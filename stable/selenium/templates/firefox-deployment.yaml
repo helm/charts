@@ -1,5 +1,5 @@
 {{- if eq true .Values.firefox.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "selenium.firefox.fullname" . }}
