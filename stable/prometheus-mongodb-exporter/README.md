@@ -54,6 +54,8 @@ podAnnotations:
 | `service.annotations` | Annotations to be added to the service | `{}` |
 | `service.port` | The port to expose | `9216` |
 | `service.type` | The type of service to expose | `ClusterIP` |
+| `serviceAccount.create` | If `true`, create the service account | `true` |
+| `serviceAccount.name` | Name of the service account | `` |
 | `serviceMonitor.enabled` | Set to true if using the Prometheus Operator | `true` |
 | `serviceMonitor.interval` | Interval at which metrics should be scraped | `30s` |
 | `serviceMonitor.scrapeTimeout` | Interval at which metric scrapes should time out | `10s` |

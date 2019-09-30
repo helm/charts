@@ -1,9 +1,8 @@
-{{ range (until (.Values.chain.nodes | int)) }}
-{{- $nodeIndex := . }}
-{{- $nodeNumber := printf "%03d" . }}
 {{- $workDir := printf "/work" }}
 {{- $refDir := printf "/ref" }}
 {{- $keysDir := printf "/keys" }}
+{{- range $index, $val := $.Values.validators }}
+{{- $nodeNumber := printf "%03d" $index }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -47,18 +46,18 @@ spec:
         - name: init-keys
           image: busybox
           imagePullPolicy: IfNotPresent
-          workingDir: {{ $keysDir }}/data
+          workingDir: {{ $keysDir }}
           volumeMounts:
-            - mountPath: {{ $workDir }}
-              name: work-dir
-            - mountPath: {{ $keysDir }}/data
-              name: keys-dir
+            - name: keys-dir
+              mountPath: {{ $keysDir }}
+            - name: work-dir
+              mountPath: {{ $workDir }}
           command:
             - 'sh'
             - '-xc'
             - |-
               mkdir -p {{ $workDir }}/.burrow/config && \
-              cp nodekey-Validator_{{ . }} {{ $workDir }}/.burrow/config/node_key.json && \
+              cp node_key.json {{ $workDir }}/.burrow/config/node_key.json && \
               chmod 600 {{ $workDir }}/.burrow/config/node_key.json
 {{- if $.Values.chain.restore.enabled }}
         - name: retrieve
@@ -72,8 +71,8 @@ spec:
           - dumpFile
           - {{ $.Values.chain.restore.dumpURL }}
           volumeMounts:
-            - mountPath: {{ $workDir }}
-              name: work-dir
+            - name: work-dir
+              mountPath: {{ $workDir }}
         - name: restore
           image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
           imagePullPolicy: {{ $.Values.image.pullPolicy }}
@@ -88,9 +87,9 @@ spec:
           - "{{ $refDir }}/genesis.json"
           - --silent
           - dumpFile
-          - --validator-address
-          - {{ (index $.Values.validatorAddresses ( printf "Validator_%d" $nodeIndex )).Address | quote }}
-          - --validator-moniker
+          - --address
+          - {{ $val.address | quote }}
+          - --moniker
           - {{ printf "%s-validator-%s" $.Values.organization $nodeNumber | quote }}
           volumeMounts:
             - mountPath: {{ $workDir }}
@@ -111,9 +110,9 @@ spec:
           - "{{ $refDir }}/burrow.json"
           - --genesis
           - "{{ $refDir }}/genesis.json"
-          - --validator-address
-          - {{ (index $.Values.validatorAddresses ( printf "Validator_%d" $nodeIndex )).Address | quote }}
-          - --validator-moniker
+          - --address
+          - {{ $val.address | quote }}
+          - --moniker
           - {{ printf "%s-validator-%s" $.Values.organization $nodeNumber | quote }}
 {{- if (and $.Values.peer.ingress.enabled (not (eq (len $.Values.peer.ingress.hosts) 0))) }}
           - --external-address
@@ -125,14 +124,14 @@ spec:
           env:
 {{- include "settings" $ | indent 10 }}
           volumeMounts:
-            - mountPath: {{ $refDir }}
-              name: ref-dir
-            - mountPath: {{ $keysDir }}/data
-              name: keys-dir
-            - mountPath: {{ $keysDir }}/names
-              name: keys-dir-names
-            - mountPath: {{ $workDir }}
-              name: work-dir
+            - name: ref-dir
+              mountPath: {{ $refDir }}
+            - name: work-dir
+              mountPath: {{ $workDir }}
+            - name: keys-dir
+              mountPath: {{ $keysDir }}/data
+            - name: keys-dir-names
+              mountPath: {{ $keysDir }}/names
           ports:
             - name: peer
               protocol: TCP
@@ -189,7 +188,7 @@ spec:
           projected:
             sources:
               - secret:
-                  name: {{ template "burrow.fullname" $ }}-keys
+                  name: {{ template "burrow.fullname" $ }}-keys-{{ $nodeNumber }}
         - name: keys-dir-names
           emptyDir: {}
         - name: work-dir
