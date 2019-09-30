@@ -67,6 +67,7 @@ Parameters introduced starting from v2
 | `certs.web.pod.annotations` | Annotations for the pod created by the `web-certs` job | `{}` |
 | `config.connectors` | Maps to the dex config `connectors` dict param | `{}` |
 | `config.enablePasswordDB` | Maps to the dex config `enablePasswordDB` param | `true` |
+| `config.frontend` | Maps to the dex config `frontend` dict param | `""` |
 | `config.grpc.address` | dex grpc listen address | `127.0.0.1` |
 | `config.grpc.tlsCert` | Maps to the dex config `grpc.tlsCert` param | `/etc/dex/tls/grpc/server/tls.crt` |
 | `config.grpc.tlsClientCA` | Maps to the dex config `grpc.tlsClientCA` param | `/etc/dex/tls/grpc/ca/tls.crt` |

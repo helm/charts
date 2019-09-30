@@ -56,7 +56,7 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 | `configmapReload.resources`            | configmap-reload pod resource requests & limits   | `{}`                          |
 | `extraArgs`                            | Optional flags for blackbox                       | `[]`                          |
 | `image.repository`                     | container image repository                        | `prom/blackbox-exporter`      |
-| `image.tag`                            | container image tag                               | `v0.14.0`                     |
+| `image.tag`                            | container image tag                               | `v0.15.0`                     |
 | `image.pullPolicy`                     | container image pull policy                       | `IfNotPresent`                |
 | `image.pullSecrets`                    | container image pull secrets                      | `[]`                          |
 | `ingress.annotations`                  | Ingress annotations                               | None                          |

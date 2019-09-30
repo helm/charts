@@ -180,12 +180,6 @@ $ helm install --name my-release -f ./values-production.yaml stable/wordpress
 + replicaCount: 3
 ```
 
-- Kubernetes Service type:
-```diff
-- service.type: LoadBalancer
-+ service.type: ClusterIP
-```
-
 - Enable client source IP preservation:
 ```diff
 - service.externalTrafficPolicy: Cluster

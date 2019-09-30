@@ -45,6 +45,9 @@ daemonset:
     type: RollingUpdate
   ## Extra environment variables that will be pass onto deployment pods
   env: {}
+  ## Allow the DaemonSet to schedule using affinity rules
+  # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  # affinity: {}
 
 # If is behind a proxy you can set the proxy server
 proxy:
