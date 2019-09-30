@@ -30,3 +30,14 @@ Create chart name and version as used by the chart label.
 {{- define "consul.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Return the apiVerion of statefulset.
+*/}}
+{{- define "statefulset.apiVersion" -}}
+{{- if semverCompare "<1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "extensions/v1beta1" -}}
+{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "apps/v1" -}}
+{{- end -}}
+{{- end -}}
