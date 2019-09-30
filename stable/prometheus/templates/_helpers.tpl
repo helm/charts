@@ -237,3 +237,14 @@ Create the name of the service account to use for the server component
     {{ default "default" .Values.serviceAccounts.server.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return the apiVerion of deployment.
+*/}}
+{{- define "deployment.apiVersion" -}}
+{{- if semverCompare "<1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "extensions/v1beta1" -}}
+{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "app/v1" -}}
+{{- end -}}
+{{- end -}}
