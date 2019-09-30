@@ -2,7 +2,7 @@ apiVersion: v1
 appVersion: "0.18.0"
 description: A Helm chart for prometheus node-exporter
 name: prometheus-node-exporter
-version: 1.6.0
+version: 1.6.1
 home: https://github.com/prometheus/node_exporter/
 sources:
 - https://github.com/prometheus/node_exporter/
