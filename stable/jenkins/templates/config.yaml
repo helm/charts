@@ -313,6 +313,10 @@ data:
     }
   {{- else }}
 # Only add config to this script if we aren't auto-reloading otherwise the pod will restart upon each config change:
+{{- if .Values.master.JCasC.defaultConfig }}
+  jcasc-default-config.yaml: |-
+    {{- include "jenkins.casc.defaults" . |nindent 4}}
+{{- end }}
 {{- range $key, $val := .Values.master.JCasC.configScripts }}
   {{ $key }}.yaml: |-
 {{ tpl $val $| indent 4 }}
