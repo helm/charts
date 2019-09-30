@@ -26,6 +26,9 @@ halyard:
     data: {}
     ## Uncomment if you want to use a pre-created ConfigMap rather than feeding data in via helm.
     # name:
+  ## Define custom profiles for Spinnaker services. Read more for details:
+  ## https://www.spinnaker.io/reference/halyard/custom/#custom-profiles
+  ## The contents of the files will be passed through `tpl`, so value interpolation is supported.
   additionalProfileConfigMaps:
     data: {}
       ## if you're running spinnaker behind a reverse proxy such as a GCE ingress
