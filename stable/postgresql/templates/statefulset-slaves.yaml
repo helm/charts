@@ -158,6 +158,7 @@ spec:
             command:
             - sh
             - -c
+            - -e
             {{- include "postgresql.readinessProbeCommand" . | nindent 12 }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
