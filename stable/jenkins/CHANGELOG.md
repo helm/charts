@@ -6,6 +6,10 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.7.4
+
+Comments out JCasC example of jenkins.systemMessage so that it can be used by end users. Previously, an attempt to set systemMessage causes Jenkins to startup, citing duplicate JCasC settings for systemMessage [issue #13333](https://github.com/helm/charts/issues/13333)
+
 ## 1.7.2
 
 Update kubernetes-plugin to version 1.18.2 which fixes frequently encountered [JENKINS-59000](https://issues.jenkins-ci.org/plugins/servlet/mobile#issue/JENKINS-59000)
