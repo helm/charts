@@ -69,24 +69,22 @@ The datadog agent is listening on port 8126.
 ####               WARNING: Deprecation notice               ####
 #################################################################
 
-* Deployment installation will be deprecated in the futur major
+* Deployment installation will be deprecated in the future major
   chart version (`v2.0.0`). This installation configuration is
   triggered by the option: `deployment.enabled: true`.
-  The recommanded solution is to run the Datadog-agent with the
+  The recommended solution is to run the Datadog-agent with the
   `Daemonset` configuration which is the default configuration.
 
 {{- if .Values.daemonset.enabled }}
 
 * Simultaneous DaemonSet + Deployment installation within a single
   release will be deprecated in the futur major chart version
-  (`v2.0.0`). You will still be able to run both as separate
-  releases with separate value files.
+  (`v2.0.0`).
 
   Running as a Deployment is not necessary for event collection
   anymore, thanks to the leader election feature.
 
-  We encourage you to migrate to a single DaemonSet, or split your
-  chart if your use case still requires a separate Deployment.
+  We encourage you to migrate to a single DaemonSet.
 {{- end }}
 {{- end }}
 
