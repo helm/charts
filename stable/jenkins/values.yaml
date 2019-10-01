@@ -161,7 +161,7 @@ master:
 
   # List of plugins to be install during Jenkins master start
   installPlugins:
-    - kubernetes:1.18.1
+    - kubernetes:1.18.2
     - workflow-job:2.33
     - workflow-aggregator:2.6
     - credentials-binding:1.19
@@ -352,6 +352,9 @@ master:
     # See here: https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/
     # The `groups` root object is added by default, simply add the rule entries
     alertingrules: []
+
+  # Can be used to disable rendering master test resources when using helm template
+  testEnabled: true
 
 agent:
   enabled: true

@@ -76,8 +76,16 @@ serviceAccount:
   # Specifies whether a ServiceAccount should be created
   create: true
   # The name of the ServiceAccount to use.
-  # If not set and create is true, a name is generated using the fullname template
+  # If not set and `create` is true, a name is generated using the fullname template
   # name: instana-agent
+
+podSecurityPolicy:
+  # Specifies whether a PodSecurityPolicy should be authorized for the Instana Agent pods.
+  # Requires `rbac.create` to be `true` as well.
+  enable: false
+  # The name of an existing PodSecurityPolicy you would like to authorize for the Instana Agent pods.
+  # If not set and `enable` is true, a PodSecurityPolicy will be created with a name generated using the fullname template.
+  name: null
 
 cluster:
   # cluster.name represents the name that will be assigned to this cluster in Instana

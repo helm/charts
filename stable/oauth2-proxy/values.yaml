@@ -93,6 +93,15 @@ resources: {}
   #   cpu: 100m
   #   memory: 300Mi
 
+extraVolumes: []
+  # - name: ca-bundle-cert
+  #   secret:
+  #     secretName: <secret-name>
+
+extraVolumeMounts: []
+  # - mountPath: /etc/ssl/certs/
+  #   name: ca-bundle-cert
+
 priorityClassName: ""
 
 # Affinity for pod assignment
