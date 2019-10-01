@@ -53,7 +53,7 @@ cloudConfigPath: /etc/gce.conf
 
 image:
   repository: k8s.gcr.io/cluster-autoscaler
-  tag: v1.13.7
+  tag: v1.14.5
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
