@@ -74,6 +74,7 @@ The following table lists the configurable parameters of the external-dns chart 
 | `azure.aadClientId`                 | When using the Azure provider, set the Azure AAD Client ID                                               | `""`                                                        |
 | `azure.aadClientSecret`             | When using the Azure provider, set the Azure AAD Client Secret                                           | `""`                                                        |
 | `azure.useManagedIdentityExtension` | When using the Azure provider, set if you use Azure MSI                                                  | `""`                                                        |
+| `cloudflare.apiToken`               | When using the Cloudflare provider, `CF_API_TOKEN` to set (optional)                                     | `""`                                                        |
 | `cloudflare.apiKey`                 | When using the Cloudflare provider, `CF_API_KEY` to set (optional)                                       | `""`                                                        |
 | `cloudflare.email`                  | When using the Cloudflare provider, `CF_API_EMAIL` to set (optional)                                     | `""`                                                        |
 | `cloudflare.proxied`                | When using the Cloudflare provider, enable the proxy feature (DDOS protection, CDN...) (optional)        | `true`                                                      |
