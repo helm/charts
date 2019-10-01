@@ -10,7 +10,7 @@ See the [Datadog JMX integration](https://docs.datadoghq.com/integrations/java/)
 
 Kubernetes 1.4+ or OpenShift 3.4+, note that:
 
-* the Datadog Agent supports Kubernetes 1.3+
+* the Datadog Agent supports Kubernetes 1.4+
 * The Datadog chart's defaults are tailored to Kubernetes 1.7.6+, see [Datadog Agent legacy Kubernetes versions documentation](https://github.com/DataDog/datadog-agent/tree/master/Dockerfiles/agent#legacy-kubernetes-versions) for adjustments you might need to make for older versions
 
 ## Quick start
