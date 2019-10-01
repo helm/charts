@@ -12,6 +12,13 @@ image:
 nameOverride: ""
 fullnameOverride: ""
 
+# Specify a CA cert to trust for self signed certificates at the Oauth2 URLs.  Be careful to indent one level beyond the
+# trustedCACert key:
+# trustedCACert: |-
+#  -----BEGIN CERTIFICATE-----
+#  ...
+#  -----END CERTIFICATE-----
+
 gangway:
   # The address to listen on. Defaults to 0.0.0.0 to listen on all interfaces.
   # Env var: GANGWAY_HOST
@@ -89,9 +96,6 @@ gangway:
   # Env var: GANGWAY_CLUSTER_CA_PATH
   # cluster_ca_path: "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
 
-  # The path to a root CA to trust for self signed certificates at the Oauth2 URLs
-  # Env var: GANGWAY_TRUSTED_CA_PATH
-  # trustedCAPath: /cacerts/rootca.crt
 
   # The path gangway uses to create urls (defaults to "")
   # Env var: GANGWAY_HTTP_PATH

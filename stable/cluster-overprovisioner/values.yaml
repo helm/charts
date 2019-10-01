@@ -18,8 +18,10 @@ fullnameOverride: ""
 
 deployments: []
   # - name: default
+  #   annotations: {}
   #   replicaCount: 1
   #   nodeSelector: {}
   #   resources: {}
   #   tolerations: []
   #   affinity: {}
+  #   labels: {}

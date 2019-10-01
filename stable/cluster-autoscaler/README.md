@@ -30,6 +30,17 @@ $ helm del --purge my-release
 Once the old release is deleted, the new 2.X release can be installed using the standard instructions.
 Note that autoscaling will not occur during the time between deletion and installation.
 
+## Upgrading from 4.X to 5.X
+
+In order to upgrade to chart version 5.X from <=4.X, deleting the old helm release first is required.
+
+```console
+$ helm del --purge my-release
+```
+
+Once the old release is deleted, the new 5.X release can be installed using the standard instructions.
+Note that autoscaling will not occur during the time between deletion and installation.
+
 ## Installing the Chart
 
 **By default, no deployment is created and nothing will autoscale**.
@@ -148,8 +159,9 @@ Parameter | Description | Default
 `extraArgs` | additional container arguments | `{}`
 `podDisruptionBudget` | Pod disruption budget | `maxUnavailable: 1`
 `extraEnv` | additional container environment variables | `{}`
-`envFromConfigMap` |  additional container environment variables from a configmap | `[]`
-`envFromSecret` | additional container environment variables from secret | `nil`
+`envFromConfigMap` | additional container environment variables from a configmap | `{}`
+`envFromSecret` | secret name containing keys that will be exposed as envs | `nil`
+`extraEnvSecrets` | additional container environment variables from a secret | `{}`
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to add to each pod | `{}`
 `deployment.apiVersion` | apiVersion for the deployment | `extensions/v1beta1`
@@ -162,7 +174,6 @@ Parameter | Description | Default
 `dnsPolicy` | dnsPolicy | `nil`
 `resources` | pod resource requests & limits | `{}`
 `service.annotations` | annotations to add to service | none
-`service.clusterIP` | IP address to assign to service | `""`
 `service.externalIPs` | service external IP addresses | `[]`
 `service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
