@@ -215,7 +215,6 @@ spec:
           - "--master_addresses={{ template "yugabyte.master_addresses" $root }}"
           - "--replication_factor={{ $root.Values.replicas.master }}"
           {{ end }}
-          - "--undefok=enable_ysql"
           {{ if not $root.Values.disableYsql }}
           - "--enable_ysql=true"
           {{ else }}
@@ -225,7 +224,7 @@ spec:
           - "--memory_limit_hard_bytes={{ template "yugabyte.memory_hard_limit" $root.Values.resource.master }}"
           - "--stderrthreshold=0"
           - "--num_cpus={{ ceil $root.Values.resource.master.requests.cpu }}"
-          - "--undefok=num_cpus"
+          - "--undefok=num_cpus,enable_ysql"
           {{- range $flag, $override := $root.Values.gflags.master }}
           - "--{{ $flag }}={{ $override }}"
           {{- end}}
@@ -238,7 +237,6 @@ spec:
           - "--server_broadcast_addresses={{ printf "$(HOSTNAME).%s.$(NAMESPACE).svc.%s" .name $root.Values.domainName }}:9100"
           - "--rpc_bind_addresses={{ printf "$(HOSTNAME).%s.$(NAMESPACE).svc.%s" .name $root.Values.domainName }}"
           - "--cql_proxy_bind_address={{ printf "$(HOSTNAME).%s.$(NAMESPACE).svc.%s" .name $root.Values.domainName }}"
-          - "--undefok=enable_ysql"
           {{ if not $root.Values.disableYsql }}
           - "--enable_ysql=true"
           - "--pgsql_proxy_bind_address={{ printf "$(POD_IP)" }}:5433"
@@ -254,7 +252,7 @@ spec:
           - "--memory_limit_hard_bytes={{ template "yugabyte.memory_hard_limit" $root.Values.resource.tserver }}"
           - "--stderrthreshold=0"
           - "--num_cpus={{ ceil $root.Values.resource.tserver.requests.cpu }}"
-          - "--undefok=num_cpus"
+          - "--undefok=num_cpus,enable_ysql"
           {{- range $flag, $override := $root.Values.gflags.tserver }}
           - "--{{ $flag }}={{ $override }}"
           {{- end }}
