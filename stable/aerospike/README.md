@@ -6,7 +6,7 @@ This is an implementation of Aerospike StatefulSet found here:
 
 ## Pre Requisites
 
-* Kubernetes 1.7+ with beta APIs enabled and support for statefulsets
+* Kubernetes 1.9+
 
 * PV support on underlying infrastructure (only if you are provisioning persistent volume).
 
