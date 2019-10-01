@@ -92,7 +92,6 @@ spec:
           server: {{ .Values.efsProvisioner.efsFileSystemId }}.efs.{{ .Values.efsProvisioner.awsRegion }}.amazonaws.com
           {{- end }}
           path: /
-{{- end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -105,3 +104,4 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations| indent 8 }}
     {{- end }}
+{{- end }}
