@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "aerospike.fullname" . }}
@@ -10,6 +10,10 @@ metadata:
 spec:
   serviceName: {{ template "aerospike.fullname" . }}-mesh
   replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "aerospike.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
