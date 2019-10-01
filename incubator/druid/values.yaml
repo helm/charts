@@ -1,12 +1,33 @@
 # Default values for druid.
 
 image:
-  repository: maver1ckpl/druid-docker
-  tag: 0.12.3-2
+  repository: apache/incubator-druid
+  tag: 0.16.0-incubating
   pullPolicy: IfNotPresent
 
-env:
-  DRUID_USE_CONTAINER_IP: true
+configVars:
+  DRUID_XMX: 1g
+  DRUID_XMS: 1g
+  DRUID_MAXNEWSIZE: 250m
+  DRUID_NEWSIZE: 250m
+  DRUID_MAXDIRECTMEMORYSIZE: 10000m
+  DRUID_USE_CONTAINER_IP: "true"
+  druid_processing_numThreads: "3"
+  druid_emitter_logging_logLevel: debug
+  druid_extensions_loadList: '["druid-histogram", "druid-datasketches", "druid-lookups-cached-global", "postgresql-metadata-storage", "druid-google-extensions"]'
+  druid_metadata_storage_type: postgresql
+  druid_metadata_storage_connector_connectURI: jdbc:postgresql://postgres:5432/druid
+  druid_metadata_storage_connector_user: druid
+  druid_metadata_storage_connector_password: druid
+  druid_coordinator_balancer_strategy: cachingCost
+  druid_indexer_runner_javaOptsArray: '["-server", "-Xmx1g", "-Xms1g", "-XX:MaxDirectMemorySize=3g", "-Duser.timezone=UTC", "-Dfile.encoding=UTF-8", "-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager"]'
+  druid_indexer_fork_property_druid_processing_buffer_sizeBytes: '268435456'
+  druid_storage_type: local
+  DRUID_LOG4J: <?xml version="1.0" encoding="UTF-8" ?><Configuration status="WARN"><Appenders><Console name="Console" target="SYSTEM_OUT"><PatternLayout pattern="%d{ISO8601} %p [%t] %c - %m%n"/></Console></Appenders><Loggers><Root level="info"><AppenderRef ref="Console"/></Root><Logger name="org.apache.druid.jetty.RequestLog" additivity="false" level="DEBUG"><AppenderRef ref="Console"/></Logger></Loggers></Configuration>
+
+gCloudStorage:
+  enabled: false
+  secretName: google-cloud-key
 
 broker:
   replicaCount: 1
@@ -75,6 +96,7 @@ coordinator:
   podAnnotations: {}
 
 overlord:
+  enabled: false
   replicaCount: 1
 
   name: overlord
@@ -113,7 +135,7 @@ historical:
   port: 8083
   serviceType: ClusterIP
 
-  javaOpts: "-Xms2G -Xmx2G -XX:MaxDirectMemorySize=8g"
+  javaOpts: "-Xms2G -Xmx2G -XX:MaxDirectMemorySize=10g"
 
   ingress:
     enabled: false
@@ -138,7 +160,8 @@ historical:
 
   nodeAffinity: {}
 
-  nodeSelector: {}
+  nodeSelector:
+    size: historical
 
   tolerations: []
 
@@ -205,6 +228,39 @@ middleManager:
   updateStrategy:
     type: RollingUpdate
 
+router:
+  enabled: true
+  replicaCount: 1
+
+  name: router
+
+  port: 8888
+  serviceType: ClusterIP
+
+  javaOpts: "-Xms1G -Xmx1G"
+
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - chart-example.local
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+  resources: {}
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  podAnnotations: {}
 
 # ------------------------------------------------------------------------------
 # Zookeeper:
@@ -228,7 +284,7 @@ zookeeper:
 # MySQL:
 # ------------------------------------------------------------------------------
 mysql:
-  enabled: true
+  enabled: false
   mysqlRootPassword: druidroot
   mysqlUser: druid
   mysqlPassword: druid
@@ -238,3 +294,18 @@ mysql:
       [mysqld]
       character-set-server=utf8
       collation-server=utf8_unicode_ci
+
+# ------------------------------------------------------------------------------
+# postgres:
+# ------------------------------------------------------------------------------
+postgresql:
+  enabled: true
+  postgresqlUsername: druid
+  postgresqlPassword: druid
+  postgresqlDatabase: druid
+  persistence:
+    enabled: true
+  service:
+    port: 5432
+
+# Secrets

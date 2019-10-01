@@ -36,13 +36,14 @@ This Helm automatically prefixes all names using the release name to avoid colli
 
 ### URL prefix
 
-This chart exposes 5 endpoints:
+This chart exposes 6 endpoints:
 
 - Druid Overlord
 - Druid Broker
 - Druid Coordinator
 - Druid Historical
 - Druid Middle Manager
+- Druid Router
 
 
 ### Druid configuration
@@ -50,7 +51,7 @@ This chart exposes 5 endpoints:
 Druid configuration can be changed by using environment variables from Docker image.
 
 See the
-[Druid Docker entry point](https://github.com/maver1ck/druid-docker/blob/master/start-druid.sh)
+[Druid Docker entry point](https://github.com/apache/incubator-druid/blob/master/distribution/docker/druid.sh)
 for more informations
 
 ### Middle Manager and Historical Statefulset
@@ -67,7 +68,7 @@ The following table lists the configurable parameters of the Druid chart and the
 | `image.repository`                       | Container image name                                    | `maver1ckpl/druid-docker` |
 | `image.tag`                              | Container image tag                                     | `0.12.3-1`                |
 | `image.pullPolicy`                       | Container pull policy                                   | `IfNotPresent`            |
-| `env`                                    | Custom env variables for all components                 | ``                        |
+| `configVars`                             | Druid configuration variables for all components        | ``                        |
 | `historical.name`                        | historical component name                               | `historical`              |
 | `historical.replicaCount`                | historical node replicas (deployment)                   | `1`                       |
 | `historical.port`                        | port of historical component                            | `8083`                    |
@@ -148,10 +149,13 @@ The following table lists the configurable parameters of the Druid chart and the
 | `coordinator.tolerations`                 | coordinator tolerations                                  | `[]`                      |
 | `coordinator.javaOpts`                    | coordinator node java options                            | `--Xms1G -Xmx1G`          |
 | `coordinator.nodeAffinity`                | coordinator node affinity policy                         | `{}`                      |
-| `coordinator.ingress.enabled`             | enable ingress                                             | `false`                   |
+| `coordinator.ingress.enabled`             | enable ingress                                           | `false`                   |
 | `coordinator.ingress.hosts`               | hosts for the coordinator api                            | `[ "chart-example.local" ]` |
 | `coordinator.ingress.path`                | path of the coordinator api                              | `/`                       |
 | `coordinator.ingress.annotations`         | annotations for the coordinator api ingress              | `{}`                      |
-| `coordinator.ingress.tls`                 | TLS configuration for the ingress                          | `[]`                      |
+| `coordinator.ingress.tls`                 | TLS configuration for the ingress                        | `[]`                      |
+| `gCloudStorage.enabled`                   | Look for secret to set google cloud credentials          | `false`                      |
+| `gCloudStorage.secretName`                | secretName to be mounted as google cloud credentials     | `false`                      |
+
 
 Full and up-to-date documentation can be found in the comments of the `values.yaml` file.

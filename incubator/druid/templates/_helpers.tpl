@@ -72,3 +72,10 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{ template "druid.fullname" . }}-{{ .Values.coordinator.name }}
 {{- end -}}
 
+{{/*
+Create a default fully qualified router name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "druid.router.fullname" -}}
+{{ template "druid.fullname" . }}-{{ .Values.router.name }}
+{{- end -}}
