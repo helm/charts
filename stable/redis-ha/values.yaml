@@ -8,6 +8,9 @@ image:
 ## replicas number for each component
 replicas: 3
 
+## Kubernetes priorityClass name for the redis-ha-server pod
+# priorityClassName: ""
+
 ## Custom labels for the redis pod
 labels: {}
 
@@ -37,6 +40,8 @@ haproxy:
     pullPolicy: IfNotPresent
   annotations: {}
   resources: {}
+  ## Kubernetes priorityClass name for the haproxy pod
+  # priorityClassName: ""
   ## Service type for HAProxy
   ##
   service:
