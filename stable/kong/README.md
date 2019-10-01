@@ -114,6 +114,7 @@ and their default values.
 | serviceMonitor.enabled             | Create ServiceMonitor for Prometheus Operator                                         | false               |
 | serviceMonitor.interval            | Scrapping interval                                                                    | 10s                 |
 | serviceMonitor.namespace           | Where to create ServiceMonitor                                                        |                     |
+| secretVolumes                      | Mount given secrets as a volume in Kong container to override default certs and keys. | `[]`                |
 | serviceMonitor.prometheusOperatorServiceMonitorSelector.enabled       | Enable Promentheus-operator custom ServiceMonitor selector labels                     | false               |
 | serviceMonitor.prometheusOperatorServiceMonitorSelector.matchLabels   | The Prometheus-operator ServiceMonitor selector Labels                                | {}                  |
 
