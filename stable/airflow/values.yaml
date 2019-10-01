@@ -43,6 +43,7 @@ airflow:
     type: ClusterIP
     externalPort: 8080
     nodePort:
+      http:
   ##
   ## The executor to use.
   ##
