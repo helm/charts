@@ -23,6 +23,9 @@ spec:
   {{- with .resourceGroup }}
     resourceGroup: {{ . }}
   {{- end }}
+  {{- with .subscriptionId }}
+    subscriptionId: {{ . }}
+  {{- end }}
   {{- with .snapshotLocation }}
     snapshotLocation: {{ . }}
   {{- end}}

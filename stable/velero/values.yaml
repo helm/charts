@@ -79,6 +79,7 @@ configuration:
     #  s3Url:
     #  kmsKeyId:
     #  resourceGroup:
+    #  subscriptionId:
     #  storageAccount:
     #  publicUrl:
 
@@ -94,6 +95,7 @@ configuration:
   #    region:
   #    apitimeout:
   #    resourceGroup:
+  #    subscriptionId:
   #    snapshotLocation:
   #    project:
 

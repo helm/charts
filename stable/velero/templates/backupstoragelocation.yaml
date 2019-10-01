@@ -36,6 +36,9 @@ spec:
   {{- with .storageAccount }}
     storageAccount: {{ . }}
   {{- end }}
+  {{- with .subscriptionId }}
+    subscriptionId: {{ . }}
+  {{- end }}
   {{- if .publicUrl }}
   {{- with .publicUrl }}
     publicUrl: {{ . }}
