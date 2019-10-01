@@ -1,4 +1,3 @@
-{{- if .Values.configurationFiles }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -9,4 +8,11 @@ data:
   {{ $key }}: |-
 {{ $val | indent 4}}
 {{- end }}
-{{- end -}}
+  mysql-init: |-
+    UPDATE mysql.user SET authentication_string = PASSWORD('MYSQL_ROOT_PASSWORD')
+    WHERE User = 'root';
+    {{- if .Values.mysqlUser }}
+    UPDATE mysql.user SET authentication_string = PASSWORD('MYSQL_PASSWORD')
+    WHERE User = '{{ .Values.mysqlUser }}';
+    {{- end }}
+    FLUSH PRIVILEGES;

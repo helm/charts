@@ -8,10 +8,13 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-{{- with .Values.deploymentAnnotations }}
   annotations:
-{{ toYaml . | indent 4 }}
-{{- end }}
+    checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+    {{- with .Values.deploymentAnnotations }}
+    {{- range . }}
+    {{ . | quote }}
+    {{- end }}
+    {{- end }}
 
 spec:
   selector:
@@ -26,10 +29,13 @@ spec:
 {{- with .Values.podLabels }}
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.podAnnotations }}
       annotations:
-{{ toYaml . | indent 8 }}
-{{- end }}
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        {{- with .Values.podAnnotations }}
+        {{- range . }}
+        {{ . | quote }}
+        {{- end }}
+        {{- end }}
     spec:
       {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
@@ -59,6 +65,35 @@ spec:
           {{- if .Values.persistence.subPath }}
           subPath: {{ .Values.persistence.subPath }}
           {{- end }}
+      {{- if not .Values.mysqlAllowEmptyPassword }}
+      - name: "update-mysql-init"
+        image: "{{ .Values.busybox.image}}:{{ .Values.busybox.tag }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        resources:
+{{ toYaml .Values.initContainer.resources | indent 10 }}
+        command: [
+            "sh",
+            "-ce",
+            "cp /configmap/mysql-init /tmp/files/mysql-init &&
+             sed -i \"s/MYSQL_ROOT_PASSWORD/$MYSQL_ROOT_PASSWORD/g\" /tmp/files/mysql-init &&
+             sed -i \"s/MYSQL_PASSWORD/$MYSQL_PASSWORD/g\" /tmp/files/mysql-init" ]
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "mysql.fullname" . }}
+              key: mysql-root-password
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "mysql.fullname" . }}
+              key: mysql-password
+        volumeMounts:
+        - name: mysql-init
+          mountPath: /configmap
+        - name: tmp-files
+          mountPath: /tmp/files
+      {{- end }}
       {{- if .Values.extraInitContainers }}
 {{ tpl .Values.extraInitContainers . | indent 6 }}
       {{- end }}
@@ -75,8 +110,11 @@ spec:
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
 
-        {{- with .Values.args }}
         args:
+        {{- if not .Values.mysqlAllowEmptyPassword }}
+          - "--init-file=/tmp/files/mysql-init"
+        {{- end }}
+        {{- with .Values.args }}
         {{- range . }}
           - {{ . | quote }}
         {{- end }}
@@ -148,6 +186,10 @@ spec:
           successThreshold: {{ .Values.readinessProbe.successThreshold }}
           failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
         volumeMounts:
+        - name: mysql-init
+          mountPath: /configmap
+        - name: tmp-files
+          mountPath: /tmp/files
         - name: data
           mountPath: /var/lib/mysql
           {{- if .Values.persistence.subPath }}
@@ -214,6 +256,14 @@ spec:
 {{ toYaml .Values.metrics.resources | indent 10 }}
       {{- end }}
       volumes:
+      - name: mysql-init
+        configMap:
+          name: {{ template "mysql.fullname" . }}-configuration
+          items:
+          - key: mysql-init
+            path: mysql-init
+      - name: tmp-files
+        emptyDir: {}
       {{- if .Values.configurationFiles }}
       - name: configurations
         configMap:
