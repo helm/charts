@@ -9,6 +9,5 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-  queries.yaml: |
-  {{ printf .Values.prometheus.queries | indent 2 }}
+  queries.yaml: {{ .Values.prometheus.queries | quote | indent 2 }}
 {{- end }}

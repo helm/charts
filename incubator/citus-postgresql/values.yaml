@@ -89,7 +89,7 @@ prometheus:
     requests:
       cpu: 100m
       memory: 256Mi
-  disableDefaultMetrics: true
+  disableDefaultMetrics: false
   logLevel: "info"
   queries: |-
       pg_replication:
@@ -106,7 +106,7 @@ prometheus:
               usage: "GAUGE"
               description: "Time at which postmaster started"
 
-      pg_stat_activity:
+      pg_stat_custom_activity:
         query: " SELECT * FROM pg_stat_activity WHERE query != '<IDLE>' AND query NOT ILIKE '%pg_stat_activity%' ORDER BY query_start desc"
         metrics:
           - datid:

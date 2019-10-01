@@ -135,7 +135,7 @@ spec:
         {{- if .Values.prometheus.enabled }}
         - name: queries
           configMap:
-          name: {{ template "citus-postgresql.fullname" . }}-metric-exporter-queries
+            name: {{ template "citus-postgresql.fullname" . }}-metric-exporter-queries
           defaultMode: 420
         {{ end }}
   volumeClaimTemplates:
