@@ -27,6 +27,9 @@ spec:
           args:
             - "--key-prefix"
             - "{{ .Values.secretName }}"
+            {{- range $value := .Values.commandArgs }}
+            - {{ $value | quote }}
+            {{- end }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
