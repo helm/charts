@@ -66,7 +66,7 @@ Also, we can't use a single if because lazy evaluation is not an option
 {{- end -}}
 
 {{/*
-Return the apiVerion of daemonset.
+Return the apiVersion of daemonset.
 */}}
 {{- define "daemonset.apiVersion" -}}
 {{- if semverCompare "<1.14-0" .Capabilities.KubeVersion.GitVersion -}}
