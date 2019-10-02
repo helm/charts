@@ -68,6 +68,10 @@ agent:
   # agent.redactKubernetesSecrets sets the INSTANA_KUBERNETES_REDACT_SECRETS environment variable.
   # redactKubernetesSecrets: null
 
+  # agent.host.repository sets a host path to be mounted as the agent maven repository (for debugging or development purposes)
+  host:
+    repository: null
+
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
