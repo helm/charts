@@ -160,6 +160,11 @@ spec:
               mountPath: /auth
               readOnly: true
 {{- end }}
+{{- if .Values.secrets.tokenAuthRootCertBundle }}
+            - name: token-auth-root-cert-bundle
+              mountPath: /tokenAuthRootCertBundle
+              readOnly: true
+{{- end }}
 {{- if eq .Values.storage "filesystem" }}
             - name: data
               mountPath: /var/lib/registry/
@@ -187,6 +192,14 @@ spec:
             items:
             - key: htpasswd
               path: htpasswd
+{{- end }}
+{{- if .Values.secrets.tokenAuthRootCertBundle }}
+        - name: token-auth-root-cert-bundle
+          secret:
+            secretName: {{ template "docker-registry.fullname" . }}-secret
+            items:
+            - key: tokenAuthRootCertBundle
+              path: cert.pem
 {{- end }}
 {{- if eq .Values.storage "filesystem" }}
         - name: data

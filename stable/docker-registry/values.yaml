@@ -66,6 +66,7 @@ storage: filesystem
 secrets:
   haSharedSecret: ""
   htpasswd: ""
+  tokenAuthRootCertBundle: ""
 # Secrets for Azure
 #   azure:
 #     accountName: ""
