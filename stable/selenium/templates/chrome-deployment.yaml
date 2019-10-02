@@ -1,5 +1,5 @@
 {{- if eq true .Values.chrome.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "selenium.chrome.fullname" . }}
@@ -88,7 +88,7 @@ spec:
           resources:
 {{ toYaml .Values.chrome.resources | trim | indent 12 }}
 {{- if or .Values.global.imagePullSecrets .Values.chrome.imagePullSecrets }}
-      imagePullSecrets: 
+      imagePullSecrets:
       - name: {{ .Values.chrome.imagePullSecrets | default .Values.global.imagePullSecrets | quote }}
 {{- end }}
       volumes:
