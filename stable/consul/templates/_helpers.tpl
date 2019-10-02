@@ -32,7 +32,7 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/*
-Return the apiVerion of statefulset.
+Return the apiVersion of statefulset.
 */}}
 {{- define "statefulset.apiVersion" -}}
 {{- if semverCompare "<1.14-0" .Capabilities.KubeVersion.GitVersion -}}
