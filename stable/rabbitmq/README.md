@@ -275,6 +275,27 @@ Any load definitions specified will be available within in the container at `/ap
 
 > Loading a definition will take precedence over any configuration done through [Helm values](#configuration).
 
+If needed, you can use `extraSecrets` to let the chart create the secret for you. This way, you don't need to manually create it before deploying a release. For example :
+
+```yaml
+extraSecrets:
+  load-definition:
+    load_definition.json: |
+      {
+        "vhosts": [
+          {
+            "name": "/"
+          }
+        ]
+      }
+rabbitmq:
+  loadDefinition:
+    enabled: true
+    secretName: load-definition
+  extraConfiguration: |
+    management.load_definitions = /app/load_definition.json
+```
+
 ## Persistence
 
 The [Bitnami RabbitMQ](https://github.com/bitnami/bitnami-docker-rabbitmq) image stores the RabbitMQ data and configurations at the `/opt/bitnami/rabbitmq/var/lib/rabbitmq/` path of the container.
