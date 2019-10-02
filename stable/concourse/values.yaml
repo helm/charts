@@ -67,16 +67,16 @@ concourse:
 
     ## The Future™ of resource checking.
     ##
-    enableLidar: false
+    enableLidar:
 
     ## Interval on which the resource scanner will run to see if new checks need
     ## to be scheduled.
     ##
-    lidarScannerInterval: 1m
+    lidarScannerInterval:
 
     ## Interval on which the resource checker runs any scheduled checks.
     ##
-    lidarCheckerInterval: 10s
+    lidarCheckerInterval:
 
     ## Enable auditing for all api requests connected to builds.
     ##
@@ -116,7 +116,7 @@ concourse:
 
     ## Enable redacting secrets in build logs.
     ##
-    enableRedactSecrets: false
+    enableRedactSecrets:
 
     ## The number of attempts secret will be retried to be fetched,
     ## in case a retryable error happens.
@@ -255,7 +255,7 @@ concourse:
 
     ## Log cluster name.
     ##
-    logClusterName: false
+    logClusterName:
 
 
     ## Interval on which to run build tracking.
@@ -649,7 +649,7 @@ concourse:
 
       ## Period after which to reap checks that are completed.
       ##
-      checkRecyclePeriod: 6h
+      checkRecyclePeriod:
 
     syslog:
       ## Enables the emission of build logs to external log ingesters through
