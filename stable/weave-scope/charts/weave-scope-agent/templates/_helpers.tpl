@@ -61,12 +61,12 @@ Create the name of the service account to use
 {{- end -}}
 
 {{/*
-Return the apiVerion of daemonset.
+Return the apiVersion of daemonset.
 */}}
 {{- define "daemonset.apiVersion" -}}
-{{- if semverCompare "<1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- if semverCompare "<1.9-0" .Capabilities.KubeVersion.GitVersion -}}
 {{- print "extensions/v1beta1" -}}
-{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- else -}}
 {{- print "apps/v1" -}}
 {{- end -}}
 {{- end -}}
