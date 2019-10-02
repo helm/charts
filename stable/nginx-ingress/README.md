@@ -137,8 +137,9 @@ Parameter | Description | Default
 `controller.metrics.service.type` | type of Prometheus metrics service to create | `ClusterIP`
 `controller.metrics.serviceMonitor.enabled` | Set this to `true` to create ServiceMonitor for Prometheus operator | `false`
 `controller.metrics.serviceMonitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | `{}`
-`controller.metrics.serviceMonitor.namespace` | namespace where servicemonitor resource should be created | `the same namespace as nginx ingress`
 `controller.metrics.serviceMonitor.honorLabels` | honorLabels chooses the metric's labels on collisions with target labels. | `false`
+`controller.metrics.serviceMonitor.namespace` | namespace where servicemonitor resource should be created | `the same namespace as nginx ingress`
+`controller.metrics.serviceMonitor.scrapeInterval` | interval between Prometheus scraping | `30s`
 `controller.metrics.prometheusRule.enabled` | Set this to `true` to create prometheusRules for Prometheus operator | `false`
 `controller.metrics.prometheusRule.additionalLabels` | Additional labels that can be used so prometheusRules will be discovered by Prometheus | `{}`
 `controller.metrics.prometheusRule.namespace` | namespace where prometheusRules resource should be created | `the same namespace as nginx ingress`

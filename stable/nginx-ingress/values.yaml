@@ -365,6 +365,7 @@ controller:
       enabled: false
       additionalLabels: {}
       namespace: ""
+      scrapeInterval: 30s
       # honorLabels: true
 
     prometheusRule:
