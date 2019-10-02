@@ -70,12 +70,12 @@ extraConfigmapMounts: []
   #   configMap: certs-configmap
   #   readOnly: true
 
-  
+
 extraEmptyDirMounts: []
   # - name: provisioning-notifiers
   #   mountPath: /etc/grafana/provisioning/notifiers
 
-  
+
 ## Assign a PriorityClassName to pods if set
 # priorityClassName:
 
@@ -366,10 +366,10 @@ grafana.ini:
     url: https://grafana.net
 ## LDAP Authentication can be enabled with the following values on grafana.ini
 ## NOTE: Grafana will fail to start if the value for ldap.toml is invalid
-# auth.ldap:
-#   enabled: true
-#   allow_sign_up: true
-#   config_file: /etc/grafana/ldap.toml
+  # auth.ldap:
+  #   enabled: true
+  #   allow_sign_up: true
+  #   config_file: /etc/grafana/ldap.toml
 
 ## Grafana's LDAP configuration
 ## Templated by the template in _helpers.tpl
@@ -409,12 +409,12 @@ sidecar:
   image: kiwigrid/k8s-sidecar:0.1.20
   imagePullPolicy: IfNotPresent
   resources: {}
-  #   limits:
-  #     cpu: 100m
-  #     memory: 100Mi
-  #   requests:
-  #     cpu: 50m
-  #     memory: 50Mi
+#   limits:
+#     cpu: 100m
+#     memory: 100Mi
+#   requests:
+#     cpu: 50m
+#     memory: 50Mi
   # skipTlsVerify Set to true to skip tls verification for kube api calls
   # skipTlsVerify: true
   dashboards:
