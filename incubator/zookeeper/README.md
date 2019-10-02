@@ -50,7 +50,7 @@ NAME                TYPE       CLUSTER-IP     EXTERNAL-IP  PORT(S)              
 zookeeper-headless  ClusterIP  None           <none>       2181/TCP,3888/TCP,2888/TCP  2m
 zookeeper           ClusterIP  10.98.179.165  <none>       2181/TCP                    2m
 
-==> v1beta1/StatefulSet
+==> v1/StatefulSet
 NAME       DESIRED  CURRENT  AGE
 zookeeper  3        3        2m
 
