@@ -30,6 +30,10 @@ spec:
       readOnly: false
     - pathPrefix: "/etc/machine-id"
       readOnly: false
+    {{- if .Values.agent.host.repository }}
+    - pathPrefix: {{ .Values.agent.host.repository }}
+      readOnly: false
+    {{- end }}
   hostNetwork: true
   hostPorts:
     - min: 0

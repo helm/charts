@@ -110,6 +110,10 @@ spec:
             - name: configuration
               subPath: configuration.yaml
               mountPath: /root/configuration.yaml
+            {{- if .Values.agent.host.repository }}
+            - name: repo
+              mountPath: /opt/instana/agent/data/repo
+            {{- end }}
           livenessProbe:
             httpGet:
               path: /status
@@ -175,5 +179,10 @@ spec:
         - name: configuration
           configMap:
             name: {{ template "instana-agent.fullname" . }}
+        {{- if .Values.agent.host.repository }}
+        - name: repo
+          hostPath:
+            path: {{ .Values.agent.host.repository }}
+        {{- end }}
 {{- end -}}
 {{- end -}}
