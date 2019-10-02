@@ -56,7 +56,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/*
-Return the apiVerion of deployment.
+Return the apiVersion of deployment.
 */}}
 {{- define "deployment.apiVersion" -}}
 {{- if semverCompare "<1.14-0" .Capabilities.KubeVersion.GitVersion -}}
