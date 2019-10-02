@@ -155,7 +155,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: "SOLR_HOST"
-              value: "$(POD_HOSTNAME).{{ include "solr.headless-service-name" . }}"
+              value: "$(POD_HOSTNAME).{{ include "solr.headless-service-name" . }}.{{ .Release.Namespace }}"
             - name: "ZK_HOST"
               value: "{{ include "solr.zookeeper-service-name" . }}:2181"
             - name: "SOLR_LOG_LEVEL"

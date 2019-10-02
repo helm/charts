@@ -222,6 +222,9 @@ spec:
           resources:
             {{- toYaml .Values.pro.resources | nindent 12 }}
         {{- end }}
+      {{- with .Values.sidecarContainers }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
