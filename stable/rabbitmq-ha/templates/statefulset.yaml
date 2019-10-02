@@ -17,6 +17,10 @@ spec:
   replicas: {{ .Values.replicaCount }}
   updateStrategy:
     type: {{ .Values.updateStrategy }}
+  selector:
+    matchLabels:
+      app: {{ template "rabbitmq-ha.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
