@@ -58,6 +58,25 @@ halyard:
     #     podAnnotations:
     #       iam.amazonaws.com/role: <role_arn>
 
+  ## Populate to provide a custom local BOM for Halyard to use for deployment. Read more for details:
+  ## https://www.spinnaker.io/guides/operator/custom-boms/#boms-and-configuration-on-your-filesystem
+  bom: ~
+  #   artifactSources:
+  #     debianRepository: https://dl.bintray.com/spinnaker-releases/debians
+  #     dockerRegistry: gcr.io/spinnaker-marketplace
+  #     gitPrefix: https://github.com/spinnaker
+  #     googleImageProject: marketplace-spinnaker-release
+  #   services:
+  #     clouddriver:
+  #       commit: 031bcec52d6c3eb447095df4251b9d7516ed74f5
+  #       version: 6.3.0-20190904130744
+  #     deck:
+  #       commit: b0aac478e13a7f9642d4d39479f649dd2ef52a5a
+  #       version: 2.12.0-20190916141821
+  #     ...
+  #   timestamp: '2019-09-16 18:18:44'
+  #   version: 1.16.1
+
   ## Uncomment if you want to add extra commands to the init script
   ## run by the init container before halyard is started.
   ## The content will be passed through `tpl`, so value interpolation is supported.

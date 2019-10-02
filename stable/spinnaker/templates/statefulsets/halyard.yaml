@@ -44,6 +44,10 @@ spec:
           mountPath: /tmp/spinnaker
         - name: additional-profile-config-maps
           mountPath: /tmp/additionalProfileConfigMaps
+        {{- if .Values.halyard.bom }}
+        - name: halyard-bom
+          mountPath: /tmp/halyard-bom
+        {{- end }}
         - name: halyard-initscript
           mountPath: /tmp/initscript
         {{- if .Values.halyard.customCerts.enabled }}
@@ -103,6 +107,11 @@ spec:
       - name: additional-profile-config-maps
         configMap:
           name: {{ template "spinnaker.fullname" . }}-additional-profile-config-maps
+      {{- if .Values.halyard.bom }}
+      - name: halyard-bom
+        configMap:
+          name: {{ template "spinnaker.fullname" . }}-halyard-bom
+      {{- end }}
       - name: halyard-config
         emptyDir: {}
       - name: service-settings
