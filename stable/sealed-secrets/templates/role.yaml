@@ -45,5 +45,6 @@ rules:
   resources:
   - services/proxy
   verbs:
+  - create
   - get
 {{ end }}
