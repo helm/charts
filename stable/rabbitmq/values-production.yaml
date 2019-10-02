@@ -388,3 +388,13 @@ volumePermissions:
 ##
 forceBoot:
   enabled: false
+
+## Optionally specify extra secrets to be created by the chart.
+## This can be useful when combined with load_definitions to automatically create the secret containing the definitions to be loaded.
+##
+extraSecrets: {}
+  # load_definition:
+  #   load_definition.json: |
+  #     {
+  #       ...
+  #     }
