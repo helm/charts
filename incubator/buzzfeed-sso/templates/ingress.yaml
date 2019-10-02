@@ -28,7 +28,7 @@ spec:
   {{- range .Values.ingress.tls }}
     - hosts:
       {{- range .hosts }}
-        - {{ . }}
+        - {{ printf "%s" . | quote }}
       {{- end }}
       secretName: {{ .secretName }}
   {{- end }}
