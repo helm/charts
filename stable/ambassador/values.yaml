@@ -149,6 +149,8 @@ serviceAccount:
 
 initContainers: []
 
+sidecarContainers: []
+
 volumes: []
 
 volumeMounts: []
