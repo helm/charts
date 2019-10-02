@@ -25,6 +25,12 @@ prometheus:
     additionalLabels: {}
     namespace: ""
 
+labelIdentifiers:
+  instance: "app.kubernetes.io/instance"
+  management: "app.kubernetes.io/managed-by"
+  helm: "helm.sh/chart"
+  name: "app.kubernetes.io/name"
+
 service:
 # clusterIP: ""
 # loadBalancerIP: ""

@@ -4,15 +4,15 @@ kind: PodSecurityPolicy
 metadata:
   name: {{ template "coredns.fullname" . }}
   labels:
-    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
-    app.kubernetes.io/instance: {{ .Release.Name | quote }}
-    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    {{ .Values.labelIdentifiers.management }}: {{ .Release.Service | quote }}
+    {{ .Values.labelIdentifiers.instance }}: {{ .Release.Name | quote }}
+    {{ .Values.labelIdentifiers.helm }}: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     {{- if .Values.isClusterService }}
     k8s-app: {{ .Chart.Name | quote }}
     kubernetes.io/cluster-service: "true"
     kubernetes.io/name: "CoreDNS"
     {{- else }}
-    app.kubernetes.io/name: {{ template "coredns.name" . }}
+    {{ .Values.labelIdentifiers.name }}: {{ template "coredns.name" . }}
     {{- end }}
 spec:
   privileged: false
