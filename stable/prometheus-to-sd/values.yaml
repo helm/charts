@@ -8,3 +8,4 @@ port: 6060
 metricsSources:
   kube-state-metrics: http://kube-state-metrics:8080
 nodeSelector: {}
+tolerations: []
