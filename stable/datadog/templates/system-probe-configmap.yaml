@@ -10,6 +10,11 @@ metadata:
     chart_version: {{ $.Chart.Version }}
     chart_name: {{ $.Chart.Name }}
     heritage: {{ .Release.Service | quote }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app.kubernetes.io/name: "{{ template "datadog.fullname" . }}"
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
 data:
   system-probe.yaml: |
     system_probe_config:
@@ -30,6 +35,11 @@ metadata:
     chart_version: {{ $.Chart.Version }}
     chart_name: {{ $.Chart.Name }}
     heritage: {{ .Release.Service | quote }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app.kubernetes.io/name: "{{ template "datadog.fullname" . }}"
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
 data:
   system-probe-seccomp.json: |
     {

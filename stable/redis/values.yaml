@@ -169,6 +169,13 @@ securityContext:
   enabled: true
   fsGroup: 1001
   runAsUser: 1001
+  ## sysctl settings for master and slave pods
+  ##
+  ## Uncomment the setting below to increase the net.core.somaxconn value
+  ##
+  # sysctls:
+  # - name: net.core.somaxconn
+  #   value: "10000"
 
 ## Use password authentication
 usePassword: true

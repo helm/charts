@@ -48,6 +48,10 @@ spec:
       {{- if .Values.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
+        {{- if .Values.securityContext.sysctls }}
+        sysctls:
+{{ toYaml .Values.securityContext.sysctls | indent 8 }}
+        {{- end }}
       {{- end }}
       serviceAccountName: "{{ template "redis.serviceAccountName" . }}"
       {{- if .Values.slave.priorityClassName }}
