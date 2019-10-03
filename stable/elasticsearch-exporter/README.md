@@ -38,6 +38,20 @@ $ helm delete --purge my-release
 ```
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
+## Upgrading an existing Release to a new major version
+
+A major chart version change (like v1.2.3 -> v2.0.0) indicates that there is an incompatible breaking change needing manual actions.
+
+### To 2.0.0
+
+Update your claster to kubernetes 1.10+
+
+Run helm upgrade
+
+```bash
+$ helm upgrade my-release stable/elasticsearch-exporter
+```
+
 ## Configuration
 
 The following table lists the configurable parameters of the Elasticsearch-Exporter chart and their default values.
