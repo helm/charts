@@ -109,9 +109,9 @@ The following table lists the configurable parameters of the external-dns chart 
 | `annotationFilter`                 | Filter sources managed by external-dns via annotation using label selector (optional)                    | `""`                                                     |
 | `domainFilters`                    | Limit possible target zones by domain suffixes (optional)                                                | `[]`                                                     |
 | `zoneIdFilters`                    | Limit possible target zones by zone id (optional)                                                        | `[]`                                                     |
-| `crd.create`                       | If true, create CRD ressource                                                                            | `false`                                                  |
-| `crd.apiversion`                   | Sets the API version for the CRD to watch                                                                | `"`                                                      |
-| `crd.kind`                         | Sets the kind for the CRD to watch                                                                       | `"`                                                      |
+| `crd.create`                       | Install and use the integrated DNSEndpoint CRD                                                           | `false`                                                  |
+| `crd.apiversion`                   | Sets the API version for the CRD to watch                                                                | `""`                                                     |
+| `crd.kind`                         | Sets the kind for the CRD to watch                                                                       | `""`                                                     |
 | `dryRun`                           | When enabled, prints DNS record changes rather than actually performing them (optional)                  | `false`                                                  |
 | `logLevel`                         | Verbosity of the logs (options: panic, debug, info, warn, error, fatal)                                  | `info`                                                   |
 | `interval`                         | Interval update period to use                                                                            | `1m`                                                     |

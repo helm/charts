@@ -78,13 +78,11 @@ spec:
         {{- if .Values.annotationFilter }}
         - --annotation-filter={{ .Values.annotationFilter }}
         {{- end }}
-        {{- if .Values.crd.create }}
-          {{- if .Values.crd.apiversion }}
+        {{- if .Values.crd.apiversion }}
         - --crd-source-apiversion={{ .Values.crd.apiversion }}
-          {{- end }}
-          {{- if .Values.crd.kind }}
+        {{- end }}
+        {{- if .Values.crd.kind }}
         - --crd-source-kind={{ .Values.crd.kind }}
-          {{- end }}
         {{- end }}
         {{- range .Values.istioIngressGateways }}
         - --istio-ingress-gateway={{ . }}
