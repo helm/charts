@@ -84,3 +84,42 @@ $ helm install --name my-release -f values.yaml stable/memcached
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Upgrading to 3.x from a previous major version
+Version 3.0.0 of this chart makes an incompatible change to the way StatefulSet/Deployment selectors are configured. If you try to upgrade from a previous major version, you will see an error like this:
+
+```
+Error: UPGRADE FAILED: Deployment.apps "mc-test-memcached" is invalid: spec.template.metadata.labels: Invalid value: map[string]string{"app":"mc-test-memcached", "chart":"memcached-3.0.0", "custom":"value", "heritage":"Tiller", "release":"mc-test"}: `selector` does not match template `labels`
+```
+
+To upgrade from a previous major version, you'll either need to perform a small manual fix or delete and reinstall the chart.
+
+The manual fix is to remove all selectors from the existing StatefulSet/Deployment except `app` and `release`.  Run `kubectl edit sts|deploy name-goes-here` (as needed), and you should see a part like this in your editor about 20 lines down:
+
+```yaml
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: mc-test-memcached
+      chart: memcached-2.10.2
+      heritage: Tiller
+      release: mc-test
+```
+
+Remove the lines under `matchLabels` except `app: ...` and `release: ...`, and don't change any other lines. The part from above should look like this when you're done:
+
+```yaml
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: mc-test-memcached
+      release: mc-test
+```
+
+Once you've done this, you can upgrade to 3.x with Helm as normal.
