@@ -43,6 +43,9 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+      {{- if and (.Values.plugins.enabled) (gt (len .Values.plugins.pluginsList) 0) }}
+        command: ["/bin/sh", "-c", "/etc/fluent/config.d/install-plugins.sh"]
+      {{- end }}
         env:
           - name: OUTPUT_HOST
             value: {{ .Values.output.host | quote }}
@@ -94,10 +97,12 @@ spec:
           mountPath: /etc/fluent/config.d
         - name: buffer
           mountPath: "/var/log/fluentd-buffers"
+      serviceAccountName: {{ template "fluentd.fullname" . }}
       volumes:
         - name: config-volume-{{ template "fluentd.fullname" . }}
           configMap:
             name: {{ template "fluentd.fullname" . }}
+            defaultMode: 0777
         {{- if and .Values.persistence.enabled (not .Values.autoscaling.enabled) }}
         - name: buffer          
           persistentVolumeClaim:

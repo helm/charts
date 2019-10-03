@@ -44,6 +44,7 @@ The following tables lists the configurable parameters of the Node-RED chart and
 | `strategyType`                     | Specifies the strategy used to replace old Pods by new ones             | `Recreate`                |
 | `flows`                            | Default flows configuration                                             | `flows.json`              |
 | `nodeOptions`                      | Node.js runtime arguments                                               | ``                        |
+| `extraEnvs`                        | Extra environment variables which will be appended to the env           | `[]`                      |
 | `timezone`                         | Default timezone                                                        | `UTC`                     |
 | `service.type`                     | Kubernetes service type for the GUI                                     | `ClusterIP`               |
 | `service.port`                     | Kubernetes port where the GUI is exposed                                | `1880`                    |

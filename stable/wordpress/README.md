@@ -92,6 +92,7 @@ The following table lists the configurable parameters of the WordPress chart and
 | `service.type`                   | Kubernetes Service type                                                       | `LoadBalancer`                                               |
 | `service.port`                   | Service HTTP port                                                             | `80`                                                         |
 | `service.httpsPort`              | Service HTTPS port                                                            | `443`                                                        |
+| `service.httpsTargetPort`              | Service Target HTTPS port                                                            | `https`                                                        |
 | `service.metricsPort`              | Service Metrics port                                                            | `9117`                                                        |
 | `service.externalTrafficPolicy`  | Enable client source IP preservation                                          | `Cluster`                                                    |
 | `service.nodePorts.http`         | Kubernetes http node port                                                     | `""`                                                         |
@@ -177,12 +178,6 @@ $ helm install --name my-release -f ./values-production.yaml stable/wordpress
 ```diff
 - replicaCount: 1
 + replicaCount: 3
-```
-
-- Kubernetes Service type:
-```diff
-- service.type: LoadBalancer
-+ service.type: ClusterIP
 ```
 
 - Enable client source IP preservation:

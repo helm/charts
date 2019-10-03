@@ -15,6 +15,9 @@ data:
     {{- else }}
     logLevel = {{ .Values.logLevel | default "info" | quote }}
     {{- end }}
+    {{- if .Values.maxIdleConnsPerHost }}
+    maxIdleConnsPerHost = {{ .Values.maxIdleConnsPerHost }}
+    {{- end }}
     {{- if .Values.sendAnonymousUsage }}
     sendAnonymousUsage = true
     {{- end }}
@@ -269,7 +272,7 @@ data:
     KeyType = {{ .Values.acme.keyType | quote }}
     email = {{ .Values.acme.email | quote }}
     {{- if .Values.kvprovider.storeAcme }}
-    storage = "traefik/acme/account"
+    storage = "{{ .Values.kvprovider.acmeStorageLocation }}"
     {{- if .Values.kvprovider.importAcme }}
     storageFile = "/acme/acme.json"
     {{- end }}

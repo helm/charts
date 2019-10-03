@@ -14,5 +14,5 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistence.size | quote }}
-  storageClassName: {{ include "mediawiki.storageClass" . }}
+  {{ include "mediawiki.storageClass" . }}
 {{- end -}}

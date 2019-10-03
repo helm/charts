@@ -1,0 +1,19 @@
+{{- if and (not .Values.rabbitmq.tls.existingSecret) ( .Values.rabbitmq.tls.enabled) }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ template "rabbitmq.fullname" . }}-certs
+  labels:
+    app: {{ template "rabbitmq.name" . }}
+    chart: {{ template "rabbitmq.chart" .  }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+type: Opaque
+data:
+  ca_certificate.pem:
+    {{ required "A valid .Values.rabbitmq.tls.caCertificate entry required!" .Values.rabbitmq.tls.caCertificate | b64enc | quote }}
+  server_certificate.pem:
+    {{ required "A valid .Values.rabbitmq.tls.serverCertificate entry required!" .Values.rabbitmq.tls.serverCertificate| b64enc | quote }}
+  server_key.pem:
+    {{ required "A valid .Values.rabbitmq.tls.serverKey entry required!" .Values.rabbitmq.tls.serverKey | b64enc | quote }}
+{{- end }}

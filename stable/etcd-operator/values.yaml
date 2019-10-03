@@ -91,7 +91,7 @@ backupOperator:
   ## e.g., analytics: true
   commandArgs: {}
   securityContext: {}
-  tolerations: {}
+  tolerations: []
 
 # restore spec
 restoreOperator:
@@ -118,7 +118,7 @@ restoreOperator:
   ## e.g., analytics: true
   commandArgs: {}
   securityContext: {}
-  tolerations: {}
+  tolerations: []
 
 ## etcd-cluster specific values
 etcdCluster:
@@ -154,4 +154,4 @@ etcdCluster:
     ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
     nodeSelector: {}
     securityContext: {}
-    tolerations: {}
+    tolerations: []

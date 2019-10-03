@@ -82,10 +82,13 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `mariadb.enabled`                   | Whether to deploy a MariaDB server to satisfy the applications database requirements     | `true`    |
 | `mariadb.rootUser.password`         | MariaDB admin password                     | `nil`                                                   |
 | `postgresql.enabled`                | Whether to deploy a PostgreSQL server to satisfy the applications database requirements  | `false`   |
-| `postgresql.postgresqlPassword`     | PostgreSQL admin password                  | `nil`                                                   |
+| `postgresql.postgresqlDatabase`     | PostgreSQL database                        | `bitnami_redmine`                                       |
+| `postgresql.postgresqlUsername`     | PostgreSQL user                            | `bn_redmine`                                            |
+| `postgresql.postgresqlPassword`     | PostgreSQL password                        | `nil`                                                   |
 | `externalDatabase.host`             | Host of the external database              | `localhost`                                             |
-| `externalDatabase.user`             | External db admin user                     | `root`                                                  |
-| `externalDatabase.password`         | Password for the admin user                | `""`                                                    |
+| `externalDatabase.name`             | Name of the external database              | `localhost`                                             |
+| `externalDatabase.user`             | External db user                           | `user`                                                  |
+| `externalDatabase.password`         | Password for the db user                   | `""`                                                    |
 | `externalDatabase.port`             | Database port number                       | `3306`                                                  |
 | `service.type`                      | Kubernetes Service type                    | `LoadBalancer`                                          |
 | `service.port`                      | Service HTTP port                          | `80`                                                    |
