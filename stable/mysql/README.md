@@ -35,10 +35,10 @@ You can retrieve your root password by running the following command. Make sure 
 To uninstall/delete the `my-release` deployment:
 
 ```bash
-$ helm delete my-release
+$ helm delete --purge my-release
 ```
 
-The command removes all the Kubernetes components associated with the chart and deletes the release.
+The command removes all the Kubernetes components associated with the chart and deletes the release completely.
 
 ## Configuration
 
@@ -52,6 +52,7 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `imageTag`                                   | `mysql` image tag.                                                                           | `5.7.14`                                             |
 | `busybox.image`                              | `busybox` image repository.                                                                  | `busybox`                                            |
 | `busybox.tag`                                | `busybox` image tag.                                                                         | `1.29.3`                                             |
+| `testFramework.enabled`                      | `test-framework` switch.                                                                     | `true`                                               |
 | `testFramework.image`                        | `test-framework` image repository.                                                           | `dduportal/bats`                                     |
 | `testFramework.tag`                          | `test-framework` image tag.                                                                  | `0.4.0`                                              |
 | `imagePullPolicy`                            | Image pull policy                                                                            | `IfNotPresent`                                       |

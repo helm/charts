@@ -152,6 +152,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `volumePermissions.image.pullPolicy`       | Init container volume-permissions image pull policy                                                            | `Always`                                             |
 | `volumePermissions.resources`                  | Init container resource requests/limit                 | `nil`                                                   |
 | `forceBoot.enabled`         | Executes 'rabbitmqctl force_boot' to force boot cluster shut down unexpectedly in an unknown order. Use it only if you prefer availability over integrity.                                                               | `false`                                          |
+| `extraSecrets`                       | Optionally specify extra secrets to be created by the chart. | `{}`                                        |
 
 The above parameters map to the env variables defined in [bitnami/rabbitmq](http://github.com/bitnami/bitnami-docker-rabbitmq). For more information please refer to the [bitnami/rabbitmq](http://github.com/bitnami/bitnami-docker-rabbitmq) image documentation.
 
@@ -273,6 +274,27 @@ Then, specify the `management.load_definitions` property as an `extraConfigurati
 Any load definitions specified will be available within in the container at `/app`.
 
 > Loading a definition will take precedence over any configuration done through [Helm values](#configuration).
+
+If needed, you can use `extraSecrets` to let the chart create the secret for you. This way, you don't need to manually create it before deploying a release. For example :
+
+```yaml
+extraSecrets:
+  load-definition:
+    load_definition.json: |
+      {
+        "vhosts": [
+          {
+            "name": "/"
+          }
+        ]
+      }
+rabbitmq:
+  loadDefinition:
+    enabled: true
+    secretName: load-definition
+  extraConfiguration: |
+    management.load_definitions = /app/load_definition.json
+```
 
 ## Persistence
 

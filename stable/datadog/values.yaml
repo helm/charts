@@ -16,9 +16,9 @@ image:
 
   ## @param tag - string - required
   ## Define the Agent version to use.
-  ## Use 6.13.0-jmx to enable jmx fetch collection
+  ## Use 6.14.0-jmx to enable jmx fetch collection
   #
-  tag: 6.13.0
+  tag: 6.14.0
 
   ## @param pullPolicy - string - required
   ## The Kubernetes pull policy.
@@ -189,17 +189,11 @@ datadog:
   #
   containerLogsPath: /var/lib/docker/containers
 
-  ## @param customLogFilesEnabled - boolean - optional - default: false
-  ## Enable this to define host logs to mount into the container.
-  ## ref: https://docs.datadoghq.com/agent/logs/?tab=tailexistingfiles#custom-log-collection
-  #
-  # customLogFilesEnabled: false
-
-  ## @param customLogFiles - array - optional - default: []
+  ## @param customLogFiles - array - optional
   ## Format a list of files from the host to mount into the container. Format
   ## must follow the "Custom log collection" format for files. Wildcard files
-  ## are NOT accepted at this time. In order for datadog to actually read these
-  ## logs, confd must also be updated. See the "customLogFiles" key in the confd
+  ## are NOT accepted at this time. For these logs to be read,
+  ## confd must also be updated. See the "customLogFiles" key in the confd
   ## example.
   ## ref: https://docs.datadoghq.com/agent/logs/?tab=tailexistingfiles#custom-log-collection
   #

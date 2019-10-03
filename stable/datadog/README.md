@@ -10,7 +10,7 @@ See the [Datadog JMX integration](https://docs.datadoghq.com/integrations/java/)
 
 Kubernetes 1.4+ or OpenShift 3.4+, note that:
 
-* the Datadog Agent supports Kubernetes 1.3+
+* the Datadog Agent supports Kubernetes 1.4+
 * The Datadog chart's defaults are tailored to Kubernetes 1.7.6+, see [Datadog Agent legacy Kubernetes versions documentation](https://github.com/DataDog/datadog-agent/tree/master/Dockerfiles/agent#legacy-kubernetes-versions) for adjustments you might need to make for older versions
 
 ## Quick start
@@ -106,13 +106,12 @@ datadog:
  logsConfigContainerCollectAll: true
 ```
 
-To collect host logs, the following configuration could be used:
+To collect custom logs, the following configuration could be used:
 
 ```
 datadog:
   (...)
-  logsEnabeld: true
-  customLogFilesEnabled: true
+  logsEnabled: true
   customLogFiles:
   - type:     file
     path:     <host-path/filename>  # Eg. /var/log/audit.log
@@ -282,7 +281,6 @@ helm install --name <RELEASE_NAME> \
 | `datadog.logLevel`                       | Agent log verbosity (possible values: trace, debug, info, warn, error, critical, and off) | `INFO`                                      |
 | `datadog.logsEnabled`                    | Enable log collection                                                                     | `nil`                                       |
 | `datadog.logsConfigContainerCollectAll`  | Collect logs from all containers                                                          | `nil`                                       |
-| `datadog.customLogFilesEnabled`          | Collect logs from the host                                                                | `nil`                                       |
 | `datadog.customLogFiles`                 | Definition of files from the host (see [Custom Log Collection](https://docs.datadoghq.com/agent/logs/?tab=tailexistingfiles#custom-log-collection))                                                                                    | `nil`                                       |
 | `datadog.logsPointerHostPath`            | Host path to store the log tailing state in                                               | `/var/lib/datadog-agent/logs`               |
 | `datadog.apmEnabled`                     | Enable tracing from the host                                                              | `nil`                                       |

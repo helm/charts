@@ -48,7 +48,7 @@ spec:
             - --logtostderr
             - --secure-port=8443
             {{- range .Values.args }}
-            - {{ . | quote }}
+            - {{ . }}
             {{- end }}
           ports:
           - containerPort: 8443
