@@ -8,7 +8,7 @@ This chart bootstraps a SonarQube instance with a PostgreSQL database.
 
 ## Prerequisites
 
-- Kubernetes 1.6+
+- Kubernetes 1.10+
 
 ## Installing the chart
 
