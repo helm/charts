@@ -9,6 +9,10 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "elasticsearch.data.fullname" . }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "elasticsearch.name" . }}
+      release: {{ .Release.Name }}
   serviceName: {{ template "elasticsearch.data.fullname" . }}
   replicas: {{ .Values.data.replicas }}
   template:
