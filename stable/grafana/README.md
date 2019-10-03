@@ -94,6 +94,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `annotations`                             | Deployment annotations                        | `{}`                                                    |
 | `labels`                                  | Deployment labels                             | `{}`                                                    |
 | `podAnnotations`                          | Pod annotations                               | `{}`                                                    |
+| `podLabels`                               | Pod labels                                    | `{}`                                                    |
 | `podPortName`                             | Name of the grafana port on the pod           | `grafana`                                               |
 | `sidecar.image`                           | Sidecar image                                 | `kiwigrid/k8s-sidecar:0.1.20`                           |
 | `sidecar.imagePullPolicy`                 | Sidecar image pull policy                     | `IfNotPresent`                                          |
