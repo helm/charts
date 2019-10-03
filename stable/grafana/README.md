@@ -94,6 +94,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `annotations`                             | Deployment annotations                        | `{}`                                                    |
 | `labels`                                  | Deployment labels                             | `{}`                                                    |
 | `podAnnotations`                          | Pod annotations                               | `{}`                                                    |
+| `podLabels`                               | Pod labels                                    | `{}`                                                    |
 | `podPortName`                             | Name of the grafana port on the pod           | `grafana`                                               |
 | `sidecar.image`                           | Sidecar image                                 | `kiwigrid/k8s-sidecar:0.1.20`                           |
 | `sidecar.imagePullPolicy`                 | Sidecar image pull policy                     | `IfNotPresent`                                          |
@@ -206,7 +207,7 @@ kind: ConfigMap
 metadata:
   name: sample-grafana-dashboard
   labels:
-     grafana_dashboard: 1
+     grafana_dashboard: "1"
 data:
   k8s-dashboard.json: |-
   [...]
@@ -231,7 +232,7 @@ kind: Secret
 metadata:
   name: sample-grafana-datasource
   labels:
-     grafana_datasource: 1
+     grafana_datasource: "1"
 type: Opaque
 stringData:
   datasource.yaml: |-
