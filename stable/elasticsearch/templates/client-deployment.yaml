@@ -12,6 +12,7 @@ spec:
   selector:
     matchLabels:
       app: {{ template "elasticsearch.name" . }}
+      component: "{{ .Values.client.name }}"
       release: {{ .Release.Name }}
   replicas: {{ .Values.client.replicas }}
   template:
