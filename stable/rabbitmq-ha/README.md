@@ -17,7 +17,7 @@ deployment on a [Kubernetes](http://kubernetes.io) cluster using the
 
 ## Prerequisites
 
-- Kubernetes 1.5+ with Beta APIs enabled
+- Kubernetes 1.9+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
