@@ -18,6 +18,9 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "clamav.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+{{- end }}
     spec:
       containers:
         - name: {{ .Chart.Name }}

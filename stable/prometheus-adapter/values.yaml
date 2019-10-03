@@ -103,3 +103,6 @@ tls:
     # Public key of the APIService
 
 tolerations: []
+
+# Annotations added to the pod
+podAnnotations: {}

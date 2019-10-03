@@ -1,6 +1,6 @@
 ## Default values for Traefik
 image: traefik
-imageTag: 1.7.12
+imageTag: 1.7.14
 
 ## Optionally specify an array of imagePullSecrets.
 ## Secrets must be manually created in the namespace.
@@ -38,6 +38,8 @@ debug:
   enabled: false
 
 # logLevel: error
+
+# maxIdleConnsPerHost: 200
 
 deploymentStrategy: {}
   # rollingUpdate:
@@ -160,6 +162,7 @@ kvprovider:
 
   ## storeAcme has to be enabled to support HA Support using acme, but at least one kvprovider is needed
   storeAcme: false
+  acmeStorageLocation: traefik/acme/account
   importAcme: false
 
   # etcd:

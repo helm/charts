@@ -16,7 +16,7 @@ spec:
   serviceAccountName: {{ template "prometheus-operator.alertmanager.serviceAccountName" . }}
 {{- if .Values.alertmanager.alertmanagerSpec.externalUrl }}
   externalUrl: "{{ .Values.alertmanager.alertmanagerSpec.externalUrl }}"
-{{- else if .Values.alertmanager.ingress.enabled }}
+{{- else if and .Values.alertmanager.ingress.enabled .Values.alertmanager.ingress.hosts }}
   externalUrl: "http://{{ index .Values.alertmanager.ingress.hosts 0 }}{{ .Values.alertmanager.alertmanagerSpec.routePrefix }}"
 {{- else }}
   externalUrl: http://{{ template "prometheus-operator.fullname" . }}-alertmanager.{{ .Release.Namespace }}:9093

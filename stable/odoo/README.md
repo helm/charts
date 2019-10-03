@@ -51,6 +51,7 @@ The following table lists the configurable parameters of the Odoo chart and thei
 |---------------------------------------|-----------------------------------------------------------|---------------------------------------------------------|
 | `global.imageRegistry`                | Global Docker image registry                              | `nil`                                                   |
 | `global.imagePullSecrets`             | Global Docker registry secret names as an array           | `[]` (does not add image pull secrets to deployed pods) |
+| `global.storageClass`                     | Global storage class for dynamic provisioning                                               | `nil`                                                        |
 | `image.registry`                      | Odoo image registry                                       | `docker.io`                                             |
 | `image.repository`                    | Odoo Image name                                           | `bitnami/odoo`                                          |
 | `image.tag`                           | Odoo Image tag                                            | `{TAG_NAME}`                                            |
@@ -77,12 +78,12 @@ The following table lists the configurable parameters of the Odoo chart and thei
 | `externalDatabase.database`           | Name of the existing database                             | `bitnami_odoo`                                          |
 | `externalDatabase.port`               | Database port number                                      | `5432`                                                  |
 | `ingress.enabled`                     | Enable ingress controller resource                        | `false`                                                 |
+| `ingress.certManager`                 | Add annotations for cert-manager                          | `false`                                                 |
+| `ingress.annotations`                 | Annotations for the ingress                               | `[]`                                                    |
 | `ingress.hosts[0].name`               | Hostname to your Odoo installation                        | `odoo.local`                                            |
 | `ingress.hosts[0].path`               | Path within the url structure                             | `/`                                                     |
 | `ingress.hosts[0].tls`                | Utilize TLS backend in ingress                            | `false`                                                 |
-| `ingress.hosts[0].certManager`        | Add annotations for cert-manager                          | `false`                                                 |
 | `ingress.hosts[0].tlsSecret`          | TLS Secret (certificates)                                 | `odoo.local-tls-secret`                                 |
-| `ingress.hosts[0].annotations`        | Annotations for this host's ingress record                | `[]`                                                    |
 | `ingress.secrets[0].name`             | TLS Secret Name                                           | `nil`                                                   |
 | `ingress.secrets[0].certificate`      | TLS Secret Certificate                                    | `nil`                                                   |
 | `ingress.secrets[0].key`              | TLS Secret Key                                            | `nil`                                                   |
@@ -110,6 +111,7 @@ The following table lists the configurable parameters of the Odoo chart and thei
 | `readinessProbe.timeoutSeconds`       | When the probe times out                                  | 5                                                       |
 | `readinessProbe.failureThreshold`     | Minimum consecutive failures to be considered failed      | 6                                                       |
 | `readinessProbe.successThreshold`     | Minimum consecutive successes to be considered successful | 1                                                       |
+| `affinity`                            | Map of node/pod affinities                                | `{}`                                                    |
 
 The above parameters map to the env variables defined in [bitnami/odoo](http://github.com/bitnami/bitnami-docker-odoo). For more information please refer to the [bitnami/odoo](http://github.com/bitnami/bitnami-docker-odoo) image documentation.
 

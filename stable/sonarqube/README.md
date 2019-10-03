@@ -39,8 +39,10 @@ The following table lists the configurable parameters of the Sonarqube chart and
 
 | Parameter                                   | Description                               | Default                                    |
 | ------------------------------------------  | ----------------------------------------  | -------------------------------------------|
+| `replicaCount`                              | Number of replicas deployed               | `1`                                        |
+| `deploymentStrategy`                        | Deployment strategy                       | `{}`                                       |
 | `image.repository`                          | image repository                          | `sonarqube`                                |
-| `image.tag`                                 | `sonarqube` image tag.                    | `7.8-community`                                        |
+| `image.tag`                                 | `sonarqube` image tag.                    | `7.9-community`                            |
 | `image.pullPolicy`                          | Image pull policy                         | `IfNotPresent`                             |
 | `image.pullSecret`                          | imagePullSecret to use for private repository      |                                   |
 | `command`                                   | command to run in the container           | `nil` (need to be set prior to 6.7.6, and 7.4)      |
@@ -92,7 +94,8 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `tolerations`                               | List of node taints to tolerate           | `[]`                                       |
 | `plugins.install`                           | List of plugins to install                | `[]`                                       |
 | `plugins.resources`                         | Plugin Pod resource requests & limits     | `{}`                                       |
-| `plugins.initContainerImage`                | Change init container image               | `[]`                                       |
+| `plugins.initContainerImage`                | Change init container image               | `joosthofman/wget:1.0`                     |
+| `plugins.initSysctlContainerImage`          | Change init sysctl container image        | `busybox:1.31`                             |
 | `plugins.deleteDefaultPlugins`              | Remove default plugins and use plugins.install list | `[]`                             |
 | `podLabels`                                 | Map of labels to add to the pods          | `{}`                                       |
 

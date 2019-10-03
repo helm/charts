@@ -69,9 +69,9 @@ The following table lists the configurable parameters of the elasticsearch chart
 
 |              Parameter               |                             Description                             |                       Default                       |
 | ------------------------------------ | ------------------------------------------------------------------- | --------------------------------------------------- |
-| `appVersion`                         | Application Version (Elasticsearch)                                 | `6.7.0`                                             |
+| `appVersion`                         | Application Version (Elasticsearch)                                 | `6.8.2`                                             |
 | `image.repository`                   | Container image name                                                | `docker.elastic.co/elasticsearch/elasticsearch-oss` |
-| `image.tag`                          | Container image tag                                                 | `6.7.0`                                             |
+| `image.tag`                          | Container image tag                                                 | `6.8.2`                                             |
 | `image.pullPolicy`                   | Container pull policy                                               | `IfNotPresent`                                      |
 | `initImage.repository`               | Init container image name                                           | `busybox`                                           |
 | `initImage.tag`                      | Init container image tag                                            | `latest`                                            |
@@ -178,6 +178,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `serviceAccounts.data.name`          | Name of the data service account to use or create                   | `{{ elasticsearch.data.fullname }}`                 |
 | `testFramework.image`                | `test-framework` image repository.                                  | `dduportal/bats`                                    |
 | `testFramework.tag`                  | `test-framework` image tag.                                         | `0.4.0`                                             |
+| `forceIpv6`                          | force to use IPv6 address to listen if set to true                  | `false`                                             |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

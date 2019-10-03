@@ -1,5 +1,5 @@
 {{- if .Values.replication.enabled }}
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "slave.fullname" . }}
@@ -181,7 +181,7 @@ spec:
         image: {{ template "mariadb.metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         env:
-        - name: MARIADB_MASTER_ROOT_PASSWORD
+        - name: MARIADB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
             {{- if .Values.existingSecret }}
@@ -190,7 +190,15 @@ spec:
               name: {{ template "mariadb.fullname" . }}
             {{- end }}
               key: mariadb-root-password
-        command: [ 'sh', '-c', 'DATA_SOURCE_NAME="root:$MARIADB_MASTER_ROOT_PASSWORD@(localhost:3306)/" /bin/mysqld_exporter' ]
+        command:
+          - sh
+          - -c
+          - >-
+            DATA_SOURCE_NAME="root:$MARIADB_ROOT_PASSWORD@(localhost:3306)/"
+            /bin/mysqld_exporter
+            {{- range .Values.metrics.extraArgs.slave }}
+            {{ . }}
+            {{- end }}
         ports:
         - name: metrics
           containerPort: 9104
@@ -232,13 +240,7 @@ spec:
         resources:
           requests:
             storage: {{ .Values.slave.persistence.size | quote }}
-      {{- if .Values.slave.persistence.storageClass }}
-      {{- if (eq "-" .Values.slave.persistence.storageClass) }}
-        storageClassName: ""
-      {{- else }}
-        storageClassName: {{ .Values.slave.persistence.storageClass | quote }}
-      {{- end }}
-      {{- end }}
+        {{ include "mariadb.slave.storageClass" . }}
 {{- else }}
         - name: "data"
           emptyDir: {}

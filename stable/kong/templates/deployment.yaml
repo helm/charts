@@ -15,6 +15,11 @@ spec:
       app: {{ template "kong.name" . }}
       release: {{ .Release.Name }}
       component: app
+  {{- if .Values.updateStrategy }}
+  strategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}
+  {{- end }}
+
   template:
     metadata:
       annotations:
@@ -103,7 +108,7 @@ spec:
         - name: KONG_ADMIN_GUI_AUTH
           value: {{ .Values.enterprise.rbac.admin_gui_auth | default "basic-auth" }}
         - name: KONG_ADMIN_GUI_AUTH_CONF
-          value: {{ toJson .Values.enterprise.rbac.admin_gui_auth_conf | default "" }}
+          value: '{{ toJson .Values.enterprise.rbac.admin_gui_auth_conf }}'
         - name: KONG_ADMIN_GUI_SESSION_CONF
           valueFrom:
             secretKeyRef:
@@ -122,9 +127,9 @@ spec:
         - name: KONG_SMTP_HOST
           value: {{ .Values.enterprise.smtp.smtp_host }}
         - name: KONG_SMTP_PORT
-          value: {{ .Values.enterprise.smtp.smtp_port }}
+          value: {{ .Values.enterprise.smtp.smtp_port | quote }}
         - name: KONG_SMTP_STARTTLS
-          value: {{ .Values.enterprise.smtp.smtp_starttls }}
+          value: {{ .Values.enterprise.smtp.smtp_starttls | quote }}
         {{- if .Values.enterprise.smtp.auth.smtp_username }}
         - name: KONG_SMTP_USERNAME
           value: {{ .Values.enterprise.smtp.auth.smtp_username }}
@@ -245,6 +250,10 @@ spec:
           - name: kong-custom-dbless-config-volume
             mountPath: /kong_dbless/
           {{- end }}
+          {{- range .Values.secretVolumes }}
+          - name:  {{ . }}
+            mountPath: /etc/secrets/{{ . }}
+          {{- end }}
         readinessProbe:
 {{ toYaml .Values.readinessProbe | indent 10 }}
         livenessProbe:
@@ -264,7 +273,7 @@ spec:
       volumes:
         - name: custom-nginx-template-volume
           configMap:
-            name: {{ .Release.Name }}-kong-default-custom-server-blocks
+            name: {{ template "kong.fullname" . }}-default-custom-server-blocks
 {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
         - name: kong-custom-dbless-config-volume
           configMap:
@@ -273,4 +282,10 @@ spec:
             {{- else }}
             name: {{ template "kong.dblessConfig.fullname" . }}
             {{- end }}
+{{- end }}
+
+{{- range $secretVolume := .Values.secretVolumes }}
+        - name: {{ . }}
+          secret:
+            secretName: {{ . }}
 {{- end }}
