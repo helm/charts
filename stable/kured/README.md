@@ -2,6 +2,11 @@
 
 See https://github.com/weaveworks/kured
 
+## Autolock feature
+
+This feature is not natively supported by kured but is added using Kubernetes Cronjob to annotate daemonset when to allow kured to run using the lock configuration annotation https://github.com/weaveworks/kured#overriding-lock-configuration
+
+
 | Config                  | Description                                                                 | Default                    |
 | ------                  | -----------                                                                 | -------                    |
 | `image.repository`      | Image repository                                                            | `weaveworks/kured` |
@@ -21,8 +26,8 @@ See https://github.com/weaveworks/kured
 | `autolock.enabled`      | Activate autolock to define when to allow kured to be executed                                                        | `false` |
 | `autolock.image.repository`      | Image repository for kubectl command                                                         | `honestica/k8s-tools` |
 | `autolock.image.tag`             | Image tag                                                                   | `1c80a6579bdb73059d72101c9f82f26291954d68`                    |
-| `autolock.scheduleUnlock`      | Cron schedule to unlock kured                                                      | `0 4 * * *` |
-| `autolock.schedulelock`      | Cron schedule to lock kured                                                      | `0 6 * * *` |
+| `autolock.scheduleUnlock`      | CronJob schedule to unlock kured                                                      | `0 4 * * *` |
+| `autolock.schedulelock`      | CronJob schedule to lock kured                                                      | `0 6 * * *` |
 
 See https://github.com/weaveworks/kured#configuration for values for `extraArgs`. Note that
 ```yaml

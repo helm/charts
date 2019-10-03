@@ -33,7 +33,7 @@ spec:
                 - annotate
                 - ds
                 - {{ template "kured.fullname" . }}
-                - weave.works/kured-node-lock='{"nodeID":"manual"}'
+                - weave.works/kured-node-lock={"nodeID":"manual"}
           restartPolicy: Never
       backoffLimit: 1
 {{- end -}}
