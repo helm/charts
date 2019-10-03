@@ -177,7 +177,7 @@ spec:
         {{- range $secret := .Values.secrets }}
           {{- if not $secret.mountPath }}
             {{- range $key := $secret.keys }}
-        - name: {{ (print $secret.name "_" $key) | upper }}
+        - name: {{ (print ($secret.name | replace "-" "_" ) "_" $key) | upper }}
           valueFrom:
             secretKeyRef:
               name: {{ $secret.name }}
