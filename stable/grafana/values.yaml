@@ -90,6 +90,9 @@ downloadDashboards:
 ## Pod Annotations
 # podAnnotations: {}
 
+## Pod Labels
+# podLabels: {}
+
 podPortName: grafana
 
 ## Deployment annotations
