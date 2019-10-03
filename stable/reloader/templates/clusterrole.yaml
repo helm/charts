@@ -12,7 +12,7 @@ metadata:
 {{- if .Values.reloader.matchLabels }}
 {{ toYaml .Values.reloader.matchLabels | indent 4 }}
 {{- end }}
-  name: {{ template "reloader-name" . }}-role
+  name: {{ template "reloader-fullname" . }}-role
   namespace: {{ .Release.Namespace }}
 rules:
   - apiGroups:

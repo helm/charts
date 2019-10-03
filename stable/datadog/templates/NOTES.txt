@@ -44,13 +44,13 @@ Create an application key at https://app.datadoghq.com/account/settings#api
     {{- end }}
   {{- end }}
 
-  {{- if not .Values.clusterAgent.token }}
+  {{- if and (not .Values.clusterAgent.token) (not .Values.clusterAgent.tokenExistingSecret) }}
 
 ##############################################################################
 ####               INFO: You did not set a clusterAgent.token            ####
 ##############################################################################
 
-Because you enabled the Cluster Agent but did not provide a token, a random token was generated.
+Because you enabled the Cluster Agent but did not either provide a token or a reference to an existing token via '{{ .Values.clusterAgent.tokenExistingSecret }}', a random token was generated.
 This token is used to secure the communication between the Agents and the Cluster Agent.
 
 Make sure to recreate all pods on upgrade (with the --recreate-pods flag) to ensure all
@@ -64,21 +64,28 @@ agents use the same shared token.
 The datadog agent is listening on port 8126.
 {{- end }}
 
-{{- if (and (.Values.daemonset.enabled) (.Values.deployment.enabled)) }}
-
+{{- if .Values.deployment.enabled }}
 #################################################################
 ####               WARNING: Deprecation notice               ####
 #################################################################
 
-Simultaneous DaemonSet + Deployment installation within a single
-release will be deprecated in a future version. You will still be
-able to run both as separate releases with separate value files.
+* Deployment installation will be deprecated in the future major
+  chart version (`v2.0.0`). This installation configuration is
+  triggered by the option: `deployment.enabled: true`.
+  The recommended solution is to run the Datadog-agent with the
+  `Daemonset` configuration which is the default configuration.
 
-Running as a Deployment is not necessary for event collection
-anymore, thanks to the leader election feature.
+{{- if .Values.daemonset.enabled }}
 
-We encourage you to migrate to a single DaemonSet, or split your
-chart if your use case still requires a separate Deployment.
+* Simultaneous DaemonSet + Deployment installation within a single
+  release will be deprecated in the futur major chart version
+  (`v2.0.0`).
+
+  Running as a Deployment is not necessary for event collection
+  anymore, thanks to the leader election feature.
+
+  We encourage you to migrate to a single DaemonSet.
+{{- end }}
 {{- end }}
 
 {{- if .Values.datadog.autoconf }}

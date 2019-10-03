@@ -81,6 +81,9 @@ The following table lists the configurable parameters of the Metabase chart and 
 | ingress.tls            | Ingress TLS configuration                                   | null              |
 | log4jProperties        | Custom `log4j.properties` file                              | null              |
 | resources              | Server resource requests and limits                         | {}                |
+| nodeSelector           | Node labels for pod assignment                              | {}                |
+| tolerations            | Toleration labels for pod assignment                        | []                |
+| affinity               | Affinity settings for pod assignment                        | {}                |
 
 The above parameters map to the env variables defined in [metabase](http://github.com/metabase/metabase). For more information please refer to the [metabase documentations](http://www.metabase.com/docs/v0.24.2/).
 

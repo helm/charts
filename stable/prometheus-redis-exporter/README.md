@@ -44,7 +44,7 @@ The following table lists the configurable parameters and their default values.
 | ---------------------- | --------------------------------------------------- | ------------------------- |
 | `replicaCount`         | desired number of prometheus-redis-exporter pods    | `1`                       |
 | `image.repository`     | prometheus-redis-exporter image repository          | `oliver006/redis_exporter`|
-| `image.tag`            | prometheus-redis-exporter image tag                 | `v1.0.3`                 |
+| `image.tag`            | prometheus-redis-exporter image tag                 | `v1.0.4`                 |
 | `image.pullPolicy`     | image pull policy                                   | `IfNotPresent`            |
 | `image.pullSecrets`    | image pull secrets                                  | {}                        |
 | `extraArgs`            | extra arguments for the binary; possible values [here](https://github.com/oliver006/redis_exporter#flags)| {}
@@ -119,6 +119,6 @@ If you want to use this script for collecting metrics, you could do this by just
 
 ## Upgrading
 
-### To 3.0.0
+### To 3.0.1
 
  The default tag for the exporter image is now `v1.x.x`. This major release includes changes to the names of various metrics and no longer directly supports the configuration (and scraping) of multiple redis instances; that is now the Prometheus server's responsibility. You'll want to use [this dashboard](https://github.com/oliver006/redis_exporter/blob/master/contrib/grafana_prometheus_redis_dashboard.json) now. Please see the [redis_exporter github page](https://github.com/oliver006/redis_exporter#upgrading-from-0x-to-1x) for more details.

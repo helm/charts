@@ -351,6 +351,9 @@ initContainer:
 ## Additional init containers
 extraInitContainers: []
 
+## Additional containers
+extraContainers: []
+
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
 ##
@@ -439,12 +442,22 @@ livenessProbe:
   periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 6
+  exec:
+    command:
+      - /bin/sh
+      - -c
+      - 'wget -O - -q --header "Authorization: Basic `echo -n \"$RABBIT_MANAGEMENT_USER:$RABBIT_MANAGEMENT_PASSWORD\" | base64`" http://localhost:15672/api/healthchecks/node | grep -qF "{\"status\":\"ok\"}"'
 
 readinessProbe:
-  failureThreshold: 6
   initialDelaySeconds: 20
-  timeoutSeconds: 3
   periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 6
+  exec:
+    command:
+      - /bin/sh
+      - -c
+      - 'wget -O - -q --header "Authorization: Basic `echo -n \"$RABBIT_MANAGEMENT_USER:$RABBIT_MANAGEMENT_PASSWORD\" | base64`" http://localhost:15672/api/healthchecks/node | grep -qF "{\"status\":\"ok\"}"'
 
 # Specifies an existing secret to be used for RMQ password, management user password and Erlang Cookie
 existingSecret: ""

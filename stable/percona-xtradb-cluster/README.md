@@ -82,6 +82,7 @@ The following table lists the configurable parameters of the Percona chart and t
 | `metricsExporter.enabled` | if set to true runs a [mysql metrics exporter](https://github.com/prometheus/mysqld_exporter) container in the pod | false |
 | `metricsExporter.commandOverrides` | Overrides default docker command for metrics exporter | `[]` |
 | `metricsExporter.argsOverrides`   | Overrides default docker args for metrics exporter     | `[]` |
+| `metricsExporter.tag`             | Specify a docker image tag for `prom/mysqld-exporter` metrics exporter docker image | `nil` |
 | `prometheus.operator.enabled`                  | Setting to true will create Prometheus-Operator specific resources | `false` |
 | `prometheus.operator.prometheusRule.enabled`   | Create default alerting rules                                      | `true`  |
 | `prometheus.operator.prometheusRule.labels`    | Labels to add to alerts                                            | `{}`    |

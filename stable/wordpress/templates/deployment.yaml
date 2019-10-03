@@ -102,6 +102,8 @@ spec:
           value: {{ ternary "yes" "no" .Values.wordpressSkipInstall | quote }}
         - name: WORDPRESS_TABLE_PREFIX
           value: {{ .Values.wordpressTablePrefix | quote }}
+        - name: WORDPRESS_SCHEME
+          value: {{ .Values.wordpressScheme | quote }}
         {{- if .Values.smtpHost }}
         - name: SMTP_HOST
           value: {{ .Values.smtpHost | quote }}

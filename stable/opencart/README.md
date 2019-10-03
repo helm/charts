@@ -51,6 +51,7 @@ The following table lists the configurable parameters of the OpenCart chart and 
 |-------------------------------------|-------------------------------------------|----------------------------------------------------------|
 | `global.imageRegistry`              | Global Docker image registry              | `nil`                                                    |
 | `global.imagePullSecrets`           | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
+| `global.storageClass`                     | Global storage class for dynamic provisioning                                               | `nil`                                                        |
 | `image.registry`                    | OpenCart image registry                   | `docker.io`                                              |
 | `image.repository`                  | OpenCart Image name                       | `bitnami/opencart`                                       |
 | `image.tag`                         | OpenCart Image tag                        | `{TAG_NAME}`                                             |
@@ -103,6 +104,7 @@ The following table lists the configurable parameters of the OpenCart chart and 
 | `persistence.opencart.size`         | PVC Storage Request for OpenCart volume   | `8Gi`                                                    |
 | `resources`                         | CPU/Memory resource requests/limits       | Memory: `512Mi`, CPU: `300m`                             |
 | `podAnnotations`                    | Pod annotations                           | `{}`                                                     |
+| `affinity`                          | Map of node/pod affinities                | `{}`                                                      |
 | `metrics.enabled`                   | Start a side-car prometheus exporter      | `false`                                                  |
 | `metrics.image.registry`            | Apache exporter image registry            | `docker.io`                                              |
 | `metrics.image.repository`          | Apache exporter image name                | `bitnami/apache-exporter`                                |

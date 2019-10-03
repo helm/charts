@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ template "mancenter.fullname" . }}-test-{{ randAlphaNum 5 | lower }}"
+  annotations:
+    "helm.sh/hook": test-success
+    "helm.sh/hook-delete-policy": hook-succeeded, hook-failed
+  labels:
+    app.kubernetes.io/name: {{ template "hazelcast.name" . }}
+    helm.sh/chart: {{ template "hazelcast.chart" . }}
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+    app.kubernetes.io/component: "test"
+    role: test
+spec:
+  hostNetwork: false
+  hostPID: false
+  hostIPC: false
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1001
+  containers:
+  - name: "{{ template "mancenter.fullname" . }}-test"
+    image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+    command:
+    - "bash"
+    - "-c"
+    - |
+      set -ex
+      # Get the HTTP Response Code of the Health Check
+      HEALTH_CHECK_HTTP_RESPONSE_CODE=$(curl --write-out %{http_code} --silent --output /dev/null {{ template "mancenter.fullname" . }}:{{ .Values.mancenter.service.port }}/hazelcast-mancenter/health)
+      # Test the currect number of Hazelcast members
+      test ${HEALTH_CHECK_HTTP_RESPONSE_CODE} -eq 200
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 1001
+      privileged: false
+      readOnlyRootFilesystem: true
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+  restartPolicy: Never

@@ -113,6 +113,12 @@ The following table lists the configurable parameters of the chart and its defau
 | `terminationGracePeriodSeconds` | Duration the pod needs to terminate gracefully     | `30`                                             |
 | `exporter.logstash`             | Prometheus logstash-exporter settings              | (see `values.yaml`)                              |
 | `exporter.logstash.enabled`     | Enables Prometheus logstash-exporter               | `false`                                          |
+| `exporter.serviceMonitor.enabled` | If true, a ServiceMonitor CRD is created for a prometheus operator | `false`
+| `exporter.serviceMonitor.namespace` | If set, the ServiceMonitor will be installed in a different namespace  | `""`
+| `exporter.serviceMonitor.labels` | Labels for prometheus operator | `{}`
+| `exporter.serviceMonitor.interval` | Interval at which metrics should be scraped | `10s`
+| `exporter.serviceMonitor.scrapeTimeout` | Timeout after which the scrape is ended | `10s`
+| `exporter.serviceMonitor.scheme` | Scheme to use for scraping | `http`
 | `elasticsearch.host`            | ElasticSearch hostname                             | `elasticsearch-client.default.svc.cluster.local` |
 | `elasticsearch.port`            | ElasticSearch port                                 | `9200`                                           |
 | `config`                        | Logstash configuration key-values                  | (see `values.yaml`)                              |

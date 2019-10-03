@@ -2,7 +2,7 @@ apiVersion: v1
 appVersion: "0.5.1"
 description: A Helm chart for prometheus postgres-exporter
 name: prometheus-postgres-exporter
-version: 0.7.1
+version: 0.7.2
 home: https://github.com/wrouesnel/postgres_exporter
 sources:
 - https://github.com/wrouesnel/postgres_exporter

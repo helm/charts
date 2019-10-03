@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "couchbase-operator.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "couchbase-operator.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "couchbase-operator.chart" . }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "couchbase-operator.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "couchbase-operator.name" . }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ template "couchbase-operator.name" . }}
+    spec:
+      serviceAccountName: {{ template "couchbase-operator.serviceAccountName" . }}
+      imagePullSecrets:
+  {{- range .Values.couchbaseOperator.imagePullSecrets }}
+      - name: "{{ . }}"
+  {{- end }}
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.couchbaseOperator.image.repository }}:{{ .Values.couchbaseOperator.image.tag }}"
+        imagePullPolicy: {{ .Values.couchbaseOperator.imagePullPolicy}}
+        command:
+        - couchbase-operator
+  {{- range $key, $value := .Values.couchbaseOperator.commandArgs }}
+        - "--{{ $key }}={{ $value }}"
+  {{- end }}
+        env:
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        ports:
+          - name: readiness-port
+            containerPort: {{ .Values.couchbaseOperator.readinessProbe.port}}
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: readiness-port
+          initialDelaySeconds: {{ .Values.couchbaseOperator.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.couchbaseOperator.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.couchbaseOperator.readinessProbe.timeoutSeconds }}
+          failureThreshold: {{ .Values.couchbaseOperator.readinessProbe.failureThreshold }}
+        resources:
+{{ toYaml .Values.couchbaseOperator.resources | indent 12 }}
+    {{- with .Values.couchbaseOperator.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.couchbaseOperator.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.couchbaseOperator.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

@@ -64,6 +64,9 @@ spec:
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
               readOnly: {{ .readOnly }}
+            {{- if .mountPropagation }}
+              mountPropagation: {{ .mountPropagation }}
+            {{- end }}
           {{- end }}
           {{- range .Values.nodeExporter.extraConfigmapMounts }}
             - name: {{ .name }}

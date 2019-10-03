@@ -40,6 +40,7 @@ image:
   # - name: myRegistryKeySecretName
 
 extraArgs: {}
+extraEnv: []
 
 # To authorize individual email addresses
 # That is part of extraArgs but since this needs special treatment we need to do a separate section
@@ -92,6 +93,15 @@ resources: {}
   #   cpu: 100m
   #   memory: 300Mi
 
+extraVolumes: []
+  # - name: ca-bundle-cert
+  #   secret:
+  #     secretName: <secret-name>
+
+extraVolumeMounts: []
+  # - mountPath: /etc/ssl/certs/
+  #   name: ca-bundle-cert
+
 priorityClassName: ""
 
 # Affinity for pod assignment
@@ -124,3 +134,14 @@ readinessProbe:
 podAnnotations: {}
 podLabels: {}
 replicaCount: 1
+
+# Additionally authenticate against a htpasswd file. Entries must be created with "htpasswd -s" for SHA encryption.
+# Alternatively supply an existing secret which contains the required information.
+htpasswdFile:
+  enabled: false
+  existingSecret: ""
+  entries: {}
+  # One row for each user
+  # example:
+  # entries:
+  #  - testuser:{SHA}EWhzdhgoYJWy0z2gyzhRYlN9DSiv

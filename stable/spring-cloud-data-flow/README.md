@@ -76,23 +76,30 @@ The following tables list the configurable parameters and their default values.
 
 ### Data Flow Server Configuration
 
-| Parameter                         | Description                                        | Default          |
-| --------------------------------- | -------------------------------------------------- | ---------------- |
-| server.version                    | The version/tag of the Data Flow server            | 2.0.2.RELEASE
-| server.imagePullPolicy            | The imagePullPolicy of the Data Flow server        | IfNotPresent
-| server.service.type               | The service type for the Data Flow server          | LoadBalancer
-| server.service.annotations        | Extra annotations for service resources            | {}
-| server.platformName               | The name of the configured platform account        | default
-| server.service.externalPort       | The external port for the Data Flow server         | 80
+| Parameter                         | Description                                                        | Default          |
+| --------------------------------- | ------------------------------------------------------------------ | ---------------- |
+| server.version                    | The version/tag of the Data Flow server                            | 2.2.1.RELEASE
+| server.imagePullPolicy            | The imagePullPolicy of the Data Flow server                        | IfNotPresent
+| server.service.type               | The service type for the Data Flow server                          | LoadBalancer
+| server.service.annotations        | Extra annotations for service resource                             | {}
+| server.service.externalPort       | The external port for the Data Flow server                         | 80
+| server.service.labels             | Extra labels for the service resource                              | {}
+| server.platformName               | The name of the configured platform account                        | default
+| server.configMap                  | Custom ConfigMap name for Data Flow server configuration           |
+| server.trustCerts                 | Trust self signed certs                                            | false
 
 ### Skipper Server Configuration
 
-| Parameter                          | Description                                       | Default          |
-| ---------------------------------- | ------------------------------------------------- | ---------------- |
-| skipper.version                    | The version/tag of the Skipper server             | 2.0.1.RELEASE
-| skipper.imagePullPolicy            | The imagePullPolicy of the Skipper server         | IfNotPresent
-| skipper.platformName               | The name of the configured platform account       | default
-| skipper.service.type               | The service type for the Skipper server           | ClusterIP
+| Parameter                         | Description                                                      | Default          |
+| --------------------------------- | ---------------------------------------------------------------- | ---------------- |
+| skipper.version                   | The version/tag of the Skipper server                            | 2.1.2.RELEASE
+| skipper.imagePullPolicy           | The imagePullPolicy of the Skipper server                        | IfNotPresent
+| skipper.platformName              | The name of the configured platform account                      | default
+| skipper.service.type              | The service type for the Skipper server                          | ClusterIP
+| skipper.service.annotations       | Extra annotations for service resources                          | {}
+| skipper.service.labels            | Extra labels for the service resource                            | {}
+| skipper.configMap                 | Custom ConfigMap name for Skipper server configuration           |
+| skipper.trustCerts                | Trust self signed certs                                          | false
 
 ### Spring Cloud Deployer for Kubernetes Configuration
 

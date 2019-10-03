@@ -4,9 +4,10 @@ kind: Deployment
 metadata:
  name: omsagent-rs
  namespace: kube-system
- chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
- release: {{ .Release.Name }}
- heritage: {{ .Release.Service }}
+ labels:
+   chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+   release: {{ .Release.Name }}
+   heritage: {{ .Release.Service }}
 spec:
  replicas: 1
  selector:
@@ -21,21 +22,20 @@ spec:
    annotations:
     agentVersion: {{ .Values.omsagent.image.tag }}
     dockerProviderVersion: {{ .Values.omsagent.image.dockerProviderVersion }}
+    schema-versions: "v1"
   spec:
   {{- if .Values.omsagent.rbac }}
    serviceAccountName: omsagent
   {{- end }}
    containers:
      - name: omsagent 
-       image: "microsoft/oms:{{ .Values.omsagent.image.tag }}"
+       image: "mcr.microsoft.com/azuremonitor/containerinsights/ciprod:{{ .Values.omsagent.image.tag }}"
        imagePullPolicy: IfNotPresent
        resources:
 {{ toYaml .Values.omsagent.resources.deployment | indent 9 }}
        env:
        - name: ACS_RESOURCE_NAME
          value: {{ .Values.omsagent.env.clusterName | quote }}
-       - name: DISABLE_KUBE_SYSTEM_LOG_COLLECTION
-         value: {{ .Values.omsagent.env.doNotCollectKubeSystemLogs | quote }}
        - name: CONTROLLER_TYPE
          value: "ReplicaSet"
        - name: NODE_IP
@@ -49,6 +49,9 @@ spec:
          protocol: TCP 
        - containerPort: 25224
          protocol: UDP
+       - containerPort: 25227
+         protocol: TCP
+         name: in-rs-tcp
        volumeMounts:
         - mountPath: /var/run/host
           name: docker-sock
@@ -63,12 +66,15 @@ spec:
           readOnly: true
         - mountPath : /etc/config
           name: omsagent-rs-config
+        - mountPath: /etc/config/settings
+          name: settings-vol-config
+          readOnly: true
        livenessProbe:
         exec:
          command:
          - /bin/bash
          - -c
-         - ps -ef | grep omsagent | grep -v "grep"
+         - "/opt/livenessprobe.sh"
         initialDelaySeconds: 60
         periodSeconds: 60
    nodeSelector:
@@ -96,4 +102,8 @@ spec:
     - name: omsagent-rs-config
       configMap:
         name: omsagent-rs-config
+    - name: settings-vol-config
+      configMap:
+        name: container-azm-ms-agentconfig
+        optional: true
 {{- end }} 

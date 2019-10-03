@@ -23,12 +23,12 @@ hostNetwork:
   #
   # You would require this enabled if you use alternate overlay networking for pods and
   # API server unable to communicate with metrics-server. As an example, this is required
-  # if you use Weave netwok on EKS
+  # if you use Weave network on EKS
   enabled: false
 
 image:
   repository: gcr.io/google_containers/metrics-server-amd64
-  tag: v0.3.2
+  tag: v0.3.5
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -92,7 +92,7 @@ service:
   labels: {}
   #  Add these labels to have metrics-server show up in `kubectl cluster-info`
   #  kubernetes.io/cluster-service: "true"
-  #  kubernetes.io/name: metrics-server
+  #  kubernetes.io/name: "Metrics-server"
   port: 443
   type: ClusterIP
 

@@ -4,7 +4,7 @@
 
 image:
   repository: homeassistant/home-assistant
-  tag: 0.95.4
+  tag: 0.98.0
   pullPolicy: IfNotPresent
   pullSecrets: []
 
@@ -54,6 +54,9 @@ persistence:
   ## If you want to reuse an existing claim, you can pass the name of the PVC using
   ## the existingClaim variable
   # existingClaim: your-claim
+  ##
+  ## If you want to use a volume on the host machine instead of a PVC:
+  # hostPath: /path/to/the/config/folder
   accessMode: ReadWriteOnce
   size: 5Gi
 
@@ -87,8 +90,11 @@ git:
   ##
   image:
     repository: causticlab/hass-configurator-docker
-    tag: x86_64-0.3.1
+    tag: 0.3.5-x86_64
     pullPolicy: IfNotPresent
+
+  ## Specify the command that runs in the git-sync container to pull in configuration.
+  # command: []
 
   # repo:
   secret: git-creds
@@ -99,6 +105,12 @@ zwave:
   enabled: false
   device: ttyACM0
 
+# Mount devices or folders from the host machine. Can be used for USB device mounting.
+hostMounts: []
+  # Example
+  # - name: zha
+  #   hostPath: /dev/serial/by-id/usb-Silicon_Labs_HubZ_Smart_Home_Controller_6120245D-if01-port0
+
 configurator:
   enabled: false
 
@@ -106,7 +118,7 @@ configurator:
   ##
   image:
     repository: causticlab/hass-configurator-docker
-    tag: x86_64-0.3.1
+    tag: 0.3.5-x86_64
     pullPolicy: IfNotPresent
 
   ## URL for the home assistant API endpoint
@@ -179,7 +191,7 @@ vscode:
   ##
   image:
     repository: codercom/code-server
-    tag: 1.939
+    tag: 2.preview.11-vsc1.37.0
     pullPolicy: IfNotPresent
 
   ## VSCode password

@@ -9,16 +9,60 @@ This release includes a Dask scheduler, {{ .Values.worker.replicas }} Dask worke
 
 The Jupyter notebook server and Dask scheduler expose external services to
 which you can connect to manage notebooks, or connect directly to the Dask
-cluster.   You can get these addresses by running the following:
+cluster. You can get these addresses by running the following:
+
+{{- if contains "NodePort" .Values.scheduler.serviceType }}
+
+  export DASK_SCHEDULER=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath='{.items[0].status.addresses[0].address}')
+  export DASK_SCHEDULER_UI_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath='{.items[0].status.addresses[0].address}')
+  export DASK_SCHEDULER_PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "dask.fullname" . }}-scheduler -o jsonpath='{.spec.ports[?(@.name=="{{ template "dask.fullname" . }}-{{ .Values.scheduler.name }}")].nodePort}')
+  export DASK_SCHEDULER_UI_PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "dask.fullname" . }}-scheduler -o jsonpath='{.spec.ports[?(@.name=="{{ template "dask.fullname" . }}-{{ .Values.webUI.name }}")].nodePort}')
+
+{{- else if contains "LoadBalancer" .Values.scheduler.serviceType }}
 
   export DASK_SCHEDULER=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "dask.fullname" . }}-scheduler -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
   export DASK_SCHEDULER_UI_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "dask.fullname" . }}-scheduler -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  export DASK_SCHEDULER_PORT={{ .Values.scheduler.servicePort }}
+  export DASK_SCHEDULER_UI_PORT={{ .Values.webUI.servicePort }}
+
+{{- else if contains "ClusterIP"  .Values.scheduler.serviceType }}
+
+  export DASK_SCHEDULER="127.0.0.1"
+  export DASK_SCHEDULER_UI_IP="127.0.0.1"
+  export DASK_SCHEDULER_PORT=8080
+  export DASK_SCHEDULER_UI_PORT=8081
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "dask.fullname" . }}-scheduler $DASK_SCHEDULER_PORT:{{ .Values.scheduler.servicePort }} &
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "dask.fullname" . }}-scheduler $DASK_SCHEDULER_UI_PORT:{{ .Values.webUI.servicePort }} &
+  
+{{- end }}
+
+
+{{- if contains "NodePort" .Values.jupyter.serviceType }}
+
+  export JUPYTER_NOTEBOOK_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath='{.items[0].status.addresses[0].address}')
+  export JUPYTER_NOTEBOOK_PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "dask.fullname" . }}-jupyter -o jsonpath='{.spec.ports[0].nodePort}')
+
+{{- else if contains "LoadBalancer" .Values.jupyter.serviceType }}
+
   export JUPYTER_NOTEBOOK_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "dask.fullname" . }}-jupyter -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-  echo http://$JUPYTER_NOTEBOOK_IP:{{ .Values.jupyter.servicePort }} -- Jupyter notebook
-  echo http://$DASK_SCHEDULER_UI_IP:{{ .Values.webUI.servicePort }}  -- Dask dashboard
-  echo http://$DASK_SCHEDULER:{{ .Values.scheduler.servicePort }}    -- Dask Client connection
+  export JUPYTER_NOTEBOOK_PORT={{ .Values.jupyter.servicePort }}
 
-  NOTE: The default password to login to the notebook server is `dask`.
+{{- else if contains "ClusterIP"  .Values.jupyter.serviceType }}
 
-  NOTE: It may take a few minutes for the LoadBalancer IP to be available, until that the commands below will not work.  
-  You can watch the status by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "dask.fullname" . }}-jupyter'
+  export JUPYTER_NOTEBOOK_IP="127.0.0.1"
+  export JUPYTER_NOTEBOOK_PORT=8082
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "dask.fullname" . }}-jupyter $JUPYTER_NOTEBOOK_PORT:{{ .Values.jupyter.servicePort }} &
+
+{{- end }}
+
+  echo tcp://$DASK_SCHEDULER:$DASK_SCHEDULER_PORT               -- Dask Client connection
+  echo http://$DASK_SCHEDULER_UI_IP:$DASK_SCHEDULER_UI_PORT     -- Dask dashboard
+  echo http://$JUPYTER_NOTEBOOK_IP:$JUPYTER_NOTEBOOK_PORT       -- Jupyter notebook
+
+NOTE: It may take a few minutes for the LoadBalancer IP to be available. Until then, the commands above will not work for the LoadBalancer service type.  
+You can watch the status by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "dask.fullname" . }}-scheduler'
+
+NOTE: It may take a few minutes for the URLs above to be available if any EXTRA_PIP_PACKAGES or EXTRA_CONDA_PACKAGES were specified,
+because they are installed before their respective services start.
+
+NOTE: The default password to login to the notebook server is `dask`. To change this password, refer to the Jupyter password section in values.yaml, or in the README.md.

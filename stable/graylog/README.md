@@ -86,7 +86,7 @@ Set the following values in `values.yaml`
 
 ```yaml
 graylog:
-  tolerations: 
+  tolerations:
     - key: graylog
       value: "true"
       operator: "Equal"
@@ -114,7 +114,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `graylog.service.master.annotations`    | Graylog Master Service annotations                                                                                                                    | `{}`                                  |
 | `graylog.podAnnotations`                | Kubernetes Pod annotations                                                                                                                            | `{}`                                  |
 | `graylog.terminationGracePeriodSeconds` | Pod termination grace period                                                                                                                          | `120`                                 |
-| `graylog.updateStrategy`                | Update Strategy of the StatefulSet                                                                                                                    | `OnDelete`                            |
+| `graylog.updateStrategy`                | Update Strategy of the StatefulSet                                                                                                                    | `RollingUpdate`                           |
 | `graylog.persistence.enabled`           | Use a PVC to persist data                                                                                                                             | `true`                                |
 | `graylog.persistence.storageClass`      | Storage class of backing PVC                                                                                                                          | `nil` (uses storage class annotation) |
 | `graylog.persistence.accessMode`        | Use volume as ReadOnly or ReadWrite                                                                                                                   | `ReadWriteOnce`                       |
@@ -138,8 +138,9 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `graylog.config`                        | Add additional server configuration to `graylog.conf` file.                                                                                           | ``                                    |
 | `graylog.serverFiles`                   | Add additional server files on /etc/graylog/server. This is useful for enable TLS on input                                                            | `{}`                                  |
 | `graylog.journal.deleteBeforeStart`     | Delete all journal files before start Graylog                                                                                                         | `false`                               |
+| `graylog.init.resources`                | Configure resource requests and limits for the Graylog StatefulSet initContainer                                                                      | `{}`                                  |
 | `graylog.provisioner.enabled`           | Enable optional Job to run an arbitrary Bash script                                                                                                   | `false`                               |
-| `graylog.provisioner.script             | The contents of the provisioner Bash script                                                                                                           | ``                                    |
+| `graylog.provisioner.script`            | The contents of the provisioner Bash script                                                                                                           | ``                                    |
 | `rbac.create`                           | If true, create & use RBAC resources                                                                                                                  | `true`                                |
 | `rbac.serviceAccount.create`            | If true, create the Graylog service account                                                                                                           | `true`                                |
 | `rbac.serviceAccount.name`              | Name of the server service account to use or create                                                                                                   | `{{ graylog.fullname }}`              |
