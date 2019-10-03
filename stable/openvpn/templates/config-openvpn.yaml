@@ -12,12 +12,13 @@ data:
     #!/bin/bash
     set -eu
     EASY_RSA_LOC="/etc/openvpn/certs"
+    cd $EASY_RSA_LOC
     SERVER_CERT="${EASY_RSA_LOC}/pki/issued/server.crt"
     if [ -e "$SERVER_CERT" ]
     then
       echo "found existing certs - reusing"
       {{- if .Values.openvpn.useCrl }}
-      if [ ! -e ${EASY_RSA_LOC}/pki/crl.pem ]
+      if [ ! -e ${EASY_RSA_LOC}/crl.pem ]
       then
         echo "generating missed crl file"
         easyrsa gen-crl
@@ -36,6 +37,8 @@ data:
       export EASYRSA_PKI=$EASY_RSA_LOC/pki
       ovpn_genconfig -u server
       echo "ca\n" | ovpn_initpki nopass
+      cp ${EASY_RSA_LOC}/pki/crl.pem ${EASY_RSA_LOC}/crl.pem # Note: the pki/ directory is inaccessible after openvpn drops privileges, so we cp crl.pem to ${EASY_RSA_LOC} to allow CRL updates without a restart
+      chmod 644 ${EASY_RSA_LOC}/crl.pem
     fi
 
   newClientCert.sh: |-

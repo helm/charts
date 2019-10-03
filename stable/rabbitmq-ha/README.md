@@ -17,7 +17,7 @@ deployment on a [Kubernetes](http://kubernetes.io) cluster using the
 
 ## Prerequisites
 
-- Kubernetes 1.5+ with Beta APIs enabled
+- Kubernetes 1.9+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
@@ -69,6 +69,7 @@ and their default values.
 | `existingSecret`                               | Use an existing secret for password, managementPassword & erlang cookie                                                                                                                                                   | `""`                                                       |
 | `extraPlugins`                                 | Additional plugins to add to the default configmap                                                                                                                                                    | `rabbitmq_shovel, rabbitmq_shovel_management, rabbitmq_federation, rabbitmq_federation_management,` |
 | `extraConfig`                                  | Additional configuration to add to default configmap                                                                                                                                                  | `{}`                                                         |
+| `extraContainers`                              | Additional containers passed through the tpl 	                                                                                                                                                 | `[]`                                                         |
 | `extraInitContainers`                          | Additional init containers passed through the tpl 	                                                                                                                                                   | `[]`                                                         |
 | `env`                                          | Environment variables to set for Rabbitmq container                                                                                                                                                   | `{}`                                                         |
 | `advancedConfig`                               | Additional configuration in classic config format                                                                                                                                                   | `""`                                                           |
@@ -246,9 +247,9 @@ Similar to custom ConfigMap, `existingSecret` can be used to override the defaul
 `rabbitmqCert.existingSecret` can be used to override the default certificates. The custom secret must provide
 the following keys:
 
-* `rabbitmq-user`
+* `rabbitmq-username`
 * `rabbitmq-password`
-* `rabbitmq-management-user`
+* `rabbitmq-management-username`
 * `rabbitmq-management-password`
 * `rabbitmq-erlang-cookie`
 * `definitions.json` (the name can be altered by setting the `definitionsSource`)
@@ -261,4 +262,5 @@ Prometheus and its features can be enabled by setting `prometheus.enabled` to `t
 
 The `tpl` function allows us to pass values from `values.yaml` through the templating engine. It is used for the following values:
 
+* `extraContainers`
 * `extraInitContainers`

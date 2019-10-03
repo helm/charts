@@ -9,6 +9,7 @@ busybox:
   tag: "1.29.3"
 
 testFramework:
+  enabled: true
   image: "dduportal/bats"
   tag: "0.4.0"
 

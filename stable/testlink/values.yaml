@@ -14,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/testlink
-  tag: 1.9.19-debian-9-r181
+  tag: 1.9.19-debian-9-r194
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -243,8 +243,19 @@ ingress:
   ## It is also possible to create and manage the certificates outside of this helm chart
   ## Please see README.md for more information
   # - name: testlink.local-tls
-  #   key:
-  #   certificate:
+  #   key: |-
+  #     -----BEGIN RSA PRIVATE KEY-----
+  #     ...
+  #     -----END RSA PRIVATE KEY-----
+  #   certificate: |-
+  #     -----BEGIN CERTIFICATE-----
+  #     ...
+  #     -----END CERTIFICATE-----
+
+## Affinity for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+##
+affinity: {}
 
 ## Prometheus Exporter / Metrics
 ##
@@ -253,7 +264,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/apache-exporter
-    tag: 0.7.0-debian-9-r32
+    tag: 0.7.0-debian-9-r44
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.

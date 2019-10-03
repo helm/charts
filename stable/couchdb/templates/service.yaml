@@ -19,6 +19,5 @@ spec:
       targetPort: 5984
   type: {{ .Values.service.type }}
   selector:
-    app: {{ template "couchdb.name" . }}
-    release: {{ .Release.Name }}
+{{ include "couchdb.ss.selector" . | indent 4 }}
 {{- end -}}

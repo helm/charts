@@ -1,6 +1,6 @@
 {{- $peerIngress := and .Values.peer.ingress.enabled (not (eq (len .Values.peer.ingress.hosts) 0)) -}}
-{{ range (until (.Values.chain.nodes | int)) }}
-{{- $nodeNumber := printf "%03d" . }}
+{{- range $index, $val := $.Values.validators }}
+{{- $nodeNumber := printf "%03d" $index }}
 ---
 kind: Service
 apiVersion: v1

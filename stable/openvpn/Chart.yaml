@@ -5,6 +5,7 @@ description: A Helm chart to install an openvpn server inside a kubernetes clust
 name: openvpn
 version: 4.0.0
 appVersion: 2.3.0
+=======
 maintainers:
 - name: jasongwartz
 - name: dippynark

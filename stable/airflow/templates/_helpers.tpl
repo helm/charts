@@ -104,14 +104,14 @@ The key names for postgres and redis are fixed, which is consistent with the sub
     valueFrom:
       secretKeyRef:
         name: {{ default (include "airflow.postgresql.fullname" .) .Values.postgresql.existingSecret }}
-        key: postgres-password
+        key: {{ .Values.postgresql.existingSecretKey }}
   {{- end }}
   {{- if or .Values.redis.existingSecret .Values.redis.enabled }}
   - name: REDIS_PASSWORD
     valueFrom:
       secretKeyRef:
         name: {{ default (include "airflow.redis.fullname" .) .Values.redis.existingSecret }}
-        key: redis-password
+        key: {{ .Values.redis.existingSecretKey }}
   {{- end }}
   {{- if .Values.airflow.extraEnv }}
 {{ toYaml .Values.airflow.extraEnv | indent 2 }}

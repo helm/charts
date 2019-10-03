@@ -109,9 +109,9 @@ The following table lists the configurable parameters of the external-dns chart 
 | `annotationFilter`                 | Filter sources managed by external-dns via annotation using label selector (optional)                    | `""`                                                     |
 | `domainFilters`                    | Limit possible target zones by domain suffixes (optional)                                                | `[]`                                                     |
 | `zoneIdFilters`                    | Limit possible target zones by zone id (optional)                                                        | `[]`                                                     |
-| `crd.create`                       | If true, create CRD ressource                                                                            | `false`                                                  |
-| `crd.apiversion`                   | Sets the API version for the CRD to watch                                                                | `"`                                                      |
-| `crd.kind`                         | Sets the kind for the CRD to watch                                                                       | `"`                                                      |
+| `crd.create`                       | Install and use the integrated DNSEndpoint CRD                                                           | `false`                                                  |
+| `crd.apiversion`                   | Sets the API version for the CRD to watch                                                                | `""`                                                     |
+| `crd.kind`                         | Sets the kind for the CRD to watch                                                                       | `""`                                                     |
 | `dryRun`                           | When enabled, prints DNS record changes rather than actually performing them (optional)                  | `false`                                                  |
 | `logLevel`                         | Verbosity of the logs (options: panic, debug, info, warn, error, fatal)                                  | `info`                                                   |
 | `interval`                         | Interval update period to use                                                                            | `1m`                                                     |
@@ -142,6 +142,7 @@ The following table lists the configurable parameters of the external-dns chart 
 | `service.annotations`              | Annotations to add to service                                                                            | `{}`                                                     |
 | `rbac.create`                      | Wether to create & use RBAC resources or not                                                             | `false`                                                  |
 | `rbac.serviceAccountName`          | ServiceAccount (ignored if rbac.create == true)                                                          | `default`                                                |
+| `rbac.serviceAccountAnnotations`   | Additional Service Account annotations                                                                   | `{}`                                                     |
 | `rbac.apiVersion`                  | Version of the RBAC API                                                                                  | `v1beta1`                                                |
 | `rbac.pspEnabled`                  | PodSecurityPolicy                                                                                        | `false`                                                  |
 | `resources`                        | CPU/Memory resource requests/limits.                                                                     | `{}`                                                     |

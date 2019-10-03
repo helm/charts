@@ -127,9 +127,9 @@ spec:
         - name: KONG_SMTP_HOST
           value: {{ .Values.enterprise.smtp.smtp_host }}
         - name: KONG_SMTP_PORT
-          value: {{ .Values.enterprise.smtp.smtp_port }}
+          value: {{ .Values.enterprise.smtp.smtp_port | quote }}
         - name: KONG_SMTP_STARTTLS
-          value: {{ .Values.enterprise.smtp.smtp_starttls }}
+          value: {{ .Values.enterprise.smtp.smtp_starttls | quote }}
         {{- if .Values.enterprise.smtp.auth.smtp_username }}
         - name: KONG_SMTP_USERNAME
           value: {{ .Values.enterprise.smtp.auth.smtp_username }}
@@ -250,6 +250,10 @@ spec:
           - name: kong-custom-dbless-config-volume
             mountPath: /kong_dbless/
           {{- end }}
+          {{- range .Values.secretVolumes }}
+          - name:  {{ . }}
+            mountPath: /etc/secrets/{{ . }}
+          {{- end }}
         readinessProbe:
 {{ toYaml .Values.readinessProbe | indent 10 }}
         livenessProbe:
@@ -278,4 +282,10 @@ spec:
             {{- else }}
             name: {{ template "kong.dblessConfig.fullname" . }}
             {{- end }}
+{{- end }}
+
+{{- range $secretVolume := .Values.secretVolumes }}
+        - name: {{ . }}
+          secret:
+            secretName: {{ . }}
 {{- end }}
