@@ -52,6 +52,7 @@ The following table lists the configurable parameters of the Vault chart and the
 | `image.pullPolicy`                | Container pull policy                    | `IfNotPresent`                      |
 | `image.repository`                | Container image to use                   | `vault`                             |
 | `image.tag`                       | Container image tag to deploy            | `.Chart.appVersion`                            |
+| `vault.backendPolicy              | If custom backend needed                 | `{}`                                |
 | `vault.dev`                       | Use Vault in dev mode                    | true (set to false in production)   |
 | `vault.extraArgs`                 | Additional arguments for vault server command | `[]`                           |
 | `vault.extraEnv`                  | Extra env vars for Vault pods            | `{}`                                |

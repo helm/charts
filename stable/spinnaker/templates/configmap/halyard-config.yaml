@@ -31,7 +31,11 @@ data:
     $HAL_COMMAND deploy clean -q
   config.sh: |
     # Spinnaker version
+    {{ if .Values.halyard.bom }}
+    $HAL_COMMAND config version edit --version local:{{ .Values.halyard.spinnakerVersion }}
+    {{ else }}
     $HAL_COMMAND config version edit --version {{ .Values.halyard.spinnakerVersion }}
+    {{ end }}
 
     # Storage
     {{ if .Values.minio.enabled }}
