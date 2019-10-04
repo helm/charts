@@ -45,7 +45,7 @@ Redis can be accessed via port {{ .Values.redisPort }} on the following DNS name
 {{ if .Values.usePassword }}
 To get your password run:
 
-    export REDIS_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "redis.fullname" . }} -o jsonpath="{.data.redis-password}" | base64 --decode)
+    export REDIS_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "redis.secretName" . }} -o jsonpath="{.data.redis-password}" | base64 --decode)
 {{- end }}
 
 To connect to your Redis server:
