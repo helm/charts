@@ -81,7 +81,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `affinity`                | Override all other affinity settings with a string.                                                                                                                                                      | `""`                                                                                       |
 | `exporter.enabled`        | If `true`, the prometheus exporter sidecar is enabled                                                                                                                                                    | `false`                                                                                    |
 | `exporter.image`          | Exporter image                                                                                                                                                                                           | `oliver006/redis_exporter`                                                                 |
-| `exporter.tag`            | Exporter tag                                                                                                                                                                                             | `v1.1.0`                                                                                  |
+| `exporter.tag`            | Exporter tag                                                                                                                                                                                             | `v1.3.0`                                                                                  |
 | `exporter.annotations`    | Prometheus scrape annotations                                                                                                                                                                            | `{prometheus.io/path: /metrics, prometheus.io/port: "9121", prometheus.io/scrape: "true"}` |
 | `exporter.extraArgs`      | Additional args for the exporter                                                                                                                                                                         | `{}`                                                                                       |
 | `haproxy.enabled`         | Enabled HAProxy LoadBalancing/Proxy                                                                                                                                                                      | `false`                                                                                       |
@@ -155,7 +155,7 @@ Note:
    # In redis 5.x，see https://raw.githubusercontent.com/antirez/redis/5.0/redis.conf
    min-replicas-to-write: 1
    min-replicas-max-lag: 5
-   
+
    # In redis 4.x and redis 3.x，see https://raw.githubusercontent.com/antirez/redis/4.0/redis.conf and https://raw.githubusercontent.com/antirez/redis/3.0/redis.conf
    min-slaves-to-write 1
    min-slaves-max-lag 5
