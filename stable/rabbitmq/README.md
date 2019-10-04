@@ -152,6 +152,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `volumePermissions.image.pullPolicy`       | Init container volume-permissions image pull policy                                                            | `Always`                                             |
 | `volumePermissions.resources`                  | Init container resource requests/limit                 | `nil`                                                   |
 | `forceBoot.enabled`         | Executes 'rabbitmqctl force_boot' to force boot cluster shut down unexpectedly in an unknown order. Use it only if you prefer availability over integrity.                                                               | `false`                                          |
+| `extraSecrets`                       | Optionally specify extra secrets to be created by the chart. | `{}`                                        |
 
 The above parameters map to the env variables defined in [bitnami/rabbitmq](http://github.com/bitnami/bitnami-docker-rabbitmq). For more information please refer to the [bitnami/rabbitmq](http://github.com/bitnami/bitnami-docker-rabbitmq) image documentation.
 
@@ -274,6 +275,27 @@ Any load definitions specified will be available within in the container at `/ap
 
 > Loading a definition will take precedence over any configuration done through [Helm values](#configuration).
 
+If needed, you can use `extraSecrets` to let the chart create the secret for you. This way, you don't need to manually create it before deploying a release. For example :
+
+```yaml
+extraSecrets:
+  load-definition:
+    load_definition.json: |
+      {
+        "vhosts": [
+          {
+            "name": "/"
+          }
+        ]
+      }
+rabbitmq:
+  loadDefinition:
+    enabled: true
+    secretName: load-definition
+  extraConfiguration: |
+    management.load_definitions = /app/load_definition.json
+```
+
 ## Persistence
 
 The [Bitnami RabbitMQ](https://github.com/bitnami/bitnami-docker-rabbitmq) image stores the RabbitMQ data and configurations at the `/opt/bitnami/rabbitmq/var/lib/rabbitmq/` path of the container.
@@ -289,6 +311,15 @@ The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/pers
 ```bash
 $ helm install --set persistence.existingClaim=PVC_NAME rabbitmq
 ```
+
+### Adjust permissions of the persistence volume mountpoint
+
+As the image runs as non-root by default, it is necessary to adjust the ownership of the persistent volume so that the container can write data into it.
+
+By default, the chart is configured to use Kubernetes Security Context to automatically change the ownership of the volume. However, this feature does not work in all Kubernetes distributions.
+As an alternative, this chart supports using an `initContainer` to change the ownership of the volume before mounting it in the final destination.
+
+You can enable this `initContainer` by setting `volumePermissions.enabled` to `true`.
 
 ## Enabling TLS support
 

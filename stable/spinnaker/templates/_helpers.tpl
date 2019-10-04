@@ -55,3 +55,14 @@ Redis base URL for Spinnaker
 {{- printf "redis://%s:%s" .Values.redis.external.host (.Values.redis.external.port | toString) -}}
 {{- end }}
 {{- end }}
+
+{{/*
+Create name of kubeconfig file to use when setting up kubernetes provider
+*/}}
+{{- define "spinnaker.kubeconfig" -}}
+{{- if .Values.kubeconfig.encryptedKubeconfig }}
+{{- printf .Values.kubeconfig.encryptedKubeconfig | toString -}}
+{{- else }}
+{{- printf "/opt/kube/%s" .Values.kubeConfig.secretKey  | toString -}}
+{{- end }}
+{{- end }}
