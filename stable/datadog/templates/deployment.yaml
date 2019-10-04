@@ -33,10 +33,21 @@ spec:
       {{- if .Values.deployment.priorityClassName }}
       priorityClassName: {{ .Values.deployment.priorityClassName }}
       {{- end }}
+      {{- if .Values.jankSecretsCopier }}
+      initContainers:
+      - name: init-secrets
+        image: 203113165317.dkr.ecr.us-east-1.amazonaws.com/awscli:latest
+        imagePullPolicy: Always # We always want the latest for this; it should still be performant per https://kubernetes.io/docs/concepts/containers/images/#updating-images
+        command: ['sh', '-c', './write_secrets_to_file.sh {{.Values.secrets.region}} {{.Values.secrets.secretNames}}']
+        volumeMounts:
+        - mountPath: /home/secrets
+          name: secrets-volume
+      {{- end }}
       containers:
       - name: {{ default .Chart.Name .Values.datadog.name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args: ['sh','-c','cat /conf.d/89-copy-customfiles.sh; cp /conf.d/89-copy-customfiles.sh /etc/cont-init.d/89-copy-customfiles.sh; sed -i "1d" /etc/cont-init.d/89-copy-customfiles.sh; chmod +x /etc/cont-init.d/89-copy-customfiles.sh; /init']
         resources:
 {{ toYaml .Values.datadog.resources | indent 10 }}
         ports:
@@ -100,6 +111,10 @@ spec:
 {{ toYaml .Values.datadog.env | indent 10 }}
 {{- end }}
         volumeMounts:
+          {{- if .Values.jankSecretsCopier }}
+          - mountPath: /home/secrets
+            name: secrets-volume
+          {{- end}}
           {{- if .Values.datadog.useCriSocketVolume }}
           - name: runtimesocket
             mountPath: {{ default "/var/run/docker.sock" .Values.datadog.criSocketPath | quote }}
@@ -141,6 +156,11 @@ spec:
           failureThreshold: 6
 {{- end }}
       volumes:
+        {{- if .Values.jankSecretsCopier }}
+        - name: secrets-volume
+          emptyDir:
+            medium: "Memory"
+        {{- end}}
         {{- if .Values.datadog.useCriSocketVolume }}
         - hostPath:
             path: {{ default "/var/run/docker.sock" .Values.datadog.criSocketPath | quote }}

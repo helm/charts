@@ -23,3 +23,7 @@ override duplicates
 {{ tpl (toYaml .Values.datadog.confd) . | indent 2 }}
 {{- end -}}
 {{- end -}}
+  {{- if .Values.jankSecretsCopier }}
+  89-copy-customfiles.sh: |
+    {{ .Values.jankSecretsCopier | nindent 4 }}
+  {{- end -}}
