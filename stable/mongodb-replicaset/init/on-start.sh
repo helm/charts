@@ -21,7 +21,6 @@ replica_set="$REPLICA_SET"
 script_name=${0##*/}
 SECONDS=0
 timeout="${TIMEOUT:-900}"
-COUNTER=0
 
 if [[ "$AUTH" == "true" ]]; then
     admin_user="$ADMIN_USER"
@@ -54,7 +53,7 @@ retry_until() {
         creds=()
     fi
     
-	echo "trying to connect to server ${host} with arguments: ${ssl_args[@]}"
+    echo "trying to connect to server ${host} with arguments: ${ssl_args[@]}"
 	
     until [[ $(mongo admin --host "${host}" "${creds[@]}" "${ssl_args[@]}" --quiet --eval "${command}") == "${expected}" ]]; do
         sleep 1
@@ -63,14 +62,7 @@ retry_until() {
             log "mongod shutdown unexpectedly"
             exit 1
         fi
-		
-		let COUNTER=COUNTER+1 
-		
-		if [[ "${COUNTER}" -eq 20 ]]; then
-            log "Timed out after ${COUNTER}s attempting to bootstrap mongod"
-            exit 1
-        fi
-		
+
         if [[ "${SECONDS}" -ge "${timeout}" ]]; then
             log "Timed out after ${timeout}s attempting to bootstrap mongod"
             exit 1
