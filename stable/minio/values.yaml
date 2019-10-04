@@ -22,6 +22,9 @@ mcImage:
 ##
 mode: standalone
 
+## Additional arguments to pass to minio binary
+extraArgs: []
+
 ## Update strategy for Deployments
 DeploymentUpdate:
   type: RollingUpdate
@@ -39,6 +42,7 @@ priorityClassName: ""
 
 ## Set default accesskey, secretkey, Minio config file path, volume mount path and
 ## number of nodes (only used for Minio distributed mode)
+## AccessKey and secretKey is generated when not set
 ## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
 ##
 existingSecret: ""

@@ -90,6 +90,11 @@ downloadDashboards:
 ## Pod Annotations
 # podAnnotations: {}
 
+## Pod Labels
+# podLabels: {}
+
+podPortName: grafana
+
 ## Deployment annotations
 # annotations: {}
 
@@ -104,6 +109,7 @@ service:
     # targetPort: 4181 To be used with a proxy extraContainer
   annotations: {}
   labels: {}
+  portName: service
 
 ingress:
   enabled: false
@@ -171,6 +177,7 @@ extraContainers: |
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistence:
+  type: pvc
   enabled: false
   # storageClassName: default
   accessModes:

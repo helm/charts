@@ -15,7 +15,7 @@ metadata:
 {{ toYaml .Values.schema.annotations | indent 4 }}
 {{- end }}
 spec:
-  activeDeadlineSeconds: 120
+  activeDeadlineSeconds: {{ .Values.schema.activeDeadlineSeconds }}
   template:
     metadata:
       name: {{ include "jaeger.fullname" . }}-cassandra-schema

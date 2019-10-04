@@ -16,7 +16,12 @@ metadata:
 {{ toYaml .Values.service.annotations | indent 4 }}
 {{- end }}
 spec:
+{{- if .Values.service.authorize.headless }}
+  clusterIP: None
+  type: ClusterIP
+{{- else }}}
   type: {{ .Values.service.type }}
+{{- end }}
   ports:
     - port: {{ .Values.service.externalPort }}
       targetPort: https

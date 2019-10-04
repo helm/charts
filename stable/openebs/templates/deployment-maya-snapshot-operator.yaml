@@ -1,3 +1,4 @@
+{{- if .Values.snapshotOperator.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -8,6 +9,8 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: snapshot-operator
+    openebs.io/component-name: openebs-snapshot-operator
+    openebs.io/version: {{ .Values.release.version }}
 spec:
   replicas: {{ .Values.snapshotOperator.replicas }}
   selector:
@@ -15,7 +18,8 @@ spec:
       app: {{ template "openebs.name" . }}
       release: {{ .Release.Name }}
   strategy:
-    type: {{ .Values.snapshotOperator.upgradeStrategy }}
+    type: "Recreate"
+    rollingUpdate: null
   template:
     metadata:
       labels:
@@ -109,4 +113,5 @@ spec:
 {{- if .Values.snapshotOperator.affinity }}
       affinity:
 {{ toYaml .Values.snapshotOperator.affinity | indent 8 }}
+{{- end }}
 {{- end }}

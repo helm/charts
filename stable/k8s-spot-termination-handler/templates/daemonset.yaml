@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ template "k8s-spot-termination-handler.fullname" . }}
@@ -8,6 +8,10 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "k8s-spot-termination-handler.name" . }}
+      app.kubernetes.io/instance:  {{ .Release.Name }}
   {{- if .Values.updateStrategy }}
   updateStrategy:
     type: {{ .Values.updateStrategy }}

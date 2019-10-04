@@ -137,6 +137,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `cluster.enabled`                             | Use master-slave topology                                                                                                                           | `true`                                                  |
 | `cluster.slaveCount`                          | Number of slaves                                                                                                                                    | `1`                                                     |
 | `existingSecret`                              | Name of existing secret object (for password authentication)                                                                                        | `nil`                                                   |
+| `existingSecretPasswordKey`                   | Name of key containing password to be retrieved from the existing secret                                                                                                 | `nil`                                                   |  
 | `usePassword`                                 | Use password                                                                                                                                        | `true`                                                  |
 | `usePasswordFile`                             | Mount passwords as files instead of environment variables                                                                                           | `false`                                                 |
 | `password`                                    | Redis password (ignored if existingSecret set)                                                                                                      | Randomly generated                                      |
@@ -147,6 +148,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `securityContext.enabled`                     | Enable security context (both redis master and slave pods)                                                                                          | `true`                                                  |
 | `securityContext.fsGroup`                     | Group ID for the container (both redis master and slave pods)                                                                                       | `1001`                                                  |
 | `securityContext.runAsUser`                   | User ID for the container (both redis master and slave pods)                                                                                        | `1001`                                                  |
+| `securityContext.sysctls`                     | Set namespaced sysctls for the container (both redis master and slave pods)                                                                         | `nil`                                                   |
 | `serviceAccount.create`                       | Specifies whether a ServiceAccount should be created                                                                                                | `false`                                                 |
 | `serviceAccount.name`                         | The name of the ServiceAccount to create                                                                                                            | Generated using the fullname template                   |
 | `rbac.create`                                 | Specifies whether RBAC resources should be created                                                                                                  | `false`                                                 |
@@ -407,6 +409,18 @@ sysctlImage:
       sysctl -w net.core.somaxconn=10000
       echo never > /host-sys/kernel/mm/transparent_hugepage/enabled
 ```
+
+Alternatively, for Kubernetes 1.12+ you can set `securityContext.sysctls` which will configure sysctls for master and slave pods. Example:
+
+```yaml
+securityContext:
+  sysctls:
+  - name: net.core.somaxconn
+    value: "10000"
+```
+
+Note that this will not disable transparent huge tables.  
+
 ## Cluster topologies
 
 ### Default: Master-Slave

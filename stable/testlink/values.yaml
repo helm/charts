@@ -206,7 +206,7 @@ ingress:
 
   ## Ingress annotations done as key:value pairs
   ## For a full list of possible ingress annotations, please see
-  ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/annotations.md
+  ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/annotations.md
   ##
   ## If tls is set to true, annotation ingress.kubernetes.io/secure-backends: "true" will automatically be set
   ## If certManager is set to true, annotation kubernetes.io/tls-acme: "true" will automatically be set
@@ -243,8 +243,14 @@ ingress:
   ## It is also possible to create and manage the certificates outside of this helm chart
   ## Please see README.md for more information
   # - name: testlink.local-tls
-  #   key:
-  #   certificate:
+  #   key: |-
+  #     -----BEGIN RSA PRIVATE KEY-----
+  #     ...
+  #     -----END RSA PRIVATE KEY-----
+  #   certificate: |-
+  #     -----BEGIN CERTIFICATE-----
+  #     ...
+  #     -----END CERTIFICATE-----
 
 ## Affinity for pod assignment
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity

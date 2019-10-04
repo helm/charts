@@ -280,7 +280,17 @@ backup:
   enabled: false
   schedule: "0 0 * * *"
   annotations: {}
-  destination: gs://bucket/influxdb
-  # Google Cloud Storage
-  gcs:
-    serviceAccountSecret: influxdb-backup-key
+
+  ## Google Cloud Storage
+  ## Secret is expected to have key stored in `key.json` field
+  # gcs:
+  #    serviceAccountSecret: influxdb-backup-key
+  #    destination: gs://bucket/influxdb
+
+  ## Azure
+  ## Secret is expected to have connection string stored in `connection-string` field
+  ## Existing container will be used or private one withing storage account will be created.
+  # azure:
+  #   storageAccountSecret: influxdb-backup-azure-key
+  #   destination_container: influxdb-container
+  #   destination_path: ""
