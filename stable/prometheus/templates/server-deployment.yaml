@@ -38,6 +38,19 @@ spec:
       schedulerName: "{{ .Values.server.schedulerName }}"
 {{- end }}
       serviceAccountName: {{ template "prometheus.serviceAccountName.server" . }}
+      {{- if .Values.server.initContainer.enabled }}
+      initContainers:
+      - name: "{{ .Values.server.initContainer.name }}"
+        image: "{{ .Values.server.initContainer.image.repository }}:{{ .Values.server.initContainer.image.tag }}"
+        imagePullPolicy: "{{ .Values.server.initContainer.image.pullPolicy }}"
+        volumeMounts:
+          - name: storage-volume
+            mountPath: {{ .Values.server.persistentVolume.mountPath }}
+            subPath: "{{ .Values.server.persistentVolume.subPath }}"
+        {{- if .Values.server.extraVolumeMounts }}
+          {{ toYaml .Values.server.extraVolumeMounts | nindent 10 }}
+        {{- end }}
+      {{- end }}
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.server.name }}-{{ .Values.configmapReload.name }}
           image: "{{ .Values.configmapReload.image.repository }}:{{ .Values.configmapReload.image.tag }}"

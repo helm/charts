@@ -830,6 +830,20 @@ server:
   ##
   retention: "15d"
 
+  ## initContainer for the prometheus-server
+  ##
+  initContainer:
+    ## Enable the initContainer
+    ##
+    enabled: false
+    ## Name of the initContainer
+    name: server-init
+    ## Image to use for the initContainer
+    image:
+      repository: busybox
+      tag: latest
+      pullPolicy: IfNotPresent
+
 pushgateway:
   ## If false, pushgateway will not be installed
   ##

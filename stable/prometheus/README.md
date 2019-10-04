@@ -306,6 +306,11 @@ Parameter | Description | Default
 `server.service.servicePort` | Prometheus server service port | `80`
 `server.service.type` | type of Prometheus server service to create | `ClusterIP`
 `server.sidecarContainers` | array of snippets with your sidecar containers for prometheus server | `""`
+`server.initContainer.enabled` | enable or disable the initContainer for the Prometheus server | `false`
+`server.initContainer.name` | name of the initContainer | `server-init`
+`server.initContainer.image.repository` | repository of the initContainer image. One wants to provide its own. | `busybox`
+`server.initContainer.image.tag` | tag of the initContainer image | `latest`
+`server.initContainer.image.pullPolicy` | pullPolicy of the initContainer image | `IfNotPresent`
 `serviceAccounts.alertmanager.create` | If true, create the alertmanager service account | `true`
 `serviceAccounts.alertmanager.name` | name of the alertmanager service account to use or create | `{{ prometheus.alertmanager.fullname }}`
 `serviceAccounts.kubeStateMetrics.create` | If true, create the kubeStateMetrics service account | `true`
