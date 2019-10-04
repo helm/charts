@@ -289,10 +289,10 @@ spec:
         # Azure mountPath(s)
         {{- if eq .Values.provider "azure" }}
         - name: azure-config-file
-          {{- if not .Values.azure.secretName }}
-          mountPath: /etc/kubernetes/azure.json
-          {{- else }}
+          {{- if or .Values.azure.secretName (and .Values.azure.resourceGroup .Values.azure.tenantId .Values.azure.subscriptionId) }}
           mountPath: /etc/kubernetes/
+          {{- else }}
+          mountPath: /etc/kubernetes/azure.json
           {{- end }}
           readOnly: true
         {{- end }}
@@ -325,13 +325,16 @@ spec:
       # Azure volume(s)
       {{- if eq .Values.provider "azure" }}
       - name: azure-config-file
-        {{- if (not .Values.azure.secretName) }}
+        {{- if .Values.azure.secretName }}
+        secret:
+          secretName: {{ .Values.azure.secretName }}
+        {{- else if (and .Values.azure.resourceGroup .Values.azure.tenantId .Values.azure.subscriptionId) }}
+        secret:
+          secretName: {{ template "external-dns.fullname" . }}
+        {{- else }}
         hostPath:
           path: /etc/kubernetes/azure.json
           type: File
-        {{- else }}
-        secret:
-          secretName: {{ .Values.azure.secretName }}
         {{- end }}
       {{- end }}
       # CoreDNS volume(s)
