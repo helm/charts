@@ -90,6 +90,9 @@ spec:
           mountPath: /usr/local/etc/haproxy
         - name: shared-socket
           mountPath: /run/haproxy
+{{- if .Values.haproxy.priorityClassName }}
+      priorityClassName: {{ .Values.haproxy.priorityClassName }}
+{{- end }}
       volumes:
       - name: config-volume
         configMap:
