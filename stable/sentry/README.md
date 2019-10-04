@@ -66,6 +66,7 @@ Parameter                                            | Description              
 `image.tag`                                          | Sentry image tag                                                                                           | `9.1.1`
 `imagePullPolicy`                                    | Image pull policy                                                                                          | `IfNotPresent`
 `imagePullSecrets`                                   | Specify image pull secrets                                                                                 | `[]`
+`sentrySecret`                                       | Specify SENTRY_SECRET_KEY. If isn't specified it will be generated automatically.                          | `nil`
 `web.podAnnotations`                                 | Web pod annotations                                                                                        | `{}`
 `web.podLabels`                                      | Worker pod extra labels                                                                                    | `{}`
 `web.replicacount`                                   | Amount of web pods to run                                                                                  | `1`

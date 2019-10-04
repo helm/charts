@@ -149,6 +149,13 @@ spec:
                   name: {{ default (include "cluster-autoscaler.fullname" $) $value.name }}
                   key: {{ required "Must specify key!" $value.key }}
           {{- end }}
+          {{- range $key, $value := .Values.extraEnvSecrets }}
+            - name: {{ $key }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default (include "cluster-autoscaler.fullname" $) $value.name }}
+                  key: {{ required "Must specify key!" $value.key }}
+          {{- end }}
           {{- if .Values.envFromSecret }}
           envFrom:
             - secretRef:
