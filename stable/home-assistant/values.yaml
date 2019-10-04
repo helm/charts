@@ -4,7 +4,7 @@
 
 image:
   repository: homeassistant/home-assistant
-  tag: 0.98.0
+  tag: 0.99.3
   pullPolicy: IfNotPresent
   pullSecrets: []
 
@@ -191,7 +191,7 @@ vscode:
   ##
   image:
     repository: codercom/code-server
-    tag: 2.preview.11-vsc1.37.0
+    tag: 2.1571-vsc1.38.1
     pullPolicy: IfNotPresent
 
   ## VSCode password
