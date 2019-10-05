@@ -5,6 +5,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   labels: {{ include "prometheus-node-exporter.labels" . | indent 4 }}
   name: psp-{{ template "prometheus-node-exporter.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 rules:
 - apiGroups: ['extensions']
   resources: ['podsecuritypolicies']

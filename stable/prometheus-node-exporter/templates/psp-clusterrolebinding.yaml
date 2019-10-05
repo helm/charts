@@ -5,6 +5,7 @@ kind: ClusterRoleBinding
 metadata:
   labels: {{ include "prometheus-node-exporter.labels" . | indent 4 }}
   name: psp-{{ template "prometheus-node-exporter.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
