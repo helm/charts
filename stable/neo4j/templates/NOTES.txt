@@ -6,7 +6,15 @@
 We'll need to wait a few seconds for the Neo4j cluster to form.
 We need to see this line in all of our pods' logs:
 
-> Remote interface available at http://neo-helm-neo4j-core-2.neo-helm-neo4j.default.svc.cluster.local:7474/
+{{- if .Values.ingress.enabled }}
+{{- range $host := .Values.ingress.hosts }}
+
+>> Remote interface available at http{{ if $.Values.ingress.tls }}s{{ end }}://{{ . }}{{ $.Values.ingress.path }}
+{{- end }}
+{{- else }}
+
+>> Remote interface available at http://{{ template "neo4j.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:7474/
+{{- end }}
 
 We can see the content of the logs by running the following command:
 

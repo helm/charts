@@ -48,7 +48,9 @@ spec:
           - "/bin/bash"
           - "-c"
           - |
-            export NEO4J_dbms_connectors_default__advertised__address=$(hostname -f)
+            # Setup connector advertise addresses
+            {{- include "neo4j.connector.advertised.addresses" . | nindent 12 }}
+
             export NEO4J_causal__clustering_transaction__advertised__address=$(hostname -f):6000
 
             if [ "${AUTH_ENABLED:-}" == "true" ]; then
@@ -57,10 +59,13 @@ spec:
               export NEO4J_AUTH="none"
             fi
 
+            # Link configs
+            [ -f /configmap/neo4j-server.properties ] && ln -s /configmap/neo4j-server.properties /var/lib/neo4j/conf
+
             exec /docker-entrypoint.sh "neo4j"
         ports:
         - containerPort: 7474
-          name: browser
+          name: http
         - containerPort: 7687
           name: bolt
         - containerPort: 6000

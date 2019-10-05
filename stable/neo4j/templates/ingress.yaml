@@ -1,0 +1,44 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "neo4j.fullname" . }}
+  labels:
+    app: {{ template "neo4j.name" . }}
+    chart: {{ template "neo4j.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    {{- range $key, $value := .Values.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  rules:
+  {{- range .Values.ingress.http.hosts }}
+  - host: {{ .name | quote }}
+    http:
+      paths:
+      - path: {{ default "/" .path }}
+        backend:
+          serviceName: "{{ template "neo4j.fullname" $ }}"
+          servicePort: http
+  {{- end }}
+  {{- range .Values.ingress.bolt.hosts }}
+  - host: {{ .name | quote }}
+    http:
+      paths:
+      - path: {{ default "/" .path }}
+        backend:
+          serviceName: "{{ template "neo4j.fullname" $ }}"
+          servicePort: bolt
+  {{- end }}
+{{- if .Values.ingress.tls }}
+  tls:
+  {{- if .Values.ingress.tls.http }}
+{{ toYaml .Values.ingress.tls.http | indent 4 }}
+  {{- end }}
+  {{- if .Values.ingress.tls.bolt }}
+{{ toYaml .Values.ingress.tls.bolt | indent 4 }}
+  {{- end }}
+{{- end }}
+{{- end }}

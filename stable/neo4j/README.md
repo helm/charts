@@ -72,6 +72,16 @@ their default values.
 | `core.persistentVolume.mountPath`     | Persistent Volume mount root path                                                                                                       | `/data`                                         |
 | `core.persistentVolume.subPath`       | Subdirectory of the volume to mount                                                                                                     | `nil`                                           |
 | `core.persistentVolume.annotations`   | Persistent Volume Claim annotations                                                                                                     | `{}`                                            |
+| `ingress.enabled`                         | Enable ingress controller resource                                                          | `false`                                                      |
+| `ingress.annotations`                     | Ingress annotations                                                                         | `[]`                                                         |
+| `ingress.http.hosts[0].name`                   | Hostname to your Neo4j installation                                                     | `neo4j.local`                                              |
+| `ingress.http.hosts[0].path`                   | Path within the url structure                                                               | `/`                                                          |
+| `ingress.bolt.hosts[0].name`                   | Hostname to your Neo4j bolt websocket protocol                                                      | `bolt-neo4j.local`                                              |
+| `ingress.bolt.hosts[0].path`                   | Path within the url structure                                                               | `/`                                                          |
+| `ingress.tls.http[0].hosts[0]`                 | TLS hosts                                                                                   | `neo4j.local-tls`                                              |
+| `ingress.tls.http[0].secretName`               | TLS Secret (certificates)                                                                   | `neo4j.local-tls`                                          |
+| `ingress.tls.bolt[0].hosts[0]`                 | TLS hosts                                                                                   | `bolt-neo4j.local-tls`                                              |
+| `ingress.tls.bolt[0].secretName`               | TLS Secret (certificates)                                                                   | `bolt-neo4j.local-tls`                                          |
 | `readReplica.numberOfServers`         | Number of machines in READ_REPLICA mode                                                                                                 | `0`                                             |
 | `readReplica.autoscaling.enabled`  | Enable horizontal pod autoscaler  | `false`  |
 | `readReplica.autoscaling.targetAverageUtilization`  | Target CPU utilization  | `70`  |
@@ -79,6 +89,9 @@ their default values.
 | `readReplica.autoscaling.maxReplicas`  | Max replicas for autoscaling  | `3` |
 | `readReplica.initContainers`          | Init containers to add to the replica pod. Example use case is a script that installs the APOC library                                  | `{}`                                            |
 | `resources`                           | Resources required (e.g. CPU, memory)                                                                                                   | `{}`                                            |
+| `service.annotations`                              | Kubernetes service annotations                                                                                                                            | `{}`                                                     |
+| `service.http.port`                              | Neo4j http service port                                                                                                                            | `7474`                                                     |
+| `service.bolt.port`                              | Neo4j bolt service port                                                                                                                            | `7687`                                                     |
 | `clusterDomain`                       | Cluster domain                                                                                                                          | `cluster.local`                                 |
 
 The above parameters map to the env variables defined in the

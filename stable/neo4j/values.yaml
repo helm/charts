@@ -7,7 +7,7 @@ name: "neo4j"
 
 # Specs for the Neo4j docker image
 image: "neo4j"
-imageTag: "3.4.5-enterprise"
+imageTag: "3.4.17-enterprise"
 imagePullPolicy: "IfNotPresent"
 # imagePullSecret: registry-secret
 acceptLicenseAgreement: "no"
@@ -44,6 +44,7 @@ testImageTag: "master"
 # Cores
 core:
   numberOfServers: 3
+
   persistentVolume:
     ## whether or not persistence is enabled
     ##
@@ -98,6 +99,53 @@ core:
   #     - |
   #       curl -L https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases/download/3.2.0.3/apoc-3.2.0.3-all.jar -O
   #       cp apoc-3.2.0.3-all.jar /plugins/
+
+configmap:
+  neo4j-server.properties:
+    # - org.neo4j.server.webserver.https.enabled=false
+
+service:
+  annotations: {}
+  http:
+    port: 7474
+  bolt:
+    port: 7687
+
+## Configure the ingress resource that allows you to access the
+## MongoDB installation. Set up the URL
+## ref: http://kubernetes.io/docs/user-guide/ingress/
+##
+ingress:
+  ## Set to true to enable ingress record generation
+  enabled: false
+
+  ## Ingress annotations done as key:value pairs
+  ## For a full list of possible ingress annotations, please see
+  ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/annotations.md
+  annotations:
+  #  kubernetes.io/ingress.class: nginx
+
+  http:
+    hosts:
+    - name: neo4j.local
+      path: /
+
+  bolt:
+    hosts:
+    - name: bolt-neo4j.local
+      path: /
+
+  ## The tls configuration for the ingress
+  ## see: https://kubernetes.io/docs/concepts/services-networking/ingress/#tls
+  # tls:
+  #   http:
+  #     secretName: neo4j.local-tls
+  #     hosts:
+  #     - neo4j.local-tls
+  #   bolt:
+  #     secretName: bolt-neo4j.local-tls
+  #     hosts:
+  #       - bolt-neo4j.local-tls
 
 # Read Replicas
 readReplica:

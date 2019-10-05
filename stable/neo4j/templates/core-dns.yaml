@@ -12,11 +12,11 @@ spec:
   clusterIP: None
   ports:
     - name: http
-      port: 7474
-      targetPort: 7474
+      port: {{ .Values.service.http.port }}
+      targetPort: http
     - name: bolt
-      port: 7687
-      targetPort: 7687
+      port: {{ .Values.service.bolt.port }}
+      targetPort: bolt
   selector:
     app: {{ template "neo4j.name" . }}
     release: {{ .Release.Name | quote }}

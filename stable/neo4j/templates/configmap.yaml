@@ -1,0 +1,18 @@
+{{- if .Values.configmap }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ template "neo4j.name" . }}
+    chart: {{ template "neo4j.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "neo4j.fullname" . }}
+data:
+{{- if .Values.configmap.properties }}
+  neo4j-server.properties: |
+    {{- range .Values.configmap.properties }}
+    {{ . }}
+    {{- end }}
+{{- end }}
+{{- end }}

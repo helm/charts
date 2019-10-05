@@ -43,14 +43,17 @@ spec:
                 name: {{ template "neo4j.secrets.fullname" . }}
                 key: neo4j-password
           {{- end }}
-{{- if .Values.core.extraVars }}
-{{ toYaml .Values.core.extraVars | indent 10 }}
+{{- range .Values.core.extraVars }}
+          - name: {{ .name }}
+            value: {{ .value | quote }}
 {{- end }}
         command:
           - "/bin/bash"
           - "-c"
           - |
-            export NEO4J_dbms_connectors_default__advertised__address=$(hostname -f)
+            # Setup connector advertise addresses
+            {{- include "neo4j.connector.advertised.addresses" . | nindent 12 }}
+
             export NEO4J_causal__clustering_discovery__advertised__address=$(hostname -f):5000
             export NEO4J_causal__clustering_transaction__advertised__address=$(hostname -f):6000
             export NEO4J_causal__clustering_raft__advertised__address=$(hostname -f):7000
@@ -61,6 +64,9 @@ spec:
               export NEO4J_AUTH="none"
             fi
 
+            # Link configs
+            [ -f /configmap/neo4j-server.properties ] && ln -s /configmap/neo4j-server.properties /var/lib/neo4j/conf
+
             exec /docker-entrypoint.sh "neo4j"
         ports:
         - containerPort: 5000
@@ -70,8 +76,8 @@ spec:
         - containerPort: 6000
           name: tx
         - containerPort: 7474
-          name: browser
-        - containerPort: 7687
+          name: http
+        - containerPort: {{ .Values.service.bolt.port }}
           name: bolt
         volumeMounts:
         - name: datadir
@@ -81,6 +87,10 @@ spec:
           {{- end }}
         - name: plugins
           mountPath: /plugins
+        {{- if .Values.configmap }}
+        - name: configmap
+          mountPath: /configmap
+        {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
 {{- if .Values.core.sidecarContainers }}
@@ -101,6 +111,11 @@ spec:
         {{- end }}
         - name: plugins
           emptyDir: {}
+        {{- if .Values.configmap }}
+        - name: configmap
+          configMap:
+            name: {{ template "neo4j.fullname" . }}
+        {{- end }}
 {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
