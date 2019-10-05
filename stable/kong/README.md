@@ -116,6 +116,7 @@ and their default values.
 | serviceMonitor.interval            | Scrapping interval                                                                    | 10s                 |
 | serviceMonitor.namespace           | Where to create ServiceMonitor                                                        |                     |
 | secretVolumes                      | Mount given secrets as a volume in Kong container to override default certs and keys. | `[]`                |
+| serviceMonitor.labels              | ServiceMonito Labels                                                                  | {}                  |
 
 ### Admin/Proxy listener override
 
@@ -396,4 +397,3 @@ You can can learn about kong ingress custom resource definitions [here](https://
 | podDisruptionBudget.enabled        | Enable PodDisruptionBudget for ingress controller                                     | `false`                                                                      |
 | podDisruptionBudget.maxUnavailable | Represents the minimum number of Pods that can be unavailable (integer or percentage) | `50%`                                                                        |
 | podDisruptionBudget.minAvailable   | Represents the number of Pods that must be available (integer or percentage)          |                                                                              |
-
