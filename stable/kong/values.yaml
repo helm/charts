@@ -438,3 +438,5 @@ serviceMonitor:
   # interval: 10s
   # Specifies namespace, where ServiceMonitor should be installed
   # namespace: monitoring
+  # labels:
+  #   foo: bar
