@@ -1,3 +1,6 @@
+### 1.18.2
+* [f8cf63789](https://github.com/kubernetes/charts/commit/f8cf63789): Add information about adding plugins
+
 ### 1.18.1
 * [a01bba93b](https://github.com/kubernetes/charts/commit/a01bba93b): Bump up kubernetes plugin version to v3.2.0
 
