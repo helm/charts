@@ -1,7 +1,7 @@
 apiVersion: v1
 name: phpmyadmin
-version: 3.0.1
-appVersion: 4.9.0-1
+version: 3.0.7
+appVersion: 4.9.1
 description: phpMyAdmin is an mysql administration frontend
 keywords:
 - mariadb

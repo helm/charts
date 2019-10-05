@@ -105,6 +105,7 @@ The following table lists the configurable parameters of the Osclass chart and t
 | `mariadb.persistence.accessMode`   | PVC Access Mode for MariaDB volume       | `ReadWriteOnce`                                         |
 | `mariadb.persistence.size`         | PVC Storage Request for MariaDB volume   | `8Gi`                                                   |
 | `podAnnotations`                | Pod annotations                                   | `{}`                                                       |
+| `affinity`                        | Map of node/pod affinities                 | `{}`                                                      |
 | `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
 | `metrics.image.registry`                   | Apache exporter image registry                                                                                  | `docker.io`                                         |
 | `metrics.image.repository`                 | Apache exporter image name                                                                                      | `bitnami/apache-exporter`                           |

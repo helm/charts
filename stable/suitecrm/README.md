@@ -106,6 +106,7 @@ The following table lists the configurable parameters of the SuiteCRM chart and 
 | `persistence.size`                  | PVC Storage Request for SuiteCRM volume         | `8Gi`                                                   |
 | `resources`                         | CPU/Memory resource requests/limits             | Memory: `512Mi`, CPU: `300m`                            |
 | `podAnnotations`                | Pod annotations                                   | `{}`                                                       |
+| `affinity`                          | Map of node/pod affinities                                    | `{}`                                                     |
 | `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
 | `metrics.image.registry`                   | Apache exporter image registry                                                                                  | `docker.io`                                         |
 | `metrics.image.repository`                 | Apache exporter image name                                                                                      | `bitnami/apache-exporter`                           |

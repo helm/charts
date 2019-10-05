@@ -92,6 +92,7 @@ The following table lists the configurable parameters of the WordPress chart and
 | `service.type`                   | Kubernetes Service type                                                       | `LoadBalancer`                                               |
 | `service.port`                   | Service HTTP port                                                             | `80`                                                         |
 | `service.httpsPort`              | Service HTTPS port                                                            | `443`                                                        |
+| `service.httpsTargetPort`              | Service Target HTTPS port                                                            | `https`                                                        |
 | `service.metricsPort`              | Service Metrics port                                                            | `9117`                                                        |
 | `service.externalTrafficPolicy`  | Enable client source IP preservation                                          | `Cluster`                                                    |
 | `service.nodePorts.http`         | Kubernetes http node port                                                     | `""`                                                         |
@@ -177,12 +178,6 @@ $ helm install --name my-release -f ./values-production.yaml stable/wordpress
 ```diff
 - replicaCount: 1
 + replicaCount: 3
-```
-
-- Kubernetes Service type:
-```diff
-- service.type: LoadBalancer
-+ service.type: ClusterIP
 ```
 
 - Enable client source IP preservation:
@@ -287,7 +282,7 @@ WordPress will be connected to at port 443.  The actual secret that
 However, please note that if TLS is enabled, the ingress record will not
 work until this secret exists.
 
-For annotations, please see [this document](https://github.com/kubernetes/ingress-nginx/blob/master/docs/annotations.md).
+For annotations, please see [this document](https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/annotations.md).
 Not all annotations are supported by all ingress controllers, but this
 document does a good job of indicating which annotation is supported by
 many popular ingress controllers.
