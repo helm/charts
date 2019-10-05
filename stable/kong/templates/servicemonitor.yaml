@@ -11,8 +11,8 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-    {{- if .Values.serviceMonitor.prometheusOperatorServiceMonitorSelector.enabled }}
-{{ toYaml .Values.serviceMonitor.prometheusOperatorServiceMonitorSelector.matchLabels | indent 4 }}
+    {{- if .Values.serviceMonitor.labels }}
+{{ toYaml .Values.serviceMonitor.labels | indent 4 }}
     {{- end }}
 spec:
   endpoints:
