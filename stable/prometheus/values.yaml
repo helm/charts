@@ -1317,6 +1317,14 @@ extraScrapeConfigs:
   #     - target_label: __address__
   #       replacement: prometheus-blackbox-exporter:9115
 
+# Adds option to add alert_relabel_configs to avoid duplicate alerts in alertmanager
+# useful in H/A prometheus with different external labels but the same alerts
+alertRelabelConfigs:
+  # alert_relabel_configs:
+  # - source_labels: [dc]
+  #   regex: (.+)\d+
+  #   target_label: dc
+
 networkPolicy:
   ## Enable creation of NetworkPolicy resources.
   ##
