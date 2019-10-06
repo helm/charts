@@ -7,6 +7,9 @@ metadata:
     helm.sh/chart: {{ include "honeydipper.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+  {{- with .Values.daemon.annotations }}
+  annotations: {{ . | toJson }}
+  {{- end }}
 spec:
   replicas: {{ .Values.daemon.replicaCount }}
   selector:
@@ -50,13 +53,18 @@ spec:
           volumeMounts:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          ports:
+            - name: webhook
+              containerPort: {{ .Values.drivers.webhook.service.port }}
           readinessProbe:
-            tcpSocket:
+            httpGet:
+              path: /hz/alive
               port: {{ .Values.drivers.webhook.service.port }}
             initialDelaySeconds: 20
             periodSeconds: 10
           livenessProbe:
-            tcpSocket:
+            httpGet:
+              path: /hz/alive
               port: {{ .Values.drivers.webhook.service.port }}
             initialDelaySeconds: 20
             periodSeconds: 20
