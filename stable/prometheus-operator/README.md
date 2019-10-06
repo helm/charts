@@ -215,7 +215,7 @@ The following tables list the configurable parameters of the prometheus-operator
 ### Prometheus
 | Parameter | Description | Default |
 | ----- | ----------- | ------ |
-| `prometheus.additionalServiceMonitors` | List of `serviceMonitor` objects to create. See https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#servicemonitorspec | `[]` |
+| `prometheus.additionalServiceMonitors` | List of `ServiceMonitor` objects to create. See https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#servicemonitorspec | `[]` |
 | `prometheus.enabled` | Deploy prometheus | `true` |
 | `prometheus.ingress.annotations` | Prometheus Ingress annotations | `{}` |
 | `prometheus.ingress.enabled` | If true, Prometheus Ingress will be created | `false` |
@@ -272,6 +272,10 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.prometheusSpec.serviceMonitorNamespaceSelector` | Namespaces to be selected for ServiceMonitor discovery. See [metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#labelselector-v1-meta) for usage | `{}` |
 | `prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues` | If true, a nil or {} value for prometheus.prometheusSpec.serviceMonitorSelector will cause the prometheus resource to be created with selectors based on values in the helm deployment, which will also match the servicemonitors created | `true` |
 | `prometheus.prometheusSpec.serviceMonitorSelector` | ServiceMonitors to be selected for target discovery. If {}, select all ServiceMonitors | `{}` |
+| `prometheus.additionalPodMonitors` | List of `PodMonitor` objects to create. See https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#podmonitorspec | `[]` |
+| `prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues` | If true, a nil or {} value for prometheus.prometheusSpec.podMonitorSelector will cause the prometheus resource to be created with selectors based on values in the helm deployment, which will also match the podmonitors created | `true` |
+| `prometheus.prometheusSpec.podMonitorSelector` | PodMonitors to be selected for target discovery. If {}, select all PodMonitors | `{}` |
+| `prometheus.prometheusSpec.podMonitorNamespaceSelector` | Namespaces to be selected for PodMonitor discovery. See [metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#labelselector-v1-meta) for usage | `{}` |
 | `prometheus.prometheusSpec.storageSpec` | Storage spec to specify how storage shall be used. | `{}` |
 | `prometheus.prometheusSpec.thanos` | Thanos configuration allows configuring various aspects of a Prometheus server in a Thanos environment. This section is experimental, it may change significantly without deprecation notice in any release.This is experimental and may change significantly without backward compatibility in any release. See https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#thanosspec | `{}` |
 | `prometheus.prometheusSpec.tolerations` | If specified, the pod's tolerations. | `[]` |
