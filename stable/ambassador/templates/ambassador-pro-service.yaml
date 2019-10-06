@@ -1,45 +1,4 @@
-{{- if .Values.pro.enabled }}
-{{- if .Values.crds.enabled }}
-{{- if .Values.pro.authService.enabled }}
----
-apiVersion: getambassador.io/v1
-kind: AuthService
-metadata:
-  name: {{ include "ambassador.fullname" . }}-pro-auth
-spec:
-  proto: grpc
-  {{- if hasKey .Values.env "AMBASSADOR_ID" }}
-  ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
-  {{- end }}
-  auth_service: 127.0.0.1:{{ .Values.pro.ports.auth }}
-  {{- if .Values.pro.authService.optional_configurations }}
-  {{- toYaml .Values.pro.authService.optional_configurations | nindent 2}}
-  {{- end }}
----
-apiVersion: getambassador.io/v1
-kind: Mapping
-metadata:
-  name: {{ include "ambassador.fullname" . }}-callback-mapping
-spec:
-  {{- if hasKey .Values.env "AMBASSADOR_ID" }}
-  ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
-  {{- end }}
-  prefix: /callback
-  service: NoTaReAlSeRvIcE
-{{- end -}}
-{{- if .Values.pro.rateLimit.enabled }}
----
-apiVersion: getambassador.io/v1
-kind: RateLimitService
-metadata:
-  name: {{ include "ambassador.fullname" . }}-pro-ratelimit
-spec:
-  {{- if hasKey .Values.env "AMBASSADOR_ID" }}
-  ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
-  {{- end }}
-  service: 127.0.0.1:{{ .Values.pro.ports.ratelimit }}
-{{- end }}
-{{- else }}
+{{ if and .Values.pro.enabled (not .Values.crds.enabled) }}
 ---
 apiVersion: v1
 kind: Service
@@ -69,7 +28,7 @@ metadata:
       # This mapping needs to exist, but is never actually followed.
       apiVersion: ambassador/v1
       kind: Mapping
-      name: {{ include "ambassador.fullname" . }}-callback_mapping
+      name: {{ include "ambassador.fullname" . }}-pro-callback_mapping
       {{- if hasKey .Values.env "AMBASSADOR_ID" }}
       ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
       {{- end }}
@@ -86,9 +45,30 @@ metadata:
       {{- end }}
       service: 127.0.0.1:{{ .Values.pro.ports.ratelimit }}
       {{- end }}
+      {{- if .Values.pro.devPortal.enabled }}
+      ---
+      apiVersion: ambassador/v1
+      kind: Mapping
+      name: {{ include "ambassador.fullname" . }}-pro-devportal
+      {{- if hasKey .Values.env "AMBASSADOR_ID" }}
+      ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
+      {{- end }}
+      prefix: /docs/
+      rewrite: ""
+      service: 127.0.0.1:{{ .Values.pro.ports.auth }}
+      ---
+      apiVersion: ambassador/v1
+      kind: Mapping
+      name: {{ include "ambassador.fullname" . }}-pro-devportal-api
+      {{- if hasKey .Values.env "AMBASSADOR_ID" }}
+      ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
+      {{- end }}
+      prefix: /openapi/
+      rewrite: ""
+      service: 127.0.0.1:{{ .Values.pro.ports.auth }}
+      {{- end }}
 spec:
   ports:
-  - name: ratelimit-grpc
+  - name: http
     port: 80
-# {{- end }}
-{{- end }}
+{{ end }}
