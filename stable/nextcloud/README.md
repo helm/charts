@@ -54,6 +54,7 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `ingress.enabled`                                            | Enable use of ingress controllers                       | `false`                                                 |
 | `ingress.servicePort`                                        | Ingress' backend servicePort                            | `http`                                                  |
 | `ingress.annotations`                                        | An array of service annotations                         | `nil`                                                   |
+| `ingress.labels`                                        | An array of service labels                         | `nil`                                                   |
 | `ingress.tls`                                                | Ingress TLS configuration                               | `[]`                                                    |
 | `nextcloud.host`                                             | nextcloud host to create application URLs               | `nextcloud.kube.home`                                   |
 | `nextcloud.username`                                         | User of the application                                 | `admin`                                                 |
@@ -96,6 +97,7 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `cronjob.enabled`                                            | Whether to enable/disable cronjob                       | `false`                                                 |
 | `cronjob.schedule`                                           | Schedule for the CronJob                                | `*/15 * * * *`                                          |
 | `cronjob.annotations`                                        | Annotations to add to the cronjob                       | {}                                                      |
+| `cronjob.curlInsecure`                                       | Set insecure (-k) option to curl                        | false                                                   |
 | `cronjob.failedJobsHistoryLimit`                             | Specify the number of failed Jobs to keep               | `5`                                                     |
 | `cronjob.successfulJobsHistoryLimit`                         | Specify the number of completed Jobs to keep            | `2`                                                     |
 | `cronjob.resources`                                          | Cronjob Resources                                       | `nil`                                                   |

@@ -131,7 +131,8 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.route.path`               | Route path                           | Not set                                   |
 | `master.jenkinsUrlProtocol`       | Set protocol for JenkinsLocationConfiguration.xml | Set to `https` if `Master.ingress.tls`, `http` otherwise |
 | `master.JCasC.enabled`            | Wheter Jenkins Configuration as Code is enabled or not | `false`                 |
-| `master.JCasC.configScripts`      | List of Jenkins Config as Code scripts | False                                   |
+| `master.JCasC.defaultConfig`      | Enables default Jenkins configuration via configuration as code plugin | `false` |
+| `master.JCasC.configScripts`      | List of Jenkins Config as Code scripts |                                         |
 | `master.enableXmlConfig`          | enables configuration done via XML files | `false`                               |
 | `master.sidecars.configAutoReload` | Jenkins Config as Code auto-reload settings |                                   |
 | `master.sidecars.configAutoReload.enabled` | Jenkins Config as Code auto-reload settings (Attention: rbac needs to be enabled otherwise the sidecar can't read the config map) | `false`                                                      |
@@ -142,7 +143,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.secretsFilesSecret`       | Kubernetes secret that contains 'secrets' files | Not set                        |
 | `master.jobs`                     | Jenkins XML job configs              | `{}`                                      |
 | `master.overwriteJobs`            | Replace jobs w/ ConfigMap on boot    | `false`                                   |
-| `master.installPlugins`           | List of Jenkins plugins to install. If you don't want to install plugins set it to `[]` | `kubernetes:1.18.1 workflow-aggregator:2.6 credentials-binding:1.19 git:3.11.0 workflow-job:2.33` |
+| `master.installPlugins`           | List of Jenkins plugins to install. If you don't want to install plugins set it to `[]` | `kubernetes:1.18.2 workflow-aggregator:2.6 credentials-binding:1.19 git:3.11.0 workflow-job:2.33` |
 | `master.overwritePlugins`         | Overwrite installed plugins on start.| `false`                                   |
 | `master.enableRawHtmlMarkupFormatter` | Enable HTML parsing using (see below) | false                                |
 | `master.scriptApproval`           | List of groovy functions to approve  | Not set                                   |
@@ -163,6 +164,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.prometheus.alertingrules` | Array of prometheus alerting rules | `[]`                                        |
 | `master.prometheus.alertingRulesAdditionalLabels` | Additional labels to add to the prometheus rule object     | `{}`                                   |
 | `master.priorityClassName`        | The name of a `priorityClass` to apply to the master pod | Not set               |
+| `master.testEnabled`              | Can be used to disable rendering test resources when using helm template | `true`                                 |
 | `networkPolicy.enabled`           | Enable creation of NetworkPolicy resources. | `false`                            |
 | `networkPolicy.apiVersion`        | NetworkPolicy ApiVersion             | `networking.k8s.io/v1`                    |
 | `rbac.create`                     | Whether RBAC resources are created   | `true`                                    |
@@ -187,7 +189,7 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.imagePullSecret`    | Agent image pull secret                         | Not set                |
 | `agent.tag`                | Agent image tag                                 | `3.27-1`               |
 | `agent.privileged`         | Agent privileged container                      | `false`                |
-| `agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 200m, memory: 256Mi}, limits: {cpu: 200m, memory: 256Mi}}`|
+| `agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 512m, memory: 512Mi}, limits: {cpu: 512m, memory: 512Mi}}`|
 | `agent.volumes`            | Additional volumes                              | `nil`                  |
 | `agent.envVars`            | Environment variables for the agent Pod         | Not set                |
 | `agent.command`            | Executed command when side container starts     | Not set                |
@@ -372,8 +374,8 @@ Adds a backup CronJob for jenkins, along with required RBAC resources.
 | `backup.enabled`                       | Enable the use of a backup CronJob                     | `false`                           |
 | `backup.schedule`                      | Schedule to run jobs                                   | `0 2 * * *`                       |
 | `backup.annotations`                   | Backup pod annotations                                 | iam.amazonaws.com/role: `jenkins` |
-| `backup.image.repo`                    | Backup image repository                                | `nuvo/kube-tasks`                 |
-| `backup.image.tag`                     | Backup image tag                                       | `0.1.2`                           |
+| `backup.image.repo`                    | Backup image repository                                | `maorfr/kube-tasks`               |
+| `backup.image.tag`                     | Backup image tag                                       | `0.2.0`                           |
 | `backup.extraArgs`                     | Additional arguments for kube-tasks                    | `[]`                              |
 | `backup.existingSecret`                | Environment variables to add to the cronjob container  | {}                                |
 | `backup.existingSecret.*`              | Specify the secret name containing the AWS credentials | `jenkinsaws`                      |
@@ -381,13 +383,13 @@ Adds a backup CronJob for jenkins, along with required RBAC resources.
 | `backup.existingSecret.*.awssecretkey` | `secretKeyRef.key` used for `AWS_SECRET_ACCESS_KEY`    | `jenkins_aws_secret_key`          |
 | `backup.env`                           | Backup environment variables                           | AWS_REGION: `us-east-1`           |
 | `backup.resources`                     | Backup CPU/Memory resource requests/limits             | Memory: `1Gi`, CPU: `1`           |
-| `backup.destination`                   | Destination to store backup artifacts                  | `s3://nuvo-jenkins-data/backup`   |
+| `backup.destination`                   | Destination to store backup artifacts                  | `s3://jenkins-data/backup`        |
 
 ### Restore from backup
 
-To restore a backup, you can use the `kube-tasks` underlying tool called [skbn](https://github.com/nuvo/skbn), which copies files from cloud storage to Kubernetes.
+To restore a backup, you can use the `kube-tasks` underlying tool called [skbn](https://github.com/maorfr/skbn), which copies files from cloud storage to Kubernetes.
 The best way to do it would be using a `Job` to copy files from the desired backup tag to the Jenkins pod.
-See the [skbn in-cluster example](https://github.com/nuvo/skbn/tree/master/examples/in-cluster) for more details.
+See the [skbn in-cluster example](https://github.com/maorfr/skbn/tree/master/examples/in-cluster) for more details.
 
 
 ## Run Jenkins as non root user

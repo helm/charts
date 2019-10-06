@@ -5,12 +5,12 @@ metadata:
   name: {{ include "kafka.fullname" . }}
   namespace: {{ .Values.prometheus.operator.serviceMonitor.namespace }}
   labels:
+  {{- include "kafka.monitor.labels" . | nindent 4 }}
 {{ toYaml .Values.prometheus.operator.serviceMonitor.selector | indent 4 }}
 spec:
   selector:
     matchLabels:
-      app: {{ include "kafka.name" . }}
-      release: {{ .Release.Name }}
+    {{- include "kafka.broker.matchLabels" . | nindent 6 }}
   endpoints:
   - port: jmx-exporter
     interval: {{ .Values.prometheus.jmx.interval }}
@@ -29,12 +29,12 @@ metadata:
   name: {{ include "kafka.fullname" . }}-exporter
   namespace: {{ .Values.prometheus.operator.serviceMonitor.namespace }}
   labels:
+  {{- include "kafka.monitor.labels" . | nindent 4 }}
 {{ toYaml .Values.prometheus.operator.serviceMonitor.selector | indent 4 }}
 spec:
   selector:
     matchLabels:
-      app: {{ include "kafka.name" . }}-exporter
-      release: {{ .Release.Name }}
+    {{- include "kafka.monitor.matchLabels" . | nindent 6 }}
   endpoints:
   - port: kafka-exporter
     interval: {{ .Values.prometheus.kafka.interval }}

@@ -42,3 +42,22 @@ Create a random string if the supplied key does not exist
 {{- randAlphaNum 20 | b64enc | quote -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Labels used to define Pods in the CouchDB statefulset
+*/}}
+{{- define "couchdb.ss.selector" -}}
+app: {{ template "couchdb.name" . }}
+release: {{ .Release.Name }}
+{{- end -}}
+
+{{/*
+Generates a comma delimited list of nodes in the cluster
+*/}}
+{{- define "couchdb.seedlist" -}}
+{{- $nodeCount :=  min 5 .Values.clusterSize | int }}
+  {{- range $index0 := until $nodeCount -}}
+    {{- $index1 := $index0 | add1 -}}
+    {{ $.Values.erlangFlags.name }}@{{ template "couchdb.fullname" $ }}-{{ $index0 }}.{{ template "couchdb.fullname" $ }}.{{ $.Release.Namespace }}.svc.{{ $.Values.dns.clusterDomainSuffix }}{{ if ne $index1 $nodeCount }},{{ end }}
+  {{- end -}}
+{{- end -}}

@@ -255,7 +255,7 @@ spec:
         resources:
           requests:
             storage: {{ .Values.persistence.size | quote }}
-        storageClassName: {{ include "mongodb.storageClass" . }}
+        {{ include "mongodb.storageClass" . }}
 {{- else }}
         - name: datadir
           emptyDir: {}
