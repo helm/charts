@@ -24,7 +24,7 @@ The following table lists the configurable parameters of the Spark operator char
 | Parameter                 | Description                                                  | Default                                |
 | ------------------------- | ------------------------------------------------------------ | -------------------------------------- |
 | `operatorImageName`       | The name of the operator image                               | `gcr.io/spark-operator/spark-operator` |
-| `operatorVersion`         | The version of the operator to install                       | `v1beta2-1.0.0-2.4.4`                |
+| `operatorVersion`         | The version of the operator to install                       | `v1beta2-1.0.1-2.4.4`                |
 | `imagePullPolicy`         | Docker image pull policy                                     | `IfNotPresent`                         |
 | `replicas`         | The number of replicas of the operator Deployment                                     | 1                         |
 | `sparkJobNamespace`       | K8s namespace where Spark jobs are to be deployed            | ``                                     |

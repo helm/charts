@@ -111,6 +111,32 @@ gangway:
   # own in procution.
   # sessionKey:
 
+tls: {}
+  # certData: |
+  #   -----BEGIN CERTIFICATE-----
+  #   ...
+  #   -----END CERTIFICATE-----
+  # keyData: |
+  #   -----BEGIN ENCRYPTED PRIVATE KEY-----
+  #   ...
+  #   -----END ENCRYPTED PRIVATE KEY-----
+
+  # Name of an existing secret containing `tls.cert` and `tls.key`.
+  # Mounted on the default tls path `/etc/gangway/tls`
+  # existingSecret: ""
+
+extraVolumes: []
+
+extraVolumeMounts: []
+
+livenessProbe:
+  # HTTP or HTTPS
+  scheme: HTTP
+
+readinessProbe:
+  # HTTP or HTTPS
+  scheme: HTTP
+
 service:
   type: ClusterIP
   port: 80
@@ -124,11 +150,11 @@ ingress:
     # kubernetes.io/tls-acme: "true"
   path: /
   hosts:
-    - chart-example.local
+  - chart-example.local
   tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+  # - secretName: chart-example-tls
+  #   hosts:
+  #     - chart-example.local
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
