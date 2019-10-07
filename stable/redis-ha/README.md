@@ -184,3 +184,10 @@ sysctlImage:
       sysctl -w net.core.somaxconn=10000
       echo never > /host-sys/kernel/mm/transparent_hugepage/enabled
 ```
+
+## HAProxy startup
+
+When HAProxy is enabled, it will attempt to connect to each announce-service of each redis replica instance in its init container before starting.
+It will fail if announce-service IP is not available fast enough (10 seconds max by announce-service). 
+A such case could happen if the orchestator is pending the nomination of redis pods.
+Risk is limited because announce-service is using `publishNotReadyAddresses: true`, although, in such case, HAProxy pod will be rescheduled afterward by the orchestrator.
