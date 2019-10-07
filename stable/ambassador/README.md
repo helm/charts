@@ -105,7 +105,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `pro.rateLimit.redis.annotations.deployment` | Annotations for the redis deployment                                  | `{}`                              |
 | `pro.rateLimit.redis.annotations.service` | Annotations for the redis service                                        | `{}`                              |
 | `pro.rateLimit.redis.resources`    | Set resource requests and limits for the rate limit service's redis instance    | `{}`                              |
-| `pro.devPortal.enabled`            | Enables the Ambassador Devloper Portal                                          | `false`                              |
+| `pro.devPortal.enabled`            | Enables the Ambassador Developer Portal                                         | `false`                              |
 | `autoscaling.enabled`              | If true, creates Horizontal Pod Autoscaler                                      | `false`                           |
 | `autoscaling.minReplica`           | If autoscaling enabled, this field sets minimum replica count                   | `2`                               |
 | `autoscaling.maxReplica`           | If autoscaling enabled, this field sets maximum replica count                   | `5`                               |
