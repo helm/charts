@@ -47,11 +47,12 @@ Notes:
 
 ### Upgrade from 1.x.x to 2.x.x
 
-This version upgrades to kubernetes-dashboard v2.0.0 along with changes in RBAC management: all secrets are explicitely created and ServiceAccount do not have permission to create any secret. On top of that, it completely removes the `clusterAdminRole` parameter, being too dangerous.
-
-Moreover, it updates all the labels to the new [recommended labels](https://github.com/helm/charts/blob/master/REVIEW_GUIDELINES.md#names-and-labels), most of them being immutable.
+- This version upgrades to kubernetes-dashboard v2.0.0 along with changes in RBAC management: all secrets are explicitely created and ServiceAccount do not have permission to create any secret. On top of that, it completely removes the `clusterAdminRole` parameter, being too dangerous. In order to upgrade, please update your configuration to remove `clusterAdminRole` parameter and uninstall/reinstall the chart.
+- It updates all the labels to the new [recommended labels](https://github.com/helm/charts/blob/master/REVIEW_GUIDELINES.md#names-and-labels), most of them being immutable.
+- It enables by default values for `podAnnotations` and `securityContext`, please disable them if you don't supoprt them
 
 In order to upgrade, please update your configuration to remove `clusterAdminRole` parameter and uninstall/reinstall the chart.
+
 
 ## Access control
 
@@ -73,7 +74,7 @@ The following table lists the configurable parameters of the kubernetes-dashboar
 | `replicaCount`                      | Number of replicas                                                                                                          | `1`                                                                        |
 | `extraArgs`                         | Additional container arguments                                                                                              | `[]`                                                                       |
 | `extraEnv`                          | Additional container environment variables                                                                                  | `[]`                                                                       |
-| `podAnnotations`                    | Annotations to be added to pods                                                                                             | {}                                                                         |
+| `podAnnotations`                    | Annotations to be added to pods                                                                                             | {seccomp.security.alpha.kubernetes.io/pod: 'runtime/default'}                                                                         |
 | `dashboardContainerSecurityContext` | SecurityContext for the kubernetes dashboard container                                                                      | {}                                                                         |
 | `nodeSelector`                      | node labels for pod assignment                                                                                              | `{}`                                                                       |
 | `tolerations`                       | List of node taints to tolerate (requires Kubernetes >= 1.6)                                                                | `[]`                                                                       |
@@ -100,9 +101,9 @@ The following table lists the configurable parameters of the kubernetes-dashboar
 | `podDisruptionBudget.enabled`       | Create a PodDisruptionBudget                                                                                                | `false`                                                                    |
 | `podDisruptionBudget.minAvailable`  | Minimum available instances; ignored if there is no PodDisruptionBudget                                                     |                                                                            |
 | `podDisruptionBudget.maxUnavailable`| Maximum unavailable instances; ignored if there is no PodDisruptionBudget                                                   |                                                                            |
-| `securityContext`                   | PodSecurityContext for pod level securityContext                                                                            | `{}`                                                                       |
+| `securityContext`                   | PodSecurityContext for pod level securityContext                                                                            | `{allowPrivilegeEscalation:false, readOnlyRootFilesystem: true, runAsUser: 1001, runAsGroup: 2001}`                                                                       |
 | `networkPolicy`                     | Whether to create a network policy that allows access to the service                                                        | `false`                                                                    |
-| `protocolHttp`                      | Serve application over HTTP without TLS                                                                                     | `false`                                                                    | 
+| `protocolHttp`                      | Serve application over HTTP without TLS                                                                                     | `false`                                                                    |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

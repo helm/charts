@@ -14,9 +14,7 @@ replicaCount: 1
 ## Here annotations can be added to the kubernetes dashboard deployment
 annotations: {}
 ## Here labels can be added to the kubernetes dashboard deployment
-##
 labels: {}
-# kubernetes.io/name: "Kubernetes Dashboard"
 
 ## Serve application over HTTP without TLS
 protocolHTTP: false
@@ -41,10 +39,8 @@ extraEnv: []
 #   value: 'some value'
 
 # Annotations to be added to kubernetes dashboard pods
-## Recommended value
-# podAnnotations:
-#   seccomp.security.alpha.kubernetes.io/pod: 'runtime/default'
-podAnnotations: {}
+podAnnotations:
+  seccomp.security.alpha.kubernetes.io/pod: 'runtime/default'
 
 ## SecurityContext for the kubernetes dashboard container
 ## Recommended values
@@ -78,11 +74,6 @@ service:
   type: ClusterIP
   externalPort: 443
 
-  ## This allows an override of the heapster service name
-  ## Default: {{ .Chart.Name }}
-  ##
-  # nameOverride:
-
   # LoadBalancerSourcesRange is a list of allowed CIDR values, which are combined with ServicePort to
   # set allowed inbound rules on the security group assigned to the master load balancer
   # loadBalancerSourceRanges: []
@@ -96,9 +87,7 @@ service:
   annotations: {}
 
   ## Here labels can be added to the Kubernetes Dashboard service
-  ##
   labels: {}
-  # kubernetes.io/name: "Kubernetes Dashboard"
 
 resources:
   limits:
@@ -184,12 +173,11 @@ podDisruptionBudget:
   minAvailable:
   maxUnavailable:
 
-
 ## PodSecurityContext for pod level securityContext
-##
-# securityContext:
-#   runAsUser: 1001
-#   runAsGroup: 2001
-securityContext: {}
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  runAsUser: 1001
+  runAsGroup: 2001
 
 networkPolicy: false

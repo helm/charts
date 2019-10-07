@@ -52,9 +52,8 @@ app.kubernetes.io/name: {{ include "kubernetes-dashboard.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
-
 {{/*
-Create the name of the service account to use
+Name of the service account to use
 */}}
 {{- define "kubernetes-dashboard.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}
