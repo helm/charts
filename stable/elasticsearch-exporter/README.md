@@ -44,7 +44,7 @@ A major chart version change (like v1.2.3 -> v2.0.0) indicates that there is an 
 
 ### To 2.0.0
 
-Some kubernetes apis used from 1.x have been deprecated. You need to update your claster to kubernetes 1.10+ to support new definations used in 2.x.
+Some kubernetes apis used from 1.x have been deprecated. You need to update your claster to kubernetes 1.10+ to support new definitions used in 2.x.
 
 ## Configuration
 
