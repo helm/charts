@@ -481,6 +481,27 @@ metrics:
       # - --collect.heartbeat.database
       # - --collect.heartbeat.table
 
+  livenessProbe:
+    enabled: true
+    ##
+    ## Initializing the database could take some time
+    initialDelaySeconds: 120
+    ##
+    ## Default Kubernetes values
+    periodSeconds: 10
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 3
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 30
+    ##
+    ## Default Kubernetes values
+    periodSeconds: 10
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 3
+
   # Enable this if you're using https://github.com/coreos/prometheus-operator
   serviceMonitor:
     enabled: false

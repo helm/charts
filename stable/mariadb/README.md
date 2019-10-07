@@ -166,6 +166,18 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `metrics.resources`                       | Exporter resource requests/limit                    | `nil`                                                             |
 | `metrics.extraArgs.master`                | Extra args to be passed to mysqld_exporter          | `[]`                                                              |
 | `metrics.extraArgs.slave`                 | Extra args to be passed to mysqld_exporter          | `[]`                                                              |
+| `metrics.livenessProbe.enabled`            | Turn on and off liveness probe (metrics)             | `true`                                                            |
+| `metrics.livenessProbe.initialDelaySeconds`| Delay before liveness probe is initiated (metrics)   | `120`                                                             |
+| `metrics.livenessProbe.periodSeconds`      | How often to perform the probe (metrics)             | `10`                                                              |
+| `metrics.livenessProbe.timeoutSeconds`     | When the probe times out (metrics)                   | `1`                                                               |
+| `metrics.livenessProbe.successThreshold`   | Minimum consecutive successes for the probe (metrics)| `1`                                                               |
+| `metrics.livenessProbe.failureThreshold`   | Minimum consecutive failures for the probe (metrics) | `3`                                                               |
+| `metrics.readinessProbe.enabled`           | Turn on and off readiness probe (metrics)            | `true`                                                            |
+| `metrics.readinessProbe.initialDelaySeconds`| Delay before readiness probe is initiated (metrics) | `30`                                                              |
+| `metrics.readinessProbe.periodSeconds`     | How often to perform the probe (metrics)             | `10`                                                              |
+| `metrics.readinessProbe.timeoutSeconds`    | When the probe times out (metrics)                   | `1`                                                               |
+| `metrics.readinessProbe.successThreshold`  | Minimum consecutive successes for the probe (metrics)| `1`                                                               |
+| `metrics.readinessProbe.failureThreshold`  | Minimum consecutive failures for the probe (metrics) | `3`                                                               |
 | `metrics.serviceMonitor.enabled`          | if `true`, creates a Prometheus Operator ServiceMonitor (also requires `metrics.enabled` to be `true`)                    | `false`                                                             |
 | `metrics.serviceMonitor.namespace`        | Optional namespace which Prometheus is running in   | `nil`                                                             |
 | `metrics.serviceMonitor.interval`         | How frequently to scrape metrics (use by default, falling back to Prometheus' default)  | `nil`                                                             |
