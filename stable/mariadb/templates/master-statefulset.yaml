@@ -219,18 +219,28 @@ spec:
         ports:
         - name: metrics
           containerPort: 9104
+        {{- if .Values.metrics.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
             path: /metrics
             port: metrics
-          initialDelaySeconds: 15
-          timeoutSeconds: 5
+          initialDelaySeconds: {{ .Values.metrics.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.metrics.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.metrics.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.metrics.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.metrics.livenessProbe.failureThreshold }}
+        {{- end }}
+        {{- if .Values.metrics.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
             path: /metrics
             port: metrics
-          initialDelaySeconds: 5
-          timeoutSeconds: 1
+          initialDelaySeconds: {{ .Values.metrics.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.metrics.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.metrics.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.metrics.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.metrics.readinessProbe.failureThreshold }}
+        {{- end }}
         resources:
 {{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
