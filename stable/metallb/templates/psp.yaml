@@ -30,4 +30,4 @@ spec:
     rule: RunAsAny
   supplementalGroups:
     rule: RunAsAny
-{{- end -}}
+{{- end }}

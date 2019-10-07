@@ -114,4 +114,4 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
   name: {{ template "metallb.fullname" . }}-config-watcher
-{{- end -}}
+{{- end }}
