@@ -64,31 +64,31 @@ spec:
           {{- if .Values.s3gateway.enabled }}
           command: [ "/bin/sh",
           "-ce",
-          "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway s3 {{ .Values.s3gateway.serviceEndpoint }}" ]
+          "/usr/bin/docker-entrypoint.sh minio gateway s3 {{ .Values.s3gateway.serviceEndpoint }}" ]
           {{- else }}
           {{- if .Values.azuregateway.enabled }}
           command: [ "/bin/sh", 
           "-ce", 
-          "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway azure" ]
+          "/usr/bin/docker-entrypoint.sh minio gateway azure" ]
           {{- else }}
           {{- if .Values.gcsgateway.enabled }}
           command: [ "/bin/sh", 
           "-ce", 
-          "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway gcs {{ .Values.gcsgateway.projectId }}" ]
+          "/usr/bin/docker-entrypoint.sh minio gateway gcs {{ .Values.gcsgateway.projectId }}" ]
           {{- else }}
           {{- if .Values.ossgateway.enabled }}
           command: [ "/bin/sh", 
           "-ce", 
-          "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway oss {{ .Values.ossgateway.endpointURL }}" ]
+          "/usr/bin/docker-entrypoint.sh minio gateway oss {{ .Values.ossgateway.endpointURL }}" ]
           {{- else }}
           {{- if .Values.nasgateway.enabled }}
           command: [ "/bin/sh", 
           "-ce", 
-          "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway nas {{ .Values.mountPath }}" ]
+          "/usr/bin/docker-entrypoint.sh minio gateway nas {{ .Values.mountPath }}" ]
           {{- else }}
           command: [ "/bin/sh", 
           "-ce", 
-          "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} server {{ .Values.mountPath }}" ]
+          "/usr/bin/docker-entrypoint.sh minio server {{ .Values.mountPath }}" ]
           {{- end }}
           {{- end }}
           {{- end }}
@@ -120,12 +120,6 @@ spec:
               mountPath: "/etc/credentials"
               readOnly: true
             {{- end }}
-            - name: minio-config-dir
-              mountPath: {{ .Values.configPath }}
-            {{- if .Values.tls.enabled }}
-            - name: cert-secret-volume
-              mountPath: {{ .Values.configPath }}certs
-            {{ end }}
           ports:
             - name: service
               containerPort: 9000

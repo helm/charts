@@ -48,8 +48,6 @@ priorityClassName: ""
 existingSecret: ""
 accessKey: "AKIAIOSFODNN7EXAMPLE"
 secretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
-configPath: "/etc/minio/"
-configPathmc: "/etc/mc/"
 mountPath: "/export"
 replicas: 4
 
