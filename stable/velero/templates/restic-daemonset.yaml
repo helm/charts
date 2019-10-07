@@ -4,6 +4,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: restic
+  namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/name: {{ include "velero.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}

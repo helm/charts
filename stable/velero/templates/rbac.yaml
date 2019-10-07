@@ -3,6 +3,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: {{ include "velero.fullname" . }}-server
+  namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/component: server
     app.kubernetes.io/name: {{ include "velero.name" . }}

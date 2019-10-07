@@ -3,6 +3,7 @@ apiVersion: velero.io/v1
 kind: Schedule
 metadata:
   name: {{ include "velero.fullname" $ }}-{{ $scheduleName }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/name: {{ include "velero.name" $ }}
     app.kubernetes.io/instance: {{ $.Release.Name }}
