@@ -101,6 +101,22 @@ spec:
 {{ else }}
   serviceMonitorNamespaceSelector: {}
 {{- end }}
+{{- if .Values.prometheus.prometheusSpec.podMonitorSelector }}
+  podMonitorSelector:
+{{ toYaml .Values.prometheus.prometheusSpec.podMonitorSelector | indent 4 }}
+{{ else if .Values.prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues  }}
+  podMonitorSelector:
+    matchLabels:
+      release: {{ .Release.Name | quote }}
+{{ else }}
+  podMonitorSelector: {}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.podMonitorNamespaceSelector }}
+  podMonitorNamespaceSelector:
+{{ toYaml .Values.prometheus.prometheusSpec.podMonitorNamespaceSelector | indent 4 }}
+{{ else }}
+  podMonitorNamespaceSelector: {}
+{{- end }}
 {{- if .Values.prometheus.prometheusSpec.remoteRead }}
   remoteRead:
 {{ toYaml .Values.prometheus.prometheusSpec.remoteRead | indent 4 }}

@@ -38,8 +38,8 @@ The following tables lists the configurable parameters of the Node-RED chart and
 
 | Parameter                          | Description                                                             | Default                   |
 |:---------------------------------- |:----------------------------------------------------------------------- |:------------------------- |
-| `image.repository`                 | node-red image                                                          | `nodered/node-red-docker` |
-| `image.tag`                        | node-red image tag                                                      | `0.20.7-slim-v8`          |
+| `image.repository`                 | node-red image                                                          | `nodered/node-red`        |
+| `image.tag`                        | node-red image tag                                                      | `1.0.1-12-minimal`        |
 | `image.pullPolicy`                 | node-red image pull policy                                              | `IfNotPresent`            |
 | `strategyType`                     | Specifies the strategy used to replace old Pods by new ones             | `Recreate`                |
 | `flows`                            | Default flows configuration                                             | `flows.json`              |

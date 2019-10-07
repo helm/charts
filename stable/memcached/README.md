@@ -94,7 +94,11 @@ Error: UPGRADE FAILED: Deployment.apps "mc-test-memcached" is invalid: spec.temp
 
 To upgrade from a previous major version, you'll either need to perform a small manual fix or delete and reinstall the chart.
 
-The manual fix is to remove all selectors from the existing StatefulSet/Deployment except `app` and `release`.  Run `kubectl edit sts|deploy name-goes-here` (as needed), and you should see a part like this in your editor about 20 lines down:
+### Upgrading with `kind: StatefulSet`
+If you're using a StatefulSet, you'll have to manually delete it and allow Helm to re-create it. Run `kubectl delete --cascade=false sts name-goes-here` to delete the StatefulSet without deleting the pods. Once you've done this, upgrade the chart as normal, and the newly-created StatefulSet will adopt the old pods.
+
+### Upgrading with `kind: Deployment`
+If you're using a Deployment, the manual fix is to remove all selectors from the spec except `app` and `release`.  Run `kubectl edit deploy name-goes-here`, and you should see a part like this in your editor about 20 lines down:
 
 ```yaml
 spec:
