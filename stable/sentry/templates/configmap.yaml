@@ -391,8 +391,8 @@ data:
 
         'SENTRY_VSTS_CLIENT_ID': 'vsts.client-id',
         'SENTRY_VSTS_CLIENT_SECRET': 'vsts.client-secret',
-        "GOOGLE_CLIENT_ID": "auth-google.client-id",
-        "GOOGLE_CLIENT_SECRET": "auth-google.client-secret",    
+        'GOOGLE_CLIENT_ID': 'auth-google.client-id',
+        'GOOGLE_CLIENT_SECRET': 'auth-google.client-secret',    
     }
 
 
