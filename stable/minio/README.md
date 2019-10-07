@@ -170,7 +170,7 @@ The following table lists the configurable parameters of the MinIO chart and the
 | `securityContext.enabled`    | Will allow changing the UID or GID from root. If true, one of securityContext.runAsUser or securityContext.runAsGroup must be defined                                                             | `false`                                      |
 
 | `securityContext.runAsUser`    | The user id to run the minio process as within the pod                                                              | `1000`                                      |
-| `securityContext.runAsUser`    | The group id to run the minio process as within the pod                                                              | `nil`                                      |
+| `securityContext.runAsGroup`    | The group id to run the minio process as within the pod                                                              | `nil`                                      |
 
 Some of the parameters above map to the env variables defined in the [MinIO DockerHub image](https://hub.docker.com/r/minio/minio/).
 
