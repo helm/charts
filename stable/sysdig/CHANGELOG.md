@@ -3,6 +3,12 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.4.19
+
+### Minor changes
+
+* Migrate API versions from deprecated, removed versions to support Kubernetes v1.16
+
 ## v1.4.18
 
 ### Minor changes
