@@ -73,6 +73,12 @@ affinity: {}
 #               values:
 #                 - target-host-name
 
+# Annotations to be added to node exporter pods
+podAnnotations: {}
+
+# Extra labels to be added to node exporter pods
+podLabels: {}
+
 ## Assign a nodeSelector if operating a hybrid cluster
 ##
 nodeSelector: {}
