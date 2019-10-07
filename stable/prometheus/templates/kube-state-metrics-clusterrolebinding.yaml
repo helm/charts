@@ -1,4 +1,5 @@
-{{- if and .Values.kubeStateMetrics.enabled .Values.rbac.create -}}
+{{- if .Values.kubeStateMetrics.enabled -}}
+{{- if .Values.rbac.create }}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
@@ -13,4 +14,5 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: {{ template "prometheus.kubeStateMetrics.fullname" . }}
+{{- end -}}
 {{- end -}}
