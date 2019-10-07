@@ -31,5 +31,4 @@ spec:
 {{ toYaml .Values.service.loadBalancerSourceRanges | indent 4 }}
 {{- end }}
   selector:
-    app.kubernetes.io/name: {{ include "kubernetes-dashboard.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+{{ include "kubernetes-dashboard.matchLabels" . | indent 4 }}

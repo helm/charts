@@ -14,5 +14,5 @@ spec:
   {{- end  }}
   selector:
     matchLabels:
-      app: {{ template "kubernetes-dashboard.name" . }}
+{{ include "kubernetes-dashboard.matchLabels" . | indent 6 }}
 {{- end -}}

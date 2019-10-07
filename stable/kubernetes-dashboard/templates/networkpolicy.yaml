@@ -11,8 +11,7 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      app: {{ template "kubernetes-dashboard.name" . }}
-      release: {{ .Release.Name }}
+{{ include "kubernetes-dashboard.matchLabels" . | indent 6 }}
   ingress:
   - ports:
     - port: 9090

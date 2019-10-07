@@ -45,6 +45,15 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
 {{/*
+Common label selectors
+*/}}
+{{- define "kubernetes-dashboard.matchLabels" -}}
+app.kubernetes.io/name: {{ include "kubernetes-dashboard.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end -}}
+
+
+{{/*
 Create the name of the service account to use
 */}}
 {{- define "kubernetes-dashboard.serviceAccountName" -}}

@@ -20,8 +20,7 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "kubernetes-dashboard.name" . }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
+{{ include "kubernetes-dashboard.matchLabels" . | indent 6 }}
   template:
     metadata:
     {{- if .Values.podAnnotations }}
@@ -29,8 +28,7 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        app.kubernetes.io/name: {{ include "kubernetes-dashboard.name" . }}
-        app.kubernetes.io/instance: {{ .Release.Name }}
+{{ include "kubernetes-dashboard.labels" . | indent 8 }}
     spec:
       {{- if .Values.securityContext }}
       securityContext:
