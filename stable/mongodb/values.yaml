@@ -116,6 +116,8 @@ clusterDomain: cluster.local
 
 ## Kubernetes service type
 service:
+  ## Specify an explicit service name.
+  # name: svc-mongo
   annotations: {}
   type: ClusterIP
   # clusterIP: None
