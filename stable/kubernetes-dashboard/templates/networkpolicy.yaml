@@ -14,6 +14,11 @@ spec:
 {{ include "kubernetes-dashboard.matchLabels" . | indent 6 }}
   ingress:
   - ports:
-    - port: 9090
+{{- if .Values.protocolHttp }}
+    - port: http
       protocol: TCP
+{{- else }}
+    - port: https
+      protocol: TCP
+{{- end -}}
 {{- end -}}

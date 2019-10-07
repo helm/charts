@@ -41,12 +41,7 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
           - --namespace={{ .Release.Namespace }}
-{{- if .Values.enableSkipLogin }}
-          - --enable-skip-login
-{{- end }}
-{{- if .Values.enableInsecureLogin }}
-          - --enable-insecure-login
-{{- else if not .Values.protocolHttp }}
+{{- if not .Values.protocolHttp }}
           - --auto-generate-certificates
 {{- end }}
 {{- if .Values.extraArgs }}

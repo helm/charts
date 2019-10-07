@@ -48,10 +48,13 @@ Notes:
 ### Upgrade from 1.x.x to 2.x.x
 
 - This version upgrades to kubernetes-dashboard v2.0.0 along with changes in RBAC management: all secrets are explicitely created and ServiceAccount do not have permission to create any secret. On top of that, it completely removes the `clusterAdminRole` parameter, being too dangerous. In order to upgrade, please update your configuration to remove `clusterAdminRole` parameter and uninstall/reinstall the chart.
-- It updates all the labels to the new [recommended labels](https://github.com/helm/charts/blob/master/REVIEW_GUIDELINES.md#names-and-labels), most of them being immutable.
 - It enables by default values for `podAnnotations` and `securityContext`, please disable them if you don't supoprt them
+- It removes `enableSkipLogin` and `enableInsecureLogin` parameters. Please use `extraEnv` instead.
+- It adds a `ProtocolHttp` parameter, allowing you to switch the backend to plain HTTP and replaces the old `enableSkipLogin` for the network part.
+- If `ProtocolHttp` is not set, it will automatically add to the `Ingress`, if enabled, annotations to support HTTPS backends for nginx-ingress and GKE Ingresses.
+- It updates all the labels to the new [recommended labels](https://github.com/helm/charts/blob/master/REVIEW_GUIDELINES.md#names-and-labels), most of them being immutable.
 
-In order to upgrade, please update your configuration to remove `clusterAdminRole` parameter and uninstall/reinstall the chart.
+In order to upgrade, please update your configuration to remove `clusterAdminRole` parameter and adapt `enableSkipLogin`, `enableInsecureLogin`, `podAnnotations` and `securityContext` parameters, and uninstall/reinstall the chart.
 
 
 ## Access control
@@ -80,10 +83,7 @@ The following table lists the configurable parameters of the kubernetes-dashboar
 | `tolerations`                       | List of node taints to tolerate (requires Kubernetes >= 1.6)                                                                | `[]`                                                                       |
 | `affinity`                          | Affinity for pod assignment                                                                                                 | `[]`                                                                       |
 | `priorityClassName`                 | Name of Priority Class to assign pods                                                                                       | nil                                                                       |
-| `enableSkipLogin`                   | Enable possibility to skip login                                                                                            | `false`                                                                    |
-| `enableInsecureLogin`               | Enable login page to serve over HTTP                                                                                        | `false`                                                                    |
 | `service.externalPort`              | Dashboard external port                                                                                                     | 443                                                                        |
-| `service.internalPort`              | Dashboard internal port                                                                                                     | 443                                                                        |
 | `service.loadBalancerSourceRanges`  | list of IP CIDRs allowed access to load balancer (if supported)                                                             | nil                                                                        |
 | `ingress.labels`                    | Add custom labels                                                                                                           | `[]`                                                                       |
 | `ingress.annotations`               | Specify ingress class                                                                                                       | `kubernetes.io/ingress.class: nginx`                                       |
@@ -125,7 +125,7 @@ helm install stable/kubernetes-dashboard --name my-release -f values.yaml
 When running 'kubectl proxy', the address `localhost:8001/ui` automatically expands to:
 
 - `http://localhost:8001/api/v1/namespaces/my-namespace/services/https:kubernetes-dashboard:https/proxy/` or
-- `http://localhost:8001/api/v1/namespaces/my-namespace/services/http:kubernetes-dashboard:http/proxy/` if `enableInsecureLogin=true`
+- `http://localhost:8001/api/v1/namespaces/my-namespace/services/http:kubernetes-dashboard:http/proxy/` if `--enable-insecure-login is set`
 
 For this to reach the dashboard, the name of the service must be 'kubernetes-dashboard', not any other value as set by Helm. You can manually specify this using the value 'fullnameOverride':
 

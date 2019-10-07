@@ -17,13 +17,9 @@ annotations: {}
 labels: {}
 
 ## Serve application over HTTP without TLS
+##
+## Note: If set to true, you may want to add --enable-insecure-login to extraArgs
 protocolHTTP: false
-
-## Enable possibility to skip login
-enableSkipLogin: false
-
-## Enable login page to serve over HTTP
-enableInsecureLogin: false
 
 ## Additional container arguments
 ##
@@ -78,12 +74,7 @@ service:
   # set allowed inbound rules on the security group assigned to the master load balancer
   # loadBalancerSourceRanges: []
 
-  ## Kubernetes Dashboard Service annotations
-  ##
-  ## For GCE ingress, the following annotation is required:
-  ## service.alpha.kubernetes.io/app-protocols: '{"https":"HTTPS"}' if enableInsecureLogin=false
-  ## or
-  ## service.alpha.kubernetes.io/app-protocols: '{"http":"HTTP"}' if enableInsecureLogin=true
+  ## Additional Kubernetes Dashboard Service annotations
   annotations: {}
 
   ## Here labels can be added to the Kubernetes Dashboard service
