@@ -72,6 +72,7 @@ The following table lists the configurable parameters of the Cloudwatch Exporter
 | `tolerations`                     | Add tolerations                                                         | `[]`                        |
 | `nodeSelector`                    | node labels for pod assignment                                          | `{}`                        |
 | `affinity`                        | node/pod affinities                                                     | `{}`                        |
+| `additionalAnnotations`           | Additional annotations to attach to deployment                          | `{}`                        |
 | `livenessProbe`                   | Liveness probe settings                                                 |                             |
 | `readinessProbe`                  | Readiness probe settings                                                |                             |
 | `serviceMonitor.enabled`          | Use servicemonitor from prometheus operator                             | `false`                     |

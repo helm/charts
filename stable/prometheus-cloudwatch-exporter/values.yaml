@@ -106,6 +106,9 @@ tolerations: []
 
 affinity: {}
 
+# extra annotations to add to deployment
+additionalAnnotations: {}
+
 # Configurable health checks against the /healthy and /ready endpoints
 livenessProbe:
   initialDelaySeconds: 30

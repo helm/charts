@@ -21,6 +21,9 @@ spec:
       annotations:
         {{ if .Values.aws.role}}iam.amazonaws.com/role: {{ .Values.aws.role }}{{ end }}
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- with .Values.additionalAnnotations }}
+{{ toYaml . | indent 8 }}
+        {{- end }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -106,6 +109,13 @@ spec:
       securityContext:
 {{ toYaml . | indent 8 }}
     {{- end }}
+      {{ if .Values.serviceAccount.create }}
+      {{ if .Values.serviceAccount.name }}
+      serviceAccount: {{ .Values.serviceAccount.name }}
+      {{- else }}
+      serviceAccount: {{ template "prometheus-cloudwatch-exporter.fullname" . }}
+      {{- end }}
+      {{- end }}
       volumes:
       - configMap:
           defaultMode: 420
