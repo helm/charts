@@ -355,11 +355,22 @@ data:
         SENTRY_OPTIONS['mail.password'] = env('SENTRY_EMAIL_PASSWORD') or ''
         SENTRY_OPTIONS['mail.port'] = int(env('SENTRY_EMAIL_PORT') or 25)
         SENTRY_OPTIONS['mail.use-tls'] = env('SENTRY_EMAIL_USE_TLS', False)
-        SENTRY_OPTIONS['mail.enable-replies'] = env('SENTRY_ENABLE_EMAIL_REPLIES', False)
-        SENTRY_OPTIONS['mail.list-namespace'] = env('SENTRY_EMAIL_LIST_NAMESPACE')
-        SENTRY_OPTIONS['mail.reply-hostname'] = env('SENTRY_SMTP_HOSTNAME')
+        SENTRY_OPTIONS['mail.list-namespace'] = env('SENTRY_EMAIL_LIST_NAMESPACE') or 'localhost'
     else:
         SENTRY_OPTIONS['mail.backend'] = 'dummy'
+
+    # The email address to send on behalf of
+    SENTRY_OPTIONS['mail.from'] = env('SENTRY_SERVER_EMAIL') or 'root@localhost'
+    # If you're using mailgun for inbound mail, set your API key and configure a
+    # route to forward to /api/hooks/mailgun/inbound/
+    SENTRY_OPTIONS['mail.mailgun-api-key'] = env('SENTRY_MAILGUN_API_KEY') or ''
+    # If you specify a MAILGUN_API_KEY, you definitely want EMAIL_REPLIES
+    if SENTRY_OPTIONS['mail.mailgun-api-key']:
+        SENTRY_OPTIONS['mail.enable-replies'] = True
+    else:
+        SENTRY_OPTIONS['mail.enable-replies'] = env('SENTRY_ENABLE_EMAIL_REPLIES', False)
+    if SENTRY_OPTIONS['mail.enable-replies']:
+        SENTRY_OPTIONS['mail.reply-hostname'] = env('SENTRY_SMTP_HOSTNAME') or ''
 
 
 
@@ -373,10 +384,6 @@ data:
 
     ENV_CONFIG_MAPPING = {
         'SENTRY_SECRET_KEY': 'system.secret-key',
-
-        # If you're using mailgun for inbound mail, set your API key and configure a
-        # route to forward to /api/hooks/mailgun/inbound/
-        'SENTRY_MAILGUN_API_KEY': 'mail.mailgun-api-key',
 
         'SENTRY_SLACK_CLIENT_ID': 'slack.client-id',
         'SENTRY_SLACK_CLIENT_SECRET': 'slack.client-secret',
