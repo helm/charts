@@ -162,8 +162,6 @@ spec:
           {{- if .Values.master.httpsKeyStore.enable }}
           {{- $httpsJKSFilePath :=  printf "%s/%s" .Values.master.httpsKeyStore.path .Values.master.httpsKeyStore.fileName -}}
               {{- if .Values.master.useSecurity }} 
-#          command: ["tail"]
-#          args: ["-f", "/dev/null"]
           args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)",  "--argumentsRealm.roles.$(ADMIN_USER)=admin", "--httpPort={{.Values.master.httpsKeyStore.httpPort}}", "--httpsPort={{.Values.master.targetPort}}", '--httpsKeyStore={{ $httpsJKSFilePath }}', "--httpsKeyStorePassword=$(JENKINS_HTTPS_KEYSTORE_PASSWORD)" ]
               {{- else }}
           args: [ "--httpPort={{.Values.master.httpsKeyStore.httpPort}}", "--httpsPort={{.Values.master.targetPort}}", '--httpsKeyStore={{ $httpsJKSFilePath | quote }}', "--httpsKeyStorePassword=$(JENKINS_HTTPS_KEYSTORE_PASSWORD)" ]
