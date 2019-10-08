@@ -167,6 +167,6 @@ podLabels: {}
 
 ## Optional Pod Annotations.
 podAnnotations: {}
-  #prometheus.io/port: "9458"
-  #prometheus.io/path: "/metrics"
-  #prometheus.io/scrape: "true"
+  # prometheus.io/port: "9458"
+  # prometheus.io/path: "/metrics"
+  # prometheus.io/scrape: "true"
