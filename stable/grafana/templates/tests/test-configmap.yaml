@@ -1,3 +1,4 @@
+{{- if .Values.testFramework.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -16,3 +17,4 @@ data:
       code=$(curl -s -o /dev/null -I -w "%{http_code}" $url)
       [ "$code" == "200" ]
     }
+{{- end }}
