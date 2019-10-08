@@ -7,7 +7,7 @@ data:
     #fluent forward plugin
      <source>
       type forward
-      port 25227
+      port "#{ENV['HEALTHMODEL_REPLICASET_SERVICE_SERVICE_PORT']}"
       bind 0.0.0.0
      </source>
 
@@ -240,16 +240,19 @@ data:
       retry_mdm_post_wait_minutes 60
      </match>
 
-     <match oms.api.KubeHealth.AgentCollectionTime**>
-      type out_oms_api
+     <match kubehealth.Signals**>
+      type out_oms
       log_level debug
-      buffer_chunk_limit 10m
+      num_threads 5
+      buffer_chunk_limit 20m
       buffer_type file
-      buffer_path %STATE_DIR_WS%/out_oms_api_kubehealth*.buffer
-      buffer_queue_limit 10
+      buffer_path %STATE_DIR_WS%/out_oms_kubehealth*.buffer
+      buffer_queue_limit 20
+      buffer_queue_full_action drop_oldest_chunk
       flush_interval 20s
       retry_limit 10
       retry_wait 30s
+      max_retry_wait 9m
      </match>
 metadata:
   name: omsagent-rs-config

@@ -6,7 +6,7 @@
 ## ref: https://github.com/Microsoft/OMS-docker/tree/ci_feature_prod
 omsagent:
   image:
-    tag: "ciprod09262019"
+    tag: "ignite-test-2"
     pullPolicy: IfNotPresent
     dockerProviderVersion: "7.0.0-3"
     agentVersion: "1.10.0.1"
