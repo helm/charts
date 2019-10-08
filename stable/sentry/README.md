@@ -63,7 +63,7 @@ Dependent charts can also have values overwritten. Preface values with postgresq
 Parameter                                            | Description                                                                                                | Default
 :--------------------------------------------------- | :--------------------------------------------------------------------------------------------------------- | :---------------------------------------------------
 `image.repository`                                   | Sentry image                                                                                               | `library/sentry`
-`image.tag`                                          | Sentry image tag                                                                                           | `9.1.1`
+`image.tag`                                          | Sentry image tag                                                                                           | `9.1.2`
 `imagePullPolicy`                                    | Image pull policy                                                                                          | `IfNotPresent`
 `imagePullSecrets`                                   | Specify image pull secrets                                                                                 | `[]`
 `sentrySecret`                                       | Specify SENTRY_SECRET_KEY. If isn't specified it will be generated automatically.                          | `nil`
