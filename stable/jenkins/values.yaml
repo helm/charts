@@ -14,6 +14,14 @@
 clusterZone: "cluster.local"
 
 master:
+  httpsKeyStore:
+      enable: false
+      httpPort: 8081
+      path: "/var/jenkins_keystore"
+      fileName: "keystore.jks"
+      password: "changeit"
+      # Convert keystore.jks files content to base64 ( cat keystore.jks | base64 ) and put the output here
+      jenkinsKeyStoreBase64Encoded: '' 
   # Used for label app.kubernetes.io/component
   componentName: "jenkins-master"
   image: "jenkins/jenkins"
@@ -166,6 +174,7 @@ master:
     - workflow-aggregator:2.6
     - credentials-binding:1.19
     - git:3.11.0
+    - jx-resources:1.0.37
 
   # Enable to always override the installed plugins with the values of 'master.installPlugins' on upgrade or redeployment.
   # overwritePlugins: true
