@@ -3,6 +3,7 @@
 {{- $serviceName := include "kong.fullname" . -}}
 {{- $servicePort := include "kong.ingress.servicePort" .Values.portalapi -}}
 {{- $path := .Values.portalapi.ingress.path -}}
+{{- $hosts_count := len .Values.portalapi.ingress.hosts -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -18,6 +19,14 @@ metadata:
     {{- end }}
 spec:
   rules:
+    {{- if eq $hosts_count 0 }}
+    - http:
+        paths:
+          - path: {{ $path }}
+            backend:
+              serviceName: {{ $serviceName }}-portalapi
+              servicePort: {{ $servicePort }}
+    {{ else -}}
     {{- range $host := .Values.portalapi.ingress.hosts }}
     - host: {{ $host }}
       http:
@@ -26,6 +35,7 @@ spec:
             backend:
               serviceName: {{ $serviceName }}-portalapi
               servicePort: {{ $servicePort }}
+    {{- end -}}
     {{- end -}}
   {{- if .Values.portalapi.ingress.tls }}
   tls:

@@ -49,7 +49,9 @@ spec:
       annotations:
         checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-{{- if .Values.podAnnotations }}{{ toYaml .Values.podAnnotations | indent 8 }}{{- end }}
+{{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | trimSuffix "\n" | indent 8 }}
+{{- end }}
     spec:
   {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"

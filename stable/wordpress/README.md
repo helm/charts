@@ -180,12 +180,6 @@ $ helm install --name my-release -f ./values-production.yaml stable/wordpress
 + replicaCount: 3
 ```
 
-- Kubernetes Service type:
-```diff
-- service.type: LoadBalancer
-+ service.type: ClusterIP
-```
-
 - Enable client source IP preservation:
 ```diff
 - service.externalTrafficPolicy: Cluster
@@ -288,7 +282,7 @@ WordPress will be connected to at port 443.  The actual secret that
 However, please note that if TLS is enabled, the ingress record will not
 work until this secret exists.
 
-For annotations, please see [this document](https://github.com/kubernetes/ingress-nginx/blob/master/docs/annotations.md).
+For annotations, please see [this document](https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/annotations.md).
 Not all annotations are supported by all ingress controllers, but this
 document does a good job of indicating which annotation is supported by
 many popular ingress controllers.
