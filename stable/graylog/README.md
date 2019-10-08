@@ -98,7 +98,7 @@ The following table lists the configurable parameters of the Graylog chart and t
 
 | Parameter                               | Description                                                                                                                                           | Default                               |
 |-----------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------|
-| `graylog.image`                         | `graylog` image repository                                                                                                                            | `graylog/graylog:2.4`                 |
+| `graylog.image.repository`              | `graylog` image repository   | `graylog/graylog:3.1.2-1`                 |
 | `graylog.imagePullPolicy`               | Image pull policy                                                                                                                                     | `IfNotPresent`                        |
 | `graylog.replicas`                      | The number of Graylog instances in the cluster. The chart will automatic create assign master to one of replicas                                      | `2`                                   |
 | `graylog.resources`                     | CPU/Memory resource requests/limits                                                                                                                   | Memory: `1024Mi`, CPU: `500m`         |
