@@ -13,7 +13,7 @@ metadata:
 {{ toYaml .Values.controller.service.labels | indent 4 }}
 {{- end }}
     app: {{ template "nginx-ingress.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "nginx-ingress.chart" . }}
     component: "{{ .Values.controller.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
