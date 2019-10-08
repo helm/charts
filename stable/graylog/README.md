@@ -94,7 +94,7 @@ graylog:
 
 ## Configuration
 
-The following table lists the configurable parameters of the Cassandra chart and their default values.
+The following table lists the configurable parameters of the Graylog chart and their default values.
 
 | Parameter                               | Description                                                                                                                                           | Default                               |
 |-----------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------|
@@ -124,6 +124,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `graylog.ingress.annotations`           | Graylog Ingress annotations                                                                                                                           | `{}`                                  |
 | `graylog.ingress.hosts`                 | Graylog Ingress host names                                                                                                                            | `[]`                                  |
 | `graylog.ingress.tls`                   | Graylog Ingress TLS configuration (YAML)                                                                                                              | `[]`                                  |
+| `graylog.ingress.extraPaths`            | Ingress extra paths to prepend to every host configuration. Useful when configuring [custom actions with AWS ALB Ingress Controller](https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/ingress/annotation/#actions). | `[]`                                  |
 | `graylog.input`                         | Graylog Input configuration (YAML) Sees #Input section for detail                                                                                     | `{}`                                  |
 | `graylog.metrics.enabled`               | If true, add Prometheus annotations to pods                                                                                                           | `false`                               |
 | `graylog.geoip.enabled`                 | If true, Maxmind Geoip Lite will be installed to ${GRAYLOG_HOME}/etc/GeoLite2-City.mmdb                                                               | `false`                               |
