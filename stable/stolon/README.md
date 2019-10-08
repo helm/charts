@@ -68,6 +68,7 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `keeper.volumes`                        | Additional volumes                             | `[]`                                                         |
 | `keeper.volumeMounts`                   | Mount paths for `keeper.volumes`               | `[]`                                                         |
 | `keeper.hooks.failKeeper.enabled`       | Enable failkeeper pre-stop hook                | `false`                                                      |
+| `keeper.extraEnv`                       | Extra [environment variables](https://github.com/sorintlab/stolon/blob/master/doc/commands_invocation.md#commands-invocation) for keeper | `[]` |
 | `keeper.podDisruptionBudget.enabled`    | If true, create a pod disruption budget for keeper pods. | `false`                                            |
 | `keeper.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `""`                                     |
 | `keeper.podDisruptionBudget.maxUnavailable` | Maximum number / percentage of pods that may be made unavailable | `""`                                   |
@@ -77,6 +78,7 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `proxy.nodeSelector`                    | Node labels for proxy pod assignment           | `{}`                                                         |
 | `proxy.affinity`                        | Affinity settings for proxy pod assignment     | `{}`                                                         |
 | `proxy.tolerations`                     | Toleration labels for proxy pod assignment     | `[]`                                                         |
+| `proxy.extraEnv`                        | Extra [environment variables](https://github.com/sorintlab/stolon/blob/master/doc/commands_invocation.md#commands-invocation) for proxy | `[]` |
 | `proxy.podDisruptionBudget.enabled`     | If true, create a pod disruption budget for proxy pods. | `false`                                             |
 | `proxy.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `""`                                      |
 | `proxy.podDisruptionBudget.maxUnavailable` | Maximum number / percentage of pods that may be made unavailable | `""`                                    |
@@ -86,6 +88,7 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `sentinel.nodeSelector`                 | Node labels for sentinel pod assignment        | `{}`                                                         |
 | `sentinel.affinity`                     | Affinity settings for sentinel pod assignment  | `{}`                                                         |
 | `sentinel.tolerations`                  | Toleration labels for sentinel pod assignment  | `[]`                                                         |
+| `sentinel.extraEnv`                     | Extra [environment variables](https://github.com/sorintlab/stolon/blob/master/doc/commands_invocation.md#commands-invocation) for sentinel | `[]` |
 | `sentinel.podDisruptionBudget.enabled`  | If true, create a pod disruption budget for sentinel pods. | `false`                                          |
 | `sentinel.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `""`                                   |
 | `sentinel.podDisruptionBudget.maxUnavailable` | Maximum number / percentage of pods that may be made unavailable | `""`                                 |
