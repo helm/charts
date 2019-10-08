@@ -268,7 +268,7 @@ helm install --name <RELEASE_NAME> \
 | `datadog.confd`                          | Additional check configurations (static and Autodiscovery)                                | `nil`                                       |
 | `datadog.criSocketPath`                  | Path to the container runtime socket (if different from Docker)                           | `nil`                                       |
 | `datadog.tags`                           | Set host tags                                                                             | `nil`                                       |
-| `datadog.nonLocalTraffic`                | Enable statsd reporting from any external ip                                              | `False`                                     |
+| `datadog.nonLocalTraffic`                | Enable statsd reporting and APM from any external ip                                      | `False`                                     |
 | `datadog.useCriSocketVolume`             | Enable mounting the container runtime socket in Agent containers                          | `True`                                      |
 | `datadog.dogstatsdOriginDetection`       | Enable origin detection for container tagging                                             | `False`                                     |
 | `datadog.useDogStatsDSocketVolume`       | Enable dogstatsd over Unix Domain Socket                                                  | `False`                                     |

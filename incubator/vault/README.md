@@ -66,6 +66,8 @@ The following table lists the configurable parameters of the Vault chart and the
 | `resources.limits.cpu`            | Container requested CPU                  | `nil`                               |
 | `resources.limits.memory`         | Container requested memory               | `nil`                               |
 | `affinity`                        | Affinity settings                        | See values.yaml                     |
+| `nodeSelector`                    | Node labels for pod assignment           | `{}`                                |
+| `tolerations`                     | Tolerations for node taints              | `[]`                                |
 | `service.loadBalancerIP`          | Assign a static IP to the loadbalancer   | `nil`                               |
 | `service.loadBalancerSourceRanges`| IP whitelist for service type loadbalancer   | `[]`                            |
 | `service.annotations`             | Annotations for service                  | `{}`                                |

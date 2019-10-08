@@ -229,7 +229,7 @@ ingress:
 
     ## Ingress annotations done as key:value pairs
     ## For a full list of possible ingress annotations, please see
-    ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/annotations.md
+    ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/annotations.md
     ##
     ## If certManager is set to true, annotation kubernetes.io/tls-acme: "true" will automatically be set
     annotations:
