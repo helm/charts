@@ -47,12 +47,8 @@ spec:
             - --localhost=127.0.0.1
             - --prometheus-config-reloader={{ .Values.prometheusOperator.prometheusConfigReloaderImage.repository }}:{{ .Values.prometheusOperator.prometheusConfigReloaderImage.tag }}
             - --config-reloader-image={{ .Values.prometheusOperator.configmapReloadImage.repository }}:{{ .Values.prometheusOperator.configmapReloadImage.tag }}
-          {{- if .Values.prometheusOperator.configReloaderCpu }}
             - --config-reloader-cpu={{ .Values.prometheusOperator.configReloaderCpu }}
-          {{- end }}
-          {{- if .Values.prometheusOperator.configReloaderMemory }}
             - --config-reloader-memory={{ .Values.prometheusOperator.configReloaderMemory }}
-          {{- end }}
           ports:
             - containerPort: 8080
               name: http

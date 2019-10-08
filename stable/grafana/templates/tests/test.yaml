@@ -9,6 +9,7 @@ metadata:
     release: "{{ .Release.Name }}"
   annotations:
     "helm.sh/hook": test-success
+  namespace: {{ .Release.Namespace }}
 spec:
   serviceAccountName: {{ template "grafana.serviceAccountNameTest" . }}
   {{- if .Values.testFramework.securityContext }}
@@ -32,6 +33,18 @@ spec:
   {{- range .Values.image.pullSecrets }}
     - name: {{ . }}
   {{- end}}
+  {{- end }}
+  {{- with .Values.nodeSelector }}
+  nodeSelector:
+{{ toYaml . | indent 4 }}
+  {{- end }}
+  {{- with .Values.affinity }}
+  affinity:
+{{ toYaml . | indent 4 }}
+  {{- end }}
+  {{- with .Values.tolerations }}
+  tolerations:
+{{ toYaml . | indent 4 }}
   {{- end }}
   containers:
     - name: {{ .Release.Name }}-test

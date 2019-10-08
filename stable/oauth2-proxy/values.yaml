@@ -40,6 +40,7 @@ image:
   # - name: myRegistryKeySecretName
 
 extraArgs: {}
+extraEnv: []
 
 # To authorize individual email addresses
 # That is part of extraArgs but since this needs special treatment we need to do a separate section
@@ -91,6 +92,15 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 300Mi
+
+extraVolumes: []
+  # - name: ca-bundle-cert
+  #   secret:
+  #     secretName: <secret-name>
+
+extraVolumeMounts: []
+  # - mountPath: /etc/ssl/certs/
+  #   name: ca-bundle-cert
 
 priorityClassName: ""
 

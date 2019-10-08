@@ -14,7 +14,7 @@ This chart bootstraps a [redis_exporter](https://github.com/oliver006/redis_expo
 
 ## Prerequisites
 
-- Kubernetes 1.8+ with Beta APIs enabled
+- Kubernetes 1.10+ with Beta APIs enabled
 
 ## Installing the Chart
 
