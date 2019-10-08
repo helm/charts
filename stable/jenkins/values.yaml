@@ -174,7 +174,6 @@ master:
     - workflow-aggregator:2.6
     - credentials-binding:1.19
     - git:3.11.0
-    - jx-resources:1.0.37
 
   # Enable to always override the installed plugins with the values of 'master.installPlugins' on upgrade or redeployment.
   # overwritePlugins: true
