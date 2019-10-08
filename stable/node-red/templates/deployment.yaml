@@ -7,6 +7,12 @@ metadata:
     helm.sh/chart: {{ include "node-red.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+  {{- if .Values.podAnnotations }}
+  annotations:
+    {{- range $key, $value := .Values.podAnnotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
 spec:
   replicas: 1
   strategy:
