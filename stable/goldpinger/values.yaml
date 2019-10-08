@@ -21,6 +21,8 @@ serviceAccount:
 goldpinger:
   port: 80
 
+extraEnv: []
+
 service:
   type: LoadBalancer
   port: 80
