@@ -78,13 +78,11 @@ spec:
         {{- if .Values.annotationFilter }}
         - --annotation-filter={{ .Values.annotationFilter }}
         {{- end }}
-        {{- if .Values.crd.create }}
-          {{- if .Values.crd.apiversion }}
+        {{- if .Values.crd.apiversion }}
         - --crd-source-apiversion={{ .Values.crd.apiversion }}
-          {{- end }}
-          {{- if .Values.crd.kind }}
+        {{- end }}
+        {{- if .Values.crd.kind }}
         - --crd-source-kind={{ .Values.crd.kind }}
-          {{- end }}
         {{- end }}
         {{- range .Values.istioIngressGateways }}
         - --istio-ingress-gateway={{ . }}
@@ -291,10 +289,10 @@ spec:
         # Azure mountPath(s)
         {{- if eq .Values.provider "azure" }}
         - name: azure-config-file
-          {{- if not .Values.azure.secretName }}
-          mountPath: /etc/kubernetes/azure.json
-          {{- else }}
+          {{- if or .Values.azure.secretName (and .Values.azure.resourceGroup .Values.azure.tenantId .Values.azure.subscriptionId) }}
           mountPath: /etc/kubernetes/
+          {{- else }}
+          mountPath: /etc/kubernetes/azure.json
           {{- end }}
           readOnly: true
         {{- end }}
@@ -327,13 +325,16 @@ spec:
       # Azure volume(s)
       {{- if eq .Values.provider "azure" }}
       - name: azure-config-file
-        {{- if (not .Values.azure.secretName) }}
+        {{- if .Values.azure.secretName }}
+        secret:
+          secretName: {{ .Values.azure.secretName }}
+        {{- else if (and .Values.azure.resourceGroup .Values.azure.tenantId .Values.azure.subscriptionId) }}
+        secret:
+          secretName: {{ template "external-dns.fullname" . }}
+        {{- else }}
         hostPath:
           path: /etc/kubernetes/azure.json
           type: File
-        {{- else }}
-        secret:
-          secretName: {{ .Values.azure.secretName }}
         {{- end }}
       {{- end }}
       # CoreDNS volume(s)
