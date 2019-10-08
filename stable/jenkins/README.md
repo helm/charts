@@ -519,11 +519,11 @@ and provide the file `templates/config.tpl` in your parent chart for your use ca
 ```
 
 ## Https keystore configuration
-This configuration enable jenkins to use keystore inorder to serve https.
-Here is the value file section related to keystore configuration.
-Keystore itself should be placed in front of `jenkinsKeyStoreBase64Encoded` key and in base64 encoded format for that after having `keystore.jks` file simply do this: `cat keystore.jks | base64` and paste the output in front of `jenkinsKeyStoreBase64Encoded` in one line.
-After enabling `httpsKeyStore.enable` make sure that `httpPort` and `targetPort` are not the same as `targetPort` will serve https.
-Do not set `master.httpsKeyStore.httpPort` to `-1` because it will cause readiness and liveliness prob to fail.
+This configuration enable jenkins to use keystore inorder to serve https. <br />
+Here is the value file section related to keystore configuration. <br />
+Keystore itself should be placed in front of `jenkinsKeyStoreBase64Encoded` key and in base64 encoded format. To achive that after having `keystore.jks` file simply do this: `cat keystore.jks | base64` and paste the output in front of `jenkinsKeyStoreBase64Encoded` in one line. <br />
+After enabling `httpsKeyStore.enable` make sure that `httpPort` and `targetPort` are not the same as `targetPort` will serve https. <br />
+Do not set `master.httpsKeyStore.httpPort` to `-1` because it will cause readiness and liveliness prob to fail. <br />
 
 ```yaml
 master:
