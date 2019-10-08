@@ -69,6 +69,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `podAnnotations`                   | Additional annotations for ambassador pods                                      | `{}`                              |
 | `deploymentAnnotations`            | Additional annotations for ambassador DaemonSet/Deployment                      | `{}`                              |
 | `podLabels`                        | Additional labels for ambassador pods                                           |                                   |
+| `affinity`                         | Affinity for ambassador pods                                                    | `{}`                              |
 | `priorityClassName`                | The name of the priorityClass for the ambassador DaemonSet/Deployment           | `""`                              |
 | `rbac.create`                      | If `true`, create and use RBAC resources                                        | `true`                            |
 | `rbac.podSecurityPolicies`         | pod security polices to bind to                                                 |                                   |
@@ -104,11 +105,12 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `pro.rateLimit.redis.annotations.deployment` | Annotations for the redis deployment                                  | `{}`                              |
 | `pro.rateLimit.redis.annotations.service` | Annotations for the redis service                                        | `{}`                              |
 | `pro.rateLimit.redis.resources`    | Set resource requests and limits for the rate limit service's redis instance    | `{}`                              |
-| `pro.devPortal.enabled`            | Enables the Ambassador Devloper Portal                                          | `false`                              |
+| `pro.devPortal.enabled`            | Enables the Ambassador Developer Portal                                         | `false`                              |
 | `autoscaling.enabled`              | If true, creates Horizontal Pod Autoscaler                                      | `false`                           |
 | `autoscaling.minReplica`           | If autoscaling enabled, this field sets minimum replica count                   | `2`                               |
 | `autoscaling.maxReplica`           | If autoscaling enabled, this field sets maximum replica count                   | `5`                               |
 | `autoscaling.metrics`              | If autoscaling enabled, configure hpa metrics                                   |                                   |
+| `podDisruptionBudget`              | Pod disruption budget rules                                                     | `{}`                              |
 | `prometheusExporter.enabled`       | DEPRECATED: Prometheus exporter side-car enabled                                | `false`                           |
 | `prometheusExporter.pullPolicy`    | DEPRECATED: Image pull policy                                                   | `IfNotPresent`                    |
 | `prometheusExporter.repository`    | DEPRECATED: Prometheus exporter image                                           | `prom/statsd-exporter`            |
