@@ -169,8 +169,8 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.httpsKeyStore.httpPort`   | Http Port that Jenkins should listen on along with https, it also serves liveness and readiness probs port. When https keystore is enabled servicePort and targetPort will be used as https port  | `8081`   |
 | `master.httpsKeyStore.path`       | Path of https keystore file                  |     `/var/jenkins_keystore`     |
 | `master.httpsKeyStore.fileName`  | Jenkins keystore filename which will apear under master.httpsKeyStore.path      | `keystore.jks` |
-| `master.httpsKeyStore.password`   | Jenkins keystore password                                           | `changeit` |
-| `master.httpsKeyStore.jenkinsKeyStoreBase64Encoded`  | Base64 ecoded Keystore content. Keystore must be converted to base64 then being pasted here  | `` |
+| `master.httpsKeyStore.password`   | Jenkins keystore password                                           | `password` |
+| `master.httpsKeyStore.jenkinsKeyStoreBase64Encoded`  | Base64 ecoded Keystore content. Keystore must be converted to base64 then being pasted here  | a self signed cert |
 | `networkPolicy.enabled`           | Enable creation of NetworkPolicy resources. | `false`                            |
 | `networkPolicy.apiVersion`        | NetworkPolicy ApiVersion             | `networking.k8s.io/v1`                    |
 | `rbac.create`                     | Whether RBAC resources are created   | `true`                                    |
@@ -523,6 +523,8 @@ This configuration enable jenkins to use keystore inorder to serve https.
 Here is the value file section related to keystore configuration.
 Keystore itself should be placed in front of `jenkinsKeyStoreBase64Encoded` key and in base64 encoded format for that after having `keystore.jks` file simply do this: `cat keystore.jks | base64` and paste the output in front of `jenkinsKeyStoreBase64Encoded` in one line.
 After enabling `httpsKeyStore.enable` make sure that `httpPort` and `targetPort` are not the same as `targetPort` will serve https.
+Do not set `master.httpsKeyStore.httpPort` to `-1` because it will cause readiness and liveliness prob to fail.
+
 ```yaml
 master:
    httpsKeyStore:
