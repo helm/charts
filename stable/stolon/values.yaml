@@ -101,7 +101,7 @@ keeper:
     # maxUnavailable: 1
   ## See https://github.com/sorintlab/stolon/blob/master/doc/commands_invocation.md#commands-invocation
   extraEnv: []
-  #  - name: STKEEPER_LOG_LEVEL 
+  #  - name: STKEEPER_LOG_LEVEL
   #    value: "info"
 
 proxy:
@@ -125,7 +125,7 @@ proxy:
     # minAvailable: 1
     # maxUnavailable: 1
   extraEnv: []
-  #  - name: STPROXY_LOG_LEVEL 
+  #  - name: STPROXY_LOG_LEVEL
   #    value: "info"
   #  - name: STPROXY_TCP_KEEPALIVE_COUNT
   #    value: "0"
@@ -146,7 +146,7 @@ sentinel:
     # minAvailable: 1
     # maxUnavailable: 1
   extraEnv: []
-  #  - name: STSENTINEL_LOG_LEVEL 
+  #  - name: STSENTINEL_LOG_LEVEL
   #    value: "info"
 
 ## initdb scripts
