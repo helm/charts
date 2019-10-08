@@ -22,6 +22,8 @@ autoscaling:
         name: memory
         targetAverageUtilization: 60
 
+podDisruptionBudget: {}
+
 # namespace:
   # name: default
 
