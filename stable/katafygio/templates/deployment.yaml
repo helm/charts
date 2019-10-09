@@ -55,6 +55,9 @@ spec:
             - --exclude-object={{ . }}
             {{- end }}
           {{- end }}
+          volumeMounts:
+            - name: {{ template "katafygio.fullname" . }}
+              mountPath: {{ .Values.localDir }}
           ports:
             - name: http
               containerPort: {{ .Values.healthcheckPort }}
@@ -67,7 +70,15 @@ spec:
             httpGet:
               path: /health
               port: http
-          resources:
+      volumes:
+        - name: {{ template "katafygio.fullname" . }}
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "katafygio.fullname" .) }}
+          {{- else }}
+            emptyDir: {}
+          {{- end }}
+      resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
@@ -81,11 +92,4 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    volumes:
-      - name: katafygio-data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim | default (include "katafygio.fullname" .) }}
-      {{- else }}
-        emptyDir: {}
-      {{- end -}}
+
