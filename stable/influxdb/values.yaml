@@ -98,6 +98,9 @@ resources: {}
 #    memory: 16Gi
 #    cpu: 8
 
+# Annotations to be added to InfuxDB pods
+podAnnotations: {}
+
 ingress:
   enabled: false
   tls: false
