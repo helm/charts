@@ -53,6 +53,8 @@ spec:
           readOnly: true
         - name: data
           mountPath: /data
+      securityContext:
+{{ toYaml .Values.haproxy.securityContext | indent 8 }}
       containers:
       {{- if .Values.haproxy.exporter.enabled }}
       - name: prometheus-exporter
