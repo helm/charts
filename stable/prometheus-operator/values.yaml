@@ -1007,6 +1007,10 @@ prometheusOperator:
   ##
   createCustomResource: true
 
+  ## Manage all CRDs with the Prometheus Operator.
+  ##
+  manageCustomResource: true
+
   ## Customize CRDs API Group
   crdApiGroup: monitoring.coreos.com
 
