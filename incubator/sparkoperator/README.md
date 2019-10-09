@@ -44,5 +44,6 @@ The following table lists the configurable parameters of the Spark operator char
 | `enableBatchScheduler`    | Whether to enable batch scheduler for pod scheduling         | false                                  |
 | `enableResourceQuotaEnforcement`    | Whether to enable the ResourceQuota enforcement for SparkApplication resources. Requires the webhook to be enabled by setting enableWebhook to true.         | false                                  |
 | `enableLeaderElection`    | Whether to enable leader election when the operator Deployment has more than one replica, i.e., when `replicas` is greater than 1.         | false                                  |
+| `securityContext`         | Defines security context for operator container               | `{}`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.

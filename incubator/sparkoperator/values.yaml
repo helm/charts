@@ -21,6 +21,8 @@ resyncInterval: 30
 ingressUrlFormat: ""
 logLevel: 2
 
+securityContext: {}
+
 enableWebhook: false
 webhookPort: 8080
 
