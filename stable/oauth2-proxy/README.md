@@ -32,6 +32,15 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
+## Upgrading an existing Release to a new major version
+
+A major chart version change (like v1.2.3 -> v2.0.0) indicates that there is an
+incompatible breaking change needing manual actions.
+
+### To 1.0.0
+
+This version upgrade oauth2-proxy to v4.0.0. Please see the [changelog](https://github.com/pusher/oauth2_proxy/blob/v4.0.0/CHANGELOG.md#v400) in order to upgrade.
+
 ## Configuration
 
 The following table lists the configurable parameters of the oauth2-proxy chart and their default values.
@@ -60,7 +69,7 @@ Parameter | Description | Default
 `htpasswdFile.existingSecret` | existing Kubernetes secret to use for OAuth2 htpasswd file | `""`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.repository` | Image repository | `quay.io/pusher/oauth2_proxy`
-`image.tag` | Image tag | `v3.2.0`
+`image.tag` | Image tag | `v4.0.0`
 `imagePullSecrets` | Specify image pull secrets | `nil` (does not add image pull secrets to deployed pods)
 `ingress.enabled` | Enable Ingress | `false`
 `ingress.path` | Ingress accepted path | `/`
