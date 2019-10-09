@@ -70,10 +70,12 @@ git_sync:
     credentials:
       ssh:
         ## A multi-line string
-        value: |-
+        value:  # |-
+          #  PRIV_KEY CONTENTS
       known_hosts:
         ## A multi-line string
-        value: |-
+        value:  # |-
+          #  KNOWN_HOSTS CONTENTS
       ## Or set the git-sync Known Hosts file and SSH Private Key
       ## from a pre-existing K8s secret
       existingSecret: ""
@@ -110,10 +112,12 @@ r10k:
     credentials:
       ssh:
         ## A multi-line string
-        value: |-
+        value:  # |-
+          #  PRIV_KEY CONTENTS
       known_hosts:
         ## A multi-line string
-        value: |-
+        value:  # |-
+          #  KNOWN_HOSTS CONTENTS
       ## Or set the git-sync Known Hosts file and SSH Private Key
       ## from a pre-existing K8s secret
       existingSecret: ""
@@ -176,7 +180,7 @@ hiera:
   ## must be kept unchanged.
   ## A multi-line string
   ##
-  config: |-
+  config:  # |-
   #  :backends:
   #    - eyaml
   #  :hierarchy:
@@ -189,9 +193,9 @@ hiera:
   eyaml:
     ## A multi-line string
     ##
-    private_key: |-
-                 # SOMEPRIVKEY
+    private_key:  # |-
+      #  PRIV_KEY CONTENTS
     ## A multi-line string
     ##
-    public_key: |-
-                # SOMEPUBKEY
+    public_key:  # |-
+      #  PUB_KEY CONTENTS
