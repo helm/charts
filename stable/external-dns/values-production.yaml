@@ -106,6 +106,9 @@ azure:
 ## Cloudflare configuration to be set via arguments/env. variables
 ##
 cloudflare:
+  ## `CF_API_TOKEN` to set in the environment
+  ##
+  apiToken: ""
   ## `CF_API_KEY` to set in the environment
   ##
   apiKey: ""
