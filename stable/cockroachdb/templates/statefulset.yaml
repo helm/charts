@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: {{ template "statefulset.apiVersion" . }}
 kind: StatefulSet
 metadata:
   name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
