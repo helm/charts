@@ -26,5 +26,17 @@ spec:
   {{- end }}
   prefix: /callback
   service: NoTaReAlSeRvIcE
+---
+apiVersion: ambassador/v1
+kind: Mapping
+metadata:
+  name: {{ include "ambassador.fullname" . }}-pro-mapping
+spec:
+  {{- if hasKey .Values.env "AMBASSADOR_ID" }}
+  ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
+  {{- end }}
+  prefix: /.ambassador/
+  rewrite: ""
+  service: 127.0.0.1:{{ .Values.pro.ports.auth }}
 {{- end }}
 {{ end }}
