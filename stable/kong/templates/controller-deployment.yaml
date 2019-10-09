@@ -41,6 +41,8 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
+        - name: KONG_NGINX_HTTP_INCLUDE
+          value: /kong/servers.conf
         - name: KONG_PROXY_LISTEN
           value: 'off'
         {{- if .Values.enterprise.enabled }}
@@ -83,9 +85,15 @@ spec:
         {{- end }}
         {{- include "kong.env" .  | indent 8 }}
         ports:
+        - name: metrics
+          containerPort: 9542
+          protocol: TCP
         - name: admin
           containerPort: {{ .Values.admin.containerPort }}
           protocol: TCP
+        volumeMounts:
+          - name: custom-nginx-template-volume
+            mountPath: /kong
         readinessProbe:
 {{ toYaml .Values.readinessProbe | indent 10 }}
         livenessProbe:
@@ -93,4 +101,8 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
       {{- include "kong.controller-container" . | nindent 6 }}
+      volumes:
+        - name: custom-nginx-template-volume
+          configMap:
+            name: {{ template "kong.fullname" . }}-default-custom-server-blocks
 {{- end -}}

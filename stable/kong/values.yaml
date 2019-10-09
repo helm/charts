@@ -292,8 +292,8 @@ resources: {}
 readinessProbe:
   httpGet:
     path: "/status"
-    port: admin
-    scheme: HTTPS
+    port: metrics
+    scheme: HTTP
   initialDelaySeconds: 30
   timeoutSeconds: 1
   periodSeconds: 10
@@ -305,8 +305,8 @@ readinessProbe:
 livenessProbe:
   httpGet:
     path: "/status"
-    port: admin
-    scheme: HTTPS
+    port: metrics
+    scheme: HTTP
   initialDelaySeconds: 30
   timeoutSeconds: 5
   periodSeconds: 30
