@@ -4,7 +4,7 @@ kind: ValidatingWebhookConfiguration
 metadata:
   labels:
     app: {{ template "nginx-ingress.name" . }}-admission
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "nginx-ingress.chart" . }}
     component: "admission-webhook"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}

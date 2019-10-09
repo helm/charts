@@ -22,6 +22,8 @@ autoscaling:
         name: memory
         targetAverageUtilization: 60
 
+podDisruptionBudget: {}
+
 # namespace:
   # name: default
 
@@ -47,7 +49,7 @@ securityContext:
 
 image:
   repository: quay.io/datawire/ambassador
-  tag: 0.81.0
+  tag: 0.83.0
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -148,6 +150,8 @@ serviceAccount:
   name:
 
 initContainers: []
+
+sidecarContainers: []
 
 volumes: []
 
