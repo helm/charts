@@ -896,6 +896,10 @@ nodeExporter:
     ##
     interval: ""
 
+    ## How long until a scrape request times out. If not set, the Prometheus default scape timeout is used.
+    ##
+    scrapeTimeout: ""
+
     ## 	metric relabel configs to apply to samples before ingestion.
     ##
     metricRelabelings: []
