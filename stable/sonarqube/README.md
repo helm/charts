@@ -42,7 +42,7 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `replicaCount`                              | Number of replicas deployed               | `1`                                        |
 | `deploymentStrategy`                        | Deployment strategy                       | `{}`                                       |
 | `image.repository`                          | image repository                          | `sonarqube`                                |
-| `image.tag`                                 | `sonarqube` image tag.                    | `7.9-community`                            |
+| `image.tag`                                 | `sonarqube` image tag.                    | `7.9.1-community`                            |
 | `image.pullPolicy`                          | Image pull policy                         | `IfNotPresent`                             |
 | `image.pullSecret`                          | imagePullSecret to use for private repository      |                                   |
 | `command`                                   | command to run in the container           | `nil` (need to be set prior to 6.7.6, and 7.4)      |
@@ -54,10 +54,12 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `ingress.tls`                               | Ingress secrets for TLS certificates      | `[]`                                       |
 | `livenessProbe.sonarWebContext`             | SonarQube web context for livenessProbe   | /                                          |
 | `readinessProbe.sonarWebContext`            | SonarQube web context for readinessProbe  | /                                          |
-| `service.type`                              | Kubernetes service type                   | `LoadBalancer`                             |
+| `service.type`                              | Kubernetes service type                   | `ClusterIP`                                |
+| `service.externalPort`                      | Kubernetes service port                   | `9000`                                     |
+| `service.internalPort`                      | Kubernetes container port                 | `9000`                                     |
 | `service.labels`                            | Kubernetes service labels                 | None                                       |
 | `service.annotations`                       | Kubernetes service annotations            | None                                       |
-| `service.loadBalancerSourceRanges`          | Kubernetes service LB Allowed inbound IP addresses | 0.0.0.0/0                            |
+| `service.loadBalancerSourceRanges`          | Kubernetes service LB Allowed inbound IP addresses | None                            |
 | `service.loadBalancerIP`                    | Kubernetes service LB Optional fixed external IP   | None                                       |
 | `persistence.enabled`                       | Flag for enabling persistent storage      | false                                      |
 | `persistence.annotations`                   | Kubernetes pvc annotations                | `{}`                                      |
