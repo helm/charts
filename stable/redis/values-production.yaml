@@ -120,6 +120,7 @@ sentinel:
     ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
     ##
     annotations: {}
+    labels: {}
     loadBalancerIP:
 
 ## Specifies the Kubernetes Cluster's Domain Name.
@@ -294,6 +295,7 @@ master:
     ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
     ##
     annotations: {}
+    labels: {}
     loadBalancerIP:
 
   ## Enable persistence using Persistent Volume Claims
@@ -352,6 +354,7 @@ slave:
     ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
     ##
     annotations: {}
+    labels: {}
     loadBalancerIP:
 
   ## Redis slave port
@@ -480,6 +483,8 @@ metrics:
     ## otherwise leave blank
     # loadBalancerIP:
     annotations: {}
+    labels: {}
+
   ## Metrics exporter pod Annotation and Labels
   podAnnotations:
     prometheus.io/scrape: "true"
