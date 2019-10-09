@@ -8,6 +8,9 @@ metadata:
     chart: {{ template "redis.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    {{- if .Values.master.service.labels -}}
+    {{ toYaml .Values.master.service.labels | nindent 4 }}
+    {{- end -}}
 {{- if .Values.master.service.annotations }}
   annotations: {{ toYaml .Values.master.service.annotations | nindent 4 }}
 {{- end }}
