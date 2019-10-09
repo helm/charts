@@ -18,6 +18,9 @@ spec:
     {{- if .Values.nodeExporter.serviceMonitor.interval }}
     interval: {{ .Values.nodeExporter.serviceMonitor.interval }}
     {{- end }}
+    {{- if .Values.nodeExporter.serviceMonitor.scrapeTimeout }}
+    scrapeTimeout: {{ .Values.nodeExporter.serviceMonitor.scrapeTimeout }}
+    {{- end }}
 {{- if .Values.nodeExporter.serviceMonitor.metricRelabelings }}
     metricRelabelings:
 {{ tpl (toYaml .Values.nodeExporter.serviceMonitor.metricRelabelings | indent 4) . }}
