@@ -136,7 +136,7 @@ spec:
         - name: KONG_SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.enterprise.smtp.auth.smtp_password }}
+              name: {{ .Values.enterprise.smtp.auth.smtp_password_secret }}
               key: smtp_password
         {{- end }}
         {{- else }}
