@@ -55,6 +55,9 @@ Parameter | Description | Default
 `nodeSelector` | Node labels for pod assignment | `{}`
 `tolerations` | Node tolerations for pod assignment | `{}`
 `podAnnotations` | Pod annotations | `{}` |
+`podSecurityPolicies.enabled` | Enable/disable PodSecurityPolicy and associated Role/Rolebinding creation | `false`
+`serviceAccount.create` | Create a ServiceAccount for the pod | `false`
+`serviceAccount.name` | Name of a ServiceAccount to use that is not handled by this chart | `default`
 `service.type` | type of service to create | `ClusterIP`
 `service.httpPort` | port for the http service | `9108`
 `service.metricsPort.name` | name for the http service | `http`
