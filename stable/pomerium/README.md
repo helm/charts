@@ -11,9 +11,11 @@
     - [Self Provisioned](#self-provisioned)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
+    - [4.0.0](#400)
     - [3.0.0](#300)
     - [2.0.0](#200)
   - [Upgrading](#upgrading)
+    - [4.0.0](#400-1)
     - [3.0.0](#300-1)
     - [2.0.0](#200-1)
   - [Metrics Discovery Configuration](#metrics-discovery-configuration)
@@ -141,6 +143,10 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ## Changelog
 
+### 4.0.0
+- Upgrade to Pomerium v0.4.0
+- Handle breaking changes from Pomerium
+
 ### 3.0.0
 - Refactor TLS certificates to use Kubernetes TLS secrets
 - Generate TLS certificates in a hook to prevent certificate churn
@@ -152,6 +158,10 @@ A full listing of Pomerium's configuration variables can be found on the [config
   - You must run pomerium v0.3.0+ to support this feature correctly
   
 ## Upgrading
+
+### 4.0.0
+- There are no user facing changes in this chart release
+- See [Pomerium Changelog](https://www.pomerium.io/docs/upgrading.html#since-0-3-0) for internal details
 
 ### 3.0.0
 
