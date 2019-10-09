@@ -896,6 +896,10 @@ nodeExporter:
     ##
     interval: ""
 
+    ## How long until a scrape request times out. If not set, the Prometheus default scape timeout is used.
+    ##
+    scrapeTimeout: ""
+
     ## 	metric relabel configs to apply to samples before ingestion.
     ##
     metricRelabelings: []
@@ -1128,13 +1132,13 @@ prometheusOperator:
     repository: quay.io/coreos/prometheus-config-reloader
     tag: v0.32.0
 
-  ## Set the prometheus config reloader side-car CPU limit. If unset, uses the prometheus-operator project default
+  ## Set the prometheus config reloader side-car CPU limit
   ##
-  # configReloaderCpu: 100m
+  configReloaderCpu: 100m
 
-  ## Set the prometheus config reloader side-car memory limit. If unset, uses the prometheus-operator project default
+  ## Set the prometheus config reloader side-car memory limit
   ##
-  # configReloaderMemory: 25Mi
+  configReloaderMemory: 25Mi
 
   ## Hyperkube image to use when cleaning up
   ##
@@ -1268,6 +1272,11 @@ prometheus:
     ## Secret name containing the TLS certificate for Prometheus per replica ingress
     ## Secret must be manually created in the namespace
     tlsSecretName: ""
+
+  ## Configure additional options for default pod security policy for Prometheus
+  ## ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+  podSecurityPolicy:
+    allowedCapabilities: []
 
   serviceMonitor:
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
@@ -1779,22 +1788,3 @@ prometheus:
     ## https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#podmetricsendpoint
     ##
     # podMetricsEndpoints: []
-      ## Name of the port this endpoint refers to
-      ## Mutually exclusive with targetPort
-      # - port: ""
-
-      ## Name or number of the target port of the endpoint
-      ## Mutually exclusive with port
-      # - targetPort: ""
-
-      ## Interval at which metrics should be scraped
-      ##
-      #   interval: 30s
-
-      ## HTTP path to scrape for metrics
-      ##
-      #   path: /metrics
-
-      ## HTTP scheme to use for scraping
-      ##
-      #   scheme: http
