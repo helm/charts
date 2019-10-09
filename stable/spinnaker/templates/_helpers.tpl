@@ -43,6 +43,14 @@ Create comma separated list of omitted namespaces in Kubernetes
 {{- join "," .Values.kubeConfig.omittedNameSpaces }}
 {{- end -}}
 
+{{- define "omittedKinds" -}}
+{{- join "," .Values.kubeConfig.omittedKinds }}
+{{- end -}}
+
+{{- define "k8sKinds" -}}
+{{- join "," .Values.kubeConfig.kinds }}
+{{- end -}}
+
 {{/*
 Redis base URL for Spinnaker
 */}}
