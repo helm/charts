@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "daemonSet.apiVersion" . }}
 kind: DaemonSet
 metadata:
   name: {{ template "fluent-bit.fullname" . }}
@@ -8,6 +8,13 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "fluent-bit.name" . }}
+      release: {{ .Release.Name }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 6 }}
+{{- end }}
   updateStrategy:
     type: RollingUpdate
   template:
