@@ -87,6 +87,9 @@ spec:
           - "{{ .Values.reloader.custom_annotations.auto }}"
           {{- end }}
         {{- end }}
+{{- if .Values.reloader.deployment.securityContext }}
+      securityContext: {{ toYaml .Values.reloader.deployment.securityContext | nindent 8 }}
+{{- end }}
       serviceAccountName: {{ template "serviceAccountName" . }}
 {{- if .Values.reloader.nodeSelector }}
       nodeSelector:
