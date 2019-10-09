@@ -3,6 +3,7 @@ apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: {{ template "kube-state-metrics.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/name: {{ template "kube-state-metrics.name" . }}
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}

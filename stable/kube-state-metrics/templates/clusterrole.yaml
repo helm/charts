@@ -8,6 +8,7 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/instance: {{ .Release.Name }}
   name: {{ template "kube-state-metrics.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 rules:
 {{ if .Values.collectors.certificatesigningrequests }}
 - apiGroups: ["certificates.k8s.io"]
