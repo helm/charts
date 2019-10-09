@@ -64,6 +64,10 @@ haproxy:
     connect: 4s
     server: 30s
     client: 30s
+  securityContext:
+    runAsUser: 1000
+    fsGroup: 1000
+    runAsNonRoot: true
 
 
 ## Role Based Access
