@@ -240,9 +240,9 @@ admin:
 ## Extra environment variables that will be pass onto deployment pods
 env: {}
 
-## The name of a secret in the same kubernetes namespace which contain values to be added to the environment
+## Sensible environment variables that will be stored as secret
 ## This can be useful for auth tokens, etc
-envFromSecret: ""
+envFromSecret: {}
 
 ## Additional grafana server secret mounts
 # Defines additional mounts with secrets. Secrets must be manually created in the namespace.
