@@ -19,9 +19,6 @@ spec:
   updatePolicy:
     updateMode: {{ .Values.server.verticalAutoscaler.updateMode | default "Off" | quote }}
   resourcePolicy:
-    containerPolicies:
-    {{- range .Values.server.verticalAutoscaler.containerPolicies }}
-    - {{- . | toYaml | trim | nindent 4 }}
-    {{- end }}
+    containerPolicies: {{ .Values.server.verticalAutoscaler.containerPolicies | default list | toYaml | trim | nindent 4 }}
 {{- end -}} {{/* if .Values.server.verticalAutoscaler.enabled */}}
 {{- end -}} {{/* .Values.server.enabled */}}
