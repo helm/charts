@@ -1,7 +1,7 @@
 {{- if .Values.rbac.create -}}
 {{- if (and .Values.podSecurityPolicy.enable (not .Values.podSecurityPolicy.name)) -}}
 kind: PodSecurityPolicy
-apiVersion: extensions/v1beta1
+apiVersion: policy/v1beta1
 metadata:
   name: {{ template "instana-agent.podSecurityPolicyName" . }}
   labels:
