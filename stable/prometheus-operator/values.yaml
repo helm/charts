@@ -968,6 +968,10 @@ prometheusOperator:
     create: true
     name: ""
 
+  ## Namespaces to scope the interaction of the Prometheus Operator and the apiserver.
+  ##
+  namespaces: []
+
   ## Configuration for Prometheus operator service
   ##
   service:

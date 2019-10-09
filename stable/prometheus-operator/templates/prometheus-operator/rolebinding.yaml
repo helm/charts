@@ -1,0 +1,21 @@
+{{- if .Values.prometheusOperator.enabled }}
+{{- range .Values.prometheusOperator.namespaces }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ template "prometheus-operator.fullname" $ }}-operator
+  namespace: {{ . }}
+  labels:
+    app: {{ template "prometheus-operator.name" $ }}-operator
+{{ include "prometheus-operator.labels" $ | indent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ template "prometheus-operator.fullname" $ }}-operator
+subjects:
+- kind: ServiceAccount
+  name: {{ template "prometheus-operator.operator.serviceAccountName" $ }}
+  namespace: {{ $.Release.Namespace }}
+{{- end }}
+{{- end }}
