@@ -164,7 +164,6 @@ Parameter | Description | Default
 `extraEnvSecrets` | additional container environment variables from a secret | `{}`
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to add to each pod | `{}`
-`deployment.apiVersion` | apiVersion for the deployment | `extensions/v1beta1`
 `rbac.create` | If true, create & use RBAC resources | `false`
 `rbac.serviceAccountName` | existing ServiceAccount to use (ignored if rbac.create=true) | `default`
 `rbac.serviceAccountAnnotations` | Additional Service Account annotations	| `{}`
