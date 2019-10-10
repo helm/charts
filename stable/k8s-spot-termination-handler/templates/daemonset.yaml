@@ -33,6 +33,7 @@ spec:
 {{- if .Values.podSecurityContext }}
       securityContext:
 {{ toYaml .Values.podSecurityContext | indent 8 }}
+{{- end }}
       hostNetwork: {{ .Values.hostNetwork }}
       serviceAccountName: {{ template "k8s-spot-termination-handler.serviceAccountName" . }}
       containers:
@@ -84,6 +85,7 @@ spec:
 {{- if .Values.securityContext }}
           securityContext:
 {{ toYaml .Values.securityContext | indent 12 }}
+{{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
