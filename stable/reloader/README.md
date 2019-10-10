@@ -85,13 +85,19 @@ Update the `values.yaml` and set the following properties
 | reloader.deployment.env.open         | Additional key value pair as environment variables                          | ``                                 |
 | reloader.deployment.env.secret       | Additional Key value pair as environment variables. It gets the values based on keys from default reloader secret if any | ``                                 |
 | reloader.deployment.env.field        | Additional environment variables to expose pod information to containers.   | ``                                 |
+| reloader.deployment.affinity         | Optional node affinity for pod assignment                                   | `{}`                               |
+| reloader.deployment.nodeSelector     | Optional node labels for pod assignment                                     | `{}`                               |
 | reloader.deployment.securityContext  | Defines deployment security context                                         | `{}`                               |
+| reloader.deployment.tolerations      | Optional tolerations for pod assignment                                     | `{}`                               |
+| reloader.isOpenshift                 | Optional flag if we are using Openshift for additional permissions          | `false`                            |
+| reloader.ignoreSecrets               | Ignores secrets tracking                                                    | `false`                            |
+| reloader.ignoreConfigMaps            | Ignores configmap tracking                                                  | `false`                            |
 | reloader.rbac.enabled                | Option to create rbac                                                       | `true`                             |
 | reloader.rbac.labels                 | Additional labels for rbac                                                  | `{}`                               |
 | reloader.serviceAccount.create       | Option to create serviceAccount                                             | `true`                             |
 | reloader.serviceAccount.name         | Name of serviceAccount                                                      | `reloader`                         |
 | reloader.custom_annotations          | Optional flags to pass to the Reloader entrypoint                           | `{}`                               |
-| reloader.nodeSelector                | Optional node labels for pod assignment                                     | `{}`                               |
+
 
 ## Deploying to Kubernetes
 
