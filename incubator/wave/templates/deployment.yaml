@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations: {{ toYaml .Values.annotations | nindent 4 }}
+  labels:
+{{ include "wave-labels.chart" . | indent 4 }}
+  name: {{ template "wave-fullname" . }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "wave-fullname" . }}
+      release: {{ .Release.Name | quote }}
+  template:
+    metadata:
+      labels:
+{{ include "wave-labels.chart" . | indent 8 }}
+    spec:
+      containers:
+        - image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          name: {{ template "wave-fullname" . }}
+          args:
+          {{- if gt .Values.replicas 1.0 }}
+            - --leader-election=true
+            - --leader-election-id={{ template "wave-fullname" . }}
+            - --leader-election-namespace={{ .Release.Namespace }}
+          {{- end }}
+          {{- if .Values.syncPeriod }}
+            - --sync-period={{ .Values.syncPeriod }}
+          {{- end }}
+      securityContext: {{ toYaml .Values.securityContext | nindent 8 }}
+      serviceAccountName: {{ .Values.serviceAccount.name | default (include "wave-fullname" .) }}
+      nodeSelector: {{ toYaml .Values.nodeSelector | nindent 8 }}

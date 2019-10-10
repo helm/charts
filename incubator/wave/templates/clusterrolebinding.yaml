@@ -1,0 +1,16 @@
+{{- if .Values.global.rbac.enabled }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+{{ include "wave-labels.chart" . | indent 4 }}
+  name: {{ template "wave-fullname" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "wave-fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Values.serviceAccount.name | default (include "wave-fullname" .) }}
+    namespace: {{ .Release.Namespace }}
+{{- end }}

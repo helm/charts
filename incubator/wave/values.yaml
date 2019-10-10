@@ -1,0 +1,37 @@
+global:
+  ## Reference to one or more secrets to be used when pulling images
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  imagePullSecrets: []
+  # - name: "image-pull-secret"
+  rbac:
+    enabled: true
+
+# Annotations for the wave pods
+annotations: {}
+image:
+  name: quay.io/pusher/wave
+  tag: v0.4.0
+  pullPolicy: IfNotPresent
+
+# Node selector for the wave pods
+nodeSelector: {}
+
+# Replicas > 1 will enable leader election
+replicas: 1
+
+# https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+
+# Service account config for the agent pods
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+# Period for reconciliation
+# syncPeriod: 5m

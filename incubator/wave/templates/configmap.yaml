@@ -1,0 +1,9 @@
+{{- if gt .Values.replicas 1.0 }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+{{ include "wave-labels.chart" . | indent 4 }}
+  name: {{ template "wave-fullname" . }}
+data:
+{{- end }}
