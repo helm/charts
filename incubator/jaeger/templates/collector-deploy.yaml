@@ -105,7 +105,7 @@ spec:
             value: /etc/conf/strategies.json
           {{- end }}
           - name: COLLECTOR_ZIPKIN_HTTP_PORT
-            value: {{ .Values.collector.service.zipkinPort }}
+            value: {{ .Values.collector.service.zipkinPort | quote }}
         ports:
         - containerPort: {{ .Values.collector.service.grpcPort }}
           name: grpc
