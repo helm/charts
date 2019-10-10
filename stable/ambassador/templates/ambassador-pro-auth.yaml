@@ -27,7 +27,7 @@ spec:
   prefix: /callback
   service: NoTaReAlSeRvIcE
 ---
-apiVersion: ambassador/v1
+apiVersion: getambassador.io/v1
 kind: Mapping
 metadata:
   name: {{ include "ambassador.fullname" . }}-pro-mapping
