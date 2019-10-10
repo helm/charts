@@ -58,7 +58,7 @@ persistence:
   size: 10Gi
   # storageClass: '-'
 
-# set the type of filesystem to use: filesystem, s3
+# set the type of storage to use: filesystem, s3, azure, swift or gcs
 storage: filesystem
 
 # Set this to name of secret for tls certs
@@ -67,18 +67,27 @@ secrets:
   haSharedSecret: ""
   htpasswd: ""
 # Secrets for Azure
-#   azure:
-#     accountName: ""
-#     accountKey: ""
-#     container: ""
+#  azure:
+#   accountName: ""
+#   accountKey: ""
+#   container: ""
 # Secrets for S3 access and secret keys
-#   s3:
-#     accessKey: ""
-#     secretKey: ""
+#  s3:
+#   accessKey: ""
+#   secretKey: ""
 # Secrets for Swift username and password
-#   swift:
-#     username: ""
-#     password: ""
+#  swift:
+#   username: ""
+#   password: ""
+# Secrets for GCS: content of keyfile
+#  gcs:
+#   keyfile: |-
+#     {
+#       "type": "service_account",
+#       "project_id": "...",
+#       ...
+#     }
+#
 
 # Options for s3 storage type:
 # s3:
@@ -92,6 +101,11 @@ secrets:
 # swift:
 #  authurl: http://swift.example.com/
 #  container: my-container
+
+# Options for gcs storage type:
+# gcs:
+#  bucket: my-bucket
+#  rootdirectory: /some/directory
 
 configData:
   version: 0.1

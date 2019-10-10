@@ -153,6 +153,15 @@ spec:
                   key: swiftPassword
             - name: REGISTRY_STORAGE_SWIFT_CONTAINER
               value: {{ required ".Values.swift.container is required" .Values.swift.container }}
+{{- else if eq .Values.storage "gcs"}}
+            - name: REGISTRY_STORAGE_GCS_BUCKET
+              value: {{ required ".Values.gcs.bucket is required" .Values.gcs.bucket }}
+            - name: REGISTRY_STORAGE_GCS_KEYFILE
+              value: "/gcs-auth/keyfile"
+          {{- if .Values.gcs.rootdirectory }}
+            - name: REGISTRY_STORAGE_GCS_ROOTDIRECTORY
+              value: {{ .Values.gcs.rootdirectory | quote }}
+          {{- end }}
 {{- end }}
 {{- if .Values.persistence.deleteEnabled }}
             - name: REGISTRY_STORAGE_DELETE_ENABLED
@@ -167,6 +176,9 @@ spec:
 {{- if eq .Values.storage "filesystem" }}
             - name: data
               mountPath: /var/lib/registry/
+{{- else if eq .Values.storage "gcs"}}
+            - name: gcs-auth
+              mountPath: /gcs-auth
 {{- end }}
             - name: "{{ template "docker-registry.fullname" . }}-config"
               mountPath: "/etc/docker/registry"
@@ -200,6 +212,13 @@ spec:
       {{- else }}
           emptyDir: {}
       {{- end -}}
+{{- else if eq .Values.storage "gcs"}}
+        - name: gcs-auth
+          secret:
+            secretName: {{ template "docker-registry.fullname" . }}-secret
+            items:
+              - key: gcsKeyFile
+                path: keyfile
 {{- end }}
         - name: {{ template "docker-registry.fullname" . }}-config
           configMap:
