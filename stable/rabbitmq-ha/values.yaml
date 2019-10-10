@@ -275,7 +275,7 @@ replicaCount: 3
 
 image:
   repository: rabbitmq
-  tag: 3.7.15-alpine
+  tag: 3.7.19-alpine
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
