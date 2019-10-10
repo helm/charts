@@ -206,9 +206,9 @@ master:
     # configuration as code support plugin is no longer needed
     supportPluginVersion: "1.18"
     configScripts:
-      welcome-message: |
-        jenkins:
-          systemMessage: Welcome to our CI\CD server.  This Jenkins is configured and managed 'as code'.
+    # welcome-message: |
+    #   jenkins:
+    #     systemMessage: Welcome to our CI\CD server.  This Jenkins is configured and managed 'as code'.
 
   # Optionally specify additional init-containers
   customInitContainers: []
