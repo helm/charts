@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "daemonSet.apiVersion" . }}
 kind: DaemonSet
 metadata:
   name: {{ template "prometheus-node-exporter.fullname" . }}

@@ -1,6 +1,6 @@
 {{- if .Values.rbac.create }}
 {{- if .Values.rbac.pspEnabled }}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "psp.apiVersion" . }}
 kind: PodSecurityPolicy
 metadata:
   labels: {{ include "prometheus-node-exporter.labels" . | indent 4 }}
