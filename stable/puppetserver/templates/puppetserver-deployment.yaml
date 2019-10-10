@@ -24,12 +24,20 @@ spec:
           imagePullPolicy: "{{.Values.puppetserver.pullPolicy}}"
           resources:
           {{ toYaml .Values.puppetserver.resources | nindent 12 }}
-          command: ["sh", "-c", "mkdir -p /etc/puppetlabs/code/environments"]
+          command: [ "sh", "-c" ]
+          args:
+            - mkdir -p /etc/puppetlabs/code/environments;
+              chown -R puppet:puppet /etc/puppetlabs;
+              chmod -R 0777 /tmp;
           securityContext:
-            runAsUser: 999 # "puppet" user
+            runAsUser: 0
+            runAsNonRoot: false
+            privileged: true
           volumeMounts:
             - name: puppet-code-storage
               mountPath: /etc/puppetlabs/code/
+            - name: puppet-hiera-storage
+              mountPath: /tmp/
       containers:
         - name: {{ template "puppetserver.fullname" . }}
           image: "{{.Values.puppetserver.image}}:{{.Values.puppetserver.tag}}"
@@ -97,7 +105,9 @@ spec:
             - --dest=data
             - --wait=120
           securityContext:
-            runAsUser: 65533 # git-sync user
+            runAsUser: 65533  # git-sync user
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
           volumeMounts:
             {{- if and (.Values.git_sync.viaSsh.enabled) (.Values.git_sync.viaSsh.credentials.ssh.value) (.Values.git_sync.viaSsh.credentials.known_hosts.value) }}
             - name: git-secret
@@ -108,7 +118,7 @@ spec:
         {{- end }}
       {{- if (.Values.hiera.hieradataurl) }}
       securityContext:
-        fsGroup: 65533 # to make SSH key readable
+        fsGroup: 65533  # to make SSH key readable
       {{- end }}
       volumes:
         - name: puppet-code-storage
@@ -145,5 +155,5 @@ spec:
         - name: git-secret
           secret:
             secretName: {{ template "git_sync.secret" . }}
-            defaultMode: 288 # = mode 0440
+            defaultMode: 288  # = mode 0440
         {{- end -}}
