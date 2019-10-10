@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "sonarqube.fullname" . }}
@@ -9,6 +9,10 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "sonarqube.name" . }}
+      release: {{ .Release.Name }}
 {{- if .Values.deploymentStrategy }}
   strategy:
 {{ toYaml .Values.deploymentStrategy | indent 4 }}
@@ -91,7 +95,9 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: {{ .Values.service.internalPort }}
+            - name: http
+              containerPort: {{ .Values.service.internalPort }}
+              protocol: TCP
           {{- if .Values.plugins.install }}
           command:
             - /tmp/scripts/copy_plugins.sh
@@ -126,13 +132,13 @@ spec:
           livenessProbe:
             httpGet:
               path: {{ .Values.livenessProbe.sonarWebContext }}sessions/new
-              port: {{ .Values.service.internalPort }}
+              port: http
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
           readinessProbe:
             httpGet:
               path: {{ .Values.readinessProbe.sonarWebContext }}sessions/new
-              port: {{ .Values.service.internalPort }}
+              port: http
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             failureThreshold: {{ .Values.readinessProbe.failureThreshold }}

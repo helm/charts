@@ -25,14 +25,7 @@ spec:
       secretName: {{ .secretName }}
   {{- end }}
 {{- end }}
-  rules:
-  {{- range .Values.drivers.webhook.ingress.hosts }}
-    - host: {{ . | quote }}
-      http:
-        paths:
-          - path: {{ $ingressPath }}
-            backend:
-              serviceName: {{ $fullName }}
-              servicePort: http
-  {{- end }}
+  backend:
+    serviceName: {{ $fullName }}
+    servicePort: {{ $.Values.drivers.webhook.service.port }}
 {{- end }}

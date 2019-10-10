@@ -28,6 +28,11 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
     spec:
+      {{- if .Values.serviceAccount.create  }}
+      serviceAccountName: {{ template "elasticsearch-exporter.fullname" . }}
+      {{- else }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      {{- end }}
 {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
 {{- end }}
