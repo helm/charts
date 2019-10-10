@@ -155,3 +155,5 @@ persistence:
     # Set this to false if you don't care to persist state between restarts.
     enabled: true
     Size: 1Gi
+
+podAnnotations: {}

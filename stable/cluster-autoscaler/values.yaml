@@ -65,6 +65,9 @@ image:
 
 tolerations: []
 
+## Extra ENV passed to the container
+extraEnv: {}
+
 extraArgs:
   v: 4
   stderrthreshold: info
