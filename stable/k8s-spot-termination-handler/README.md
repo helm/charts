@@ -42,6 +42,8 @@ Parameter | Description | Default
 `gracePeriod` | Grace period for node draining | `120`
 `envFromSecret` | Name of a Kubernetes secret (must be manually created in the same namespace) containing values to be added to the environment | `""` |
 `resources` | pod resource requests & limits | `{}`
+`securityContext` | [Security settings for a container](https://kubernetes.io/docs/concepts/policy/security-context) | `{}`
+`podSecurityContext` | [Security settings for a pod](https://kubernetes.io/docs/concepts/policy/security-context) | `{}`
 `nodeSelector` | node labels for pod assignment | `{}`
 `tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `affinity` | node/pod affinities (requires Kubernetes >=1.6) | `{}`
