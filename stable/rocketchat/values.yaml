@@ -161,3 +161,12 @@ service:
   # nodePort: 30000
 
   port: 80
+
+## Optional Pod Labels.
+podLabels: {}
+
+## Optional Pod Annotations.
+podAnnotations: {}
+  # prometheus.io/port: "9458"
+  # prometheus.io/path: "/metrics"
+  # prometheus.io/scrape: "true"

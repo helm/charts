@@ -40,6 +40,9 @@ service:
 meshService:
   annotations: {}
 
+labels: {}
+annotations: {}
+
 tolerations: []
 
 resources: {}
