@@ -37,6 +37,9 @@ spec:
         {{ toYaml . | nindent 8 }}
       {{- end }}
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
       containers:
       {{- if .Values.cloudsql.enabled  }}
       - name: cloudsql-proxy
