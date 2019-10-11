@@ -1,0 +1,17 @@
+{{ if .Values.controller.vpa.enabled }}
+apiVersion: autoscaling.k8s.io/v1beta2
+kind: VerticalPodAutoscaler
+metadata:
+  name: {{ template "nginx-ingress.controller.fullname" . }}
+spec:
+  resourcePolicy:
+    containerPolicies:
+    - containerName: istio-proxy
+      mode: "Off"
+  targetRef:
+    apiVersion: extensions/v1beta1
+    kind: Deployment
+    name: {{ template "nginx-ingress.controller.fullname" . }}
+  updatePolicy:
+    updateMode: {{ .Values.controller.vpa.updateMode }}
+{{- end }}

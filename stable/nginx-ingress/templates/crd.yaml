@@ -1,0 +1,63 @@
+{{ if .Values.controller.vpa.enabled }}
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+  name: verticalpodautoscalers.autoscaling.k8s.io
+spec:
+  group: autoscaling.k8s.io
+  names:
+    kind: VerticalPodAutoscaler
+    listKind: VerticalPodAutoscalerList
+    plural: verticalpodautoscalers
+    shortNames:
+    - vpa
+    singular: verticalpodautoscaler
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        spec:
+          properties:
+            resourcePolicy:
+              properties:
+                containerPolicies:
+                  type: array
+            targetRef:
+              type: object
+            updatePolicy:
+              properties:
+                updateMode:
+                  type: string
+  version: v1beta1
+  versions:
+  - name: v1beta1
+    served: true
+    storage: false
+  - name: v1beta2
+    served: true
+    storage: true
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: verticalpodautoscalercheckpoints.autoscaling.k8s.io
+spec:
+  group: autoscaling.k8s.io
+  names:
+    kind: VerticalPodAutoscalerCheckpoint
+    listKind: VerticalPodAutoscalerCheckpointList
+    plural: verticalpodautoscalercheckpoints
+    shortNames:
+    - vpacheckpoint
+    singular: verticalpodautoscalercheckpoint
+  scope: Namespaced
+  version: v1beta1
+  versions:
+  - name: v1beta1
+    served: true
+    storage: false
+  - name: v1beta2
+    served: true
+    storage: true
+{{- end }}
