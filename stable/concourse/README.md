@@ -316,6 +316,10 @@ kubectl create secret generic my-release-concourse --from-file=.
 Make sure you clean up after yourself.
 
 
+### Ephemeral Workers
+
+If you set `workers.ephemeral: true`, then the workers are created as a `Deployment` instead of a `StatefulSet`. This means that they will have randomised hostnames, and will be treated by ATC as new workers when they start.
+
 ### Persistence
 
 This chart mounts a Persistent Volume for each Concourse Worker.
@@ -351,6 +355,7 @@ persistence:
 
 It is highly recommended to use Persistent Volumes for Concourse Workers; otherwise, the Concourse volumes managed by the Worker are stored in an [`emptyDir`](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir) volume on the Kubernetes node's disk. This will interfere with Kubernete's [ImageGC](https://kubernetes.io/docs/concepts/cluster-administration/kubelet-garbage-collection/#image-collection) and the node's disk will fill up as a result.
 
+If you are using `ephemeral` workers then you should consider disabling persistence.
 
 ### Ingress TLS
 
