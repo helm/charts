@@ -3,8 +3,8 @@ The haproxy-ingress controller has been installed.
 {{- if contains "NodePort" .Values.controller.service.type }}
 Get the application URL by running these commands:
 
-  export HTTP_NODE_PORT=$(kubectl --namespace {{ .Release.Namespace }} get services -o jsonpath="{.spec.ports[0].nodePort}" {{ template "haproxy-ingress.fullname" . }}-controller)
-  export HTTPS_NODE_PORT=$(kubectl --namespace {{ .Release.Namespace }} get services -o jsonpath="{.spec.ports[1].nodePort}" {{ template "haproxy-ingress.fullname" . }}-controller)
+  export HTTP_NODE_PORT=$(kubectl --namespace {{ .Release.Namespace }} get services -o jsonpath="{.spec.ports[0].nodePort}" {{ template "haproxy-ingress.controller.fullname" . }})
+  export HTTPS_NODE_PORT=$(kubectl --namespace {{ .Release.Namespace }} get services -o jsonpath="{.spec.ports[1].nodePort}" {{ template "haproxy-ingress.controller.fullname" . }})
   export NODE_IP=$(kubectl --namespace {{ .Release.Namespace }} get nodes -o jsonpath="{.items[0].status.addresses[1].address}")
 
   echo "Visit http://$NODE_IP:$HTTP_NODE_PORT to access your application via HTTP."
