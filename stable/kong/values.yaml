@@ -294,7 +294,7 @@ readinessProbe:
     path: "/status"
     port: metrics
     scheme: HTTP
-  initialDelaySeconds: 30
+  initialDelaySeconds: 10
   timeoutSeconds: 1
   periodSeconds: 10
   successThreshold: 1
@@ -307,7 +307,7 @@ livenessProbe:
     path: "/status"
     port: metrics
     scheme: HTTP
-  initialDelaySeconds: 30
+  initialDelaySeconds: 10
   timeoutSeconds: 5
   periodSeconds: 30
   successThreshold: 1
@@ -373,7 +373,7 @@ ingressController:
       path: "/healthz"
       port: 10254
       scheme: HTTP
-    initialDelaySeconds: 30
+    initialDelaySeconds: 10
     periodSeconds: 10
     successThreshold: 1
     timeoutSeconds: 5
@@ -383,10 +383,11 @@ ingressController:
       path: "/healthz"
       port: 10254
       scheme: HTTP
-      initialDelaySeconds: 30
+    initialDelaySeconds: 10
     periodSeconds: 10
     successThreshold: 1
     timeoutSeconds: 5
+  resources: {}
 
   installCRDs: true
 

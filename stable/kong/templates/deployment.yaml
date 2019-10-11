@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: "{{ template "kong.fullname" . }}"
@@ -36,7 +36,7 @@ spec:
         release: {{ .Release.Name }}
         component: app
     spec:
-      {{- if (and (.Values.ingressController.enabled) (eq .Values.env.database "off")) }}
+      {{- if .Values.ingressController.enabled }}
       serviceAccountName: {{ template "kong.serviceAccountName" . }}
       {{ end }}
       {{- if .Values.image.pullSecrets }}
@@ -50,7 +50,7 @@ spec:
       {{- include "kong.wait-for-db" . | nindent 6 }}
       {{ end }}
       containers:
-      {{- if (and (.Values.ingressController.enabled) (eq .Values.env.database "off")) }}
+      {{- if .Values.ingressController.enabled }}
       {{- include "kong.controller-container" . | nindent 6 }}
       {{ end }}
       - name: {{ template "kong.name" . }}
@@ -136,7 +136,7 @@ spec:
         - name: KONG_SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.enterprise.smtp.auth.smtp_password }}
+              name: {{ .Values.enterprise.smtp.auth.smtp_password_secret }}
               key: smtp_password
         {{- end }}
         {{- else }}
