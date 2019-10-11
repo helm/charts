@@ -83,7 +83,7 @@ ingress:
 # Global configuration shared by all anchore-engine services.
 anchoreGlobal:
   # Image used for all anchore engine deployments (excluding enterprise components).
-  image: docker.io/anchore/anchore-engine:v0.5.0
+  image: docker.io/anchore/anchore-engine:v0.5.1
   imagePullPolicy: IfNotPresent
 
   # Set this value to True to setup the chart for OpenShift deployment compatability.
