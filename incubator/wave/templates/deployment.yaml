@@ -9,8 +9,7 @@ spec:
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
-      app: {{ template "wave-fullname" . }}
-      release: {{ .Release.Name | quote }}
+{{ include "wave-labels.chart" . | indent 6 }}
   template:
     metadata:
       labels:

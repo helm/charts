@@ -9,3 +9,8 @@ keywords:
 home: https://github.com/pusher/wave
 sources:
 - https://github.com/pusher/wave
+maintainers:
+- name: JoelSpeed
+  email: Joel.speed@hotmail.co.uk
+- name: marcostvz
+  email: marcos.stvz@gmail.com
