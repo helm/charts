@@ -3,6 +3,7 @@ apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default 
 kind: ServiceMonitor
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-node-exporter
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-node-exporter
 {{ include "prometheus-operator.labels" . | indent 4 }}
@@ -16,6 +17,9 @@ spec:
   - port: metrics
     {{- if .Values.nodeExporter.serviceMonitor.interval }}
     interval: {{ .Values.nodeExporter.serviceMonitor.interval }}
+    {{- end }}
+    {{- if .Values.nodeExporter.serviceMonitor.scrapeTimeout }}
+    scrapeTimeout: {{ .Values.nodeExporter.serviceMonitor.scrapeTimeout }}
     {{- end }}
 {{- if .Values.nodeExporter.serviceMonitor.metricRelabelings }}
     metricRelabelings:

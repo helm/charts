@@ -74,7 +74,9 @@ aws:
   ## AWS Zone tags
   ##
   zoneTags: []
-
+  ## Enable AWS Prefer CNAME. Available values are: true, false
+  ##
+  preferCNAME: ""
 ## Azure configuration to be set via arguments/env. variables
 ##
 azure:
@@ -106,6 +108,9 @@ azure:
 ## Cloudflare configuration to be set via arguments/env. variables
 ##
 cloudflare:
+  ## `CF_API_TOKEN` to set in the environment
+  ##
+  apiToken: ""
   ## `CF_API_KEY` to set in the environment
   ##
   apiKey: ""
