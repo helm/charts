@@ -85,6 +85,7 @@ spec:
           {{- end }}
           {{- if .Values.server.baseURL }}
             - --web.external-url={{ .Values.server.baseURL }}
+            - --web.route-prefix=/
           {{- end }}
           {{- if .Values.server.enableAdminApi }}
             - --web.enable-admin-api
