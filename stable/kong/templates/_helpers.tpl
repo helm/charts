@@ -192,27 +192,12 @@ Create the ingress servicePort value string
         fieldPath: metadata.namespace
   image: "{{ .Values.ingressController.image.repository }}:{{ .Values.ingressController.image.tag }}"
   imagePullPolicy: {{ .Values.image.pullPolicy }}
-  livenessProbe:
-    failureThreshold: 3
-    httpGet:
-      path: /healthz
-      port: 10254
-      scheme: HTTP
-    initialDelaySeconds: 30
-    periodSeconds: 10
-    successThreshold: 1
-    timeoutSeconds: 1
   readinessProbe:
-    failureThreshold: 3
-    httpGet:
-      path: /healthz
-      port: 10254
-      scheme: HTTP
-    periodSeconds: 10
-    successThreshold: 1
-    timeoutSeconds: 1
+{{ toYaml .Values.ingressController.readinessProbe | indent 4 }}
+  livenessProbe:
+{{ toYaml .Values.ingressController.livenessProbe | indent 4 }}
   resources:
-{{ toYaml .Values.ingressController.resources | indent 10 }}
+{{ toYaml .Values.ingressController.resources | indent 4 }}
 {{- end -}}
 
 {{/*
