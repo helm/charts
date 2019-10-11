@@ -17,7 +17,7 @@ deployment on a [Kubernetes](http://kubernetes.io) cluster using the
 
 ## Prerequisites
 
-- Kubernetes 1.5+ with Beta APIs enabled
+- Kubernetes 1.9+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
@@ -86,7 +86,7 @@ and their default values.
 | `forceBoot`                                    | [Force](https://www.rabbitmq.com/rabbitmqctl.8.html#force_boot) the cluster to start even if it was shutdown in an unexpected order, preferring availability over integrity | `false` |
 | `image.pullPolicy`                             | Image pull policy                                                                                                                                                                                     | `IfNotPresent`   |
 | `image.repository`                             | RabbitMQ container image repository                                                                                                                                                                   | `rabbitmq`                                                 |
-| `image.tag`                                    | RabbitMQ container image tag                                                                                                                                                                          | `3.7.15-alpine`                                            |
+| `image.tag`                                    | RabbitMQ container image tag                                                                                                                                                                          | `3.7.19-alpine`                                            |
 | `image.pullSecrets`                            | Specify docker-registry secret names as an array                                                                                                                                                      | `[]`                                                       |
 | `managementPassword`                           | Management user password.                                                                                                                                                                             | _random 24 character long alphanumeric string_             |
 | `managementUsername`                           | Management user with minimal permissions used for health checks                                                                                                                                       | `management`                                               |
