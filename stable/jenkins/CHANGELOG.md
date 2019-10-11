@@ -6,6 +6,19 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.7.6
+
+Updated  `master.slaveKubernetesNamespace` to parse helm templates.
+Removed some invalid warnings.
+Defined an sensible empty value to the following variables:
+  - master.extraPorts
+  - master.scriptApproval
+  - master.initScripts
+  - master.JCasC.configScripts
+  - master.sidecars.other
+  - agent.envVars
+  - agent.volumes
+
 ## 1.7.5
 
 Fixed an issue where the JCasC won't run if JCasC auto-reload is enabled [issue #17135](https://github.com/helm/charts/issues/17135)
