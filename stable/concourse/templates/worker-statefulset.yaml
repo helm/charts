@@ -1,6 +1,10 @@
 {{- if .Values.worker.enabled -}}
 apiVersion: apps/v1beta1
+{{- if .Values.concourse.worker.ephemeral }}
+kind: Deployment
+{{- else }}
 kind: StatefulSet
+{{- end }}
 metadata:
   name: {{ template "concourse.worker.fullname" . }}
   labels:
@@ -9,7 +13,9 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  {{- if not .Values.concourse.worker.ephemeral }}
   serviceName: {{ template "concourse.worker.fullname" . }}
+  {{- end }}
   replicas: {{ .Values.worker.replicas }}
   template:
     metadata:
@@ -350,11 +356,13 @@ spec:
             {{- end }}
       {{- end }}
   {{- end }}
+  {{- if not .Values.concourse.worker.ephemeral }}
   {{- if semverCompare "^1.7-0" .Capabilities.KubeVersion.GitVersion }}
   updateStrategy:
     type: {{ .Values.worker.updateStrategy }}
   {{- end }}
   {{- if .Values.worker.podManagementPolicy }}
   podManagementPolicy: {{ .Values.worker.podManagementPolicy }}
+  {{- end }}
   {{- end }}
 {{- end }}
