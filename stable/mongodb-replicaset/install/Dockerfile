@@ -12,6 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+FROM golang
+ADD https://raw.githubusercontent.com/kubernetes-retired/contrib/master/peer-finder/peer-finder.go .
+RUN go get -d -v k8s.io/apimachinery/pkg/util/sets
+RUN CGO_ENABLED=0 go build -a -installsuffix cgo --ldflags '-w' ./peer-finder.go
+
 FROM alpine:3.8
 
 LABEL maintainer="Reinhard Nägele <unguiculus@gmail.com>"
@@ -21,5 +26,6 @@ RUN apk update && apk add bash openssl && wget -qO /peer-finder http://storage.g
 ENTRYPOINT ["/install.sh"]
 
 COPY install.sh /
-
+COPY --from=0 /go/peer-finder /peer-finder
 RUN chmod -c 755 /install.sh /peer-finder
+

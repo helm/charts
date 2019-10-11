@@ -14,7 +14,7 @@
 
 all: push
 
-TAG = 0.7
+TAG = 0.8
 PREFIX = unguiculus/mongodb-install
 
 build:

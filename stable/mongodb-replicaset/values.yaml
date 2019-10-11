@@ -28,7 +28,7 @@ imagePullSecrets: []
 # Specs for the Docker image for the init container that establishes the replica set
 installImage:
   repository: unguiculus/mongodb-install
-  tag: 0.7
+  tag: 0.8
   pullPolicy: IfNotPresent
 
 # Specs for the Docker image for the copyConfig init container
