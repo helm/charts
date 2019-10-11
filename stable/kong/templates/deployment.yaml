@@ -167,6 +167,10 @@ spec:
           value: "/kong_dbless/kong.yml"
         {{- end }}
         {{- include "kong.env" .  | indent 8 }}
+        lifecycle:
+          preStop:
+            exec:
+              command: [ "/bin/sh", "-c", "kong quit" ]
         ports:
         - name: admin
           containerPort: {{ .Values.admin.containerPort }}
