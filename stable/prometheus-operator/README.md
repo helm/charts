@@ -217,6 +217,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | ----- | ----------- | ------ |
 | `prometheus.additionalServiceMonitors` | List of `ServiceMonitor` objects to create. See https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#servicemonitorspec | `[]` |
 | `prometheus.enabled` | Deploy prometheus | `true` |
+| `prometheus.annotations` | Prometheus annotations | `{}` |
 | `prometheus.ingress.annotations` | Prometheus Ingress annotations | `{}` |
 | `prometheus.ingress.enabled` | If true, Prometheus Ingress will be created | `false` |
 | `prometheus.ingress.hosts` | Prometheus Ingress hostnames | `[]` |
