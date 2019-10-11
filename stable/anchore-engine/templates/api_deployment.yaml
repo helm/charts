@@ -37,6 +37,9 @@ spec:
         {{ toYaml . | nindent 8 }}
       {{- end }}
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
       {{ if and .Values.anchoreEnterpriseGlobal.enabled (or .Values.anchoreEnterpriseRbac.enabled .Values.anchoreEnterpriseReports.enabled) }}
       imagePullSecrets:
       - name: {{ .Values.anchoreEnterpriseGlobal.imagePullSecretName }}
