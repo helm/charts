@@ -1,6 +1,6 @@
 # Node-RED
 
-Flow-based programming for the Internet of Things
+Low-code programming for event-driven applications
 
 **This chart is not maintained by the Node-RED project and any issues with the chart should be raised [here](https://github.com/helm/charts/issues/new)**
 
@@ -12,8 +12,7 @@ helm install stable/node-red
 
 ## Introduction
 
-This code is adopted from the [official node-red docker image](https://hub.docker.com/r/nodered/node-red-docker/) which runs the [Node-RED application](https://nodered.org/)
-
+This code is adopted from the [official node-red docker image](https://hub.docker.com/r/nodered/node-red/) which runs the [Node-RED application](https://nodered.org/)
 
 ## Installing the Chart
 
@@ -39,10 +38,12 @@ The following tables lists the configurable parameters of the Node-RED chart and
 | Parameter                          | Description                                                             | Default                   |
 |:---------------------------------- |:----------------------------------------------------------------------- |:------------------------- |
 | `image.repository`                 | node-red image                                                          | `nodered/node-red`        |
-| `image.tag`                        | node-red image tag                                                      | `1.0.1-12-minimal`        |
+| `image.tag`                        | node-red image tag                                                      | `1.0.2-12-minimal`        |
 | `image.pullPolicy`                 | node-red image pull policy                                              | `IfNotPresent`            |
 | `strategyType`                     | Specifies the strategy used to replace old Pods by new ones             | `Recreate`                |
 | `flows`                            | Default flows configuration                                             | `flows.json`              |
+| `safeMode`                         | Setting to true starts Node-RED in safe (not running) mode              | `false`                   |
+| `enableProjects`                   | setting to true starts Node-RED with the projects feature enabled       | `false`                   |
 | `nodeOptions`                      | Node.js runtime arguments                                               | ``                        |
 | `extraEnvs`                        | Extra environment variables which will be appended to the env           | `[]`                      |
 | `timezone`                         | Default timezone                                                        | `UTC`                     |
