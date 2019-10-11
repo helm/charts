@@ -74,7 +74,9 @@ aws:
   ## AWS Zone tags
   ##
   zoneTags: []
-
+  ## Enable AWS Prefer CNAME. Available values are: true, false
+  ##
+  preferCNAME: ""
 ## Azure configuration to be set via arguments/env. variables
 ##
 azure:

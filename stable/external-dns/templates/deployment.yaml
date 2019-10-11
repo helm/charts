@@ -105,6 +105,9 @@ spec:
         {{- range .Values.aws.zoneTags }}
         - --aws-zone-tags={{ . }}
         {{- end }}
+        {{- if .Values.aws.preferCNAME }}
+        - --aws-prefer-cname
+        {{- end }}
         # Azure Arguments
         {{- if eq .Values.provider "azure" }}
         {{- if .Values.azure.resourceGroup }}
