@@ -124,6 +124,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `master.podDisruptionBudget.enabled`      | If true, create a pod disruption budget for master pods. | `false`                                                      |
 | `master.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `1`                                                  |
 | `master.podDisruptionBudget.maxUnavailable`| Maximum number / percentage of pods that may be made unavailable | `nil`                                               |
+| `master.service.annotations`              | Master service annotations                          | `{}`                                                              |
 | `slave.replicas`                          | Desired number of slave replicas                    | `1`                                                               |
 | `slave.annotations[].key`                 | key for the the annotation list item                | `nil`                                                             |
 | `slave.annotations[].value`               | value for the the annotation list item              | `nil`                                                             |
@@ -156,12 +157,27 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `slave.podDisruptionBudget.enabled`       | If true, create a pod disruption budget for slave pods. | `false`                                                       |
 | `slave.podDisruptionBudget.minAvailable`  | Minimum number / percentage of pods that should remain scheduled | `1`                                                  |
 | `slave.podDisruptionBudget.maxUnavailable`| Maximum number / percentage of pods that may be made unavailable | `nil`                                                |
+| `slave.service.annotations`               | Slave service annotations                           | `{}`                                                              |
 | `metrics.enabled`                         | Start a side-car prometheus exporter                | `false`                                                           |
 | `metrics.image.registry`                  | Exporter image registry                             | `docker.io`                                                       |
 | `metrics.image.repository`                | Exporter image name                                 | `bitnami/mysqld-exporter`                                         |
 | `metrics.image.tag`                       | Exporter image tag                                  | `{TAG_NAME}`                                                      |
 | `metrics.image.pullPolicy`                | Exporter image pull policy                          | `IfNotPresent`                                                    |
 | `metrics.resources`                       | Exporter resource requests/limit                    | `nil`                                                             |
+| `metrics.extraArgs.master`                | Extra args to be passed to mysqld_exporter          | `[]`                                                              |
+| `metrics.extraArgs.slave`                 | Extra args to be passed to mysqld_exporter          | `[]`                                                              |
+| `metrics.livenessProbe.enabled`            | Turn on and off liveness probe (metrics)             | `true`                                                            |
+| `metrics.livenessProbe.initialDelaySeconds`| Delay before liveness probe is initiated (metrics)   | `120`                                                             |
+| `metrics.livenessProbe.periodSeconds`      | How often to perform the probe (metrics)             | `10`                                                              |
+| `metrics.livenessProbe.timeoutSeconds`     | When the probe times out (metrics)                   | `1`                                                               |
+| `metrics.livenessProbe.successThreshold`   | Minimum consecutive successes for the probe (metrics)| `1`                                                               |
+| `metrics.livenessProbe.failureThreshold`   | Minimum consecutive failures for the probe (metrics) | `3`                                                               |
+| `metrics.readinessProbe.enabled`           | Turn on and off readiness probe (metrics)            | `true`                                                            |
+| `metrics.readinessProbe.initialDelaySeconds`| Delay before readiness probe is initiated (metrics) | `30`                                                              |
+| `metrics.readinessProbe.periodSeconds`     | How often to perform the probe (metrics)             | `10`                                                              |
+| `metrics.readinessProbe.timeoutSeconds`    | When the probe times out (metrics)                   | `1`                                                               |
+| `metrics.readinessProbe.successThreshold`  | Minimum consecutive successes for the probe (metrics)| `1`                                                               |
+| `metrics.readinessProbe.failureThreshold`  | Minimum consecutive failures for the probe (metrics) | `3`                                                               |
 | `metrics.serviceMonitor.enabled`          | if `true`, creates a Prometheus Operator ServiceMonitor (also requires `metrics.enabled` to be `true`)                    | `false`                                                             |
 | `metrics.serviceMonitor.namespace`        | Optional namespace which Prometheus is running in   | `nil`                                                             |
 | `metrics.serviceMonitor.interval`         | How frequently to scrape metrics (use by default, falling back to Prometheus' default)  | `nil`                                                             |

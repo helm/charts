@@ -1,0 +1,197 @@
+{{- if and .Values.systemProbe.enabled .Values.daemonset.useDedicatedContainers }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: system-probe-config
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: {{ $.Chart.Name }}
+    service: {{ $.Chart.Name }}
+    chart_version: {{ $.Chart.Version }}
+    chart_name: {{ $.Chart.Name }}
+    heritage: {{ .Release.Service | quote }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app.kubernetes.io/name: "{{ template "datadog.fullname" . }}"
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+data:
+  system-probe.yaml: |
+    system_probe_config:
+      enabled: {{ $.Values.systemProbe.enabled }}
+      debug_port:  {{ $.Values.systemProbe.debugPort }}
+      sysprobe_socket: /opt/datadog-agent/run/sysprobe.sock
+      enable_conntrack : {{ $.Values.systemProbe.enableConntrack }}
+      bpf_debug: {{ $.Values.systemProbe.bpfDebug }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: datadog-agent-security
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: {{ $.Chart.Name }}
+    service: {{ $.Chart.Name }}
+    chart_version: {{ $.Chart.Version }}
+    chart_name: {{ $.Chart.Name }}
+    heritage: {{ .Release.Service | quote }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app.kubernetes.io/name: "{{ template "datadog.fullname" . }}"
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+data:
+  system-probe-seccomp.json: |
+    {
+      "defaultAction": "SCMP_ACT_ERRNO",
+      "syscalls": [
+        {
+          "names": [
+            "accept4",
+            "arch_prctl",
+            "bind",
+            "bpf",
+            "brk",
+            "capget",
+            "capset",
+            "chdir",
+            "clone",
+            "close",
+            "connect",
+            "copy_file_range",
+            "creat",
+            "dup",
+            "dup2",
+            "dup3",
+            "epoll_create",
+            "epoll_create1",
+            "epoll_ctl",
+            "epoll_ctl_old",
+            "epoll_pwait",
+            "epoll_wait",
+            "epoll_wait",
+            "epoll_wait_old",
+            "execve",
+            "execveat",
+            "exit",
+            "exit_group",
+            "fchmod",
+            "fchmodat",
+            "fchown",
+            "fchown32",
+            "fchownat",
+            "fcntl",
+            "fcntl64",
+            "fstat",
+            "fstat64",
+            "fsync",
+            "futex",
+            "getdents",
+            "getdents64",
+            "getpeername",
+            "getpid",
+            "getppid",
+            "getpriority",
+            "getrandom",
+            "getresgid",
+            "getresgid32",
+            "getresuid",
+            "getresuid32",
+            "getrlimit",
+            "getrusage",
+            "getsid",
+            "getsockname",
+            "getsockopt",
+            "gettid",
+            "gettimeofday",
+            "getxattr",
+            "ioctl",
+            "ipc",
+            "listen",
+            "lstat",
+            "lstat64",
+            "mkdir",
+            "mkdirat",
+            "mmap",
+            "mmap2",
+            "mprotect",
+            "munmap",
+            "nanosleep",
+            "newfstatat",
+            "open",
+            "openat",
+            "pause",
+            "perf_event_open",
+            "pipe",
+            "pipe2",
+            "poll",
+            "ppoll",
+            "prctl",
+            "prlimit64",
+            "read",
+            "recvfrom",
+            "recvmmsg",
+            "recvmsg",
+            "restart_syscall",
+            "rmdir",
+            "rt_sigaction",
+            "rt_sigpending",
+            "rt_sigprocmask",
+            "rt_sigqueueinfo",
+            "rt_sigreturn",
+            "rt_sigsuspend",
+            "rt_sigtimedwait",
+            "rt_tgsigqueueinfo",
+            "seccomp",
+            "select",
+            "semtimedop",
+            "send",
+            "sendmmsg",
+            "sendmsg",
+            "sendto",
+            "setgid",
+            "setgid32",
+            "setgroups",
+            "setgroups32",
+            "setrlimit",
+            "setsid",
+            "setsidaccept4",
+            "setsockopt",
+            "setuid",
+            "setuid32",
+            "sigaltstack",
+            "socket",
+            "socketcall",
+            "socketpair",
+            "umask",
+            "uname",
+            "unlink",
+            "unlinkat",
+            "wait4",
+            "waitid",
+            "waitpid",
+            "write"
+          ],
+          "action": "SCMP_ACT_ALLOW",
+          "args": null
+        },
+        {
+          "names": [
+            "setns"
+          ],
+          "action": "SCMP_ACT_ALLOW",
+          "args": [
+            {
+              "index": 1,
+              "value": 1073741824,
+              "valueTwo": 0,
+              "op": "SCMP_CMP_EQ"
+            }
+          ],
+          "comment": "",
+          "includes": {},
+          "excludes": {}
+        }
+      ]
+    }
+{{- end }}

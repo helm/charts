@@ -21,6 +21,12 @@ rules:
 - apiGroups: [""]
   resources: ["pods", "events", "nodes", "namespaces", "services"]
   verbs: ["list", "get", "watch"]
+- apiGroups: ["extensions"]
+  resources: ["deployments"]
+  verbs: ["list"]
+- apiGroups: ["azmon.container.insights"]
+  resources: ["healthstates"]
+  verbs: ["get", "create", "patch"]
 - nonResourceURLs: ["/metrics"]
   verbs: ["get"]
 ---

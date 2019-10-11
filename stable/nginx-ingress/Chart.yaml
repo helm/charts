@@ -15,3 +15,4 @@ maintainers:
   - name: taharah
     email: Trevor.G.Wood@gmail.com
 engine: gotpl
+kubeVersion: ">=1.10.0-0"

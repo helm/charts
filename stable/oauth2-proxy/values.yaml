@@ -30,7 +30,7 @@ config:
 
 image:
   repository: "quay.io/pusher/oauth2_proxy"
-  tag: "v3.2.0"
+  tag: "v4.0.0"
   pullPolicy: "IfNotPresent"
 
 # Optionally specify an array of imagePullSecrets.
@@ -92,6 +92,15 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 300Mi
+
+extraVolumes: []
+  # - name: ca-bundle-cert
+  #   secret:
+  #     secretName: <secret-name>
+
+extraVolumeMounts: []
+  # - mountPath: /etc/ssl/certs/
+  #   name: ca-bundle-cert
 
 priorityClassName: ""
 
