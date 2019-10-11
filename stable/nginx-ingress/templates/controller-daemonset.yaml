@@ -214,7 +214,7 @@ spec:
     {{- end }}
       serviceAccountName: {{ template "nginx-ingress.serviceAccountName" . }}
       terminationGracePeriodSeconds: 60
-{{- if (or .Values.controller.customTemplate.configMapName .Values.controller.extraVolumeMounts .Values.controller.admissionWebhooks.enabled) }}
+{{- if (or .Values.controller.customTemplate.configMapName .Values.controller.extraVolumeMounts .Values.controller.admissionWebhooks.enabled .Values.controller.extraVolumes) }}
       volumes:
 {{- end }}
 {{- if .Values.controller.customTemplate.configMapName }}
