@@ -9,8 +9,7 @@ NOTE: The change log until version 1.5.7 is auto generated based on git commits.
 ## 1.7.6
 
 Updated  `master.slaveKubernetesNamespace` to parse helm templates.
-Removed some invalid warnings.
-Defined an sensible empty value to the following variables:
+Defined an sensible empty value to the following variables, to silence invalid warnings:
   - master.extraPorts
   - master.scriptApproval
   - master.initScripts
