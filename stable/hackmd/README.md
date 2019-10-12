@@ -54,6 +54,7 @@ Parameter | Description | Default
 `postgresql.postgresHost` | PostgreSQL host (if `postgresql.install == false`)  | `nil`
 `postgresql.postgresPassword` | PostgreSQL Password for the new user | random 10 characters
 `postgresql.postgresDatabase` | PostgreSQL Database to create | `hackmd`
+`postgresql.postgresPort` | PostgreSQL Port to use | `5432`
 
 ### Use persistent volume for image uploads
 
