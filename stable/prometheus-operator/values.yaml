@@ -1156,6 +1156,10 @@ prometheus:
 
   enabled: true
 
+  ## Annotations for Prometheus
+  ##
+  annotations: {}
+
   ## Service account for Prometheuses to use.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
   ##
