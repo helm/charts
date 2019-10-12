@@ -13,5 +13,7 @@ maintainers:
   email: miroslav.hadzhiev@gmail.com
 - name: scottcressi
   email: scottcressi@gmail.com
+- name: underscorgan
+  email: morgan@puppet.com
 engine: gotpl
 tillerVersion: ">=2.8.0"
