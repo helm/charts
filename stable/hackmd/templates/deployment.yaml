@@ -62,9 +62,9 @@ spec:
                   name: {{ template "hackmd.fullname" . }}
                   key: sessionSecret
             - name: CMD_DB_URL
-              value: postgres://{{ .Values.postgresql.postgresUser }}:$(CMD_DB_PASSWORD)@{{ template "hackmd.database.host" . }}:5432/{{ .Values.postgresql.postgresDatabase }}
+              value: postgres://{{ .Values.postgresql.postgresUser }}:$(CMD_DB_PASSWORD)@{{ template "hackmd.database.host" . }}:{{ .Values.postgresql.postgresPort }}/{{ .Values.postgresql.postgresDatabase }}
             - name: HMD_DB_URL
-              value: postgres://{{ .Values.postgresql.postgresUser }}:$(CMD_DB_PASSWORD)@{{ template "hackmd.database.host" . }}:5432/{{ .Values.postgresql.postgresDatabase }}
+              value: postgres://{{ .Values.postgresql.postgresUser }}:$(CMD_DB_PASSWORD)@{{ template "hackmd.database.host" . }}:{{ .Values.postgresql.postgresPort }}/{{ .Values.postgresql.postgresDatabase }}
             {{- if .Values.extraVars }}
 {{ toYaml .Values.extraVars | indent 12 }}
             {{- end }}

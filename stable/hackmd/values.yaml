@@ -84,5 +84,6 @@ postgresql:
   imageTag: "9.6.2"
   postgresUser: "hackmd"
   postgresDatabase: "hackmd"
+  postgresPort: "5432"
   ## Default: random 10 character string
   # postgresPassword:
