@@ -964,7 +964,7 @@ prometheusOperator:
       podAnnotations: {}
       nodeSelector: {}
 
-  ## Namespaces not to scope the interaction of the Prometheus Operator (deny list).
+  ## Namespaces not to scope the interaction of the Prometheus Operator (deny list).
   ##
   denyNamespaces: {}
 
