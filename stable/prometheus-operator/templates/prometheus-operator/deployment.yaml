@@ -43,6 +43,9 @@ spec:
           {{- if .Values.prometheusOperator.logLevel }}
             - --log-level={{ .Values.prometheusOperator.logLevel }}
           {{- end }}
+          {{- if .Values.prometheusOperator.denyNamespaces }}
+            - --deny-namespaces={{ .Values.prometheusOperator.denyNamespaces | join "," }}
+          {{- end }}
             - --logtostderr=true
             - --crd-apigroup={{ .Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com" }}
             - --localhost=127.0.0.1
