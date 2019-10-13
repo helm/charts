@@ -51,6 +51,7 @@ rules:
       - daemonsets
       - deployments
       - statefulsets
+      - replicasets
     verbs:
       - get
       - list
@@ -81,6 +82,13 @@ rules:
       - certificates.k8s.io
     resources:
       - certificatesigningrequests
+    verbs:
+      - list
+      - watch
+  - apiGroups:
+      - storage.k8s.io
+    resources:
+      - storageclasses
     verbs:
       - list
       - watch
