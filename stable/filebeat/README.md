@@ -4,7 +4,7 @@
 
 ## Prerequisites
 
-- Kubernetes 1.9+
+- Kubernetes 1.10+
 
 ## Note
 
@@ -25,7 +25,7 @@ The following table lists the configurable parameters of the filebeat chart and 
 | Parameter                                                | Description                                                                                              | Default                                            |
 | -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
 | `image.repository`                                       | Docker image repo                                                                                        | `docker.elastic.co/beats/filebeat-oss`             |
-| `image.tag`                                              | Docker image tag                                                                                         | `6.7.0`                                            |
+| `image.tag`                                              | Docker image tag                                                                                         | `7.0.1`                                            |
 | `image.pullPolicy`                                       | Docker image pull policy                                                                                 | `IfNotPresent`                                     |
 | `image.pullSecrets`                                      | Specify image pull secrets                                                                               | `nil`                                              |
 | `config.filebeat.config.modules.path`                    |                                                                                                          | `${path.config}/modules.d/*.yml`                   |

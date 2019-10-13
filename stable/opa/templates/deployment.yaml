@@ -20,6 +20,9 @@ spec:
         checksum/config: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
 {{- end }}
 {{- end }}
+{{- if .Values.annotations }}
+{{ toYaml .Values.annotations | indent 8 }}
+{{- end }}
       labels:
         app: {{ template "opa.fullname" . }}
       name: {{ template "opa.fullname" . }}
@@ -27,7 +30,7 @@ spec:
 {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
 {{- end }}
-{{- if .Values.authz.enabled }}
+{{- if or .Values.authz.enabled .Values.bootstrapPolicies}}
       initContainers:
         - name: initpolicy
           image: {{ .Values.mgmt.image }}:{{ .Values.mgmt.imageTag }}
@@ -38,9 +41,10 @@ spec:
           - /bin/sh
           - -c
           - |
-            tr -dc 'A-F0-9' < /dev/urandom | dd bs=1 count=32 2>/dev/null > /authz/mgmt-token
-            TOKEN=`cat /authz/mgmt-token`
-            cat > /authz/authz.rego <<EOF
+{{- if .Values.authz.enabled }}
+            tr -dc 'A-F0-9' < /dev/urandom | dd bs=1 count=32 2>/dev/null > /bootstrap/mgmt-token
+            TOKEN=`cat /bootstrap/mgmt-token`
+            cat > /bootstrap/authz.rego <<EOF
             package system.authz
             default allow = false
             # Allow anonymous access to the default policy decision.
@@ -48,12 +52,23 @@ spec:
             allow { input.path = [""]; input.method = "GET" }
             # This is only used for health check in liveness and readiness probe
             allow { input.path = ["health"]; input.method = "GET" }
+{{- if .Values.prometheus.enabled }}
+            # This allows metrics to be scraped by prometheus
+            allow { input.path = ["metrics"]; input.method = "GET" }
+{{- end }}
             allow { input.identity == "$TOKEN" }
             EOF
-          volumeMounts:
-            - name: authz
-              mountPath: /authz
 {{- end }}
+{{- range $policyName, $policy := .Values.bootstrapPolicies }}
+            cat > /bootstrap/{{ $policyName }}.rego <<EOF
+{{ $policy | indent 12 }}
+            EOF
+{{- end }}
+          volumeMounts:
+            - name: bootstrap
+              mountPath: /bootstrap
+{{- end }}
+
       containers:
         - name: opa
           image: {{ .Values.image }}:{{ .Values.imageTag }}
@@ -74,11 +89,15 @@ spec:
 {{- if .Values.authz.enabled }}
             - "--authentication=token"
             - "--authorization=basic"
-            - "/authz/authz.rego"
             - "--ignore=.*"
 {{- end }}
-{{- if .Values.mgmt.enabled }}
+{{- if .Values.prometheus.enabled }}
+            - "--insecure-addr=0.0.0.0:8181"
+{{- else if .Values.mgmt.enabled }}
             - "--insecure-addr=127.0.0.1:8181"
+{{- end }}
+{{- if or .Values.authz.enabled .Values.bootstrapPolicies }}
+            - "/bootstrap"
 {{- end }}
           volumeMounts:
             - name: certs
@@ -89,10 +108,10 @@ spec:
               readOnly: true
               mountPath: /config
 {{- end }}
-{{- if .Values.authz.enabled }}
-            - name: authz
+{{- if or .Values.authz.enabled .Values.bootstrapPolicies }}
+            - name: bootstrap
               readOnly: true
-              mountPath: /authz
+              mountPath: /bootstrap
 {{- end }}
           readinessProbe:
 {{ toYaml .Values.readinessProbe | indent 12 }}
@@ -106,7 +125,7 @@ spec:
 {{ toYaml .Values.mgmt.resources | indent 12 }}
           args:
 {{- if .Values.authz.enabled }}
-            - --opa-auth-token-file=/authz/mgmt-token
+            - --opa-auth-token-file=/bootstrap/mgmt-token
 {{- end }}
             - --opa-url=http://127.0.0.1:8181/v1
             - --replicate-path={{ .Values.mgmt.replicate.path }}
@@ -121,11 +140,11 @@ spec:
 {{- range .Values.mgmt.replicate.cluster }}
             - --replicate-cluster={{ . }}
 {{- end }}
-{{- if .Values.authz.enabled }}
+{{- if or .Values.authz.enabled .Values.bootstrapPolicies }}
           volumeMounts:
-            - name: authz
+            - name: bootstrap
               readOnly: true
-              mountPath: /authz
+              mountPath: /bootstrap
 {{- end }}
 {{- end }}
 {{- if .Values.sar.enabled }}
@@ -149,8 +168,8 @@ spec:
           secret:
             secretName: {{ template "opa.fullname" . }}-config
 {{- end }}
-{{- if .Values.authz.enabled }}
-        - name: authz
+{{- if or .Values.authz.enabled .Values.bootstrapPolicies}}
+        - name: bootstrap
           emptyDir: {}
 {{- end }}
       nodeSelector:

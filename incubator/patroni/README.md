@@ -94,6 +94,7 @@ The following table lists the configurable parameters of the patroni chart and t
 | `tolerations`                     | List of node taints to tolerate             | `[]`                                                |
 | `affinityTemplate`                | A template string to use to generate the affinity settings | Anti-affinity preferred on hostname  |
 | `affinity`                        | Affinity settings. Overrides `affinityTemplate` if set. | `{}`                                    |
+| `schedulerName`                   | Alternate scheduler name                    | `nil`                                               |
 | `persistentVolume.accessModes`    | Persistent Volume access modes              | `[ReadWriteOnce]`                                   |
 | `persistentVolume.annotations`    | Annotations for Persistent Volume Claim`    | `{}`                                                |
 | `persistentVolume.mountPath`      | Persistent Volume mount root path           | `/home/postgres/pgdata`                             |

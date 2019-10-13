@@ -33,15 +33,22 @@ spec:
           args: ["start"]
           env:
             - name: WATCH_NAMESPACE
-            {{- if .Values.watchNamespace.own }}
+              {{- if .Values.watchNamespace.own }}
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-            {{ else if .Values.watchNamespace.specific }}
+              {{ else if .Values.watchNamespace.specific }}
               value: {{ .Values.watchNamespace.specific }}
-            {{ else if .Values.watchNamespace.all }}
+              {{ else if .Values.watchNamespace.all }}
               value: ""
-            {{- end }}
+              {{- end }}
+              {{- if .Values.rbac.clusterRole }}
+              value: ""
+              {{- else }}
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+              {{- end }}
             - name: POD_NAME
               valueFrom:
                 fieldRef:

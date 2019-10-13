@@ -23,6 +23,11 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
+{{- define "kong.dblessConfig.fullname" -}}
+{{- $name := default "kong-custom-dbless-config" .Values.dblessConfig.nameOverride -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
 {{/*
 Create the name of the service account to use
 */}}
@@ -30,7 +35,7 @@ Create the name of the service account to use
 {{- if .Values.ingressController.serviceAccount.create -}}
     {{ default (include "kong.fullname" .) .Values.ingressController.serviceAccount.name }}
 {{- else -}}
-    {{ default "default" .Values.serviceAccount.name }}
+    {{ default "default" .Values.ingressController.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
 
@@ -187,27 +192,12 @@ Create the ingress servicePort value string
         fieldPath: metadata.namespace
   image: "{{ .Values.ingressController.image.repository }}:{{ .Values.ingressController.image.tag }}"
   imagePullPolicy: {{ .Values.image.pullPolicy }}
-  livenessProbe:
-    failureThreshold: 3
-    httpGet:
-      path: /healthz
-      port: 10254
-      scheme: HTTP
-    initialDelaySeconds: 30
-    periodSeconds: 10
-    successThreshold: 1
-    timeoutSeconds: 1
   readinessProbe:
-    failureThreshold: 3
-    httpGet:
-      path: /healthz
-      port: 10254
-      scheme: HTTP
-    periodSeconds: 10
-    successThreshold: 1
-    timeoutSeconds: 1
+{{ toYaml .Values.ingressController.readinessProbe | indent 4 }}
+  livenessProbe:
+{{ toYaml .Values.ingressController.livenessProbe | indent 4 }}
   resources:
-{{ toYaml .Values.ingressController.resources | indent 10 }}
+{{ toYaml .Values.ingressController.resources | indent 4 }}
 {{- end -}}
 
 {{/*

@@ -51,7 +51,7 @@ image:
 ## Sidecar that connects the individual Pods into a cluster
 helperImage:
   repository: kocolosk/couchdb-statefulset-assembler
-  tag: 1.2.0
+  tag: 2.1.0
   pullPolicy: IfNotPresent
 
 ## Experimental integration with Lucene-powered fulltext search
