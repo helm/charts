@@ -964,6 +964,9 @@ prometheusOperator:
       podAnnotations: {}
       nodeSelector: {}
 
+  ## Namespaces not to scope the interaction of the Prometheus Operator (deny list).
+  ##
+  denyNamespaces: {}
 
   ## Service account for Alertmanager to use.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
