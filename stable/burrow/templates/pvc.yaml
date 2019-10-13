@@ -1,6 +1,6 @@
 {{- if .Values.persistence.enabled }}
-{{ range (until (.Values.chain.nodes | int)) }}
-{{- $nodeNumber := printf "%03d" . }}
+{{- range $index, $val := $.Values.validators }}
+{{- $nodeNumber := printf "%03d" $index }}
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
