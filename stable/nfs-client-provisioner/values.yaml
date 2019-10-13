@@ -44,13 +44,17 @@ rbac:
   # Specifies whether RBAC resources should be created
   create: true
 
-# If true, create & use Pod Security Policy resources
-# https://kubernetes.io/docs/concepts/policy/pod-security-policy/
-podSecurityPolicy:
-  enabled: false
-
 ## Set pod priorityClassName
 # priorityClassName: ""
+
+## Set security Context
+# securityContext:
+  #  The GID to run the entrypoint of the container process
+  # runAsGroup: 65534
+  #  The UID to run the entrypoint of the container process
+  # runAsUser: 65534
+  #  Indicates that the container must run as a non-root user
+  # runAsNonRoot: true
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
