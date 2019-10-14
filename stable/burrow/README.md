@@ -18,12 +18,12 @@ is installed. Two files will be generated, the first of note is `setup.yaml` whi
 
 ```bash
 curl -LO https://raw.githubusercontent.com/helm/charts/master/stable/burrow/initialize.sh
-CHAIN_NODES=4 CHAIN_NAME="my-release" ./initialize.sh
+CHAIN_NODES=4 CHAIN_NAME="my-release-burrow" ./initialize.sh
 kubectl apply --filename setup.yaml
 ```
 
-Please note that the variable `$CHAIN_NAME` should be the same as the helm release name specified below. Another file, `addresses.yaml` contains the the equivalent validator
-addresses to set in the charts.
+Please note that the variable `$CHAIN_NAME` should be the same as the helm release name specified below with the `-burrow` suffix. 
+Another file, `addresses.yaml` contains the the equivalent validator addresses to set in the charts.
 
 ### Deployment
 
