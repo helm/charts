@@ -32,6 +32,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | Parameter                                 | Description                                   | Default                                                 |
 |-------------------------------------------|-----------------------------------------------|---------------------------------------------------------|
 | `replicas`                                | Number of nodes                               | `1`                                                     |
+| `podDisruptionBudget.minAvailable`        | Pod disruption minimum available              | `nil`                                                     |
+| `podDisruptionBudget.maxUnavailable`      | Pod disruption maximum unavailable            | `nil`                                                     |
 | `deploymentStrategy`                      | Deployment strategy                           | `{ "type": "RollingUpdate" }`                           |
 | `livenessProbe`                           | Liveness Probe settings                       | `{ "httpGet": { "path": "/api/health", "port": 3000 } "initialDelaySeconds": 60, "timeoutSeconds": 30, "failureThreshold": 10 }` |
 | `readinessProbe`                          | Readiness Probe settings                      | `{ "httpGet": { "path": "/api/health", "port": 3000 } }`|
@@ -77,7 +79,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `initChownData.resources`                 | init-chown-data pod resource requests & limits | `{}`                                                   |
 | `schedulerName`                           | Alternate scheduler name                      | `nil`                                                   |
 | `env`                                     | Extra environment variables passed to pods    | `{}`                                                    |
-| `envFromSecret`                           | Name of a Kubernetes secret (must be manually created in the same namespace) containing values to be added to the environment | `""` |
+| `envFromSecret`                           | Sensible environment variables passed to pods and stored as secret | `{}`                               |
 | `extraSecretMounts`                       | Additional grafana server secret mounts       | `[]`                                                    |
 | `extraVolumeMounts`                       | Additional grafana server volume mounts       | `[]`                                                    |
 | `extraConfigmapMounts`                    | Additional grafana server configMap volume mounts  | `[]`                                               |
@@ -94,6 +96,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `annotations`                             | Deployment annotations                        | `{}`                                                    |
 | `labels`                                  | Deployment labels                             | `{}`                                                    |
 | `podAnnotations`                          | Pod annotations                               | `{}`                                                    |
+| `podLabels`                               | Pod labels                                    | `{}`                                                    |
 | `podPortName`                             | Name of the grafana port on the pod           | `grafana`                                               |
 | `sidecar.image`                           | Sidecar image                                 | `kiwigrid/k8s-sidecar:0.1.20`                           |
 | `sidecar.imagePullPolicy`                 | Sidecar image pull policy                     | `IfNotPresent`                                          |
@@ -128,6 +131,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `rbac.extraRoleRules`                     | Additional rules to add to the Role                                                                     | [] |
 | `rbac.extraClusterRoleRules`              | Additional rules to add to the ClusterRole                                                              | [] |
 | `command`                     | Define command to be executed by grafana container at startup  | `nil` |
+| `testFramework.enabled`                   | Whether to create test-related resources       | `true`                                                 |
 | `testFramework.image`                     | `test-framework` image repository.             | `dduportal/bats`                                       |
 | `testFramework.tag`                       | `test-framework` image tag.                    | `0.4.0`                                                |
 | `testFramework.securityContext`           | `test-framework` securityContext                | `{}`                                                   |
@@ -206,7 +210,7 @@ kind: ConfigMap
 metadata:
   name: sample-grafana-dashboard
   labels:
-     grafana_dashboard: 1
+     grafana_dashboard: "1"
 data:
   k8s-dashboard.json: |-
   [...]
@@ -231,7 +235,7 @@ kind: Secret
 metadata:
   name: sample-grafana-datasource
   labels:
-     grafana_datasource: 1
+     grafana_datasource: "1"
 type: Opaque
 stringData:
   datasource.yaml: |-

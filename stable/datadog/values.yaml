@@ -16,9 +16,9 @@ image:
 
   ## @param tag - string - required
   ## Define the Agent version to use.
-  ## Use 6.13.0-jmx to enable jmx fetch collection
+  ## Use 6.14.0-jmx to enable jmx fetch collection
   #
-  tag: 6.13.0
+  tag: 6.14.0
 
   ## @param pullPolicy - string - required
   ## The Kubernetes pull policy.
@@ -663,6 +663,30 @@ daemonset:
   #  Configures a configmap to provide the agent configuration
   #
   # useConfigMap: false
+
+  ## @param customAgentConfig - object - optional
+  ## Specify custom contents for the datadog agent config (datadog.yaml).
+  ## ref: https://docs.datadoghq.com/agent/guide/agent-configuration-files/?tab=agentv6
+  ## ref: https://github.com/DataDog/datadog-agent/blob/master/pkg/config/config_template.yaml
+  #
+  # customAgentConfig:
+  #   # Autodiscovery for Kubernetes
+  #   listeners:
+  #     - name: kubelet
+  #   config_providers:
+  #     - name: kubelet
+  #       polling: true
+  #     # needed to support legacy docker label config templates
+  #     - name: docker
+  #       polling: true
+  #
+  #   # Enable APM by setting the DD_APM_ENABLED envvar to true, or override this configuration
+  #   apm_config:
+  #     enabled: false
+  #     apm_non_local_traffic: true
+  #
+  #   # Use java cgroup memory awareness
+  #   jmx_use_cgroup_memory_limit: true
 
 deployment:
   ## @param enabled - boolean - required

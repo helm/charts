@@ -255,7 +255,7 @@ containers:
     {{- if .Values.envFromSecret }}
     envFrom:
       - secretRef:
-          name: {{ .Values.envFromSecret }}
+          name: {{ template "grafana.fullname" . }}-env
     {{- end }}
     livenessProbe:
 {{ toYaml .Values.livenessProbe | indent 6 }}
