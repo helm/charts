@@ -210,14 +210,3 @@ Retrieve Kong Enterprise license from a secret and make it available in env vars
       name: {{ .Values.enterprise.license_secret }}
       key: license
 {{- end -}}
-
-{{/*
-Retrieve Kong Enterprise license from a secret and make it available in env vars
-*/}}
-{{- define "kong.license" -}}
-- name: KONG_LICENSE_DATA
-  valueFrom:
-    secretKeyRef:
-      name: {{ .Values.enterprise.license_secret }}
-      key: license
-{{- end -}}
