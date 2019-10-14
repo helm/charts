@@ -27,7 +27,8 @@ spec:
           - name: GRAYLOG_PASSWORD_SECRET
             valueFrom:
               secretKeyRef:
-                name: {{ template "graylog.fullname" . }}
+                name: {{ .Values.existingRootSecret | default (include "graylog.fullname" .) }}
+
                 key: graylog-password-secret
         args:
           - -c
