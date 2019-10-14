@@ -137,3 +137,6 @@ extraSecrets: []
 #   mountPath: /etc/coredns/tls/etcd
 # - name: some-fancy-secret
 #   mountPath: /etc/wherever
+
+# Custom labels to apply to Deployment, Pod, Service, ServiceMonitor
+customLabels: {}

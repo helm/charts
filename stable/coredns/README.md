@@ -74,7 +74,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `tolerations`                           | Tolerations for pod assignment                                                        | []                                                          |
 | `zoneFiles`                             | Configure custom Zone files                                                           | []                                                          |
 | `extraSecrets`                          | Optional array of secrets to mount inside the CoreDNS container                       | []                                                          |
-
+| `customLabels`			  | Optional labels for Deployment, Pod, Service, ServiceMonitor objects		  | {}								|
 See `values.yaml` for configuration notes. Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
