@@ -84,7 +84,7 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | Parameter                          | Description                                     | Default                                                    |
 | ---------------------------------- | ------------------------------------------------ | ---------------------------------------------------------- |
 | `image.repository`                 | `hlf-ord` image repository                       | `hyperledger/fabric-orderer`                                    |
-| `image.tag`                        | `hlf-ord` image tag                              | `x86_64-1.1.0`                                             |
+| `image.tag`                        | `hlf-ord` image tag                              | `1.4.3`                                             |
 | `image.pullPolicy`                 | Image pull policy                                | `IfNotPresent`                                             |
 | `service.port`                     | TCP port                                         | `7050`                                                     |
 | `service.type`                     | K8S service type exposing ports, e.g. `ClusterIP`| `ClusterIP`                                                |
