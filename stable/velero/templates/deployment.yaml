@@ -105,6 +105,11 @@ spec:
       initContainers:
         {{- toYaml .Values.initContainers | nindent 8 }}
 {{- end }}
+      securityContext:
+        # This fsGroup is needed so that our process can read projected service account tokens, such as when we're
+        # trying to use IAM Roles for Service Accounts on EKS.
+        # Ref: https://github.com/aws/amazon-eks-pod-identity-webhook/issues/8
+        fsGroup: 65534
       volumes:
         {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
         - name: cloud-credentials
