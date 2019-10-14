@@ -30,3 +30,6 @@ data:
 
     echo "Node ${NODE_NAME} is ready to shutdown"
 {{- end }}
+{{- with .Values.nodePostStartScript }}
+{{ toYaml . | indent 2 }}
+{{- end }}

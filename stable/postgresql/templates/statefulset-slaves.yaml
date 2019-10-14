@@ -1,5 +1,5 @@
 {{- if .Values.replication.enabled }}
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: "{{ template "postgresql.fullname" . }}-slave"
@@ -158,6 +158,7 @@ spec:
             command:
             - sh
             - -c
+            - -e
             {{- include "postgresql.readinessProbeCommand" . | nindent 12 }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
