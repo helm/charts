@@ -212,6 +212,10 @@ graylog:
   ##
   rootTimezone: "UTC"
 
+  ## Grayog existing root secret
+  ##
+  existingRootSecret: ""
+
   elasticsearch:
     ## List of Elasticsearch hosts Graylog should connect to.
     ## Need to be specified as a comma-separated list of valid URIs for the http ports of your elasticsearch nodes.
