@@ -203,6 +203,9 @@ service:
   ## Extra ports to expose
   # extraPorts:
 
+  ## Extra ports to be included in container spec, primarily informational
+  # extraContainerPorts:
+
 # Additional pod labels to apply
 podLabels: {}
 
