@@ -92,6 +92,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `service.nodePort`                   | Node port override, if serviceType NodePort      | _random available between 30000-32767_                  |
 | `service.nodeTlsPort`                | Node port override, if serviceType NodePort      | _random available between 30000-32767_                  |
 | `service.managerPort`                | RabbitMQ Manager port                            | `15672`                                                 |
+| `service.extraPorts`                 | Extra ports to expose in the service             | `nil`                                                   |
 | `persistence.enabled`                | Use a PVC to persist data                        | `true`                                                  |
 | `service.annotations`                | service annotations as an array                  | []                                                      |
 | `schedulerName`                      | Name of the k8s service (other than default)     | `nil`                                                   |

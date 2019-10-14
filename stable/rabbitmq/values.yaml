@@ -200,6 +200,9 @@ service:
   # loadBalancerSourceRanges:
   # - 10.10.10.0/24
 
+  ## Extra ports to expose
+  # extraPorts:
+
 # Additional pod labels to apply
 podLabels: {}
 
