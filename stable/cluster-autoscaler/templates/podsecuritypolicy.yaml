@@ -1,5 +1,5 @@
 {{- if .Values.rbac.pspEnabled }}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "podsecuritypolicy.apiVersion" . }}
 kind: PodSecurityPolicy
 metadata:
   name: {{ template "cluster-autoscaler.fullname" . }}
@@ -16,9 +16,8 @@ spec:
     - 'configMap'
     - 'secret'
     - 'hostPath'
-  allowedHostPaths:
-    - pathPrefix: {{ .Values.sslCertHostPath }}
 {{- if eq .Values.cloudProvider "gce" }}
+  allowedHostPaths:
     - pathPrefix: {{ .Values.cloudConfigPath }}
 {{- end }}
   hostNetwork: false
