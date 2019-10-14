@@ -35,8 +35,9 @@ spec:
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
       initContainers:
+      {{- if .Values.init.sysctl.enabled }}
         - name: init-sysctl
-          image: {{ default "busybox:1.31" .Values.plugins.initSysctlContainerImage }}
+          image: {{ .Values.init.sysctl.image }}
           command:
           - sysctl
           - -w
@@ -44,6 +45,7 @@ spec:
           imagePullPolicy: IfNotPresent
           securityContext:
             privileged: true
+        {{- end }}
       {{- if .Values.plugins.install }}
         - name: install-plugins
           image: {{ default "joosthofman/wget:1.0" .Values.plugins.initContainerImage }}

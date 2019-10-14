@@ -37,69 +37,70 @@ $ helm delete kindly-newt
 
 The following table lists the configurable parameters of the Sonarqube chart and their default values.
 
-| Parameter                                   | Description                               | Default                                    |
-| ------------------------------------------  | ----------------------------------------  | -------------------------------------------|
-| `replicaCount`                              | Number of replicas deployed               | `1`                                        |
-| `deploymentStrategy`                        | Deployment strategy                       | `{}`                                       |
-| `image.repository`                          | image repository                          | `sonarqube`                                |
-| `image.tag`                                 | `sonarqube` image tag.                    | `7.9.1-community`                            |
-| `image.pullPolicy`                          | Image pull policy                         | `IfNotPresent`                             |
-| `image.pullSecret`                          | imagePullSecret to use for private repository      |                                   |
-| `command`                                   | command to run in the container           | `nil` (need to be set prior to 6.7.6, and 7.4)      |
-| `securityContext.fsGroup`                   | Group applied to mounted directories/files|  `999`                                     |
-| `ingress.enabled`                           | Flag for enabling ingress                 | false                                      |
-| `ingress.labels`                            | Ingress additional labels                 | `{}`                                       |
-| `ingress.hosts[0].name`                     | Hostname to your SonarQube installation   | `sonar.organization.com`                   |
-| `ingress.hosts[0].path`                     | Path within the URL structure             | /                                          |
-| `ingress.tls`                               | Ingress secrets for TLS certificates      | `[]`                                       |
-| `livenessProbe.sonarWebContext`             | SonarQube web context for livenessProbe   | /                                          |
-| `readinessProbe.sonarWebContext`            | SonarQube web context for readinessProbe  | /                                          |
-| `service.type`                              | Kubernetes service type                   | `ClusterIP`                                |
-| `service.externalPort`                      | Kubernetes service port                   | `9000`                                     |
-| `service.internalPort`                      | Kubernetes container port                 | `9000`                                     |
-| `service.labels`                            | Kubernetes service labels                 | None                                       |
-| `service.annotations`                       | Kubernetes service annotations            | None                                       |
-| `service.loadBalancerSourceRanges`          | Kubernetes service LB Allowed inbound IP addresses | None                            |
-| `service.loadBalancerIP`                    | Kubernetes service LB Optional fixed external IP   | None                                       |
-| `persistence.enabled`                       | Flag for enabling persistent storage      | false                                      |
-| `persistence.annotations`                   | Kubernetes pvc annotations                | `{}`                                      |
-| `persistence.existingClaim`                 | Do not create a new PVC but use this one  | None                                       |
-| `persistence.storageClass`                  | Storage class to be used                  | "-"                                        |
-| `persistence.accessMode`                    | Volumes access mode to be set             | `ReadWriteOnce`                            |
-| `persistence.size`                          | Size of the volume                        | None                                     |
-| `sonarProperties`                           | Custom `sonar.properties` file            | None                                       |
-| `customCerts.enabled`                       | Use `customCerts.secretName`              | false                                      |
-| `customCerts.secretName`                    | Name of the secret which conatins your `cacerts` | false                                      |
-| `sonarSecretKey`                            | Name of existing secret used for settings encryption | None                            |
-| `sonarProperties`                           | Custom `sonar.properties` file            | `{}`                                       |
-| `database.type`                             | Set to "mysql" to use mysql database       | `postgresql`|
-| `postgresql.enabled`                        | Set to `false` to use external server / mysql database     | `true`                                     |
-| `postgresql.postgresServer`                 | Hostname of the external Postgresql server| `null`                                     |
-| `postgresql.postgresPasswordSecret`         | Secret containing the password of the external Postgresql server | `null`              |
-| `postgresql.postgresUser`                   | Postgresql database user                  | `sonarUser`                                |
-| `postgresql.postgresPassword`               | Postgresql database password              | `sonarPass`                                |
-| `postgresql.postgresDatabase`               | Postgresql database name                  | `sonarDB`                                  |
-| `postgresql.service.port`                   | Postgresql port                           | `5432`                                     |
-| `mysql.enabled`                             | Set to `false` to use external server / postgresql database        | `false`                                     |
-| `mysql.mysqlServer`                         | Hostname of the external Mysql server     | `null`                                     |
-| `mysql.mysqlPasswordSecret`                 | Secret containing the password of the external Mysql server | `null`                   |
-| `mysql.mysqlUser`                           | Mysql database user                       | `sonarUser`                                |
-| `mysql.mysqlPassword`                       | Mysql database password                   | `sonarPass`                                |
-| `mysql.mysqlDatabase`                       | Mysql database name                       | `sonarDB`                                  |
-| `mysql.mysqlParams`                         | Mysql parameters for JDBC connection string     | `{}`                                 |
-| `mysql.service.port`                        | Mysql port                                | `3306`                                     |
-| `annotations`                               | Sonarqube Pod annotations                 | `{}`                                       |
-| `resources`                                 | Sonarqube Pod resource requests & limits  | `{}`                                       |
-| `affinity`                                  | Node / Pod affinities                     | `{}`                                       |
-| `nodeSelector`                              | Node labels for pod assignment            | `{}`                                       |
-| `hostAliases`                               | Aliases for IPs in /etc/hosts             | `[]`                                       |
-| `tolerations`                               | List of node taints to tolerate           | `[]`                                       |
-| `plugins.install`                           | List of plugins to install                | `[]`                                       |
-| `plugins.resources`                         | Plugin Pod resource requests & limits     | `{}`                                       |
-| `plugins.initContainerImage`                | Change init container image               | `joosthofman/wget:1.0`                     |
-| `plugins.initSysctlContainerImage`          | Change init sysctl container image        | `busybox:1.31`                             |
-| `plugins.deleteDefaultPlugins`              | Remove default plugins and use plugins.install list | `[]`                             |
-| `podLabels`                                 | Map of labels to add to the pods          | `{}`                                       |
+| Parameter                           | Description                                                      | Default                                        |
+| ----------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------- |
+| `replicaCount`                      | Number of replicas deployed                                      | `1`                                            |
+| `deploymentStrategy`                | Deployment strategy                                              | `{}`                                           |
+| `image.repository`                  | image repository                                                 | `sonarqube`                                    |
+| `image.tag`                         | `sonarqube` image tag.                                           | `7.9.1-community`                              |
+| `image.pullPolicy`                  | Image pull policy                                                | `IfNotPresent`                                 |
+| `image.pullSecret`                  | imagePullSecret to use for private repository                    |                                                |
+| `command`                           | command to run in the container                                  | `nil` (need to be set prior to 6.7.6, and 7.4) |
+| `securityContext.fsGroup`           | Group applied to mounted directories/files                       | `999`                                          |
+| `ingress.enabled`                   | Flag for enabling ingress                                        | false                                          |
+| `ingress.labels`                    | Ingress additional labels                                        | `{}`                                           |
+| `ingress.hosts[0].name`             | Hostname to your SonarQube installation                          | `sonar.organization.com`                       |
+| `ingress.hosts[0].path`             | Path within the URL structure                                    | /                                              |
+| `ingress.tls`                       | Ingress secrets for TLS certificates                             | `[]`                                           |
+| `livenessProbe.sonarWebContext`     | SonarQube web context for livenessProbe                          | /                                              |
+| `readinessProbe.sonarWebContext`    | SonarQube web context for readinessProbe                         | /                                              |
+| `service.type`                      | Kubernetes service type                                          | `ClusterIP`                                    |
+| `service.externalPort`              | Kubernetes service port                                          | `9000`                                         |
+| `service.internalPort`              | Kubernetes container port                                        | `9000`                                         |
+| `service.labels`                    | Kubernetes service labels                                        | None                                           |
+| `service.annotations`               | Kubernetes service annotations                                   | None                                           |
+| `service.loadBalancerSourceRanges`  | Kubernetes service LB Allowed inbound IP addresses               | None                                           |
+| `service.loadBalancerIP`            | Kubernetes service LB Optional fixed external IP                 | None                                           |
+| `persistence.enabled`               | Flag for enabling persistent storage                             | false                                          |
+| `persistence.annotations`           | Kubernetes pvc annotations                                       | `{}`                                           |
+| `persistence.existingClaim`         | Do not create a new PVC but use this one                         | None                                           |
+| `persistence.storageClass`          | Storage class to be used                                         | "-"                                            |
+| `persistence.accessMode`            | Volumes access mode to be set                                    | `ReadWriteOnce`                                |
+| `persistence.size`                  | Size of the volume                                               | None                                           |
+| `sonarProperties`                   | Custom `sonar.properties` file                                   | None                                           |
+| `customCerts.enabled`               | Use `customCerts.secretName`                                     | false                                          |
+| `customCerts.secretName`            | Name of the secret which conatins your `cacerts`                 | false                                          |
+| `sonarSecretKey`                    | Name of existing secret used for settings encryption             | None                                           |
+| `sonarProperties`                   | Custom `sonar.properties` file                                   | `{}`                                           |
+| `database.type`                     | Set to "mysql" to use mysql database                             | `postgresql`                                   |
+| `postgresql.enabled`                | Set to `false` to use external server / mysql database           | `true`                                         |
+| `postgresql.postgresServer`         | Hostname of the external Postgresql server                       | `null`                                         |
+| `postgresql.postgresPasswordSecret` | Secret containing the password of the external Postgresql server | `null`                                         |
+| `postgresql.postgresUser`           | Postgresql database user                                         | `sonarUser`                                    |
+| `postgresql.postgresPassword`       | Postgresql database password                                     | `sonarPass`                                    |
+| `postgresql.postgresDatabase`       | Postgresql database name                                         | `sonarDB`                                      |
+| `postgresql.service.port`           | Postgresql port                                                  | `5432`                                         |
+| `mysql.enabled`                     | Set to `false` to use external server / postgresql database      | `false`                                        |
+| `mysql.mysqlServer`                 | Hostname of the external Mysql server                            | `null`                                         |
+| `mysql.mysqlPasswordSecret`         | Secret containing the password of the external Mysql server      | `null`                                         |
+| `mysql.mysqlUser`                   | Mysql database user                                              | `sonarUser`                                    |
+| `mysql.mysqlPassword`               | Mysql database password                                          | `sonarPass`                                    |
+| `mysql.mysqlDatabase`               | Mysql database name                                              | `sonarDB`                                      |
+| `mysql.mysqlParams`                 | Mysql parameters for JDBC connection string                      | `{}`                                           |
+| `mysql.service.port`                | Mysql port                                                       | `3306`                                         |
+| `annotations`                       | Sonarqube Pod annotations                                        | `{}`                                           |
+| `resources`                         | Sonarqube Pod resource requests & limits                         | `{}`                                           |
+| `affinity`                          | Node / Pod affinities                                            | `{}`                                           |
+| `nodeSelector`                      | Node labels for pod assignment                                   | `{}`                                           |
+| `hostAliases`                       | Aliases for IPs in /etc/hosts                                    | `[]`                                           |
+| `tolerations`                       | List of node taints to tolerate                                  | `[]`                                           |
+| `plugins.install`                   | List of plugins to install                                       | `[]`                                           |
+| `plugins.resources`                 | Plugin Pod resource requests & limits                            | `{}`                                           |
+| `plugins.initContainerImage`        | Change init container image                                      | `joosthofman/wget:1.0`                         |
+| `plugins.deleteDefaultPlugins`      | Remove default plugins and use plugins.install list              | `[]`                                           |
+| `podLabels`                         | Map of labels to add to the pods                                 | `{}`                                           |
+| `init.sysctl.enabled`               | Flag for the sysctl init container                               | `true`                                         |
+| `init.sysctl.image`                 | Image for the sysctl init container                              | `busybox:1.31`                                 |
 
 You can also configure values for the PostgreSQL / MySQL database via the Postgresql [README.md](https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md) / MySQL [README.md](https://github.com/kubernetes/charts/blob/master/stable/mysql/README.md)
 
@@ -135,3 +136,14 @@ In environments with air-gapped setup, especially with internal tooling (repos) 
       enabled: false
       secretName: my-cacerts
    ```
+
+### Sysctl init container
+
+The sysctl init container is used to set sysctls required by the Elasticsearch component of Sonarqube.
+As the container modifies node settings it must be run in privileged mode. This may causes issues if you
+use PodSecurityPolicies that prevent containers from running in privileged mode.
+
+If this is the case you can disable the init container by setting `init.sysctl.enabled` to `false`.
+Be aware that if you do this you have to make sure that all nodes the the sonarqube pod might be scheduled to must be
+Elasticsearch compatible (e. g. vm.max_map_count=>262144).
+
