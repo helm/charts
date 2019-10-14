@@ -53,7 +53,7 @@ spec:
         - name: KONG_LUA_PACKAGE_PATH
           value: "/opt/?.lua;;"
         - name: KONG_PLUGINS
-          value: {{ default "bundled" .Values.env.plugins }}
+          value: {{ template "kong.plugins" . }}
         - name: KONG_NGINX_DAEMON
           value: "off"
         {{- if .Values.enterprise.enabled }}

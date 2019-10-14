@@ -168,6 +168,8 @@ spec:
         - name: KONG_DECLARATIVE_CONFIG
           value: "/kong_dbless/kong.yml"
         {{- end }}
+        - name: KONG_PLUGINS
+          value: {{ template "kong.plugins" . }}
         {{- include "kong.env" .  | indent 8 }}
         lifecycle:
           preStop:

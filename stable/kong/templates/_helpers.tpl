@@ -187,6 +187,17 @@ Create the ingress servicePort value string
 {{- end }}
 {{- end -}}
 
+{{- define "kong.plugins" -}}
+{{ $myList := list "bundled" }}
+{{- range .Values.plugins.configMaps -}}
+{{- $myList = append $myList .pluginName -}}
+{{- end -}}
+{{- range .Values.plugins.secrets -}}
+  {{ $myList = append $myList .pluginName -}}
+{{- end }}
+{{- $myList | join "," -}}
+{{- end -}}
+
 {{- define "kong.wait-for-db" -}}
 - name: wait-for-db
   image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

@@ -364,9 +364,6 @@ postgresql:
 # The `name` property refers to the name of the ConfigMap or Secret
 # itself, while the pluginName refers to the name of the plugin as it appears
 # in Kong.
-# These properties mount the plugin code such that Kong can find them but does
-# not enable loading. To load the plugins into Kong, set the env.plugins
-# property, eg: `env.plugins=bundled,rewriter`
 plugins: {}
   # configMaps:
   # - pluginName: rewriter
