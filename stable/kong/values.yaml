@@ -359,7 +359,7 @@ postgresql:
     port: 5432
 
 # Custom Kong plugins can be loaded into Kong by installing them inside
-# The plugin code should be present in ConfigMap or Secret inside the sam
+# The plugin code should be present in ConfigMap or Secret inside the same
 # namespace as Kong is being installed.
 # The `name` property refers to the name of the ConfigMap or Secret
 # itself, while the pluginName refers to the name of the plugin as it appears
