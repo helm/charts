@@ -131,6 +131,8 @@ rbac:
 serviceAccount:
   server:
     create: true
+     # Annotatons to add to the service account.  Only relevant if `create` is true.
+    annotations: {}
     name:
 
 # Info about the secret to be used by the Velero deployment, which

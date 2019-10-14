@@ -63,6 +63,7 @@ Parameter | Description | Default
 `rbac.create` | If true, create and use RBAC resources | `true`
 `serviceAccount.server.create` | Whether a new service account name that the server will use should be created | `true`
 `serviceAccount.server.name` | Service account to be used for the server. If not set and `serviceAccount.server.create` is `true` a name is generated using the fullname template | ``
+`serviceAccount.server.annotations` | Annotations to add to the created service account.  Only relevant if `serviceAccount.server.create` is `true` | `{}`
 `resources` | Resource requests and limits | `{}`
 `initContainers` | InitContainers and their specs to start with the deployment pod | `[]`
 `tolerations` | List of node taints to tolerate | `[]`
