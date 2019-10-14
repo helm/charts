@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: "{{ template "kong.fullname" . }}"
@@ -36,7 +36,7 @@ spec:
         release: {{ .Release.Name }}
         component: app
     spec:
-      {{- if (and (.Values.ingressController.enabled) (eq .Values.env.database "off")) }}
+      {{- if .Values.ingressController.enabled }}
       serviceAccountName: {{ template "kong.serviceAccountName" . }}
       {{ end }}
       {{- if .Values.image.pullSecrets }}
@@ -50,7 +50,7 @@ spec:
       {{- include "kong.wait-for-db" . | nindent 6 }}
       {{ end }}
       containers:
-      {{- if (and (.Values.ingressController.enabled) (eq .Values.env.database "off")) }}
+      {{- if .Values.ingressController.enabled }}
       {{- include "kong.controller-container" . | nindent 6 }}
       {{ end }}
       - name: {{ template "kong.name" . }}
@@ -127,16 +127,16 @@ spec:
         - name: KONG_SMTP_HOST
           value: {{ .Values.enterprise.smtp.smtp_host }}
         - name: KONG_SMTP_PORT
-          value: {{ .Values.enterprise.smtp.smtp_port }}
+          value: {{ .Values.enterprise.smtp.smtp_port | quote }}
         - name: KONG_SMTP_STARTTLS
-          value: {{ .Values.enterprise.smtp.smtp_starttls }}
+          value: {{ .Values.enterprise.smtp.smtp_starttls | quote }}
         {{- if .Values.enterprise.smtp.auth.smtp_username }}
         - name: KONG_SMTP_USERNAME
           value: {{ .Values.enterprise.smtp.auth.smtp_username }}
         - name: KONG_SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.enterprise.smtp.auth.smtp_password }}
+              name: {{ .Values.enterprise.smtp.auth.smtp_password_secret }}
               key: smtp_password
         {{- end }}
         {{- else }}
@@ -167,6 +167,10 @@ spec:
           value: "/kong_dbless/kong.yml"
         {{- end }}
         {{- include "kong.env" .  | indent 8 }}
+        lifecycle:
+          preStop:
+            exec:
+              command: [ "/bin/sh", "-c", "kong quit" ]
         ports:
         - name: admin
           containerPort: {{ .Values.admin.containerPort }}
@@ -250,6 +254,10 @@ spec:
           - name: kong-custom-dbless-config-volume
             mountPath: /kong_dbless/
           {{- end }}
+          {{- range .Values.secretVolumes }}
+          - name:  {{ . }}
+            mountPath: /etc/secrets/{{ . }}
+          {{- end }}
         readinessProbe:
 {{ toYaml .Values.readinessProbe | indent 10 }}
         livenessProbe:
@@ -278,4 +286,10 @@ spec:
             {{- else }}
             name: {{ template "kong.dblessConfig.fullname" . }}
             {{- end }}
+{{- end }}
+
+{{- range $secretVolume := .Values.secretVolumes }}
+        - name: {{ . }}
+          secret:
+            secretName: {{ . }}
 {{- end }}

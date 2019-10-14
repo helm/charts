@@ -65,6 +65,9 @@ proxy:
     enabled: true
     servicePort: 443
     containerPort: 8443
+    # Set a target port for the TLS port in proxy service, useful when using TLS
+    # termination on an ELB.
+    # overrideServiceTargetPort: 8000
     # Set a nodePort which is available if service type is NodePort
     # nodePort: 32443
 
@@ -289,9 +292,9 @@ resources: {}
 readinessProbe:
   httpGet:
     path: "/status"
-    port: admin
-    scheme: HTTPS
-  initialDelaySeconds: 30
+    port: metrics
+    scheme: HTTP
+  initialDelaySeconds: 10
   timeoutSeconds: 1
   periodSeconds: 10
   successThreshold: 1
@@ -302,9 +305,9 @@ readinessProbe:
 livenessProbe:
   httpGet:
     path: "/status"
-    port: admin
-    scheme: HTTPS
-  initialDelaySeconds: 30
+    port: metrics
+    scheme: HTTP
+  initialDelaySeconds: 10
   timeoutSeconds: 5
   periodSeconds: 30
   successThreshold: 1
@@ -370,7 +373,7 @@ ingressController:
       path: "/healthz"
       port: 10254
       scheme: HTTP
-    initialDelaySeconds: 30
+    initialDelaySeconds: 10
     periodSeconds: 10
     successThreshold: 1
     timeoutSeconds: 5
@@ -380,10 +383,11 @@ ingressController:
       path: "/healthz"
       port: 10254
       scheme: HTTP
-      initialDelaySeconds: 30
+    initialDelaySeconds: 10
     periodSeconds: 10
     successThreshold: 1
     timeoutSeconds: 5
+  resources: {}
 
   installCRDs: true
 
@@ -420,9 +424,20 @@ dblessConfig:
       #     paths:
       #     - "/example"
 
+# Inject specified secrets as a volume in Kong Container at path /etc/secrets/{secret-name}/
+# This can be used to override default SSL certificates
+# Example configuration
+# secretVolumes:
+# - kong-proxy-tls
+# - kong-admin-tls
+secretVolumes: []
+
+
 serviceMonitor:
   # Specifies whether ServiceMonitor for Prometheus operator should be created
   enabled: false
   # interval: 10s
   # Specifies namespace, where ServiceMonitor should be installed
   # namespace: monitoring
+  # labels:
+  #   foo: bar

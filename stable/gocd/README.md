@@ -421,6 +421,21 @@ Possible states:
 |reuseTopLevelServiceAccount = false and name = 'agentSA'|The 'agentSA' service account will be used. The service account needs to exist and bound with the appropriate role. |
 |reuseTopLevelServiceAccount = true| The GoCD service account will be created and used for the agents in the specified namespace. The permissions associated with the GoCD SA are defined here - [Cluster role privileges](#cluster-role-privileges).  |
 
+# Adding plugins 
+
+- Add the .jar file link from the releases section in the plugin's repo to the env.extraEnvVars section as a new environment variable.
+The environment variable name must have GOCD_PLUGIN_INSTALL prefixed to it like the following section
+
+```
+env:
+  extraEnvVars:
+    - name: GOCD_PLUGIN_INSTALL_email-notifier
+      value: https://github.com/gocd-contrib/email-notifier/releases/download/v0.3-68-exp/email-notifier-0.3-68.jar
+```
+- Make sure to add the link of the release you want to use before applying the values.
+
+- If you are adding a plugin to an existing Go server, it will result in a new Go server pod being created that has the plugin installed and running.
+
 # License
 
 ```plain

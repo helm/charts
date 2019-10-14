@@ -18,6 +18,12 @@ serviceAccount:
 
 replicas: 1
 
+## See `kubectl explain poddisruptionbudget.spec` for more
+## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+podDisruptionBudget: {}
+#  minAvailble: 1
+#  maxUnavailable: 1
+
 ## See `kubectl explain deployment.spec.strategy` for more
 ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
 deploymentStrategy:
@@ -43,7 +49,7 @@ livenessProbe:
 
 image:
   repository: grafana/grafana
-  tag: 6.3.5
+  tag: 6.4.2
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -54,6 +60,7 @@ image:
   #   - myRegistrKeySecretName
 
 testFramework:
+  enabled: true
   image: "dduportal/bats"
   tag: "0.4.0"
   securityContext: {}
@@ -89,6 +96,9 @@ downloadDashboards:
 
 ## Pod Annotations
 # podAnnotations: {}
+
+## Pod Labels
+# podLabels: {}
 
 podPortName: grafana
 
@@ -236,9 +246,9 @@ admin:
 ## Extra environment variables that will be pass onto deployment pods
 env: {}
 
-## The name of a secret in the same kubernetes namespace which contain values to be added to the environment
+## Sensible environment variables that will be stored as secret
 ## This can be useful for auth tokens, etc
-envFromSecret: ""
+envFromSecret: {}
 
 ## Additional grafana server secret mounts
 # Defines additional mounts with secrets. Secrets must be manually created in the namespace.
