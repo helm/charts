@@ -107,6 +107,7 @@ The command removes all the Kubernetes components associated with the chart and 
 ## Configuration
 
 The following table lists the configurable parameters of the Prometheus Adapter chart and their default values.
+
 | Parameter                       | Description                                                                     | Default                                     |
 | ------------------------------- | ------------------------------------------------------------------------------- | --------------------------------------------|
 | `affinity`                      | Node affinity                                                                   | `{}`                                        |
