@@ -1,5 +1,5 @@
 {{ if eq .Values.controller.kind "DaemonSet" -}}
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   labels:
@@ -9,6 +9,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   name: {{ template "haproxy-ingress.controller.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   updateStrategy:
 {{ toYaml .Values.controller.updateStrategy | indent 4 }}

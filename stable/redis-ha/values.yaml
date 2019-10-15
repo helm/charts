@@ -8,6 +8,9 @@ image:
 ## replicas number for each component
 replicas: 3
 
+## Kubernetes priorityClass name for the redis-ha-server pod
+# priorityClassName: ""
+
 ## Custom labels for the redis pod
 labels: {}
 
@@ -37,10 +40,13 @@ haproxy:
     pullPolicy: IfNotPresent
   annotations: {}
   resources: {}
+  ## Kubernetes priorityClass name for the haproxy pod
+  # priorityClassName: ""
   ## Service type for HAProxy
   ##
   service:
     type: ClusterIP
+    loadBalancerIP:
     annotations: {}
   serviceAccount:
     create: true
@@ -54,6 +60,14 @@ haproxy:
     port: 9101
   init:
     resources: {}
+  timeout:
+    connect: 4s
+    server: 30s
+    client: 30s
+  securityContext:
+    runAsUser: 1000
+    fsGroup: 1000
+    runAsNonRoot: true
 
 
 ## Role Based Access
