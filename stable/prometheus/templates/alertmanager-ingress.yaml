@@ -2,7 +2,7 @@
 {{- $releaseName := .Release.Name -}}
 {{- $serviceName := include "prometheus.alertmanager.fullname" . }}
 {{- $servicePort := .Values.alertmanager.service.servicePort -}}
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
 {{- if .Values.alertmanager.ingress.annotations }}
