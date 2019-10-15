@@ -9,6 +9,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   name: {{ template "haproxy-ingress.controller.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.controller.replicaCount }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
@@ -18,6 +19,7 @@ spec:
   selector:
     matchLabels:
       app: {{ template "haproxy-ingress.name" . }}
+      component: "{{ .Values.controller.name }}"
       release: {{ .Release.Name }}
   template:
     metadata:

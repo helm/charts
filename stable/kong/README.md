@@ -101,6 +101,7 @@ and their default values.
 | proxy.ingress.annotations          | Ingress annotations. See documentation for your ingress controller for details        | `{}`                |
 | updateStrategy                     | update strategy for deployment                                                        | `{}`                |
 | env                                | Additional [Kong configurations](https://getkong.org/docs/latest/configuration/)      |                     |
+| plugins                            | Install custom plugins into Kong via ConfigMaps or Secrets                            | `{}`                |
 | runMigrations                      | Run Kong migrations job                                                               | `true`              |
 | readinessProbe                     | Kong readiness probe                                                                  |                     |
 | livenessProbe                      | Kong liveness probe                                                                   |                     |

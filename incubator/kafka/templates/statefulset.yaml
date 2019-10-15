@@ -177,7 +177,7 @@ spec:
         {{- range $secret := .Values.secrets }}
           {{- if not $secret.mountPath }}
             {{- range $key := $secret.keys }}
-        - name: {{ (print $secret.name "_" $key) | upper }}
+        - name: {{ (print ($secret.name | replace "-" "_") "_" $key) | upper }}
           valueFrom:
             secretKeyRef:
               name: {{ $secret.name }}
@@ -246,9 +246,11 @@ spec:
 {{ toYaml .Values.securityContext | indent 8 }}
       {{- end }}
       {{- range .Values.secrets }}
+      {{- if .mountPath }}
       - name: {{ include "kafka.fullname" $ }}-{{ .name }}
         secret:
           secretName: {{ .name }}
+      {{- end }}
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
   {{- if .Values.persistence.enabled }}
