@@ -57,6 +57,8 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
+        - name: KONG_LUA_PACKAGE_PATH
+          value: "/opt/?.lua;;"
         {{- if not .Values.env.admin_listen }}
         {{- if .Values.admin.useTLS }}
         - name: KONG_ADMIN_LISTEN
@@ -166,6 +168,8 @@ spec:
         - name: KONG_DECLARATIVE_CONFIG
           value: "/kong_dbless/kong.yml"
         {{- end }}
+        - name: KONG_PLUGINS
+          value: {{ template "kong.plugins" . }}
         {{- include "kong.env" .  | indent 8 }}
         lifecycle:
           preStop:
@@ -248,16 +252,7 @@ spec:
         {{- end }}
         {{- end }}
         volumeMounts:
-          - name: custom-nginx-template-volume
-            mountPath: /kong
-          {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
-          - name: kong-custom-dbless-config-volume
-            mountPath: /kong_dbless/
-          {{- end }}
-          {{- range .Values.secretVolumes }}
-          - name:  {{ . }}
-            mountPath: /etc/secrets/{{ . }}
-          {{- end }}
+        {{- include "kong.volumeMounts" . | nindent 10 }}
         readinessProbe:
 {{ toYaml .Values.readinessProbe | indent 10 }}
         livenessProbe:
@@ -275,21 +270,4 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       volumes:
-        - name: custom-nginx-template-volume
-          configMap:
-            name: {{ template "kong.fullname" . }}-default-custom-server-blocks
-{{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
-        - name: kong-custom-dbless-config-volume
-          configMap:
-            {{- if .Values.dblessConfig.configMap }}
-            name: {{ .Values.dblessConfig.configMap }}
-            {{- else }}
-            name: {{ template "kong.dblessConfig.fullname" . }}
-            {{- end }}
-{{- end }}
-
-{{- range $secretVolume := .Values.secretVolumes }}
-        - name: {{ . }}
-          secret:
-            secretName: {{ . }}
-{{- end }}
+      {{- include "kong.volumes" . | nindent 8 -}}
