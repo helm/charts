@@ -66,14 +66,12 @@ spec:
         - name: yugaware-config
           configMap:
             name: {{ .Release.Name }}-yugaware-app-config
-            release: {{ .Release.Name }}
             items:
               - key: application.docker.conf
                 path: application.docker.conf
         - name: nginx-config
           configMap:
             name: {{ .Release.Name }}-yugaware-nginx-config
-            release: {{ .Release.Name }}
             items:
               - key: default.conf
                 path: default.conf
@@ -84,7 +82,7 @@ spec:
               - key: prometheus.yml
                 path: prometheus.yml
       containers:
-        - image: postgres
+        - image: postgres:11.5
           name: postgres
           env:
             - name: POSTGRES_USER
@@ -185,7 +183,7 @@ spec:
             mountPath: /opt/swamper_targets/
             subPath: swamper_targets
         - name: nginx
-          image: nginx:latest
+          image: nginx:1.14.7
           ports:
           - containerPort: 80
           volumeMounts:
