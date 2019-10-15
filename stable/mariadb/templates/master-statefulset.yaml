@@ -106,6 +106,10 @@ spec:
         image: {{ template "mariadb.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
+        {{- if .Values.timeZone }}
+        - name: TZ
+          value: {{ .Values.timeZone | quote }}
+        {{- end }}
         {{- if .Values.image.debug}}
         - name: BITNAMI_DEBUG
           value: "true"

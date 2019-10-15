@@ -37,6 +37,11 @@ image:
   ## ref:  https://github.com/bitnami/minideb-extras/#turn-on-bash-debugging
   debug: false
 
+## MariaDb instances time zone
+##
+timeZone: null
+# timeZone: Europe/Paris
+
 ## String to partially override mariadb.fullname template (will maintain the release name)
 ##
 # nameOverride:

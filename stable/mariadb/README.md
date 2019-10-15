@@ -60,6 +60,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `image.debug`                             | Specify if debug logs should be enabled             | `false`                                                           |
 | `nameOverride`                            | String to partially override mariadb.fullname template with a string (will prepend the release name) | `nil`            |
 | `fullnameOverride`                        | String to fully override mariadb.fullname template with a string                                     | `nil`            |
+| `timeZone`                                | Time zone of the mariadb instances                  | `nil`                                                             |
 | `volumePermissions.enabled`          | Enable init container that changes volume permissions in the data directory (for cases where the default k8s `runAsUser` and `fsUser` values do not work) | `false`                                                      |
 | `volumePermissions.image.registry`   | Init container volume-permissions image registry                                                                                                          | `docker.io`                                                  |
 | `volumePermissions.image.repository` | Init container volume-permissions image name                                                                                                              | `bitnami/minideb`                                            |
