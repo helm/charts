@@ -161,6 +161,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheusOperator.admissionWebhooks.patch.nodeSelector` | Node selector for running admission hook patch jobs | `nil` |
 | `prometheusOperator.admissionWebhooks.patch.podAnnotations` | Annotations for the webhook job pods | `nil` |
 | `prometheusOperator.admissionWebhooks.patch.priorityClassName` | Priority class for the webhook integration jobs | `nil` |
+| `prometheusOperator.admissionWebhooks.patch.tolerations` | If specified, the job pod's tolerations. | `nil` |
 | `prometheusOperator.affinity` | Assign custom affinity rules to the prometheus operator https://kubernetes.io/docs/concepts/configuration/assign-pod-node/ | `{}` |
 | `prometheusOperator.cleanupCustomResourceBeforeInstall` | Remove CRDs before running the crd-install hook on changes. | `false` |
 | `prometheusOperator.cleanupCustomResource` | Attempt to delete CRDs when the release is removed. This option may be useful while testing but is not recommended, as deleting the CRD definition will delete resources and prevent the operator from being able to clean up resources that it manages | `false` |

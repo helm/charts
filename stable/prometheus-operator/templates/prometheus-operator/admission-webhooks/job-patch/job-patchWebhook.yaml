@@ -45,6 +45,10 @@ spec:
       nodeSelector:
 {{ toYaml . | indent 8 }}
       {{- end }}
+      {{- with .Values.prometheusOperator.admissionWebhooks.patch.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
       securityContext:
         runAsNonRoot: true
         runAsUser: 2000
