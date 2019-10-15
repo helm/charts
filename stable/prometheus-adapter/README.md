@@ -104,37 +104,39 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the Prometheus Adapter chart and their default values.
 
-| Parameter                       | Description                                                                     | Default                                     |
-| ------------------------------- | ------------------------------------------------------------------------------- | --------------------------------------------|
-| `affinity`                      | Node affinity                                                                   | `{}`                                        |
-| `image.repository`              | Image repository                                                                | `directxman12/k8s-prometheus-adapter-amd64` |
-| `image.tag`                     | Image tag                                                                       | `v0.5.0`                                    |
-| `image.pullPolicy`              | Image pull policy                                                               | `IfNotPresent`                              |
-| `image.pullSecrets`             | Image pull secrets                                                              | `{}`                                        |
-| `logLevel`                      | Log level                                                                       | `4`                                         |
-| `metricsRelistInterval`         | Interval at which to re-list the set of all available metrics from Prometheus   | `1m`                                        |
-| `nodeSelector`                  | Node labels for pod assignment                                                  | `{}`                                        |
-| `podAnnotations`                | Annotations to add to the pod                                                   | `{}`                                        |
-| `priorityClassName`             | Pod priority                                                                    | ``                                          |
-| `prometheus.url`                | Url of where we can find the Prometheus service                                 | `http://prometheus.default.svc`             |
-| `prometheus.port`               | Port of where we can find the Prometheus service, zero to omit this option      | `9090`                                      |
-| `rbac.create`                   | If true, create & use RBAC resources                                            | `true`                                      |
-| `resources`                     | CPU/Memory resource requests/limits                                             | `{}`                                        |
-| `rules.default`                 | If `true`, enable a set of default rules in the configmap                       | `true`                                      |
-| `rules.custom`                  | A list of custom configmap rules                                                | `[]`                                        |
-| `rules.existing`                | The name of an existing configMap with rules. Overrides default, custom and external. | ``                                    |
-| `rules.external`                | A list of custom rules for external metrics API                                 | `[]`                                        |
-| `rules.resource`                | `resourceRules` to set in configmap rules                                       | `{}`                                        |
-| `service.annotations`           | Annotations to add to the service                                               | `{}`                                        |
-| `service.port`                  | Service port to expose                                                          | `443`                                       |
-| `service.type`                  | Type of service to create                                                       | `ClusterIP`                                 |
-| `serviceAccount.create`         | If true, create & use Serviceaccount                                            | `true`                                      |
-| `serviceAccount.name`           | If not set and create is true, a name is generated using the fullname template  | ``                                          |
-| `tls.enable`                    | If true, use the provided certificates. If false, generate self-signed certs    | `false`                                     |
-| `tls.ca`                        | Public CA file that signed the APIService (ignored if tls.enable=false)         | ``                                          |
-| `tls.key`                       | Private key of the APIService (ignored if tls.enable=false)                     | ``                                          |
-| `tls.certificate`               | Public key of the APIService (ignored if tls.enable=false)                      | ``                                          |
-| `tolerations`                   | List of node taints to tolerate                                                 | `[]`                                        |
+| Parameter               | Description                                                                           | Default                                     |
+|-------------------------|---------------------------------------------------------------------------------------|---------------------------------------------|
+| `affinity`              | Node affinity                                                                         | `{}`                                        |
+| `image.repository`      | Image repository                                                                      | `directxman12/k8s-prometheus-adapter-amd64` |
+| `image.tag`             | Image tag                                                                             | `v0.5.0`                                    |
+| `image.pullPolicy`      | Image pull policy                                                                     | `IfNotPresent`                              |
+| `image.pullSecrets`     | Image pull secrets                                                                    | `{}`                                        |
+| `logLevel`              | Log level                                                                             | `4`                                         |
+| `metricsRelistInterval` | Interval at which to re-list the set of all available metrics from Prometheus         | `1m`                                        |
+| `nodeSelector`          | Node labels for pod assignment                                                        | `{}`                                        |
+| `podAnnotations`        | Annotations to add to the pod                                                         | `{}`                                        |
+| `priorityClassName`     | Pod priority                                                                          | ``                                          |
+| `prometheus.url`        | Url of where we can find the Prometheus service                                       | `http://prometheus.default.svc`             |
+| `prometheus.port`       | Port of where we can find the Prometheus service, zero to omit this option            | `9090`                                      |
+| `rbac.create`           | If true, create & use RBAC resources                                                  | `true`                                      |
+| `resources`             | CPU/Memory resource requests/limits                                                   | `{}`                                        |
+| `rules.default`         | If `true`, enable a set of default rules in the configmap                             | `true`                                      |
+| `rules.custom`          | A list of custom configmap rules                                                      | `[]`                                        |
+| `rules.existing`        | The name of an existing configMap with rules. Overrides default, custom and external. | ``                                          |
+| `rules.external`        | A list of custom rules for external metrics API                                       | `[]`                                        |
+| `rules.resource`        | `resourceRules` to set in configmap rules                                             | `{}`                                        |
+| `service.annotations`   | Annotations to add to the service                                                     | `{}`                                        |
+| `service.port`          | Service port to expose                                                                | `443`                                       |
+| `service.type`          | Type of service to create                                                             | `ClusterIP`                                 |
+| `serviceAccount.create` | If true, create & use Serviceaccount                                                  | `true`                                      |
+| `serviceAccount.name`   | If not set and create is true, a name is generated using the fullname template        | ``                                          |
+| `tls.enable`            | If true, use the provided certificates. If false, generate self-signed certs          | `false`                                     |
+| `tls.ca`                | Public CA file that signed the APIService (ignored if tls.enable=false)               | ``                                          |
+| `tls.key`               | Private key of the APIService (ignored if tls.enable=false)                           | ``                                          |
+| `tls.certificate`       | Public key of the APIService (ignored if tls.enable=false)                            | ``                                          |
+| `extraVolumeMounts`     | Any extra volumes mounts                                                              | `[]`                                        |
+| `extraVolumes`          | Any extra volumes                                                                     | `[]`                                        |
+| `tolerations`           | List of node taints to tolerate                                                       | `[]`                                        |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
