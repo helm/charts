@@ -32,7 +32,7 @@ webhooks:
         name: {{ template "opa.fullname" . }}
         namespace: {{ .Release.Namespace }}
     sideEffects: {{ .Values.admissionControllerSideEffect }}
-{{ if .Values.timeoutSeconds }
+{{ if .Values.timeoutSeconds }}
     timeoutSeconds: {{ .Values.timeoutSeconds }}
 {{ end }}
 
