@@ -213,5 +213,5 @@ init:
     # Set to false to disable the privileged running sysctl init container .
     # When disabling the init container the nodeSelector must only select Elasticseach compatible nodes.
     # When enabled sets vm.max_map_count=262144 which is the minimum Elasticsearch requires.
-    enabled: true 
+    enabled: true
     image: "busybox:1.31"
