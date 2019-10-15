@@ -91,6 +91,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `dashboards`                              | Dashboards to import                          | `{}`                                                    |
 | `dashboardsConfigMaps`                    | ConfigMaps reference that contains dashboards | `{}`                                                    |
 | `grafana.ini`                             | Grafana's primary configuration               | `{}`                                                    |
+| `ldap_enabled`                            | Enable LDAP authentication                    | `false`                                                 |
 | `ldap.existingSecret`                     | The name of an existing secret containing the `ldap.toml` file, this must have the key `ldap-toml`. | `""` |
 | `ldap.config  `                           | Grafana's LDAP configuration                  | `""`                                                    |
 | `annotations`                             | Deployment annotations                        | `{}`                                                    |
