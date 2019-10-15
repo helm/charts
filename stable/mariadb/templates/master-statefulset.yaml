@@ -117,11 +117,7 @@ spec:
         - name: MARIADB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-            {{- if .Values.existingSecret }}
-              name: {{ .Values.existingSecret }}
-            {{- else }}
-              name: {{ template "mariadb.fullname" . }}
-            {{- end }}
+              name: {{ template "mariadb.secretName" . }}
               key: mariadb-root-password
         {{- if .Values.db.user }}
         - name: MARIADB_USER
@@ -129,11 +125,7 @@ spec:
         - name: MARIADB_PASSWORD
           valueFrom:
             secretKeyRef:
-            {{- if .Values.existingSecret }}
-              name: {{ .Values.existingSecret }}
-            {{- else }}
-              name: {{ template "mariadb.fullname" . }}
-            {{- end }}
+              name: {{ template "mariadb.secretName" . }}
               key: mariadb-password
         {{- end }}
         - name: MARIADB_DATABASE
@@ -146,11 +138,7 @@ spec:
         - name: MARIADB_REPLICATION_PASSWORD
           valueFrom:
             secretKeyRef:
-            {{- if .Values.existingSecret }}
-              name: {{ .Values.existingSecret }}
-            {{- else }}
-              name: {{ template "mariadb.fullname" . }}
-            {{- end }}
+              name: {{ template "mariadb.secretName" . }}
               key: mariadb-replication-password
         {{- end }}
         ports:
@@ -201,11 +189,7 @@ spec:
         - name: MARIADB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-            {{- if .Values.existingSecret }}
-              name: {{ .Values.existingSecret }}
-            {{- else }}
-              name: {{ template "mariadb.fullname" . }}
-            {{- end }}
+              name: {{ template "mariadb.secretName" . }}
               key: mariadb-root-password
         command:
           - sh
