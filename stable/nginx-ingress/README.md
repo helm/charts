@@ -278,6 +278,10 @@ Annotate the controller as shown in the [nginx-ingress l7 patch](https://github.
 
 ```yaml
 controller:
+  config:
+    use-proxy-protocol: "false"
+    use-forwarded-headers: "true"
+    proxy-real-ip-cidr: "0.0.0.0/0"
   service:
     targetPorts:
       http: http
@@ -286,6 +290,20 @@ controller:
       service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:XX-XXXX-X:XXXXXXXXX:certificate/XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXX
       service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
       service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "https"
+      service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: '3600'
+```
+
+## AWS L4 ELB
+
+Annotate the controller as shown in the [nginx-ingress l4 patch](https://github.com/kubernetes/ingress-nginx/blob/master/deploy/aws/l4/service-l4.yaml):
+
+```yaml
+controller:
+  config:
+    use-proxy-protocol: "true"
+  service:
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
       service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: '3600'
 ```
 
