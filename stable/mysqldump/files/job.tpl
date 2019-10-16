@@ -1,14 +1,46 @@
 spec:
+  {{- if .Values.securityContext.enabled }}
+  securityContext:
+    fsGroup: {{ .Values.securityContext.fsGroup }}
+    runAsUser: {{ .Values.securityContext.runAsUser }}
+  {{- end }}
   containers:
   - name: mysql-backup
     image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
     imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
     command: ["/bin/bash", "/scripts/backup.sh"]
+{{- if or .Values.mysql.existingSecret .Values.upload.openstack.existingSecret }}
+    env:
+{{- end }}
+{{- if .Values.mysql.existingSecret }}
+      - name: MYSQL_PWD
+        valueFrom:
+          secretKeyRef:
+            name: {{ .Values.mysql.existingSecret | quote }}
+            {{- if .Values.mysql.existingSecretKey }}
+            key: {{ .Values.mysql.existingSecretKey | quote }}
+            {{- else }}
+            key: "mysql-root-password"
+            {{- end }}
+{{- end }}
+{{- if .Values.upload.openstack.existingSecret }}
+      - name: OS_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: {{ .Values.upload.openstack.existingSecret | quote }}
+            {{- if .Values.upload.openstack.existingSecretKey }}
+            key: {{ .Values.upload.openstack.existingSecretKey | quote }}
+            {{- else }}
+            key: "openstack-backup-password"
+            {{- end }}
+{{- end }}
     envFrom:
     - configMapRef:
         name: "{{ template "mysqldump.fullname" . }}"
+{{- if not .Values.mysql.existingSecret }}
     - secretRef:
         name: "{{ template "mysqldump.fullname" . }}"
+{{- end }}
     volumeMounts:
     - name: backups
       mountPath: /backup

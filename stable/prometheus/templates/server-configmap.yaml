@@ -1,3 +1,4 @@
+{{- if .Values.server.enabled -}}
 {{- if (empty .Values.server.configMapOverrideName) -}}
 apiVersion: v1
 kind: ConfigMap
@@ -20,6 +21,9 @@ data:
 {{- end -}}
 {{- if $root.Values.alertmanager.enabled }}
     alerting:
+{{- if $root.Values.alertRelabelConfigs }}
+{{ $root.Values.alertRelabelConfigs | toYaml  | trimSuffix "\n" | indent 6 }}
+{{- end }}
       alertmanagers:
       - kubernetes_sd_configs:
           - role: pod
@@ -42,6 +46,7 @@ data:
         - source_labels: [__meta_kubernetes_pod_container_port_number]
           regex:
           action: drop
+{{- end -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}

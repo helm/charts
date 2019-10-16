@@ -29,11 +29,14 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         env:
-        - name: HOSTNAME
-          value: "telegraf-polling-service"
+{{ toYaml .Values.env | indent 8 }}       
         volumeMounts:
         - name: config
           mountPath: /etc/telegraf
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
       volumes:
       - name: config
         configMap:

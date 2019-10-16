@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "selenium.hub.fullname" . }}
@@ -94,7 +94,7 @@ spec:
           resources:
 {{ toYaml .Values.hub.resources | trim | indent 12 -}}
 {{- if or .Values.global.imagePullSecrets .Values.hub.imagePullSecrets }}
-      imagePullSecrets: 
+      imagePullSecrets:
       - name: {{ .Values.hub.imagePullSecrets | default .Values.global.imagePullSecrets | quote }}
 {{- end }}
       nodeSelector:

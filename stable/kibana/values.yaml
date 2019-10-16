@@ -4,6 +4,7 @@ image:
   pullPolicy: "IfNotPresent"
 
 testFramework:
+  enabled: "true"
   image: "dduportal/bats"
   tag: "0.4.0"
 
@@ -19,6 +20,17 @@ env: {}
   # SERVER_PORT: 5601
   # LOGGING_VERBOSE: "true"
   # SERVER_DEFAULTROUTE: "/app/kibana"
+
+envFromSecrets: {}
+  ## Create a secret manually. Reference it here to inject environment variables
+  # ELASTICSEARCH_USERNAME:
+  #   from:
+  #     secret: secret-name-here
+  #     key: ELASTICSEARCH_USERNAME
+  # ELASTICSEARCH_PASSWORD:
+  #   from:
+  #     secret: secret-name-here
+  #     key: ELASTICSEARCH_PASSWORD
 
 files:
   kibana.yml:

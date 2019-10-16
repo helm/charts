@@ -1,0 +1,20 @@
+{{- if .Values.rbac.pspEnabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ template "sealed-secrets.fullname" . }}-psp
+  labels:
+    app.kubernetes.io/name: {{ template "sealed-secrets.name" . }}
+    helm.sh/chart: {{ template "sealed-secrets.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "sealed-secrets.fullname" . }}-psp
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "sealed-secrets.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+{{- end }}

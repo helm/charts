@@ -77,6 +77,7 @@ spec:
               scheme: HTTP
             initialDelaySeconds: {{ add .Values.livenessProbeInitialDelay .Values.readinessProbeInitialDelay }}
             periodSeconds: 60
+            timeoutSeconds: {{ .Values.livenessProbeTimeout }}
           {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}

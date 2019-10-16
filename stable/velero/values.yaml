@@ -6,7 +6,7 @@
 # enabling restic). Required.
 image:
   repository: gcr.io/heptio-images/velero
-  tag: v1.0.0
+  tag: v1.1.0
   pullPolicy: IfNotPresent
 
 # Annotations to add to the Velero deployment's pod template. Optional.
@@ -148,6 +148,9 @@ credentials:
   # true and `existingSecret` is empty. This should be the contents
   # of your IAM credentials file.
   secretContents: {}
+
+# Wheter to create volumesnapshotlocation crd, if false => disable snapshot feature
+snapshotsEnabled: true
 
 # Whether to deploy the restic daemonset.
 deployRestic: false

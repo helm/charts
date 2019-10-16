@@ -9,6 +9,7 @@ busybox:
   tag: "1.29.3"
 
 testFramework:
+  enabled: true
   image: "dduportal/bats"
   tag: "0.4.0"
 
@@ -194,9 +195,11 @@ ssl:
 ## Example: 'Australia/Sydney'
 # timezone:
 
+# Deployment Annotations
+deploymentAnnotations: {}
+
 # To be added to the database server pod(s)
 podAnnotations: {}
-
 podLabels: {}
 
 ## Set pod priorityClassName

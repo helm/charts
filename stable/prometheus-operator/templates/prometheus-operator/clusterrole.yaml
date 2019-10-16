@@ -3,6 +3,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-operator
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-operator
 {{ include "prometheus-operator.labels" . | indent 4 }}
@@ -23,6 +24,7 @@ rules:
   - servicemonitors
   - podmonitors
   - prometheusrules
+  - podmonitors
   verbs:
   - '*'
 - apiGroups:

@@ -2,6 +2,13 @@
 
 Installs [kiam](https://github.com/uswitch/kiam) to integrate AWS IAM with Kubernetes.
 
+## Pre-deprecation Notice
+
+As mentioned in #16664, this chart will be deprecated in favour of the [uSwitch-hosted Helm chart](https://github.com/uswitch/kiam/tree/master/helm/kiam).
+Please open new [issues](https://github.com/uswitch/kiam/issues/new) and pull requests in the [uSwitch repository](https://github.com/uswitch/kiam).
+
+The chart is also available in [Helm Hub](https://hub.helm.sh/charts/uswitch/kiam).
+
 ## TL;DR;
 
 ```console
@@ -95,7 +102,7 @@ Parameter | Description | Default
 `agent.enabled` | If true, create agent | `true`
 `agent.name` | Agent container name | `agent`
 `agent.image.repository` | Agent image | `quay.io/uswitch/kiam`
-`agent.image.tag` | Agent image tag | `v3.2`
+`agent.image.tag` | Agent image tag | `v3.3`
 `agent.image.pullPolicy` | Agent image pull policy | `IfNotPresent`
 `agent.dnsPolicy` | Agent pod DNS policy | `ClusterFirstWithHostNet`
 `agent.whiteListRouteRegexp` | Agent pod whitelist metadata API path argument regex  | `{}`
@@ -130,7 +137,7 @@ Parameter | Description | Default
 `server.name` | Server container name | `server`
 `server.gatewayTimeoutCreation` | Server's timeout when creating the kiam gateway | `50ms`
 `server.image.repository` | Server image | `quay.io/uswitch/kiam`
-`server.image.tag` | Server image tag | `v3.2`
+`server.image.tag` | Server image tag | `v3.3`
 `server.image.pullPolicy` | Server image pull policy | `Always`
 `server.assumeRoleArn` | IAM role for the server to assume before processing requests | `null`
 `server.cache.syncInterval` | Pod cache synchronization interval | `1m`

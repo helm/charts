@@ -52,13 +52,14 @@ The following table lists the configurable parameters of the Moodle chart and th
 | `jwtKey`                  | the JWT key to use for both publishers and subscribers                                              | random string       |   |   |
 | `logFormat`               | the log format                                                                                      | `FLUENTD`           |   |   |
 | `publishAllowedOrigins`   | a comma separated list of origins allowed to publish (only applicable when using cookie-based auth) | empty               |   |   |
-| `publisherJwtKey`         | must contain the secret key to valid publishers' JWT, can be omited in favor of `jwtKey`            | empty               |   |   |
-| `subscriberJwtKey`        | must contain the secret key to valid subscribers' JWT, can be omited in favor of `jwtKey`           | empty               |   |   |
+| `publisherJwtKey`         | must contain the secret key to valid publishers' JWT, can be omitted in favor of `jwtKey`            | empty              |   |   |
+| `subscriberJwtKey`        | must contain the secret key to valid subscribers' JWT, can be omitted in favor of `jwtKey`           | empty              |   |   |
 | `heartbeatInterval`       | interval between heartbeats (useful with some proxies, and old browsers)                            | `0s`                |   |   |
 | `historyCleanupFrequency` | chances to trigger history cleanup when an update occurs (number between `0` and `1`)               | `0.3`               |   |   |
 | `historySize`             | size of the history (`0` for no limits)                                                             | `0`                 |   |   |
 | `readTimeout`             | maximum duration for reading the entire request, including the body                                 | `0s`                |   |   |
 | `writeTimeout`            | maximum duration before timing out writes of the response                                           | `0s`                |   |   |
+| `useForwardedHeaders`     | use the `X-Forwarded-For`, and `X-Real-IP` for the remote (client) IP address, `X-Forwarded-Proto` or `X-Forwarded-Scheme` for the scheme (http or https), `X-Forwarded-Host` for the host and the RFC 7239 `Forwarded` header, which may include both client IPs and schemes. If this option is enabled, the reverse proxy must override or remove these headers or you will be at risk. | `0`                |   |   |
 | `image.repository`        | controller container image repository                                                               | `dunglas/mercure`   |   |   |
 | `image.tag`               | controller container image tag                                                                      | `v0.3.2`            |   |   |
 | `image.pullPolicy`        | controller container image pull policy                                                              | `IfNotPresent`      |   |   |
@@ -68,7 +69,7 @@ The following table lists the configurable parameters of the Moodle chart and th
 | `service.port`            | Service port                                                                                        | `80`                |   |   |
 | `ingress.enabled`         | Enables Ingress                                                                                     | `false`             |   |   |
 | `ingress.annotations`     | Ingress annotations                                                                                 | `{}`                |   |   |
-| `ingress.path`            | Ingress path                                                                                        | `/`                 |   |   |
+| `ingress.paths`           | Ingress paths for all hostnames                                                                     | `["/"]`             |   |   |
 | `ingress.hosts`           | Ingress accepted hostnames                                                                          | `["mercure.local"]` |   |   |
 | `ingress.tls`             | Ingress TLS configuration                                                                           | `[]`                |   |   |
 | `resources`               | controller pod resource requests & limits                                                           | `{}`                |   |   |

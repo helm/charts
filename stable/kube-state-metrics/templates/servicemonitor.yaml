@@ -1,0 +1,24 @@
+{{- if .Values.prometheus.monitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "kube-state-metrics.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "kube-state-metrics.name" . }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+    {{- if .Values.prometheus.monitor.additionalLabels }}
+{{ toYaml .Values.prometheus.monitor.additionalLabels | indent 4 }}
+    {{- end }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "kube-state-metrics.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  endpoints:
+    - port: http
+      {{- if .Values.prometheus.monitor.honorLabels }}
+      honorLabels: true
+      {{- end }}
+{{- end }}

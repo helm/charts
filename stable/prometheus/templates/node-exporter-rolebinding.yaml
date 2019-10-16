@@ -1,5 +1,5 @@
 {{- if and .Values.nodeExporter.enabled .Values.rbac.create }}
-{{- if .Values.nodeExporter.podSecurityPolicy.enabled }}
+{{- if .Values.podSecurityPolicy.enabled }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:

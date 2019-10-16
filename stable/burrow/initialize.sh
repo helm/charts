@@ -13,7 +13,7 @@ then
 fi
 
 export CHAIN_NODES=${CHAIN_NODES:-4}
-export CHAIN_NAME=${CHAIN_NAME:-"my-release"}
+export CHAIN_NAME=${CHAIN_NAME:-"my-release-burrow"}
 if [ -z $CHAIN_OUTPUT_DIRECTORY ]; then
   export CHAIN_OUTPUT_DIRECTORY=`pwd`
 fi
@@ -30,39 +30,49 @@ genSpec=$(mktemp)
 genesis=$(mktemp)
 keys=$(mktemp -d)
 
+function finish {
+  rm $keysTemplate
+  rm $valsTemplate
+  rm $genSpec
+  rm $genesis
+  rm -r $keys
+}
+trap finish EXIT
+
+setup="setup.yaml"
+values="addresses.yaml"
 
 cat >$keysTemplate <<EOF
+{{- range \$index, \$val := .Validators -}}
 apiVersion: v1
 kind: Secret
 type: Opaque
 metadata:
-  name: << .Config.ChainName >>-keys
+  name: {{ $.ChainName }}-keys-{{ printf "%03d" \$index }}
 data:
-  <<- \$keys:=.Keys ->>
-  <<- range .Keys ->>
-    <<- if index \$keys .Address >>
-    << .Address >>.json: << base64 (index \$keys .Address).KeyJSON >>
-    <<- end ->>
-  <<- end ->>
-  <<- range .Validators ->>
-    <<- if index \$keys .NodeAddress >>
-    nodekey-<< .Name >>: << base64 (index \$keys .NodeAddress).KeyJSON >>
-    <<- end ->>
-  <<- end ->>
+{{- \$keys := $.Keys -}}
+
+{{- if index \$keys $val.Address }}
+  {{ \$val.Address }}.json: {{ base64 (index \$keys \$val.Address).KeyJSON }}
+{{- end -}}
+
+{{- if index \$keys $val.NodeAddress }}
+  node_key.json: {{ base64 (index \$keys \$val.NodeAddress).KeyJSON }}
+{{- end }}
+
+---
+{{ end -}}
 EOF
 
 cat >$valsTemplate <<EOF
-chain:
-  nodes: $CHAIN_NODES
-
-validatorAddresses:
-  <<- range .Config.Validators >>
-  << .Name >>:
-    Address: << .Address ->>
-    <<if .NodeAddress >>
-    NodeAddress: << .NodeAddress >>
-    <<- end ->>
-  <<- end >>
+validators:
+  {{- range .Validators }}
+  - name: {{ .Name }}
+    address: {{ .Address -}}
+    {{ if .NodeAddress }}
+    nodeAddress: {{ .NodeAddress }}
+    {{- end -}}
+  {{- end }}
 EOF
 
 echo "Building the genesis spec with burrow ($(burrow --version))."
@@ -73,22 +83,19 @@ burrow spec \
 
 echo "Creating keys and necessary deploy files..."
 burrow configure \
-  --generate-node-keys \
   --chain-name=$CHAIN_NAME \
-  --keysdir=$keys \
+  --keys-dir=$keys \
   --genesis-spec=$genSpec \
   --config-template-in=$keysTemplate \
-  --config-out=$CHAIN_OUTPUT_DIRECTORY/chain-info.yaml \
+  --config-out=$CHAIN_OUTPUT_DIRECTORY/$setup \
   --config-template-in=$valsTemplate \
-  --config-out=$CHAIN_OUTPUT_DIRECTORY/initialize.yaml \
+  --config-out=$CHAIN_OUTPUT_DIRECTORY/$values \
   --separate-genesis-doc=$genesis >/dev/null
 
-echo "Saved Kubernetes specification as $CHAIN_OUTPUT_DIRECTORY/chain-info.yaml"
-echo "Saved example 'values.yaml' as $CHAIN_OUTPUT_DIRECTORY/initialize.yaml"
+echo "Saved keys and genesis as $CHAIN_OUTPUT_DIRECTORY/$setup"
+echo "Saved example 'values.yaml' as $CHAIN_OUTPUT_DIRECTORY/$values"
 
-cat >>$CHAIN_OUTPUT_DIRECTORY/chain-info.yaml <<EOF
-
----
+cat >>$CHAIN_OUTPUT_DIRECTORY/$setup <<EOF
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -97,12 +104,5 @@ data:
   genesis.json: |
     `cat $genesis | jq -rc .`
 EOF
-
-echo "Garbage collecting..."
-rm $keysTemplate
-rm $valsTemplate
-rm $genSpec
-rm $genesis
-rm -r $keys
 
 echo -e "Done\n"

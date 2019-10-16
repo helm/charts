@@ -42,45 +42,48 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the Metabase chart and their default values.
 
-| Parameter              | Description                                                | Default           |
-|------------------------|------------------------------------------------------------|-------------------|
-| replicaCount           | desired number of controller pods                          | 1                 |
-| podAnnotations         | controller pods annotations                                | {}                |
-| image.repository       | controller container image repository                      | metabase/metabase |
-| image.tag              | controller container image tag                             | v0.31.2           |
-| image.pullPolicy       | controller container image pull policy                     | IfNotPresent      |
-| listen.host            | Listening on a specific network host                       | 0.0.0.0           |
-| listen.port            | Listening on a specific network port                       | 3000              |
-| ssl.enabled            | Enable SSL to run over HTTPS                               | false             |
-| ssl.port               | SSL port                                                   | null              |
-| ssl.keyStore           | The key store in JKS format                                | null              |
-| ssl.keyStorePassword   | The password for key Store                                 | null              |
-| database.type          | Backend database type                                      | h2                |
-| database.encryptionKey | Secret key for encrypt sensitive information into database | null              |
-| database.connectionURI | Database connection URI (alternative to the below settings)| null              |
-| database.host          | Database host                                              | null              |
-| database.port          | Database port                                              | null              |
-| database.dbname        | Database name                                              | null              |
-| database.username      | Database username                                          | null              |
-| database.password      | Database password                                          | null              |
-| password.complexity    | Complexity requirement for Metabase account's password     | normal            |
-| password.length        | Minimum length required for Metabase account's password    | 6                 |
-| timeZone               | Service time zone                                          | UTC               |
-| emojiLogging           | Get a funny emoji in service log                           | true              |
-| javaOpts               | JVM options                                                | null              |
-| pluginsDirectory       | A directory with Metabase plugins                          | null              |
-| service.type           | ClusterIP, NodePort, or LoadBalancer                       | ClusterIP         |
-| service.externalPort   | Service external port                                      | 80                |
-| service.internalPort   | Service internal port, should be the same as `listen.port` | 3000              |
-| service.annotations    | Service annotations                                        | {}                |
-| ingress.enabled        | Enable ingress controller resource                         | false             |
-| ingress.hosts          | Ingress resource hostnames                                 | null              |
-| ingress.path           | Ingress path                                               | /                 |
-| ingress.labels         | Ingress labels configuration                               | null              |
-| ingress.annotations    | Ingress annotations configuration                          | null              |
-| ingress.tls            | Ingress TLS configuration                                  | null              |
-| log4jProperties        | Custom `log4j.properties` file                             | null              |
-| resources              | Server resource requests and limits                        | {}                |
+| Parameter              | Description                                                 | Default           |
+| ---------------------- | ----------------------------------------------------------- | ----------------- |
+| replicaCount           | desired number of controller pods                           | 1                 |
+| podAnnotations         | controller pods annotations                                 | {}                |
+| image.repository       | controller container image repository                       | metabase/metabase |
+| image.tag              | controller container image tag                              | v0.32.9           |
+| image.pullPolicy       | controller container image pull policy                      | IfNotPresent      |
+| listen.host            | Listening on a specific network host                        | 0.0.0.0           |
+| listen.port            | Listening on a specific network port                        | 3000              |
+| ssl.enabled            | Enable SSL to run over HTTPS                                | false             |
+| ssl.port               | SSL port                                                    | null              |
+| ssl.keyStore           | The key store in JKS format                                 | null              |
+| ssl.keyStorePassword   | The password for key Store                                  | null              |
+| database.type          | Backend database type                                       | h2                |
+| database.encryptionKey | Secret key for encrypt sensitive information into database  | null              |
+| database.connectionURI | Database connection URI (alternative to the below settings) | null              |
+| database.host          | Database host                                               | null              |
+| database.port          | Database port                                               | null              |
+| database.dbname        | Database name                                               | null              |
+| database.username      | Database username                                           | null              |
+| database.password      | Database password                                           | null              |
+| password.complexity    | Complexity requirement for Metabase account's password      | normal            |
+| password.length        | Minimum length required for Metabase account's password     | 6                 |
+| timeZone               | Service time zone                                           | UTC               |
+| emojiLogging           | Get a funny emoji in service log                            | true              |
+| javaOpts               | JVM options                                                 | null              |
+| pluginsDirectory       | A directory with Metabase plugins                           | null              |
+| service.type           | ClusterIP, NodePort, or LoadBalancer                        | ClusterIP         |
+| service.externalPort   | Service external port                                       | 80                |
+| service.internalPort   | Service internal port, should be the same as `listen.port`  | 3000              |
+| service.annotations    | Service annotations                                         | {}                |
+| ingress.enabled        | Enable ingress controller resource                          | false             |
+| ingress.hosts          | Ingress resource hostnames                                  | null              |
+| ingress.path           | Ingress path                                                | /                 |
+| ingress.labels         | Ingress labels configuration                                | null              |
+| ingress.annotations    | Ingress annotations configuration                           | null              |
+| ingress.tls            | Ingress TLS configuration                                   | null              |
+| log4jProperties        | Custom `log4j.properties` file                              | null              |
+| resources              | Server resource requests and limits                         | {}                |
+| nodeSelector           | Node labels for pod assignment                              | {}                |
+| tolerations            | Toleration labels for pod assignment                        | []                |
+| affinity               | Affinity settings for pod assignment                        | {}                |
 
 The above parameters map to the env variables defined in [metabase](http://github.com/metabase/metabase). For more information please refer to the [metabase documentations](http://www.metabase.com/docs/v0.24.2/).
 

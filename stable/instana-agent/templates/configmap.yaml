@@ -38,3 +38,6 @@ data:
     #com.instana.plugin.generic.hardware:
     #  enabled: true # disabled by default
     #  availability-zone: 'zone'
+  {{- if .Values.agent.configuration_yaml -}}
+  {{ .Values.agent.configuration_yaml | nindent 4 }}
+  {{- end }}
