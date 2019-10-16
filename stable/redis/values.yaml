@@ -120,6 +120,7 @@ sentinel:
     ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
     ##
     annotations: {}
+    labels: {}
     loadBalancerIP:
 
 ## Specifies the Kubernetes Cluster's Domain Name.
@@ -169,6 +170,13 @@ securityContext:
   enabled: true
   fsGroup: 1001
   runAsUser: 1001
+  ## sysctl settings for master and slave pods
+  ##
+  ## Uncomment the setting below to increase the net.core.somaxconn value
+  ##
+  # sysctls:
+  # - name: net.core.somaxconn
+  #   value: "10000"
 
 ## Use password authentication
 usePassword: true
@@ -287,6 +295,7 @@ master:
     ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
     ##
     annotations: {}
+    labels: {}
     loadBalancerIP:
 
   ## Enable persistence using Persistent Volume Claims
@@ -345,6 +354,7 @@ slave:
     ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
     ##
     annotations: {}
+    labels: {}
     loadBalancerIP:
 
   ## Redis slave port
@@ -491,6 +501,7 @@ metrics:
     ## otherwise leave blank
     # loadBalancerIP:
     annotations: {}
+    labels: {}
 
 ##
 ## Init containers parameters:

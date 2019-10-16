@@ -88,6 +88,7 @@ and their default values.
 | proxy.tls.servicePort              | Service port to use for TLS                                                           | 8443                |
 | proxy.tls.nodePort                 | Node port to use for TLS                                                              | 32443               |
 | proxy.tls.hostPort                 | Host port to use for TLS                                                              |                     |
+| proxy.tls.overrideServiceTargetPort| Override service port to use for TLS without touching Kong containerPort              |                     |
 | proxy.type                         | k8s service type. Options: NodePort, ClusterIP, LoadBalancer                          | `NodePort`          |
 | proxy.loadBalancerSourceRanges     | Limit proxy access to CIDRs if set and service type is `LoadBalancer`                 | `[]`                |
 | proxy.loadBalancerIP               | To reuse an existing ingress static IP for the admin service                          |                     |
@@ -100,6 +101,7 @@ and their default values.
 | proxy.ingress.annotations          | Ingress annotations. See documentation for your ingress controller for details        | `{}`                |
 | updateStrategy                     | update strategy for deployment                                                        | `{}`                |
 | env                                | Additional [Kong configurations](https://getkong.org/docs/latest/configuration/)      |                     |
+| plugins                            | Install custom plugins into Kong via ConfigMaps or Secrets                            | `{}`                |
 | runMigrations                      | Run Kong migrations job                                                               | `true`              |
 | readinessProbe                     | Kong readiness probe                                                                  |                     |
 | livenessProbe                      | Kong liveness probe                                                                   |                     |
@@ -115,6 +117,7 @@ and their default values.
 | serviceMonitor.interval            | Scrapping interval                                                                    | 10s                 |
 | serviceMonitor.namespace           | Where to create ServiceMonitor                                                        |                     |
 | secretVolumes                      | Mount given secrets as a volume in Kong container to override default certs and keys. | `[]`                |
+| serviceMonitor.labels              | ServiceMonito Labels                                                                  | {}                  |
 
 ### Admin/Proxy listener override
 
@@ -395,4 +398,3 @@ You can can learn about kong ingress custom resource definitions [here](https://
 | podDisruptionBudget.enabled        | Enable PodDisruptionBudget for ingress controller                                     | `false`                                                                      |
 | podDisruptionBudget.maxUnavailable | Represents the minimum number of Pods that can be unavailable (integer or percentage) | `50%`                                                                        |
 | podDisruptionBudget.minAvailable   | Represents the number of Pods that must be available (integer or percentage)          |                                                                              |
-
