@@ -2,6 +2,7 @@
 {{- $fullName := include "grafana.fullname" . -}}
 {{- $servicePort := .Values.service.port -}}
 {{- $ingressPath := .Values.ingress.path -}}
+{{- $extraPaths := .Values.ingress.extraPaths -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -22,19 +23,16 @@ metadata:
 spec:
 {{- if .Values.ingress.tls }}
   tls:
-  {{- range .Values.ingress.tls }}
-    - hosts:
-      {{- range .hosts }}
-        - {{ . | quote }}
-      {{- end }}
-      secretName: {{ .secretName }}
-  {{- end }}
+{{ toYaml .Values.ingress.tls | indent 4 }}
 {{- end }}
   rules:
   {{- range .Values.ingress.hosts }}
     - host: {{ . }}
       http:
         paths:
+{{ if $extraPaths }}
+{{ toYaml $extraPaths | indent 10 }}
+{{- end }}
           - path: {{ $ingressPath }}
             backend:
               serviceName: {{ $fullName }}

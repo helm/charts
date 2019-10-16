@@ -99,3 +99,7 @@ To provide that support the API versions of objects should be those that work fo
 ## Status of the Project
 
 This project is still under active development, so you might run into [issues](https://github.com/helm/charts/issues). If you do, please don't be shy about letting us know, or better yet, contribute a fix or feature.
+
+## Happy Helming in China
+
+If you are in China, there are some problems to use upstream Helm Charts directly (e.g. images hosted on `gcr.io`, `quay.io`, and Charts hosted on `googleapis.com` etc), you can use this mirror repo at https://github.com/cloudnativeapp/charts which automatically sync & replace unavailable image & repo URLs in every Chart.

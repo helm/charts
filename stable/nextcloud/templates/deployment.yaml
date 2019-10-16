@@ -20,6 +20,9 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "nextcloud.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- if .Values.redis.enabled }}
+        {{ template "nextcloud.redis.fullname" . }}-client: "true"
+        {{- end }}
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -51,6 +54,22 @@ spec:
               name: {{ printf "%s-%s" .Release.Name "db"  }}
               key: db-password
         {{- else }}
+          {{- if eq .Values.externalDatabase.type "postgresql" }}
+        - name: POSTGRES_HOST
+          value: {{ .Values.externalDatabase.host | quote }}
+        - name: POSTGRES_DB
+          value: {{ .Values.externalDatabase.database | quote }}
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ printf "%s-%s" .Release.Name "db" }}
+              key: db-username
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ printf "%s-%s" .Release.Name "db" }}
+              key: db-password
+          {{- else }}
         - name: MYSQL_HOST
           value: {{ .Values.externalDatabase.host | quote }}
         - name: MYSQL_DATABASE
@@ -65,6 +84,7 @@ spec:
             secretKeyRef:
               name: {{ printf "%s-%s" .Release.Name "db" }}
               key: db-password
+          {{- end }}
         {{- end }}
         - name: NEXTCLOUD_ADMIN_USER
           valueFrom:
@@ -154,8 +174,11 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
         - name: nextcloud-data
-          mountPath: /var/www/html/
+          mountPath: /var/www/
           subPath: root
+        - name: nextcloud-data
+          mountPath: /var/www/html
+          subPath: html
         - name: nextcloud-data
           mountPath: {{ .Values.nextcloud.datadir }}
           subPath: data
@@ -166,8 +189,30 @@ spec:
           mountPath: /var/www/html/custom_apps
           subPath: custom_apps
         - name: nextcloud-data
+          mountPath: /var/www/tmp
+          subPath: tmp
+        - name: nextcloud-data
           mountPath: /var/www/html/themes
           subPath: themes
+        {{- range $key, $value := .Values.nextcloud.configs }}
+        - name: nextcloud-config
+          mountPath: /var/www/html/config/{{ $key }}
+          subPath: {{ $key }}
+        {{- end }}
+        {{- if .Values.nextcloud.configs }}
+        {{- range $key, $value := .Values.nextcloud.defaultConfigs }}
+        {{- if $value }}
+        - name: nextcloud-config
+          mountPath: /var/www/html/config/{{ $key }}
+          subPath: {{ $key }}
+        {{- end }}
+        {{- end }}
+        {{- end }}
+        {{- range $key, $value := .Values.nextcloud.phpConfigs }}
+        - name: nextcloud-phpconfig
+          mountPath: /usr/local/etc/php/conf.d/{{ $key }}
+          subPath: {{ $key }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -188,3 +233,16 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
+      {{- if .Values.nextcloud.configs }}
+      - name: nextcloud-config
+        configMap:
+          name: {{ template "nextcloud.fullname" . }}-config
+      {{- end }}
+      {{- if .Values.nextcloud.phpConfigs }}
+      - name: nextcloud-phpconfig
+        configMap:
+          name: {{ template "nextcloud.fullname" . }}-phpconfig
+      {{- end }}
+      # Will mount configuration files as www-data (id: 33) for nextcloud
+      securityContext:
+        fsGroup: 33

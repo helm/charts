@@ -17,11 +17,22 @@ spec:
       labels:
         app: {{ template "minio.name" . }}
         release: {{ .Release.Name }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+{{- end }}
     spec:
       restartPolicy: OnFailure
 {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
 {{- end }}
       volumes:
         - name: minio-configuration
@@ -56,4 +67,6 @@ spec:
           - name: cert-secret-volume-mc
             mountPath: {{ .Values.configPathmc }}certs
           {{ end }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
 {{- end }}

@@ -10,7 +10,7 @@
         {{- end }}
 
         {{- if .Values.Master.ImageTag }}
-           {{ fail "`Master.ImageTag` does no longer exist. It has been renamed to `master.imageTag`" }}
+           {{ fail "`Master.ImageTag` does no longer exist. It has been renamed to `master.tag`" }}
         {{- end }}
 
         {{- if .Values.Master.ImagePullPolicy }}

@@ -85,6 +85,7 @@ persistence:
   # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 8Gi
+  # existingClaim: ""
 
 resources: {}
  # requests:
@@ -93,6 +94,14 @@ resources: {}
  # limits:
  #   cpu: "500m"
  #   memory: "512Mi"
+
+initResources: {}
+ # requests:
+ #   cpu: "100m"
+ #   memory: "128Mi"
+ # limits:
+ #   cpu: "100m"
+ #   memory: "128Mi"
 
 nodeSelector: {}
 

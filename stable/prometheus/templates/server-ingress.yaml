@@ -1,3 +1,4 @@
+{{- if .Values.server.enabled -}}
 {{- if .Values.server.ingress.enabled -}}
 {{- $releaseName := .Release.Name -}}
 {{- $serviceName := include "prometheus.server.fullname" . }}
@@ -31,4 +32,5 @@ spec:
   tls:
 {{ toYaml .Values.server.ingress.tls | indent 4 }}
   {{- end -}}
+{{- end -}}
 {{- end -}}

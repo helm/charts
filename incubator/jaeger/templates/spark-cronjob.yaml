@@ -54,11 +54,13 @@ spec:
               value: {{ template "elasticsearch.client.url" . }}
             - name: ES_NODES_WAN_ONLY
               value: {{ .Values.storage.elasticsearch.nodesWanOnly | quote }}
+            {{- if .Values.storage.elasticsearch.usePassword }}
             - name: ES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ if .Values.storage.elasticsearch.existingSecret }}{{ .Values.storage.elasticsearch.existingSecret }}{{- else }}{{ include "jaeger.fullname" . }}-elasticsearch{{- end }}
                   key: password
+            {{- end }}
             - name: ES_USERNAME
               value: {{ .Values.storage.elasticsearch.user }}
             {{- end }}

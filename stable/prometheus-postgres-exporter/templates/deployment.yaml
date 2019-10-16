@@ -1,7 +1,7 @@
 {{- if and .Values.config.datasource.passwordSecret .Values.config.datasource.password -}}
 {{ fail (printf "ERROR: only one of .Values.config.datasource.passwordSecret and .Values.config.datasource.password must be defined") }}
 {{- end -}}
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "prometheus-postgres-exporter.fullname" . }}
@@ -28,7 +28,7 @@ spec:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
 {{- if .Values.annotations }}
 {{ toYaml .Values.annotations | indent 8 }}
-{{- end}}
+{{- end }}
     spec:
       serviceAccountName: {{ template "prometheus-postgres-exporter.serviceAccountName" . }}
       containers:
@@ -37,6 +37,13 @@ spec:
           - "--extend.query-path=/etc/config.yaml"
           {{- if .Values.config.disableDefaultMetrics }}
           - "--disable-default-metrics"
+          {{- end }}
+          {{- if .Values.config.autoDiscoverDatabases }}
+          - "--auto-discover-databases"
+          {{- if .Values.config.excludeDatabases }}
+          - "--exclude-databases"
+          - {{ .Values.config.excludeDatabases | join "," }}
+          {{- end }}
           {{- end }}
           env:
           - name: DATA_SOURCE_URI

@@ -3,6 +3,7 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: {{ template "jenkins.fullname" . }}-backup
+  namespace: {{ template "jenkins.namespace" . }}
   labels:
     "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
     "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -29,11 +30,11 @@ spec:
             args:
             - simple-backup
             - -n
-            - {{ .Release.Namespace }}
+            - {{ template "jenkins.namespace" . }}
             - -l
             - app.kubernetes.io/instance={{ .Release.Name }}
             - --container
-            - {{ template "jenkins.fullname" . }}
+            - jenkins
             - --path
             - /var/jenkins_home
             - --dst

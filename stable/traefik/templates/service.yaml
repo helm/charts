@@ -53,6 +53,8 @@ spec:
     {{- end }}
     {{- if not .Values.ssl.enabled }}
     targetPort: httpn
+    {{- else }}
+    targetPort: https
     {{- end }}
   {{- if (and (.Values.metrics.prometheus.enabled) (not (.Values.metrics.prometheus.restrictAccess)))}}
   - port: 8080

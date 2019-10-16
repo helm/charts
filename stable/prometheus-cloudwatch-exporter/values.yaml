@@ -134,6 +134,17 @@ serviceMonitor:
   # labels:
   # Set timeout for scrape
   # timeout: 10s
+  # Set relabelings for the ServiceMonitor, use to apply to samples before scraping
+  # relabelings: []
+  # Set metricRelabelings for the ServiceMonitor, use to apply to samples for ingestion
+  # metricRelabelings: []
+  #
+  # Example - note the Kubernetes convention of camelCase instead of Prometheus' snake_case
+  # metricRelabelings:
+  #   - sourceLabels: [dbinstance_identifier]
+  #     action: replace
+  #     replacement: mydbname
+  #     targetLabel: dbname
 
 ingress:
   enabled: false
@@ -148,3 +159,6 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+
+securityContext:
+  runAsUser: 65534  # run as nobody user instead of root

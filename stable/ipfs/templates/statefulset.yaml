@@ -23,10 +23,26 @@ spec:
         # the persistent volume to be able to start.
         fsGroup: 1000
         runAsUser: 1000
+      livenessProbe:
+        httpGet:
+          path: /debug/metrics/prometheus
+          port: api
+        initialDelaySeconds: 15
+        periodSeconds: 3
+      readinessProbe:
+        httpGet:
+          path: /debug/metrics/prometheus
+          port: api
+        initialDelaySeconds: 15
+        periodSeconds: 3
       containers:
       - name: {{ .Chart.Name }}
         image: {{ .Values.image }}
         ports:
+{{- if .Values.swarm.enabled }}
+        - containerPort: 4001
+          name: swarm
+{{- end }}
         - containerPort: 5001
           name: api
         - containerPort: 8080

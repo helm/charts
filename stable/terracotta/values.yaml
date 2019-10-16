@@ -2,14 +2,14 @@
 
 image:
   repository: terracotta/terracotta-server-oss
-  tag: 5.5.1
+  tag: 5.6.0
   pullPolicy: Always
 
 website: "https://github.com/Terracotta-OSS/docker"
 
 sampleEhcacheClientImage:
   repository: terracotta/sample-ehcache-client
-  tag: 5.5.1
+  tag: 5.6.0
 
 
 replicaCount: 2

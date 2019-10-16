@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "prometheus-redis-exporter.fullname" . }}
@@ -41,7 +41,7 @@ spec:
               containerPort: 9121
           env:
             - name: REDIS_ADDR
-              value: {{ join "," .Values.redisAddress }}
+              value: {{ .Values.redisAddress }}
 {{- if .Values.script }}
             - name: REDIS_EXPORTER_SCRIPT
               value: /script/script.lua

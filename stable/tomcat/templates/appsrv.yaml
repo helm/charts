@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "tomcat.fullname" . }}
@@ -22,6 +22,9 @@ spec:
       volumes:
         - name: app-volume
           emptyDir: {}
+        {{- with .Values.extraVolumes }}
+{{ toYaml . | indent 8 }}
+        {{- end }}
       initContainers:
         - name: war
           image: {{ .Values.image.webarchive.repository }}:{{ .Values.image.webarchive.tag }}
@@ -33,16 +36,29 @@ spec:
           volumeMounts:
             - name: app-volume
               mountPath: /app
+        {{- with .Values.extraInitContainers }}
+{{ toYaml . | indent 8 }}
+        {{- end }}
+
       containers:
         - name: {{ .Chart.Name }}
           image: {{ .Values.image.tomcat.repository }}:{{ .Values.image.tomcat.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.env }}
+          env:
+{{ toYaml . | indent 12 }}
+          {{- end }}
           volumeMounts:
             - name: app-volume
               mountPath: {{ .Values.deploy.directory }}
+            {{- with .Values.extraVolumeMounts }}
+{{ toYaml . | indent 12 }}
+            {{- end }}
           ports:
             - containerPort: {{ .Values.service.internalPort }}
-              hostPort: 8009
+              {{- with .Values.hostPort }}
+              hostPort: {{ . }}
+              {{- end }}
           livenessProbe:
             httpGet:
               path: {{ .Values.livenessProbe.path }}
