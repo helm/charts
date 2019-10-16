@@ -9,6 +9,7 @@ cronjob:
   concurrencyPolicy: ""
   failedJobsHistoryLimit: ""
   successfulJobsHistoryLimit: ""
+  jobRestartPolicy: Never
 
 pod:
   annotations: {}

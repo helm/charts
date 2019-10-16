@@ -170,6 +170,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheusOperator.configmapReloadImage.tag` | Tag for configmapReload image | `v0.0.1` |
 | `prometheusOperator.crdApiGroup` | Specify the API Group for the CustomResourceDefinitions | `monitoring.coreos.com` |
 | `prometheusOperator.createCustomResource` | Create CRDs. Required if deploying anything besides the operator itself as part of the release. The operator will create / update these on startup. If your Helm version < 2.10 you will have to either create the CRDs first or deploy the operator first, then the rest of the resources | `true` |
+| `prometheusOperator.denyNamespaces` | Namespaces not to scope the interaction of the Prometheus Operator (deny list). | `{}` |
 | `prometheusOperator.enabled` | Deploy Prometheus Operator. Only one of these should be deployed into the cluster | `true` |
 | `prometheusOperator.hyperkubeImage.repository` | Image pull policy for hyperkube image used to perform maintenance tasks | `IfNotPresent` |
 | `prometheusOperator.hyperkubeImage.repository` | Repository for hyperkube image used to perform maintenance tasks | `k8s.gcr.io/hyperkube` |
@@ -217,6 +218,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | ----- | ----------- | ------ |
 | `prometheus.additionalServiceMonitors` | List of `ServiceMonitor` objects to create. See https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#servicemonitorspec | `[]` |
 | `prometheus.enabled` | Deploy prometheus | `true` |
+| `prometheus.annotations` | Prometheus annotations | `{}` |
 | `prometheus.ingress.annotations` | Prometheus Ingress annotations | `{}` |
 | `prometheus.ingress.enabled` | If true, Prometheus Ingress will be created | `false` |
 | `prometheus.ingress.hosts` | Prometheus Ingress hostnames | `[]` |
@@ -266,7 +268,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.prometheusSpec.replicaExternalLabelName` | Name of the external label used to denote replica name. | `""` |
 | `prometheus.prometheusSpec.replicas` | Number of instances to deploy for a Prometheus deployment. | `1` |
 | `prometheus.prometheusSpec.resources` | Define resources requests and limits for single Pods. | `{}` |
-| `prometheus.prometheusSpec.retentionSize` | Used Storage Prometheus shall retain data for. Example 50g (50 Gigabyte). Can be combined with prometheus.prometheusSpec.retention | `""` |
+| `prometheus.prometheusSpec.retentionSize` | Used Storage Prometheus shall retain data for. Example 50GiB (50 Gigabyte). Can be combined with prometheus.prometheusSpec.retention | `""` |
 | `prometheus.prometheusSpec.walCompression` | Enable compression of the write-ahead log using Snappy. This flag is only available in versions of Prometheus >= 2.11.0. | `false` |
 | `prometheus.prometheusSpec.retention` | Time duration Prometheus shall retain data for. Must match the regular expression `[0-9]+(ms\|s\|m\|h\|d\|w\|y)` (milliseconds seconds minutes hours days weeks years). | `10d` |
 | `prometheus.prometheusSpec.routePrefix` | The route prefix Prometheus registers HTTP handlers for. This is useful, if using ExternalURL and a proxy is rewriting HTTP routes of a request, and the actual ExternalURL is still true, but the server serves requests under a different route prefix. For example for use with `kubectl proxy`. | `/` |

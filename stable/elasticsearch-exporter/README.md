@@ -17,7 +17,7 @@ cluster using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
 
-- Kubernetes 1.8+ with Beta APIs enabled
+- Kubernetes 1.10+
 
 ## Installing the Chart
 
@@ -37,6 +37,14 @@ To uninstall/delete the `my-release` deployment:
 $ helm delete --purge my-release
 ```
 The command removes all the Kubernetes components associated with the chart and deletes the release.
+
+## Upgrading an existing Release to a new major version
+
+A major chart version change (like v1.2.3 -> v2.0.0) indicates that there is an incompatible breaking change needing manual actions.
+
+### To 2.0.0
+
+Some kubernetes apis used from 1.x have been deprecated. You need to update your claster to kubernetes 1.10+ to support new definitions used in 2.x.
 
 ## Configuration
 

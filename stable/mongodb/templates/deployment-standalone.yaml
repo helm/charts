@@ -8,6 +8,13 @@ metadata:
     chart: {{ template "mongodb.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+    {{- with .Values.labels }}
+{{ toYaml . | indent 4 }}
+    {{- end }}
+  {{- with .Values.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
 spec:
   selector:
     matchLabels:

@@ -64,6 +64,7 @@ logGroupName: kubernetes
 rbac:
   ## If true, create and use RBAC resources
   create: false
+  pspEnabled: false
 
   ## Ignored if rbac.create is true
   serviceAccountName: default

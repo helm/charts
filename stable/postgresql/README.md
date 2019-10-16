@@ -16,7 +16,8 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 
 ## Prerequisites
 
-- Kubernetes 1.10+
+- Kubernetes 1.12+
+- Helm 2.11+ or Helm 3.0-beta3+
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
@@ -112,14 +113,14 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `master.podAnnotations`                       | Map of annotations to add to the pods (postgresql master)                                                              | `{}`                                                        |
 | `master.podLabels`                            | Map of labels to add to the pods (postgresql master)                                                                   | `{}`                                                        |
 | `master.extraVolumeMounts`                    | Additional volume mounts to add to the pods (postgresql master)                                                        |  `[]`                                                       |
-| `master.extraVolume`                          | Additional volumes to add to the pods (postgresql master)                                                              |  `[]`                                                       |
+| `master.extraVolumes`                          | Additional volumes to add to the pods (postgresql master)                                                              |  `[]`                                                       |
 | `slave.nodeSelector`                          | Node labels for pod assignment (postgresql slave)                                                                      | `{}`                                                        |
 | `slave.affinity`                              | Affinity labels for pod assignment (postgresql slave)                                                                  | `{}`                                                        |
 | `slave.tolerations`                           | Toleration labels for pod assignment (postgresql slave)                                                                | `[]`                                                        |
 | `slave.podAnnotations`                        | Map of annotations to add to the pods (postgresql slave)                                                               | `{}`                                                        |
 | `slave.podLabels`                             | Map of labels to add to the pods (postgresql slave)                                                                    | `{}`                                                        |
 | `slave.extraVolumeMounts`                     | Additional volume mounts to add to the pods (postgresql slave)                                                         |  `[]`                                                       |
-| `slave.extraVolume`                           | Additional volumes to add to the pods (postgresql slave)                                                               |  `[]`                                                       |
+| `slave.extraVolumes`                           | Additional volumes to add to the pods (postgresql slave)                                                               |  `[]`                                                       |
 | `terminationGracePeriodSeconds`               | Seconds the pod needs to terminate gracefully                                                                          | `nil`                                                       |
 | `resources`                                   | CPU/Memory resource requests/limits                                                                                    | Memory: `256Mi`, CPU: `250m`                                |
 | `securityContext.enabled`                     | Enable security context                                                                                                | `true`                                                      |

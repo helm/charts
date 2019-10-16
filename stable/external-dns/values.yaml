@@ -40,7 +40,7 @@ sources:
 # - crd
 
 ## DNS provider where the DNS records will be created. Available providers are:
-## - aws, azure, cloudflare, coredns, designate, digitalocoean, google, infoblox, rfc2136
+## - aws, azure, cloudflare, coredns, designate, digitalocean, google, infoblox, rfc2136
 ##
 provider: aws
 
@@ -74,7 +74,9 @@ aws:
   ## AWS Zone tags
   ##
   zoneTags: []
-
+  ## Enable AWS Prefer CNAME. Available values are: true, false
+  ##
+  preferCNAME: ""
 ## Azure configuration to be set via arguments/env. variables
 ##
 azure:
