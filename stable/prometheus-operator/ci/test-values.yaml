@@ -967,6 +967,7 @@ prometheusOperator:
       priorityClassName: ""
       podAnnotations: {}
       nodeSelector: {}
+      tolerations: []
 
   ## Namespaces not to scope the interaction of the Prometheus Operator (deny list).
   ##
