@@ -24,6 +24,9 @@ replicas: 1
 #   - "--ping"
 #   - "--ping.entrypoint=http"
 
+# /ping health-check entry point.
+# pingEntryPoint: http
+
 podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 2
