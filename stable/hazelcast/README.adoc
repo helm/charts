@@ -1,4 +1,4 @@
-:repo: hazelcast/charts
+:repo: helm/charts
 
 == Hazelcast
 
