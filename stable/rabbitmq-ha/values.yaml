@@ -253,6 +253,15 @@ rabbitmqWebSTOMPPlugin:
     # web_stomp.ws_frame = binary
     # web_stomp.cowboy_opts.max_keepalive = 10
 
+## Prometheus Plugin
+## Ref: https://www.rabbitmq.com/prometheus.html
+rabbitmqPrometheusPlugin:
+  enabled: false
+  ## Prometheus configuration:
+  config: |
+   # prometheus.path = /metrics
+   # prometheus.tcp.port =  15692
+
 ## AMQPS support
 ## Ref: http://www.rabbitmq.com/ssl.html
 rabbitmqAmqpsSupport:
