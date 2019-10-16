@@ -7,6 +7,11 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 0.4.10 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 0.5.0
+
+Added value: additionalAnnotations to allow passing annotations to pod
+Fix service account name/creation not being honored
+
 ## 0.4.11
 
 Added CHANGELOG.md
@@ -105,4 +110,3 @@ commit: 647b56cc4
 
 Add cloudwatch exporter (#4022)
 commit: 0f730f26e
-
