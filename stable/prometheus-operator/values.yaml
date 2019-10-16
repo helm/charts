@@ -885,7 +885,7 @@ kube-state-metrics:
 ## Deploy node exporter as a daemonset to all nodes
 ##
 nodeExporter:
-  enabled: true
+  enabled: truee
 
   ## Use the value configured in prometheus-node-exporter.podLabels
   ##
