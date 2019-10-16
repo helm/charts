@@ -236,6 +236,14 @@ $ helm install --name my-release -f ./values-production.yaml stable/postgresql
 $ kubectl scale statefulset my-postgresql-slave --replicas=3
 ```
 
+### Change PostgreSQL version
+
+To modify the PostgreSQL version used in this chart you can specify a [valid image tag](https://hub.docker.com/r/bitnami/postgresql/tags/) using the `--set image.tag` argument to `helm install`. For example, 
+
+```console
+$ helm install --name my-release --set image.tag=12.0.0-debian-9-r0 stable/postgresql
+```
+
 ### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
 
 It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
