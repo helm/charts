@@ -255,6 +255,11 @@ containers:
     {{- if .Values.envFromSecret }}
     envFrom:
       - secretRef:
+          name: {{ .Values.envFromSecret }}
+    {{- end }}
+    {{- if .Values.envRenderSecret }}
+    envFrom:
+      - secretRef:
           name: {{ template "grafana.fullname" . }}-env
     {{- end }}
     livenessProbe:
