@@ -9,8 +9,8 @@ NOTE: The change log until version 0.4.10 is auto generated based on git commits
 
 ## 0.5.0
 
-Added value: additionalAnnotations to allow passing annotations to pod
-Fix service account name/creation not being honored
+Added value: additionalAnnotations to allow passing annotations to deployment
+Fix custom service account name not being honored
 
 ## 0.4.11
 
