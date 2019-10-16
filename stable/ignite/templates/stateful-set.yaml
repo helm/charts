@@ -54,7 +54,7 @@ spec:
           name: ignite-persistence
 {{- end }}
         - name: config-volume
-          mountPath: /opt/ignite/apache-ignite-fabric/config
+          mountPath: /opt/ignite/apache-ignite/config
 {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
