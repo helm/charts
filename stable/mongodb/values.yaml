@@ -177,6 +177,12 @@ replicaSet:
       # secondary: 1
       # arbiter: 1
 
+# Annotations to be added to the deployment or statefulsets
+annotations: {}
+
+# Additional labels to apply to the deployment or statefulsets
+labels: {}
+
 # Annotations to be added to MongoDB pods
 podAnnotations: {}
 
