@@ -9,9 +9,15 @@ metadata:
     heritage: {{ .Release.Service }}
 data:
   install_plugins.sh: |-
-    cd /opt/sonarqube/extensions/plugins/tmp
     {{- if .Values.plugins.install }}
+      mkdir -p /opt/sonarqube/extensions/tmp/plugins
+      cd /opt/sonarqube/extensions/tmp/plugins
       {{- range $index, $val := .Values.plugins.install }}
         wget {{ $val }} --no-check-certificate
       {{- end }}
+    {{- end }}
+    {{- if and .Values.oracle.oracleInstallDriver .Values.oracle.oracleDriverPath }}
+      mkdir -p /opt/sonarqube/extensions/tmp/jdbc-driver
+      cd /opt/sonarqube/extensions/tmp/jdbc-driver
+      wget {{ .Values.oracle.oracleDriverPath }} --no-check-certificate
     {{- end }}

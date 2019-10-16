@@ -44,7 +44,7 @@ spec:
           imagePullPolicy: IfNotPresent
           securityContext:
             privileged: true
-      {{- if .Values.plugins.install }}
+        {{- if or .Values.plugins.install .Values.oracle.oracleInstallDriver }}
         - name: install-plugins
           image: {{ default "joosthofman/wget:1.0" .Values.plugins.initContainerImage }}
           env:
@@ -54,42 +54,21 @@ spec:
             {{- end }}
           command: ["sh",
             "-c",
-            "mkdir -p /opt/sonarqube/extensions/plugins/tmp &&
-            rm -f /opt/sonarqube/extensions/plugins/tmp/* &&
-            cp /tmp/scripts/install_plugins.sh /opt/sonarqube/extensions/plugins/tmp/install_plugins.sh &&
-            chmod 0775 /opt/sonarqube/extensions/plugins/tmp/install_plugins.sh &&
-            /opt/sonarqube/extensions/plugins/tmp/install_plugins.sh && pwd && ls -lah
-            "
-           ]
+            "mkdir -p /opt/sonarqube/extensions/tmp/plugins &&
+            rm -f /opt/sonarqube/extensions/tmp/plugins/tmp/* &&
+            cp /tmp/scripts/install_plugins.sh /opt/sonarqube/extensions/tmp/plugins/install_plugins.sh &&
+            chmod 0775 /opt/sonarqube/extensions/tmp/plugins/install_plugins.sh &&
+            /opt/sonarqube/extensions/tmp/plugins/install_plugins.sh"
+          ]
           volumeMounts:
-            - mountPath: /opt/sonarqube/extensions/plugins/tmp
+            - mountPath: /opt/sonarqube/extensions/tmp
               name: sonarqube
               subPath: tmp
             - name: install-plugins
               mountPath: /tmp/scripts/
           resources:
 {{ toYaml .Values.plugins.resources | indent 12 }}
-    {{- if .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
-    {{- end }}
-    {{- if .Values.hostAliases }}
-      hostAliases:
-{{ toYaml .Values.hostAliases | indent 8 }}
-    {{- end }}
-    {{- if .Values.tolerations }}
-      tolerations:
-{{ toYaml .Values.tolerations | indent 8 }}
-    {{- end }}
-    {{- if .Values.affinity }}
-      affinity:
-{{ toYaml .Values.affinity | indent 8 }}
-    {{- end }}
-      {{- end }}
-      {{- if .Values.image.pullSecret }}
-      imagePullSecrets:
-      - name: {{ .Values.image.pullSecret }}
-      {{- end }}
+        {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -98,7 +77,7 @@ spec:
             - name: http
               containerPort: {{ .Values.service.internalPort }}
               protocol: TCP
-          {{- if .Values.plugins.install }}
+          {{- if or .Values.plugins.install .Values.oracle.oracleInstallDriver }}
           command:
             - /tmp/scripts/copy_plugins.sh
           {{- end }}
@@ -112,6 +91,8 @@ spec:
               value: {{ .Values.postgresql.postgresUser | quote }}
               {{- else if eq .Values.database.type "mysql" }}
               value: {{ .Values.mysql.mysqlUser | quote }}
+              {{- else if eq .Values.database.type "oracle" }}
+              value: {{ .Values.oracle.oracleUser | quote }}
               {{- end }}
             - name: SONARQUBE_JDBC_PASSWORD
               valueFrom:
@@ -122,12 +103,17 @@ spec:
                   {{- else if eq .Values.database.type "mysql" }}
                   name: {{- if .Values.mysql.enabled }} {{ template "mysql.fullname" .}} {{- else if .Values.mysql.mysqlPasswordSecret }} {{ .Values.mysql.mysqlPasswordSecret }} {{- else }} {{ template "sonarqube.fullname" . }} {{- end }}
                   key: mysql-password
+                  {{- else if eq .Values.database.type "oracle" }}
+                  name: {{- if .Values.oracle.enabled }} {{ template "oracle.fullname" .}} {{- else if .Values.oracle.oraclePasswordSecret }} {{ .Values.oracle.oraclePasswordSecret }} {{- else }} {{ template "sonarqube.fullname" . }} {{- end }}
+                  key: oracle-password
                   {{- end }}
             - name: SONARQUBE_JDBC_URL
               {{- if eq .Values.database.type "postgresql" }}
               value: "jdbc:postgresql://{{ template "postgresql.hostname" . }}:{{- .Values.postgresql.service.port -}}/{{- .Values.postgresql.postgresDatabase -}}"
               {{- else if eq .Values.database.type "mysql" }}
               value: "jdbc:mysql://{{ template "mysql.hostname" . }}:{{ .Values.mysql.service.port }}/{{ .Values.mysql.mysqlDatabase }}?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true{{- range $key, $value := .Values.mysql.mysqlParams }}&{{ $key }}={{ $value }}{{- end }}"
+              {{- else if eq .Values.database.type "oracle" }}
+              value: "jdbc:oracle:thin:@{{ .Values.oracle.oracleHostname }}:{{- .Values.oracle.oracleHostport -}}/{{- .Values.oracle.oracleDatabase -}}"
               {{- end }}
           livenessProbe:
             httpGet:
@@ -159,7 +145,7 @@ spec:
             - mountPath: /opt/sonarqube/data
               name: sonarqube
               subPath: data
-            - mountPath: /opt/sonarqube/extensions/plugins/tmp
+            - mountPath: /opt/sonarqube/extensions/tmp
               name: sonarqube
               subPath: tmp
             - mountPath: /opt/sonarqube/extensions/downloads
@@ -180,18 +166,26 @@ spec:
               mountPath: /tmp/scripts
           resources:
 {{ toYaml .Values.resources | indent 12 }}
-    {{- if .Values.nodeSelector }}
+      {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
-    {{- end }}
-    {{- if .Values.tolerations }}
+      {{- end }}
+      {{- if .Values.hostAliases }}
+      hostAliases:
+{{ toYaml .Values.hostAliases | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
-    {{- end }}
-    {{- if .Values.affinity }}
+      {{- end }}
+      {{- if .Values.affinity }}
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
-    {{- end }}
+      {{- end }}
+      {{- if .Values.image.pullSecret }}
+      imagePullSecrets:
+      - name: {{ .Values.image.pullSecret }}
+      {{- end }}
       volumes:
       {{- if .Values.sonarProperties }}
       - name: config

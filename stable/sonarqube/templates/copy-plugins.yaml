@@ -13,7 +13,7 @@ data:
       {{- if .Values.plugins.deleteDefaultPlugins }}
       rm -f /opt/sonarqube/extensions/plugins/*.jar
       {{- end }}
-      for f in /opt/sonarqube/extensions/plugins/tmp/*.jar
+      for f in /opt/sonarqube/extensions/tmp/plugins/*.jar
       do
         file=${f##*/} && file=${file%-[0-9]*} 
         for original in /opt/sonarqube/extensions/plugins/*.jar
@@ -24,7 +24,9 @@ data:
           fi
         done
       done
-      cp /opt/sonarqube/extensions/plugins/tmp/*.jar /opt/sonarqube/extensions/plugins/
+      cp /opt/sonarqube/extensions/tmp/plugins/*.jar /opt/sonarqube/extensions/plugins/
+      {{- if and .Values.oracle.oracleInstallDriver .Values.oracle.oracleDriverPath }}
+      cp /opt/sonarqube/extensions/tmp/jdbc-driver/*.jar /opt/sonarqube/extensions/jdbc-driver/oracle/
+      {{- end }}
       /opt/sonarqube/bin/run.sh
-    
-    
+

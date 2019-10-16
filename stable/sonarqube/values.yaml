@@ -207,3 +207,19 @@ mysql:
 # podLabels:
 #   key: value
 podLabels: {}
+
+## Configuration values for external Oracle DB
+oracle:
+  oracleHostname: ""
+  oracleHostport: 1521
+  # To use an external secret for the password for an external Oracle
+  # instance, provide the name of the secret on the line below:
+  # oraclePasswordSecret: ""
+  oracleUser: "sonarUser"
+  oraclePassword: "sonarPass"
+  oracleDatabase: "sonarDB"
+  # To use Oracle, you will need to install the Oracle JDBC driver.
+  # Set oracleInstallDriver to true and provide a URL where the driver
+  # can be downloaded in oracleDriverPath.
+  oracleInstallDriver: false
+  oracleDriverPath: ""
