@@ -45,7 +45,7 @@ spec:
 {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 12 }}
 {{- end }}
-          restartPolicy: Never
+          restartPolicy: {{ .Values.cronjob.jobRestartPolicy }}
 {{- if .Values.priorityClassName }}
           priorityClassName: "{{ .Values.priorityClassName }}"
 {{- end }}
