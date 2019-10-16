@@ -26,14 +26,10 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:
-      initContainers:
-        - name: chown-db
-          image: {{ .Values.init.image.repository }}:{{ .Values.init.image.tag }}
-          imagePullPolicy: {{ .Values.init.image.pullPolicy }}
-          command: ["chown", "1000:1000", "/var/db/cerebro"]
-          volumeMounts:
-            - name: db
-              mountPath: /var/db/cerebro
+      {{- if .Values.securityContext }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
+      {{- end }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range .Values.image.pullSecrets }}
@@ -54,6 +50,13 @@ spec:
               mountPath: /var/db/cerebro
             - name: config
               mountPath: /etc/cerebro
+          {{- if .Values.env }}
+          env:
+          {{- range $index, $element := .Values.env }}
+          - name: {{ $index | quote }}
+            value: {{ $element | quote }}
+          {{- end }}
+          {{- end }}
           {{- if .Values.envFromSecretRef }}
           envFrom:
             - secretRef:
@@ -61,14 +64,14 @@ spec:
           {{- end }}
           livenessProbe:
             httpGet:
-              path: /
+              path: {{ .Values.config.basePath }}
               port: http
-              initialDelaySeconds: 120
+            initialDelaySeconds: 120
           readinessProbe:
             httpGet:
-              path: /
+              path: {{ .Values.config.basePath }}
               port: http
-              initialDelaySeconds: 120
+            initialDelaySeconds: 120
           resources:
 {{ toYaml .Values.resources | indent 12 }}
       volumes:

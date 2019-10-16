@@ -24,6 +24,9 @@ serviceMonitor:
   # scrapeTimeout: 10s
   # additionalLabels is the set of additional labels to add to the ServiceMonitor
   additionalLabels: {}
+  jobLabel: ""
+  targetLabels: []
+  podTargetLabels: []
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

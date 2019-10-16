@@ -1,20 +1,16 @@
 {{- if or .Values.autoDiscovery.clusterName .Values.autoscalingGroups }}
 {{/* one of the above is required */}}
-apiVersion: {{ .Values.deployment.apiVersion }}
+apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   labels:
-    app: {{ template "cluster-autoscaler.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+{{ include "cluster-autoscaler.labels" . | indent 4 }}
   name: {{ template "cluster-autoscaler.fullname" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "cluster-autoscaler.name" . }}
-      release: {{ .Release.Name }}
+{{ include "cluster-autoscaler.instance-name" . | indent 6 }}
     {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 6 }}
     {{- end }}
@@ -25,8 +21,7 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        app: {{ template "cluster-autoscaler.name" . }}
-        release: {{ .Release.Name }}
+{{ include "cluster-autoscaler.instance-name" . | indent 8 }}
       {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
       {{- end }}
@@ -57,8 +52,7 @@ spec:
           {{- end }}
           {{- if eq .Values.cloudProvider "aws" }}
             {{- if .Values.autoDiscovery.clusterName }}
-            - --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,kubernetes.io/cluster/
-              {{- .Values.autoDiscovery.clusterName }}
+            - --node-group-auto-discovery=asg:tag={{ tpl (join "," .Values.autoDiscovery.tags) . }}
             {{- end }}
           {{- else if eq .Values.cloudProvider "gce" }}
           {{- if .Values.autoscalingGroupsnamePrefix }}
@@ -148,6 +142,20 @@ spec:
             - name: {{ $key }}
               value: "{{ $value }}"
           {{- end }}
+          {{- range $key, $value := .Values.envFromConfigMap }}
+            - name: {{ $key }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ default (include "cluster-autoscaler.fullname" $) $value.name }}
+                  key: {{ required "Must specify key!" $value.key }}
+          {{- end }}
+          {{- range $key, $value := .Values.extraEnvSecrets }}
+            - name: {{ $key }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default (include "cluster-autoscaler.fullname" $) $value.name }}
+                  key: {{ required "Must specify key!" $value.key }}
+          {{- end }}
           {{- if .Values.envFromSecret }}
           envFrom:
             - secretRef:
@@ -161,15 +169,12 @@ spec:
             - containerPort: 8085
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+          {{- if eq .Values.cloudProvider "gce" }}
           volumeMounts:
-            - name: ssl-certs
-              mountPath: {{ .Values.sslCertPath }}
-              readOnly: true
-            {{- if eq .Values.cloudProvider "gce" }}
             - name: cloudconfig
               mountPath: {{ .Values.cloudConfigPath }}
               readOnly: true
-            {{- end }}
+          {{- end }}
     {{- if .Values.affinity }}
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
@@ -181,15 +186,12 @@ spec:
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "cluster-autoscaler.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
+      {{- if eq .Values.cloudProvider "gce" }}
       volumes:
-        - name: ssl-certs
-          hostPath:
-            path: {{ .Values.sslCertHostPath }}
-        {{- if eq .Values.cloudProvider "gce" }}
         - name: cloudconfig
           hostPath:
             path: {{ .Values.cloudConfigPath }}
-        {{- end }}
+      {{- end }}
     {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range .Values.image.pullSecrets }}

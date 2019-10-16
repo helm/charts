@@ -1,0 +1,18 @@
+{{- if and .Values.ssl.enabled .Values.ssl.mtls }}
+{{- if .Values.ssl.mtls.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "traefik.fullname" . }}-client-ca-certs
+  labels:
+    app: {{ template "traefik.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+type: Opaque
+data:
+{{- range $idx, $caCert := .Values.ssl.mtls.clientCaCerts }}
+  clientCaCert-{{ $idx }}.crt: {{ $caCert | quote }}
+{{- end }}
+{{- end }}
+{{- end }}

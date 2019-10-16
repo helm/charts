@@ -17,8 +17,10 @@ service:
   type: LoadBalancer
   externalPort: 443
   internalPort: 443
+  # hostPort: 443
   externalIPs: []
   nodePort: 32085
+  # clusterIP: None
   # LoadBalancerSourceRanges: 0.0.0.0/0
   # loadBalancerIP: 10.0.0.1
 
@@ -91,5 +93,15 @@ openvpn:
   # conf: |
   #  max-clients 100
   #  client-to-client
+  # Enable istio support for openvpn connections
+  istio:
+    enabled: false
+    proxy:
+      port: 15001
+  iptablesExtra: []
+  # - -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+  # - -A FORWARD -m conntrack --ctstate NEW -d 10.240.0.0/255.255.0.0 -j ACCEPT
+  # - -A FORWARD -j REJECT
+
 
 nodeSelector: {}

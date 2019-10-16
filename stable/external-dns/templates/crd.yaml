@@ -1,5 +1,4 @@
 {{- if .Values.crd.create }}
----
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
@@ -62,9 +61,4 @@ spec:
               type: integer
           type: object
   version: v1alpha1
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: null
 {{- end }}

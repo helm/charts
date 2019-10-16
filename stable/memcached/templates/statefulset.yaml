@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: {{ .Values.kind }}
 metadata:
   name: {{ template "memcached.fullname" . }}
@@ -8,6 +8,10 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "memcached.fullname" . }}
+      release: "{{ .Release.Name }}"
   {{- if eq .Values.kind "StatefulSet" }}
   serviceName: {{ template "memcached.fullname" . }}
   {{- end }}
@@ -27,6 +31,10 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+      {{- end }}
       affinity:
         podAntiAffinity:
         {{- if eq .Values.AntiAffinity "hard" }}
@@ -46,10 +54,17 @@ spec:
                   app:  {{ template "memcached.fullname" . }}
                   release: {{ .Release.Name | quote }}
         {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+      {{- end }}
       containers:
       - name: {{ template "memcached.fullname" . }}
         image: {{ .Values.image }}
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        {{- if .Values.securityContext.enabled }}
+        securityContext:
+          runAsUser: {{ .Values.securityContext.runAsUser }}
+        {{- end }}
         command:
         - memcached
         - -m {{ .Values.memcached.maxItemMemory }}
@@ -82,6 +97,10 @@ spec:
       - name: metrics
         image: {{ .Values.metrics.image }}
         imagePullPolicy: {{ default "" .Values.metrics.imagePullPolicy | quote }}
+        {{- if .Values.securityContext.enabled }}
+        securityContext:
+          runAsUser: {{ .Values.securityContext.runAsUser }}
+        {{- end }}
         ports:
         - name: metrics
           containerPort: 9150
@@ -107,3 +126,8 @@ spec:
       affinity:
 {{ toYaml . | trim | indent 8}}
 {{- end }}
+  updateStrategy:
+    type: {{ .Values.updateStrategy.type }}
+    {{- if (eq "Recreate" .Values.updateStrategy.type) }}
+    rollingUpdate: null
+    {{- end }}

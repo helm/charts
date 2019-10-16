@@ -1,3 +1,4 @@
+{{- if .Values.server.enabled -}}
 {{- if .Values.networkPolicy.enabled }}
 apiVersion: {{ template "prometheus.networkPolicy.apiVersion" . }}
 kind: NetworkPolicy
@@ -12,4 +13,5 @@ spec:
   ingress:
     - ports:
       - port: 9090
+{{- end }}
 {{- end }}

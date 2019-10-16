@@ -14,11 +14,5 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistence.joomla.size | quote }}
-{{- if .Values.persistence.joomla.storageClass }}
-{{- if (eq "-" .Values.persistence.joomla.storageClass) }}
-  storageClassName: ""
-{{- else }}
-  storageClassName: {{ .Values.persistence.joomla.storageClass | quote }}
-{{- end }}
-{{- end }}
+  {{ include "joomla.storageClass" . }}
 {{- end -}}

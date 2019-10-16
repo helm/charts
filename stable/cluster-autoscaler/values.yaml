@@ -2,6 +2,10 @@ autoDiscovery:
 # Only cloudProvider `aws` and `gce` are supported by auto-discovery at this time
 # AWS: Set tags as described in https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md#auto-discovery-setup
   clusterName:  # cluster.local
+  tags:
+  - k8s.io/cluster-autoscaler/enabled
+  - k8s.io/cluster-autoscaler/{{ .Values.autoDiscovery.clusterName }}
+  # - kubernetes.io/cluster/{{ .Values.autoDiscovery.clusterName }}
 
 autoscalingGroups: []
 # At least one element is required if not using autoDiscovery
@@ -44,15 +48,12 @@ azureUseManagedIdentityExtension: false
 # Currently only `gce`, `aws`, `azure` & `spotinst` are supported
 cloudProvider: aws
 
-sslCertPath: /etc/ssl/certs/ca-certificates.crt
-sslCertHostPath: /etc/ssl/certs/ca-certificates.crt
-
 # Configuration file for cloud provider
 cloudConfigPath: /etc/gce.conf
 
 image:
   repository: k8s.gcr.io/cluster-autoscaler
-  tag: v1.13.1
+  tag: v1.14.5
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -63,6 +64,9 @@ image:
   #   - myRegistrKeySecretName
 
 tolerations: []
+
+## Extra ENV passed to the container
+extraEnv: {}
 
 extraArgs:
   v: 4
@@ -100,9 +104,6 @@ podAnnotations: {}
 podLabels: {}
 replicaCount: 1
 
-deployment:
-  apiVersion: "extensions/v1beta1"
-
 rbac:
   ## If true, create & use RBAC resources
   ##
@@ -113,6 +114,9 @@ rbac:
   ## Ignored if rbac.create is true
   ##
   serviceAccountName: default
+  ## Annotations for the Service Account
+  ##
+  serviceAccountAnnotations: {}
 
 resources: {}
   # limits:
@@ -131,7 +135,6 @@ priorityClassName: ""
 
 service:
   annotations: {}
-  clusterIP: ""
 
   ## List of IP addresses at which the service is available
   ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips

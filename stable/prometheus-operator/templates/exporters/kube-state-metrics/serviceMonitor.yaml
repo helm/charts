@@ -3,11 +3,12 @@ apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default 
 kind: ServiceMonitor
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-kube-state-metrics
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-kube-state-metrics
 {{ include "prometheus-operator.labels" . | indent 4 }}
 spec:
-  jobLabel: app
+  jobLabel: app.kubernetes.io/name
   endpoints:
   - port: http
     {{- if .Values.kubeStateMetrics.serviceMonitor.interval }}
@@ -24,6 +25,6 @@ spec:
 {{- end }}
   selector:
     matchLabels:
-      app: kube-state-metrics
-      release: "{{ .Release.Name }}"
+      app.kubernetes.io/name: kube-state-metrics
+      app.kubernetes.io/instance: "{{ .Release.Name }}"
 {{- end }}
