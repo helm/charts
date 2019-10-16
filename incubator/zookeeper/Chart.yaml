@@ -1,7 +1,7 @@
 apiVersion: v1
 name: zookeeper
 home: https://zookeeper.apache.org/
-version: 2.0.1
+version: 2.0.2
 appVersion: 3.5.5
 description: Centralized service for maintaining configuration information, naming,
   providing distributed synchronization, and providing group services.
