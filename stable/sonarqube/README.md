@@ -88,6 +88,14 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `mysql.mysqlDatabase`                       | Mysql database name                       | `sonarDB`                                  |
 | `mysql.mysqlParams`                         | Mysql parameters for JDBC connection string     | `{}`                                 |
 | `mysql.service.port`                        | Mysql port                                | `3306`                                     |
+| `cloudsql.enabled`                          | Set to `true` to use Google CloudSQL database | `false`                                |
+| `cloudsql.instance`                         | Set CloudSQL instance: 'project:zone:instancename' | `""`                              |
+| `cloudsql.useExistingServiceAcc`            | Set to `true` to use existing service account for cloudsql proxy | `false`             |
+| `cloudsql.serviceAccSecretName`             | Secret name with cloudsql service account | None                                       |
+| `cloudsql.serviceAccJsonName`               | Service account file name                 | None                                       |
+| `cloudsql.image.repository`                 | CloudSQL proxy image repository           | `gcr.io/cloudsql-docker/gce-proxy`         |
+| `cloudsql.image.tag`                        | CloudSQL proxy image tag                  | `1.12`                                       |
+| `cloudsql.image.pullPolicy`                 | CloudSQL proxy image pull policy          | `IfNotPresent`                                       |
 | `annotations`                               | Sonarqube Pod annotations                 | `{}`                                       |
 | `resources`                                 | Sonarqube Pod resource requests & limits  | `{}`                                       |
 | `affinity`                                  | Node / Pod affinities                     | `{}`                                       |

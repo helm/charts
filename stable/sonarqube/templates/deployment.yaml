@@ -91,6 +91,21 @@ spec:
       - name: {{ .Values.image.pullSecret }}
       {{- end }}
       containers:
+        {{- if .Values.cloudsql.enabled  }}
+        - name: cloudsql-proxy
+          image: {{ .Values.cloudsql.image.repository }}:{{ .Values.cloudsql.image.tag }}
+          imagePullPolicy: {{ .Values.cloudsql.image.pullPolicy }}
+          command: ["/cloud_sql_proxy"]
+          args:
+          - "-instances={{ .Values.cloudsql.instance }}=tcp:5432"
+          {{- if .Values.cloudsql.useExistingServiceAcc }}
+          - "-credential_file=/var/{{ .Values.cloudsql.serviceAccSecretName }}/{{ .Values.cloudsql.serviceAccJsonName }}"
+          volumeMounts:
+          - mountPath: /var/{{ .Values.cloudsql.serviceAccSecretName }}
+            name: {{ .Values.cloudsql.serviceAccSecretName }}
+            readOnly: true
+          {{- end }}
+        {{- end }}
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -193,6 +208,11 @@ spec:
 {{ toYaml .Values.affinity | indent 8 }}
     {{- end }}
       volumes:
+      {{- if .Values.cloudsql.useExistingServiceAcc }}
+      - name: {{ .Values.cloudsql.serviceAccSecretName }}
+        secret:
+          secretName: {{ .Values.cloudsql.serviceAccSecretName }}
+      {{- end }}
       {{- if .Values.sonarProperties }}
       - name: config
         configMap:
