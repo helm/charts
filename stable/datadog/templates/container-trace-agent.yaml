@@ -15,7 +15,7 @@
   env:
     {{- include "containers-common-env" . | nindent 4 }}
     - name: DD_APM_ENABLED
-      value: {{ .Values.datadog.apmEnabled | quote }}
+      value: {{ .Values.datadog.apm.enabled | quote }}
     - name: DD_LOG_LEVEL
       value: {{ .Values.daemonset.containers.traceAgent.logLevel | default .Values.datadog.logLevel | quote }}
     {{- if .Values.datadog.nonLocalTraffic }}
@@ -36,9 +36,5 @@
       subPath: datadog.yaml
     {{- end }}
   livenessProbe:
-    tcpSocket:
-      port: 8126
-    initialDelaySeconds: 15
-    periodSeconds: 15
-    timeoutSeconds: 5
+{{ toYaml .Values.daemonset.containers.traceAgent.livenessProbe | indent 4 }}
 {{- end -}}

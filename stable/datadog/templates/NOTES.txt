@@ -60,32 +60,8 @@ agents use the same shared token.
 
 {{- end }}
 
-{{- if .Values.datadog.apmEnabled }}
+{{- if .Values.datadog.apm.enabled }}
 The datadog agent is listening on port 8126.
-{{- end }}
-
-{{- if .Values.deployment.enabled }}
-#################################################################
-####               WARNING: Deprecation notice               ####
-#################################################################
-
-* Deployment installation will be deprecated in the future major
-  chart version (`v2.0.0`). This installation configuration is
-  triggered by the option: `deployment.enabled: true`.
-  The recommended solution is to run the Datadog-agent with the
-  `Daemonset` configuration which is the default configuration.
-
-{{- if .Values.daemonset.enabled }}
-
-* Simultaneous DaemonSet + Deployment installation within a single
-  release will be deprecated in the futur major chart version
-  (`v2.0.0`).
-
-  Running as a Deployment is not necessary for event collection
-  anymore, thanks to the leader election feature.
-
-  We encourage you to migrate to a single DaemonSet.
-{{- end }}
 {{- end }}
 
 {{- if .Values.datadog.autoconf }}

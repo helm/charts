@@ -145,21 +145,9 @@
       readOnly: true
     {{- end }}
     {{- end }}
-{{- if .Values.datadog.volumeMounts }}
-{{ toYaml .Values.datadog.volumeMounts | indent 4 }}
+{{- if .Values.daemonset.volumeMounts }}
+{{ toYaml .Values.daemonset.volumeMounts | indent 4 }}
 {{- end }}
-{{- if .Values.datadog.livenessProbe }}
   livenessProbe:
-{{ toYaml .Values.datadog.livenessProbe | indent 4 }}
-{{- else }}
-  livenessProbe:
-    httpGet:
-      path: /health
-      port: 5555
-    initialDelaySeconds: 15
-    periodSeconds: 15
-    timeoutSeconds: 5
-    successThreshold: 1
-    failureThreshold: 6
-{{- end }}
+{{ toYaml .Values.daemonset.containers.agent.livenessProbe | indent 4 }}
 {{- end -}}

@@ -80,12 +80,6 @@ datadog:
   #
   # clusterName: <CLUSTER_NAME>
 
-  ## @param name - string - required
-  ## Daemonset/Deployment container name
-  ## See clusterAgent.containerName if clusterAgent.enabled = true
-  #
-  name: datadog
-
   ## @param site - string - optional - default: 'datadoghq.com'
   ## The site of the Datadog intake to send Agent data to.
   ## Set to 'datadoghq.eu' to send data to the EU site.
@@ -202,19 +196,12 @@ datadog:
   #
   containerLogsPath: /var/lib/docker/containers
 
-
-  ## @param apmEnabled - boolean - optional - default: false
-  ## Enable this to enable APM and tracing, on port 8126
-  ## ref: https://github.com/DataDog/docker-dd-agent#tracing-from-the-host
-  #
-  # apmEnabled: false
-
-  ## @param processAgentEnabled - boolean - optional - default: false
-  ## Enable this to activate live process monitoring.
-  ## Note: /etc/passwd is automatically mounted to allow username resolution.
-  ## ref: https://docs.datadoghq.com/graphing/infrastructure/process/#kubernetes-daemonset
-  #
-  # processAgentEnabled: false
+  apm:
+    ## @param enabled - boolean - optional - default: false
+    ## Enable this to enable APM and tracing, on port 8126
+    ## ref: https://github.com/DataDog/docker-dd-agent#tracing-from-the-host
+    #
+    enabled: false
 
   ## @param env - list of object - optional
   ## The dd-agent supports many environment variables
@@ -224,21 +211,7 @@ datadog:
   #   - name: <ENV_VAR_NAME>
   #     value: <ENV_VAR_VALUE>
 
-  ## @param volumes - list of objects - optional
-  ## Specify additional volumes to mount in the dd-agent container
-  #
-  # volumes:
-  #   - hostPath:
-  #       path: <HOST_PATH>
-  #     name: <VOLUME_NAME>
 
-  ## @param volumeMounts - list of objects - optional
-  ## Specify additional volumes to mount in the dd-agent container
-  #
-  # volumeMounts:
-  #   - name: <VOLUME_NAME>
-  #     mountPath: <CONTAINER_PATH>
-  #     readOnly: true
 
   ## @param confd - list of objects - optional
   ## Provide additional check configurations (static and Autodiscovery)
@@ -278,68 +251,57 @@ datadog:
   #
   # dogStatsDSocketPath: /var/run/datadog/dsd.socket
 
-  ## @param livenessProbe - object - optional
-  ## Override the agent's liveness probe logic from the default:
-  ## In case of issues with the probe, you can disable it with the
-  ## following values, to allow easier investigating:
+  ## @param processAgent - object - required
+  ## Enable process agent and provide custom configs
   #
-  # livenessProbe:
-  #   exec:
-  #     command: ["/bin/true"]
+  processAgent:
+    ## @param enabled - boolean - required
+    ## Set this to true to enable live process monitoring agent
+    ## Note: /etc/passwd is automatically mounted to allow username resolution.
+    ## ref: https://docs.datadoghq.com/graphing/infrastructure/process/#kubernetes-daemonset
+    #
+    enabled: false
 
-  ## @param resources - object -required
-  ## datadog-agent resource requests and limits
-  ## Make sure to keep requests and limits equal to keep the pods in the Guaranteed QoS class
-  ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ## @param systemProbe - object - required
+  ## Enable systemProbe agent and provide custom configs
   #
-  resources: {}
-  # requests:
-  #   cpu: 200m
-  #   memory: 256Mi
-  # limits:
-  #   cpu: 200m
-  #   memory: 256Mi
+  systemProbe:
+    ## @param enabled - boolean - required
+    ## Set this to true to enable system-probe agent
+    #
+    enabled: false
 
-## @param systemProbe - object - required
-## Enable systemProbe agent and provide custom configs
-#
-systemProbe:
-  ## @param enabled - boolean - required
-  ## Set this to true to enable system-probe agent
-  #
-  enabled: false
+    ## @param debugPort - integer - required
+    ## Specify the port to expose pprof and expvar for system-probe agent
+    #
+    debugPort: 0
 
-  ## @param debugPort - integer - required
-  ## Specify the port to expose pprof and expvar for system-probe agent
-  #
-  debugPort: 0
+    ## @param enableConntrack - boolean - required
+    ## Enable the system-probe agent to connect to the netlink/conntrack subsystem to add NAT information to connection data
+    ## Ref: http://conntrack-tools.netfilter.org/
+    #
+    enableConntrack: true
 
-  ## @param enableConntrack - boolean - required
-  ## Enable the system-probe agent to connect to the netlink/conntrack subsystem to add NAT information to connection data
-  ## Ref: http://conntrack-tools.netfilter.org/
-  #
-  enableConntrack: true
+    ## @param seccomp - string - required
+    ## Apply an ad-hoc seccomp profile to the system-probe agent to restrict its privileges
+    ## Note that this will break `kubectl exec … -c system-probe -- /bin/bash`
+    #
+    seccomp: localhost/system-probe
+    
+    ## @param seccompRoot - string - required
+    ## Specify the seccomp profile root directory
+    #
+    seccompRoot: /var/lib/kubelet/seccomp
 
-  ## @param seccomp - string - required
-  ## Apply an ad-hoc seccomp profile to the system-probe agent to restrict its privileges
-  ## Note that this will break `kubectl exec … -c system-probe -- /bin/bash`
-  #
-  seccomp: localhost/system-probe
+    ## @param bpfDebug - boolean - required
+    ## Enable logging for kernel debug
+    #
+    bpfDebug: false
 
-  ## @param seccompRoot - string - required
-  ## Specify the seccomp profile root directory
-  #
-  seccompRoot: /var/lib/kubelet/seccomp
-
-  ## @param bpfDebug - boolean - required
-  ## Enable logging for kernel debug
-  #
-  bpfDebug: false
-
-  ## @param apparmor profile - string - required
-  ## specify a apparmor profile for system-probe
-  #
-  apparmor: unconfined
+    ## @param apparmor profile - string - required
+    ## specify a apparmor profile for system-probe
+    #
+    apparmor: unconfined
 
 ## @param clusterAgent - object - required
 ## This is the Datadog Cluster Agent implementation that handles cluster-wide
@@ -354,7 +316,6 @@ clusterAgent:
   #
   enabled: false
 
-  containerName: cluster-agent
   image:
     repository: datadog/cluster-agent
     tag: 1.4.0
@@ -412,12 +373,12 @@ clusterAgent:
   ## Datadog cluster-agent resource requests and limits.
   #
   resources: {}
-#    requests:
-#      cpu: 200m
-#      memory: 256Mi
-#    limits:
-#      cpu: 200m
-#      memory: 256Mi
+  # requests:
+  #   cpu: 200m
+  #   memory: 256Mi
+  # limits:
+  #   cpu: 200m
+  #   memory: 256Mi
 
   ## @param priorityclassName - string - optional
   ## Name of the priorityClass to apply to the Cluster Agent
@@ -436,19 +397,30 @@ clusterAgent:
   ## In case of issues with the probe, you can disable it with the
   ## following values, to allow easier investigating:
   #
-  # livenessProbe:
-  #   exec:
-  #     command: ["/bin/true"]
+  livenessProbe:
+    httpGet:
+      port: 443
+      path: /healthz
+      scheme: HTTPS
 
-  ## @param strategy - string - optional
+  ## @param readinessProbe - object - required
+  ## Override the cluster-agent's readiness probe logic from the default:
+  #
+  readinessProbe:
+    httpGet:
+      port: 443
+      path: /healthz
+      scheme: HTTPS
+
+  ## @param strategy - string - required
   ## Allow the Cluster Agent deployment to perform a rolling update on helm update
   ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
   #
-  # strategy:
-  #   type: RollingUpdate
-  #   rollingUpdate:
-  #     maxSurge: 1
-  #     maxUnavailable: 0
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
 
   ## @param podAnnotations - list of key:value strings - optional
   ## Annotations to add to the cluster-agents's pod(s)
@@ -554,12 +526,6 @@ daemonset:
   #
   enabled: true
 
-  ## @param useDedicatedContainers - boolean - optional
-  ## Deploy each datadog agent process in a separate container. Allow fine-grained
-  ## control over allocated resources and better isolation.
-  #
-  # useDedicatedContainers: false
-
   containers:
 
     agent:
@@ -585,6 +551,21 @@ daemonset:
       #  limits:
       #    cpu: 200m
       #    memory: 256Mi
+
+      ## @param livenessProbe - object - required
+      ## Override the agent's liveness probe logic from the default:
+      ## In case of issues with the probe, you can disable it with the
+      ## following values, to allow easier investigating:
+      #
+      livenessProbe:
+        httpGet:
+          path: /health
+          port: 5555
+        initialDelaySeconds: 15
+        periodSeconds: 15
+        timeoutSeconds: 5
+        successThreshold: 1
+        failureThreshold: 6
 
     processAgent:
       ## @param env - list - required
@@ -634,6 +615,18 @@ daemonset:
       #    cpu: 100m
       #    memory: 200Mi
 
+      ## @param livenessProbe - object - optional
+      ## Override the trace agent's liveness probe logic from the default:
+      ## In case of issues with the probe, you can disable it with the
+      ## following values, to allow easier investigating:
+      #
+      livenessProbe:
+        tcpSocket:
+          port: 8126
+        initialDelaySeconds: 15
+        periodSeconds: 15
+        timeoutSeconds: 5
+
     systemProbe:
       ## @param env - list - required
       ## Additionnal environment variables for the system-probe container.
@@ -657,6 +650,22 @@ daemonset:
       #  limits:
       #    cpu: 100m
       #    memory: 200Mi
+
+  ## @param volumes - list of objects - optional
+  ## Specify additional volumes to mount in the dd-agent container
+  #
+  # volumes:
+  #   - hostPath:
+  #       path: <HOST_PATH>
+  #     name: <VOLUME_NAME>
+
+  ## @param volumeMounts - list of objects - optional
+  ## Specify additional volumes to mount in the dd-agent container
+  #
+  # volumeMounts:
+  #   - name: <VOLUME_NAME>
+  #     mountPath: <CONTAINER_PATH>
+  #     readOnly: true
 
   ## @param useHostNetwork - boolean - optional
   ## Bind ports on the hostNetwork. Useful for CNI networking where hostPort might
@@ -711,10 +720,10 @@ daemonset:
   ## Allow the DaemonSet to perform a rolling update on helm update
   ## ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
   #
-  # updateStrategy:
-  #   type: RollingUpdate
-  #   rollingUpdate:
-  #     maxUnavailable: "10%"
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: "10%"
 
   ## @param priorityClassName - string - optional
   ## Sets PriorityClassName if defined.
@@ -760,52 +769,6 @@ daemonset:
   #
   #   # agent version >= 6.15
   #   # jmx_use_container_support: true
-
-deployment:
-  ## @param enabled - boolean - required
-  ## Apart from DaemonSet, deploy Datadog agent pods and related service for
-  ## applications that want to send custom metrics. Provides DogStatsD service.
-  #
-  enabled: false
-
-  ## @param replicas - integer - required
-  ## If you want to use datadog.collectEvents, keep deployment.replicas set to 1.
-  #
-  replicas: 1
-
-  ## @param affinity - object - required
-  ## Affinity for pod assignment
-  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-  #
-  affinity: {}
-
-  ## @param tolerations - array - required
-  ## Tolerations for pod assignment
-  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
-  #
-  tolerations: []
-
-  ## @param dogstatsdNodePort - integer - optional
-  ## If you're using a NodePort-type service and need a fixed port, set this parameter.
-  #
-  # dogstatsdNodePort: 8125
-
-  ## @param traceNodePort - integer - optional
-  ## If you're using a NodePort-type service and need a fixed port, set this parameter.
-  #
-  # traceNodePort: 8126
-
-  ## @param service - object - required
-  ##
-  #
-  service:
-    type: ClusterIP
-    annotations: {}
-
-  ## @param priorityClassName - string - optional
-  ## Sets PriorityClassName if defined.
-  #
-  # priorityClassName:
 
 clusterchecksDeployment:
 
@@ -853,11 +816,11 @@ clusterchecksDeployment:
   ## Allow the ClusterChecks deployment to perform a rolling update on helm update
   ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
   #
-  # strategy:
-  #   type: RollingUpdate
-  #   rollingUpdate:
-  #     maxSurge: 1
-  #     maxUnavailable: 0
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
 
   ## @param nodeSelector - object - optional
   ## Allow the ClusterChecks Deployment to schedule on selected nodes
