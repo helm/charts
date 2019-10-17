@@ -20,6 +20,12 @@ spec:
   {{ if eq .Values.slave.service.type "LoadBalancer" -}} {{ if .Values.slave.service.loadBalancerIP -}}
   loadBalancerIP: {{ .Values.slave.service.loadBalancerIP }}
   {{ end -}}
+  {{if .Values.slave.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{ with .Values.slave.service.loadBalancerSourceRanges }}
+{{ toYaml . | indent 4 }}
+  {{- end }}
+  {{- end }}
   {{- end -}}
   ports:
   - name: redis
