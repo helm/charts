@@ -7,6 +7,7 @@ metadata:
     helm.sh/chart: {{ include "kube-downscaler.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app: {{ include "kube-downscaler.name" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -18,6 +19,7 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "kube-downscaler.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+        app: {{ include "kube-downscaler.name" . }}
       {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8}}
       {{- end }}
@@ -31,13 +33,18 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
-            - --interval={{ .Values.interval }}
-            {{- if .Values.namespace}}
-            {{- if .Values.namespace.active_in}}
-            - --namespace="{{ .Values.namespace.active_in }}"
-            {{- end }}
-            {{- end }}
-            {{ if .Values.debug.enable }}- --debug{{end }}
+          - --interval={{ .Values.interval }}
+          {{- if .Values.namespace}}
+          {{- if .Values.namespace.active_in}}
+          - --namespace="{{ .Values.namespace.active_in }}"
+          {{- end }}
+          {{- end }}
+          {{ if .Values.debug.enable }}
+          - --debug
+          {{end }}
+{{- with .Values.extraArgs }}
+{{ toYaml . | indent 10 }}
+{{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
