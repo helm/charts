@@ -11,6 +11,13 @@ metadata:
     chart: {{ template "traefik.chart" . }}
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
+    {{- if .Values.deployment.labels }}
+    {{- toYaml .Values.deployment.labels | nindent 4 }}
+    {{- end }}
+  {{- with .Values.deployment.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   replicas: {{ default 1 .Values.replicas }}
   selector:
@@ -84,7 +91,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /ping
-            port: {{ template "traefik.containerPort.http" . }}
+            port: "{{ .Values.pingEntryPoint | default "http" }}"
           failureThreshold: 1
           initialDelaySeconds: 10
           periodSeconds: 10
@@ -93,7 +100,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /ping
-            port: {{ template "traefik.containerPort.http" . }}
+            port: "{{ .Values.pingEntryPoint | default "http" }}"
           failureThreshold: 3
           initialDelaySeconds: 10
           periodSeconds: 10
