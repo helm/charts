@@ -659,13 +659,9 @@ daemonset:
   #
   # podLabels: {}
 
-  ## @param useConfigMap - boolean - optional
-  #  Configures a configmap to provide the agent configuration
-  #
-  # useConfigMap: false
-
   ## @param customAgentConfig - object - optional
-  ## Specify custom contents for the datadog agent config (datadog.yaml).
+  ## Specify custom contents for the datadog agent config (datadog.yaml) using a configmap.
+  ## ref: https://github.com/helm/charts/blob/master/stable/datadog/templates/datadog-yaml-configmap.yaml
   ## ref: https://docs.datadoghq.com/agent/guide/agent-configuration-files/?tab=agentv6
   ## ref: https://github.com/DataDog/datadog-agent/blob/master/pkg/config/config_template.yaml
   #

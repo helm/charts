@@ -191,7 +191,7 @@
       mountPath: /etc/passwd
       readOnly: true
     {{- end }}
-    {{- if .Values.daemonset.useConfigMap }}
+    {{- if .Values.daemonset.customAgentConfig }}
     - name: {{ template "datadog.fullname" . }}-datadog-yaml
       mountPath: /etc/datadog-agent/datadog.yaml
       subPath: datadog.yaml
