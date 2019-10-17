@@ -77,6 +77,7 @@ proxy:
   ingress:
     # Enable/disable exposure using ingress.
     enabled: false
+    hosts: []
     # TLS section. Unlike other ingresses, this follows the format at
     # https://kubernetes.io/docs/concepts/services-networking/ingress/#tls
     # tls:
