@@ -275,7 +275,7 @@ data:
                                 "decimals": 2,
                                 "link": true,
                                 "linkTooltip": "Drill down",
-                                "linkUrl": "/d/6581e46e4e5c7ba40a07646395ef7b23/k8s-resources-pod?var-datasource=$datasource&var-cluster=$cluster&var-namespace=$namespace&var-pod=$__cell",
+                                "linkUrl": "./d/6581e46e4e5c7ba40a07646395ef7b23/k8s-resources-pod?var-datasource=$datasource&var-cluster=$cluster&var-namespace=$namespace&var-pod=$__cell",
                                 "pattern": "pod",
                                 "thresholds": [
 
@@ -640,7 +640,7 @@ data:
                                 "decimals": 2,
                                 "link": true,
                                 "linkTooltip": "Drill down",
-                                "linkUrl": "/d/6581e46e4e5c7ba40a07646395ef7b23/k8s-resources-pod?var-datasource=$datasource&var-cluster=$cluster&var-namespace=$namespace&var-pod=$__cell",
+                                "linkUrl": "./d/6581e46e4e5c7ba40a07646395ef7b23/k8s-resources-pod?var-datasource=$datasource&var-cluster=$cluster&var-namespace=$namespace&var-pod=$__cell",
                                 "pattern": "pod",
                                 "thresholds": [
 
