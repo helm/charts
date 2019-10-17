@@ -17,6 +17,9 @@ spec:
     metadata:
       labels:
         app: {{ include "ignite.fullname" . }}
+{{- with .Values.podLabels }}
+{{ toYaml . | indent 8 }}
+{{- end }}
     spec:
       serviceAccountName: {{ include "ignite.serviceAccountName" . }}
       volumes:
@@ -67,6 +70,11 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+    {{- with .Values.securityContext }}
+      securityContext:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      hostNetwork: {{ .Values.hostNetwork }}
   volumeClaimTemplates:
 {{- if (.Values.persistence.enabled) }}
   - metadata:
