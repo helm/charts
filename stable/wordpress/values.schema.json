@@ -23,6 +23,20 @@
       "title": "Blog Name",
       "form": "blogName"
     },
+    "persistence": {
+      "type": "object",
+      "properties": {
+        "size": {
+          "type": "string",
+          "title": "Disk Size",
+          "form": "diskSize",
+          "render": "slider",
+          "sliderMin": 1,
+          "sliderMax": 100,
+          "sliderUnit": "Gi"
+        }
+      }
+    },
     "mariadb": {
       "type": "object",
       "properties": {
@@ -92,20 +106,6 @@
         }
       }
     },
-    "persistence": {
-      "type": "object",
-      "properties": {
-        "size": {
-          "type": "string",
-          "title": "Disk Size",
-          "form": "diskSize",
-          "render": "slider",
-          "sliderMin": 1,
-          "sliderMax": 100,
-          "sliderUnit": "Gi"
-        }
-      }
-    },
     "resources": {
       "type": "object",
       "title": "Required Resources",
@@ -137,11 +137,16 @@
         }
       }
     },
-    "enableMetrics": {
-      "type": "boolean",
-      "title": "Enable Metrics",
-      "description": "Prometheus Exporter / Metrics",
-      "form": "enableMetrics"
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable Metrics",
+          "description": "Prometheus Exporter / Metrics",
+          "form": "enableMetrics"
+        }
+      }
     }
   }
 }
