@@ -16,7 +16,8 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 
 ## Prerequisites
 
-- Kubernetes 1.10+
+- Kubernetes 1.12+
+- Helm 2.11+ or Helm 3.0-beta3+
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
@@ -233,6 +234,14 @@ To horizontally scale this chart, first download the [values-production.yaml](va
 ```console
 $ helm install --name my-release -f ./values-production.yaml stable/postgresql
 $ kubectl scale statefulset my-postgresql-slave --replicas=3
+```
+
+### Change PostgreSQL version
+
+To modify the PostgreSQL version used in this chart you can specify a [valid image tag](https://hub.docker.com/r/bitnami/postgresql/tags/) using the `--set image.tag` argument to `helm install`. For example, 
+
+```console
+$ helm install --name my-release --set image.tag=12.0.0-debian-9-r0 stable/postgresql
 ```
 
 ### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
