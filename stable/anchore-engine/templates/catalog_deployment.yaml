@@ -37,6 +37,9 @@ spec:
         {{ toYaml . | nindent 8 }}
       {{- end }}
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
       containers:
       {{- if .Values.cloudsql.enabled  }}
       - name: cloudsql-proxy
@@ -173,7 +176,7 @@ metadata:
     {{- end }}
   {{- with .Values.anchoreCatalog.service.annotations }}
   annotations:
-    {{ toYaml .Values.anchoreCatalog.service.annotations | nindent 4 }}
+    {{ toYaml . | nindent 4 }}
   {{- end }}
 spec:
   type: {{ .Values.anchoreCatalog.service.type }}

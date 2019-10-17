@@ -133,7 +133,7 @@ containers:
       - name: config
         mountPath: "/etc/grafana/grafana.ini"
         subPath: grafana.ini
-      {{- if not .Values.admin.existingSecret }}
+      {{- if .Values.ldap.enabled }}
       - name: ldap
         mountPath: "/etc/grafana/ldap.toml"
         subPath: ldap.toml
@@ -257,6 +257,11 @@ containers:
       - secretRef:
           name: {{ .Values.envFromSecret }}
     {{- end }}
+    {{- if .Values.envRenderSecret }}
+    envFrom:
+      - secretRef:
+          name: {{ template "grafana.fullname" . }}-env
+    {{- end }}
     livenessProbe:
 {{ toYaml .Values.livenessProbe | indent 6 }}
     readinessProbe:
@@ -302,7 +307,7 @@ volumes:
       name: {{ tpl $name $root }}
     {{- end }}
   {{- end }}
-  {{- if not .Values.admin.existingSecret }}
+  {{- if .Values.ldap.enabled }}
   - name: ldap
     secret:
       {{- if .Values.ldap.existingSecret }}

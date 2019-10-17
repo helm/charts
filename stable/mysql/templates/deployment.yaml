@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "mysql.fullname" . }}
@@ -14,10 +14,15 @@ metadata:
 {{- end }}
 
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "mysql.fullname" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
         app: {{ template "mysql.fullname" . }}
+        release: {{ .Release.Name }}
 {{- with .Values.podLabels }}
 {{ toYaml . | indent 8 }}
 {{- end }}

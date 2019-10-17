@@ -458,15 +458,15 @@ data:
                 "renderer": "flot",
                 "seriesOverrides": [
                     {
-                        "alias": "tcp:90",
+                        "alias": "tcp:90%",
                         "yaxis": 2
                     },
                     {
-                        "alias": "tcp:99 ",
+                        "alias": "tcp:99%",
                         "yaxis": 2
                     },
                     {
-                        "alias": "tcp:50",
+                        "alias": "tcp:50%",
                         "yaxis": 2
                     }
                 ],
@@ -477,21 +477,21 @@ data:
                     {
                         "expr": "histogram_quantile(0.99, sum(rate(coredns_dns_request_size_bytes_bucket{instance=~\"$instance\",proto=\"udp\"}[5m])) by (le,proto))",
                         "intervalFactor": 2,
-                        "legendFormat": "{{`{{proto}}`}}:99 ",
+                        "legendFormat": "{{`{{proto}}`}}:99%",
                         "refId": "A",
                         "step": 60
                     },
                     {
                         "expr": "histogram_quantile(0.90, sum(rate(coredns_dns_request_size_bytes_bucket{instance=~\"$instance\",proto=\"udp\"}[5m])) by (le,proto))",
                         "intervalFactor": 2,
-                        "legendFormat": "{{`{{proto}}`}}:90",
+                        "legendFormat": "{{`{{proto}}`}}:90%",
                         "refId": "B",
                         "step": 60
                     },
                     {
                         "expr": "histogram_quantile(0.50, sum(rate(coredns_dns_request_size_bytes_bucket{instance=~\"$instance\",proto=\"udp\"}[5m])) by (le,proto))",
                         "intervalFactor": 2,
-                        "legendFormat": "{{`{{proto}}`}}:50",
+                        "legendFormat": "{{`{{proto}}`}}:50%",
                         "refId": "C",
                         "step": 60
                     }
@@ -570,15 +570,15 @@ data:
                 "renderer": "flot",
                 "seriesOverrides": [
                     {
-                        "alias": "tcp:90",
+                        "alias": "tcp:90%",
                         "yaxis": 1
                     },
                     {
-                        "alias": "tcp:99 ",
+                        "alias": "tcp:99%",
                         "yaxis": 1
                     },
                     {
-                        "alias": "tcp:50",
+                        "alias": "tcp:50%",
                         "yaxis": 1
                     }
                 ],
@@ -589,21 +589,21 @@ data:
                     {
                         "expr": "histogram_quantile(0.99, sum(rate(coredns_dns_request_size_bytes_bucket{instance=~\"$instance\",proto=\"tcp\"}[5m])) by (le,proto))",
                         "intervalFactor": 2,
-                        "legendFormat": "{{`{{proto}}`}}:99 ",
+                        "legendFormat": "{{`{{proto}}`}}:99%",
                         "refId": "A",
                         "step": 60
                     },
                     {
                         "expr": "histogram_quantile(0.90, sum(rate(coredns_dns_request_size_bytes_bucket{instance=~\"$instance\",proto=\"tcp\"}[5m])) by (le,proto))",
                         "intervalFactor": 2,
-                        "legendFormat": "{{`{{proto}}`}}:90",
+                        "legendFormat": "{{`{{proto}}`}}:90%",
                         "refId": "B",
                         "step": 60
                     },
                     {
                         "expr": "histogram_quantile(0.50, sum(rate(coredns_dns_request_size_bytes_bucket{instance=~\"$instance\",proto=\"tcp\"}[5m])) by (le,proto))",
                         "intervalFactor": 2,
-                        "legendFormat": "{{`{{proto}}`}}:50",
+                        "legendFormat": "{{`{{proto}}`}}:50%",
                         "refId": "C",
                         "step": 60
                     }
@@ -611,7 +611,7 @@ data:
                 "thresholds": [],
                 "timeFrom": null,
                 "timeShift": null,
-                "title": "Requests (size,tcp)",
+                "title": "Requests (size, tcp)",
                 "tooltip": {
                     "shared": true,
                     "sort": 0,
@@ -897,7 +897,7 @@ data:
                         "step": 40
                     },
                     {
-                        "expr": "histogram_quantile(0.90, sum(rate(coredns_dns_response_size_bytes_bucket{instance=\"$instance\",proto=\"udp\"}[5m])) by (le,proto)) ",
+                        "expr": "histogram_quantile(0.90, sum(rate(coredns_dns_response_size_bytes_bucket{instance=~\"$instance\",proto=\"udp\"}[5m])) by (le,proto)) ",
                         "intervalFactor": 2,
                         "legendFormat": "{{`{{proto}}`}}:90%",
                         "refId": "B",

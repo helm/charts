@@ -298,7 +298,7 @@ data:
     import jenkins.security.*
     import hudson.model.User
     import jenkins.model.Jenkins
-    User user = User.get("{{ .Values.master.adminUser | default "admin" }}", false)
+    User user = User.getOrCreateByIdOrFullName("{{ .Values.master.adminUser | default "admin" }}")
     if (user == null) {
       System.err.println("ERROR: user '{{ .Values.master.adminUser | default "admin" }}' not found! Can't configure SSH key which is needed to reload JCasC config!")
     } else {
