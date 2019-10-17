@@ -81,7 +81,7 @@ The following table lists the configurable parameters of the Metabase chart and 
 | ingress.tls             | Ingress TLS configuration                                   | null              |
 | persistence.enabled     | Persistent disk enable                                      | false             |
 | persistence.accessMode  | Persistnt access mode                                       | null              |
-| persistence.storageClass| Persistent storage class                                   | null              |
+| persistence.storageClass| Persistent storage class                                    | null              |
 | persistence.size        | Persistence disk size                                       | null              |
 | log4jProperties         | Custom `log4j.properties` file                              | null              |
 | resources               | Server resource requests and limits                         | {}                |
