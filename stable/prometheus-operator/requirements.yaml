@@ -6,7 +6,7 @@ dependencies:
     condition: kubeStateMetrics.enabled
 
   - name: prometheus-node-exporter
-    version: 1.5.*
+    version: 1.7.*
     repository: https://kubernetes-charts.storage.googleapis.com/
     condition: nodeExporter.enabled
 
