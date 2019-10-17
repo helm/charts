@@ -3,18 +3,23 @@ kind: DaemonSet
 metadata:
   name: {{ template "kube-registry-proxy.fullname" . }}
   labels:
+    app: {{ template "kube-registry-proxy.fullname" . }}
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
   selector:
     matchLabels:
+      app: {{ template "kube-registry-proxy.fullname" . }}
       release: {{ .Release.Name | quote }}
   template:
     metadata:
       name: {{ template "kube-registry-proxy.fullname" . }}
       labels:
         app: {{ template "kube-registry-proxy.fullname" . }}
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     spec:
       containers:
       - name: kube-registry-proxy
