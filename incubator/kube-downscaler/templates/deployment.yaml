@@ -34,7 +34,7 @@ spec:
             - --interval={{ .Values.interval }}
             {{- if .Values.namespace}}
             {{- if .Values.namespace.active_in}}
-            "- --namespace="{{ .Values.namespace.active_in }}
+            - --namespace="{{ .Values.namespace.active_in }}"
             {{- end }}
             {{- end }}
             {{ if .Values.debug.enable }}- --debug{{end }}
