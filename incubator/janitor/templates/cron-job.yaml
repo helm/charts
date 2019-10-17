@@ -1,0 +1,88 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ template "chart.fullname" . }}
+  labels:
+    app: {{ template "chart.name" . }}
+    chart: {{ template "chart.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  schedule: "{{ .Values.cron.schedule }}"
+  {{- if .Values.cron.successfulJobsHistoryLimit }}
+  successfulJobsHistoryLimit: {{ .Values.cron.successfulJobsHistoryLimit }}
+  {{- end }}
+  {{- if .Values.cron.failedJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.cron.failedJobsHistoryLimit }}
+  {{- end }}
+  {{- if .Values.cron.suspend }}
+  suspend: {{ .Values.cron.suspend }}
+  {{- end }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: {{ template "chart.fullname" . }}
+          restartPolicy: {{ .Values.restartPolicy }}
+          {{- if .Values.nodeSelector }}
+          nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 12 }}
+          {{- end }}
+          {{- if .Values.affinity }}
+          affinity:
+{{ toYaml .Values.affinity | indent 12 }}
+          {{- end }}
+          {{- if .Values.tolerations }}
+          tolerations:
+{{ toYaml .Values.tolerations | indent 12 }}
+          {{- end }}
+          containers:
+          - name: {{ .Chart.Name }}
+            image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+            imagePullPolicy: {{ .Values.image.pullPolicy }}
+            args:
+              {{- if .Values.kubejanitor.dryRun }}
+              - "--dry-run"
+              {{- end }}
+              {{- if .Values.kubejanitor.debug }}
+              - "--debug"
+              {{- end }}
+              {{- if .Values.kubejanitor.once }}
+              - "--once"
+              {{- end }}
+              {{- if .Values.kubejanitor.interval }}
+              - "--interval"
+              - "{{ .Values.kubejanitor.interval }}"
+              {{- end }}
+              {{- if .Values.kubejanitor.includeResources }}
+              - "--include-resources"
+              - "{{ .Values.kubejanitor.includeResources }}"
+              {{- end }}
+              {{- if .Values.kubejanitor.excludeResources }}
+              - "--exclude-resources"
+              - "{{ .Values.kubejanitor.excludeResources }}"
+              {{- end }}
+              {{- if .Values.kubejanitor.includeNamespaces }}
+              - "--include-namespaces"
+              - "{{ .Values.kubejanitor.includeNamespaces }}"
+              {{- end }}
+              {{- if .Values.kubejanitor.excludeNamespaces }}
+              - "--exclude-namespaces"
+              - "{{ .Values.kubejanitor.excludeNamespaces }}"
+              {{- end }}
+              - --rules-file=/config/rules.yaml
+            {{- if .Values.resources }}
+            resources:
+{{ toYaml .Values.resources | indent 14 }}
+            {{- end }}
+            securityContext:
+              readOnlyRootFilesystem: true
+              runAsNonRoot: true
+              runAsUser: 1000
+            volumeMounts:
+              - name: {{ template "chart.fullname" . }}-volume
+                mountPath: /config
+          volumes:
+            - name: {{ template "chart.fullname" . }}-volume
+              configMap:
+                name: {{ template "chart.fullname" . }}

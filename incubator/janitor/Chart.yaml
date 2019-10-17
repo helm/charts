@@ -1,0 +1,13 @@
+apiVersion: v1
+appVersion: "v19.9.0"
+description: A Helm chart for running hjacobs/kube-janitor
+name: janitor
+version: 0.1.0
+home: https://github.com/hjacobs/kube-janitor
+maintainers:
+  - name: hjacobs
+    email: henning@jacobs1.de
+  - name: mayppong
+    email: me@mayppong.com
+sources:
+  - https://github.com/hjacobs/kube-janitor

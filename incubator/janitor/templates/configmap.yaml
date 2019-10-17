@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "chart.fullname" . }}
+data:
+  rules.yaml: |-
+    # example rules configuration to set TTL for arbitrary objects
+    # see https://github.com/hjacobs/kube-janitor for details
+    rules:
+{{ toYaml .Values.kubejanitor.rules | indent 6 }}
