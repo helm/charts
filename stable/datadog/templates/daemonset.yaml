@@ -1,12 +1,6 @@
 {{- if .Values.daemonset.enabled }}
 {{- if (or (.Values.datadog.apiKeyExistingSecret) (.Values.datadog.apiKey)) }}
-{{- if .Capabilities.APIVersions.Has "apps/v1" }}
 apiVersion: apps/v1
-{{- else if .Capabilities.APIVersions.Has "extensions/v1beta1" }}
-apiVersion: extensions/v1beta1
-{{- else }}
-apiVersion: apps/v1
-{{- end }}
 kind: DaemonSet
 metadata:
   name: {{ template "datadog.fullname" . }}
@@ -83,9 +77,9 @@ spec:
       volumes:
         - name: config
           emptyDir: {}
-        {{- if .Values.datadog.useCriSocketVolume }}
+        {{- if .Values.datadog.criSocketPath }}
         - hostPath:
-            path: {{ default "/var/run/docker.sock" .Values.datadog.criSocketPath | quote }}
+            path: {{ .Values.datadog.criSocketPath }}
           name: runtimesocket
         {{- end }}
         {{- if .Values.datadog.useDogStatsDSocketVolume }}
@@ -118,10 +112,10 @@ spec:
         - hostPath:
             path: /var/log/pods
           name: logpodpath
-        {{- if .Values.datadog.containerLogsPath }}
+        {{- if regexFind "^.*docker.*$" $.Values.datadog.criSocketPath }}
         - hostPath:
-            path: {{ .Values.datadog.containerLogsPath | quote }}
-          name: logcontainerpath
+            path: /var/lib/docker/containers
+          name: logdockercontainerpath
         {{- end }}
         {{- end }}
         {{- if or .Values.datadog.processAgent.enabled .Values.datadog.systemProbe.enabled }}
@@ -163,7 +157,7 @@ spec:
       affinity:
 {{ toYaml .Values.daemonset.affinity | indent 8 }}
       {{- end }}
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "datadog.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ if .Values.daemonset.rbac.create }}{{ template "datadog.fullname" . }}{{ else }}"{{ .Values.daemonset.rbac.serviceAccountName }}"{{ end }}
       {{- if .Values.daemonset.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.daemonset.nodeSelector | indent 8 }}

@@ -1,4 +1,4 @@
-{{- if .Values.rbac.create -}}
+{{- if .Values.daemonset.rbac.create -}}
 apiVersion: {{ template "rbac.apiVersion" . }}
 kind: ClusterRole
 metadata:

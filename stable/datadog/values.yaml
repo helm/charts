@@ -2,6 +2,16 @@
 ## See Datadog helm documentation to learn more:
 ## https://docs.datadoghq.com/agent/kubernetes/helm/
 
+## @param nameOverride - string - optional
+## Override name of app.
+#
+# nameOverride: ""
+
+## @param fullnameOverride - string - optional
+## Override the full qualified app name.
+#
+# fullnameOverride: ""
+
 ## @param image - object - required
 ## Define the Datadog image to work with.
 #
@@ -31,9 +41,6 @@ image:
   #
   # pullSecrets:
   #   - name: "<REG_SECRET>"
-
-nameOverride: ""
-fullnameOverride: ""
 
 datadog:
 
@@ -131,11 +138,6 @@ datadog:
   #   - <KEY_1>:<VALUE_1>
   #   - <KEY_2>:<VALUE_2>
 
-  ## @param useCriSocketVolume - boolean - required
-  ## Enable container runtime socket volume mounting
-  #
-  useCriSocketVolume: true
-
   ## @param dogstatsdOriginDetection - boolean - optional
   ## Enable origin detection for container tagging
   ## https://docs.datadoghq.com/developers/dogstatsd/unix_socket/#using-origin-detection-for-container-tagging
@@ -189,13 +191,6 @@ datadog:
   #
   # logsConfigContainerCollectAll: false
 
-  ## @param containerLogsPath - string - optional - default: /var/lib/docker/containers
-  ## This to allow log collection from container log path. Set to a different path if not
-  ## using docker runtime.
-  ## ref: https://docs.datadoghq.com/agent/kubernetes/daemonset_setup/?tab=k8sfile#create-manifest
-  #
-  containerLogsPath: /var/lib/docker/containers
-
   apm:
     ## @param enabled - boolean - optional - default: false
     ## Enable this to enable APM and tracing, on port 8126
@@ -210,8 +205,6 @@ datadog:
   # env:
   #   - name: <ENV_VAR_NAME>
   #     value: <ENV_VAR_VALUE>
-
-
 
   ## @param confd - list of objects - optional
   ## Provide additional check configurations (static and Autodiscovery)
@@ -240,11 +233,11 @@ datadog:
   # checksd:
   #   service.py: |-
 
-  ## @param criSocketPath - string - optional
+  ## @param criSocketPath - string - required
   ## Path to the container runtime socket (if different from Docker)
   ## This is supported starting from agent 6.6.0
   #
-  # criSocketPath: /var/run/containerd/containerd.sock
+  criSocketPath: /var/run/docker.sock
 
   ## @param dogStatsDSocketPath - string - optional
   ## Path to the DogStatsD socket
@@ -328,7 +321,25 @@ clusterAgent:
   #
   token: ""
 
+  ## @param replicas - integer - required
+  ## Specify the of cluster agent replicas, if > 1 it allow the cluster agent to
+  ## work in HA mode.
+  #
   replicas: 1
+
+  ## @param rbac - object - required
+  ## Provide Cluster Agent Deployment pod(s) RBAC configuration
+  rbac:
+
+    ## @param created - boolean - required
+    ## If true, create & use RBAC resources
+    #
+    create: true
+
+    ## @param serviceAccountName - string - required
+    ## Ignored if clusterAgentrbac.create is true
+    #
+    serviceAccountName: default
 
   ## @param metricsProvider - object - required
   ## Enable the metricsProvider to be able to scale based on metrics in Datadog
@@ -392,25 +403,29 @@ clusterAgent:
   #
   # nodeSelector: {}
 
-  ## @param livenessProbe - object - optional
+  ## @param healthPort - integer - optional - default: 443
+  ## Port number use the cluster-agent to server healthz endpoint
+  # healthPort: 8080
+
+  ## @param livenessProbe - object - required
   ## Override the agent's liveness probe logic from the default:
   ## In case of issues with the probe, you can disable it with the
   ## following values, to allow easier investigating:
   #
   livenessProbe:
     httpGet:
-      port: 443
+      port: 8080
       path: /healthz
-      scheme: HTTPS
+      scheme: HTTP
 
   ## @param readinessProbe - object - required
   ## Override the cluster-agent's readiness probe logic from the default:
   #
   readinessProbe:
     httpGet:
-      port: 443
+      port: 8080
       path: /healthz
-      scheme: HTTPS
+      scheme: HTTP
 
   ## @param strategy - string - required
   ## Allow the Cluster Agent deployment to perform a rolling update on helm update
@@ -427,11 +442,6 @@ clusterAgent:
   #
   # podAnnotations:
   #   key: "value"
-
-  ## @param readinessProbe - object - optional
-  ## Override the cluster-agent's readiness probe logic from the default:
-  #
-  # readinessProbe:
 
   ## @param useHostNetwork - boolean - optional
   ## Bind ports on the hostNetwork. Useful for CNI networking where hostPort might
@@ -462,20 +472,6 @@ clusterAgent:
   ## Specify custom contents for the datadog cluster agent config (datadog-cluster.yaml).
   #
   # datadog_cluster_yaml: {}
-
-rbac:
-
-  ## @param created - boolean - required
-  ## If true, create & use RBAC resources
-  #
-  create: true
-
-  ## @param serviceAccountName - string - required
-  ## Ignored if rbac.create is true
-  #
-  serviceAccountName: default
-
-tolerations: []
 
 kubeStateMetrics:
 
@@ -515,7 +511,6 @@ kube-state-metrics:
   #     memory: 256Mi
 
 daemonset:
-
   ## @param enabled - boolean - required
   ## You should keep Datadog DaemonSet enabled!
   ## The exceptional case could be a situation when you need to run
@@ -525,6 +520,20 @@ daemonset:
   ## get guaranteed delivery of the metrics in Datadog-per-namespace setup!
   #
   enabled: true
+
+  ## @param rbac - object - required
+  ## Provide Daemonset RBAC configuration
+  rbac:
+
+    ## @param created - boolean - required
+    ## If true, create & use RBAC resources
+    #
+    create: true
+
+    ## @param serviceAccountName - string - required
+    ## Ignored if daemonset.rbac.create is true
+    #
+    serviceAccountName: default
 
   containers:
 
@@ -778,13 +787,22 @@ clusterchecksDeployment:
   #
   enabled: false
 
+  ## @param rbac - object - required
+  ## Provide Cluster Checks Deployment pods RBAC configuration
   rbac:
+
+    ## @param created - boolean - required
+    ## If true, create & use RBAC resources
+    #
+    create: true
+
     ## @param dedicated - boolean - required
     ## If true, use a dedicated RBAC resource for the cluster checks agent(s)
     #
     dedicated: false
+
     ## @param serviceAccountName - string - required
-    ## Ignored if rbac.create is true
+    ## Ignored if clusterchecksDeployment.rbac.create is true
     #
     serviceAccountName: default
 

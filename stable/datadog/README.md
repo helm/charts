@@ -223,9 +223,10 @@ helm upgrade -f datadog-values.yaml <RELEASE_NAME> stable/datadog --recreate-pod
 
 ### CRI integration
 
-As of the version 6.6.0, the Datadog Agent supports collecting metrics from any container runtime interface used in your cluster. Configure the location path of the socket with `datadog.criSocketPath` and make sure you allow the socket to be mounted into the pod running the agent by setting `datadog.useCriSocketVolume` to `True`.
+As of the version 6.6.0, the Datadog Agent supports collecting metrics from any container runtime interface used in your cluster. Configure the location path of the socket with `datadog.criSocketPath`; default is the Docker container runtime socket. To deactivate this support, you just need to unset the `datadog.criSocketPath` setting.
 Standard paths are:
 
+- Docker socket: `/var/run/docker.sock`
 - Containerd socket: `/var/run/containerd/containerd.sock`
 - Cri-o socket: `/var/run/crio/crio.sock`
 
@@ -241,18 +242,18 @@ helm install --name <RELEASE_NAME> \
 
 | Parameter                                | Description                                                                               | Default                                     |
 | -----------------------------            | ------------------------------------                                                      | ------------------------------------------- |
-| `datadog.apiKey`                         | Your Datadog API key                                                                      | `Nil` You must provide your own key         |
+| `datadog.apiKey`                         | Your Datadog API key                                                                      | `nil` You must provide your own key         |
 | `datadog.apiKeyExistingSecret`           | If set, use the secret with a provided name instead of creating a new one                 | `nil`                                       |
-| `datadog.appKey`                         | Datadog APP key required to use metricsProvider                                           | `Nil` You must provide your own key         |
+| `datadog.appKey`                         | Datadog APP key required to use metricsProvider                                           | `nil` You must provide your own key         |
 | `datadog.appKeyExistingSecret`           | If set, use the secret with a provided name instead of creating a new one                 | `nil`                                       |
 | `image.repository`                       | The image repository to pull from                                                         | `datadog/agent`                             |
-| `image.tag`                              | The image tag to pull                                                                     | `6.10.1`                                    |
+| `image.tag`                              | The image tag to pull                                                                     | `6.14.0`                                    |
 | `image.pullPolicy`                       | Image pull policy                                                                         | `IfNotPresent`                              |
 | `image.pullSecrets`                      | Image pull secrets                                                                        | `nil`                                       |
-| `nameOverride`                           | Override name of app                                                                      | `nil`                                       |
-| `fullnameOverride`                       | Override full name of app                                                                 | `nil`                                       |
-| `rbac.create`                            | If true, create & use RBAC resources                                                      | `true`                                      |
-| `rbac.serviceAccountName`                | existing ServiceAccount to use (ignored if rbac.create=true)                              | `default`                                   |
+| `nameOverride`                           | Override name of app                                                                      | `""`                                        |
+| `fullnameOverride`                       | Override full name of app                                                                 | `""`                                        |
+| `daemonset.rbac.create`                  | If true, create & use RBAC resources                                                      | `true`                                      |
+| `daemonset.rbac.serviceAccountName`      | existing ServiceAccount to use (ignored if rbac.create=true)                              | `default`                                   |
 | `datadog.site`                           | Site ('datadoghq.com' or 'datadoghq.eu')                                                  | `nil`                                       |
 | `datadog.dd_url`                         | Datadog intake server                                                                     | `nil`                                       |
 | `datadog.env`                            | Additional Datadog environment variables                                                  | `nil`                                       |
@@ -260,11 +261,11 @@ helm install --name <RELEASE_NAME> \
 | `datadog.logsEnabled`                    | Enable log collection                                                                     | `nil`                                       |
 | `datadog.logsConfigContainerCollectAll`  | Collect logs from all containers                                                          | `nil`                                       |
 | `datadog.logsPointerHostPath`            | Host path to store the log tailing state in                                               | `/var/lib/datadog-agent/logs`               |
-| `datadog.apm.enabled`                     | Enable tracing from the host                                                              | `nil`                                       |
-| `datadog.processAgent.enabled`            | Control live process and container monitoring. Possible values: `nil` for container monitoring only, `true` for container and process monitoring, `false` turns off process-agent | `nil`|
+| `datadog.apm.enabled`                    | Enable tracing from the host                                                              | `nil`                                       |
+| `datadog.processAgent.enabled`           | Control live process and container monitoring. Possible values: `nil` for container monitoring only, `true` for container and process monitoring, `false` turns off process-agent | `nil`|
 | `datadog.checksd`                        | Additional custom checks as python code                                                   | `nil`                                       |
 | `datadog.confd`                          | Additional check configurations (static and Autodiscovery)                                | `nil`                                       |
-| `datadog.criSocketPath`                  | Path to the container runtime socket (if different from Docker)                           | `nil`                                       |
+| `datadog.criSocketPath`                  | Path to the container runtime socket (default is Docker runtime)                          | `/var/run/docker.sock`                      |
 | `datadog.tags`                           | Set host tags                                                                             | `nil`                                       |
 | `datadog.nonLocalTraffic`                | Enable statsd reporting and APM from any external ip                                      | `False`                                     |
 | `datadog.useCriSocketVolume`             | Enable mounting the container runtime socket in Agent containers                          | `True`                                      |
@@ -340,6 +341,8 @@ helm install --name <RELEASE_NAME> \
 | `clusterAgent.image.tag`                 | The image tag to pull                                                                     | `1.2.0`                                     |
 | `clusterAgent.image.pullPolicy`          | Image pull policy                                                                         | `IfNotPresent`                              |
 | `clusterAgent.image.pullSecrets`         | Image pull secrets                                                                        | `nil`                                       |
+| `clusterAgent.rbac.create`               | If true, create & use RBAC resources for cluster agent's pods                             | `true`                                      |
+| `clusterAgent.rbac.serviceAccount`       | existing ServiceAccount to use (ignored if rbac.create=true) for cluster agent's pods     | `default`                                   |
 | `clusterAgent.metricsProvider.enabled`   | Enable Datadog metrics as a source for HPA scaling                                        | `false`                                     |
 | `clusterAgent.metricsProvider.service.type` | The type of service to use for the clusterAgent metrics server                         | `ClusterIP`                                 |
 | `clusterAgent.metricsProvider.service.port` | The port for service to use for the clusterAgent metrics server                         | `443` .                                     |
@@ -353,8 +356,9 @@ helm install --name <RELEASE_NAME> \
 | `clusterAgent.resources.requests.memory` | Memory resource requests                                                                  | `256Mi`                                     |
 | `clusterAgent.resources.limits.memory`   | Memory resource limits                                                                    | `256Mi`                                     |
 | `clusterAgent.tolerations`               | List of node taints to tolerate                                                           | `[]`                                        |
-| `clusterAgent.livenessProbe`             | Overrides the default liveness probe                                                      | http port 443 if external metrics enabled   |
-| `clusterAgent.readinessProbe`            | Overrides the default readiness probe                                                     | http port 443 if external metrics enabled   |
+| `clusterAgent.healthPort`                | Overrides the default health port used by the liveness and readiness endpoint             | `8080`                                      |
+| `clusterAgent.livenessProbe`             | Overrides the default liveness probe                                                      | `http check on /healthz with port 8080`     |
+| `clusterAgent.readinessProbe`            | Overrides the default readiness probe                                                     | `http check on /healthz with port 8080`     |
 | `clusterAgent.strategy`                  | Which update strategy to deploy the cluster-agent                                         | RollingUpdate with 0 maxUnavailable, 1 maxSurge |
 | `clusterAgent.useHostNetwork`            | If true, use the host's network                                                           | `nil`                                       |
 | `clusterAgent.volumes`                   | Additional volumes for the cluster-agent deployment                                       | `nil`                                       |
@@ -369,6 +373,7 @@ helm install --name <RELEASE_NAME> \
 | `clusterchecksDeployment.tolerations`                    | List of node taints to tolerate                                                               | `nil`                                       |
 | `clusterchecksDeployment.affinity`                       | Node affinities                                                                               | avoid running pods on the same node         |
 | `clusterchecksDeployment.livenessProbe`                  | Overrides the default liveness probe                                                          | http port 5555                              |
+| `clusterchecksDeployment.rbac.create`                    | If true, create & use RBAC resources for clusterchecks agent's pods                           | `true`                                      |
 | `clusterchecksDeployment.rbac.dedicated`                 | If true, use dedicated RBAC resources for clusterchecks agent's pods                          | `false`                                     |
-| `clusterchecksDeployment.rbac.serviceAccount`            | existing ServiceAccount to use (ignored if rbac.create=true) for clusterchecks                | `default`                                   |
+| `clusterchecksDeployment.rbac.serviceAccount`            | existing ServiceAccount to use (ignored if rbac.create=true) for clusterchecks agent's pods   | `default`                                   |
 | `clusterchecksDeployment.strategy`                       | Which update strategy to deploy the Cluster Checks Deployment                                 | RollingUpdate with 0 maxUnavailable, 1 maxSurge |

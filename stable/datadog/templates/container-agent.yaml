@@ -93,7 +93,7 @@
     {{- end }}
     {{- if .Values.datadog.criSocketPath }}
     - name: DD_CRI_SOCKET_PATH
-      value: {{ .Values.datadog.criSocketPath | quote }}
+      value: {{ .Values.datadog.criSocketPath }}
     {{- end }}
     {{- if not .Values.datadog.livenessProbe }}
     - name: DD_HEALTH_PORT
@@ -118,9 +118,9 @@
       mountPath: /etc/datadog-agent/datadog.yaml
       subPath: datadog.yaml
     {{- end }}
-    {{- if .Values.datadog.useCriSocketVolume }}
+    {{- if .Values.datadog.criSocketPath }}
     - name: runtimesocket
-      mountPath: {{ default "/var/run/docker.sock" .Values.datadog.criSocketPath | quote }}
+      mountPath: {{ .Values.datadog.criSocketPath }}
       readOnly: true
     {{- end }}
     {{- if .Values.datadog.useDogStatsDSocketVolume }}
@@ -139,9 +139,9 @@
     - name: logpodpath
       mountPath: /var/log/pods
       readOnly: true
-    {{- if .Values.datadog.containerLogsPath }}
-    - name: logcontainerpath
-      mountPath: {{ .Values.datadog.containerLogsPath | quote }}
+    {{- if regexFind "^.*docker.*$" $.Values.datadog.criSocketPath }}
+    - name: logdockercontainerpath
+      mountPath: /var/lib/docker/containers
       readOnly: true
     {{- end }}
     {{- end }}

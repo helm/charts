@@ -1,11 +1,5 @@
 {{- if and .Values.clusterAgent.enabled .Values.clusterAgent.clusterChecks.enabled .Values.clusterchecksDeployment.enabled -}}
-{{- if .Capabilities.APIVersions.Has "apps/v1" }}
 apiVersion: apps/v1
-{{- else if .Capabilities.APIVersions.Has "extensions/v1beta1" }}
-apiVersion: extensions/v1beta1
-{{- else }}
-apiVersion: apps/v1
-{{- end }}
 kind: Deployment
 metadata:
   name: {{ template "datadog.fullname" . }}-clusterchecks
@@ -29,9 +23,9 @@ spec:
       name: {{ template "datadog.fullname" . }}-clusterchecks
     spec:
       {{- if .Values.clusterchecksDeployment.rbac.dedicated }}
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "datadog.fullname" . }}-cluster-checks{{ else }}"{{ .Values.clusterchecksDeployment.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ if .Values.clusterchecksDeployment.rbac.create }}{{ template "datadog.fullname" . }}-cluster-checks{{ else }}"{{ .Values.clusterchecksDeployment.rbac.serviceAccountName }}"{{ end }}
       {{- else }}
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "datadog.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ if .Values.daemonset.rbac.create }}{{ template "datadog.fullname" . }}{{ else }}"{{ .Values.daemonset.rbac.serviceAccountName }}"{{ end }}
       {{- end }}
       containers:
       - name: agent

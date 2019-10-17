@@ -28,9 +28,9 @@
     - name: procdir
       mountPath: /host/proc
       readOnly: true
-    {{- if .Values.datadog.useCriSocketVolume }}
+    {{- if .Values.datadog.criSocketPath }}
     - name: runtimesocket
-      mountPath: {{ default "/var/run/docker.sock" .Values.datadog.criSocketPath | quote }}
+      mountPath: {{ .Values.datadog.criSocketPath }}
       readOnly: true
     {{- end }}
   env:

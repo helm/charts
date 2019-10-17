@@ -1,4 +1,4 @@
-{{- if and .Values.rbac.create .Values.clusterAgent.enabled -}}
+{{- if and .Values.clusterAgent.enabled .Values.clusterAgent.rbac.create -}}
 apiVersion: {{ template "rbac.apiVersion" . }}
 kind: ClusterRole
 metadata:
@@ -107,7 +107,7 @@ metadata:
   name: {{ template "datadog.fullname" . }}-cluster-agent
 {{- end }}
 
-{{- if and .Values.rbac.create .Values.clusterAgent.enabled .Values.clusterAgent.metricsProvider.enabled }}
+{{- if and .Values.clusterAgent.enabled .Values.clusterAgent.rbac.create .Values.clusterAgent.metricsProvider.enabled }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding

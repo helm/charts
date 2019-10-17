@@ -1,4 +1,4 @@
-{{- if and .Values.rbac.create .Values.clusterAgent.enabled .Values.clusterAgent.metricsProvider.enabled -}}
+{{- if and .Values.clusterAgent.enabled .Values.clusterAgent.rbac.create .Values.clusterAgent.metricsProvider.enabled -}}
 apiVersion: {{ template "rbac.apiVersion" . }}
 kind: ClusterRole
 metadata:
