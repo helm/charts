@@ -24,6 +24,9 @@ replicas: 1
 #   - "--ping"
 #   - "--ping.entrypoint=http"
 
+# /ping health-check entry point.
+# pingEntryPoint: http
+
 podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 2
@@ -429,6 +432,11 @@ metrics:
     # address: localhost:8125
     # pushinterval: 10s
 deployment:
+  # labels to add to the deployment
+  # labels:
+  #   key: value
+  # annotations:
+  #   key: value
   # labels to add to the pod container metadata
   # podLabels:
   #   key: value
