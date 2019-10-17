@@ -91,7 +91,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /ping
-            port: {{ template "traefik.containerPort.http" . }}
+            port: "{{ .Values.pingEntryPoint | default "http" }}"
           failureThreshold: 1
           initialDelaySeconds: 10
           periodSeconds: 10
@@ -100,7 +100,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /ping
-            port: {{ template "traefik.containerPort.http" . }}
+            port: "{{ .Values.pingEntryPoint | default "http" }}"
           failureThreshold: 3
           initialDelaySeconds: 10
           periodSeconds: 10

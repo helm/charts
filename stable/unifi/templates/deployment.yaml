@@ -33,10 +33,10 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: https-gui
-              containerPort: 8443
+              containerPort: {{ .Values.guiService.port }}
               protocol: TCP
             - name: controller
-              containerPort: 8080
+              containerPort: {{ .Values.controllerService.port }}
               protocol: TCP
             - name: discovery
               containerPort: 10001
@@ -63,6 +63,10 @@ spec:
               scheme: HTTPS
             initialDelaySeconds: 15
           env:
+            - name: UNIFI_HTTP_PORT
+              value: "{{ .Values.controllerService.port }}"
+            - name: UNIFI_HTTPS_PORT
+              value: "{{ .Values.guiService.port }}"
             - name: TZ
               value: "{{ .Values.timezone }}"
             - name: RUNAS_UID0
