@@ -123,6 +123,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `admin.existingSecret`                    | The name of an existing secret containing the admin credentials. | `""`                                 |
 | `admin.userKey`                           | The key in the existing admin secret containing the username. | `"admin-user"`                          |
 | `admin.passwordKey`                       | The key in the existing admin secret containing the password. | `"admin-password"`                      |
+| `serviceAccount.annotations`              | ServiceAccount annotations                                                                              |
 | `serviceAccount.create`                   | Create service account | `true` |
 | `serviceAccount.name`                     | Service account name to use, when empty will be set to created account if `serviceAccount.create` is set else to `default` | `` |
 | `serviceAccount.nameTest`                 | Service account name to use for test, when empty will be set to created account if `serviceAccount.create` is set else to `default` | `` |
