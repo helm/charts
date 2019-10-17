@@ -840,7 +840,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "1 -\n(\n  max without (mountpoint, fstype) (node_filesystem_avail_bytes{job=\"node-exporter\", , instance=\"$instance\"}}`}})\n/\n  max without (mountpoint, fstype) (node_filesystem_size_bytes{job=\"node-exporter\", , instance=\"$instance\"}}`}})\n)\n",
+                                "expr": "1 -\n(\n  max without (mountpoint, fstype) (node_filesystem_avail_bytes{job=\"node-exporter\", fstype!=\"\", instance=\"$instance\"})\n/\n  max without (mountpoint, fstype) (node_filesystem_size_bytes{job=\"node-exporter\", fstype!=\"\", instance=\"$instance\"})\n)\n",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{device}}`}}",
