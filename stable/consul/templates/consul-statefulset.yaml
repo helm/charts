@@ -22,6 +22,10 @@ spec:
   template:
     metadata:
       name: "{{ template "consul.fullname" . }}"
+{{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
       labels:
         heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
