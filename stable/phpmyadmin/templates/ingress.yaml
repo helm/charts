@@ -18,26 +18,26 @@ metadata:
 spec:
   rules:
   {{- range .Values.ingress.hosts }}
-  - host: {{ .name }}
-    http:
-      paths:
-        - path: {{ default "/" .path }}
-          backend:
-            serviceName: {{ template "phpmyadmin.fullname" $ }}
-            servicePort: http
-  {{- end }}
+    - host: {{ .name }}
+      http:
+        paths:
+          - path: {{ default "/" .path }}
+            backend:
+              serviceName: {{ template "phpmyadmin.fullname" $ }}
+              servicePort: http
+    {{- end }}
   tls:
   {{- range .Values.ingress.hosts }}
-  {{- if .tls }}
-  - hosts:
-  {{- if .tlsHosts }}
-  {{- range $host := .tlsHosts }}
-    - {{ $host }}
-  {{- end }}
-  {{- else }}
-    - {{ .name }}
-  {{- end }}
-    secretName: {{ .tlsSecret }}
-  {{- end }}
+    {{- if .tls }}
+    - hosts:
+    {{- if .tlsHosts }}
+      {{- range $host := .tlsHosts }}
+        - {{ $host }}
+      {{- end }}
+    {{- else }}
+        - {{ .name }}
+    {{- end }}
+      secretName: {{ .tlsSecret }}
+    {{- end }}
   {{- end }}
 {{- end }}
