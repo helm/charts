@@ -111,6 +111,8 @@ into `+values.yaml+`) |`+{DEFAULT_HAZELCAST_YAML}+`
 
 |`+affinity+` | Hazelcast Node affinity |`+nil+`
 
+|`+tolerations+` | Hazelcast Node tolerations |`+nil+`
+
 |`+nodeSelector+` |Hazelcast Node labels for pod assignment |`+nil+`
 
 |`+hostPort+` |Port under which Hazelcast PODs are exposed on the host machines
@@ -220,6 +222,10 @@ provided, can be filled in the web interface |`+nil+`
 
 |`+mancenter.licenseKeySecretName+` |Kubernetes Secret Name, where Management
 Center License Key is stored (can be used instead of licenseKey) |`+nil+`
+
+|`+mancenter.affinity+` |Management Center Node affinity |`+nil+`
+
+|`+mancenter.tolerations+` |Management Center Node tolerations |`+nil+`
 
 |`+mancenter.nodeSelector+` |Hazelcast Management Center node labels for pod
 assignment |`+nil+`
