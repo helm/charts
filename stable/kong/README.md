@@ -150,6 +150,7 @@ Postgres is enabled by default.
 | ------------------------------| ------------------------------------------------------------------------| ----------------------|
 | cassandra.enabled             | Spin up a new cassandra cluster for Kong                                | `false`               |
 | postgresql.enabled            | Spin up a new postgres instance for Kong                                | `true`                |
+| postgresql.existingSecret     | Existing secret with postgres credentials                               | ``                    |
 | waitImage.repository          | Image used to wait for database to become ready                         | `busybox`             |
 | waitImage.tag                 | Tag for image used to wait for database to become ready                 | `latest`              |
 | env.database                  | Choose either `postgres`, `cassandra` or `"off"` (for dbless mode)      | `postgres`            |

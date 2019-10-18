@@ -157,7 +157,7 @@ spec:
         - name: KONG_PG_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "kong.postgresql.fullname" . }}
+              name: {{ template "kong.postgresql.secret" . }}
               key: postgresql-password
         {{- end }}
         {{- if .Values.cassandra.enabled }}

@@ -41,7 +41,7 @@ spec:
         - name: KONG_PG_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "kong.postgresql.fullname" . }}
+              name: {{ template "kong.postgresql.secret" . }}
               key: postgresql-password
         command: [ "/bin/sh", "-c", "until nc -zv $KONG_PG_HOST $KONG_PG_PORT -w1; do echo 'waiting for db'; sleep 1; done" ]
       {{- end }}
@@ -67,7 +67,7 @@ spec:
         - name: KONG_PG_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "kong.postgresql.fullname" . }}
+              name: {{ template "kong.postgresql.secret" . }}
               key: postgresql-password
         {{- end }}
         {{- if .Values.cassandra.enabled }}

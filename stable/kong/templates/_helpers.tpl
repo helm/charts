@@ -18,6 +18,10 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
+{{- define "kong.postgresql.secret" -}}
+{{- default (include "kong.postgresql.fullname" .) .Values.postgresql.existingSecret }}
+{{- end -}}
+
 {{- define "kong.cassandra.fullname" -}}
 {{- $name := default "cassandra" .Values.cassandra.nameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
@@ -216,7 +220,7 @@ Create the ingress servicePort value string
   - name: KONG_PG_PASSWORD
     valueFrom:
       secretKeyRef:
-        name: {{ template "kong.postgresql.fullname" . }}
+        name: {{ template "kong.postgresql.secret" . }}
         key: postgresql-password
   {{- end }}
   {{- if .Values.cassandra.enabled }}
