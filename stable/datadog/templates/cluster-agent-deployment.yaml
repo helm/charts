@@ -157,16 +157,30 @@ spec:
             path: /healthz
             scheme: HTTPS
 {{- end }}
-{{- if .Values.clusterAgent.confd }}
         volumeMounts:
+{{- if .Values.clusterAgent.confd }}        
           - name: confd
             mountPath: /conf.d
             readOnly: true
+{{- end}}
+{{- if .Values.clusterAgent.datadog_cluster_yaml }}
+          - name: cluster-agent-yaml
+            mountPath: /etc/datadog-agent/datadog-cluster.yaml
+            subPath: datadog-cluster.yaml
+            readOnly: true
+{{- end}}
       volumes:
+{{- if .Values.clusterAgent.confd }}
         - name: confd
           configMap:
             name: {{ template "datadog.fullname" . }}-cluster-agent-confd
 {{- end }}
+{{- if .Values.clusterAgent.datadog_cluster_yaml }}
+        - name: cluster-agent-yaml
+          configMap:
+            name: {{ template "datadog.fullname" . }}-cluster-agent-config
+{{- end}}
+
       {{- if .Values.clusterAgent.tolerations }}
       tolerations:
 {{ toYaml .Values.clusterAgent.tolerations | indent 8 }}

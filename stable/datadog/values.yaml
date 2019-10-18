@@ -424,6 +424,11 @@ clusterAgent:
   #
   # readinessProbe:
 
+  ## @param datadog-cluster.yaml - object - optional
+  ## Specify custom contents for the datadog cluster agent config (datadog-cluster.yaml).
+  #
+  # datadog-cluster.yaml: {}
+
 rbac:
 
   ## @param created - boolean - required
@@ -659,11 +664,6 @@ daemonset:
   #
   # podLabels: {}
 
-  ## @param useConfigMap - boolean - optional
-  #  Configures a configmap to provide the agent configuration
-  #
-  # useConfigMap: false
-
   ## @param customAgentConfig - object - optional
   ## Specify custom contents for the datadog agent config (datadog.yaml).
   ## ref: https://docs.datadoghq.com/agent/guide/agent-configuration-files/?tab=agentv6
@@ -691,7 +691,7 @@ daemonset:
 deployment:
   ## @param enabled - boolean - required
   ## Apart from DaemonSet, deploy Datadog agent pods and related service for
-  ## applications that want to send custom metrics. Provides DogStasD service.
+  ## applications that want to send custom metrics. Provides DogStatsD service.
   #
   enabled: false
 

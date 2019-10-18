@@ -157,7 +157,7 @@ spec:
         - name: sysprobe-socket-dir
           emptyDir: {}
         {{- end }}
-        {{- if .Values.daemonset.useConfigMap }}
+        {{- if .Values.daemonset.datadog_yaml }}
         - name: {{ template "datadog.fullname" . }}-datadog-yaml
           configMap:
             name: {{ template "datadog.fullname" . }}-datadog-yaml

@@ -1,4 +1,4 @@
-{{- if .Values.daemonset.useConfigMap }}
+{{- if .Values.daemonset.customAgentConfig }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
