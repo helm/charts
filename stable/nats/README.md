@@ -57,7 +57,7 @@ The following table lists the configurable parameters of the NATS chart and thei
 | `nameOverride`                       | String to partially override nats.fullname template with a string (will prepend the release name) | `nil`                                                    |
 | `fullnameOverride`                   | String to fully override nats.fullname template with a string                                | `nil`                                                         |
 | `auth.enabled`                       | Switch to enable/disable client authentication                                               | `true`                                                        |
-| `auth.user`                          | Client authentication user                                                                   | `nats_cluster`                                                |
+| `auth.user`                          | Client authentication user                                                                   | `nats_client`                                                |
 | `auth.password`                      | Client authentication password                                                               | `random alhpanumeric string (10)`                             |
 | `auth.token`                         | Client authentication token                                                                  | `nil`                                                         |
 | `clusterAuth.enabled`                | Switch to enable/disable cluster authentication                                              | `true`                                                        |
