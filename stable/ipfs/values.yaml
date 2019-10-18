@@ -31,8 +31,6 @@ ingressGateway:
   #   hosts:
   #     - chart-example.local
 
-
-
 resources: {}
 
 persistence:
