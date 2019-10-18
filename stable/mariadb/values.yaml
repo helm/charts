@@ -229,11 +229,19 @@ master:
     ## Persistent Volume size
     ##
     size: 8Gi
-    ##
+
   extraInitContainers: |
   # - name: do-something
   #   image: busybox
   #   command: ['do', 'something']
+
+  ## An array to add extra environment variables
+  ## For example:
+  ## extraEnvVars:
+  ##  - name: TZ
+  ##    value: "Europe/Paris"
+  ##
+  # extraEnvVars:
 
   ## Configure MySQL with a custom my.cnf file
   ## ref: https://mysql.com/kb/en/mysql/configuring-mysql-with-mycnf/#example-of-configuration-file
@@ -351,11 +359,19 @@ slave:
     ## Persistent Volume size
     ##
     size: 8Gi
-    ##
+
   extraInitContainers: |
   # - name: do-something
   #   image: busybox
   #   command: ['do', 'something']
+
+  ## An array to add extra environment variables
+  ## For example:
+  ## extraEnvVars:
+  ##  - name: TZ
+  ##    value: "Europe/Paris"
+  ##
+  # extraEnvVars:
 
   ## Configure MySQL slave with a custom my.cnf file
   ## ref: https://mysql.com/kb/en/mysql/configuring-mysql-with-mycnf/#example-of-configuration-file
