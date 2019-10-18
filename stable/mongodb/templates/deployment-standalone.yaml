@@ -136,7 +136,7 @@ spec:
         {{- end }}
         {{- if .Values.mongodbExtraFlags }}
         - name: MONGODB_EXTRA_FLAGS
-          value: {{ .Values.mongodbExtraFlags | join " " }}
+          value: {{ .Values.mongodbExtraFlags | join " " | quote }}
         {{- end }}
         ports:
         - name: mongodb
