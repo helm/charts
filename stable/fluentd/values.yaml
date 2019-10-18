@@ -27,6 +27,10 @@ extraEnvVars:
 #        name: secret_name
 #        key: secret_key
 
+plugins:
+  enabled: false
+  pluginsList: []
+
 service:
   annotations: {}
   type: ClusterIP
@@ -146,6 +150,17 @@ resources: {}
   # requests:
   #  cpu: 500m
   #  memory: 200Mi
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
 
 ## Persist data to a persistent volume
 persistence:

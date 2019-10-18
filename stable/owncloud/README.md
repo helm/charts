@@ -18,8 +18,10 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.12+
+- Helm 2.11+ or Helm 3.0-beta3+
 - PV provisioner support in the underlying infrastructure
+- ReadWriteMany volumes for deployment scaling
 
 ## Installing the Chart
 
@@ -95,6 +97,7 @@ The following table lists the configurable parameters of the ownCloud chart and 
 | `persistence.owncloud.size`         | PVC Storage Request for ownCloud volume    | `8Gi`                                                   |
 | `resources`                         | CPU/Memory resource requests/limits        | Memory: `512Mi`, CPU: `300m`                            |
 | `podAnnotations`                    | Pod annotations                            | `{}`                                                    |
+| `affinity`                          | Map of node/pod affinities                 | `{}`                                                    |
 | `metrics.enabled`                   | Start a side-car prometheus exporter       | `false`                                                 |
 | `metrics.image.registry`            | Apache exporter image registry             | `docker.io`                                             |
 | `metrics.image.repository`          | Apache exporter image name                 | `bitnami/apache-exporter`                               |
