@@ -10,6 +10,7 @@ metadata:
     chart: {{ template "traefik.chart" . }}
     app: {{ template "traefik.name" . }}
 spec:
+  backoffLimit: 5
   template:
     metadata:
       name: "storeconfig-job-{{ .Release.Revision }}"
@@ -18,7 +19,6 @@ spec:
         chart: {{ template "traefik.chart" . }}
     spec:
       restartPolicy: Never
-      backoffLimit: 5
       containers:
         - name: storeconfig-job
           image: "{{ .Values.image }}:{{ .Values.imageTag }}"
@@ -30,6 +30,10 @@ spec:
             name: config
           - mountPath: /acme
             name: acme
+          {{- if .Values.env }}
+          env:
+{{ toYaml .Values.env | indent 12 }}
+          {{- end }}
       volumes:
       - name: config
         configMap:

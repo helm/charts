@@ -56,6 +56,11 @@ spec:
         configMap:
           name: {{ template "spinnaker.fullname" . }}-additional-scripts
       {{- end }}
+      {{- if .Values.halyard.bom }}
+      - name: halyard-bom
+        configMap:
+          name: {{ template "spinnaker.fullname" . }}-halyard-bom
+      {{- end }}
       {{- if .Values.gcs.enabled }}
       - name: gcs-key
         secret:
@@ -91,6 +96,10 @@ spec:
         {{- if .Values.halyard.additionalScripts.create }}
         - name: additional-scripts
           mountPath: /opt/halyard/additionalScripts
+        {{- end }}
+        {{- if .Values.halyard.bom }}
+        - name: halyard-bom
+          mountPath: /opt/halyard/bom
         {{- end }}
         {{- if .Values.gcs.enabled }}
         - name: gcs-key

@@ -13,21 +13,22 @@ strategy: |
     maxUnavailable: 1
 
 image:
-  repository: envoyproxy/envoy-alpine
-  tag: d920944aed67425f91fc203774aebce9609e5d9a
-  ## ^ ref: https://github.com/envoyproxy/envoy/commit/d920944aed67425f91fc203774aebce9609e5d9a
+  repository: envoyproxy/envoy
+  tag: v1.11.1
   pullPolicy: IfNotPresent
 
 command:
-  - /usr/bin/dumb-init
-  - --
-args:
   - /usr/local/bin/envoy
-  - --v2-config-only
+args:
   - -l
   - $loglevel
   - -c
   - /config/envoy.yaml
+
+## Args template allows you to use Chart template expressions to dynamically generate args
+# argsTemplate: |-
+#   - -c
+#   - /docker-entrypoint.sh envoy --service-node ${POD_NAME} --service-cluster {{ template "envoy.fullname" . }} -l debug -c /config/envoy.yaml
 
 ## Client service.
 service:
@@ -238,6 +239,54 @@ files:
 #               port_value: 443
 #         tls_context:
 #           sni: www.google.com
+
+## Additional volumes to be added to Envoy pods
+# volumes:
+# - name: xds
+#   emptyDir: {}
+
+## Additional volume mounts to be added to Envoy containers(Primary containers of Envoy pods)
+# volumeMounts:
+# - name: xds
+#   mountPath: /srv/runtime
+
+## Init containers
+# initContainersTemplate: |-
+#   - name: xds-init
+#     image: mumoshu/envoy-xds-configmap-loader:canary-6090275
+#     command:
+#     - envoy-xds-configmap-loader
+#     args:
+#     - --configmap={{ template "envoy.fullname" . }}-xds
+#     - --onetime
+#     - --insecure
+#     env:
+#     - name: POD_NAMESPACE
+#       valueFrom:
+#         fieldRef:
+#           fieldPath: metadata.namespace
+#     volumeMounts:
+#     - name: xds
+#       mountPath: /srv/runtime
+
+## Sidecar containers
+# sidecarContainersTemplate: |-
+#   - name: xds-update
+#     image: mumoshu/envoy-xds-configmap-loader:canary-6090275
+#     command:
+#     - envoy-xds-configmap-loader
+#     args:
+#     - --configmap={{ template "envoy.fullname" . }}-xds
+#     - --sync-interval=5s
+#     - --insecure
+#     env:
+#     - name: POD_NAMESPACE
+#       valueFrom:
+#         fieldRef:
+#           fieldPath: metadata.namespace
+#     volumeMounts:
+#     - name: xds
+#       mountPath: /srv/runtime
 
 ## ServiceMonitor consumed by prometheus-operator
 serviceMonitor:

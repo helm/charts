@@ -1,18 +1,18 @@
 # Velero-server
 
 This helm chart installs Velero version v1.1.0
-https://github.com/heptio/velero/tree/v1.1.0
+https://github.com/vmware-tanzu/velero/tree/v1.1.0
 
 
 ## Upgrading to v1.1.0
 
-As of v1.1.0, Heptio Velero is no longer backwards-compatible with Heptio Ark.
+As of v1.1.0, Velero is no longer backwards-compatible with Heptio Ark.
 
 The [instructions found here](https://velero.io/docs/v1.1.0/upgrade-to-1.1/) will assist you in upgrading from version v1.0.0 to v1.1.0
 
 ## Upgrading to v1.0.0
 
-As of v1.0.0, Heptio Velero is no longer backwards-compatible with Heptio Ark.
+As of v1.0.0, Velero is no longer backwards-compatible with Heptio Ark.
 
 The [instructions found here](https://velero.io/docs/v1.0.0/upgrade-to-1.0/) will assist you in upgrading from version v0.11.0 to v1.0.0
 
@@ -101,6 +101,7 @@ Parameter | Description | Default
 `restic.podVolumePath` | Location of pod volumes on the host | `/var/lib/kubelet/pods`
 `restic.privileged` | Whether restic should run as a privileged pod. Only necessary in special cases (SELinux) | `false`
 `restic.resources` | Restic DaemonSet resource requests and limits | `{}`
+`restic.tolerations` | Restic DaemonSet tolerations | `[]`
 `configMaps` | Velero ConfigMaps | `[]`
 
 ## How to

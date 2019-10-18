@@ -39,9 +39,17 @@ spec:
       hostPID: false
       hostIPC: false
       securityContext:
-        runAsNonRoot: true
+        runAsNonRoot: {{ if eq (int .Values.securityContext.runAsUser) 0 }}false{{ else }}true{{ end }}
         runAsUser: {{ .Values.securityContext.runAsUser }}
         fsGroup: {{ .Values.securityContext.fsGroup }}
+      {{- if .Values.mancenter.affinity }}
+      affinity:
+{{ toYaml .Values.mancenter.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.mancenter.tolerations }}
+      tolerations:
+{{ toYaml .Values.mancenter.tolerations | indent 8 }}
+      {{- end }}
       containers:
       - name: {{ template "mancenter.fullname" . }}
         image: "{{ .Values.mancenter.image.repository }}:{{ .Values.mancenter.image.tag }}"
@@ -91,7 +99,7 @@ spec:
         serviceAccountName: {{ template "hazelcast.serviceAccountName" . }}
         {{- if .Values.securityContext.enabled }}
         securityContext:
-          runAsNonRoot: true
+          runAsNonRoot: {{ if eq (int .Values.securityContext.runAsUser) 0 }}false{{ else }}true{{ end }}
           runAsUser: {{ .Values.securityContext.runAsUser }}
           privileged: false
           readOnlyRootFilesystem: false
