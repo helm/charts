@@ -55,6 +55,7 @@ The following table lists the configurable parameters of the consul chart and th
 | `affinity`              | Consul affinity settings              | `see values.yaml`                                          |
 | `nodeSelector`          | Node labels for pod assignment        | `{}`                                                       |
 | `tolerations`           | Tolerations for pod assignment        | `[]`                                                       |
+| `podAnnotations`        | Annotations for pod                   | `{}`                                                       |
 | `maxUnavailable`        | Pod disruption Budget maxUnavailable  | `1`                                                        |
 | `ui.enabled`            | Enable Consul Web UI                  | `true`                                                     |
 | `uiIngress.enabled`     | Create Ingress for Consul Web UI      | `false`                                                    |
