@@ -293,6 +293,8 @@ serviceMonitor:
   ## If the operator is installed in your cluster, set to true to create a Service Monitor Entry
   enabled: false
   interval: "15s"
+  targetLabels: []
+  podTargetLabels: []
   ## Namespace in which the service monitor is created
   # namespace: monitoring
   # Added to the ServiceMonitor object so that prometheus-operator is able to discover it
