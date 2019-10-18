@@ -26,7 +26,7 @@ agent:
     # agent.image.name is the name of the container image of the Instana agent.
     name: instana/agent
     # agent.image.tag is the tag name of the agent container image.
-    tag: 1.0.28
+    tag: 1.0.29
     # agent.image.pullPolicy specifies when to pull the image container.
     pullPolicy: IfNotPresent
 

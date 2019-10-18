@@ -1,10 +1,10 @@
 # Instana
 
-[Instana](https://www.instana.com/) is a Dynamic APM for Microservice Applications
+Instana is an [APM solution(https://www.instana.com/) built for microservices that enables IT Ops to build applications faster and deliver higher quality services by automating monitoring, tracing and root cause analysis. This solution is optimized for [Kubernetes](https://www.instana.com/automatic-kubernetes-monitoring/).
 
 ## Introduction
 
-This chart adds the Instana Agent to all schedulable nodes (e.g. by default, not masters) in your cluster via a `DaemonSet`.
+This chart adds the Instana Agent to all schedulable nodes in your cluster via a `DaemonSet`.
 
 ## Prerequisites
 
@@ -88,7 +88,7 @@ The following table lists the configurable parameters of the Instana chart and t
 | `agent.endpointHost`               | Instana Agent backend endpoint host                                     | `saas-us-west-2.instana.io`                                                                                 |
 | `agent.endpointPort`               | Instana Agent backend endpoint port                                     | `443`                                                                                                       |
 | `agent.image.name`                 | The image name to pull                                                  | `instana/agent`                                                                                             |
-| `agent.image.tag`                  | The image tag to pull                                                   | `1.0.28`                                                                                                    |
+| `agent.image.tag`                  | The image tag to pull                                                   | `1.0.29`                                                                                                    |
 | `agent.image.pullPolicy`           | Image pull policy                                                       | `IfNotPresent`                                                                                              |
 | `agent.key`                        | Your Instana Agent key                                                  | `nil` You must provide your own key                                                                         |
 | `agent.leaderElectorPort`          | Instana leader elector sidecar port                                     | `42655`                                                                                                     |
