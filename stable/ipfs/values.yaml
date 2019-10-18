@@ -58,4 +58,3 @@ persistence:
   size: "8Gi"
   accessModes:
     - ReadWriteOnce
-
