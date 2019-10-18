@@ -257,6 +257,13 @@ rabbitmqWebSTOMPPlugin:
 ## Ref: https://www.rabbitmq.com/prometheus.html
 rabbitmqPrometheusPlugin:
   enabled: false
+
+  ## NodePort
+  metricsNodePort: null
+
+  ## metrics port, should be the same port used in the
+  ## configuration: prometheus.tcp.port
+  metricsPort: 15692
   ## Prometheus configuration:
   config: |
    # prometheus.path = /metrics
