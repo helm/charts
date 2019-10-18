@@ -29,7 +29,7 @@ The following table lists the configurable parameters of the Spark operator char
 | `replicas`         | The number of replicas of the operator Deployment                                     | 1                         |
 | `sparkJobNamespace`       | K8s namespace where Spark jobs are to be deployed            | ``                                     |
 | `enableWebhook`           | Whether to enable mutating admission webhook                 | false                                  |
-| `enableMetrics`           | Whether to expose metrics to be scraped by Premetheus        | true                                   |
+| `enableMetrics`           | Whether to expose metrics to be scraped by Prometheus        | true                                   |
 | `controllerThreads`       | Number of worker threads used by the SparkApplication controller | 10                                 |
 | `ingressUrlFormat`        | Ingress URL format                                           | ""                                     |
 | `logLevel`                | Logging verbosity level                                      | 2                                      |
