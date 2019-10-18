@@ -83,8 +83,8 @@ The following tables list the configurable parameters of the GoCD chart and thei
 | `server.initContainers`                    | GoCD server init containers                                                                                   | `[]`                |
 | `server.restartPolicy`                     | GoCD server restart policy                                                                                    | `Always`            |
 | `server.nodeSelector`                      | GoCD server nodeSelector for pod labels                                                                       | `{}`                |
-| `server.affinity`                         | GoCD server affinity                                                                                           | `{}`                |
-| `server.env.goServerSystemProperties`      | GoCD Server system properties                                                                                 | `nil`               |
+| `server.affinity`                          | GoCD server affinity                                                                                          | `{}`                |
+| `server.env.goServerJvmOpts`               | GoCD Server JVM arguments                                                                                     | `nil`               |
 | `server.env.extraEnvVars`                  | GoCD Server extra Environment variables                                                                       | `nil`               |
 | `server.service.type`                      | Type of GoCD server Kubernetes service                                                                        | `NodePort`          |
 | `server.service.loadBalancerSourceRanges`  | GoCD server service Load Balancer source IP ranges to whitelist                                               | `nil`               |
@@ -102,6 +102,9 @@ The following tables list the configurable parameters of the GoCD chart and thei
 | `server.hostAliases`                       | Aliases for IPs in /etc/hosts                                                                                 | `[]`                |
 | `server.security.ssh.enabled`              | Enable the use of SSH keys for GoCD server                                                                    | `false`             |
 | `server.security.ssh.secretName`           | The name of the secret holding the SSH keys                                                                   | `gocd-server-ssh`   |
+| `server.securityContext.runAsUser`         | The container user for all the GoCD server pods.                                                              | `1000`              |
+| `server.securityContext.runAsGroup`        | The container group for all the GoCD server pods.                                                             | `0`                 |
+| `server.securityContext.fsGroup`           | The container supplementary group for all the GoCD server pods.                                               | `0`                 |
 
 #### Preconfiguring the GoCD Server
 
@@ -185,6 +188,7 @@ $ kubectl create secret generic gocd-server-ssh \
 | `agent.env.agentAutoRegisterHostname`     | GoCD Agent hostname                                                                                                                                                              | `nil`                        |
 | `agent.env.goAgentBootstrapperArgs`       | GoCD Agent Bootstrapper Args. It can be used to [Configure end-to-end transport security](https://docs.gocd.org/current/installation/ssl_tls/end_to_end_transport_security.html) | `nil`                        |
 | `agent.env.goAgentBootstrapperJvmArgs`    | GoCD Agent Bootstrapper JVM Args.                                                                                                                                                | `nil`                        |
+| `agent.env.goAgentJvmOpts`                | GoCD Agent JVM arguments                                                                                     | `nil`               |
 | `agent.env.extraEnvVars`                  | GoCD Agent extra Environment variables                                                                       | `nil`               |
 | `agent.privileged`                        | Run container in privileged mode (needed for DinD, Docker-in-Docker agents)                                                                                                      | `false`                      |
 | `agent.healthCheck.enabled`               | Enable use of GoCD agent health checks.                                                                                                                                          | `false`                      |
@@ -194,6 +198,9 @@ $ kubectl create secret generic gocd-server-ssh \
 | `agent.hostAliases`                       | Aliases for IPs in /etc/hosts                                                                                 | `[]`                |
 | `agent.security.ssh.enabled`              | Enable the use of SSH keys for GoCD agent                                                                                                                                        | `false`                      |
 | `agent.security.ssh.secretName`           | The name of the secret holding the SSH keys                                                                                                                                      | `gocd-agent-ssh`             |
+| `agent.securityContext.runAsUser`         | The container user for all the GoCD agent pods.                                                                                                                                  | `1000`                       |
+| `agent.securityContext.runAsGroup`        | The container group for all the GoCD agent pods.                                                                                                                                 | `0`                          |
+| `agent.securityContext.fsGroup`           | The container supplementary group for all the GoCD agent pods.                                                                                                                   | `0`                          |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -413,6 +420,21 @@ Possible states:
 |reuseTopLevelServiceAccount = false and name = empty|The service account 'default' will be used.|
 |reuseTopLevelServiceAccount = false and name = 'agentSA'|The 'agentSA' service account will be used. The service account needs to exist and bound with the appropriate role. |
 |reuseTopLevelServiceAccount = true| The GoCD service account will be created and used for the agents in the specified namespace. The permissions associated with the GoCD SA are defined here - [Cluster role privileges](#cluster-role-privileges).  |
+
+# Adding plugins 
+
+- Add the .jar file link from the releases section in the plugin's repo to the env.extraEnvVars section as a new environment variable.
+The environment variable name must have GOCD_PLUGIN_INSTALL prefixed to it like the following section
+
+```
+env:
+  extraEnvVars:
+    - name: GOCD_PLUGIN_INSTALL_email-notifier
+      value: https://github.com/gocd-contrib/email-notifier/releases/download/v0.3-68-exp/email-notifier-0.3-68.jar
+```
+- Make sure to add the link of the release you want to use before applying the values.
+
+- If you are adding a plugin to an existing Go server, it will result in a new Go server pod being created that has the plugin installed and running.
 
 # License
 

@@ -3,6 +3,37 @@
 This file documents all notable changes to Ambassador Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v4.0.0
+
+### Breaking Changes
+
+- Introduces the performance tuned and certified build of open source Ambassador, Ambassador core
+- The license key is now stored and read from a Kubernetes secret by default
+- Added `.Values.pro.licenseKey.secret.enabled` `.Values.pro.licenseKey.secret.create` fields to allow multiple releases in the same namespace to use the same license key secret.
+
+### Minor Changes
+
+- Introduces the ability to configure resource limits for both Ambassador Pro and it's redis instance
+- Introduces the ability to configure additional `AuthService` options (see [AuthService documentation](https://www.getambassador.io/reference/services/auth-service/))
+- The ambassador-pro-auth `AuthService` and ambassador-pro-ratelimit `RateLimitService` and now created as CRDs when `.Values.crds.enabled: true`
+- Fixed misnamed selector for redis instance that failed in an edge case
+- Exposes annotations for redis deployment and service
+
+## v3.0.0
+
+### Breaking Changes
+
+- The default annotation has been removed. The service port will be set dynamically to 8080 or 8443 for http and https respectively.
+- `service.http`, `service.https`, and `additionalTCPPort` has been replaced with `service.ports`.
+- `rbac.namespaced` has been removed. Use `scope.singleNamespace` instead.
+
+### Minor Changes
+
+- Ambassador Pro will pick up when `AMBASSADOR_ID` is set in `.Values.env` [[#15025]](https://github.com/helm/charts/issues/15025).
+- `{{release name}}-admins` has been renamed to `{{release name}}-admin` to match YAML install templates
+- RBAC configuration has been updated to allow for CRD use when `scope.singleNamespace: true`. [[ambassador/#1576]](https://github.com/datawire/ambassador/issues/1576)
+- RBAC configuration now allows for multiple Ambassadors to use CRDs. Set `crds.enabled` in releases that expect CRDs [[ambassador/#1679]](https://github.com/datawire/ambassador/issues/1679)
+
 ## v2.6.0
 
 ### Minor Changes

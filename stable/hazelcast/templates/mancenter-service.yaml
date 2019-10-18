@@ -1,0 +1,33 @@
+{{- if .Values.mancenter.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+{{- if .Values.mancenter.service.annotations }}
+  annotations:
+{{ toYaml .Values.mancenter.service.annotations | indent 4 }}
+{{- end }}
+  name: {{ template "mancenter.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "hazelcast.name" . }}
+    helm.sh/chart: {{ template "hazelcast.chart" . }}
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+spec:
+  type: {{ .Values.mancenter.service.type }}
+  {{- if .Values.mancenter.service.clusterIP }}
+  clusterIP: {{ .Values.mancenter.service.clusterIP }}
+  {{- end }}
+  selector:
+    app.kubernetes.io/name: {{ template "hazelcast.name" . }}
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    role: mancenter
+  ports:
+  - protocol: TCP
+    port: {{ .Values.mancenter.service.port }}
+    targetPort: mancenter
+    name: http
+  - protocol: TCP
+    port: {{ .Values.mancenter.service.httpsPort }}
+    targetPort: mancenter
+    name: https
+{{- end }}

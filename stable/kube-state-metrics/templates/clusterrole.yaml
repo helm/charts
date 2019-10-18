@@ -52,7 +52,7 @@ rules:
   verbs: ["list", "watch"]
 {{ end -}}
 {{ if .Values.collectors.ingresses }}
-- apiGroups: ["extensions"]
+- apiGroups: ["extensions", "networking.k8s.io"]
   resources:
   - ingresses
   verbs: ["list", "watch"]
@@ -139,6 +139,18 @@ rules:
 - apiGroups: ["apps"]
   resources:
   - statefulsets
+  verbs: ["list", "watch"]
+{{ end -}}
+{{ if .Values.collectors.storageclasses }}
+- apiGroups: ["storage.k8s.io"]
+  resources:
+    - storageclasses
+  verbs: ["list", "watch"]
+{{ end -}}
+{{ if .Values.collectors.verticalpodautoscalers }}
+- apiGroups: ["autoscaling.k8s.io"]
+  resources:
+    - verticalpodautoscalers
   verbs: ["list", "watch"]
 {{ end -}}
 {{- end -}}

@@ -1,3 +1,13 @@
 Verify the application is working by running these commands:
-  kubectl port-forward deployment/{{ include "prometheus-mongodb-exporter.fullname" . }} {{ .Values.port }}
-  curl http://127.0.0.1:{{ .Values.port }}/metrics
+{{if contains "NodePort" .Values.service.type }}
+  NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "prometheus-mongodb-exporter.fullname" . }})
+  curl http://$NODE_IP:$NODE_PORT/metrics
+{{- else if contains "LoadBalancer" .Values.service.type }}
+  # NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+  SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "prometheus-mongodb-exporter.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  curl http://$SERVICE_IP:{{ .Values.service.port }}/metrics
+{{- else if contains "ClusterIP" .Values.service.type }}
+  kubectl port-forward service/{{ include "prometheus-mongodb-exporter.fullname" . }} {{ .Values.service.port }}
+  curl http://127.0.0.1:{{ .Values.service.port }}/metrics
+{{- end }}

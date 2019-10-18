@@ -18,6 +18,8 @@ spec:
   template:
     metadata:
       name: "{{ .Release.Name }}-db-init"
+      annotations:
+        checksum/secrets.yaml: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
       labels:
         app: {{ template "sentry.fullname" . }}
         release: "{{ .Release.Name }}"
@@ -99,7 +101,10 @@ spec:
         - mountPath: /etc/sentry
           name: config
           readOnly: true
+        resources:
+{{ toYaml .Values.hooks.dbInit.resources | indent 10 }}
       volumes:
       - name: config
         configMap:
           name: {{ template "sentry.fullname" . }}
+

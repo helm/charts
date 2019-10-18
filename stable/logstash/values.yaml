@@ -213,6 +213,17 @@ exporter:
       timeoutSeconds: 60
       failureThreshold: 8
       successThreshold: 1
+  serviceMonitor:
+    ## If true, a ServiceMonitor CRD is created for a prometheus operator
+    ## https://github.com/coreos/prometheus-operator
+    ##
+    enabled: false
+    #  namespace: monitoring
+    labels: {}
+    interval: 10s
+    scrapeTimeout: 10s
+    scheme: http
+    port: metrics
 
 elasticsearch:
   host: elasticsearch-client.default.svc.cluster.local

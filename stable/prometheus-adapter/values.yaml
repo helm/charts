@@ -102,4 +102,26 @@ tls:
   certificate: |-
     # Public key of the APIService
 
+# Any extra volumes
+extraVolumes: []
+  # - name: example-name
+  #   hostPath:
+  #     path: /path/on/host
+  #     type: DirectoryOrCreate
+  # - name: ssl-certs
+  #   hostPath:
+  #     path: /etc/ssl/certs/ca-bundle.crt
+  #     type: File
+
+# Any extra volume mounts
+extraVolumeMounts: []
+  #   - name: example-name
+  #     mountPath: /path/in/container
+  #   - name: ssl-certs
+  #     mountPath: /etc/ssl/certs/ca-certificates.crt
+  #     readOnly: true
+
 tolerations: []
+
+# Annotations added to the pod
+podAnnotations: {}

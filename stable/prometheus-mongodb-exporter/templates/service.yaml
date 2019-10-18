@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "prometheus-mongodb-exporter.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "prometheus-mongodb-exporter.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "prometheus-mongodb-exporter.chart" . }}
+  annotations:
+    {{- toYaml .Values.service.annotations | nindent 4 }}
+spec:
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: metrics
+      protocol: TCP
+      name: metrics
+  selector:
+    app.kubernetes.io/name: {{ include "prometheus-mongodb-exporter.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  type: {{ .Values.service.type }}

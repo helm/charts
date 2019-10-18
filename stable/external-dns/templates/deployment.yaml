@@ -14,7 +14,7 @@ spec:
         {{- if or .Values.podAnnotations .Values.metrics.enabled }}
         {{ include "external-dns.podAnnotations" . | nindent 8 }}
         {{- end }}
-        {{- if or (and .Values.aws.credentials.secretKey .Values.aws.credentials.accessKey) .Values.cloudflare.apiKey .Values.digitalocean.apiToken (and .Values.infoblox.wapiUsername .Values.infoblox.wapiPassword) .Values.rfc2136.tsigSecret .Values.extraEnv .Values.google.serviceAccountKey }}
+        {{- if or (and .Values.aws.credentials.secretKey .Values.aws.credentials.accessKey) (or .Values.cloudflare.apiToken .Values.cloudflare.apiKey) .Values.digitalocean.apiToken (and .Values.infoblox.wapiUsername .Values.infoblox.wapiPassword) .Values.rfc2136.tsigSecret .Values.extraEnv .Values.google.serviceAccountKey }}
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
         {{- end }}
         {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
@@ -78,13 +78,11 @@ spec:
         {{- if .Values.annotationFilter }}
         - --annotation-filter={{ .Values.annotationFilter }}
         {{- end }}
-        {{- if .Values.crd.create }}
-          {{- if .Values.crd.apiversion }}
+        {{- if .Values.crd.apiversion }}
         - --crd-source-apiversion={{ .Values.crd.apiversion }}
-          {{- end }}
-          {{- if .Values.crd.kind }}
+        {{- end }}
+        {{- if .Values.crd.kind }}
         - --crd-source-kind={{ .Values.crd.kind }}
-          {{- end }}
         {{- end }}
         {{- range .Values.istioIngressGateways }}
         - --istio-ingress-gateway={{ . }}
@@ -103,6 +101,12 @@ spec:
         {{- if .Values.aws.batchChangeSize }}
         - --aws-batch-change-size={{ .Values.aws.batchChangeSize }}
         {{- end }}
+        {{- end }}
+        {{- range .Values.aws.zoneTags }}
+        - --aws-zone-tags={{ . }}
+        {{- end }}
+        {{- if .Values.aws.preferCNAME }}
+        - --aws-prefer-cname
         {{- end }}
         # Azure Arguments
         {{- if eq .Values.provider "azure" }}
@@ -184,13 +188,34 @@ spec:
         {{- end }}
         # Cloudflare environment variables
         {{- if eq .Values.provider "cloudflare" }}
+        {{- if .Values.cloudflare.apiToken }}
+        - name: CF_API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "external-dns.fullname" . }}
+              key: cloudflare_api_token
+        {{- else }}
         - name: CF_API_KEY
           valueFrom:
             secretKeyRef:
               name: {{ template "external-dns.fullname" . }}
               key: cloudflare_api_key
         - name: CF_API_EMAIL
-          value: {{ .Values.cloudflare.email | quote }}
+          value: {{ required "cloudflare.email is required if cloudflare.apiToken is not provided" .Values.cloudflare.email | quote }}
+        {{- end }}
+        {{- end }}
+        # CoreDNS environment variables
+        {{- if eq .Values.provider "coredns" }}
+        - name: ETCD_URLS
+          value: {{ .Values.coredns.etcdEndpoints | quote }}
+        {{- if .Values.coredns.etcdTLS.enabled }}
+        - name: ETCD_CERT_FILE
+          value: {{ .Values.coredns.etcdTLS.mountPath }}/{{ .Values.coredns.etcdTLS.certFilename }}
+        - name: ETCD_KEY_FILE
+          value: {{ .Values.coredns.etcdTLS.mountPath }}/{{ .Values.coredns.etcdTLS.keyFilename }}
+        - name: ETCD_CA_FILE
+          value: {{ .Values.coredns.etcdTLS.mountPath }}/{{ .Values.coredns.etcdTLS.caFilename }}
+        {{- end }}
         {{- end }}
         # DigitalOcean environment variables
         {{- if eq .Values.provider "digitalocean" }}
@@ -251,17 +276,8 @@ spec:
               key: pdns_api_key
         {{- end }}
         # Extra environment variables
-        {{- $root := . -}}
-        {{- range .Values.extraEnv }}
-        - name: {{ .name }}
-          valueFrom:
-            {{- if .valueFrom }}
-{{ toYaml .valueFrom | indent 12 }}
-            {{- else }}
-            secretKeyRef:
-              name: {{ template "external-dns.fullname" $root }}
-              key: {{ .name }}
-            {{- end }}
+        {{- if .Values.extraEnv }}
+        {{ toYaml .Values.extraEnv | nindent 8 }}
         {{- end }}
         ports:
         - name: http
@@ -284,11 +300,17 @@ spec:
         # Azure mountPath(s)
         {{- if eq .Values.provider "azure" }}
         - name: azure-config-file
-          {{- if not .Values.azure.secretName }}
-          mountPath: /etc/kubernetes/azure.json
-          {{- else }}
+          {{- if or .Values.azure.secretName (and .Values.azure.resourceGroup .Values.azure.tenantId .Values.azure.subscriptionId) }}
           mountPath: /etc/kubernetes/
+          {{- else }}
+          mountPath: /etc/kubernetes/azure.json
           {{- end }}
+          readOnly: true
+        {{- end }}
+        # CoreDNS mountPath(s)
+        {{- if and (eq .Values.provider "coredns") (.Values.coredns.etcdTLS.enabled) }}
+        - name: {{ .Values.coredns.etcdTLS.secretName }}
+          mountPath: {{ .Values.coredns.etcdTLS.mountPath }}
           readOnly: true
         {{- end }}
         # Google mountPath(s)
@@ -314,14 +336,24 @@ spec:
       # Azure volume(s)
       {{- if eq .Values.provider "azure" }}
       - name: azure-config-file
-        {{- if (not .Values.azure.secretName) }}
+        {{- if .Values.azure.secretName }}
+        secret:
+          secretName: {{ .Values.azure.secretName }}
+        {{- else if (and .Values.azure.resourceGroup .Values.azure.tenantId .Values.azure.subscriptionId) }}
+        secret:
+          secretName: {{ template "external-dns.fullname" . }}
+        {{- else }}
         hostPath:
           path: /etc/kubernetes/azure.json
           type: File
-        {{- else }}
-        secret:
-          secretName: {{ .Values.azure.secretName }}
         {{- end }}
+      {{- end }}
+      # CoreDNS volume(s)
+      {{- if and (eq .Values.provider "coredns") (.Values.coredns.etcdTLS.enabled) }}
+      - name: {{ .Values.coredns.etcdTLS.secretName }}
+        secret:
+          secretName: {{ .Values.coredns.etcdTLS.secretName }}
+          defaultMode: 400
       {{- end }}
       # Google volume(s)
       {{- if eq .Values.provider "google" }}

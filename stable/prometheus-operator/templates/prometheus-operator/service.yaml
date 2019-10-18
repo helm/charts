@@ -3,6 +3,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-operator
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-operator
 {{ include "prometheus-operator.labels" . | indent 4 }}
@@ -34,6 +35,14 @@ spec:
     {{- end }}
     port: 8080
     targetPort: http
+  {{- if .Values.prometheusOperator.tlsProxy.enabled }}
+  - name: https
+    {{- if eq .Values.prometheusOperator.service.type "NodePort"}}
+    nodePort: {{ .Values.prometheusOperator.service.nodePortTls }}
+    {{- end }}
+    port: 443
+    targetPort: https
+  {{- end }}
   selector:
     app: {{ template "prometheus-operator.name" . }}-operator
     release: {{ .Release.Name | quote }}

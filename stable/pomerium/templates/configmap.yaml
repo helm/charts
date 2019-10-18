@@ -22,6 +22,16 @@ data:
 {{- if .Values.metrics.enabled }}
     metrics_address: :{{ .Values.metrics.port }}
 {{- end -}}
+{{- if .Values.tracing.enabled }}
+    tracing_debug: {{ .Values.tracing.debug }}
+    tracing_provider: {{ required "tracing_provider is required for tracing" .Values.tracing.provider }}
+
+{{- if eq .Values.tracing.provider "jaeger" }}
+    tracing_jaeger_collector_endpoint: {{ required "collector_endpoint is required for jaeoger tracing" .Values.tracing.jaeger.collector_endpoint }}
+    tracing_jaeger_agent_endpoint: {{ required "agent_endpoint is required for jaeger tracing" .Values.tracing.jaeger.agent_endpoint }}
+{{- end -}}
+
+{{- end -}}
 {{- if .Values.config.policy }}
     policy: 
 {{ toYaml .Values.config.policy | indent 6 }}

@@ -30,6 +30,11 @@ extraPlugins: |
   rabbitmq_federation_management,
 
 definitions:
+  globalParameters: |-
+#    {
+#        "name": "cluster_name",
+#        "value": "rabbitmq-ha"
+#    }
   users: |-
 #   {
 #     "name": "myUsername",
@@ -248,6 +253,15 @@ rabbitmqWebSTOMPPlugin:
     # web_stomp.ws_frame = binary
     # web_stomp.cowboy_opts.max_keepalive = 10
 
+## Prometheus Plugin
+## Ref: https://www.rabbitmq.com/prometheus.html
+rabbitmqPrometheusPlugin:
+  enabled: false
+  ## Prometheus configuration:
+  config: |
+   # prometheus.path = /metrics
+   # prometheus.tcp.port =  15692
+
 ## AMQPS support
 ## Ref: http://www.rabbitmq.com/ssl.html
 rabbitmqAmqpsSupport:
@@ -270,7 +284,7 @@ replicaCount: 3
 
 image:
   repository: rabbitmq
-  tag: 3.7.15-alpine
+  tag: 3.7.19-alpine
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -345,6 +359,9 @@ initContainer:
 
 ## Additional init containers
 extraInitContainers: []
+
+## Additional containers
+extraContainers: []
 
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
@@ -434,12 +451,22 @@ livenessProbe:
   periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 6
+  exec:
+    command:
+      - /bin/sh
+      - -c
+      - 'wget -O - -q --header "Authorization: Basic `echo -n \"$RABBIT_MANAGEMENT_USER:$RABBIT_MANAGEMENT_PASSWORD\" | base64`" http://localhost:15672/api/healthchecks/node | grep -qF "{\"status\":\"ok\"}"'
 
 readinessProbe:
-  failureThreshold: 6
   initialDelaySeconds: 20
-  timeoutSeconds: 3
   periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 6
+  exec:
+    command:
+      - /bin/sh
+      - -c
+      - 'wget -O - -q --header "Authorization: Basic `echo -n \"$RABBIT_MANAGEMENT_USER:$RABBIT_MANAGEMENT_PASSWORD\" | base64`" http://localhost:15672/api/healthchecks/node | grep -qF "{\"status\":\"ok\"}"'
 
 # Specifies an existing secret to be used for RMQ password, management user password and Erlang Cookie
 existingSecret: ""

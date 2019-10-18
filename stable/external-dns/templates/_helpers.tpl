@@ -37,6 +37,9 @@ app.kubernetes.io/name: {{ template "external-dns.name" . }}
 helm.sh/chart: {{ template "external-dns.chart" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels }}
+{{- end }}
 {{- end -}}
 
 {{/* matchLabels */}}
@@ -120,6 +123,21 @@ region = {{ .Values.aws.region }}
 source_profile = default
 {{ end }}
 
+{{- define "external-dns.azure-credentials" -}}
+{
+  "tenantId": "{{ .Values.azure.tenantId }}",
+  "subscriptionId": "{{ .Values.azure.subscriptionId }}",
+  "resourceGroup": "{{ .Values.azure.resourceGroup }}",
+  {{- if not .Values.azure.useManagedIdentityExtension }}
+  "aadClientId": "{{ .Values.azure.aadClientId }}",
+  "aadClientSecret": "{{ .Values.azure.aadClientSecret }}"
+  {{- end }}
+  {{- if .Values.azure.useManagedIdentityExtension }}
+  "useManagedIdentityExtension": true
+  {{- end }}
+}
+{{ end }}
+
 {{/*
 Compile all warnings into a single message, and call fail.
 */}}
@@ -132,6 +150,13 @@ Compile all warnings into a single message, and call fail.
 {{- $messages := append $messages (include "external-dns.validateValues.infoblox.wapiPassword" .) -}}
 {{- $messages := append $messages (include "external-dns.validateValues.pdns.apiUrl" .) -}}
 {{- $messages := append $messages (include "external-dns.validateValues.pdns.apiKey" .) -}}
+{{- $messages := append $messages (include "external-dns.validateValues.azure.resourceGroup" .) -}}
+{{- $messages := append $messages (include "external-dns.validateValues.azure.tenantId" .) -}}
+{{- $messages := append $messages (include "external-dns.validateValues.azure.subscriptionId" .) -}}
+{{- $messages := append $messages (include "external-dns.validateValues.azure.useManagedIdentityExtensionAadClientId" .) -}}
+{{- $messages := append $messages (include "external-dns.validateValues.azure.useManagedIdentityExtensionAadClientSecret" .) -}}
+{{- $messages := append $messages (include "external-dns.validateValues.azure.aadClientId" .) -}}
+{{- $messages := append $messages (include "external-dns.validateValues.azure.aadClientSecret" .) -}}
 {{- $messages := without $messages "" -}}
 {{- $message := join "\n" $messages -}}
 
@@ -204,6 +229,17 @@ external-dns: infoblox.wapiPassword
 {{- end -}}
 
 {{/*
+Return the appropriate apiVersion for PodSecurityPolicy.
+*/}}
+{{- define "podSecurityPolicy.apiVersion" -}}
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "policy/v1beta1" -}}
+{{- else -}}
+{{- print "extensions/v1beta1" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Validate values of External DNS:
 - must provide the PowerDNS API URL when provider is "pdns"
 */}}
@@ -233,4 +269,88 @@ external-dns: pdns.apiKey
 WARNING: Rolling tag detected ({{ .Values.image.repository }}:{{ .Values.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
 +info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
 {{- end }}
+{{- end -}}
+
+{{/*
+Validate values of Azure DNS:
+- must provide the Azure Resource Group when provider is "azure"
+*/}}
+{{- define "external-dns.validateValues.azure.resourceGroup" -}}
+{{- if and (eq .Values.provider "azure") (not .Values.azure.resourceGroup) -}}
+external-dns: azure.resourceGroup
+    You must provide the Azure Resource Group when provider="azure".
+    Please set the resourceGroup parameter (--set azure.resourceGroup="xxxx")
+{{- end -}}
+{{- end -}}
+
+{{/*
+Validate values of Azure DNS:
+- must provide the Azure Tenant ID when provider is "azure" and secretName is not set
+*/}}
+{{- define "external-dns.validateValues.azure.tenantId" -}}
+{{- if and (eq .Values.provider "azure") (not .Values.azure.tenantId) (not .Values.azure.secretName) -}}
+external-dns: azure.tenantId
+    You must provide the Azure Tenant ID when provider="azure".
+    Please set the tenantId parameter (--set azure.tenantId="xxxx")
+{{- end -}}
+{{- end -}}
+
+{{/*
+Validate values of Azure DNS:
+- must provide the Azure Subscription ID when provider is "azure" and secretName is not set
+*/}}
+{{- define "external-dns.validateValues.azure.subscriptionId" -}}
+{{- if and (eq .Values.provider "azure") (not .Values.azure.subscriptionId) (not .Values.azure.secretName) -}}
+external-dns: azure.subscriptionId
+    You must provide the Azure Subscription ID when provider="azure".
+    Please set the subscriptionId parameter (--set azure.subscriptionId="xxxx")
+{{- end -}}
+{{- end -}}
+
+{{/*
+Validate values of Azure DNS:
+- must not provide the Azure AAD Client ID when provider is "azure", secretName is not set and MSI is enabled
+*/}}
+{{- define "external-dns.validateValues.azure.useManagedIdentityExtensionAadClientId" -}}
+{{- if and (eq .Values.provider "azure") (not .Values.azure.secretName) .Values.azure.aadClientId .Values.azure.useManagedIdentityExtension -}}
+external-dns: azure.seManagedIdentityExtension
+    You must not provide the Azure AAD Client ID when provider="azure" and useManagedIdentityExtension is "true".
+    Please unset the aadClientId parameter (--set azure.aadClientId="xxxx")
+{{- end -}}
+{{- end -}}
+
+{{/*
+Validate values of Azure DNS:
+- must not provide the Azure AAD Client Secret when provider is "azure", secretName is not set and MSI is enabled
+*/}}
+{{- define "external-dns.validateValues.azure.useManagedIdentityExtensionAadClientSecret" -}}
+{{- if and (eq .Values.provider "azure") (not .Values.azure.secretName) .Values.azure.aadClientSecret .Values.azure.useManagedIdentityExtension -}}
+external-dns: azure.seManagedIdentityExtension
+    You must not provide the Azure AAD Client Secret when provider="azure" and useManagedIdentityExtension is "true".
+    Please unset set the aadClientSecret parameter (--set azure.aadClientSecret="xxxx")
+{{- end -}}
+{{- end -}}
+
+{{/*
+Validate values of Azure DNS:
+- must provide the Azure AAD Client ID when provider is "azure", secretName is not set and MSI is disabled
+*/}}
+{{- define "external-dns.validateValues.azure.aadClientId" -}}
+{{- if and (eq .Values.provider "azure") (not .Values.azure.secretName) (not .Values.azure.aadClientId) (not .Values.azure.useManagedIdentityExtension) -}}
+external-dns: azure.seManagedIdentityExtension
+    You must provide the Azure AAD Client ID when provider="azure" and useManagedIdentityExtension is not set.
+    Please set the aadClientId parameter (--set azure.aadClientId="xxxx").
+{{- end -}}
+{{- end -}}
+
+{{/*
+Validate values of Azure DNS:
+- must provide the Azure AAD Client Secret when provider is "azure", secretName is not set and MSI is disabled
+*/}}
+{{- define "external-dns.validateValues.azure.aadClientSecret" -}}
+{{- if and (eq .Values.provider "azure") (not .Values.azure.secretName) (not .Values.azure.aadClientSecret) (not .Values.azure.useManagedIdentityExtension) -}}
+external-dns: azure.seManagedIdentityExtension
+    You must provide the Azure AAD Client Secret when provider="azure" and useManagedIdentityExtension is not set.
+    Please set set the aadClientSecret parameter (--set azure.aadClientSecret="xxxx")
+{{- end -}}
 {{- end -}}

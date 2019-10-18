@@ -1,0 +1,30 @@
+{{- if .Values.prometheus.monitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "prometheus-rabbitmq-exporter.fullname" . }}
+  labels:
+    app: {{ template "prometheus-rabbitmq-exporter.name" . }}
+    chart: {{ template "prometheus-rabbitmq-exporter.chart" . }}
+    heritage: {{ .Release.Service }}
+  {{- if .Values.prometheus.monitor.additionalLabels }}
+{{ toYaml .Values.prometheus.monitor.additionalLabels | indent 4 }}
+  {{- end }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "prometheus-rabbitmq-exporter.name" . }}
+      release: {{ .Release.Name }}
+  endpoints:
+    - port: rabbitmq-exporter
+  {{- if .Values.prometheus.monitor.interval }}
+      interval: {{ .Values.prometheus.monitor.interval }}
+  {{- end }}
+  {{- if .Values.prometheus.monitor.namespace }}
+  namespaceSelector:
+    matchNames:
+    {{- range .Values.prometheus.monitor.namespace }}
+    - {{ . }}
+    {{- end }}
+  {{- end }}
+{{- end }}
