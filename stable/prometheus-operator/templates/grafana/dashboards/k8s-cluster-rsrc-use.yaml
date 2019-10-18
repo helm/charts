@@ -76,7 +76,7 @@ data:
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{node}}`}}",
-                                "legendLink": "/d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
+                                "legendLink": "./d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
                                 "step": 10
                             }
                         ],
@@ -162,7 +162,7 @@ data:
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{node}}`}}",
-                                "legendLink": "/d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
+                                "legendLink": "./d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
                                 "step": 10
                             }
                         ],
@@ -260,7 +260,7 @@ data:
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{node}}`}}",
-                                "legendLink": "/d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
+                                "legendLink": "./d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
                                 "step": 10
                             }
                         ],
@@ -346,7 +346,7 @@ data:
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{node}}`}}",
-                                "legendLink": "/d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
+                                "legendLink": "./d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
                                 "step": 10
                             }
                         ],
@@ -444,7 +444,7 @@ data:
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{node}}`}}",
-                                "legendLink": "/d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
+                                "legendLink": "./d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
                                 "step": 10
                             }
                         ],
@@ -530,7 +530,7 @@ data:
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{node}}`}}",
-                                "legendLink": "/d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
+                                "legendLink": "./d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
                                 "step": 10
                             }
                         ],
@@ -628,7 +628,7 @@ data:
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{node}}`}}",
-                                "legendLink": "/d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
+                                "legendLink": "./d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
                                 "step": 10
                             }
                         ],
@@ -714,7 +714,7 @@ data:
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{node}}`}}",
-                                "legendLink": "/d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
+                                "legendLink": "./d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
                                 "step": 10
                             }
                         ],
@@ -812,7 +812,7 @@ data:
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{node}}`}}",
-                                "legendLink": "/d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
+                                "legendLink": "./d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
                                 "step": 10
                             }
                         ],
@@ -903,7 +903,7 @@ data:
                     "options": [
 
                     ],
-                    "query": "label_values(kube_node_info, cluster)",
+                    "query": "label_values(:kube_pod_info_node_count:, cluster)",
                     "refresh": 1,
                     "regex": "",
                     "sort": 2,
