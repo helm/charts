@@ -57,6 +57,35 @@
         }
       }
     },
+    "replication": {
+      "type": "object",
+      "form": "replication",
+      "title": "Replication Details",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable Replication",
+          "form": "enableReplication",
+          "enables": "replication"
+        },
+        "slaveReplicas": {
+          "type": "integer",
+          "title": "Slave Replicas",
+          "form": "slaveReplicas"
+        }
+      }
+    },
+    "volumePermissions": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "form": "enableVolumePermissions",
+          "title": "Enable Init Containers",
+          "description": "Change the owner of the persist volume mountpoint to RunAsUser:fsGroup"
+        }
+      }
+    },
     "metrics": {
       "type": "object",
       "properties": {
