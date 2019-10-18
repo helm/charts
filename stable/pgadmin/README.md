@@ -31,7 +31,7 @@ pgAdmin is a web based administration tool for PostgreSQL database.
 | `ingress.hosts` | Ingress accepted hostnames | `nil` |
 | `ingress.tls` | Ingress TLS configuration | `[]` |
 | `ingress.path` | Ingress path mapping | `` |
-| `env.username` | pgAdmin default email | `pgadmin@domain.com` |
+| `env.username` | pgAdmin default email | `chart@example.local` |
 | `env.password` | pgAdmin default password | `SuperSecret` |
 | `persistence` | Persistent enabled/disabled | `true` |
 | `persistence.accessMode` | Persistent Access Mode | `ReadWriteOnce` |
