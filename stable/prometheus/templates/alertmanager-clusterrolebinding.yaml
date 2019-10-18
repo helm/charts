@@ -1,0 +1,16 @@
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    {{- include "prometheus.alertmanager.labels" . | nindent 4 }}
+  name: {{ template "prometheus.alertmanager.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "prometheus.serviceAccountName.alertmanager" . }}
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "prometheus.alertmanager.fullname" . }}
+{{- end }}

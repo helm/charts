@@ -34,7 +34,7 @@ spec:
             - -l
             - app.kubernetes.io/instance={{ .Release.Name }}
             - --container
-            - {{ template "jenkins.fullname" . }}
+            - jenkins
             - --path
             - /var/jenkins_home
             - --dst

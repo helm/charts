@@ -14,6 +14,12 @@ proxy:
     - 192.168.1.1/32
     - 10.10.10.10/32
 
+updateStrategy:
+  type: "RollingUpdate"
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0
+
 readinessProbe:
   httpGet:
     path: "/status"

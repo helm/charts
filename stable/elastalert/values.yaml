@@ -28,7 +28,7 @@ image:
   # docker image
   repository: jertel/elastalert-docker
   # docker image tag
-  tag: 0.1.39
+  tag: 0.2.1
   pullPolicy: IfNotPresent
 resources: {}
 
@@ -120,3 +120,18 @@ nodeSelector: {}
 #     value: "infra_worker"
 #     effect: "NoSchedule"
 tolerations: []
+
+extraVolumes: []
+  # - name: smtp-auth
+  #   secret:
+  #     secretName: elastalert-smtp-auth
+  #     items:
+  #       - key: smtp_auth.yaml
+  #         path: smtp_auth.yaml
+  #         mode: 0400
+
+extraVolumeMounts: []
+  # - name: smtp-auth
+  #   mountPath: /opt/config-smtp/smtp_auth.yaml
+  #   subPath: smtp_auth.yaml
+  #   readOnly: true

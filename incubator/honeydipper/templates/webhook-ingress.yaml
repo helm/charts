@@ -1,0 +1,31 @@
+{{- if .Values.drivers.webhook.ingress.enabled -}}
+{{- $fullName := include "honeydipper.fullname" . -}}
+{{- $ingressPath := .Values.drivers.webhook.ingress.path -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}
+  labels:
+    app.kubernetes.io/name: {{ include "honeydipper.name" . }}
+    helm.sh/chart: {{ include "honeydipper.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- with .Values.drivers.webhook.ingress.annotations }}
+  annotations:
+{{- toYaml . | nindent 4 }}
+{{- end }}
+spec:
+{{- if .Values.drivers.webhook.ingress.tls }}
+  tls:
+  {{- range .Values.drivers.webhook.ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . | quote }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
+  backend:
+    serviceName: {{ $fullName }}
+    servicePort: {{ $.Values.drivers.webhook.service.port }}
+{{- end }}

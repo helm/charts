@@ -22,8 +22,8 @@ spec:
   jobTemplate:
     metadata:
       labels:
-        app: {{ include "nextcloud.name" . }}
-        release: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ include "nextcloud.name" . }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       template:
         metadata:
@@ -32,29 +32,39 @@ spec:
             app.kubernetes.io/managed-by: {{ .Release.Service }}
         spec:
           restartPolicy: Never
+          {{- if (default .Values.image.pullSecrets .Values.cronjob.image.pullSecrets) }}
+          imagePullSecrets:
+          {{- range (default .Values.image.pullSecrets .Values.cronjob.image.pullSecrets) }}
+            - name: {{ . }}
+          {{- end }}
+          {{- end }}
           containers:
             - name: {{ .Chart.Name }}
-              image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              image: "{{ default .Values.image.repository .Values.cronjob.image.repository }}:{{ default .Values.image.tag .Values.cronjob.image.tag }}"
+              imagePullPolicy: {{ default .Values.image.pullPolicy .Values.cronjob.image.pullPolicy }}
               command: [ "curl" ]
               args:
+              {{- if .Values.cronjob.curlInsecure }}
+                - "-k"
+              {{- end }}
                 - "--fail"
+                - "-L"
               {{- if .Values.ingress.tls }}
                 - "https://{{ .Values.nextcloud.host }}/cron.php"
               {{- else }}
                 - "http://{{ .Values.nextcloud.host }}/cron.php"
               {{- end }}
               resources:
-{{ toYaml .Values.resources | indent 16 }}
-    {{- with .Values.nodeSelector }}
+{{ toYaml (default .Values.resources .Values.cronjob.resources) | indent 16 }}
+    {{- with (default .Values.nodeSelector .Values.cronjob.nodeSelector) }}
           nodeSelector:
 {{ toYaml . | indent 12 }}
     {{- end }}
-    {{- with .Values.affinity }}
+    {{- with (default .Values.affinity .Values.cronjob.affinity) }}
           affinity:
 {{ toYaml . | indent 12 }}
     {{- end }}
-    {{- with .Values.tolerations }}
+    {{- with (default .Values.tolerations .Values.cronjob.tolerations) }}
           tolerations:
 {{ toYaml . | indent 12 }}:
     {{- end }}

@@ -10,8 +10,9 @@ metadata:
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-  {{ if .Values.crds.keep }}
   annotations:
+    "helm.sh/hook": crd-install
+  {{ if .Values.crds.keep }}
     "helm.sh/resource-policy": keep
   {{ end }}
 spec:
@@ -37,8 +38,9 @@ metadata:
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-  {{ if .Values.crds.keep }}
   annotations:
+    "helm.sh/hook": crd-install
+  {{ if .Values.crds.keep }}
     "helm.sh/resource-policy": keep
   {{ end }}
 spec:
@@ -64,8 +66,9 @@ metadata:
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-  {{ if .Values.crds.keep }}
   annotations:
+    "helm.sh/hook": crd-install
+  {{ if .Values.crds.keep }}
     "helm.sh/resource-policy": keep
   {{ end }}
 spec:
@@ -91,8 +94,9 @@ metadata:
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-  {{ if .Values.crds.keep }}
   annotations:
+    "helm.sh/hook": crd-install
+  {{ if .Values.crds.keep }}
     "helm.sh/resource-policy": keep
   {{ end }}
 spec:
@@ -118,8 +122,9 @@ metadata:
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-  {{ if .Values.crds.keep }}
   annotations:
+    "helm.sh/hook": crd-install
+  {{ if .Values.crds.keep }}
     "helm.sh/resource-policy": keep
   {{ end }}
 spec:
@@ -145,6 +150,11 @@ metadata:
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+    "helm.sh/hook": crd-install
+  {{ if .Values.crds.keep }}
+    "helm.sh/resource-policy": keep
+  {{ end }}
 spec:
   group: getambassador.io
   version: v1
@@ -168,8 +178,9 @@ metadata:
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-  {{ if .Values.crds.keep }}
   annotations:
+    "helm.sh/hook": crd-install
+  {{ if .Values.crds.keep }}
     "helm.sh/resource-policy": keep
   {{ end }}
 spec:
@@ -195,8 +206,9 @@ metadata:
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-  {{ if .Values.crds.keep }}
   annotations:
+    "helm.sh/hook": crd-install
+  {{ if .Values.crds.keep }}
     "helm.sh/resource-policy": keep
   {{ end }}
 spec:
@@ -222,8 +234,9 @@ metadata:
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-  {{ if .Values.crds.keep }}
   annotations:
+    "helm.sh/hook": crd-install
+  {{ if .Values.crds.keep }}
     "helm.sh/resource-policy": keep
   {{ end }}
 spec:
@@ -248,8 +261,9 @@ metadata:
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-  {{ if .Values.crds.keep }}
   annotations:
+    "helm.sh/hook": crd-install
+  {{ if .Values.crds.keep }}
     "helm.sh/resource-policy": keep
   {{ end }}
 spec:

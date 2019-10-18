@@ -61,7 +61,7 @@ spec:
               for v in $((btrfs subvolume list --sort=-ogen "{{ .Values.concourse.worker.workDir }}" || true) | awk '{print $9}'); do
                 (btrfs subvolume show "{{ .Values.concourse.worker.workDir }}/$v" && btrfs subvolume delete "{{ .Values.concourse.worker.workDir }}/$v") || true
               done
-              rm -rf "{{ .Values.concourse.worker.workDir }}/*"
+              rm -rf "{{ .Values.concourse.worker.workDir }}"/*
           volumeMounts:
             - name: concourse-work-dir
               mountPath: {{ .Values.concourse.worker.workDir | quote }}
@@ -324,8 +324,6 @@ spec:
                 path: host_key.pub
               - key: worker-key
                 path: worker_key
-              - key: worker-key-pub
-                path: worker_key.pub
   {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:

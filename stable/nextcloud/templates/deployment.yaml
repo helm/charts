@@ -174,8 +174,11 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
         - name: nextcloud-data
-          mountPath: /var/www/html/
+          mountPath: /var/www/
           subPath: root
+        - name: nextcloud-data
+          mountPath: /var/www/html
+          subPath: html
         - name: nextcloud-data
           mountPath: {{ .Values.nextcloud.datadir }}
           subPath: data
@@ -186,11 +189,28 @@ spec:
           mountPath: /var/www/html/custom_apps
           subPath: custom_apps
         - name: nextcloud-data
+          mountPath: /var/www/tmp
+          subPath: tmp
+        - name: nextcloud-data
           mountPath: /var/www/html/themes
           subPath: themes
         {{- range $key, $value := .Values.nextcloud.configs }}
         - name: nextcloud-config
           mountPath: /var/www/html/config/{{ $key }}
+          subPath: {{ $key }}
+        {{- end }}
+        {{- if .Values.nextcloud.configs }}
+        {{- range $key, $value := .Values.nextcloud.defaultConfigs }}
+        {{- if $value }}
+        - name: nextcloud-config
+          mountPath: /var/www/html/config/{{ $key }}
+          subPath: {{ $key }}
+        {{- end }}
+        {{- end }}
+        {{- end }}
+        {{- range $key, $value := .Values.nextcloud.phpConfigs }}
+        - name: nextcloud-phpconfig
+          mountPath: /usr/local/etc/php/conf.d/{{ $key }}
           subPath: {{ $key }}
         {{- end }}
       {{- with .Values.nodeSelector }}
@@ -218,3 +238,11 @@ spec:
         configMap:
           name: {{ template "nextcloud.fullname" . }}-config
       {{- end }}
+      {{- if .Values.nextcloud.phpConfigs }}
+      - name: nextcloud-phpconfig
+        configMap:
+          name: {{ template "nextcloud.fullname" . }}-phpconfig
+      {{- end }}
+      # Will mount configuration files as www-data (id: 33) for nextcloud
+      securityContext:
+        fsGroup: 33

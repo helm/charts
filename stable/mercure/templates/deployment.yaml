@@ -100,6 +100,11 @@ spec:
                 configMapKeyRef:
                   name: {{ include "mercure.fullname" . }}
                   key: writeTimeout
+            - name: USE_FORWARDED_HEADERS
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "mercure.fullname" . }}
+                  key: useForwardedHeaders
           livenessProbe:
             httpGet:
               path: /

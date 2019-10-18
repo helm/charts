@@ -22,6 +22,8 @@ service:
   externalPort: 80
   internalPort: 8080
 
+hostPort: 8009
+
 ingress:
   enabled: false
   annotations: {}
@@ -34,6 +36,24 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+
+env: []
+  # - name: env
+  #   value: test
+
+extraVolumes: []
+  # - name: extra
+  #   emptyDir: {}
+
+extraVolumeMounts: []
+  # - name: extra
+  #   mountPath: /usr/local/tomcat/webapps/app
+  #   readOnly: true
+
+extraInitContainers: []
+  # - name: do-something
+  #   image: busybox
+  #   command: ['do', 'something']
 
 readinessProbe:
   path: "/sample"

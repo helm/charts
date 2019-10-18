@@ -23,6 +23,9 @@ spec:
       name: {{ template "k8s-prometheus-adapter.name" . }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/custom-metrics-configmap.yaml") . | sha256sum }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | trim | nindent 8 }}
+        {{- end }}
     spec:
       serviceAccountName: {{ template "k8s-prometheus-adapter.serviceAccountName" . }}
       containers:
@@ -69,6 +72,9 @@ spec:
           runAsNonRoot: true
           runAsUser: 10001
         volumeMounts:
+        {{- if .Values.extraVolumeMounts }}
+        {{ toYaml .Values.extraVolumeMounts | trim | nindent 8 }}
+        {{ end }}
         - mountPath: /etc/adapter/
           name: config
           readOnly: true
@@ -93,6 +99,9 @@ spec:
         {{- end }}
       {{- end }}
       volumes:
+      {{- if .Values.extraVolumes  }}
+      {{ toYaml .Values.extraVolumes | trim | nindent 6 }}
+      {{ end }}
       - name: config
         configMap:
           name: {{ .Values.rules.existing | default (include "k8s-prometheus-adapter.fullname" . ) }}
