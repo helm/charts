@@ -171,7 +171,7 @@ spec:
 {{- if and .Values.backend.type "stackdriver" .Values.backend.stackdriver.google_service_credentials }}
       - name: gcp-stackdriver-secret
         secret:
-          secretName: "{{ template "fluent-bit.fullname" . }}-gcp-secret"
+          secretName: "{{ template "fluent-bit.fullname" . }}-gcp-stackdriver-secret"
 {{- end }}
 {{- if .Values.trackOffsets }}
       - name: tail-db
