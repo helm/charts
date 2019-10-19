@@ -1,20 +1,16 @@
-{{ if and (.Values.prometheus.operator.prometheusRule.enabled) (.Values.prometheus.operator.prometheusRule.rules) }}
+{{ if and (.Values.prometheus.prometheusRule.enabled) (.Values.prometheus.prometheusRule.rules) }}
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: {{ include "zookeeper.fullname" . }}
-  {{- if .Values.prometheus.operator.prometheusRule.namespace }}
-  namespace: {{ .Values.prometheus.operator.prometheusRule.namespace }}
+  {{- if .Values.prometheus.prometheusRule.namespace }}
+  namespace: {{ .Values.prometheus.prometheusRule.namespace }}
   {{- end }}
   labels:
-{{ toYaml .Values.prometheus.operator.prometheusRule.selector | indent 4 }}
+    {{ toYaml .Values.prometheus.prometheusRule.selector | nindent 4 }}
 spec:
   groups:
   - name: {{ include "zookeeper.fullname" . }}
     rules:
-{{- $zookeeperFullname := include "zookeeper.fullname" . }}
-{{- range $key, $value := .Values.prometheus.operator.prometheusRule.rules }}
-    - alert: {{ $zookeeperFullname }}-{{ $key }}
-{{ toYaml $value | indent 6 }}
-{{- end }}
+      {{ toYaml .Values.prometheus.prometheusRule.rules | nindent 6 }}
 {{- end }}
