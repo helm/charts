@@ -47,4 +47,19 @@ spec:
           type: boolean
         config:
           type: object
+        run_on:
+          type: string
+          enum:
+          - first
+          - second
+          - all
+        protocols:
+          type: array
+          items:
+            type: string
+            enum:
+            - http
+            - https
+            - tcp
+            - tls
 {{- end -}}

@@ -1,29 +1,29 @@
 {{- if and (include "parse.host" .) .Values.dashboard.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "parse.fullname" . }}-dashboard
-  labels:
-    app: {{ template "parse.name" . }}
-    chart: {{ template "parse.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
-    component: "dashboard"
+  name: {{ include "parse.fullname" . }}-dashboard
+  labels: {{ include "parse.labels" . | nindent 4 }}
+    app.kubernetes.io/component: dashboard
 spec:
   selector:
-    matchLabels:
-      app: {{ template "parse.name" . }}
-      release: "{{ .Release.Name }}"
-      component: "dashboard"
+    matchLabels: {{ include "parse.matchLabels" . | nindent 6 }}
+      app.kubernetes.io/component: dashboard
   replicas: 1
   template:
     metadata:
-      labels:
-        app: {{ template "parse.name" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
-        component: "dashboard"
+      labels: {{ include "parse.labels" . | nindent 8 }}
+        app.kubernetes.io/component: dashboard
     spec:
+      {{- with .Values.dashboard.affinity }}
+      affinity: {{ tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}
+      {{- with .Values.dashboard.nodeSelector }}
+      nodeSelector: {{ tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}
+      {{- with .Values.dashboard.tolerations }}
+      tolerations: {{ tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}
       {{- if .Values.dashboard.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.dashboard.securityContext.fsGroup }}
@@ -31,8 +31,8 @@ spec:
       {{- end }}
 {{- include "parse.imagePullSecrets" . | indent 6 }}
       containers:
-      - name: {{ template "parse.fullname" . }}
-        image: {{ template "parse.dashboard.image" . }}
+      - name: parse-dashboard
+        image: {{ include "parse.dashboard.image" . }}
         imagePullPolicy: {{ .Values.dashboard.image.pullPolicy | quote }}
         env:
         - name: PARSE_DASHBOARD_USER
@@ -40,7 +40,7 @@ spec:
         - name: PARSE_DASHBOARD_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "parse.fullname" . }}
+              name: {{ include "parse.fullname" . }}
               key: parse-dashboard-password
         - name: PARSE_HOST
           value: {{ include "parse.host" . | quote }}
@@ -53,33 +53,42 @@ spec:
         - name: PARSE_MASTER_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ template "parse.fullname" . }}
+              name: {{ include "parse.fullname" . }}
               key: master-key
         - name: PARSE_DASHBOARD_APP_NAME
           value: {{ .Values.dashboard.appName | quote }}
         ports:
         - name: dashboard-http
           containerPort: 4040
+        {{- if and .Values.dashboard.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
             path: /
             port: dashboard-http
-          initialDelaySeconds: 240
+          initialDelaySeconds: {{ .Values.dashboard.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.dashboard.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.dashboard.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.dashboard.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.dashboard.livenessProbe.failureThreshold }}
+        {{- end }}
+        {{- if and .Values.dashboard.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
             path: /
             port: dashboard-http
-          initialDelaySeconds: 30
-        resources:
-{{ toYaml .Values.dashboard.resources | indent 10 }}
+          initialDelaySeconds: {{ .Values.dashboard.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.dashboard.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.dashboard.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.dashboard.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.dashboard.readinessProbe.failureThreshold }}
+        {{- end }}
+        {{- if .Values.dashboard.resources }}
+        resources: {{- toYaml .Values.dashboard.resources | nindent 10 }}
+        {{- end }}
         volumeMounts:
         - name: parse-dashboard-data
           mountPath: /bitnami/parse-dashboard
       volumes:
       - name: parse-dashboard-data
         emptyDir: {}
-      {{- with .Values.dashboard.affinity }}
-      affinity:
-{{ toYaml . | indent 8 }}
-      {{- end }}
 {{- end -}}

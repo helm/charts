@@ -18,8 +18,10 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.12+
+- Helm 2.11+ or Helm 3.0-beta3+
 - PV provisioner support in the underlying infrastructure
+- ReadWriteMany volumes for deployment scaling
 
 ## Installing the Chart
 
@@ -89,8 +91,9 @@ The following table lists the configurable parameters of the Phabricator chart a
 | `ingress.annotations`            | Ingress annotations                                                                                      | `[]`                                                         |
 | `ingress.hosts[0].name`          | Hostname to your Phabricator installation                                                                | `phabricator.local`                                          |
 | `ingress.hosts[0].path`          | Path within the url structure                                                                            | `/`                                                          |
-| `ingress.tls[0].hosts[0]`        | TLS hosts                                                                                                | `phabricator.local`                                          |
-| `ingress.tls[0].secretName`      | TLS Secret (certificates)                                                                                | `phabricator.local-tls`                                      |
+| `ingress.hosts[0].tls`              | Utilize TLS backend in ingress                                | `false`                                                  |
+| `ingress.hosts[0].tlsHosts`         | Array of TLS hosts for ingress record (defaults to `ingress.hosts[0].name` if `nil`)                               | `nil`                                                  |
+| `ingress.hosts[0].tlsSecret`        | TLS Secret (certificates)                                     | `phabricator.local-tls-secret`                                 |
 | `ingress.secrets[0].name`        | TLS Secret Name                                                                                          | `nil`                                                        |
 | `ingress.secrets[0].certificate` | TLS Secret Certificate                                                                                   | `nil`                                                        |
 | `ingress.secrets[0].key`         | TLS Secret Key                                                                                           | `nil`                                                        |

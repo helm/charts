@@ -6,7 +6,7 @@ This is an implementation of Aerospike StatefulSet found here:
 
 ## Pre Requisites
 
-* Kubernetes 1.7+ with beta APIs enabled and support for statefulsets
+* Kubernetes 1.9+
 
 * PV support on underlying infrastructure (only if you are provisioning persistent volume).
 
@@ -45,6 +45,8 @@ The chart can be customized using the following configurable parameters:
 | `replicaCount`                  | Aerospike Brokers                                               | `1`                          |
 | `command`                       | Custom command (Docker Entrypoint)                              | `[]`                         |
 | `args`                          | Custom args (Docker Cmd)                                        | `[]`                         |
+| `labels`                        | Map of labels to add to the statefulset                         | `{}`                         |
+| `annotations`                   | Map of annotations to add to the statefulset                    | `{}`                         |
 | `tolerations`                   | List of node taints to tolerate                                 | `[]`                         |
 | `persistentVolume`              | Config of persistent volumes for storage-engine                 | `{}`                         |
 | `confFile`                      | Config filename. This file should be included in the chart path | `aerospike.conf`             |

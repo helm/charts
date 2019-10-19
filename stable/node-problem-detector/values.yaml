@@ -78,3 +78,11 @@ metrics:
   serviceMonitor:
     enabled: false
     additionalLabels: {}
+
+env:
+#  - name: FOO
+#    value: BAR
+#  - name: POD_NAME
+#    valueFrom:
+#      fieldRef:
+#        fieldPath: metadata.name
