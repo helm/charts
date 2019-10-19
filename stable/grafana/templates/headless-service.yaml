@@ -1,4 +1,5 @@
-{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) (eq .Values.persistence.type "statefulset")}}
+{{- if and .Values.persistence.enabled (eq .Values.persistence.type "statefulset") }}
+{{- if and .Values.service.type (eq .Values.service.type "ClusterIP") -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -19,4 +20,5 @@ spec:
     app: {{ template "grafana.name" . }}
     release: {{ .Release.Name }}
   type: ClusterIP
+{{- end }}
 {{- end }}
