@@ -16,8 +16,10 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.12+
+- Helm 2.11+ or Helm 3.0-beta3+
 - PV provisioner support in the underlying infrastructure
+- ReadWriteMany volumes for deployment scaling
 
 ## Installing the Chart
 
@@ -96,6 +98,8 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `replicaSet.pdb.minAvailable.arbiter`              | PDB (min available) for the MongoDB Arbiter nodes                                                                                                         | `1`                                                      |
 | `replicaSet.pdb.maxUnavailable.secondary`          | PDB (max unavailable) for the MongoDB Secondary nodes                                                                                                     | `nil`                                                    |
 | `replicaSet.pdb.maxUnavailable.arbiter`            | PDB (max unavailable) for the MongoDB Arbiter nodes                                                                                                       | `nil`                                                    |
+| `annotations`                                      | Annotations to be added to the deployment or statefulsets                                                                                                 | `{}`                                                     |
+| `labels`                                           | Additional labels for the deployment or statefulsets                                                                                                      | `{}`                                                     |
 | `podAnnotations`                                   | Annotations to be added to pods                                                                                                                           | `{}`                                                     |
 | `podLabels`                                        | Additional labels for the pod(s).                                                                                                                         | `{}`                                                     |
 | `resources`                                        | Pod resources                                                                                                                                             | `{}`                                                     |

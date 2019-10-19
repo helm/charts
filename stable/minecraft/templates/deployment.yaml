@@ -8,17 +8,17 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-  {{- if .Values.podAnnotations }}
-  annotations:
-    {{- range $key, $value := .Values.podAnnotations }}
-    {{ $key }}: {{ $value | quote }}
-    {{- end }}
-  {{- end }}
 spec:
   template:
     metadata:
       labels:
         app: {{ template "minecraft.fullname" . }}
+      {{- if .Values.podAnnotations }}
+      annotations:
+        {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      {{- end }}
     spec:
       securityContext:
         runAsUser: {{ .Values.securityContext.runAsUser }}

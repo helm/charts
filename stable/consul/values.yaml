@@ -148,6 +148,7 @@ test:
 nodeSelector: {}
 tolerations: []
 additionalLabels: {}
+podAnnotations: {}
 
 # Lifecycle for StatefulSet
 # lifecycle:
