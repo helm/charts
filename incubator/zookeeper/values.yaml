@@ -239,7 +239,7 @@ prometheus:
     selector: {}
 
   prometheusRule:
-    ## If true a PrometheusRules resource will be installed
+    ## If true a PrometheusRule resource will be installed
     enabled: false
     # namespace: monitoring
 

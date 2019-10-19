@@ -19,7 +19,7 @@ This chart will do the following:
 * Optionally start JMX Exporter and Zookeeper Exporter containers inside Zookeeper pods.
 * Optionally create a job which creates Zookeeper chroots (e.g. `/kafka1`).
 * Optionally create a Prometheus Operator ServiceMonitor resource for each enabled exporter container.
-* Optionally create a Prometheus Operator PrometheusRules resource.
+* Optionally create a Prometheus Operator PrometheusRule resource.
 
 ## Installing the Chart
 You can install the chart with the release name `zookeeper` as below.
