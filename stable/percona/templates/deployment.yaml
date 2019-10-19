@@ -18,8 +18,10 @@ spec:
       {{- end }}
       initContainers:
       - name: "remove-lost-found"
-        image: "busybox:1.25.0"
-        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        image: "{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}"
+        imagePullPolicy: {{ .Values.initImage.pullPolicy | quote }}
+        resources:
+{{ toYaml .Values.initResources | indent 10 }}
         command:
         - "rm"
         - "-fr"

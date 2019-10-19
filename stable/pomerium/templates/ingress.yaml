@@ -27,6 +27,7 @@ spec:
             backend:
               serviceName: {{ template "pomerium.proxy.fullname" . }}
               servicePort: https
+{{- if not .Values.service.authorize.headless }}
     - host:  {{ printf "authorize.%s" .Values.config.rootDomain }}
       http:
         paths:
@@ -34,6 +35,7 @@ spec:
             backend:
               serviceName: {{ template "pomerium.authorize.fullname" . }}
               servicePort: https
+{{- end }}
     - host: {{ printf "authenticate.%s" .Values.config.rootDomain }}
       http:
         paths:

@@ -17,7 +17,7 @@ cluster using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
 
-- Kubernetes 1.8+ with Beta APIs enabled
+- Kubernetes 1.10+
 
 ## Installing the Chart
 
@@ -38,6 +38,14 @@ $ helm delete --purge my-release
 ```
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
+## Upgrading an existing Release to a new major version
+
+A major chart version change (like v1.2.3 -> v2.0.0) indicates that there is an incompatible breaking change needing manual actions.
+
+### To 2.0.0
+
+Some kubernetes apis used from 1.x have been deprecated. You need to update your claster to kubernetes 1.10+ to support new definitions used in 2.x.
+
 ## Configuration
 
 The following table lists the configurable parameters of the Elasticsearch-Exporter chart and their default values.
@@ -55,6 +63,9 @@ Parameter | Description | Default
 `nodeSelector` | Node labels for pod assignment | `{}`
 `tolerations` | Node tolerations for pod assignment | `{}`
 `podAnnotations` | Pod annotations | `{}` |
+`podSecurityPolicies.enabled` | Enable/disable PodSecurityPolicy and associated Role/Rolebinding creation | `false`
+`serviceAccount.create` | Create a ServiceAccount for the pod | `false`
+`serviceAccount.name` | Name of a ServiceAccount to use that is not handled by this chart | `default`
 `service.type` | type of service to create | `ClusterIP`
 `service.httpPort` | port for the http service | `9108`
 `service.metricsPort.name` | name for the http service | `http`
@@ -73,7 +84,7 @@ Parameter | Description | Default
 `es.ssl.enabled` | If true, a secure connection to Elasticsearch cluster is used | `false`
 `es.ssl.useExistingSecrets` | If true, certs from secretMounts will be used | `false`
 `es.ssl.ca.pem` | PEM that contains trusted CAs used for setting up secure Elasticsearch connection |
-`es.ssl.ca.pemPath` | Path of ca pem file which should match a secretMount path |
+`es.ssl.ca.path` | Path of ca pem file which should match a secretMount path |
 `es.ssl.client.pem` | PEM that contains the client cert to connect to Elasticsearch |
 `es.ssl.client.pemPath` | Path of client pem file which should match a secretMount path |
 `es.ssl.client.key` | Private key for client auth when connecting to Elasticsearch |

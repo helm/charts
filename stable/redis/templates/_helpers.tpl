@@ -157,6 +157,17 @@ Get the password secret.
 {{- end -}}
 
 {{/*
+Get the password key to be retrieved from Redis secret.
+*/}}
+{{- define "redis.secretPasswordKey" -}}
+{{- if and .Values.existingSecret .Values.existingSecretPasswordKey -}}
+{{- printf "%s" .Values.existingSecretPasswordKey -}}
+{{- else -}}
+{{- printf "redis-password" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Return sysctl image
 */}}
 {{- define "redis.sysctl.image" -}}

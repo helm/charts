@@ -28,22 +28,44 @@ spec:
   - name: epmd
     port: 4369
     targetPort: epmd
+    {{- if (eq .Values.service.type "ClusterIP") }}
+    nodePort: null
+    {{- end }}
   - name: amqp
     port: {{ .Values.service.port }}
     targetPort: amqp
-    {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
+    {{- if (eq .Values.service.type "ClusterIP") }}
+    nodePort: null
+    {{- else if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
     nodePort: {{ .Values.service.nodePort }}
     {{- end }}
+  {{- if .Values.rabbitmq.tls.enabled }}
+  - name: amqp-ssl
+    port: {{ .Values.service.tlsPort }}
+    targetPort: amqp-ssl
+    {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodeTlsPort))) }}
+    nodePort: {{ .Values.service.nodeTlsPort }}
+    {{- end }}
+  {{- end }}
   - name: dist
     port: {{ .Values.service.distPort }}
     targetPort: dist
+    {{- if (eq .Values.service.type "ClusterIP") }}
+    nodePort: null
+    {{- end }}
   - name: stats
     port: {{ .Values.service.managerPort }}
     targetPort: stats
+    {{- if (eq .Values.service.type "ClusterIP") }}
+    nodePort: null
+    {{- end }}
 {{- if .Values.metrics.enabled }}
   - name: metrics
     port: {{ .Values.metrics.port }}
     targetPort: 9090
+    {{- if (eq .Values.service.type "ClusterIP") }}
+    nodePort: null
+    {{- end }}
 {{- end }}
   selector:
     app: {{ template "rabbitmq.name" . }}

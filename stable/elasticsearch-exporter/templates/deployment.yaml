@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "elasticsearch-exporter.fullname" . }}
@@ -28,6 +28,11 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
     spec:
+      {{- if .Values.serviceAccount.create  }}
+      serviceAccountName: {{ template "elasticsearch-exporter.fullname" . }}
+      {{- else }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      {{- end }}
 {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
 {{- end }}
@@ -153,6 +158,6 @@ spec:
         {{- end }}
         {{- range .Values.secretMounts }}
         - name: {{ .name }}
-        secret:
-          secretName: {{ .secretName }}
+          secret:
+            secretName: {{ .secretName }}
         {{- end }}

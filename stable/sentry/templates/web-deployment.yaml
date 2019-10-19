@@ -15,6 +15,7 @@ spec:
         metrics-enabled: {{ .Values.metrics.enabled | quote }}
         checksum/configYml: {{ .Values.config.configYml | sha256sum }}
         checksum/sentryConfPy: {{ .Values.config.sentryConfPy | sha256sum }}
+        checksum/secrets.yaml: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
       {{- if .Values.web.podAnnotations }}
 {{ toYaml .Values.web.podAnnotations | indent 8 }}
       {{- end }}
@@ -131,7 +132,7 @@ spec:
             path: /_health/
             port: {{ .Values.service.internalPort }}
             scheme: HTTP
-          initialDelaySeconds: 50
+          initialDelaySeconds: {{ .Values.web.probeInitialDelaySeconds }}
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 2
@@ -141,7 +142,7 @@ spec:
             path: /_health/
             port: {{ .Values.service.internalPort }}
             scheme: HTTP
-          initialDelaySeconds: 50
+          initialDelaySeconds: {{ .Values.web.probeInitialDelaySeconds }}
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 2
@@ -163,3 +164,6 @@ spec:
         secret:
           secretName: {{ .Values.filestore.gcs.secretName }}
       {{ end }}
+      {{- if .Values.web.priorityClassName }}
+      priorityClassName: "{{ .Values.web.priorityClassName }}"
+      {{- end }}

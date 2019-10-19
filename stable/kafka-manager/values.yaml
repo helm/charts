@@ -12,6 +12,19 @@ serviceAccount:
   ##
   name: ""
 
+livenessProbe:
+  httpGet:
+    path: /api/health
+    port: kafka-manager
+  initialDelaySeconds: 60
+  timeoutSeconds: 30
+  failureThreshold: 10
+
+readinessProbe:
+  httpGet:
+    path: /api/health
+    port: kafka-manager
+
 ## Specs for the Kafka-manager image
 ##
 image:

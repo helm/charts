@@ -19,3 +19,14 @@ Create the name of the service account to use
     {{ default "default" .Values.Secure.ServiceAccount.Name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return the appropriate apiVersion for StatefulSets
+*/}}
+{{- define "statefulset.apiVersion" -}}
+{{- if semverCompare "<1.12-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "apps/v1beta1" -}}
+{{- else -}}
+{{- print "apps/v1" -}}
+{{- end -}}
+{{- end -}}

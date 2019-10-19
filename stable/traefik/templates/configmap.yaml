@@ -148,7 +148,7 @@ data:
         {{- end }}
       {{- end }}
     [ping]
-    entryPoint = "http"
+    entryPoint = "{{ .Values.pingEntryPoint | default "http" }}"
     [kubernetes]
     {{- if .Values.kubernetes}}
       {{- if .Values.kubernetes.endpoint }}
@@ -272,7 +272,7 @@ data:
     KeyType = {{ .Values.acme.keyType | quote }}
     email = {{ .Values.acme.email | quote }}
     {{- if .Values.kvprovider.storeAcme }}
-    storage = "traefik/acme/account"
+    storage = "{{ .Values.kvprovider.acmeStorageLocation }}"
     {{- if .Values.kvprovider.importAcme }}
     storageFile = "/acme/acme.json"
     {{- end }}

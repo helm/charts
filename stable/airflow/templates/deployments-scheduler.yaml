@@ -77,6 +77,12 @@ spec:
               mountPath: /keys
             {{- end }}
       {{- end }}
+{{- if and ( .Values.airflow.extraInitContainers ) ( .Values.dags.initContainer.enabled ) }}
+{{ toYaml .Values.airflow.extraInitContainers | indent 8 }}
+{{- else if and ( .Values.airflow.extraInitContainers ) ( not .Values.dags.initContainer.enabled ) }}
+      initContainers:
+{{ toYaml .Values.airflow.extraInitContainers | indent 8 }}
+{{- end }}
       containers:
         - name: {{ .Chart.Name }}-scheduler
           image: {{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}
