@@ -7,10 +7,10 @@ metadata:
   namespace: {{ .Values.prometheus.prometheusRule.namespace }}
   {{- end }}
   labels:
-    {{ toYaml .Values.prometheus.prometheusRule.selector | nindent 4 }}
+    {{- toYaml .Values.prometheus.prometheusRule.selector | nindent 4 }}
 spec:
   groups:
   - name: {{ include "zookeeper.fullname" . }}
     rules:
-      {{ toYaml .Values.prometheus.prometheusRule.rules | nindent 6 }}
+      {{- toYaml .Values.prometheus.prometheusRule.rules | nindent 6 }}
 {{- end }}
