@@ -6,7 +6,11 @@ metadata:
     {{- include "prometheus.alertmanager.labels" . | nindent 4 }}
   name: {{ template "prometheus.alertmanager.fullname" . }}
 spec:
+  {{- if and .Values.alertmanager.service.type (eq .Values.alertmanager.service.type "ClusterIP") }}
   serviceName: {{ template "prometheus.alertmanager.fullname" . }}-headless
+  {{- else }}
+  serviceName: {{ template "prometheus.alertmanager.fullname" . }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "prometheus.alertmanager.matchLabels" . | nindent 6 }}

@@ -14,7 +14,11 @@ metadata:
     {{- end}}
   name: {{ template "prometheus.server.fullname" . }}
 spec:
+  {{- if and .Values.server.service.type (eq .Values.server.service.type "ClusterIP") }}
   serviceName: {{ template "prometheus.server.fullname" . }}-headless
+  {{- else }}
+  serviceName: {{ template "prometheus.server.fullname" . }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "prometheus.server.matchLabels" . | nindent 6 }}

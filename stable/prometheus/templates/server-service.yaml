@@ -1,4 +1,5 @@
 {{- if .Values.server.enabled -}}
+{{- if and .Values.server.service.type (ne .Values.server.service.type "ClusterIP") }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -40,4 +41,5 @@ spec:
   selector:
     {{- include "prometheus.server.matchLabels" . | nindent 4 }}
   type: "{{ .Values.server.service.type }}"
+{{- end -}}
 {{- end -}}

@@ -1,4 +1,5 @@
 {{- if .Values.alertmanager.enabled -}}
+{{- if and .Values.alertmanager.service.type (ne .Values.alertmanager.service.type "ClusterIP") }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -46,4 +47,5 @@ spec:
   selector:
     {{- include "prometheus.alertmanager.matchLabels" . | nindent 4 }}
   type: "{{ .Values.alertmanager.service.type }}"
+{{- end }}
 {{- end }}
