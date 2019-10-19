@@ -5,6 +5,12 @@
 > [official repository](https://github.com/jetstack/cert-manager/tree/master/deploy).
 > The latest version of the chart can be found on the [Helm Hub](https://hub.helm.sh/charts/jetstack/cert-manager).
 
+> **ACTION REQUIRED: Let's Encrypt is blocking old cert-manager versions
+> Let's Encrypt plan to start
+> blocking all traffic from cert-manager versions less than 0.8.0 (the
+> current semver minor release), as of November 1, 2019. Please upgrade
+> all of your cert-manager instances before then.
+
 cert-manager is a Kubernetes addon to automate the management and issuance of
 TLS certificates from various issuing sources.
 
