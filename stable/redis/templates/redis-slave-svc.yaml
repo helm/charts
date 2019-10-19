@@ -17,16 +17,15 @@ metadata:
 {{- end }}
 spec:
   type: {{ .Values.slave.service.type }}
-  {{ if eq .Values.slave.service.type "LoadBalancer" -}} {{ if .Values.slave.service.loadBalancerIP -}}
+  {{- if and (eq .Values.slave.service.type "LoadBalancer") .Values.slave.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.slave.service.loadBalancerIP }}
-  {{ end -}}
-  {{if .Values.slave.service.loadBalancerSourceRanges }}
+  {{- end }}
+  {{- if and (eq .Values.slave.service.type "LoadBalancer") .Values.slave.service.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:
-  {{ with .Values.slave.service.loadBalancerSourceRanges }}
+  {{- with .Values.slave.service.loadBalancerSourceRanges }}
 {{ toYaml . | indent 4 }}
+{{- end }}
   {{- end }}
-  {{- end }}
-  {{- end -}}
   ports:
   - name: redis
     port: {{ .Values.slave.service.port }}
