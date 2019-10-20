@@ -1,5 +1,5 @@
 {{- if .Values.cluster.enabled }}
-apiVersion: apps/v1
+apiVersion: {{ template "statefulSet.apiVersion" . }}
 kind: StatefulSet
 metadata:
   name: {{ template "redis.fullname" . }}-slave
