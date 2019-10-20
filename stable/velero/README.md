@@ -67,6 +67,8 @@ Parameter | Description | Default
 `initContainers` | InitContainers and their specs to start with the deployment pod | `[]`
 `tolerations` | List of node taints to tolerate | `[]`
 `nodeSelector` | Node labels for pod assignment | `{}`
+`extraVolumes` | Extra volumes for the Velero deployment | `[]`
+`extraVolumeMounts` | Extra volumeMounts for the Velero deployment | `[]`
 `configuration.backupStorageLocation.name` | The name of the cloud provider that will be used to actually store the backups (`aws`, `azure`, `gcp`) | ``
 `configuration.backupStorageLocation.bucket` | The storage bucket where backups are to be uploaded | ``
 `configuration.backupStorageLocation.config.region` | The cloud provider region (AWS only) | ``

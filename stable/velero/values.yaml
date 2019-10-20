@@ -33,6 +33,12 @@ tolerations: []
 # Node selector to use for the Velero deployment. Optional.
 nodeSelector: {}
 
+# Extra volumes for the Velero deployment. Optional.
+extraVolumes: []
+
+# Extra volumeMounts for the Velero deployment. Optional.
+extraVolumeMounts: []
+
 # Settings for Velero's prometheus metrics. Disabled by default.
 metrics:
   enabled: false
