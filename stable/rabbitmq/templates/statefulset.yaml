@@ -136,6 +136,9 @@ spec:
           containerPort: {{ .Values.service.distPort }}
         - name: stats
           containerPort: {{ .Values.service.managerPort }}
+{{- if .Values.service.extraContainerPorts }}
+{{ toYaml .Values.service.extraContainerPorts | indent 8 }}
+{{- end }}
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           exec:
