@@ -5,7 +5,7 @@ replicaCount: 1
 
 image:
   name: orientdb
-  tag: latest
+  tag: 3.0.13
   pullPolicy: IfNotPresent
 
 # distributed settings for default-distributed-db-config.json
