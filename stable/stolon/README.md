@@ -59,9 +59,10 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `job.autoUpdateClusterSpec`             | Set to `false` to force-disable auto-cluster-spec-update | `true`                                             |
 | `clusterSpec`                           | Stolon cluster spec [reference](https://github.com/sorintlab/stolon/blob/master/doc/cluster_spec.md) | `{}`   |
 | `tls.enabled`                           | Enable tls support to postgresql               | `false`                                                      |
-| `tls.rootCa`                            | Ca ceertificate                                | `""`                                                         |
-| `tls.serverCrt`                         | Server Cerfificate                             | `""`                                                         |
+| `tls.rootCa`                            | Ca certificate                                | `""`                                                         |
+| `tls.serverCrt`                         | Server cerfificate                             | `""`                                                         |
 | `tls.serverKey`                         | Server key                                     | `""`                                                         |
+| `tls.existingSecret`                    | Existing secret with certificate content to stolon credentials | `""`                                                         |
 | `keeper.uid_prefix`                     | Keeper prefix name                             | `keeper`                                                     |
 | `keeper.replicaCount`                   | Number of keeper nodes                         | `2`                                                          |
 | `keeper.resources`                      | Keeper resource requests/limit                 | `{}`                                                         |
