@@ -56,24 +56,24 @@ livenessProbe:
   enabled: true
 
 hazelcast:
-  groupName: sfdevorientdb
-  groupPassword: sfdevorientdb
+  groupName: devorientdb
+  groupPassword: devorientdb
 
 persistence:
   enabled: true
-  volumeClaim:
-    storageName: sf-dev-orient-vc-01
-    backupName: sf-dev-orient-vc-backup-01
-  # storage:
-  #   # storageClassName: nfs-client
-  #   accessMode:
-  #   - ReadWriteMany
-  #   size: 5Gi
-  # backup:
-  #   # storageClassName: nfs-client
-  #   accessMode:
-  #   - ReadWriteMany
-  #   size: 2Gi
+  # volumeClaim:
+  #   storageName: dev-orient-vc-01
+  #   backupName: dev-orient-vc-backup-01
+  storage:
+    # storageClassName: nfs-client
+    accessMode:
+    - ReadWriteOnce
+    size: 5Gi
+  backup:
+    # storageClassName: nfs-client
+    accessMode:
+    - ReadWriteOnce
+    size: 2Gi
 
 config:
   overrideHazelcastConfig: true
