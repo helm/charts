@@ -5,7 +5,7 @@ replicaCount: 1
 
 image:
   name: orientdb
-  tag: 3.0.13
+  tag: latest
   pullPolicy: IfNotPresent
 
 # distributed settings for default-distributed-db-config.json
@@ -56,16 +56,21 @@ livenessProbe:
   enabled: true
 
 hazelcast:
-  groupName: orientdb
-  groupPassword: orientdb
+  groupName: devorientdb
+  groupPassword: devorientdb
 
 persistence:
   enabled: true
+  # volumeClaim:
+  #   storageName: dev-orient-vc-01
+  #   backupName: dev-orient-vc-backup-01
   storage:
+    # storageClassName: nfs-client
     accessMode:
     - ReadWriteOnce
     size: 10Gi
   backup:
+    # storageClassName: nfs-client
     accessMode:
     - ReadWriteOnce
     size: 2Gi

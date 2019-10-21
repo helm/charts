@@ -84,8 +84,10 @@ spec:
           {{- if .Values.persistence.enabled }}
           - name: storage
             mountPath: /orientdb/databases
+            subPath: databases
           - name: backup
             mountPath: /orientdb/backup
+            subPath: backup
           {{- end }}
         {{- if .Values.readinessProbe.enabled }}
         readinessProbe:
@@ -122,16 +124,31 @@ spec:
             name: {{ template "orientdb.fullname" . }}-configmap
         - name: orientdb-config-vol
           emptyDir: {}
+  {{- if .Values.persistence.enabled and .Values.persistence.volumeClaim}}
+      {{- if .Values.persistence.volumeClaim.storageName }}
+        - name: storage
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.volumeClaim.storageName }}
+      {{- end }}
+      {{- if .Values.persistence.volumeClaim.backupName }}
+        - name: backup
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.volumeClaim.backupName }}
+      {{- end }}
+  {{- end }}
 {{- if .Values.image.pullSecret }} 
       imagePullSecrets:
         - name: {{ .Values.image.pullSecret }}
 {{- end }} 
-{{- if .Values.persistence.enabled }}
+{{- if (.Values.persistence.enabled) and not (.Values.persistence.volumeClaim) }}
   volumeClaimTemplates:
   - metadata:
       name: storage
     spec:
       accessModes: {{ .Values.persistence.storage.accessMode }}
+      {{- if .Values.persistence.storage.storageClassName }}
+      storageClassName: {{ .Values.persistence.storage.storageClassName }}
+      {{- end }}
       resources:
         requests:
           storage: {{ .Values.persistence.storage.size }}
@@ -139,6 +156,9 @@ spec:
       name: backup
     spec:
       accessModes: {{ .Values.persistence.backup.accessMode }}
+      {{- if .Values.persistence.backup.storageClassName }}
+      storageClassName: {{ .Values.persistence.backup.storageClassName }}
+      {{- end }}
       resources:
         requests:
           storage: {{ .Values.persistence.backup.size }}
