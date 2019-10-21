@@ -1,6 +1,6 @@
 {{- if .Values.rbac.create -}}
 {{- if .Values.podSecurityPolicy.enabled }}
-apiVersion: extensions/v1beta1
+apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: {{ template "filebeat.fullname" . }}

@@ -2,7 +2,7 @@ apiVersion: v1
 appVersion: 7.0.0-1
 description: Helm chart for deploying Azure Monitor container monitoring agent in Kubernetes
 name: azuremonitor-containers
-version: 2.0.0
+version: 2.1.0
 keywords:
   - monitoring
   - azuremonitor
@@ -16,6 +16,8 @@ keywords:
   - kubernetesmonitoring
   - acs-engine
   - aks-engine
+  - azurestack
+  - on-prem kubernetes monitoring
   - containerlogs
   - containerhealth
   - containermonitoring

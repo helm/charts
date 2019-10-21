@@ -8,6 +8,13 @@ metadata:
     chart: {{ template "postgresql.chart" . }}
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
+{{- with .Values.slave.labels }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+{{- with .Values.slave.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
 spec:
   serviceName: {{ template "postgresql.fullname" . }}-headless
   replicas: {{ .Values.replication.slaveReplicas }}
@@ -158,6 +165,7 @@ spec:
             command:
             - sh
             - -c
+            - -e
             {{- include "postgresql.readinessProbeCommand" . | nindent 12 }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}

@@ -81,6 +81,7 @@ backend:
     tls_verify: "off"
     tls_debug: 1
     message_key: "kubernetes"
+  stackdriver: {}
 
   ##
   ## Ref: http://fluentbit.io/documentation/current/output/http.html
@@ -221,6 +222,7 @@ input:
     memBufLimit: 5MB
     parser: docker
     path: /var/log/containers/*.log
+    ignore_older: ""
   systemd:
     enabled: false
     filters:

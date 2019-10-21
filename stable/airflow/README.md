@@ -332,6 +332,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.service.type`                   | service type for Airflow UI                             | `ClusterIP`               |
 | `airflow.service.annotations`            | (optional) service annotations for Airflow UI           | `{}`                      |
 | `airflow.service.externalPort`           | (optional) external port for Airflow UI                 | `8080`                    |
+| `airflow.service.nodePort.http`               | (optional) when using service.type == NodePort, an optional NodePort to request | ``|
 | `airflow.executor`                       | the executor to run                                     | `Celery`                  |
 | `airflow.initRetryLoop`                  | max number of retries during container init             |                           |
 | `airflow.image.repository`               | Airflow docker image                                    | `puckel/docker-airflow`   |
@@ -356,6 +357,14 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `flower.service.externalPort`            | (optional) external port for Flower UI                  | `5555`                    |
 | `web.resources`                          | custom resource configuration for web pod               | `{}`                      |
 | `web.initialStartupDelay`                | amount of time webserver pod should sleep before initializing webserver             | `60`  |
+| `web.livenessProbe.periodSeconds`        | interval between probes                         | `60`  |
+| `web.livenessProbe.timeoutSeconds`       | time allowed for a result to return             | `1`  |
+| `web.livenessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful             | `1`  |
+| `web.livenessProbe.failureThreshold`     | Minimum consecutive successes for the probe to be considered failed                 | `5`  |
+| `web.readinessProbe.periodSeconds`       | interval between probes                         | `60`  |
+| `web.readinessProbe.timeoutSeconds`      | time allowed for a result to return             | `1`  |
+| `web.readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful             | `1`  |
+| `web.readinessProbe.failureThreshold`    | Minimum consecutive successes for the probe to be considered failed                 | `5`  |
 | `web.initialDelaySeconds`                | initial delay on livenessprobe before checking if webserver is available    | `360` |
 | `web.secretsDir`                         | directory in which to mount secrets on webserver nodes  | /var/airflow/secrets      |
 | `web.secrets`                            | secrets to mount as volumes on webserver nodes          | []                        |

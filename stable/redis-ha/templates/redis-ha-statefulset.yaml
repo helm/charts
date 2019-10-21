@@ -241,6 +241,9 @@ spec:
           - name: exporter-port
             containerPort: {{ .Values.exporter.port }}
 {{- end }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+{{- end }}
       volumes:
       - name: config
         configMap:

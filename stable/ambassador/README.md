@@ -52,6 +52,8 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `adminService.nodePort`            | If explicit NodePort for admin service is required                              | `true`                            |
 | `adminService.type`                | Ambassador's admin service type to be used                                      | `ClusterIP`                       |
 | `adminService.annotations`         | Annotations to apply to Ambassador admin service                                | `{}`                              |
+| `adminService.loadBalancerIP`      | IP address to assign (if cloud provider supports it)                            | `""`                              |
+| `adminService.loadBalancerSourceRanges` | Passed to cloud provider load balancer if created (e.g: AWS ELB)           | None                              |
 | `ambassadorConfig`                 | Config thats mounted to `/ambassador/ambassador-config`                         | `""`                              |
 | `crds.enabled`                     | If `true`, enables CRD resources for the installation.                          | `true`                            |
 | `crds.create`                      | If `true`, Creates CRD resources                                                | `true`                            |
@@ -62,13 +64,14 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `env`                              | Any additional environment variables for ambassador pods                        | `{}`                              |
 | `image.pullPolicy`                 | Ambassador image pull policy                                                    | `IfNotPresent`                    |
 | `image.repository`                 | Ambassador image                                                                | `quay.io/datawire/ambassador`     |
-| `image.tag`                        | Ambassador image tag                                                            | `0.81.0`                          |
+| `image.tag`                        | Ambassador image tag                                                            | `0.84.1`                          |
 | `imagePullSecrets`                 | Image pull secrets                                                              | `[]`                              |
 | `namespace.name`                   | Set the `AMBASSADOR_NAMESPACE` environment variable                             | `metadata.namespace`              |
 | `scope.singleNamespace`            | Set the `AMBASSADOR_SINGLE_NAMESPACE` environment variable and create namespaced RBAC if `rbac.enabled: true` | `false`                           |
 | `podAnnotations`                   | Additional annotations for ambassador pods                                      | `{}`                              |
 | `deploymentAnnotations`            | Additional annotations for ambassador DaemonSet/Deployment                      | `{}`                              |
 | `podLabels`                        | Additional labels for ambassador pods                                           |                                   |
+| `affinity`                         | Affinity for ambassador pods                                                    | `{}`                              |
 | `priorityClassName`                | The name of the priorityClass for the ambassador DaemonSet/Deployment           | `""`                              |
 | `rbac.create`                      | If `true`, create and use RBAC resources                                        | `true`                            |
 | `rbac.podSecurityPolicies`         | pod security polices to bind to                                                 |                                   |
@@ -76,6 +79,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `resources`                        | CPU/memory resource requests/limits                                             | `{}`                              |
 | `securityContext`                  | Set security context for pod                                                    | `{ "runAsUser": "8888" }`         |
 | `initContainers`                   | Containers used to initialize context for pods                                  | `[]`                              |
+| `sidecarContainers`                | Containers that share the pod context                                           | `[]`                              |
 | `service.annotations`              | Annotations to apply to Ambassador service                                      | `""`                              |
 | `service.externalTrafficPolicy`    | Sets the external traffic policy for the service                                | `""`                              |
 | `service.ports`                    | List of ports Ambassador is listening on                                        |  `[{"name": "http","port": 80,"targetPort": 8080},{"name": "https","port": 443,"targetPort": 8443}]` |
@@ -88,7 +92,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `volumes`                          | Volumes for the ambassador service                                              | `[]`                              |
 | `pro.enabled`                      | Installs the Ambassador Pro container as a sidecar to Ambassador                | `false`                           |
 | `pro.image.repository`             | Ambassador Pro image                                                            | `quay.io/datawire/ambassador_pro` |
-| `pro.image.tag`                    | Ambassador Pro image tag                                                        | `0.8.0`               |
+| `pro.image.tag`                    | Ambassador Pro image tag                                                        | `0.9.0`                           |
 | `pro.ports.auth`                   | Ambassador Pro authentication port                                              | `8500`                            |
 | `pro.ports.ratelimit`              | Ambassador Pro ratelimit port                                                   | `8500`                            |
 | `pro.logLevel`                     | Log level for Ambassador Pro                                                    | `"info"`                          |
@@ -103,11 +107,12 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `pro.rateLimit.redis.annotations.deployment` | Annotations for the redis deployment                                  | `{}`                              |
 | `pro.rateLimit.redis.annotations.service` | Annotations for the redis service                                        | `{}`                              |
 | `pro.rateLimit.redis.resources`    | Set resource requests and limits for the rate limit service's redis instance    | `{}`                              |
-| `pro.devPortal.enabled`            | Enables the Ambassador Devloper Portal                                          | `false`                              |
+| `pro.devPortal.enabled`            | Enables the Ambassador Developer Portal                                         | `false`                              |
 | `autoscaling.enabled`              | If true, creates Horizontal Pod Autoscaler                                      | `false`                           |
 | `autoscaling.minReplica`           | If autoscaling enabled, this field sets minimum replica count                   | `2`                               |
 | `autoscaling.maxReplica`           | If autoscaling enabled, this field sets maximum replica count                   | `5`                               |
 | `autoscaling.metrics`              | If autoscaling enabled, configure hpa metrics                                   |                                   |
+| `podDisruptionBudget`              | Pod disruption budget rules                                                     | `{}`                              |
 | `prometheusExporter.enabled`       | DEPRECATED: Prometheus exporter side-car enabled                                | `false`                           |
 | `prometheusExporter.pullPolicy`    | DEPRECATED: Image pull policy                                                   | `IfNotPresent`                    |
 | `prometheusExporter.repository`    | DEPRECATED: Prometheus exporter image                                           | `prom/statsd-exporter`            |

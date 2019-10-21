@@ -22,6 +22,8 @@ autoscaling:
         name: memory
         targetAverageUtilization: 60
 
+podDisruptionBudget: {}
+
 # namespace:
   # name: default
 
@@ -47,7 +49,7 @@ securityContext:
 
 image:
   repository: quay.io/datawire/ambassador
-  tag: 0.81.0
+  tag: 0.84.1
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -149,6 +151,8 @@ serviceAccount:
 
 initContainers: []
 
+sidecarContainers: []
+
 volumes: []
 
 volumeMounts: []
@@ -195,7 +199,7 @@ pro:
   enabled: false
   image:
     repository: quay.io/datawire/ambassador_pro
-    tag: 0.8.0
+    tag: 0.9.0
   # As of Ambassador Pro 0.6.0, both the RateLimitService and AuthService use the same port
   ports:
     auth: 8500
