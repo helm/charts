@@ -1,5 +1,6 @@
 {{- $lr := .Values.hyperparams.learningrate -}}
 {{- $batchsize := .Values.hyperparams.batchsize -}}
+{{- $trainsteps := .Values.hyperparams.trainsteps -}}
 
 apiVersion: apps/v1beta2
 kind: StatefulSet
@@ -48,6 +49,8 @@ spec:
         - {{ $lr | quote }}
         - --batch_size
         - {{ $batchsize | quote }}
+        - --train_steps
+        - {{ $trainsteps | quote }}
         env:
         - name: WORKER_HOSTS
           valueFrom:
@@ -65,7 +68,7 @@ spec:
               fieldPath: metadata.name
         - name: JOB_NAME
           value: worker
-       {{- if .Values.worker.env }}            
+       {{- if .Values.worker.env }}
        {{- range $key, $value := .Values.worker.env }}
         - name: "{{ $key }}"
           value: "{{ $value }}"
