@@ -68,7 +68,7 @@ persistence:
     # storageClassName: nfs-client
     accessMode:
     - ReadWriteOnce
-    size: 5Gi
+    size: 10Gi
   backup:
     # storageClassName: nfs-client
     accessMode:
