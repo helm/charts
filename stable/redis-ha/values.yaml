@@ -50,14 +50,15 @@ haproxy:
     annotations: {}
   serviceAccount:
     create: true
-  ## Prometheus metric exporter for HAProxy.
+  ## Official HAProxy embedded prometheus metrics settings.
+  ## Ref: https://github.com/haproxy/haproxy/tree/master/contrib/prometheus-exporter
   ##
-  exporter:
-    image:
-      repository: quay.io/prometheus/haproxy-exporter
-      tag: v0.9.0
+  metrics:
     enabled: false
+    # prometheus port & scrape path
     port: 9101
+    portName: exporter-port
+    scrapePath: /metrics
   init:
     resources: {}
   timeout:
@@ -68,6 +69,15 @@ haproxy:
     runAsUser: 1000
     fsGroup: 1000
     runAsNonRoot: true
+  ## Custom config-haproxy.cfg files used to override default settings. If this file is
+  ## specified then the config-haproxy.cfg above will be ignored.
+  ##
+  # customConfig: |-
+      # Define configuration here
+  ## Place any additional configuration section to add to the default config-haproxy.cfg
+  ##
+  # extraConfig: |-
+      # Define configuration here
 
 
 ## Role Based Access
