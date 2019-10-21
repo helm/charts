@@ -1,0 +1,18 @@
+{{- if .Values.serviceMonitor.enabled  }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "stolon.fullname" . }}-metrics
+  labels:
+    app: {{ template "stolon.name" . }}
+    chart: {{ template "stolon.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  ports:
+    - name: metrics
+      port: {{ .Values.ports.metrics.containerPort }}
+  selector:
+    app: {{ template "stolon.name" . }}
+    release: {{ .Release.Name }}
+{{- end  }}
