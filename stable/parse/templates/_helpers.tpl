@@ -255,3 +255,27 @@ but Helm 2.9 and 2.10 does not support it, so we need to implement this if-else 
     {{- end -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return the Parse Cloud Clode scripts configmap.
+*/}}
+{{- define "parse.cloudCodeScriptsCMName" -}}
+{{- if .Values.server.existingCloudCodeScriptsCM -}}
+    {{- printf "%s" (tpl .Values.server.existingCloudCodeScriptsCM $) -}}
+{{- else -}}
+    {{- printf "%s-cloud-code-scripts" (include "parse.fullname" .) -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Renders a value that contains template.
+Usage:
+{{ include "parse.tplValue" ( dict "value" .Values.path.to.the.Value "context" $) }}
+*/}}
+{{- define "parse.tplValue" -}}
+    {{- if typeIs "string" .value }}
+        {{- tpl .value .context }}
+    {{- else }}
+        {{- tpl (.value | toYaml) .context }}
+    {{- end }}
+{{- end -}}
