@@ -120,6 +120,17 @@ spec:
             - -http-addr=http://127.0.0.1:{{ .Values.HttpPort }}
           initialDelaySeconds: 300
           timeoutSeconds: 5
+        readinessProbe:
+          exec:
+            command:
+              - "/bin/sh"
+              - "-ec"
+              - curl http://127.0.0.1:{{ .Values.HttpPort }}/v1/status/leader 2>/dev/null | grep -E '".+"'
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 2
+          successThreshold: 1
         command:
           - "/bin/sh"
           - "-ec"
