@@ -5,7 +5,6 @@ metadata:
   labels: {{ include "parse.labels" . | nindent 4 }}
     app.kubernetes.io/component: server
 spec:
-spec:
   selector:
     matchLabels: {{ include "parse.matchLabels" . | nindent 6 }}
       app.kubernetes.io/component: server
