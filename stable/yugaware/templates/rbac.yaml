@@ -24,7 +24,7 @@ rules:
   - endpoints
   - pods
   - pods/exec
-  verbs: ["get", "list", "watch"]
+  verbs: ["get", "list", "watch", "create"]
 - apiGroups:
   - extensions
   resources:
