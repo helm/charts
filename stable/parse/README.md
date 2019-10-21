@@ -78,6 +78,9 @@ The following table lists the configurable parameters of the Parse chart and the
 | `server.mountPath`                     | Parse server API mount path                                                                                                                               | `/parse`                                                |
 | `server.appId`                         | Parse server App Id                                                                                                                                       | `myappID`                                               |
 | `server.masterKey`                     | Parse server Master Key                                                                                                                                   | `random 10 character alphanumeric string`               |
+| `server.enableCloudCode`               | Enable Parse Cloud Clode                                                                                                                                  | `false`                                                 |
+| `server.cloudCodeScripts`              | Dictionary of Cloud Code scripts                                                                                                                          | `nil`                                                   |
+| `server.existingCloudCodeScriptsCM`    | ConfigMap with Cloud Code scripts (Note: Overrides `cloudCodeScripts`).                                                                                   | `nil`                                                   |
 | `server.resources`                     | The [resources] to allocate for container                                                                                                                 | `{}`                                                    |
 | `server.livenessProbe`                 | Liveness probe configuration for Server                                                                                                                   | `Check values.yaml file`                                |
 | `server.readinessProbe`                | Readiness probe configuration for Server                                                                                                                  | `Check values.yaml file`                                |
@@ -184,6 +187,14 @@ By default, the chart is configured to use Kubernetes Security Context to automa
 As an alternative, this chart supports using an initContainer to change the ownership of the volume before mounting it in the final destination.
 
 You can enable this initContainer by setting `volumePermissions.enabled` to `true`.
+
+### Deploy your Cloud functions with Parse Cloud Code
+
+The [Bitnami Parse](https://github.com/bitnami/bitnami-docker-parse) image allows you to deploy your Cloud functions with Parse Cloud Code (a feature which allows running a piece of code in your Parse Server instead of the user's mobile devices). In order to add your custom scripts, they must be located inside the chart folder `files/cloud` so they can be consumed as a ConfigMap.
+
+Alternatively, you can specify custom scripts using the `cloudCodeScripts` parameter as dict.
+
+In addition to these options, you can also set an external ConfigMap with all the Cloud Code scripts. This is done by setting the `existingCloudCodeScriptsCM` parameter. Note that this will override the two previous options.
 
 ## Upgrading
 
