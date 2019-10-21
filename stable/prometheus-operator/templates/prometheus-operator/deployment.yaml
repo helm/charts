@@ -43,6 +43,9 @@ spec:
           {{- if .Values.prometheusOperator.logLevel }}
             - --log-level={{ .Values.prometheusOperator.logLevel }}
           {{- end }}
+          {{- if .Values.prometheusOperator.denyNamespaces }}
+            - --deny-namespaces={{ .Values.prometheusOperator.denyNamespaces | join "," }}
+          {{- end }}
             - --logtostderr=true
             - --crd-apigroup={{ .Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com" }}
             - --localhost=127.0.0.1
@@ -69,10 +72,8 @@ spec:
             - --key=cert/key
             - --cert=cert/cert
             - --disable-authentication
-{{- if .Values.prometheusOperator.tlsProxy.resources }}
           resources:
-{{ toYaml .Values.prometheusOperator.tlsProxy.resources | indent 10 }}
-{{- end }}
+{{ toYaml .Values.prometheusOperator.tlsProxy.resources | indent 12 }}
           volumeMounts:
           - name: tls-proxy-secret
             mountPath: /cert

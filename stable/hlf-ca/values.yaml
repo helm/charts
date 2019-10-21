@@ -4,7 +4,7 @@
 
 image:
   repository: hyperledger/fabric-ca
-  tag: 1.3.0
+  tag: 1.4.3
   pullPolicy: IfNotPresent
 
 service:
@@ -73,7 +73,7 @@ postgresql:
   image:
     registry: docker.io
     repository: "bitnami/postgresql"
-    tag: "10.6.0"
+    tag: "10.10.0"
   postgresqlDatabase: fabric_ca
   postgresqlUsername: fabric_ca
 
@@ -87,7 +87,7 @@ mysql:
   # To use an external database set this to false and configure the externalDatabase parameters, specifying the type to 'mysql'
   enabled: false
   image: "mysql"
-  imageTag: "5.7.14"
+  imageTag: "5.7.27"
   mysqlDatabase: fabric_ca
   mysqlUser: fabric_ca
   # Custom mysql configuration to remove SQL Mode NO_ZERO_DATE because the Fabric CA schema defines TIMESTAMP to 0 by default
@@ -111,7 +111,7 @@ externalDatabase:
 
 ## Settings used in configMap "--config"
 config:
-  hlfToolsVersion: 1.3.0
+  hlfToolsVersion: 1.4.3
   ## Mount the TLS certificate & key to disk?
   mountTLS: false
   ## Enable debug logging in ca Server configuration file
