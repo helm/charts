@@ -119,10 +119,10 @@ kubectl get pods \
 -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.spec.containers[0].image}{"\n"}'
 ```
 ```
-my-release-cockroachdb-0    cockroachdb/cockroach:v19.1.1
-my-release-cockroachdb-1    cockroachdb/cockroach:v19.1.1
-my-release-cockroachdb-2    cockroachdb/cockroach:v19.1.1
-my-release-cockroachdb-3    cockroachdb/cockroach:v19.1.1
+my-release-cockroachdb-0    cockroachdb/cockroach:v19.1.5
+my-release-cockroachdb-1    cockroachdb/cockroach:v19.1.5
+my-release-cockroachdb-2    cockroachdb/cockroach:v19.1.5
+my-release-cockroachdb-3    cockroachdb/cockroach:v19.1.5
 ```
 
 Resume normal operations.  Once you are comfortable that the stability and performance of the cluster is what you'd expect post upgrade, finalize it by running the following:
@@ -167,7 +167,7 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | ------------------------------ | ------------------------------------------------ | ----------------------------------------- |
 | `Name`                         | Chart name                                       | `cockroachdb`                             |
 | `Image`                        | Container image name                             | `cockroachdb/cockroach`                   |
-| `ImageTag`                     | Container image tag                              | `v19.1.3`                                 |
+| `ImageTag`                     | Container image tag                              | `v19.1.5`                                 |
 | `ImagePullPolicy`              | Container pull policy                            | `Always`                                  |
 | `Replicas`                     | k8s statefulset replicas                         | `3`                                       |
 | `MaxUnavailable`               | k8s PodDisruptionBudget parameter                | `1`                                       |

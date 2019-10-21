@@ -18,7 +18,7 @@ image:
   ## Bitnami MongoDB image tag
   ## ref: https://hub.docker.com/r/bitnami/mongodb/tags/
   ##
-  tag: 4.0.12-debian-9-r43
+  tag: 4.0.13-debian-9-r0
   ## Specify a imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   ##
@@ -116,6 +116,8 @@ clusterDomain: cluster.local
 
 ## Kubernetes service type
 service:
+  ## Specify an explicit service name.
+  # name: svc-mongo
   annotations: {}
   type: ClusterIP
   # clusterIP: None
@@ -172,6 +174,12 @@ replicaSet:
     # maxUnavailable:
       # secondary: 1
       # arbiter: 1
+
+# Annotations to be added to the deployment or statefulsets
+annotations: {}
+
+# Additional labels to apply to the deployment or statefulsets
+labels: {}
 
 # Annotations to be added to MongoDB pods
 podAnnotations: {}
@@ -268,7 +276,7 @@ ingress:
 
   ## Ingress annotations done as key:value pairs
   ## For a full list of possible ingress annotations, please see
-  ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/annotations.md
+  ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/annotations.md
   ##
   ## If tls is set to true, annotation ingress.kubernetes.io/secure-backends: "true" will automatically be set
   ## If certManager is set to true, annotation kubernetes.io/tls-acme: "true" will automatically be set
@@ -382,7 +390,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/mongodb-exporter
-    tag: 0.10.0-debian-9-r2
+    tag: 0.10.0-debian-9-r24
     pullPolicy: Always
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.

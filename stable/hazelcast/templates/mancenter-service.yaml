@@ -2,6 +2,10 @@
 apiVersion: v1
 kind: Service
 metadata:
+{{- if .Values.mancenter.service.annotations }}
+  annotations:
+{{ toYaml .Values.mancenter.service.annotations | indent 4 }}
+{{- end }}
   name: {{ template "mancenter.fullname" . }}
   labels:
     app.kubernetes.io/name: {{ template "hazelcast.name" . }}
@@ -21,5 +25,9 @@ spec:
   - protocol: TCP
     port: {{ .Values.mancenter.service.port }}
     targetPort: mancenter
-    name: mancenterport
+    name: http
+  - protocol: TCP
+    port: {{ .Values.mancenter.service.httpsPort }}
+    targetPort: mancenter
+    name: https
 {{- end }}

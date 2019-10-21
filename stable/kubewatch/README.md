@@ -13,6 +13,11 @@ $ helm install stable/kubewatch
 
 This chart bootstraps a kubewatch deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
+## Prerequisites
+
+- Kubernetes 1.12+
+- Helm 2.11+ or Helm 3.0-beta3+
+
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:

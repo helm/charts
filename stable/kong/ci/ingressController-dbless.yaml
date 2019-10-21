@@ -1,0 +1,7 @@
+# CI test for Ingress controller basic installation
+ingressController:
+  enabled: true
+env:
+  database: "off"
+postgresql:
+  enabled: false

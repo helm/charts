@@ -57,6 +57,8 @@ The following table lists the configurable parameters of the postgres Exporter c
 | `config.datasource`                 | Postgresql datasource configuration                      |  see [values.yaml](values.yaml)              |
 | `config.queries`                | SQL queries that the exporter will run | [postgres exporter defaults](https://github.com/wrouesnel/postgres_exporter/blob/master/queries.yaml) |
 | `config.disableDefaultMetrics`  | Specifies whether to use only metrics from `queries.yaml`| `false` |
+| `config.autoDiscoverDatabases`  | Specifies whether to autodiscover all databases | `false` |
+| `config.excludeDatabases`  | When autodiscover is enabled, list databases to exclude| `[]` |
 | `rbac.create`                   | Specifies whether RBAC resources should be created.| `true` |
 | `rbac.pspEnabled`               | Specifies whether a PodSecurityPolicy should be created.| `true` |
 | `serviceAccount.create`         | Specifies whether a service account should be created.| `true` |

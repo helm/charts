@@ -20,6 +20,12 @@ data:
     mkdir -p /tmp/spinnaker/.hal/default/profiles
     cp /tmp/additionalProfileConfigMaps/* /tmp/spinnaker/.hal/default/profiles/
 
+    {{- if .Values.halyard.bom }}
+    rm -rf /tmp/spinnaker/.hal/.boms/bom
+    mkdir -p /tmp/spinnaker/.hal/.boms/bom
+    cp /tmp/halyard-bom/* /tmp/spinnaker/.hal/.boms/bom
+    {{- end }}
+
     {{- if hasKey .Values.halyard "additionalInitScript" }}
     # additionalInitScript
     {{ tpl .Values.halyard.additionalInitScript $ | indent 4 }}
