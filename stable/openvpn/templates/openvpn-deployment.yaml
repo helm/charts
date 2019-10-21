@@ -44,9 +44,9 @@ spec:
             add:
               - NET_ADMIN
         readinessProbe:
-          initialDelaySeconds: 5
-          periodSeconds: 5
-          successThreshold: 2
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
           exec:
             command:
             - nc

@@ -20,14 +20,18 @@ spec:
   validation:
     openAPIV3Schema:
       properties:
-        upstream:
-          type: object
         route:
           properties:
             methods:
               type: array
               items:
                 type: string
+            headers:
+              type: object
+              additionalProperties:
+                type: array
+                items:
+                  type: string
             regex_priority:
               type: integer
             strip_path:
@@ -41,6 +45,8 @@ spec:
                 enum:
                 - http
                 - https
+            https_redirect_status_code:
+              type: integer
         proxy:
           type: object
           properties:
@@ -67,6 +73,12 @@ spec:
         upstream:
           type: object
           properties:
+            algorithm:
+              type: string
+              enum:
+              - "round-robin"
+              - "consistent-hashing"
+              - "least-connections"
             hash_on:
               type: string
             hash_on_cookie:

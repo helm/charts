@@ -1,11 +1,9 @@
 {{- if and .Values.reloader.watchGlobally (.Values.reloader.rbac.enabled) }}
----
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
   labels:
 {{ include "reloader-labels.chart" . | indent 4 }}
-{{ include "reloader-labels.selector" . | indent 4 }}
 {{- if .Values.reloader.rbac.labels }}
 {{ toYaml .Values.reloader.rbac.labels | indent 4 }}
 {{- end }}
@@ -20,6 +18,6 @@ roleRef:
   name: {{ template "reloader-fullname" . }}-role
 subjects:
   - kind: ServiceAccount
-    name: {{ template "serviceAccountName" . }}
+    name: {{ template "reloader-serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
 {{- end }}

@@ -16,7 +16,8 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 
 ## Prerequisites
 
-- Kubernetes 1.10+
+- Kubernetes 1.12+
+- Helm 2.11+ or Helm 3.0-beta3+
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
@@ -109,17 +110,21 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `master.nodeSelector`                         | Node labels for pod assignment (postgresql master)                                                                     | `{}`                                                        |
 | `master.affinity`                             | Affinity labels for pod assignment (postgresql master)                                                                 | `{}`                                                        |
 | `master.tolerations`                          | Toleration labels for pod assignment (postgresql master)                                                               | `[]`                                                        |
+| `master.anotations`                           | Map of annotations to add to the statefulset (postgresql master)                                                       | `{}`                                                        |
+| `master.labels`                               | Map of labels to add to the statefulset (postgresql master)                                                            | `{}`                                                        |
 | `master.podAnnotations`                       | Map of annotations to add to the pods (postgresql master)                                                              | `{}`                                                        |
 | `master.podLabels`                            | Map of labels to add to the pods (postgresql master)                                                                   | `{}`                                                        |
 | `master.extraVolumeMounts`                    | Additional volume mounts to add to the pods (postgresql master)                                                        |  `[]`                                                       |
-| `master.extraVolume`                          | Additional volumes to add to the pods (postgresql master)                                                              |  `[]`                                                       |
+| `master.extraVolumes`                          | Additional volumes to add to the pods (postgresql master)                                                              |  `[]`                                                       |
 | `slave.nodeSelector`                          | Node labels for pod assignment (postgresql slave)                                                                      | `{}`                                                        |
 | `slave.affinity`                              | Affinity labels for pod assignment (postgresql slave)                                                                  | `{}`                                                        |
 | `slave.tolerations`                           | Toleration labels for pod assignment (postgresql slave)                                                                | `[]`                                                        |
+| `slave.anotations`                            | Map of annotations to add to the statefulsets (postgresql slave)                                                       | `{}`                                                        |
+| `slave.labels`                                | Map of labels to add to the statefulsets (postgresql slave)                                                            | `{}`                                                        |
 | `slave.podAnnotations`                        | Map of annotations to add to the pods (postgresql slave)                                                               | `{}`                                                        |
 | `slave.podLabels`                             | Map of labels to add to the pods (postgresql slave)                                                                    | `{}`                                                        |
 | `slave.extraVolumeMounts`                     | Additional volume mounts to add to the pods (postgresql slave)                                                         |  `[]`                                                       |
-| `slave.extraVolume`                           | Additional volumes to add to the pods (postgresql slave)                                                               |  `[]`                                                       |
+| `slave.extraVolumes`                           | Additional volumes to add to the pods (postgresql slave)                                                               |  `[]`                                                       |
 | `terminationGracePeriodSeconds`               | Seconds the pod needs to terminate gracefully                                                                          | `nil`                                                       |
 | `resources`                                   | CPU/Memory resource requests/limits                                                                                    | Memory: `256Mi`, CPU: `250m`                                |
 | `securityContext.enabled`                     | Enable security context                                                                                                | `true`                                                      |
@@ -233,6 +238,14 @@ To horizontally scale this chart, first download the [values-production.yaml](va
 ```console
 $ helm install --name my-release -f ./values-production.yaml stable/postgresql
 $ kubectl scale statefulset my-postgresql-slave --replicas=3
+```
+
+### Change PostgreSQL version
+
+To modify the PostgreSQL version used in this chart you can specify a [valid image tag](https://hub.docker.com/r/bitnami/postgresql/tags/) using the `--set image.tag` argument to `helm install`. For example, 
+
+```console
+$ helm install --name my-release --set image.tag=12.0.0-debian-9-r0 stable/postgresql
 ```
 
 ### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)

@@ -39,6 +39,9 @@ spec:
         checksum/autoconf-config: {{ tpl (toYaml .Values.datadog.autoconf) . | sha256sum }}
         checksum/confd-config: {{ tpl (toYaml .Values.datadog.confd) . | sha256sum }}
         checksum/checksd-config: {{ tpl (toYaml .Values.datadog.checksd) . | sha256sum }}
+        {{- if .Values.daemonset.customAgentConfig }}
+        checksum/agent-config: {{ tpl (toYaml .Values.daemonset.customAgentConfig) . | sha256sum }}
+        {{- end }}
         {{- if and .Values.systemProbe.enabled .Values.daemonset.useDedicatedContainers }}
         container.apparmor.security.beta.kubernetes.io/system-probe: {{ .Values.systemProbe.apparmor }}
         container.seccomp.security.alpha.kubernetes.io/system-probe: localhost/system-probe
