@@ -35,7 +35,7 @@ nexus:
   service:
     type: NodePort
     # clusterIP: None
-  annotations: {}
+  # annotations: {}
     ## When using LoadBalancer service type, use the following AWS certificate from ACM
     ## https://aws.amazon.com/documentation/acm/
     # service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:eu-west-1:123456789:certificate/abc123-abc123-abc123-abc123"
