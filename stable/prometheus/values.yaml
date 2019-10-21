@@ -410,7 +410,7 @@ kubeStateMetrics:
 nodeExporter:
   ## If false, node-exporter will not be installed
   ##
-  enabled: true
+  enabled: false
 
   ## If true, node-exporter pods share the host network namespace
   ##
@@ -1271,6 +1271,7 @@ serverFiles:
       # * `prometheus.io/scrape`: Only scrape pods that have a value of `true`
       # * `prometheus.io/path`: If the metrics path is not `/metrics` override this.
       # * `prometheus.io/port`: Scrape the pod on the indicated port instead of the default of `9102`.
+      # * `prometheus.io.param-<parameter>`: send ?parameter=value with the path
       - job_name: 'kubernetes-pods'
 
         kubernetes_sd_configs:
@@ -1289,6 +1290,9 @@ serverFiles:
             regex: ([^:]+)(?::\d+)?;(\d+)
             replacement: $1:$2
             target_label: __address__
+          - regex: '__meta_kubernetes_pod_annotation_prometheus_io_param_(.+)'
+            action: 'labelmap'
+            replacement: '__param_$1'
           - action: labelmap
             regex: __meta_kubernetes_pod_label_(.+)
           - source_labels: [__meta_kubernetes_namespace]
