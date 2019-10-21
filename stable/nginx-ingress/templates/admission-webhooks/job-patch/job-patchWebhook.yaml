@@ -8,12 +8,15 @@ metadata:
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
   labels:
     app: {{ template "nginx-ingress.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "nginx-ingress.chart" . }}
     component: "{{ .Values.controller.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
+  {{- if .Capabilities.APIVersions.Has "batch/v1alpha1" }}
+  # Alpha feature since k8s 1.12
   ttlSecondsAfterFinished: 0
+  {{- end }}
   template:
     metadata:
       name:   {{ template "nginx-ingress.fullname" . }}-admission-patch
@@ -23,7 +26,7 @@ spec:
 {{- end }}
       labels:
         app: {{ template "nginx-ingress.name" . }}
-        chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+        chart: {{ template "nginx-ingress.chart" . }}
         component: "{{ .Values.controller.name }}"
         heritage: {{ .Release.Service }}
         release: {{ .Release.Name }}

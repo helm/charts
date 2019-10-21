@@ -113,3 +113,105 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
   {{- end -}}
 {{- end -}}
 {{- end -}}
+
+{{/* Determine secret name for Authenticate TLS Cert */}}
+{{- define "pomerium.authenticate.tlsSecret.name" -}}
+{{- if .Values.authenticate.existingTLSSecret -}}
+{{- .Values.authenticate.existingTLSSecret | trunc 63 | trimSuffix "-" -}}
+{{- /* TODO in future: Remove legacy logic */ -}}
+{{- else if .Values.config.existingLegacyTLSSecret -}}
+{{ template "pomerium.fullname" . }}
+{{- else -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- printf "%s-authenticate-tls" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s-authenticate-tls" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/* Determine secret name for Authorize TLS Cert */}}
+{{- define "pomerium.authorize.tlsSecret.name" -}}
+{{- if .Values.authorize.existingTLSSecret -}}
+{{- .Values.authorize.existingTLSSecret | trunc 63 | trimSuffix "-" -}}
+{{- /* TODO in future: Remove legacy logic */ -}}
+{{- else if .Values.config.existingLegacyTLSSecret -}}
+{{ template "pomerium.fullname" . }}
+{{- else -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- printf "%s-authorize-tls" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s-authorize-tls" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/* Determine secret name for Proxy TLS Cert */}}
+{{- define "pomerium.proxy.tlsSecret.name" -}}
+{{- if .Values.proxy.existingTLSSecret -}}
+{{- .Values.proxy.existingTLSSecret | trunc 63 | trimSuffix "-" -}}
+{{- /* TODO in future: Remove legacy logic */ -}}
+{{- else if .Values.config.existingLegacyTLSSecret -}}
+{{ template "pomerium.fullname" . }}
+{{- else -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- printf "%s-proxy-tls" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s-proxy-tls" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/* Set up secret data field names for each service */}}
+{{- define "pomerium.proxy.tlsSecret.certName" -}}
+{{- /* TODO in future: Remove legacy logic */ -}}
+{{- printf "%s" (ternary "tls.crt" "proxy-cert" (empty .Values.config.existingLegacyTLSSecret)) -}}
+{{- end -}}
+{{- define "pomerium.proxy.tlsSecret.keyName" -}}
+{{- /* TODO in future: Remove legacy logic */ -}}
+{{- printf "%s" (ternary "tls.key" "proxy-key" (empty .Values.config.existingLegacyTLSSecret)) -}}
+{{- end -}}
+
+{{- define "pomerium.authenticate.tlsSecret.certName" -}}
+{{- /* TODO in future: Remove legacy logic */ -}}
+{{- printf "%s" (ternary "tls.crt" "authenticate-cert" (empty .Values.config.existingLegacyTLSSecret)) -}}
+{{- end -}}
+{{- define "pomerium.authenticate.tlsSecret.keyName" -}}
+{{- /* TODO in future: Remove legacy logic */ -}}
+{{- printf "%s" (ternary "tls.key" "authenticate-key" (empty .Values.config.existingLegacyTLSSecret)) -}}
+{{- end -}}
+
+{{- define "pomerium.authorize.tlsSecret.certName" -}}
+{{- /* TODO in future: Remove legacy logic */ -}}
+{{- printf "%s" (ternary "tls.crt" "authorize-cert" (empty .Values.config.existingLegacyTLSSecret)) -}}
+{{- end -}}
+{{- define "pomerium.authorize.tlsSecret.keyName" -}}
+{{- /* TODO in future: Remove legacy logic */ -}}
+{{- printf "%s" (ternary "tls.key" "authorize-key" (empty .Values.config.existingLegacyTLSSecret)) -}}
+{{- end -}}
+
+{{- define "pomerium.caSecret.name" -}}
+{{if .Values.config.existingCASecret }}
+{{- .Values.proxy.existingCASecret | trunc 63 | trimSuffix "-" -}}
+{{- /* TODO in future: Remove legacy logic */ -}}
+{{- else if .Values.config.existingLegacyTLSSecret -}}
+{{- template "pomerium.fullname" . -}}
+{{- else -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- printf "%s-ca-tls" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s-ca-tls" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "pomerium.caSecret.certName" -}}
+{{- /* TODO in future: Remove legacy logic */ -}}
+{{- printf "%s" (ternary "ca.crt" "ca-cert" (empty .Values.config.existingLegacyTLSSecret)) -}}
+{{- end -}}
+
+

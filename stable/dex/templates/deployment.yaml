@@ -6,7 +6,7 @@
 {{ $grpcCaBuiltName := printf "%s-ca" $fullname }}
 {{ $grpcCaSecretName := default $grpcCaBuiltName .Values.certs.grpc.secret.caName }}
 
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "dex.fullname" . }}

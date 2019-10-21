@@ -32,7 +32,7 @@ The following table shows the configuration options for the Solr helm chart:
 | `extraEnvVars`                                | Additional environment variables to set on the solr pods (in yaml syntax) | `[]` |
 | `terminationGracePeriodSeconds`               | The termination grace period of the Solr pods | `180`|
 | `image.repository`                            | The repository to pull the docker image from| `solr`                                                                |
-| `image.tag`                                   | The tag on the repository to pull | `7.6.0`                                                               |
+| `image.tag`                                   | The tag on the repository to pull | `7.7.2`                                                               |
 | `image.pullPolicy`                            | Solr pod pullPolicy | `IfNotPresent`                                                              |
 | `livenessProbe.initialDelaySeconds`           | Inital Delay for Solr pod liveness probe | `20`                                                                  |
 | `livenessProbe.periodSeconds`                 | Poll rate for liveness probe | `10`                                                                  |

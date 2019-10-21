@@ -18,7 +18,7 @@ image:
   ## Bitnami MongoDB image tag
   ## ref: https://hub.docker.com/r/bitnami/mongodb/tags/
   ##
-  tag: 4.0.12-debian-9-r43
+  tag: 4.0.13-debian-9-r0
   ## Specify a imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   ##
@@ -116,6 +116,8 @@ clusterDomain: cluster.local
 
 ## Kubernetes service type
 service:
+  ## Specify an explicit service name.
+  # name: svc-mongo
   annotations: {}
   type: ClusterIP
   # clusterIP: None
@@ -172,6 +174,12 @@ replicaSet:
     # maxUnavailable:
       # secondary: 1
       # arbiter: 1
+
+# Annotations to be added to the deployment or statefulsets
+annotations: {}
+
+# Additional labels to apply to the deployment or statefulsets
+labels: {}
 
 # Annotations to be added to MongoDB pods
 podAnnotations: {}
@@ -268,7 +276,7 @@ ingress:
 
   ## Ingress annotations done as key:value pairs
   ## For a full list of possible ingress annotations, please see
-  ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/annotations.md
+  ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/annotations.md
   ##
   ## If tls is set to true, annotation ingress.kubernetes.io/secure-backends: "true" will automatically be set
   ## If certManager is set to true, annotation kubernetes.io/tls-acme: "true" will automatically be set
@@ -332,30 +340,36 @@ readinessProbe:
 initConfigMap: {}
 #  name: "init-config-map"
 
-# Entries for the MongoDB config file
+## Entries for the MongoDB config file. For documentation of all options, see:
+##   http://docs.mongodb.org/manual/reference/configuration-options/
+##
 configmap:
-#  # Where and how to store data.
+#  # where and how to store data.
 #  storage:
-#    dbPath: /opt/bitnami/mongodb/data/db
+#    dbPath: /bitnami/mongodb/data/db
 #    journal:
 #      enabled: true
-#    #engine:
-#    #wiredTiger:
+#    directoryPerDB: false
 #  # where to write logging data.
 #  systemLog:
 #    destination: file
+#    quiet: false
 #    logAppend: true
+#    logRotate: reopen
 #    path: /opt/bitnami/mongodb/logs/mongodb.log
+#    verbosity: 0
 #  # network interfaces
 #  net:
 #    port: 27017
-#    bindIp: 0.0.0.0
 #    unixDomainSocket:
 #      enabled: true
 #      pathPrefix: /opt/bitnami/mongodb/tmp
+#    ipv6: false
+#    bindIpAll: true
 #  # replica set options
-#  replication:
-#    replSetName: replicaset
+#  #replication:
+#    #replSetName: replicaset
+#    #enableMajorityReadConcern: true
 #  # process management options
 #  processManagement:
 #     fork: false
@@ -365,8 +379,8 @@ configmap:
 #     enableLocalhostAuthBypass: true
 #  # security options
 #  security:
-#    authorization: enabled
-#    keyFile: /opt/bitnami/mongodb/conf/keyfile
+#    authorization: disabled
+#    #keyFile: /opt/bitnami/mongodb/conf/keyfile
 
 ## Prometheus Exporter / Metrics
 ##
@@ -376,7 +390,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/mongodb-exporter
-    tag: 0.10.0-debian-9-r2
+    tag: 0.10.0-debian-9-r24
     pullPolicy: Always
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.

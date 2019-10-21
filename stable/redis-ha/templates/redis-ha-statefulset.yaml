@@ -17,7 +17,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/init-config: {{ include (print $.Template.BasePath "/redis-ha-configmap.yaml") . | sha256sum }}
+        checksum/init-config: {{ print (include "config-redis.conf" .) (include "config-init.sh" .) | sha256sum }}
       {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
@@ -240,6 +240,9 @@ spec:
         ports:
           - name: exporter-port
             containerPort: {{ .Values.exporter.port }}
+{{- end }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
 {{- end }}
       volumes:
       - name: config

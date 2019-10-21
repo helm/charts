@@ -86,13 +86,14 @@ spec:
         {{- end }}
         ports:
           - containerPort: 4180
-            name: http
+            name: {{ .Values.httpScheme }}
             protocol: TCP
 {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
             path: /ping
-            port: http
+            port: {{ .Values.httpScheme }}
+            scheme: {{ .Values.httpScheme | upper }}
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
 {{- end }}
@@ -100,7 +101,8 @@ spec:
         readinessProbe:
           httpGet:
             path: /ping
-            port: http
+            port: {{ .Values.httpScheme }}
+            scheme: {{ .Values.httpScheme | upper }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
           successThreshold: {{ .Values.readinessProbe.successThreshold }}
@@ -130,6 +132,9 @@ spec:
           name: {{ template "oauth2-proxy.fullname" . }}-htpasswd-file
           readOnly: true
 {{- end }}
+{{- if ne (len .Values.extraVolumeMounts) 0 }}
+{{ toYaml .Values.extraVolumeMounts | indent 8 }}
+{{- end }}
       volumes:
 {{- with .Values.config.google }}
 {{- if and .adminEmail (or .serviceAccountJson .existingSecret) }}
@@ -150,6 +155,9 @@ spec:
           defaultMode: 420
           name: {{ if .Values.config.existingConfig }}{{ .Values.config.existingConfig }}{{ else }}{{ template "oauth2-proxy.fullname" . }}{{ end }}
         name: configmain
+{{- end }}
+{{- if ne (len .Values.extraVolumes) 0 }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
 {{- end }}
 {{- if .Values.authenticatedEmailsFile.enabled }}
       - configMap:

@@ -44,6 +44,10 @@ spec:
           mountPath: /tmp/spinnaker
         - name: additional-profile-config-maps
           mountPath: /tmp/additionalProfileConfigMaps
+        {{- if .Values.halyard.bom }}
+        - name: halyard-bom
+          mountPath: /tmp/halyard-bom
+        {{- end }}
         - name: halyard-initscript
           mountPath: /tmp/initscript
         {{- if .Values.halyard.customCerts.enabled }}
@@ -103,6 +107,11 @@ spec:
       - name: additional-profile-config-maps
         configMap:
           name: {{ template "spinnaker.fullname" . }}-additional-profile-config-maps
+      {{- if .Values.halyard.bom }}
+      - name: halyard-bom
+        configMap:
+          name: {{ template "spinnaker.fullname" . }}-halyard-bom
+      {{- end }}
       - name: halyard-config
         emptyDir: {}
       - name: service-settings
@@ -156,14 +165,14 @@ spec:
           mountPath: /opt/halyard/config
         - name: reg-secrets
           mountPath: /opt/registry/passwords
-        {{- if .Values.halyard.env }}
-        env:
-{{ toYaml .Values.halyard.env | indent 8 }}
-        {{- end }}
         {{- if .Values.halyard.customCerts.enabled }}
         - mountPath: /etc/ssl/certs/java/cacerts
           subPath: cacerts
           name: cacerts
+        {{- end }}
+        {{- if .Values.halyard.env }}
+        env:
+{{ toYaml .Values.halyard.env | indent 8 }}
         {{- end }}
 {{- if .Values.halyard.persistence.enabled }}
   volumeClaimTemplates:
