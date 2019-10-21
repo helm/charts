@@ -8,5 +8,5 @@ sources:
 - https://www.tensorflow.org/deploy/distributed
 home: https://www.tensorflow.org
 maintainers:
-- name: cheyang
-  email: cheyang@163.com
+- name: Dysproz
+  email: krasuski.szymon.piotr@gmail.com
