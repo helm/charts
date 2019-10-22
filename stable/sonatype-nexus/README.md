@@ -146,6 +146,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `service.portName`                          | Service port name                | `nil`                                      |
 | `service.labels`                            | Service labels                   | `nil`                                      |
 | `service.annotations`                       | Service annotations              | `nil`                                      |
+| `service.loadBalancerSourceRanges`          | Service LoadBalancer source IP whitelist | `nil`                              |
 | `service.targetPort`                        | Service port                     | `nil`                                      |
 | `service.port`                              | Port for exposing service        | `nil`                                      |
 | `route.enabled`         | Set to true to create route for additional service | `false` |
