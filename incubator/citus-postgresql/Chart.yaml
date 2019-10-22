@@ -1,3 +1,4 @@
+apiVersion: v1
 name: citus-postgresql
 description: Deploys Citus PostgreSQL cluster
 version: 0.1.0
