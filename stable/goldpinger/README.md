@@ -45,7 +45,7 @@ The following table lists the configurable parameters of the Goldpinger chart an
 | Parameter                      | Description                                  | Default                |
 | ------------------------------ | -------------------------------------------- | ---------------------- |
 | `image.repository`             | Goldpinger image                             | `bloomberg/goldpinger` |
-| `image.tag`                    | Goldpinger image tag                         | `1.5.0`                |
+| `image.tag`                    | Goldpinger image tag                         | `2.0.0`                |
 | `pullPolicy`                   | Image pull policy                            | `IfNotPresent`         |
 | `rbac.create`                  | Install required rbac clusterrole            | `true`                 |
 | `serviceAccount.create`        | Enable ServiceAccount creation               | `true`                 |
@@ -67,7 +67,7 @@ The following table lists the configurable parameters of the Goldpinger chart an
 | `resources`                    | CPU/Memory resource requests/limits          | `{}`                   |
 | `podSecurityPolicy.enabled`    | Enable podSecuritypolicy                     | `false`                |
 | `podSecurityPolicy.policyName` | PodSecurityPolicy Name                       | `unrestricted-psp`     |
-| `serviceMonitor.enabled`       | Set this to `true` to create ServiceMonitor for Prometheus operator | `false` | 
+| `serviceMonitor.enabled`       | Set this to `true` to create ServiceMonitor for Prometheus operator | `false` |
 | `serviceMonitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | `{}` |
 | `serviceMonitor.honorLabels` | honorLabels chooses the metric's labels on collisions with target labels. | `false`|
 | `serviceMonitor.namespace` | namespace where servicemonitor resource should be created | `the same namespace as goldpinger` |
