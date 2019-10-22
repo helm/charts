@@ -56,14 +56,14 @@ livenessProbe:
   enabled: true
 
 hazelcast:
-  groupName: devorientdb
-  groupPassword: devorientdb
+  groupName: orientdb
+  groupPassword: orientdb
 
 persistence:
   enabled: true
   # volumeClaim:
-  #   storageName: dev-orient-vc-01
-  #   backupName: dev-orient-vc-backup-01
+  #   storageName: orient-vc-01
+  #   backupName: orient-vc-backup-01
   storage:
     # storageClassName: nfs-client
     accessMode:
