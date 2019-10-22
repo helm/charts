@@ -1,0 +1,19 @@
+{{- if .Values.rbac.pspEnabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ template "fluentd-cloudwatch.fullname" . }}-psp
+  labels:
+    app: {{ template "fluentd-cloudwatch.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "fluentd-cloudwatch.fullname" . }}-psp
+subjects:
+  - kind: ServiceAccount
+    name: {{ if .Values.rbac.create }}{{ template "fluentd-cloudwatch.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+    namespace: {{ .Release.Namespace }}
+{{- end }}

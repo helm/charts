@@ -77,16 +77,16 @@ spec:
             httpGet:
               path: /
               port: api
-            initialDelaySeconds: 30
+            initialDelaySeconds: 60
             failureThreshold: 5
-            timeoutSeconds: 5
+            timeoutSeconds: 10
           readinessProbe:
             httpGet:
               path: /
               port: api
-            initialDelaySeconds: 30
+            initialDelaySeconds: 60
             failureThreshold: 5
-            timeoutSeconds: 5
+            timeoutSeconds: 10
           env:
             {{- range $key, $value := .Values.extraEnv }}
             - name: {{ $key }}
@@ -106,6 +106,14 @@ spec:
           - mountPath: /dev/ttyACM0
             name: ttyacm
           {{- end }}
+          {{- range .Values.hostMounts }}
+          {{- if .mountPath }}
+          - mountPath: {{ .mountPath }}
+          {{- else }}
+          - mountPath: {{ .hostPath }}
+          {{- end }}
+            name: {{ .name }}
+          {{- end }}
           {{- if .Values.git.enabled }}
           - mountPath: {{ .Values.git.keyPath }}
             name: git-secret
@@ -121,7 +129,7 @@ spec:
           {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
-          {{- if .Values.zwave.enabled }}
+          {{- if or .Values.zwave.enabled (.Values.hostMounts) }}
           securityContext:
             privileged: true
           {{- end }}
@@ -205,6 +213,7 @@ spec:
             {{- if .Values.vscode.vscodePath }}
             - --extensions-dir={{ .Values.vscode.vscodePath }}
             - --user-data-dir={{ .Values.vscode.vscodePath }}
+            - {{ .Values.vscode.hassConfig }}
             {{- end }}
           ports:
             - name: vscode
@@ -240,8 +249,14 @@ spec:
       volumes:
       - name: config
       {{- if .Values.persistence.enabled }}
+        {{- if .Values.persistence.hostPath }}
+        hostPath:
+          path: {{.Values.persistence.hostPath}}
+          type: Directory
+        {{- else }}
         persistentVolumeClaim:
           claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "home-assistant.fullname" . }}{{- end }}
+        {{- end }}
       {{- else }}
         emptyDir: {}
       {{ end }}
@@ -249,6 +264,14 @@ spec:
       - name: ttyacm
         hostPath:
           path: /dev/{{.Values.zwave.device}}
+      {{- end }}
+      {{- range .Values.hostMounts }}
+      - name: {{ .name }}
+        hostPath:
+          path: {{.hostPath}}
+          {{- if .type }}
+          type: {{ .type }}
+          {{- end }}
       {{- end }}
       {{- if .Values.git.enabled }}
       - name: git-secret

@@ -59,6 +59,7 @@ backend:
     type: flb_type
     logstash_prefix: kubernetes_cluster
     replace_dots: "On"
+    logstash_format: "On"
     time_key: "@timestamp"
     # Optional username credential for Elastic X-Pack access
     http_user:
@@ -80,6 +81,7 @@ backend:
     tls_verify: "off"
     tls_debug: 1
     message_key: "kubernetes"
+  stackdriver: {}
 
   ##
   ## Ref: http://fluentbit.io/documentation/current/output/http.html
@@ -220,6 +222,7 @@ input:
     memBufLimit: 5MB
     parser: docker
     path: /var/log/containers/*.log
+    ignore_older: ""
   systemd:
     enabled: false
     filters:

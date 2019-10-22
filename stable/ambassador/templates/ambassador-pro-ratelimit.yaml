@@ -1,0 +1,67 @@
+{{ if and .Values.pro.enabled .Values.pro.rateLimit.enabled  }}
+{{- if .Values.crds.enabled }}
+---
+apiVersion: getambassador.io/v1
+kind: RateLimitService
+metadata:
+  name: {{ include "ambassador.fullname" . }}-pro-ratelimit
+spec:
+  {{- if hasKey .Values.env "AMBASSADOR_ID" }}
+  ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
+  {{- end }}
+  service: 127.0.0.1:{{ .Values.pro.ports.ratelimit }}
+
+{{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ambassador.fullname" . }}-pro-redis
+  labels:
+    app.kubernetes.io/name: {{ include "ambassador.fullname" . }}-pro-redis
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+    helm.sh/chart: {{ include "ambassador.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+    {{- toYaml .Values.pro.rateLimit.redis.annotations.service | nindent 4}}
+spec:
+  type: ClusterIP
+  ports:
+  - port: 6379
+    targetPort: 6379
+  selector:
+    app.kubernetes.io/name: {{ include "ambassador.fullname" . }}-pro-redis
+    app.kubernetes.io/instance: {{ .Release.Name }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ambassador.fullname" . }}-pro-redis
+  labels:
+    app.kubernetes.io/name: {{ include "ambassador.fullname" . }}-pro-redis
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+    helm.sh/chart: {{ include "ambassador.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+    {{- toYaml .Values.pro.rateLimit.redis.annotations.deployment | nindent 4}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "ambassador.fullname" . }}-pro-redis
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "ambassador.fullname" . }}-pro-redis
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: redis
+        image: redis:5.0.1
+      restartPolicy: Always
+      resources:
+        {{- toYaml .Values.pro.rateLimit.redis.resources | nindent 8 }}
+{{ end }}

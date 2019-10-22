@@ -49,6 +49,11 @@ spec:
         secret:
           secretName: {{ $name }}
       {{- end }}
+      {{- range .Values.googleServiceAccountSecrets }}
+      - name: {{ .name }}
+        secret:
+          secretName: {{ .secretName }}
+      {{- end }}
       {{- if .Values.gitconfig }}
       - name: gitconfig-volume
         secret:
@@ -94,7 +99,7 @@ spec:
           args:
             - server
             {{- if .Values.config }}
-            - --config /etc/atlantis/atlantis.yaml
+            - --config=/etc/atlantis/atlantis.yaml
             {{- end }}
           ports:
           - name: atlantis
@@ -235,6 +240,11 @@ spec:
           - name: {{ $name }}-volume
             readOnly: true
             mountPath: /etc/{{ $name }}
+          {{- end }}
+          {{- range .Values.googleServiceAccountSecrets }}
+          - name: {{ .name }}
+            readOnly: true
+            mountPath: /var/secrets/{{ .name }}
           {{- end }}
           {{- if .Values.gitconfig}}
           - name: gitconfig-volume

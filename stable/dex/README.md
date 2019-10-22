@@ -67,12 +67,14 @@ Parameters introduced starting from v2
 | `certs.web.pod.annotations` | Annotations for the pod created by the `web-certs` job | `{}` |
 | `config.connectors` | Maps to the dex config `connectors` dict param | `{}` |
 | `config.enablePasswordDB` | Maps to the dex config `enablePasswordDB` param | `true` |
+| `config.frontend` | Maps to the dex config `frontend` dict param | `""` |
 | `config.grpc.address` | dex grpc listen address | `127.0.0.1` |
 | `config.grpc.tlsCert` | Maps to the dex config `grpc.tlsCert` param | `/etc/dex/tls/grpc/server/tls.crt` |
 | `config.grpc.tlsClientCA` | Maps to the dex config `grpc.tlsClientCA` param | `/etc/dex/tls/grpc/ca/tls.crt` |
 | `config.grpc.tlsKey` | Maps to the dex config `grpc.tlsKey` param | `/etc/dex/tls/grpc/server/tls.key` |
 | `config.issuer` | Maps to the dex config `issuer` param | `http://dex.io:8080` |
 | `config.logger` | Maps to the dex config `logger` dict param | `{"level": "debug"}` |
+| `config.oauth2.alwaysShowLoginScreen` | Maps to the dex config `oauth2.alwaysShowLoginScreen` param | `false` |
 | `config.oauth2.skipApprovalScreen` | Maps to the dex config `oauth2.skipApprovalScreen` param | `true` |
 | `config.staticClients` | Maps to the dex config `staticClients` list param | `""` |
 | `config.staticPasswords` | Maps to the dex config `staticPasswords` list param | `""` |

@@ -27,6 +27,9 @@ spec:
           args:
             - "--key-prefix"
             - "{{ .Values.secretName }}"
+            {{- range $value := .Values.commandArgs }}
+            - {{ $value | quote }}
+            {{- end }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
@@ -46,7 +49,7 @@ spec:
           securityContext:
             readOnlyRootFilesystem: true
             runAsNonRoot: true
-            runAsUser: 1001
+            runAsUser: {{ .Values.securityContext.runAsUser }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
       volumes:

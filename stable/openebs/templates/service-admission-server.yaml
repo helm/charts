@@ -1,3 +1,4 @@
+{{- if .Values.webhook.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -7,9 +8,11 @@ metadata:
     chart: {{ template "openebs.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    openebs.io/component-name: admission-webhook-svc
 spec:
   ports:
   - port: 443
     targetPort: 443
   selector:
     app: admission-webhook
+{{- end }}

@@ -1,3 +1,4 @@
+{{- if .Values.testFramework.enabled }}
 apiVersion: v1
 kind: Pod
 metadata:
@@ -9,6 +10,7 @@ metadata:
     release: "{{ .Release.Name }}"
   annotations:
     "helm.sh/hook": test-success
+  namespace: {{ .Release.Namespace }}
 spec:
   serviceAccountName: {{ template "grafana.serviceAccountNameTest" . }}
   {{- if .Values.testFramework.securityContext }}
@@ -33,6 +35,18 @@ spec:
     - name: {{ . }}
   {{- end}}
   {{- end }}
+  {{- with .Values.nodeSelector }}
+  nodeSelector:
+{{ toYaml . | indent 4 }}
+  {{- end }}
+  {{- with .Values.affinity }}
+  affinity:
+{{ toYaml . | indent 4 }}
+  {{- end }}
+  {{- with .Values.tolerations }}
+  tolerations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
   containers:
     - name: {{ .Release.Name }}-test
       image: "{{ .Values.testFramework.image}}:{{ .Values.testFramework.tag }}"
@@ -50,3 +64,4 @@ spec:
   - name: tools
     emptyDir: {}
   restartPolicy: Never
+{{- end }}

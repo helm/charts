@@ -6,15 +6,18 @@
 strategyType: Recreate
 
 image:
-  repository: nodered/node-red-docker
-  tag: 0.20.7-slim-v8
+  repository: nodered/node-red
+  tag: 1.0.1-12-minimal
   pullPolicy: IfNotPresent
 
 nameOverride: ""
 fullnameOverride: ""
 
 flows: "flows.json"
+safeMode: "false"
+enableProjects: "false"
 # nodeOptions: ""
+extraEnvs: []
 timezone: "UTC"
 
 service:
@@ -87,3 +90,5 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+podAnnotations: {}

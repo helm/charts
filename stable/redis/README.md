@@ -1,3 +1,4 @@
+
 # Redis
 
 [Redis](http://redis.io/) is an advanced key-value cache and store. It is often referred to as a data structure server since keys can contain strings, hashes, lists, sets, sorted sets, bitmaps and hyperloglogs.
@@ -22,7 +23,8 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 
 ## Prerequisites
 
-- Kubernetes 1.8+
+- Kubernetes 1.12+
+- Helm 2.11+ or Helm 3.0-beta3+
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
@@ -125,6 +127,7 @@ The following table lists the configurable parameters of the Redis chart and the
 |-----------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------|
 | `global.imageRegistry`                        | Global Docker image registry                                                                                                                        | `nil`                                                   |
 | `global.imagePullSecrets`                     | Global Docker registry secret names as an array                                                                                                     | `[]` (does not add image pull secrets to deployed pods) |
+| `global.storageClass`                     | Global storage class for dynamic provisioning                                               | `nil`                                                        |
 | `image.registry`                              | Redis Image registry                                                                                                                                | `docker.io`                                             |
 | `image.repository`                            | Redis Image name                                                                                                                                    | `bitnami/redis`                                         |
 | `image.tag`                                   | Redis Image tag                                                                                                                                     | `{TAG_NAME}`                                            |
@@ -135,16 +138,18 @@ The following table lists the configurable parameters of the Redis chart and the
 | `cluster.enabled`                             | Use master-slave topology                                                                                                                           | `true`                                                  |
 | `cluster.slaveCount`                          | Number of slaves                                                                                                                                    | `1`                                                     |
 | `existingSecret`                              | Name of existing secret object (for password authentication)                                                                                        | `nil`                                                   |
+| `existingSecretPasswordKey`                   | Name of key containing password to be retrieved from the existing secret                                                                                                 | `nil`                                                   |
 | `usePassword`                                 | Use password                                                                                                                                        | `true`                                                  |
 | `usePasswordFile`                             | Mount passwords as files instead of environment variables                                                                                           | `false`                                                 |
 | `password`                                    | Redis password (ignored if existingSecret set)                                                                                                      | Randomly generated                                      |
-| `configmap`                                   | Additional common Redis node configuration                                                                                                          | See values.yaml                                         |
+| `configmap`                                   | Additional common Redis node configuration (this value is evaluated as a template)                                                                  | See values.yaml                                         |
 | `clusterDomain`                               | Kubernetes DNS Domain name to use                                                                                                                   | `cluster.local`                                         |
 | `networkPolicy.enabled`                       | Enable NetworkPolicy                                                                                                                                | `false`                                                 |
 | `networkPolicy.allowExternal`                 | Don't require client label for connections                                                                                                          | `true`                                                  |
 | `securityContext.enabled`                     | Enable security context (both redis master and slave pods)                                                                                          | `true`                                                  |
 | `securityContext.fsGroup`                     | Group ID for the container (both redis master and slave pods)                                                                                       | `1001`                                                  |
 | `securityContext.runAsUser`                   | User ID for the container (both redis master and slave pods)                                                                                        | `1001`                                                  |
+| `securityContext.sysctls`                     | Set namespaced sysctls for the container (both redis master and slave pods)                                                                         | `nil`                                                   |
 | `serviceAccount.create`                       | Specifies whether a ServiceAccount should be created                                                                                                | `false`                                                 |
 | `serviceAccount.name`                         | The name of the ServiceAccount to create                                                                                                            | Generated using the fullname template                   |
 | `rbac.create`                                 | Specifies whether RBAC resources should be created                                                                                                  | `false`                                                 |
@@ -165,6 +170,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `metrics.serviceMonitor.selector`             | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install                                          | `{ prometheus: kube-prometheus }`                       |
 | `metrics.service.type`                        | Kubernetes Service type (redis metrics)                                                                                                             | `ClusterIP`                                             |
 | `metrics.service.annotations`                 | Annotations for the services to monitor  (redis master and redis slave service)                                                                     | {}                                                      |
+| `metrics.service.labels`                      | Additional labels for the metrics service                                                                                                           | {}                                                      |
 | `metrics.service.loadBalancerIP`              | loadBalancerIP if redis metrics service type is `LoadBalancer`                                                                                      | `nil`                                                   |
 | `metrics.priorityClassName`                   | Metrics exporter pod priorityClassName                                                                                                              | {}                                                      |
 | `persistence.existingClaim`                   | Provide an existing PersistentVolumeClaim                                                                                                           | `nil`                                                   |
@@ -180,7 +186,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `master.podAnnotations`                       | Additional annotations for Redis master pod                                                                                                         | {}                                                      |
 | `redisPort`                                   | Redis port (in both master and slaves)                                                                                                              | `6379`                                                  |
 | `master.command`                              | Redis master entrypoint string. The command `redis-server` is executed if this is not provided.                                                     | `/run.sh`                                               |
-| `master.configmap`                            | Additional Redis configuration for the master nodes                                                                                                 | `nil`                                                   |
+| `master.configmap`                            | Additional Redis configuration for the master nodes (this value is evaluated as a template)                                                         | `nil`                                                   |
 | `master.disableCommands`                      | Array of Redis commands to disable (master)                                                                                                         | `["FLUSHDB", "FLUSHALL"]`                               |
 | `master.extraFlags`                           | Redis master additional command line flags                                                                                                          | []                                                      |
 | `master.nodeSelector`                         | Redis master Node labels for pod assignment                                                                                                         | {"beta.kubernetes.io/arch": "amd64"}                    |
@@ -191,7 +197,9 @@ The following table lists the configurable parameters of the Redis chart and the
 | `master.service.port`                         | Kubernetes Service port (redis master)                                                                                                              | `6379`                                                  |
 | `master.service.nodePort`                     | Kubernetes Service nodePort (redis master)                                                                                                          | `nil`                                                   |
 | `master.service.annotations`                  | annotations for redis master service                                                                                                                | {}                                                      |
+| `master.service.labels`                       | Additional labels for redis master service                                                                                                          | {}                                                      |
 | `master.service.loadBalancerIP`               | loadBalancerIP if redis master service type is `LoadBalancer`                                                                                       | `nil`                                                   |
+| `master.service.loadBalancerSourceRanges`     | loadBalancerSourceRanges if redis master service type is `LoadBalancer`                                                                                       | `nil`                                                   |
 | `master.resources`                            | Redis master CPU/Memory resource requests/limits                                                                                                    | Memory: `256Mi`, CPU: `100m`                            |
 | `master.livenessProbe.enabled`                | Turn on and off liveness probe (redis master pod)                                                                                                   | `true`                                                  |
 | `master.livenessProbe.initialDelaySeconds`    | Delay before liveness probe is initiated (redis master pod)                                                                                         | `30`                                                    |
@@ -209,16 +217,18 @@ The following table lists the configurable parameters of the Redis chart and the
 | `volumePermissions.enabled`                   | Enable init container that changes volume permissions in the registry (for cases where the default k8s `runAsUser` and `fsUser` values do not work) | `false`                                                 |
 | `volumePermissions.image.registry`            | Init container volume-permissions image registry                                                                                                    | `docker.io`                                             |
 | `volumePermissions.image.repository`          | Init container volume-permissions image name                                                                                                        | `bitnami/minideb`                                       |
-| `volumePermissions.image.tag`                 | Init container volume-permissions image tag                                                                                                         | `latest`                                                |
+| `volumePermissions.image.tag`                 | Init container volume-permissions image tag                                                                                                         | `stretch`                                                |
 | `volumePermissions.image.pullPolicy`          | Init container volume-permissions image pull policy                                                                                                 | `Always`                                                |
 | `volumePermissions.resources       `          | Init container volume-permissions CPU/Memory resource requests/limits                                                                               | {}                                                      |
 | `slave.service.type`                          | Kubernetes Service type (redis slave)                                                                                                               | `ClusterIP`                                             |
 | `slave.service.nodePort`                      | Kubernetes Service nodePort (redis slave)                                                                                                           | `nil`                                                   |
 | `slave.service.annotations`                   | annotations for redis slave service                                                                                                                 | {}                                                      |
+| `slave.service.labels`                        | Additional labels for redis slave service                                                                                                           | {}                                                      |
 | `slave.service.port`                          | Kubernetes Service port (redis slave)                                                                                                               | `6379`                                                  |
 | `slave.service.loadBalancerIP`                | LoadBalancerIP if Redis slave service type is `LoadBalancer`                                                                                        | `nil`                                                   |
+| `slave.service.loadBalancerSourceRanges`      | loadBalancerSourceRanges if Redis slave service type is `LoadBalancer`                                                                              | `nil`                                                   |
 | `slave.command`                               | Redis slave entrypoint array. The docker image's ENTRYPOINT is used if this is not provided.                                                        | `/run.sh`                                               |
-| `slave.configmap`                             | Additional Redis configuration for the slave nodes                                                                                                  | `nil`                                                   |
+| `slave.configmap`                             | Additional Redis configuration for the slave nodes (this value is evaluated as a template)                                                          | `nil`                                                   |
 | `slave.disableCommands`                       | Array of Redis commands to disable (slave)                                                                                                          | `[FLUSHDB, FLUSHALL]`                                   |
 | `slave.extraFlags`                            | Redis slave additional command line flags                                                                                                           | `[]`                                                    |
 | `slave.livenessProbe.enabled`                 | Turn on and off liveness probe (redis slave pod)                                                                                                    | `true`                                                  |
@@ -255,10 +265,11 @@ The following table lists the configurable parameters of the Redis chart and the
 | `sentinel.failoverTimeout`                    | Timeout for performing a election failover                                                                                                          | `18000`                                                 |
 | `sentinel.parallelSyncs`                      | Number of parallel syncs in the cluster                                                                                                             | `1`                                                     |
 | `sentinel.port`                               | Redis Sentinel port                                                                                                                                 | `26379`                                                 |
-| `sentinel.configmap`                          | Additional Redis configuration for the sentinel nodes                                                                                               | `nil`                                                   |
+| `sentinel.configmap`                          | Additional Redis configuration for the sentinel nodes (this value is evaluated as a template)                                                       | `nil`                                                   |
 | `sentinel.service.type`                       | Kubernetes Service type (redis sentinel)                                                                                                            | `ClusterIP`                                             |
 | `sentinel.service.nodePort`                   | Kubernetes Service nodePort (redis sentinel)                                                                                                        | `nil`                                                   |
 | `sentinel.service.annotations`                | annotations for redis sentinel service                                                                                                              | {}                                                      |
+| `sentinel.service.labels`                     | Additional labels for redis sentinel service                                                                                                        | {}                                                      |
 | `sentinel.service.redisPort`                  | Kubernetes Service port for Redis read only operations                                                                                              | `6379`                                                  |
 | `sentinel.service.sentinelPort`               | Kubernetes Service port for Redis sentinel                                                                                                          | `26379`                                                 |
 | `sentinel.service.redisNodePort`              | Kubernetes Service node port for Redis read only operations                                                                                         | ``                                                      |
@@ -286,7 +297,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `sysctlImage.command`                         | sysctlImage command to execute                                                                                                                      | []                                                      |
 | `sysctlImage.registry`                        | sysctlImage Init container registry                                                                                                                 | `docker.io`                                             |
 | `sysctlImage.repository`                      | sysctlImage Init container name                                                                                                                     | `bitnami/minideb`                                       |
-| `sysctlImage.tag`                             | sysctlImage Init container tag                                                                                                                      | `latest`                                                |
+| `sysctlImage.tag`                             | sysctlImage Init container tag                                                                                                                      | `stretch`                                                |
 | `sysctlImage.pullPolicy`                      | sysctlImage Init container pull policy                                                                                                              | `Always`                                                |
 | `sysctlImage.mountHostSys`                    | Mount the host `/sys` folder to `/host-sys`                                                                                                         | `false`                                                 |
 | `sysctlImage.resources`                       | sysctlImage Init container CPU/Memory resource requests/limits                                                                                      | {}                                                      |
@@ -310,6 +321,20 @@ $ helm install --name my-release -f values.yaml stable/redis
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
 > **Note for minikube users**: Current versions of minikube (v0.24.1 at the time of writing) provision `hostPath` persistent volumes that are only writable by root. Using chart defaults cause pod failure for the Redis pod as it attempts to write to the `/bitnami` directory. Consider installing Redis with `--set persistence.enabled=false`. See minikube issue [1990](https://github.com/kubernetes/minikube/issues/1990) for more information.
+
+### Using password file
+To use a password file for Redis you need to create a secret containing the password:
+
+```bash
+$ kubectl create secret generic redis-password-file --from-file=/tmp/redis-password
+```
+> *NOTE*: It is important that the file with the password must be called `redis-password`
+
+And deploy the Helm Chart using the secret name:
+
+```bash
+$ helm install stable/redis --set usePassword=true,usePasswordFile=true,existingSecret=redis-password-file,sentinels.enabled=true,metrics.enabled=true
+```
 
 ### Production configuration
 
@@ -387,10 +412,22 @@ sysctlImage:
     - /bin/sh
     - -c
     - |-
-      install_packages systemd
+      install_packages procps
       sysctl -w net.core.somaxconn=10000
       echo never > /host-sys/kernel/mm/transparent_hugepage/enabled
 ```
+
+Alternatively, for Kubernetes 1.12+ you can set `securityContext.sysctls` which will configure sysctls for master and slave pods. Example:
+
+```yaml
+securityContext:
+  sysctls:
+  - name: net.core.somaxconn
+    value: "10000"
+```
+
+Note that this will not disable transparent huge tables.
+
 ## Cluster topologies
 
 ### Default: Master-Slave

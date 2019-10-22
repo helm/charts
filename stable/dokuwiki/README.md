@@ -16,8 +16,10 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.12+
+- Helm 2.11+ or Helm 3.0-beta3+
 - PV provisioner support in the underlying infrastructure
+- ReadWriteMany volumes for deployment scaling
 
 ## Installing the Chart
 
@@ -49,6 +51,7 @@ The following table lists the configurable parameters of the DokuWiki chart and 
 |--------------------------------------|------------------------------------------------------------|-----------------------------------------------|
 | `global.imageRegistry`               | Global Docker image registry                               | `nil`                                         |
 | `global.imagePullSecrets`            | Global Docker registry secret names as an array            | `[]` (does not add image pull secrets to deployed pods) |
+| `global.storageClass`                     | Global storage class for dynamic provisioning                                               | `nil`                                                        |
 | `image.registry`                     | DokuWiki image registry                                    | `docker.io`                                   |
 | `image.repository`                   | DokuWiki image name                                        | `bitnami/dokuwiki`                            |
 | `image.tag`                          | DokuWiki image tag                                         | `{TAG_NAME}`                                  |

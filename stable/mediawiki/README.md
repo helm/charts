@@ -18,8 +18,10 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.12+
+- Helm 2.11+ or Helm 3.0-beta3+
 - PV provisioner support in the underlying infrastructure
+- ReadWriteMany volumes for deployment scaling
 
 ## Installing the Chart
 
@@ -51,6 +53,7 @@ The following table lists the configurable parameters of the MediaWiki chart and
 |--------------------------------------|-------------------------------------------------------------|---------------------------------------------------------|
 | `global.imageRegistry`               | Global Docker image registry                                | `nil`                                                   |
 | `global.imagePullSecrets`            | Global Docker registry secret names as an array             | `[]` (does not add image pull secrets to deployed pods) |
+| `global.storageClass`                     | Global storage class for dynamic provisioning                                               | `nil`                                                        |
 | `image.registry`                     | MediaWiki image registry                                    | `docker.io`                                             |
 | `image.repository`                   | MediaWiki Image name                                        | `bitnami/mediawiki`                                     |
 | `image.tag`                          | MediaWiki Image tag                                         | `{TAG_NAME}`                                            |
@@ -80,7 +83,7 @@ The following table lists the configurable parameters of the MediaWiki chart and
 | `service.type`                       | Kubernetes Service type                                     | `LoadBalancer`                                          |
 | `service.loadBalancer`               | Kubernetes LoadBalancerIP to request                        | `nil`                                                   |
 | `service.port`                       | Service HTTP port                                           | `80`                                                    |
-| `service.httpsPort`                  | Service HTTPS port                                          | `443`                                                   |
+| `service.httpsPort`                  | Service HTTPS port                                          | `""`                                                    |
 | `service.externalTrafficPolicy`      | Enable client source IP preservation                        | `Cluster`                                               |
 | `service.nodePorts.http`             | Kubernetes http node port                                   | `""`                                                    |
 | `service.nodePorts.https`            | Kubernetes https node port                                  | `""`                                                    |
@@ -113,6 +116,7 @@ The following table lists the configurable parameters of the MediaWiki chart and
 | `readinessProbe.failureThreshold`    | Minimum consecutive failures to be considered failed        | 6                                                       |
 | `readinessProbe.successThreshold`    | Minimum consecutive successes to be considered successful   | 1                                                       |
 | `podAnnotations`                     | Pod annotations                                             | `{}`                                                    |
+| `affinity`                           | Map of node/pod affinities                                  | `{}`                                                    |
 | `metrics.enabled`                    | Start a side-car prometheus exporter                        | `false`                                                 |
 | `metrics.image.registry`             | Apache exporter image registry                              | `docker.io`                                             |
 | `metrics.image.repository`           | Apache exporter image name                                  | `bitnami/apache-exporter`                               |

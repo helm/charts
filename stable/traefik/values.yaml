@@ -1,6 +1,6 @@
 ## Default values for Traefik
 image: traefik
-imageTag: 1.7.12
+imageTag: 1.7.14
 
 ## Optionally specify an array of imagePullSecrets.
 ## Secrets must be manually created in the namespace.
@@ -24,6 +24,9 @@ replicas: 1
 #   - "--ping"
 #   - "--ping.entrypoint=http"
 
+# /ping health-check entry point.
+# pingEntryPoint: http
+
 podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 2
@@ -38,6 +41,8 @@ debug:
   enabled: false
 
 # logLevel: error
+
+# maxIdleConnsPerHost: 200
 
 deploymentStrategy: {}
   # rollingUpdate:
@@ -160,6 +165,7 @@ kvprovider:
 
   ## storeAcme has to be enabled to support HA Support using acme, but at least one kvprovider is needed
   storeAcme: false
+  acmeStorageLocation: traefik/acme/account
   importAcme: false
 
   # etcd:
@@ -426,6 +432,11 @@ metrics:
     # address: localhost:8125
     # pushinterval: 10s
 deployment:
+  # labels to add to the deployment
+  # labels:
+  #   key: value
+  # annotations:
+  #   key: value
   # labels to add to the pod container metadata
   # podLabels:
   #   key: value

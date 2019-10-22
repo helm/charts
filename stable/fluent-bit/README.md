@@ -44,6 +44,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.es.index`         | Elastic Index name | `kubernetes_cluster` |
 | `backend.es.type`          | Elastic Type name | `flb_type` |
 | `backend.es.time_key`          | Elastic Time Key | `@timestamp` |
+| `backend.es.logstash_format`          | Enable Logstash format compatibility. | `On` |
 | `backend.es.logstash_prefix`  | Index Prefix. If Logstash_Prefix is equals to 'mydata' your index will become 'mydata-YYYY.MM.DD'. | `kubernetes_cluster` |
 | `backend.es.replace_dots`     | Enable/Disable Replace_Dots option. | `On` |
 | `backend.es.http_user`        | Optional username credential for Elastic X-Pack access. | `` |
@@ -76,6 +77,10 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.splunk.tls_verify`           | Force TLS certificate validation | `off` |
 | `backend.splunk.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
 | `backend.splunk.message_key`           | Tag applied to all incoming logs | `kubernetes` |
+| **Stackdriver Backend**              |
+| `backend.stackdriver.google_service_credentials`           | Contents of a Google Cloud credentials JSON file. | `` |
+| `backend.stackdriver.service_account_email`           | Account email associated to the service. Only available if no credentials file has been provided. | `` |
+| `backend.stackdriver.service_account_secret`            | Private key content associated with the service account. Only available if no credentials file has been provided. | `` |
 | **Parsers**                   |
 | `parsers.enabled`                  | Enable custom parsers | `false` |
 | `parsers.regex`                    | List of regex parsers | `NULL` |
@@ -113,6 +118,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `input.tail.memBufLimit`           | Specify Mem_Buf_Limit in tail input        | `5MB`                                             |
 | `input.tail.parser`                | Specify Parser in tail input.        | `docker`                                             |
 | `input.tail.path`                  | Specify log file(s) through the use of common wildcards.        | `/var/log/containers/*.log`                                             |
+| `input.tail.ignore_older`          | Ignores files that have been last modified before this time in seconds. Supports m,h,d (minutes, hours,days) syntax.        | ``                                             |
 | `input.systemd.enabled`            | [Enable systemd input](https://docs.fluentbit.io/manual/input/systemd)                   | `false`                                       |
 | `input.systemd.filters.systemdUnit` | Please see https://docs.fluentbit.io/manual/input/systemd | `[docker.service, kubelet.service`, `node-problem-detector.service]`                                       |
 | `input.systemd.maxEntries`         | Please see https://docs.fluentbit.io/manual/input/systemd | `1000`                             |
