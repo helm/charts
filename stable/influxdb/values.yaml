@@ -16,6 +16,12 @@ livenessProbe:
 
 readinessProbe:
   probePath: "/ping"
+  
+startupProbe:
+  enabled: false
+  probePath: "/ping"
+  # failureThreshold: 6
+  # periodSeconds: 5
 
 ## Specify a service type
 ## NodePort is default
