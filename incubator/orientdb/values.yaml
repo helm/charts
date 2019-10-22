@@ -83,3 +83,6 @@ config:
 
 testing:
   enabled: false
+
+command:
+  postStartCommand: 'orientdb; CREATE USER user IDENTIFIED BY orientdb123 ROLE admin'
