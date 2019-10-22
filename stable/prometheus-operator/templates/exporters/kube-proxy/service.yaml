@@ -16,7 +16,9 @@ spec:
       port: {{ .Values.kubeProxy.service.port }}
       protocol: TCP
       targetPort: {{ .Values.kubeProxy.service.targetPort }}
+{{- if .Values.kubeProxy.endpoints }}{{- else }}
   selector:
   {{ include "prometheus-operator.rangeskipempty" .Values.kubeProxy.service.selector | indent 4 }}
+{{- end }}
   type: ClusterIP
 {{- end -}}
