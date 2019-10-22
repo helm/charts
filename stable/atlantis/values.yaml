@@ -209,3 +209,15 @@ googleServiceAccountSecrets: []
 # googleServiceAccountSecrets:
 #   - name: some-secret-name
 #     secretName: the_k8s_secret_name
+
+# Optionally specify additional volumes for the pod.
+extraVolumes: []
+# extraVolumes:
+#   - name: some-volume-name
+#     emptyDir: {}
+
+# Optionally specify additional volume mounts for the container.
+extraVolumeMounts: []
+# extraVolumeMounts:
+#   - name: some-volume-name
+#     mountPath: /path/in/container
