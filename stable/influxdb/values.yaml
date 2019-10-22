@@ -16,7 +16,7 @@ livenessProbe:
 
 readinessProbe:
   probePath: "/ping"
-  
+
 startupProbe:
   enabled: false
   probePath: "/ping"
