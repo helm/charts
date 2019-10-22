@@ -216,7 +216,7 @@ $ helm upgrade my-release stable/parse
 If you use a previous container image (previous to **3.1.2-r14** for Parse or **1.2.0-r69** for Parse Dashboard), disable the `securityContext` by running the command below:
 
 ```
-$ helm upgrade my-release stable/parse --set server.securityContext.enabled=fase,dashboard.securityContext.enabled=fase,server.image.tag=XXX,dashboard.image.tag=YYY
+$ helm upgrade my-release stable/parse --set server.securityContext.enabled=false,dashboard.securityContext.enabled=false,server.image.tag=XXX,dashboard.image.tag=YYY
 ```
 
 ### To 3.0.0
