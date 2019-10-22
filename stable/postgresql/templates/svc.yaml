@@ -26,12 +26,12 @@ spec:
   clusterIP: {{ .Values.service.clusterIP }}
   {{- end }}
   ports:
-  - name: postgresql
-    port: {{ template "postgresql.port" . }}
-    targetPort: postgresql
-    {{- if .Values.service.nodePort }}
-    nodePort: {{ .Values.service.nodePort }}
-    {{- end }}
+    - name: postgresql
+      port: {{ template "postgresql.port" . }}
+      targetPort: postgresql
+      {{- if .Values.service.nodePort }}
+      nodePort: {{ .Values.service.nodePort }}
+      {{- end }}
   selector:
     app: {{ template "postgresql.name" . }}
     release: {{ .Release.Name | quote }}
