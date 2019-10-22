@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 image:
   repository: prom/pushgateway
-  tag: v0.9.1
+  tag: v1.0.0
   pullPolicy: IfNotPresent
 
 service:
@@ -124,7 +124,7 @@ persistentVolume:
   ## If true, pushgateway will create/use a Persistent Volume Claim
   ## If false, use emptyDir
   ##
-  enabled: false
+  enabled: true
 
   ## pushgateway data Persistent Volume access modes
   ## Must match those of existing PV or dynamic provisioner

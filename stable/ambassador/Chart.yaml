@@ -1,8 +1,8 @@
 apiVersion: v1
-appVersion: 0.83.0
+appVersion: 0.85.0
 description: A Helm chart for Datawire Ambassador
 name: ambassador
-version: 4.3.3
+version: 4.4.3
 icon: https://www.getambassador.io/images/logo.png
 home: https://www.getambassador.io/
 sources:

@@ -268,6 +268,7 @@ updateStrategy: {}
 # is set below. In general, you should not set values here if they are set elsewhere.
 env:
   database: postgres
+  nginx_worker_processes: "1"
   proxy_access_log: /dev/stdout
   admin_access_log: /dev/stdout
   admin_gui_access_log: /dev/stdout
@@ -294,7 +295,7 @@ readinessProbe:
     path: "/status"
     port: metrics
     scheme: HTTP
-  initialDelaySeconds: 30
+  initialDelaySeconds: 10
   timeoutSeconds: 1
   periodSeconds: 10
   successThreshold: 1
@@ -307,7 +308,7 @@ livenessProbe:
     path: "/status"
     port: metrics
     scheme: HTTP
-  initialDelaySeconds: 30
+  initialDelaySeconds: 10
   timeoutSeconds: 5
   periodSeconds: 30
   successThreshold: 1
@@ -358,6 +359,20 @@ postgresql:
   service:
     port: 5432
 
+# Custom Kong plugins can be loaded into Kong by mounting the plugin code
+# into the file-system of Kong container.
+# The plugin code should be present in ConfigMap or Secret inside the same
+# namespace as Kong is being installed.
+# The `name` property refers to the name of the ConfigMap or Secret
+# itself, while the pluginName refers to the name of the plugin as it appears
+# in Kong.
+plugins: {}
+  # configMaps:
+  # - pluginName: rewriter
+  #   name: kong-plugin-rewriter
+  # secrets:
+  # - pluginName: rewriter
+  #   name: kong-plugin-rewriter
 # Kong Ingress Controller's primary purpose is to satisfy Ingress resources
 # created in k8s.  It uses CRDs for more fine grained control over routing and
 # for Kong specific configuration.
@@ -373,7 +388,7 @@ ingressController:
       path: "/healthz"
       port: 10254
       scheme: HTTP
-    initialDelaySeconds: 30
+    initialDelaySeconds: 10
     periodSeconds: 10
     successThreshold: 1
     timeoutSeconds: 5
@@ -383,10 +398,11 @@ ingressController:
       path: "/healthz"
       port: 10254
       scheme: HTTP
-      initialDelaySeconds: 30
+    initialDelaySeconds: 10
     periodSeconds: 10
     successThreshold: 1
     timeoutSeconds: 5
+  resources: {}
 
   installCRDs: true
 

@@ -18,8 +18,10 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.12+
+- Helm 2.11+ or Helm 3.0-beta3+
 - PV provisioner support in the underlying infrastructure
+- ReadWriteMany volumes for deployment scaling
 
 ## Installing the Chart
 
@@ -81,7 +83,7 @@ The following table lists the configurable parameters of the MediaWiki chart and
 | `service.type`                       | Kubernetes Service type                                     | `LoadBalancer`                                          |
 | `service.loadBalancer`               | Kubernetes LoadBalancerIP to request                        | `nil`                                                   |
 | `service.port`                       | Service HTTP port                                           | `80`                                                    |
-| `service.httpsPort`                  | Service HTTPS port                                          | `443`                                                   |
+| `service.httpsPort`                  | Service HTTPS port                                          | `""`                                                    |
 | `service.externalTrafficPolicy`      | Enable client source IP preservation                        | `Cluster`                                               |
 | `service.nodePorts.http`             | Kubernetes http node port                                   | `""`                                                    |
 | `service.nodePorts.https`            | Kubernetes https node port                                  | `""`                                                    |

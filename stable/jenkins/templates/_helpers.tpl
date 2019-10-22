@@ -19,7 +19,7 @@ Allow the release namespace to be overridden for multi-namespace deployments in 
 
 {{- define "jenkins.master.slaveKubernetesNamespace" -}}
   {{- if .Values.master.slaveKubernetesNamespace -}}
-    {{- .Values.master.slaveKubernetesNamespace -}}
+    {{- tpl .Values.master.slaveKubernetesNamespace . -}}
   {{- else -}}
     {{- if .Values.namespaceOverride -}}
       {{- .Values.namespaceOverride -}}

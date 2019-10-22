@@ -18,8 +18,10 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.12+
+- Helm 2.11+ or Helm 3.0-beta3+
 - PV provisioner support in the underlying infrastructure
+- ReadWriteMany volumes for deployment scaling
 
 ## Installing the Chart
 
@@ -104,6 +106,7 @@ The following table lists the configurable parameters of the WordPress chart and
 | `readinessProbeHeaders`          | Headers to use for readinessProbe                                             | `nil`                                                        |
 | `ingress.enabled`                | Enable ingress controller resource                                            | `false`                                                      |
 | `ingress.certManager`            | Add annotations for cert-manager                                              | `false`                                                      |
+| `ingress.hostname`               | Default host for the ingress resource                                         | `wordpress.local`                                            |
 | `ingress.annotations`            | Ingress annotations                                                           | `[]`                                                         |
 | `ingress.hosts[0].name`          | Hostname to your Wordpress installation                                       | `wordpress.local`                                            |
 | `ingress.hosts[0].path`          | Path within the url structure                                                 | `/`                                                          |
@@ -270,8 +273,9 @@ To enable ingress integration, please set `ingress.enabled` to `true`
 ### Hosts
 
 Most likely you will only want to have one hostname that maps to this
-WordPress installation, however, it is possible to have more than one
-host.  To facilitate this, the `ingress.hosts` object is an array.
+WordPress installation. If that's your case, the property `ingress.hostname`
+will set it. However, it is possible to have more than one host. To
+facilitate this, the `ingress.hosts` object is can be specified as an array.
 
 For each item, please indicate a `name`, `tls`, `tlsSecret`, and any
 `annotations` that you may want the ingress controller to know about.

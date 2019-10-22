@@ -135,6 +135,9 @@ podAnnotations: {}
 podLabels: {}
 replicaCount: 1
 
+# whether to use http or https
+httpScheme: http
+
 # Additionally authenticate against a htpasswd file. Entries must be created with "htpasswd -s" for SHA encryption.
 # Alternatively supply an existing secret which contains the required information.
 htpasswdFile:

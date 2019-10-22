@@ -64,3 +64,14 @@ Also, we can't use a single if because lazy evaluation is not an option
     {{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return the apiVersion of daemonset.
+*/}}
+{{- define "daemonset.apiVersion" -}}
+{{- if semverCompare "<1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "extensions/v1beta1" -}}
+{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "apps/v1" -}}
+{{- end -}}
+{{- end -}}
