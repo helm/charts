@@ -137,6 +137,11 @@ spec:
               protocol: TCP
               containerPort: 5671
             {{- end }}
+            {{- if .Values.rabbitmqPrometheusPlugin.enabled }}
+            - name: metrics
+              protocol: TCP
+              containerPort: 15692
+            {{- end }}
           livenessProbe:
             {{- toYaml .Values.livenessProbe | trim | nindent 12 }}
           readinessProbe:
