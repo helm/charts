@@ -39,10 +39,6 @@ spec:
       - name: {{ template "orientdb.name" . }}
         image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        lifecycle:
-          postStart:
-            exec:
-              command: ["/bin/sh", "-c", {{ .Values.command.postStartCommand }}]
         ports:
           - containerPort: {{ .Values.service.orientHttp }}
             name: http
