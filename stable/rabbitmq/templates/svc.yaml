@@ -67,6 +67,9 @@ spec:
     nodePort: null
     {{- end }}
 {{- end }}
+{{- if .Values.service.extraPorts }}
+{{ toYaml .Values.service.extraPorts | indent 2 }}
+{{- end }}
   selector:
     app: {{ template "rabbitmq.name" . }}
     release: "{{ .Release.Name }}"
