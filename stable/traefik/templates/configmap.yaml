@@ -150,39 +150,35 @@ data:
     [ping]
     entryPoint = "{{ .Values.pingEntryPoint | default "http" }}"
     [kubernetes]
-    {{- if .Values.kubernetes}}
-      {{- if .Values.kubernetes.endpoint }}
+    {{- if .Values.kubernetes.endpoint }}
     endpoint = {{ .Values.kubernetes.endpoint | quote }}
-      {{- end}}
-      {{- if .Values.kubernetes.namespaces }}
-    namespaces = [
-        {{- range $idx, $element := .Values.kubernetes.namespaces }}
-            {{- if $idx }}, {{ end }}
-            {{- $element | quote }}
-        {{- end -}}
-        ]
-      {{- end}}
-      {{- if .Values.kubernetes.labelSelector }}
-    labelselector = {{ .Values.kubernetes.labelSelector | quote }}
-      {{- end}}
-      {{- if .Values.kubernetes.ingressClass }}
-    ingressClass = {{ .Values.kubernetes.ingressClass | quote }}
-      {{- end}}
-      {{- if .Values.kubernetes.ingressEndpoint }}
-      [kubernetes.ingressEndpoint]
-        {{- if .Values.kubernetes.ingressEndpoint.hostname }}
-      hostname = {{ .Values.kubernetes.ingressEndpoint.hostname | quote }}
-        {{- end}}
-        {{- if .Values.kubernetes.ingressEndpoint.ip }}
-      ip = {{ .Values.kubernetes.ingressEndpoint.ip | quote }}
-        {{- end}}
-        {{- if .Values.kubernetes.ingressEndpoint.publishedService }}
-      publishedService = {{ .Values.kubernetes.ingressEndpoint.publishedService | quote }}
-        {{- else if .Values.kubernetes.ingressEndpoint.useDefaultPublishedService }}
-      publishedService = "{{ .Release.Namespace }}/{{ template "traefik.fullname" . }}"
-        {{- end}}
-      {{- end}}
     {{- end}}
+    {{- if .Values.kubernetes.namespaces }}
+    namespaces = [
+      {{- range $idx, $element := .Values.kubernetes.namespaces }}
+          {{- if $idx }}, {{ end }}
+          {{- $element | quote }}
+      {{- end -}}
+      ]
+    {{- end}}
+    {{- if .Values.kubernetes.labelSelector }}
+    labelselector = {{ .Values.kubernetes.labelSelector | quote }}
+    {{- end}}
+    {{- if .Values.kubernetes.ingressClass }}
+    ingressClass = {{ .Values.kubernetes.ingressClass | quote }}
+    {{- end}}
+      [kubernetes.ingressEndpoint]
+      {{- if .Values.kubernetes.ingressEndpoint.hostname }}
+      hostname = {{ .Values.kubernetes.ingressEndpoint.hostname | quote }}
+      {{- end}}
+      {{- if .Values.kubernetes.ingressEndpoint.ip }}
+      ip = {{ .Values.kubernetes.ingressEndpoint.ip | quote }}
+      {{- end}}
+      {{- if .Values.kubernetes.ingressEndpoint.publishedService }}
+      publishedService = {{ .Values.kubernetes.ingressEndpoint.publishedService | quote }}
+      {{- else }}
+      publishedService = "{{ .Release.Namespace }}/{{ template "traefik.fullname" . }}"
+      {{- end}}
     {{- if .Values.fileBackend }}
     [file]
     {{- .Values.fileBackend | nindent 4 }}

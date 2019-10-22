@@ -64,17 +64,15 @@ tolerations: []
 #   value: "value"
 #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 ## Kubernetes ingress filters
-# kubernetes:
-  # endpoint:
-  # namespaces:
-  # - default
-  # labelSelector:
-  # ingressClass:
-  # ingressEndpoint:
-  #   hostname: "localhost"
-  #   ip: "127.0.0.1"
-  #   publishedService: "namespace/servicename"
-  #   useDefaultPublishedService: false
+kubernetes:
+  endpoint: ""
+  namespaces: []
+  labelSelector: ""
+  ingressClass: ""
+  ingressEndpoint:
+    hostname: ""
+    ip: ""
+    publishedService: ""
 
 fileBackend: ""
   # as in same traefik.toml
