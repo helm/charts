@@ -168,6 +168,19 @@ Get the password key to be retrieved from Redis secret.
 {{- end -}}
 
 {{/*
+Return Redis password
+*/}}
+{{- define "redis.password" -}}
+{{- if .Values.global.redis.password }}
+    {{- .Values.global.redis.password -}}
+{{- else if .Values.password -}}
+    {{- .Values.password -}}
+{{- else -}}
+    {{- randAlphaNum 10 -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Return sysctl image
 */}}
 {{- define "redis.sysctl.image" -}}
