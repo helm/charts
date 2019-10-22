@@ -49,3 +49,14 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return the appropriate apiVersion for podSecurityPolicy.
+*/}}
+{{- define "podSecurityPolicy.apiVersion" -}}
+{{- if semverCompare ">=1.10-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "policy/v1beta1" -}}
+{{- else -}}
+{{- print "extensions/v1beta1" -}}
+{{- end -}}
+{{- end -}}
