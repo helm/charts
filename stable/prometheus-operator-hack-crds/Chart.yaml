@@ -1,0 +1,12 @@
+apiVersion: v1
+description: Hack remove Prometheus Operator CRDs when they latch during tests
+engine: gotpl
+maintainers:
+  - name: vsliouniaev
+name: prometheus-operator-hack-crds
+version: 1.0.0
+appVersion: 0.32.0
+home: https://github.com/helm/charts
+keywords:
+- operator
+- prometheus
