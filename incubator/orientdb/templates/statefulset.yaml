@@ -128,7 +128,7 @@ spec:
             name: {{ template "orientdb.fullname" . }}-configmap
         - name: orientdb-config-vol
           emptyDir: {}
-  {{- if (.Values.persistence.enabled) and (.Values.persistence.volumeClaim) }}
+  {{- if and (eq .Values.persistence.enabled true) (.Values.persistence.volumeClaim) }}
       {{- if .Values.persistence.volumeClaim.storageName }}
         - name: storage
           persistentVolumeClaim:
@@ -144,7 +144,7 @@ spec:
       imagePullSecrets:
         - name: {{ .Values.image.pullSecret }}
 {{- end }} 
-{{- if (.Values.persistence.enabled) and not (.Values.persistence.volumeClaim) }}
+{{- if and (eq .Values.persistence.enabled true) (not .Values.persistence.volumeClaim) }}
   volumeClaimTemplates:
   - metadata:
       name: storage
