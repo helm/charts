@@ -297,6 +297,7 @@ master:
     annotations: {}
     labels: {}
     loadBalancerIP:
+    # loadBalancerSourceRanges: ["10.0.0.0/8"]
 
   ## Enable persistence using Persistent Volume Claims
   ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
@@ -356,6 +357,7 @@ slave:
     annotations: {}
     labels: {}
     loadBalancerIP:
+    # loadBalancerSourceRanges: ["10.0.0.0/8"]
 
   ## Redis slave port
   port: 6379
