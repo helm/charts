@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "redis.fullname" . }}-master
@@ -42,6 +42,10 @@ spec:
       {{- if .Values.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
+        {{- if .Values.securityContext.sysctls }}
+        sysctls:
+{{ toYaml .Values.securityContext.sysctls | indent 8 }}
+        {{- end }}
       {{- end }}
       serviceAccountName: "{{ template "redis.serviceAccountName" . }}"
       {{- if .Values.master.priorityClassName }}
@@ -119,7 +123,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: {{ template "redis.secretName" . }}
-              key: redis-password
+              key: {{ template "redis.secretPasswordKey" . }}
         {{- end }}
         {{- else }}
         - name: ALLOW_EMPTY_PASSWORD
@@ -210,7 +214,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: {{ template "redis.secretName" . }}
-              key: redis-password
+              key: {{ template "redis.secretPasswordKey" . }}
         {{- end }}
         {{- else }}
         - name: ALLOW_EMPTY_PASSWORD
@@ -288,7 +292,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: {{ template "redis.secretName" . }}
-              key: redis-password
+              key: {{ template "redis.secretPasswordKey" . }}
         {{- end }}
         volumeMounts:
         {{- if .Values.usePasswordFile }}
@@ -345,6 +349,9 @@ spec:
       - name: redis-password
         secret:
           secretName: {{ template "redis.secretName" . }}
+          items:
+          - key: {{ template "redis.secretPasswordKey" . }}
+            path: redis-password
       {{- end }}
       - name: config
         configMap:

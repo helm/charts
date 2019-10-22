@@ -3,5 +3,5 @@ env:
 
 cassandra:
   enabled: true
-postgres:
+postgresql:
   enabled: false

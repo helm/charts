@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: {{ .Values.kind }}
 metadata:
   name: {{ template "memcached.fullname" . }}
@@ -8,6 +8,10 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "memcached.fullname" . }}
+      release: "{{ .Release.Name }}"
   {{- if eq .Values.kind "StatefulSet" }}
   serviceName: {{ template "memcached.fullname" . }}
   {{- end }}
@@ -50,6 +54,9 @@ spec:
                   app:  {{ template "memcached.fullname" . }}
                   release: {{ .Release.Name | quote }}
         {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+      {{- end }}
       containers:
       - name: {{ template "memcached.fullname" . }}
         image: {{ .Values.image }}

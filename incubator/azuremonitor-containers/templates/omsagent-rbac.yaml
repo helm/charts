@@ -10,7 +10,7 @@ metadata:
     heritage: {{ .Release.Service }}
 ---
 kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: omsagent-reader
   labels:
@@ -21,11 +21,17 @@ rules:
 - apiGroups: [""]
   resources: ["pods", "events", "nodes", "namespaces", "services"]
   verbs: ["list", "get", "watch"]
+- apiGroups: ["extensions"]
+  resources: ["deployments"]
+  verbs: ["list"]
+- apiGroups: ["azmon.container.insights"]
+  resources: ["healthstates"]
+  verbs: ["get", "create", "patch"]
 - nonResourceURLs: ["/metrics"]
   verbs: ["get"]
 ---
 kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: omsagentclusterrolebinding
   labels:

@@ -66,6 +66,9 @@ logSubPath: "logs"
 ## Useful when using images in custom repositories
 # serviceAccountName:
 
+## Set a pod priorityClassName
+# priorityClassName: high-priority
+
 ## Pod scheduling preferences (by default keep pods within a release on separate nodes).
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 ## By default we don't set affinity

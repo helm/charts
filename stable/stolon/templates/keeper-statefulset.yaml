@@ -98,6 +98,9 @@ spec:
               value: "0.0.0.0:8080"
             - name: STKEEPER_DEBUG
               value: {{ .Values.debug | quote}}
+{{- if .Values.keeper.extraEnv }}
+{{ toYaml .Values.keeper.extraEnv | indent 12 }}
+{{- end }}
           ports:
 {{- range $key, $value := .Values.ports }}
             - name: {{ $key }}
@@ -128,11 +131,23 @@ spec:
           - name: config
             mountPath: /pre-stop-hook.sh
             subPath: pre-stop-hook.sh
+{{- end }}
+{{- if .Values.nodePostStartScript }}
+          - name: config
+            mountPath: /postStartScript.sh
+            subPath: postStartScript.sh
+{{- end }}
           lifecycle:
+{{- if .Values.keeper.hooks.failKeeper.enabled }}
             preStop:
               exec:
                 command: ["/bin/bash", "-e", "/pre-stop-hook.sh"]
-{{ end }}
+{{- end }}
+{{- if .Values.nodePostStartScript }}
+            postStart:
+              exec:
+                command: ["/bin/bash", "-e", "/postStartScript.sh"]
+{{- end }}
 {{- with .Values.keeper.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

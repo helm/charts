@@ -18,8 +18,10 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.12+
+- Helm 2.11+ or Helm 3.0-beta3+
 - PV provisioner support in the underlying infrastructure
+- ReadWriteMany volumes for deployment scaling
 
 ## Installing the Chart
 
@@ -108,11 +110,13 @@ The following table lists the configurable parameters of the Moodle chart and th
 | `mariadb.persistence.existingClaim`   | If PVC exists&bounded for MariaDB                                                            | `nil` (when nil, new one is requested)         |
 | `mariadb.affinity`                    | Set affinity for the MariaDB pods                                                            | `nil`                                          |
 | `mariadb.resources`                   | CPU/Memory resource requests/limits                                                          | Memory: `256Mi`, CPU: `250m`                   |
+| `livenessProbe.enabled`               | Turn on and off liveness probe                                                               | `true`                                         |
 | `livenessProbe.initialDelaySeconds`   | Delay before liveness probe is initiated                                                     | 600                                            |
 | `livenessProbe.periodSeconds`         | How often to perform the probe                                                               | 3                                              |
 | `livenessProbe.timeoutSeconds`        | When the probe times out                                                                     | 5                                              |
 | `livenessProbe.failureThreshold`      | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 6                                              |
 | `livenessProbe.successThreshold`      | Minimum consecutive successes for the probe to be considered successful after having failed. | 1                                              |
+| `readinessProbe.enabled`              | Turn on and off readiness probe                                                              | `true`                                         |
 | `readinessProbe.initialDelaySeconds`  | Delay before readiness probe is initiated                                                    | 30                                             |
 | `readinessProbe.periodSeconds`        | How often to perform the probe                                                               | 3                                              |
 | `readinessProbe.timeoutSeconds`       | When the probe times out                                                                     | 5                                              |

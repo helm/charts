@@ -16,8 +16,8 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
-- PV provisioner support in the underlying infrastructure
+- Kubernetes 1.12+
+- Helm 2.11+ or Helm 3.0-beta3+
 
 ## Installing the Chart
 
@@ -57,7 +57,7 @@ The following table lists the configurable parameters of the NATS chart and thei
 | `nameOverride`                       | String to partially override nats.fullname template with a string (will prepend the release name) | `nil`                                                    |
 | `fullnameOverride`                   | String to fully override nats.fullname template with a string                                | `nil`                                                         |
 | `auth.enabled`                       | Switch to enable/disable client authentication                                               | `true`                                                        |
-| `auth.user`                          | Client authentication user                                                                   | `nats_cluster`                                                |
+| `auth.user`                          | Client authentication user                                                                   | `nats_client`                                                |
 | `auth.password`                      | Client authentication password                                                               | `random alhpanumeric string (10)`                             |
 | `auth.token`                         | Client authentication token                                                                  | `nil`                                                         |
 | `clusterAuth.enabled`                | Switch to enable/disable cluster authentication                                              | `true`                                                        |
