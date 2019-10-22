@@ -7,6 +7,13 @@ metadata:
     chart: {{ template "postgresql.chart" . }}
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
+{{- with .Values.master.labels }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+{{- with .Values.master.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
 spec:
   serviceName: {{ template "postgresql.fullname" . }}-headless
   replicas: 1

@@ -176,7 +176,7 @@ metadata:
     {{- end }}
   {{- with .Values.anchoreCatalog.service.annotations }}
   annotations:
-    {{ toYaml .Values.anchoreCatalog.service.annotations | nindent 4 }}
+    {{ toYaml . | nindent 4 }}
   {{- end }}
 spec:
   type: {{ .Values.anchoreCatalog.service.type }}
