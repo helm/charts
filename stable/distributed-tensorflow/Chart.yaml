@@ -1,7 +1,7 @@
 apiVersion: v1
 description: A Helm chart for running distributed TensorFlow on Kubernetes
 name: distributed-tensorflow
-version: 0.1.1
+version: 0.1.2
 appVersion: 1.6.0
 sources:
 - https://github.com/tensorflow/tensorflow

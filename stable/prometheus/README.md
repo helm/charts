@@ -248,7 +248,7 @@ Parameter | Description | Default
 `server.enabled` | If false, Prometheus server will not be created | `true`
 `server.name` | Prometheus server container name | `server`
 `server.image.repository` | Prometheus server container image repository | `prom/prometheus`
-`server.image.tag` | Prometheus server container image tag | `v2.11.1`
+`server.image.tag` | Prometheus server container image tag | `v2.13.1`
 `server.image.pullPolicy` | Prometheus server container image pull policy | `IfNotPresent`
 `server.enableAdminApi` |  If true, Prometheus administrative HTTP API will be enabled. Please note, that you should take care of administrative API access protection (ingress or some frontend Nginx with auth) before enabling it. | `false`
 `server.skipTSDBLock` |  If true, Prometheus skip TSDB locking. | `false`
@@ -257,6 +257,7 @@ Parameter | Description | Default
 `server.global.scrape_timeout` | How long until a scrape request times out | `10s`
 `server.global.evaluation_interval` | How frequently to evaluate rules | `1m`
 `server.extraArgs` | Additional Prometheus server container arguments | `{}`
+`server.extraInitContainers` | Init containers to launch alongside the server | `[]`
 `server.prefixURL` | The prefix slug at which the server can be accessed | ``
 `server.baseURL` | The external url at which the server can be accessed | ``
 `server.env` | Prometheus server environment variables | `[]`

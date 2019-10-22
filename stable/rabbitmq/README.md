@@ -16,7 +16,8 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 
 ## Prerequisites
 
-- Kubernetes 1.8+
+- Kubernetes 1.12+
+- Helm 2.11+ or Helm 3.0-beta3+
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
@@ -92,6 +93,8 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `service.nodePort`                   | Node port override, if serviceType NodePort      | _random available between 30000-32767_                  |
 | `service.nodeTlsPort`                | Node port override, if serviceType NodePort      | _random available between 30000-32767_                  |
 | `service.managerPort`                | RabbitMQ Manager port                            | `15672`                                                 |
+| `service.extraPorts`                 | Extra ports to expose in the service             | `nil`                                                   |
+| `service.extraContainerPorts`        | Extra ports to be included in container spec, primarily informational   | `nil`                            |
 | `persistence.enabled`                | Use a PVC to persist data                        | `true`                                                  |
 | `service.annotations`                | service annotations as an array                  | []                                                      |
 | `schedulerName`                      | Name of the k8s service (other than default)     | `nil`                                                   |
@@ -355,7 +358,7 @@ Disabling [failIfNoPeerCert](https://www.rabbitmq.com/ssl.html#peer-verification
 
 ### To 6.0.0
 
-This new version updates the RabbitMQ image to a [new version based on bash instead of node.js](https://github.com/bitnami/bitnami-docker-rabbitmq#3715-r18-3715-ol-7-r19). However, since this Chart overwrites the container's command, the changes to the container shouldn't affect the Chart. To upgrade, it may be needed to enable the `fastBoot` option, as it is already the case from upgrading from 5.X to 5.Y.  
+This new version updates the RabbitMQ image to a [new version based on bash instead of node.js](https://github.com/bitnami/bitnami-docker-rabbitmq#3715-r18-3715-ol-7-r19). However, since this Chart overwrites the container's command, the changes to the container shouldn't affect the Chart. To upgrade, it may be needed to enable the `fastBoot` option, as it is already the case from upgrading from 5.X to 5.Y.
 
 ### To 5.0.0
 
