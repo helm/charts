@@ -58,7 +58,7 @@ store:
   kubeResourceKind: configmap
 
 pgParameters: {}
-  # maxConnections: 1000
+  # max_connections: "1000"
 
 ports:
   stolon:
@@ -67,9 +67,9 @@ ports:
     containerPort: 8080
 
 serviceMonitor:
-  # When set true then use a ServiceMonitor to configure scraping
+  # When set to true then use a ServiceMonitor to collect metrics
   enabled: false
-  # Set the namespace the ServiceMonitor should be deployed
+  # Set the namespace the ServiceMonitor should be deployed to
   # namespace: default
   # Set how frequently Prometheus should scrape
   # interval: 30s
