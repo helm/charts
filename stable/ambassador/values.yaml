@@ -199,7 +199,7 @@ pro:
   enabled: false
   image:
     repository: quay.io/datawire/ambassador_pro
-    tag: 0.9.0
+    tag: 0.9.1
   # As of Ambassador Pro 0.6.0, both the RateLimitService and AuthService use the same port
   ports:
     auth: 8500
