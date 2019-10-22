@@ -410,7 +410,7 @@ kubeStateMetrics:
 nodeExporter:
   ## If false, node-exporter will not be installed
   ##
-  enabled: false
+  enabled: true
 
   ## If true, node-exporter pods share the host network namespace
   ##
