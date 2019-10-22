@@ -2,7 +2,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ template "stolon.fullname" . }}-metrics
+  name: {{ template "stolon.fullname" . }}
   labels:
     app: {{ template "stolon.name" . }}
     chart: {{ template "stolon.chart" . }}
@@ -27,4 +27,5 @@ spec:
     matchLabels:
       app: {{ template "stolon.name" . }}
       release: {{ .Release.Name }}
+      component: "all"
 {{- end }}

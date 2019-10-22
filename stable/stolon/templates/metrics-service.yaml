@@ -8,6 +8,7 @@ metadata:
     chart: {{ template "stolon.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    component: "all"
 spec:
   ports:
     - name: metrics
