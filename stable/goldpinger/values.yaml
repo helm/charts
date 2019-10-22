@@ -76,3 +76,11 @@ affinity: {}
 podSecurityPolicy:
   enabled: false
   policyName: unrestricted-psp
+
+serviceMonitor:
+  enabled: false
+  selector:
+    prometheus: "kube-prometheus"
+  namespace: "monitoring"
+  interval: 30s
+  # honorLabels: true
