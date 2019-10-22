@@ -113,8 +113,10 @@ spec:
         ports:
         - name: http
           containerPort: 80
+        {{- if .Values.service.httpsPort }}
         - name: https
           containerPort: 443
+        {{ end }}
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
