@@ -124,7 +124,7 @@ spec:
             name: {{ template "orientdb.fullname" . }}-configmap
         - name: orientdb-config-vol
           emptyDir: {}
-  {{- if .Values.persistence.enabled and .Values.persistence.volumeClaim}}
+  {{- if (.Values.persistence.enabled) and (.Values.persistence.volumeClaim) }}
       {{- if .Values.persistence.volumeClaim.storageName }}
         - name: storage
           persistentVolumeClaim:
