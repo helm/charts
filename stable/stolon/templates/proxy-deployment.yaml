@@ -61,6 +61,9 @@ spec:
               value: "0.0.0.0:8080"
             - name: STPROXY_DEBUG
               value: {{ .Values.debug | quote}}
+{{- if .Values.proxy.extraEnv }}
+{{ toYaml .Values.proxy.extraEnv | indent 12 }}
+{{- end }}
           ports:
 {{- range $key, $value := .Values.ports }}
             - name: {{ $key }}
