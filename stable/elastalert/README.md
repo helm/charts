@@ -69,6 +69,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `elasticsearch.certsVolumes` | certs volumes, required to mount ssl certificates when elasticsearch has tls enabled | `NULL` |
 | `elasticsearch.certsVolumeMounts` | mount certs volumes, required to mount ssl certificates when elasticsearch has tls enabled | `NULL` |
 | `extraConfigOptions` | Additional options to propagate to all rules, cannot be `alert`, `type`, `name` or `index` | `{}` |
+| `optEnv`           | Additional pod environment variable definitions                     | []                  |
 | `extraVolumes`           | Additional volume definitions                     | []                              |
 | `extraVolumeMounts`      | Additional volumeMount definitions                | []                              |
 | `resources`              | Container resource requests and limits            | {}                              |
