@@ -182,7 +182,7 @@ serviceAccount:
   annotations: {}
   ## The name of the ServiceAccount to use.
   ## If not set and create is true, a name is generated using the fullname template
-  name:
+  # name:
 
 vault:
   # Only used to enable dev mode. When in dev mode, the rest of this config
@@ -256,7 +256,7 @@ vault:
         # tls_cert_file: /vault/tls/server.crt
         # tls_key_file: /vault/tls/server.key
     # See https://www.vaultproject.io/docs/configuration/storage/ for storage backends
-    storage:
+    storage: []
       # consul:
       #   address: ""
       #   path: ""
