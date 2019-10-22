@@ -21,6 +21,7 @@ service:
   port: 80
   annotations: {}
     # prometheus.io/scrape: "true"
+  labels: {}
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
