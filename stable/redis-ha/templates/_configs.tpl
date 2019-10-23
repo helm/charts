@@ -150,7 +150,7 @@
 
     {{- $root := . }}
     {{- $fullName := include "redis-ha.fullname" . }}
-    {{- $replicas := .Values.replicas }}
+    {{- $replicas := int (toString .Values.replicas) }}
     {{- range $i := until $replicas }}
     # Check Sentinel and whether they are nominated master
     backend check_if_redis_is_master_{{ $i }}
