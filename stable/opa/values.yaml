@@ -194,3 +194,14 @@ livenessProbe:
 
 # Set a priorityClass using priorityClassName
 # priorityClassName:
+
+# Timeout for a webhook call in seconds.
+# Starting in kubernetes 1.14 you can set the timeout and it is
+# encouraged to use a small timeout for webhooks. If the webhook call times out, the request
+# the request is handled according to the webhook'sfailure policy.
+# timeoutSeconds: 20
+
+securityContext:
+  enabled: false
+  runAsNonRoot: true
+  runAsUser: 1
