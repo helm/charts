@@ -17,7 +17,7 @@ subjects:
     name: {{ template "kong.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
 {{- end -}}
-{{- if and .Values.podSecurityPolicy.enabled }}
+{{- if .Values.podSecurityPolicy.enabled }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding

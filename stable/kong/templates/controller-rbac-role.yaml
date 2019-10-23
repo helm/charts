@@ -45,7 +45,7 @@ rules:
     verbs:
       - get
 {{- end -}}
-{{- if and .Values.podSecurityPolicy.enabled }}
+{{- if .Values.podSecurityPolicy.enabled }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
