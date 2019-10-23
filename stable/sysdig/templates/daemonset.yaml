@@ -1,5 +1,5 @@
 {{- if .Values.sysdig.accessKey }}
-apiVersion: {{ template "daemonset.apiVersion" . }}
+apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   name: {{ template "sysdig.fullname" . }}
