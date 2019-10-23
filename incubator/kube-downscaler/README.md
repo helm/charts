@@ -57,6 +57,7 @@ The following tables lists the configurable parameters of the kube-downscaler ch
 | `resources`               | downscaler pod resource requests & limits                                                            | `{}`                      |
 | `rbac.create`             | If true, create & use RBAC resources                                                                 | `false`                   |
 | `rbac.serviceAccountName` | ServiceAccount downscaler will use (ignored if rbac.create=true)                                     | `default`                 |
+| `extraArgs` | Add extra args to docker command                                     | `[]`                 |
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
