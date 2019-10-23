@@ -30,6 +30,12 @@ serviceMonitor:
   # labels:
   # Set timeout for scrape
   # timeout: 10s
+  # Label to pull job_name from
+  # jobLabel: ""
+  # Import selected labels from service to prometheus
+  # targetLabels: []
+  # Import selected labels from pod to prometheus
+  # podTargetLabels: []
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

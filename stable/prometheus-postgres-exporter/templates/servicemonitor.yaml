@@ -22,7 +22,17 @@ spec:
 {{- if .Values.serviceMonitor.timeout }}
     scrapeTimeout: {{ .Values.serviceMonitor.timeout }}
 {{- end }}
-  jobLabel: {{ template "prometheus-postgres-exporter.fullname" . }}
+  {{- with .Values.serviceMonitor.jobLabel }}
+  jobLabel: {{ . | quote}}
+  {{- end }}
+  {{- with .Values.serviceMonitor.targetLabels }}
+  targetLabels:
+{{ toYaml . | trim | indent 4 -}}
+  {{- end }}
+  {{- with .Values.serviceMonitor.podTargetLabels }}
+  podTargetLabels:
+{{ toYaml . | trim | indent 4 -}}
+  {{- end }}
   namespaceSelector:
     matchNames:
     - {{ .Release.Namespace }}
@@ -30,4 +40,5 @@ spec:
     matchLabels:
       app: {{ template "prometheus-postgres-exporter.name" . }}
       release: {{ .Release.Name }}
+
 {{- end }}

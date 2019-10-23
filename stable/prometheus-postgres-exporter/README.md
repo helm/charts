@@ -53,6 +53,9 @@ The following table lists the configurable parameters of the postgres Exporter c
 | `servicemonitor.telemetryPath`    | path to cloudwatch-exporter telemtery-path                              |                             |
 | `servicemonitor.labels`           | labels for the ServiceMonitor passed to Prometheus Operator             | `{}`                        |
 | `servicemonitor.timeout`          | Timeout after which the scrape is ended                                 |                             |
+| `serviceMonitor.jobLabel`              | Label to use to retrieve the job name from          | `""`                               |
+| `serviceMonitor.targetLabels`          | Labels to transfer from service onto the target     | `[]`                               |
+| `serviceMonitor.podTargetLabels`       | Labels to transfor from pod onto the target         | `[]`                               |
 | `resources`          |                                  |                    `{}`                                  |
 | `config.datasource`                 | Postgresql datasource configuration                      |  see [values.yaml](values.yaml)              |
 | `config.queries`                | SQL queries that the exporter will run | [postgres exporter defaults](https://github.com/wrouesnel/postgres_exporter/blob/master/queries.yaml) |
