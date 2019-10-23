@@ -190,6 +190,8 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | `NetworkPolicy.AllowExternal`  | Don't require client label for connections       | `true`                                    |
 | `Service.Type`                 | Public service type                              | `ClusterIP`                               |
 | `Service.Annotations`          | Annotations to apply to the service              | `{}`                                      |
+| `Service.labels`               | Labels to apply to the service                   | `{}`                                      |
+| `ServiceDiscovery.labels`      | Labels to apply to the service for discovery     | `{}`                                      |
 | `PodManagementPolicy`          | `OrderedReady` or `Parallel` pod creation/deletion order | `Parallel`                        |
 | `UpdateStrategy.type`          | allows setting of RollingUpdate strategy         | `RollingUpdate`                           |
 | `NodeSelector`                 | Node labels for pod assignment                   | `{}`                                      |
