@@ -246,6 +246,7 @@ spec:
         ports:
         - name: metrics
           containerPort: 9090
+        {{- if .Values.metrics.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
             path: /metrics
@@ -255,6 +256,8 @@ spec:
           periodSeconds: {{ .Values.metrics.livenessProbe.periodSeconds }}
           failureThreshold: {{ .Values.metrics.livenessProbe.failureThreshold }}
           successThreshold: {{ .Values.metrics.livenessProbe.successThreshold }}
+        {{- end }}
+        {{- if .Values.metrics.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
             path: /metrics
@@ -264,6 +267,7 @@ spec:
           periodSeconds: {{ .Values.metrics.readinessProbe.periodSeconds }}
           failureThreshold: {{ .Values.metrics.readinessProbe.failureThreshold }}
           successThreshold: {{ .Values.metrics.readinessProbe.successThreshold }}
+        {{- end }}
         resources:
 {{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
