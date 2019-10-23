@@ -229,7 +229,7 @@
     HAPROXY_CONF=/data/haproxy.cfg
     cp /readonly/haproxy.cfg "$HAPROXY_CONF"
     {{- $fullName := include "redis-ha.fullname" . }}
-    {{- $replicas := .Values.replicas }}
+    {{- $replicas := int (toString .Values.replicas) }}
     {{- range $i := until $replicas }}
     for loop in $(seq 1 10); do
       getent hosts {{ $fullName }}-announce-{{ $i }} && break
