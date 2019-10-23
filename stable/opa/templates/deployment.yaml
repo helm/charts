@@ -158,6 +158,10 @@ spec:
             - proxy
             - --accept-paths=^/apis/authorization.k8s.io/v1/subjectaccessreviews$
 {{- end }}
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        {{- toYaml .Values.securityContext | nindent 8 }}
+      {{- end }}
       serviceAccountName: {{ template "opa.serviceAccountName" .}}
       volumes:
         - name: certs

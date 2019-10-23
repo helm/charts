@@ -88,3 +88,4 @@ Reference](https://www.openpolicyagent.org/docs/configuration.html).
 | `annotations` | Annotations to be added to the deployment template. | `{}` |
 | `bootstrapPolicies` | Bootstrap policies to be loaded during OPA startup. | `{}` |
 | `timeoutSeconds` | Timeout for a webhook call in seconds. | `` |
+| `securityContext` | Security context for the containers | `{enabled: false, runAsNonRoot: true, runAsUser: 1}` |

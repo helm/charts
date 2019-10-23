@@ -200,3 +200,8 @@ livenessProbe:
 # encouraged to use a small timeout for webhooks. If the webhook call times out, the request
 # the request is handled according to the webhook'sfailure policy.
 # timeoutSeconds: 20
+
+securityContext:
+  enabled: false
+  runAsNonRoot: true
+  runAsUser: 1
