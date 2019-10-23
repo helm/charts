@@ -41,6 +41,11 @@ spec:
     targetPort: {{ trimPrefix ":" $value.service_address | int64 }}
     name: "webhooks"
     {{- end }}
+  {{- end -}}
+  {{- end }}
+  {{- range $objectKey, $objectValue := .Values.config.outputs }}
+  {{- range $key, $value := . -}}
+    {{- $tp := typeOf $value -}}
     {{- if eq $key "prometheus_client" }}
   - port: {{ trimPrefix ":" $value.listen | int64 }}
     targetPort: {{ trimPrefix ":" $value.listen | int64 }}
