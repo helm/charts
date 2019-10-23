@@ -1,5 +1,5 @@
 {{- $fullName := include "redis-ha.fullname" . }}
-{{- $replicas := int .Values.replicas }}
+{{- $replicas : .Values.replicas }}
 {{- $root := . }}
 {{- range $i := until $replicas }}
 ---
