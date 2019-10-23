@@ -6,6 +6,9 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
   template:
     metadata:
       labels:
