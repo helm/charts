@@ -21,3 +21,7 @@ spec:
       # Consume a test message from the topic
       kafka-console-consumer --bootstrap-server {{ include "kafka.fullname" . }}-headless:9092 --topic helm-test-topic-create-consume-produce --from-beginning --timeout-ms 2000 --max-messages 1 | grep "$MESSAGE"
   restartPolicy: Never
+{{- with .Values.imagePullSecrets }}
+  imagePullSecrets:
+    {{- toYaml . | nindent 4 }}
+{{- end }}
