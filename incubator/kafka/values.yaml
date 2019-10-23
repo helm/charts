@@ -15,6 +15,10 @@ imageTag: "5.0.1"  # Confluent image for Kafka 2.0.0
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 imagePullPolicy: "IfNotPresent"
 
+## Specify a secret with your registry credentials to pull from a private registry
+imagePullSecrets: []
+#  - name: secretName
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 resources: {}
