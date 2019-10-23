@@ -29,6 +29,10 @@ spec:
         component: jobs
         job: chroots
     spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
       restartPolicy: {{ $job.restartPolicy }}
 {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
