@@ -70,6 +70,14 @@ spec:
             port: api
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds | default 5 }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds | default 1 }}
+        {{- if .Values.startupProbe.enabled }}
+        startupProbe:
+          httpGet:
+            path: {{ .Values.startupProbe.probePath }}
+            port: api
+          failureThreshold: {{ .Values.startupProbe.failureThreshold | default 6 }}
+          periodSeconds: {{ .Values.startupProbe.periodSeconds | default 5 }}
+        {{- end }}
         volumeMounts:
         - name: data
           mountPath: {{ .Values.config.storage_directory }}
