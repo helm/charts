@@ -186,6 +186,13 @@ alertmanager:
     ##
     # storageClass: "-"
 
+    ## alertmanager data Persistent Volume Binding Mode
+    ## If defined, volumeBindingMode: <volumeBindingMode>
+    ## If undefined (the default) or set to null, no volumeBindingMode spec is
+    ##   set, choosing the default mode.
+    ##
+    # volumeBindingMode: ""
+
     ## Subdirectory of alertmanager data Persistent Volume to mount
     ## Useful if the volume's root directory is not empty
     ##
@@ -740,6 +747,13 @@ server:
     ##
     # storageClass: "-"
 
+    ## Prometheus server data Persistent Volume Binding Mode
+    ## If defined, volumeBindingMode: <volumeBindingMode>
+    ## If undefined (the default) or set to null, no volumeBindingMode spec is
+    ##   set, choosing the default mode.
+    ##
+    # volumeBindingMode: ""
+
     ## Subdirectory of Prometheus server data Persistent Volume to mount
     ## Useful if the volume's root directory is not empty
     ##
@@ -995,7 +1009,7 @@ pushgateway:
     ##
     size: 2Gi
 
-    ## alertmanager data Persistent Volume Storage Class
+    ## pushgateway data Persistent Volume Storage Class
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
     ## If undefined (the default) or set to null, no storageClassName spec is
@@ -1004,7 +1018,14 @@ pushgateway:
     ##
     # storageClass: "-"
 
-    ## Subdirectory of alertmanager data Persistent Volume to mount
+    ## pushgateway data Persistent Volume Binding Mode
+    ## If defined, volumeBindingMode: <volumeBindingMode>
+    ## If undefined (the default) or set to null, no volumeBindingMode spec is
+    ##   set, choosing the default mode.
+    ##
+    # volumeBindingMode: ""
+
+    ## Subdirectory of pushgateway data Persistent Volume to mount
     ## Useful if the volume's root directory is not empty
     ##
     subPath: ""

@@ -124,6 +124,7 @@ Parameter | Description | Default
 `alertmanager.persistentVolume.mountPath` | alertmanager data Persistent Volume mount root path | `/data`
 `alertmanager.persistentVolume.size` | alertmanager data Persistent Volume size | `2Gi`
 `alertmanager.persistentVolume.storageClass` | alertmanager data Persistent Volume Storage Class | `unset`
+`alertmanager.persistentVolume.volumeBindingMode` | alertmanager data Persistent Volume Binding Mode | `unset`
 `alertmanager.persistentVolume.subPath` | Subdirectory of alertmanager data Persistent Volume to mount | `""`
 `alertmanager.podAnnotations` | annotations to be added to alertmanager pods | `{}`
 `alertmanager.podSecurityPolicy.annotations` | Specify pod annotations in the pod security policy | `{}` |
@@ -231,7 +232,8 @@ Parameter | Description | Default
 `pushgateway.persistentVolume.existingClaim` | Prometheus pushgateway data Persistent Volume existing claim name | `""`
 `pushgateway.persistentVolume.mountPath` | Prometheus pushgateway data Persistent Volume mount root path | `/data`
 `pushgateway.persistentVolume.size` | Prometheus pushgateway data Persistent Volume size | `2Gi`
-`pushgateway.persistentVolume.storageClass` | Prometheus server data Persistent Volume Storage Class |  `unset`
+`pushgateway.persistentVolume.storageClass` | Prometheus pushgateway data Persistent Volume Storage Class |  `unset`
+`pushgateway.persistentVolume.volumeBindingMode` | Prometheus pushgateway data Persistent Volume Binding Mode |  `unset`
 `pushgateway.persistentVolume.subPath` | Subdirectory of Prometheus server data Persistent Volume to mount | `""`
 `pushgateway.priorityClassName` | pushgateway priorityClassName | `nil`
 `pushgateway.resources` | pushgateway pod resource requests & limits | `{}`
@@ -282,6 +284,7 @@ Parameter | Description | Default
 `server.persistentVolume.mountPath` | Prometheus server data Persistent Volume mount root path | `/data`
 `server.persistentVolume.size` | Prometheus server data Persistent Volume size | `8Gi`
 `server.persistentVolume.storageClass` | Prometheus server data Persistent Volume Storage Class |  `unset`
+`server.persistentVolume.volumeBindingMode` | Prometheus server data Persistent Volume Binding Mode | `unset`
 `server.persistentVolume.subPath` | Subdirectory of Prometheus server data Persistent Volume to mount | `""`
 `server.emptyDir.sizeLimit` | emptyDir sizeLimit if a Persistent Volume is not used | `""`
 `server.podAnnotations` | annotations to be added to Prometheus server pods | `{}`

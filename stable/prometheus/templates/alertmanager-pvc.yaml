@@ -21,6 +21,9 @@ spec:
   storageClassName: "{{ .Values.alertmanager.persistentVolume.storageClass }}"
 {{- end }}
 {{- end }}
+{{- if .Values.alertmanager.persistentVolume.volumeBindingMode }}
+  volumeBindingModeName: "{{ .Values.alertmanager.persistentVolume.volumeBindingMode }}"
+{{- end }}
   resources:
     requests:
       storage: "{{ .Values.alertmanager.persistentVolume.size }}"
