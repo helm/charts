@@ -7,6 +7,9 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
   replicas: {{ .Values.chromeDebug.replicas }}
+  selector:
+    matchLabels:
+      chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
   template:
     metadata:
       labels:
