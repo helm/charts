@@ -16,7 +16,7 @@ service:
 
   nfsPort: 2049
   mountdPort: 20048
-  rpcbindPort: 51413
+  rpcbindPort: 111
   # nfsNodePort:
   # mountdNodePort:
   # rpcbindNodePort:
