@@ -22,7 +22,7 @@ image:
 
 ## Specify a secret with credentials to pull the image from a private registry
 imagePullSecrets: []
-#  - name: registry-credentials
+#  - name: secretName
 
 service:
   type: ClusterIP  # Exposes zookeeper on a cluster-internal IP.
