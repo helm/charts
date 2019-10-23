@@ -27,9 +27,9 @@ spec:
 {{- end }}
 {{ if .Values.annotations}}
       annotations:
-    {{- range $key, $value := .Values.annotations }}
-    {{ $key }}: {{ $value | quote }}
-    {{- end }}
+      {{- range $key, $value := .Values.annotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
 {{- end }}
     spec:
       securityContext:
