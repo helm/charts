@@ -975,11 +975,11 @@ prometheusOperator:
       podAnnotations: {}
       nodeSelector: {}
 
-  ## Restricts the Prometheus scope to the release namespace only. Not compatible with prometheusOperator.namespaces
+  ## Restricts the Prometheus scope to the release namespace only. Not compatible with prometheusOperator.namespaces.
   ##
   releaseNamespaceOnly: false
 
-  ## Namespaces to scope the interaction of the Prometheus Operator (allow list). Not compatible with prometheusOperator.releaseNamespaceOnly
+  ## Namespaces to scope the interaction of the Prometheus Operator (allow list). Not compatible with prometheusOperator.releaseNamespaceOnly.
   ##
   namespaces: []
 

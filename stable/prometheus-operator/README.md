@@ -170,7 +170,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheusOperator.configmapReloadImage.tag` | Tag for configmapReload image | `v0.0.1` |
 | `prometheusOperator.crdApiGroup` | Specify the API Group for the CustomResourceDefinitions | `monitoring.coreos.com` |
 | `prometheusOperator.createCustomResource` | Create CRDs. Required if deploying anything besides the operator itself as part of the release. The operator will create / update these on startup. If your Helm version < 2.10 you will have to either create the CRDs first or deploy the operator first, then the rest of the resources | `true` |
-| `prometheusOperator.denyNamespaces` | Namespaces not to scope the interaction of the Prometheus Operator (deny list). | `{}` |
+| `prometheusOperator.denyNamespaces` | Namespaces not to scope the interaction of the Prometheus Operator (deny list). | `[]` |
 | `prometheusOperator.enabled` | Deploy Prometheus Operator. Only one of these should be deployed into the cluster | `true` |
 | `prometheusOperator.hyperkubeImage.repository` | Image pull policy for hyperkube image used to perform maintenance tasks | `IfNotPresent` |
 | `prometheusOperator.hyperkubeImage.repository` | Repository for hyperkube image used to perform maintenance tasks | `k8s.gcr.io/hyperkube` |
@@ -182,12 +182,14 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheusOperator.kubeletService.namespace` | Namespace to deploy kubelet service | `kube-system` |
 | `prometheusOperator.logFormat` | Operator log output formatting | `"logfmt"` |
 | `prometheusOperator.logLevel` | Operator log level. Possible values: "all", "debug",	"info",	"warn",	"error", "none" | `"info"` |
+| `prometheusOperator.namespaces` | Namespaces to scope the interaction of the Prometheus Operator (allow list). Not compatible with prometheusOperator.releaseNamespaceOnly. | `[]` |
 | `prometheusOperator.nodeSelector` | Prometheus operator node selector https://kubernetes.io/docs/user-guide/node-selection/ | `{}` |
 | `prometheusOperator.podAnnotations` | Annotations to add to the operator pod | `{}` |
 | `prometheusOperator.podLabels` | Labels to add to the operator pod | `{}` |
 | `prometheusOperator.priorityClassName` | Name of Priority Class to assign pods | `nil` |
 | `prometheusOperator.prometheusConfigReloaderImage.repository` | Repository for config-reloader image | `quay.io/coreos/prometheus-config-reloader` |
 | `prometheusOperator.prometheusConfigReloaderImage.tag` | Tag for config-reloader image | `v0.32.0` |
+| `prometheusOperator.releaseNamespaceOnly` | Restricts the Prometheus scope to the release namespace only. Not compatible with prometheusOperator.namespaces. | `false` |
 | `prometheusOperator.resources` | Resource limits for prometheus operator | `{}` |
 | `prometheusOperator.securityContext` | SecurityContext for prometheus operator | `{"runAsNonRoot": true, "runAsUser": 65534}` |
 | `prometheusOperator.service.annotations` | Annotations to be added to the prometheus operator service | `{}` |
