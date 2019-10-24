@@ -23,7 +23,6 @@ tomcat:
   enabled: true
   service:
     type: ClusterIP
-  
 
 # Use this property to provide a full varnish config
 # consider disabling Tomcat above as well
