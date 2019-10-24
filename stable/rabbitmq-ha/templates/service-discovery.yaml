@@ -65,12 +65,6 @@ spec:
       port: {{ .Values.rabbitmqAmqpsSupport.amqpsNodePort }}
       targetPort: amqps
     {{- end }}
-    {{- if .Values.rabbitmqPrometheusPlugin.enabled }}
-    - name: metrics
-      protocol: TCP
-      port: {{ .Values.rabbitmqPrometheusPlugin.metricsPort }}
-      targetPort: metrics
-    {{- end }}
   publishNotReadyAddresses: true
   selector:
     app: {{ template "rabbitmq-ha.name" . }}
