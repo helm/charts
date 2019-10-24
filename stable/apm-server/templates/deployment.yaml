@@ -54,15 +54,9 @@ spec:
             containerPort: 8200
             protocol: TCP
         livenessProbe:
-          httpGet:
-            path: /
-            port: http
-          initialDelaySeconds: 60
+{{ toYaml .Values.livenessProbe | indent 10 }}
         readinessProbe:
-          httpGet:
-            path: /
-            port: http
-          initialDelaySeconds: 60
+{{ toYaml .Values.readinessProbe | indent 10 }}
         securityContext:
           runAsUser: 0
         resources:
