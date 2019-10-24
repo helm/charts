@@ -97,7 +97,7 @@ and their default values.
 | `persistentVolume.name`                        | Persistent volume name                                                                                                                                                                                | `data`                                                     |
 | `persistentVolume.size`                        | Persistent volume size                                                                                                                                                                                | `8Gi`                                                      |
 | `persistentVolume.storageClass`                | Persistent volume storage class                                                                                                                                                                       | `-`                                                        |
-| `podAntiAffinity`                              | Pod antiaffinity, `hard` or `soft`                                                                                                                                                                    | `hard`                                                     |
+| `podAntiAffinity`                              | Pod antiaffinity, `hard` or `soft`                                                                                                                                                                    | `soft`                                                     |
 | `podAntiAffinityTopologyKey`                   | TopologyKey for antiaffinity, default is hostname
 | `podDisruptionBudget`                          | Pod Disruption Budget rules                                                                                                                                                                           | `{}`                                                       |
 | `podManagementPolicy`                          | Whether the pods should be restarted in parallel or one at a time. Either `OrderedReady` or `Parallel`.                                                                                               | `OrderedReady`                                             |
@@ -142,6 +142,7 @@ and their default values.
 | `rabbitmqWebMQTTPlugin.enabled`                | Enable MQTT over websocket plugin                                                                                                                                                                     | `false`                                                    |
 | `rabbitmqWebSTOMPPlugin.config`                | STOMP over websocket configuration                                                                                                                                                                    | ``                                                         |
 | `rabbitmqWebSTOMPPlugin.enabled`               | Enable STOMP over websocket plugin                                                                                                                                                                    | `false`                                                    |
+| `rabbitmqPrometheusPlugin.enabled`               | Enable native RabbitMQ prometheus plugin. (Available in RabbitMQ 3.8)                                                                                                                                                                    | `false`                                                    |
 | `rbac.create`                                  | If true, create & use RBAC resources                                                                                                                                                                  | `true`                                                     |
 | `replicaCount`                                 | Number of replica                                                                                                                                                                                     | `3`                                                        |
 | `resources`                                    | CPU/Memory resource requests/limits                                                                                                                                                                   | `{}`                                                       |
@@ -256,7 +257,13 @@ the following keys:
 
 ### Prometheus Monitoring & Alerts
 
-Prometheus and its features can be enabled by setting `prometheus.enabled` to `true`.  See values.yaml for more details and configuration options
+As of RabbitMQ 3.8.0, it is possible to enable Prometheus metrics natively, no need to run an external exporter. To enable native Prometheus metrics, set `rabbitmqPrometheusPlugin.enabled` to `true`. This will expose all RabbitMQ node metrics via the `<<rabbitmqhost>>:15692/metrics` URL. Since all metrics are node local, they add the least pressure on RabbitMQ and will be available for as long as RabbitMQ is running, regardless of inter-node pressure or other nodes in the cluster going away.
+
+To learn more about RabbitMQ's native support for Prometheus, please refer to the official [Monitoring with Prometheus & Grafana guide](https://www.rabbitmq.com/prometheus.html).
+
+Team RabbitMQ manages Grafana dashboards that are meant to be used with the native Prometheus support. They are publicly available at [grafana.com/orgs/rabbitmq](https://grafana.com/orgs/rabbitmq).
+
+To enable metrics via the traditional [rabbitmq_exporter](https://github.com/kbudde/rabbitmq_exporter) sidecar container, set `prometheus.enabled` to `true`. See `values.yaml` file for more details and configuration options.
 
 ### Usage of the `tpl` Function
 

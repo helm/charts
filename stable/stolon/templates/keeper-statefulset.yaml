@@ -100,6 +100,9 @@ spec:
               value: "0.0.0.0:8080"
             - name: STKEEPER_DEBUG
               value: {{ .Values.debug | quote}}
+{{- if .Values.keeper.extraEnv }}
+{{ toYaml .Values.keeper.extraEnv | indent 12 }}
+{{- end }}
           ports:
 {{- range $key, $value := .Values.ports }}
             - name: {{ $key }}

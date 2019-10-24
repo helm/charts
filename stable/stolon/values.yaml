@@ -110,6 +110,9 @@ keeper:
   podDisruptionBudget:
     # minAvailable: 1
     # maxUnavailable: 1
+  extraEnv: []
+  #  - name: STKEEPER_LOG_LEVEL
+  #    value: "info"
 
 proxy:
   replicaCount: 2
@@ -131,6 +134,15 @@ proxy:
   podDisruptionBudget:
     # minAvailable: 1
     # maxUnavailable: 1
+  extraEnv: []
+  #  - name: STPROXY_LOG_LEVEL
+  #    value: "info"
+  #  - name: STPROXY_TCP_KEEPALIVE_COUNT
+  #    value: "0"
+  #  - name: STPROXY_TCP_KEEPALIVE_IDLE
+  #    value: "0"
+  #  - name: STPROXY_TCP_KEEPALIVE_INTERVAL
+  #    value: "0"
 
 sentinel:
   replicaCount: 2
@@ -143,6 +155,9 @@ sentinel:
   podDisruptionBudget:
     # minAvailable: 1
     # maxUnavailable: 1
+  extraEnv: []
+  #  - name: STSENTINEL_LOG_LEVEL
+  #    value: "info"
 
 ## initdb scripts
 ## Specify dictionary of scripts to be run at first boot, the entry point script is create_script.sh

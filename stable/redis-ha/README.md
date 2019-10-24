@@ -92,7 +92,8 @@ The following table lists the configurable parameters of the Redis chart and the
 | `haproxy.image.pullPolicy`| HAProxy Image PullPolicy                                                                                                                                                                                 | `IfNotPresent`                                                                                       |
 | `haproxy.annotations`     | HAProxy template annotations                                                                                                                                                                             | `{}`                                                                                       |
 | `haproxy.resources`       | HAProxy resources                                                                                                                                                                                        | `{}`                                                                                       |
-| `haproxy.service.type`    | HAProxy service type "ClusterIP" or "LoadBalancer"                                                                                                                                                       | `ClusterIP`                                                                                       |
+| `haproxy.service.type`    | HAProxy service type "ClusterIP", "LoadBalancer" or "NodePort"                                                                                                                                                       | `ClusterIP`                                                                                       |
+| `haproxy.service.nodePort`    | HAProxy service nodePort value (haproxy.service.type must be NodePort)                                                                                                                                                   | not set                                                                                       |
 | `haproxy.service.annotations` | HAProxy service annotations                                                                                                                                                                          | `{}`                                                                                       |
 | `haproxy.hapreadport.enable` | Enable a read only port for redis slaves                                                                                                                                                                           | `false`                                                                        |
 | `haproxy.hapreadport.port`   | Haproxy port for read only redis slaves                                                                                                                                                                          | `6380`                                                                           |
@@ -182,7 +183,7 @@ sysctlImage:
     - /bin/sh
     - -c
     - |-
-      install_packages systemd
+      install_packages systemd procps
       sysctl -w net.core.somaxconn=10000
       echo never > /host-sys/kernel/mm/transparent_hugepage/enabled
 ```

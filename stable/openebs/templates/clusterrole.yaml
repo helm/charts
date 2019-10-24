@@ -54,6 +54,9 @@ rules:
 - apiGroups: ["*"]
   resources: [ "upgradetasks"]
   verbs: ["*" ]
+- apiGroups: ["coordination.k8s.io"]
+  resources: ["leases"]
+  verbs: ["get", "watch", "list", "delete", "update", "create"]
 - nonResourceURLs: ["/metrics"]
   verbs: ["get"]
 {{- end }}

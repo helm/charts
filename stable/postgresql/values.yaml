@@ -260,6 +260,8 @@ master:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+  labels: {}
+  annotations: {}
   podLabels: {}
   podAnnotations: {}
   ## Additional PostgreSQL Master Volume mounts
@@ -280,6 +282,8 @@ slave:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+  labels: {}
+  annotations: {}
   podLabels: {}
   podAnnotations: {}
   ## Additional PostgreSQL Slave Volume mounts
