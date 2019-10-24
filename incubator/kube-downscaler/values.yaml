@@ -36,6 +36,9 @@ resources:
   #   cpu: 50m
   #   memory: 200Mi
 
+securityContext: {}
+# runAsUser: 1000
+
 extraArgs: []
 # - --include-resources deployments
 
