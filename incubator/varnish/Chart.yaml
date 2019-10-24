@@ -3,3 +3,5 @@ appVersion: "1.0"
 description: Varnish Chart
 name: varnish
 version: 0.1.0
+home: https://www.varnish-software.com
+icon: https://www.varnish-software.com/wp-content/uploads/favicon.png
