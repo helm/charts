@@ -58,6 +58,7 @@ The following tables lists the configurable parameters of the kube-downscaler ch
 | `podAnnotations`          | Annotations to be added to downscaler pod                                                            | `{}`                      |
 | `podLabels`               | Labels to be added to downscaler pod                                                                 | `{}`                      |
 | `resources`               | Downscaler pod resource requests & limits                                                            | `{}`                      |
+| `securityContext`         | SecurityContext to apply to the downscaler pod                                                       | `{}`                      |
 | `rbac.create`             | If true, create & use RBAC resources                                                                 | `true`                    |
 | `rbac.serviceAccountName` | ServiceAccount downscaler will use (ignored if rbac.create=true)                                     | `default`                 |
 | `extraArgs`               | Add extra args to docker command                                                                     | `[]`                      |
