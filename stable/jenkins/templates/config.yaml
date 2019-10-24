@@ -236,6 +236,12 @@ data:
   {{- end }}
   {{- end }}
 {{- end }}
+{{- else }}
+{{- if .Values.master.JCasC.enabled }}
+    # Prevent Setup Wizard when JCasC is enabled
+    echo $JENKINS_VERSION > /var/jenkins_home/jenkins.install.UpgradeWizard.state
+    echo $JENKINS_VERSION > /var/jenkins_home/jenkins.install.InstallUtil.lastExecVersion
+{{- end }}
 {{- end }}
 {{- if .Values.master.overwritePlugins }}
     # remove all plugins from shared volume

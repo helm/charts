@@ -27,14 +27,15 @@ spec:
 {{- end }}
 {{ if .Values.annotations}}
       annotations:
-    {{- range $key, $value := .Values.annotations }}
-    {{ $key }}: {{ $value | quote }}
-    {{- end }}
+      {{- range $key, $value := .Values.annotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
 {{- end }}
     spec:
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
       initContainers:
+      {{- if .Values.elasticsearch.configureNode }}
         - name: init-sysctl
           image: {{ default "busybox:1.31" .Values.plugins.initSysctlContainerImage }}
           command:
@@ -44,6 +45,7 @@ spec:
           imagePullPolicy: IfNotPresent
           securityContext:
             privileged: true
+      {{- end }}
       {{- if .Values.plugins.install }}
         - name: install-plugins
           image: {{ default "joosthofman/wget:1.0" .Values.plugins.initContainerImage }}
@@ -158,7 +160,7 @@ spec:
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           volumeMounts:
-            {{- if .Values.sonarProperties }}
+            {{- if or .Values.sonarProperties (not .Values.elasticsearch.bootstrapChecks) }}
             - mountPath: /opt/sonarqube/conf/
               name: config
             {{- end }}
@@ -213,7 +215,7 @@ spec:
         secret:
           secretName: {{ .Values.cloudsql.serviceAccSecretName }}
       {{- end }}
-      {{- if .Values.sonarProperties }}
+      {{- if or .Values.sonarProperties (not .Values.elasticsearch.bootstrapChecks) }}
       - name: config
         configMap:
           name: {{ template "sonarqube.fullname" . }}-config

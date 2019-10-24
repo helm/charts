@@ -16,6 +16,11 @@ image:
 securityContext:
   fsGroup: 999
 
+# Settings to configure elasticsearch host requirements
+elasticsearch:
+  configureNode: true
+  bootstrapChecks: true
+
 service:
   type: ClusterIP
   externalPort: 9000
