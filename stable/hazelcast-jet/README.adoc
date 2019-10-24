@@ -1,0 +1,363 @@
+:repo: helm/charts
+
+== Hazelcast Jet
+
+http://jet.hazelcast.org[Hazelcast Jet] is a distributed computing platform
+built for high-performance stream processing and fast batch processing. It
+embeds Hazelcast In-Memory Data Grid (IMDG) to provide a lightweight,
+simple-to-deploy package that includes scalable in-memory storage.
+
+Visit http://jet.hazelcast.org[jet.hazelcast.org] to learn more about the
+architecture and use cases.
+
+=== Quick Start
+
+
+ifeval::["{repo}"=="hazelcast/charts"]
+[source,bash]
+----
+$ helm repo add hazelcast https://hazelcast.github.io/charts/
+$ helm repo update
+$ helm install hazelcast/hazelcast-jet
+----
+endif::[]
+
+
+ifeval::["{repo}"=="helm/charts"]
+[source,bash]
+----
+$ helm install stable/hazelcast-jet
+----
+endif::[]
+
+=== Introduction
+
+This chart bootstraps a
+https://github.com/hazelcast/hazelcast-jet-docker[Hazelcast Jet] and
+https://github.com/hazelcast/hazelcast-jet-management-center-docker[Hazelcast
+Jet Management Center] deployments on a http://kubernetes.io[Kubernetes] cluster
+using the https://helm.sh[Helm] package manager.
+
+=== Prerequisites
+
+* Kubernetes 1.9+
+
+=== Installing the Chart
+
+To install the chart with the release name `+my-release+`:
+
+ifeval::["{repo}"=="hazelcast/charts"]
+[source,bash]
+----
+$ helm install --name my-release hazelcast/hazelcast-jet
+----
+endif::[]
+
+ifeval::["{repo}"=="helm/charts"]
+[source,bash]
+----
+$ helm install --name my-release stable/hazelcast-jet
+----
+endif::[]
+
+The command deploys Hazelcast Jet on the Kubernetes cluster in the default
+configuration. The link:#configuration[configuration] section lists the
+parameters that can be configured during installation.
+
+____
+*Tip*: List all releases using `+helm list+`
+____
+
+=== Uninstalling the Chart
+
+To uninstall/delete the `+my-release+` deployment:
+
+[source,bash]
+----
+$ helm delete my-release
+----
+
+The command removes all the Kubernetes components associated with the chart and
+deletes the release.
+
+=== Configuration
+
+The following table lists the configurable parameters of the Hazelcast chart and
+their default values.
+
+[width="100%",cols="22%,53%,25%",options="header",]
+|===
+|Parameter |Description |Default
+|`+image.repository+` |Hazelcast Jet Image name |`+hazelcast/hazelcast-jet+`
+
+|`+image.tag+` |Hazelcast Jet Image tag |`+{VERSION}+`
+
+|`+image.pullPolicy+` |Image pull policy |`+IfNotPresent+`
+
+|`+image.pullSecrets+` |Specify docker-registry secret names as an array
+|`+nil+`
+
+|`+cluster.memberCount+` |Number of Hazelcast Jet members |2
+
+|`+jet.rest+` |Enable REST endpoints for Hazelcast Jet member |`+true+`
+
+|`+jet.javaOpts+` |Additional JAVA_OPTS properties for Hazelcast Jet member
+|`+nil+`
+
+|`+jet.yaml.hazelcast-jet+` and `+jet.yaml.hazelcast+` |Hazelcast Jet and IMDG
+YAML configurations (`+hazelcast-jet.yaml+` and `+hazelcast.yaml+` embedded into
+`+values.yaml+`) |`+{DEFAULT_JET_YAML}+` and `+{DEFAULT_HAZELCAST_YAML}+`
+
+|`+jet.configurationFiles+` |Hazelcast configuration files |`+nil+`
+
+|`+nodeSelector+` |Hazelcast Node labels for pod assignment |`+nil+`
+
+|`+gracefulShutdown.enabled+` |Turn on and off Graceful Shutdown |`+true+`
+
+|`+gracefulShutdown.maxWaitSeconds+` |Maximum time to wait for the Hazelcast Jet
+POD to shut down |`+600+`
+
+|`+livenessProbe.enabled+` |Turn on and off liveness probe |`+true+`
+
+|`+livenessProbe.initialDelaySeconds+` |Delay before liveness probe is initiated
+|`+30+`
+
+|`+livenessProbe.periodSeconds+` |How often to perform the probe |`+10+`
+
+|`+livenessProbe.timeoutSeconds+` |When the probe times out |`+5+`
+
+|`+livenessProbe.successThreshold+` |Minimum consecutive successes for the probe
+to be considered successful after having failed |`+1+`
+
+|`+livenessProbe.failureThreshold+` |Minimum consecutive failures for the probe
+to be considered failed after having succeeded. |`+3+`
+
+|`+readinessProbe.enabled+` |Turn on and off readiness probe |`+true+`
+
+|`+readinessProbe.initialDelaySeconds+` |Delay before readiness probe is
+initiated |`+30+`
+
+|`+readinessProbe.periodSeconds+` |How often to perform the probe |`+10+`
+
+|`+readinessProbe.timeoutSeconds+` |When the probe times out |`+1+`
+
+|`+readinessProbe.successThreshold+` |Minimum consecutive successes for the
+probe to be considered successful after having failed |`+1+`
+
+|`+readinessProbe.failureThreshold+` |Minimum consecutive failures for the probe
+to be considered failed after having succeeded. |`+3+`
+
+|`+resources+` |CPU/Memory resource requests/limits |`+nil+`
+
+|`+service.type+` |Kubernetes service type (`ClusterIP', `LoadBalancer', or
+`NodePort') |`+ClusterIP+`
+
+|`+service.port+` |Kubernetes service port |`+5701+`
+
+|`+rbac.create+` |Enable installing RBAC Role authorization |`+true+`
+
+|`+serviceAccount.create+` |Enable installing Service Account |`+true+`
+
+|`+serviceAccount.name+` |Name of Service Account, if not set, the name is
+generated using the fullname template |`+nil+`
+
+|`+securityContext.enabled+` |Enables Security Context for Hazelcast Jet and
+Hazelcast Jet Management Center |`+true+`
+
+|`+securityContext.runAsUser+` |User ID used to run the Hazelcast Jet and
+Hazelcast Jet Management Center containers |`+1001+`
+
+|`+securityContext.fsGroup+` |Group ID associated with the Hazelcast Jet and
+Hazelcast Jet Management Center container |`+1001+`
+
+|`+metrics.enabled+` |Turn on and off JMX Prometheus metrics available at
+`+/metrics+` |`+false+`
+
+|`+metrics.service.type+` |Type of the metrics service |`+ClusterIP+`
+
+|`+metrics.service.port+` |Port of the `+/metrics+` endpoint and the metrics
+service |`+8080+`
+
+|`+metrics.service.annotations+` |Annotations for the Prometheus discovery |
+
+|`+managementcenter.enabled+` |Turn on and off Hazelcast Jet Management Center
+application |`+true+`
+
+|`+managementcenter.image.repository+` |Hazelcast Jet Management Center Image
+name |`+hazelcast/hazelcast-jet-management-center+`
+
+|`+managementcenter.image.tag+` |Hazelcast Jet Management Center Image tag
+(NOTE: must be the same or one minor release greater than Hazelcast image
+version) |`+{VERSION}+`
+
+|`+managementcenter.image.pullPolicy+` |Image pull policy |`+IfNotPresent+`
+
+|`+managementcenter.image.pullSecrets+` |Specify docker-registry secret names as
+an array |`+nil+`
+
+|`+managementcenter.javaOpts+` |Additional JAVA_OPTS properties for Hazelcast
+Jet Management Center |`+nil+`
+
+|`+managementcenter.licenseKey+` |License Key for Hazelcast Jet Management
+Center |`+nil+`
+
+|`+managementcenter.licenseKeySecretName+` |Kubernetes Secret Name, where Jet
+Management Center License Key is stored (can be used instead of licenseKey)
+|`+nil+`
+
+|`+managementcenter.nodeSelector+` |Hazelcast Jet Management Center node labels
+for pod assignment |`+nil+`
+
+|`+managementcenter.resources+` |CPU/Memory resource requests/limits |`+nil+`
+
+|`+managementcenter.service.type+` |Kubernetes service type (`ClusterIP',
+`LoadBalancer', or `NodePort') |`+ClusterIP+`
+
+|`+managementcenter.service.port+` |Kubernetes service port |`+8081+`
+
+|`+managementcenter.livenessProbe.enabled+` |Turn on and off liveness probe
+|`+true+`
+
+|`+managementcenter.livenessProbe.initialDelaySeconds+` |Delay before liveness
+probe is initiated |`+30+`
+
+|`+managementcenter.livenessProbe.periodSeconds+` |How often to perform the
+probe |`+10+`
+
+|`+managementcenter.livenessProbe.timeoutSeconds+` |When the probe times out
+|`+5+`
+
+|`+managementcenter.livenessProbe.successThreshold+` |Minimum consecutive
+successes for the probe to be considered successful after having failed |`+1+`
+
+|`+managementcenter.livenessProbe.failureThreshold+` |Minimum consecutive
+failures for the probe to be considered failed after having succeeded. |`+3+`
+
+|`+managementcenter.readinessProbe.enabled+` |Turn on and off readiness probe
+|`+true+`
+
+|`+managementcenter.readinessProbe.initialDelaySeconds+` |Delay before readiness
+probe is initiated |`+30+`
+
+|`+managementcenter.readinessProbe.periodSeconds+` |How often to perform the
+probe |`+10+`
+
+|`+managementcenter.readinessProbe.timeoutSeconds+` |When the probe times out
+|`+1+`
+
+|`+managementcenter.readinessProbe.successThreshold+` |Minimum consecutive
+successes for the probe to be considered successful after having failed |`+1+`
+
+|`+managementcenter.readinessProbe.failureThreshold+` |Minimum consecutive
+failures for the probe to be considered failed after having succeeded. |`+3+`
+|===
+
+Specify each parameter using the `+--set key=value[,key=value]+` argument to
+`+helm install+`. For example,
+
+
+ifeval::["{repo}"=="hazelcast/charts"]
+[source,bash]
+----
+$ helm install --name my-release \
+  --set cluster.memberCount=3,serviceAccount.create=false \
+    hazelcast/hazelcast-jet
+----
+endif::[]
+
+ifeval::["{repo}"=="helm/charts"]
+[source,bash]
+----
+$ helm install --name my-release \
+  --set cluster.memberCount=3,serviceAccount.create=false \
+    stable/hazelcast-jet
+----
+endif::[]
+
+
+The above command sets number of Hazelcast Jet members to 3 and disables REST
+endpoints.
+
+Alternatively, a YAML file that specifies the values for the parameters can be
+provided while installing the chart. For example,
+
+ifeval::["{repo}"=="hazelcast/charts"]
+[source,bash]
+----
+$ helm install --name my-release -f values.yaml hazelcast/hazelcast-jet
+----
+endif::[]
+
+ifeval::["{repo}"=="helm/charts"]
+[source,bash]
+----
+$ helm install --name my-release -f values.yaml stable/hazelcast-jet
+----
+endif::[]
+
+
+____
+*Tip*: You can use the default values.yaml
+____
+
+=== Custom Hazelcast IMDG and Jet configuration
+
+Custom Hazelcast IMDG and Hazelcast Jet configuration can be specified inside
+`+values.yaml+`, as the `+jet.yaml.hazelcast+` and `+jet.yaml.hazelcast-jet+`
+properties.
+
+[source,yaml]
+----
+jet:
+  yaml:
+    hazelcast:
+      network:
+        join:
+          multicast:
+            enabled: false
+          kubernetes:
+            enabled: true
+            service-name: ${serviceName}
+            namespace: ${namespace}
+            resolve-not-ready-addresses: true
+      management-center:
+        enabled: ${hazelcast.mancenter.enabled}
+        url: ${hazelcast.mancenter.url}
+    hazelcast-jet:
+      instance:
+        flow-control-period: 100
+        backup-count: 1
+        scale-up-delay-millis: 10000
+        lossless-restart-enabled: false
+      edge-defaults:
+        queue-size: 1024
+        packet-size-limit: 16384
+        receive-window-multiplier: 3
+      metrics:
+        enabled: true
+        jmx-enabled: true
+        retention-seconds: 120
+        collection-interval-seconds: 5
+        metrics-for-data-structures: false
+----
+
+Alternatively, above parameters can be modified directly via `+helm+` commands.
+For example,
+
+ifeval::["{repo}"=="hazelcast/charts"]
+[source,bash]
+----
+$ helm install --name my-jet-release \
+  --set jet.yaml.hazelcast-jet.instance.backup-count=2,jet.yaml.hazelcast.network.kubernetes.service-name=jet-service \
+    hazelcast/hazelcast-jet
+----
+endif::[]
+
+ifeval::["{repo}"=="helm/charts"]
+[source,bash]
+----
+$ helm install --name my-jet-release \
+  --set jet.yaml.hazelcast-jet.instance.backup-count=2,jet.yaml.hazelcast.network.kubernetes.service-name=jet-service \
+    stable/hazelcast-jet
+----
+endif::[]
