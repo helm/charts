@@ -78,6 +78,27 @@ halyard:
   #   timestamp: '2019-09-16 18:18:44'
   #   version: 1.16.1
 
+  ## Define local configuration for Spinnaker services.
+  ## The contents of these files would be copies of the configuration normally retrieved from
+  ## `gs://halconfig/<service-name>`, but instead need to be available locally on the halyard pod to facilitate
+  ## offline installation. This would typically be used along with a custom `bom:` with the `local:` prefix on a
+  ## service version.
+  ## Read more for details:
+  ## https://www.spinnaker.io/guides/operator/custom-boms/#boms-and-configuration-on-your-filesystem
+  serviceConfigs: {}
+  # clouddriver-boostrap.yml: |-
+  #   ...
+  # clouddriver-caching.yml: |-
+  #   ...
+  # clouddriver-ro-deck.yml: |-
+  #   ...
+  # clouddriver-ro.yml: |-
+  #   ...
+  # clouddriver-rw.yml: |-
+  #   ...
+  # clouddriver.yml: |-
+  #   ...
+
   ## Uncomment if you want to add extra commands to the init script
   ## run by the init container before halyard is started.
   ## The content will be passed through `tpl`, so value interpolation is supported.

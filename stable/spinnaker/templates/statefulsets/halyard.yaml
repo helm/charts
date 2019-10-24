@@ -40,6 +40,8 @@ spec:
           mountPath: /tmp/config
         - name: service-settings
           mountPath: /tmp/service-settings
+        - name: service-configs
+          mountPath: /tmp/service-configs
         - name: halyard-home
           mountPath: /tmp/spinnaker
         - name: additional-profile-config-maps
@@ -121,6 +123,9 @@ spec:
       - name: service-settings
         configMap:
           name: {{ template "spinnaker.fullname" . }}-service-settings
+      - name: service-configs
+        configMap:
+          name: {{ template "spinnaker.fullname" . }}-service-configs
       - name: halyard-initscript
         configMap:
           name: {{ template "spinnaker.fullname" . }}-halyard-init-script
