@@ -205,3 +205,9 @@ securityContext:
   enabled: false
   runAsNonRoot: true
   runAsUser: 1
+
+deploymentStrategy: {}
+  # rollingUpdate:
+  #   maxSurge: 1
+  #   maxUnavailable: 0
+  # type: RollingUpdate
