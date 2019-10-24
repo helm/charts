@@ -90,12 +90,10 @@ graylog:
   ## Additional plugins you need to install on Graylog.
   ##
   plugins: []
-    # - name: graylog-plugin-slack-2.7.1.jar
-    #   url: https://github.com/omise/graylog-plugin-slack/releases/download/2.7.1/graylog-plugin-slack-2.7.1.jar
+    # - name: graylog-plugin-slack-notification-3.1.0.jar
+    #   url: https://github.com/omise/graylog-plugin-slack-notification/releases/download/v3.1.0/graylog-plugin-slack-notification-3.1.0.jar
     # - name: graylog-plugin-function-check-diff-1.0.0.jar
     #   url: https://github.com/omise/graylog-plugin-function-check-diff/releases/download/1.0.0/graylog-plugin-function-check-diff-1.0.0.jar
-    # - name: graylog-plugin-custom-alert-condition-1.0.0.jar
-    #   url: https://github.com/omise/graylog-plugin-custom-alert-condition/releases/download/v1.0.0/graylog-plugin-custom-alert-condition-1.0.0.jar
     # - name: graylog-plugin-auth-sso-3.0.0.jar
     #   url: https://github.com/Graylog2/graylog-plugin-auth-sso/releases/download/3.0.0/graylog-plugin-auth-sso-3.0.0.jar
 
