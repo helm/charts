@@ -200,6 +200,12 @@ service:
   # loadBalancerSourceRanges:
   # - 10.10.10.0/24
 
+  ## Extra ports to expose
+  # extraPorts:
+
+  ## Extra ports to be included in container spec, primarily informational
+  # extraContainerPorts:
+
 # Additional pod labels to apply
 podLabels: {}
 
@@ -342,6 +348,22 @@ metrics:
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "9090"
+
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 15
+    timeoutSeconds: 5
+    periodSeconds: 30
+    failureThreshold: 6
+    successThreshold: 1
+
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 5
+    timeoutSeconds: 5
+    periodSeconds: 30
+    failureThreshold: 3
+    successThreshold: 1
 
   ## Prometheus Service Monitor
   ## ref: https://github.com/coreos/prometheus-operator
