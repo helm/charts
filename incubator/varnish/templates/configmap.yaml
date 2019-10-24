@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ include "varnish.fullname" . }}-config-map"
+  labels:
+{{ include "varnish.labels" . | indent 4 }}
+data:
+{{- if .Values.varnishConfigPath }}
+  default.vcl: |
+{{ .Files.Get .Values.varnishConfigPath | indent 4 }}
+{{- else }}
+  default.vcl: |
+    vcl 4.0;
+
+    backend default {
+      .host = "{{ .Values.default.host }}";
+      .port = "{{ .Values.default.port }}";
+    }
+{{- end }}
