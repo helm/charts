@@ -11,6 +11,9 @@ metadata:
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Release.Name }}-{{ .Values.Component }}"
+{{- if .Values.Service.labels }}
+{{ toYaml .Values.Service.labels | indent 4 }}
+{{- end }}
 spec:
   type: {{ .Values.Service.type }}
   ports:

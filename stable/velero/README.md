@@ -108,7 +108,7 @@ Parameter | Description | Default
 
 ## How to
 ```
-helm install --name velero --namespace velero ./velero
+helm install --name velero --namespace velero stable/velero
 ```
 
 ## Remove heptio/velero

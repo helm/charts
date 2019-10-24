@@ -151,7 +151,8 @@ service:
   # HTTP Port
   port: 80
   # HTTPS Port
-  httpsPort: 443
+  ## Set this to any value (recommended: 443) to enable the https service port
+  # httpsPort: 443
   ## Use nodePorts to requets some specific ports when usin NodePort
   ## nodePorts:
   ##   http: <to set explicitly, choose port between 30000-32767>
