@@ -22,7 +22,8 @@ default:
   host: backend-svc
   port: 80
 
-#varnishConfigPath: varnish.vcl
+# Use this property to provide a full varnish config
+# varnishConfigPath: varnish.vcl
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
