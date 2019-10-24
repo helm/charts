@@ -95,12 +95,12 @@ data:
     echo "Trying to creating a hello world pipeline." >> /godata/logs/preconfigure.log
 
     (curl --fail -i 'http://localhost:8153/go/api/admin/pipelines' \
-      -H 'Accept: application/vnd.go.cd.v6+json' \
+      -H 'Accept: application/vnd.go.cd.v8+json' \
       -H 'Content-Type: application/json' \
       -X POST -d '{ "group": "sample",
                     "pipeline": {
                       "label_template": "${COUNT}",
-                      "name": "hello_world",
+                      "name": "getting_started_pipeline",
                       "materials": [
                         {
                           "type": "git",
@@ -121,11 +121,20 @@ data:
                                 {
                                   "type": "exec",
                                   "attributes": {
-                                    "command": "echo",
-                                    "arguments": [
-                                      "Hello World"
-                                    ]
+                                    "command": "./build"
                                   }
+                                }
+                              ],
+                              "tabs": [
+                                {
+                                  "name": "Sample",
+                                  "path": "my-artifact.html"
+                                }
+                              ],
+                              "artifacts": [
+                                {
+                                  "type": "build",
+                                  "source": "my-artifact.html"
                                 }
                               ]
                             }

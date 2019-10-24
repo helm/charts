@@ -1,0 +1,19 @@
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  labels:
+    {{- include "prometheus.alertmanager.labels" . | nindent 4 }}
+  name: {{ template "prometheus.alertmanager.fullname" . }}
+rules:
+{{- if .Values.podSecurityPolicy.enabled }}
+  - apiGroups:
+    - extensions
+    resources:
+    - podsecuritypolicies
+    verbs:
+    - use
+    resourceNames:
+    - {{ template "prometheus.alertmanager.fullname" . }}
+{{- end }}
+{{- end }}

@@ -41,6 +41,10 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
     {{- end }}
+    {{- if .Values.securityContext }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
+    {{- end }}
       serviceAccountName: {{ template "eventrouter.serviceAccountName" . }}
       volumes:
         - name: config-volume

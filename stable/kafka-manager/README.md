@@ -42,6 +42,8 @@ Parameter | Description | Default
 --------- | ----------- | -------
 `serviceAccount.create` | If true, create a service account for kafka-manager | `true`
 `serviceAccount.name` | Name of the service account to create or use | `{{ kafka-manager.fullname }}`
+`livenessProbe` | Liveness probe configurations | `{ "httpGet": { "path": "/api/health", "port": "kafka-manager" }, "initialDelaySeconds": 60, "timeoutSeconds": 30, "failureThreshold": 10 }`
+`readinessProbe` | Readiness probe configurations | `{ "httpGet": { "path": "/api/health", "port": "kafka-manager" } }`
 `image.repository` | Container image repository | `zenko/kafka-manager`
 `image.tag` | Container image tag | `1.3.3.22`
 `image.pullPolicy` | Container image pull policy | `IfNotPresent`

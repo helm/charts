@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "influxdb.fullname" . }}
+  name: "{{ template "influxdb.fullname" . }}"
   labels:
-    app: {{ template "influxdb.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "influxdb.fullname" . }}"
+    chart: "{{ template "influxdb.chart" . }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 data:
@@ -70,6 +70,7 @@ data:
     [http]
       enabled = {{ .Values.config.http.enabled }}
       bind-address = ":{{ .Values.config.http.bind_address }}"
+      flux-enabled = {{ .Values.config.http.flux_enabled }}
       auth-enabled = {{ .Values.config.http.auth_enabled }}
       log-enabled = {{ .Values.config.http.log_enabled }}
       write-tracing = {{ .Values.config.http.write_tracing }}

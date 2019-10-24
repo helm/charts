@@ -126,6 +126,18 @@ Create the block for RootCAs.
 {{- end -}}
 
 {{/*
+Create the block for mTLS ClientCAs.
+*/}}
+{{- define "traefik.ssl.mtls.clientCAs" -}}
+         files = [
+	   {{- range $idx, $_ := .Values.ssl.mtls.clientCaCerts }}
+	     {{- if $idx }}, {{ end }}
+	     {{- printf "/mtls/clientCaCert-%d.crt" $idx | quote }}
+	   {{- end -}}
+         ]
+{{- end -}}
+
+{{/*
 Helper for containerPort (http)
 */}}
 {{- define "traefik.containerPort.http" -}}
@@ -133,6 +145,21 @@ Helper for containerPort (http)
 	6080
 	{{- else -}}
 	80
+	{{- end -}}
+{{- end -}}
+
+{{/*
+Helper for RBAC Scope
+If Kubernetes namespace selection is defined and the (one) selected
+namespace is the release namespace Cluster scope is unnecessary.
+*/}}
+{{- define "traefik.rbac.scope" -}}
+	{{- if .Values.kubernetes -}}
+		{{- if not (eq (.Values.kubernetes.namespaces | default (list) | toString) (list .Release.Namespace | toString)) -}}
+		Cluster
+		{{- end -}}
+	{{- else -}}
+	Cluster
 	{{- end -}}
 {{- end -}}
 

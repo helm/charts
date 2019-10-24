@@ -4,14 +4,11 @@ kind: PodDisruptionBudget
 metadata:
   name: {{ template "dex.fullname" . }}
   labels:
-    app: {{ template "dex.name" . }}
-    chart: {{ template "dex.chart" . }}
-    heritage: "{{ .Release.Service }}"
-    release: "{{ .Release.Name }}"
+{{ include "dex.labels" . | indent 4 }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "dex.name" . }}
-      release: "{{ .Release.Name }}"
+      app.kubernetes.io/name: {{ include "dex.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
 {{ toYaml .Values.podDisruptionBudget | indent 2 }}
 {{- end -}}

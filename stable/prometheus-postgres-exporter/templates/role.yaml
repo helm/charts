@@ -5,7 +5,7 @@ metadata:
   name: {{ template "prometheus-postgres-exporter.fullname" . }}
   labels:
     app: {{ template "prometheus-postgres-exporter.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "prometheus-postgres-exporter.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 {{- if .Values.rbac.pspEnabled }}

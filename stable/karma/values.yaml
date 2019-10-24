@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: lmierzwa/karma
-  tag: v0.38
+  tag: v0.42
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -21,6 +21,7 @@ service:
   port: 80
   annotations: {}
     # prometheus.io/scrape: "true"
+  labels: {}
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
@@ -59,6 +60,8 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+securityContext: {}
 
 # configuration for liveness probe
 livenessProbe:

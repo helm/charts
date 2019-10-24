@@ -14,11 +14,5 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistence.dokuwiki.size | quote }}
-{{- if .Values.persistence.dokuwiki.storageClass }}
-{{- if (eq "-" .Values.persistence.dokuwiki.storageClass) }}
-  storageClassName: ""
-{{- else }}
-  storageClassName: {{ .Values.persistence.dokuwiki.storageClass | quote }}
-{{- end }}
-{{- end }}
+  {{ include "dokuwiki.storageClass" . }}
 {{- end -}}

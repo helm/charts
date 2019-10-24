@@ -25,7 +25,7 @@ spec:
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "fluentd-cloudwatch.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       initContainers:
         - name: copy-fluentd-config
-          image: busybox
+          image: "{{.Values.busybox.repository}}:{{.Values.busybox.tag}}"
           command: ['sh', '-c', 'cp /config-volume/* /etc/fluentd']
           volumeMounts:
             - name: config-volume

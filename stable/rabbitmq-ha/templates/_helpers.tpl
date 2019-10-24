@@ -62,6 +62,9 @@ users, virtual hosts, permissions and parameters) to load by the management plug
 */}}
 {{- define "rabbitmq-ha.definitions" -}}
 {
+  "global_parameters": [
+{{ .Values.definitions.globalParameters | indent 4 }}
+  ],
   "users": [
     {
       "name": {{ .Values.managementUsername | quote }},

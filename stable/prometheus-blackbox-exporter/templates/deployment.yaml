@@ -1,28 +1,27 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "prometheus-blackbox-exporter.fullname" . }}
   labels:
-    chart: {{ template "prometheus-blackbox-exporter.chart" . }}
-    app: {{ template "prometheus-blackbox-exporter.name" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ include "prometheus-blackbox-exporter.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "prometheus-blackbox-exporter.chart" . }}
 spec:
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
-      app: {{ template "prometheus-blackbox-exporter.name" . }}
-      release: "{{ .Release.Name }}"
+      app.kubernetes.io/name: {{ include "prometheus-blackbox-exporter.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   strategy:
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
-    type: RollingUpdate
+{{ toYaml .Values.strategy | indent 4 }}
   template:
     metadata:
       labels:
-        app: {{ template "prometheus-blackbox-exporter.name" . }}
-        release: "{{ .Release.Name }}"
+        app.kubernetes.io/name: {{ include "prometheus-blackbox-exporter.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        helm.sh/chart: {{ include "prometheus-blackbox-exporter.chart" . }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
     spec:
@@ -46,13 +45,18 @@ spec:
     {{- end }}
 
       restartPolicy: {{ .Values.restartPolicy }}
+
+      {{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+      {{- end }}
       containers:
         - name: blackbox-exporter
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
-            runAsNonRoot: true
-            runAsUser: 1000
+            readOnlyRootFilesystem: {{ .Values.readOnlyRootFilesystem }}
+            runAsNonRoot: {{ .Values.runAsNonRoot  }}
+            runAsUser: {{ .Values.runAsUser }}
           args:
 {{- if .Values.config }}
             - "--config.file=/config/blackbox.yaml"
@@ -62,8 +66,6 @@ spec:
         {{- if .Values.extraArgs }}
 {{ toYaml .Values.extraArgs | indent 12 }}
         {{- end }}
-          securityContext:
-            readOnlyRootFilesystem: true
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           ports:
@@ -83,6 +85,9 @@ spec:
         - name: configmap-reload
           image: "{{ .Values.configmapReload.image.repository }}:{{ .Values.configmapReload.image.tag }}"
           imagePullPolicy: "{{ .Values.configmapReload.image.pullPolicy }}"
+          securityContext:
+            runAsNonRoot: {{ .Values.configmapReload.runAsNonRoot }}
+            runAsUser: {{ .Values.configmapReload.runAsUser }}
           args:
             - --volume-dir=/etc/config
             - --webhook-url=http://localhost:{{ .Values.service.port }}/-/reload

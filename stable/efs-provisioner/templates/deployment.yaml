@@ -10,7 +10,7 @@ creates pods that will never enter a clean, running state.
 Omitting the deployment hacks around this limitation.
 */}}
 kind: Deployment
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 metadata:
   name: {{ template "efs-provisioner.fullname" . }}
   labels:
@@ -77,6 +77,8 @@ spec:
         image: {{ .Values.busyboxImage.repository}}:{{ .Values.busyboxImage.tag}}
         imagePullPolicy: {{ .Values.busyboxImage.pullPolicy }}
         command: [ "sh", "-c", "mkdir -p /efs-vol-root/{{ (trimPrefix "/" .Values.efsProvisioner.path) }}" ]
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
         volumeMounts:
         - name: pv-volume
           mountPath: /efs-vol-root

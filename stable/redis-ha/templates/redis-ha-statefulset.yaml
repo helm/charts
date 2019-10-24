@@ -17,8 +17,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/init-config: {{ include (print $.Template.BasePath "/redis-ha-configmap.yaml") . | sha256sum }}
-        checksum/probe-config: {{ include (print $.Template.BasePath "/redis-ha-healthchecks.yaml") . | sha256sum }}
+        checksum/init-config: {{ print (include "config-redis.conf" .) (include "config-init.sh" .) | sha256sum }}
       {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
@@ -52,7 +51,7 @@ spec:
     {{- end }}
     {{- else }}
     {{- if .Values.additionalAffinities }}
-    {{ toYaml .Values.additionalAffinities | indent 8 }}
+{{ toYaml .Values.additionalAffinities | indent 8 }}
     {{- end }}
         podAntiAffinity:
     {{- if .Values.hardAntiAffinity }}
@@ -149,11 +148,11 @@ spec:
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
-        - redis-server
+        - redis-server 
         args:
         - /data/conf/redis.conf
-{{- if .Values.auth }}
         env:
+        {{- if .Values.auth }}
         - name: AUTH
           valueFrom:
             secretKeyRef:
@@ -163,17 +162,11 @@ spec:
               name: {{ template "redis-ha.fullname" . }}
             {{- end }}
               key: {{ .Values.authKey }}
-{{- end }}
+        {{- end }}
         livenessProbe:
-          exec:
-            command: [ "sh", "/probes/liveness.sh", "{{ .Values.redis.port }}"]
+          tcpSocket:
+            port: {{ .Values.redis.port }}
           initialDelaySeconds: 15
-          periodSeconds: 5
-        readinessProbe:
-          exec:
-            command: ["sh", "/probes/readiness.sh", "{{ .Values.redis.port }}"]
-          initialDelaySeconds: 15
-          periodSeconds: 5
         resources:
 {{ toYaml .Values.redis.resources | indent 10 }}
         ports:
@@ -182,8 +175,6 @@ spec:
         volumeMounts:
         - mountPath: /data
           name: data
-        - mountPath: /probes
-          name: probes
       - name: sentinel
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -204,15 +195,9 @@ spec:
               key: {{ .Values.authKey }}
 {{- end }}
         livenessProbe:
-          exec:
-            command: [ "sh", "/probes/readiness.sh", "{{ .Values.sentinel.port }}"]
+          tcpSocket:
+            port: {{ .Values.sentinel.port }}
           initialDelaySeconds: 15
-          periodSeconds: 5
-        readinessProbe:
-          exec:
-            command: ["sh", "/probes/readiness.sh", "{{ .Values.sentinel.port }}"]
-          initialDelaySeconds: 15
-          periodSeconds: 5
         resources:
 {{ toYaml .Values.sentinel.resources | indent 10 }}
         ports:
@@ -221,8 +206,6 @@ spec:
         volumeMounts:
         - mountPath: /data
           name: data
-        - mountPath: /probes
-          name: probes
 {{- if .Values.exporter.enabled }}
       - name: redis-exporter
         image: "{{ .Values.exporter.image }}:{{ .Values.exporter.tag }}"
@@ -233,7 +216,7 @@ spec:
         {{- end }}
         env:
           - name: REDIS_ADDR
-            value: redis://localhost:6379
+            value: redis://localhost:{{ .Values.redis.port }}
         {{- if .Values.auth }}
           - name: REDIS_PASSWORD
             valueFrom:
@@ -258,13 +241,13 @@ spec:
           - name: exporter-port
             containerPort: {{ .Values.exporter.port }}
 {{- end }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+{{- end }}
       volumes:
       - name: config
         configMap:
           name: {{ template "redis-ha.fullname" . }}-configmap
-      - name: probes
-        configMap:
-          name: {{ template "redis-ha.fullname" . }}-probes
       {{- if .Values.sysctlImage.mountHostSys }}
       - name: host-sys
         hostPath:

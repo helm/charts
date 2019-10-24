@@ -66,12 +66,16 @@ The following table lists the configurable parameters of the Fluentd Cloudwatch 
 | `logGroupName`               | AWS Cloudwatch log group                                                        | `kubernetes`                          |
 | `rbac.create`                | If true, create & use RBAC resources                                            | `false`                               |
 | `rbac.serviceAccountName`    | existing ServiceAccount to use (ignored if rbac.create=true)                    | `default`                             |
+| `rbac.pspEnabled`            | PodSecuritypolicy                                                               | `false`                               |
 | `tolerations`                | Add tolerations                                                                 | `[]`                                  |
 | `extraVars`                  | Add pod environment variables (must be specified as a single line object)       | `[]`                                  |
 | `updateStrategy`             | Define daemonset update strategy                                                | `OnDelete`                            |
 | `nodeSelector`               | Node labels for pod assignment                                                  | `{}`                                  |
 | `affinity`                   | Node affinity for pod assignment                                                | `{}`                                  |
 | `priorityClassName`          | Set priority class for daemon set                                               | `nil`                                 |
+| `busybox.repository`         | Image repository of busybox                                                     | `busybox`                             |
+| `busybox.tag`                | Image tag of busybox                                                            | `1.31.0`                              |
+
 
 If using fluentd-kubernetes-daemonset v0.12.43-cloudwatch, the container runs as user fluentd. To be able to write pos files to the host system, you'll need to run fluentd as root. Add the following extraVars value to run as root.
 

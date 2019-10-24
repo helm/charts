@@ -64,12 +64,17 @@ logGroupName: kubernetes
 rbac:
   ## If true, create and use RBAC resources
   create: false
+  pspEnabled: false
 
   ## Ignored if rbac.create is true
   serviceAccountName: default
 # Add extra environment variables if specified (must be specified as a single line object and be quoted)
 extraVars: []
 # - "{ name: NODE_NAME, valueFrom: { fieldRef: { fieldPath: spec.nodeName } } }"
+
+busybox:
+  repository: busybox
+  tag: 1.31.0
 
 updateStrategy:
   type: OnDelete

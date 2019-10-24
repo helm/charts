@@ -6,7 +6,7 @@ metadata:
   name: {{ template "minio.fullname" . }}-svc
   labels:
     app: {{ template "minio.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "minio.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
@@ -18,7 +18,7 @@ spec:
   selector:
     app: {{ template "minio.name" . }}
 ---
-apiVersion: apps/v1beta1
+apiVersion: {{ template "minio.statefulset.apiVersion" . }}
 kind: StatefulSet
 metadata:
   name: {{ template "minio.fullname" . }}
@@ -30,6 +30,7 @@ metadata:
 spec:
   updateStrategy:
     type: {{ .Values.StatefulSetUpdate.updateStrategy }}
+  podManagementPolicy: "Parallel"
   serviceName: {{ template "minio.fullname" . }}-svc
   replicas: {{ .Values.replicas }}
   selector:
@@ -42,10 +43,13 @@ spec:
       labels:
         app: {{ template "minio.name" . }}
         release: {{ .Release.Name }}
-      {{- if .Values.podAnnotations }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+{{- end }}
       annotations:
-{{ toYaml .Values.podAnnotations | indent 8 }}
-      {{- end }}
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+{{- if .Values.podAnnotations }}{{ toYaml .Values.podAnnotations | indent 8 }}{{- end }}
     spec:
       {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
@@ -70,6 +74,10 @@ spec:
           http://{{ template `minio.fullname` $ }}-{{ $i }}.{{ template `minio.fullname` $ }}-svc.{{ $.Release.Namespace }}.svc.{{ $.Values.clusterDomain }}{{ $.Values.mountPath }}
           {{- end }}" ]
           {{ end }}
+          {{- if .Values.extraArgs }}
+          args:
+{{ toYaml .Values.extraArgs | indent 12 }}
+          {{- end  }}
           volumeMounts:
             {{- if .Values.persistence.enabled }}
             - name: export

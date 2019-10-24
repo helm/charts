@@ -52,8 +52,8 @@ spec:
             - name: SA_PASSWORD
               valueFrom:
                secretKeyRef:
-                 name: {{ template "mssql.fullname" . }}-secret
-                 key: sapassword
+                 name: {{ template "mssql.secret" . }}
+                 key: {{ template "mssql.passwordKey" . }}
             - name: MSSQL_DATA_DIR
               value: /mssql-data/data
             - name: MSSQL_LOG_DIR
@@ -72,6 +72,8 @@ spec:
               value: /mssql-data/master/mastlog.ldf
             - name: MSSQL_ENABLE_HADR
               value: "{{ .Values.hadr }}"
+            - name: MSSQL_AGENT_ENABLED
+              value: {{ .Values.agent.enabled | quote }}
             {{ if .Values.resources.limits.memory }}
             - name: MSSQL_MEMORY_LIMIT_MB
               valueFrom:
