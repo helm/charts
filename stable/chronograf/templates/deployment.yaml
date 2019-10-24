@@ -9,6 +9,9 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   replicas: {{ .Values.service.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "chronograf.fullname" . }}
   template:
     metadata:
       labels:
