@@ -80,9 +80,9 @@ ingress:
 persistence:
   enabled: false
   ## Only when persistent enabled
-  # accessMode: 
+  # accessMode:
   # size: 1Gi
-  # storageClass: 
+  # storageClass:
 
 # A custom log4j.properties file can be provided using a multiline YAML string.
 # See https://github.com/metabase/metabase/blob/master/resources/log4j.properties
