@@ -9,6 +9,10 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "influxdb.fullname" . }}
+      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
