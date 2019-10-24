@@ -422,7 +422,7 @@ clusterAgent:
   #     maxUnavailable: 0
 
   ## @param podAnnotations - list of key:value strings - optional
-  ## Annotations to add to the cluster-agents's pod(s)
+  ## Annotations to add to pods of the Cluster Check Deployment
   #
   # podAnnotations:
   #   key: "value"
