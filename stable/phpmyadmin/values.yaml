@@ -118,6 +118,9 @@ tolerations: []
 ##
 affinity: {}
 
+## Pod labels
+podLabels: {}
+
 ## Pod annotations
 podAnnotations: {}
 
