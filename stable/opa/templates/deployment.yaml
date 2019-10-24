@@ -9,6 +9,10 @@ spec:
   selector:
     matchLabels:
       app: {{ template "opa.fullname" . }}
+  {{- with .Values.deploymentStrategy }}
+  strategy:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
   template:
     metadata:
 {{- if or .Values.generateAdmissionControllerCerts .Values.opa }}
