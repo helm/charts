@@ -72,7 +72,7 @@ region: US
 
 # support for custom URLs
 serverBaseUrl: null
-eventsRecieverUrl: null
+eventsReceiverUrl: null
 logsReceiverUrl: null
 
 tolerations: []

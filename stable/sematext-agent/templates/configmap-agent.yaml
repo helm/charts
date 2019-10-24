@@ -15,8 +15,8 @@ data:
   {{- if .Values.serverBaseUrl }}
   SERVER_BASE_URL: {{ default "" .Values.serverBaseUrl | quote }}
   {{- end }}
-  {{- if .Values.eventsRecieverUrl }}
-  EVENTS_RECEIVER_URL: {{ default "" .Values.eventsRecieverUrl | quote }}
+  {{- if .Values.eventsReceiverUrl }}
+  EVENTS_RECEIVER_URL: {{ default "" .Values.eventsReceiverUrl | quote }}
   {{- end }}
   {{- if .Values.logsReceiverUrl }}
   LOGS_RECEIVER_URL: {{ default "" .Values.logsReceiverUrl | quote }}
