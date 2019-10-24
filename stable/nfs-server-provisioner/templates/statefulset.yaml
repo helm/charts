@@ -34,14 +34,38 @@ spec:
             - name: nfs
               containerPort: 2049
               protocol: TCP
+            - name: nfs-udp
+              containerPort: 2049
+              protocol: UDP
+            - name: nlockmgr
+              containerPort: 32803
+              protocol: TCP
+            - name: nlockmgr-udp
+              containerPort: 32803
+              protocol: UDP
             - name: mountd
               containerPort: 20048
               protocol: TCP
-            - name: rpcbind-tcp
+            - name: mountd-udp
+              containerPort: 20048
+              protocol: UDP
+            - name: rquotad
+              containerPort: 875
+              protocol: TCP
+            - name: rquotad-udp
+              containerPort: 875
+              protocol: UDP
+            - name: rpcbind
               containerPort: 111
               protocol: TCP
             - name: rpcbind-udp
               containerPort: 111
+              protocol: UDP
+            - name: statd
+              containerPort: 662
+              protocol: TCP
+            - name: statd-udp
+              containerPort: 662
               protocol: UDP
           securityContext:
             capabilities:

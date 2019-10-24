@@ -15,11 +15,17 @@ service:
   type: ClusterIP
 
   nfsPort: 2049
+  nlockmgrPort: 32803
   mountdPort: 20048
-  rpcbindPort: 51413
+  rquotadPort: 875
+  rpcbindPort: 111
+  statdPort: 662
   # nfsNodePort:
+  # nlockmgrNodePort:
   # mountdNodePort:
+  # rquotadNodePort:
   # rpcbindNodePort:
+  # statdNodePort:
 
   externalIPs: []
 
@@ -59,8 +65,8 @@ storageClass:
   parameters: {}
 
   mountOptions:
-    - vers=4.1
-    - noatime
+    - vers=3
+    - relatime
 
   ## ReclaimPolicy field of the class, which can be either Delete or Retain
   reclaimPolicy: Delete

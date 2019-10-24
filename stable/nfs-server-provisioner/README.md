@@ -75,7 +75,7 @@ their default values.
 | `storageClass.name`            | The name to assign the created StorageClass                                                                     | `nfs`                                                    |
 | `storageClass.allowVolumeExpansion` | Allow base storage PCV to be dynamically resizeable (set to null to disable )                              | `true                                                    |
 | `storageClass.parameters`      | Parameters for StorageClass                                                                                     | `{}`                                                     |
-| `storageClass.mountOptions`    | Mount options for StorageClass                                                                                  | `[ "vers=4.1", "noatime" ]`                              |
+| `storageClass.mountOptions`    | Mount options for StorageClass                                                                                  | `[ "vers=3", "relatime" ]`                               |
 | `storageClass.reclaimPolicy`   | ReclaimPolicy field of the class, which can be either Delete or Retain                                          | `Delete`                                                    |
 | `resources`                    | Resource limits for nfs-server-provisioner pod                                                                          | `{}`                                                     |
 | `nodeSelector`                 | Map of node labels for pod assignment                                                                           | `{}`                                                     |

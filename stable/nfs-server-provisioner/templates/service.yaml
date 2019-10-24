@@ -17,6 +17,27 @@ spec:
 {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nfsNodePort))) }}
       nodePort: {{ .Values.service.nfsNodePort }}
 {{- end }}
+    - port: {{ .Values.service.nfsPort }}
+      targetPort: nfs-udp
+      protocol: UDP
+      name: nfs-udp
+{{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nfsNodePort))) }}
+      nodePort: {{ .Values.service.nfsNodePort }}
+{{- end }}
+    - port: {{ .Values.service.nlockmgrPort }}
+      targetPort: nlockmgr
+      protocol: TCP
+      name: nlockmgr
+{{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nlockmgrNodePort))) }}
+      nodePort: {{ .Values.service.nlockmgrNodePort }}
+{{- end }}
+    - port: {{ .Values.service.nlockmgrPort }}
+      targetPort: nlockmgr-udp
+      protocol: UDP
+      name: nlockmgr-udp
+{{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nlockmgrPort))) }}
+      nodePort: {{ .Values.service.nlockmgrNodePort }}
+{{- end }}
     - port: {{ .Values.service.mountdPort }}
       targetPort: mountd
       protocol: TCP
@@ -24,10 +45,31 @@ spec:
 {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.mountdNodePort))) }}
       nodePort: {{ .Values.service.mountdNodePort }}
 {{- end }}
-    - port: {{ .Values.service.rpcbindPort }}
-      targetPort: rpcbind-tcp
+    - port: {{ .Values.service.mountdPort }}
+      targetPort: mountd-udp
+      protocol: UDP
+      name: mountd-udp
+{{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.mountdNodePort))) }}
+      nodePort: {{ .Values.service.mountdNodePort }}
+{{- end }}
+    - port: {{ .Values.service.rquotadPort }}
+      targetPort: rquotad
       protocol: TCP
-      name: rpcbind-tcp
+      name: rquotad
+{{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.rquotadNodePort))) }}
+      nodePort: {{ .Values.service.rquotadNodePort }}
+{{- end }}
+    - port: {{ .Values.service.rquotadPort }}
+      targetPort: rquotad-udp
+      protocol: UDP
+      name: rquotad-udp
+{{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.rquotadNodePort))) }}
+      nodePort: {{ .Values.service.rquotadNodePort }}
+{{- end }}
+    - port: {{ .Values.service.rpcbindPort }}
+      targetPort: rpcbind
+      protocol: TCP
+      name: rpcbind
 {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.rpcbindNodePort))) }}
       nodePort: {{ .Values.service.rpcbindNodePort }}
 {{- end }}
@@ -37,6 +79,20 @@ spec:
       name: rpcbind-udp
 {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.rpcbindNodePort))) }}
       nodePort: {{ .Values.service.rpcbindNodePort }}
+{{- end }}
+    - port: {{ .Values.service.statdPort }}
+      targetPort: statd
+      protocol: TCP
+      name: statd
+{{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.statdPort))) }}
+      nodePort: {{ .Values.service.statdPort }}
+{{- end }}
+    - port: {{ .Values.service.statdPort }}
+      targetPort: statd-udp
+      protocol: UDP
+      name: statd-udp
+{{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.statdPort))) }}
+      nodePort: {{ .Values.service.statdPort }}
 {{- end }}
 {{- if .Values.service.externalIPs }}
   externalIPs:
