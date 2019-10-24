@@ -26,7 +26,7 @@ To install the chart with the release name `my-release`:
 $ helm install stable/kubewatch --name my-release
 ```
 
-The command deploys kubewatch on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys kubewatch on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
 
 ## Uninstalling the Chart
 
@@ -38,7 +38,7 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
-## Configuration
+## Parameters
 
 The following table lists the configurable parameters of the kubewatch chart and their default values.
 
@@ -103,7 +103,15 @@ $ helm install stable/kubewatch --name my-release -f values.yaml
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
-## Create a Slack bot
+## Configuration and installation details
+
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
+
+### Create a Slack bot
 
 Open [https://my.slack.com/services/new/bot](https://my.slack.com/services/new/bot) to create a new Slack bot.
 The API token can be found on the edit page (it starts with `xoxb-`).
