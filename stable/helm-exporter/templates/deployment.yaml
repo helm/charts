@@ -15,8 +15,6 @@ spec:
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
-      annotations:
-{{ toYaml .Values.annotations | indent 8 }}
       labels:
         app.kubernetes.io/name: {{ include "helm-exporter.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
