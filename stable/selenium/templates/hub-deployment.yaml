@@ -8,7 +8,8 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+      app: {{ template "selenium.hub.fullname" . }}
+      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:

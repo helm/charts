@@ -9,7 +9,8 @@ spec:
   replicas: {{ .Values.firefox.replicas }}
   selector:
     matchLabels:
-      chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+      app: {{ template "selenium.firefox.fullname" . }}
+      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:

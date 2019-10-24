@@ -9,7 +9,8 @@ spec:
   replicas: {{ .Values.chromeDebug.replicas }}
   selector:
     matchLabels:
-      chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+      app: {{ template "selenium.chromeDebug.fullname" . }}
+      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
