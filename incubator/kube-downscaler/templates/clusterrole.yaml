@@ -18,11 +18,11 @@ rules:
       - watch
       - list
   - apiGroups:
-      - extensions
-      - apps
+      - "*"
     resources:
       - deployments
       - statefulsets
+      - namespaces
     verbs:
       - get
       - watch

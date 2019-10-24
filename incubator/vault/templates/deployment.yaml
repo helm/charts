@@ -139,8 +139,10 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: status.podIP
+        {{- if .Values.vault.podApiAddress }}
           - name: VAULT_API_ADDR
-            value: "http://$(POD_IP):8200"
+            value: "{{ if .Values.vault.config.listener.tcp.tls_disable }}http{{ else }}https{{ end }}://$(POD_IP):8200"
+        {{- end }}
         {{- if not .Values.vault.dev }}
           - name: VAULT_CLUSTER_ADDR
             value: "https://$(POD_IP):8201"

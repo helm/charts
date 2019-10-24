@@ -26,6 +26,14 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
+## Upgrading an existing Release to a new major version
+
+A major chart version change (like v1.2.3 -> v2.0.0) indicates that there is an
+incompatible breaking change needing manual actions.
+
+### To 4.0.0 (And 3.12.1)
+
+This version requires Helm >= 2.12.0.
 
 ## Configuration
 
@@ -47,6 +55,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `service.port`                            | Kubernetes port where service is exposed      | `80`                                                    |
 | `service.portName`                        | Name of the port on the service               | `service`                                               |
 | `service.targetPort`                      | Internal service is port                      | `3000`                                                  |
+| `service.nodePort`                        | Kubernetes service nodePort                   | `nil`                                                   |
 | `service.annotations`                     | Service annotations                           | `{}`                                                    |
 | `service.labels`                          | Custom labels                                 | `{}`                                                    |
 | `ingress.enabled`                         | Enables Ingress                               | `false`                                                 |
@@ -123,6 +132,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `admin.existingSecret`                    | The name of an existing secret containing the admin credentials. | `""`                                 |
 | `admin.userKey`                           | The key in the existing admin secret containing the username. | `"admin-user"`                          |
 | `admin.passwordKey`                       | The key in the existing admin secret containing the password. | `"admin-password"`                      |
+| `serviceAccount.annotations`              | ServiceAccount annotations                                                                              |
 | `serviceAccount.create`                   | Create service account | `true` |
 | `serviceAccount.name`                     | Service account name to use, when empty will be set to created account if `serviceAccount.create` is set else to `default` | `` |
 | `serviceAccount.nameTest`                 | Service account name to use for test, when empty will be set to created account if `serviceAccount.create` is set else to `default` | `` |

@@ -23,7 +23,8 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 
 ## Prerequisites
 
-- Kubernetes 1.8+
+- Kubernetes 1.12+
+- Helm 2.11+ or Helm 3.0-beta3+
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
@@ -137,7 +138,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `cluster.enabled`                             | Use master-slave topology                                                                                                                           | `true`                                                  |
 | `cluster.slaveCount`                          | Number of slaves                                                                                                                                    | `1`                                                     |
 | `existingSecret`                              | Name of existing secret object (for password authentication)                                                                                        | `nil`                                                   |
-| `existingSecretPasswordKey`                   | Name of key containing password to be retrieved from the existing secret                                                                                                 | `nil`                                                   |  
+| `existingSecretPasswordKey`                   | Name of key containing password to be retrieved from the existing secret                                                                                                 | `nil`                                                   |
 | `usePassword`                                 | Use password                                                                                                                                        | `true`                                                  |
 | `usePasswordFile`                             | Mount passwords as files instead of environment variables                                                                                           | `false`                                                 |
 | `password`                                    | Redis password (ignored if existingSecret set)                                                                                                      | Randomly generated                                      |
@@ -198,6 +199,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `master.service.annotations`                  | annotations for redis master service                                                                                                                | {}                                                      |
 | `master.service.labels`                       | Additional labels for redis master service                                                                                                          | {}                                                      |
 | `master.service.loadBalancerIP`               | loadBalancerIP if redis master service type is `LoadBalancer`                                                                                       | `nil`                                                   |
+| `master.service.loadBalancerSourceRanges`     | loadBalancerSourceRanges if redis master service type is `LoadBalancer`                                                                                       | `nil`                                                   |
 | `master.resources`                            | Redis master CPU/Memory resource requests/limits                                                                                                    | Memory: `256Mi`, CPU: `100m`                            |
 | `master.livenessProbe.enabled`                | Turn on and off liveness probe (redis master pod)                                                                                                   | `true`                                                  |
 | `master.livenessProbe.initialDelaySeconds`    | Delay before liveness probe is initiated (redis master pod)                                                                                         | `30`                                                    |
@@ -224,6 +226,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `slave.service.labels`                        | Additional labels for redis slave service                                                                                                           | {}                                                      |
 | `slave.service.port`                          | Kubernetes Service port (redis slave)                                                                                                               | `6379`                                                  |
 | `slave.service.loadBalancerIP`                | LoadBalancerIP if Redis slave service type is `LoadBalancer`                                                                                        | `nil`                                                   |
+| `slave.service.loadBalancerSourceRanges`      | loadBalancerSourceRanges if Redis slave service type is `LoadBalancer`                                                                              | `nil`                                                   |
 | `slave.command`                               | Redis slave entrypoint array. The docker image's ENTRYPOINT is used if this is not provided.                                                        | `/run.sh`                                               |
 | `slave.configmap`                             | Additional Redis configuration for the slave nodes (this value is evaluated as a template)                                                          | `nil`                                                   |
 | `slave.disableCommands`                       | Array of Redis commands to disable (slave)                                                                                                          | `[FLUSHDB, FLUSHALL]`                                   |
@@ -423,7 +426,7 @@ securityContext:
     value: "10000"
 ```
 
-Note that this will not disable transparent huge tables.  
+Note that this will not disable transparent huge tables.
 
 ## Cluster topologies
 

@@ -136,6 +136,9 @@ spec:
           containerPort: {{ .Values.service.distPort }}
         - name: stats
           containerPort: {{ .Values.service.managerPort }}
+{{- if .Values.service.extraContainerPorts }}
+{{ toYaml .Values.service.extraContainerPorts | indent 8 }}
+{{- end }}
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           exec:
@@ -243,18 +246,28 @@ spec:
         ports:
         - name: metrics
           containerPort: 9090
+        {{- if .Values.metrics.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
             path: /metrics
             port: metrics
-          initialDelaySeconds: 15
-          timeoutSeconds: 5
+          initialDelaySeconds: {{ .Values.metrics.livenessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.metrics.livenessProbe.timeoutSeconds }}
+          periodSeconds: {{ .Values.metrics.livenessProbe.periodSeconds }}
+          failureThreshold: {{ .Values.metrics.livenessProbe.failureThreshold }}
+          successThreshold: {{ .Values.metrics.livenessProbe.successThreshold }}
+        {{- end }}
+        {{- if .Values.metrics.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
             path: /metrics
             port: metrics
-          initialDelaySeconds: 5
-          timeoutSeconds: 5
+          initialDelaySeconds: {{ .Values.metrics.readinessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.metrics.readinessProbe.timeoutSeconds }}
+          periodSeconds: {{ .Values.metrics.readinessProbe.periodSeconds }}
+          failureThreshold: {{ .Values.metrics.readinessProbe.failureThreshold }}
+          successThreshold: {{ .Values.metrics.readinessProbe.successThreshold }}
+        {{- end }}
         resources:
 {{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
