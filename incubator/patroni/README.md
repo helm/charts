@@ -3,7 +3,7 @@
 This directory contains a Kubernetes chart to deploy a five node [Patroni](https://github.com/zalando/patroni/) cluster using a [Spilo](https://github.com/zalando/spilo) and a StatefulSet.
 
 ## Prerequisites Details
-* Kubernetes 1.5+
+* Kubernetes 1.9+
 * PV support on the underlying infrastructure
 
 ## StatefulSet Details
