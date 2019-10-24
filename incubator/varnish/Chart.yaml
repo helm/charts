@@ -5,3 +5,6 @@ name: varnish
 version: 0.1.0
 home: https://www.varnish-software.com
 icon: https://www.varnish-software.com/wp-content/uploads/favicon.png
+maintainers:
+  - name: empinator
+    email: empi@polstelle.de
