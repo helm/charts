@@ -4,7 +4,7 @@
 
 MariaDB is developed as open source software and as a relational database it provides an SQL interface for accessing data. The latest versions of MariaDB also include GIS and JSON features.
 
-## TL;DR
+## TL;DR;
 
 ```bash
 $ helm install stable/mariadb
