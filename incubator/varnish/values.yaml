@@ -13,19 +13,20 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+# Port where varnish expects requests on
 service:
   port: 80
 
-# Deploying NGINX for Demo Purposes, otherwise
+# Deploying Tomcat for Demo Purposes, otherwise
 # Varnish won't start without an existing service to connect to
-nginx:
+tomcat:
   enabled: true
   service:
     type: ClusterIP
   
 
 # Use this property to provide a full varnish config
-# consider disabling NGINX as well
+# consider disabling Tomcat above as well
 # varnishConfigPath: varnish.vcl
 
 resources: {}

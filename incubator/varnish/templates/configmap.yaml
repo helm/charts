@@ -13,7 +13,7 @@ data:
     vcl 4.0;
 
     backend default {
-      .host = "{{ include "varnish.fullname" . }}-nginx";
-      .port = "80";
+      .host = "{{ include "varnish.fullname" . }}-tomcat";
+      .port = "8080";
     }
 {{- end }}

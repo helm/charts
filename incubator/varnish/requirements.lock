@@ -1,6 +1,6 @@
 dependencies:
-- name: nginx
-  repository: https://charts.bitnami.com/bitnami
-  version: 4.3.10
-digest: sha256:f23a6c3204c2451ff34a0f00d57fbae182f4242127166b7efb45eba1be8b379d
-generated: "2019-10-24T17:06:05.588466228+02:00"
+- name: tomcat
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 0.4.0
+digest: sha256:0001b5710f45bf1fde93158593ca5204cad8a588ebe1655921381d04f9837b35
+generated: "2019-10-24T17:35:30.318925737+02:00"

@@ -1,7 +1,7 @@
 dependencies:
-  - name: nginx
-    version: 4.3.10
-    repository: https://charts.bitnami.com/bitnami
-    condition: nginx.enabled
+  - name: tomcat
+    version: 0.4.0
+    repository: https://kubernetes-charts.storage.googleapis.com/
+    condition: tomcat.enabled
     tags:
-      - default http server
+      - default backend server
