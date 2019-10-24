@@ -16,13 +16,16 @@ fullnameOverride: ""
 service:
   port: 80
 
-# sets a minimal default configuration
-# ignored if varnishConfigPath is set
-default:
-  host: backend-svc
-  port: 80
+# Deploying NGINX for Demo Purposes, otherwise
+# Varnish won't start without an existing service to connect to
+nginx:
+  enabled: true
+  service:
+    type: ClusterIP
+  
 
 # Use this property to provide a full varnish config
+# consider disabling NGINX as well
 # varnishConfigPath: varnish.vcl
 
 resources: {}

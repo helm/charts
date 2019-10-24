@@ -1,0 +1,7 @@
+dependencies:
+  - name: nginx
+    version: 4.3.10
+    repository: https://charts.bitnami.com/bitnami
+    condition: nginx.enabled
+    tags:
+      - default http server

@@ -13,7 +13,7 @@ data:
     vcl 4.0;
 
     backend default {
-      .host = "{{ .Values.default.host }}";
-      .port = "{{ .Values.default.port }}";
+      .host = "{{ include "varnish.fullname" . }}-nginx";
+      .port = "80";
     }
 {{- end }}
