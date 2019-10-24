@@ -6,12 +6,14 @@ apiVersion: extensions/v1beta1
 kind: IngressList
 metadata:
   name: {{ include "prometheus-operator.fullname" $ }}-prometheus-ingressperreplica
+  namespace: {{ .Release.Namespace }}
 items:
 {{ range $i, $e := until $count }}
   - apiVersion: extensions/v1beta1
     kind: Ingress
     metadata:
       name: {{ include "prometheus-operator.fullname" $ }}-prometheus-{{ $i }}
+      namespace: {{ $.Release.Namespace }}
       labels:
         app: {{ include "prometheus-operator.name" $ }}-prometheus
 {{ include "prometheus-operator.labels" $ | indent 8 }}

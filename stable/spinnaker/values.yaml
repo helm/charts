@@ -1,8 +1,8 @@
 halyard:
-  spinnakerVersion: 1.12.5
+  spinnakerVersion: 1.16.1
   image:
     repository: gcr.io/spinnaker-marketplace/halyard
-    tag: 1.20.2
+    tag: 1.23.2
   # Set to false to disable persistence data volume for halyard
   persistence:
     enabled: true
@@ -155,6 +155,21 @@ kubeConfig:
     enabled: false
   liveManifestCalls:
     enabled: false
+
+  # When false, clouddriver will skip the permission checks for all kubernetes kinds at startup.
+  # This can save a great deal of time during clouddriver startup when you have many kubernetes
+  # accounts configured. This disables the log messages at startup about missing permissions.
+  checkPermissionsOnStartup: true
+
+  # A list of resource kinds this Spinnaker account can deploy to and will cache.
+  # When no kinds are configured, this defaults to ‘all kinds'.
+  # kinds:
+  # -
+
+  # A list of resource kinds this Spinnaker account cannot deploy to or cache.
+  # This can only be set when –kinds is empty or not set.
+  # omittedKinds:
+  # -
 
 # Change this if youd like to expose Spinnaker outside the cluster
 ingress:

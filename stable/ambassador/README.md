@@ -52,6 +52,8 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `adminService.nodePort`            | If explicit NodePort for admin service is required                              | `true`                            |
 | `adminService.type`                | Ambassador's admin service type to be used                                      | `ClusterIP`                       |
 | `adminService.annotations`         | Annotations to apply to Ambassador admin service                                | `{}`                              |
+| `adminService.loadBalancerIP`      | IP address to assign (if cloud provider supports it)                            | `""`                              |
+| `adminService.loadBalancerSourceRanges` | Passed to cloud provider load balancer if created (e.g: AWS ELB)           | None                              |
 | `ambassadorConfig`                 | Config thats mounted to `/ambassador/ambassador-config`                         | `""`                              |
 | `crds.enabled`                     | If `true`, enables CRD resources for the installation.                          | `true`                            |
 | `crds.create`                      | If `true`, Creates CRD resources                                                | `true`                            |
@@ -62,7 +64,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `env`                              | Any additional environment variables for ambassador pods                        | `{}`                              |
 | `image.pullPolicy`                 | Ambassador image pull policy                                                    | `IfNotPresent`                    |
 | `image.repository`                 | Ambassador image                                                                | `quay.io/datawire/ambassador`     |
-| `image.tag`                        | Ambassador image tag                                                            | `0.82.0`                          |
+| `image.tag`                        | Ambassador image tag                                                            | `0.85.0`                          |
 | `imagePullSecrets`                 | Image pull secrets                                                              | `[]`                              |
 | `namespace.name`                   | Set the `AMBASSADOR_NAMESPACE` environment variable                             | `metadata.namespace`              |
 | `scope.singleNamespace`            | Set the `AMBASSADOR_SINGLE_NAMESPACE` environment variable and create namespaced RBAC if `rbac.enabled: true` | `false`                           |
@@ -90,7 +92,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `volumes`                          | Volumes for the ambassador service                                              | `[]`                              |
 | `pro.enabled`                      | Installs the Ambassador Pro container as a sidecar to Ambassador                | `false`                           |
 | `pro.image.repository`             | Ambassador Pro image                                                            | `quay.io/datawire/ambassador_pro` |
-| `pro.image.tag`                    | Ambassador Pro image tag                                                        | `0.8.0`               |
+| `pro.image.tag`                    | Ambassador Pro image tag                                                        | `0.9.1`                           |
 | `pro.ports.auth`                   | Ambassador Pro authentication port                                              | `8500`                            |
 | `pro.ports.ratelimit`              | Ambassador Pro ratelimit port                                                   | `8500`                            |
 | `pro.logLevel`                     | Log level for Ambassador Pro                                                    | `"info"`                          |
