@@ -156,7 +156,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `metrics.serviceMonitor.honorLabels`         | honorLabels chooses the metric's labels on collisions with target labels.      | `false`                   |
 | `metrics.serviceMonitor.additionalLabels`    | Used to pass Labels that are required by the Installed Prometheus Operator     | `{}`                      |
 | `metrics.port        `                       | Prometheus metrics exporter port                 | `9419`                                                  |
-| `metrics.env`                                | Exporter [configuration environment variables](https://github.com/kbudde/rabbitmq_exporter#parameters) | `{}` |
+| `metrics.env`                                | Exporter [configuration environment variables](https://github.com/kbudde/rabbitmq_exporter#configuration) | `{}` |
 | `metrics.resources`                          | Exporter resource requests/limit                 | `nil`                                                   |
 | `metrics.capabilities`                       | Exporter: Comma-separated list of extended [scraping capabilities supported by the target RabbitMQ server](https://github.com/kbudde/rabbitmq_exporter#extended-rabbitmq-capabilities) | `bert,no_sort` |
 | `podLabels`                                  | Additional labels for the statefulset pod(s).    | {}                                                      |
