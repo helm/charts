@@ -43,6 +43,16 @@ spec:
     {{- end }}
   {{- end -}}
   {{- end }}
+  {{- range $objectKey, $objectValue := .Values.config.outputs }}
+  {{- range $key, $value := . -}}
+    {{- $tp := typeOf $value -}}
+    {{- if eq $key "prometheus_client" }}
+  - port: {{ trimPrefix ":" $value.listen | int64 }}
+    targetPort: {{ trimPrefix ":" $value.listen | int64 }}
+    name: "prometheus-client"
+    {{- end }}
+  {{- end -}}
+  {{- end }}
   selector:
     app.kubernetes.io/name: {{ include "telegraf.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
