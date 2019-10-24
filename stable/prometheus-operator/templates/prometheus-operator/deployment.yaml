@@ -43,6 +43,11 @@ spec:
           {{- if .Values.prometheusOperator.logLevel }}
             - --log-level={{ .Values.prometheusOperator.logLevel }}
           {{- end }}
+          {{- if .Values.prometheusOperator.releaseNamespaceOnly }}
+            - --namespaces={{ .Release.Namespace }}
+          {{- else if .Values.prometheusOperator.namespaces }}
+            - --namespaces={{ .Values.prometheusOperator.namespaces | join "," }}
+          {{- end }}
           {{- if .Values.prometheusOperator.denyNamespaces }}
             - --deny-namespaces={{ .Values.prometheusOperator.denyNamespaces | join "," }}
           {{- end }}
