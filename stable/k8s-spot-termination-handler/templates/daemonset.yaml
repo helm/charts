@@ -32,6 +32,10 @@ spec:
     spec:
       hostNetwork: {{ .Values.hostNetwork }}
       serviceAccountName: {{ template "k8s-spot-termination-handler.serviceAccountName" . }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
