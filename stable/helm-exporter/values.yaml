@@ -19,6 +19,11 @@ tolerations: []
 
 affinity: {}
 
+annotations: {}
+#  prometheus.io/path: /metrics
+#  prometheus.io/port: "9121"
+#  prometheus.io/scrape: "true"
+
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
