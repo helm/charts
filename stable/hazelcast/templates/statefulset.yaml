@@ -60,7 +60,7 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         ports:
         - name: hazelcast
-          containerPort: 5701
+          containerPort: {{ if .Values.hostPort }}{{ .Values.hostPort }}{{ else }}5701{{ end }}
           hostPort: {{ .Values.hostPort }}
         {{- if .Values.metrics.enabled }}
         - name: metrics
@@ -70,7 +70,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /hazelcast/health/node-state
-            port: 5701
+            port: {{ if .Values.hostPort }}{{ .Values.hostPort }}{{ else }}5701{{ end }}
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -81,7 +81,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /hazelcast/health/node-state
-            port: 5701
+            port: {{ if .Values.hostPort }}{{ .Values.hostPort }}{{ else }}5701{{ end }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
