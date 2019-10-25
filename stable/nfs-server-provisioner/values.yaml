@@ -86,3 +86,8 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+## NFS Ganesha specific parameters
+ganesha:
+  ## NFS Ganesha grace period to use in seconds, from 0-180
+  gracePeriod: 90

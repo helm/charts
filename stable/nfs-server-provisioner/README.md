@@ -81,6 +81,7 @@ their default values.
 | `nodeSelector`                 | Map of node labels for pod assignment                                                                           | `{}`                                                     |
 | `tolerations`                  | List of node taints to tolerate                                                                                 | `[]`                                                     |
 | `affinity`                     | Map of node/pod affinities                                                                                      | `{}`                                                     |
+| `ganesha.gracePeriod`          | NFS Ganesha grace period to use in seconds, from 0-180.                                                         | `90`                                                     |
 
 ```console
 $ helm install stable/nfs-server-provisioner --name my-release \
