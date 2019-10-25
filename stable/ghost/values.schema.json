@@ -2,26 +2,32 @@
   "$schema": "http://json-schema.org/schema#",
   "type": "object",
   "properties": {
-    "wordpressUsername": {
+    "ghostUsername": {
       "type": "string",
-      "title": "Username",
+      "title": "User",
       "form": "username"
     },
-    "wordpressPassword": {
+    "ghostPassword": {
       "type": "string",
       "title": "Password",
       "form": "password",
       "description": "Defaults to a random 10-character alphanumeric string if not set"
     },
-    "wordpressEmail": {
+    "ghostEmail": {
       "type": "string",
       "title": "Admin email",
       "form": "email"
     },
-    "wordpressBlogName": {
+    "ghostBlogTitle": {
       "type": "string",
       "title": "Blog Name",
       "form": "blogName"
+    },
+    "ghostHost": {
+      "type": "string",
+      "title": "Host",
+      "form": "host",
+      "description": "Hostname used to generate application URLs"
     },
     "persistence": {
       "type": "object",
@@ -81,25 +87,6 @@
         }
       }
     },
-    "ingress": {
-      "type": "object",
-      "form": "ingress",
-      "title": "Ingress Details",
-      "properties": {
-        "enabled": {
-          "type": "boolean",
-          "form": "enableIngress",
-          "enables": "ingress",
-          "title": "Use a custom hostname",
-          "description": "Enable the ingress resource that allows you to access the WordPress installation."
-        },
-        "hostname": {
-          "type": "string",
-          "form": "hostname",
-          "title": "Hostname"
-        }
-      }
-    },
     "resources": {
       "type": "object",
       "title": "Required Resources",
@@ -131,14 +118,14 @@
         }
       }
     },
-    "metrics": {
+    "securityContext": {
       "type": "object",
       "properties": {
         "enabled": {
           "type": "boolean",
-          "title": "Enable Metrics",
-          "description": "Prometheus Exporter / Metrics",
-          "form": "enableMetrics"
+          "title": "Enable Pod Security Context",
+          "description": "When disabled, an initContainer will be used to set required folder permissions",
+          "form": "enableSecurityContext"
         }
       }
     }

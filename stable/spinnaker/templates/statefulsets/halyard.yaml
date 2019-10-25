@@ -55,6 +55,10 @@ spec:
           subPath: cacerts
           name: cacerts
         {{- end }}
+        {{- if .Values.halyard.env }}
+        env:
+{{ toYaml .Values.halyard.env | indent 8 }}
+        {{- end }}
       volumes:
       {{- if not .Values.halyard.persistence.enabled }}
       - name: halyard-home
@@ -128,6 +132,12 @@ spec:
           - key: cacerts
             path: cacerts
       {{- end }}
+      {{- if .Values.halyard.image.pullSecrets }}
+      imagePullSecrets:
+        {{- range .Values.halyard.image.pullSecrets }}
+        - name: {{ . }}
+        {{- end}}
+      {{- end}}
       containers:
       - name: halyard
         image: {{ .Values.halyard.image.repository }}:{{ .Values.halyard.image.tag }}

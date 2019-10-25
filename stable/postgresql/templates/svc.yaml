@@ -9,7 +9,7 @@ metadata:
     heritage: {{ .Release.Service | quote }}
 {{- with .Values.service.annotations }}
   annotations:
-{{ toYaml . | indent 4 }}
+{{ tpl (toYaml .) $ | indent 4 }}
 {{- end }}
 spec:
   type: {{ .Values.service.type }}
