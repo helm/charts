@@ -3,6 +3,7 @@ halyard:
   image:
     repository: gcr.io/spinnaker-marketplace/halyard
     tag: 1.23.2
+    pullSecrets: []
   # Set to false to disable persistence data volume for halyard
   persistence:
     enabled: true
