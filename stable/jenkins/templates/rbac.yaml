@@ -15,7 +15,7 @@ metadata:
     "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
 rules:
 - apiGroups: [""]
-  resources: ["pods", "pods/exec", "pods/log", "persistentvolumeclaims"]
+  resources: ["secrets", "pods", "pods/exec", "pods/log", "persistentvolumeclaims"]
   verbs: ["*"]
 
 ---
