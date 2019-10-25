@@ -4,7 +4,7 @@
 
 MariaDB is developed as open source software and as a relational database it provides an SQL interface for accessing data. The latest versions of MariaDB also include GIS and JSON features.
 
-## TL;DR
+## TL;DR;
 
 ```bash
 $ helm install stable/mariadb
@@ -18,7 +18,8 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 
 ## Prerequisites
 
-- Kubernetes 1.10+
+- Kubernetes 1.12+
+- Helm 2.11+ or Helm 3.0-beta3+
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
@@ -29,7 +30,7 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release stable/mariadb
 ```
 
-The command deploys MariaDB on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys MariaDB on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
@@ -43,7 +44,7 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
-## Configuration
+## Parameters
 
 The following table lists the configurable parameters of the MariaDB chart and their default values.
 
@@ -51,7 +52,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 |-------------------------------------------|-----------------------------------------------------|-------------------------------------------------------------------|
 | `global.imageRegistry`                    | Global Docker image registry                        | `nil`                                                             |
 | `global.imagePullSecrets`                 | Global Docker registry secret names as an array     | `[]` (does not add image pull secrets to deployed pods)           |
-| `global.storageClass`                     | Global storage class for dynamic provisioning                                               | `nil`                                                        |
+| `global.storageClass`                     | Global storage class for dynamic provisioning       | `nil`                                                             |
 | `image.registry`                          | MariaDB image registry                              | `docker.io`                                                       |
 | `image.repository`                        | MariaDB Image name                                  | `bitnami/mariadb`                                                 |
 | `image.tag`                               | MariaDB Image tag                                   | `{TAG_NAME}`                                                      |
@@ -60,12 +61,12 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `image.debug`                             | Specify if debug logs should be enabled             | `false`                                                           |
 | `nameOverride`                            | String to partially override mariadb.fullname template with a string (will prepend the release name) | `nil`            |
 | `fullnameOverride`                        | String to fully override mariadb.fullname template with a string                                     | `nil`            |
-| `volumePermissions.enabled`          | Enable init container that changes volume permissions in the data directory (for cases where the default k8s `runAsUser` and `fsUser` values do not work) | `false`                                                      |
-| `volumePermissions.image.registry`   | Init container volume-permissions image registry                                                                                                          | `docker.io`                                                  |
-| `volumePermissions.image.repository` | Init container volume-permissions image name                                                                                                              | `bitnami/minideb`                                            |
-| `volumePermissions.image.tag`        | Init container volume-permissions image tag                                                                                                               | `stretch`                                                     |
-| `volumePermissions.image.pullPolicy` | Init container volume-permissions image pull policy                                                                                                       | `Always`                                                     |
-| `volumePermissions.resources`        | Init container resource requests/limit                                                                                                                    | `nil`                                                        |
+| `volumePermissions.enabled`               | Enable init container that changes volume permissions in the data directory (for cases where the default k8s `runAsUser` and `fsUser` values do not work) | `false`             |
+| `volumePermissions.image.registry`        | Init container volume-permissions image registry    | `docker.io`                                                       |
+| `volumePermissions.image.repository`      | Init container volume-permissions image name        | `bitnami/minideb`                                                 |
+| `volumePermissions.image.tag`             | Init container volume-permissions image tag         | `stretch`                                                         |
+| `volumePermissions.image.pullPolicy`      | Init container volume-permissions image pull policy | `Always`                                                          |
+| `volumePermissions.resources`             | Init container resource requests/limit              | `nil`                                                             |
 | `service.type`                            | Kubernetes service type                             | `ClusterIP`                                                       |
 | `service.clusterIp.master`                | Specific cluster IP for master when service type is cluster IP. Use None for headless service | `nil`                   |
 | `service.clusterIp.slave`                 | Specific cluster IP for slave when service type is cluster IP. Use None for headless service | `nil`                    |
@@ -77,7 +78,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `securityContext.enabled`                 | Enable security context                             | `true`                                                            |
 | `securityContext.fsGroup`                 | Group ID for the container                          | `1001`                                                            |
 | `securityContext.runAsUser`               | User ID for the container                           | `1001`                                                            |
-| `existingSecret`                          | Use existing secret for password details (`rootUser.password`, `db.password`, `replication.password` will be ignored and picked up from this secret). The secret has to contain the keys `mariadb-root-password`, `mariadb-replication-password` and `mariadb-password`. |                         |
+| `existingSecret`                          | Use existing secret for password details (`rootUser.password`, `db.password`, `replication.password` will be ignored and picked up from this secret). The secret has to contain the keys `mariadb-root-password`, `mariadb-replication-password` and `mariadb-password`. | `nil`                        |
 | `rootUser.password`                       | Password for the `root` user. Ignored if existing secret is provided. | _random 10 character alphanumeric string_       |
 | `rootUser.forcePassword`                  | Force users to specify a password                   | `false`                                                           |
 | `db.user`                                 | Username of new user to create                      | `nil`                                                             |
@@ -107,6 +108,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `master.persistence.accessModes`          | Persistent Volume Access Modes                      | `[ReadWriteOnce]`                                                 |
 | `master.persistence.size`                 | Persistent Volume Size                              | `8Gi`                                                             |
 | `master.extraInitContainers`              | Additional init containers as a string to be passed to the `tpl` function (master) |                                    |
+| `master.extraEnvVars`                     | Array containing extra env vars to configure MariaDB master replicas          | `nil`                                   |
 | `master.config`                           | Config file for the MariaDB Master server           | `_default values in the values.yaml file_`                        |
 | `master.resources`                        | CPU/Memory resource requests/limits for master node | `{}`                                                              |
 | `master.livenessProbe.enabled`            | Turn on and off liveness probe (master)             | `true`                                                            |
@@ -139,7 +141,8 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `slave.persistence.storageClass`          | Persistent Volume Storage Class                     | ``                                                                |
 | `slave.persistence.accessModes`           | Persistent Volume Access Modes                      | `[ReadWriteOnce]`                                                 |
 | `slave.persistence.size`                  | Persistent Volume Size                              | `8Gi`                                                             |
-| `slave.extraInitContainers`               | Additional init containers as a string to be passed to the `tpl` function (slave)               |                       |
+| `slave.extraInitContainers`               | Additional init containers as a string to be passed to the `tpl` function (slave)  | `nil`                              |
+| `slave.extraEnvVars`                      | Array containing extra env vars to configure MariaDB slave replicas          | `nil`                                    |
 | `slave.config`                            | Config file for the MariaDB Slave replicas          | `_default values in the values.yaml file_`                        |
 | `slave.resources`                         | CPU/Memory resource requests/limits for slave node  | `{}`                                                              |
 | `slave.livenessProbe.enabled`             | Turn on and off liveness probe (slave)              | `true`                                                            |
@@ -164,10 +167,24 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `metrics.image.tag`                       | Exporter image tag                                  | `{TAG_NAME}`                                                      |
 | `metrics.image.pullPolicy`                | Exporter image pull policy                          | `IfNotPresent`                                                    |
 | `metrics.resources`                       | Exporter resource requests/limit                    | `nil`                                                             |
-| `metrics.serviceMonitor.enabled`          | if `true`, creates a Prometheus Operator ServiceMonitor (also requires `metrics.enabled` to be `true`)                    | `false`                                                             |
+| `metrics.extraArgs.master`                | Extra args to be passed to mysqld_exporter          | `[]`                                                              |
+| `metrics.extraArgs.slave`                 | Extra args to be passed to mysqld_exporter          | `[]`                                                              |
+| `metrics.livenessProbe.enabled`            | Turn on and off liveness probe (metrics)             | `true`                                                          |
+| `metrics.livenessProbe.initialDelaySeconds`| Delay before liveness probe is initiated (metrics)   | `120`                                                           |
+| `metrics.livenessProbe.periodSeconds`      | How often to perform the probe (metrics)             | `10`                                                            |
+| `metrics.livenessProbe.timeoutSeconds`     | When the probe times out (metrics)                   | `1`                                                             |
+| `metrics.livenessProbe.successThreshold`   | Minimum consecutive successes for the probe (metrics)| `1`                                                             |
+| `metrics.livenessProbe.failureThreshold`   | Minimum consecutive failures for the probe (metrics) | `3`                                                             |
+| `metrics.readinessProbe.enabled`           | Turn on and off readiness probe (metrics)            | `true`                                                          |
+| `metrics.readinessProbe.initialDelaySeconds`| Delay before readiness probe is initiated (metrics) | `30`                                                            |
+| `metrics.readinessProbe.periodSeconds`     | How often to perform the probe (metrics)             | `10`                                                            |
+| `metrics.readinessProbe.timeoutSeconds`    | When the probe times out (metrics)                   | `1`                                                             |
+| `metrics.readinessProbe.successThreshold`  | Minimum consecutive successes for the probe (metrics)| `1`                                                             |
+| `metrics.readinessProbe.failureThreshold`  | Minimum consecutive failures for the probe (metrics) | `3`                                                             |
+| `metrics.serviceMonitor.enabled`          | if `true`, creates a Prometheus Operator ServiceMonitor (also requires `metrics.enabled` to be `true`)  | `false`       |
 | `metrics.serviceMonitor.namespace`        | Optional namespace which Prometheus is running in   | `nil`                                                             |
-| `metrics.serviceMonitor.interval`         | How frequently to scrape metrics (use by default, falling back to Prometheus' default)  | `nil`                                                             |
-| `metrics.serviceMonitor.selector`         | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install                    | `{ prometheus: kube-prometheus }`                                                             |
+| `metrics.serviceMonitor.interval`         | How frequently to scrape metrics (use by default, falling back to Prometheus' default)  | `nil`                         |
+| `metrics.serviceMonitor.selector`         | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install   | `{ prometheus: kube-prometheus }` |
 
 The above parameters map to the env variables defined in [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb). For more information please refer to the [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb) image documentation.
 
@@ -189,13 +206,17 @@ $ helm install --name my-release -f values.yaml stable/mariadb
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+## Configuration and installation details
+
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
+
 ### Production configuration
 
-This chart includes a `values-production.yaml` file where you can find some parameters oriented to production configuration in comparison to the regular `values.yaml`.
-
-```console
-$ helm install --name my-release -f ./values-production.yaml stable/mariadb
-```
+This chart includes a `values-production.yaml` file where you can find some parameters oriented to production configuration in comparison to the regular `values.yaml`. You can use this file instead of the default one.
 
 - Force users to specify a password:
 ```diff
@@ -219,13 +240,7 @@ $ helm install --name my-release -f ./values-production.yaml stable/mariadb
 + metrics.enabled: true
 ```
 
-### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
-
-It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
-
-Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
-
-## Initialize a fresh instance
+### Initialize a fresh instance
 
 The [Bitnami MariaDB](https://github.com/bitnami/bitnami-docker-mariadb) image allows you to use your custom scripts to initialize a fresh instance. In order to execute the scripts, they must be located inside the chart folder `files/docker-entrypoint-initdb.d` so they can be consumed as a ConfigMap.
 
@@ -234,6 +249,20 @@ Alternatively, you can specify custom scripts using the `initdbScripts` paramete
 In addition to these options, you can also set an external ConfigMap with all the initialization scripts. This is done by setting the `initdbScriptsConfigMap` parameter. Note that this will override the two previous options.
 
 The allowed extensions are `.sh`, `.sql` and `.sql.gz`.
+
+### Extra Init Containers
+
+The feature allows for specifying a template string for a initContainer in the master/slave pod. Usecases include situations when you need some pre-run setup. For example, in IKS (IBM Cloud Kubernetes Service), non-root users do not have write permission on the volume mount path for NFS-powered file storage. So, you could use a initcontainer to `chown` the mount. See a example below, where we add an initContainer on the master pod that reports to an external resource that the db is going to starting.
+`values.yaml`
+```yaml
+master:
+  extraInitContainers: |
+    - name: initcontainer
+      image: bitnami/minideb:stretch
+      command: ["/bin/sh", "-c"]
+      args:
+        - install_packages curl && curl http://api-service.local/db/starting;
+```
 
 ## Persistence
 
@@ -249,20 +278,6 @@ By default, the chart is configured to use Kubernetes Security Context to automa
 As an alternative, this chart supports using an initContainer to change the ownership of the volume before mounting it in the final destination.
 
 You can enable this initContainer by setting `volumePermissions.enabled` to `true`.
-
-## Extra Init Containers
-
-The feature allows for specifying a template string for a initContainer in the master/slave pod. Usecases include situations when you need some pre-run setup. For example, in IKS (IBM Cloud Kubernetes Service), non-root users do not have write permission on the volume mount path for NFS-powered file storage. So, you could use a initcontainer to `chown` the mount. See a example below, where we add an initContainer on the master pod that reports to an external resource that the db is going to starting.
-`values.yaml`
-```yaml
-master:
-  extraInitContainers: |
-    - name: initcontainer
-      image: bitnami/minideb:stretch
-      command: ["/bin/sh", "-c"]
-      args:
-        - install_packages curl && curl http://api-service.local/db/starting;
-```
 
 ## Upgrading
 

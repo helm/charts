@@ -27,11 +27,7 @@ spec:
         - name: MARIADB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-            {{- if .Values.existingSecret }}
-              name: {{ .Values.existingSecret }}
-            {{- else }}
-              name: {{ template "mariadb.fullname" . }}
-            {{- end }}
+              name: {{ template "mariadb.secretName" . }}
               key: mariadb-root-password
       volumeMounts:
       - mountPath: /tests

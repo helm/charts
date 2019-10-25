@@ -1,15 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-{{- if or .Values.service.annotations (and .Values.prometheus.exporter.enabled (not .Values.prometheus.operator.enabled)) }}
-  annotations:
-{{- end }}
 {{- if .Values.service.annotations }}
+  annotations:
 {{ toYaml .Values.service.annotations | indent 4 }}
-{{- end }}
-{{- if and .Values.prometheus.exporter.enabled (not .Values.prometheus.operator.enabled) }}
-    prometheus.io/scrape: "true"
-    prometheus.io/port: {{ .Values.prometheus.exporter.port | quote }}
 {{- end }}
   name: {{ template "rabbitmq-ha.fullname" . }}
   namespace: {{ .Release.Namespace }}

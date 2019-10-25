@@ -50,10 +50,6 @@ spec:
               secretKeyRef:
                 name: {{ template "sematext-agent.fullname" . }}
                 key: logs-token
-          - name: NODE_NAME
-            valueFrom:
-              fieldRef:
-                fieldPath: spec.nodeName
           - name: STA_NAMESPACE
             valueFrom:
             fieldRef:
@@ -109,9 +105,11 @@ spec:
           - configMapRef:
               name: {{ template "sematext-agent.fullname" . }}-logagent
           volumeMounts:
+            - name: run
+              mountPath: /var/run/
             {{- if .Values.logagent.customConfigs }}
-            - mountPath: /etc/sematext
-              name: logagent-config-volume
+            - name: logagent-config-volume
+              mountPath: /etc/sematext
             {{- end }}
             {{- if .Values.logagent.extraHostVolumeMounts }}
             {{- range $_, $mount := .Values.logagent.extraHostVolumeMounts }}

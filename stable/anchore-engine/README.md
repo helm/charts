@@ -31,18 +31,18 @@ Create a new file named `anchore_values.yaml` and add all desired custom values 
 
 ##### Example anchore_values.yaml - using chart managed PostgreSQL service with custom passwords.
 *Note: Installs with chart managed PostgreSQL database. This is not a guaranteed production ready config.*
-  ```
-  ## anchore_values.yaml
+```
+## anchore_values.yaml
 
-  postgresql:
-    postgresPassword: <PASSWORD>
-    persistence:
-      size: 50Gi
+postgresql:
+  postgresPassword: <PASSWORD>
+  persistence:
+    size: 50Gi
 
-  anchoreGlobal:
-    defaultAdminPassword: <PASSWORD>
-    defaultAdminEmail: <EMAIL>
-  ```
+anchoreGlobal:
+  defaultAdminPassword: <PASSWORD>
+  defaultAdminEmail: <EMAIL>
+```
 
 ## Adding Enterprise Components
 
@@ -78,31 +78,126 @@ To use this Helm chart with the enterprise services enabled, perform these steps
 
     `helm install --name <release_name> -f /path/to/anchore_values.yaml stable/anchore-engine`
 
-##### Example anchore_values.yaml - installing Anchore Enterprise
+#### Example anchore_values.yaml - installing Anchore Enterprise
+
 *Note: Installs with chart managed PostgreSQL & Redis databases. This is not a guaranteed production ready config.*
+```
+## anchore_values.yaml
 
-  ```
-  ## anchore_values.yaml
+postgresql:
+  postgresPassword: <PASSWORD>
+  persistence:
+    size: 50Gi
 
-  postgresql:
+anchoreGlobal:
+  defaultAdminPassword: <PASSWORD>
+  defaultAdminEmail: <EMAIL>
+  enableMetrics: True
+
+anchoreEnterpriseGlobal:
+  enabled: True
+
+anchore-feeds-db:
+  postgresPassword: <PASSWORD>
+  persistence:
+    size: 20Gi
+
+anchore-ui-redis:
+  password: <PASSWORD>
+```
+
+## Installing on OpenShift
+As of chart version 1.3.1 deployments to OpenShift are fully supported. Due to permission constraints when utilizing OpenShift, the official RHEL postgresql image must be utilized, which requires custom environment variables to be configured for compatibility with this chart.
+
+#### Example anchore_values.yaml - deploying on OpenShift
+*Note: Installs with chart managed PostgreSQL database. This is not a guaranteed production ready config.*
+```
+## anchore_values.yaml
+
+postgresql:
+  image: registry.access.redhat.com/rhscl/postgresql-96-rhel7
+  imageTag: latest
+  extraEnv:
+  - name: POSTGRESQL_USER
+    value: anchoreengine
+  - name: POSTGRESQL_PASSWORD
+    value: anchore-postgres,123
+  - name: POSTGRESQL_DATABASE
+    value: anchore
+  - name: PGUSER
+    value: postgres
+  - name: LD_LIBRARY_PATH
+    value: /opt/rh/rh-postgresql96/root/usr/lib64
+  - name: PATH
+     value: /opt/rh/rh-postgresql96/root/usr/bin:/opt/app-root/src/bin:/opt/app-root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+  postgresPassword: <PASSWORD>
+  persistence:
+    size: 50Gi
+
+anchoreGlobal:
+  defaultAdminPassword: <PASSWORD>
+  defaultAdminEmail: <EMAIL>
+  openShiftDeployment: True
+```
+
+To perform an Enterprise deployment on OpenShift use the following anchore_values.yaml configuration
+
+*Note: Installs with chart managed PostgreSQL database. This is not a guaranteed production ready config.*
+```
+## anchore_values.yaml
+
+postgresql:
+  image: registry.access.redhat.com/rhscl/postgresql-96-rhel7
+  imageTag: latest
+  extraEnv:
+  - name: POSTGRESQL_USER
+    value: anchoreengine
+  - name: POSTGRESQL_PASSWORD
+    value: anchore-postgres,123
+  - name: POSTGRESQL_DATABASE
+    value: anchore
+  - name: PGUSER
+    value: postgres
+  - name: LD_LIBRARY_PATH
+    value: /opt/rh/rh-postgresql96/root/usr/lib64
+  - name: PATH
+     value: /opt/rh/rh-postgresql96/root/usr/bin:/opt/app-root/src/bin:/opt/app-root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    postgresPassword: <PASSWORD>
+    persistence:
+      size: 20Gi
+
+anchoreGlobal:
+  defaultAdminPassword: <PASSWORD>
+  defaultAdminEmail: <EMAIL>
+  enableMetrics: True
+  openShiftDeployment: True
+
+anchoreEnterpriseGlobal:
+  enabled: True
+
+anchore-feeds-db:
+  image: registry.access.redhat.com/rhscl/postgresql-96-rhel7
+  imageTag: latest
+  extraEnv:
+  - name: POSTGRESQL_USER
+    value: anchoreengine
+  - name: POSTGRESQL_PASSWORD
+    value: anchore-postgres,123
+  - name: POSTGRESQL_DATABASE
+    value: anchore
+  - name: PGUSER
+    value: postgres
+  - name: LD_LIBRARY_PATH
+    value: /opt/rh/rh-postgresql96/root/usr/lib64
+  - name: PATH
+     value: /opt/rh/rh-postgresql96/root/usr/bin:/opt/app-root/src/bin:/opt/app-root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     postgresPassword: <PASSWORD>
     persistence:
       size: 50Gi
 
-  anchoreGlobal:
-    defaultAdminPassword: <PASSWORD>
-    defaultAdminEmail: <EMAIL>
-    enableMetrics: True
-
-  anchoreEnterpriseGlobal:
-    enabled: True
-
-  anchore-feeds-db:
-    postgresPassword: <PASSWORD>
-
-  anchore-ui-redis:
-    password: <PASSWORD>
-  ```
+anchore-ui-redis:
+  password: <PASSWORD>
+```
 
 ## Upgrading to Chart version 1.3.0
 The following features were added with this chart version:

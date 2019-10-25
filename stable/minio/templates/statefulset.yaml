@@ -74,6 +74,10 @@ spec:
           http://{{ template `minio.fullname` $ }}-{{ $i }}.{{ template `minio.fullname` $ }}-svc.{{ $.Release.Namespace }}.svc.{{ $.Values.clusterDomain }}{{ $.Values.mountPath }}
           {{- end }}" ]
           {{ end }}
+          {{- if .Values.extraArgs }}
+          args:
+{{ toYaml .Values.extraArgs | indent 12 }}
+          {{- end  }}
           volumeMounts:
             {{- if .Values.persistence.enabled }}
             - name: export

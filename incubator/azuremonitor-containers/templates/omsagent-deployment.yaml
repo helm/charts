@@ -1,5 +1,5 @@
 {{- if and (ne .Values.omsagent.secret.key "<your_workspace_key>") (ne .Values.omsagent.secret.wsid "<your_workspace_id>") (ne .Values.omsagent.env.clusterName "<your_cluster_name>")}}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
  name: omsagent-rs
@@ -28,8 +28,12 @@ spec:
    serviceAccountName: omsagent
   {{- end }}
    containers:
-     - name: omsagent 
+     - name: omsagent
+       {{- if  eq (.Values.omsagent.domain | lower) "opinsights.azure.cn" }}
+       image: "dockerhub.azk8s.cn/microsoft/oms:{{ .Values.omsagent.image.tag }}"
+       {{- else }}
        image: "mcr.microsoft.com/azuremonitor/containerinsights/ciprod:{{ .Values.omsagent.image.tag }}"
+       {{- end }}
        imagePullPolicy: IfNotPresent
        resources:
 {{ toYaml .Values.omsagent.resources.deployment | indent 9 }}
@@ -41,20 +45,23 @@ spec:
        - name: NODE_IP
          valueFrom:
             fieldRef:
-              fieldPath: status.hostIP  
+              fieldPath: status.hostIP
        securityContext:
          privileged: true
        ports:
        - containerPort: 25225
-         protocol: TCP 
+         protocol: TCP
        - containerPort: 25224
          protocol: UDP
+       - containerPort: 25227
+         protocol: TCP
+         name: in-rs-tcp
        volumeMounts:
         - mountPath: /var/run/host
           name: docker-sock
-        - mountPath: /var/log 
+        - mountPath: /var/log
           name: host-log
-        - mountPath: /var/lib/docker/containers 
+        - mountPath: /var/lib/docker/containers
           name: containerlog-path
         - mountPath: /etc/kubernetes/host
           name: azure-json-path
@@ -78,7 +85,7 @@ spec:
     beta.kubernetes.io/os: linux
     kubernetes.io/role: agent
    volumes:
-    - name: docker-sock 
+    - name: docker-sock
       hostPath:
        path: /var/run
     - name: container-hostname
@@ -103,4 +110,4 @@ spec:
       configMap:
         name: container-azm-ms-agentconfig
         optional: true
-{{- end }} 
+{{- end }}

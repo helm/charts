@@ -4,15 +4,11 @@ kind: PodDisruptionBudget
 metadata:
   name: {{ include "kafka.fullname" . }}
   labels:
-    app: {{ template "kafka.name" . }}
-    chart: {{ template "kafka.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+  {{- include "kafka.broker.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "kafka.name" . }}
-      release: {{ .Release.Name }}
+    {{- include "kafka.broker.matchLabels" . | nindent 6 }}
 {{ toYaml .Values.podDisruptionBudget | indent 2 }}
 
 {{- end }}
