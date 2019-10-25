@@ -257,7 +257,7 @@ rabbitmqWebSTOMPPlugin:
 ## Ref: https://www.rabbitmq.com/prometheus.html
 rabbitmqPrometheusPlugin:
   enabled: false
-  
+
   ## NodePort
   nodePort: null
 
@@ -268,7 +268,7 @@ rabbitmqPrometheusPlugin:
   ## metrics path, overrides configuration:
   ## prometheus.path
   path: /metrics
-  
+
   ## Prometheus configuration:
   ## https://github.com/rabbitmq/rabbitmq-prometheus
   config: |
