@@ -23,6 +23,11 @@ spec:
     rules:
     - expr: sum(rate(container_cpu_usage_seconds_total{job="kubelet", image!="", container!="POD"}[5m])) by (namespace)
       record: namespace:container_cpu_usage_seconds_total:sum_rate
+    - expr: |
+        sum by (namespace, pod, container) (
+          rate(container_cpu_usage_seconds_total{job="kubelet", image!="", container!="POD"}[5m])
+        ) * on (namespace, pod) group_left(node) max by(namespace, pod, node) (kube_pod_info)
+      record: node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate
     - expr: |-
         sum by (namespace, pod, container) (
           rate(container_cpu_usage_seconds_total{job="kubelet", image!="", container!="POD"}[5m])
