@@ -49,6 +49,10 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
+{{- if .Values.startWithEmptyEnvironment }}
+          - env
+          - -i
+{{ end }}
           - /bin/registry
           - serve
           - /etc/docker/registry/config.yml
