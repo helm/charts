@@ -100,10 +100,10 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `ingress.secrets[0].name`           | TLS Secret Name                                               | `nil`                                                    |
 | `ingress.secrets[0].certificate`    | TLS Secret Certificate                                        | `nil`                                                    |
 | `ingress.secrets[0].key`            | TLS Secret Key                                                | `nil`                                                    |
-| `externalDatabase.host`             | Host of the external database                                 | `nil`                                                    |
-| `externalDatabase.port`             | Port of the external database                                 | `nil`                                                    |
+| `externalDatabase.host`             | Host of the external database                                 | `localhost`                                              |
+| `externalDatabase.port`             | Port of the external database                                 | `3306`                                                   |
 | `externalDatabase.user`             | Existing username in the external db                          | `bn_ghost`                                               |
-| `externalDatabase.password`         | Password for the above username                               | `nil`                                                    |
+| `externalDatabase.password`         | Password for the above username                               | `""`                                                     |
 | `externalDatabase.database`         | Name of the existing database                                 | `bitnami_ghost`                                          |
 | `mariadb.enabled`                   | Whether or not to install MariaDB (disable if using external) | `true`                                                   |
 | `mariadb.rootUser.password`         | MariaDB admin password                                        | `nil`                                                    |
