@@ -132,6 +132,12 @@ spec:
           - key: cacerts
             path: cacerts
       {{- end }}
+      {{- if .Values.halyard.image.pullSecrets }}
+      imagePullSecrets:
+        {{- range .Values.halyard.image.pullSecrets }}
+        - name: {{ . }}
+        {{- end}}
+      {{- end}}
       containers:
       - name: halyard
         image: {{ .Values.halyard.image.repository }}:{{ .Values.halyard.image.tag }}
