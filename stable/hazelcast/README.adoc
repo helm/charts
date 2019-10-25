@@ -116,7 +116,7 @@ into `+values.yaml+`) |`+{DEFAULT_HAZELCAST_YAML}+`
 |`+nodeSelector+` |Hazelcast Node labels for pod assignment |`+nil+`
 
 |`+hostPort+` |Port under which Hazelcast PODs are exposed on the host machines
-|`+nil+`                                              |
+|`+nil+`
 
 |`+gracefulShutdown.enabled+` |Turn on and off Graceful Shutdown |`+true+`
 
