@@ -8,8 +8,8 @@ Spark:
 
 Master:
   Name: master
-  Image: "mcr.microsoft.com/mmlspark/spark2.4"
-  ImageTag: "v4_mini"
+  Image: "dbanda/spark2.4"
+  ImageTag: "v5_mini"
   Replicas: 1
   Component: "spark-master"
   Cpu: "100m"
@@ -33,8 +33,8 @@ WebUi:
 
 Worker:
   Name: worker
-  Image: "mcr.microsoft.com/mmlspark/spark2.4"
-  ImageTag: "v4_mini"
+  Image: "dbanda/spark2.4"
+  ImageTag: "v5_mini"
   Replicas: 2
   Component: "spark-worker"
   Cpu: "100m"
@@ -52,8 +52,8 @@ Worker:
 
 Zeppelin:
   Name: zeppelin
-  Image: "mcr.microsoft.com/mmlspark/zeppelin"
-  ImageTag: "v4_mini"
+  Image: "dbanda/zeppelin"
+  ImageTag: "v5_mini"
   Replicas: 1
   Component: "zeppelin"
   Cpu: "100m"
@@ -103,8 +103,8 @@ Zeppelin:
 Livy:
   Enabled: true
   Name: livy
-  Image: "mcr.microsoft.com/mmlspark/livy"
-  ImageTag: "v4_mini"
+  Image: "dbanda/livy"
+  ImageTag: "v5_mini"
   Replicas: 1
   Component: "livy"
   Cpu: "100m"
