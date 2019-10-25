@@ -371,6 +371,9 @@ $ helm upgrade my-release bitnami/influxdb \
 
 > Note: you need to substitute the placeholders _[POSTGRESQL_PASSWORD]_, and _[REPLICATION_PASSWORD]_ with the values obtained from instructions in the installation notes.
 
+## 6.5.4
+
+In this version, the chart will use PostgreSQL with the Postgis extension included.
 
 ## 5.0.0
 
