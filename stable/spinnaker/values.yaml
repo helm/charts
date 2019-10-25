@@ -85,7 +85,7 @@ halyard:
   ## service version.
   ## Read more for details:
   ## https://www.spinnaker.io/guides/operator/custom-boms/#boms-and-configuration-on-your-filesystem
-  serviceConfigs: {}
+  serviceConfigs: ~
   # clouddriver-boostrap.yml: |-
   #   ...
   # clouddriver-caching.yml: |-

@@ -28,6 +28,7 @@ data:
     cp /tmp/halyard-bom/* /tmp/spinnaker/.hal/.boms/bom
     {{- end }}
 
+    {{- if .Values.halyard.serviceConfigs }}
     for filename in /tmp/service-configs/*.yml; do
       basename=$(basename -- "$filename")
       rootname="${basename%.yml}"
@@ -36,6 +37,7 @@ data:
       mkdir -p "/tmp/spinnaker/.hal/.boms/$servicename"
       cp "$filename" "/tmp/spinnaker/.hal/.boms/$servicename"
     done
+    {{- end }}
 
     {{- if hasKey .Values.halyard "additionalInitScript" }}
     # additionalInitScript
