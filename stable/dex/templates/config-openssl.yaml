@@ -6,7 +6,6 @@ metadata:
 {{ include "dex.labels" . | indent 4 }}
   name: {{ template "dex.fullname" . }}-openssl-config
   annotations:
-    "helm.sh/hook": post-install
     "helm.sh/hook-weight": "1"
     "helm.sh/hook-delete-policy": hook-succeeded
 data:
