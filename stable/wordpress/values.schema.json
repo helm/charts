@@ -93,12 +93,6 @@
           "title": "Use a custom hostname",
           "description": "Enable the ingress resource that allows you to access the WordPress installation."
         },
-        "certManager": {
-          "type": "boolean",
-          "form": "enableCertManager",
-          "title": "Enable TLS annotations via cert-manager",
-          "description": "Set this to true in order to add the corresponding annotations for cert-manager"
-        },
         "hostname": {
           "type": "string",
           "form": "hostname",
