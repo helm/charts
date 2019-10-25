@@ -1,0 +1,133 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "type": "object",
+  "properties": {
+    "ghostUsername": {
+      "type": "string",
+      "title": "User",
+      "form": "username"
+    },
+    "ghostPassword": {
+      "type": "string",
+      "title": "Password",
+      "form": "password",
+      "description": "Defaults to a random 10-character alphanumeric string if not set"
+    },
+    "ghostEmail": {
+      "type": "string",
+      "title": "Admin email",
+      "form": "email"
+    },
+    "ghostBlogTitle": {
+      "type": "string",
+      "title": "Blog Name",
+      "form": "blogName"
+    },
+    "ghostHost": {
+      "type": "string",
+      "title": "Host",
+      "form": "host",
+      "description": "Hostname used to generate application URLs"
+    },
+    "persistence": {
+      "type": "object",
+      "properties": {
+        "size": {
+          "type": "string",
+          "title": "Disk Size",
+          "form": "diskSize",
+          "render": "slider",
+          "sliderMin": 1,
+          "sliderMax": 100,
+          "sliderUnit": "Gi"
+        }
+      }
+    },
+    "mariadb": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Use a new MariaDB database hosted in the cluster",
+          "form": "useSelfHostedDatabase",
+          "disables": "externalDatabase",
+          "description": "Whether to deploy a mariadb server to satisfy the applications database requirements. To use an external database switch this off and configure the external database parameters"
+        }
+      }
+    },
+    "externalDatabase": {
+      "type": "object",
+      "title": "External Database Details",
+      "form": "externalDatabase",
+      "properties": {
+        "host": {
+          "type": "string",
+          "form": "externalDatabaseHost",
+          "title": "Database Host"
+        },
+        "user": {
+          "type": "string",
+          "form": "externalDatabaseUser",
+          "title": "Database Username"
+        },
+        "password": {
+          "type": "string",
+          "form": "externalDatabasePassword",
+          "title": "Database Password"
+        },
+        "database": {
+          "type": "string",
+          "form": "externalDatabaseName",
+          "title": "Database Name"
+        },
+        "port": {
+          "type": "integer",
+          "form": "externalDatabasePort",
+          "title": "Database Port"
+        }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "title": "Required Resources",
+      "description": "Configure resource requests",
+      "form": "resources",
+      "properties": {
+        "requests": {
+          "type": "object",
+          "properties": {
+            "memory": {
+              "type": "string",
+              "form": "memoryRequest",
+              "render": "slider",
+              "title": "Memory Request",
+              "sliderMin": 10,
+              "sliderMax": 2048,
+              "sliderUnit": "Mi"
+            },
+            "cpu": {
+              "type": "string",
+              "form": "cpuRequest",
+              "render": "slider",
+              "title": "CPU Request",
+              "sliderMin": 10,
+              "sliderMax": 2000,
+              "sliderUnit": "m"
+            }
+          }
+        }
+      }
+    },
+    "securityContext": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable Pod Security Context",
+          "description": "When disabled, an initContainer will be used to set required folder permissions",
+          "form": "enableSecurityContext"
+        }
+      }
+    }
+  }
+}
