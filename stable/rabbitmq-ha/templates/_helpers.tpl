@@ -114,3 +114,14 @@ users, virtual hosts, permissions and parameters) to load by the management plug
   ]
 }
 {{- end -}}
+
+{{/*
+Generate ServiceMonitor port name
+*/}}
+{{- define "rabbitmq-ha.monitoringPortName" -}}
+{{- if .Values.prometheus.exporter.enabled -}}
+    "exporter"
+{{- else if .Values.rabbitmqPrometheusPlugin.enabled -}}
+    "metrics"
+{{- end -}}
+{{- end -}}

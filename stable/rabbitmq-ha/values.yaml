@@ -257,17 +257,22 @@ rabbitmqWebSTOMPPlugin:
 ## Ref: https://www.rabbitmq.com/prometheus.html
 rabbitmqPrometheusPlugin:
   enabled: false
-
+  
   ## NodePort
-  metricsNodePort: null
+  nodePort: null
 
-  ## metrics port, should be the same port used in the
-  ## configuration: prometheus.tcp.port
-  metricsPort: 15692
+  ## metrics port, overrides configuration:
+  ## prometheus.tcp.port
+  port: 15692
+
+  ## metrics path, overrides configuration:
+  ## prometheus.path
+  path: /metrics
+  
   ## Prometheus configuration:
+  ## https://github.com/rabbitmq/rabbitmq-prometheus
   config: |
-   # prometheus.path = /metrics
-   # prometheus.tcp.port =  15692
+   ## prometheus.path and prometheus.tcp.port can be set above
 
 ## AMQPS support
 ## Ref: http://www.rabbitmq.com/ssl.html

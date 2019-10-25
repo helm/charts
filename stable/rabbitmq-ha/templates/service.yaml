@@ -100,9 +100,9 @@ spec:
     - name: metrics
       protocol: TCP
       {{- if eq .Values.service.type "NodePort" "LoadBalancer" }}
-      nodePort: {{ .Values.rabbitmqPrometheusPlugin.metricsNodePort }}
+      nodePort: {{ .Values.rabbitmqPrometheusPlugin.nodePort }}
       {{- end }}
-      port: {{ .Values.rabbitmqPrometheusPlugin.metricsPort }}
+      port: {{ .Values.rabbitmqPrometheusPlugin.port }}
       targetPort: metrics
     {{- end }}
   selector:
