@@ -50,7 +50,7 @@ spec:
 {{- end }}
           envFrom:
             - secretRef:
-                name: {{ template "prometheus-mysql-exporter.fullname" . }}
+                name: {{ template "prometheus-mysql-exporter.secret" . }}
           ports:
             - containerPort: {{ .Values.service.internalPort }}
           livenessProbe:
