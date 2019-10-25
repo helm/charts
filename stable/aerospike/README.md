@@ -53,6 +53,11 @@ The chart can be customized using the following configurable parameters:
 | `resources`                     | Resource requests and limits                                    | `{}`                         |
 | `nodeSelector`                  | Labels for pod assignment                                       | `{}`                         |
 | `terminationGracePeriodSeconds` | Wait time before forcefully terminating container               | `30`                         |
+| `service.type`                  | Kubernetes Service type                                         | `ClusterIP`                  |
+| `service.annotations`           | Kubernetes service annotations, evaluated as a template         | `{}`                         |
+| `service.loadBalancerIP`        | Static IP Address to use for LoadBalancer service type          | `nil`                        |
+| `service.clusterIP`             | Static clusterIP or None for headless services                  | `None`                       |
+| `meshService.annotations`       | Kubernetes service annotations, evaluated as a template         | `{}`                         |
 
 Specify parameters using `--set key=value[,key=value]` argument to `helm install`
 
