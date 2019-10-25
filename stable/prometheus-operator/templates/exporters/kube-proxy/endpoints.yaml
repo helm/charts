@@ -8,7 +8,6 @@ metadata:
     app: {{ template "prometheus-operator.name" . }}-kube-proxy
     k8s-app: kube-proxy
 {{ include "prometheus-operator.labels" . | indent 4 }}
-  namespace: kube-system
 subsets:
   - addresses:
       {{- range .Values.kubeProxy.endpoints }}

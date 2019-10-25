@@ -8,7 +8,6 @@ metadata:
     app: {{ template "prometheus-operator.name" . }}-kube-proxy
     jobLabel: kube-proxy
 {{ include "prometheus-operator.labels" . | indent 4 }}
-  namespace: kube-system
 spec:
   clusterIP: None
   ports:
