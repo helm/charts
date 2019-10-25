@@ -22,7 +22,7 @@ spec:
         paths:
           - path: /{{ rest $url | join "/" }}
             backend:
-              serviceName: {{ template "ipfs.servicename" . }}
+              serviceName: {{ $serviceName }}
               servicePort: 5001
         {{- end -}}
         {{- if .Values.ingressApi.tls }}
