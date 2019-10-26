@@ -63,3 +63,14 @@ Return the apiVersion of ingress.
     {{- print "extensions/v1beta1" -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return the apiVersion of networkPolicy.
+*/}}
+{{- define "networkPolicy.apiVersion" -}}
+{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1" -}}
+    {{- print "networking.k8s.io/v1" -}}
+{{- else -}}
+    {{- print "extensions/v1beta1" -}}
+{{- end -}}
+{{- end -}}
