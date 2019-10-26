@@ -1,0 +1,5 @@
+# Testing Prometheus exporter
+
+prometheus:
+  exporter:
+    enabled: true

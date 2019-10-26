@@ -1,0 +1,4 @@
+# Testing native Prometheus plugin
+
+rabbitmqPrometheusPlugin:
+  enabled: true
