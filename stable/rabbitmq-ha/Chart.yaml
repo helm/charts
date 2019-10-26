@@ -1,6 +1,6 @@
 name: rabbitmq-ha
 apiVersion: v1
-appVersion: 3.7.19
+appVersion: 3.8.0
 version: 1.35.0
 description: Highly available RabbitMQ cluster, the open source message broker
   software that implements the Advanced Message Queuing Protocol (AMQP).
