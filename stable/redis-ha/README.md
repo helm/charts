@@ -25,6 +25,10 @@ This chart bootstraps a [Redis](https://redis.io) highly available master/slave 
 
 Please note that there have been a number of changes simplifying the redis management strategy (for better failover and elections) in the 3.x version of this chart. These changes allow the use of official [redis](https://hub.docker.com/_/redis/) images that do not require special RBAC or ServiceAccount roles. As a result when upgrading from version >=2.0.1 to >=3.0.0 of this chart, `Role`, `RoleBinding`, and `ServiceAccount` resources should be deleted manually.
 
+### Upgrading the chart from 3.x to 4.x
+
+Starting from version `4.x` HAProxy sidecar prometheus-exporter removed and replaced by by the embedded [HAProxy metrics endpoint](https://github.com/haproxy/haproxy/tree/master/contrib/prometheus-exporter), as a result when upgrading from version 3.x to 4.x section `haproxy.exporter` should be removed and the `haproxy.metrics` need to be configured for fit your needs.
+
 ## Installing the Chart
 
 To install the chart
