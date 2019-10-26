@@ -99,7 +99,6 @@ spec:
           {{- else }}
           ARGS+=("--protected-mode" "no")
           {{- end }}
-          ARGS+=("--include" "/opt/bitnami/redis/etc/redis.conf")
           ARGS+=("--include" "/opt/bitnami/redis/etc/master.conf")
           {{- if .Values.master.extraFlags }}
           {{- range .Values.master.extraFlags }}
