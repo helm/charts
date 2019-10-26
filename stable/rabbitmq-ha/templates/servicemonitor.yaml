@@ -14,11 +14,13 @@ spec:
       app: {{ template "rabbitmq-ha.name" . }}
       release: {{ .Release.Name }}
   endpoints:
-  - port: {{ template "rabbitmq-ha.monitoringPortName" . }}
-    interval: {{ .Values.prometheus.operator.serviceMonitor.interval }}
-    {{- if .Values.rabbitmqPrometheusPlugin.enabled }}
+  - interval: {{ .Values.prometheus.operator.serviceMonitor.interval }}
+  {{- if .Values.rabbitmqPrometheusPlugin.enabled }}
+    port: metrics
     path: {{ .Values.rabbitmqPrometheusPlugin.path }}
-    {{- end }}
+  {{- else }}
+    port: exporter
+  {{- end }}
   namespaceSelector:
     any: true
 {{- end }}
