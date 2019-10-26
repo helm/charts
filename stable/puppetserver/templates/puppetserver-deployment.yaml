@@ -16,6 +16,9 @@ spec:
         {{- include "puppetserver.puppetserver.labels" . | nindent 8 }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/hiera-configmap.yaml") . | sha256sum }}
+      {{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | nindent 8 }}
+      {{- end }}
     spec:
       hostname: "puppet"
       initContainers:
@@ -157,3 +160,18 @@ spec:
             secretName: {{ template "git_sync.secret" . }}
             defaultMode: 288  # = mode 0440
         {{- end -}}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | nindent 10 }}
+    {{- end }}
+    {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | nindent 10 }}
+    {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations| nindent 10 }}
+    {{- end }}
+    {{- if and (.Capabilities.APIVersions.Has "scheduling.k8s.io/v1beta1") (.Values.priorityClassName) }}
+      priorityClassName: {{ .Values.priorityClassName }}
+    {{- end }}

@@ -4,9 +4,20 @@ metadata:
   name: puppetdb-claim
   labels:
     {{- include "puppetserver.puppetdb.labels" . | nindent 4 }}
+{{- if .Values.storage.annotations }}
+  annotations:
+{{ toYaml .Values.storage.annotations | nindent 4 }}
+{{- end }}
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 100Mi
+      storage: {{ .Values.storage.size | quote }}
+{{- if .Values.storage.storageClass }}
+{{- if (eq "-" .Values.storage.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.storage.storageClass }}"
+{{- end }}
+{{- end }}

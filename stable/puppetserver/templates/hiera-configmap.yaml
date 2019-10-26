@@ -7,5 +7,5 @@ metadata:
     {{- include "puppetserver.hiera.labels" . | nindent 4 }}
 data:
   hiera.yaml: |-
-    {{- .Values.hiera.config | nindent 4 }}
+{{ .Values.hiera.config | nindent 4 }}
 {{- end }}

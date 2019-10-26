@@ -2,10 +2,12 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+## Puppet Server Deployment Configuration
+##
 puppetserver:
   name: puppetserver
   image: puppet/puppetserver
-  tag: 6.6.0
+  tag: 6.7.1
   pullPolicy: IfNotPresent
   resources: {}
   #  requests:
@@ -39,6 +41,8 @@ puppetserver:
   ##
   puppeturl: ""   # git@github.com:$SOMEUSER/puppet.git
 
+## Hiera Data Repo Configuration
+##
 git_sync:
   name: git_sync
   image: k8s.gcr.io/git-sync
@@ -70,20 +74,22 @@ git_sync:
     credentials:
       ssh:
         ## A multi-line string
-        value:  # |-
+        value:  # |
           #  PRIV_KEY CONTENTS
       known_hosts:
         ## A multi-line string
-        value:  # |-
+        value:  # |
           #  KNOWN_HOSTS CONTENTS
       ## Or set the git-sync Known Hosts file and SSH Private Key
       ## from a pre-existing K8s secret
       existingSecret: ""
 
+## r10k Repo Configuration
+##
 r10k:
   name: r10k
   image: puppet/r10k
-  tag: 3.3.1
+  tag: 3.3.3
   pullPolicy: IfNotPresent
   resources: {}
   #  requests:
@@ -112,16 +118,18 @@ r10k:
     credentials:
       ssh:
         ## A multi-line string
-        value:  # |-
+        value:  # |
           #  PRIV_KEY CONTENTS
       known_hosts:
         ## A multi-line string
-        value:  # |-
+        value:  # |
           #  KNOWN_HOSTS CONTENTS
       ## Or set the git-sync Known Hosts file and SSH Private Key
       ## from a pre-existing K8s secret
       existingSecret: ""
 
+## PostgreSQL Configuration for PuppetDB
+##
 postgres:
   name: postgres
   image: postgres
@@ -138,10 +146,12 @@ postgres:
   ## this bug with the PuppetDB Docker image is resolved.
   ## Gitissue:
 
+## PuppetDB Configuration
+##
 puppetdb:
   name: puppetdb
   image: puppet/puppetdb
-  tag: 6.6.0
+  tag: 6.7.2
   pullPolicy: IfNotPresent
   resources: {}
   #  requests:
@@ -159,6 +169,8 @@ puppetdb:
       existingSecret: ""
       existingSecretKey: ""
 
+## Puppetboard Configuration
+##
 puppetboard:
   enabled: false
   name: puppetboard
@@ -173,10 +185,13 @@ puppetboard:
   #    memory: 768Mi
   #    cpu: 500m
 
+## Hiera Configuration for Puppet Server
+##
 hiera:
   name: hiera
   hieradataurl: ""   # git@github.com:$SOMEUSER/hieradata.git
-  ## If "hiera.config" is set, the pre-filled value of ":eyaml::datadir:"
+  ## If "hiera.config" is set, the pre-filled value of ":eyaml::datadir:",
+  ## ":eyaml::pkcs7_private_key:" and ":eyaml::pkcs7_public_key:"
   ## must be kept unchanged.
   ## A multi-line string
   ##
@@ -186,16 +201,50 @@ hiera:
   #  :hierarchy:
   #    - common
   #  :eyaml:
-  #    :datadir: /hiera/git/data  # keep unchanged
+  #    :datadir: /hiera/git/data   # keep unchanged
   #    :extension: 'yaml'
-  #    :pkcs7_private_key: /etc/puppetlabs/puppet/keys/private_key.pkcs7.pem
-  #    :pkcs7_public_key:  /etc/puppetlabs/puppet/keys/public_key.pkcs7.pem
+  #    :pkcs7_private_key: /etc/puppetlabs/puppet/keys/private_key.pkcs7.pem   # keep unchanged
+  #    :pkcs7_public_key:  /etc/puppetlabs/puppet/keys/public_key.pkcs7.pem   # keep unchanged
   eyaml:
     ## A multi-line string
     ##
-    private_key:  # |-
+    private_key:  # |
       #  PRIV_KEY CONTENTS
     ## A multi-line string
     ##
-    public_key:  # |-
+    public_key:  # |
       #  PUB_KEY CONTENTS
+
+## Pod Configuration
+##
+## Node labels for pod assignment
+nodeSelector: {}
+
+## Affinity for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}
+
+## Tolerations for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
+
+## Leverage a priorityClass to ensure your pods survive resource shortages
+## ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+# priorityClass: system-cluster-critical
+
+## Extra Pod annotations
+podAnnotations: {}
+
+## Storage Configuration
+##
+storage:
+  ## Puppet Server data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  storageClass: ""
+  annotations: {}
+  size: 100Mi

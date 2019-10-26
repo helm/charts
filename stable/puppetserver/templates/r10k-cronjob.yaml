@@ -10,6 +10,13 @@ spec:
   jobTemplate:
     spec:
       template:
+        metadata:
+          labels:
+            {{- include "puppetserver.r10k.labels" . | nindent 12 }}
+          {{- if .Values.podAnnotations }}
+          annotations:
+  {{ toYaml .Values.podAnnotations | nindent 12 }}
+          {{- end }}
         spec:
           containers:
             - name: r10k
@@ -46,4 +53,19 @@ spec:
                 secretName: {{ template "r10k.secret" . }}
                 defaultMode: 288 # = mode 0440
             {{- end -}}
+        {{- if .Values.nodeSelector }}
+          nodeSelector:
+{{ toYaml .Values.nodeSelector | nindent 14 }}
+        {{- end }}
+        {{- if .Values.affinity }}
+          affinity:
+{{ toYaml .Values.affinity | nindent 14 }}
+        {{- end }}
+        {{- if .Values.tolerations }}
+          tolerations:
+{{ toYaml .Values.tolerations| nindent 14 }}
+        {{- end }}
+        {{- if and (.Capabilities.APIVersions.Has "scheduling.k8s.io/v1beta1") (.Values.priorityClassName) }}
+          priorityClassName: {{ .Values.priorityClassName }}
+        {{- end }}
 {{- end }}
