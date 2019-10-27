@@ -9,9 +9,6 @@ keywords:
 - kubernetes
 - cloudwatch
 - monitoring
-#sources:
-#- https://github.com/kubernetes/charts
-#- https://github.com/fluent/fluentd-kubernetes-daemonset
 maintainers:
 - name: Sergey Vasilyev
   email: s2504s@gmail.com
