@@ -1,0 +1,19 @@
+{{- if .Values.rbac.pspEnabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ template "cloudwatch-agent.fullname" . }}-psp
+  labels:
+    app: {{ template "cloudwatch-agent.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "cloudwatch-agent.fullname" . }}-psp
+subjects:
+  - kind: ServiceAccount
+    name: {{ if .Values.rbac.create }}{{ template "cloudwatch-agent.name" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+    namespace: {{ .Release.Namespace }}
+{{- end }}
