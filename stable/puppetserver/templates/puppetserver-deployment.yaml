@@ -20,7 +20,7 @@ spec:
 {{ toYaml .Values.podAnnotations | nindent 8 }}
       {{- end }}
     spec:
-      hostname: "puppet"
+      hostname: {{ template "puppetserver.puppetserver.serviceName" . }}
       initContainers:
         - name: create-puppet-r10k-dir
           image: "{{.Values.puppetserver.image}}:{{.Values.puppetserver.tag}}"

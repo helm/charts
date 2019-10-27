@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-## Puppet Server Deployment Configuration
+## Puppet Server Configuration
 ##
 puppetserver:
   name: puppetserver
@@ -29,11 +29,41 @@ puppetserver:
   fqdns:
     alternateServerNames: ""   # Comma-separated
   service:
-    type: LoadBalancer
+    type: ClusterIP
     port: 8140
     annotations: {}
     labels: {}
     loadBalancerIP: ""
+  ingress:
+    ## If true, Puppet Server Ingress will be created
+    ##
+    enabled: false
+
+    ## Puppet Server Ingress annotations
+    ##
+    annotations: {}
+    #   kubernetes.io/ingress.class: nginx
+    #   kubernetes.io/tls-acme: 'true'
+
+    ## Puppet Server Ingress additional labels
+    ##
+    extraLabels: {}
+
+    ## Puppet Server Ingress hostnames with optional path
+    ## Must be provided if Ingress is enabled
+    ##
+    hosts: []
+    #   - puppet.domain.com
+    #   - domain.com/puppet
+
+    ## Puppet Server Ingress TLS configuration
+    ## Secrets must be manually created in the namespace
+    ##
+    tls: []
+    #   - secretName: puppet-server-tls
+    #     hosts:
+    #       - puppet.domain.com
+
   ## The pattern of managing Hieradata in a separate repository is
   ## both common and acceptable. Doing so provides the ability to decouple
   ## the management of configuration data from that of the Puppet code base.

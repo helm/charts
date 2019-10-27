@@ -25,7 +25,6 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 {{- end -}}
 
-
 {{/*
 Create unified labels for Puppetserver components
 */}}
@@ -109,6 +108,12 @@ component: {{ .Values.puppetserver.name | quote }}
 {{ include "puppetserver.common.matchLabels" . }}
 {{- end -}}
 
+{{/*
+Set mandatory Puppet Server Service name.
+*/}}
+{{- define "puppetserver.puppetserver.serviceName" -}}
+puppet
+{{- end -}}
 
 {{/*
 Create the name for the PuppetDB password secret.
