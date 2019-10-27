@@ -10,6 +10,6 @@ keywords:
 - cloudwatch
 - monitoring
 maintainers:
-- name: Sergey Vasilyev
+- name: s2504s
   email: s2504s@gmail.com
 engine: gotpl
