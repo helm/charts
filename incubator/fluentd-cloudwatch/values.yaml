@@ -68,6 +68,9 @@ rbac:
 
   ## Ignored if rbac.create is true
   serviceAccountName: default
+  ## Annotations for the Service Account
+  ##
+  serviceAccountAnnotations: {}
 # Add extra environment variables if specified (must be specified as a single line object and be quoted)
 extraVars: []
 # - "{ name: NODE_NAME, valueFrom: { fieldRef: { fieldPath: spec.nodeName } } }"
