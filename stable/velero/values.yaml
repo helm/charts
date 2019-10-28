@@ -169,6 +169,12 @@ restic:
   # Tolerations to use for the Restic daemonset. Optional.
   tolerations: []
 
+  # Extra volumes for the Restic daemonset. Optional.
+  extraVolumes: []
+
+  # Extra volumeMounts for the Restic daemonset. Optional.
+  extraVolumeMounts: []
+
 # Backup schedules to create.
 # Eg:
 # schedules:
