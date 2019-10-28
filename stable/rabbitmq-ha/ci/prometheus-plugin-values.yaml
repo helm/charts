@@ -2,3 +2,7 @@
 
 rabbitmqPrometheusPlugin:
   enabled: true
+
+prometheus:
+  operator:
+    enabled: false
