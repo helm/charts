@@ -24,9 +24,10 @@ tomcat:
   service:
     type: ClusterIP
 
-# Use this property to provide a full varnish config
+# Use this property to override the default content with
+# the --set-file option: helm install --set-file varnishConfigContent=varnish.vcl
 # consider disabling Tomcat above as well
-# varnishConfigPath: varnish.vcl
+# varnishConfigContent:
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

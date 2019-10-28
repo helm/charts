@@ -5,9 +5,9 @@ metadata:
   labels:
 {{ include "varnish.labels" . | indent 4 }}
 data:
-{{- if .Values.varnishConfigPath }}
+{{- if .Values.varnishConfigContent }}
   default.vcl: |
-{{ .Files.Get .Values.varnishConfigPath | indent 4 }}
+{{ .Values.varnishConfigContent | indent 4 }}
 {{- else }}
   default.vcl: |
     vcl 4.0;
@@ -16,4 +16,5 @@ data:
       .host = "{{ include "varnish.fullname" . }}-tomcat";
       .port = "8080";
     }
+
 {{- end }}
