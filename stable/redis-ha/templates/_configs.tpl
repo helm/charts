@@ -150,7 +150,7 @@
 
     {{- $root := . }}
     {{- $fullName := include "redis-ha.fullname" . }}
-    {{- $replicas := int .Values.replicas }}
+    {{- $replicas := int (toString .Values.replicas) }}
     {{- range $i := until $replicas }}
     # Check Sentinel and whether they are nominated master
     backend check_if_redis_is_master_{{ $i }}
@@ -229,7 +229,7 @@
     HAPROXY_CONF=/data/haproxy.cfg
     cp /readonly/haproxy.cfg "$HAPROXY_CONF"
     {{- $fullName := include "redis-ha.fullname" . }}
-    {{- $replicas := int .Values.replicas }}
+    {{- $replicas := int (toString .Values.replicas) }}
     {{- range $i := until $replicas }}
     for loop in $(seq 1 10); do
       getent hosts {{ $fullName }}-announce-{{ $i }} && break
