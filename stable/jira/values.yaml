@@ -1,0 +1,38 @@
+affinity: {}
+commonResources:
+  limits:
+    cpu: 2
+    memory: 4Gi
+  requests:
+    cpu: 2
+    memory: 4Gi
+container:
+  httpPort: 8080
+  imagePullPolicy: Always
+  repository: atlassian/jira-software:8.3.3
+  runAsUser: 0
+deployment:
+  enabled: true
+extraVolumes:
+  enabled: false
+  name: jira
+probe:
+  enabled: true
+  httpGet:
+    path: /
+    port: 8080
+  liveness:
+    initialDelaySeconds: 90
+    periodSeconds: 30
+    timeoutSeconds: 30
+  readinesse:
+    initialDelaySeconds: 90
+    periodSeconds: 30
+    timeoutSeconds: 30
+  tcpSocket:
+    port: 8080
+  type: httpGet
+replicas: 1
+service:
+  enabled: true
+  type: NodePort

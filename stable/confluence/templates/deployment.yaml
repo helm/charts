@@ -1,0 +1,81 @@
+{{- if .Values.deployment.enabled -}}
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Release.Name }}
+        image: {{ .Values.container.repository }}
+        imagePullPolicy: {{ .Values.container.imagePullPolicy }}
+        {{- if .Values.extraVolumes.enabled }}
+        volumeMounts:
+        - name: confluence
+          mountPath: /var/atlassian/application-data/confluence
+        {{- end }}
+        securityContext:
+          runAsUser: {{ .Values.container.runAsUser }}
+        ports:
+          - name: http
+            containerPort: {{ .Values.container.httpPort }}
+            protocol: TCP
+        env:
+        - name:  "APP_NAMESPACE"
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+{{- if .Values.commonResources }}
+        resources:
+{{ toYaml .Values.commonResources | indent 10 }}
+{{- end }}
+        {{- if .Values.probe.enabled }}
+        livenessProbe:
+{{- if eq .Values.probe.type "httpGet" }}
+          httpGet:
+{{ toYaml .Values.probe.httpGet | indent 12 }}
+{{- end }}
+{{- if eq .Values.probe.type "tcpSocket" }}
+          tcpSocket:
+{{ toYaml .Values.probe.tcpSocket | indent 12 }}
+{{- end }}
+          initialDelaySeconds: {{ .Values.probe.liveness.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.probe.liveness.timeoutSeconds }}
+          periodSeconds: {{ .Values.probe.liveness.periodSeconds }}
+        readinessProbe:
+{{- if eq .Values.probe.type "httpGet" }}
+          httpGet:
+{{ toYaml .Values.probe.httpGet | indent 12 }}
+{{- end }}
+{{- if eq .Values.probe.type "tcpSocket" }}
+          tcpSocket:
+{{ toYaml .Values.probe.tcpSocket | indent 12 }}
+{{- end }}
+          initialDelaySeconds: {{ .Values.probe.readinesse.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.probe.readinesse.timeoutSeconds }}
+          periodSeconds: {{ .Values.probe.readinesse.periodSeconds }}
+        {{- end }}
+      terminationGracePeriodSeconds: 60
+{{- if .Values.container.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.container.imagePullSecrets }}
+{{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      {{- if .Values.extraVolumes.enabled }}
+      volumes:
+        - name: confluence
+          persistentVolumeClaim:
+            claimName: {{ .Values.extraVolumes.name }}
+      {{- end }}
+{{- end }}

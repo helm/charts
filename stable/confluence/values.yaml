@@ -1,0 +1,38 @@
+affinity: {}
+commonResources:
+  limits:
+    cpu: 2
+    memory: 4Gi
+  requests:
+    cpu: 2
+    memory: 4Gi
+container:
+  httpPort: 8090
+  imagePullPolicy: Always
+  repository: atlassian/confluence-server:6.15.9-alpine
+  runAsUser: 0
+deployment:
+  enabled: true
+extraVolumes:
+  enabled: false
+  name: confluence
+probe:
+  enabled: true
+  httpGet:
+    path: /
+    port: 8090
+  liveness:
+    initialDelaySeconds: 90
+    periodSeconds: 30
+    timeoutSeconds: 30
+  readinesse:
+    initialDelaySeconds: 900
+    periodSeconds: 30
+    timeoutSeconds: 30
+  tcpSocket:
+    port: 8090
+  type: httpGet
+replicas: 1
+service:
+  enabled: true
+  type: NodePort
