@@ -817,6 +817,13 @@ kubeScheduler:
 kubeProxy:
   enabled: true
 
+  ## If your kube proxy is not deployed as a pod, specify IPs it can be found on
+  ##
+  endpoints: []
+  # - 10.141.4.22
+  # - 10.141.4.23
+  # - 10.141.4.24
+
   service:
     port: 10249
     targetPort: 10249
@@ -1016,17 +1023,17 @@ prometheusOperator:
 
   ## Deploy CRDs used by Prometheus Operator.
   ##
-  createCustomResource: true
+  createCustomResource: false
 
   ## Customize CRDs API Group
   crdApiGroup: monitoring.coreos.com
 
   # Remove CRDs before instaling, created for use on CI environment.
-  cleanupCustomResourceBeforeInstall: true
+  cleanupCustomResourceBeforeInstall: false
 
   ## Attempt to clean up CRDs created by Prometheus Operator.
   ##
-  cleanupCustomResource: true
+  cleanupCustomResource: false
 
   ## Labels to add to the operator pod
   ##
