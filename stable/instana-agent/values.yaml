@@ -26,7 +26,7 @@ agent:
     # agent.image.name is the name of the container image of the Instana agent.
     name: instana/agent
     # agent.image.tag is the tag name of the agent container image.
-    tag: 1.0.17
+    tag: 1.0.29
     # agent.image.pullPolicy specifies when to pull the image container.
     pullPolicy: IfNotPresent
 
@@ -67,6 +67,10 @@ agent:
 
   # agent.redactKubernetesSecrets sets the INSTANA_KUBERNETES_REDACT_SECRETS environment variable.
   # redactKubernetesSecrets: null
+
+  # agent.host.repository sets a host path to be mounted as the agent maven repository (for debugging or development purposes)
+  host:
+    repository: null
 
 rbac:
   # Specifies whether RBAC resources should be created

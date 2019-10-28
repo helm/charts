@@ -150,7 +150,7 @@
 
     {{- $root := . }}
     {{- $fullName := include "redis-ha.fullname" . }}
-    {{- $replicas := int .Values.replicas }}
+    {{- $replicas := int (toString .Values.replicas) }}
     {{- range $i := until $replicas }}
     # Check Sentinel and whether they are nominated master
     backend check_if_redis_is_master_{{ $i }}
@@ -229,9 +229,17 @@
     HAPROXY_CONF=/data/haproxy.cfg
     cp /readonly/haproxy.cfg "$HAPROXY_CONF"
     {{- $fullName := include "redis-ha.fullname" . }}
-    {{- $replicas := int .Values.replicas }}
+    {{- $replicas := int (toString .Values.replicas) }}
     {{- range $i := until $replicas }}
+    for loop in $(seq 1 10); do
+      getent hosts {{ $fullName }}-announce-{{ $i }} && break
+      echo "Waiting for service {{ $fullName }}-announce-{{ $i }} to be ready ($loop) ..." && sleep 1
+    done
     ANNOUNCE_IP{{ $i }}=$(getent hosts "{{ $fullName }}-announce-{{ $i }}" | awk '{ print $1 }')
+    if [ -z "$ANNOUNCE_IP{{ $i }}" ]; then
+      echo "Could not resolve the announce ip for {{ $fullName }}-announce-{{ $i }}"
+      exit 1
+    fi
     sed -i "s/REPLACE_ANNOUNCE{{ $i }}/$ANNOUNCE_IP{{ $i }}/" "$HAPROXY_CONF"
     {{- end }}
 {{- end }}

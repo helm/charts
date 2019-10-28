@@ -1,6 +1,7 @@
 restartPolicy: Always
 
 podDisruptionBudget:
+  enabled: true
   maxUnavailable: 0
 
 strategy:
@@ -11,7 +12,7 @@ strategy:
 
 image:
   repository: prom/blackbox-exporter
-  tag: v0.15.0
+  tag: v0.15.1
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.

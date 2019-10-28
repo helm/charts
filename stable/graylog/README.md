@@ -94,11 +94,11 @@ graylog:
 
 ## Configuration
 
-The following table lists the configurable parameters of the Cassandra chart and their default values.
+The following table lists the configurable parameters of the Graylog chart and their default values.
 
 | Parameter                               | Description                                                                                                                                           | Default                               |
 |-----------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------|
-| `graylog.image`                         | `graylog` image repository                                                                                                                            | `graylog/graylog:2.4`                 |
+| `graylog.image.repository`              | `graylog` image repository   | `graylog/graylog:3.1.2-1`                 |
 | `graylog.imagePullPolicy`               | Image pull policy                                                                                                                                     | `IfNotPresent`                        |
 | `graylog.replicas`                      | The number of Graylog instances in the cluster. The chart will automatic create assign master to one of replicas                                      | `2`                                   |
 | `graylog.resources`                     | CPU/Memory resource requests/limits                                                                                                                   | Memory: `1024Mi`, CPU: `500m`         |
@@ -124,6 +124,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `graylog.ingress.annotations`           | Graylog Ingress annotations                                                                                                                           | `{}`                                  |
 | `graylog.ingress.hosts`                 | Graylog Ingress host names                                                                                                                            | `[]`                                  |
 | `graylog.ingress.tls`                   | Graylog Ingress TLS configuration (YAML)                                                                                                              | `[]`                                  |
+| `graylog.ingress.extraPaths`            | Ingress extra paths to prepend to every host configuration. Useful when configuring [custom actions with AWS ALB Ingress Controller](https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/ingress/annotation/#actions). | `[]`                                  |
 | `graylog.input`                         | Graylog Input configuration (YAML) Sees #Input section for detail                                                                                     | `{}`                                  |
 | `graylog.metrics.enabled`               | If true, add Prometheus annotations to pods                                                                                                           | `false`                               |
 | `graylog.geoip.enabled`                 | If true, Maxmind Geoip Lite will be installed to ${GRAYLOG_HOME}/etc/GeoLite2-City.mmdb                                                               | `false`                               |
@@ -131,6 +132,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `graylog.rootUsername`                  | Graylog root user name                                                                                                                                | `admin`                               |
 | `graylog.rootPassword`                  | Graylog root password. If not set, random 10-character alphanumeric string                                                                            | ``                                    |
 | `graylog.rootEmail`                     | Graylog root email.                                                                                                                                   | ``                                    |
+| `graylog.existingRootSecret`            | Graylog existing root secret                                                                                                                          | ``                                    |
 | `graylog.rootTimezone`                  | Graylog root timezone.                                                                                                                                | `UTC`                                 |
 | `graylog.elasticsearch.hosts`           | Graylog Elasticsearch host name. You need to specific where data will be stored.                                                                      | ``                                    |
 | `graylog.mongodb.uri`                   | Graylog MongoDB connection string. You need to specific where data will be stored.                                                                    | ``                                    |

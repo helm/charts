@@ -73,8 +73,6 @@ spec:
           value: {{ default (printf "https://authenticate.%s" .Values.config.rootDomain ) .Values.proxy.authenticateServiceUrl }}
         - name: AUTHORIZE_SERVICE_URL
           value: {{ default (printf "https://%s.%s.svc.cluster.local" (include "pomerium.authorize.fullname" .) .Release.Namespace ) .Values.proxy.authorizeInternalUrl}}
-        - name: AUTHENTICATE_INTERNAL_URL
-          value: {{ default (printf "https://%s.%s.svc.cluster.local" (include "pomerium.authenticate.fullname" .) .Release.Namespace ) .Values.proxy.authenticateInternalUrl}}
 {{- /* TODO in future: Remove legacy logic */ -}}
 {{- if .Values.config.existingLegacyTLSSecret }}
         - name: CERTIFICATE
@@ -93,6 +91,10 @@ spec:
               name:  {{ template "pomerium.caSecret.name" . }}
               key:  {{ template "pomerium.caSecret.certName" . }}
 {{- else }}
+        - name: CERTIFICATE_FILE
+          value: "/pomerium/cert.pem"
+        - name: CERTIFICATE_KEY_FILE
+          value: "/pomerium/privkey.pem"
         - name: CERTIFICATE_AUTHORITY_FILE
           value: "/pomerium/ca.pem"
 {{- end }}

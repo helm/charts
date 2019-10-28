@@ -30,6 +30,8 @@ persistentVolume: {}
 
 service:
   type: ClusterIP
+  # Provide any additional annotations which may be required.
+  # The value is evaluated as a template, so, for example, the value can depend on .Release or .Chart
   annotations: {}
   loadBalancerIP:
   clusterIP: None
@@ -38,7 +40,12 @@ service:
   # - 10.0.0.0/8
 
 meshService:
+  # Provide any additional annotations which may be required.
+  # The value is evaluated as a template, so, for example, the value can depend on .Release or .Chart
   annotations: {}
+
+labels: {}
+annotations: {}
 
 tolerations: []
 
