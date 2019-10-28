@@ -349,7 +349,7 @@ service:
 ## https://kubernetes.io/docs/reference/access-authn-authz/rbac/
 ##
 rbac:
-  create: false
+  create: true
   ## Service Account for pods
   ## https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
   ##
