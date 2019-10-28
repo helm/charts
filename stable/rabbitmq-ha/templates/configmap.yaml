@@ -115,6 +115,8 @@ data:
     ## Prometheus Plugin
     {{- if .Values.rabbitmqPrometheusPlugin.enabled }}
 {{ .Values.rabbitmqPrometheusPlugin.config | indent 4 }}
+    prometheus.path = {{ .Values.rabbitmqPrometheusPlugin.path }}
+    prometheus.tcp.port =  {{ .Values.rabbitmqPrometheusPlugin.port }}
     {{- end }}
 
     ## AMQPS support
