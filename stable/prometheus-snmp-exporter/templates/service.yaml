@@ -8,6 +8,7 @@ metadata:
 {{ toYaml .Values.service.annotations | indent 4 }}
 {{- end }}
   labels:
+    app: {{ template "prometheus-snmp-exporter.name" . }}
     app.kubernetes.io/name: {{ include "prometheus-snmp-exporter.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}

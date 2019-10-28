@@ -21,9 +21,11 @@ spec:
     {{- if .Values.serviceMonitor.scrapeTimeout }}
     scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
     {{- end }}
-    {{- if .Values.serviceMonitor.params.enabled }}
-{{ toYaml .Values.conf.params.conf | indent 6 }}
-    {{- end }}
+    params:
+      module:
+      - {{ .Values.serviceMonitor.params.conf.module }}
+      target:
+      - {{ .Values.serviceMonitor.params.conf.target }}
   selector:
     matchLabels:
       app: {{ template "prometheus-snmp-exporter.name" . }}
