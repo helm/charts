@@ -31,10 +31,11 @@ The following options are supported . See [values.yaml](./values.yaml) for more 
 | daemon.image.tag | The version tag of the docker image to use | `latest` |
 | daemon.image.pullPolicy | Pull policy for the docker image | `Always` |
 | daemon.args | Honeydipper daemon args, should be a list of Honeydipper daemon services, empty means all | |
-| daemon.resources | The pod resource spec, cpu limit, memory limit, etc., as defined in a pod sped | |
-| daemon.nodeSelector | A map of node selectors for the pod, as defined in a pod sped | |
-| daemon.affinity | A map of affinity settings for the pod, as defined in a pod sped | |
-| daemon.tolerations | A list of toleration settings for the pod, as defined in a pod sped | |
+| daemon.resources | The pod resource spec, cpu limit, memory limit, etc., as defined in a pod spec | |
+| daemon.nodeSelector | A map of node selectors for the pod, as defined in a pod spec | |
+| daemon.affinity | A map of affinity settings for the pod, as defined in a pod spec | |
+| daemon.annotations | A map of annotations as defined in a deployment metadata | |
+| daemon.tolerations | A list of toleration settings for the pod, as defined in a pod spec | |
 | daemon.extraVolumes | A list of volumns to be added to the pod | |
 | daemon.extraVolumeMounts | A list of volumns to be mounted to main daemon container | |
 | daemon.env | A list of environment variables to be added to the main daemon container | |
