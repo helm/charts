@@ -8,7 +8,7 @@ This chart adds the Sysdig agent for [Sysdig Monitor](https://sysdig.com/product
 
 ## Prerequisites
 
-- Kubernetes 1.2+ with Beta APIs enabled
+- Kubernetes 1.9+ with Beta APIs enabled
 
 ## Installing the Chart
 
