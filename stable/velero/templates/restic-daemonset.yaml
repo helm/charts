@@ -31,6 +31,9 @@ spec:
       {{- end }}
       securityContext:
         runAsUser: 0
+      {{- if .Values.restic.priorityClassName }}
+      priorityClassName: {{ include "velero.restic.priorityClassName" . }}
+      {{- end }}
       volumes:
         {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
         - name: cloud-credentials
