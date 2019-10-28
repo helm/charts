@@ -1,61 +1,69 @@
-# deploy cwagent as daemonset
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ template "cloudwatch-agent.name" . }}
+  labels:
+    app: {{ template "cloudwatch-agent.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
 spec:
   selector:
     matchLabels:
-      name: {{ template "cloudwatch-agent.name" . }}
+      app: {{ template "cloudwatch-agent.name" . }}
   template:
     metadata:
       labels:
-        name: {{ template "cloudwatch-agent.name" . }}
+        app: {{ template "cloudwatch-agent.name" . }}
+        release: "{{ .Release.Name }}"
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/cwagent-configmap.yaml") . | sha256sum }}
     spec:
+      terminationGracePeriodSeconds: 60
+      serviceAccountName: {{ template "cloudwatch-agent.name" . }}
       containers:
-        - name: {{ template "cloudwatch-agent.name" . }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          #ports:
-          #  - containerPort: 8125
-          #    hostPort: 8125
-          #    protocol: UDP
-          resources:
-  {{ toYaml .Values.resources | indent 10 }}
-          # Please don't change below envs
-          env:
-            - name: HOST_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.hostIP
-            - name: HOST_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: spec.nodeName
-            - name: K8S_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
-            - name: CI_VERSION
-              value: "k8s/1.0.0"
-          # Please don't change the mountPath
-          volumeMounts:
-            - name: cwagentconfig
-              mountPath: /etc/cwagentconfig
-            - name: rootfs
-              mountPath: /rootfs
-              readOnly: true
-            - name: dockersock
-              mountPath: /var/run/docker.sock
-              readOnly: true
-            - name: varlibdocker
-              mountPath: /var/lib/docker
-              readOnly: true
-            - name: sys
-              mountPath: /sys
-              readOnly: true
-            - name: devdisk
-              mountPath: /dev/disk
-              readOnly: true
+      - name: {{ template "cloudwatch-agent.name" . }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        #ports:
+        #  - containerPort: 8125
+        #    hostPort: 8125
+        #    protocol: UDP
+
+        # Please don't change below envs
+        env:
+          - name: HOST_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+          - name: HOST_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: K8S_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: CI_VERSION
+            value: "k8s/1.0.0"
+        # Please don't change the mountPath
+        volumeMounts:
+          - name: cwagentconfig
+            mountPath: /etc/cwagentconfig
+          - name: rootfs
+            mountPath: /rootfs
+            readOnly: true
+          - name: dockersock
+            mountPath: /var/run/docker.sock
+            readOnly: true
+          - name: varlibdocker
+            mountPath: /var/lib/docker
+            readOnly: true
+          - name: sys
+            mountPath: /sys
+            readOnly: true
+          - name: devdisk
+            mountPath: /dev/disk
+            readOnly: true
       volumes:
         - name: cwagentconfig
           configMap:
@@ -75,5 +83,17 @@ spec:
         - name: devdisk
           hostPath:
             path: /dev/disk/
-      terminationGracePeriodSeconds: 60
-      serviceAccountName: {{ template "cloudwatch-agent.name" . }}
+{{- if .Values.tolerations }}
+    tolerations:
+{{ toYaml .Values.tolerations | indent 6 }}
+{{- end }}
+      {{- if .Values.affinity }}
+    affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
+    {{- if .Values.nodeSelector }}
+    nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+  updateStrategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}
