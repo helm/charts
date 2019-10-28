@@ -61,10 +61,10 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `mariadb.db.user`                 | Database user to create                  | `bookstack`                                             |
 | `mariadb.db.password`             | Password for the database                | `nil`                                                   |
 | `mariadb.rootUser.password`        | MariaDB admin password                   | `nil`                                                   |
-| `mariadb.persistence.enabled`        | Enable MariaDB persistence using PVC     | `true`                                                  |
-| `mariadb.persistence.storageClass`   | PVC Storage Class for MariaDB volume     | `nil` (uses alpha storage class annotation)             |
-| `mariadb.persistence.accessMode`     | PVC Access Mode for MariaDB volume       | `ReadWriteOnce`                                         |
-| `mariadb.persistence.size`           | PVC Storage Request for MariaDB volume   | `8Gi`                                                   |
+| `mariadb.master.persistence.enabled`        | Enable MariaDB persistence using PVC     | `true`                                                  |
+| `mariadb.master.persistence.storageClass`   | PVC Storage Class for MariaDB volume     | `nil` (uses alpha storage class annotation)             |
+| `mariadb.master.persistence.accessMode`     | PVC Access Mode for MariaDB volume       | `ReadWriteOnce`                                         |
+| `mariadb.master.persistence.size`           | PVC Storage Request for MariaDB volume   | `8Gi`                                                   |
 | `service.type`                    | Desired service type                                | `ClusterIP`               |
 | `service.port`                    | Service exposed port                               | `80`                    |
 | `podSecurityPolicy.enabled`	    | Create & use Pod Security Policy resources  | `false`						      |
