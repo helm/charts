@@ -82,7 +82,7 @@ metrics:
     interval: 15s
 
   ## Memcached exporter image and tag
-  image: quay.io/prometheus/memcached-exporter:v0.4.1
+  image: quay.io/prometheus/memcached-exporter:v0.6.0
 
   ## Specify a imagePullPolicy
   ## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
