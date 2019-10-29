@@ -9,6 +9,7 @@ NOTE: The change log until version 1.5.7 is auto generated based on git commits.
 ## 1.7.10
 
 Disable direct connection in default configuration (when kubernetes plugin version >= 1.20.2).
+Note: In case direct connection is going to be used `jenkins/jnlp-slave` needs to be version `3.35-5` or newer.
 
 ## 1.7.8
 
