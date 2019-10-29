@@ -417,6 +417,7 @@ readinessProbe:
 ##
 metrics:
   enabled: true
+  podAnnotations: {}
   serviceMonitor:
     enabled: true
   ## Metrics exporter pod Annotation and Labels

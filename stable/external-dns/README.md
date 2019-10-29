@@ -135,7 +135,7 @@ The following table lists the configurable parameters of the external-dns chart 
 | `nodeSelector`                      | Node labels for pod assignment (this value is evaluated as a template)                                   | `{}`                                                        |
 | `tolerations`                       | Tolerations for pod assignment (this value is evaluated as a template)                                   | `[]`                                                        |
 | `podAnnotations`                    | Additional annotations to apply to the pod.                                                              | `{}`                                                        |
-| `podLabels`                         | Additional labels to be added to pods                                                                    | {}                                                          |
+| `podLabels`                         | Additional labels to be added to pods                                                                    | `{}`                                                          |
 | `podSecurityContext.fsGroup`        | Group ID for the container                                                                               | `1001`                                                      |
 | `podSecurityContext.runAsUser`      | User ID for the container                                                                                | `1001`                                                      |
 | `priorityClassName`                 | priorityClassName                                                                                        | `""`                                                        |
@@ -157,7 +157,10 @@ The following table lists the configurable parameters of the external-dns chart 
 | `livenessProbe`                     | Deployment Liveness Probe                                                                                | See `values.yaml`                                           |
 | `readinessProbe`                    | Deployment Readiness Probe                                                                               | See `values.yaml`                                           |
 | `metrics.enabled`                   | Enable prometheus to access external-dns metrics endpoint                                                | `false`                                                     |
-| `metrics.podAnnotations`            | Annotations for enabling prometheus to access the metrics endpoint                                       | {`prometheus.io/scrape: "true",prometheus.io/port: "7979"`} |
+| `metrics.podAnnotations`            | Annotations for enabling prometheus to access the metrics endpoint                                       | `{}` |
+| `metrics.serviceMonitor.enabled`   | Enable prometheus-operator service monitor                                                               | `false`  |
+| `metrics.serviceMonitor.namespace`   | Namespace to apply the service monitor                                                               |   |
+| `metrics.serviceMonitor.interval`   | Prometheus scrape interval for the service monitor                                                               |   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
