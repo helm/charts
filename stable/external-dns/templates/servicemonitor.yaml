@@ -18,5 +18,5 @@ spec:
     matchNames:
       - {{ .Release.Namespace }}
   selector:
-    matchLabels: {{ include "external-dns.labels" . | nindent 8 }}
+    matchLabels: {{ include "external-dns.labels" . | nindent 6 }}
 {{- end }}
