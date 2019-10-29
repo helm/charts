@@ -1,3 +1,11 @@
+DEPRECATION WARNING
+-------------------
+
+This chart is now deprecated and will not receive further updates!
+You can find the new chart at https://helm.dask.org/.
+
+--------------------
+
 Thank you for installing {{ .Chart.Name | upper }}, released at name: {{ .Release.Name }}.
 
 To learn more about the release, try:
@@ -5,7 +13,7 @@ To learn more about the release, try:
   $ helm status {{ .Release.Name }}  # information about running pods and this message
   $ helm get {{ .Release.Name }}     # get full Kubernetes specification
 
-This release includes a Dask scheduler, {{ .Values.worker.replicas }} Dask workers, and {{ .Values.jupyter.replicas }} Jupyter servers.  
+This release includes a Dask scheduler, {{ .Values.worker.replicas }} Dask workers, and {{ .Values.jupyter.replicas }} Jupyter servers.
 
 The Jupyter notebook server and Dask scheduler expose external services to
 which you can connect to manage notebooks, or connect directly to the Dask
@@ -33,7 +41,7 @@ cluster. You can get these addresses by running the following:
   export DASK_SCHEDULER_UI_PORT=8081
   kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "dask.fullname" . }}-scheduler $DASK_SCHEDULER_PORT:{{ .Values.scheduler.servicePort }} &
   kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "dask.fullname" . }}-scheduler $DASK_SCHEDULER_UI_PORT:{{ .Values.webUI.servicePort }} &
-  
+
 {{- end }}
 
 
@@ -59,7 +67,7 @@ cluster. You can get these addresses by running the following:
   echo http://$DASK_SCHEDULER_UI_IP:$DASK_SCHEDULER_UI_PORT     -- Dask dashboard
   echo http://$JUPYTER_NOTEBOOK_IP:$JUPYTER_NOTEBOOK_PORT       -- Jupyter notebook
 
-NOTE: It may take a few minutes for the LoadBalancer IP to be available. Until then, the commands above will not work for the LoadBalancer service type.  
+NOTE: It may take a few minutes for the LoadBalancer IP to be available. Until then, the commands above will not work for the LoadBalancer service type.
 You can watch the status by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "dask.fullname" . }}-scheduler'
 
 NOTE: It may take a few minutes for the URLs above to be available if any EXTRA_PIP_PACKAGES or EXTRA_CONDA_PACKAGES were specified,

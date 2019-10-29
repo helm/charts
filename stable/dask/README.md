@@ -1,4 +1,13 @@
-# Dask Helm Chart
+# Dask Helm Chart - DEPRECATED
+
+**This chart is deprecated! You can find the new chart in:**
+
+- **Sources:** https://github.com/dask/helm-chart
+- **Charts repository:** https://helm.dask.org/
+
+```bash
+helm repo add dask https://helm.dask.org/
+```
 
 Dask allows distributed computation in Python.
 
