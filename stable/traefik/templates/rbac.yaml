@@ -3,6 +3,11 @@ kind: ServiceAccount
 apiVersion: v1
 metadata:
   name: {{ template "traefik.fullname" . }}
+  labels:
+    app: {{ template "traefik.name" . }}
+    chart: {{ template "traefik.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 ---
 kind: {{ include "traefik.rbac.scope" . | printf "%sRole" }}
 {{- if semverCompare "^1.8-0" .Capabilities.KubeVersion.GitVersion }}
@@ -12,6 +17,11 @@ apiVersion: rbac.authorization.k8s.io/v1beta1
 {{- end }}
 metadata:
   name: {{ template "traefik.fullname" . }}
+  labels:
+    app: {{ template "traefik.name" . }}
+    chart: {{ template "traefik.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 rules:
   - apiGroups:
       - ""
@@ -47,6 +57,11 @@ apiVersion: rbac.authorization.k8s.io/v1beta1
 {{- end }}
 metadata:
   name: {{ template "traefik.fullname" . }}
+  labels:
+    app: {{ template "traefik.name" . }}
+    chart: {{ template "traefik.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: {{ include "traefik.rbac.scope" . | printf "%sRole" }}
