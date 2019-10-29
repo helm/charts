@@ -1,7 +1,7 @@
 apiVersion: v1
 description: A pure in-memory redis cache, using statefulset and redis-sentinel-micro
 name: redis-cache
-version: 0.4.1
+version: 0.5.0
 appVersion: 4.0.12-alpine
 home: https://redis.io/
 icon: https://redis.io/images/redis-white.png

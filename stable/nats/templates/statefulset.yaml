@@ -1,5 +1,5 @@
 {{- if or (eq .Values.resourceType "statefulset") (not (contains .Values.resourceType "deployment")) }}
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "nats.fullname" . }}

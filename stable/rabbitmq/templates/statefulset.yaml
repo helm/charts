@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "rabbitmq.fullname" . }}
@@ -95,34 +95,6 @@ spec:
             {{- end }}
             #replace the default password that is generated
             sed -i "/CHANGEME/cdefault_pass=${RABBITMQ_PASSWORD//\\/\\\\}" /opt/bitnami/rabbitmq/etc/rabbitmq/rabbitmq.conf
-            #api check for probes
-            cat > /opt/bitnami/rabbitmq/sbin/rabbitmq-api-check <<EOF
-            #!/bin/sh
-            set -e
-            URL=\$1
-            EXPECTED=\$2
-            ACTUAL=\$(curl --silent --show-error --fail "\${URL}")
-            echo "\${ACTUAL}"
-            test "\${EXPECTED}" = "\${ACTUAL}"
-            EOF
-            chmod a+x /opt/bitnami/rabbitmq/sbin/rabbitmq-api-check
-            #health check for probes, handle period during rabbtmq sync
-            cat > /opt/bitnami/rabbitmq/sbin/rabbitmq-health-check <<EOF
-            #!/bin/sh
-            START_FLAG=/opt/bitnami/rabbitmq/var/lib/rabbitmq/.start
-            if [ -f \${START_FLAG} ]; then
-               rabbitmqctl node_health_check
-               RESULT=\$?
-               if [ \$RESULT -ne 0 ]; then
-                  rabbitmqctl status
-                  exit $?
-               fi
-               rm -f \${START_FLAG}
-               exit \${RESULT}
-            fi
-            rabbitmq-api-check \$1 \$2
-            EOF
-            chmod a+x /opt/bitnami/rabbitmq/sbin/rabbitmq-health-check
             {{- if and .Values.persistence.enabled .Values.forceBoot.enabled }}
             if [ -d "{{ .Values.persistence.path }}/mnesia/${RABBITMQ_NODENAME}" ]; then rabbitmqctl force_boot; fi
             {{- end }}
@@ -134,6 +106,12 @@ spec:
         volumeMounts:
           - name: config-volume
             mountPath: /opt/bitnami/rabbitmq/conf
+          - name: healthchecks
+            mountPath: /usr/local/sbin/rabbitmq-api-check
+            subPath: rabbitmq-api-check
+          - name: healthchecks
+            mountPath: /usr/local/sbin/rabbitmq-health-check
+            subPath: rabbitmq-health-check
           {{- if .Values.rabbitmq.tls.enabled }}
           - name: {{ template "rabbitmq.fullname" . }}-certs
             mountPath: /opt/bitnami/rabbitmq/certs
@@ -158,6 +136,9 @@ spec:
           containerPort: {{ .Values.service.distPort }}
         - name: stats
           containerPort: {{ .Values.service.managerPort }}
+{{- if .Values.service.extraContainerPorts }}
+{{ toYaml .Values.service.extraContainerPorts | indent 8 }}
+{{- end }}
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           exec:
@@ -265,18 +246,28 @@ spec:
         ports:
         - name: metrics
           containerPort: 9090
+        {{- if .Values.metrics.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
             path: /metrics
             port: metrics
-          initialDelaySeconds: 15
-          timeoutSeconds: 5
+          initialDelaySeconds: {{ .Values.metrics.livenessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.metrics.livenessProbe.timeoutSeconds }}
+          periodSeconds: {{ .Values.metrics.livenessProbe.periodSeconds }}
+          failureThreshold: {{ .Values.metrics.livenessProbe.failureThreshold }}
+          successThreshold: {{ .Values.metrics.livenessProbe.successThreshold }}
+        {{- end }}
+        {{- if .Values.metrics.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
             path: /metrics
             port: metrics
-          initialDelaySeconds: 5
-          timeoutSeconds: 5
+          initialDelaySeconds: {{ .Values.metrics.readinessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.metrics.readinessProbe.timeoutSeconds }}
+          periodSeconds: {{ .Values.metrics.readinessProbe.periodSeconds }}
+          failureThreshold: {{ .Values.metrics.readinessProbe.failureThreshold }}
+          successThreshold: {{ .Values.metrics.readinessProbe.successThreshold }}
+        {{- end }}
         resources:
 {{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
@@ -313,6 +304,16 @@ spec:
         {{- end }}
             - key: enabled_plugins
               path: enabled_plugins
+        - name: healthchecks
+          configMap:
+            name: {{ template "rabbitmq.fullname" . }}-healthchecks
+            items:
+            - key: rabbitmq-health-check
+              path: rabbitmq-health-check
+              mode: 111
+            - key: rabbitmq-api-check
+              path: rabbitmq-api-check
+              mode: 111
         {{- if .Values.rabbitmq.loadDefinition.enabled }}
         - name: load-definition-volume
           secret:

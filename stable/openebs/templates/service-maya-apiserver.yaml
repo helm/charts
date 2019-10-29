@@ -1,3 +1,4 @@
+{{- if .Values.apiserver.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -19,3 +20,4 @@ spec:
     release: {{ .Release.Name }}
     component: apiserver
   sessionAffinity: None
+{{- end }}

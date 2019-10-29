@@ -6,7 +6,7 @@ This is an implementation of Aerospike StatefulSet found here:
 
 ## Pre Requisites
 
-* Kubernetes 1.7+ with beta APIs enabled and support for statefulsets
+* Kubernetes 1.9+
 
 * PV support on underlying infrastructure (only if you are provisioning persistent volume).
 
@@ -45,12 +45,19 @@ The chart can be customized using the following configurable parameters:
 | `replicaCount`                  | Aerospike Brokers                                               | `1`                          |
 | `command`                       | Custom command (Docker Entrypoint)                              | `[]`                         |
 | `args`                          | Custom args (Docker Cmd)                                        | `[]`                         |
+| `labels`                        | Map of labels to add to the statefulset                         | `{}`                         |
+| `annotations`                   | Map of annotations to add to the statefulset                    | `{}`                         |
 | `tolerations`                   | List of node taints to tolerate                                 | `[]`                         |
 | `persistentVolume`              | Config of persistent volumes for storage-engine                 | `{}`                         |
 | `confFile`                      | Config filename. This file should be included in the chart path | `aerospike.conf`             |
 | `resources`                     | Resource requests and limits                                    | `{}`                         |
 | `nodeSelector`                  | Labels for pod assignment                                       | `{}`                         |
 | `terminationGracePeriodSeconds` | Wait time before forcefully terminating container               | `30`                         |
+| `service.type`                  | Kubernetes Service type                                         | `ClusterIP`                  |
+| `service.annotations`           | Kubernetes service annotations, evaluated as a template         | `{}`                         |
+| `service.loadBalancerIP`        | Static IP Address to use for LoadBalancer service type          | `nil`                        |
+| `service.clusterIP`             | Static clusterIP or None for headless services                  | `None`                       |
+| `meshService.annotations`       | Kubernetes service annotations, evaluated as a template         | `{}`                         |
 
 Specify parameters using `--set key=value[,key=value]` argument to `helm install`
 

@@ -1,0 +1,45 @@
+{{- if and .Values.prometheus.enabled .Values.prometheus.servicePerReplica.enabled .Values.prometheus.ingressPerReplica.enabled }}
+{{- $count := .Values.prometheus.prometheusSpec.replicas | int -}}
+{{- $servicePort := 9090 -}}
+{{- $ingressValues := .Values.prometheus.ingressPerReplica -}}
+apiVersion: extensions/v1beta1
+kind: IngressList
+metadata:
+  name: {{ include "prometheus-operator.fullname" $ }}-prometheus-ingressperreplica
+  namespace: {{ .Release.Namespace }}
+items:
+{{ range $i, $e := until $count }}
+  - apiVersion: extensions/v1beta1
+    kind: Ingress
+    metadata:
+      name: {{ include "prometheus-operator.fullname" $ }}-prometheus-{{ $i }}
+      namespace: {{ $.Release.Namespace }}
+      labels:
+        app: {{ include "prometheus-operator.name" $ }}-prometheus
+{{ include "prometheus-operator.labels" $ | indent 8 }}
+      {{- if $ingressValues.labels }}
+      {{ toYaml $ingressValues.labels | indent 8 }}
+      {{- end }}
+      {{- if $ingressValues.annotations }}
+      annotations:
+{{ toYaml $ingressValues.annotations | indent 8 }}
+      {{- end }}
+    spec:
+      rules:
+        - host: {{ $ingressValues.hostPrefix }}-{{ $i }}.{{ $ingressValues.hostDomain }}
+          http:
+            paths:
+      {{- range $p := $ingressValues.paths }}
+              - path: {{ tpl $p $ }}
+                backend:
+                  serviceName: {{ include "prometheus-operator.fullname" $ }}-prometheus-{{ $i }}
+                  servicePort: {{ $servicePort }}
+      {{- end -}}
+      {{- if $ingressValues.tlsSecretName }}
+      tls:
+        - hosts:
+            - {{ $ingressValues.hostPrefix }}-{{ $i }}.{{ $ingressValues.hostDomain }}
+          secretName: {{ $ingressValues.tlsSecretName }}
+      {{- end }}
+{{- end -}}
+{{- end -}}

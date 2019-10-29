@@ -5,13 +5,11 @@ kind: CustomResourceDefinition
 metadata:
   creationTimestamp: null
   name: {{ printf "alertmanagers.%s" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-operator
 {{ include "prometheus-operator.labels" . | indent 4 }}
   annotations:
-{{- if .Values.prometheusOperator.cleanupCustomResourceBeforeInstall }}
-    "helm.sh/hook-delete-policy": "before-hook-creation"
-{{- end }}
     "helm.sh/hook": crd-install
 spec:
   group: {{ .Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com" }}
