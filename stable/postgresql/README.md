@@ -373,7 +373,14 @@ $ helm upgrade my-release bitnami/influxdb \
 
 ## 6.5.4
 
-In this version, the chart will use PostgreSQL with the Postgis extension included.
+In this version, the chart will use PostgreSQL with the Postgis extension included.  The version used with Postgresql version 10, 11 and 12 is Postgis 2.5. It has been compiled with the following dependencies:
+
+ - protobuf
+ - protobuf-c
+ - json-c
+ - geos
+ - proj
+ - gdal
 
 ## 5.0.0
 
