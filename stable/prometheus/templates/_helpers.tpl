@@ -7,6 +7,13 @@ Expand the name of the chart.
 {{- end -}}
 
 {{/*
+Create chart name and version as used by the chart label.
+*/}}
+{{- define "prometheus.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
 Create unified labels for prometheus components
 */}}
 {{- define "prometheus.common.matchLabels" -}}
@@ -15,7 +22,7 @@ release: {{ .Release.Name }}
 {{- end -}}
 
 {{- define "prometheus.common.metaLabels" -}}
-chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+chart: {{ template "prometheus.chart" . }}
 heritage: {{ .Release.Service }}
 {{- end -}}
 
