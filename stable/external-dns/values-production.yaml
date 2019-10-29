@@ -416,9 +416,11 @@ readinessProbe:
 ## Prometheus Exporter / Metrics
 ##
 metrics:
-  enabled: true
+  enabled: false
   podAnnotations: {}
   serviceMonitor:
-    enabled: true
+    namespace: ''
+    intervarl: ''
+    enabled: false
   ## Metrics exporter pod Annotation and Labels
   ##

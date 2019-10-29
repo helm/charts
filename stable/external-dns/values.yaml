@@ -418,8 +418,8 @@ metrics:
   enabled: false
   podAnnotations: {}
   serviceMonitor:
-  	namespace: ''
-  	intervarl: ''
+    namespace: ''
+    intervarl: ''
     enabled: false
   ## Metrics exporter pod Annotation and Labels
   ##
