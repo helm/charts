@@ -95,10 +95,13 @@ kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/ma
 $ helm install --name my-release stable/prometheus-operator --set prometheusOperator.createCustomResource=false
 ```
 
-### Helm <2.10 workaround
-The `crd-install` hook is required to deploy the prometheus operator CRDs before they are used. If you are forced to use an earlier version of Helm you can work around this requirement as follows:
-1. Install prometheus-operator by itself, disabling everything but the prometheus-operator component, and also setting `prometheusOperator.serviceMonitor.selfMonitor=false`
-2. Install all the other components, and configure `prometheus.additionalServiceMonitors` to scrape the prometheus-operator service.
+## Upgrading an existing Release to a new major version
+
+A major chart version change (like v1.2.3 -> v2.0.0) indicates that there is an
+incompatible breaking change needing manual actions.
+
+### Upgrading from 6.x.x to 7.x.x
+Due to a change in grafana subchart, version 7.x.x now requires Helm >= 2.12.0.
 
 ### Upgrading from 5.x.x to 6.x.x
 Due to a change in deployment labels of kube-state-metrics, the upgrade requires `helm upgrade --force` in order to re-create the deployment. If this is not done an error will occur indicating that the deployment cannot be modified:
