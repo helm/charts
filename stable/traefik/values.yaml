@@ -410,11 +410,8 @@ rbac:
 metrics:
   prometheus:
     enabled: false
-    ## If true, prevents exposing port 8080 on the main Traefik service, reserving
-    ## it to the dashboard service only
-    restrictAccess: false
     # buckets: [0.1,0.3,1.2,5]
-  # serviceMonitor:
+   # serviceMonitor:
     # When set true and if Prometheus Operator is installed then use a ServiceMonitor to configure scraping
     # enabled: false
     # Set the namespace the ServiceMonitor should be deployed
