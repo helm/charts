@@ -19,7 +19,7 @@ data:
           "servers": [
             {{- $global := . }}
             {{- range $i, $e := until (.Values.memcached.replicaCount | int) }}
-            "{{ $global.Release.Name }}-memcached-{{ $i }}.{{ $global.Release.Name }}-memcached.{{ $global.Release.Namespace }}.svc.cluster.local:11211",
+            "{{ $global.Release.Name }}-memcached-{{ $i }}.{{ $global.Release.Name }}-memcached.{{ $global.Release.Namespace }}.svc{{ $global.Values.clusterSuffix }}:11211",
             {{- end }}
           ]
         }

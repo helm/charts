@@ -26,15 +26,10 @@ mcrouterCommandParams:
   ## https://github.com/facebook/mcrouter/wiki/Config-Files
   # configFile:
 
-## Information about the memcached service
-memcachedService:
-  # serviceName: "memcached"
-  # replicaCount: 3
-  port: 11211
-  namespace: "default"
-
 ## Pod controller. Possible values: "daemonset", "statefulset".
 controller: "daemonset"
+
+clusterSuffix: .cluster.local
 
 ## Values for the daemonset controller
 daemonset:
