@@ -354,7 +354,7 @@ Renders a value that contains template.
 Usage:
 {{ include "postgresql.tplValue" ( dict "value" .Values.path.to.the.Value "context" $) }}
 */}}
-{{- define "logstash.tplValue" -}}
+{{- define "postgresql.tplValue" -}}
     {{- if typeIs "string" .value }}
         {{- tpl .value .context }}
     {{- else }}
