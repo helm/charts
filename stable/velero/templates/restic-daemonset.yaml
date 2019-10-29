@@ -45,6 +45,9 @@ spec:
             path: {{ .Values.restic.podVolumePath }}
         - name: scratch
           emptyDir: {}
+        {{- if .Values.restic.extraVolumes }}
+        {{- toYaml .Values.restic.extraVolumes | nindent 8 }}
+        {{- end }}
       containers:
         - name: velero
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -64,6 +67,9 @@ spec:
               mountPropagation: HostToContainer
             - name: scratch
               mountPath: /scratch
+            {{- if .Values.restic.extraVolumeMounts }}
+            {{- toYaml .Values.restic.extraVolumeMounts | nindent 12 }}
+            {{- end }}
           {{- if and .Values.credentials.useSecret (eq $provider "azure") }}
           envFrom:
             - secretRef:

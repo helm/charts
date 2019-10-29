@@ -106,6 +106,8 @@ Parameter | Description | Default
 `restic.resources` | Restic DaemonSet resource requests and limits | `{}`
 `restic.priorityClassName` | Restic DaemonSet pod priority class name | `{}`
 `restic.tolerations` | Restic DaemonSet tolerations | `[]`
+`restic.extraVolumes` | Extra volumes for the Restic daemonset | `[]`
+`restic.extraVolumeMounts` | Extra volumeMounts for the Restic daemonset | `[]`
 `configMaps` | Velero ConfigMaps | `[]`
 
 ## How to
