@@ -371,6 +371,16 @@ $ helm upgrade my-release bitnami/influxdb \
 
 > Note: you need to substitute the placeholders _[POSTGRESQL_PASSWORD]_, and _[REPLICATION_PASSWORD]_ with the values obtained from instructions in the installation notes.
 
+## 6.6.0
+
+In this version, the chart will use PostgreSQL with the Postgis extension included.  The version used with Postgresql version 10, 11 and 12 is Postgis 2.5. It has been compiled with the following dependencies:
+
+ - protobuf
+ - protobuf-c
+ - json-c
+ - geos
+ - proj
+ - gdal
 
 ## 5.0.0
 
