@@ -80,6 +80,9 @@ The following table lists the configurable parameters of the WordPress chart and
 | `smtpUsername`                            | User name for SMTP emails                                                     | `nil`                                                        |
 | `smtpProtocol`                            | SMTP protocol [`tls`, `ssl`, `none`]                                          | `nil`                                                        |
 | `replicaCount`                            | Number of WordPress Pods to run                                               | `1`                                                          |
+| `extraEnv`                                | Additional container environment variables                                    | `[]`                                                         |
+| `extraVolumeMounts`                       | Additional volume mounts                                                      | `[]`                                                         |
+| `extraVolumes`                            | Additional volumes                                                            | `[]`                                                         |
 | `mariadb.enabled`                         | Deploy MariaDB container(s)                                                   | `true`                                                       |
 | `mariadb.rootUser.password`               | MariaDB admin password                                                        | `nil`                                                        |
 | `mariadb.db.name`                         | Database name to create                                                       | `bitnami_wordpress`                                          |
