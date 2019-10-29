@@ -136,6 +136,11 @@
 {{- if .Values.haproxy.customConfig }}
 {{ .Values.haproxy.customConfig | indent 4}}
 {{- else }}
+    {{- if .Values.haproxy.exporter.enabled }}
+    global
+      stats socket /run/haproxy/admin.sock mode 660 level admin
+
+    {{- end }}
     defaults REDIS
       mode tcp
       timeout connect  {{ .Values.haproxy.timeout.connect }}
