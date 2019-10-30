@@ -49,6 +49,18 @@ spec:
         - sh
         args:
         - /readonly/haproxy_init.sh
+{{- if .Values.auth }}
+        env:
+        - name: AUTH
+          valueFrom:
+            secretKeyRef:
+            {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+            {{- else }}
+              name: {{ template "redis-ha.fullname" . }}
+            {{- end }}
+              key: {{ .Values.authKey }}
+{{- end }}
         volumeMounts:
         - name: config-volume
           mountPath: /readonly

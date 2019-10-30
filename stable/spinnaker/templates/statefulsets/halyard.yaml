@@ -40,6 +40,10 @@ spec:
           mountPath: /tmp/config
         - name: service-settings
           mountPath: /tmp/service-settings
+        {{- if .Values.halyard.serviceConfigs }}
+        - name: service-configs
+          mountPath: /tmp/service-configs
+        {{- end }}
         - name: halyard-home
           mountPath: /tmp/spinnaker
         - name: additional-profile-config-maps
@@ -121,6 +125,11 @@ spec:
       - name: service-settings
         configMap:
           name: {{ template "spinnaker.fullname" . }}-service-settings
+      {{- if .Values.halyard.serviceConfigs }}
+      - name: service-configs
+        configMap:
+          name: {{ template "spinnaker.fullname" . }}-service-configs
+      {{- end }}
       - name: halyard-initscript
         configMap:
           name: {{ template "spinnaker.fullname" . }}-halyard-init-script
@@ -132,6 +141,12 @@ spec:
           - key: cacerts
             path: cacerts
       {{- end }}
+      {{- if .Values.halyard.image.pullSecrets }}
+      imagePullSecrets:
+        {{- range .Values.halyard.image.pullSecrets }}
+        - name: {{ . }}
+        {{- end}}
+      {{- end}}
       containers:
       - name: halyard
         image: {{ .Values.halyard.image.repository }}:{{ .Values.halyard.image.tag }}

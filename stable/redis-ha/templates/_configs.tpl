@@ -189,7 +189,7 @@
       option tcp-check
       tcp-check connect
       {{- if .Values.auth }}
-      tcp-check send AUTH\ {{ .Values.redisPassword }}\r\n
+      tcp-check send AUTH\ REPLACE_AUTH_SECRET\r\n
       tcp-check expect string +OK
       {{- end }}
       tcp-check send PING\r\n
@@ -208,7 +208,7 @@
       option tcp-check
       tcp-check connect
       {{- if .Values.auth }}
-      tcp-check send AUTH\ {{ .Values.redisPassword }}\r\n
+      tcp-check send AUTH\ REPLACE_AUTH_SECRET\r\n
       tcp-check expect string +OK
       {{- end }}
       tcp-check send PING\r\n
@@ -252,5 +252,11 @@
       exit 1
     fi
     sed -i "s/REPLACE_ANNOUNCE{{ $i }}/$ANNOUNCE_IP{{ $i }}/" "$HAPROXY_CONF"
+
+    if [ "${AUTH:-}" ]; then
+        echo "Setting auth values"
+        ESCAPED_AUTH=$(echo "$AUTH" | sed -e 's/[\/&]/\\&/g');
+        sed -i "s/REPLACE_AUTH_SECRET/${ESCAPED_AUTH}/" "$HAPROXY_CONF"
+    fi
     {{- end }}
 {{- end }}

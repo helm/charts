@@ -558,3 +558,11 @@ sysctlImage:
   #   requests:
   #     memory: 128Mi
   #     cpu: 100m
+
+## PodSecurityPolicy configuration
+## ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+##
+podSecurityPolicy:
+  ## Specifies whether a PodSecurityPolicy should be created
+  ##
+  create: false
