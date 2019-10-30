@@ -276,5 +276,6 @@ storage:
   ##   GKE, AWS & OpenStack)
   ##
   storageClass: ""
+  selector: false
   annotations: {}
   size: 100Mi

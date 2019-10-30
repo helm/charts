@@ -6,6 +6,9 @@ metadata:
   labels:
     {{- include "puppetserver.r10k.labels" . | nindent 4 }}
 spec:
+  selector:
+    matchLabels:
+      {{- include "puppetserver.r10k.matchLabels" . | nindent 6 }}
   schedule: "{{.Values.r10k.cronJob.schedule}}"
   jobTemplate:
     spec:

@@ -9,6 +9,11 @@ metadata:
 {{ toYaml .Values.storage.annotations | nindent 4 }}
 {{- end }}
 spec:
+  {{- if .Values.storage.selector }}
+  selector:
+    matchLabels:
+      {{- include "puppetserver.postgres.matchLabels" . | nindent 6 }}
+  {{- end }}
   accessModes:
     - ReadWriteOnce
   resources:

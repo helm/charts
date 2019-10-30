@@ -144,6 +144,7 @@ Parameter | Description | Default
 `priorityClass`| Leverage a priorityClass to ensure your pods survive resource shortages |``
 `podAnnotations`| Extra Pod annotations |``
 `storage.storageClass`| Storage Class |``
+`storage.selector`| PVs/PVCs Selector Config |`false`
 `storage.annotations`| Storage annotations |``
 `storage.size`| PVCs Storage Size |`100Mi`
 
