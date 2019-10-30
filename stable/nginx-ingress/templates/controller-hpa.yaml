@@ -12,7 +12,7 @@ metadata:
   name: {{ template "nginx-ingress.controller.fullname" . }}
 spec:
   scaleTargetRef:
-    apiVersion: {{ .Values.controller.apiVersion }}
+    apiVersion: {{ template "deployment.apiVersion" . }}
     kind: Deployment
     name: {{ template "nginx-ingress.controller.fullname" . }}
   minReplicas: {{ .Values.controller.autoscaling.minReplicas }}
