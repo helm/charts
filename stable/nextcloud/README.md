@@ -80,6 +80,8 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `nextcloud.defaultConfigs.\.apps\.config\.php`               | Default configuration for apps                          | `true`                                                  |
 | `nextcloud.defaultConfigs.\.autoconfig\.php`                 | Default auto-configuration for databases                | `true`                                                  |
 | `nextcloud.defaultConfigs.\.smtp\.config\.php`               | Default configuration for smtp                          | `true`                                                  |
+| `lifecycle.postStartCommand`                                 | Specify deployment lifecycle hook postStartCommand      | `nil`                                                   |
+| `lifecycle.preStopCommand`                                   | Specify deployment lifecycle hook preStopCommand        | `nil`                                                   |
 | `internalDatabase.enabled`                                   | Whether to use internal sqlite database                 | `true`                                                  |
 | `internalDatabase.database`                                  | Name of the existing database                           | `nextcloud`                                             |
 | `externalDatabase.enabled`                                   | Whether to use external database                        | `false`                                                 |

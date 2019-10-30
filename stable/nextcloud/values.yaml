@@ -58,6 +58,13 @@ ingress:
   #        - nextcloud.kube.home
   labels: {}
 
+
+# Allow configuration of lifecycle hooks
+# ref: https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/
+lifecycle: {}
+  # postStartCommand: []
+  # preStopCommand: []
+
 nextcloud:
   host: nextcloud.kube.home
   username: admin
