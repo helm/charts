@@ -95,10 +95,13 @@ kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/ma
 $ helm install --name my-release stable/prometheus-operator --set prometheusOperator.createCustomResource=false
 ```
 
-### Helm <2.10 workaround
-The `crd-install` hook is required to deploy the prometheus operator CRDs before they are used. If you are forced to use an earlier version of Helm you can work around this requirement as follows:
-1. Install prometheus-operator by itself, disabling everything but the prometheus-operator component, and also setting `prometheusOperator.serviceMonitor.selfMonitor=false`
-2. Install all the other components, and configure `prometheus.additionalServiceMonitors` to scrape the prometheus-operator service.
+## Upgrading an existing Release to a new major version
+
+A major chart version change (like v1.2.3 -> v2.0.0) indicates that there is an
+incompatible breaking change needing manual actions.
+
+### Upgrading from 6.x.x to 7.x.x
+Due to a change in grafana subchart, version 7.x.x now requires Helm >= 2.12.0.
 
 ### Upgrading from 5.x.x to 6.x.x
 Due to a change in deployment labels of kube-state-metrics, the upgrade requires `helm upgrade --force` in order to re-create the deployment. If this is not done an error will occur indicating that the deployment cannot be modified:
@@ -162,7 +165,6 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheusOperator.admissionWebhooks.patch.podAnnotations` | Annotations for the webhook job pods | `nil` |
 | `prometheusOperator.admissionWebhooks.patch.priorityClassName` | Priority class for the webhook integration jobs | `nil` |
 | `prometheusOperator.affinity` | Assign custom affinity rules to the prometheus operator https://kubernetes.io/docs/concepts/configuration/assign-pod-node/ | `{}` |
-| `prometheusOperator.cleanupCustomResourceBeforeInstall` | Remove CRDs before running the crd-install hook on changes. | `false` |
 | `prometheusOperator.cleanupCustomResource` | Attempt to delete CRDs when the release is removed. This option may be useful while testing but is not recommended, as deleting the CRD definition will delete resources and prevent the operator from being able to clean up resources that it manages | `false` |
 | `prometheusOperator.configReloaderCpu` | Set the prometheus config reloader side-car CPU limit. If unset, uses the prometheus-operator project default | `nil` |
 | `prometheusOperator.configReloaderMemory` | Set the prometheus config reloader side-car memory limit. If unset, uses the prometheus-operator project default | `nil` |

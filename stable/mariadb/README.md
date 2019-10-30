@@ -4,7 +4,7 @@
 
 MariaDB is developed as open source software and as a relational database it provides an SQL interface for accessing data. The latest versions of MariaDB also include GIS and JSON features.
 
-## TL;DR
+## TL;DR;
 
 ```bash
 $ helm install stable/mariadb
@@ -30,7 +30,7 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release stable/mariadb
 ```
 
-The command deploys MariaDB on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys MariaDB on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
@@ -44,7 +44,7 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
-## Configuration
+## Parameters
 
 The following table lists the configurable parameters of the MariaDB chart and their default values.
 
@@ -206,13 +206,17 @@ $ helm install --name my-release -f values.yaml stable/mariadb
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+## Configuration and installation details
+
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
+
 ### Production configuration
 
-This chart includes a `values-production.yaml` file where you can find some parameters oriented to production configuration in comparison to the regular `values.yaml`.
-
-```console
-$ helm install --name my-release -f ./values-production.yaml stable/mariadb
-```
+This chart includes a `values-production.yaml` file where you can find some parameters oriented to production configuration in comparison to the regular `values.yaml`. You can use this file instead of the default one.
 
 - Force users to specify a password:
 ```diff
@@ -236,13 +240,7 @@ $ helm install --name my-release -f ./values-production.yaml stable/mariadb
 + metrics.enabled: true
 ```
 
-### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
-
-It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
-
-Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
-
-## Initialize a fresh instance
+### Initialize a fresh instance
 
 The [Bitnami MariaDB](https://github.com/bitnami/bitnami-docker-mariadb) image allows you to use your custom scripts to initialize a fresh instance. In order to execute the scripts, they must be located inside the chart folder `files/docker-entrypoint-initdb.d` so they can be consumed as a ConfigMap.
 
@@ -251,6 +249,20 @@ Alternatively, you can specify custom scripts using the `initdbScripts` paramete
 In addition to these options, you can also set an external ConfigMap with all the initialization scripts. This is done by setting the `initdbScriptsConfigMap` parameter. Note that this will override the two previous options.
 
 The allowed extensions are `.sh`, `.sql` and `.sql.gz`.
+
+### Extra Init Containers
+
+The feature allows for specifying a template string for a initContainer in the master/slave pod. Usecases include situations when you need some pre-run setup. For example, in IKS (IBM Cloud Kubernetes Service), non-root users do not have write permission on the volume mount path for NFS-powered file storage. So, you could use a initcontainer to `chown` the mount. See a example below, where we add an initContainer on the master pod that reports to an external resource that the db is going to starting.
+`values.yaml`
+```yaml
+master:
+  extraInitContainers: |
+    - name: initcontainer
+      image: bitnami/minideb:stretch
+      command: ["/bin/sh", "-c"]
+      args:
+        - install_packages curl && curl http://api-service.local/db/starting;
+```
 
 ## Persistence
 
@@ -266,20 +278,6 @@ By default, the chart is configured to use Kubernetes Security Context to automa
 As an alternative, this chart supports using an initContainer to change the ownership of the volume before mounting it in the final destination.
 
 You can enable this initContainer by setting `volumePermissions.enabled` to `true`.
-
-## Extra Init Containers
-
-The feature allows for specifying a template string for a initContainer in the master/slave pod. Usecases include situations when you need some pre-run setup. For example, in IKS (IBM Cloud Kubernetes Service), non-root users do not have write permission on the volume mount path for NFS-powered file storage. So, you could use a initcontainer to `chown` the mount. See a example below, where we add an initContainer on the master pod that reports to an external resource that the db is going to starting.
-`values.yaml`
-```yaml
-master:
-  extraInitContainers: |
-    - name: initcontainer
-      image: bitnami/minideb:stretch
-      command: ["/bin/sh", "-c"]
-      args:
-        - install_packages curl && curl http://api-service.local/db/starting;
-```
 
 ## Upgrading
 
