@@ -131,6 +131,9 @@ spec:
         - name: SMTP_PROTOCOL
           value: {{ .Values.smtpProtocol | quote }}
         {{- end }}
+        {{- with .Values.extraEnv }}
+{{ toYaml . | indent 8 }}
+        {{- end }}
         ports:
         - name: http
           containerPort: 80
@@ -168,6 +171,9 @@ spec:
         - mountPath: /opt/bitnami/wordpress/wordpress-htaccess.conf
           name: custom-htaccess
           subPath: wordpress-htaccess.conf
+        {{- end }}
+        {{- with .Values.extraVolumeMounts }}
+{{ toYaml . | indent 8 }}
         {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
@@ -210,6 +216,9 @@ spec:
       {{- else }}
         emptyDir: {}
       {{ end }}
+      {{- with .Values.extraVolumes }}
+{{ toYaml . | indent 6 }}
+      {{- end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
