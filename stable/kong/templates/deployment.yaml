@@ -68,6 +68,10 @@ spec:
           value: 0.0.0.0:{{ .Values.admin.containerPort }}
         {{- end }}
         {{- end }}
+        {{- if .Values.admin.ingress.enabled }}
+        - name: KONG_ADMIN_API_URI
+          value: {{ include "kong.ingress.serviceUrl" .Values.admin.ingress }}
+        {{- end }}
         {{- if not .Values.env.proxy_listen }}
         - name: KONG_PROXY_LISTEN
           value: {{ template "kong.kongProxyListenValue" . }}
@@ -76,13 +80,32 @@ spec:
         - name: KONG_ADMIN_GUI_LISTEN
           value: {{ template "kong.kongManagerListenValue" . }}
         {{- end }}
+        {{- if and (.Values.manager.ingress.enabled) (.Values.enterprise.enabled) }}
+        - name: KONG_ADMIN_GUI_URL
+          value: {{ include "kong.ingress.serviceUrl" .Values.manager.ingress }}
+        {{- end }}
         {{- if and (not .Values.env.portal_gui_listen) (.Values.enterprise.enabled) (.Values.enterprise.portal.enabled) }}
         - name: KONG_PORTAL_GUI_LISTEN
           value: {{ template "kong.kongPortalListenValue" . }}
         {{- end }}
+        {{- if and (.Values.portal.ingress.enabled) (.Values.enterprise.enabled) (.Values.enterprise.portal.enabled) }}
+        - name: KONG_PORTAL_GUI_HOST
+          value: {{ .Values.portal.ingress.hostname }}
+        {{- if .Values.portal.ingress.tls }}
+        - name: KONG_PORTAL_GUI_PROTOCOL
+          value: https
+        {{- else }}
+        - name: KONG_PORTAL_GUI_PROTOCOL
+          value: http
+        {{- end }}
+        {{- end }}
         {{- if and (not .Values.env.portal_api_listen) (.Values.enterprise.enabled) (.Values.enterprise.portal.enabled) }}
         - name: KONG_PORTAL_API_LISTEN
           value: {{ template "kong.kongPortalApiListenValue" . }}
+        {{- end }}
+        {{- if and (.Values.portalapi.ingress.enabled) (.Values.enterprise.enabled) (.Values.enterprise.portal.enabled) }}
+        - name: KONG_PORTAL_API_URL
+          value: {{ include "kong.ingress.serviceUrl" .Values.portalapi.ingress }}
         {{- end }}
         - name: KONG_NGINX_DAEMON
           value: "off"
