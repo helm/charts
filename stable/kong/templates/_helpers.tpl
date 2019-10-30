@@ -123,6 +123,21 @@ Create the ingress servicePort value string
 {{- end -}}
 {{- end -}}
 
+{{/*
+Generate an appropriate external URL from a Kong service's ingress configuration
+Strips trailing slashes from the path. Manager at least does not handle these
+intelligently and will append its own slash regardless, and the admin API cannot handle
+the extra slash.
+*/}}
+
+{{- define "kong.ingress.serviceUrl" -}}
+{{- if .tls -}}
+    https://{{ .hostname }}{{ .path | trimSuffix "/" }}
+{{- else -}}
+    http://{{ .hostname }}{{ .path | trimSuffix "/" }}
+{{- end -}}
+{{- end -}}
+
 
 {{- define "kong.env" -}}
 {{- range $key, $val := .Values.env }}
