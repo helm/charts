@@ -1,0 +1,47 @@
+{{- if .Values.enabled -}}
+apiVersion: {{ template "deployment.apiVersion" . }}
+kind: Deployment
+metadata:
+  labels:
+    {{- include "weave-scope-cluster-agent.helm_std_labels" . | indent 4 }}
+    component: cluster-agent
+  name: {{ template "weave-scope-cluster-agent.fullname" . }}
+  annotations:
+    {{- include "weave-scope-cluster-agent.annotations" . | indent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "toplevel.name" . }}
+      release: {{ .Release.Name }}
+      component: cluster-agent
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        {{- include "weave-scope-cluster-agent.helm_std_labels" . | indent 8 }}
+        component: cluster-agent
+    spec:
+      containers:
+        - name: {{ template "weave-scope-cluster-agent.name" . }}
+          image: "{{ .Values.global.image.repository }}:{{ .Values.global.image.tag }}"
+          imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
+          args:
+            - '--mode=probe'
+            - '--probe-only'
+            - '--probe.kubernetes.role=cluster'
+            {{- range $arg := .Values.flags }}
+            - {{ $arg | quote }}
+            {{- end }}
+            {{if .Values.readOnly}}
+            - "--probe.no-controls"
+            {{end}}
+            {{- if .Values.global.scopeFrontendAddr }}
+            - {{ .Values.global.scopeFrontendAddr }}
+            {{- else }}
+            - {{ .Values.global.service.name | default (include "toplevel.fullname" .) }}.{{ .Release.Namespace }}.svc:{{ .Values.global.service.port }}
+            {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+      serviceAccountName: {{ template "weave-scope-cluster-agent.serviceAccountName" . }}
+{{- end -}}

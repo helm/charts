@@ -5,13 +5,11 @@ kind: CustomResourceDefinition
 metadata:
   creationTimestamp: null
   name: {{ printf "prometheuses.%s" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-operator
 {{ include "prometheus-operator.labels" . | indent 4 }}
   annotations:
-{{- if .Values.cleanupCustomResourceBeforeInstall }}
-    "helm.sh/hook-delete-policy": "before-hook-creation"
-{{- end }}
     "helm.sh/hook": crd-install
 spec:
   group: {{ .Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com" }}
@@ -2438,6 +2436,9 @@ spec:
             retentionSize:
               description: Maximum amount of disk space used by blocks.
               type: string
+            walCompression:
+              description: Enable compression of the write-ahead log using Snappy.
+              type: boolean
             routePrefix:
               description: The route prefix Prometheus registers HTTP handlers for.
                 This is useful, if using ExternalURL and a proxy is rewriting HTTP

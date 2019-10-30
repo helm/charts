@@ -86,3 +86,7 @@ Make sure to uncomment or configure the job settings after enabling it. If a pas
 ### From < 1.0.0 To >= 1.0.0
 
 Values `.Values.config.bind_address` and `.Values.exposeRpc` no longer exist. They have been replaced with `.Values.config.rpc.bind_address` and `.Values.config.rpc.enabled` respectively. Please adjust your values file accordingly.
+
+### From < 1.5.0 to >= 2.0.0
+
+The Kubernetes API change to support 1.160 may not be backwards compatible and may require the chare to be uninstalled in order to upgrade.  See [this issue](https://github.com/helm/helm/issues/6583) for some background.

@@ -27,8 +27,10 @@ To install the chart with the release name `my-release`:
 $ helm install stable/etcd-operator --name my-release
 ```
 
-__Note__: If you set `cluster.enabled` on install, it will have no effect.
-Before you create an etcd cluster, the TPR must be installed by the operator, so this option is ignored during helm installs, but can be used in upgrades.
+Note that by default chart installs etcd operator only. If you want to also deploy `etcd` cluster, enable `customResources.createEtcdClusterCRD` flag:
+```bash
+$ helm install --name my-release --set customResources.createEtcdClusterCRD=true stable/etcd-operator
+```
 
 ## Uninstalling the Chart
 
@@ -41,9 +43,15 @@ $ helm delete my-release
 The command removes all the Kubernetes components EXCEPT the persistent volume.
 
 ## Updating
-Updating the TPR resource will not result in the cluster being update until `kubectl apply` for
-TPRs is fixed see [kubernetes/issues/29542](https://github.com/kubernetes/kubernetes/issues/29542)
-Work around options are documented [here](https://github.com/coreos/etcd-operator#resize-an-etcd-cluster)
+Once you have a new chart version, you can update your deployment with:
+```
+$ helm upgrade my-release stable/etcd-operator
+```
+
+Example resizing etcd cluster from `3` to `5` nodes during helm upgrade:
+```bash
+$ helm upgrade my-release --set etcdCluster.size=5 --set customResources.createEtcdClusterCRD=true stable/etcd-operator
+```
 
 ## Configuration
 

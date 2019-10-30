@@ -1,3 +1,15 @@
+### 1.18.2
+* [f8cf63789](https://github.com/kubernetes/charts/commit/f8cf63789): Add information about adding plugins
+
+### 1.18.1
+* [a01bba93b](https://github.com/kubernetes/charts/commit/a01bba93b): Bump up kubernetes plugin version to v3.2.0
+
+### 1.18.0
+* [d890eaf](https://github.com/kubernetes/charts/commit/d890eaf): Bump up GoCD Version to 19.9.0
+
+### 1.17.0
+* [5916a7b](https://github.com/kubernetes/charts/commit/5916a7b): Bump up GoCD Version to 19.8.0
+
 ### 1.16.1
 
 * [c70a0b189](https://github.com/kubernetes/charts/commit/c70a0b189): Bump up kubernetes plugin version to v3.1.0

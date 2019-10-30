@@ -78,6 +78,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `tolerations`             | Toleration labels for pod assignment                                                                                                                                                                     | `[]`                                                                                       |
 | `hardAntiAffinity`        | Whether the Redis server pods should be forced to run on separate nodes.                                                                                                                                  | `true`                                                                                     |
 | `additionalAffinities`    | Additional affinities to add to the Redis server pods.                                                                                                                                                    | `{}`                                                                                       |
+| `securityContext`    | Security context to be added to the Redis server pods.                                                                                                                                                    | `{runAsUser: 1000, fsGroup: 1000, runAsNonRoot: true}`       |
 | `affinity`                | Override all other affinity settings with a string.                                                                                                                                                      | `""`                                                                                       |
 | `exporter.enabled`        | If `true`, the prometheus exporter sidecar is enabled                                                                                                                                                    | `false`                                                                                    |
 | `exporter.image`          | Exporter image                                                                                                                                                                                           | `oliver006/redis_exporter`                                                                 |
@@ -91,12 +92,21 @@ The following table lists the configurable parameters of the Redis chart and the
 | `haproxy.image.pullPolicy`| HAProxy Image PullPolicy                                                                                                                                                                                 | `IfNotPresent`                                                                                       |
 | `haproxy.annotations`     | HAProxy template annotations                                                                                                                                                                             | `{}`                                                                                       |
 | `haproxy.resources`       | HAProxy resources                                                                                                                                                                                        | `{}`                                                                                       |
-| `haproxy.service.type`    | HAProxy service type "ClusterIP" or "LoadBalancer"                                                                                                                                                       | `ClusterIP`                                                                                       |
+| `haproxy.service.type`    | HAProxy service type "ClusterIP", "LoadBalancer" or "NodePort"                                                                                                                                                       | `ClusterIP`                                                                                       |
+| `haproxy.service.nodePort`    | HAProxy service nodePort value (haproxy.service.type must be NodePort)                                                                                                                                                   | not set                                                                                       |
 | `haproxy.service.annotations` | HAProxy service annotations                                                                                                                                                                          | `{}`                                                                                       |
+| `haproxy.hapreadport.enable` | Enable a read only port for redis slaves                                                                                                                                                                           | `false`                                                                        |
+| `haproxy.hapreadport.port`   | Haproxy port for read only redis slaves                                                                                                                                                                          | `6380`                                                                           |
 | `haproxy.exporter.enabled`| Enable Prometheus metric scraping                                                                                                                                                                        | `false`                                                                                       |
 | `haproxy.exporter.port`   | Prometheus metric scraping port                                                                                                                                                                          | `9101`                                                                                       |
 | `haproxy.init.resources`  | Extra init resources                                                                                                                                                                                     | `{}`                                                                                       |
+| `haproxy.timeout.connect` | haproxy.cfg `timeout connect` setting                                                                                                                                                                    | `4s`                                                                                       |
+| `haproxy.timeout.server`  | haproxy.cfg `timeout server` setting                                                                                                                                                                     | `30s`                                                                                       |
+| `haproxy.timeout.client`  | haproxy.cfg `timeout client` setting                                                                                                                                                                     | `30s`                                                                                       |
+| `haproxy.priorityClassName` | priorityClassName for `haproxy` deployment                                                                                                                                                             | not set                                                                                       |
+| `haproxy.securityContext`    | Security context to be added to the HAProxy deployment.                                                                                                                                                    | `{runAsUser: 1000, fsGroup: 1000, runAsNonRoot: true}`            |
 | `podDisruptionBudget`     | Pod Disruption Budget rules                                                                                                                                                                              | `{}`                                                                                       |
+| `priorityClassName`       | priorityClassName for `redis-ha-statefulset`                                                                                                                                                             | not set                                                                                       |
 | `hostPath.path`           | Use this path on the host for data storage                                                                                                                                                               | not set                                                                                    |
 | `hostPath.chown`          | Run an init-container as root to set ownership on the hostPath                                                                                                                                           | `true`                                                                                       |
 | `sysctlImage.enabled`     | Enable an init container to modify Kernel settings                                                             | `false`                                              |
@@ -140,6 +150,20 @@ For example `repl-timeout 60` would be added to the `redis.config` section of th
     repl-timeout: "60"
 ```
 
+Note:
+
+1. Some config options should be renamed by redis version，e.g.:
+
+   ```
+   # In redis 5.x，see https://raw.githubusercontent.com/antirez/redis/5.0/redis.conf
+   min-replicas-to-write: 1
+   min-replicas-max-lag: 5
+   
+   # In redis 4.x and redis 3.x，see https://raw.githubusercontent.com/antirez/redis/4.0/redis.conf and https://raw.githubusercontent.com/antirez/redis/3.0/redis.conf
+   min-slaves-to-write 1
+   min-slaves-max-lag 5
+   ```
+
 Sentinel options supported must be in the the `sentinel <option> <master-group-name> <value>` format. For example, `sentinel down-after-milliseconds 30000` would be added to the `sentinel.config` section of the `values.yaml` as:
 
 ```yml
@@ -159,7 +183,14 @@ sysctlImage:
     - /bin/sh
     - -c
     - |-
-      install_packages systemd
+      install_packages systemd procps
       sysctl -w net.core.somaxconn=10000
       echo never > /host-sys/kernel/mm/transparent_hugepage/enabled
 ```
+
+## HAProxy startup
+
+When HAProxy is enabled, it will attempt to connect to each announce-service of each redis replica instance in its init container before starting.
+It will fail if announce-service IP is not available fast enough (10 seconds max by announce-service). 
+A such case could happen if the orchestator is pending the nomination of redis pods.
+Risk is limited because announce-service is using `publishNotReadyAddresses: true`, although, in such case, HAProxy pod will be rescheduled afterward by the orchestrator.

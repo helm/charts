@@ -33,6 +33,8 @@
     {{- if .Values.datadog.nonLocalTraffic }}
     - name: DD_DOGSTATSD_NON_LOCAL_TRAFFIC
       value: {{ .Values.datadog.nonLocalTraffic | quote }}
+    - name: DD_APM_NON_LOCAL_TRAFFIC
+      value: {{ .Values.datadog.nonLocalTraffic | quote }}
     {{- end }}
     {{- if .Values.datadog.dogstatsdOriginDetection }}
     - name: DD_DOGSTATSD_ORIGIN_DETECTION
@@ -69,6 +71,10 @@
         secretKeyRef:
           name: {{ template "clusterAgent.tokenSecretName" . }}
           key: token
+    {{- end }}
+    {{- if .Values.datadog.nodeLabelsAsTags }}
+    - name: DD_KUBERNETES_NODE_LABELS_AS_TAGS
+      value: '{{ toJson .Values.datadog.nodeLabelsAsTags }}'
     {{- end }}
     {{- if .Values.datadog.podLabelsAsTags }}
     - name: DD_KUBERNETES_POD_LABELS_AS_TAGS

@@ -17,7 +17,6 @@ reclaimPolicy: {{ .Values.storageClass.reclaimPolicy }}
 {{ if .Values.storageClass.allowVolumeExpansion }}
 allowVolumeExpansion: {{ .Values.storageClass.allowVolumeExpansion }}
 {{ end }}
-{{ end -}}
 {{- with .Values.storageClass.parameters }}
 parameters:
 {{ toYaml . | indent 2 }}
@@ -26,3 +25,4 @@ parameters:
 mountOptions:
 {{ toYaml . | indent 2 }}
 {{- end }}
+{{ end -}}

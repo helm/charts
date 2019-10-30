@@ -61,7 +61,7 @@ and their default values.
 | Parameter                          | Description                                                                           | Default             |
 | ---------------------------------- | ------------------------------------------------------------------------------------- | ------------------- |
 | image.repository                   | Kong image                                                                            | `kong`              |
-| image.tag                          | Kong image version                                                                    | `1.2`               |
+| image.tag                          | Kong image version                                                                    | `1.3`               |
 | image.pullPolicy                   | Image pull policy                                                                     | `IfNotPresent`      |
 | image.pullSecrets                  | Image pull secrets                                                                    | `null`              |
 | replicaCount                       | Kong instance count                                                                   | `1`                 |
@@ -88,6 +88,7 @@ and their default values.
 | proxy.tls.servicePort              | Service port to use for TLS                                                           | 8443                |
 | proxy.tls.nodePort                 | Node port to use for TLS                                                              | 32443               |
 | proxy.tls.hostPort                 | Host port to use for TLS                                                              |                     |
+| proxy.tls.overrideServiceTargetPort| Override service port to use for TLS without touching Kong containerPort              |                     |
 | proxy.type                         | k8s service type. Options: NodePort, ClusterIP, LoadBalancer                          | `NodePort`          |
 | proxy.loadBalancerSourceRanges     | Limit proxy access to CIDRs if set and service type is `LoadBalancer`                 | `[]`                |
 | proxy.loadBalancerIP               | To reuse an existing ingress static IP for the admin service                          |                     |
@@ -100,6 +101,7 @@ and their default values.
 | proxy.ingress.annotations          | Ingress annotations. See documentation for your ingress controller for details        | `{}`                |
 | updateStrategy                     | update strategy for deployment                                                        | `{}`                |
 | env                                | Additional [Kong configurations](https://getkong.org/docs/latest/configuration/)      |                     |
+| plugins                            | Install custom plugins into Kong via ConfigMaps or Secrets                            | `{}`                |
 | runMigrations                      | Run Kong migrations job                                                               | `true`              |
 | readinessProbe                     | Kong readiness probe                                                                  |                     |
 | livenessProbe                      | Kong liveness probe                                                                   |                     |
@@ -114,6 +116,8 @@ and their default values.
 | serviceMonitor.enabled             | Create ServiceMonitor for Prometheus Operator                                         | false               |
 | serviceMonitor.interval            | Scrapping interval                                                                    | 10s                 |
 | serviceMonitor.namespace           | Where to create ServiceMonitor                                                        |                     |
+| secretVolumes                      | Mount given secrets as a volume in Kong container to override default certs and keys. | `[]`                |
+| serviceMonitor.labels              | ServiceMonito Labels                                                                  | {}                  |
 
 ### Admin/Proxy listener override
 
@@ -183,7 +187,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```console
 $ helm install stable/kong --name my-release \
-  --set=image.tag=1.2,env.database=cassandra,cassandra.enabled=true
+  --set=image.tag=1.3,env.database=cassandra,cassandra.enabled=true
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters
@@ -387,11 +391,10 @@ You can can learn about kong ingress custom resource definitions [here](https://
 | enabled                            | Deploy the ingress controller, rbac and crd                                           | false                                                                        |
 | replicaCount                       | Number of desired ingress controllers                                                 | 1                                                                            |
 | image.repository                   | Docker image with the ingress controller                                              | kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller |
-| image.tag                          | Version of the ingress controller                                                     | 0.2.0                                                                        |
+| image.tag                          | Version of the ingress controller                                                     | 0.6.0                                                                        |
 | readinessProbe                     | Kong ingress controllers readiness probe                                              |                                                                              |
 | livenessProbe                      | Kong ingress controllers liveness probe                                               |                                                                              |
-| ingressClass                       | The ingress-class value for controller                                                | nginx                                                                        |
+| ingressClass                       | The ingress-class value for controller                                                | kong                                                                        |
 | podDisruptionBudget.enabled        | Enable PodDisruptionBudget for ingress controller                                     | `false`                                                                      |
 | podDisruptionBudget.maxUnavailable | Represents the minimum number of Pods that can be unavailable (integer or percentage) | `50%`                                                                        |
 | podDisruptionBudget.minAvailable   | Represents the number of Pods that must be available (integer or percentage)          |                                                                              |
-

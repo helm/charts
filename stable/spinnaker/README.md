@@ -36,6 +36,7 @@ $ helm install --name my-release -f values.yaml stable/spinnaker
 
 ## Adding Kubernetes Clusters to Spinnaker
 
+### Configuring arbitrary clusters with a kubernetes secret
 By default, installing the chart only registers the local cluster as a deploy target
 for Spinnaker. If you want to add arbitrary clusters need to do the following:
 
@@ -45,13 +46,37 @@ for Spinnaker. If you want to add arbitrary clusters need to do the following:
 $ kubectl create secret generic --from-file=$HOME/.kube/config my-kubeconfig
 ```
 
-1. Set the following values of the chart:
+2. Set the following values of the chart:
 
 ```yaml
 kubeConfig:
   enabled: true
   secretName: my-kubeconfig
   secretKey: config
+  contexts:
+  # Names of contexts available in the uploaded kubeconfig
+  - my-context
+  # This is the context from the list above that you would like
+  # to deploy Spinnaker itself to.
+  deploymentContext: my-context
+```
+
+### Configuring arbitrary clusters with s3
+By default, installing the chart only registers the local cluster as a deploy target
+for Spinnaker. If you do not want to store your kubeconfig as a secret on the cluster, you
+can also store in s3. Full documentation can be found [here](https://www.spinnaker.io/reference/halyard/secrets/s3-secrets/#secrets-in-s3).
+
+1. Upload your kubeconfig to a s3 bucket that halyard and spinnaker services can access.
+
+
+2. Set the following values of the chart:
+
+```yaml
+kubeConfig:
+  enabled: true
+  # secretName: my-kubeconfig
+  # secretKey: config
+  encryptedKubeconfig: encrypted:s3!r:us-west-2!b:mybucket!f:mykubeconfig
   contexts:
   # Names of contexts available in the uploaded kubeconfig
   - my-context
@@ -186,6 +211,72 @@ halyard:
 ```
 
 Any files added through `additionalConfigMaps` will be written to disk at `/opt/halyard/additionalConfigMaps`.
+
+### Use a custom Halyard BOM
+
+Spinnaker uses a Bill of Materials to describe the services that are part of a release. See the [BOM documentation](https://www.spinnaker.io/guides/operator/custom-boms/#the-bill-of-materials-bom) for more details.   
+
+A [custom BOM](https://www.spinnaker.io/guides/operator/custom-boms/#boms-and-configuration-on-your-filesystem) can be provided to the Helm chart and used for the Halyard deployment: 
+
+```yaml
+halyard:
+  spinnakerVersion: '1.16.1'
+  bom: |-
+    artifactSources:
+      debianRepository: https://dl.bintray.com/spinnaker-releases/debians
+      dockerRegistry: gcr.io/spinnaker-marketplace
+      gitPrefix: https://github.com/spinnaker
+      googleImageProject: marketplace-spinnaker-release
+    dependencies:
+      consul:
+        version: 0.7.5
+      redis:
+        version: 2:2.8.4-2
+      vault:
+        version: 0.7.0
+    services:
+      clouddriver:
+        commit: 031bcec52d6c3eb447095df4251b9d7516ed74f5
+        version: 6.3.0-20190904130744
+      deck:
+        commit: b0aac478e13a7f9642d4d39479f649dd2ef52a5a
+        version: 2.12.0-20190916141821
+      defaultArtifact: {}
+      echo:
+        commit: 7aae2141883240bd5747b981b2196adfa5b24225
+        version: 2.8.0-20190914075316
+      fiat:
+        commit: e92cfbcac018d9dcfa03869224f7106bf2a11315
+        version: 1.7.0-20190904130744
+      front50:
+        commit: abc5c168e3619ac084d4130eef7313cbdcfc3f61
+        version: 0.19.0-20190904130744
+      gate:
+        commit: fd0128a6b79ddaca984c3bcdd1259c14f167cd2d
+        version: 1.12.0-20190914075316
+      igor:
+        commit: c9bbca8e5c340d90b812f4fd27c6ebe3088dbc8d
+        version: 1.6.0-20190914075316
+      kayenta:
+        commit: 8aa41e6e723e8d37831f5d4fe0bd5aa24ede5872
+        version: 0.11.0-20190830172818
+      monitoring-daemon:
+        commit: 922385def92058877d61dfc835873539f0377cd7
+        version: 0.15.0-20190820135930
+      monitoring-third-party:
+        commit: 922385def92058877d61dfc835873539f0377cd7
+        version: 0.15.0-20190820135930
+      orca:
+        commit: 7b4e3dd6c4393ba88ebb3ea209a9c95df63e5e87
+        version: 2.10.0-20190914075316
+      rosco:
+        commit: cfb88bb57f7af064876cfe5eef3c330a2621507b
+        version: 0.14.0-20190904130744
+    timestamp: '2019-09-16 18:18:44'
+    version: 1.16.1
+```
+
+This will result in the specified BOM contents being written to a `1.16.1.yml` BOM file, and the Spinnaker version set to `local:1.16.1`.  
 
 ### Set custom annotations for the halyard pod
 

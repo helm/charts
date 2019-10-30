@@ -1,0 +1,42 @@
+{{ if and .Values.pro.enabled .Values.pro.authService.enabled }}
+
+{{- if .Values.crds.enabled }}
+---
+apiVersion: getambassador.io/v1
+kind: AuthService
+metadata:
+  name: {{ include "ambassador.fullname" . }}-pro-auth
+spec:
+  proto: grpc
+  {{- if hasKey .Values.env "AMBASSADOR_ID" }}
+  ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
+  {{- end }}
+  auth_service: 127.0.0.1:{{ .Values.pro.ports.auth }}
+  {{- if .Values.pro.authService.optional_configurations }}
+  {{- toYaml .Values.pro.authService.optional_configurations | nindent 2}}
+  {{- end }}
+---
+apiVersion: getambassador.io/v1
+kind: Mapping
+metadata:
+  name: {{ include "ambassador.fullname" . }}-pro-callback-mapping
+spec:
+  {{- if hasKey .Values.env "AMBASSADOR_ID" }}
+  ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
+  {{- end }}
+  prefix: /callback
+  service: NoTaReAlSeRvIcE
+---
+apiVersion: getambassador.io/v1
+kind: Mapping
+metadata:
+  name: {{ include "ambassador.fullname" . }}-pro-mapping
+spec:
+  {{- if hasKey .Values.env "AMBASSADOR_ID" }}
+  ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
+  {{- end }}
+  prefix: /.ambassador/
+  rewrite: ""
+  service: 127.0.0.1:{{ .Values.pro.ports.auth }}
+{{- end }}
+{{ end }}

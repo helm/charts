@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: "{{ template "redis-cache.fullname" . }}"
@@ -8,6 +8,10 @@ metadata:
      release: "{{ .Release.Name }}"
      heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "redis-cache.name" . }}
+      release: "{{ .Release.Name }}"
   serviceName: "{{ template "redis-cache.fullname" . }}"
   replicas: {{ .Values.replicaCount }}
   template:

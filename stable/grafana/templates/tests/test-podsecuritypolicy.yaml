@@ -1,8 +1,9 @@
-{{- if .Values.rbac.pspEnabled }}
-apiVersion: extensions/v1beta1
+{{- if and .Values.testFramework.enabled .Values.rbac.pspEnabled }}
+apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: {{ template "grafana.fullname" . }}-test
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "grafana.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}

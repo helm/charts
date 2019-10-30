@@ -43,6 +43,17 @@ Return the appropriate apiVersion for networkpolicy.
 {{- end -}}
 
 {{/*
+Return the appropriate apiVersion for PodSecurityPolicy.
+*/}}
+{{- define "podSecurityPolicy.apiVersion" -}}
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "policy/v1beta1" -}}
+{{- else -}}
+{{- print "extensions/v1beta1" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Return the proper Redis image name
 */}}
 {{- define "redis.image" -}}
@@ -153,6 +164,17 @@ Get the password secret.
 {{- printf "%s" .Values.existingSecret -}}
 {{- else -}}
 {{- printf "%s" (include "redis.fullname" .) -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Get the password key to be retrieved from Redis secret.
+*/}}
+{{- define "redis.secretPasswordKey" -}}
+{{- if and .Values.existingSecret .Values.existingSecretPasswordKey -}}
+{{- printf "%s" .Values.existingSecretPasswordKey -}}
+{{- else -}}
+{{- printf "redis-password" -}}
 {{- end -}}
 {{- end -}}
 

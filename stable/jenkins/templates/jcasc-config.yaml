@@ -18,4 +18,22 @@ data:
   {{ $key }}.yaml: |-
 {{ tpl $val $| indent 4 }}
 {{- end }}
+{{- if .Values.master.JCasC.defaultConfig }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "jenkins.fullname" $root }}-jenkins-jcasc-config
+  namespace: {{ template "jenkins.namespace" $root }}
+  labels:
+    "app.kubernetes.io/name": {{ template "jenkins.name" $root}}
+    "helm.sh/chart": {{ $.Chart.Name }}-{{ $.Chart.Version }}
+    "app.kubernetes.io/managed-by": "{{ $.Release.Service }}"
+    "app.kubernetes.io/instance": "{{ $.Release.Name }}"
+    "app.kubernetes.io/component": "{{ $.Values.master.componentName }}"
+    {{ template "jenkins.fullname" $root }}-jenkins-config: "true"
+data:
+  jcasc-default-config.yaml: |-
+    {{- include "jenkins.casc.defaults" . |nindent 4 }}
+{{- end}}
 {{- end }}
