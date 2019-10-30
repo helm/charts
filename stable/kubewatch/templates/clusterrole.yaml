@@ -59,4 +59,13 @@ rules:
     - get
     - list
     - watch
+  - apiGroups:
+      - extensions
+      - "networking.k8s.io" # k8s 1.14+
+    resources:
+      - ingresses
+    verbs:
+      - get
+      - list
+      - watch
 {{- end -}}
