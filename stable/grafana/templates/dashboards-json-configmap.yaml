@@ -1,6 +1,7 @@
 {{- if .Values.dashboards }}
 {{ $files := .Files }}
 {{- range $provider, $dashboards := .Values.dashboards }}
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -33,6 +34,6 @@ data:
 {{- end }}
 {{- end }}
 {{- end }}
----
+
 
 {{- end }}
