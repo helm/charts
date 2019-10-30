@@ -34,7 +34,7 @@ spec:
     {{- if eq .Values.prometheus.service.type "NodePort" }}
     nodePort: {{ .Values.prometheus.service.nodePort }}
     {{- end }}
-    port: 9090
+    port: {{ .Values.prometheus.service.port }}
     targetPort: {{ .Values.prometheus.service.targetPort }}
 {{- if .Values.prometheus.service.additionalPorts }}
 {{ toYaml .Values.prometheus.service.additionalPorts | indent 2 }}
