@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "rabbitmq-ha.fullname" . }}
@@ -17,6 +17,10 @@ spec:
   replicas: {{ .Values.replicaCount }}
   updateStrategy:
     type: {{ .Values.updateStrategy }}
+  selector:
+    matchLabels:
+      app: {{ template "rabbitmq-ha.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
@@ -132,6 +136,11 @@ spec:
             - name: amqps
               protocol: TCP
               containerPort: 5671
+            {{- end }}
+            {{- if .Values.rabbitmqPrometheusPlugin.enabled }}
+            - name: metrics
+              protocol: TCP
+              containerPort: {{ .Values.rabbitmqPrometheusPlugin.port }}
             {{- end }}
           livenessProbe:
             {{- toYaml .Values.livenessProbe | trim | nindent 12 }}

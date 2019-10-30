@@ -95,10 +95,13 @@ kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/ma
 $ helm install --name my-release stable/prometheus-operator --set prometheusOperator.createCustomResource=false
 ```
 
-### Helm <2.10 workaround
-The `crd-install` hook is required to deploy the prometheus operator CRDs before they are used. If you are forced to use an earlier version of Helm you can work around this requirement as follows:
-1. Install prometheus-operator by itself, disabling everything but the prometheus-operator component, and also setting `prometheusOperator.serviceMonitor.selfMonitor=false`
-2. Install all the other components, and configure `prometheus.additionalServiceMonitors` to scrape the prometheus-operator service.
+## Upgrading an existing Release to a new major version
+
+A major chart version change (like v1.2.3 -> v2.0.0) indicates that there is an
+incompatible breaking change needing manual actions.
+
+### Upgrading from 6.x.x to 7.x.x
+Due to a change in grafana subchart, version 7.x.x now requires Helm >= 2.12.0.
 
 ### Upgrading from 5.x.x to 6.x.x
 Due to a change in deployment labels of kube-state-metrics, the upgrade requires `helm upgrade --force` in order to re-create the deployment. If this is not done an error will occur indicating that the deployment cannot be modified:
@@ -162,7 +165,6 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheusOperator.admissionWebhooks.patch.podAnnotations` | Annotations for the webhook job pods | `nil` |
 | `prometheusOperator.admissionWebhooks.patch.priorityClassName` | Priority class for the webhook integration jobs | `nil` |
 | `prometheusOperator.affinity` | Assign custom affinity rules to the prometheus operator https://kubernetes.io/docs/concepts/configuration/assign-pod-node/ | `{}` |
-| `prometheusOperator.cleanupCustomResourceBeforeInstall` | Remove CRDs before running the crd-install hook on changes. | `false` |
 | `prometheusOperator.cleanupCustomResource` | Attempt to delete CRDs when the release is removed. This option may be useful while testing but is not recommended, as deleting the CRD definition will delete resources and prevent the operator from being able to clean up resources that it manages | `false` |
 | `prometheusOperator.configReloaderCpu` | Set the prometheus config reloader side-car CPU limit. If unset, uses the prometheus-operator project default | `nil` |
 | `prometheusOperator.configReloaderMemory` | Set the prometheus config reloader side-car memory limit. If unset, uses the prometheus-operator project default | `nil` |
@@ -170,6 +172,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheusOperator.configmapReloadImage.tag` | Tag for configmapReload image | `v0.0.1` |
 | `prometheusOperator.crdApiGroup` | Specify the API Group for the CustomResourceDefinitions | `monitoring.coreos.com` |
 | `prometheusOperator.createCustomResource` | Create CRDs. Required if deploying anything besides the operator itself as part of the release. The operator will create / update these on startup. If your Helm version < 2.10 you will have to either create the CRDs first or deploy the operator first, then the rest of the resources | `true` |
+| `prometheusOperator.denyNamespaces` | Namespaces not to scope the interaction of the Prometheus Operator (deny list). | `{}` |
 | `prometheusOperator.enabled` | Deploy Prometheus Operator. Only one of these should be deployed into the cluster | `true` |
 | `prometheusOperator.hyperkubeImage.repository` | Image pull policy for hyperkube image used to perform maintenance tasks | `IfNotPresent` |
 | `prometheusOperator.hyperkubeImage.repository` | Repository for hyperkube image used to perform maintenance tasks | `k8s.gcr.io/hyperkube` |
@@ -205,24 +208,32 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheusOperator.serviceMonitor.relabelings` | The `relabel_configs` for scraping the operator instance. | `` |
 | `prometheusOperator.serviceMonitor.selfMonitor` | Enable monitoring of prometheus operator | `true` |
 | `prometheusOperator.tlsProxy.enabled` | Enable a TLS proxy container. Only the `squareup/ghostunnel` command line arguments are currently supported and the secret where the cert is loaded from is expected to be provided by the admission webhook | `true` |
-| `prometheusOperator.tlsProxy.image.repository` | Image pull policy for the TLS proxy container | `IfNotPresent` |
 | `prometheusOperator.tlsProxy.image.repository` | Repository for the TLS proxy container | `squareup/ghostunnel` |
-| `prometheusOperator.tlsProxy.image.resources` | Resource requests and limits for the TLS proxy container | `{}` |
 | `prometheusOperator.tlsProxy.image.tag` | Repository for the TLS proxy container | `v1.4.1` |
+| `prometheusOperator.tlsProxy.image.pullPolicy` | Image pull policy for the TLS proxy container | `IfNotPresent` |
+| `prometheusOperator.tlsProxy.resources` | Resource requests and limits for the TLS proxy container | `{}` |
 | `prometheusOperator.tolerations` | Tolerations for use with node taints https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/ | `[]` |
 
 
 ### Prometheus
 | Parameter | Description | Default |
 | ----- | ----------- | ------ |
-| `prometheus.additionalServiceMonitors` | List of `serviceMonitor` objects to create. See https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#servicemonitorspec | `[]` |
+| `prometheus.additionalServiceMonitors` | List of `ServiceMonitor` objects to create. See https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#servicemonitorspec | `[]` |
 | `prometheus.enabled` | Deploy prometheus | `true` |
+| `prometheus.annotations` | Prometheus annotations | `{}` |
 | `prometheus.ingress.annotations` | Prometheus Ingress annotations | `{}` |
 | `prometheus.ingress.enabled` | If true, Prometheus Ingress will be created | `false` |
 | `prometheus.ingress.hosts` | Prometheus Ingress hostnames | `[]` |
 | `prometheus.ingress.labels` | Prometheus Ingress additional labels | `{}` |
 | `prometheus.ingress.paths` | Prometheus Ingress paths | `[]` |
 | `prometheus.ingress.tls` | Prometheus Ingress TLS configuration (YAML) | `[]` |
+| `prometheus.ingressPerReplica.annotations` | Prometheus pre replica Ingress annotations | `{}` |
+| `prometheus.ingressPerReplica.enabled` | If true, create an Ingress for each Prometheus server replica in the StatefulSet | `false` |
+| `prometheus.ingressPerReplica.hostPrefix` |  | `""` |
+| `prometheus.ingressPerReplica.hostDomain` |  | `""` |
+| `prometheus.ingressPerReplica.labels` | Prometheus per replica Ingress additional labels | `{}` |
+| `prometheus.ingressPerReplica.paths` | Prometheus per replica Ingress paths | `[]` |
+| `prometheus.ingressPerReplica.tlsSecretName` | Secret name containing the TLS certificate for Prometheus per replica ingress | `[]` |
 | `prometheus.podDisruptionBudget.enabled` | If true, create a pod disruption budget for prometheus pods. The created resource cannot be modified once created - it must be deleted to perform a change | `false` |
 | `prometheus.podDisruptionBudget.maxUnavailable` | Maximum number / percentage of pods that may be made unavailable | `""` |
 | `prometheus.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `1` |
@@ -259,7 +270,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.prometheusSpec.replicaExternalLabelName` | Name of the external label used to denote replica name. | `""` |
 | `prometheus.prometheusSpec.replicas` | Number of instances to deploy for a Prometheus deployment. | `1` |
 | `prometheus.prometheusSpec.resources` | Define resources requests and limits for single Pods. | `{}` |
-| `prometheus.prometheusSpec.retentionSize` | Used Storage Prometheus shall retain data for. Example 50g (50 Gigabyte). Can be combined with prometheus.prometheusSpec.retention | `""` |
+| `prometheus.prometheusSpec.retentionSize` | Used Storage Prometheus shall retain data for. Example 50GiB (50 Gigabyte). Can be combined with prometheus.prometheusSpec.retention | `""` |
 | `prometheus.prometheusSpec.walCompression` | Enable compression of the write-ahead log using Snappy. This flag is only available in versions of Prometheus >= 2.11.0. | `false` |
 | `prometheus.prometheusSpec.retention` | Time duration Prometheus shall retain data for. Must match the regular expression `[0-9]+(ms\|s\|m\|h\|d\|w\|y)` (milliseconds seconds minutes hours days weeks years). | `10d` |
 | `prometheus.prometheusSpec.routePrefix` | The route prefix Prometheus registers HTTP handlers for. This is useful, if using ExternalURL and a proxy is rewriting HTTP routes of a request, and the actual ExternalURL is still true, but the server serves requests under a different route prefix. For example for use with `kubectl proxy`. | `/` |
@@ -272,6 +283,10 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.prometheusSpec.serviceMonitorNamespaceSelector` | Namespaces to be selected for ServiceMonitor discovery. See [metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#labelselector-v1-meta) for usage | `{}` |
 | `prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues` | If true, a nil or {} value for prometheus.prometheusSpec.serviceMonitorSelector will cause the prometheus resource to be created with selectors based on values in the helm deployment, which will also match the servicemonitors created | `true` |
 | `prometheus.prometheusSpec.serviceMonitorSelector` | ServiceMonitors to be selected for target discovery. If {}, select all ServiceMonitors | `{}` |
+| `prometheus.additionalPodMonitors` | List of `PodMonitor` objects to create. See https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#podmonitorspec | `[]` |
+| `prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues` | If true, a nil or {} value for prometheus.prometheusSpec.podMonitorSelector will cause the prometheus resource to be created with selectors based on values in the helm deployment, which will also match the podmonitors created | `true` |
+| `prometheus.prometheusSpec.podMonitorSelector` | PodMonitors to be selected for target discovery. If {}, select all PodMonitors | `{}` |
+| `prometheus.prometheusSpec.podMonitorNamespaceSelector` | Namespaces to be selected for PodMonitor discovery. See [metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#labelselector-v1-meta) for usage | `{}` |
 | `prometheus.prometheusSpec.storageSpec` | Storage spec to specify how storage shall be used. | `{}` |
 | `prometheus.prometheusSpec.thanos` | Thanos configuration allows configuring various aspects of a Prometheus server in a Thanos environment. This section is experimental, it may change significantly without deprecation notice in any release.This is experimental and may change significantly without backward compatibility in any release. See https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#thanosspec | `{}` |
 | `prometheus.prometheusSpec.tolerations` | If specified, the pod's tolerations. | `[]` |
@@ -283,15 +298,25 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.service.loadBalancerIP` |  Prometheus Loadbalancer IP | `""` |
 | `prometheus.service.loadBalancerSourceRanges` | Prometheus Load Balancer Source Ranges | `[]` |
 | `prometheus.service.nodePort` |  Prometheus Service port for NodePort service type | `30090` |
+| `prometheus.service.port` |  Port for Prometheus Service to listen on | `9090` |
 | `prometheus.service.sessionAffinity` | Prometheus Service Session Affinity | `""` |
 | `prometheus.service.targetPort` |  Prometheus Service internal port | `9090` |
 | `prometheus.service.type` |  Prometheus Service type | `ClusterIP` |
 | `prometheus.serviceAccount.create` | Create a default serviceaccount for prometheus to use | `true` |
 | `prometheus.serviceAccount.name` | Name for prometheus serviceaccount | `""` |
+| `prometheus.serviceAccount.annotations` | Annotations to add to the serviceaccount | `""` |
 | `prometheus.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `prometheus.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping the prometheus instance. | `` |
 | `prometheus.serviceMonitor.relabelings` | The `relabel_configs` for scraping the prometheus instance. | `` |
 | `prometheus.serviceMonitor.selfMonitor` | Create a `serviceMonitor` to automatically monitor the prometheus instance | `true` |
+| `prometheus.servicePerReplica.annotations` | Prometheus per replica Service Annotations | `{}` |
+| `prometheus.servicePerReplica.enabled` | If true, create a Service for each Prometheus server replica in the StatefulSet | `false` |
+| `prometheus.servicePerReplica.labels` | Prometheus per replica Service Labels | `{}` |
+| `prometheus.servicePerReplica.loadBalancerSourceRanges` | Prometheus per replica Service Loadbalancer Source Ranges | `[]` |
+| `prometheus.servicePerReplica.nodePort` |  Prometheus per replica Service port for NodePort Service type | `30091` |
+| `prometheus.servicePerReplica.port` |  Port for Prometheus per replica Service to listen on | `9090` |
+| `prometheus.servicePerReplica.targetPort` |  Prometheus per replica Service internal port | `9090` |
+| `prometheus.servicePerReplica.type` |  Prometheus per replica Service type | `ClusterIP` |
 
 ### Alertmanager
 | Parameter | Description | Default |
@@ -332,6 +357,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `alertmanager.podDisruptionBudget.enabled` | If true, create a pod disruption budget for Alertmanager pods. The created resource cannot be modified once created - it must be deleted to perform a change | `false` |
 | `alertmanager.podDisruptionBudget.maxUnavailable` | Maximum number / percentage of pods that may be made unavailable | `""` |
 | `alertmanager.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `1` |
+| `alertmanager.secret.annotations` | Alertmanager Secret annotations | `{}` |
 | `alertmanager.service.annotations` | Alertmanager Service annotations | `{}` |
 | `alertmanager.service.clusterIP` | Alertmanager service clusterIP IP | `""` |
 | `alertmanager.service.externalIPs` | List of IP addresses at which the Alertmanager server service is available | `[]` |
@@ -339,6 +365,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `alertmanager.service.loadBalancerIP` |  Alertmanager Loadbalancer IP | `""` |
 | `alertmanager.service.loadBalancerSourceRanges` | Alertmanager Load Balancer Source Ranges | `[]` |
 | `alertmanager.service.nodePort` | Alertmanager Service port for NodePort service type | `30903` |
+| `alertmanager.service.port` | Port for Alertmanager Service to listen on | `9093` |
 | `alertmanager.service.type` | Alertmanager Service type | `ClusterIP` |
 | `alertmanager.serviceAccount.create` | Create a `serviceAccount` for alertmanager | `true` |
 | `alertmanager.serviceAccount.name` | Name for Alertmanager service account | `""` |
@@ -432,6 +459,7 @@ For a full list of configurable values please refer to the [Grafana chart](https
 | `kubeEtcd.serviceMonitor.scheme` | Etcd servicemonitor scheme | `http` |
 | `kubeEtcd.serviceMonitor.serverName` | Etcd server name to validate certificate against when scraping | `""` |
 | `kubeProxy.enabled` | Deploy a `service` and `serviceMonitor` to scrape the Kubernetes proxy | `true` |
+| `kubeProxy.endpoints` | Endpoints where proxy runs. Provide this if running proxy outside the cluster | `[]` |
 | `kubeProxy.service.port` | Kubernetes proxy port for the service runs on | `10249` |
 | `kubeProxy.service.selector` | Kubernetes proxy service selector | `{"k8s-app" : "kube-proxy" }` |
 | `kubeProxy.service.targetPort` | Kubernetes proxy targetPort for the service runs on | `10249` |
@@ -465,6 +493,7 @@ For a full list of configurable values please refer to the [Grafana chart](https
 | `nodeExporter.enabled` | Deploy the `prometheus-node-exporter` and scrape it | `true` |
 | `nodeExporter.jobLabel` | The name of the label on the target service to use as the job name in prometheus. See `prometheus-node-exporter.podLabels.jobLabel=node-exporter` default | `jobLabel` |
 | `nodeExporter.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
+| `nodeExporter.serviceMonitor.scrapeTimeout` | How long until a scrape request times out. If not set, the Prometheus default scape timeout is used | `nil` |
 | `nodeExporter.serviceMonitor.metricRelabelings` | Metric relablings for the `prometheus-node-exporter` ServiceMonitor | `[]` |
 | `nodeExporter.serviceMonitor.relabelings` | The `relabel_configs` for scraping the `prometheus-node-exporter`. | `` |
 | `prometheus-node-exporter.extraArgs` | Additional arguments for the node exporter container | `["--collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/.+)($|/)", "--collector.filesystem.ignored-fs-types=^(autofs|binfmt_misc|cgroup|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|mqueue|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|sysfs|tracefs)$"]` |
