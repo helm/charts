@@ -45,6 +45,10 @@ resourcesToWatch:
   pod: true
   job: false
   persistentvolume: false
+  ingress: true
+  namespace: true
+  secret: true
+  configmap: true
 
 image:
   registry: "docker.io"
