@@ -33,6 +33,9 @@ spec:
   {{- if .Values.ossgateway.enabled }}
   replicas: {{ .Values.ossgateway.replicas }}
   {{- end }}
+  {{- if .Values.b2gateway.enabled }}
+  replicas: {{ .Values.b2gateway.replicas }}
+  {{- end }}
   selector:
     matchLabels:
       app: {{ template "minio.name" . }}
@@ -86,9 +89,15 @@ spec:
           "-ce", 
           "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway nas {{ .Values.mountPath }}" ]
           {{- else }}
+          {{- if .Values.b2gateway.enabled }}
+          command: [ "/bin/sh",
+          "-ce",
+          "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway b2" ]
+          {{- else }}
           command: [ "/bin/sh", 
           "-ce", 
           "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} server {{ .Values.mountPath }}" ]
+          {{- end }}
           {{- end }}
           {{- end }}
           {{- end }}
@@ -99,7 +108,7 @@ spec:
 {{ toYaml .Values.extraArgs | indent 12 }}
           {{- end  }}
           volumeMounts:
-            {{- if and .Values.persistence.enabled (not .Values.gcsgateway.enabled) (not .Values.azuregateway.enabled) (not .Values.s3gateway.enabled) }}
+            {{- if and .Values.persistence.enabled (not .Values.gcsgateway.enabled) (not .Values.azuregateway.enabled) (not .Values.s3gateway.enabled) (not .Values.b2gateway.enabled) }}
             - name: export
               mountPath: {{ .Values.mountPath }}
               {{- if .Values.persistence.subPath }}
@@ -180,7 +189,7 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
       volumes:
-        {{- if and ((not .Values.gcsgateway.enabled) (not .Values.azuregateway.enabled) (not .Values.s3gateway.enabled)) }}
+        {{- if and ((not .Values.gcsgateway.enabled) (not .Values.azuregateway.enabled) (not .Values.s3gateway.enabled) (not .Values.b2gateway.enabled)) }}
         - name: export
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
