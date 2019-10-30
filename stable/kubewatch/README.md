@@ -87,7 +87,6 @@ The following table lists the configurable parameters of the kubewatch chart and
 | `resourcesToWatch.services`              | watch changes to [Services](https://kubernetes.io/docs/concepts/services-networking/service/)              | `false`                           |
 | `resourcesToWatch.job`                   | watch changes to [Jobs](https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/) | `false`                           |
 | `resourcesToWatch.persistentvolume`      | watch changes to [PersistentVolumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)      | `false`                           |
-
 | `resourcesToWatch.ingress`      | watch changes to [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/)      | `false`                           |
 | `resourcesToWatch.namespace`      | watch changes to [Namespace](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/)      | `false`                           |
 | `resourcesToWatch.secret`      | watch changes to [Secret](https://kubernetes.io/docs/concepts/configuration/secret/)      | `false`                           |
