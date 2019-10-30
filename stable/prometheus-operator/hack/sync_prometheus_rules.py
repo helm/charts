@@ -27,14 +27,12 @@ charts = [
     {
         'source': 'https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml',
         'destination': '../templates/prometheus/rules-1.14',
-        'min_kubernetes': '1.14.0-0',
-        'max_kubernetes': '1.16.0-0'
+        'min_kubernetes': '1.14.0-0'
     },
     {
         'source': 'https://raw.githubusercontent.com/etcd-io/etcd/master/Documentation/op-guide/etcd3_alert.rules.yml',
         'destination': '../templates/prometheus/rules-1.14',
-        'min_kubernetes': '1.14.0-0',
-        'max_kubernetes': '1.16.0-0'
+        'min_kubernetes': '1.14.0-0'
     },
     {
         'source': 'https://raw.githubusercontent.com/coreos/kube-prometheus/release-0.1/manifests/prometheus-rules.yaml',
@@ -248,6 +246,7 @@ def main():
             continue
         raw_text = response.text
         yaml_text = yaml.load(raw_text)
+        if ('max_kubernetes' not in chart): chart['max_kubernetes']="9.9.9-9"
         # etcd workaround, their file don't have spec level
         groups = yaml_text['spec']['groups'] if yaml_text.get('spec') else yaml_text['groups']
         for group in groups:
