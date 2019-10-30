@@ -57,6 +57,8 @@ spec:
           {{- end }}
           args:
             - /nginx-ingress-controller
+            - --http-port={{ .Values.controller.containerPort.http }}
+            - --https-port={{ .Values.controller.containerPort.https }}
             - --default-backend-service={{ if .Values.defaultBackend.enabled }}{{ .Release.Namespace }}/{{ template "nginx-ingress.defaultBackend.fullname" . }}{{ else }}{{ .Values.controller.defaultBackendService }}{{ end }}
           {{- if and (semverCompare ">=0.9.0-beta.1" .Values.controller.image.tag) .Values.controller.publishService.enabled }}
             - --publish-service={{ template "nginx-ingress.controller.publishServicePath" . }}
