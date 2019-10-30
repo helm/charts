@@ -48,7 +48,7 @@ helm install --dry-run --debug.enabled incubator/cassandra-operator --set debug.
 To install the chart with the release name my-release:
 
 ```console
-$ helm install --name casskop incubator/cassandra-operator
+$ helm install --name my-release incubator/cassandra-operator
 ```
 
 We can surcharge default parameters using `--set` flag :
