@@ -9,7 +9,7 @@ Spark:
 Master:
   Name: master
   Image: "dbanda/spark2.4"
-  ImageTag: "v5_mini"
+  ImageTag: "v6_mini"
   Replicas: 1
   Component: "spark-master"
   Cpu: "100m"
@@ -34,7 +34,7 @@ WebUi:
 Worker:
   Name: worker
   Image: "dbanda/spark2.4"
-  ImageTag: "v5_mini"
+  ImageTag: "v6_mini"
   Replicas: 2
   Component: "spark-worker"
   Cpu: "100m"
@@ -53,7 +53,7 @@ Worker:
 Zeppelin:
   Name: zeppelin
   Image: "dbanda/zeppelin"
-  ImageTag: "v5_mini"
+  ImageTag: "v6_mini"
   Replicas: 1
   Component: "zeppelin"
   Cpu: "100m"
@@ -104,7 +104,7 @@ Livy:
   Enabled: true
   Name: livy
   Image: "dbanda/livy"
-  ImageTag: "v5_mini"
+  ImageTag: "v6_mini"
   Replicas: 1
   Component: "livy"
   Cpu: "100m"
