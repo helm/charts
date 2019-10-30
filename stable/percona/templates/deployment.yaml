@@ -61,15 +61,27 @@ spec:
         livenessProbe:
           exec:
             command:
+            {{- if .Values.mysqlAllowEmptyPassword }}
             - mysqladmin
             - ping
+            {{- else }}
+            - sh
+            - -c
+            - "mysqladmin ping -u root -p${MYSQL_ROOT_PASSWORD}"
+            {{- end }}
           initialDelaySeconds: 30
           timeoutSeconds: 5
         readinessProbe:
           exec:
             command:
+            {{- if .Values.mysqlAllowEmptyPassword }}
             - mysqladmin
             - ping
+            {{- else }}
+            - sh
+            - -c
+            - "mysqladmin ping -u root -p${MYSQL_ROOT_PASSWORD}"
+            {{- end }}
           initialDelaySeconds: 5
           timeoutSeconds: 1
         volumeMounts:
