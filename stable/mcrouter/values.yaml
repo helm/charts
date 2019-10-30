@@ -18,6 +18,9 @@ resources:
     cpu: 256m
     memory: 512Mi
 
+service:
+  clusterIP: None
+
 ## Parameters for the mcrouter command
 mcrouterCommandParams:
   port: 5000

@@ -8,7 +8,7 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
-  clusterIP: None
+  clusterIP: {{ .Values.service.clusterIP }}
   ports:
   - name: mcrouter-port
     port: {{ .Values.mcrouterCommandParams.port }}
