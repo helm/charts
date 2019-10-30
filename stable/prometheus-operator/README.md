@@ -95,10 +95,13 @@ kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/ma
 $ helm install --name my-release stable/prometheus-operator --set prometheusOperator.createCustomResource=false
 ```
 
-### Helm <2.10 workaround
-The `crd-install` hook is required to deploy the prometheus operator CRDs before they are used. If you are forced to use an earlier version of Helm you can work around this requirement as follows:
-1. Install prometheus-operator by itself, disabling everything but the prometheus-operator component, and also setting `prometheusOperator.serviceMonitor.selfMonitor=false`
-2. Install all the other components, and configure `prometheus.additionalServiceMonitors` to scrape the prometheus-operator service.
+## Upgrading an existing Release to a new major version
+
+A major chart version change (like v1.2.3 -> v2.0.0) indicates that there is an
+incompatible breaking change needing manual actions.
+
+### Upgrading from 6.x.x to 7.x.x
+Due to a change in grafana subchart, version 7.x.x now requires Helm >= 2.12.0.
 
 ### Upgrading from 5.x.x to 6.x.x
 Due to a change in deployment labels of kube-state-metrics, the upgrade requires `helm upgrade --force` in order to re-create the deployment. If this is not done an error will occur indicating that the deployment cannot be modified:
@@ -162,7 +165,6 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheusOperator.admissionWebhooks.patch.podAnnotations` | Annotations for the webhook job pods | `nil` |
 | `prometheusOperator.admissionWebhooks.patch.priorityClassName` | Priority class for the webhook integration jobs | `nil` |
 | `prometheusOperator.affinity` | Assign custom affinity rules to the prometheus operator https://kubernetes.io/docs/concepts/configuration/assign-pod-node/ | `{}` |
-| `prometheusOperator.cleanupCustomResourceBeforeInstall` | Remove CRDs before running the crd-install hook on changes. | `false` |
 | `prometheusOperator.cleanupCustomResource` | Attempt to delete CRDs when the release is removed. This option may be useful while testing but is not recommended, as deleting the CRD definition will delete resources and prevent the operator from being able to clean up resources that it manages | `false` |
 | `prometheusOperator.configReloaderCpu` | Set the prometheus config reloader side-car CPU limit. If unset, uses the prometheus-operator project default | `nil` |
 | `prometheusOperator.configReloaderMemory` | Set the prometheus config reloader side-car memory limit. If unset, uses the prometheus-operator project default | `nil` |
@@ -296,6 +298,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.service.loadBalancerIP` |  Prometheus Loadbalancer IP | `""` |
 | `prometheus.service.loadBalancerSourceRanges` | Prometheus Load Balancer Source Ranges | `[]` |
 | `prometheus.service.nodePort` |  Prometheus Service port for NodePort service type | `30090` |
+| `prometheus.service.port` |  Port for Prometheus Service to listen on | `9090` |
 | `prometheus.service.sessionAffinity` | Prometheus Service Session Affinity | `""` |
 | `prometheus.service.targetPort` |  Prometheus Service internal port | `9090` |
 | `prometheus.service.type` |  Prometheus Service type | `ClusterIP` |
@@ -310,7 +313,8 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.servicePerReplica.enabled` | If true, create a Service for each Prometheus server replica in the StatefulSet | `false` |
 | `prometheus.servicePerReplica.labels` | Prometheus per replica Service Labels | `{}` |
 | `prometheus.servicePerReplica.loadBalancerSourceRanges` | Prometheus per replica Service Loadbalancer Source Ranges | `[]` |
-| `prometheus.servicePerReplica.nodePort` |  Prometheus per replica service port for NodePort Service type | `30091` |
+| `prometheus.servicePerReplica.nodePort` |  Prometheus per replica Service port for NodePort Service type | `30091` |
+| `prometheus.servicePerReplica.port` |  Port for Prometheus per replica Service to listen on | `9090` |
 | `prometheus.servicePerReplica.targetPort` |  Prometheus per replica Service internal port | `9090` |
 | `prometheus.servicePerReplica.type` |  Prometheus per replica Service type | `ClusterIP` |
 
@@ -361,6 +365,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `alertmanager.service.loadBalancerIP` |  Alertmanager Loadbalancer IP | `""` |
 | `alertmanager.service.loadBalancerSourceRanges` | Alertmanager Load Balancer Source Ranges | `[]` |
 | `alertmanager.service.nodePort` | Alertmanager Service port for NodePort service type | `30903` |
+| `alertmanager.service.port` | Port for Alertmanager Service to listen on | `9093` |
 | `alertmanager.service.type` | Alertmanager Service type | `ClusterIP` |
 | `alertmanager.serviceAccount.create` | Create a `serviceAccount` for alertmanager | `true` |
 | `alertmanager.serviceAccount.name` | Name for Alertmanager service account | `""` |

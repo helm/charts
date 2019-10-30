@@ -182,13 +182,16 @@ alertmanager:
     labels: {}
     clusterIP: ""
 
-  ## Port to expose on each node
-  ## Only used if service.type is 'NodePort'
-  ##
+    ## Port for Alertmanager Service to listen on
+    ##
+    port: 9093
+    ## Port to expose on each node
+    ## Only used if service.type is 'NodePort'
+    ##
     nodePort: 30903
-  ## List of IP addresses at which the Prometheus server service is available
-  ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
-  ##
+    ## List of IP addresses at which the Prometheus server service is available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
     externalIPs: []
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
@@ -1028,9 +1031,6 @@ prometheusOperator:
   ## Customize CRDs API Group
   crdApiGroup: monitoring.coreos.com
 
-  # Remove CRDs before instaling, created for use on CI environment.
-  cleanupCustomResourceBeforeInstall: false
-
   ## Attempt to clean up CRDs created by Prometheus Operator.
   ##
   cleanupCustomResource: false
@@ -1185,6 +1185,9 @@ prometheus:
     labels: {}
     clusterIP: ""
 
+    ## Port for Prometheus Service to listen on
+    ##
+    port: 9090
 
     ## To be used with a proxy extraContainer port
     targetPort: 9090
@@ -1214,6 +1217,10 @@ prometheus:
   servicePerReplica:
     enabled: false
     annotations: {}
+
+    ## Port for Prometheus Service per replica to listen on
+    ##
+    port: 9090
 
     ## To be used with a proxy extraContainer port
     targetPort: 9090

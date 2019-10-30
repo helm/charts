@@ -42,6 +42,8 @@ spec:
         pending: []
     spec:
       serviceAccountName: {{ include "sparkoperator.serviceAccountName" . }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | trim | indent 8 }}
       {{- if .Values.enableWebhook }}
       volumes:
         - name: webhook-certs
