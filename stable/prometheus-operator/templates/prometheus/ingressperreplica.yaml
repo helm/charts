@@ -1,6 +1,6 @@
 {{- if and .Values.prometheus.enabled .Values.prometheus.servicePerReplica.enabled .Values.prometheus.ingressPerReplica.enabled }}
 {{- $count := .Values.prometheus.prometheusSpec.replicas | int -}}
-{{- $servicePort := 9090 -}}
+{{- $servicePort := .Values.prometheus.service.port -}}
 {{- $ingressValues := .Values.prometheus.ingressPerReplica -}}
 apiVersion: extensions/v1beta1
 kind: IngressList

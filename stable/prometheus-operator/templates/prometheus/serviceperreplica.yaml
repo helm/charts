@@ -35,7 +35,7 @@ items:
           {{- if eq $serviceValues.type "NodePort" }}
           nodePort: {{ $serviceValues.nodePort }}
           {{- end }}
-          port: 9090
+          port: {{ $serviceValues.port }}
           targetPort: {{ $serviceValues.targetPort }}
       selector:
         app: prometheus

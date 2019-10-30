@@ -33,7 +33,7 @@ spec:
     {{- if eq .Values.alertmanager.service.type "NodePort" }}
       nodePort: {{ .Values.alertmanager.service.nodePort }}
     {{- end }}
-      port: 9093
+      port: {{ .Values.alertmanager.service.port }}
       targetPort: 9093
       protocol: TCP
   selector:
