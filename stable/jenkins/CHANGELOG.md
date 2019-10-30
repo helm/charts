@@ -6,6 +6,11 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.7.10
+
+Disable direct connection in default configuration (when kubernetes plugin version >= 1.20.2).
+Note: In case direct connection is going to be used `jenkins/jnlp-slave` needs to be version `3.35-5` or newer.
+
 ## 1.7.8
 
 Extend extraPorts to be opened on the Service object, not just the container.
