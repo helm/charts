@@ -93,10 +93,10 @@ spec:
           {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp") (eq $provider "azure")) }}
             {{- if eq $provider "aws" }}
             - name: AWS_SHARED_CREDENTIALS_FILE
-            {{- else if eq $provider "gcp" }}
-            - name: GOOGLE_APPLICATION_CREDENTIALS
-            {{- else }}
+            {{- else if eq $provider "azure" }}
             - name: AZURE_CREDENTIALS_FILE
+            {{- else }}
+            - name: GOOGLE_APPLICATION_CREDENTIALS            
             {{- end }}
               value: /credentials/cloud
           {{- end }}
