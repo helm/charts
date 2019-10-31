@@ -112,7 +112,7 @@ invalid: spec.selector: Invalid value: v1.LabelSelector{MatchLabels:map[string]s
 If this error has already been encountered, a `helm history` command can be used to determine which release has worked, then `helm rollback` to the release, then `helm upgrade --force` to this new one
 
 ## prometheus.io/scrape
-The prometheus operator does not support annotation-based discovery of services, using the `serviceMonitor` CRD in its place as it provides far more configuration options. For information on how to use servicemonitors, please see the documentation on the coreos/prometheus-operator documentation here: [Running Exporters](https://github.com/coreos/prometheus-operator/blob/master/Documentation/user-guides/running-exporters.md)
+The prometheus operator does not support annotation-based discovery of services, use the `serviceMonitor` CRD in its place as it provides far more configuration options. For information on how to use servicemonitors, please see the documentation on the coreos/prometheus-operator documentation here: [Running Exporters](https://github.com/coreos/prometheus-operator/blob/master/Documentation/user-guides/running-exporters.md)
 
 ## Configuration
 
