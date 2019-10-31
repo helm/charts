@@ -431,15 +431,15 @@ For a full list of configurable values please refer to the [Grafana chart](https
 | `kubeApiServer.tlsConfig.serverName` | Name of the server to use when validating TLS certificate | `kubernetes` |
 | `kubeControllerManager.enabled` | Deploy a `service` and `serviceMonitor` to scrape the Kubernetes controller-manager | `true` |
 | `kubeControllerManager.endpoints` | Endpoints where Controller-manager runs. Provide this if running Controller-manager outside the cluster | `[]` |
-| `kubeControllermanager.service.port` | Controller-manager port for the service runs on | `10252` |
-| `kubeControllermanager.service.selector` | Controller-manager service selector | `{"component" : "kube-controller-manager" }` |
-| `kubeControllermanager.service.targetPort` | Controller-manager targetPort for the service runs on | `10252` |
-| `kubeControllermanager.serviceMonitor.https` | Controller-manager service scrape over https | `false` |
-| `kubeControllermanager.serviceMonitor.insecureSkipVerify` | Skip TLS certificate validation when scraping | `null` |
-| `kubeControllermanager.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
-| `kubeControllermanager.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping the scheduler. | `` |
-| `kubeControllermanager.serviceMonitor.relabelings` | The `relabel_configs` for scraping the scheduler. | `` |
-| `kubeControllermanager.serviceMonitor.serverName` | Name of the server to use when validating TLS certificate | `null` |
+| `kubeControllerManager.service.port` | Controller-manager port for the service runs on | `10252` |
+| `kubeControllerManager.service.selector` | Controller-manager service selector | `{"component" : "kube-controller-manager" }` |
+| `kubeControllerManager.service.targetPort` | Controller-manager targetPort for the service runs on | `10252` |
+| `kubeControllerManager.serviceMonitor.https` | Controller-manager service scrape over https | `false` |
+| `kubeControllerManager.serviceMonitor.insecureSkipVerify` | Skip TLS certificate validation when scraping | `null` |
+| `kubeControllerManager.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
+| `kubeControllerManager.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping the scheduler. | `` |
+| `kubeControllerManager.serviceMonitor.relabelings` | The `relabel_configs` for scraping the scheduler. | `` |
+| `kubeControllerManager.serviceMonitor.serverName` | Name of the server to use when validating TLS certificate | `null` |
 | `kubeDns.enabled` | Deploy kubeDns scraping components. Use either this or coreDns| `false` |
 | `kubeDns.service.selector` | kubeDns service selector | `{"k8s-app" : "kube-dns" }` |
 | `kubeDns.serviceMonitor.dnsmasqMetricRelabelings` | The `metric_relabel_configs` for scraping dnsmasq kubeDns. | `` |
