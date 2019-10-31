@@ -3,6 +3,10 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.4.21
+
+* Add 'How to upgrade to last version' to the README
+
 ## v1.4.20
 
 ### Minor changes
