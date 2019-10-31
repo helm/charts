@@ -57,4 +57,3 @@ Return the appropriate apiVersion for deployment.
 {{- print "extensions/v1beta1" -}}
 {{- end -}}
 {{- end -}}
-
