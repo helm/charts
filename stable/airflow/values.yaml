@@ -333,6 +333,12 @@ ingress:
       ## If enabled, set "secretName" to the secret containing the TLS private key and certificate
       ## Example:
       ## secretName: example-com-crt
+    paths:
+      ## Different http paths to add to the ingress
+      ## Example:
+      ## - path: "/*"
+      ##   serviceName: "ssl-redirect"
+      ##   servicePort: "use-annotation"
   ##
   ## Configure the flower endpoind
   flower:
