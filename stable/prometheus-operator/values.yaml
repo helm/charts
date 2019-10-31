@@ -1309,6 +1309,8 @@ prometheus:
     interval: ""
     selfMonitor: true
 
+    bearerTokenFile:
+
     ## 	metric relabel configs to apply to samples before ingestion.
     ##
     metricRelabelings: []

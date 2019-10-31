@@ -21,6 +21,9 @@ spec:
     {{- if .Values.prometheus.serviceMonitor.interval }}
     interval: {{ .Values.prometheus.serviceMonitor.interval }}
     {{- end }}
+    {{- if .Values.prometheus.serviceMonitor.bearerTokenFile }}
+    bearerTokenFile: {{ .Values.prometheus.serviceMonitor.bearerTokenFile }}
+    {{- end }}
     path: "{{ trimSuffix "/" .Values.prometheus.prometheusSpec.routePrefix }}/metrics"
 {{- if .Values.prometheus.serviceMonitor.metricRelabelings }}
     metricRelabelings:

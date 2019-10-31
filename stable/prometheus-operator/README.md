@@ -306,6 +306,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.serviceAccount.name` | Name for prometheus serviceaccount | `""` |
 | `prometheus.serviceAccount.annotations` | Annotations to add to the serviceaccount | `""` |
 | `prometheus.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
+| `prometheus.serviceMonitor.bearerTokenFile` | Bearer token used to scrape the Prometheus server | `nil` |
 | `prometheus.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping the prometheus instance. | `` |
 | `prometheus.serviceMonitor.relabelings` | The `relabel_configs` for scraping the prometheus instance. | `` |
 | `prometheus.serviceMonitor.selfMonitor` | Create a `serviceMonitor` to automatically monitor the prometheus instance | `true` |
