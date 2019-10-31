@@ -3,10 +3,10 @@ description: Provides easy monitoring definitions for Kubernetes services, and d
 icon: https://raw.githubusercontent.com/prometheus/prometheus.github.io/master/assets/prometheus_logo-cb55bb5c346.png
 engine: gotpl
 maintainers:
-  - name: gianrubio
-    email: gianrubio@gmail.com
   - name: vsliouniaev
   - name: bismarck
+  - name: gianrubio
+    email: gianrubio@gmail.com
 name: prometheus-operator
 sources:
   - https://github.com/coreos/prometheus-operator
