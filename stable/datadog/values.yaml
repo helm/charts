@@ -356,7 +356,6 @@ clusterAgent:
   metricsProvider:
     enabled: false
 
-    ## @param service - object - optional
     ## Configuration for the service for the cluster-agent metrics server
     #
     service:
