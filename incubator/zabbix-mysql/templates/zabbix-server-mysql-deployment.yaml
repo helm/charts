@@ -1,0 +1,204 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "zabbix-server-mysql.fullname" . }}
+  labels:
+    app: "{{ template "zabbix-server-mysql.fullname" . }}"
+    chart: "{{ template "zabbix.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  selector:
+    matchLabels:
+      app: "{{ template "zabbix-server-mysql.fullname" . }}"
+      release: {{ .Release.Name | quote }}
+  {{- if .Values.updateStrategy }}
+  strategy: {{ toYaml .Values.updateStrategy.zabbix_server_mysql | nindent 4 }}
+  {{- end }}
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: "{{ template "zabbix-server-mysql.fullname" . }}"
+        chart: "{{ template "zabbix.chart" . }}"
+        release: {{ .Release.Name | quote }}
+{{- if or .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
+    spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
+      containers:
+      - name: zabbix-agent
+        image: {{ template "zabbix_agent.image" . }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        env:
+        - name: ZBX_SERVER_NAME
+          value: {{ .Values.zabbix_vars.zbx_server_name }}
+        - name: ZBX_TIMEOUT
+          value: "{{ .Values.zabbix_vars.zbx_timeout }}"
+        - name: ZBX_UNSAFEUSERPARAMETERS
+          value: "{{ .Values.zabbix_vars.zbx_unsafeuserparameters }}"
+        - name: ZBX_ENABLEREMOTECOMMANDS
+          value: "{{ .Values.zabbix_vars.zbx_enableremotecommands }}"
+        - name: ZBX_LOGREMOTECOMMANDS
+          value: "{{ .Values.zabbix_vars.zbx_logremotecommands }}"
+        ports:
+        - containerPort: 10050
+          name: agent
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /var/lib/zabbix/userscripts
+          name: userscripts
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      - name: zabbix-server-mysql
+        image: {{ template "zabbix_server_mysql.image" . }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        env:
+        - name: DB_SERVER_HOST
+          value: {{ template "mariadb.fullname" . }}
+        - name: DB_SERVER_PORT
+          value: "3306"
+        - name: MYSQL_DATABASE
+          value: {{ .Values.mariadb.db.name | quote }}
+        - name: MYSQL_USER
+          value: {{ .Values.mariadb.db.user | quote }}
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "mariadb.fullname" . }}
+              key: mariadb-password
+        - name: ZBX_SERVER_NAME
+          value: {{ .Values.zabbix_vars.zbx_server_name }}
+        - name: ZBX_TIMEOUT
+          value: "{{ .Values.zabbix_vars.zbx_timeout }}"
+        ports:
+        - name: trapper
+          containerPort: 10051
+        livenessProbe:
+          tcpSocket:
+            port: 10051
+{{ toYaml .Values.zabbix_server_mysql.livenessProbe | indent 10 }}
+        readinessProbe:
+          tcpSocket:
+            port: 10051
+{{ toYaml .Values.zabbix_server_mysql.readinessProbe | indent 10 }}
+        volumeMounts:
+        - mountPath: /var/lib/zabbix/alertscripts
+          name: alertscripts
+        - mountPath: /var/lib/zabbix/externalscripts
+          name: externalscripts
+        - mountPath: /var/lib/zabbix/enc
+          name: enc
+        - mountPath: /var/lib/zabbix/mibs
+          name: mibs
+        - mountPath: /var/lib/zabbix/modules
+          name: modules
+        - mountPath: /var/lib/zabbix/snmptraps
+          name: snmptraps
+        - mountPath: /var/lib/zabbix/ssh_keys
+          name: ssh-keys
+        - mountPath: /var/lib/zabbix/ssl/certs
+          name: ssl-certs
+        - mountPath: /var/lib/zabbix/ssl/keys
+          name: ssl-keys
+        - mountPath: /var/lib/zabbix/ssl/ssl_ca
+          name: ssl-ssl-ca
+        - mountPath: /var/lib/zabbix/userscripts
+          name: userscripts
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+      volumes:
+      - name: alertscripts
+      {{- if .Values.persistence.alertscripts.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.alertscripts.claimName }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: externalscripts
+      {{- if .Values.persistence.externalscripts.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.externalscripts.claimName }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: enc
+      {{- if .Values.persistence.enc.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.enc.claimName }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: mibs
+      {{- if .Values.persistence.mibs.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.mibs.claimName }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: modules
+      {{- if .Values.persistence.modules.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.modules.claimName }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: snmptraps
+      {{- if .Values.persistence.snmptraps.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.snmptraps.claimName }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: ssh-keys
+      {{- if .Values.persistence.ssh_keys.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.ssh_keys.claimName }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: ssl-certs
+      {{- if .Values.persistence.ssl.certs.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.ssl.certs.claimName }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: ssl-keys
+      {{- if .Values.persistence.ssl.keys.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.ssl.keys.claimName }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: ssl-ssl-ca
+      {{- if .Values.persistence.ssl.ssl_ca.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.ssl.ssl_ca.claimName }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: userscripts
+      {{- if .Values.persistence.userscripts.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.userscripts.claimName }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      nodeSelector:
+    {{- if .Values.nodeSelector }}
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end -}}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

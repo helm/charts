@@ -1,0 +1,209 @@
+{{- if .Values.persistence.alertscripts.enabled }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.persistence.alertscripts.claimName }}
+  labels:
+    app: "{{ template "zabbix-server-mysql.fullname" . }}"
+    chart: "{{ template "zabbix.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.alertscripts.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.alertscripts.size | quote }}
+  {{ include "zabbix.storageClass" . }}
+{{- end -}}
+{{- if .Values.persistence.externalscripts.enabled }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.persistence.externalscripts.claimName }}
+  labels:
+    app: "{{ template "zabbix-server-mysql.fullname" . }}"
+    chart: "{{ template "zabbix.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.externalscripts.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.externalscripts.size | quote }}
+  {{ include "zabbix.storageClass" . }}
+{{- end -}}
+{{- if .Values.persistence.enc.enabled }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.persistence.enc.claimName }}
+  labels:
+    app: "{{ template "zabbix-server-mysql.fullname" . }}"
+    chart: "{{ template "zabbix.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.enc.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.enc.size | quote }}
+  {{ include "zabbix.storageClass" . }}
+{{- end -}}
+{{- if .Values.persistence.mibs.enabled }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.persistence.mibs.claimName }}
+  labels:
+    app: "{{ template "zabbix-server-mysql.fullname" . }}"
+    chart: "{{ template "zabbix.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.mibs.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.mibs.size | quote }}
+  {{ include "zabbix.storageClass" . }}
+{{- end -}}
+{{- if .Values.persistence.modules.enabled }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.persistence.modules.claimName }}
+  labels:
+    app: "{{ template "zabbix-server-mysql.fullname" . }}"
+    chart: "{{ template "zabbix.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.modules.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.modules.size | quote }}
+  {{ include "zabbix.storageClass" . }}
+{{- end -}}
+{{- if .Values.persistence.snmptraps.enabled }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.persistence.snmptraps.claimName }}
+  labels:
+    app: "{{ template "zabbix-server-mysql.fullname" . }}"
+    chart: "{{ template "zabbix.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.snmptraps.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.snmptraps.size | quote }}
+  {{ include "zabbix.storageClass" . }}
+{{- end -}}
+{{- if .Values.persistence.ssh_keys.enabled }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.persistence.ssh_keys.claimName }}
+  labels:
+    app: "{{ template "zabbix-server-mysql.fullname" . }}"
+    chart: "{{ template "zabbix.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.ssh_keys.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.ssh_keys.size | quote }}
+  {{ include "zabbix.storageClass" . }}
+{{- end -}}
+{{- if .Values.persistence.ssl.certs.enabled }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.persistence.ssl.certs.claimName }}
+  labels:
+    app: "{{ template "zabbix-server-mysql.fullname" . }}"
+    chart: "{{ template "zabbix.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.ssl.certs.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.ssl.certs.size | quote }}
+  {{ include "zabbix.storageClass" . }}
+{{- end -}}
+{{- if .Values.persistence.ssl.keys.enabled }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.persistence.ssl.keys.claimName }}
+  labels:
+    app: "{{ template "zabbix-server-mysql.fullname" . }}"
+    chart: "{{ template "zabbix.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.ssl.keys.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.ssl.keys.size | quote }}
+  {{ include "zabbix.storageClass" . }}
+{{- end -}}
+{{- if .Values.persistence.ssl.ssl_ca.enabled }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.persistence.ssl.ssl_ca.claimName }}
+  labels:
+    app: "{{ template "zabbix-server-mysql.fullname" . }}"
+    chart: "{{ template "zabbix.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.ssl.ssl_ca.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.ssl.ssl_ca.size | quote }}
+  {{ include "zabbix.storageClass" . }}
+{{- end -}}
+{{- if .Values.persistence.userscripts.enabled }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.persistence.userscripts.claimName }}
+  labels:
+    app: "{{ template "zabbix-server-mysql.fullname" . }}"
+    chart: "{{ template "zabbix.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.userscripts.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.userscripts.size | quote }}
+  {{ include "zabbix.storageClass" . }}
+{{- end -}}

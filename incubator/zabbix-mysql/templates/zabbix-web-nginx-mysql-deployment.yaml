@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "zabbix-web-nginx-mysql.fullname" . }}
+  labels:
+    app: "{{ template "zabbix-web-nginx-mysql.fullname" . }}"
+    chart: "{{ template "zabbix.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  selector:
+    matchLabels:
+      app: "{{ template "zabbix-web-nginx-mysql.fullname" . }}"
+      release: {{ .Release.Name | quote }}
+  {{- if .Values.updateStrategy }}
+  strategy: {{ toYaml .Values.updateStrategy.zabbix_web_nginx_mysql | nindent 4 }}
+  {{- end }}
+  replicas: {{ .Values.replicaCount.zabbix_web_nginx_mysql }}
+  template:
+    metadata:
+      labels:
+        app: "{{ template "zabbix-web-nginx-mysql.fullname" . }}"
+        chart: "{{ template "zabbix.chart" . }}"
+        release: {{ .Release.Name | quote }}
+{{- if or .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
+    spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
+      containers:
+      - name: zabbix-web-nginx-mysql
+        image: {{ template "zabbix_web_nginx_mysql.image" . }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        env:
+        - name: DB_SERVER_HOST
+          value: {{ template "mariadb.fullname" . }}
+        - name: DB_SERVER_PORT
+          value: "3306"
+        - name: MYSQL_DATABASE
+          value: {{ .Values.mariadb.db.name | quote }}
+        - name: MYSQL_USER
+          value: {{ .Values.mariadb.db.user | quote }}
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "mariadb.fullname" . }}
+              key: mariadb-password
+        - name: ZBX_SERVER_HOST
+          vale: {{ template "zabbix-server-mysql.fullname" . }}
+        - name: ZBX_SERVER_NAME
+          value: {{ .Values.zabbix_vars.zbx_server_name }}
+        ports:
+        - name: http
+          containerPort: 80
+        livenessProbe:
+          httpGet:
+            path: /index.php
+            port: 80
+            scheme: HTTP
+{{ toYaml .Values.zabbix_web_nginx.livenessProbe | indent 10 }}
+        readinessProbe:
+          httpGet:
+            path: /index.php
+            port: 80
+            scheme: HTTP
+{{ toYaml .Values.zabbix_web_nginx.readinessProbe | indent 10 }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

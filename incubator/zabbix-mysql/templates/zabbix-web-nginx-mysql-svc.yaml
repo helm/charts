@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "zabbix-web-nginx-mysql.fullname" . }}
+  labels:
+    app: "{{ template "zabbix-web-nginx-mysql.fullname" . }}"
+    chart: "{{ template "zabbix.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+  annotations:
+{{- if .Values.service.zabbix_web_nginx_mysql.annotations }}
+{{ toYaml .Values.service.zabbix_web_nginx_mysql.annotations | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.service.zabbix_web_nginx_mysql.type }}
+  {{- if eq .Values.service.zabbix_web_nginx_mysql.type "LoadBalancer" }}
+  externalTrafficPolicy: {{ .Values.service.zabbix_web_nginx_mysql.externalTrafficPolicy | quote }}
+  {{- end }}
+  ports:
+    - name:
+      port: {{ .Values.service.zabbix_web_nginx_mysql.port }}
+      targetPort: http
+      nodePort: null
+  selector:
+    app: "{{ template "zabbix-web-nginx-mysql.fullname" . }}"

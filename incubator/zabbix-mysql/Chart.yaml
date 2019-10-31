@@ -1,0 +1,20 @@
+apiVersion: v1
+name: zabbix-mysql
+version: 0.0.1
+appVersion: 0.0.1
+description: Zabbix monitoring server
+icon: https://cdn.lo4d.com/t/icon/70/zabbix.png
+keywords:
+- zabbix
+- zabbix-server
+- zabbix-server-mysql
+- monitoring
+- application
+- php
+home: https://www.zabbix.com/
+sources:
+- https://github.com/elmanytas/zabbix-chart
+maintainers:
+- name: elmanytas
+  email: elmanytas@gmail.com
+engine: gotpl
