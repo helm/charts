@@ -16,7 +16,7 @@ data:
 
     ready: |
       #!/bin/sh
-      echo ruok | nc 127.0.0.1 ${1:-2181}
+      zkServer.sh status
 
     run: |
       #!/bin/bash
