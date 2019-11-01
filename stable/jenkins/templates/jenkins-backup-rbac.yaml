@@ -1,20 +1,54 @@
-{{- if .Values.backup.enabled }}
-apiVersion: v1
-kind: ServiceAccount
+{{ if .Values.rbac.create }}
+{{- $serviceName := include "jenkins.fullname" . -}}
+
+# This role is used to allow Jenkins scheduling of agents via Kubernetes plugin.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
 metadata:
-  name: {{ template "jenkins.fullname" . }}-backup
-  namespace: {{ template "jenkins.namespace" . }}
+  name: {{ $serviceName }}-schedule-agents
+  namespace: {{ template "jenkins.master.slaveKubernetesNamespace" . }}
   labels:
     "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
     "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
     "app.kubernetes.io/managed-by": "{{ .Release.Service }}"
     "app.kubernetes.io/instance": "{{ .Release.Name }}"
     "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
+rules:
+{{ .Values.rbac.rules | toYaml }}
+
 ---
+
+# We bind the role to the Jenkins service account. The role binding is created in the namespace
+# where the agents are supposed to run.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ $serviceName }}-schedule-agents
+  namespace: {{ template "jenkins.master.slaveKubernetesNamespace" . }}
+  labels:
+    "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+    "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    "app.kubernetes.io/managed-by": "{{ .Release.Service }}"
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
+    "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ $serviceName }}-schedule-agents
+subjects:
+- kind: ServiceAccount
+  name: {{ template "jenkins.serviceAccountName" .}}
+  namespace: {{ template "jenkins.namespace" . }}
+
+---
+
+{{- if .Values.master.sidecars.configAutoReload.enabled }}
+# The sidecar container which is responsible for reloading configuration changes
+# needs permissions to watch ConfigMaps
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: {{ template "jenkins.fullname" . }}-backup
+  name: {{ template "jenkins.fullname" . }}-casc-reload
   namespace: {{ template "jenkins.namespace" . }}
   labels:
     "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
@@ -24,16 +58,15 @@ metadata:
     "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
 rules:
 - apiGroups: [""]
-  resources: ["pods", "pods/log"]
-  verbs: ["get", "list"]
-- apiGroups: [""]
-  resources: ["pods/exec"]
-  verbs: ["create"]
+  resources: ["configmaps"]
+  verbs: ["get", "watch", "list"]
+
 ---
+
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: {{ template "jenkins.fullname" . }}-backup
+  name: {{ $serviceName }}-watch-configmaps
   namespace: {{ template "jenkins.namespace" . }}
   labels:
     "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
@@ -44,9 +77,12 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: {{ template "jenkins.fullname" . }}-backup
+  name: {{ template "jenkins.fullname" . }}-casc-reload
 subjects:
 - kind: ServiceAccount
-  name: {{ template "jenkins.fullname" . }}-backup
+  name: {{ template "jenkins.serviceAccountName" . }}
   namespace: {{ template "jenkins.namespace" . }}
-{{- end }}
+
+{{- end}}
+
+{{ end }}
