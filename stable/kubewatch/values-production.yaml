@@ -41,16 +41,16 @@ resourcesToWatch:
   deployment: true
   replicationcontroller: false
   replicaset: false
-  daemonset: false
-  services: false
+  daemonset: true
+  services: true
   pod: true
-  job: false
-  persistentvolume: false
-  ingress: false
+  job: true
+  persistentvolume: true
+  ingress: true
   # resourcesToWatch.namespace tell kubewatch catch changes in create/reconfigure namespaces (as object)
-  namespace: false
-  secret: false
-  configmap: false
+  namespace: true
+  secret: true
+  configmap: true
 
 image:
   registry: "docker.io"
