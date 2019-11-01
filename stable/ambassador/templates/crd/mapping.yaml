@@ -10,11 +10,9 @@ metadata:
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+    service: ambassador
   annotations:
     "helm.sh/hook": crd-install
-  {{ if .Values.crds.keep }}
-    "helm.sh/resource-policy": keep
-  {{ end }}
 spec:
   group: getambassador.io
   version: v1
