@@ -167,10 +167,9 @@ spec:
         - mountPath: /bitnami/wordpress
           name: wordpress-data
           subPath: wordpress
-        {{- if and .Values.allowOverrideNone .Values.customHTAccessCM}}
-        - mountPath: /opt/bitnami/wordpress/wordpress-htaccess.conf
+        {{- if and .Values.allowOverrideNone .Values.customHTAccessCM }}
+        - mountPath: /htaccess
           name: custom-htaccess
-          subPath: wordpress-htaccess.conf
         {{- end }}
         {{- with .Values.extraVolumeMounts }}
 {{ toYaml . | indent 8 }}
@@ -204,11 +203,14 @@ spec:
 {{ toYaml .Values.sidecars | indent 6 }}
 {{- end }}
       volumes:
-      {{- if and .Values.allowOverrideNone .Values.customHTAccessCM}}
+      {{- if and .Values.allowOverrideNone .Values.customHTAccessCM }}
       - name: custom-htaccess
         configMap:
           name: {{ template "wordpress.customHTAccessCM" . }}
       {{- end }}
+          items:
+            - key: wordpress-htaccess.conf
+              path: wordpress-htaccess.conf
       - name: wordpress-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
