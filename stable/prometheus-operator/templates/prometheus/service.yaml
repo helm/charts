@@ -8,6 +8,7 @@ metadata:
     app: {{ template "prometheus-operator.name" . }}-prometheus
     self-monitor: {{ .Values.prometheus.serviceMonitor.selfMonitor | quote }}
 {{ include "prometheus-operator.labels" . | indent 4 }}
+{{- if .Values.prometheus.service.labels }}
 {{- if .Values.prometheus.service.annotations }}
   annotations:
 {{ toYaml .Values.prometheus.service.annotations | indent 4 }}
