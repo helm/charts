@@ -1,6 +1,6 @@
 {{- if (or (.Values.sumologic.collectorUrlExistingSecret) (.Values.sumologic.collectorUrl)) -}}
 # Sumologic collector URL is required
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ template "sumologic-fluentd.fullname" . }}
@@ -10,6 +10,10 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "sumologic-fluentd.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       name: {{ template "sumologic-fluentd.fullname" . }}
