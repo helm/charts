@@ -20,6 +20,8 @@ rules:
     - replicasets
     - daemonsets
     - persistentvolumes
+    - secrets
+    - configmaps
     verbs:
     - list
     - watch
