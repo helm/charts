@@ -11,8 +11,13 @@ name: prometheus-operator
 sources:
   - https://github.com/coreos/prometheus-operator
   - https://coreos.com/operators/prometheus
+<<<<<<< HEAD
 version: 7.4.0
 appVersion: 0.34.0
+=======
+version: 8.0.0
+appVersion: 0.32.0
+>>>>>>> Hypthetical chart version
 tillerVersion: ">=2.12.0"
 home: https://github.com/coreos/prometheus-operator
 keywords:
