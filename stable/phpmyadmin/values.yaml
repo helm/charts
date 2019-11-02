@@ -39,16 +39,44 @@ service:
   port: 80
 
 db:
-  ## using default mysql port explicitly
+  ## Database port
+  ##
   port: 3306
-  ## if you are deploying it as part of a release, and the db is also in the release
-  ## you can pass a suffix that will be used to find the DB in releasename-dbSuffix
-  ## please note that this setting precedes dbHost
+
+  ## If you are deploying phpMyAdmin as part of a release and the database is part
+  ## of the release, you can pass a suffix that will be used to find the database
+  ## in releasename-dbSuffix. Please note that this setting precedes db.host
+  ##
   # chartName: mariadb
+
+  ## Database Hostname. Ignored when db.chartName is set.
+  ##
   # host: foo
+
   ## If you want to test phpMyAdmin, you can set it to bundle a MariaDB
   ## instance
+  ##
   bundleTestDB: false
+
+  ## Whether to enable SSL for the connection between phpMyAdmin and the MySQL server to secure the connection
+  ##
+  enableSsl: false
+  ssl:
+    ## Client key file when using SSL
+    ##
+    clientKey: |-
+    ## Client certificate file when using SSL
+    ##
+    clientCertificate: |-
+    ## CA file when using SSL
+    ##
+    caCertificate: |-
+    ## List of allowable ciphers for connections when using SSL
+    ##
+    # ciphers:
+    ## Enable SSL certificate validation
+    ##
+    verify: true
 
 ingress:
   ## Set to true to enable ingress record generation
