@@ -182,13 +182,16 @@ alertmanager:
     labels: {}
     clusterIP: ""
 
-  ## Port to expose on each node
-  ## Only used if service.type is 'NodePort'
-  ##
+    ## Port for Alertmanager Service to listen on
+    ##
+    port: 9093
+    ## Port to expose on each node
+    ## Only used if service.type is 'NodePort'
+    ##
     nodePort: 30903
-  ## List of IP addresses at which the Prometheus server service is available
-  ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
-  ##
+    ## List of IP addresses at which the Prometheus server service is available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
     externalIPs: []
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
@@ -1025,9 +1028,6 @@ prometheusOperator:
   ##
   createCustomResource: true
 
-  ## Customize CRDs API Group
-  crdApiGroup: monitoring.coreos.com
-
   ## Attempt to clean up CRDs created by Prometheus Operator.
   ##
   cleanupCustomResource: false
@@ -1128,7 +1128,7 @@ prometheusOperator:
   ##
   image:
     repository: quay.io/coreos/prometheus-operator
-    tag: v0.32.0
+    tag: v0.34.0
     pullPolicy: IfNotPresent
 
   ## Configmap-reload image to use for reloading configmaps
@@ -1141,7 +1141,7 @@ prometheusOperator:
   ##
   prometheusConfigReloaderImage:
     repository: quay.io/coreos/prometheus-config-reloader
-    tag: v0.32.0
+    tag: v0.34.0
 
   ## Set the prometheus config reloader side-car CPU limit
   ##
@@ -1182,6 +1182,9 @@ prometheus:
     labels: {}
     clusterIP: ""
 
+    ## Port for Prometheus Service to listen on
+    ##
+    port: 9090
 
     ## To be used with a proxy extraContainer port
     targetPort: 9090
@@ -1211,6 +1214,10 @@ prometheus:
   servicePerReplica:
     enabled: false
     annotations: {}
+
+    ## Port for Prometheus Service per replica to listen on
+    ##
+    port: 9090
 
     ## To be used with a proxy extraContainer port
     targetPort: 9090
@@ -1299,6 +1306,8 @@ prometheus:
     interval: ""
     selfMonitor: true
 
+    bearerTokenFile:
+
     ## 	metric relabel configs to apply to samples before ingestion.
     ##
     metricRelabelings: []
@@ -1343,7 +1352,7 @@ prometheus:
     ##
     image:
       repository: quay.io/prometheus/prometheus
-      tag: v2.12.0
+      tag: v2.13.1
 
     ## Tolerations for use with node taints
     ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/

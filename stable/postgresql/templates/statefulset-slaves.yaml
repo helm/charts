@@ -75,7 +75,7 @@ spec:
           resources: {{- toYaml .Values.resources | nindent 12 }}
           {{- end }}
           command:
-            - sh
+            - /bin/sh
             - -c
             - |
               mkdir -p {{ .Values.persistence.mountPath }}/data
@@ -148,7 +148,7 @@ spec:
           livenessProbe:
             exec:
               command:
-                - sh
+                - /bin/sh
                 - -c
                 {{- if (include "postgresql.database" .) }}
                 - exec pg_isready -U {{ include "postgresql.username" . | quote }} -d {{ (include "postgresql.database" .) | quote }} -h 127.0.0.1 -p {{ template "postgresql.port" . }}
@@ -165,7 +165,7 @@ spec:
           readinessProbe:
             exec:
               command:
-                - sh
+                - /bin/sh
                 - -c
                 - -e
                 {{- include "postgresql.readinessProbeCommand" . | nindent 16 }}
