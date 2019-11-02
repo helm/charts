@@ -6,6 +6,8 @@ replicaCount: 1
 
 strategyType: RollingUpdate
 
+serviceAccountName: default
+
 image:
   repository: minddocdev/hubot
   tag: 3.3.2
