@@ -169,6 +169,10 @@ config:
     alwaysShowLoginScreen: false
     skipApprovalScreen: true
 
+  expiry:
+    signingKeys: "6h"
+    idTokens: "168h"
+
 #  staticClients:
 #  - id: example-app
 #    redirectURIs:
@@ -186,3 +190,4 @@ config:
 
 # frontend:
 #   logoURL: https://example.com/yourlogo.png
+
