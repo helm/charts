@@ -30,6 +30,7 @@ spec:
         app.kubernetes.io/name: {{ include "hubot.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ .Values.serviceAccountName }}
       initContainers:
         {{- if .Values.redis.enabled }}
         - name: wait-for-redis
