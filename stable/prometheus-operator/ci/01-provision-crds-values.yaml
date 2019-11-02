@@ -29,8 +29,14 @@ defaultRules:
 # Default configuration of prometheus operator will create CRDs in the cluster idempotently
 prometheusOperator:
   enabled: true
+  serviceMonitor:
+    selfMonitor: false
   createCustomResource: false
   tlsProxy:
     enabled: false
   admissionWebhooks:
     enabled: false
+  namespaces:
+    releaseNamespace: true
+    additional:
+      - kube-system

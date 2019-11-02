@@ -46,6 +46,13 @@ spec:
           {{- if .Values.prometheusOperator.denyNamespaces }}
             - --deny-namespaces={{ .Values.prometheusOperator.denyNamespaces | join "," }}
           {{- end }}
+          {{- with $.Values.prometheusOperator.namespaces }}
+          {{ $ns := .additional }}
+          {{- if .releaseNamespace }}
+          {{- $ns = append $ns $.Release.Namespace }}
+          {{- end }}
+            - --namespaces={{ $ns | join "," }}
+          {{- end }}
             - --logtostderr=true
             - --localhost=127.0.0.1
             - --prometheus-config-reloader={{ .Values.prometheusOperator.prometheusConfigReloaderImage.repository }}:{{ .Values.prometheusOperator.prometheusConfigReloaderImage.tag }}
