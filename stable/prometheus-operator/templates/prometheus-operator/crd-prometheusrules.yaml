@@ -5,7 +5,6 @@ kind: CustomResourceDefinition
 metadata:
   creationTimestamp: null
   name: prometheusrules.monitoring.coreos.com
-  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-operator
 {{ include "prometheus-operator.labels" . | indent 4 }}

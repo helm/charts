@@ -3,7 +3,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-alertmanager
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ $.Release.Namespace }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-alertmanager
 {{ include "prometheus-operator.labels" . | indent 4 }}
@@ -11,10 +11,10 @@ spec:
   selector:
     matchLabels:
       app: {{ template "prometheus-operator.name" . }}-alertmanager
-      release: {{ .Release.Name | quote }}
+      release: {{ $.Release.Name | quote }}
   namespaceSelector:
     matchNames:
-      - {{ .Release.Namespace | quote }}
+      - {{ $.Release.Namespace | quote }}
   endpoints:
   - port: web
     {{- if .Values.alertmanager.serviceMonitor.interval }}

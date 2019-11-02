@@ -3,7 +3,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-prometheus
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ $.Release.Namespace }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-prometheus
 {{ include "prometheus-operator.labels" . | indent 4 }}
@@ -11,11 +11,11 @@ spec:
   selector:
     matchLabels:
       app: {{ template "prometheus-operator.name" . }}-prometheus
-      release: {{ .Release.Name | quote }}
+      release: {{ $.Release.Name | quote }}
       self-monitor: "true"
   namespaceSelector:
     matchNames:
-      - {{ .Release.Namespace | quote }}
+      - {{ $.Release.Namespace | quote }}
   endpoints:
   - port: web
     {{- if .Values.prometheus.serviceMonitor.interval }}
