@@ -342,6 +342,9 @@ podDisruptionBudget:
   enabled: false
   maxUnavailable: "50%"
 
+podSecurityPolicy:
+  enabled: false
+
 # Kong has a choice of either Postgres or Cassandra as a backend datatstore.
 # This chart allows you to choose either of them with the `database.type`
 # parameter.  Postgres is chosen by default.
@@ -451,7 +454,6 @@ dblessConfig:
 # - kong-proxy-tls
 # - kong-admin-tls
 secretVolumes: []
-
 
 serviceMonitor:
   # Specifies whether ServiceMonitor for Prometheus operator should be created
