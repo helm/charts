@@ -6,7 +6,7 @@ apiVersion: extensions/v1beta1
 kind: IngressList
 metadata:
   name: {{ include "prometheus-operator.fullname" $ }}-prometheus-ingressperreplica
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ $.Release.Namespace }}
 items:
 {{ range $i, $e := until $count }}
   - apiVersion: extensions/v1beta1

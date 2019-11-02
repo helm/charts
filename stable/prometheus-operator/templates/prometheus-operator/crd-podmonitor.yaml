@@ -4,15 +4,14 @@ apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
   creationTimestamp: null
-  name: {{ printf "podmonitors.%s" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
-  namespace: {{ .Release.Namespace }}
+  name: podmonitors.monitoring.coreos.com
   labels:
     app: {{ template "prometheus-operator.name" . }}-operator
 {{ include "prometheus-operator.labels" . | indent 4 }}
   annotations:
     "helm.sh/hook": crd-install
 spec:
-  group: {{ .Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com" }}
+  group: monitoring.coreos.com
   names:
     kind: PodMonitor
     plural: podmonitors
