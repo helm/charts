@@ -1028,9 +1028,6 @@ prometheusOperator:
   ##
   createCustomResource: true
 
-  ## Customize CRDs API Group
-  crdApiGroup: monitoring.coreos.com
-
   ## Attempt to clean up CRDs created by Prometheus Operator.
   ##
   cleanupCustomResource: false

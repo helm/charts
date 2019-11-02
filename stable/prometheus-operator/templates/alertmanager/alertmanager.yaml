@@ -1,5 +1,5 @@
 {{- if .Values.alertmanager.enabled }}
-apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
+apiVersion: monitoring.coreos.com/v1
 kind: Alertmanager
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-alertmanager

@@ -1,5 +1,5 @@
 {{- if .Values.prometheus.enabled }}
-apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
+apiVersion: monitoring.coreos.com/v1
 kind: Prometheus
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-prometheus
@@ -37,7 +37,7 @@ spec:
 {{- if .Values.prometheus.prometheusSpec.prometheusExternalLabelNameClear }}
   prometheusExternalLabelName: ""
 {{- else if .Values.prometheus.prometheusSpec.prometheusExternalLabelName }}
-  prometheusExternalLabelName: "{{ .Values.prometheus.prometheusSpec.prometheusExternalLabelName }}"  
+  prometheusExternalLabelName: "{{ .Values.prometheus.prometheusSpec.prometheusExternalLabelName }}"
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.replicaExternalLabelNameClear }}
   replicaExternalLabelName: ""

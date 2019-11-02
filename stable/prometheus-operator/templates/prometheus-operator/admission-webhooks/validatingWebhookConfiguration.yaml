@@ -16,7 +16,7 @@ webhooks:
     {{- end }}
     rules:
       - apiGroups:
-          - {{ .Values.prometheusOperator.crdApiGroup }}
+          - monitoring.coreos.com
         apiVersions:
           - "*"
         resources:
