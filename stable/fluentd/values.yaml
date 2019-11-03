@@ -34,6 +34,7 @@ plugins:
 service:
   annotations: {}
   type: ClusterIP
+  # loadBalancerIP:
   # type: NodePort
   # nodePort:
   # Used to create Service records
