@@ -71,6 +71,7 @@ Parameter | Description | Default
 `serviceAccount.create` | Specifies whether a service account should be created. | `true`
 `serviceAccount.name` | Name of the service account.
 `priorityClassName` | priorityClassName | `nil`
+`service.loadBalancerIP` | If `service.type` is `LoadBalancer` set custom IP load balancer IP address | `nil`
 `service.ports` | port definition for the service | See [values.yaml](values.yaml)
 `service.type` | type of service | `ClusterIP`
 `service.annotations` | list of annotations for the service | `{}`
