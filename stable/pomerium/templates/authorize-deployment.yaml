@@ -82,6 +82,10 @@ spec:
               name:  {{ template "pomerium.caSecret.name" . }}
               key:  {{ template "pomerium.caSecret.certName" . }}
 {{- else }}
+        - name: CERTIFICATE_FILE
+          value: "/pomerium/cert.pem"
+        - name: CERTIFICATE_KEY_FILE
+          value: "/pomerium/privkey.pem"
         - name: CERTIFICATE_AUTHORITY_FILE
           value: "/pomerium/ca.pem"
 {{- end }}
@@ -97,15 +101,12 @@ spec:
             name: metrics
             protocol: TCP
         livenessProbe:
-          httpGet:
-            path: /ping
+          tcpSocket:
             port: https
-            scheme: HTTPS
+          initialDelaySeconds: 15
         readinessProbe:
-          httpGet:
-            path: /ping
+          tcpSocket:
             port: https
-            scheme: HTTPS
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:

@@ -18,6 +18,7 @@ spec:
         release: "{{ .Release.Name }}"
         component: init-migrations
     spec:
+      serviceAccountName: {{ template "kong.serviceAccountName" . }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range .Values.image.pullSecrets }}
@@ -45,6 +46,10 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
+        - name: KONG_PLUGINS
+          value: {{ template "kong.plugins" . }}
+        - name: KONG_LUA_PACKAGE_PATH
+          value: "/opt/?.lua;;"
         - name: KONG_NGINX_DAEMON
           value: "off"
         {{- if .Values.enterprise.enabled }}
@@ -67,5 +72,9 @@ spec:
         {{- end }}
         {{- include "kong.env" .  | indent 8 }}
         command: [ "/bin/sh", "-c", "kong migrations bootstrap" ]
+        volumeMounts:
+        {{- include "kong.volumeMounts" . | nindent 8 }}
       restartPolicy: OnFailure
+      volumes:
+      {{- include "kong.volumes" . | nindent 6 -}}
 {{- end }}

@@ -136,6 +136,9 @@ data:
           <serverUrl>https://kubernetes.default</serverUrl>
           <skipTlsVerify>false</skipTlsVerify>
           <namespace>{{ template "jenkins.master.slaveKubernetesNamespace" . }}</namespace>
+{{- if semverCompare ">=1.20.2" (include "jenkins.kubernetes-version" . ) }}
+          <directConnection>false</directConnection>
+{{- end }}
 {{- if .Values.master.slaveKubernetesNamespace }}
           <jenkinsUrl>http://{{ template "jenkins.fullname" . }}.{{ template "jenkins.namespace" . }}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</jenkinsUrl>
           <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent.{{ template "jenkins.namespace" . }}:{{ .Values.master.slaveListenerPort }}</jenkinsTunnel>
@@ -236,6 +239,12 @@ data:
   {{- end }}
   {{- end }}
 {{- end }}
+{{- else }}
+{{- if .Values.master.JCasC.enabled }}
+    # Prevent Setup Wizard when JCasC is enabled
+    echo $JENKINS_VERSION > /var/jenkins_home/jenkins.install.UpgradeWizard.state
+    echo $JENKINS_VERSION > /var/jenkins_home/jenkins.install.InstallUtil.lastExecVersion
+{{- end }}
 {{- end }}
 {{- if .Values.master.overwritePlugins }}
     # remove all plugins from shared volume
@@ -298,7 +307,7 @@ data:
     import jenkins.security.*
     import hudson.model.User
     import jenkins.model.Jenkins
-    User user = User.get("{{ .Values.master.adminUser | default "admin" }}", false)
+    User user = User.getOrCreateByIdOrFullName("{{ .Values.master.adminUser | default "admin" }}")
     if (user == null) {
       System.err.println("ERROR: user '{{ .Values.master.adminUser | default "admin" }}' not found! Can't configure SSH key which is needed to reload JCasC config!")
     } else {

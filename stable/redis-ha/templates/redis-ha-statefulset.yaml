@@ -121,7 +121,7 @@ spec:
         args:
         - /readonly-config/init.sh
         env:
-{{- $replicas := int .Values.replicas -}}
+{{- $replicas := int (toString .Values.replicas) -}}
 {{- range $i := until $replicas }}
         - name: SENTINEL_ID_{{ $i }}
           value: {{ printf "%s\n%s\nindex: %d" (include "redis-ha.name" $) ($.Release.Name) $i | sha1sum }}

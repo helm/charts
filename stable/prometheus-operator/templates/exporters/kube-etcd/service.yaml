@@ -3,6 +3,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-kube-etcd
+  namespace: {{ $.Release.Namespace }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-kube-etcd
     jobLabel: kube-etcd

@@ -40,8 +40,8 @@ admin:
     enabled: false
     # TLS secret name.
     # tls: kong-admin.example.com-tls
-    # Array of ingress hosts.
-    hosts: []
+    # Ingress hostname
+    hostname:
     # Map of ingress annotations.
     annotations: {}
     # Ingress path.
@@ -77,10 +77,15 @@ proxy:
   ingress:
     # Enable/disable exposure using ingress.
     enabled: false
-    # TLS secret name.
-    # tls: kong-proxy.example.com-tls
-    # Array of ingress hosts.
     hosts: []
+    # TLS section. Unlike other ingresses, this follows the format at
+    # https://kubernetes.io/docs/concepts/services-networking/ingress/#tls
+    # tls:
+    #   hosts:
+    #     - example.com
+    #     secretName: example-com-tls-secret
+    #     - example.net
+    #     secretName: example-net-tls-secret
     # Map of ingress annotations.
     annotations: {}
     # Ingress path.
@@ -117,8 +122,8 @@ manager:
     enabled: false
     # TLS secret name.
     # tls: kong-proxy.example.com-tls
-    # Array of ingress hosts.
-    hosts: []
+    # Ingress hostname
+    hostname:
     # Map of ingress annotations.
     annotations: {}
     # Ingress path.
@@ -155,8 +160,8 @@ portal:
     enabled: false
     # TLS secret name.
     # tls: kong-proxy.example.com-tls
-    # Array of ingress hosts.
-    hosts: []
+    # Ingress hostname
+    hostname:
     # Map of ingress annotations.
     annotations: {}
     # Ingress path.
@@ -193,8 +198,8 @@ portalapi:
     enabled: false
     # TLS secret name.
     # tls: kong-proxy.example.com-tls
-    # Array of ingress hosts.
-    hosts: []
+    # Ingress hostname
+    hostname:
     # Map of ingress annotations.
     annotations: {}
     # Ingress path.
@@ -268,6 +273,7 @@ updateStrategy: {}
 # is set below. In general, you should not set values here if they are set elsewhere.
 env:
   database: postgres
+  nginx_worker_processes: "1"
   proxy_access_log: /dev/stdout
   admin_access_log: /dev/stdout
   admin_gui_access_log: /dev/stdout
@@ -292,9 +298,9 @@ resources: {}
 readinessProbe:
   httpGet:
     path: "/status"
-    port: admin
-    scheme: HTTPS
-  initialDelaySeconds: 30
+    port: metrics
+    scheme: HTTP
+  initialDelaySeconds: 10
   timeoutSeconds: 1
   periodSeconds: 10
   successThreshold: 1
@@ -305,9 +311,9 @@ readinessProbe:
 livenessProbe:
   httpGet:
     path: "/status"
-    port: admin
-    scheme: HTTPS
-  initialDelaySeconds: 30
+    port: metrics
+    scheme: HTTP
+  initialDelaySeconds: 10
   timeoutSeconds: 5
   periodSeconds: 30
   successThreshold: 1
@@ -336,6 +342,9 @@ podDisruptionBudget:
   enabled: false
   maxUnavailable: "50%"
 
+podSecurityPolicy:
+  enabled: false
+
 # Kong has a choice of either Postgres or Cassandra as a backend datatstore.
 # This chart allows you to choose either of them with the `database.type`
 # parameter.  Postgres is chosen by default.
@@ -358,6 +367,20 @@ postgresql:
   service:
     port: 5432
 
+# Custom Kong plugins can be loaded into Kong by mounting the plugin code
+# into the file-system of Kong container.
+# The plugin code should be present in ConfigMap or Secret inside the same
+# namespace as Kong is being installed.
+# The `name` property refers to the name of the ConfigMap or Secret
+# itself, while the pluginName refers to the name of the plugin as it appears
+# in Kong.
+plugins: {}
+  # configMaps:
+  # - pluginName: rewriter
+  #   name: kong-plugin-rewriter
+  # secrets:
+  # - pluginName: rewriter
+  #   name: kong-plugin-rewriter
 # Kong Ingress Controller's primary purpose is to satisfy Ingress resources
 # created in k8s.  It uses CRDs for more fine grained control over routing and
 # for Kong specific configuration.
@@ -373,7 +396,7 @@ ingressController:
       path: "/healthz"
       port: 10254
       scheme: HTTP
-    initialDelaySeconds: 30
+    initialDelaySeconds: 10
     periodSeconds: 10
     successThreshold: 1
     timeoutSeconds: 5
@@ -383,10 +406,11 @@ ingressController:
       path: "/healthz"
       port: 10254
       scheme: HTTP
-      initialDelaySeconds: 30
+    initialDelaySeconds: 10
     periodSeconds: 10
     successThreshold: 1
     timeoutSeconds: 5
+  resources: {}
 
   installCRDs: true
 
@@ -431,10 +455,11 @@ dblessConfig:
 # - kong-admin-tls
 secretVolumes: []
 
-
 serviceMonitor:
   # Specifies whether ServiceMonitor for Prometheus operator should be created
   enabled: false
   # interval: 10s
   # Specifies namespace, where ServiceMonitor should be installed
   # namespace: monitoring
+  # labels:
+  #   foo: bar

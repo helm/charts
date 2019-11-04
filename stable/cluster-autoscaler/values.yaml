@@ -53,7 +53,7 @@ cloudConfigPath: /etc/gce.conf
 
 image:
   repository: k8s.gcr.io/cluster-autoscaler
-  tag: v1.14.5
+  tag: v1.14.6
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -103,9 +103,6 @@ nodeSelector: {}
 podAnnotations: {}
 podLabels: {}
 replicaCount: 1
-
-deployment:
-  apiVersion: "extensions/v1beta1"
 
 rbac:
   ## If true, create & use RBAC resources

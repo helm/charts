@@ -1,5 +1,5 @@
 {{- if .Values.sysdig.accessKey }}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ template "sysdig.fullname" . }}
@@ -9,12 +9,14 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "sysdig.fullname" .}}
   template:
     metadata:
       name: {{ template "sysdig.fullname" .}}
       labels:
         app: {{ template "sysdig.fullname" .}}
-        role: monitoring
     spec:
       serviceAccountName: {{ template "sysdig.serviceAccountName" .}}
 {{- if .Values.priorityClassName }}
