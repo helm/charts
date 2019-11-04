@@ -2,7 +2,7 @@ halyard:
   spinnakerVersion: 1.16.1
   image:
     repository: gcr.io/spinnaker-marketplace/halyard
-    tag: 1.23.2
+    tag: 1.26.0
     pullSecrets: []
   # Set to false to disable persistence data volume for halyard
   persistence:
@@ -228,6 +228,7 @@ ingressGate:
 #   - pipeline-templates
 spinnakerFeatureFlags:
   - artifacts
+  # - jobs
 
 # Node labels for pod assignment
 # Ref: https://kubernetes.io/docs/user-guide/node-selection/
