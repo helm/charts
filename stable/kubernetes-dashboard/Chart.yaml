@@ -15,3 +15,4 @@ maintainers:
 - name: desaintmartin
   email: cdesaintmartin@wiremind.fr
 icon: https://raw.githubusercontent.com/kubernetes/kubernetes/master/logo/logo.svg
+kubeVersion: ">=1.10.0-0"
