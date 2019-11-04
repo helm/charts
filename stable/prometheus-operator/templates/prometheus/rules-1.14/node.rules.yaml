@@ -34,4 +34,9 @@ spec:
       record: node:node_num_cpu:sum
     - expr: sum(node_memory_MemFree_bytes{job="node-exporter"} + node_memory_Cached_bytes{job="node-exporter"} + node_memory_Buffers_bytes{job="node-exporter"})
       record: :node_memory_MemFreeCachedBuffers_bytes:sum
+    - expr: |
+        sum by (namespace, pod, container) (
+          rate(container_cpu_usage_seconds_total{job="kubelet", image!="", container!="POD"}[5m])
+        ) * on (namespace, pod) group_left(node) max by(namespace, pod, node) (kube_pod_info)
+      record: node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate
 {{- end }}
