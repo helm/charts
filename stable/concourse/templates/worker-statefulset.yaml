@@ -1,5 +1,5 @@
 {{- if .Values.worker.enabled -}}
-apiVersion: apps/v1beta1
+apiVersion: {{ template "concourse.statefulset.apiVersion" . }}
 kind: StatefulSet
 metadata:
   name: {{ template "concourse.worker.fullname" . }}
@@ -11,6 +11,10 @@ metadata:
 spec:
   serviceName: {{ template "concourse.worker.fullname" . }}
   replicas: {{ .Values.worker.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "concourse.worker.fullname" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:

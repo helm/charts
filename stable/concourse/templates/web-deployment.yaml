@@ -1,5 +1,5 @@
 {{- if .Values.web.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "concourse.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "concourse.web.fullname" . }}
@@ -13,6 +13,10 @@ spec:
 {{- if .Values.web.strategy }}
 {{ toYaml .Values.web.strategy | indent 2 }}
 {{- end }}
+  selector:
+    matchLabels:
+      app: {{ template "concourse.web.fullname" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:

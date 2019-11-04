@@ -3,7 +3,7 @@
 {{- $releaseName := .Release.Name -}}
 {{- $serviceName := default "web" .Values.web.nameOverride -}}
 {{- $servicePort := .Values.concourse.web.bindPort -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "concourse.ingress.apiVersion" . }}
 kind: Ingress
 metadata:
   name: {{ template "concourse.web.fullname" . }}
