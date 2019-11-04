@@ -1,3 +1,5 @@
+### 1.19.0
+* [e6bb744](https://github.com/kubernetes/charts/commit/e6bb744): Bump up GoCD Version to 19.10.0
 ### 1.18.2
 * [f8cf63789](https://github.com/kubernetes/charts/commit/f8cf63789): Add information about adding plugins
 
