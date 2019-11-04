@@ -28,7 +28,8 @@ spec:
         #  - containerPort: 8125
         #    hostPort: 8125
         #    protocol: UDP
-
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
         # Please don't change below envs
         env:
           - name: HOST_IP
