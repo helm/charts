@@ -29,15 +29,13 @@ charts = [
         'source': 'https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/grafana-dashboardDefinitions.yaml',
         'destination': '../templates/grafana/dashboards-1.14',
         'type': 'yaml',
-        'min_kubernetes': '1.14.0-0',
-        'max_kubernetes': '1.16.0-0'
+        'min_kubernetes': '1.14.0-0'
     },
     {
         'source': 'https://raw.githubusercontent.com/etcd-io/etcd/master/Documentation/op-guide/grafana.json',
         'destination': '../templates/grafana/dashboards-1.14',
         'type': 'json',
-        'min_kubernetes': '1.14.0-0',
-        'max_kubernetes': '1.16.0-0'
+        'min_kubernetes': '1.14.0-0'
     },
     {
         'source': 'https://raw.githubusercontent.com/coreos/kube-prometheus/release-0.1/manifests/grafana-dashboardDefinitions.yaml',
@@ -149,6 +147,7 @@ def main():
             print('Skipping the file, response code %s not equals 200' % response.status_code)
             continue
         raw_text = response.text
+        if ('max_kubernetes' not in chart): chart['max_kubernetes']="9.9.9-9"
         if chart['type'] == 'yaml':
             yaml_text = yaml.load(raw_text)
             groups = yaml_text['items']

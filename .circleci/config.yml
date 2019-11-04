@@ -14,7 +14,7 @@ jobs:
             shellcheck -x test/repo-sync.sh
   lint-charts:
     docker:
-      - image: gcr.io/kubernetes-charts-ci/test-image:v3.3.2
+      - image: gcr.io/kubernetes-charts-ci/test-image:v3.4.0
     steps:
       - checkout
       - run:
