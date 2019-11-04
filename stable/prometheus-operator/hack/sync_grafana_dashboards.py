@@ -148,7 +148,10 @@ def main():
             print('Skipping the file, response code %s not equals 200' % response.status_code)
             continue
         raw_text = response.text
-        if ('max_kubernetes' not in chart): chart['max_kubernetes']="9.9.9-9"
+
+        if ('max_kubernetes' not in chart):
+            chart['max_kubernetes']="9.9.9-9"
+
         if chart['type'] == 'yaml':
             yaml_text = yaml.full_load(raw_text)
             groups = yaml_text['items']
