@@ -6,7 +6,7 @@
 
 image:
   repository: linuxserver/quassel-core
-  tag: 92
+  tag: 0.13.1-ls33
   pullPolicy: IfNotPresent
 
 # User and Group IDs to run Quassel as
