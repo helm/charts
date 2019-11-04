@@ -153,6 +153,9 @@ spec:
         - name: REDIS_HOST_PORT
           value: {{ .Values.redis.redisPort | quote }}
         {{- end }}
+        {{- if .Values.nextcloud.extraEnv }}
+{{ toYaml .Values.nextcloud.extraEnv | indent 8 }}
+        {{- end }}
         ports:
         - name: http
           containerPort: 80
