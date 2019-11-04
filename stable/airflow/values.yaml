@@ -180,6 +180,12 @@ scheduler:
     # requests:
     #   cpu: "500m"
     #   memory: "512Mi"
+  ##
+  ## Labels for the scheduler deployment
+  labels: {}
+  ##
+  ## Annotations for the scheduler deployment
+  annotations: {}
 
   ## Support Node, affinity and tolerations for scheduler pod assignment
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
@@ -197,6 +203,12 @@ flower:
     # requests:
     #   cpu: "100m"
     #   memory: "128Mi"
+  ##
+  ## Labels for the flower deployment
+  labels: {}
+  ##
+  ## Annotations for the flower deployment
+  annotations: {}
   service:
     annotations: {}
     type: ClusterIP
@@ -218,6 +230,12 @@ web:
     # requests:
     #   cpu: "100m"
     #   memory: "512Mi"
+  ##
+  ## Labels for the web deployment
+  labels: {}
+  ##
+  ## Annotations for the web deployment
+  annotations: {}
   initialStartupDelay: "60"
   initialDelaySeconds: "360"
   readinessProbe:
@@ -262,6 +280,12 @@ workers:
     # requests:
     #   cpu: "0.5"
     #   memory: "512Mi"
+  ##
+  ## Labels for the Worker statefulSet
+  labels: {}
+  ##
+  ## Annotations for the Worker statefulSet
+  annotations: {}
   ##
   ## Annotations for the Worker pods
   podAnnotations: {}
