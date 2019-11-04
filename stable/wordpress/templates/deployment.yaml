@@ -207,10 +207,10 @@ spec:
       - name: custom-htaccess
         configMap:
           name: {{ template "wordpress.customHTAccessCM" . }}
-      {{- end }}
           items:
             - key: wordpress-htaccess.conf
               path: wordpress-htaccess.conf
+      {{- end }}
       - name: wordpress-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
