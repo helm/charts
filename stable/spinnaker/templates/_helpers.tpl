@@ -37,18 +37,10 @@ release: {{ .Release.Name | quote }}
 {{- end -}}
 
 {{/*
-Create comma separated list of omitted namespaces in Kubernetes
+Create comma separated list
 */}}
-{{- define "omittedNameSpaces" -}}
-{{- join "," .Values.kubeConfig.omittedNameSpaces }}
-{{- end -}}
-
-{{- define "omittedKinds" -}}
-{{- join "," .Values.kubeConfig.omittedKinds }}
-{{- end -}}
-
-{{- define "k8sKinds" -}}
-{{- join "," .Values.kubeConfig.kinds }}
+{{- define "joinList" -}}
+{{- join "," . }}
 {{- end -}}
 
 {{/*

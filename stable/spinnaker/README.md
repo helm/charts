@@ -53,9 +53,17 @@ kubeConfig:
   enabled: true
   secretName: my-kubeconfig
   secretKey: config
-  contexts:
+  accounts:
   # Names of contexts available in the uploaded kubeconfig
-  - my-context
+  - context: my-context
+    # read_permissions:
+    # - mygroup
+    # write_permissions:
+    # - mygroup
+    # A list of namespaces this Spinnaker account can deploy to and will cache.
+    # When no namespaces are configured, this defaults to 'all namespaces'.
+    # namespaces:
+    # - default
   # This is the context from the list above that you would like
   # to deploy Spinnaker itself to.
   deploymentContext: my-context
@@ -77,9 +85,9 @@ kubeConfig:
   # secretName: my-kubeconfig
   # secretKey: config
   encryptedKubeconfig: encrypted:s3!r:us-west-2!b:mybucket!f:mykubeconfig
-  contexts:
+  accounts:
   # Names of contexts available in the uploaded kubeconfig
-  - my-context
+  - context: my-context
   # This is the context from the list above that you would like
   # to deploy Spinnaker itself to.
   deploymentContext: my-context
