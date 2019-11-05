@@ -6,6 +6,10 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.8.1
+
+Add `master.schedulerName` to allow setting a Kubernetes custom scheduler
+
 ## 1.8.0 JCasC auto reload works without ssh keys
 
 We make use of the fact that the Jenkins Configuration as Code Plugin can be triggered via http `POST` to `JENKINS_URL/configuration-as-code/reload`and a pre-shared key.
