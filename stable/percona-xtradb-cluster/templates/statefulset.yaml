@@ -94,25 +94,15 @@ spec:
         livenessProbe:
           exec:
             command:
-              {{- if .Values.mysqlAllowEmptyPassword }}
               - "/bin/bash"
               - "-c"
               - "mysqladmin ping || test -e /var/lib/mysql/sst_in_progress"
-              {{- else }}
-              - "/bin/bash"
-              - "-c"
-              - "mysqladmin ping u root -p${MYSQL_ROOT_PASSWORD} || test -e /var/lib/mysql/sst_in_progress"
-              {{- end }}
           initialDelaySeconds: 30
           timeoutSeconds: 2
         readinessProbe:
           exec:
             command:
-             {{- if .Values.mysqlAllowEmptyPassword }}
              ["mysql", "-h", "127.0.0.1", "-e", "SELECT 1"]
-             {{- else }}
-             ["mysql", "-h", "127.0.0.1", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}", "-e", "SELECT 1"]
-             {{- end }}
           initialDelaySeconds: 30
           timeoutSeconds: 2
         volumeMounts:
