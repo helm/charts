@@ -80,12 +80,3 @@ heritage: {{ $.Release.Service | quote }}
     {{ default "default" .Values.alertmanager.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
-
-{{/* Workaround for https://github.com/helm/helm/issues/3117 */}}
-{{- define "prometheus-operator.rangeskipempty" -}}
-{{- range $key, $value := . }}
-{{- if $value }}
-{{ $key }}: {{ $value }}
-{{- end }}
-{{- end }}
-{{- end }}
