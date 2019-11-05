@@ -198,9 +198,11 @@ controller:
 
     httpPorts:
       - port: 80
+        targetPort: http
       # nodePort:
     httpsPorts:
       - port: 443
+        targetPort: https
       # nodePort:
 
     ## Set external traffic policy to: "Local" to preserve source IP on

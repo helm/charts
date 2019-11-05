@@ -12,6 +12,13 @@ metadata:
     chart: {{ template "airflow.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    {{- with .Values.workers.labels }}
+{{ toYaml . | indent 4 }}
+    {{- end }}
+  {{- with .Values.workers.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
 spec:
   serviceName: "{{ template "airflow.fullname" . }}-worker"
   updateStrategy:

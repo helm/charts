@@ -182,13 +182,16 @@ alertmanager:
     labels: {}
     clusterIP: ""
 
-  ## Port to expose on each node
-  ## Only used if service.type is 'NodePort'
-  ##
+    ## Port for Alertmanager Service to listen on
+    ##
+    port: 9093
+    ## Port to expose on each node
+    ## Only used if service.type is 'NodePort'
+    ##
     nodePort: 30903
-  ## List of IP addresses at which the Prometheus server service is available
-  ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
-  ##
+    ## List of IP addresses at which the Prometheus server service is available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
     externalIPs: []
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
@@ -929,10 +932,6 @@ nodeExporter:
 ## Configuration for prometheus-node-exporter subchart
 ##
 prometheus-node-exporter:
-  service:
-    port: 9100
-    targetPort: 9100
-
   podLabels:
     ## Add the 'node-exporter' label to be used by serviceMonitor to match standard common usage in rules and grafana dashboards
     ##
@@ -975,9 +974,17 @@ prometheusOperator:
       podAnnotations: {}
       nodeSelector: {}
 
+  ## Namespaces to scope the interaction of the Prometheus Operator and the apiserver (allow list).
+  ## This is mutually exclusive with denyNamespaces. Setting this to an empty object will disable the configuration
+  ##
+  namespaces: {}
+    # releaseNamespace: true
+    # additional:
+    # - kube-system
+
   ## Namespaces not to scope the interaction of the Prometheus Operator (deny list).
   ##
-  denyNamespaces: {}
+  denyNamespaces: []
 
   ## Service account for Alertmanager to use.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
@@ -1024,12 +1031,6 @@ prometheusOperator:
   ## Deploy CRDs used by Prometheus Operator.
   ##
   createCustomResource: true
-
-  ## Customize CRDs API Group
-  crdApiGroup: monitoring.coreos.com
-
-  # Remove CRDs before instaling, created for use on CI environment.
-  cleanupCustomResourceBeforeInstall: false
 
   ## Attempt to clean up CRDs created by Prometheus Operator.
   ##
@@ -1131,7 +1132,7 @@ prometheusOperator:
   ##
   image:
     repository: quay.io/coreos/prometheus-operator
-    tag: v0.32.0
+    tag: v0.34.0
     pullPolicy: IfNotPresent
 
   ## Configmap-reload image to use for reloading configmaps
@@ -1144,7 +1145,7 @@ prometheusOperator:
   ##
   prometheusConfigReloaderImage:
     repository: quay.io/coreos/prometheus-config-reloader
-    tag: v0.32.0
+    tag: v0.34.0
 
   ## Set the prometheus config reloader side-car CPU limit
   ##
@@ -1185,6 +1186,9 @@ prometheus:
     labels: {}
     clusterIP: ""
 
+    ## Port for Prometheus Service to listen on
+    ##
+    port: 9090
 
     ## To be used with a proxy extraContainer port
     targetPort: 9090
@@ -1214,6 +1218,10 @@ prometheus:
   servicePerReplica:
     enabled: false
     annotations: {}
+
+    ## Port for Prometheus Service per replica to listen on
+    ##
+    port: 9090
 
     ## To be used with a proxy extraContainer port
     targetPort: 9090
@@ -1302,6 +1310,8 @@ prometheus:
     interval: ""
     selfMonitor: true
 
+    bearerTokenFile:
+
     ## 	metric relabel configs to apply to samples before ingestion.
     ##
     metricRelabelings: []
@@ -1346,7 +1356,7 @@ prometheus:
     ##
     image:
       repository: quay.io/prometheus/prometheus
-      tag: v2.12.0
+      tag: v2.13.1
 
     ## Tolerations for use with node taints
     ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
