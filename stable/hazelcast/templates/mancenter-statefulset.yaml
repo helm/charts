@@ -63,7 +63,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /hazelcast-mancenter/health
-            port: 8080
+            port: 8081
           initialDelaySeconds: {{ .Values.mancenter.livenessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.mancenter.livenessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.mancenter.livenessProbe.timeoutSeconds }}
@@ -74,7 +74,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /hazelcast-mancenter/health
-            port: 8080
+            port: 8081
           initialDelaySeconds: {{ .Values.mancenter.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.mancenter.readinessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.mancenter.readinessProbe.timeoutSeconds }}
@@ -95,7 +95,7 @@ spec:
           value: {{ .Values.mancenter.licenseKey }}
         {{- end }}
         - name: JAVA_OPTS
-          value: "{{ if or .Values.mancenter.licenseKey .Values.mancenter.licenseKeySecretName }}-Dhazelcast.mc.license=$(MC_LICENSE_KEY){{ end }} {{ .Values.mancenter.javaOpts }}"
+          value: "{{ if or .Values.mancenter.licenseKey .Values.mancenter.licenseKeySecretName }}-Dhazelcast.mc.license=$(MC_LICENSE_KEY){{ end }} {{ if or .Values.mancenter.readinessProbe.enabled .Values.mancenter.livenessProbe.enabled }}-Dhazelcast.mc.healthCheck.enable=true{{ end }} {{ .Values.mancenter.javaOpts }}"
         serviceAccountName: {{ template "hazelcast.serviceAccountName" . }}
         {{- if .Values.securityContext.enabled }}
         securityContext:
