@@ -355,9 +355,6 @@ podSecurityPolicy:
 # will be used by Kong based on the `env.database` parameter.
 # Postgres is enabled by default.
 
-# Cassandra chart configs
-cassandra:
-  enabled: false
 
 # PostgreSQL chart configs
 postgresql:
