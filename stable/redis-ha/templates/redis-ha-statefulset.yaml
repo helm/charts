@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: {{ template "redis-ha.fullname" . }}-server
   labels:
+    {{ template "redis-ha.fullname" . }}: replica
 {{ include "labels.standard" . | indent 4 }}
 spec:
   selector:
@@ -29,6 +30,7 @@ spec:
       labels:
         release: {{ .Release.Name }}
         app: {{ template "redis-ha.name" . }}
+        {{ template "redis-ha.fullname" . }}: replica
         {{- range $key, $value := .Values.labels }}
         {{ $key }}: {{ $value }}
         {{- end }}
@@ -60,6 +62,7 @@ spec:
                 matchLabels:
                   app: {{ template "redis-ha.name" . }}
                   release: {{ .Release.Name }}
+                  {{ template "redis-ha.fullname" . }}: replica
               topologyKey: kubernetes.io/hostname
     {{- else }}
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -67,6 +70,7 @@ spec:
                 matchLabels:
                   app: {{ template "redis-ha.name" . }}
                   release: {{ .Release.Name }}
+                  {{ template "redis-ha.fullname" . }}: replica
               topologyKey: kubernetes.io/hostname
     {{- end }}
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -76,6 +80,7 @@ spec:
                   matchLabels:
                     app:  {{ template "redis-ha.name" . }}
                     release: {{ .Release.Name }}
+                    {{ template "redis-ha.fullname" . }}: replica
                 topologyKey: failure-domain.beta.kubernetes.io/zone
     {{- end }}
       securityContext:
