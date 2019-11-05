@@ -12,8 +12,4 @@ keywords:
 maintainers:
 - name: s2504s
   email: s2504s@gmail.com
-- name: viglesiasce
-  email: viglesiasce@gmail.com
-- name: unguiculus
-  email: unguiculus@gmail.com
 engine: gotpl
