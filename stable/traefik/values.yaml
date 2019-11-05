@@ -145,14 +145,14 @@ ssl:
   auth: {}
     # basic:
     #   testuser: $apr1$JXRA7j2s$LpVns9vsme8FHN0r.aSt11
-  # a list of any extra certificate/key filenames you want included in the traefik instance. You can use this in conjunction with
+
+  # a list of any extra certificate/key filenames you want included in the traefik instance. This must be used in conjunction with
   # the "secretFiles" parameter to include the certs on each traefik pod. the expected format is:
   # extraCerts:
   #   - certFile: /secrets/cert1.crt
   #     keyFile: /secrets/key1.key
   #   - certFile: /secrets/cert2.crt
   #     keyFile: /secrets/key2.key
-  extraCerts: []
 
   # mtls:
   #   enabled: true
