@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "sentry.fullname" . }}-cron
@@ -8,6 +8,11 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+        app: {{ template "sentry.fullname" . }}
+        release: "{{ .Release.Name }}"
+        role: cron
   replicas: {{ .Values.cron.replicacount }}
   template:
     metadata:

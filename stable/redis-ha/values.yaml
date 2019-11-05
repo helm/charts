@@ -231,6 +231,20 @@ exporter:
   # Additional args for redis exporter
   extraArgs: {}
 
+  serviceMonitor:
+    # When set true then use a ServiceMonitor to configure scraping
+    enabled: false
+    # Set the namespace the ServiceMonitor should be deployed
+    # namespace: monitoring
+    # Set how frequently Prometheus should scrape
+    # interval: 30s
+    # Set path to redis-exporter telemtery-path
+    # telemetryPath: /metrics
+    # Set labels for the ServiceMonitor, use this to define your scrape label for Prometheus Operator
+    # labels: {}
+    # Set timeout for scrape
+    # timeout: 10s
+
 podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 1

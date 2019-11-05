@@ -3,7 +3,6 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-operator
-  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-operator
 {{ include "prometheus-operator.labels" . | indent 4 }}
@@ -15,7 +14,7 @@ rules:
   verbs:
   - '*'
 - apiGroups:
-  - {{ .Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com" }}
+  - monitoring.coreos.com
   resources:
   - alertmanagers
   - prometheuses
