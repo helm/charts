@@ -28,7 +28,7 @@ SumoLogic.
 
 ## Prerequisites
 
-- Kubernetes 1.2+ with Beta APIs enabled. However, certain configuration parameters may require a more recent version of Kubernetes. Such parameters will specify the minimum Kubernetes version required in the parameter description.
+- Kubernetes 1.10+ with Beta APIs enabled. However, certain configuration parameters may require a more recent version of Kubernetes. Such parameters will specify the minimum Kubernetes version required in the parameter description.
 
 ## Installing the Chart
 

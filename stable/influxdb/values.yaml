@@ -291,9 +291,9 @@ backup:
   annotations: {}
 
   ## Google Cloud Storage
-  ## Secret is expected to have key stored in `key.json` field
   # gcs:
   #    serviceAccountSecret: influxdb-backup-key
+  #    serviceAccountSecretKey: key.json
   #    destination: gs://bucket/influxdb
 
   ## Azure

@@ -341,6 +341,31 @@ $ helm install stable/prometheus --name my-release -f values.yaml
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+Note that you have multiple yaml files. This is particularly useful when you have alerts belonging to multiple services in the cluster. For example,
+
+```yaml
+# values.yaml
+# ...
+
+# service1-alert.yaml
+serverFiles:
+  alerts:
+    service1:
+      - alert: anAlert
+      # ...
+
+# service2-alert.yaml
+serverFiles:
+  alerts:
+    service2:
+      - alert: anAlert
+      # ...
+```
+
+```console
+$ helm install stable/prometheus --name my-release -f values.yaml -f service1-alert.yaml -f service2-alert.yaml
+```
+
 ### RBAC Configuration
 Roles and RoleBindings resources will be created automatically for `server` and `kubeStateMetrics` services.
 

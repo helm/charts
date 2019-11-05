@@ -68,7 +68,7 @@ The following table lists the configurable parameters of the OpenEBS chart and t
 | `ndm.imageTag`                          | Image Tag for Node Disk Manager               | `v0.4.3`                                  |
 | `ndm.sparse.path`                       | Directory where Sparse files are created      | `/var/openebs/sparse`                     |
 | `ndm.sparse.size`                       | Size of the sparse file in bytes              | `10737418240`                             |
-| `ndm.sparse.count`                      | Number of sparse files to be created          | `1`                                       |
+| `ndm.sparse.count`                      | Number of sparse files to be created          | `0`                                       |
 | `ndm.filters.excludeVendors`            | Exclude devices with specified vendor         | `CLOUDBYT,OpenEBS`                        |
 | `ndm.filters.excludePaths`              | Exclude devices with specified path patterns  | `loop,fd0,sr0,/dev/ram,/dev/dm-,/dev/md`  |
 | `ndm.filters.includePaths`              | Include devices with specified path patterns  | `""`                                      |

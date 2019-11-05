@@ -14,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/rabbitmq
-  tag: 3.8.0-debian-9-r0
+  tag: 3.8.1-debian-9-r0
 
   ## set to true if you would like to see extra information on logs
   ## it turns BASH and NAMI debugging in minideb
@@ -108,7 +108,7 @@ rabbitmq:
 
   ## Extra plugins to enable
   ## Use this instead of `plugins` to add new plugins
-  # extraPlugins: ""
+  extraPlugins: "rabbitmq_auth_backend_ldap"
 
   ## Clustering settings
   clustering:
@@ -154,6 +154,20 @@ rabbitmq:
     enabled: false
     failIfNoPeerCert: true
     sslOptionsVerify: verify_peer
+    caCertificate: |-
+    serverCertificate: |-
+    serverKey: |-
+    # existingSecret: name-of-existing-secret-to-rabbitmq
+
+## LDAP configuration
+##
+ldap:
+  enabled: false
+  server: ""
+  port: "389"
+  user_dn_pattern: cn=${username},dc=example,dc=org
+  tls:
+    enabled: false
     caCertificate: |-
     serverCertificate: |-
     serverKey: |-
@@ -328,7 +342,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/rabbitmq-exporter
-    tag: 0.29.0-debian-9-r61
+    tag: 0.29.0-debian-9-r82
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.

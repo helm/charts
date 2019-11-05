@@ -27,14 +27,12 @@ charts = [
     {
         'source': 'https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml',
         'destination': '../templates/prometheus/rules-1.14',
-        'min_kubernetes': '1.14.0-0',
-        'max_kubernetes': '1.16.0-0'
+        'min_kubernetes': '1.14.0-0'
     },
     {
         'source': 'https://raw.githubusercontent.com/etcd-io/etcd/master/Documentation/op-guide/etcd3_alert.rules.yml',
         'destination': '../templates/prometheus/rules-1.14',
-        'min_kubernetes': '1.14.0-0',
-        'max_kubernetes': '1.16.0-0'
+        'min_kubernetes': '1.14.0-0'
     },
     {
         'source': 'https://raw.githubusercontent.com/coreos/kube-prometheus/release-0.1/manifests/prometheus-rules.yaml',
@@ -110,7 +108,7 @@ header = '''# Generated from '%(name)s' group from %(url)s
 # https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
 {{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
 {{- if and (semverCompare ">=%(min_kubernetes)s" $kubeTargetVersion) (semverCompare "<%(max_kubernetes)s" $kubeTargetVersion) .Values.defaultRules.create%(condition)s }}%(init_line)s
-apiVersion: {{ printf "%%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
+apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: {{ printf "%%s-%%s" (include "prometheus-operator.fullname" .) "%(name)s" | trunc 63 | trimSuffix "-" }}
@@ -247,7 +245,11 @@ def main():
             print('Skipping the file, response code %s not equals 200' % response.status_code)
             continue
         raw_text = response.text
-        yaml_text = yaml.load(raw_text)
+        yaml_text = yaml.full_load(raw_text)
+
+        if ('max_kubernetes' not in chart):
+            chart['max_kubernetes']="9.9.9-9"
+
         # etcd workaround, their file don't have spec level
         groups = yaml_text['spec']['groups'] if yaml_text.get('spec') else yaml_text['groups']
         for group in groups:

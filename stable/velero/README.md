@@ -104,6 +104,8 @@ Parameter | Description | Default
 `restic.privileged` | Whether restic should run as a privileged pod. Only necessary in special cases (SELinux) | `false`
 `restic.resources` | Restic DaemonSet resource requests and limits | `{}`
 `restic.tolerations` | Restic DaemonSet tolerations | `[]`
+`restic.extraVolumes` | Extra volumes for the Restic daemonset | `[]`
+`restic.extraVolumeMounts` | Extra volumeMounts for the Restic daemonset | `[]`
 `configMaps` | Velero ConfigMaps | `[]`
 
 ## How to

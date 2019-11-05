@@ -9,6 +9,9 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "minecraft.fullname" . }}
   template:
     metadata:
       labels:
