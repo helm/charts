@@ -66,10 +66,6 @@ spec:
               name: {{ template "kong.postgresql.fullname" . }}
               key: postgresql-password
         {{- end }}
-        {{- if .Values.cassandra.enabled }}
-        - name: KONG_CASSANDRA_CONTACT_POINTS
-          value: {{ template "kong.cassandra.fullname" . }}
-        {{- end }}
         {{- include "kong.env" .  | indent 8 }}
         command: [ "/bin/sh", "-c", "kong migrations bootstrap" ]
         volumeMounts:
