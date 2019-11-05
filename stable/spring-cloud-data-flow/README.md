@@ -57,6 +57,12 @@ Only one messaging layer can be used at a given time. If RabbitMQ and Kafka are 
 
 Note that this chart pulls in many different Docker images so can take a while to fully install.
 
+### Disabling Skipper Server
+
+If you only need to deploy tasks, the Skipper Server and Messaging layer can be disabled, for example:
+
+`--set skipper.enabled=false --set rabbitmq.enabled=false`
+
 ## Configuration
 
 The following tables list the configurable parameters and their default values.
@@ -92,6 +98,7 @@ The following tables list the configurable parameters and their default values.
 
 | Parameter                         | Description                                                      | Default          |
 | --------------------------------- | ---------------------------------------------------------------- | ---------------- |
+| skipper.enabled                   | Enable Skipper server                                            | true
 | skipper.version                   | The version/tag of the Skipper server                            | 2.1.2.RELEASE
 | skipper.imagePullPolicy           | The imagePullPolicy of the Skipper server                        | IfNotPresent
 | skipper.platformName              | The name of the configured platform account                      | default

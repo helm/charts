@@ -1,3 +1,4 @@
+{{- if .Values.skipper.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -25,3 +26,4 @@ spec:
     app: {{ template "scdf.name" . }}
     component: skipper
     release: {{ .Release.Name }}
+{{- end }}
