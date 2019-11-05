@@ -1250,7 +1250,7 @@ data:
                     "query": "label_values(apiserver_request_total{job=\"apiserver\"}, instance)",
                     "refresh": 2,
                     "regex": "",
-                    "sort": 0,
+                    "sort": 1,
                     "tagValuesQuery": "",
                     "tags": [
 
