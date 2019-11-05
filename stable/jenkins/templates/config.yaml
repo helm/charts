@@ -136,6 +136,9 @@ data:
           <serverUrl>https://kubernetes.default</serverUrl>
           <skipTlsVerify>false</skipTlsVerify>
           <namespace>{{ template "jenkins.master.slaveKubernetesNamespace" . }}</namespace>
+{{- if semverCompare ">=1.20.2" (include "jenkins.kubernetes-version" . ) }}
+          <directConnection>false</directConnection>
+{{- end }}
 {{- if .Values.master.slaveKubernetesNamespace }}
           <jenkinsUrl>http://{{ template "jenkins.fullname" . }}.{{ template "jenkins.namespace" . }}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</jenkinsUrl>
           <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent.{{ template "jenkins.namespace" . }}:{{ .Values.master.slaveListenerPort }}</jenkinsTunnel>
@@ -235,6 +238,12 @@ data:
     yes n | cp -i /var/jenkins_config/{{- $key }} /var/jenkins_home;
   {{- end }}
   {{- end }}
+{{- end }}
+{{- else }}
+{{- if .Values.master.JCasC.enabled }}
+    # Prevent Setup Wizard when JCasC is enabled
+    echo $JENKINS_VERSION > /var/jenkins_home/jenkins.install.UpgradeWizard.state
+    echo $JENKINS_VERSION > /var/jenkins_home/jenkins.install.InstallUtil.lastExecVersion
 {{- end }}
 {{- end }}
 {{- if .Values.master.overwritePlugins }}

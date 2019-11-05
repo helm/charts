@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: lmierzwa/karma
-  tag: v0.42
+  tag: v0.48
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -21,6 +21,7 @@ service:
   port: 80
   annotations: {}
     # prometheus.io/scrape: "true"
+  labels: {}
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
