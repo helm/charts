@@ -106,25 +106,35 @@ data:
 
     {{- end }}
 
-    $HAL_COMMAND config provider kubernetes enable
-    {{- range $index, $context := .Values.kubeConfig.contexts }}
+    {{- if .Values.kubeConfig.contexts }}
+      echo "Please use kubeConfig.accounts instead of kubeConfig.contexts"
+      exit 1
+    {{- end }}
 
-    if $HAL_COMMAND config provider kubernetes account get {{ $context }}; then
+    $HAL_COMMAND config provider kubernetes enable
+    {{- range $index, $account := .Values.kubeConfig.accounts }}
+
+    if $HAL_COMMAND config provider kubernetes account get {{ $account.context }}; then
       PROVIDER_COMMAND='edit'
     else
       PROVIDER_COMMAND='add'
     fi
-
-    $HAL_COMMAND config provider kubernetes account $PROVIDER_COMMAND {{ $context }} --docker-registries dockerhub \
-                --context {{ $context }} {{ if not $.Values.kubeConfig.enabled }}--service-account true{{ end }} \
+    
+    $HAL_COMMAND config provider kubernetes account $PROVIDER_COMMAND {{ $account.context }} --docker-registries dockerhub \
+                --context {{ $account.context }} {{ if not $.Values.kubeConfig.enabled }}--service-account true{{ end }} \
                 {{ if $.Values.kubeConfig.enabled }}--kubeconfig-file {{ template "spinnaker.kubeconfig" $ }}{{ end }} \
-                {{ if $.Values.kubeConfig.onlySpinnakerManaged.enabled }}--only-spinnaker-managed true{{ end }} \
-                {{ if not $.Values.kubeConfig.checkPermissionsOnStartup }}--check-permissions-on-startup false{{ end }} \
-                --omit-namespaces={{ template "omittedNameSpaces" $ }} \
-                {{ if $.Values.kubeConfig.omittedKinds }}--omit-kinds={{ template "omittedKinds" $ }}{{ end }} \
-                {{ if $.Values.kubeConfig.kinds }}--kinds={{ template "k8sKinds" $ }}{{ end }} \
+                {{ if hasKey $account "onlySpinnakerManaged" }}--only-spinnaker-managed {{ $account.onlySpinnakerManaged }}{{ end }} \
+                {{ if hasKey $account "liveManifestCalls" }}--live-manifest-calls {{ $account.liveManifestCalls }}{{ end }} \
+                {{ if hasKey $account "checkPermissionsOnStartup" }}--check-permissions-on-startup {{ $account.checkPermissionsOnStartup }}{{ end }} \
+                {{ if $account.kinds }}--kinds={{ template "joinList" $account.kinds }}{{ end }} \
+                {{ if $account.omittedKinds }}--omit-kinds={{ template "joinList" $account.omittedKinds }}{{ end }} \
+                {{ if $account.namespaces }}--namespaces={{ template "joinList" $account.namespaces }}{{ end }} \
+                {{ if $account.omittedNameSpaces }}--omit-namespaces={{ template "joinList" $account.omittedNameSpaces }}{{ end }} \
+                {{ if $account.read_permissions }}--read-permissions={{ template "joinList" $account.read_permissions }}{{ end }} \
+                {{ if $account.write_permissions }}--write-permissions={{ template "joinList" $account.write_permissions }}{{ end }} \
                 --provider-version v2
     {{- end }}
+
     $HAL_COMMAND config deploy edit --account-name {{ .Values.kubeConfig.deploymentContext }} --type distributed \
                            --location {{ .Release.Namespace }}
     # Use Deck to route to Gate

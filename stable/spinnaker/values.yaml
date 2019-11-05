@@ -1,5 +1,5 @@
 halyard:
-  spinnakerVersion: 1.16.1
+  spinnakerVersion: 1.17.2
   image:
     repository: gcr.io/spinnaker-marketplace/halyard
     tag: 1.23.2
@@ -160,35 +160,55 @@ kubeConfig:
   enabled: false
   secretName: my-kubeconfig
   secretKey: config
+
+  # This is the context from the list below that you would like to deploy Spinnaker itself to.
+  deploymentContext: default
+
   # Use this when you want to configure halyard to reference a kubeconfig from s3
   # This allows you to keep your kubeconfig in an encrypted s3 bucket
   # For more info visit:
   #   https://www.spinnaker.io/reference/halyard/secrets/s3-secrets/#secrets-in-s3
   # encryptedKubeconfig: encrypted:s3!r:us-west-2!b:mybucket!f:mykubeconfig
-  # List of contexts from the kubeconfig to make available to Spinnaker
-  contexts:
-  - default
-  deploymentContext: default
-  omittedNameSpaces:
-  - kube-system
-  - kube-public
-  onlySpinnakerManaged:
-    enabled: false
 
-  # When false, clouddriver will skip the permission checks for all kubernetes kinds at startup.
-  # This can save a great deal of time during clouddriver startup when you have many kubernetes
-  # accounts configured. This disables the log messages at startup about missing permissions.
-  checkPermissionsOnStartup: true
+  # List of accounts and associated contexts from the kubeconfig to make available to Spinnaker
+  accounts:
+  - context: default
+    # read_permissions:
+    # - mygroup
+    # write_permissions:
+    # - mygroup
 
-  # A list of resource kinds this Spinnaker account can deploy to and will cache.
-  # When no kinds are configured, this defaults to ‘all kinds'.
-  # kinds:
-  # -
+    # A list of namespaces this Spinnaker account can deploy to and will cache.
+    # When no namespaces are configured, this defaults to 'all namespaces'.
+    # namespaces:
+    # - default
 
-  # A list of resource kinds this Spinnaker account cannot deploy to or cache.
-  # This can only be set when –kinds is empty or not set.
-  # omittedKinds:
-  # -
+    omittedNameSpaces:
+    - kube-system
+    - kube-public
+
+    # When true, Spinnaker will only cache/display applications that have been created by Spinnaker;
+    # as opposed to attempting to configure applications for resources already present in Kubernetes.
+    onlySpinnakerManaged: false
+
+    # When true, clouddriver will query manifest status during pipeline executions using live data rather than the cache.
+    # This eliminates all time spent in the “force cache refresh” task in pipelines, greatly reducing execution time.
+    liveManifestCalls: false
+
+    # When false, clouddriver will skip the permission checks for all kubernetes kinds at startup.
+    # This can save a great deal of time during clouddriver startup when you have many kubernetes
+    # accounts configured. This disables the log messages at startup about missing permissions.
+    checkPermissionsOnStartup: true
+
+    # A list of resource kinds this Spinnaker account can deploy to and will cache.
+    # When no kinds are configured, this defaults to ‘all kinds'.
+    # kinds:
+    # -
+
+    # A list of resource kinds this Spinnaker account cannot deploy to or cache.
+    # This can only be set when –kinds is empty or not set.
+    # omittedKinds:
+    # -
 
 # Change this if youd like to expose Spinnaker outside the cluster
 ingress:
