@@ -7,6 +7,14 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 0.4.10 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 0.5.0
+
+Update Ingress and Deployment apiVersions for k8s 1.16 support
+
+## 0.4.12
+
+Updated cloudwatch-exporter version to [0.6.0](https://github.com/prometheus/cloudwatch_exporter/releases/tag/cloudwatch_exporter-0.6.0)
+
 ## 0.4.11
 
 Added CHANGELOG.md

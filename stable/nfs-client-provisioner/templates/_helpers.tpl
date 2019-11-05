@@ -51,11 +51,11 @@ Create the name of the service account to use
 {{- end -}}
 
 {{/*
-Return the appropriate apiVersion for deployment.
+Return the appropriate apiVersion for podSecurityPolicy.
 */}}
-{{- define "deployment.apiVersion" -}}
-{{- if semverCompare ">=1.9-0" .Capabilities.KubeVersion.GitVersion -}}
-{{- print "apps/v1" -}}
+{{- define "podSecurityPolicy.apiVersion" -}}
+{{- if semverCompare ">=1.10-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "policy/v1beta1" -}}
 {{- else -}}
 {{- print "extensions/v1beta1" -}}
 {{- end -}}
