@@ -103,7 +103,7 @@ spec:
         livenessProbe:
           tcpSocket:
             port: https
-            initialDelaySeconds: 15
+          initialDelaySeconds: 15
         readinessProbe:
           tcpSocket:
             port: https

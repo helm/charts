@@ -116,6 +116,10 @@ spec:
           - name: {{ template "rabbitmq.fullname" . }}-certs
             mountPath: /opt/bitnami/rabbitmq/certs
           {{- end }}
+          {{- if .Values.ldap.tls.enabled }}
+          - name: {{ template "rabbitmq.fullname" . }}-ldap-certs
+            mountPath: /opt/bitnami/rabbitmq/certs-ldap
+          {{- end }}
           - name: data
             mountPath: "{{ .Values.persistence.path }}"
           {{- if .Values.rabbitmq.loadDefinition.enabled }}
@@ -197,6 +201,18 @@ spec:
             value: "rabbit@$(MY_POD_NAME)"
             {{- end }}
           {{- end }}
+          {{- if .Values.ldap.enabled }}
+          - name: RABBITMQ_LDAP_ENABLE
+            value: "yes"
+          - name: RABBITMQ_LDAP_TLS
+            value: {{ ternary "yes" "no" .Values.ldap.tls.enabled | quote }}
+          - name: RABBITMQ_LDAP_SERVER
+            value: {{ .Values.ldap.server }}
+          - name: RABBITMQ_LDAP_SERVER_PORT
+            value: {{ .Values.ldap.port | quote }}
+          - name: RABBITMQ_LDAP_USER_DN_PATTERN
+            value: {{ .Values.ldap.user_dn_pattern }}
+          {{- end }}
           - name: RABBITMQ_LOGS
             value: {{ .Values.rabbitmq.logs | quote }}
           - name: RABBITMQ_ULIMIT_NOFILES
@@ -246,18 +262,28 @@ spec:
         ports:
         - name: metrics
           containerPort: 9090
+        {{- if .Values.metrics.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
             path: /metrics
             port: metrics
-          initialDelaySeconds: 15
-          timeoutSeconds: 5
+          initialDelaySeconds: {{ .Values.metrics.livenessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.metrics.livenessProbe.timeoutSeconds }}
+          periodSeconds: {{ .Values.metrics.livenessProbe.periodSeconds }}
+          failureThreshold: {{ .Values.metrics.livenessProbe.failureThreshold }}
+          successThreshold: {{ .Values.metrics.livenessProbe.successThreshold }}
+        {{- end }}
+        {{- if .Values.metrics.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
             path: /metrics
             port: metrics
-          initialDelaySeconds: 5
-          timeoutSeconds: 5
+          initialDelaySeconds: {{ .Values.metrics.readinessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.metrics.readinessProbe.timeoutSeconds }}
+          periodSeconds: {{ .Values.metrics.readinessProbe.periodSeconds }}
+          failureThreshold: {{ .Values.metrics.readinessProbe.failureThreshold }}
+          successThreshold: {{ .Values.metrics.readinessProbe.successThreshold }}
+        {{- end }}
         resources:
 {{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
@@ -281,7 +307,19 @@ spec:
               path: server_certificate.pem
             - key: server_key.pem
               path: server_key.pem
-          {{- end }}
+        {{- end }}
+        {{- if and .Values.ldap.enabled .Values.ldap.tls.enabled }}
+        - name: {{ template "rabbitmq.fullname" . }}-ldap-certs
+          secret:
+            secretName: {{ if .Values.ldap.tls.existingSecret }}{{ .Values.ldap.tls.existingSecret }}{{- else }}{{ template "rabbitmq.fullname" . }}-ldap-certs{{- end }}
+            items:
+            - key: ca_certificate.pem
+              path: ca_certificate.pem
+            - key: server_certificate.pem
+              path: server_certificate.pem
+            - key: server_key.pem
+              path: server_key.pem
+        {{- end }}
         - name: config-volume
           configMap:
             name: {{ template "rabbitmq.fullname" . }}-config
