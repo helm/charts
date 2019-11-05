@@ -166,3 +166,9 @@ serviceMonitor:
    ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
   selector:
     prometheus: kube-prometheus
+
+## String to partially override cluster-autoscaler.fullname template (will maintain the release name)
+nameOverride: ""
+
+## String to fully override cluster-autoscaler.fullname template
+fullnameOverride: ""
