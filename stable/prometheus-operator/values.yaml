@@ -1571,6 +1571,9 @@ prometheus:
     remoteWrite: []
     # - url: http://remote1/push
 
+    ## Enable/Disable Grafana dashboards provisioning for prometheus remote write feature
+    remoteWriteDashboards: false
+
     ## Resource limits & requests
     ##
     resources: {}
