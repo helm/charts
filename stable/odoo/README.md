@@ -69,6 +69,7 @@ The following table lists the configurable parameters of the Odoo chart and thei
 | `smtpUser`                            | SMTP user                                                 | `nil`                                                   |
 | `smtpPassword`                        | SMTP password                                             | `nil`                                                   |
 | `smtpProtocol`                        | SMTP protocol [`ssl`, `tls`]                              | `nil`                                                   |
+| `env`                                 | Arbitrary env to pass to odoo                             | `[]`                                                    |
 | `service.type`                        | Kubernetes Service type                                   | `LoadBalancer`                                          |
 | `service.port`                        | Service HTTP port                                         | `80`                                                    |
 | `service.loadBalancer`                | Kubernetes LoadBalancerIP to request                      | `nil`                                                   |

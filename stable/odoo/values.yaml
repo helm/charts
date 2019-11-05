@@ -59,6 +59,13 @@ odooEmail: user@example.com
 # smtpPassword:
 # smtpProtocol:
 
+## Additional environment variables for Odoo
+## env:
+##  - name: MY_VAR
+##    value: my-value
+##
+env: []
+
 externalDatabase:
 ## All of these values are only used when postgresql.enabled is set to false
   ## Database host

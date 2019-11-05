@@ -66,6 +66,9 @@ spec:
         - name: SMTP_PROTOCOL
           value: {{ .Values.smtpProtocol | quote }}
         {{- end }}
+        {{- if .Values.env }}
+{{ toYaml .Values.env | indent 8 }}
+        {{- end }}
         ports:
         - name: http
           containerPort: 8069
