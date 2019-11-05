@@ -82,7 +82,7 @@ rules:
       - create
       - patch
 {{- if .Values.podSecurityPolicy.enabled }}
-  - apiGroups:      ['extensions']
+  - apiGroups:      ['{{ template "podSecurityPolicy.apiVersion" . }}']
     resources:      ['podsecuritypolicies']
     verbs:          ['use']
     resourceNames:  [{{ template "nginx-ingress.fullname" . }}]
