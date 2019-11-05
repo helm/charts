@@ -1,0 +1,33 @@
+{{- if and ( .Capabilities.APIVersions.Has "monitoring.coreos.com/v1" ) ( .Values.exporter.serviceMonitor.enabled ) ( .Values.exporter.enabled ) }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+{{- if .Values.exporter.serviceMonitor.labels }}
+  labels:
+{{ toYaml .Values.exporter.serviceMonitor.labels | indent 4}}
+{{- end }}
+  name: {{ template "redis-ha.fullname" . }}
+{{- if .Values.exporter.serviceMonitor.namespace }}
+  namespace: {{ .Values.exporter.serviceMonitor.namespace }}
+{{- end }}
+spec:
+  endpoints:
+  - targetPort: {{ .Values.exporter.port }}
+{{- if .Values.exporter.serviceMonitor.interval }}
+    interval: {{ .Values.exporter.serviceMonitor.interval }}
+{{- end }}
+{{- if .Values.exporter.serviceMonitor.telemetryPath }}
+    path: {{ .Values.exporter.serviceMonitor.telemetryPath }}
+{{- end }}
+{{- if .Values.exporter.serviceMonitor.timeout }}
+    scrapeTimeout: {{ .Values.exporter.serviceMonitor.timeout }}
+{{- end }}
+  jobLabel: {{ template "redis-ha.fullname" . }}
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      app: {{ template "redis-ha.name" . }}
+      release: {{ .Release.Name }}
+{{- end }}
