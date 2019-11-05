@@ -136,7 +136,7 @@ spec:
           {{- end }}
           {{- if .Values.controller.metrics.enabled }}
             - name: metrics
-              containerPort: 10254
+              containerPort: {{ .Values.controller.metrics.port }}
               protocol: TCP
           {{- end }}
           {{- if .Values.controller.admissionWebhooks.enabled }}
