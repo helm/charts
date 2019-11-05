@@ -261,12 +261,6 @@ data:
 {{- if .Values.master.scriptApproval }}
     yes n | cp -i /var/jenkins_config/scriptapproval.xml /var/jenkins_home/scriptApproval.xml;
 {{- end }}
-{{- if and (.Values.master.JCasC.enabled) (.Values.master.sidecars.configAutoReload.enabled) }}
-  {{- if not .Values.master.initScripts }}
-    mkdir -p /var/jenkins_home/init.groovy.d/;
-    yes n | cp -i /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/;
-  {{- end }}
-{{- end }}
 {{- if .Values.master.initScripts }}
     mkdir -p /var/jenkins_home/init.groovy.d/;
     {{- if .Values.master.overwriteConfig }}
@@ -274,10 +268,8 @@ data:
     {{- end }}
     yes n | cp -i /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/;
 {{- end }}
-{{- if .Values.master.JCasC.enabled }}
-  {{- if .Values.master.sidecars.configAutoReload.enabled }}
-    bash -c 'ssh-keygen -y -f <(echo "${ADMIN_PRIVATE_KEY}") > /var/jenkins_home/key.pub'
-  {{- else }}
+{{- if .Values.master.JCasC.enabled}}
+  {{- if not .Values.master.sidecars.configAutoReload.enabled }}
     mkdir -p /var/jenkins_home/casc_configs;
     rm -rf /var/jenkins_home/casc_configs/*
     cp -v /var/jenkins_config/*.yaml /var/jenkins_home/casc_configs
@@ -302,25 +294,7 @@ data:
 {{ $val | indent 4 }}
 {{- end }}
 {{- if .Values.master.JCasC.enabled }}
-  {{- if .Values.master.sidecars.configAutoReload.enabled }}
-  init-add-ssh-key-to-admin.groovy: |-
-    import jenkins.security.*
-    import hudson.model.User
-    import jenkins.model.Jenkins
-    User user = User.getOrCreateByIdOrFullName("{{ .Values.master.adminUser | default "admin" }}")
-    if (user == null) {
-      System.err.println("ERROR: user '{{ .Values.master.adminUser | default "admin" }}' not found! Can't configure SSH key which is needed to reload JCasC config!")
-    } else {
-      String sshKeyString = new File('/var/jenkins_home/key.pub').text
-      keys_param = new org.jenkinsci.main.modules.cli.auth.ssh.UserPropertyImpl(sshKeyString)
-      user.addProperty(keys_param)
-      def inst = Jenkins.getInstance()
-      def sshDesc = inst.getDescriptor("org.jenkinsci.main.modules.sshd.SSHD")
-      sshDesc.setPort({{ .Values.master.sidecars.configAutoReload.sshTcpPort | default 1044 }})
-      sshDesc.getActualPort()
-      sshDesc.save()
-    }
-  {{- else }}
+  {{- if not .Values.master.sidecars.configAutoReload.enabled }}
 # Only add config to this script if we aren't auto-reloading otherwise the pod will restart upon each config change:
 {{- if .Values.master.JCasC.defaultConfig }}
   jcasc-default-config.yaml: |-
