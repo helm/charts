@@ -17,8 +17,6 @@ spec:
     - secretName: {{ default .Values.ingress.secretName .Values.ingress.secret.name}}
       hosts:
         - {{ printf "*.%s" .Values.config.rootDomain | quote }}
-        - {{ printf "authorize.%s" .Values.config.rootDomain | quote }}
-        - {{ printf "authenticate.%s" .Values.config.rootDomain | quote }}
   rules:
     - host: {{ printf "*.%s" .Values.config.rootDomain| quote }}
       http:

@@ -1005,7 +1005,7 @@ data:
                     "query": "label_values(process_cpu_seconds_total{job=\"kube-scheduler\"}, instance)",
                     "refresh": 2,
                     "regex": "",
-                    "sort": 0,
+                    "sort": 1,
                     "tagValuesQuery": "",
                     "tags": [
 

@@ -44,6 +44,9 @@ spec:
 {{ toYaml .Values.master.podAnnotations | indent 8 }}
         {{- end }}
     spec:
+      {{- if .Values.master.schedulerName }}
+      schedulerName: {{ .Values.master.schedulerName }}
+      {{- end }}
       {{- if .Values.master.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.master.nodeSelector | indent 8 }}

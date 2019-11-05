@@ -9,6 +9,7 @@ maintainers:
     email: gianrubio@gmail.com
 name: prometheus-operator
 sources:
+  - https://github.com/coreos/kube-prometheus
   - https://github.com/coreos/prometheus-operator
   - https://coreos.com/operators/prometheus
 version: 8.1.0
