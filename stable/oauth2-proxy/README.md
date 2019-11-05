@@ -97,6 +97,9 @@ Parameter | Description | Default
 `service.loadBalancerIP` | ip of load balancer | `nil`
 `service.loadBalancerSourceRanges` | allowed source ranges in load balancer | `nil`
 `tolerations` | list of node taints to tolerate | `[]`
+`securityContext.enabled` | enable Kubernetes security context | `false`
+`securityContext.runAsNonRoot` | make sure that the container runs as a non-root user | `true`
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
