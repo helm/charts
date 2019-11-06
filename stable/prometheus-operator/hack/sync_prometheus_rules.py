@@ -61,6 +61,8 @@ condition_map = {
     'kubernetes-resources': ' .Values.defaultRules.rules.kubernetesResources',
     'kubernetes-storage': ' .Values.defaultRules.rules.kubernetesStorage',
     'kubernetes-system': ' .Values.defaultRules.rules.kubernetesSystem',
+    'kubernetes-system-controller-manager': ' .Values.kubeControllerManager.enabled',
+    'kubernetes-system-scheduler': ' .Values.kubeScheduler.enabled .Values.defaultRules.rules.kubeScheduler',
     'node-exporter.rules': ' .Values.nodeExporter.enabled .Values.defaultRules.rules.node',
     'node-exporter': ' .Values.nodeExporter.enabled .Values.defaultRules.rules.node',
     'node.rules': ' .Values.nodeExporter.enabled .Values.defaultRules.rules.node',
