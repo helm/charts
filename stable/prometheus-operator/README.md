@@ -454,6 +454,10 @@ For a full list of configurable values please refer to the [Grafana chart](https
 | `kubeControllerManager.serviceMonitor.relabelings` | The `relabel_configs` for scraping the scheduler. | `` |
 | `kubeControllerManager.serviceMonitor.serverName` | Name of the server to use when validating TLS certificate | `null` |
 | `kubeDns.enabled` | Deploy kubeDns scraping components. Use either this or coreDns| `false` |
+| `kubeDns.service.dnsmasq.port` | Dnsmasq service port | `10054` |
+| `kubeDns.service.dnsmasq.targetPort` | Dnsmasq service targetPort | `10054` |
+| `kubeDns.service.skydns.port` | Skydns service port | `10055` |
+| `kubeDns.service.skydns.targetPort` | Skydns service targetPort | `10055` |
 | `kubeDns.service.selector` | kubeDns service selector | `{"k8s-app" : "kube-dns" }` |
 | `kubeDns.serviceMonitor.dnsmasqMetricRelabelings` | The `metric_relabel_configs` for scraping dnsmasq kubeDns. | `` |
 | `kubeDns.serviceMonitor.dnsmasqRelabelings` | The `relabel_configs` for scraping dnsmasq kubeDns. | `` |
