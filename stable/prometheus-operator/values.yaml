@@ -663,9 +663,15 @@ coreDns:
 ##
 kubeDns:
   enabled: false
-  # service:
-  #   selector:
-  #     k8s-app: kube-dns
+  service:
+    dnsmasq:
+      port: 10054
+      targetPort: 10054
+    skydns:
+      port: 10055
+      targetPort: 10055
+    # selector:
+    #   k8s-app: kube-dns
   serviceMonitor:
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
     ##
