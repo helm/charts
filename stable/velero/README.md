@@ -67,6 +67,8 @@ Parameter | Description | Default
 `initContainers` | InitContainers and their specs to start with the deployment pod | `[]`
 `tolerations` | List of node taints to tolerate | `[]`
 `nodeSelector` | Node labels for pod assignment | `{}`
+`extraVolumes` | Extra volumes for the Velero deployment | `[]`
+`extraVolumeMounts` | Extra volumeMounts for the Velero deployment | `[]`
 `configuration.backupStorageLocation.name` | The name of the cloud provider that will be used to actually store the backups (`aws`, `azure`, `gcp`) | ``
 `configuration.backupStorageLocation.bucket` | The storage bucket where backups are to be uploaded | ``
 `configuration.backupStorageLocation.config.region` | The cloud provider region (AWS only) | ``
@@ -101,11 +103,14 @@ Parameter | Description | Default
 `restic.podVolumePath` | Location of pod volumes on the host | `/var/lib/kubelet/pods`
 `restic.privileged` | Whether restic should run as a privileged pod. Only necessary in special cases (SELinux) | `false`
 `restic.resources` | Restic DaemonSet resource requests and limits | `{}`
+`restic.tolerations` | Restic DaemonSet tolerations | `[]`
+`restic.extraVolumes` | Extra volumes for the Restic daemonset | `[]`
+`restic.extraVolumeMounts` | Extra volumeMounts for the Restic daemonset | `[]`
 `configMaps` | Velero ConfigMaps | `[]`
 
 ## How to
 ```
-helm install --name velero --namespace velero ./velero
+helm install --name velero --namespace velero stable/velero
 ```
 
 ## Remove heptio/velero

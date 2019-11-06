@@ -36,7 +36,7 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | Parameter                  | Description                         | Default                                                 |
 |----------------------------|-------------------------------------|---------------------------------------------------------|
 | `image.repository`         | Image repository | `homeassistant/home-assistant` |
-| `image.tag`                | Image tag. Possible values listed [here](https://hub.docker.com/r/homeassistant/home-assistant/tags/).| `0.98.0`|
+| `image.tag`                | Image tag. Possible values listed [here](https://hub.docker.com/r/homeassistant/home-assistant/tags/).| `0.101.2`|
 | `image.pullPolicy`         | Image pull policy | `IfNotPresent` |
 | `image.pullSecrets`        | Secrets to use when pulling the image | `[]` |
 | `strategyType`             | Specifies the strategy used to replace old Pods by new ones | `Recreate` |
@@ -106,7 +106,7 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `configurator.service.loadBalancerSourceRanges`   | Loadbalancer client IP restriction range for the configurator UI | `[]` |
 | `vscode.enabled`                  | Enable the optional [VS Code Server Sidecar](https://github.com/cdr/code-server) | `false` |
 | `vscode.image.repository`         | Image repository | `codercom/code-server` |
-| `vscode.image.tag`                | Image tag | `2.preview.11-vsc1.37.0`|
+| `vscode.image.tag`                | Image tag | `2.1665-vsc1.39.2`|
 | `vscode.image.pullPolicy`         | Image pull policy | `IfNotPresent` |
 | `vscode.hassConfig`               | Base path of the home assistant configuration files | `/config` |
 | `vscode.vscodePath`               | Base path of the VS Code configuration files | `/config/.vscode` |

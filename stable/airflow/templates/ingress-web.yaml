@@ -27,5 +27,11 @@ spec:
             backend:
               serviceName: {{ template "airflow.fullname" . }}-web
               servicePort: web
+          {{- range .Values.ingress.web.paths }}
+          - path: {{ .path }}
+            backend:
+              serviceName: {{ .serviceName }}
+              servicePort: {{ .servicePort }}
+          {{- end }}
       host: {{ .Values.ingress.web.host }}
 {{- end }}

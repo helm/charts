@@ -11,6 +11,9 @@ metadata:
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Release.Name }}-{{ .Values.Component }}"
+{{- if .Values.ServiceDiscovery.labels }}
+{{ toYaml .Values.ServiceDiscovery.labels | indent 4 }}
+{{- end }}
   annotations:
     # Use this annotation in addition to the actual field below because the
     # annotation will stop being respected soon but the field is broken in
