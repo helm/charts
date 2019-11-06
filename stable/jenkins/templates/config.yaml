@@ -136,9 +136,6 @@ data:
           <serverUrl>https://kubernetes.default</serverUrl>
           <skipTlsVerify>false</skipTlsVerify>
           <namespace>{{ template "jenkins.master.slaveKubernetesNamespace" . }}</namespace>
-{{- if semverCompare ">=1.20.2" (include "jenkins.kubernetes-version" . ) }}
-          <directConnection>false</directConnection>
-{{- end }}
 {{- if .Values.master.slaveKubernetesNamespace }}
           <jenkinsUrl>http://{{ template "jenkins.fullname" . }}.{{ template "jenkins.namespace" . }}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</jenkinsUrl>
           <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent.{{ template "jenkins.namespace" . }}:{{ .Values.master.slaveListenerPort }}</jenkinsTunnel>
