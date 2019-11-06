@@ -1,5 +1,5 @@
 {{- if .Values.podSecurityPolicy.create}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "kured.psp.apiVersion" . }}
 kind: PodSecurityPolicy
 metadata:
   name: {{ template "kured.fullname" . }}
