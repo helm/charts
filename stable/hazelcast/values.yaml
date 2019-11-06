@@ -5,7 +5,7 @@ image:
   # repository is the Hazelcast image name
   repository: "hazelcast/hazelcast"
   # tag is the Hazelcast image tag
-  tag: "3.12.2"
+  tag: "3.12.4"
   # pullPolicy is the Docker image pull policy
   # It's recommended to change this to 'Always' if the image tag is 'latest'
   # ref: http://kubernetes.io/docs/user-guide/images/#updating-images
@@ -66,6 +66,9 @@ affinity:
 #          - hazelcast
 #      topologyKey: kubernetes.io/hostname
 
+# tolerations enable Hazelcast PODs to be able to run on nodes with taints
+# tolerations:
+
 # nodeSelector is an array of Hazelcast Node labels for POD assignments
 # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 nodeSelector: {}
@@ -120,6 +123,12 @@ readinessProbe:
 
 # Hazelcast Service properties
 service:
+  # Specifies whether a Service should be created
+  create: true
+  # The name of the Service to use.
+  # The name is used for service discovery by Hazelcast K8S discovery plugin.
+  # If not set and create is true, a name is generated using the fullname template
+  # name:
   # type defines the Kubernetes service type ('ClusterIP', 'LoadBalancer', or 'NodePort')
   type: ClusterIP
   # port is the Kubernetes service port
@@ -175,7 +184,7 @@ mancenter:
     # repository is the Hazelcast Management Center image name
     repository: "hazelcast/management-center"
     # tag is the Hazelcast Management Center image tag
-    tag: "3.12.3"
+    tag: "3.12.6"
     # pullPolicy is the Docker image pull policy
     # It's recommended to change this to 'Always' if the image tag is 'latest'
     # ref: http://kubernetes.io/docs/user-guide/images/#updating-images
@@ -206,6 +215,12 @@ mancenter:
   licenseKey:
   # licenseKeySecretName is the name of the secret where the Hazelcast Management Center License Key is stored (can be used instead of licenseKey)
   # licenseKeySecretName:
+
+  # affinity specifies the Management Center affinity/anti-affinity of different pods
+  # affinity:
+
+  # tolerations enable Management Center POD to be able to run on nodes with taints
+  # tolerations:
 
   # nodeSelector is an array of Hazelcast Management Center Node labels for POD assignments
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
@@ -241,6 +256,10 @@ mancenter:
     type: LoadBalancer
     # port is the Kubernetes service port
     port: 8080
+    # service https port
+    httpsPort: 443
+    # service annotations for management center
+    annotations: {}
 
   # Hazelcast Management Center Liveness probe
   livenessProbe:

@@ -22,6 +22,8 @@ autoscaling:
         name: memory
         targetAverageUtilization: 60
 
+podDisruptionBudget: {}
+
 # namespace:
   # name: default
 
@@ -47,7 +49,7 @@ securityContext:
 
 image:
   repository: quay.io/datawire/ambassador
-  tag: 0.81.0
+  tag: 0.85.0
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -149,6 +151,8 @@ serviceAccount:
 
 initContainers: []
 
+sidecarContainers: []
+
 volumes: []
 
 volumeMounts: []
@@ -195,7 +199,7 @@ pro:
   enabled: false
   image:
     repository: quay.io/datawire/ambassador_pro
-    tag: 0.7.0
+    tag: 0.9.1
   # As of Ambassador Pro 0.6.0, both the RateLimitService and AuthService use the same port
   ports:
     auth: 8500
@@ -260,6 +264,8 @@ pro:
       #   requests:
       #     cpu: 50m
       #     memory: 128Mi
+  devPortal:
+    enabled: false
 
 # DEPRECATED: Ambassador now exposes the /metrics endpoint in Envoy.
 # DEPRECATED: See https://www.getambassador.io/user-guide/monitoring#deployment for more information on how to use the /metrics endpoint

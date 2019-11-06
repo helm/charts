@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "elasticsearch-exporter.fullname" . }}
@@ -28,6 +28,11 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
     spec:
+      {{- if .Values.serviceAccount.create  }}
+      serviceAccountName: {{ template "elasticsearch-exporter.fullname" . }}
+      {{- else }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      {{- end }}
 {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
 {{- end }}
@@ -105,16 +110,22 @@ spec:
               name: http
           livenessProbe:
             httpGet:
-              path: /health
+              path: /healthz
               port: http
-            initialDelaySeconds: 30
-            timeoutSeconds: 10
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
+            periodSeconds: 5
           readinessProbe:
             httpGet:
-              path: /health
+              path: /healthz
               port: http
-            initialDelaySeconds: 10
-            timeoutSeconds: 10
+            initialDelaySeconds: 1
+            timeoutSeconds: 5
+            periodSeconds: 5
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/bash", "-c", "sleep 20"]
           volumeMounts:
             {{- if and .Values.es.ssl.enabled (eq .Values.es.ssl.useExistingSecrets false) }}
             - mountPath: /ssl

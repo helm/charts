@@ -15,7 +15,7 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "sparkoperator.name" . }}
@@ -38,10 +38,10 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "sparkoperator.name" . }}
         app.kubernetes.io/version: {{ .Values.operatorVersion }}
-      initializers:
-        pending: []
     spec:
       serviceAccountName: {{ include "sparkoperator.serviceAccountName" . }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | trim | indent 8 }}
       {{- if .Values.enableWebhook }}
       volumes:
         - name: webhook-certs
@@ -52,6 +52,12 @@ spec:
       - name: sparkoperator
         image: {{ .Values.operatorImageName }}:{{ .Values.operatorVersion }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
+        {{- if .Values.securityContext }}
+        securityContext: 
+          {{- range $securityPolicy, $value := .Values.securityContext }}
+            {{ $securityPolicy }}: {{ $value }}
+          {{- end }}
+        {{- end }}
         {{- if .Values.enableWebhook }}
         volumeMounts:
           - name: webhook-certs
@@ -65,7 +71,6 @@ spec:
         - -v={{ .Values.logLevel }}
         - -namespace={{ .Values.sparkJobNamespace }}
         - -ingress-url-format={{ .Values.ingressUrlFormat }}
-        - -install-crds={{ .Values.installCrds }}
         - -controller-threads={{ .Values.controllerThreads }}
         - -resync-interval={{ .Values.resyncInterval }}
         - -logtostderr
@@ -85,6 +90,12 @@ spec:
         - -webhook-port={{ .Values.webhookPort }}
         - -webhook-svc-name={{ .Release.Name }}-webhook
         - -webhook-config-name={{ include "sparkoperator.fullname" . }}-webhook-config
+        {{- end }}
+        {{- if .Values.enableResourceQuotaEnforcement }}
+        - -enable-resource-quota-enforcement={{ .Values.enableResourceQuotaEnforcement }}
+        {{- end }}
+        {{- if .Values.enableLeaderElection }}
+        - -leader-election={{ .Values.enableLeaderElection }}
         {{- end }}
         {{- if .Values.resources }}
         resources:

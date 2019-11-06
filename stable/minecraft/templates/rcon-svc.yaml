@@ -9,7 +9,23 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+{{- if (or (eq .Values.minecraftServer.rcon.serviceType "ClusterIP") (empty .Values.minecraftServer.rcon.serviceType)) }}
+  type: ClusterIP
+{{- else if eq .Values.minecraftServer.rcon.serviceType "LoadBalancer" }}
   type: {{ .Values.minecraftServer.rcon.serviceType }}
+  {{- if .Values.minecraftServer.rcon.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.minecraftServer.rcon.loadBalancerIP }}
+  {{- end }}
+  {{- if .Values.minecraftServer.rcon.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{ toYaml .Values.minecraftServer.rcon.loadBalancerSourceRanges | indent 4 }}
+  {{- end -}}
+{{- else }}
+  type: {{ .Values.minecraftServer.rcon.serviceType }}
+{{- end }}
+  {{- if .Values.minecraftServer.rcon.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ .Values.minecraftServer.rcon.externalTrafficPolicy }}
+  {{- end }}
   ports:
   - name: rcon
     port: {{ .Values.minecraftServer.rcon.port }}

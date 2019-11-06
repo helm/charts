@@ -24,6 +24,9 @@ replicas: 1
 #   - "--ping"
 #   - "--ping.entrypoint=http"
 
+# /ping health-check entry point.
+# pingEntryPoint: http
+
 podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 2
@@ -407,11 +410,8 @@ rbac:
 metrics:
   prometheus:
     enabled: false
-    ## If true, prevents exposing port 8080 on the main Traefik service, reserving
-    ## it to the dashboard service only
-    restrictAccess: false
     # buckets: [0.1,0.3,1.2,5]
-  # serviceMonitor:
+   # serviceMonitor:
     # When set true and if Prometheus Operator is installed then use a ServiceMonitor to configure scraping
     # enabled: false
     # Set the namespace the ServiceMonitor should be deployed
@@ -429,6 +429,11 @@ metrics:
     # address: localhost:8125
     # pushinterval: 10s
 deployment:
+  # labels to add to the deployment
+  # labels:
+  #   key: value
+  # annotations:
+  #   key: value
   # labels to add to the pod container metadata
   # podLabels:
   #   key: value

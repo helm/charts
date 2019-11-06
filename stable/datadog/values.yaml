@@ -16,9 +16,9 @@ image:
 
   ## @param tag - string - required
   ## Define the Agent version to use.
-  ## Use 6.13.0-jmx to enable jmx fetch collection
+  ## Use 6.14.0-jmx to enable jmx fetch collection
   #
-  tag: 6.13.0
+  tag: 6.14.0
 
   ## @param pullPolicy - string - required
   ## The Kubernetes pull policy.
@@ -356,6 +356,14 @@ clusterAgent:
   metricsProvider:
     enabled: false
 
+    ## Configuration for the service for the cluster-agent metrics server
+    #
+    service:
+      ## @param type - string - optional
+      ##
+      #
+      type: ClusterIP
+
   ## @param clusterChecks - object - required
   ## Enable the Cluster Checks feature on both the cluster-agents and the daemonset
   ## ref: https://docs.datadoghq.com/agent/autodiscovery/clusterchecks/
@@ -423,6 +431,16 @@ clusterAgent:
   ## Override the cluster-agent's readiness probe logic from the default:
   #
   # readinessProbe:
+
+  ## @param useHostNetwork - boolean - optional
+  ## Bind ports on the hostNetwork. Useful for CNI networking where hostPort might
+  ## not be supported. The ports need to be available on all hosts. It can be
+  ## used for custom metrics instead of a service endpoint.
+  ##
+  ## WARNING: Make sure that hosts using this are properly firewalled otherwise
+  ## metrics and traces are accepted from any host able to connect to this host.
+  #
+  # useHostNetwork: true
 
 rbac:
 
@@ -663,6 +681,30 @@ daemonset:
   #  Configures a configmap to provide the agent configuration
   #
   # useConfigMap: false
+
+  ## @param customAgentConfig - object - optional
+  ## Specify custom contents for the datadog agent config (datadog.yaml).
+  ## ref: https://docs.datadoghq.com/agent/guide/agent-configuration-files/?tab=agentv6
+  ## ref: https://github.com/DataDog/datadog-agent/blob/master/pkg/config/config_template.yaml
+  #
+  # customAgentConfig:
+  #   # Autodiscovery for Kubernetes
+  #   listeners:
+  #     - name: kubelet
+  #   config_providers:
+  #     - name: kubelet
+  #       polling: true
+  #     # needed to support legacy docker label config templates
+  #     - name: docker
+  #       polling: true
+  #
+  #   # Enable APM by setting the DD_APM_ENABLED envvar to true, or override this configuration
+  #   apm_config:
+  #     enabled: false
+  #     apm_non_local_traffic: true
+  #
+  #   # Use java cgroup memory awareness
+  #   jmx_use_cgroup_memory_limit: true
 
 deployment:
   ## @param enabled - boolean - required

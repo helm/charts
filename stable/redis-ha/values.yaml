@@ -8,6 +8,9 @@ image:
 ## replicas number for each component
 replicas: 3
 
+## Kubernetes priorityClass name for the redis-ha-server pod
+# priorityClassName: ""
+
 ## Custom labels for the redis pod
 labels: {}
 
@@ -37,6 +40,8 @@ haproxy:
     pullPolicy: IfNotPresent
   annotations: {}
   resources: {}
+  ## Kubernetes priorityClass name for the haproxy pod
+  # priorityClassName: ""
   ## Service type for HAProxy
   ##
   service:
@@ -59,6 +64,10 @@ haproxy:
     connect: 4s
     server: 30s
     client: 30s
+  securityContext:
+    runAsUser: 1000
+    fsGroup: 1000
+    runAsNonRoot: true
 
 
 ## Role Based Access
@@ -211,6 +220,20 @@ exporter:
 
   # Additional args for redis exporter
   extraArgs: {}
+
+  serviceMonitor:
+    # When set true then use a ServiceMonitor to configure scraping
+    enabled: false
+    # Set the namespace the ServiceMonitor should be deployed
+    # namespace: monitoring
+    # Set how frequently Prometheus should scrape
+    # interval: 30s
+    # Set path to redis-exporter telemtery-path
+    # telemetryPath: /metrics
+    # Set labels for the ServiceMonitor, use this to define your scrape label for Prometheus Operator
+    # labels: {}
+    # Set timeout for scrape
+    # timeout: 10s
 
 podDisruptionBudget: {}
   # maxUnavailable: 1

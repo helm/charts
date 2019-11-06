@@ -1,5 +1,5 @@
 {{- if eq true .Values.firefox.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "selenium.firefox.fullname" . }}
@@ -7,6 +7,10 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
   replicas: {{ .Values.firefox.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "selenium.firefox.fullname" . }}
+      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
@@ -84,7 +88,7 @@ spec:
           resources:
 {{ toYaml .Values.firefox.resources | indent 12 }}
 {{- if or .Values.global.imagePullSecrets .Values.firefox.imagePullSecrets }}
-      imagePullSecrets: 
+      imagePullSecrets:
       - name: {{ .Values.firefox.imagePullSecrets | default .Values.global.imagePullSecrets | quote }}
 {{- end }}
       hostAliases:

@@ -63,7 +63,7 @@ spec:
             - "-p"
             - "{{ .Values.exporter.port }}"
             - "-z"
-            - "{{ include "solr.zookeeper-name" . }}:2181"
+            - "{{ include "solr.zookeeper-service-name" . }}:2181"
             - "-n"
             - "{{ .Values.exporter.threads }}"
             - "-f"

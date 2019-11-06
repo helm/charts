@@ -1,6 +1,6 @@
 # Solr Helm Chart
 
-This helm chart installs a Solr cluster and it's required Zookeeper cluster into a running
+This helm chart installs a Solr cluster and its required Zookeeper cluster into a running
 kubernetes cluster.
 
 The chart installs the Solr docker image from: https://hub.docker.com/_/solr/
@@ -16,7 +16,7 @@ To install the Solr helm chart run:
 
 ```txt
 helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install --name solr incubator/solr
+helm install --name solr incubator/solr
 ```
 
 ## Configuration Options
@@ -32,11 +32,11 @@ The following table shows the configuration options for the Solr helm chart:
 | `extraEnvVars`                                | Additional environment variables to set on the solr pods (in yaml syntax) | `[]` |
 | `terminationGracePeriodSeconds`               | The termination grace period of the Solr pods | `180`|
 | `image.repository`                            | The repository to pull the docker image from| `solr`                                                                |
-| `image.tag`                                   | The tag on the repository to pull | `7.6.0`                                                               |
+| `image.tag`                                   | The tag on the repository to pull | `7.7.2`                                                               |
 | `image.pullPolicy`                            | Solr pod pullPolicy | `IfNotPresent`                                                              |
-| `livenessProbe.initialDelaySeconds`           | Inital Delay for Solr pod liveness probe | `20`                                                                  |
+| `livenessProbe.initialDelaySeconds`           | Initial Delay for Solr pod liveness probe | `20`                                                                  |
 | `livenessProbe.periodSeconds`                 | Poll rate for liveness probe | `10`                                                                  |
-| `readinessProbe.initialDelaySeconds`          | Inital Delay for Solr pod readiness probe | `15`                                                                  |
+| `readinessProbe.initialDelaySeconds`          | Initial Delay for Solr pod readiness probe | `15`                                                                  |
 | `readinessProbe.periodSeconds`                | Poll rate for readiness probe | `5`                                                                   |
 | `podAnnotations`                              | Annotations to be applied to the solr pods | `{}` |
 | `affinity`                                    | Affinity policy to be applied to the Solr pods | `{}` |
@@ -67,18 +67,19 @@ The following table shows the configuration options for the Solr helm chart:
 | `exporter.resources`                          | Resource limits to set on the exporter pods | `{}` |
 | `exporter.port`                               | The port that the exporter runs on | `9983`                                                                |
 | `exporter.threads`                            | The number of query threads that the exporter runs | `7`                                                                   |
-| `exporter.livenessProbe.initialDelaySeconds`  | Inital Delay for the exporter pod liveness| `20`                                                                  |
+| `exporter.livenessProbe.initialDelaySeconds`  | Initial Delay for the exporter pod liveness| `20`                                                                  |
 | `exporter.livenessProbe.periodSeconds`        | Poll rate for liveness probe | `10`                                                                  |
-| `exporter.readinessProbe.initialDelaySeconds` | Inital Delay for the exporter pod readiness | `15`                                                                  |
+| `exporter.readinessProbe.initialDelaySeconds` | Initial Delay for the exporter pod readiness | `15`                                                                  |
 | `exporter.readinessProbe.periodSeconds`       | Poll rate for readiness probe | `5`                                                                   |
 | `exporter.service.type`                       | The type of the exporter service | `ClusterIP`                                                           |
 | `exporter.service.annotations`                | Annotations to apply to the exporter service | `{}` |
 
 ## Service Start with command sets
 
+```sh
 helm install --name solr \
     --set image.tag=7.7.2,javaMem="-Xms1g -Xmx1g",logLevel=INFO,replicaCount=2,livenessProbe.initialDelaySeconds=420,exporter.readinessProbe.periodSeconds=30 incubator/solr
-
+```
 
 ## TLS Configuration
 
