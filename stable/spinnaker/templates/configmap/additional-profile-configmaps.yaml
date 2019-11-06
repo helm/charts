@@ -42,5 +42,10 @@ Render profiles for each service by merging predefined defaults with values pass
 {{- end -}}
 {{- end -}}
 
+{{- /* Pass content of profiles through tpl */}}
+{{- range $filename, $content := $profiles -}}
+{{- $_ := set $profiles $filename (tpl $content $) -}}
+{{- end -}}
+
 data:
 {{ $profiles | toYaml | indent 2 }}

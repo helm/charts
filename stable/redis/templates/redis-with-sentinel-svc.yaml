@@ -6,8 +6,11 @@ metadata:
   labels:
     app: {{ template "redis.name" . }}
     chart: {{ template "redis.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    {{- if .Values.sentinel.service.labels }}
+    {{ toYaml .Values.sentinel.service.labels | nindent 4 }}
+    {{- end }}
 {{- if .Values.sentinel.service.annotations }}
   annotations:
 {{ toYaml .Values.sentinel.service.annotations | indent 4 }}
@@ -33,5 +36,5 @@ spec:
     {{- end }}
   selector:
     app: {{ template "redis.name" . }}
-    release: "{{ .Release.Name }}"
+    release: {{ .Release.Name }}
 {{- end }}

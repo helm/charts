@@ -13,7 +13,7 @@
 image:
   registry: docker.io
   repository: bitnami/external-dns
-  tag: 0.5.16-debian-9-r8
+  tag: 0.5.17-debian-9-r25
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -74,6 +74,9 @@ aws:
   ## Zone Tag Filter
   ##
   zoneTags: []
+  ## Enable AWS Prefer CNAME. Available values are: true, false
+  ##
+  preferCNAME: ""
 
 ## Azure configuration to be set via arguments/env. variables
 ##
@@ -81,14 +84,34 @@ azure:
   ## When a secret to load azure.json is not specified,
   ## the host's /etc/kubernetes/azure.json will be used
   ##
+  ## Deprecated: please use tenantId, subscriptionId, aadClientId and aadClientSecret values instead.
+  ##
   secretName: ""
   ## Azure resource group to use
   ##
   resourceGroup: ""
+  ## Azure tenant ID to use
+  ##
+  tenantId: ""
+  ## Azure subscription ID to use
+  ##
+  subscriptionId: ""
+  ## Azure Application Client ID to use
+  ##
+  aadClientId: ""
+  ## Azure Application Client Secret to use
+  ##
+  aadClientSecret: ""
+  ## If you use Azure MSI, this should be set to true
+  ##
+  useManagedIdentityExtension: false
 
 ## Cloudflare configuration to be set via arguments/env. variables
 ##
 cloudflare:
+  ## `CF_API_TOKEN` to set in the environment
+  ##
+  apiToken: ""
   ## `CF_API_KEY` to set in the environment
   ##
   apiKey: ""
@@ -283,10 +306,12 @@ podLabels: {}
 ##
 priorityClassName: ""
 
-## Installs the DNSEndpoint CRD
+## Options for the source type "crd"
 ##
 crd:
+  ## Install and use the integrated DNSEndpoint CRD
   create: false
+  ## Change these to use an external DNSEndpoint CRD (E.g. from kubefed)
   apiversion: ""
   kind: ""
 
@@ -324,7 +349,7 @@ service:
 ## https://kubernetes.io/docs/reference/access-authn-authz/rbac/
 ##
 rbac:
-  create: false
+  create: true
   ## Service Account for pods
   ## https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
   ##

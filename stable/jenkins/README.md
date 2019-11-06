@@ -110,7 +110,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.loadBalancerSourceRanges` | Allowed inbound IP addresses         | `0.0.0.0/0`                               |
 | `master.loadBalancerIP`           | Optional fixed external IP           | Not set                                   |
 | `master.jmxPort`                  | Open a port, for JMX stats           | Not set                                   |
-| `master.extraPorts`               | Open extra ports, for other uses     | Not set                                   |
+| `master.extraPorts`               | Open extra ports, for other uses     | `[]`                                      |
 | `master.overwriteConfig`          | Replace init scripts and config w/ ConfigMap on boot  | `false`                  |
 | `master.ingress.enabled`          | Enables ingress                      | `false`                                   |
 | `master.ingress.apiVersion`       | Ingress API version                  | `extensions/v1beta1`                      |
@@ -132,23 +132,24 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.jenkinsUrlProtocol`       | Set protocol for JenkinsLocationConfiguration.xml | Set to `https` if `Master.ingress.tls`, `http` otherwise |
 | `master.JCasC.enabled`            | Wheter Jenkins Configuration as Code is enabled or not | `false`                 |
 | `master.JCasC.defaultConfig`      | Enables default Jenkins configuration via configuration as code plugin | `false` |
-| `master.JCasC.configScripts`      | List of Jenkins Config as Code scripts |                                         |
+| `master.JCasC.configScripts`      | List of Jenkins Config as Code scripts | `{}`                                    |
 | `master.enableXmlConfig`          | enables configuration done via XML files | `false`                               |
 | `master.sidecars.configAutoReload` | Jenkins Config as Code auto-reload settings |                                   |
 | `master.sidecars.configAutoReload.enabled` | Jenkins Config as Code auto-reload settings (Attention: rbac needs to be enabled otherwise the sidecar can't read the config map) | `false`                                                      |
-| `master.sidecars.configAutoReload.image` | Image which triggers the reload | `shadwell/k8s-sidecar:0.0.2`            |
-| `master.sidecars.others`          | Configures additional sidecar container(s) for Jenkins master | `{}`             |
-| `master.initScripts`              | List of Jenkins init scripts         | Not set                                   |
+| `master.sidecars.configAutoReload.image` | Image which triggers the reload | `kiwigrid/k8s-sidecar:0.1.20`           |
+| `master.sidecars.other`           | Configures additional sidecar container(s) for Jenkins master | `[]`             |
+| `master.initScripts`              | List of Jenkins init scripts         | `[]`                                      |
 | `master.credentialsXmlSecret`     | Kubernetes secret that contains a 'credentials.xml' file | Not set               |
 | `master.secretsFilesSecret`       | Kubernetes secret that contains 'secrets' files | Not set                        |
 | `master.jobs`                     | Jenkins XML job configs              | `{}`                                      |
 | `master.overwriteJobs`            | Replace jobs w/ ConfigMap on boot    | `false`                                   |
-| `master.installPlugins`           | List of Jenkins plugins to install. If you don't want to install plugins set it to `[]` | `kubernetes:1.18.1 workflow-aggregator:2.6 credentials-binding:1.19 git:3.11.0 workflow-job:2.33` |
+| `master.installPlugins`           | List of Jenkins plugins to install. If you don't want to install plugins set it to `[]` | `kubernetes:1.18.2 workflow-aggregator:2.6 credentials-binding:1.19 git:3.11.0 workflow-job:2.33` |
 | `master.overwritePlugins`         | Overwrite installed plugins on start.| `false`                                   |
 | `master.enableRawHtmlMarkupFormatter` | Enable HTML parsing using (see below) | false                                |
-| `master.scriptApproval`           | List of groovy functions to approve  | Not set                                   |
+| `master.scriptApproval`           | List of groovy functions to approve  | `[]`                                      |
 | `master.nodeSelector`             | Node labels for pod assignment       | `{}`                                      |
 | `master.affinity`                 | Affinity settings                    | `{}`                                      |
+| `master.schedulerName`            | Kubernetes scheduler name            | Not set                                   |
 | `master.tolerations`              | Toleration labels for pod assignment | `[]`                                      |
 | `master.podAnnotations`           | Annotations for master pod           | `{}`                                      |
 | `master.customConfigMap`          | Deprecated: Use a custom ConfigMap   | `false`                                   |
@@ -164,6 +165,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.prometheus.alertingrules` | Array of prometheus alerting rules | `[]`                                        |
 | `master.prometheus.alertingRulesAdditionalLabels` | Additional labels to add to the prometheus rule object     | `{}`                                   |
 | `master.priorityClassName`        | The name of a `priorityClass` to apply to the master pod | Not set               |
+| `master.testEnabled`              | Can be used to disable rendering test resources when using helm template | `true`                                 |
 | `networkPolicy.enabled`           | Enable creation of NetworkPolicy resources. | `false`                            |
 | `networkPolicy.apiVersion`        | NetworkPolicy ApiVersion             | `networking.k8s.io/v1`                    |
 | `rbac.create`                     | Whether RBAC resources are created   | `true`                                    |
@@ -188,9 +190,9 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.imagePullSecret`    | Agent image pull secret                         | Not set                |
 | `agent.tag`                | Agent image tag                                 | `3.27-1`               |
 | `agent.privileged`         | Agent privileged container                      | `false`                |
-| `agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 200m, memory: 256Mi}, limits: {cpu: 200m, memory: 256Mi}}`|
-| `agent.volumes`            | Additional volumes                              | `nil`                  |
-| `agent.envVars`            | Environment variables for the agent Pod         | Not set                |
+| `agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 512m, memory: 512Mi}, limits: {cpu: 512m, memory: 512Mi}}`|
+| `agent.volumes`            | Additional volumes                              | `[]`                   |
+| `agent.envVars`            | Environment variables for the agent Pod         | `[]`                   |
 | `agent.command`            | Executed command when side container starts     | Not set                |
 | `agent.args`               | Arguments passed to executed command            | Not set                |
 | `agent.sideContainerName`  | Side container name in agent                    | jnlp                   |

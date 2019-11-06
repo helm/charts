@@ -4,7 +4,7 @@ kind: Role
 metadata:
   labels:
     app: {{ template "nginx-ingress.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "nginx-ingress.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "nginx-ingress.fullname" . }}
@@ -82,7 +82,7 @@ rules:
       - create
       - patch
 {{- if .Values.podSecurityPolicy.enabled }}
-  - apiGroups:      ['extensions']
+  - apiGroups:      ['{{ template "podSecurityPolicy.apiVersion" . }}']
     resources:      ['podsecuritypolicies']
     verbs:          ['use']
     resourceNames:  [{{ template "nginx-ingress.fullname" . }}]

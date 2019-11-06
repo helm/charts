@@ -1,6 +1,6 @@
 {{- if .Values.haproxy.enabled }}
 kind: Deployment
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 metadata:
   name: {{ template "redis-ha.fullname" . }}-haproxy
   labels:
@@ -24,13 +24,15 @@ spec:
         prometheus.io/path: /metrics
         prometheus.io/port: "9101"
         prometheus.io/scrape: "true"
-        checksum/config: {{ include (print $.Template.BasePath "/redis-ha-configmap.yaml") . | sha256sum }}
+        checksum/config: {{ print (include "config-haproxy.cfg" .) (include "config-haproxy_init.sh" .) | sha256sum }}
       {{- if .Values.haproxy.annotations }}
-{{ toYaml .Values.haproxy.annotations . | indent 8 }}
+{{ toYaml .Values.haproxy.annotations | indent 8 }}
       {{- end }}
     spec:
       # Needed when using unmodified rbac-setup.yml
+      {{ if .Values.haproxy.serviceAccount.create }}
       serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}-haproxy
+      {{ end }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
       tolerations:
@@ -45,12 +47,26 @@ spec:
         - sh
         args:
         - /readonly/haproxy_init.sh
+{{- if .Values.auth }}
+        env:
+        - name: AUTH
+          valueFrom:
+            secretKeyRef:
+            {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+            {{- else }}
+              name: {{ template "redis-ha.fullname" . }}
+            {{- end }}
+              key: {{ .Values.authKey }}
+{{- end }}
         volumeMounts:
         - name: config-volume
           mountPath: /readonly
           readOnly: true
         - name: data
           mountPath: /data
+      securityContext:
+{{ toYaml .Values.haproxy.securityContext | indent 8 }}
       containers:
       {{- if .Values.haproxy.exporter.enabled }}
       - name: prometheus-exporter
@@ -77,11 +93,9 @@ spec:
         ports:
         - name: redis
           containerPort: {{ default "6379" .Values.redis.port }}
-          hostPort: 6379
         {{- if .Values.haproxy.readOnly.enabled }}
         - name: readonlyport
           containerPort: {{ default "6380" .Values.haproxy.readOnly.port }}
-          hostPort: 6380
         {{- end }}
         resources:
 {{ toYaml .Values.haproxy.resources | indent 10 }}
@@ -90,6 +104,9 @@ spec:
           mountPath: /usr/local/etc/haproxy
         - name: shared-socket
           mountPath: /run/haproxy
+{{- if .Values.haproxy.priorityClassName }}
+      priorityClassName: {{ .Values.haproxy.priorityClassName }}
+{{- end }}
       volumes:
       - name: config-volume
         configMap:

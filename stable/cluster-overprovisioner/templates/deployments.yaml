@@ -16,20 +16,32 @@ metadata:
   name: "{{ $fullname }}-{{ .name }}"
   labels:
     app.kubernetes.io/name: {{ $name }}
+    cluster-overprovisioner-name: {{ .name }}
     helm.sh/chart: {{ $chart }}
     app.kubernetes.io/instance: {{ $relName }}
     app.kubernetes.io/managed-by: {{ $relService }}
 spec:
+  strategy:
+    type: Recreate
   replicas: {{ .replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ $name }}
+      cluster-overprovisioner-name: {{ .name }}
       app.kubernetes.io/instance: {{ $relName }}
   template:
     metadata:
+    {{- with .annotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
       labels:
         app.kubernetes.io/name: {{ $name }}
+        cluster-overprovisioner-name: {{ .name }}
         app.kubernetes.io/instance: {{ $relName }}
+    {{- with .labels }}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
     spec:
       priorityClassName: {{ $priorityClassName }}
       containers:
