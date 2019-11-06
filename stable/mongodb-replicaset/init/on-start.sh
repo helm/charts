@@ -156,7 +156,7 @@ if [[ "${DO_NOT_INIT}" == "true" ]]; then
 else
   log "Peers: ${peers[*]}"
   log "Starting a MongoDB replica"
-  mongod --config /data/configdb/mongod.conf --dbpath=/data/db --replSet="$replica_set" --port="${port}" "${auth_args[@]}" --bind_ip=0.0.0.0 2>&1 | tee -a /work-dir/log.txt 1>&2 &
+  mongod --config /data/configdb/mongod.conf --dbpath=/data/db --replSet="$replica_set" --port="${port}" "${auth_args[@]}" "${ssl_server_args[@]}" --bind_ip=0.0.0.0 2>&1 | tee -a /work-dir/log.txt 1>&2 &
   pid=$!
   trap shutdown_mongo EXIT
 
