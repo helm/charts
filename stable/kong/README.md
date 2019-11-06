@@ -161,6 +161,7 @@ that via the `env.database` parameter.
 | env.pg_password               | Postgres database password (required if you are using your own database)| `kong`                |
 | env.pg_host                   | Postgres database host (required if you are using your own database)    | ``                    |
 | env.pg_port                   | Postgres database port                                                  | `5432`                |
+| env.pg_ssl                    | Postgres database enforce ssl                                           |``                     |
 | dblessConfig.configMap        | Name of an existing ConfigMap containing the `kong.yml` file. This must have the key `kong.yml`.| `` |
 | dblessConfig.config           | Yaml configuration file for the dbless (declarative) configuration of Kong | see in `values.yaml`    |
 
