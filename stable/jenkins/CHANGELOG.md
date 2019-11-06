@@ -6,6 +6,10 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.8.2
+
+Revert fix in `1.7.10` since direct connection is now disabled by default.
+
 ## 1.8.1
 
 Add `master.schedulerName` to allow setting a Kubernetes custom scheduler
