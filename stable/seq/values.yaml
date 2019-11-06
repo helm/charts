@@ -76,13 +76,16 @@ persistence:
 
 serviceAccount:
   create: false
-  # name:
+  name:
 
+## Enable RBAC
 rbac:
   create: false
 
+# If true, create & use Pod Security Policy resources
+# https://kubernetes.io/docs/concepts/policy/pod-security-policy/
 podSecurityPolicy:
-  enabled: false
+  create: false
 
 ingress:
   enabled: false

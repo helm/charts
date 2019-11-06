@@ -64,6 +64,7 @@ spec:
             subPath: {{ .Values.persistence.subPath }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+      serviceAccountName: {{ template "seq.serviceAccountName" . }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

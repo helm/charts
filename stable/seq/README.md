@@ -43,42 +43,46 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the Seq chart and their default values.
 
-| Parameter                            | Description                                                                                           | Default         |
-| ------------------------------------ | ----------------------------------------------------------------------------------------------------- | --------------- |
-| `image.repository`                   | Image repository                                                                                      | `datalust/seq`  |
-| `image.tag`                          | Seq image tag. Possible values listed [here](https://hub.docker.com/r/datalust/seq/tags/).            | `5`             |
-| `image.pullPolicy`                   | Image pull policy                                                                                     | `IfNotPresent`  |
-| `acceptEULA`                         | Accept EULA                                                                                           | `Y`             |
-| `baseURI`                            | Base URL for ingress/AAD (see values.yaml)                                                            |                 |
-| `service.type`                       | Kubernetes service type                                                                               | `ClusterIP`     |
-| `service.port`                       | Kubernetes port where service is exposed                                                              | `5341`          |
-| `persistence.enabled`                | Use persistent volume to store data                                                                   | `true`          |
-| `persistence.size`                   | Size of persistent volume claim                                                                       | `8Gi`           |
-| `persistence.existingClaim`          | Use an existing PVC to persist data                                                                   | `nil`           |
-| `persistence.storageClass`           | Type of persistent volume claim                                                                       | `generic`       |
-| `persistence.accessMode`             | ReadWriteOnce or ReadOnly                                                                             | `ReadWriteOnce` |
-| `persistence.subPath`                | Mount a sub directory of the persistent volume if set                                                 | `""`            |
-| `resources`                          | CPU/Memory resource requests/limits                                                                   | `{}`            |
-| `nodeSelector`                       | Node labels for pod assignment                                                                        | `{}`            |
-| `affinity`                           | Affinity settings for pod assignment                                                                  | `{}`            |
-| `tolerations`                        | Toleration labels for pod assignment                                                                  | `[]`            |
-| `ingress.enabled`                    | Enables Ingress                                                                                       | `false`         |
-| `ingress.annotations`                | Ingress annotations                                                                                   | `{}`            |
-| `ingress.labels`                     | Custom labels                                                                                         | `{}`            |
-| `ingress.hosts`                      | Ingress accepted hostnames                                                                            | `[]`            |
-| `ingress.tls`                        | Ingress TLS configuration                                                                             | `[]`            |
-| `livenessProbe.enabled`              | Enable/disable the Liveness probe                                                                     | `true`          |
-| `livenessProbe.failureThreshold`     | Minimum consecutive failures for the liveness probe to be considered failed after having succeeded    | `3`             |
-| `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated                                                              | `0`             |
-| `livenessProbe.periodSeconds`        | How often to perform the liveness probe                                                               | `10`            |
-| `livenessProbe.successThreshold`     | Minimum consecutive successes for the liveness probe to be considered successful after having failed  | `1`             |
-| `livenessProbe.timeoutSeconds`       | When the liveness probe times out                                                                     | `1`             |
-| `readinessProbe.enabled`             | Enable/disable the Readiness probe                                                                    | `true`          |
-| `readinessProbe.failureThreshold`    | Minimum consecutive failures for the readiness probe to be considered failed after having succeeded   | `3`             |
-| `readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated                                                             | `0`             |
-| `readinessProbe.periodSeconds`       | How often to perform the readiness probe                                                              | `10`            |
-| `readinessProbe.successThreshold`    | Minimum consecutive successes for the readiness probe to be considered successful after having failed | `1`             |
-| `readinessProbe.timeoutSeconds`      | When the readiness probe times out                                                                    | `1`             |
+| Parameter                            | Description                                                                                           | Default                               |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------- | --------------------------------------|
+| `image.repository`                   | Image repository                                                                                      | `datalust/seq`                        |
+| `image.tag`                          | Seq image tag. Possible values listed [here](https://hub.docker.com/r/datalust/seq/tags/).            | `5`                                   |
+| `image.pullPolicy`                   | Image pull policy                                                                                     | `IfNotPresent`                        |
+| `acceptEULA`                         | Accept EULA                                                                                           | `Y`                                   |
+| `baseURI`                            | Base URL for ingress/AAD (see values.yaml)                                                            |                                       |
+| `service.type`                       | Kubernetes service type                                                                               | `ClusterIP`                           |
+| `service.port`                       | Kubernetes port where service is exposed                                                              | `5341`                                |
+| `persistence.enabled`                | Use persistent volume to store data                                                                   | `true`                                |
+| `persistence.size`                   | Size of persistent volume claim                                                                       | `8Gi`                                 |
+| `persistence.existingClaim`          | Use an existing PVC to persist data                                                                   | `nil`                                 |
+| `persistence.storageClass`           | Type of persistent volume claim                                                                       | `generic`                             |
+| `persistence.accessMode`             | ReadWriteOnce or ReadOnly                                                                             | `ReadWriteOnce`                       |
+| `persistence.subPath`                | Mount a sub directory of the persistent volume if set                                                 | `""`                                  |
+| `resources`                          | CPU/Memory resource requests/limits                                                                   | `{}`                                  |
+| `nodeSelector`                       | Node labels for pod assignment                                                                        | `{}`                                  |
+| `affinity`                           | Affinity settings for pod assignment                                                                  | `{}`                                  |
+| `tolerations`                        | Toleration labels for pod assignment                                                                  | `[]`                                  |
+| `serviceAccount.create`              | Specifies whether a ServiceAccount should be created                                                  | `false`                               |
+| `serviceAccount.name`                | The name of the ServiceAccount to create                                                              | Generated using the fullname template |
+| `rbac.create`                        | Specifies whether RBAC resources should be created                                                    | `false`                               |
+| `podSecurityPolicy.create`           | Specifies whether a PodSecurityPolicy should be created                                               | `false`                               |
+| `ingress.enabled`                    | Enables Ingress                                                                                       | `false`                               |
+| `ingress.annotations`                | Ingress annotations                                                                                   | `{}`                                  |
+| `ingress.labels`                     | Custom labels                                                                                         | `{}`                                  |
+| `ingress.hosts`                      | Ingress accepted hostnames                                                                            | `[]`                                  |
+| `ingress.tls`                        | Ingress TLS configuration                                                                             | `[]`                                  |
+| `livenessProbe.enabled`              | Enable/disable the Liveness probe                                                                     | `true`                                |
+| `livenessProbe.failureThreshold`     | Minimum consecutive failures for the liveness probe to be considered failed after having succeeded    | `3`                                   |
+| `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated                                                              | `0`                                   |
+| `livenessProbe.periodSeconds`        | How often to perform the liveness probe                                                               | `10`                                  |
+| `livenessProbe.successThreshold`     | Minimum consecutive successes for the liveness probe to be considered successful after having failed  | `1`                                   |
+| `livenessProbe.timeoutSeconds`       | When the liveness probe times out                                                                     | `1`                                   |
+| `readinessProbe.enabled`             | Enable/disable the Readiness probe                                                                    | `true`                                |
+| `readinessProbe.failureThreshold`    | Minimum consecutive failures for the readiness probe to be considered failed after having succeeded   | `3`                                   |
+| `readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated                                                             | `0`                                   |
+| `readinessProbe.periodSeconds`       | How often to perform the readiness probe                                                              | `10`                                  |
+| `readinessProbe.successThreshold`    | Minimum consecutive successes for the readiness probe to be considered successful after having failed | `1`                                   |
+| `readinessProbe.timeoutSeconds`      | When the readiness probe times out                                                                    | `1`                                   |
 
 Some of the parameters above map to the env variables defined in the [Seq DockerHub image](https://hub.docker.com/r/datalust/seq/).
 
