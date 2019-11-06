@@ -663,9 +663,9 @@ coreDns:
 ##
 kubeDns:
   enabled: false
-  # service:
-  #   selector:
-  #     k8s-app: kube-dns
+  service: {}
+    # selector:
+    #   k8s-app: kube-dns
   serviceMonitor:
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
     ##
