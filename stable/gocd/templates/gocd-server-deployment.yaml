@@ -152,6 +152,10 @@ spec:
       affinity:
 {{ toYaml .Values.server.affinity | indent 8 }}
     {{- end }}
+    {{- if .Values.server.tolerations }}
+      tolerations:
+{{ toYaml .Values.server.tolerations | indent 8 }}
+    {{- end }}
     {{- if .Values.server.hostAliases }}
       hostAliases:
 {{ toYaml .Values.server.hostAliases | indent 8 }}
