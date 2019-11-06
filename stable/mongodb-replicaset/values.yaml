@@ -1,6 +1,9 @@
 replicas: 3
 port: 27017
 
+## Setting this will skip the replicaset and user creation process during bootstrapping
+doNotInit: false
+
 replicaSetName: rs0
 
 podDisruptionBudget: {}
@@ -17,6 +20,8 @@ auth:
   # existingKeySecret:
   # existingAdminSecret:
   # existingMetricsSecret:
+
+
 
 ## Optionally specify an array of imagePullSecrets.
 ## Secrets must be manually created in the namespace.
