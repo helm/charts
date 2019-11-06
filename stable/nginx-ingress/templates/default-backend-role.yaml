@@ -9,7 +9,7 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "nginx-ingress.fullname" . }}-backend
 rules:
-  - apiGroups:      ['{{ template "podSecurityPolicy.apiVersion" . }}']
+  - apiGroups:      ['{{ template "podSecurityPolicy.apiGroup" . }}']
     resources:      ['podsecuritypolicies']
     verbs:          ['use']
     resourceNames:  [{{ template "nginx-ingress.fullname" . }}-backend]
