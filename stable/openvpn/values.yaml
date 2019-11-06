@@ -98,6 +98,7 @@ openvpn:
   # conf: |
   #  max-clients 100
   #  client-to-client
+  #  explicit-exit-notify
   # Enable istio support for openvpn connections
   istio:
     enabled: false
