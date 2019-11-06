@@ -1,4 +1,4 @@
-{{- if .Values.skipper.enabled }}
+{{- if .Values.features.streaming.enabled }}
 apiVersion: v1
 kind: Service
 metadata:

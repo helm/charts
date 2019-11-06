@@ -1,4 +1,4 @@
-{{- if .Values.skipper.enabled }}
+{{- if .Values.features.streaming.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
