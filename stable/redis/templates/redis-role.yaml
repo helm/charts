@@ -10,7 +10,7 @@ metadata:
     heritage: {{ .Release.Service }}
 rules:
 {{- if .Values.podSecurityPolicy.create }}
-  - apiGroups: ['{{ template "podSecurityPolicy.apiVersion" . }}']
+  - apiGroups: ['{{ template "podSecurityPolicy.apiGroup" . }}']
     resources: ['podsecuritypolicies']
     verbs: ['use']
     resourceNames: [{{ template "redis.fullname" . }}]
