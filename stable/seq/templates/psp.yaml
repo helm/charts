@@ -1,0 +1,22 @@
+{{- if .Values.podSecurityPolicy.enabled -}}
+apiVersion: {{ template "podSecurityPolicy.apiVersion" . }}
+kind: PodSecurityPolicy
+metadata:
+  name: {{ template "seq.fullname" . }}
+  labels:
+    app: {{ template "seq.name" . }}
+    chart: {{ template "seq.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  fsGroup:
+    rule: RunAsAny
+  runAsUser:
+    rule: RunAsAny
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  volumes:
+  - persistentVolumeClaim
+{{- end -}}

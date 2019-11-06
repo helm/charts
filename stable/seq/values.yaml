@@ -74,6 +74,16 @@ persistence:
   accessMode: ReadWriteOnce
   size: 8Gi
 
+serviceAccount:
+  create: false
+  # name:
+
+rbac:
+  create: false
+
+podSecurityPolicy:
+  enabled: false
+
 ingress:
   enabled: false
   annotations: {}
