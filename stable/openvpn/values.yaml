@@ -11,7 +11,7 @@ updateStrategy: {}
 
 image:
   repository: kylemanna/openvpn
-  tag: "2.3"
+  tag: "2.4"
   pullPolicy: IfNotPresent
 service:
   type: LoadBalancer
@@ -68,8 +68,8 @@ openvpn:
   OVPN_NETWORK: 10.240.0.0
   # Network subnet allocated for openvpn client (default: 255.255.0.0).
   OVPN_SUBNET: 255.255.0.0
-  # Protocol used by openvpn tcp or udp (default: tdp).
-  OVPN_PROTO: tcp
+  # Protocol used by openvpn tcp or udp (default: udp).
+  OVPN_PROTO: udp
   # Kubernetes pod network (optional).
   OVPN_K8S_POD_NETWORK: "10.0.0.0"
   # Kubernetes pod network subnet (optional).
