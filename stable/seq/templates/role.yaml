@@ -9,7 +9,7 @@ metadata:
     heritage: {{ .Release.Service }}
   name: {{ template "seq.fullname" . }}
 rules:
-  - apiGroups:      ['extensions']
+  - apiGroups:      ['{{ template "podSecurityPolicy.apiGroup" . }}']
     resources:      ['podsecuritypolicies']
     verbs:          ['use']
     resourceNames:  [{{ template "seq.fullname" . }}]

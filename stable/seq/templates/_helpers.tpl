@@ -76,6 +76,17 @@ Return the appropriate apiGroup for PodSecurityPolicy.
 {{- end -}}
 
 {{/*
+Return the appropriate apiGroup for PodSecurityPolicy.
+*/}}
+{{- define "podSecurityPolicy.apiGroup" -}}
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "policy" -}}
+{{- else -}}
+{{- print "extensions" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Return the appropriate apiVersion for podSecurityPolicy.
 */}}
 {{- define "podSecurityPolicy.apiVersion" -}}
