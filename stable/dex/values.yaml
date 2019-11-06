@@ -169,6 +169,10 @@ config:
     alwaysShowLoginScreen: false
     skipApprovalScreen: true
 
+#  expiry:
+#    signingKeys: "6h"
+#    idTokens: "24h"
+
 #  staticClients:
 #  - id: example-app
 #    redirectURIs:
