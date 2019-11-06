@@ -18,6 +18,7 @@ spec:
         app: {{ template "seq.name" . }}
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ template "seq.serviceAccountName" . }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -64,7 +65,6 @@ spec:
             subPath: {{ .Values.persistence.subPath }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
-      serviceAccountName: {{ template "seq.serviceAccountName" . }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

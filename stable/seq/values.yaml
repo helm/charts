@@ -87,6 +87,9 @@ rbac:
 podSecurityPolicy:
   create: false
 
+securityContext:
+  privileged: true
+
 ingress:
   enabled: false
   annotations: {}
