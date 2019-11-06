@@ -1,4 +1,9 @@
+{{- if eq .Values.kubernetes.version ">1.16" }}
+apiVersion: apps/v1
+{{- end }}
+{{- if eq .Values.kubernetes.version "<1.16" }}
 apiVersion: apps/v1beta2
+{{- end }}
 kind: Deployment
 metadata:
   name: {{ template "stolon.fullname" . }}-sentinel

@@ -25,6 +25,7 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 
 | Parameter                               | Description                                    | Default                                                      |
 | --------------------------------------- | ---------------------------------------------- | ------------------------------------------------------------ |
+| `kubernetes.version`                    | Kubernetes version limit: `<1.16` or `>1.16`   | `<1.16`                                                      |
 | `clusterName`                           | `stolon` cluster name                          | `nil`                                                |
 | `image.repository`                      | `stolon` image repository                      | `sorintlab/stolon`                                           |
 | `image.tag`                             | `stolon` image tag                             | `v0.13.0-pg10`                                               |

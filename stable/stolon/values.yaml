@@ -1,3 +1,6 @@
+# Kubernetes version
+kubernetes:
+  version: "<1.16"
 # clusterName:
 image:
   repository: sorintlab/stolon
