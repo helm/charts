@@ -282,11 +282,7 @@ spec:
           if [[ -f '/secrets/redis-password' ]]; then
            export REDIS_PASSWORD=$(cat /secrets/redis-password)
           fi
-          redis_exporter
-        args:
-        {{- range $key, $value := .Values.metrics.extraArgs }}
-          - --{{ $key }}={{ $value }}
-        {{- end }}
+          redis_exporter{{- range $key, $value := .Values.metrics.extraArgs }} --{{ $key }}={{ $value }}{{- end }}
         env:
         - name: REDIS_ALIAS
           value: {{ template "redis.fullname" . }}

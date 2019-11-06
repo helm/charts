@@ -245,8 +245,11 @@ def main():
             print('Skipping the file, response code %s not equals 200' % response.status_code)
             continue
         raw_text = response.text
-        yaml_text = yaml.load(raw_text)
-        if ('max_kubernetes' not in chart): chart['max_kubernetes']="9.9.9-9"
+        yaml_text = yaml.full_load(raw_text)
+
+        if ('max_kubernetes' not in chart):
+            chart['max_kubernetes']="9.9.9-9"
+
         # etcd workaround, their file don't have spec level
         groups = yaml_text['spec']['groups'] if yaml_text.get('spec') else yaml_text['groups']
         for group in groups:

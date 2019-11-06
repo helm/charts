@@ -55,7 +55,7 @@ spec:
         - name: {{ .Values.airflow.image.pullSecret }}
       {{- end }}
       restartPolicy: Always
-      terminationGracePeriodSeconds: 30
+      terminationGracePeriodSeconds: {{ .Values.workers.terminationPeriod }}
       serviceAccountName: {{ template "airflow.serviceAccountName" . }}
       {{- if .Values.workers.nodeSelector }}
       nodeSelector:
@@ -95,6 +95,12 @@ spec:
         - name: {{ .Chart.Name }}-worker
           imagePullPolicy: {{ .Values.airflow.image.pullPolicy }}
           image: "{{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}"
+          {{- if and (eq .Values.airflow.executor "Celery") (.Values.workers.celery.gracefullTermination)}}
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/entrypoint.sh","/usr/local/scripts/stop-worker.sh"]
+          {{- end}}
           envFrom:
             - configMapRef:
                 name: "{{ template "airflow.fullname" . }}-env"

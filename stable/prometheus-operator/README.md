@@ -100,6 +100,18 @@ $ helm install --name my-release stable/prometheus-operator --set prometheusOper
 A major chart version change (like v1.2.3 -> v2.0.0) indicates that there is an
 incompatible breaking change needing manual actions.
 
+### Upgrading from 7.x.x to 8.x.x
+Due to new template functions being used in the rules in version 8.x.x of the chart, an upgrade to Prometheus Operator and Prometheus is necessary in order to support them.
+First, upgrade to the latest version of 7.x.x
+```sh
+helm upgrade <your-release-name> stable/prometheus-operator --version 7.4.0
+```
+Then upgrade to 8.x.x
+```sh
+helm upgrade <your-release-name> stable/prometheus-operator
+```
+Minimal recommended Prometheus version for this chart release is `2.12.x`
+
 ### Upgrading from 6.x.x to 7.x.x
 Due to a change in grafana subchart, version 7.x.x now requires Helm >= 2.12.0.
 
@@ -268,6 +280,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.prometheusSpec.query` | QuerySpec defines the query command line flags when starting Prometheus. Not all parameters are supported by the operator - [see coreos documentation](https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#queryspec) | `{}` |
 | `prometheus.prometheusSpec.remoteRead` | If specified, the remote_read spec. This is an experimental feature, it may change in any upcoming release in a breaking way. | `[]` |
 | `prometheus.prometheusSpec.remoteWrite` | If specified, the remote_write spec. This is an experimental feature, it may change in any upcoming release in a breaking way. | `[]` |
+| `prometheus.prometheusSpec.remoteWriteDashboards` | Enable/Disable Grafana dashboards provisioning for prometheus remote write feature | `false` |
 | `prometheus.prometheusSpec.replicaExternalLabelNameClear` | If true, the Operator won't add the external label used to denote replica name. | `false` |
 | `prometheus.prometheusSpec.replicaExternalLabelName` | Name of the external label used to denote replica name. | `""` |
 | `prometheus.prometheusSpec.replicas` | Number of instances to deploy for a Prometheus deployment. | `1` |
@@ -431,16 +444,20 @@ For a full list of configurable values please refer to the [Grafana chart](https
 | `kubeApiServer.tlsConfig.serverName` | Name of the server to use when validating TLS certificate | `kubernetes` |
 | `kubeControllerManager.enabled` | Deploy a `service` and `serviceMonitor` to scrape the Kubernetes controller-manager | `true` |
 | `kubeControllerManager.endpoints` | Endpoints where Controller-manager runs. Provide this if running Controller-manager outside the cluster | `[]` |
-| `kubeControllermanager.service.port` | Controller-manager port for the service runs on | `10252` |
-| `kubeControllermanager.service.selector` | Controller-manager service selector | `{"component" : "kube-controller-manager" }` |
-| `kubeControllermanager.service.targetPort` | Controller-manager targetPort for the service runs on | `10252` |
-| `kubeControllermanager.serviceMonitor.https` | Controller-manager service scrape over https | `false` |
-| `kubeControllermanager.serviceMonitor.insecureSkipVerify` | Skip TLS certificate validation when scraping | `null` |
-| `kubeControllermanager.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
-| `kubeControllermanager.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping the scheduler. | `` |
-| `kubeControllermanager.serviceMonitor.relabelings` | The `relabel_configs` for scraping the scheduler. | `` |
-| `kubeControllermanager.serviceMonitor.serverName` | Name of the server to use when validating TLS certificate | `null` |
+| `kubeControllerManager.service.port` | Controller-manager port for the service runs on | `10252` |
+| `kubeControllerManager.service.selector` | Controller-manager service selector | `{"component" : "kube-controller-manager" }` |
+| `kubeControllerManager.service.targetPort` | Controller-manager targetPort for the service runs on | `10252` |
+| `kubeControllerManager.serviceMonitor.https` | Controller-manager service scrape over https | `false` |
+| `kubeControllerManager.serviceMonitor.insecureSkipVerify` | Skip TLS certificate validation when scraping | `null` |
+| `kubeControllerManager.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
+| `kubeControllerManager.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping the scheduler. | `` |
+| `kubeControllerManager.serviceMonitor.relabelings` | The `relabel_configs` for scraping the scheduler. | `` |
+| `kubeControllerManager.serviceMonitor.serverName` | Name of the server to use when validating TLS certificate | `null` |
 | `kubeDns.enabled` | Deploy kubeDns scraping components. Use either this or coreDns| `false` |
+| `kubeDns.service.dnsmasq.port` | Dnsmasq service port | `10054` |
+| `kubeDns.service.dnsmasq.targetPort` | Dnsmasq service targetPort | `10054` |
+| `kubeDns.service.skydns.port` | Skydns service port | `10055` |
+| `kubeDns.service.skydns.targetPort` | Skydns service targetPort | `10055` |
 | `kubeDns.service.selector` | kubeDns service selector | `{"k8s-app" : "kube-dns" }` |
 | `kubeDns.serviceMonitor.dnsmasqMetricRelabelings` | The `metric_relabel_configs` for scraping dnsmasq kubeDns. | `` |
 | `kubeDns.serviceMonitor.dnsmasqRelabelings` | The `relabel_configs` for scraping dnsmasq kubeDns. | `` |

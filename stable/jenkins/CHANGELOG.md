@@ -6,10 +6,33 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.8.2
+
+Revert fix in `1.7.10` since direct connection is now disabled by default.
+
+## 1.8.1
+
+Add `master.schedulerName` to allow setting a Kubernetes custom scheduler
+
+## 1.8.0 JCasC auto reload works without ssh keys
+
+We make use of the fact that the Jenkins Configuration as Code Plugin can be triggered via http `POST` to `JENKINS_URL/configuration-as-code/reload`and a pre-shared key.
+The sidecar container responsible for reloading config changes is now `kiwigrid/k8s-sidecar:0.1.20` instead of it's fork `shadwell/k8s-sidecar`.
+
+References:
+- [Triggering Configuration Reload](https://github.com/jenkinsci/configuration-as-code-plugin/blob/master/docs/features/configurationReload.md)
+- [kiwigrid/k8s-sidecar](https://hub.docker.com/r/kiwigrid/k8s-sidecar)
+
+`master.sidecars.configAutoReload.enabled` now works using `casc.reload.token`
+
 ## 1.7.10
 
 Disable direct connection in default configuration (when kubernetes plugin version >= 1.20.2).
 Note: In case direct connection is going to be used `jenkins/jnlp-slave` needs to be version `3.35-5` or newer.
+
+## 1.7.9
+
+Prevented Jenkins Setup Wizard on new installations
 
 ## 1.7.8
 

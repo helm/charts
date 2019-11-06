@@ -20,3 +20,13 @@ data:
     else
       exit 0
     fi
+  stop-worker.sh: |
+    #!/bin/sh -e
+    celery -b $AIRFLOW__CELERY__BROKER_URL -d celery@$HOSTNAME control cancel_consumer default
+
+    # wait 10 second before checking the status of the worker
+    sleep 10
+
+    while (( $(celery -b $AIRFLOW__CELERY__BROKER_URL inspect active --json | python -c "import sys, json; print(len(json.load(sys.stdin)['celery@$HOSTNAME']))") > 0 )); do
+    sleep 60
+    done

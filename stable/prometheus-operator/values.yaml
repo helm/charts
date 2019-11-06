@@ -592,8 +592,8 @@ kubeControllerManager:
   service:
     port: 10252
     targetPort: 10252
-    selector:
-      component: kube-controller-manager
+    # selector:
+    #   component: kube-controller-manager
 
   serviceMonitor:
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
@@ -635,8 +635,8 @@ coreDns:
   service:
     port: 9153
     targetPort: 9153
-    selector:
-      k8s-app: kube-dns
+    # selector:
+    #   k8s-app: kube-dns
   serviceMonitor:
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
     ##
@@ -664,8 +664,14 @@ coreDns:
 kubeDns:
   enabled: false
   service:
-    selector:
-      k8s-app: kube-dns
+    dnsmasq:
+      port: 10054
+      targetPort: 10054
+    skydns:
+      port: 10055
+      targetPort: 10055
+    # selector:
+    #   k8s-app: kube-dns
   serviceMonitor:
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
     ##
@@ -719,8 +725,8 @@ kubeEtcd:
   service:
     port: 2379
     targetPort: 2379
-    selector:
-      component: etcd
+    # selector:
+    #   component: etcd
 
   ## Configure secure access to the etcd cluster by loading a secret into prometheus and
   ## specifying security configuration below. For example, with a secret named etcd-client-cert
@@ -779,8 +785,8 @@ kubeScheduler:
   service:
     port: 10251
     targetPort: 10251
-    selector:
-      component: kube-scheduler
+    # selector:
+    #   component: kube-scheduler
 
   serviceMonitor:
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
@@ -830,8 +836,8 @@ kubeProxy:
   service:
     port: 10249
     targetPort: 10249
-    selector:
-      k8s-app: kube-proxy
+    # selector:
+    #   k8s-app: kube-proxy
 
   serviceMonitor:
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
@@ -1570,6 +1576,9 @@ prometheus:
     ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#remotewritespec
     remoteWrite: []
     # - url: http://remote1/push
+
+    ## Enable/Disable Grafana dashboards provisioning for prometheus remote write feature
+    remoteWriteDashboards: false
 
     ## Resource limits & requests
     ##
