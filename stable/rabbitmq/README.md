@@ -134,6 +134,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `livenessProbe.periodSeconds`                | number of seconds                                | 30                                                      |
 | `livenessProbe.failureThreshold`             | number of failures                               | 6                                                       |
 | `livenessProbe.successThreshold`             | number of successes                              | 1                                                       |
+| `podDisruptionBudget`                        | Pod Disruption Budget settings                   | {}                                                      |
 | `readinessProbe.enabled`                     | would you like a readinessProbe to be enabled    | `true`                                                  |
 | `readinessProbe.initialDelaySeconds`         | number of seconds                                | 10                                                      |
 | `readinessProbe.timeoutSeconds`              | number of seconds                                | 20                                                      |
