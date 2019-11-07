@@ -48,7 +48,7 @@ helm install --namespace <YOUR NAMESPACE> \
 --set configuration.volumeSnapshotLocation.name=<PROVIDER NAME> \
 --set configuration.volumeSnapshotLocation.config.region=<REGION> \
 --set image.repository=velero/velero \
---set image.tag=v1.2.0-beta.1 \
+--set image.tag=v1.2.0 \
 --set image.pullPolicy=IfNotPresent \
 --set initContainers[0].name=velero-plugin-for-aws \
 --set initContainers[0].image=velero/velero-plugin-for-aws:v1.0.0-beta.1 \
