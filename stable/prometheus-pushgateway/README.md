@@ -69,7 +69,6 @@ The following table lists the configurable parameters of the pushgateway chart a
 | `serviceMonitor.selector`   | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install                    | `{ prometheus: kube-prometheus }` |
 | `serviceMonitor.honorLabels`| if `true`, label conflicts are resolved by keeping label values from the scraped data                                         | `true`                            |
 | `podDisruptionBudget`       | If set, create a PodDisruptionBudget with the items in this map set in the spec                                               | ``                                |
-| `kubeTargetVersionOverride` | Provide a target gitVersion of K8S, in case .Capabilites.KubeVersion is not available (e.g. `helm template`)                  | `""`                              |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
