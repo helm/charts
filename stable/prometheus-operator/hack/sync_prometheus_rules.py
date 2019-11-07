@@ -61,6 +61,8 @@ condition_map = {
     'kubernetes-resources': ' .Values.defaultRules.rules.kubernetesResources',
     'kubernetes-storage': ' .Values.defaultRules.rules.kubernetesStorage',
     'kubernetes-system': ' .Values.defaultRules.rules.kubernetesSystem',
+    'kubernetes-system-controller-manager': ' .Values.kubeControllerManager.enabled',
+    'kubernetes-system-scheduler': ' .Values.kubeScheduler.enabled .Values.defaultRules.rules.kubeScheduler',
     'node-exporter.rules': ' .Values.nodeExporter.enabled .Values.defaultRules.rules.node',
     'node-exporter': ' .Values.nodeExporter.enabled .Values.defaultRules.rules.node',
     'node.rules': ' .Values.nodeExporter.enabled .Values.defaultRules.rules.node',
@@ -245,8 +247,11 @@ def main():
             print('Skipping the file, response code %s not equals 200' % response.status_code)
             continue
         raw_text = response.text
-        yaml_text = yaml.load(raw_text)
-        if ('max_kubernetes' not in chart): chart['max_kubernetes']="9.9.9-9"
+        yaml_text = yaml.full_load(raw_text)
+
+        if ('max_kubernetes' not in chart):
+            chart['max_kubernetes']="9.9.9-9"
+
         # etcd workaround, their file don't have spec level
         groups = yaml_text['spec']['groups'] if yaml_text.get('spec') else yaml_text['groups']
         for group in groups:

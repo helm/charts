@@ -17,6 +17,7 @@ image:
 waitImage:
   repository: busybox
   tag: latest
+  pullPolicy: IfNotPresent
 
 # Specify Kong admin and proxy services configurations
 admin:
@@ -355,9 +356,6 @@ podSecurityPolicy:
 # will be used by Kong based on the `env.database` parameter.
 # Postgres is enabled by default.
 
-# Cassandra chart configs
-cassandra:
-  enabled: false
 
 # PostgreSQL chart configs
 postgresql:

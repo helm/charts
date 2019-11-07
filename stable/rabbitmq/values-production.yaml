@@ -14,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/rabbitmq
-  tag: 3.8.0-debian-9-r17
+  tag: 3.8.1-debian-9-r0
 
   ## set to true if you would like to see extra information on logs
   ## it turns BASH and NAMI debugging in minideb
@@ -285,8 +285,30 @@ nodeSelector:
 tolerations: []
 affinity: {}
 
+## affinity: |
+##   podAntiAffinity:
+##     requiredDuringSchedulingIgnoredDuringExecution:
+##       - labelSelector:
+##           matchLabels:
+##             app: {{ template "rabbitmq.name" . }}
+##             release: {{ .Release.Name | quote }}
+##         topologyKey: kubernetes.io/hostname
+##     preferredDuringSchedulingIgnoredDuringExecution:
+##       - weight: 100
+##         podAffinityTerm:
+##           labelSelector:
+##             matchLabels:
+##               app:  {{ template "rabbitmq.name" . }}
+##               release: {{ .Release.Name | quote }}
+##           topologyKey: failure-domain.beta.kubernetes.io/zone
+
 ## annotations for rabbitmq pods
 podAnnotations: {}
+
+## Configure the podDisruptionBudget
+podDisruptionBudget: {}
+# maxUnavailable: 1
+# minAvailable: 1
 
 ## Configure the ingress resource that allows you to access the
 ## Wordpress installation. Set up the URL
@@ -342,7 +364,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/rabbitmq-exporter
-    tag: 0.29.0-debian-9-r61
+    tag: 0.29.0-debian-9-r82
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -429,7 +451,7 @@ forceBoot:
 ## This can be useful when combined with load_definitions to automatically create the secret containing the definitions to be loaded.
 ##
 extraSecrets: {}
-  # load_definition:
+  # load-definition:
   #   load_definition.json: |
   #     {
   #       ...

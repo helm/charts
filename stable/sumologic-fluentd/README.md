@@ -60,6 +60,7 @@ The following table lists the configurable parameters of the sumologic-fluentd c
 | Parameter | Description | Default |
 |-----------|-------------|---------|
 | `podAnnotations` | Annotations to add to the DaemonSet's Pods | `{}` |
+| `daemonsetAnnotations` | Annotations to add to the DaemonSet itself | `{}` |
 | `tolerations` | List of node taints to tolerate (requires Kubernetes >= 1.6) | `[]` |
 | `nodeSelector` | Node labels for fluentd pod assignment | `{}` |
 | `affinity` | Expressions for affinity | `{}` |
