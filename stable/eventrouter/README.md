@@ -26,3 +26,4 @@ The following table lists the configurable parameters of the eventrouter chart a
 | `podAnnotations`        | Annotations for pod metadata                                                                                                | `{}`                               |
 | `containerPorts`        | List of ports for the container                                                                                             | `[]`                               |
 | `securityContext`       | Security context for the pod                                                                                                | `{}`                               |
+| `kubeTargetVersionOverride` | Override the .Capabilities.KubeVersion.GitVersion | `""` |

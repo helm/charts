@@ -1,4 +1,9 @@
+{{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
+{{- if semverCompare "<1.9-0" $kubeTargetVersion -}}
 apiVersion: apps/v1beta1
+{{- else -}}
+apiVersion: apps/v1
+{{- end -}}
 kind: Deployment
 metadata:
   labels: {{ include "eventrouter.labels" . | indent 4 }}

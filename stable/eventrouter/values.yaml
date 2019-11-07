@@ -35,3 +35,5 @@ containerPorts: []
 
 securityContext: {}
   # runAsUser: 1000
+
+kubeTargetVersionOverride: ""
