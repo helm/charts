@@ -80,8 +80,8 @@ sysctlImage:
   enabled: false
   command: []
   registry: docker.io
-  repository: bitnami/minideb
-  tag: latest
+  repository: busybox
+  tag: 1.31.1
   pullPolicy: Always
   mountHostSys: false
 
