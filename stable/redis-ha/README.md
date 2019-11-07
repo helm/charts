@@ -188,9 +188,8 @@ sysctlImage:
   mountHostSys: true
   command:
     - /bin/sh
-    - -c
+    - -xc
     - |-
-      install_packages systemd procps
       sysctl -w net.core.somaxconn=10000
       echo never > /host-sys/kernel/mm/transparent_hugepage/enabled
 ```
