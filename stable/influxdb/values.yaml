@@ -17,6 +17,12 @@ livenessProbe:
 readinessProbe:
   probePath: "/ping"
 
+startupProbe:
+  enabled: false
+  probePath: "/ping"
+  # failureThreshold: 6
+  # periodSeconds: 5
+
 ## Specify a service type
 ## NodePort is default
 ## ref: http://kubernetes.io/docs/user-guide/services/
@@ -94,6 +100,9 @@ resources: {}
 #  limits:
 #    memory: 16Gi
 #    cpu: 8
+
+# Annotations to be added to InfuxDB pods
+podAnnotations: {}
 
 ingress:
   enabled: false
@@ -279,9 +288,9 @@ backup:
   annotations: {}
 
   ## Google Cloud Storage
-  ## Secret is expected to have key stored in `key.json` field
   # gcs:
   #    serviceAccountSecret: influxdb-backup-key
+  #    serviceAccountSecretKey: key.json
   #    destination: gs://bucket/influxdb
 
   ## Azure

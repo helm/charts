@@ -31,15 +31,24 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
-            - --interval={{ .Values.interval }}
-            {{- if .Values.namespace}}
-            {{- if .Values.namespace.active_in}}
-            "- --namespace="{{ .Values.namespace.active_in }}
-            {{- end }}
-            {{- end }}
-            {{ if .Values.debug.enable }}- --debug{{end }}
+          - --interval={{ .Values.interval }}
+          {{- if .Values.namespace}}
+          {{- if .Values.namespace.active_in}}
+          - --namespace="{{ .Values.namespace.active_in }}"
+          {{- end }}
+          {{- end }}
+          {{ if .Values.debug.enable }}
+          - --debug
+          {{end }}
+{{- with .Values.extraArgs }}
+{{ toYaml . | indent 10 }}
+{{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.securityContext }}
+      securityContext:
+{{ toYaml . | indent 8 }}
+    {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

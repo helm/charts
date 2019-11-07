@@ -8,7 +8,7 @@ This chart bootstraps a single node MySQL deployment on a [Kubernetes](http://ku
 
 ## Prerequisites
 
-- Kubernetes 1.6+ with Beta APIs enabled
+- Kubernetes 1.10+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart

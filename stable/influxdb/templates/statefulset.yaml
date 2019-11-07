@@ -18,6 +18,10 @@ spec:
       labels:
         app: {{ template "influxdb.fullname" . }}
         release: "{{ .Release.Name }}"
+      {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+      {{- end }}
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -70,6 +74,14 @@ spec:
             port: api
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds | default 5 }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds | default 1 }}
+        {{- if .Values.startupProbe.enabled }}
+        startupProbe:
+          httpGet:
+            path: {{ .Values.startupProbe.probePath }}
+            port: api
+          failureThreshold: {{ .Values.startupProbe.failureThreshold | default 6 }}
+          periodSeconds: {{ .Values.startupProbe.periodSeconds | default 5 }}
+        {{- end }}
         volumeMounts:
         - name: {{ template "influxdb.fullname" . }}-data
           mountPath: {{ .Values.config.storage_directory }}

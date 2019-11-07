@@ -147,8 +147,12 @@ data:
         {{- end }}
         {{- end }}
       {{- end }}
+      {{- if .Values.metrics.prometheus.enabled }}
+      [entryPoints.prometheus]
+      address = ":9100"
+      {{- end }}
     [ping]
-    entryPoint = "http"
+    entryPoint = "{{ .Values.pingEntryPoint | default "http" }}"
     [kubernetes]
     {{- if .Values.kubernetes}}
       {{- if .Values.kubernetes.endpoint }}
@@ -325,7 +329,7 @@ data:
     {{- end }}
       {{- if .Values.metrics.prometheus.enabled }}
       [metrics.prometheus]
-        entryPoint = "traefik"
+        entryPoint = "prometheus"
         {{- if .Values.metrics.prometheus.buckets }}
         buckets = [
           {{- range $idx, $element := .Values.metrics.prometheus.buckets }}
