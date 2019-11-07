@@ -3,7 +3,7 @@
 apiVersion: apps/v1beta1
 {{- else -}}
 apiVersion: apps/v1
-{{- end -}}
+{{- end }}
 kind: Deployment
 metadata:
   labels: {{ include "eventrouter.labels" . | indent 4 }}
