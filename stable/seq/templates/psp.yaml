@@ -14,8 +14,11 @@ metadata:
     seccomp.security.alpha.kubernetes.io/defaultProfileName:  'runtime/default'
     apparmor.security.beta.kubernetes.io/defaultProfileName:  'runtime/default'
 spec:
-  allowedCapabilities: [] # default set of capabilities are implicitly allowed
-  privileged: true
+  allowedCapabilities:
+    - NET_BIND_SERVICE
+  privileged: false
+  # Required to prevent escalations to root.
+  allowPrivilegeEscalation: false
   # This is redundant with non-root + disallow privilege escalation,
   # but we can provide it for defense in depth.
   requiredDropCapabilities:

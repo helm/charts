@@ -36,6 +36,13 @@ spec:
             - name: ui
               containerPort: 80
               protocol: TCP
+          {{- if .Values.podSecurityPolicy.create }}
+          securityContext:
+            runAsUser: 0
+            capabilities:
+              add:
+                - NET_BIND_SERVICE
+          {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
@@ -64,10 +71,6 @@ spec:
             subPath: {{ .Values.persistence.subPath }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
-          {{- if .Values.podSecurityPolicy.create }}
-          securityContext:
-            privileged: true
-          {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
