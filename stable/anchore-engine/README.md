@@ -35,7 +35,7 @@ Create a new file named `anchore_values.yaml` and add all desired custom values 
 ## anchore_values.yaml
 
 postgresql:
-  postgresPassword: <PASSWORD>
+  postgresqlPassword: <PASSWORD>
   persistence:
     size: 50Gi
 
@@ -85,7 +85,7 @@ To use this Helm chart with the enterprise services enabled, perform these steps
 ## anchore_values.yaml
 
 postgresql:
-  postgresPassword: <PASSWORD>
+  postgresqlPassword: <PASSWORD>
   persistence:
     size: 50Gi
 
@@ -98,7 +98,7 @@ anchoreEnterpriseGlobal:
   enabled: True
 
 anchore-feeds-db:
-  postgresPassword: <PASSWORD>
+  postgresqlPassword: <PASSWORD>
   persistence:
     size: 20Gi
 
@@ -130,7 +130,7 @@ postgresql:
     value: /opt/rh/rh-postgresql96/root/usr/lib64
   - name: PATH
      value: /opt/rh/rh-postgresql96/root/usr/bin:/opt/app-root/src/bin:/opt/app-root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-  postgresPassword: <PASSWORD>
+  postgresqlPassword: <PASSWORD>
   persistence:
     size: 50Gi
 
@@ -162,7 +162,7 @@ postgresql:
     value: /opt/rh/rh-postgresql96/root/usr/lib64
   - name: PATH
      value: /opt/rh/rh-postgresql96/root/usr/bin:/opt/app-root/src/bin:/opt/app-root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-    postgresPassword: <PASSWORD>
+    postgresqlPassword: <PASSWORD>
     persistence:
       size: 20Gi
 
@@ -191,7 +191,7 @@ anchore-feeds-db:
     value: /opt/rh/rh-postgresql96/root/usr/lib64
   - name: PATH
      value: /opt/rh/rh-postgresql96/root/usr/bin:/opt/app-root/src/bin:/opt/app-root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-    postgresPassword: <PASSWORD>
+    postgresqlPassword: <PASSWORD>
     persistence:
       size: 50Gi
 
@@ -415,9 +415,9 @@ anchoreGlobal:
 
   ```
   postgresql:
-    postgresPassword: <PASSWORD>
-    postgresUser: <USER>
-    postgresDatabase: <DATABASE>
+    postgresqlPassword: <PASSWORD>
+    postgresqlUser: <USER>
+    postgresqlDatabase: <DATABASE>
     enabled: false
     externalEndpoint: <HOSTNAME:5432>
 
@@ -431,9 +431,9 @@ anchoreGlobal:
   ## anchore_values.yaml
   postgresql:
     enabled: false
-    postgresPassword: <CLOUDSQL-PASSWORD>
-    postgresUser: <CLOUDSQL-USER>
-    postgresDatabase: <CLOUDSQL-DATABASE>
+    postgresqlPassword: <CLOUDSQL-PASSWORD>
+    postgresqlUser: <CLOUDSQL-USER>
+    postgresqlDatabase: <CLOUDSQL-DATABASE>
 
   cloudsql:
     enabled: true
@@ -531,7 +531,7 @@ The Swift driver supports three authentication methods:
   ```
   anchoreCatalog:
     archive:
-      storage_driver:    
+      storage_driver:
         name: swift
         config:
           auth_version: '2'
@@ -579,7 +579,7 @@ When enabled, each service provides the metrics over the existing service port s
 know about each pod and the ports it provides to scrape the metrics.
 
 ### Using custom certificates
-A secret needs to be created in the same namespace as the anchore-engine chart installation. This secret should contain all custom certs, including CA certs & any certs used for internal TLS communication. 
+A secret needs to be created in the same namespace as the anchore-engine chart installation. This secret should contain all custom certs, including CA certs & any certs used for internal TLS communication.
 This secret will be mounted to all anchore-engine pods at /home/anchore/certs to be utilized by the system.
 
 ### Event Notifications

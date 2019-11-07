@@ -11,8 +11,8 @@ metadata:
     {{ toYaml . | nindent 4 }}
     {{- end }}
 data:
-  ANCHORE_DB_NAME: {{ index .Values "postgresql" "postgresDatabase" | quote }}
-  ANCHORE_DB_USER: {{ index .Values "postgresql" "postgresUser" | quote }}
+  ANCHORE_DB_NAME: {{ index .Values "postgresql" "postgresqlDatabase" | quote }}
+  ANCHORE_DB_USER: {{ index .Values "postgresql" "postgresqlUser" | quote }}
   {{- if and (index .Values "postgresql" "externalEndpoint") (not (index .Values "postgresql" "enabled")) }}
   ANCHORE_DB_HOST: {{ index .Values "postgresql" "externalEndpoint" | quote }}
   {{- else if and (index .Values "cloudsql" "enabled") (not (index .Values "postgresql" "enabled")) }}
@@ -207,4 +207,3 @@ data:
         ssl_cert: "/home/anchore/certs/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}"
         ssl_key: "/home/anchore/certs/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}"
         {{- end }}
-
