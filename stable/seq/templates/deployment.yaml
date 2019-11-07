@@ -18,7 +18,7 @@ spec:
         app: {{ template "seq.name" . }}
         release: {{ .Release.Name }}
     spec:
-      serviceAccountName: {{ template "seq.serviceAccountName" . }}
+      serviceAccountName: {{ template "seq.serviceAccountName" | quote }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
