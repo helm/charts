@@ -52,3 +52,14 @@ Create the name for the credentials secret.
   {{- include "velero.fullname" . -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create the priority class name.
+*/}}
+{{- define "velero.priorityClassName" -}}
+{{- if .Values.priorityClassName -}}
+  {{- .Values.priorityClassName -}}
+{{- else -}}
+  {{- include "velero.fullname" . -}}
+{{- end -}}
+{{- end -}}
