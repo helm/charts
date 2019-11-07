@@ -34,6 +34,7 @@ spec:
       initContainers:
       - name: wait-for-postgres
         image: "{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
+        imagePullPolicy: {{ .Values.waitImage.pullPolicy }}
         env:
         - name: KONG_PG_HOST
           value: {{ template "kong.postgresql.fullname" . }}

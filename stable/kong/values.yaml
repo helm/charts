@@ -17,6 +17,7 @@ image:
 waitImage:
   repository: busybox
   tag: latest
+  pullPolicy: IfNotPresent
 
 # Specify Kong admin and proxy services configurations
 admin:
