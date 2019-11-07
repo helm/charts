@@ -57,7 +57,7 @@ spec:
               value: {{ .Values.store.endpoints | quote}}
             {{- end }}
             - name: STSENTINEL_METRICS_LISTEN_ADDRESS
-              value: "0.0.0.0:8080"
+              value: "0.0.0.0:{{ .Values.ports.metrics.containerPort }}"
             - name: STSENTINEL_DEBUG
               value: {{ .Values.debug | quote}}
 {{- if .Values.sentinel.extraEnv }}
