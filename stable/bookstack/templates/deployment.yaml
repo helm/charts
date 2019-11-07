@@ -37,6 +37,8 @@ spec:
               path: /
               port: http
           env:
+            - name: APP_URL
+              value: {{ .Values.ingress.hosts | quote }}
           {{- if .Values.ldap.enabled }}
             - name: AUTH_METHOD
               value: ldap
@@ -53,6 +55,154 @@ spec:
             - name: LDAP_VERSION
               value: {{ .Values.ldap.version | quote }}
           {{- end }}
+          {{- if .Values.oauth.google.enabled }}
+            - name: GOOGLE_AUTO_CONFIRM_EMAIL
+              value: {{ .Values.oauth.google.autoRegister | quote }}
+            - name: GOOGLE_APP_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.oauth.google.secret | quote }}
+                  key: {{ .Values.oauth.google.appIdKey | quote }}
+            - name: GOOGLE_APP_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.oauth.google.secret | quote }}
+                  key: {{ .Values.oauth.google.appSecretKey | quote }}
+          {{- end}}
+          {{- if .Values.oauth.github.enabled }}
+            - name: GITHUB_AUTO_CONFIRM_EMAIL
+              value: {{ .Values.oauth.github.autoRegister | quote }}
+            - name: GITHUB_APP_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.oauth.github.secret | quote }}
+                  key: {{ .Values.oauth.github.appIdKey | quote }}
+            - name: GITHUB_APP_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.oauth.github.secret | quote }}
+                  key: {{ .Values.oauth.github.appSecretKey | quote }}
+          {{- end}}
+          {{- if .Values.oauth.twitter.enabled }}
+            - name: TWITTER_AUTO_CONFIRM_EMAIL
+              value: {{ .Values.oauth.twitter.autoRegister | quote }}
+            - name: TWITTER_APP_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.oauth.twitter.secret | quote }}
+                  key: {{ .Values.oauth.twitter.appIdKey | quote }}
+            - name: TWITTER_APP_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.oauth.twitter.secret | quote }}
+                  key: {{ .Values.oauth.twitter.appSecretKey | quote }}
+          {{- end}}
+          {{- if .Values.oauth.facebook.enabled }}
+            - name: FACEBOOK_AUTO_CONFIRM_EMAIL
+              value: {{ .Values.oauth.facebook.autoRegister | quote }}
+            - name: FACEBOOK_APP_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.oauth.facebook.secret | quote }}
+                  key: {{ .Values.oauth.facebook.appIdKey | quote }}
+            - name: FACEBOOK_APP_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.oauth.facebook.secret | quote }}
+                  key: {{ .Values.oauth.facebook.appSecretKey | quote }}
+          {{- end}}
+          {{- if .Values.oauth.slack.enabled }}
+            - name: SLACK_AUTO_CONFIRM_EMAIL
+              value: {{ .Values.oauth.slack.autoRegister | quote }}
+            - name: SLACK_APP_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.oauth.slack.secret | quote }}
+                  key: {{ .Values.oauth.slack.appIdKey | quote }}
+            - name: SLACK_APP_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.oauth.slack.secret | quote }}
+                  key: {{ .Values.oauth.slack.appSecretKey | quote }}
+          {{- end}}
+          {{- if .Values.oauth.azure.enabled }}
+            - name: AZURE_AUTO_CONFIRM_EMAIL
+              value: {{ .Values.oauth.azure.autoRegister | quote }}
+            - name: AZURE_TENANT
+              value: {{ .Values.oauth.azure.tenant | quote }}
+            - name: AZURE_APP_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.oauth.azure.secret | quote }}
+                  key: {{ .Values.oauth.azure.appIdKey | quote }}
+            - name: AZURE_APP_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.oauth.azure.secret | quote }}
+                  key: {{ .Values.oauth.azure.appSecretKey | quote }}
+          {{- end}}
+          {{- if .Values.oauth.okta.enabled }}
+            - name: OKTA_AUTO_CONFIRM_EMAIL
+              value: {{ .Values.oauth.okta.autoRegister | quote }}
+            - name: OKTA_BASE_URL
+              value: {{ .Values.oauth.okta.baseUrl | quote }}
+            - name: OKTA_APP_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.oauth.okta.secret | quote }}
+                  key: {{ .Values.oauth.okta.appIdKey | quote }}
+            - name: OKTA_APP_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.oauth.azure.secret | quote }}
+                  key: {{ .Values.oauth.azure.appSecretKey | quote }}
+          {{- end}}
+          {{- if .Values.oauth.gitlab.enabled }}
+            - name: GITLAB_AUTO_CONFIRM_EMAIL
+              value: {{ .Values.oauth.gitlab.autoRegister | quote }}
+            {{- if .Values.oauth.gitlab.baseUrl }}
+            - name: GITLAB_BASE_URL
+              value: {{ .Values.oauth.gitlab.baseUrl | quote }}
+            {{- end}}
+            - name: GITLAB_APP_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.oauth.gitlab.secret | quote }}
+                  key: {{ .Values.oauth.gitlab.appIdKey | quote }}
+            - name: GITLAB_APP_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.oauth.azure.secret | quote }}
+                  key: {{ .Values.oauth.azure.appSecretKey | quote }}
+          {{- end}}
+          {{- if .Values.oauth.twitch.enabled }}
+            - name: TWITCH_AUTO_CONFIRM_EMAIL
+              value: {{ .Values.oauth.twitch.autoRegister | quote }}
+            - name: TWITCH_APP_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.oauth.twitch.secret | quote }}
+                  key: {{ .Values.oauth.twitch.appIdKey | quote }}
+            - name: TWITCH_APP_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.oauth.twitch.secret | quote }}
+                  key: {{ .Values.oauth.twitch.appSecretKey | quote }}
+          {{- end}}
+          {{- if .Values.oauth.discord.enabled }}
+            - name: DISCORD_AUTO_CONFIRM_EMAIL
+              value: {{ .Values.oauth.discord.autoRegister | quote }}
+            - name: DISCORD_APP_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.oauth.discord.secret | quote }}
+                  key: {{ .Values.oauth.discord.appIdKey | quote }}
+            - name: DISCORD_APP_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.oauth.discord.secret | quote }}
+                  key: {{ .Values.oauth.discord.appSecretKey | quote }}
+          {{- end}}
           {{- if .Values.mariadb.enabled }}
             - name: DB_HOST
               value: {{ template "bookstack.mariadb.fullname" . }}

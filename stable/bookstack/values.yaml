@@ -170,3 +170,77 @@ ldap:
   pass:
   userFilter:
   version:
+
+oauth:
+  google:
+    enabled: false
+    autoRegister: false
+    secret: OAuthBookstack
+    appIdKey: googleAppSecretKey
+    appSecretKey: googleAppSecretKey
+
+  github:
+    enabled: false
+    autoRegister: false
+    secret: OAuthBookstack
+    appIdKey: githubAppSecretKey
+    appSecretKey: githubAppSecretKey
+
+  twitter:
+    enabled: false
+    autoRegister: false
+    secret: OAuthBookstack
+    appIdKey: twitterAppSecretKey
+    appSecretKey: twitterAppSecretKey
+
+  facebook:
+    enabled: false
+    autoRegister: false
+    secret: OAuthBookstack
+    appIdKey: facebookAppSecretKey
+    appSecretKey: facebookAppSecretKey
+
+  slack:
+    enabled: false
+    autoRegister: false
+    secret: OAuthBookstack
+    appIdKey: slackAppSecretKey
+    appSecretKey: slackAppSecretKey
+
+  azure:
+    enabled: false
+    autoRegister: false
+    secret: OAuthBookstack
+    appIdKey: azureAppSecretKey
+    appSecretKey: azureAppSecretKey
+    tenant:
+
+  okta:
+    enabled: false
+    autoRegister: false
+    secret: OAuthBookstack
+    appIdKey: oktaAppSecretKey
+    appSecretKey: oktaAppSecretKey
+    baseUrl:
+
+  gitlab:
+    enabled: false
+    autoRegister: false
+    secret: OAuthBookstack
+    appIdKey: gitlabAppSecretKey
+    appSecretKey: gitlabAppSecretKey
+    baseUrl:
+
+  twitch:
+    enabled: false
+    autoRegister: false
+    secret: OAuthBookstack
+    appIdKey: twitchAppSecretKey
+    appSecretKey: twitchAppSecretKey
+
+  discord:
+    enabled: false
+    autoRegister: false
+    secret: OAuthBookstack
+    appIdKey: discordAppSecretKey
+    appSecretKey: discordAppSecretKey
