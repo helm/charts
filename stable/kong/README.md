@@ -113,6 +113,7 @@ and their default values.
 | podDisruptionBudget.enabled        | Enable PodDisruptionBudget for Kong                                                   | `false`             |
 | podDisruptionBudget.maxUnavailable | Represents the minimum number of Pods that can be unavailable (integer or percentage) | `50%`               |
 | podDisruptionBudget.minAvailable   | Represents the number of Pods that must be available (integer or percentage)          |                     |
+| podSecurityPolicy.enabled            | Enable podSecurityPolicy for Kong                                                   | `false`             |
 | serviceMonitor.enabled             | Create ServiceMonitor for Prometheus Operator                                         | false               |
 | serviceMonitor.interval            | Scrapping interval                                                                    | 10s                 |
 | serviceMonitor.namespace           | Where to create ServiceMonitor                                                        |                     |
@@ -138,30 +139,29 @@ for the service definition to work properly.
 
 Kong has a choice of either Postgres or Cassandra as a backend datatstore.
 This chart allows you to choose either of them with the `env.database`
-parameter.  Postgres is chosen by default.
+parameter. Postgres is chosen by default.
 
-Additionally, this chart allows you to use your own database or spin up a new
-instance by using the `postgres.enabled` or `cassandra.enabled` parameters.
-Enabling both will create both databases in your cluster, but only one
-will be used by Kong based on the `env.database` parameter.
-Postgres is enabled by default.
+This chart allows you to bring your own database that you manage or spin up
+separately (recommended) or spin up a new Postgres instance using 
+the `postgres.enabled` parameter.
+
+Note: Cassandra deployment via a sub-chart was previously supported but
+the support has now been dropped due to stability issues.
+You can still deploy Cassandra on your own and configure Kong to use
+that via the `env.database` parameter.
 
 | Parameter                     | Description                                                             | Default               |
 | ------------------------------| ------------------------------------------------------------------------| ----------------------|
-| cassandra.enabled             | Spin up a new cassandra cluster for Kong                                | `false`               |
 | postgresql.enabled            | Spin up a new postgres instance for Kong                                | `true`                |
 | waitImage.repository          | Image used to wait for database to become ready                         | `busybox`             |
 | waitImage.tag                 | Tag for image used to wait for database to become ready                 | `latest`              |
+| waitImage.pullPolicy          | Wait image pull policy                                                  | `IfNotPresent`        |
 | env.database                  | Choose either `postgres`, `cassandra` or `"off"` (for dbless mode)      | `postgres`            |
 | env.pg_user                   | Postgres username                                                       | `kong`                |
 | env.pg_database               | Postgres database name                                                  | `kong`                |
 | env.pg_password               | Postgres database password (required if you are using your own database)| `kong`                |
 | env.pg_host                   | Postgres database host (required if you are using your own database)    | ``                    |
 | env.pg_port                   | Postgres database port                                                  | `5432`                |
-| env.cassandra_contact_points  | Cassandra contact points (required if you are using your own database)  | ``                    |
-| env.cassandra_port            | Cassandra query port                                                    | `9042`                |
-| env.cassandra_keyspace        | Cassandra keyspace                                                      | `kong`                |
-| env.cassandra_repl_factor     | Replication factor for the Kong keyspace                                | `2`                   |
 | dblessConfig.configMap        | Name of an existing ConfigMap containing the `kong.yml` file. This must have the key `kong.yml`.| `` |
 | dblessConfig.config           | Yaml configuration file for the dbless (declarative) configuration of Kong | see in `values.yaml`    |
 
@@ -181,13 +181,13 @@ kong:
 ```
 
 
-For complete list of Kong configurations please check https://getkong.org/docs/latest/configuration/.
+For complete list of Kong configurations please check https://docs.konghq.com/latest/configuration/.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
 $ helm install stable/kong --name my-release \
-  --set=image.tag=1.3,env.database=cassandra,cassandra.enabled=true
+  --set=image.tag=1.3,env.database=postgres,postgres.enabled=true
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters

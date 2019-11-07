@@ -15,6 +15,7 @@ serviceAccount:
   create: true
   name:
   nameTest:
+#  annotations:
 
 replicas: 1
 

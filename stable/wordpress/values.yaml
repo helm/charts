@@ -14,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/wordpress
-  tag: 5.2.3-debian-9-r34
+  tag: 5.2.4-debian-9-r16
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -121,6 +121,29 @@ customHTAccessCM:
 # smtpProtocol:
 
 replicaCount: 1
+
+# Additional container environment variables
+extraEnv: []
+  ## Example: Configure SSL for database
+  # - name: WORDPRESS_DATABASE_SSL_CA_FILE
+  #   value: /path/to/ca_cert
+
+# Additional volume mounts
+extraVolumeMounts: []
+  ## Example: Mount CA file
+  # - name: ca-cert
+  #   subPath: ca_cert
+  #   mountPath: /path/to/ca_cert
+
+# Additional volumes
+extraVolumes: []
+  ## Example: Add secret volume
+  # - name: ca-cert
+  #   secret:
+  #     secretName: ca-cert
+  #     items:
+  #     - key: ca-cert
+  #       path: ca_cert
 
 externalDatabase:
 ## All of these values are only used when mariadb.enabled is set to false
@@ -264,7 +287,7 @@ ingress:
   ##
   ## If tls is set to true, annotation ingress.kubernetes.io/secure-backends: "true" will automatically be set
   ## If certManager is set to true, annotation kubernetes.io/tls-acme: "true" will automatically be set
-  annotations:
+  annotations: {}
   #  kubernetes.io/ingress.class: nginx
 
   ## The list of additional hostnames to be covered with this ingress record.
@@ -348,7 +371,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/apache-exporter
-    tag: 0.7.0-debian-9-r79
+    tag: 0.7.0-debian-9-r101
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.

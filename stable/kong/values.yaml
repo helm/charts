@@ -17,6 +17,7 @@ image:
 waitImage:
   repository: busybox
   tag: latest
+  pullPolicy: IfNotPresent
 
 # Specify Kong admin and proxy services configurations
 admin:
@@ -40,8 +41,8 @@ admin:
     enabled: false
     # TLS secret name.
     # tls: kong-admin.example.com-tls
-    # Array of ingress hosts.
-    hosts: []
+    # Ingress hostname
+    hostname:
     # Map of ingress annotations.
     annotations: {}
     # Ingress path.
@@ -77,10 +78,15 @@ proxy:
   ingress:
     # Enable/disable exposure using ingress.
     enabled: false
-    # TLS secret name.
-    # tls: kong-proxy.example.com-tls
-    # Array of ingress hosts.
     hosts: []
+    # TLS section. Unlike other ingresses, this follows the format at
+    # https://kubernetes.io/docs/concepts/services-networking/ingress/#tls
+    # tls:
+    #   hosts:
+    #     - example.com
+    #     secretName: example-com-tls-secret
+    #     - example.net
+    #     secretName: example-net-tls-secret
     # Map of ingress annotations.
     annotations: {}
     # Ingress path.
@@ -117,8 +123,8 @@ manager:
     enabled: false
     # TLS secret name.
     # tls: kong-proxy.example.com-tls
-    # Array of ingress hosts.
-    hosts: []
+    # Ingress hostname
+    hostname:
     # Map of ingress annotations.
     annotations: {}
     # Ingress path.
@@ -155,8 +161,8 @@ portal:
     enabled: false
     # TLS secret name.
     # tls: kong-proxy.example.com-tls
-    # Array of ingress hosts.
-    hosts: []
+    # Ingress hostname
+    hostname:
     # Map of ingress annotations.
     annotations: {}
     # Ingress path.
@@ -193,8 +199,8 @@ portalapi:
     enabled: false
     # TLS secret name.
     # tls: kong-proxy.example.com-tls
-    # Array of ingress hosts.
-    hosts: []
+    # Ingress hostname
+    hostname:
     # Map of ingress annotations.
     annotations: {}
     # Ingress path.
@@ -268,6 +274,7 @@ updateStrategy: {}
 # is set below. In general, you should not set values here if they are set elsewhere.
 env:
   database: postgres
+  nginx_worker_processes: "1"
   proxy_access_log: /dev/stdout
   admin_access_log: /dev/stdout
   admin_gui_access_log: /dev/stdout
@@ -336,6 +343,9 @@ podDisruptionBudget:
   enabled: false
   maxUnavailable: "50%"
 
+podSecurityPolicy:
+  enabled: false
+
 # Kong has a choice of either Postgres or Cassandra as a backend datatstore.
 # This chart allows you to choose either of them with the `database.type`
 # parameter.  Postgres is chosen by default.
@@ -346,9 +356,6 @@ podDisruptionBudget:
 # will be used by Kong based on the `env.database` parameter.
 # Postgres is enabled by default.
 
-# Cassandra chart configs
-cassandra:
-  enabled: false
 
 # PostgreSQL chart configs
 postgresql:
@@ -445,7 +452,6 @@ dblessConfig:
 # - kong-proxy-tls
 # - kong-admin-tls
 secretVolumes: []
-
 
 serviceMonitor:
   # Specifies whether ServiceMonitor for Prometheus operator should be created

@@ -16,6 +16,11 @@ image:
 securityContext:
   fsGroup: 999
 
+# Settings to configure elasticsearch host requirements
+elasticsearch:
+  configureNode: true
+  bootstrapChecks: true
+
 service:
   type: ClusterIP
   externalPort: 9000
@@ -134,7 +139,7 @@ persistence:
 plugins:
   install: []
 
-  # initContainerImage: alpine:3.9
+  # initContainerImage: alpine:3.10.3
   # deleteDefaultPlugins: true
   resources: {}
   # We allow the plugins init container to have a separate resources declaration because

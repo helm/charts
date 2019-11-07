@@ -15,7 +15,7 @@ global:
 image:
   registry: docker.io
   repository: bitnami/postgresql
-  tag: 11.5.0-debian-9-r60
+  tag: 11.5.0-debian-9-r84
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -200,7 +200,8 @@ service:
   ##
   # nodePort:
 
-  ## Provide any additional annotations which may be required. This can be used to
+  ## Provide any additional annotations which may be required.
+  ## The value is evaluated as a template, so, for example, the value can depend on .Release or .Chart
   annotations: {}
   ## Set the LoadBalancer service type to internal only.
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
@@ -351,7 +352,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/postgres-exporter
-    tag: 0.5.1-debian-9-r73
+    tag: 0.6.0-debian-9-r0
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -384,4 +385,4 @@ metrics:
     successThreshold: 1
 
 # Define custom environment variables to pass to the image here
-extraEnv: {}
+extraEnv: []

@@ -171,7 +171,7 @@ spec:
                   - -ec
                   - |
                       ROOT_PASSWORD=`/k8s/kubectl get secret {{ template "graylog.fullname" . }} -o "jsonpath={.data['graylog-password-secret']}" | base64 -d`
-                      curl -XPOST -sS -u "{{ .Values.graylog.rootUsername }}:${ROOT_PASSWORD}" "localhost:9000/api/system/shutdown/shutdown"
+                      curl -XPOST -sS -u "{{ .Values.graylog.rootUsername }}:${ROOT_PASSWORD}" -H "X-Requested-By: {{ template "graylog.fullname" . }}" "localhost:9000/api/system/shutdown/shutdown"
       terminationGracePeriodSeconds: {{ default 30 .Values.graylog.terminationGracePeriodSeconds }}
       volumes:
         - name: config

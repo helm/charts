@@ -77,6 +77,10 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.splunk.tls_verify`           | Force TLS certificate validation | `off` |
 | `backend.splunk.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
 | `backend.splunk.message_key`           | Tag applied to all incoming logs | `kubernetes` |
+| **Stackdriver Backend**              |
+| `backend.stackdriver.google_service_credentials`           | Contents of a Google Cloud credentials JSON file. | `` |
+| `backend.stackdriver.service_account_email`           | Account email associated to the service. Only available if no credentials file has been provided. | `` |
+| `backend.stackdriver.service_account_secret`            | Private key content associated with the service account. Only available if no credentials file has been provided. | `` |
 | **Parsers**                   |
 | `parsers.enabled`                  | Enable custom parsers | `false` |
 | `parsers.regex`                    | List of regex parsers | `NULL` |
@@ -106,7 +110,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `filter.mergeJSONLog`              | If the log field content is a JSON string map, append the map fields as part of the log structure         | `true`                                 |
 | `filter.mergeLogKey`               | If set, append the processed log keys under a new root key specified by this variable. | `nil` |
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
-| `image.fluent_bit.tag`             | Image tag                                  | `1.2.2`                                           |
+| `image.fluent_bit.tag`             | Image tag                                  | `1.3.2`                                           |
 | `image.pullPolicy`                 | Image pull policy                          | `Always`                                          |
 | `nameOverride`                     | Override name of app                   | `nil`                                        |
 | `fullnameOverride`                 | Override full name of app              | `nil`                                        |
