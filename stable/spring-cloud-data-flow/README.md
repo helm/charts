@@ -57,6 +57,18 @@ Only one messaging layer can be used at a given time. If RabbitMQ and Kafka are 
 
 Note that this chart pulls in many different Docker images so can take a while to fully install.
 
+### Feature Toggles
+
+If you only need to deploy tasks and schedules, streams can be disabled:
+
+`--set features.streaming.enabled=false --set rabbitmq.enabled=false`
+
+If you only need to deploy streams, tasks and schedules can be disabled:
+
+`--set features.batch.enabled=false`
+
+NOTE: Both `features.streaming.enabled` and `features.batch.enabled` should not be set to `false` at the same time.
+
 ## Configuration
 
 The following tables list the configurable parameters and their default values.
@@ -152,3 +164,11 @@ The following tables list the configurable parameters and their default values.
 | database.password   | Database password              | nil
 | database.dataflow   | Database name for SCDF server  | dataflow
 | database.skipper    | Database name for SCDF skipper | skipper
+
+### Feature Toggles
+
+| Parameter                    | Description                             | Default                   |
+| ---------------------------- | --------------------------------------- | ------------------------- |
+| features.streaming.enabled   | Enables or disables streams             | true
+| features.batch.enabled       | Enables or disables tasks and schedules | true
+
