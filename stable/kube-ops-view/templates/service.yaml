@@ -18,4 +18,6 @@ spec:
     targetPort: {{ .Values.service.internalPort }}
     protocol: TCP
   selector:
-    app: {{ template "kube-ops-view.fullname" . }}
+    app: {{ template "kube-ops-view.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
