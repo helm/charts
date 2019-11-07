@@ -137,9 +137,11 @@ for the service definition to work properly.
 
 ### Kong-specific parameters
 
-Kong has a choice of either Postgres or Cassandra as a backend datatstore.
-This chart allows you to choose either of them with the `env.database`
-parameter. Postgres is chosen by default.
+Kong can run and store all it's configuration in-memory or it can be backed 
+using a database. Kong supports Postgres and Cassandra.
+This chart by default installs Kong without a database, storing all the
+configuration in-memory. If you'd like to use a database, you can deploy one
+and set the 'env.database` property accordingly.
 
 This chart allows you to bring your own database that you manage or spin up
 separately (recommended) or spin up a new Postgres instance using 
@@ -152,10 +154,11 @@ that via the `env.database` parameter.
 
 | Parameter                     | Description                                                             | Default               |
 | ------------------------------| ------------------------------------------------------------------------| ----------------------|
-| postgresql.enabled            | Spin up a new postgres instance for Kong                                | `true`                |
+| postgresql.enabled            | Spin up a new postgres instance for Kong                                | `false`               |
 | waitImage.repository          | Image used to wait for database to become ready                         | `busybox`             |
 | waitImage.tag                 | Tag for image used to wait for database to become ready                 | `latest`              |
-| env.database                  | Choose either `postgres`, `cassandra` or `"off"` (for dbless mode)      | `postgres`            |
+| waitImage.pullPolicy          | Wait image pull policy                                                  | `IfNotPresent`        |
+| env.database                  | Choose either `postgres`, `cassandra` or `"off"` (for dbless mode)      | `off`                 |
 | env.pg_user                   | Postgres username                                                       | `kong`                |
 | env.pg_database               | Postgres database name                                                  | `kong`                |
 | env.pg_password               | Postgres database password (required if you are using your own database)| `kong`                |
@@ -388,7 +391,7 @@ You can can learn about kong ingress custom resource definitions [here](https://
 
 | Parameter                          | Description                                                                           | Default                                                                      |
 | ---------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| enabled                            | Deploy the ingress controller, rbac and crd                                           | false                                                                        |
+| enabled                            | Deploy the ingress controller, rbac and crd                                           | true                                                                         |
 | replicaCount                       | Number of desired ingress controllers                                                 | 1                                                                            |
 | image.repository                   | Docker image with the ingress controller                                              | kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller |
 | image.tag                          | Version of the ingress controller                                                     | 0.6.0                                                                        |
@@ -398,3 +401,13 @@ You can can learn about kong ingress custom resource definitions [here](https://
 | podDisruptionBudget.enabled        | Enable PodDisruptionBudget for ingress controller                                     | `false`                                                                      |
 | podDisruptionBudget.maxUnavailable | Represents the minimum number of Pods that can be unavailable (integer or percentage) | `50%`                                                                        |
 | podDisruptionBudget.minAvailable   | Represents the number of Pods that must be available (integer or percentage)          |                                                                              |
+
+
+## Changelog
+
+### 0.27.0
+
+#### Breaking changes
+
+- DB-less mode is enabled by default.
+- Kong is installed as an Ingress Controller for the cluster by default.
