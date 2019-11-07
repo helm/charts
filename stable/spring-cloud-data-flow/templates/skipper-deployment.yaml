@@ -1,3 +1,4 @@
+{{- if .Values.features.streaming.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -122,3 +123,4 @@ spec:
         - 'mysql -h {{ template "scdf.database.host" . }} -P {{ template "scdf.database.port" . }} -u root -e "CREATE DATABASE IF NOT EXISTS {{ template "scdf.database.skipper" . }};"'
       {{- end }}
       serviceAccountName: {{ template "scdf.serviceAccountName" . }}
+{{- end }}
