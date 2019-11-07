@@ -12,8 +12,13 @@ sources:
   - https://github.com/coreos/kube-prometheus
   - https://github.com/coreos/prometheus-operator
   - https://coreos.com/operators/prometheus
+<<<<<<< 78ee4bac28e9b8b6a00f97442c53f64889edc4ad
 version: 8.1.2
 appVersion: 0.34.0
+=======
+version: 7.2.2
+appVersion: 0.32.0
+>>>>>>> increase version
 tillerVersion: ">=2.12.0"
 home: https://github.com/coreos/prometheus-operator
 keywords:
