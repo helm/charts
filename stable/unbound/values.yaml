@@ -17,7 +17,7 @@ unbound:
 # https://github.com/kubernetes/contrib/tree/master/exec-healthz
 healthz:
   image:
-    repository: googlecontainer/exechealthz
+    repository: gcr.io/google_containers/exechealthz
     tag: "1.2"
     pullPolicy: IfNotPresent
 
