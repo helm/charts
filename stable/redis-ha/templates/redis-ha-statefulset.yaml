@@ -90,6 +90,7 @@ spec:
       {{- if .Values.sysctlImage.enabled }}
       - name: init-sysctl
         image: {{ template "redis.sysctl.image" . }}
+        imagePullPolicy: {{ if .Values.sysctlImage.pullPolicy }}
         {{- if .Values.sysctlImage.mountHostSys }}
         volumeMounts:
         - name: host-sys
