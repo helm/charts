@@ -51,7 +51,7 @@ helm install --namespace <YOUR NAMESPACE> \
 --set image.tag=v1.2.0 \
 --set image.pullPolicy=IfNotPresent \
 --set initContainers[0].name=velero-plugin-for-aws \
---set initContainers[0].image=velero/velero-plugin-for-aws:v1.0.0-beta.1 \
+--set initContainers[0].image=velero/velero-plugin-for-aws:v1.0.0 \
 --set initContainers[0].volumeMounts[0].mountPath=/target \
 --set initContainers[0].volumeMounts[0].name=plugins \
 stable/velero
