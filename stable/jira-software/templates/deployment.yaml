@@ -74,8 +74,8 @@ spec:
               value: {{ .Values.envVars.jvmMinMemory | quote }}
             - name: JVM_MAXIMUM_MEMORY
               value: {{ .Values.envVars.jvmMaxMemory | quote }}
-            {{- if .Values.caCerts }}
             - name: JVM_SUPPORT_RECOMMENDED_ARGS
+            {{- if .Values.caCerts }}
               value: {{ printf "-Djavax.net.ssl.trustStore=/var/atlassian/application-data/jira/cacerts %s" .Values.envVars.jvmMemoryOptions | quote }}
             {{ else }}
               value: {{ .Values.envVars.jvmMemoryOptions | quote }}
