@@ -6,8 +6,8 @@ postgresql:
   # externalEndpoint, postgresqlUser, postgresqlPassword & postgresqlDatabase are required values for external postgres
   # enabled: false
   postgresqlUser: anchoreengine
-  postgressqlPassword: anchore-postgres,123
-  postgressqlDatabase: anchore
+  postgresqlPassword: anchore-postgres,123
+  postgresqlDatabase: anchore
 
   # Specify an external (already existing) postgres deployment for use.
   # Set to the host and port. eg. mypostgres.myserver.io:5432
