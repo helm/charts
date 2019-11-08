@@ -45,7 +45,7 @@ collector:
 
   ## If set to true, will use the unauthenticated real only port for the kubelet
   ## If set to false, will use the encrypted full access port for the kubelet (default false)
-  # useReadOnlyPort: false  
+  # useReadOnlyPort: false
 
   ## If set to true, metrics will be sent to Wavefront via a Wavefront Proxy.
   ## When true you must either specify a value for `collector.proxyAddress` or set `proxy.enabled` to true
@@ -71,7 +71,7 @@ collector:
   discovery:
     enabled: true
 
-  ## When specified, this replaces `prometheus.io` as the prefix for annotations used to 
+  ## When specified, this replaces `prometheus.io` as the prefix for annotations used to
   ## auto-discover Prometheus endpoints
   #   annotationPrefix: "wavefront.com"
 
@@ -84,7 +84,7 @@ collector:
   #       labels:
   #         k8s-app:
   #         - prom-example
-  #.    port: 8080
+  #     port: 8080
   #     path: /metrics
   #     prefix: kube.prom-example.
   #     tags:
@@ -114,7 +114,7 @@ collector:
   #     conf: |
   #       url = "http://${host}:${port}"
   #       username = "USER"
-  #       password = "PASSWORD"  
+  #       password = "PASSWORD"
 
   ## Wavefront Collector resource requests and limits
   ## Make sure to keep requests and limits equal to keep the pods in the Guaranteed QoS class
@@ -216,4 +216,3 @@ serviceAccount:
 ## will be configured to capture metrics.
 kubeStateMetrics:
   enabled: true
-
