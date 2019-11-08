@@ -8,7 +8,7 @@ This chart adds the Sysdig agent for [Sysdig Monitor](https://sysdig.com/product
 
 ## Prerequisites
 
-- Kubernetes 1.2+ with Beta APIs enabled
+- Kubernetes 1.9+ with Beta APIs enabled
 
 ## Installing the Chart
 
@@ -175,6 +175,38 @@ And then, upgrade Helm chart with:
 
 ```bash
 $ helm upgrade my-release -f values.yaml stable/sysdig
+```
+
+## How to upgrade to the last version
+
+First of all ensure you have the lastest chart version
+
+```bash
+$ helm repo update
+```
+
+In case you deployed the chart with a values.yaml file, you just need to modify (or add if it's missing) the `image.tag` field and execute:
+
+```bash
+$ helm install --name sysdig -f values.yaml stable/sysdig
+```
+
+If you deployed the chart setting the values as CLI parameters, like for example:
+
+```bash
+$ helm install \
+    --name sysdig \
+    --set sysdig.accessKey=xxxx \
+    --set secure.enabled=true \
+    --set ebpf.enabled=true \
+    --namespace sysdig-agent \
+    stable/sysdig
+```
+
+You will need to execute:
+
+```bash
+$ helm upgrade --set image.tag=<last_version> --reuse-values sysdig stable/sysdig
 ```
 
 ## Adding custom AppChecks

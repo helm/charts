@@ -177,6 +177,11 @@ spec:
           {{- end }}
           protocol: TCP
         {{- end }}
+        {{- if .Values.metrics.prometheus.enabled }}
+        - name: metrics
+          containerPort: 9100
+          protocol: TCP
+        {{- end }}
         args:
         - --configfile=/config/traefik.toml
         {{- range .Values.startupArguments }}

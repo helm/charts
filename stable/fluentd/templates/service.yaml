@@ -11,6 +11,9 @@ metadata:
 {{ toYaml .Values.service.annotations | indent 4 }}
 spec:
   type: {{ .Values.service.type }}
+  {{ if (and (eq .Values.service.type "LoadBalancer") (not (empty .Values.service.loadBalancerIP))) }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+  {{ end }}
   ports:
   {{- range $port := .Values.service.ports }}
     - name: {{ $port.name }}

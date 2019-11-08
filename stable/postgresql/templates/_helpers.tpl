@@ -354,10 +354,21 @@ Renders a value that contains template.
 Usage:
 {{ include "postgresql.tplValue" ( dict "value" .Values.path.to.the.Value "context" $) }}
 */}}
-{{- define "logstash.tplValue" -}}
+{{- define "postgresql.tplValue" -}}
     {{- if typeIs "string" .value }}
         {{- tpl .value .context }}
     {{- else }}
         {{- tpl (.value | toYaml) .context }}
     {{- end }}
+{{- end -}}
+
+{{/*
+Return the appropriate apiVersion for statefulset.
+*/}}
+{{- define "postgresql.statefulset.apiVersion" -}}
+{{- if semverCompare "<1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "apps/v1beta2" -}}
+{{- else -}}
+{{- print "apps/v1" -}}
+{{- end -}}
 {{- end -}}

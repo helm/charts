@@ -9,6 +9,13 @@ metadata:
     chart: {{ template "airflow.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    {{- with .Values.flower.labels }}
+{{ toYaml . | indent 4 }}
+    {{- end }}
+  {{- with .Values.flower.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
 spec:
   replicas: 1
   minReadySeconds: 10

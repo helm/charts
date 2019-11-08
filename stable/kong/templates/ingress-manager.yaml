@@ -3,7 +3,8 @@
 {{- $serviceName := include "kong.fullname" . -}}
 {{- $servicePort := include "kong.ingress.servicePort" .Values.manager -}}
 {{- $path := .Values.manager.ingress.path -}}
-{{- $hosts_count := len .Values.manager.ingress.hosts -}}
+{{- $tls := .Values.manager.ingress.tls -}}
+{{- $hostname := .Values.manager.ingress.hostname -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -19,27 +20,18 @@ metadata:
     {{- end }}
 spec:
   rules:
-    {{- if eq $hosts_count 0 }}
-    - http:
-        paths:
-          - path: {{ $path }}
-            backend:
-              serviceName: {{ $serviceName }}-manager
-              servicePort: {{ $servicePort }}
-    {{ else -}}
-    {{- range $host := .Values.manager.ingress.hosts }}
-    - host: {{ $host }}
-      http:
-        paths:
-          - path: {{ $path }}
-            backend:
-              serviceName: {{ $serviceName }}-manager
-              servicePort: {{ $servicePort }}
-    {{- end -}}
-    {{- end -}}
-  {{- if .Values.manager.ingress.tls }}
+  - host: {{ $hostname }}
+    http:
+      paths:
+        - path: {{ $path }}
+          backend:
+            serviceName: {{ $serviceName }}-manager
+            servicePort: {{ $servicePort }}
+  {{- if $tls }}
   tls:
-{{ toYaml .Values.manager.ingress.tls | indent 4 }}
+  - hosts:
+    - {{ $hostname }}
+    secretName: {{ $tls }}
   {{- end -}}
 {{- end -}}
 {{- end -}}

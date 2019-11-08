@@ -148,7 +148,7 @@ The following table lists the configurable parameters of the external-dns chart 
 | `service.loadBalancerIP`            | IP address to assign to load balancer (if supported)                                                     | `""`                                                        |
 | `service.loadBalancerSourceRanges`  | List of IP CIDRs allowed access to load balancer (if supported)                                          | `[]`                                                        |
 | `service.annotations`               | Annotations to add to service                                                                            | `{}`                                                        |
-| `rbac.create`                       | Weather to create & use RBAC resources or not                                                            | `false`                                                     |
+| `rbac.create`                       | Weather to create & use RBAC resources or not                                                            | `true`                                                      |
 | `rbac.serviceAccountName`           | ServiceAccount (ignored if rbac.create == true)                                                          | `default`                                                   |
 | `rbac.serviceAccountAnnotations`    | Additional Service Account annotations                                                                   | `{}`                                                        |
 | `rbac.apiVersion`                   | Version of the RBAC API                                                                                  | `v1beta1`                                                   |

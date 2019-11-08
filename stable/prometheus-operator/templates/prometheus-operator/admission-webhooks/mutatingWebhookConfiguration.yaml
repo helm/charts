@@ -3,7 +3,7 @@ apiVersion: admissionregistration.k8s.io/v1beta1
 kind: MutatingWebhookConfiguration
 metadata:
   name:  {{ template "prometheus-operator.fullname" . }}-admission
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ $.Release.Namespace }}
   labels:
     app: {{ template "prometheus-operator.name" $ }}-admission
 {{- include "prometheus-operator.labels" $ | indent 4 }}
@@ -16,7 +16,7 @@ webhooks:
     {{- end }}
     rules:
       - apiGroups:
-          - {{ .Values.prometheusOperator.crdApiGroup }}
+          - monitoring.coreos.com
         apiVersions:
           - "*"
         resources:
@@ -26,7 +26,7 @@ webhooks:
           - UPDATE
     clientConfig:
       service:
-        namespace: {{ .Release.Namespace }}
+        namespace: {{ $.Release.Namespace }}
         name: {{ template "prometheus-operator.operator.fullname" $ }}
         path: /admission-prometheusrules/mutate
 {{- end }}
