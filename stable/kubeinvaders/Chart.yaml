@@ -3,7 +3,7 @@ description: A Helm chart for KubeInvaders
 name: kubeinvaders
 appVersion: 0.2.8
 version: 0.1.0
-home: https://www.elastic.co/products/beats/auditbeat
+home: https://github.com/lucky-sideburn/KubeInvaders
 
 sources:
 - https://github.com/lucky-sideburn/KubeInvaders
