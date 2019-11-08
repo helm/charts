@@ -49,10 +49,10 @@ spec:
   {{- range $job.config.create }}
               echo '==> {{ . }}';
               echo '====> Create chroot if does not exist.';
-              zkCli.sh -server {{ template "zookeeper.fullname" $root }}:{{ $port }} get {{ . }} 2>&1 >/dev/null | grep 'cZxid'
-              || zkCli.sh -server {{ template "zookeeper.fullname" $root }}:{{ $port }} create {{ . }} "";
+              zkCli.sh -server $SERVER get {{ . }} 2>&1 >/dev/null | grep 'cZxid'
+              || zkCli.sh -server $SERVER create {{ . }} "";
               echo '====> Confirm chroot exists.';
-              zkCli.sh -server {{ template "zookeeper.fullname" $root }}:{{ $port }} get {{ . }} 2>&1 >/dev/null | grep 'cZxid';
+              zkCli.sh -server $SERVER get {{ . }} 2>&1 >/dev/null | grep 'cZxid';
               echo '====> Chroot exists.';
   {{- end }}
           env:
