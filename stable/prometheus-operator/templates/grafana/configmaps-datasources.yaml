@@ -4,6 +4,10 @@ kind: ConfigMap
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-grafana-datasource
   namespace: {{ $.Release.Namespace }}
+{{- if .Values.grafana.sidecar.datasources.annotations }}
+  annotations:
+{{ toYaml .Values.alertmanager.secret.annotations | indent 4 }}
+{{- end }}
   labels:
     {{ $.Values.grafana.sidecar.datasources.label }}: "1"
     app: {{ template "prometheus-operator.name" $ }}-grafana
