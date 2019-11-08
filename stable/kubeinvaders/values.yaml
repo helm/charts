@@ -23,7 +23,7 @@ ingress:
     # kubernetes.io/tls-acme: "true"
   hosts:
     - host: kubeinvaders.local
-      paths: [ "/" ]
+      paths: ["/"]
 
   tls:
     - secretName: chart-example-tls
