@@ -52,7 +52,8 @@ helm.sh/chart: {{ include "cluster-autoscaler.chart" . | quote }}
 Return the appropriate apiVersion for deployment.
 */}}
 {{- define "deployment.apiVersion" -}}
-{{- if semverCompare "<1.9-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
+{{- if semverCompare "<1.9-0" $kubeTargetVersion -}}
 {{- print "apps/v1beta2" -}}
 {{- else -}}
 {{- print "apps/v1" -}}
@@ -63,7 +64,8 @@ Return the appropriate apiVersion for deployment.
 Return the appropriate apiVersion for podsecuritypolicy.
 */}}
 {{- define "podsecuritypolicy.apiVersion" -}}
-{{- if semverCompare "<1.10-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
+{{- if semverCompare "<1.10-0" $kubeTargetVersion -}}
 {{- print "extensions/v1beta1" -}}
 {{- else -}}
 {{- print "policy/v1beta1" -}}
