@@ -105,7 +105,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `service.extraPorts`                         | Extra ports to expose in the service             | `nil`                                                   |
 | `service.extraContainerPorts`                | Extra ports to be included in container spec, primarily informational   | `nil`                            |
 | `persistence.enabled`                        | Use a PVC to persist data                        | `true`                                                  |
-| `service.annotations`                        | service annotations as an array                  | []                                                      |
+| `service.annotations`                        | service annotations                              | {}                                                      |
 | `schedulerName`                              | Name of the k8s service (other than default)     | `nil`                                                   |
 | `persistence.storageClass`                   | Storage class of backing PVC                     | `nil` (uses alpha storage class annotation)             |
 | `persistence.existingClaim`                  | RabbitMQ data Persistent Volume existing claim name, evaluated as a template |  ""                         |
