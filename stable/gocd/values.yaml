@@ -70,6 +70,9 @@ server:
   #     cpu: 100m
   #     memory: 1024Mi
 
+  # Sidecar containers that runs alongside GoCD server.
+  sidecarContainers: []
+
   # specify init containers, e.g. to prepopulate home directories etc
   initContainers: []
   #  - name: download-kubectl
