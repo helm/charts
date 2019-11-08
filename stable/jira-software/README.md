@@ -1,6 +1,6 @@
 # Jira Software
 
-[JIRA Software](https://www.atlassian.com/software/jira) is built for every member of your software team to plan, track, and release great software.
+Atlassian [Jira Software](https://www.atlassian.com/software/jira) is built for every member of your software team to plan, track, and release great software.
 
 ## TL;DR:
 
@@ -14,7 +14,8 @@ This chart bootstraps a [atlassian/jira-software](https://hub.docker.com/r/atlas
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.12+
+- Helm 2.11+ or Helm 3.0-beta3+
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
@@ -46,7 +47,7 @@ The following table lists the configurable parameters of the *Jira Software* cha
 | Parameter | Description | Default|
 | --- | --- | --- |
 | `image.repository` | Docker repository to use | `atlassian/jira-software` |
-| `image.tag` | Docker tag to use | `8.4.0` |
+| `image.tag` | Docker tag to use | `8.5.1` |
 | `image.pullPolicy` | Docker image pull policy | `IfNotPresent` |
 | `nameOverride` | String to partially override `jira-software.fullname` template (will prepend the release name) | `nil` |
 | `fullnameOverride` | String to fully override `jira-software.fullname` template | `nil`
@@ -62,12 +63,14 @@ The following table lists the configurable parameters of the *Jira Software* cha
 | `psql.password.key` | Key on the secret containing the external *PostgreSQL* password | `nil` |
 | `envVars.jvmMinMemory` | JVM minimum memory | `384M` |
 | `envVars.jvmMaxMemory` | JVM maximum memory | `768M` |
+| `envVars.jvmMemoryOptions` | JVM memory options | `-XX:MaxMetaspaceSize=512m -XX:MaxDirectMemorySize=10m` |
 | `env` | List of environmental variable to apply to the deployment | `nil` |
 | `persistence.enabled` | Create a volume (PVC) for storage | `false` |
 | `persistence.existingClaim` | An existing PVC to use instead of creating a new one | `nil` |
 | `persistence.accessMode` | The PVC access mode | `ReadWriteOnce` |
 | `persistence.storageClass` | The PVC storage class (use `-` for default) | `standard` |
 | `persistence.size` | The size of the PVC to create | `8Gi` |
+| `podAnnotations` | Pod Annotations | `{}` |
 | `resources` | Resource requests and limits | `{}` |
 | `nodeSelector` | Node labels for pod assignment | `{}` |
 | `tolerations` | List of node taints to tolerate | `[]` |

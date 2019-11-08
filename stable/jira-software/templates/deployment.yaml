@@ -20,6 +20,10 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "jira-software.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- . | toYaml | trim | nindent 8 }}
+      {{- end }}
     spec:
       {{- if .Values.caCerts }}
       initContainers:
@@ -72,7 +76,9 @@ spec:
               value: {{ .Values.envVars.jvmMaxMemory | quote }}
             {{- if .Values.caCerts }}
             - name: JVM_SUPPORT_RECOMMENDED_ARGS
-              value: "-Djavax.net.ssl.trustStore=/var/atlassian/application-data/jira/cacerts"
+              value: {{ printf "-Djavax.net.ssl.trustStore=/var/atlassian/application-data/jira/cacerts %s" .Values.envVars.jvmMemoryOptions | quote }}
+            {{ else }}
+              value: {{ .Values.envVars.jvmMemoryOptions | quote }}
             {{- end }}
             {{- if .Values.ingress.enabled }}
             - name: ATL_PROXY_NAME

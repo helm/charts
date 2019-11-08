@@ -1,6 +1,6 @@
 image:
   repository: atlassian/jira-software
-  tag: 8.5.0
+  tag: 8.5.1
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -28,6 +28,7 @@ service:
 envVars:
   jvmMinMemory: 384M
   jvmMaxMemory: 768M
+  jvmMemoryOptions: "-XX:MaxMetaspaceSize=512m -XX:MaxDirectMemorySize=10m"
 
 # env:
 #   - name: VARIABLE
@@ -57,7 +58,7 @@ ingress:
   hosts: []
     # - jira.local
   tls: []
-    # - secretName: nexus-local-tls
+    # - secretName: jira-local-tls
     #   hosts:
     #     - jira.local
 
