@@ -32,7 +32,7 @@ spec:
               mountPath: /config-volume
             - name: config
               mountPath: /etc/fluentd
-      hostNetwork: {{ default false .Values.hostNetwork }}
+      hostNetwork: {{ .Values.hostNetwork }}
       containers:
       - name: {{ template "fluentd-cloudwatch.fullname" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
