@@ -172,3 +172,6 @@ nameOverride: ""
 
 ## String to fully override cluster-autoscaler.fullname template
 fullnameOverride: ""
+
+# Allow overridding the .Capabilities.KubeVersion.GitVersion (useful for "helm template" command)
+kubeTargetVersionOverride: ""

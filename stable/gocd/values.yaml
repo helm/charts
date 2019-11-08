@@ -95,6 +95,10 @@ server:
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   affinity: {}
 
+  ## Tolerations for allowing pods to be scheduled on nodes with matching taints
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: {}
+
   healthCheck:
     # server.healthCheck.initialDelaySeconds is the initial delays in seconds to start the health checks
     initialDelaySeconds: 90
@@ -382,3 +386,7 @@ agent:
   ## Affinity for assigning pods to specific nodes
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   affinity: {}
+
+  ## Tolerations for allowing pods to be scheduled on nodes with matching taints
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: {}
