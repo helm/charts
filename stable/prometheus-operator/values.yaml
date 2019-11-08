@@ -422,6 +422,11 @@ grafana:
     datasources:
       enabled: true
       defaultDatasourceEnabled: true
+
+      ## Annotations for Grafana datasource configmaps
+      ##
+      annotations: {}
+
       ## Create datasource for each Pod of Prometheus StatefulSet;
       ## this uses headless service `prometheus-operated` which is
       ## created by Prometheus Operator
