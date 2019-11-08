@@ -165,6 +165,10 @@ spec:
       affinity:
 {{ toYaml .Values.agent.affinity | indent 8 }}
     {{- end }}
+    {{- if .Values.agent.tolerations }}
+      tolerations:
+{{ toYaml .Values.agent.tolerations | indent 8 }}
+    {{- end }}
     {{- if .Values.agent.hostAliases }}
       hostAliases:
 {{ toYaml .Values.agent.hostAliases | indent 8 }}

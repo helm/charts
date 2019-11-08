@@ -58,6 +58,10 @@ spec:
       imagePullSecrets:
 {{ toYaml .Values.clusterAgent.image.pullSecrets | indent 8 }}
       {{- end }}
+      {{- if .Values.clusterAgent.useHostNetwork }}
+      hostNetwork: {{ .Values.clusterAgent.useHostNetwork }}
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
       containers:
       - name: {{ .Values.clusterAgent.containerName }}
         image: "{{ .Values.clusterAgent.image.repository }}:{{ .Values.clusterAgent.image.tag }}"

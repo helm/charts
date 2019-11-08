@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "sonarqube.fullname" . }}
@@ -9,6 +9,10 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "sonarqube.name" . }}
+      release: {{ .Release.Name }}
 {{- if .Values.deploymentStrategy }}
   strategy:
 {{ toYaml .Values.deploymentStrategy | indent 4 }}
@@ -23,14 +27,15 @@ spec:
 {{- end }}
 {{ if .Values.annotations}}
       annotations:
-    {{- range $key, $value := .Values.annotations }}
-    {{ $key }}: {{ $value | quote }}
-    {{- end }}
+      {{- range $key, $value := .Values.annotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
 {{- end }}
     spec:
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
       initContainers:
+      {{- if .Values.elasticsearch.configureNode }}
         - name: init-sysctl
           image: {{ default "busybox:1.31" .Values.plugins.initSysctlContainerImage }}
           command:
@@ -40,9 +45,10 @@ spec:
           imagePullPolicy: IfNotPresent
           securityContext:
             privileged: true
+      {{- end }}
       {{- if .Values.plugins.install }}
         - name: install-plugins
-          image: {{ default "joosthofman/wget:1.0" .Values.plugins.initContainerImage }}
+          image: {{ default "alpine:3.10.3" .Values.plugins.initContainerImage }}
           env:
             {{- range $key, $value := .Values.extraEnv }}
             - name: {{ $key }}
@@ -91,7 +97,9 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: {{ .Values.service.internalPort }}
+            - name: http
+              containerPort: {{ .Values.service.internalPort }}
+              protocol: TCP
           {{- if .Values.plugins.install }}
           command:
             - /tmp/scripts/copy_plugins.sh
@@ -126,18 +134,18 @@ spec:
           livenessProbe:
             httpGet:
               path: {{ .Values.livenessProbe.sonarWebContext }}sessions/new
-              port: {{ .Values.service.internalPort }}
+              port: http
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
           readinessProbe:
             httpGet:
               path: {{ .Values.readinessProbe.sonarWebContext }}sessions/new
-              port: {{ .Values.service.internalPort }}
+              port: http
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           volumeMounts:
-            {{- if .Values.sonarProperties }}
+            {{- if or .Values.sonarProperties (not .Values.elasticsearch.bootstrapChecks) }}
             - mountPath: /opt/sonarqube/conf/
               name: config
             {{- end }}
@@ -187,7 +195,7 @@ spec:
 {{ toYaml .Values.affinity | indent 8 }}
     {{- end }}
       volumes:
-      {{- if .Values.sonarProperties }}
+      {{- if or .Values.sonarProperties (not .Values.elasticsearch.bootstrapChecks) }}
       - name: config
         configMap:
           name: {{ template "sonarqube.fullname" . }}-config

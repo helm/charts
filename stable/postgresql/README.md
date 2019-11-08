@@ -16,7 +16,8 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 
 ## Prerequisites
 
-- Kubernetes 1.10+
+- Kubernetes 1.12+
+- Helm 2.11+ or Helm 3.0-beta3+
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
@@ -26,7 +27,7 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release stable/postgresql
 ```
 
-The command deploys PostgreSQL on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys PostgreSQL on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
@@ -40,7 +41,7 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
-## Configuration
+## Parameters
 
 The following tables lists the configurable parameters of the PostgreSQL chart and their default values.
 
@@ -89,12 +90,14 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `configurationConfigMap`                      | ConfigMap with the PostgreSQL configuration files (Note: Overrides `postgresqlConfiguration` and `pgHbaConfiguration`). The value is evaluated as a template. | `nil`                |
 | `extendedConfConfigMap`                       | ConfigMap with the extended PostgreSQL configuration files. The value is evaluated as a template.                      | `nil`                                                       |
 | `initdbScripts`                               | Dictionary of initdb scripts                                                                                           | `nil`                                                       |
+| `initdbUsername`                              | PostgreSQL user to execute the .sql and sql.gz scripts                                                                 | `nil`                                                       |
+| `initdbPassword`                              | Password for the user specified in `initdbUsername`                                                                    | `nil`                                                       |
 | `initdbScriptsConfigMap`                      | ConfigMap with the initdb scripts (Note: Overrides `initdbScripts`). The value is evaluated as a template.             | `nil`                                                       |
 | `initdbScriptsSecret`                         | Secret with initdb scripts that contain sensitive information (Note: can be used with `initdbScriptsConfigMap` or `initdbScripts`). The value is evaluated as a template. | `nil`    |
 | `service.type`                                | Kubernetes Service type                                                                                                | `ClusterIP`                                                 |
 | `service.port`                                | PostgreSQL port                                                                                                        | `5432`                                                      |
 | `service.nodePort`                            | Kubernetes Service nodePort                                                                                            | `nil`                                                       |
-| `service.annotations`                         | Annotations for PostgreSQL service                                                                                     | {}                                                          |
+| `service.annotations`                         | Annotations for PostgreSQL service, the value is evaluated as a template.                                              | {}                                                          |
 | `service.loadBalancerIP`                      | loadBalancerIP if service type is `LoadBalancer`                                                                       | `nil`                                                       |
 | `service.loadBalancerSourceRanges`            | Address that are allowed when svc is LoadBalancer                                                                      | []                                                          |
 | `schedulerName`                               | Name of the k8s scheduler (other than default)                                                                         | `nil`                                                       |
@@ -109,17 +112,21 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `master.nodeSelector`                         | Node labels for pod assignment (postgresql master)                                                                     | `{}`                                                        |
 | `master.affinity`                             | Affinity labels for pod assignment (postgresql master)                                                                 | `{}`                                                        |
 | `master.tolerations`                          | Toleration labels for pod assignment (postgresql master)                                                               | `[]`                                                        |
+| `master.anotations`                           | Map of annotations to add to the statefulset (postgresql master)                                                       | `{}`                                                        |
+| `master.labels`                               | Map of labels to add to the statefulset (postgresql master)                                                            | `{}`                                                        |
 | `master.podAnnotations`                       | Map of annotations to add to the pods (postgresql master)                                                              | `{}`                                                        |
 | `master.podLabels`                            | Map of labels to add to the pods (postgresql master)                                                                   | `{}`                                                        |
 | `master.extraVolumeMounts`                    | Additional volume mounts to add to the pods (postgresql master)                                                        |  `[]`                                                       |
-| `master.extraVolume`                          | Additional volumes to add to the pods (postgresql master)                                                              |  `[]`                                                       |
+| `master.extraVolumes`                          | Additional volumes to add to the pods (postgresql master)                                                              |  `[]`                                                       |
 | `slave.nodeSelector`                          | Node labels for pod assignment (postgresql slave)                                                                      | `{}`                                                        |
 | `slave.affinity`                              | Affinity labels for pod assignment (postgresql slave)                                                                  | `{}`                                                        |
 | `slave.tolerations`                           | Toleration labels for pod assignment (postgresql slave)                                                                | `[]`                                                        |
+| `slave.anotations`                            | Map of annotations to add to the statefulsets (postgresql slave)                                                       | `{}`                                                        |
+| `slave.labels`                                | Map of labels to add to the statefulsets (postgresql slave)                                                            | `{}`                                                        |
 | `slave.podAnnotations`                        | Map of annotations to add to the pods (postgresql slave)                                                               | `{}`                                                        |
 | `slave.podLabels`                             | Map of labels to add to the pods (postgresql slave)                                                                    | `{}`                                                        |
 | `slave.extraVolumeMounts`                     | Additional volume mounts to add to the pods (postgresql slave)                                                         |  `[]`                                                       |
-| `slave.extraVolume`                           | Additional volumes to add to the pods (postgresql slave)                                                               |  `[]`                                                       |
+| `slave.extraVolumes`                           | Additional volumes to add to the pods (postgresql slave)                                                               |  `[]`                                                       |
 | `terminationGracePeriodSeconds`               | Seconds the pod needs to terminate gracefully                                                                          | `nil`                                                       |
 | `resources`                                   | CPU/Memory resource requests/limits                                                                                    | Memory: `256Mi`, CPU: `250m`                                |
 | `securityContext.enabled`                     | Enable security context                                                                                                | `true`                                                      |
@@ -190,13 +197,17 @@ $ helm install --name my-release -f values.yaml stable/postgresql
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
-### Production configuration
+## Configuration and installation details
 
-This chart includes a `values-production.yaml` file where you can find some parameters oriented to production configuration in comparison to the regular `values.yaml`.
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
 
-```console
-$ helm install --name my-release -f ./values-production.yaml stable/postgresql
-```
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
+
+### Production configuration and horizontal scaling
+
+This chart includes a `values-production.yaml` file where you can find some parameters oriented to production configuration in comparison to the regular `values.yaml`. You can use this file instead of the default one.
 
 - Enable replication:
 ```diff
@@ -228,18 +239,11 @@ $ helm install --name my-release -f ./values-production.yaml stable/postgresql
 + metrics.enabled: true
 ```
 
-To horizontally scale this chart, first download the [values-production.yaml](values-production.yaml) file to your local folder, then:
+To horizontally scale this chart, you can use the `--replicas` flag to modify the number of nodes in your PostgreSQL deployment. Also you can use the `values-production.yaml` file or modify the parameters shown above.
 
-```console
-$ helm install --name my-release -f ./values-production.yaml stable/postgresql
-$ kubectl scale statefulset my-postgresql-slave --replicas=3
-```
+### Change PostgreSQL version
 
-### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
-
-It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
-
-Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
+To modify the PostgreSQL version used in this chart you can specify a [valid image tag](https://hub.docker.com/r/bitnami/postgresql/tags/) using the `image.tag` parameter. For example, `image.tag=12.0.0-debian-9-r0`
 
 ### postgresql.conf / pg_hba.conf files as configMap
 
@@ -258,7 +262,7 @@ Those files will be mounted as configMap to the containers adding/overwriting th
 
 Alternatively, you can also set an external ConfigMap with all the extra configuration files. This is done by setting the `extendedConfConfigMap` parameter. Note that this will override the previous option.
 
-## Initialize a fresh instance
+### Initialize a fresh instance
 
 The [Bitnami PostgreSQL](https://github.com/bitnami/bitnami-docker-postgresql) image allows you to use your custom scripts to initialize a fresh instance. In order to execute the scripts, they must be located inside the chart folder `files/docker-entrypoint-initdb.d` so they can be consumed as a ConfigMap.
 
@@ -268,54 +272,13 @@ In addition to these options, you can also set an external ConfigMap with all th
 
 The allowed extensions are `.sh`, `.sql` and `.sql.gz`.
 
-## Persistence
-
-The [Bitnami PostgreSQL](https://github.com/bitnami/bitnami-docker-postgresql) image stores the PostgreSQL data and configurations at the `/bitnami/postgresql` path of the container.
-
-Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
-See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
-
-## Metrics
+### Metrics
 
 The chart optionally can start a metrics exporter for [prometheus](https://prometheus.io). The metrics endpoint (port 9187) is not exposed and it is expected that the metrics are collected from inside the k8s cluster using something similar as the described in the [example Prometheus scrape configuration](https://github.com/prometheus/prometheus/blob/master/documentation/examples/prometheus-kubernetes.yml).
 
 The exporter allows to create custom metrics from additional SQL queries. See the Chart's `values.yaml` for an example and consult the [exporters documentation](https://github.com/wrouesnel/postgres_exporter#adding-new-metrics-via-a-config-file) for more details.
 
-## NetworkPolicy
-
-To enable network policy for PostgreSQL, install [a networking plugin that implements the Kubernetes NetworkPolicy spec](https://kubernetes.io/docs/tasks/administer-cluster/declare-network-policy#before-you-begin), and set `networkPolicy.enabled` to `true`.
-
-For Kubernetes v1.5 & v1.6, you must also turn on NetworkPolicy by setting the DefaultDeny namespace annotation. Note: this will enforce policy for _all_ pods in the namespace:
-
-```console
-$ kubectl annotate namespace default "net.beta.kubernetes.io/network-policy={\"ingress\":{\"isolation\":\"DefaultDeny\"}}"
-```
-
-With NetworkPolicy enabled, traffic will be limited to just port 5432.
-
-For more precise policy, set `networkPolicy.allowExternal=false`. This will only allow pods with the generated client label to connect to PostgreSQL.
-This label will be displayed in the output of a successful install.
-
-## Deploy chart using Docker Official PostgreSQL Image
-
-From chart version 4.0.0, it is possible to use this chart with the Docker Official PostgreSQL image.
-Besides specifying the new Docker repository and tag, it is important to modify the PostgreSQL data directory and volume mount point. Basically, the PostgreSQL data dir cannot be the mount point directly, it has to be a subdirectory.
-
-```
-helm install --name postgres \
-             --set image.repository=postgres \
-             --set image.tag=10.6 \
-             --set postgresqlDataDir=/data/pgdata \
-             --set persistence.mountPath=/data/ \
-             stable/postgresql
-```
-
-## Differences between Bitnami PostgreSQL image and [Docker Official](https://hub.docker.com/_/postgres) image
-
-- The Docker Official PostgreSQL image does not support replication. If you pass any replication environment variable, this would be ignored. The only environment variables supported by the Docker Official image are POSTGRES_USER, POSTGRES_DB, POSTGRES_PASSWORD, POSTGRES_INITDB_ARGS, POSTGRES_INITDB_WALDIR and PGDATA. All the remaining environment variables are specific to the Bitnami PostgreSQL image.
-- The Bitnami PostgreSQL image is non-root by default. This requires that you run the pod with `securityContext` and updates the permissions of the volume with an `initContainer`. A key benefit of this configuration is that the pod follows security best practices and is prepared to run on Kubernetes distributions with hard security constraints like OpenShift.
-
-## Use of global variables
+### Use of global variables
 
 In more complex scenarios, we may have the following tree of dependencies
 
@@ -337,19 +300,66 @@ In more complex scenarios, we may have the following tree of dependencies
 +--------------+    +---------------+  +---------------+
 ```
 
-The three charts below depend on the parent chart Chart 1. However, subcharts 1 and 2 may need to connect to PostgreSQL as well. In order to do so, subcharts 1 and 2 need to know the PostgreSQL credentials, so one option for deploying could be:
+The three charts below depend on the parent chart Chart 1. However, subcharts 1 and 2 may need to connect to PostgreSQL as well. In order to do so, subcharts 1 and 2 need to know the PostgreSQL credentials, so one option for deploying could be deploy Chart 1 with the following parameters:
 
 ```
-helm install chart1 --set postgresql.postgresqlPassword=testtest --set subchart1.postgresql.postgresqlPassword=testtest --set subchart2.postgresql.postgresqlPassword=testtest --set postgresql.postgresqlDatabase=db1 --set subchart1.postgresql.postgresqlDatabase=db1 --set subchart1.postgresql.postgresqlDatabase=db1
+postgresql.postgresqlPassword=testtest
+subchart1.postgresql.postgresqlPassword=testtest
+subchart2.postgresql.postgresqlPassword=testtest
+postgresql.postgresqlDatabase=db1
+subchart1.postgresql.postgresqlDatabase=db1
+subchart2.postgresql.postgresqlDatabase=db1
 ```
 
-If the number of dependent sub-charts increases, executing `helm install` can become increasingly difficult. An alternative would be to set the credentials using global variables as follows:
+If the number of dependent sub-charts increases, installing the chart with parameters can become increasingly difficult. An alternative would be to set the credentials using global variables as follows:
 
 ```
-helm install chart1 --set global.postgresql.postgresqlPassword=testtest --set global.postgresql.postgresqlDatabase=db1
+global.postgresql.postgresqlPassword=testtest
+global.postgresql.postgresqlDatabase=db1
 ```
 
 This way, the credentials will be available in all of the subcharts.
+
+## Persistence
+
+The [Bitnami PostgreSQL](https://github.com/bitnami/bitnami-docker-postgresql) image stores the PostgreSQL data and configurations at the `/bitnami/postgresql` path of the container.
+
+Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
+See the [Parameters](#parameters) section to configure the PVC or to disable persistence.
+
+## NetworkPolicy
+
+To enable network policy for PostgreSQL, install [a networking plugin that implements the Kubernetes NetworkPolicy spec](https://kubernetes.io/docs/tasks/administer-cluster/declare-network-policy#before-you-begin), and set `networkPolicy.enabled` to `true`.
+
+For Kubernetes v1.5 & v1.6, you must also turn on NetworkPolicy by setting the DefaultDeny namespace annotation. Note: this will enforce policy for _all_ pods in the namespace:
+
+```console
+$ kubectl annotate namespace default "net.beta.kubernetes.io/network-policy={\"ingress\":{\"isolation\":\"DefaultDeny\"}}"
+```
+
+With NetworkPolicy enabled, traffic will be limited to just port 5432.
+
+For more precise policy, set `networkPolicy.allowExternal=false`. This will only allow pods with the generated client label to connect to PostgreSQL.
+This label will be displayed in the output of a successful install.
+
+## Differences between Bitnami PostgreSQL image and [Docker Official](https://hub.docker.com/_/postgres) image
+
+- The Docker Official PostgreSQL image does not support replication. If you pass any replication environment variable, this would be ignored. The only environment variables supported by the Docker Official image are POSTGRES_USER, POSTGRES_DB, POSTGRES_PASSWORD, POSTGRES_INITDB_ARGS, POSTGRES_INITDB_WALDIR and PGDATA. All the remaining environment variables are specific to the Bitnami PostgreSQL image.
+- The Bitnami PostgreSQL image is non-root by default. This requires that you run the pod with `securityContext` and updates the permissions of the volume with an `initContainer`. A key benefit of this configuration is that the pod follows security best practices and is prepared to run on Kubernetes distributions with hard security constraints like OpenShift.
+
+### Deploy chart using Docker Official PostgreSQL Image
+
+From chart version 4.0.0, it is possible to use this chart with the Docker Official PostgreSQL image.
+Besides specifying the new Docker repository and tag, it is important to modify the PostgreSQL data directory and volume mount point. Basically, the PostgreSQL data dir cannot be the mount point directly, it has to be a subdirectory.
+
+```
+helm install --name postgres \
+             --set image.repository=postgres \
+             --set image.tag=10.6 \
+             --set postgresqlDataDir=/data/pgdata \
+             --set persistence.mountPath=/data/ \
+             stable/postgresql
+```
 
 ## Upgrade
 
@@ -363,6 +373,13 @@ $ helm upgrade my-release bitnami/influxdb \
 
 > Note: you need to substitute the placeholders _[POSTGRESQL_PASSWORD]_, and _[REPLICATION_PASSWORD]_ with the values obtained from instructions in the installation notes.
 
+## 7.0.0
+
+Helm performs a lookup for the object based on its group (apps), version (v1), and kind (Deployment). Also known as its GroupVersionKind, or GVK. Changing the GVK is considered a compatibility breaker from Kubernetes' point of view, so you cannot "upgrade" those objects to the new GVK in-place. Earlier versions of Helm 3 did not perform the lookup correctly which has since been fixed to match the spec.
+
+In https://github.com/helm/charts/pull/17281 the `apiVersion` of the statefulset resources was updated to `apps/v1` in tune with the api's deprecated, resulting in compatibility breakage.
+
+This major version bump signifies this change.
 
 ## 5.0.0
 

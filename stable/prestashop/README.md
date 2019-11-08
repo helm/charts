@@ -18,8 +18,10 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 
 ## Prerequisites
 
-- Kubernetes 1.5+ with Beta APIs enabled
+- Kubernetes 1.12+
+- Helm 2.11+ or Helm 3.0-beta3+
 - PV provisioner support in the underlying infrastructure
+- ReadWriteMany volumes for deployment scaling
 
 ## Installing the Chart
 
@@ -29,7 +31,7 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release stable/prestashop
 ```
 
-The command deploys PrestaShop on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys PrestaShop on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
@@ -43,7 +45,7 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
-## Configuration
+## Parameters
 
 The following table lists the configurable parameters of the PrestaShop chart and their default values.
 
@@ -111,11 +113,13 @@ The following table lists the configurable parameters of the PrestaShop chart an
 | `persistence.accessMode`             | PVC Access Mode for PrestaShop volume                                                                   | `ReadWriteOnce`                                              |
 | `persistence.size`                   | PVC Storage Request for PrestaShop volume                                                               | `8Gi`                                                        |
 | `resources`                          | CPU/Memory resource requests/limits                                                                     | Memory: `512Mi`, CPU: `300m`                                 |
+| `livenessProbe.enabled`              | Would you like a livenessProbe to be enabled                                                                                                               | `true`                                                       |
 | `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated                                                                | 600                                                          |
 | `livenessProbe.periodSeconds`        | How often to perform the probe                                                                          | 3                                                            |
 | `livenessProbe.timeoutSeconds`       | When the probe times out                                                                                | 5                                                            |
 | `livenessProbe.failureThreshold`     | Minimum consecutive failures for the probe to be considered failed after having succeeded.              | 6                                                            |
 | `livenessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful after having failed.            | 1                                                            |
+| `readinessProbe.enabled`             | Would you like a readinessProbe to be enabled                                                                                                               | `true`                                                       |
 | `readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated                                                               | 30                                                           |
 | `readinessProbe.periodSeconds`       | How often to perform the probe                                                                          | 3                                                            |
 | `readinessProbe.timeoutSeconds`      | When the probe times out                                                                                | 5                                                            |
@@ -166,6 +170,8 @@ $ helm install --name my-release -f values.yaml stable/prestashop
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+## Configuration and installation details
+
 ### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
 
 It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
@@ -177,7 +183,7 @@ Bitnami will release a new chart updating its containers if a new version of the
 The [Bitnami PrestaShop](https://github.com/bitnami/bitnami-docker-prestashop) image stores the PrestaShop data and configurations at the `/bitnami/prestashop` path of the container.
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
-See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+See the [Parameters](#parameters) section to configure the PVC or to disable persistence.
 
 ## Upgrading
 

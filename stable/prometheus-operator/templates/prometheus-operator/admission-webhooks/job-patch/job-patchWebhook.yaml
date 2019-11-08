@@ -3,6 +3,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name:  {{ template "prometheus-operator.fullname" . }}-admission-patch
+  namespace: {{ $.Release.Namespace }}
   annotations:
     "helm.sh/hook": post-install,post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
@@ -35,7 +36,7 @@ spec:
           args:
             - patch
             - --webhook-name={{ template "prometheus-operator.fullname" . }}-admission
-            - --namespace={{ .Release.Namespace }}
+            - --namespace={{ $.Release.Namespace }}
             - --secret-name={{ template "prometheus-operator.fullname" . }}-admission
             - --patch-failure-policy={{ .Values.prometheusOperator.admissionWebhooks.failurePolicy }}
       restartPolicy: OnFailure

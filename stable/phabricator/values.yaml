@@ -14,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/phabricator
-  tag: 2019.39.0-debian-9-r1
+  tag: 2019.43.0-debian-9-r1
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -182,13 +182,18 @@ ingress:
   - name: phabricator.local
     path: /
 
-  ## The tls configuration for the ingress
-  ## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/#tls
-  ##
-  tls:
-  - hosts:
-    - phabricator.local
-    secretName: phabricator.local-tls
+    ## Set this to true in order to enable TLS on the ingress record
+    tls: false
+
+    ## Optionally specify the TLS hosts for the ingress record
+    ## Useful when the Ingress controller supports www-redirection
+    ## If not specified, the above host name will be used
+    # tlsHosts:
+    # - www.phabricator.local
+    # - phabricator.local
+
+    ## If TLS is set to true, you must declare what secret will store the key/certificate for TLS
+    tlsSecret: phabricator.local-tls
 
   secrets:
   ## If you're providing your own certificates, please use this to add the certificates as secrets
@@ -223,7 +228,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/apache-exporter
-    tag: 0.7.0-debian-9-r72
+    tag: 0.7.0-debian-9-r96
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
