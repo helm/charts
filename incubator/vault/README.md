@@ -52,6 +52,7 @@ The following table lists the configurable parameters of the Vault chart and the
 | `image.pullPolicy`                | Container pull policy                    | `IfNotPresent`                      |
 | `image.repository`                | Container image to use                   | `vault`                             |
 | `image.tag`                       | Container image tag to deploy            | `.Chart.appVersion`                            |
+| `vault.backendPolicy              | If custom backend needed                 | `{}`                                |
 | `vault.dev`                       | Use Vault in dev mode                    | true (set to false in production)   |
 | `vault.extraArgs`                 | Additional arguments for vault server command | `[]`                           |
 | `vault.extraEnv`                  | Extra env vars for Vault pods            | `{}`                                |
@@ -60,11 +61,14 @@ The following table lists the configurable parameters of the Vault chart and the
 | `vault.extraVolumes`              | Additional volumes to the controller pod | `{}`                                |
 | `vault.extraVolumeMounts`         | Extra volumes to mount to the controller pod | `{}`                                |
 | `vault.existingConfigName`        | Location of existing Vault configuration | nil                                 |
+| `vault.podApiAddress`             | Set the `VAULT_API_ADDR` environment variable to the Pod IP Address. This is the address (full URL) to advertise to other Vault servers in the cluster for client redirection.| `true`           |
 | `vault.config`                    | Vault configuration                      | No default backend                  |
 | `replicaCount`                    | k8s replicas                             | `3`                                 |
 | `resources.limits.cpu`            | Container requested CPU                  | `nil`                               |
 | `resources.limits.memory`         | Container requested memory               | `nil`                               |
 | `affinity`                        | Affinity settings                        | See values.yaml                     |
+| `nodeSelector`                    | Node labels for pod assignment           | `{}`                                |
+| `tolerations`                     | Tolerations for node taints              | `[]`                                |
 | `service.loadBalancerIP`          | Assign a static IP to the loadbalancer   | `nil`                               |
 | `service.loadBalancerSourceRanges`| IP whitelist for service type loadbalancer   | `[]`                            |
 | `service.annotations`             | Annotations for service                  | `{}`                                |
@@ -96,6 +100,17 @@ The following table lists the configurable parameters of the Vault chart and the
 | `vaultExporter.pullPolicy`        | Image pull policy that sould be used     | `IfNotPresent`                      |
 | `vaultExporter.vaultAddress`      | Vault address that exporter should use   | `127.0.0.1:8200`                    |
 | `vaultExporter.tlsCAFile`         | Vault TLS CA certificate mount path      | `/vault/tls/ca.crt`                 |
+| `serviceMonitor.enabled`          | Specifies whether a Prometheus ServiceMonitor should be created | `false`|
+| `serviceMonitor.additionalLabels` | Additional labels for Service Monitor    | `{}`                                |
+| `serviceMonitor.podPortName`      | Name of the port of the pod to scrape    | `metrics`                           |
+| `serviceMonitor.interval`         | Prometheus scrape interval               | `10s`                               |
+| `serviceMonitor.jobLabel`         | Prometheus job label                     | `vault-exporter`                    |
+| `prometheusRules.enabled`         | Specifies whether a Prometheus Alert Rule should be created                     | `false`          |
+| `prometheusRules.defaultRules.vaultUp`           | Specifies whether the vaultUp rule should be included            | `true`           |
+| `prometheusRules.defaultRules.vaultUninitialized`| Specifies whether the vaultUninitialized rule should be included | `true`           |
+| `prometheusRules.defaultRules.vaultSealed`       | Specifies whether the vaulSealed rule should be included         | `true`           |
+| `prometheusRules.defaultRules.vaultStandby`      | Specifies whether the vaultStandy rule should be included        | `false`          |
+| `prometheusRules.extraRules`                     | Custom extra rules                                               | `[]`             |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -131,6 +146,60 @@ your needs.
 
 If your Vault is set up with TLS make sure to specify the CA certificate path properly.
 This is done through the parameter `vaultExporter.tlsCAFile`.
+
+If you want to use the exporter with the Prometheus Operator you can simply enable the ServiceMonitor
+with an extraLabel corresponding to your Prometheus scraper label selector. For example:
+
+```yaml
+serviceMonitor:
+  enabled: true
+  additionalLabels:
+    prometheus-scraper: "default"
+  interval: 10s
+  jobLabel: "vault-exporter"
+```
+
+If you do not want to use the default vaultExporter container, but use your own, you can declare it in the `vault.extraContainer` part. But you have to expose a __named__ port for the metrics and set this name in the `serviceMonitor.podPortName`. For exmaple:
+
+```yaml
+vaultExporter:
+  enabled: false
+
+serviceMonitor:
+  enabled: true
+  additionalLabels:
+    prometheus-scraper: "default"
+  podPortName: "metricPort"
+
+vault:
+  extraContainer:
+  - name: my-vault-exporter
+    image: my-vault-exporter:latest
+    ports:
+    - containerPort: 8080
+      name: metricPort
+```
+
+If you want to add Prometheus alerting rules you can simply enable the alerts and disabling/enabling
+the defaults rules you want to use. You can add as many custom rules as you want. For example:
+
+```yaml
+  prometheusRules:
+    enabled: true
+    defaultRules:
+      vaultUp: true
+      vaultUninitialized: true
+      vaultSealed: true
+      vaultStandby: false
+    extraRules:
+    - alert: VaultHTTPErrorRateIsHigh
+      annotations:
+        description: The ingress is failing more than %15 of the requests for 5m
+      expr: sum(rate(nginx_ingress_controller_requests{ingress="vault",status!~"[4-5].*"}[2m])) by (ingress) / sum(rate(nginx_ingress_controller_requests{ingress="vault"}[2m])) by (ingress) < 0.85
+      for: 5m
+      labels:
+        severity: critical
+```
 
 ## Using Vault
 

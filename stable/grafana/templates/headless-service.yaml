@@ -1,0 +1,22 @@
+{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) (eq .Values.persistence.type "statefulset")}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "grafana.fullname" . }}-headless
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "grafana.name" . }}
+    chart: {{ template "grafana.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- with .Values.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  clusterIP: None
+  selector:
+    app: {{ template "grafana.name" . }}
+    release: {{ .Release.Name }}
+  type: ClusterIP
+{{- end }}

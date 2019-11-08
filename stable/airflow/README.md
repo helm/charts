@@ -200,7 +200,7 @@ Next, you can use those secrets with the Helm chart:
 ```yaml
 # values.yaml
 
-postgres:
+postgresql:
   existingSecret: airflow-postgres
 
 redis:
@@ -332,6 +332,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.service.type`                   | service type for Airflow UI                             | `ClusterIP`               |
 | `airflow.service.annotations`            | (optional) service annotations for Airflow UI           | `{}`                      |
 | `airflow.service.externalPort`           | (optional) external port for Airflow UI                 | `8080`                    |
+| `airflow.service.nodePort.http`               | (optional) when using service.type == NodePort, an optional NodePort to request | ``|
 | `airflow.executor`                       | the executor to run                                     | `Celery`                  |
 | `airflow.initRetryLoop`                  | max number of retries during container init             |                           |
 | `airflow.image.repository`               | Airflow docker image                                    | `puckel/docker-airflow`   |
@@ -345,24 +346,43 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.extraEnv`                       | specify additional environment variables to mount       | `{}`                      |
 | `airflow.extraConfigmapMounts`           | Additional configMap volume mounts on the airflow pods. | `[]`                      |
 | `airflow.podAnnotations`                 | annotations for scheduler, worker and web pods          | `{}`                      |
+| `airflow.extraInitContainers`            | additional Init Containers to run in the scheduler pods | `[]`                      |
 | `airflow.extraContainers`                | additional containers to run in the scheduler, worker & web pods | `[]`             |
 | `airflow.extraVolumeMounts`              | additional volumeMounts to the main container in scheduler, worker & web pods | `[]`|
 | `airflow.extraVolumes`                   | additional volumes for the scheduler, worker & web pods | `[]`                      |
 | `airflow.initdb`                         | run `airflow initdb` when starting the scheduler        | `true`                    |
 | `flower.resources`                       | custom resource configuration for flower pod            | `{}`                      |
+| `flower.labels`                          | labels for the flower deployment                        | `{}`                      |
+| `flower.annotations`                     | annotations for the flower deployment                   | `{}`                      |
 | `flower.service.type`                    | service type for Flower UI                              | `ClusterIP`               |
 | `flower.service.annotations`             | (optional) service annotations for Flower UI            | `{}`                      |
 | `flower.service.externalPort`            | (optional) external port for Flower UI                  | `5555`                    |
 | `web.resources`                          | custom resource configuration for web pod               | `{}`                      |
+| `web.labels`                             | labels for the web deployment                           | `{}`                      |
+| `web.annotations`                        | annotations for the web deployment                      | `{}`                      |
 | `web.initialStartupDelay`                | amount of time webserver pod should sleep before initializing webserver             | `60`  |
+| `web.livenessProbe.periodSeconds`        | interval between probes                         | `60`  |
+| `web.livenessProbe.timeoutSeconds`       | time allowed for a result to return             | `1`  |
+| `web.livenessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful             | `1`  |
+| `web.livenessProbe.failureThreshold`     | Minimum consecutive successes for the probe to be considered failed                 | `5`  |
+| `web.readinessProbe.periodSeconds`       | interval between probes                         | `60`  |
+| `web.readinessProbe.timeoutSeconds`      | time allowed for a result to return             | `1`  |
+| `web.readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful             | `1`  |
+| `web.readinessProbe.failureThreshold`    | Minimum consecutive successes for the probe to be considered failed                 | `5`  |
 | `web.initialDelaySeconds`                | initial delay on livenessprobe before checking if webserver is available    | `360` |
 | `web.secretsDir`                         | directory in which to mount secrets on webserver nodes  | /var/airflow/secrets      |
 | `web.secrets`                            | secrets to mount as volumes on webserver nodes          | []                        |
 | `scheduler.resources`                    | custom resource configuration for scheduler pod         | `{}`                      |
+| `scheduler.labels`                       | labels for the scheduler deployment                     | `{}`                      |
+| `scheduler.annotations`                  | annotations for the scheduler deployment                | `{}`                      |
 | `workers.enabled`                        | enable workers                                          | `true`                    |
 | `workers.replicas`                       | number of workers pods to launch                        | `1`                       |
+| `workers.terminationPeriod`              | gracefull termination period for workers to stop        | `30`                      |
 | `workers.resources`                      | custom resource configuration for worker pod            | `{}`                      |
 | `workers.celery.instances`               | number of parallel celery tasks per worker              | `1`                       |
+| `workers.labels`                         | labels for the worker statefulSet                       | `{}`                      |
+| `workers.annotations`                    | annotations for the worker statefulSet                  | `{}`                      |
+| `workers.celery.gracefullTermination`    | cancel the consumer and wait for the current task to finish before stopping the worker      | `false`     |
 | `workers.podAnnotations`                 | annotations for the worker pods                         | `{}`                      |
 | `workers.secretsDir`                     | directory in which to mount secrets on worker nodes     | /var/airflow/secrets      |
 | `workers.secrets`                        | secrets to mount as volumes on worker nodes             | []                        |
@@ -376,6 +396,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `ingress.web.livenessPath`               | path to the web liveness probe                          | `{{ ingress.web.path }}/health` |
 | `ingress.web.tls.enabled`                | enables TLS termination at the ingress                  | `false`                   |
 | `ingress.web.tls.secretName`             | name of the secret containing the TLS certificate & key | ``                        |
+| `ingress.web.paths`                      | additional paths for the ingress                        | `{}`                      |
 | `ingress.flower.host`                    | hostname for the flower ui                              | ""                        |
 | `ingress.flower.path`                    | path of the flower ui (read `values.yaml`)              | ``                        |
 | `ingress.flower.livenessPath`            | path to the liveness probe (read `values.yaml`)         | `/`                       |
@@ -416,8 +437,8 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `postgresql.postgresPassword`            | PostgreSQL Password                                     | `airflow`                 |
 | `postgresql.postgresDatabase`            | PostgreSQL Database name                                | `airflow`                 |
 | `postgresql.persistence.enabled`         | Enable Postgres PVC                                     | `true`                    |
-| `postgresql.persistance.storageClass`    | Persistant class                                        | (undefined)               |
-| `postgresql.persistance.accessMode`      | Access mode                                             | `ReadWriteOnce`           |
+| `postgresql.persistence.storageClass`    | Persistent class                                        | (undefined)               |
+| `postgresql.persistence.accessMode`      | Access mode                                             | `ReadWriteOnce`           |
 | `redis.enabled`                          | Create a Redis cluster                                  | `true`                    |
 | `redis.existingSecret`                   | The name of an existing secret with a key named `redis.existingSecretKey` to use as the password  | `nil` |
 | `redis.existingSecretKey`                | The name of the key containing the password in the secret named `redis.existingSecret`  | `redis-password` |

@@ -29,28 +29,26 @@ charts = [
         'source': 'https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/grafana-dashboardDefinitions.yaml',
         'destination': '../templates/grafana/dashboards-1.14',
         'type': 'yaml',
-        'min_kubernetes': '1.14.0-0',
-        'max_kubernetes': '1.16.0-0'
+        'min_kubernetes': '1.14.0-0'
     },
     {
         'source': 'https://raw.githubusercontent.com/etcd-io/etcd/master/Documentation/op-guide/grafana.json',
         'destination': '../templates/grafana/dashboards-1.14',
         'type': 'json',
-        'min_kubernetes': '1.14.0-0',
-        'max_kubernetes': '1.16.0-0'
+        'min_kubernetes': '1.14.0-0'
     },
     {
         'source': 'https://raw.githubusercontent.com/coreos/kube-prometheus/release-0.1/manifests/grafana-dashboardDefinitions.yaml',
         'destination': '../templates/grafana/dashboards',
         'type': 'yaml',
-        'min_kubernetes': '1.11.0-0',
+        'min_kubernetes': '1.10.0-0',
         'max_kubernetes': '1.14.0-0'
     },
     {
         'source': 'https://raw.githubusercontent.com/etcd-io/etcd/master/Documentation/op-guide/grafana.json',
         'destination': '../templates/grafana/dashboards',
         'type': 'json',
-        'min_kubernetes': '1.11.0-0',
+        'min_kubernetes': '1.10.0-0',
         'max_kubernetes': '1.14.0-0'
     },
 ]
@@ -63,14 +61,18 @@ condition_map = {
     'controller-manager': ' .Values.kubeControllerManager.enabled',
     'kubelet': ' .Values.kubelet.enabled',
     'proxy': ' .Values.kubeProxy.enabled',
-    'scheduler': ' .Values.kubeScheduler.enabled'
+    'scheduler': ' .Values.kubeScheduler.enabled',
+    'node-rsrc-use': ' .Values.nodeExporter.enabled',
+    'node-cluster-rsrc-use': ' .Values.nodeExporter.enabled',
+    'prometheus-remote-write': ' .Values.prometheus.prometheusSpec.remoteWriteDashboards'
 }
 
 # standard header
 header = '''# Generated from '%(name)s' from %(url)s
 # Do not change in-place! In order to change this file first read following link:
 # https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
-{{- if and (semverCompare ">=%(min_kubernetes)s" .Capabilities.KubeVersion.GitVersion) (semverCompare "<%(max_kubernetes)s" .Capabilities.KubeVersion.GitVersion) .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled%(condition)s }}
+{{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
+{{- if and (semverCompare ">=%(min_kubernetes)s" $kubeTargetVersion) (semverCompare "<%(max_kubernetes)s" $kubeTargetVersion) .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled%(condition)s }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -146,8 +148,12 @@ def main():
             print('Skipping the file, response code %s not equals 200' % response.status_code)
             continue
         raw_text = response.text
+
+        if ('max_kubernetes' not in chart):
+            chart['max_kubernetes']="9.9.9-9"
+
         if chart['type'] == 'yaml':
-            yaml_text = yaml.load(raw_text)
+            yaml_text = yaml.full_load(raw_text)
             groups = yaml_text['items']
             for group in groups:
                 for resource, content in group['data'].items():

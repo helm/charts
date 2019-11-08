@@ -30,6 +30,17 @@ $ helm del --purge my-release
 Once the old release is deleted, the new 2.X release can be installed using the standard instructions.
 Note that autoscaling will not occur during the time between deletion and installation.
 
+## Upgrading from 4.X to 5.X
+
+In order to upgrade to chart version 5.X from <=4.X, deleting the old helm release first is required.
+
+```console
+$ helm del --purge my-release
+```
+
+Once the old release is deleted, the new 5.X release can be installed using the standard instructions.
+Note that autoscaling will not occur during the time between deletion and installation.
+
 ## Installing the Chart
 
 **By default, no deployment is created and nothing will autoscale**.
@@ -140,8 +151,6 @@ Parameter | Description | Default
 `autoscalingGroupsnamePrefix[].name` | GCE MIG name prefix (the full name is invalid) | None. Required for `cloudProvider=gce`
 `autoscalingGroupsnamePrefix[].maxSize` | maximum MIG size | None. Required for `cloudProvider=gce`
 `autoscalingGroupsnamePrefix[].minSize` | minimum MIG size |  None. Required for `cloudProvider=gce`
-`sslCertPath` | Path on the pod where ssl ca cert exists | `/etc/ssl/certs/ca-certificates.crt`
-`sslCertHostPath` | Path on the host where ssl ca cert exists | `/etc/ssl/certs/ca-certificates.crt`
 `cloudProvider` | `aws` or `spotinst` are currently supported for AWS. `gce` for GCE. `azure` for Azure AKS | `aws`
 `image.repository` | Image | `k8s.gcr.io/cluster-autoscaler`
 `image.tag` | Image tag  | `v1.13.1`
@@ -150,20 +159,22 @@ Parameter | Description | Default
 `extraArgs` | additional container arguments | `{}`
 `podDisruptionBudget` | Pod disruption budget | `maxUnavailable: 1`
 `extraEnv` | additional container environment variables | `{}`
-`envFromConfigMap` |  additional container environment variables from a configmap | `[]`
-`envFromSecret` | additional container environment variables from secret | `nil`
+`envFromConfigMap` | additional container environment variables from a configmap | `{}`
+`envFromSecret` | secret name containing keys that will be exposed as envs | `nil`
+`extraEnvSecrets` | additional container environment variables from a secret | `{}`
+`fullnameOverride` | String to fully override cluster-autoscaler.fullname template | `""`
+`nameOverride` | String to partially override cluster-autoscaler.fullname template (will maintain the release name) | `""`
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to add to each pod | `{}`
-`deployment.apiVersion` | apiVersion for the deployment | `extensions/v1beta1`
 `rbac.create` | If true, create & use RBAC resources | `false`
 `rbac.serviceAccountName` | existing ServiceAccount to use (ignored if rbac.create=true) | `default`
+`rbac.serviceAccountAnnotations` | Additional Service Account annotations	| `{}`
 `rbac.pspEnabled` | Must be used with `rbac.create` true. If true, creates & uses RBAC resources required in the cluster with [Pod Security Policies](https://kubernetes.io/docs/concepts/policy/pod-security-policy/) enabled. | `false`
 `replicaCount` | desired number of pods | `1`
 `priorityClassName` | priorityClassName | `nil`
 `dnsPolicy` | dnsPolicy | `nil`
 `resources` | pod resource requests & limits | `{}`
 `service.annotations` | annotations to add to service | none
-`service.clusterIP` | IP address to assign to service | `""`
 `service.externalIPs` | service external IP addresses | `[]`
 `service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
@@ -189,6 +200,7 @@ Parameter | Description | Default
 `azureVMType: "AKS"` | Azure VM type | `AKS`
 `azureNodeResourceGroup` | azure resource group where the clusters Nodes are located, typically set as `MC_<cluster-resource-group-name>_<cluster-name>_<location>` | none
 `azureUseManagedIdentityExtension` | Whether to use Azure's managed identity extension for credentials | false
+`kubeTargetVersionOverride` | Override the .Capabilities.KubeVersion.GitVersion | `""`
 
 Specify each parameter you'd like to override using a YAML file as described above in the [installation](#installing-the-chart) section or by using the `--set key=value[,key=value]` argument to `helm install`. For example, to change the region and [expander](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#what-are-expanders):
 
@@ -226,6 +238,15 @@ The worker running the cluster autoscaler will need access to certain resources 
   - `DescribeLaunchconfigurations` is required to scale up an ASG from 0
 
 Unfortunately AWS does not support ARNs for autoscaling groups yet so you must use "*" as the resource. More information [here](http://docs.aws.amazon.com/autoscaling/latest/userguide/IAM.html#UsingWithAutoScaling_Actions).
+
+# IAM Roles for Service Accounts (IRSA)
+
+For Kubernetes clusters that use Amazon EKS, the service account can be configured with an IAM role using [IAM Roles for Service Accounts](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html) to avoid needing to grant access to the worker nodes for AWS resources.
+
+In order to accomplish this, you will first need to create a new IAM role with the above mentions policies.  Take care in [configuring the trust relationship](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts-technical-overview.html#iam-role-configuration) to restrict access just to the service account used by cluster autoscaler.
+
+Once you have the IAM role configured, you would then need to `--set rbac.serviceAccountAnnotations."eks\.amazonaws\.com/role-arn"=arn:aws:iam::123456789012:role/MyRoleName` when installing.
+
 
 ## Auto-discovery
 

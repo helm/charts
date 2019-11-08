@@ -12,7 +12,7 @@ metadata:
 data:
     ok: |
       #!/bin/sh
-      echo ruok | nc 127.0.0.1 ${1:-2181}
+      zkServer.sh status
 
     ready: |
       #!/bin/sh
@@ -88,7 +88,7 @@ data:
 
       echo "zookeeper.root.logger=$ZK_LOG_LEVEL, CONSOLE" >> $LOG4J_PROPERTIES
       echo "zookeeper.console.threshold=$ZK_LOG_LEVEL" >> $LOG4J_PROPERTIES
-      echo "zookeeper.log.threshold=$ZK_LOG_LEVEL" >> $LOGGER_PROPERS_FILE
+      echo "zookeeper.log.threshold=$ZK_LOG_LEVEL" >> $LOG4J_PROPERTIES
       echo "zookeeper.log.dir=$ZK_DATA_LOG_DIR" >> $LOG4J_PROPERTIES
       echo "zookeeper.log.file=zookeeper.log" >> $LOG4J_PROPERTIES
       echo "zookeeper.log.maxfilesize=256MB" >> $LOG4J_PROPERTIES

@@ -1,7 +1,8 @@
 # Generated from 'persistentvolumesusage' from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/grafana-dashboardDefinitions.yaml
 # Do not change in-place! In order to change this file first read following link:
 # https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
-{{- if and (semverCompare ">=1.14.0-0" .Capabilities.KubeVersion.GitVersion) (semverCompare "<1.16.0-0" .Capabilities.KubeVersion.GitVersion) .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled }}
+{{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
+{{- if and (semverCompare ">=1.14.0-0" $kubeTargetVersion) (semverCompare "<9.9.9-9" $kubeTargetVersion) .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -467,7 +468,7 @@ data:
                     "query": "label_values(kubelet_volume_stats_capacity_bytes, cluster)",
                     "refresh": 2,
                     "regex": "",
-                    "sort": 0,
+                    "sort": 1,
                     "tagValuesQuery": "",
                     "tags": [
 
@@ -493,7 +494,7 @@ data:
                     "query": "label_values(kubelet_volume_stats_capacity_bytes{cluster=\"$cluster\", job=\"kubelet\"}, namespace)",
                     "refresh": 2,
                     "regex": "",
-                    "sort": 0,
+                    "sort": 1,
                     "tagValuesQuery": "",
                     "tags": [
 
@@ -519,7 +520,7 @@ data:
                     "query": "label_values(kubelet_volume_stats_capacity_bytes{cluster=\"$cluster\", job=\"kubelet\", namespace=\"$namespace\"}, persistentvolumeclaim)",
                     "refresh": 2,
                     "regex": "",
-                    "sort": 0,
+                    "sort": 1,
                     "tagValuesQuery": "",
                     "tags": [
 

@@ -39,7 +39,20 @@ extraEnv: []
 #   value: 'some value'
 
 # Annotations to be added to kubernetes dashboard pods
+## Recommended value
+# podAnnotations:
+#   seccomp.security.alpha.kubernetes.io/pod: 'runtime/default'
 podAnnotations: {}
+
+## SecurityContext for the kubernetes dashboard container
+## Recommended values
+# dashboardContainerSecurityContext:
+#   allowPrivilegeEscalation: false
+#   readOnlyRootFilesystem: true
+## The two values below can be set here or at podLevel (using variable .securityContext)
+#   runAsUser: 1001
+#   runAsGroup: 2001
+dashboardContainerSecurityContext: {}
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -57,6 +70,7 @@ tolerations: []
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}
 
+# priorityClassName: ""
 
 service:
   type: ClusterIP
@@ -174,6 +188,12 @@ podDisruptionBudget:
   minAvailable:
   maxUnavailable:
 
+
+## PodSecurityContext for pod level securityContext
+##
+# securityContext:
+#   runAsUser: 1001
+#   runAsGroup: 2001
 securityContext: {}
 
 networkPolicy: false

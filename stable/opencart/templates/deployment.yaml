@@ -1,5 +1,5 @@
 {{- if include "opencart.host" . -}}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "opencart.fullname" . }}
@@ -154,5 +154,9 @@ spec:
           claimName: {{ template "opencart.fullname" . }}-opencart
       {{- else }}
         emptyDir: {}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
       {{- end }}
 {{- end -}}

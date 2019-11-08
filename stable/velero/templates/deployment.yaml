@@ -34,6 +34,9 @@ spec:
     spec:
       restartPolicy: Always
       serviceAccountName: {{ include "velero.serverServiceAccount" . }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ include "velero.priorityClassName" . }}
+      {{- end }}
       containers:
         - name: velero
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -79,6 +82,9 @@ spec:
             - name: scratch
               mountPath: /scratch
         {{- end }}
+            {{- if .Values.extraVolumeMounts }}
+            {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
+            {{- end }}
           env:
             - name: VELERO_SCRATCH_DIR
               value: /scratch
@@ -115,6 +121,9 @@ spec:
           emptyDir: {}
         - name: scratch
           emptyDir: {}
+        {{- if .Values.extraVolumes }}
+        {{- toYaml .Values.extraVolumes | nindent 8 }}
+        {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

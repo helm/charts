@@ -79,6 +79,7 @@ The following table lists the configurable parameters of the SchemaRegistry char
 | `sasl.scram.zookeeperClientPassword` | the sasl scram password to use to authenticate to zookeeper | `zookeeper-password` |
 | `resources` | CPU/Memory resource requests/limits | `{}` |
 | `servicePort` | The port on which the SchemaRegistry server will be exposed. | `8081` |
+| `service.annotations` | Additional annotations for the service | `{}` |
 | `service.labels` | Additional labels for the service | `{}` |
 | `overrideGroupId` | Group ID defaults to using Release Name so each release is its own Schema Registry worker group, it can be overridden | `{- .Release.Name -}}` |
 | `kafkaStore.overrideBootstrapServers` | Defaults to Kafka Servers in the same release, it can be overridden in case there was a separate release for Kafka Deploy | `{{- printf "PLAINTEXT://%s-kafka-headless:9092" .Release.Name }}`
@@ -97,6 +98,7 @@ The following table lists the configurable parameters of the SchemaRegistry char
 | `external.servicePort` | set service port | `443` |
 | `external.loadBalancerIP` | set Static IP for LoadBalancer | `""` |
 | `external.nodePort` | set Nodeport (valid range depends on CLoud Provider) | `""` |
+| `external.annotations` | Additional annotations for the external service | `{}` |
 | `jmx.enabled` | Enable JMX? | `true` |
 | `jmx.port` | set JMX port | `5555` |
 | `prometheus.jmx.enabled` | Enable Prometheus JMX Exporter | `false` |

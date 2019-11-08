@@ -57,6 +57,18 @@ Only one messaging layer can be used at a given time. If RabbitMQ and Kafka are 
 
 Note that this chart pulls in many different Docker images so can take a while to fully install.
 
+### Feature Toggles
+
+If you only need to deploy tasks and schedules, streams can be disabled:
+
+`--set features.streaming.enabled=false --set rabbitmq.enabled=false`
+
+If you only need to deploy streams, tasks and schedules can be disabled:
+
+`--set features.batch.enabled=false`
+
+NOTE: Both `features.streaming.enabled` and `features.batch.enabled` should not be set to `false` at the same time.
+
 ## Configuration
 
 The following tables list the configurable parameters and their default values.
@@ -81,10 +93,12 @@ The following tables list the configurable parameters and their default values.
 | server.version                    | The version/tag of the Data Flow server                            | 2.2.1.RELEASE
 | server.imagePullPolicy            | The imagePullPolicy of the Data Flow server                        | IfNotPresent
 | server.service.type               | The service type for the Data Flow server                          | LoadBalancer
-| server.service.annotations        | Extra annotations for service resources                            | {}
-| server.platformName               | The name of the configured platform account                        | default
+| server.service.annotations        | Extra annotations for service resource                             | {}
 | server.service.externalPort       | The external port for the Data Flow server                         | 80
+| server.service.labels             | Extra labels for the service resource                              | {}
+| server.platformName               | The name of the configured platform account                        | default
 | server.configMap                  | Custom ConfigMap name for Data Flow server configuration           |
+| server.trustCerts                 | Trust self signed certs                                            | false
 
 ### Skipper Server Configuration
 
@@ -94,7 +108,10 @@ The following tables list the configurable parameters and their default values.
 | skipper.imagePullPolicy           | The imagePullPolicy of the Skipper server                        | IfNotPresent
 | skipper.platformName              | The name of the configured platform account                      | default
 | skipper.service.type              | The service type for the Skipper server                          | ClusterIP
+| skipper.service.annotations       | Extra annotations for service resources                          | {}
+| skipper.service.labels            | Extra labels for the service resource                            | {}
 | skipper.configMap                 | Custom ConfigMap name for Skipper server configuration           |
+| skipper.trustCerts                | Trust self signed certs                                          | false
 
 ### Spring Cloud Deployer for Kubernetes Configuration
 
@@ -147,3 +164,11 @@ The following tables list the configurable parameters and their default values.
 | database.password   | Database password              | nil
 | database.dataflow   | Database name for SCDF server  | dataflow
 | database.skipper    | Database name for SCDF skipper | skipper
+
+### Feature Toggles
+
+| Parameter                    | Description                             | Default                   |
+| ---------------------------- | --------------------------------------- | ------------------------- |
+| features.streaming.enabled   | Enables or disables streams             | true
+| features.batch.enabled       | Enables or disables tasks and schedules | true
+

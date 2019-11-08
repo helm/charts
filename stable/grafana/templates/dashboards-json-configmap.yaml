@@ -1,7 +1,6 @@
 {{- if .Values.dashboards }}
 {{ $files := .Files }}
 {{- range $provider, $dashboards := .Values.dashboards }}
----
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -13,9 +12,12 @@ metadata:
     release: {{ $.Release.Name }}
     heritage: {{ $.Release.Service }}
     dashboard-provider: {{ $provider }}
+{{- if $dashboards }}
 data:
+{{- $dashboardFound := false }}
 {{- range $key, $value := $dashboards }}
 {{- if (or (hasKey $value "json") (hasKey $value "file")) }}
+{{- $dashboardFound = true }}
 {{ print $key | indent 2 }}.json:
 {{- if hasKey $value "json" }}
     |-
@@ -26,5 +28,11 @@ data:
 {{- end }}
 {{- end }}
 {{- end }}
+{{- if not $dashboardFound }}
+  {}
 {{- end }}
+{{- end }}
+---
+{{- end }}
+
 {{- end }}

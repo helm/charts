@@ -29,13 +29,31 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 {{- define "sentry.postgresql.fullname" -}}
-{{- printf "%s-%s" .Release.Name "postgresql" | trunc 63 | trimSuffix "-" -}}
+{{- if .Values.postgresql.fullnameOverride -}}
+{{- .Values.postgresql.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default .Chart.Name .Values.postgresql.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s" .Release.Name "sentry-postgresql" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
 {{- end -}}
 {{- define "sentry.redis.fullname" -}}
-{{- printf "%s-%s" .Release.Name "redis" | trunc 63 | trimSuffix "-" -}}
+{{- if .Values.redis.fullnameOverride -}}
+{{- .Values.redis.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default .Chart.Name .Values.redis.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s" .Release.Name "sentry-redis" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
 {{- end -}}
 {{- define "sentry.smtp.fullname" -}}
-{{- printf "%s-%s" .Release.Name "smtp" | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-%s" .Release.Name "sentry-smtp" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
@@ -45,7 +63,7 @@ Set postgres host
 {{- if .Values.postgresql.enabled -}}
 {{- template "sentry.postgresql.fullname" . -}}
 {{- else -}}
-{{- .Values.postgresql.postgresHost | quote -}}
+{{- .Values.postgresql.postgresqlHost | quote -}}
 {{- end -}}
 {{- end -}}
 
@@ -67,7 +85,7 @@ Set postgres port
 {{- if .Values.postgresql.enabled -}}
     "5432"
 {{- else -}}
-{{- default "5432" .Values.postgresql.postgresPort | quote -}}
+{{- default "5432" .Values.postgresql.postgresqlPort | quote -}}
 {{- end -}}
 {{- end -}}
 

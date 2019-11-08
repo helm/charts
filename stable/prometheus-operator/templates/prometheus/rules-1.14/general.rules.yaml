@@ -1,8 +1,9 @@
 # Generated from 'general.rules' group from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml
 # Do not change in-place! In order to change this file first read following link:
 # https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
-{{- if and (semverCompare ">=1.14.0-0" .Capabilities.KubeVersion.GitVersion) (semverCompare "<1.16.0-0" .Capabilities.KubeVersion.GitVersion) .Values.defaultRules.create .Values.defaultRules.rules.general }}
-apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
+{{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
+{{- if and (semverCompare ">=1.14.0-0" $kubeTargetVersion) (semverCompare "<9.9.9-9" $kubeTargetVersion) .Values.defaultRules.create .Values.defaultRules.rules.general }}
+apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: {{ printf "%s-%s" (include "prometheus-operator.fullname" .) "general.rules" | trunc 63 | trimSuffix "-" }}
@@ -22,8 +23,8 @@ spec:
     rules:
     - alert: TargetDown
       annotations:
-        message: '{{`{{ $value }}`}}% of the {{`{{ $labels.job }}`}} targets are down.'
-      expr: 100 * (count(up == 0) BY (job) / count(up) BY (job)) > 10
+        message: '{{`{{ printf "%.4g" $value }}`}}% of the {{`{{ $labels.job }}`}} targets in {{`{{ $labels.namespace }}`}} namespace are down.'
+      expr: 100 * (count(up == 0) BY (job, namespace, service) / count(up) BY (job, namespace, service)) > 10
       for: 10m
       labels:
         severity: warning

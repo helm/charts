@@ -1,4 +1,5 @@
-{{- if .Values.pro.enabled -}}
+{{ if and .Values.pro.enabled (not .Values.crds.enabled) }}
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -12,36 +13,62 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
   annotations:
     getambassador.io/config: |
+      {{- if .Values.pro.authService.enabled }}
       ---
       apiVersion: ambassador/v1
       kind: AuthService
-      name: ambassador-pro-auth
+      name: {{ include "ambassador.fullname" . }}-pro-auth
       proto: grpc
-      auth_service: 127.0.0.1:{{ .Values.pro.ports.auth }}
-      allow_request_body: false # setting this to 'true' allows Plugin and External filters to access the body, but has performance overhead
       {{- if hasKey .Values.env "AMBASSADOR_ID" }}
       ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
       {{- end }}
+      auth_service: 127.0.0.1:{{ .Values.pro.ports.auth }}
+      {{- toYaml .Values.pro.authService.optional_configurations | nindent 6}}
       ---
       # This mapping needs to exist, but is never actually followed.
       apiVersion: ambassador/v1
       kind: Mapping
-      name: callback_mapping
-      prefix: /callback
-      service: NoTaReAlSeRvIcE
+      name: {{ include "ambassador.fullname" . }}-pro-callback_mapping
       {{- if hasKey .Values.env "AMBASSADOR_ID" }}
       ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
       {{- end }}
+      prefix: /callback
+      service: NoTaReAlSeRvIcE
+      {{- end }}
+      {{- if .Values.pro.rateLimit.enabled }}
       ---
       apiVersion: ambassador/v1
       kind: RateLimitService
-      name: ambassador-pro-ratelimit
-      service: 127.0.0.1:{{ .Values.pro.ports.ratelimit }}
+      name: {{ include "ambassador.fullname" . }}-pro-ratelimit
       {{- if hasKey .Values.env "AMBASSADOR_ID" }}
       ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
       {{- end }}
+      service: 127.0.0.1:{{ .Values.pro.ports.ratelimit }}
+      {{- end }}
+      {{- if .Values.pro.devPortal.enabled }}
+      ---
+      apiVersion: ambassador/v1
+      kind: Mapping
+      name: {{ include "ambassador.fullname" . }}-pro-devportal
+      {{- if hasKey .Values.env "AMBASSADOR_ID" }}
+      ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
+      {{- end }}
+      prefix: /docs/
+      rewrite: ""
+      service: 127.0.0.1:{{ .Values.pro.ports.auth }}
+      ---
+      apiVersion: ambassador/v1
+      kind: Mapping
+      name: {{ include "ambassador.fullname" . }}-pro-devportal-api
+      {{- if hasKey .Values.env "AMBASSADOR_ID" }}
+      ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
+      {{- end }}
+      prefix: /openapi/
+      rewrite: ""
+      service: 127.0.0.1:{{ .Values.pro.ports.auth }}
+      {{- end }}
 spec:
   ports:
-  - name: ratelimit-grpc
+  - name: http
     port: 80
-{{- end -}}
+{{ end }}
