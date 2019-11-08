@@ -1,6 +1,14 @@
 apiVersion: v1
 appVersion: "1.0"
-description: A Helm chart for Kubernetes
+description: A Helm chart for KubeInvaders
 name: kubeinvaders
 appVersion: 0.2.8
 version: 0.1.0
+home: https://www.elastic.co/products/beats/auditbeat
+
+
+sources:
+- https://github.com/lucky-sideburn/KubeInvaders
+maintainers:
+- name: Eugenio Marzo
+  email: luckysideburn@gmail.com
