@@ -82,6 +82,7 @@ ingress:
     cert: ""
     key: ""
   enabled: true
+  hosts: []
   annotations:
     {}
     # === nginx tweaks
