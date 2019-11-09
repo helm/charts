@@ -85,7 +85,11 @@ spec:
             - --web.console.templates=/etc/prometheus/consoles
             - --web.enable-lifecycle
           {{- range $key, $value := .Values.server.extraArgs }}
+          {{- if $value }}
             - --{{ $key }}={{ $value }}
+          {{- else }}
+            - --{{ $key }}
+          {{- end }}
           {{- end }}
           {{- if .Values.server.baseURL }}
             - --web.external-url={{ .Values.server.baseURL }}
