@@ -21,7 +21,7 @@ resources: {}
 #    cpu: 100m
 #    memory: 200Mi
 
-# hostNetwork: false
+hostNetwork: false
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
