@@ -1,3 +1,4 @@
+{{- if .Values.server.enabled -}}
 {{- if .Values.server.statefulSet.enabled -}}
 apiVersion: apps/v1
 kind: StatefulSet
@@ -97,14 +98,14 @@ spec:
             httpGet:
               path: {{ .Values.server.prefixURL }}/-/ready
               port: 9090
-            initialDelaySeconds: 30
-            timeoutSeconds: 30
+            initialDelaySeconds: {{ .Values.server.readinessProbeInitialDelay }}
+            timeoutSeconds: {{ .Values.server.readinessProbeTimeout }}
           livenessProbe:
             httpGet:
               path: {{ .Values.server.prefixURL }}/-/healthy
               port: 9090
-            initialDelaySeconds: 30
-            timeoutSeconds: 30
+            initialDelaySeconds: {{ .Values.server.livenessProbeInitialDelay }}
+            timeoutSeconds: {{ .Values.server.livenessProbeTimeout }}
           resources:
 {{ toYaml .Values.server.resources | indent 12 }}
           volumeMounts:
@@ -214,5 +215,6 @@ spec:
 {{- else }}
         - name: storage-volume
           emptyDir: {}
+{{- end }}
 {{- end }}
 {{- end }}

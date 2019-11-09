@@ -1,0 +1,189 @@
+# Generated from 'kubernetes-apps' group from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml
+# Do not change in-place! In order to change this file first read following link:
+# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
+{{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
+{{- if and (semverCompare ">=1.14.0-0" $kubeTargetVersion) (semverCompare "<9.9.9-9" $kubeTargetVersion) .Values.defaultRules.create .Values.kubeStateMetrics.enabled .Values.defaultRules.rules.kubernetesApps }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ printf "%s-%s" (include "prometheus-operator.fullname" .) "kubernetes-apps" | trunc 63 | trimSuffix "-" }}
+  labels:
+    app: {{ template "prometheus-operator.name" . }}
+{{ include "prometheus-operator.labels" . | indent 4 }}
+{{- if .Values.defaultRules.labels }}
+{{ toYaml .Values.defaultRules.labels | indent 4 }}
+{{- end }}
+{{- if .Values.defaultRules.annotations }}
+  annotations:
+{{ toYaml .Values.defaultRules.annotations | indent 4 }}
+{{- end }}
+spec:
+  groups:
+  - name: kubernetes-apps
+    rules:
+    - alert: KubePodCrashLooping
+      annotations:
+        message: Pod {{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod }}`}} ({{`{{ $labels.container }}`}}) is restarting {{`{{ printf "%.2f" $value }}`}} times / 5 minutes.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubepodcrashlooping
+      expr: rate(kube_pod_container_status_restarts_total{job="kube-state-metrics"}[15m]) * 60 * 5 > 0
+      for: 15m
+      labels:
+        severity: critical
+    - alert: KubePodNotReady
+      annotations:
+        message: Pod {{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod }}`}} has been in a non-ready state for longer than 15 minutes.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubepodnotready
+      expr: sum by (namespace, pod) (kube_pod_status_phase{job="kube-state-metrics", phase=~"Failed|Pending|Unknown"} * on(namespace, pod) group_left(owner_kind) kube_pod_owner{owner_kind!="Job"}) > 0
+      for: 15m
+      labels:
+        severity: critical
+    - alert: KubeDeploymentGenerationMismatch
+      annotations:
+        message: Deployment generation for {{`{{ $labels.namespace }}`}}/{{`{{ $labels.deployment }}`}} does not match, this indicates that the Deployment has failed but has not been rolled back.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubedeploymentgenerationmismatch
+      expr: |-
+        kube_deployment_status_observed_generation{job="kube-state-metrics"}
+          !=
+        kube_deployment_metadata_generation{job="kube-state-metrics"}
+      for: 15m
+      labels:
+        severity: critical
+    - alert: KubeDeploymentReplicasMismatch
+      annotations:
+        message: Deployment {{`{{ $labels.namespace }}`}}/{{`{{ $labels.deployment }}`}} has not matched the expected number of replicas for longer than 15 minutes.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubedeploymentreplicasmismatch
+      expr: |-
+        kube_deployment_spec_replicas{job="kube-state-metrics"}
+          !=
+        kube_deployment_status_replicas_available{job="kube-state-metrics"}
+      for: 15m
+      labels:
+        severity: critical
+    - alert: KubeStatefulSetReplicasMismatch
+      annotations:
+        message: StatefulSet {{`{{ $labels.namespace }}`}}/{{`{{ $labels.statefulset }}`}} has not matched the expected number of replicas for longer than 15 minutes.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubestatefulsetreplicasmismatch
+      expr: |-
+        kube_statefulset_status_replicas_ready{job="kube-state-metrics"}
+          !=
+        kube_statefulset_status_replicas{job="kube-state-metrics"}
+      for: 15m
+      labels:
+        severity: critical
+    - alert: KubeStatefulSetGenerationMismatch
+      annotations:
+        message: StatefulSet generation for {{`{{ $labels.namespace }}`}}/{{`{{ $labels.statefulset }}`}} does not match, this indicates that the StatefulSet has failed but has not been rolled back.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubestatefulsetgenerationmismatch
+      expr: |-
+        kube_statefulset_status_observed_generation{job="kube-state-metrics"}
+          !=
+        kube_statefulset_metadata_generation{job="kube-state-metrics"}
+      for: 15m
+      labels:
+        severity: critical
+    - alert: KubeStatefulSetUpdateNotRolledOut
+      annotations:
+        message: StatefulSet {{`{{ $labels.namespace }}`}}/{{`{{ $labels.statefulset }}`}} update has not been rolled out.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubestatefulsetupdatenotrolledout
+      expr: |-
+        max without (revision) (
+          kube_statefulset_status_current_revision{job="kube-state-metrics"}
+            unless
+          kube_statefulset_status_update_revision{job="kube-state-metrics"}
+        )
+          *
+        (
+          kube_statefulset_replicas{job="kube-state-metrics"}
+            !=
+          kube_statefulset_status_replicas_updated{job="kube-state-metrics"}
+        )
+      for: 15m
+      labels:
+        severity: critical
+    - alert: KubeDaemonSetRolloutStuck
+      annotations:
+        message: Only {{`{{ $value | humanizePercentage }}`}} of the desired Pods of DaemonSet {{`{{ $labels.namespace }}`}}/{{`{{ $labels.daemonset }}`}} are scheduled and ready.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubedaemonsetrolloutstuck
+      expr: |-
+        kube_daemonset_status_number_ready{job="kube-state-metrics"}
+          /
+        kube_daemonset_status_desired_number_scheduled{job="kube-state-metrics"} < 1.00
+      for: 15m
+      labels:
+        severity: critical
+    - alert: KubeContainerWaiting
+      annotations:
+        message: Pod {{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod }}`}} container {{`{{ $labels.container}}`}} has been in waiting state for longer than 1 hour.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubecontainerwaiting
+      expr: sum by (namespace, pod, container) (kube_pod_container_status_waiting_reason{job="kube-state-metrics"}) > 0
+      for: 1h
+      labels:
+        severity: warning
+    - alert: KubeDaemonSetNotScheduled
+      annotations:
+        message: '{{`{{ $value }}`}} Pods of DaemonSet {{`{{ $labels.namespace }}`}}/{{`{{ $labels.daemonset }}`}} are not scheduled.'
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubedaemonsetnotscheduled
+      expr: |-
+        kube_daemonset_status_desired_number_scheduled{job="kube-state-metrics"}
+          -
+        kube_daemonset_status_current_number_scheduled{job="kube-state-metrics"} > 0
+      for: 10m
+      labels:
+        severity: warning
+    - alert: KubeDaemonSetMisScheduled
+      annotations:
+        message: '{{`{{ $value }}`}} Pods of DaemonSet {{`{{ $labels.namespace }}`}}/{{`{{ $labels.daemonset }}`}} are running where they are not supposed to run.'
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubedaemonsetmisscheduled
+      expr: kube_daemonset_status_number_misscheduled{job="kube-state-metrics"} > 0
+      for: 10m
+      labels:
+        severity: warning
+    - alert: KubeCronJobRunning
+      annotations:
+        message: CronJob {{`{{ $labels.namespace }}`}}/{{`{{ $labels.cronjob }}`}} is taking more than 1h to complete.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubecronjobrunning
+      expr: time() - kube_cronjob_next_schedule_time{job="kube-state-metrics"} > 3600
+      for: 1h
+      labels:
+        severity: warning
+    - alert: KubeJobCompletion
+      annotations:
+        message: Job {{`{{ $labels.namespace }}`}}/{{`{{ $labels.job_name }}`}} is taking more than one hour to complete.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubejobcompletion
+      expr: kube_job_spec_completions{job="kube-state-metrics"} - kube_job_status_succeeded{job="kube-state-metrics"}  > 0
+      for: 1h
+      labels:
+        severity: warning
+    - alert: KubeJobFailed
+      annotations:
+        message: Job {{`{{ $labels.namespace }}`}}/{{`{{ $labels.job_name }}`}} failed to complete.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubejobfailed
+      expr: kube_job_failed{job="kube-state-metrics"}  > 0
+      for: 15m
+      labels:
+        severity: warning
+    - alert: KubeHpaReplicasMismatch
+      annotations:
+        message: HPA {{`{{ $labels.namespace }}`}}/{{`{{ $labels.hpa }}`}} has not matched the desired number of replicas for longer than 15 minutes.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubehpareplicasmismatch
+      expr: |-
+        (kube_hpa_status_desired_replicas{job="kube-state-metrics"}
+          !=
+        kube_hpa_status_current_replicas{job="kube-state-metrics"})
+          and
+        changes(kube_hpa_status_current_replicas[15m]) == 0
+      for: 15m
+      labels:
+        severity: warning
+    - alert: KubeHpaMaxedOut
+      annotations:
+        message: HPA {{`{{ $labels.namespace }}`}}/{{`{{ $labels.hpa }}`}} has been running at max replicas for longer than 15 minutes.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubehpamaxedout
+      expr: |-
+        kube_hpa_status_current_replicas{job="kube-state-metrics"}
+          ==
+        kube_hpa_spec_max_replicas{job="kube-state-metrics"}
+      for: 15m
+      labels:
+        severity: warning
+{{- end }}

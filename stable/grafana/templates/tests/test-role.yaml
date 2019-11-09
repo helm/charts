@@ -1,8 +1,9 @@
-{{- if .Values.rbac.pspEnabled -}}
+{{- if and .Values.testFramework.enabled .Values.rbac.pspEnabled -}}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: {{ template "grafana.fullname" . }}-test
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "grafana.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}

@@ -28,9 +28,13 @@ image:
   # docker image
   repository: jertel/elastalert-docker
   # docker image tag
-  tag: 0.1.39
+  tag: 0.2.1
   pullPolicy: IfNotPresent
+
 resources: {}
+
+# Annotations to be added to pods
+podAnnotations: {}
 
 elasticsearch:
   # elasticsearch endpoint e.g. (svc.namespace||svc)
@@ -63,6 +67,9 @@ elasticsearch:
   #   - name: es-certs
   #     mountPath: /certs
   #     readOnly: true
+
+# Optional env variables for the pod
+optEnv: []
 
 extraConfigOptions: {}
   # # Options to propagate to all rules, e.g. a common slack_webhook_url or kibana_url

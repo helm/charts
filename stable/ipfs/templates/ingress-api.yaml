@@ -1,0 +1,31 @@
+{{- if .Values.ingressApi.enabled -}}
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  labels:
+    app: {{ template "ipfs.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "ipfs.fullname" . }}-api
+  annotations:
+          {{- range $key, $value := .Values.ingressApi.annotations }}
+          {{ $key }}: {{ $value | quote }}
+        {{- end }}
+spec:
+  rules:
+          {{- range .Values.ingressApi.hosts }}
+          {{- $url := splitList "/" . }}
+    - host: {{ first $url }}
+      http:
+        paths:
+          - path: /{{ rest $url | join "/" }}
+            backend:
+              serviceName: {{ include "ipfs.fullname" . }}
+              servicePort: 5001
+        {{- end -}}
+        {{- if .Values.ingressApi.tls }}
+  tls:
+        {{ toYaml .Values.ingressApi.tls | indent 4 }}
+        {{- end -}}
+        {{- end -}}

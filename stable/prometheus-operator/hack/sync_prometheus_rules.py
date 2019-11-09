@@ -26,11 +26,25 @@ def change_style(style, representer):
 charts = [
     {
         'source': 'https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml',
-        'destination': '../templates/prometheus/rules'
+        'destination': '../templates/prometheus/rules-1.14',
+        'min_kubernetes': '1.14.0-0'
     },
     {
         'source': 'https://raw.githubusercontent.com/etcd-io/etcd/master/Documentation/op-guide/etcd3_alert.rules.yml',
-        'destination': '../templates/prometheus/rules'
+        'destination': '../templates/prometheus/rules-1.14',
+        'min_kubernetes': '1.14.0-0'
+    },
+    {
+        'source': 'https://raw.githubusercontent.com/coreos/kube-prometheus/release-0.1/manifests/prometheus-rules.yaml',
+        'destination': '../templates/prometheus/rules',
+        'min_kubernetes': '1.10.0-0',
+        'max_kubernetes': '1.14.0-0'
+    },
+    {
+        'source': 'https://raw.githubusercontent.com/etcd-io/etcd/master/Documentation/op-guide/etcd3_alert.rules.yml',
+        'destination': '../templates/prometheus/rules',
+        'min_kubernetes': '1.10.0-0',
+        'max_kubernetes': '1.14.0-0'
     },
 ]
 
@@ -47,7 +61,13 @@ condition_map = {
     'kubernetes-resources': ' .Values.defaultRules.rules.kubernetesResources',
     'kubernetes-storage': ' .Values.defaultRules.rules.kubernetesStorage',
     'kubernetes-system': ' .Values.defaultRules.rules.kubernetesSystem',
+    'kubernetes-system-controller-manager': ' .Values.kubeControllerManager.enabled',
+    'kubernetes-system-scheduler': ' .Values.kubeScheduler.enabled .Values.defaultRules.rules.kubeScheduler',
+    'node-exporter.rules': ' .Values.nodeExporter.enabled .Values.defaultRules.rules.node',
+    'node-exporter': ' .Values.nodeExporter.enabled .Values.defaultRules.rules.node',
     'node.rules': ' .Values.nodeExporter.enabled .Values.defaultRules.rules.node',
+    'node-network': ' .Values.defaultRules.rules.network',
+    'node-time': ' .Values.defaultRules.rules.time',
     'prometheus-operator': ' .Values.defaultRules.rules.prometheusOperator',
     'prometheus.rules': ' .Values.defaultRules.rules.prometheus',
     'kubernetes-apps': ' .Values.kubeStateMetrics.enabled .Values.defaultRules.rules.kubernetesApps',
@@ -88,8 +108,9 @@ replacement_map = {
 header = '''# Generated from '%(name)s' group from %(url)s
 # Do not change in-place! In order to change this file first read following link:
 # https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
-{{- if and .Values.defaultRules.create%(condition)s }}%(init_line)s
-apiVersion: {{ printf "%%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
+{{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
+{{- if and (semverCompare ">=%(min_kubernetes)s" $kubeTargetVersion) (semverCompare "<%(max_kubernetes)s" $kubeTargetVersion) .Values.defaultRules.create%(condition)s }}%(init_line)s
+apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: {{ printf "%%s-%%s" (include "prometheus-operator.fullname" .) "%(name)s" | trunc 63 | trimSuffix "-" }}
@@ -173,7 +194,7 @@ def add_rules_conditions(rules, indent=4):
     return rules
 
 
-def write_group_to_file(group, url, destination):
+def write_group_to_file(group, url, destination, min_kubernetes, max_kubernetes):
     fix_expr(group['rules'])
 
     # prepare rules string representation
@@ -193,6 +214,8 @@ def write_group_to_file(group, url, destination):
         'url': url,
         'condition': condition_map.get(group['name'], ''),
         'init_line': init_line,
+        'min_kubernetes': min_kubernetes,
+        'max_kubernetes': max_kubernetes
     }
 
     # rules themselves
@@ -224,11 +247,15 @@ def main():
             print('Skipping the file, response code %s not equals 200' % response.status_code)
             continue
         raw_text = response.text
-        yaml_text = yaml.load(raw_text)
+        yaml_text = yaml.full_load(raw_text)
+
+        if ('max_kubernetes' not in chart):
+            chart['max_kubernetes']="9.9.9-9"
+
         # etcd workaround, their file don't have spec level
         groups = yaml_text['spec']['groups'] if yaml_text.get('spec') else yaml_text['groups']
         for group in groups:
-            write_group_to_file(group, chart['source'], chart['destination'])
+            write_group_to_file(group, chart['source'], chart['destination'], chart['min_kubernetes'], chart['max_kubernetes'])
     print("Finished")
 
 

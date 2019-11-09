@@ -1,9 +1,47 @@
 replicaCount: 1
 
-image: ipfs/go-ipfs:v0.4.20
+image: ipfs/go-ipfs:v0.4.22
 
 service:
   type: ClusterIP
+
+ingressApi:
+  enabled: false
+    # hosts:
+    # - ipfs-api.localhost.localdomain
+    # - localhost.localdomain/ipfs-api
+    # annotations:
+    #   kubernetes.io/ingress.class: nginx
+    #   kubernetes.io/tls-acme: "true"
+    # tls:
+    # - secretName: chart-example-tls
+    #   hosts:
+    #     - chart-example.local
+
+ingressGateway:
+  enabled: false
+    # hosts:
+    # - ipfs-gateway.localhost.localdomain
+    # - localhost.localdomain/ipfs-gateway
+    # annotations:
+    #   kubernetes.io/ingress.class: nginx
+    #   kubernetes.io/tls-acme: "true"
+    # tls:
+    # - secretName: chart-example-tls
+    #   hosts:
+    #     - chart-example.local
+
+swarm:
+  enabled: false
+  type: ClusterIP
+  # loadBalancerIP: ""
+  # externalIP: ""
+  ## Further config for service of type NodePort
+  ## Default config with empty string "" will assign a dynamic nodePort
+  nodePort: ""
+  ## If static nodePort configuration is required it can be enabled as below
+  ## Configure ports in allowable range (eg. 30000 - 32767 on minikube)
+  # nodePort: 34001
 
 resources: {}
 

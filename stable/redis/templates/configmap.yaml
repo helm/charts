@@ -1,23 +1,23 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: {{ template "redis.fullname" . }}
   labels:
     app: {{ template "redis.name" . }}
     chart: {{ template "redis.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "redis.fullname" . }}
 data:
   redis.conf: |-
 {{- if .Values.configmap }}
     # User-supplied configuration:
-{{ .Values.configmap | indent 4 }}
+{{ tpl .Values.configmap . | indent 4 }}
 {{- end }}
   master.conf: |-
     dir {{ .Values.master.persistence.path }}
 {{- if .Values.master.configmap }}
     # User-supplied master configuration:
-{{ .Values.master.configmap | indent 4 }}
+{{ tpl .Values.master.configmap . | indent 4 }}
 {{- end }}
 {{- if .Values.master.disableCommands }}
 {{- range .Values.master.disableCommands }}
@@ -29,7 +29,7 @@ data:
     slave-read-only yes
 {{- if .Values.slave.configmap }}
     # User-supplied slave configuration:
-{{ .Values.slave.configmap | indent 4 }}
+{{ tpl .Values.slave.configmap . | indent 4 }}
 {{- end }}
 {{- if .Values.slave.disableCommands }}
 {{- range .Values.slave.disableCommands }}
@@ -47,6 +47,6 @@ data:
     sentinel parallel-syncs {{ .Values.sentinel.masterSet }} {{ .Values.sentinel.parallelSyncs }}
 {{- if .Values.sentinel.configmap }}
     # User-supplied sentinel configuration:
-{{ .Values.sentinel.configmap | indent 4 }}
+{{ tpl .Values.sentinel.configmap . | indent 4 }}
 {{- end }}
 {{- end }}

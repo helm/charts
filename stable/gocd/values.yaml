@@ -95,6 +95,10 @@ server:
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   affinity: {}
 
+  ## Tolerations for allowing pods to be scheduled on nodes with matching taints
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: {}
+
   healthCheck:
     # server.healthCheck.initialDelaySeconds is the initial delays in seconds to start the health checks
     initialDelaySeconds: 90
@@ -109,7 +113,7 @@ server:
     #  server.env.extraEnvVars is the list of environment variables passed to GoCD Server
     extraEnvVars:
       - name: GOCD_PLUGIN_INSTALL_kubernetes-elastic-agents
-        value: https://github.com/gocd/kubernetes-elastic-agents/releases/download/v3.0.0-156/kubernetes-elastic-agent-3.0.0-156.jar
+        value: https://github.com/gocd/kubernetes-elastic-agents/releases/download/v3.4.0-196/kubernetes-elastic-agent-3.4.0-196.jar
       - name: GOCD_PLUGIN_INSTALL_docker-registry-artifact-plugin
         value: https://github.com/gocd/docker-registry-artifact-plugin/releases/download/v1.1.0-104/docker-registry-artifact-plugin-1.1.0-104.jar
   service:
@@ -382,3 +386,7 @@ agent:
   ## Affinity for assigning pods to specific nodes
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   affinity: {}
+
+  ## Tolerations for allowing pods to be scheduled on nodes with matching taints
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: {}

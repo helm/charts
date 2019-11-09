@@ -1,0 +1,11 @@
+---
+repos:
+  - repo: https://github.com/honeydipper/honeydipper-config-essentials
+
+rules:
+  - when:
+      driver: webhook
+      conditions:
+        url: "/health"
+    do:
+      content: noop

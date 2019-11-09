@@ -2,10 +2,10 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: {{ template "influxdb.fullname" . }}-backup
+  name: "{{ template "influxdb.fullname" . }}-backup"
   labels:
-    app: {{ template "influxdb.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "influxdb.fullname" . }}"
+    chart: "{{ template "influxdb.chart" . }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
   annotations:
@@ -25,12 +25,14 @@ spec:
           volumes:
           - name: backups
             emptyDir: {}
+          {{- if and .Values.backup.gcs }}
           - name: google-cloud-key
             secret:
               secretName: {{ .Values.backup.gcs.serviceAccountSecret | quote }}
+          {{- end }}
           initContainers:
           - name: influxdb-backup
-            image: "{{ .Values.image.repo }}:{{ .Values.image.tag }}"
+            image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
             volumeMounts:
             - name: backups
               mountPath: /backups
@@ -41,6 +43,7 @@ spec:
             - |
               influxd backup -host {{ template "influxdb.fullname" . }}.{{ .Release.Namespace }}.svc:{{ .Values.config.rpc.bind_address }} -portable /backups/backup_$(date +%Y%m%d_%H%M%S)
           containers:
+          {{- if .Values.backup.gcs}}
           - name: gsutil-cp
             image: google/cloud-sdk:alpine
             command:
@@ -59,7 +62,34 @@ spec:
               - name: SRC_URL
                 value: /backups
               - name: DST_URL
-                value: {{ .Values.backup.destination}}
+                value: {{ .Values.backup.gcs.destination}}
               - name: KEY_FILE
-                value: /var/secrets/google/key.json
+                value: /var/secrets/google/{{ .Values.backup.gcs.serviceAccountSecretKey }}
+          {{- end }}
+          {{- if .Values.backup.azure }}
+          - name: azure-cli
+            image: microsoft/azure-cli
+            command:
+            - /bin/sh
+            args:
+            - '-c'
+            - |
+              az storage container create --name "$DST_CONTAINER"
+              az storage blob upload-batch --destination "$DST_CONTAINER" --destination-path "$DST_PATH" --source "$SRC_URL"
+            volumeMounts:
+            - name: backups
+              mountPath: /backups
+            env:
+              - name: SRC_URL
+                value: /backups
+              - name: DST_CONTAINER
+                value: {{ .Values.backup.azure.destination_container }}
+              - name: DST_PATH
+                value: {{ .Values.backup.azure.destination_path }}
+              - name: AZURE_STORAGE_CONNECTION_STRING
+                valueFrom:
+                  secretKeyRef:
+                    name: {{ .Values.backup.azure.storageAccountSecret }}
+                    key: connection-string
+          {{- end }}
 {{- end }}

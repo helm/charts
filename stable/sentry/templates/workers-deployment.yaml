@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "sentry.fullname" . }}-worker
@@ -8,6 +8,11 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+        app: {{ template "sentry.fullname" . }}
+        release: "{{ .Release.Name }}"
+        role: worker
   replicas: {{ .Values.worker.replicacount }}
   template:
     metadata:
@@ -15,6 +20,7 @@ spec:
         metrics-enabled: {{ .Values.metrics.enabled | quote }}
         checksum/configYml: {{ .Values.config.configYml | sha256sum }}
         checksum/sentryConfPy: {{ .Values.config.sentryConfPy | sha256sum }}
+        checksum/secrets.yaml: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
       {{- if .Values.worker.podAnnotations }}
 {{ toYaml .Values.worker.podAnnotations | indent 8 }}
       {{- end }}
@@ -41,6 +47,9 @@ spec:
       {{- if .Values.worker.schedulerName }}
       schedulerName: "{{ .Values.worker.schedulerName }}"
       {{- end }}
+      {{- if .Values.worker.priorityClassName }}
+      priorityClassName: "{{ .Values.worker.priorityClassName }}"
+      {{- end }}
       {{- if .Values.image.imagePullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.image.imagePullSecrets | indent 8 }}
@@ -65,9 +74,9 @@ spec:
               name: {{ template "sentry.fullname" . }}
               key: sentry-secret
         - name: SENTRY_DB_USER
-          value: {{ default "sentry" .Values.postgresql.postgresUser | quote }}
+          value: {{ default "sentry" .Values.postgresql.postgresqlUsername | quote }}
         - name: SENTRY_DB_NAME
-          value: {{ default "sentry" .Values.postgresql.postgresDatabase | quote }}
+          value: {{ default "sentry" .Values.postgresql.postgresqlDatabase | quote }}
         - name: SENTRY_DB_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -76,7 +85,7 @@ spec:
             {{- else }}
               name: {{ template "sentry.postgresql.secret" . }}
             {{- end }}
-              key: postgres-password
+              key: postgresql-password
         - name: SENTRY_POSTGRES_HOST
           value: {{ template "sentry.postgresql.host" . }}
         - name: SENTRY_POSTGRES_PORT

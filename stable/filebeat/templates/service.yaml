@@ -15,13 +15,14 @@ metadata:
   name: {{ template "filebeat.fullname" . }}-metrics
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "filebeat.name" . }}
-    chart: {{ template "filebeat.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ template "filebeat.name" . }}
+    helm.sh/chart: {{ template "filebeat.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
-    app: {{ template "filebeat.name" . }}
+    app.kubernetes.io/name: {{ template "filebeat.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
   ports:
     - name: metrics
       port: {{ .Values.monitoring.exporterPort }}

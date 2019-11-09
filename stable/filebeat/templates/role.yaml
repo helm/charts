@@ -5,10 +5,10 @@ kind: Role
 metadata:
   name: {{ template "filebeat.fullname" . }}
   labels:
-    app: {{ template "filebeat.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ template "filebeat.name" . }}
+    helm.sh/chart: {{ template "filebeat.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
   namespace: {{ .Release.Namespace }}
 rules:
 - apiGroups: ['extensions']

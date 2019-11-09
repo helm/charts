@@ -42,7 +42,7 @@ The following table lists the configurable parameters of the cerebro chart and t
 |-------------------------------------|-------------------------------------|-------------------------------------------|
 | `replicaCount`                      | Number of replicas                  | `1`                                       |
 | `image.repository`                  | The image to run                    | `lmenezes/cerebro`                        |
-| `image.tag`                         | The image tag to pull               | `0.8.3`                                   |
+| `image.tag`                         | The image tag to pull               | `0.8.4`                                   |
 | `image.pullPolicy`                  | Image pull policy                   | `IfNotPresent`                            |
 | `image.pullSecrets`                 | Specify image pull secrets          | `nil` (does not add image pull secrets to deployed pods) |
 | `init.image.repository`             | The image to run                    | `docker.io/busybox`                       |
@@ -68,6 +68,7 @@ The following table lists the configurable parameters of the cerebro chart and t
 | `config.restHistorySize`            | Rest request history size per user  | `50`                                      |
 | `config.hosts`                      | A list of known hosts               | `[]`                                      |
 | `config.secret`                     | Secret used to sign session cookies | `(random alphanumeric 64 length string)`  |
+| `securityContext`                   | Security context for pod            | `See values.yaml`                         |
 
 
 

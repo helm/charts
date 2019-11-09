@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: prom/cloudwatch-exporter
-  tag: cloudwatch_exporter-0.5.0
+  tag: cloudwatch_exporter-0.6.0
   pullPolicy: IfNotPresent
 
 # Example proxy configuration:
@@ -134,6 +134,17 @@ serviceMonitor:
   # labels:
   # Set timeout for scrape
   # timeout: 10s
+  # Set relabelings for the ServiceMonitor, use to apply to samples before scraping
+  # relabelings: []
+  # Set metricRelabelings for the ServiceMonitor, use to apply to samples for ingestion
+  # metricRelabelings: []
+  #
+  # Example - note the Kubernetes convention of camelCase instead of Prometheus' snake_case
+  # metricRelabelings:
+  #   - sourceLabels: [dbinstance_identifier]
+  #     action: replace
+  #     replacement: mydbname
+  #     targetLabel: dbname
 
 ingress:
   enabled: false

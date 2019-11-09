@@ -44,12 +44,17 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.es.index`         | Elastic Index name | `kubernetes_cluster` |
 | `backend.es.type`          | Elastic Type name | `flb_type` |
 | `backend.es.time_key`          | Elastic Time Key | `@timestamp` |
+| `backend.es.logstash_format`          | Enable Logstash format compatibility. | `On` |
 | `backend.es.logstash_prefix`  | Index Prefix. If Logstash_Prefix is equals to 'mydata' your index will become 'mydata-YYYY.MM.DD'. | `kubernetes_cluster` |
 | `backend.es.replace_dots`     | Enable/Disable Replace_Dots option. | `On` |
 | `backend.es.http_user`        | Optional username credential for Elastic X-Pack access. | `` |
-| `backend.es.http_passwd:`     | Password for user defined in HTTP_User. | `` |
+| `backend.es.http_passwd`      | Password for user defined in HTTP_User. | `` |
+| `backend.es.http_passwd_secret`     | Secret name for password for user defined in HTTP_User. | `` |
+| `backend.es.http_passwd_secret_key` | Secret key for password for user defined in HTTP_User. | `` |
 | `backend.es.tls`              | Enable or disable TLS support | `off` |
 | `backend.es.tls_verify`       | Force certificate validation  | `on` |
+| `backend.es.tls_secret`        | Existing secret storing TLS CA certificate for the Elastic instance. Specify if tls: on. Overrides `backend.es.tls_ca` | `` |
+| `backend.es.tls_secret_ca_key` | Existing secret key storing TLS CA certificate for the Elastic instance. Specify if tls: on.                           | `` |
 | `backend.es.tls_ca`           | TLS CA certificate for the Elastic instance (in PEM format). Specify if tls: on. | `` |
 | `backend.es.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
 | **HTTP Backend**              |
@@ -59,6 +64,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.http.http_user`        | Optional username credential for Basic Authentication. | `` |
 | `backend.http.http_passwd:`     | Password for user defined in HTTP_User. | `` |
 | `backend.http.format`         | Specify the data format to be used in the HTTP request body, by default it uses msgpack, optionally it can be set to json.  | `msgpack` |
+| `backend.http.headers`          | HTTP Headers | `[]` |
 | `backend.http.tls`              | Enable or disable TLS support | `off` |
 | `backend.http.tls_verify`       | Force certificate validation  | `on` |
 | `backend.http.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
@@ -71,6 +77,10 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.splunk.tls_verify`           | Force TLS certificate validation | `off` |
 | `backend.splunk.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
 | `backend.splunk.message_key`           | Tag applied to all incoming logs | `kubernetes` |
+| **Stackdriver Backend**              |
+| `backend.stackdriver.google_service_credentials`           | Contents of a Google Cloud credentials JSON file. | `` |
+| `backend.stackdriver.service_account_email`           | Account email associated to the service. Only available if no credentials file has been provided. | `` |
+| `backend.stackdriver.service_account_secret`            | Private key content associated with the service account. Only available if no credentials file has been provided. | `` |
 | **Parsers**                   |
 | `parsers.enabled`                  | Enable custom parsers | `false` |
 | `parsers.regex`                    | List of regex parsers | `NULL` |
@@ -100,7 +110,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `filter.mergeJSONLog`              | If the log field content is a JSON string map, append the map fields as part of the log structure         | `true`                                 |
 | `filter.mergeLogKey`               | If set, append the processed log keys under a new root key specified by this variable. | `nil` |
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
-| `image.fluent_bit.tag`             | Image tag                                  | `1.2.2`                                           |
+| `image.fluent_bit.tag`             | Image tag                                  | `1.3.2`                                           |
 | `image.pullPolicy`                 | Image pull policy                          | `Always`                                          |
 | `nameOverride`                     | Override name of app                   | `nil`                                        |
 | `fullnameOverride`                 | Override full name of app              | `nil`                                        |
@@ -108,6 +118,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `input.tail.memBufLimit`           | Specify Mem_Buf_Limit in tail input        | `5MB`                                             |
 | `input.tail.parser`                | Specify Parser in tail input.        | `docker`                                             |
 | `input.tail.path`                  | Specify log file(s) through the use of common wildcards.        | `/var/log/containers/*.log`                                             |
+| `input.tail.ignore_older`          | Ignores files that have been last modified before this time in seconds. Supports m,h,d (minutes, hours,days) syntax.        | ``                                             |
 | `input.systemd.enabled`            | [Enable systemd input](https://docs.fluentbit.io/manual/input/systemd)                   | `false`                                       |
 | `input.systemd.filters.systemdUnit` | Please see https://docs.fluentbit.io/manual/input/systemd | `[docker.service, kubelet.service`, `node-problem-detector.service]`                                       |
 | `input.systemd.maxEntries`         | Please see https://docs.fluentbit.io/manual/input/systemd | `1000`                             |

@@ -59,6 +59,9 @@ Parameter | Description | Default
 `priorityClassName` | (Optional) Set a PriorityClass on the Daemonset | `""`
 `resources.limits.memory` | Memory resource limits | 500Mi                                      |
 `updateOnSecretChange` | Optionally set annotation on daemonset to cause deploy when secret changes | None
+`extraEnv` | Additional environment variables | `{}`
+`extraVolumeMounts` | Additional Volume mounts | `[]`
+`extraVolumes` | Additional Volumes | `[]`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

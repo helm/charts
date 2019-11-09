@@ -56,6 +56,11 @@ spec:
         configMap:
           name: {{ template "spinnaker.fullname" . }}-additional-scripts
       {{- end }}
+      {{- if .Values.halyard.bom }}
+      - name: halyard-bom
+        configMap:
+          name: {{ template "spinnaker.fullname" . }}-halyard-bom
+      {{- end }}
       {{- if .Values.gcs.enabled }}
       - name: gcs-key
         secret:
@@ -70,6 +75,12 @@ spec:
         secret:
           secretName: {{ template "spinnaker.fullname" .}}-s3
       {{- end }}
+      {{- if .Values.halyard.pullSecrets }}
+      imagePullSecrets:
+        {{- range .Values.halyard.image.pullSecrets }}
+        - name: {{ . }}
+        {{- end}}
+      {{- end}}
       containers:
       - name: halyard-install
         image: {{ .Values.halyard.image.repository }}:{{ .Values.halyard.image.tag }}
@@ -91,6 +102,10 @@ spec:
         {{- if .Values.halyard.additionalScripts.create }}
         - name: additional-scripts
           mountPath: /opt/halyard/additionalScripts
+        {{- end }}
+        {{- if .Values.halyard.bom }}
+        - name: halyard-bom
+          mountPath: /opt/halyard/bom
         {{- end }}
         {{- if .Values.gcs.enabled }}
         - name: gcs-key

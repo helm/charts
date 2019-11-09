@@ -11,6 +11,11 @@ spec:
   clusterIP: None
   type: {{ .Values.service.type }}
   ports:
+    {{- if .Values.exporter.enabled }}
+  - name: metrics
+    port: 5556
+    targetPort: {{ .Values.exporter.port }}
+    {{- end }}
   - name: intra
     port: 7000
     targetPort: 7000

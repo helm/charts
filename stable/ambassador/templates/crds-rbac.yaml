@@ -1,0 +1,48 @@
+{{- if .Values.crds.enabled }}
+{{- if .Values.rbac.create }}
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: {{ include "ambassador.fullname" . }}-crds
+  labels:
+    app.kubernetes.io/name: {{ include "ambassador.name" . }}
+    helm.sh/chart: {{ include "ambassador.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+rules:
+  - apiGroups: [ "apiextensions.k8s.io" ]
+    resources:
+    - customresourcedefinitions
+    resourceNames:
+    - authservices.getambassador.io
+    - mappings.getambassador.io
+    - modules.getambassador.io
+    - ratelimitservices.getambassador.io
+    - tcpmappings.getambassador.io
+    - tlscontexts.getambassador.io
+    - tracingservices.getambassador.io
+    - kubernetesendpointresolvers.getambassador.io
+    - kubernetesserviceresolvers.getambassador.io
+    - consulresolvers.getambassador.io
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "ambassador.fullname" . }}-crds
+  labels:
+    app.kubernetes.io/name: {{ include "ambassador.name" . }}
+    helm.sh/chart: {{ include "ambassador.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "ambassador.fullname" . }}-crds
+subjects:
+  - name: {{ include "ambassador.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace | quote }}
+    kind: ServiceAccount
+{{- end }}
+{{- end }}

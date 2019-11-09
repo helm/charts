@@ -48,6 +48,8 @@ The following table lists the configurable parameters of the Memcached chart and
 | `memcached.maxItemMemory`  | Max memory for items (in MB)    | `64`                                                    |
 | `memcached.extraArgs`      | Additional memcached arguments  | `[]`                                                    |
 | `metrics.enabled`          | Expose metrics in prometheus format | false                                               |
+| `metrics.serviceMonitor.enabled`          | Expose serviceMonitor to be scraped in prometheus-operator target | false                                               |
+| `metrics.serviceMonitor.interval`          | Default frequency to scrap metrics | 15s                                               |
 | `metrics.image`            | The image to pull and run for the metrics exporter | A recent official memcached tag      |
 | `metrics.imagePullPolicy`  | Image pull policy               | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
 | `metrics.resources`        | CPU/Memory resource requests/limits for the metrics exporter | `{}`                       |
@@ -62,6 +64,8 @@ The following table lists the configurable parameters of the Memcached chart and
 | `securityContext.enabled`  | Enable security context    | `true`                                                       |
 | `securityContext.fsGroup`  | Group ID for the container | `1001`                                                       |
 | `securityContext.runAsUser`| User ID for the container  | `1001`                                                       |
+| `updateStrategy.type`      | Update strategy for the StatefulSet/Deployment | `RollingUpdate`                          |
+| `priorityClassName  `      | Specifies the pod's priority class name        | Un-set                                   |
 
 The above parameters map to `memcached` params. For more information please refer to the [Memcached documentation](https://github.com/memcached/memcached/wiki/ConfiguringServer).
 
@@ -82,3 +86,62 @@ $ helm install --name my-release -f values.yaml stable/memcached
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Upgrading to 3.x from a previous major version
+Version 3.0.0 of this chart makes an incompatible change to the way StatefulSet/Deployment selectors are configured. If you try to upgrade from a previous major version, you will see an error like this:
+
+```
+Error: UPGRADE FAILED: Deployment.apps "mc-test-memcached" is invalid: spec.template.metadata.labels: Invalid value: map[string]string{"app":"mc-test-memcached", "chart":"memcached-3.0.0", "custom":"value", "heritage":"Tiller", "release":"mc-test"}: `selector` does not match template `labels`
+```
+
+To upgrade from a previous major version, you'll either need to perform a small manual fix or delete and reinstall the chart.
+
+### Upgrading with `kind: StatefulSet`
+If you're using a StatefulSet, you'll have to manually delete it and allow Helm to re-create it. Run `kubectl delete --cascade=false sts name-goes-here` to delete the StatefulSet without deleting the pods. Once you've done this, upgrade the chart as normal, and the newly-created StatefulSet will adopt the old pods.
+
+### Upgrading with `kind: Deployment`
+If you're using a Deployment, the manual fix is to remove all selectors from the spec except `app` and `release`.  Run `kubectl edit deploy name-goes-here`, and you should see a part like this in your editor about 20 lines down:
+
+```yaml
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: mc-test-memcached
+      chart: memcached-2.10.2
+      heritage: Tiller
+      release: mc-test
+```
+
+Remove the lines under `matchLabels` except `app: ...` and `release: ...`, and don't change any other lines. The part from above should look like this when you're done:
+
+```yaml
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: mc-test-memcached
+      release: mc-test
+```
+
+Once you've done this, you can upgrade to 3.x with Helm as normal.
+
+If you want prometheus-operator scrap all serviceMonitors in your cluster you need to set:
+```yaml
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+```
+If you want to be specific:
+```yaml
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelector:
+      matchLabels:
+        app: memcached
+```
+You can have more intel in prometheus-operator values and here [github](https://github.com/helm/charts/issues/11310#issuecomment-463486706)

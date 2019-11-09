@@ -1,28 +1,28 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "parse.fullname" . }}-server
-  labels:
-    app: {{ template "parse.name" . }}
-    chart: {{ template "parse.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
-    component: "server"
+  name: {{ include "parse.fullname" . }}-server
+  labels: {{ include "parse.labels" . | nindent 4 }}
+    app.kubernetes.io/component: server
 spec:
   selector:
-    matchLabels:
-      app: {{ template "parse.name" . }}
-      release: "{{ .Release.Name }}"
-      component: "server"
+    matchLabels: {{ include "parse.matchLabels" . | nindent 6 }}
+      app.kubernetes.io/component: server
   replicas: 1
   template:
     metadata:
-      labels:
-        app: {{ template "parse.name" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
-        component: "server"
+      labels: {{ include "parse.labels" . | nindent 8 }}
+        app.kubernetes.io/component: server
     spec:
+      {{- if .Values.server.affinity }}
+      affinity: {{- include "parse.tplValue" (dict "value" .Values.server.affinity "context" $) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.server.nodeSelector }}
+      nodeSelector: {{- include "parse.tplValue" (dict "value" .Values.server.nodeSelector "context" $) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.server.tolerations }}
+      tolerations: {{- include "parse.tplValue" (dict "value" .Values.server.tolerations "context" $) | nindent 8 }}
+      {{- end }}
       {{- if .Values.server.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.server.securityContext.fsGroup }}
@@ -31,75 +31,113 @@ spec:
 {{- include "parse.imagePullSecrets" . | indent 6 }}
       {{- if and .Values.volumePermissions.enabled .Values.persistence.enabled }}
       initContainers:
-      - name: volume-permissions
-        image: {{ template "parse.volumePermissions.image" . }}
-        imagePullPolicy: {{ .Values.volumePermissions.image.pullPolicy | quote }}
-        command: ["chown", "-R", "{{ .Values.server.securityContext.runAsUser }}:{{ .Values.server.securityContext.fsGroup }}", "/bitnami/parse"]
-        securityContext:
-          runAsUser: 0
-        resources: {{ toYaml .Values.volumePermissions.resources | nindent 10 }}
-        volumeMounts:
-        - name: parse-data
-          mountPath: /bitnami/parse
+        - name: volume-permissions
+          image: {{ include "parse.volumePermissions.image" . }}
+          imagePullPolicy: {{ .Values.volumePermissions.image.pullPolicy | quote }}
+          command: ["chown", "-R", "{{ .Values.server.securityContext.runAsUser }}:{{ .Values.server.securityContext.fsGroup }}", "/bitnami/parse"]
+          securityContext:
+            runAsUser: 0
+          resources: {{ toYaml .Values.volumePermissions.resources | nindent 12 }}
+          volumeMounts:
+            - name: parse-data
+              mountPath: /bitnami/parse
       {{- end }}
       containers:
-      - name: {{ template "parse.fullname" . }}
-        image: {{ template "parse.server.image" . }}
-        imagePullPolicy: {{ .Values.server.image.pullPolicy | quote }}
-        env:
-        - name: PARSE_HOST
-          value: "0.0.0.0"
-        - name: PARSE_PORT_NUMBER
-          value: {{ .Values.server.port | quote }}
-        - name: PARSE_MOUNT_PATH
-          value: {{ .Values.server.mountPath | quote }}
-        - name: PARSE_APP_ID
-          value: {{ .Values.server.appId | quote }}
-        - name: PARSE_MASTER_KEY
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "parse.fullname" . }}
-              key: master-key
-        - name: MONGODB_HOST
-          value: {{ template "parse.mongodb.fullname" . }}
-        - name: MONGODB_PORT
-          value: "27017"
-        {{- if .Values.mongodb.usePassword }}
-        - name: MONGODB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "parse.mongodb.fullname" . }}
-              key: mongodb-root-password
-        {{- end }}
-        ports:
-        - name: server-http
-          containerPort: {{ .Values.server.port }}
-        livenessProbe:
-          httpGet:
-            path: {{ .Values.server.mountPath }}/users
-            port: server-http
-            httpHeaders:
-            - name: X-Parse-Application-Id
-              value: {{ .Values.server.appId }}
-          initialDelaySeconds: 120
-        readinessProbe:
-          httpGet:
-            path: {{ .Values.server.mountPath }}/users
-            port: server-http
-            httpHeaders:
-            - name: X-Parse-Application-Id
-              value: {{ .Values.server.appId }}
-          initialDelaySeconds: 30
-        resources:
-{{ toYaml .Values.server.resources | indent 10 }}
-        volumeMounts:
-        - name: parse-data
-          mountPath: /bitnami/parse
+        - name: parse
+          image: {{ include "parse.server.image" . }}
+          imagePullPolicy: {{ .Values.server.image.pullPolicy | quote }}
+          env:
+            - name: PARSE_HOST
+              value: "0.0.0.0"
+            - name: PARSE_PORT_NUMBER
+              value: {{ .Values.server.port | quote }}
+            - name: PARSE_MOUNT_PATH
+              value: {{ .Values.server.mountPath | quote }}
+            - name: PARSE_APP_ID
+              value: {{ .Values.server.appId | quote }}
+            - name: PARSE_MASTER_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "parse.fullname" . }}
+                  key: master-key
+            - name: PARSE_ENABLE_CLOUD_CODE
+              value: {{ ternary "yes" "no" .Values.server.enableCloudCode | quote }}
+            - name: MONGODB_HOST
+              value: {{ include "parse.mongodb.fullname" . }}
+            - name: MONGODB_PORT
+              value: "27017"
+            {{- if .Values.mongodb.usePassword }}
+            - name: MONGODB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "parse.mongodb.fullname" . }}
+                  key: mongodb-root-password
+            {{- end }}
+            {{- if .Values.server.extraEnvVars }}
+              {{- include "parse.tplValue" ( dict "value" .Values.server.extraEnvVars "context" $ ) | nindent 12 }}
+            {{- end }}
+          {{- if or .Values.server.extraEnvVarsCM .Values.server.extraEnvVarsSecret }}
+          envFrom:
+            {{- if .Values.server.extraEnvVarsCM }}
+            - configMapRef:
+                name: {{ include "parse.tplValue" ( dict "value" .Values.server.extraEnvVarsCM "context" $ ) }}
+            {{- end }}
+            {{- if .Values.server.extraEnvVarsSecret }}
+            - secretRef:
+                name: {{ include "parse.tplValue" ( dict "value" .Values.server.extraEnvVarsSecret "context" $ ) }}
+            {{- end }}
+          {{- end }}
+          ports:
+            - name: server-http
+              containerPort: {{ .Values.server.port }}
+          {{- if and .Values.server.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.server.mountPath }}/users
+              port: server-http
+              httpHeaders:
+                - name: X-Parse-Application-Id
+                  value: {{ .Values.server.appId }}
+            initialDelaySeconds: {{ .Values.server.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.server.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.server.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.server.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.server.livenessProbe.failureThreshold }}
+          {{- end }}
+          {{- if and .Values.server.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.server.mountPath }}/users
+              port: server-http
+              httpHeaders:
+                - name: X-Parse-Application-Id
+                  value: {{ .Values.server.appId }}
+            initialDelaySeconds: {{ .Values.server.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.server.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.server.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.server.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.server.readinessProbe.failureThreshold }}
+          {{- end }}
+          {{- if .Values.server.resources }}
+          resources: {{- toYaml .Values.server.resources | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: parse-data
+              mountPath: /bitnami/parse
+            {{- if and .Values.server.enableCloudCode (or (.Files.Glob "files/cloud/*.js") .Values.server.cloudCodeScripts .Values.server.existingCloudCodeCM) }}
+            - name: cloud-code-config
+              mountPath: /opt/bitnami/parse/cloud
+            {{- end }}
       volumes:
-      - name: parse-data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ template "parse.fullname" . }}
-      {{- else }}
-        emptyDir: {}
-      {{- end }}
+        {{- if and .Values.server.enableCloudCode (or (.Files.Glob "files/cloud/*.js") .Values.server.cloudCodeScripts .Values.server.existingCloudCodeCM) }}
+        - name: cloud-code-config
+          configMap:
+            name: {{ include "parse.cloudCodeScriptsCMName" . }}
+        {{- end }}
+        - name: parse-data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "parse.fullname" . }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}

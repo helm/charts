@@ -1,0 +1,124 @@
+{{- if .Values.mancenter.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ template "mancenter.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "hazelcast.name" . }}
+    helm.sh/chart: {{ template "hazelcast.chart" . }}
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+spec:
+  serviceName: {{ template "mancenter.fullname" . }}
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "hazelcast.name" . }}
+      app.kubernetes.io/instance: "{{ .Release.Name }}"
+      role: mancenter
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ template "hazelcast.name" . }}
+        helm.sh/chart: {{ template "hazelcast.chart" . }}
+        app.kubernetes.io/instance: "{{ .Release.Name }}"
+        app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+        role: mancenter
+    spec:
+      {{- if .Values.mancenter.image.pullSecrets }}
+      imagePullSecrets:
+        {{- range .Values.mancenter.image.pullSecrets }}
+        - name: {{ . }}
+        {{- end}}
+      {{- end}}
+      {{- if .Values.mancenter.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.mancenter.nodeSelector | indent 8 }}
+      {{- end }}
+      hostNetwork: false
+      hostPID: false
+      hostIPC: false
+      securityContext:
+        runAsNonRoot: {{ if eq (int .Values.securityContext.runAsUser) 0 }}false{{ else }}true{{ end }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+      {{- if .Values.mancenter.affinity }}
+      affinity:
+{{ toYaml .Values.mancenter.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.mancenter.tolerations }}
+      tolerations:
+{{ toYaml .Values.mancenter.tolerations | indent 8 }}
+      {{- end }}
+      containers:
+      - name: {{ template "mancenter.fullname" . }}
+        image: "{{ .Values.mancenter.image.repository }}:{{ .Values.mancenter.image.tag }}"
+        imagePullPolicy: {{ .Values.mancenter.image.pullPolicy | quote }}
+        resources:
+{{ toYaml .Values.mancenter.resources | indent 10 }}
+        ports:
+        - name: mancenter
+          containerPort: 8080
+        {{- if .Values.mancenter.livenessProbe.enabled }}
+        livenessProbe:
+          httpGet:
+            path: /hazelcast-mancenter/health
+            port: 8081
+          initialDelaySeconds: {{ .Values.mancenter.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.mancenter.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.mancenter.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.mancenter.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.mancenter.livenessProbe.failureThreshold }}
+        {{- end }}
+        {{- if .Values.mancenter.readinessProbe.enabled }}
+        readinessProbe:
+          httpGet:
+            path: /hazelcast-mancenter/health
+            port: 8081
+          initialDelaySeconds: {{ .Values.mancenter.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.mancenter.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.mancenter.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.mancenter.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.mancenter.readinessProbe.failureThreshold }}
+        {{- end }}
+        volumeMounts:
+        - name: mancenter-storage
+          mountPath: /data
+        env:
+        - name: MC_LICENSE_KEY
+        {{- if .Values.mancenter.licenseKeySecretName }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.mancenter.licenseKeySecretName }}
+              key: key
+        {{- else }}
+          value: {{ .Values.mancenter.licenseKey }}
+        {{- end }}
+        - name: JAVA_OPTS
+          value: "{{ if or .Values.mancenter.licenseKey .Values.mancenter.licenseKeySecretName }}-Dhazelcast.mc.license=$(MC_LICENSE_KEY){{ end }} {{ if or .Values.mancenter.readinessProbe.enabled .Values.mancenter.livenessProbe.enabled }}-Dhazelcast.mc.healthCheck.enable=true{{ end }} {{ .Values.mancenter.javaOpts }}"
+        serviceAccountName: {{ template "hazelcast.serviceAccountName" . }}
+        {{- if .Values.securityContext.enabled }}
+        securityContext:
+          runAsNonRoot: {{ if eq (int .Values.securityContext.runAsUser) 0 }}false{{ else }}true{{ end }}
+          runAsUser: {{ .Values.securityContext.runAsUser }}
+          privileged: false
+          readOnlyRootFilesystem: false
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        {{- end }}
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+      {{- end }}
+      serviceAccountName: {{ template "hazelcast.serviceAccountName" . }}
+      volumes:
+      - name: mancenter-storage
+      {{- if .Values.mancenter.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.mancenter.persistence.existingClaim | default (include "mancenter.fullname" .) }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}
+{{- end -}}

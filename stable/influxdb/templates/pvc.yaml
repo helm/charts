@@ -5,7 +5,7 @@ metadata:
   name: "{{- if not (empty .Values.persistence.name) }}{{ .Values.persistence.name }}{{- else }}{{ template "influxdb.fullname" . }}{{- end }}"
   labels:
     app: "{{- if not (empty .Values.persistence.name) }}{{ .Values.persistence.name }}{{- else }}{{ template "influxdb.fullname" . }}{{- end }}"
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: "{{ template "influxdb.chart" . }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:

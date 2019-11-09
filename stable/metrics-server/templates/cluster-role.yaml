@@ -15,6 +15,7 @@ rules:
       - pods
       - nodes
       - nodes/stats
+      - namespaces
     verbs:
       - get
       - list

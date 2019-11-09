@@ -32,6 +32,19 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/*
+Common labels
+*/}}
+{{- define "dex.labels" -}}
+app.kubernetes.io/name: {{ include "dex.name" . }}
+helm.sh/chart: {{ include "dex.chart" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end -}}
+
+{{/*
 Create the name of the service account to use
 */}}
 {{- define "dex.serviceAccountName" -}}

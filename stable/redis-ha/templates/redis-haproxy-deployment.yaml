@@ -1,0 +1,118 @@
+{{- if .Values.haproxy.enabled }}
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: {{ template "redis-ha.fullname" . }}-haproxy
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+spec:
+  strategy:
+    type: RollingUpdate
+  revisionHistoryLimit: 1
+  replicas: {{ .Values.haproxy.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "redis-ha.name" . }}-haproxy
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      name: {{ template "redis-ha.fullname" . }}-haproxy
+      labels:
+        app: {{ template "redis-ha.name" . }}-haproxy
+        release: {{ .Release.Name }}
+      annotations:
+        prometheus.io/path: /metrics
+        prometheus.io/port: "9101"
+        prometheus.io/scrape: "true"
+        checksum/config: {{ print (include "config-haproxy.cfg" .) (include "config-haproxy_init.sh" .) | sha256sum }}
+      {{- if .Values.haproxy.annotations }}
+{{ toYaml .Values.haproxy.annotations | indent 8 }}
+      {{- end }}
+    spec:
+      # Needed when using unmodified rbac-setup.yml
+      {{ if .Values.haproxy.serviceAccount.create }}
+      serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}-haproxy
+      {{ end }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      initContainers:
+      - name: config-init
+        image: {{ .Values.haproxy.image.repository }}:{{ .Values.haproxy.image.tag }}
+        imagePullPolicy: {{ .Values.haproxy.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.haproxy.init.resources | indent 10 }}
+        command:
+        - sh
+        args:
+        - /readonly/haproxy_init.sh
+{{- if .Values.auth }}
+        env:
+        - name: AUTH
+          valueFrom:
+            secretKeyRef:
+            {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+            {{- else }}
+              name: {{ template "redis-ha.fullname" . }}
+            {{- end }}
+              key: {{ .Values.authKey }}
+{{- end }}
+        volumeMounts:
+        - name: config-volume
+          mountPath: /readonly
+          readOnly: true
+        - name: data
+          mountPath: /data
+      securityContext:
+{{ toYaml .Values.haproxy.securityContext | indent 8 }}
+      containers:
+      {{- if .Values.haproxy.exporter.enabled }}
+      - name: prometheus-exporter
+        image: {{ .Values.haproxy.exporter.image.repository }}:{{ .Values.haproxy.exporter.image.tag }}
+        imagePullPolicy: {{ .Values.haproxy.pullPolicy }}
+        ports:
+        - name: exporter-port
+          containerPort: {{ default "9101" .Values.haproxy.exporter.port }}
+        command: ["haproxy_exporter",
+                    "--haproxy.scrape-uri=unix:/run/haproxy/admin.sock"]
+        volumeMounts:
+          - name: shared-socket
+            mountPath: /run/haproxy
+      {{- end }}
+      - name: haproxy
+        image: {{ .Values.haproxy.image.repository }}:{{ .Values.haproxy.image.tag }}
+        imagePullPolicy: {{ .Values.haproxy.image.pullPolicy }}
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8888
+          initialDelaySeconds: 5
+          periodSeconds: 3
+        ports:
+        - name: redis
+          containerPort: {{ default "6379" .Values.redis.port }}
+        {{- if .Values.haproxy.readOnly.enabled }}
+        - name: readonlyport
+          containerPort: {{ default "6380" .Values.haproxy.readOnly.port }}
+        {{- end }}
+        resources:
+{{ toYaml .Values.haproxy.resources | indent 10 }}
+        volumeMounts:
+        - name: data
+          mountPath: /usr/local/etc/haproxy
+        - name: shared-socket
+          mountPath: /run/haproxy
+{{- if .Values.haproxy.priorityClassName }}
+      priorityClassName: {{ .Values.haproxy.priorityClassName }}
+{{- end }}
+      volumes:
+      - name: config-volume
+        configMap:
+          name: {{ template "redis-ha.fullname" . }}-configmap
+      - name: shared-socket
+        emptyDir: {}
+      - name: data
+        emptyDir: {}
+{{- end }}

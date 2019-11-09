@@ -17,4 +17,5 @@ some required system databases:
     -u <adminUsername>
 {{- end }}
 
-Then it's time to relax.
+NOTE: This version of the CouchDB chart is deprecated; please use the one from
+the stable Helm repository instead of the incubator.

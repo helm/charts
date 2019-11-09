@@ -8,6 +8,13 @@ metadata:
     chart: {{ template "airflow.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    {{- with .Values.web.labels }}
+{{ toYaml . | indent 4 }}
+    {{- end }}
+  {{- with .Values.web.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
 spec:
   replicas: {{ .Values.airflow.webReplicas }}
   minReadySeconds: 120
@@ -92,6 +99,12 @@ spec:
           volumeMounts:
             - name: scripts
               mountPath: /usr/local/scripts
+          {{- $secretsDir := .Values.web.secretsDir -}}
+          {{- range .Values.web.secrets }}
+            - name: {{ . }}-volume
+              readOnly: true
+              mountPath: {{ $secretsDir }}/{{ . }}
+          {{- end }}
           {{- if .Values.persistence.enabled }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
@@ -148,10 +161,20 @@ spec:
               port: web
             ## Keep 6 minutes the delay to allow clean wait of postgres and redis containers
             initialDelaySeconds: {{ .Values.web.initialDelaySeconds }}
-            periodSeconds: 60
-            timeoutSeconds: 1
-            successThreshold: 1
-            failureThreshold: 5
+            periodSeconds: {{ .Values.web.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.web.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.web.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.web.livenessProbe.failureThreshold }}
+
+          readinessProbe:
+            httpGet:
+              path: "{{ .Values.ingress.web.path }}/health"
+              port: web
+            initialDelaySeconds: {{ .Values.web.initialDelaySeconds }}
+            periodSeconds: {{ .Values.web.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.web.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.web.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.web.readinessProbe.failureThreshold }}
 {{- if .Values.airflow.extraContainers }}
 {{ toYaml .Values.airflow.extraContainers | indent 8 }}
 {{- end }}
@@ -160,6 +183,11 @@ spec:
           configMap:
             name: {{ template "airflow.fullname" . }}-scripts
             defaultMode: 0755
+        {{- range .Values.web.secrets }}
+        - name: {{ . }}-volume
+          secret:
+            secretName: {{ . }}
+        {{- end }}
         - name: dags-data
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:

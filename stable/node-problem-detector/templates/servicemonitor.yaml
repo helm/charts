@@ -1,0 +1,35 @@
+{{- if .Values.metrics.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "node-problem-detector.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "node-problem-detector.name" . }}
+    helm.sh/chart: {{ include "node-problem-detector.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- if .Values.metrics.serviceMonitor.additionalLabels }}
+{{ toYaml .Values.metrics.serviceMonitor.additionalLabels | indent 4 }}
+    {{- end }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "node-problem-detector.name" . }}
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+  endpoints:
+  - port: exporter
+    path: /metrics
+    interval: 60s
+    relabelings:
+    - action: replace
+      targetLabel: node
+      sourceLabels:
+        - __meta_kubernetes_pod_node_name
+    - action: replace
+      targetLabel: host_ip
+      sourceLabels:
+        - __meta_kubernetes_pod_host_ip
+{{- end }}

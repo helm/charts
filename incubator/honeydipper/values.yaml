@@ -1,0 +1,109 @@
+# Default values for honeydipper.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# nameOverride is used to override the chart name part of the release name
+nameOverride: ""
+# fullnameOverride is used to override the release name
+fullnameOverride: ""
+
+# daemon is used to specify the settings for the daemon
+daemon:
+  # dnsConfig specifies the DNS parameters of the pod. Parameters specified here will be merged to the generated DNS configuration based on DNSPolicy.
+  dnsConfig: {}
+
+  # serviceAccountName is the name of the ServiceAccount to use to run this pod. More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+  serviceAccountName: ""
+
+  # replicaCount specifies how many replica daemon should be running
+  replicaCount: 1
+
+  # image specifies what image to use to start the daemon
+  image:
+    # repository is the image repository for the daemon container
+    repository: honeydipper/honeydipper
+    # tag is the version of the docker image to use
+    tag: "0.1.10"
+    # pullPolicy specify when to refresh the image
+    pullPolicy: IfNotPresent
+
+  # args are the arguments passed to the daemon, a list of services to run in the daemon
+  args: []
+
+  # resources specifies the resource limitation for the daemon container
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    # requests:
+    #  cpu: 100m
+    #  memory: 128Mi
+
+  # nodeSelector is used for specifying what nodes to place the daemon containers on
+  nodeSelector: {}
+
+  # tolerations is used in the daemon pod speicification
+  tolerations: []
+
+  # tolerations is used in the daemon pod speicification
+  affinity: {}
+
+  # annotations are the annotations for the daemon
+  annotations: {}
+
+  # env is a list of environment variables for the daemon container
+  env:
+    - name: REPO
+      value: https://github.com/honeydipper/honeydipper-config-essentials
+
+  # extraVolumeMounts is a list of volumes to be mounted on the daemon container
+  extraVolumeMounts: []
+
+  # extraVolumes is a list of volumes to be mounted on the daemon container
+  extraVolumes: []
+
+# drivers containers the settings for the drivers
+drivers:
+  # redis settings for the redis related drivers
+  redis:
+    # local means run a local redis side car container, only useful for testing
+    local: true
+    image:
+      # when using local redis sidecar container specify the name of the image repository
+      repository: redis
+      # when using local redis sidecar container specify the tag of the image
+      tag: 5
+  # webhook settings for the webhook driver
+  webhook:
+    # service specifies how the webhook driver service is exposed
+    service:
+      # type is the type of kubernetes service for the webhook
+      type: LoadBalancer
+      port: 8080
+      nodePort: 0
+
+      # annotations are the annotations for the service
+      annotations: {}
+
+    # ingress controller settings
+    ingress:
+      # enabled is used for creating an ingress kubernetes resouce
+      enabled: false
+      # annotations are the annotations for the  ingress resource
+      annotations: {}
+        # kubernetes.io/ingress.class: nginx
+        # kubernetes.io/tls-acme: "true"
+      # path specify the path of the ingress
+      path: /
+      # hosts specify the hosts of the ingress
+      hosts:
+        - chart-example.local
+      # tls is used for specifying the ssl cert using secret
+      tls: []
+      #  - secretName: chart-example-tls
+      #    hosts:
+      #      - chart-example.local
