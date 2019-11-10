@@ -6,6 +6,16 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.9.3 Update plugin versions
+
+plugin                | old version | new version
+--------------------- | ----------- | ----------
+kubernetes            | 1.18.2      | 1.21.2
+workflow-job          | 2.33        | 2.36
+credentials-binding   | 1.19        | 1.20
+git                   | 3.11.0      | 4.0.0
+configuration-as-code | 1.27        | 1.32
+
 ## 1.9.2 Add support for kubernetes-credentials-provider-plugin
 
 [kubernetes-credentials-provider-plugin](https://jenkinsci.github.io/kubernetes-credentials-provider-plugin/) needs permissions to get/watch/list kubernetes secrets in the namespaces where Jenkins is running.
