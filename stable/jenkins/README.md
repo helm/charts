@@ -2,7 +2,7 @@
 
 Jenkins master and agent cluster utilizing the Jenkins Kubernetes plugin
 
-* https://wiki.jenkins-ci.org/display/JENKINS/Kubernetes+Plugin
+* https://plugins.jenkins.io/kubernetes
 
 Inspired by the awesome work of Carlos Sanchez <mailto:carlos@apache.org>
 
