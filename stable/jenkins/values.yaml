@@ -458,6 +458,7 @@ networkPolicy:
 ## Install Default RBAC roles and bindings
 rbac:
   create: true
+  readSecrets: false
 
 serviceAccount:
   create: true
