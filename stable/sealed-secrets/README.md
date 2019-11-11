@@ -45,6 +45,7 @@ Read about kubeseal usage on [sealed-secrets docs](https://github.com/bitnami-la
 
 | Parameter | Description | Default |
 |----------:|:------------|:--------|
+| **controller.create** | `true` if Sealed Secrets controller resources should be created | `true` |
 | **rbac.create** | `true` if rbac resources should be created | `true` |
 | **rbac.pspEnabled** | `true` if psp resources should be created | `false` |
 | **serviceAccount.create** | Whether to create a service account or not | `true` |
