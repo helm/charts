@@ -26,4 +26,13 @@ spec:
   selector:
     app.kubernetes.io/name: {{ include "ambassador.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
+  {{- if eq .Values.adminService.type "LoadBalancer" }}
+  {{- if not (empty .Values.adminService.loadBalancerIP) }}
+  loadBalancerIP: {{ .Values.adminService.loadBalancerIP | quote }}
+  {{- end }}
+  {{- if not (empty .Values.adminService.loadBalancerSourceRanges) }}
+  loadBalancerSourceRanges:
+    {{- toYaml .Values.adminService.loadBalancerSourceRanges | nindent 4 }}
+  {{- end }}
+  {{- end }}
 {{- end -}}

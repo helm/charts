@@ -14,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/ghost
-  tag: 2.31.1-debian-9-r0
+  tag: 3.0.2-debian-9-r4
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -98,20 +98,21 @@ allowEmptyPassword: "yes"
 ## External database configuration
 ##
 externalDatabase:
+  ## All of these values are only used when mariadb.enabled is set to false
   ## Database host
-  # host:
+  host: localhost
 
-  ## Database port
-  # port:
-
-  ## Database user
-  # user: bn_ghost
+  ## non-root Username for Wordpress Database
+  user: bn_ghost
 
   ## Database password
-  # password:
+  password: ""
 
   ## Database name
-  # database: bitnami_ghost
+  database: bitnami_ghost
+
+  ## Database port number
+  port: 3306
 
 ##
 ## MariaDB chart configuration
@@ -224,7 +225,7 @@ ingress:
 
   ## Ingress annotations done as key:value pairs
   ## For a full list of possible ingress annotations, please see
-  ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/annotations.md
+  ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/annotations.md
   ##
   ## If tls is set to true, annotation ingress.kubernetes.io/secure-backends: "true" will automatically be set
   ## If certManager is set to true, annotation kubernetes.io/tls-acme: "true" will automatically be set

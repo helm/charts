@@ -63,9 +63,9 @@ Dependent charts can also have values overwritten. Preface values with postgresq
 Parameter                                            | Description                                                                                                | Default
 :--------------------------------------------------- | :--------------------------------------------------------------------------------------------------------- | :---------------------------------------------------
 `image.repository`                                   | Sentry image                                                                                               | `library/sentry`
-`image.tag`                                          | Sentry image tag                                                                                           | `9.1.1`
-`imagePullPolicy`                                    | Image pull policy                                                                                          | `IfNotPresent`
-`imagePullSecrets`                                   | Specify image pull secrets                                                                                 | `[]`
+`image.tag`                                          | Sentry image tag                                                                                           | `9.1.2`
+`image.pullPolicy`                                   | Image pull policy                                                                                          | `IfNotPresent`
+`image.imagePullSecrets`                             | Specify image pull secrets                                                                                 | `[]`
 `sentrySecret`                                       | Specify SENTRY_SECRET_KEY. If isn't specified it will be generated automatically.                          | `nil`
 `web.podAnnotations`                                 | Web pod annotations                                                                                        | `{}`
 `web.podLabels`                                      | Worker pod extra labels                                                                                    | `{}`
@@ -122,11 +122,11 @@ Parameter                                            | Description              
 `ingress.path`                                       | path to address your Sentry installation                                                                   | `/`
 `ingress.tls`                                        | Ingress TLS configuration                                                                                  | `[]`
 `postgresql.enabled`                                 | Deploy postgres server (see below)                                                                         | `true`
-`postgresql.postgresDatabase`                        | Postgres database name                                                                                     | `sentry`
-`postgresql.postgresUser`                            | Postgres username                                                                                          | `sentry`
-`postgresql.postgresHost`                            | External postgres host                                                                                     | `nil`
-`postgresql.postgresPassword`                        | External postgres password                                                                                 | `nil`
-`postgresql.postgresPort`                            | External postgres port                                                                                     | `5432`
+`postgresql.postgresqlDatabase`                      | Postgres database name                                                                                     | `sentry`
+`postgresql.postgresqlUsername`                      | Postgres username                                                                                          | `postgres`
+`postgresql.postgresqlHost`                          | External postgres host                                                                                     | `nil`
+`postgresql.postgresqlPassword`                      | External postgres password                                                                                 | `nil`
+`postgresql.postgresqlPort`                          | External postgres port                                                                                     | `5432`
 `redis.enabled`                                      | Deploy redis server (see below)                                                                            | `true`
 `redis.host`                                         | External redis host                                                                                        | `nil`
 `redis.password`                                     | External redis password                                                                                    | `nil`
@@ -145,6 +145,7 @@ Parameter                                            | Description              
 `filestore.s3.accessKey`                             | S3 access key                                                                                              | `nil`
 `filestore.s3.secretKey`                             | S3 secret key                                                                                              | `nil`
 `filestore.s3.bucketName`                            | The name of the S3 bucket                                                                                  | `nil`
+`filestore.s3.endpointUrl`                           | The endpoint url of the S3 (using for "MinIO S3 Backend")                                                  | `nil`
 `config.configYml`                                   | Sentry config.yml file                                                                                     | ``
 `config.sentryConfPy`                                | Sentry sentry.conf.py file                                                                                 | ``
 `metrics.enabled`                                    | Start an exporter for sentry metrics                                                                       | `false`
@@ -187,7 +188,7 @@ $ helm install --name my-release -f values.yaml stable/sentry
 
 ## PostgresSQL
 
-By default, PostgreSQL is installed as part of the chart. To use an external PostgreSQL server set `postgresql.enabled` to `false` and then set `postgresql.postgresHost` and `postgresql.postgresPassword`. The other options (`postgresql.postgresDatabase`, `postgresql.postgresUser` and `postgresql.postgresPort`) may also want changing from their default values.
+By default, PostgreSQL is installed as part of the chart. To use an external PostgreSQL server set `postgresql.enabled` to `false` and then set `postgresql.postgresHost` and `postgresql.postgresqlPassword`. The other options (`postgresql.postgresqlDatabase`, `postgresql.postgresqlUsername` and `postgresql.postgresqlPort`) may also want changing from their default values.
 
 ## Redis
 

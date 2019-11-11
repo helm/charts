@@ -39,7 +39,7 @@ data:
     echo "Trying to configure cluster profile." >> /godata/logs/preconfigure.log
 
     (curl --fail -i 'http://localhost:8153/go/api/admin/elastic/cluster_profiles' \
-      -H'Accept: application/vnd.go.cd.v1+json'  \
+      -H'Accept: application/vnd.go.cd+json'  \
       -H 'Content-Type: application/json' \
       -X POST -d '{
         "id": "k8-cluster-profile",
@@ -67,7 +67,7 @@ data:
     echo "Trying to create an elastic profile now." >> /godata/logs/preconfigure.log
 
     (curl --fail -i 'http://localhost:8153/go/api/elastic/profiles' \
-      -H 'Accept: application/vnd.go.cd.v2+json' \
+      -H 'Accept: application/vnd.go.cd+json' \
       -H 'Content-Type: application/json' \
       -X POST -d '{
         "id": "demo-app",
@@ -95,7 +95,7 @@ data:
     echo "Trying to creating a hello world pipeline." >> /godata/logs/preconfigure.log
 
     (curl --fail -i 'http://localhost:8153/go/api/admin/pipelines' \
-      -H 'Accept: application/vnd.go.cd.v8+json' \
+      -H 'Accept: application/vnd.go.cd+json' \
       -H 'Content-Type: application/json' \
       -X POST -d '{ "group": "sample",
                     "pipeline": {

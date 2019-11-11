@@ -16,7 +16,8 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 
 ## Prerequisites
 
-- Kubernetes 1.8+ with Beta APIs enabled
+- Kubernetes 1.12+
+- Helm 2.11+ or Helm 3.0-beta3+
 
 ## Installing the Chart
 
@@ -26,7 +27,7 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release stable/external-dns
 ```
 
-The command deploys ExternalDNS on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys ExternalDNS on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
@@ -40,7 +41,7 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
-## Configuration
+## Parameters
 
 The following table lists the configurable parameters of the external-dns chart and their default values.
 
@@ -67,6 +68,7 @@ The following table lists the configurable parameters of the external-dns chart 
 | `aws.assumeRoleArn`                 | When using the AWS provider, assume role by specifying --aws-assume-role to the external-dns daemon      | `""`                                                        |
 | `aws.batchChangeSize`               | When using the AWS provider, set the maximum number of changes that will be applied in each batch        | `1000`                                                      |
 | `aws.zoneTags`                      | When using the AWS provider, filter for zones with these tags                                            | `[]`                                                        |
+| `aws.preferCNAME`                   | When using the AWS provider, replaces Alias recors with CNAME (options: true, false)                     | `[]`                                                        |
 | `azure.secretName`                  | When using the Azure provider, set the secret containing the `azure.json` file                           | `""`                                                        |
 | `azure.resourceGroup`               | When using the Azure provider, set the Azure Resource Group                                              | `""`                                                        |
 | `azure.tenantId`                    | When using the Azure provider, set the Azure Tenant ID                                                   | `""`                                                        |
@@ -74,6 +76,7 @@ The following table lists the configurable parameters of the external-dns chart 
 | `azure.aadClientId`                 | When using the Azure provider, set the Azure AAD Client ID                                               | `""`                                                        |
 | `azure.aadClientSecret`             | When using the Azure provider, set the Azure AAD Client Secret                                           | `""`                                                        |
 | `azure.useManagedIdentityExtension` | When using the Azure provider, set if you use Azure MSI                                                  | `""`                                                        |
+| `cloudflare.apiToken`               | When using the Cloudflare provider, `CF_API_TOKEN` to set (optional)                                     | `""`                                                        |
 | `cloudflare.apiKey`                 | When using the Cloudflare provider, `CF_API_KEY` to set (optional)                                       | `""`                                                        |
 | `cloudflare.email`                  | When using the Cloudflare provider, `CF_API_EMAIL` to set (optional)                                     | `""`                                                        |
 | `cloudflare.proxied`                | When using the Cloudflare provider, enable the proxy feature (DDOS protection, CDN...) (optional)        | `true`                                                      |
@@ -145,7 +148,7 @@ The following table lists the configurable parameters of the external-dns chart 
 | `service.loadBalancerIP`            | IP address to assign to load balancer (if supported)                                                     | `""`                                                        |
 | `service.loadBalancerSourceRanges`  | List of IP CIDRs allowed access to load balancer (if supported)                                          | `[]`                                                        |
 | `service.annotations`               | Annotations to add to service                                                                            | `{}`                                                        |
-| `rbac.create`                       | Weather to create & use RBAC resources or not                                                            | `false`                                                     |
+| `rbac.create`                       | Weather to create & use RBAC resources or not                                                            | `true`                                                      |
 | `rbac.serviceAccountName`           | ServiceAccount (ignored if rbac.create == true)                                                          | `default`                                                   |
 | `rbac.serviceAccountAnnotations`    | Additional Service Account annotations                                                                   | `{}`                                                        |
 | `rbac.apiVersion`                   | Version of the RBAC API                                                                                  | `v1beta1`                                                   |
@@ -171,13 +174,17 @@ $ helm install --name my-release -f values.yaml stable/external-dns
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+## Configuration and installation details
+
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
+
 ### Production configuration
 
-This chart includes a `values-production.yaml` file where you can find some parameters oriented to production configuration in comparison to the regular `values.yaml`.
-
-```console
-$ helm install --name my-release -f ./values-production.yaml stable/external-dns
-```
+This chart includes a `values-production.yaml` file where you can find some parameters oriented to production configuration in comparison to the regular `values.yaml`. You can use this file instead of the default one.
 
 - Desired number of ExternalDNS replicas:
 ```diff
@@ -213,12 +220,6 @@ $ helm install --name my-release \
   --set domainFilters[0]=HOSTED_ZONE_NAME \
   stable/external-dns
 ```
-
-### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
-
-It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
-
-Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
 
 ## Upgrading
 
