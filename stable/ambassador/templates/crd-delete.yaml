@@ -35,6 +35,6 @@ spec:
           - /bin/sh
           - -c
           - >
-              kubectl delete crds -l service=ambassador
+              kubectl delete crds -l app.kubernetes.io/part-of={{ .Release.Name }}
       restartPolicy: OnFailure
 {{- end }}
