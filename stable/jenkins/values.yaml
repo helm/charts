@@ -90,7 +90,7 @@ master:
   targetPort: 8080
   # For minikube, set this to NodePort, elsewhere use LoadBalancer
   # Use ClusterIP if your setup includes ingress controller
-  serviceType: LoadBalancer
+  serviceType: ClusterIP
   # Jenkins master service annotations
   serviceAnnotations: {}
   # Jenkins master custom labels
@@ -224,7 +224,7 @@ master:
       # over SSH to reapply config when changes to the configScripts are detected.  The admin user (or account you specify in
       # master.adminUser) will have a random SSH private key (RSA 4096) assigned unless you specify adminSshKey.  This will be saved to a k8s secret.
       enabled: false
-      image: shadwell/k8s-sidecar:0.0.2
+      image: kiwigrid/k8s-sidecar:0.1.20
       imagePullPolicy: IfNotPresent
       resources: {}
         #   limits:
@@ -458,6 +458,7 @@ networkPolicy:
 ## Install Default RBAC roles and bindings
 rbac:
   create: true
+  readSecrets: false
 
 serviceAccount:
   create: true
