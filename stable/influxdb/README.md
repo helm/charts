@@ -12,7 +12,7 @@ $ helm install stable/influxdb --name foo --namespace bar
 
 ## Introduction
 
-This chart bootstraps an InfluxDB deployment and service on a Kubernetes cluster using the Helm Package manager.
+This chart bootstraps an InfluxDB statefulset and service on a Kubernetes cluster using the Helm Package manager.
 
 ## Prerequisites
 
@@ -69,7 +69,7 @@ $ helm install --name my-release -f values.yaml stable/influxdb
 
 The [InfluxDB](https://hub.docker.com/_/influxdb/) image stores data in the `/var/lib/influxdb` directory in the container.
 
-The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) at this location. The volume is created using dynamic volume provisioning.
+If persistence is enabled, a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) associated with Statefulset will be provisioned. The volume is created using dynamic volume provisioning. In case of a disruption e.g. a node drain, kubernetes ensures that the same volume will be reatached to the Pod, preventing any data loss. Althought, when persistence is not enabled, InfluxDB data will be stored in an empty directory thus, in a Pod restart, data will be lost.
 
 ## Starting with authentication
 
