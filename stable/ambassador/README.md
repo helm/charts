@@ -121,6 +121,18 @@ The following tables lists the configurable parameters of the Ambassador chart a
 
 **NOTE:** Make sure the configured `service.http.targetPort` and `service.https.targetPort` ports match your [Ambassador Module's](https://www.getambassador.io/reference/modules/#the-ambassador-module) `service_port` and `redirect_cleartext_from` configurations.
 
+### CRDs
+
+This helm chart includes the creation of the core CRDs Ambassador uses for
+configuration. 
+
+The `crds` flags let you configure how a release manages crds.
+- `crds.create` Can only be set on your first/master Ambassador release. 
+- `crds.enabled` Should be set on all releases using Ambassador CRDs
+- `crds.keep` Configures if the CRDs are deleted when the master release is 
+  purged. This value is only checked for the master release and can be set to
+  any value on secondary releases. 
+
 ### Annotations
 
 Ambassador configuration is done through annotations on Kubernetes services or Custom Resource Definitions (CRDs). The `service.annotations` section of the values file contains commented out examples of [Ambassador Module](https://www.getambassador.io/reference/core/ambassador) and a global [TLSContext](https://www.getambassador.io/reference/core/tls) configurations which are typically created in the Ambassador service.
