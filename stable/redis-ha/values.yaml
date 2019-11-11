@@ -80,8 +80,8 @@ sysctlImage:
   enabled: false
   command: []
   registry: docker.io
-  repository: bitnami/minideb
-  tag: latest
+  repository: busybox
+  tag: 1.31.1
   pullPolicy: Always
   mountHostSys: false
 
@@ -208,7 +208,7 @@ affinity: |
 exporter:
   enabled: false
   image: oliver006/redis_exporter
-  tag: v0.31.0
+  tag: v1.3.0
   pullPolicy: IfNotPresent
 
   # prometheus port & scrape path

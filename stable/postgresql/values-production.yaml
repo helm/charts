@@ -175,6 +175,10 @@ postgresqlDataDir: /bitnami/postgresql/data
 #      #!/bin/sh
 #      echo "Do something."
 
+## Specify the PostgreSQL username and password to execute the initdb scripts
+# initdbUser:
+# initdbPassword:
+
 ## ConfigMap with scripts to be run at first boot
 ## NOTE: This will override initdbScripts
 # initdbScriptsConfigMap:

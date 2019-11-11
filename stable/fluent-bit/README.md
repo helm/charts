@@ -43,6 +43,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.es.port`          | TCP port of the target Elasticsearch instance. | `9200` |
 | `backend.es.index`         | Elastic Index name | `kubernetes_cluster` |
 | `backend.es.type`          | Elastic Type name | `flb_type` |
+| `backend.es.retry_limit`   | Max number of retries to attempt (False == no limit) | `False` |
 | `backend.es.time_key`          | Elastic Time Key | `@timestamp` |
 | `backend.es.logstash_format`          | Enable Logstash format compatibility. | `On` |
 | `backend.es.logstash_prefix`  | Index Prefix. If Logstash_Prefix is equals to 'mydata' your index will become 'mydata-YYYY.MM.DD'. | `kubernetes_cluster` |
