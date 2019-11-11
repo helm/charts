@@ -25,6 +25,7 @@ data:
     service_dir: {{ .Values.anchoreGlobal.serviceDir }}
     tmp_dir: {{ .Values.anchoreGlobal.scratchVolume.mountPath }}
     log_level: {{ .Values.anchoreGlobal.logLevel }}
+    image_analyze_timeout_seconds: {{ .Values.anchoreGlobal.imageAnalyzeTimeoutSeconds }}
     cleanup_images: {{ .Values.anchoreGlobal.cleanupImages }}
     allow_awsecr_iam_auto: {{ .Values.anchoreGlobal.allowECRUseIAMRole }}
     host_id: "${ANCHORE_POD_NAME}"
