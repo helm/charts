@@ -18,8 +18,10 @@ spec:
       hosts:
         - {{ printf "authorize.%s" .Values.config.rootDomain | quote }}
         - {{ printf "authenticate.%s" .Values.config.rootDomain | quote }}
+      {{- if not .Values.ingress.hosts }}
       {{- range .Values.config.policy }}
         - {{ .from | trimPrefix "https://" | trimPrefix "http://" | quote }}
+      {{- end }}
       {{- end }}
       {{- range .Values.ingress.hosts }}
         - {{ . | quote }}
