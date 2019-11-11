@@ -383,6 +383,16 @@ In https://github.com/helm/charts/pull/17281 the `apiVersion` of the statefulset
 
 This major version bump signifies this change.
 
+## 6.5.7
+
+In this version, the chart will use PostgreSQL with the Postgis extension included. The version used with Postgresql version 10, 11 and 12 is Postgis 2.5. It has been compiled with the following dependencies:
+
+ - protobuf
+ - protobuf-c
+ - json-c
+ - geos
+ - proj
+
 ## 5.0.0
 
 In this version, the **chart is using PostgreSQL 11 instead of PostgreSQL 10**. You can find the main difference and notable changes in the following links: [https://www.postgresql.org/about/news/1894/](https://www.postgresql.org/about/news/1894/) and [https://www.postgresql.org/about/featurematrix/](https://www.postgresql.org/about/featurematrix/).
