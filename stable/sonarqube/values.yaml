@@ -126,9 +126,9 @@ persistence:
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   ##
-  # storageClass: "-"
-  # accessMode: ReadWriteOnce
-  # size: 10Gi
+  storageClass:
+  accessMode: ReadWriteOnce
+  size: 10Gi
 
 # List of plugins to install.
 # For example:
