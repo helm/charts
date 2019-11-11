@@ -10,6 +10,7 @@ imageTag: 1.7.14
 
 
 testFramework:
+  enabled: true
   image: "dduportal/bats"
   tag: "0.4.0"
 
