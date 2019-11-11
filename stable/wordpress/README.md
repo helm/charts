@@ -343,7 +343,7 @@ For performance and security reasons, it is a good practice to configure Apache 
 However, some plugins may include `.htaccess` directives that will not be loaded when `AllowOverride` is set to `None`. A way to make them work would be to create your own `wordpress-htaccess.conf` file with all the required dircectives to make the plugin work. After creating it, then create a ConfigMap with it and install the chart with the correct parameters:
 
 ```console
-allowOverrideNone=yes
+allowOverrideNone=true
 customHTAccessCM=custom-htaccess
 ```
 

@@ -57,6 +57,20 @@ spec:
                   key: master-key
             - name: PARSE_DASHBOARD_APP_NAME
               value: {{ .Values.dashboard.appName | quote }}
+            {{- if .Values.dashboard.extraEnvVars }}
+              {{- include "parse.tplValue" ( dict "value" .Values.dashboard.extraEnvVars "context" $ ) | nindent 12 }}
+            {{- end }}
+          {{- if or .Values.dashboard.extraEnvVarsCM .Values.dashboard.extraEnvVarsSecret }}
+          envFrom:
+            {{- if .Values.dashboard.extraEnvVarsCM }}
+            - configMapRef:
+                name: {{ include "parse.tplValue" ( dict "value" .Values.dashboard.extraEnvVarsCM "context" $ ) }}
+            {{- end }}
+            {{- if .Values.dashboard.extraEnvVarsSecret }}
+            - secretRef:
+                name: {{ include "parse.tplValue" ( dict "value" .Values.dashboard.extraEnvVarsSecret "context" $ ) }}
+            {{- end }}
+          {{- end }}
           ports:
             - name: dashboard-http
               containerPort: 4040

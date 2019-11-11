@@ -19,7 +19,7 @@
 image:
   registry: docker.io
   repository: bitnami/mariadb
-  tag: 10.3.18-debian-9-r36
+  tag: 10.3.20-debian-9-r0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -251,6 +251,7 @@ master:
     skip-name-resolve
     explicit_defaults_for_timestamp
     basedir=/opt/bitnami/mariadb
+    plugin_dir=/opt/bitnami/mariadb/plugin
     port=3306
     socket=/opt/bitnami/mariadb/tmp/mysql.sock
     tmpdir=/opt/bitnami/mariadb/tmp
@@ -265,6 +266,7 @@ master:
     port=3306
     socket=/opt/bitnami/mariadb/tmp/mysql.sock
     default-character-set=UTF8
+    plugin_dir=/opt/bitnami/mariadb/plugin
 
     [manager]
     port=3306
@@ -443,7 +445,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/mysqld-exporter
-    tag: 0.12.1-debian-9-r75
+    tag: 0.12.1-debian-9-r96
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.

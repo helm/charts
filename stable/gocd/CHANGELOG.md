@@ -1,3 +1,11 @@
+### 1.19.1
+* [00e10170c](https://github.com/kubernetes/charts/commit/00e10170c): Add support for specifying tolerations on both the GoCD server and agent pods
+
+### 1.19.0
+* [9cfa1b98b](https://github.com/kubernetes/charts/commit/9cfa1b98b): Bump up GoCD Version to 19.10.0
+* [10e7c8e3a](https://github.com/kubernetes/charts/commit/10e7c8e3a): Use latest GoCD APIs in preconfigure script
+* [7cba0ba63](https://github.com/kubernetes/charts/commit/7cba0ba63): Bump up kubernetes elastic agent plugin version to v3.4.0
+
 ### 1.18.2
 * [f8cf63789](https://github.com/kubernetes/charts/commit/f8cf63789): Add information about adding plugins
 

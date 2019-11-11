@@ -44,6 +44,9 @@ spec:
 {{ toYaml .Values.master.podAnnotations | indent 8 }}
         {{- end }}
     spec:
+      {{- if .Values.master.schedulerName }}
+      schedulerName: {{ .Values.master.schedulerName }}
+      {{- end }}
       {{- if .Values.master.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.master.nodeSelector | indent 8 }}
@@ -101,15 +104,6 @@ spec:
                 secretKeyRef:
                   name: {{ template "jenkins.fullname" . }}
                   key: jenkins-admin-user
-            {{- if or (.Values.master.adminSshKey) (.Values.master.sidecars.configAutoReload.enabled) }}
-            {{- if .Values.master.JCasC.enabled }}
-            - name: ADMIN_PRIVATE_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "jenkins.fullname" . }}
-                  key: {{ "jenkins-admin-private-key" | quote }}
-            {{- end }}
-            {{- end }}
             {{- end }}
             {{- if .Values.master.initContainerEnv }}
 {{ toYaml .Values.master.initContainerEnv | indent 12 }}
@@ -167,8 +161,14 @@ spec:
 {{ toYaml .Values.master.lifecycle | indent 12 }}
           {{- end }}
           env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
             - name: JAVA_OPTS
-              value: {{ default "" .Values.master.javaOpts | quote }}
+              value: >
+                {{ default "" .Values.master.javaOpts }}
+                {{- if .Values.master.sidecars.configAutoReload.enabled }} -Dcasc.reload.token=$(POD_NAME) {{end}}
             - name: JENKINS_OPTS
               value: "{{ if .Values.master.jenkinsUriPrefix }}--prefix={{ .Values.master.jenkinsUriPrefix }} {{ end }}{{ default "" .Values.master.jenkinsOpts}}"
             - name: JENKINS_SLAVE_AGENT_PORT
@@ -184,15 +184,6 @@ spec:
                 secretKeyRef:
                   name: {{ template "jenkins.fullname" . }}
                   key: jenkins-admin-user
-            {{- if or (.Values.master.adminSshKey) (.Values.master.sidecars.configAutoReload.enabled) }}
-            {{- if .Values.master.JCasC.enabled }}
-            - name: ADMIN_PRIVATE_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "jenkins.fullname" . }}
-                  key: {{ "jenkins-admin-private-key" | quote }}
-            {{- end }}
-            {{- end }}
             {{- end }}
             {{- if .Values.master.containerEnv }}
 {{ toYaml .Values.master.containerEnv | indent 12 }}
@@ -284,38 +275,24 @@ spec:
             {{- end }}
 
 {{- if and (.Values.master.JCasC.enabled) (.Values.master.sidecars.configAutoReload.enabled) }}
-        - name: {{ template "jenkins.name" . }}-sc-config
+        - name: jenkins-sc-config
           image: "{{ .Values.master.sidecars.configAutoReload.image }}"
           imagePullPolicy: {{ .Values.master.sidecars.configAutoReload.imagePullPolicy }}
           env:
-            - name: JENKINSRELOADCONFIG
-              value: "true"
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
             - name: LABEL
               value: "{{ template "jenkins.fullname" . }}-jenkins-config"
             - name: FOLDER
               value: "{{ .Values.master.sidecars.configAutoReload.folder }}"
             - name: NAMESPACE
-              value: "{{ .Values.master.sidecars.configAutoReload.searchNamespace }}"
-            - name: SSH_PORT
-              value: "{{ .Values.master.sidecars.configAutoReload.sshTcpPort }}"
-            - name: JENKINS_PORT
-              value: "{{ .Values.master.targetPort }}"
-            {{- if .Values.master.useSecurity }}
-            - name: ADMIN_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "jenkins.fullname" . }}
-                  key: jenkins-admin-user
-            {{- if or (.Values.master.adminSshKey) (.Values.master.sidecars.configAutoReload.enabled) }}
-            {{- if .Values.master.JCasC.enabled }}
-            - name: ADMIN_PRIVATE_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "jenkins.fullname" . }}
-                  key: {{ "jenkins-admin-private-key" | quote }}
-            {{- end }}
-            {{- end }}
-            {{- end }}
+              value: "{{ .Values.master.sidecars.configAutoReload.searchNamespace | default .Release.Namespace }}"
+            - name: REQ_URL
+              value: "http://localhost:8080/reload-configuration-as-code/?casc-reload-token=$(POD_NAME)"
+            - name: REQ_METHOD
+              value: "POST"
           resources:
 {{ toYaml .Values.master.sidecars.configAutoReload.resources | indent 12 }}
           volumeMounts:

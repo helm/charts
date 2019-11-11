@@ -14,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/rabbitmq
-  tag: 3.8.0-debian-9-r17
+  tag: 3.8.1-debian-9-r0
 
   ## set to true if you would like to see extra information on logs
   ## it turns BASH and NAMI debugging in minideb
@@ -205,7 +205,7 @@ service:
   managerPort: 15672
 
   ## Service annotations
-  annotations:
+  annotations: {}
     # service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
 
   ## Load Balancer sources
@@ -280,7 +280,9 @@ updateStrategy:
 nodeSelector: {}
 tolerations: []
 affinity: {}
-
+podDisruptionBudget: {}
+  # maxUnavailable: 1
+  # minAvailable: 1
 ## annotations for rabbitmq pods
 podAnnotations: {}
 
@@ -312,7 +314,7 @@ ingress:
   ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/annotations.md
   ##
   ## If tls is set to true, annotation ingress.kubernetes.io/secure-backends: "true" will automatically be set
-  annotations:
+  annotations: {}
   #  kubernetes.io/ingress.class: nginx
   #  kubernetes.io/tls-acme: true
 
@@ -338,7 +340,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/rabbitmq-exporter
-    tag: 0.29.0-debian-9-r61
+    tag: 0.29.0-debian-9-r82
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -429,7 +431,7 @@ forceBoot:
 ## This can be useful when combined with load_definitions to automatically create the secret containing the definitions to be loaded.
 ##
 extraSecrets: {}
-  # load_definition:
+  # load-definition:
   #   load_definition.json: |
   #     {
   #       ...
