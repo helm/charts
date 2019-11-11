@@ -8,6 +8,10 @@ nodeSelector: {}
 tolerations: []
 affinity: {}
 
+controller:
+  # controller.create: `true` if Sealed Secrets controller should be created
+  create: true
+
 serviceAccount:
   # serviceAccount.create: Whether to create a service account or not
   create: true
