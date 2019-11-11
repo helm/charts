@@ -82,13 +82,13 @@ service:
   annotations:
   #############################################################################
   ## Ambassador should be configured using CRD definition. If you want
-  ## to use annotations, the following is an example of annotating the 
+  ## to use annotations, the following is an example of annotating the
   ## Ambassador service with global configuration manifest.
   ##
   ## See https://www.getambassador.io/reference/core/ambassador and
   ## https://www.getambassador.io/reference/core/tls for more info
   #############################################################################
-  # 
+  #
   #  getambassador.io/config: |
   #    ---
   #    apiVersion: ambassador/v1
