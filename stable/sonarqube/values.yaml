@@ -152,6 +152,9 @@ plugins:
 #   sonar.security.realm: LDAP
 #   ldap.url: ldaps://organization.com
 
+# Additional sonar properties to load from a secret with a key "secret.properties" (must be a string)
+# sonarSecretProperties:
+
 # Kubernetes secret that contains the encryption key for the sonarqube instance.
 # The secret must contain the key 'sonar-secret.txt'.
 # The 'sonar.secretKeyPath' property will be set automatically.
