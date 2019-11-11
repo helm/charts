@@ -80,9 +80,15 @@ service:
       # nodePort: 30222
 
   annotations:
-  #  Uncomment out fields you want to use.
-  #  See https://www.getambassador.io/reference/core/ambassador and
-  #  https://www.getambassador.io/reference/core/tls for more info
+  #############################################################################
+  ## Ambassador should be configured using CRD definition. If you want
+  ## to use annotations, the following is an example of annotating the
+  ## Ambassador service with global configuration manifest.
+  ##
+  ## See https://www.getambassador.io/reference/core/ambassador and
+  ## https://www.getambassador.io/reference/core/tls for more info
+  #############################################################################
+  #
   #  getambassador.io/config: |
   #    ---
   #    apiVersion: ambassador/v1
