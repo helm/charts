@@ -1,3 +1,6 @@
+### 1.19.2
+* [cacab5e62](https://github.com/kubernetes/charts/commit/cacab5e62): GoCD agents postStart lifecycle hooks
+
 ### 1.19.1
 * [00e10170c](https://github.com/kubernetes/charts/commit/00e10170c): Add support for specifying tolerations on both the GoCD server and agent pods
 
