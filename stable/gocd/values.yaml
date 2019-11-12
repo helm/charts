@@ -71,7 +71,13 @@ server:
   #     memory: 1024Mi
 
   # Sidecar containers that runs alongside GoCD server.
+  # https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/
   sidecarContainers: []
+  # - name: sidecar-container
+  #   image: sidecar-image:latest
+  #   volumeMounts:
+  #     - name: goserver-vol
+  #     mountPath: /godata
 
   # specify init containers, e.g. to prepopulate home directories etc
   initContainers: []
