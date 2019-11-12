@@ -174,9 +174,9 @@ spec:
             {{- if .Values.extraEnv }}
             {{- include "postgresql.tplValue" (dict "value" .Values.extraEnv "context" $) | nindent 12 }}
             {{- end }}
-            {{- if .Values.ldap.enabled }}
             - name: POSTGRESQL_ENABLE_LDAP
-              value: "yes"
+              value: {{ ternary "yes" "no" .Values.ldap.enabled | quote }}
+            {{- if .Values.ldap.enabled }}
             - name: POSTGRESQL_LDAP_SERVER
               value: {{ .Values.ldap.server }}
             - name: POSTGRESQL_LDAP_PORT
