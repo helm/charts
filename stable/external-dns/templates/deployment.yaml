@@ -14,7 +14,7 @@ spec:
         {{- if or .Values.podAnnotations .Values.metrics.enabled }}
         {{ include "external-dns.podAnnotations" . | nindent 8 }}
         {{- end }}
-        {{- if or (and .Values.aws.credentials.secretKey .Values.aws.credentials.accessKey) .Values.cloudflare.apiKey .Values.digitalocean.apiToken (and .Values.infoblox.wapiUsername .Values.infoblox.wapiPassword) .Values.rfc2136.tsigSecret .Values.extraEnv .Values.google.serviceAccountKey }}
+        {{- if or (and .Values.aws.credentials.secretKey .Values.aws.credentials.accessKey) (or .Values.cloudflare.apiToken .Values.cloudflare.apiKey) .Values.digitalocean.apiToken (and .Values.infoblox.wapiUsername .Values.infoblox.wapiPassword) .Values.rfc2136.tsigSecret .Values.extraEnv .Values.google.serviceAccountKey }}
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
         {{- end }}
         {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
@@ -105,6 +105,9 @@ spec:
         {{- range .Values.aws.zoneTags }}
         - --aws-zone-tags={{ . }}
         {{- end }}
+        {{- if .Values.aws.preferCNAME }}
+        - --aws-prefer-cname
+        {{- end }}
         # Azure Arguments
         {{- if eq .Values.provider "azure" }}
         {{- if .Values.azure.resourceGroup }}
@@ -185,13 +188,21 @@ spec:
         {{- end }}
         # Cloudflare environment variables
         {{- if eq .Values.provider "cloudflare" }}
+        {{- if .Values.cloudflare.apiToken }}
+        - name: CF_API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "external-dns.fullname" . }}
+              key: cloudflare_api_token
+        {{- else }}
         - name: CF_API_KEY
           valueFrom:
             secretKeyRef:
               name: {{ template "external-dns.fullname" . }}
               key: cloudflare_api_key
         - name: CF_API_EMAIL
-          value: {{ .Values.cloudflare.email | quote }}
+          value: {{ required "cloudflare.email is required if cloudflare.apiToken is not provided" .Values.cloudflare.email | quote }}
+        {{- end }}
         {{- end }}
         # CoreDNS environment variables
         {{- if eq .Values.provider "coredns" }}
@@ -291,7 +302,7 @@ spec:
         - name: azure-config-file
           {{- if or .Values.azure.secretName (and .Values.azure.resourceGroup .Values.azure.tenantId .Values.azure.subscriptionId) }}
           mountPath: /etc/kubernetes/
-          {{- else }}
+          {{- else if not .Values.azure.useManagedIdentityExtension }}
           mountPath: /etc/kubernetes/azure.json
           {{- end }}
           readOnly: true
@@ -331,7 +342,7 @@ spec:
         {{- else if (and .Values.azure.resourceGroup .Values.azure.tenantId .Values.azure.subscriptionId) }}
         secret:
           secretName: {{ template "external-dns.fullname" . }}
-        {{- else }}
+        {{- else if not .Values.azure.useManagedIdentityExtension }}
         hostPath:
           path: /etc/kubernetes/azure.json
           type: File

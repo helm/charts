@@ -6,6 +6,78 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.9.2 Add support for kubernetes-credentials-provider-plugin
+
+[kubernetes-credentials-provider-plugin](https://jenkinsci.github.io/kubernetes-credentials-provider-plugin/) needs permissions to get/watch/list kubernetes secrets in the namespaces where Jenkins is running.
+
+The necessary role binding can be created using `rbac.readSecrets` when `rbac.create` is `true`.
+
+To quote from the plugin documentation:
+
+> Because granting these permissions for secrets is not something that should be done lightly it is highly advised for security reasons that you both create a unique service account to run Jenkins as, and run Jenkins in a unique namespace.
+
+Therefor this is disabled by default.
+
+## 1.9.1 Update kubernetes plugin URL
+
+## 1.9.0 Change default serviceType to ClusterIP
+
+## 1.8.2
+
+Revert fix in `1.7.10` since direct connection is now disabled by default.
+
+## 1.8.1
+
+Add `master.schedulerName` to allow setting a Kubernetes custom scheduler
+
+## 1.8.0 JCasC auto reload works without ssh keys
+
+We make use of the fact that the Jenkins Configuration as Code Plugin can be triggered via http `POST` to `JENKINS_URL/configuration-as-code/reload`and a pre-shared key.
+The sidecar container responsible for reloading config changes is now `kiwigrid/k8s-sidecar:0.1.20` instead of it's fork `shadwell/k8s-sidecar`.
+
+References:
+- [Triggering Configuration Reload](https://github.com/jenkinsci/configuration-as-code-plugin/blob/master/docs/features/configurationReload.md)
+- [kiwigrid/k8s-sidecar](https://hub.docker.com/r/kiwigrid/k8s-sidecar)
+
+`master.sidecars.configAutoReload.enabled` now works using `casc.reload.token`
+
+## 1.7.10
+
+Disable direct connection in default configuration (when kubernetes plugin version >= 1.20.2).
+Note: In case direct connection is going to be used `jenkins/jnlp-slave` needs to be version `3.35-5` or newer.
+
+## 1.7.9
+
+Prevented Jenkins Setup Wizard on new installations
+
+## 1.7.8
+
+Extend extraPorts to be opened on the Service object, not just the container.
+
+## 1.7.7
+
+Add persistentvolumeclaim permission to the role to support new dynamic pvc workspaces.
+
+## 1.7.6
+
+Updated  `master.slaveKubernetesNamespace` to parse helm templates.
+Defined an sensible empty value to the following variables, to silence invalid warnings:
+  - master.extraPorts
+  - master.scriptApproval
+  - master.initScripts
+  - master.JCasC.configScripts
+  - master.sidecars.other
+  - agent.envVars
+  - agent.volumes
+
+## 1.7.5
+
+Fixed an issue where the JCasC won't run if JCasC auto-reload is enabled [issue #17135](https://github.com/helm/charts/issues/17135)
+
+## 1.7.4
+
+Comments out JCasC example of jenkins.systemMessage so that it can be used by end users. Previously, an attempt to set systemMessage causes Jenkins to startup, citing duplicate JCasC settings for systemMessage [issue #13333](https://github.com/helm/charts/issues/13333)
+
 ## 1.7.2
 
 Update kubernetes-plugin to version 1.18.2 which fixes frequently encountered [JENKINS-59000](https://issues.jenkins-ci.org/plugins/servlet/mobile#issue/JENKINS-59000)

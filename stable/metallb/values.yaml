@@ -115,3 +115,4 @@ speaker:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  initContainers: []
