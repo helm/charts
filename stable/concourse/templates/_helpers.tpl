@@ -61,3 +61,14 @@ Creates the address of the TSA service.
 {{- $port := .Values.concourse.web.tsa.bindPort -}}
 {{ template "concourse.web.fullname" . }}:{{- print $port -}}
 {{- end -}}
+
+{{/*
+Return the apiVersion of deployment.
+*/}}
+{{- define "deployment.apiVersion" -}}
+{{- if semverCompare "<1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "extensions/v1beta1" -}}
+{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "apps/v1" -}}
+{{- end -}}
+{{- end -}}
