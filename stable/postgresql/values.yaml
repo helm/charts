@@ -192,6 +192,23 @@ postgresqlDataDir: /bitnami/postgresql/data
 ##
 # terminationGracePeriodSeconds: 30
 
+## LDAP configuration
+##
+ldap:
+  enabled: false
+  url: ""
+  server: ""
+  port: ""
+  prefix: ""
+  suffix: ""
+  baseDN: ""
+  bindDN: ""
+  bind_password:
+  search_attr: ""
+  search_filter: ""
+  scheme: ""
+  tls: false
+
 ## PostgreSQL service configuration
 service:
   ## PosgresSQL service type
