@@ -21,7 +21,7 @@ spec:
         app: {{ template "redis-ha.name" . }}-haproxy
         release: {{ .Release.Name }}
       annotations:
-      {{- if .Values.exporter.enabled }}
+      {{- if .Values.haproxy.metrics.enabled }}
         prometheus.io/port: {{ .Values.haproxy.metrics.port | toString }}
         prometheus.io/scrape: "true"
         prometheus.io/path: {{ .Values.haproxy.metrics.scrapePath | toString }}
