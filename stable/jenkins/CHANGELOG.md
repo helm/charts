@@ -6,6 +6,22 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.9.2 Add support for kubernetes-credentials-provider-plugin
+
+[kubernetes-credentials-provider-plugin](https://jenkinsci.github.io/kubernetes-credentials-provider-plugin/) needs permissions to get/watch/list kubernetes secrets in the namespaces where Jenkins is running.
+
+The necessary role binding can be created using `rbac.readSecrets` when `rbac.create` is `true`.
+
+To quote from the plugin documentation:
+
+> Because granting these permissions for secrets is not something that should be done lightly it is highly advised for security reasons that you both create a unique service account to run Jenkins as, and run Jenkins in a unique namespace.
+
+Therefor this is disabled by default.
+
+## 1.9.1 Update kubernetes plugin URL
+
+## 1.9.0 Change default serviceType to ClusterIP
+
 ## 1.8.2
 
 Revert fix in `1.7.10` since direct connection is now disabled by default.
