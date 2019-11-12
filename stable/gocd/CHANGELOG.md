@@ -1,3 +1,6 @@
+### 1.19.3
+* [afd78ccd8](https://github.com/kubernetes/charts/commit/afd78ccd8): GoCD server sidecar containers
+
 ### 1.19.2
 * [cacab5e62](https://github.com/kubernetes/charts/commit/cacab5e62): GoCD agents postStart lifecycle hooks
 
