@@ -1,5 +1,5 @@
 {{- if .Values.worker.enabled -}}
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "concourse.worker.fullname" . }}
@@ -10,6 +10,13 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   serviceName: {{ template "concourse.worker.fullname" . }}
+  selector:
+    matchLabels:
+      app: {{ template "concourse.worker.fullname" . }}
+      release: "{{ .Release.Name }}"
+      {{- with .Values.worker.labels }}
+{{ toYaml . | trim | indent 6 }}
+      {{- end }}
   replicas: {{ .Values.worker.replicas }}
   template:
     metadata:
