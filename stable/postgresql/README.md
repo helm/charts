@@ -56,9 +56,6 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `global.postgresql.replicationPassword`       | Replication user password (overrides `replication.password`)                                                           | `nil`                                                       |
 | `global.imagePullSecrets`                     | Global Docker registry secret names as an array                                                                        | `[]` (does not add image pull secrets to deployed pods)     |
 | `global.storageClass`                         | Global storage class for dynamic provisioning                                                                          | `nil`                                                       |
-| `global.ldap.existingSecret`                  | Name of existing secret to use for LDAP passwords (overrides `ldap.existingSecret`)                                    | `nil`                                                       |
-| `global.ldap.bind_password`                   | LDAP bind password (overrides `ldap.bind_password`)                                                                           | `nil`                                                       |
-| `global.storageClass`                         | Global storage class for dynamic provisioning                                                                          | `nil`                                                       |
 | `image.registry`                              | PostgreSQL Image registry                                                                                              | `docker.io`                                                 |
 | `image.repository`                            | PostgreSQL Image name                                                                                                  | `bitnami/postgresql`                                        |
 | `image.tag`                                   | PostgreSQL Image tag                                                                                                   | `{TAG_NAME}`                                                |
@@ -391,6 +388,7 @@ $ helm upgrade my-release bitnami/influxdb \
 ```
 
 > Note: you need to substitute the placeholders _[POSTGRESQL_PASSWORD]_, and _[REPLICATION_PASSWORD]_ with the values obtained from instructions in the installation notes.
+
 ## 7.0.2
 
 Adds support for LDAP configuration.
