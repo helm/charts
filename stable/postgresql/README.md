@@ -389,7 +389,7 @@ $ helm upgrade my-release bitnami/influxdb \
 
 > Note: you need to substitute the placeholders _[POSTGRESQL_PASSWORD]_, and _[REPLICATION_PASSWORD]_ with the values obtained from instructions in the installation notes.
 
-## 7.0.2
+## 7.1.0
 
 Adds support for LDAP configuration.
 
