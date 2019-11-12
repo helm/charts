@@ -6,5 +6,5 @@ haproxy:
     any.domain/key: "value"
   serviceAccount:
     create: true
-  exporter:
+  metrics:
     enabled: false

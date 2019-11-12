@@ -29,8 +29,8 @@ spec:
     targetPort: {{ .Values.haproxy.readOnly.port }}
 {{- end }}
 {{- if .Values.exporter.enabled }}
-  - name: exporter-port
-    port: {{ .Values.haproxy.exporter.port }}
+  - name: {{ .Values.metrics.portName }}
+    port: {{ .Values.haproxy.metrics.port }}
     protocol: TCP
     targetPort: exporter-port
 {{- end }}
