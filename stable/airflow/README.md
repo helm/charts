@@ -200,7 +200,7 @@ Next, you can use those secrets with the Helm chart:
 ```yaml
 # values.yaml
 
-postgres:
+postgresql:
   existingSecret: airflow-postgres
 
 redis:
@@ -377,10 +377,12 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `scheduler.annotations`                  | annotations for the scheduler deployment                | `{}`                      |
 | `workers.enabled`                        | enable workers                                          | `true`                    |
 | `workers.replicas`                       | number of workers pods to launch                        | `1`                       |
+| `workers.terminationPeriod`              | gracefull termination period for workers to stop        | `30`                      |
 | `workers.resources`                      | custom resource configuration for worker pod            | `{}`                      |
 | `workers.celery.instances`               | number of parallel celery tasks per worker              | `1`                       |
 | `workers.labels`                         | labels for the worker statefulSet                       | `{}`                      |
 | `workers.annotations`                    | annotations for the worker statefulSet                  | `{}`                      |
+| `workers.celery.gracefullTermination`    | cancel the consumer and wait for the current task to finish before stopping the worker      | `false`     |
 | `workers.podAnnotations`                 | annotations for the worker pods                         | `{}`                      |
 | `workers.secretsDir`                     | directory in which to mount secrets on worker nodes     | /var/airflow/secrets      |
 | `workers.secrets`                        | secrets to mount as volumes on worker nodes             | []                        |
@@ -435,8 +437,8 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `postgresql.postgresPassword`            | PostgreSQL Password                                     | `airflow`                 |
 | `postgresql.postgresDatabase`            | PostgreSQL Database name                                | `airflow`                 |
 | `postgresql.persistence.enabled`         | Enable Postgres PVC                                     | `true`                    |
-| `postgresql.persistance.storageClass`    | Persistant class                                        | (undefined)               |
-| `postgresql.persistance.accessMode`      | Access mode                                             | `ReadWriteOnce`           |
+| `postgresql.persistence.storageClass`    | Persistent class                                        | (undefined)               |
+| `postgresql.persistence.accessMode`      | Access mode                                             | `ReadWriteOnce`           |
 | `redis.enabled`                          | Create a Redis cluster                                  | `true`                    |
 | `redis.existingSecret`                   | The name of an existing secret with a key named `redis.existingSecretKey` to use as the password  | `nil` |
 | `redis.existingSecretKey`                | The name of the key containing the password in the secret named `redis.existingSecret`  | `redis-password` |

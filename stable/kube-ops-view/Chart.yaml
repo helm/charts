@@ -1,7 +1,7 @@
 apiVersion: v1
 name: kube-ops-view
-version: 1.1.0
-appVersion: 0.11
+version: 1.1.1
+appVersion: 19.9.0
 description: Kubernetes Operational View - read-only system dashboard for multiple
   K8s clusters
 keywords:
