@@ -106,6 +106,7 @@ The following tables list the configurable parameters of the GoCD chart and thei
 | `server.securityContext.runAsUser`         | The container user for all the GoCD server pods.                                                              | `1000`              |
 | `server.securityContext.runAsGroup`        | The container group for all the GoCD server pods.                                                             | `0`                 |
 | `server.securityContext.fsGroup`           | The container supplementary group for all the GoCD server pods.                                               | `0`                 |
+| `server.sidecarContainers`                 | Sidecar containers to run alongside GoCD server.                                                              | `[]`                |
 
 #### Preconfiguring the GoCD Server
 
