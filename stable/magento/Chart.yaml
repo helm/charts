@@ -3,7 +3,7 @@ name: magento
 # The Magento chart is deprecated and no longer maintained. For details on deprecation,
 # including how to un-deprecate a chart, see the PROCESSES.md file.
 deprecated: true
-version: 5.1.4
+version: 6.0.0
 appVersion: 2.3.1
 description: DEPRECATED A feature-rich flexible e-commerce solution. It includes transaction options, multi-store functionality, loyalty programs, product categorization and shopper filtering, promotion rules, and more.
 keywords:
