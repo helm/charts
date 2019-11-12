@@ -1080,7 +1080,7 @@ data:
                     "query": "label_values(process_cpu_seconds_total{job=\"kube-controller-manager\"}, instance)",
                     "refresh": 2,
                     "regex": "",
-                    "sort": 0,
+                    "sort": 1,
                     "tagValuesQuery": "",
                     "tags": [
 

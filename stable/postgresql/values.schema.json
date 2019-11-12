@@ -5,20 +5,20 @@
     "postgresqlUsername": {
       "type": "string",
       "title": "Admin user",
-      "form": "username"
+      "form": true
     },
     "postgresqlPassword": {
       "type": "string",
       "title": "Password",
-      "form": "password"
+      "form": true
     },
     "persistence": {
       "type": "object",
       "properties": {
         "size": {
           "type": "string",
-          "title": "Disk Size",
-          "form": "diskSize",
+          "title": "Persistent Volume Size",
+          "form": true,
           "render": "slider",
           "sliderMin": 1,
           "sliderMax": 100,
@@ -30,14 +30,14 @@
       "type": "object",
       "title": "Required Resources",
       "description": "Configure resource requests",
-      "form": "resources",
+      "form": true,
       "properties": {
         "requests": {
           "type": "object",
           "properties": {
             "memory": {
               "type": "string",
-              "form": "memoryRequest",
+              "form": true,
               "render": "slider",
               "title": "Memory Request",
               "sliderMin": 10,
@@ -46,7 +46,7 @@
             },
             "cpu": {
               "type": "string",
-              "form": "cpuRequest",
+              "form": true,
               "render": "slider",
               "title": "CPU Request",
               "sliderMin": 10,
@@ -59,19 +59,22 @@
     },
     "replication": {
       "type": "object",
-      "form": "replication",
+      "form": true,
       "title": "Replication Details",
       "properties": {
         "enabled": {
           "type": "boolean",
           "title": "Enable Replication",
-          "form": "enableReplication",
-          "enables": "replication"
+          "form": true
         },
         "slaveReplicas": {
           "type": "integer",
           "title": "Slave Replicas",
-          "form": "slaveReplicas"
+          "form": true,
+          "hidden": {
+            "condition": false,
+            "value": "replication.enabled"
+          }
         }
       }
     },
@@ -80,7 +83,7 @@
       "properties": {
         "enabled": {
           "type": "boolean",
-          "form": "enableVolumePermissions",
+          "form": true,
           "title": "Enable Init Containers",
           "description": "Change the owner of the persist volume mountpoint to RunAsUser:fsGroup"
         }
@@ -92,7 +95,7 @@
         "enabled": {
           "type": "boolean",
           "title": "Configure metrics exporter",
-          "form": "enableMetrics"
+          "form": true
         }
       }
     }
