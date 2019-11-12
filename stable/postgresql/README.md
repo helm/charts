@@ -56,6 +56,9 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `global.postgresql.replicationPassword`       | Replication user password (overrides `replication.password`)                                                           | `nil`                                                       |
 | `global.imagePullSecrets`                     | Global Docker registry secret names as an array                                                                        | `[]` (does not add image pull secrets to deployed pods)     |
 | `global.storageClass`                         | Global storage class for dynamic provisioning                                                                          | `nil`                                                       |
+| `global.ldap.existingSecret`                  | Name of existing secret to use for LDAP passwords (overrides `ldap.existingSecret`)                                    | `nil`                                                       |
+| `global.ldap.bind_password`                   | LDAP bind password (overrides `ldap.bind_password`)                                                                           | `nil`                                                       |
+| `global.storageClass`                         | Global storage class for dynamic provisioning                                                                          | `nil`                                                       |
 | `image.registry`                              | PostgreSQL Image registry                                                                                              | `docker.io`                                                 |
 | `image.repository`                            | PostgreSQL Image name                                                                                                  | `bitnami/postgresql`                                        |
 | `image.tag`                                   | PostgreSQL Image tag                                                                                                   | `{TAG_NAME}`                                                |
@@ -70,6 +73,20 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `volumePermissions.image.pullPolicy`          | Init container volume-permissions image pull policy                                                                    | `Always`                                                    |
 | `volumePermissions.securityContext.runAsUser` | User ID for the init container                                                                                         | `0`                                                         |
 | `usePasswordFile`                             | Have the secrets mounted as a file instead of env vars                                                                 | `false`                                                     |
+| `ldap.enabled`                                | Enable LDAP support                                          | `false`                                                      |
+| `ldap.existingSecret`                         | Name of existing secret to use for LDAP passwords            | `nil`                                                        |
+| `ldap.url`                                    | LDAP URL beginning in the form `ldap[s]://host[:port]/basedn[?[attribute][?[scope][?[filter]]]]` | `nil`                    |
+| `ldap.server`                                 | IP address or name of the LDAP server.                       | `nil`                                                        |
+| `ldap.port`                                   | Port number on the LDAP server to connect to                 | `nil`                                                        |
+| `ldap.scheme`                                 | Set to `ldaps` to use LDAPS.                                 | `nil`                                                        |
+| `ldap.tls`                                    | Set to `1` to use TLS encryption                             | `nil`                                                        |
+| `ldap.prefix`                                 | String to prepend to the user name when forming the DN to bind | `nil`                                                      |
+| `ldap.suffix`                                 | String to append to the user name when forming the DN to bind | `nil`                                                       |
+| `ldap.search_attr`                            | Attribute to match agains the user name in the search        | `nil`                                                        |
+| `ldap.search_filter`                          | The search filter to use when doing search+bind authentication | `nil`                                                      |
+| `ldap.baseDN`                                 | Root DN to begin the search for the user in                  | `nil`                                                        |
+| `ldap.bindDN`                                 | DN of user to bind to LDAP                                   | `nil`                                                        |
+| `ldap.bind_password`                          | Password for the user to bind to LDAP                        | `nil`                                                        |
 | `replication.enabled`                         | Enable replication                                                                                                     | `false`                                                     |
 | `replication.user`                            | Replication user                                                                                                       | `repl_user`                                                 |
 | `replication.password`                        | Replication user password                                                                                              | `repl_password`                                             |
@@ -374,6 +391,9 @@ $ helm upgrade my-release bitnami/influxdb \
 ```
 
 > Note: you need to substitute the placeholders _[POSTGRESQL_PASSWORD]_, and _[REPLICATION_PASSWORD]_ with the values obtained from instructions in the installation notes.
+## 7.0.2
+
+Adds support for LDAP configuration.
 
 ## 7.0.0
 
