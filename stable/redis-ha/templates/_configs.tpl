@@ -177,7 +177,7 @@
     frontend ft_redis_master
       bind *:{{ $root.Values.redis.port }}
       use_backend bk_redis_master
-    {{ if .Values.haproxy.readOnly.enabled }}
+    {{- if .Values.haproxy.readOnly.enabled }}
     #slave
     frontend ft_redis_slave
       bind *:{{ .Values.haproxy.readOnly.port }}
@@ -202,7 +202,7 @@
       use-server R{{ $i }} if { srv_is_up(R{{ $i }}) } { nbsrv(check_if_redis_is_master_{{ $i }}) ge 2 }
       server R{{ $i }} {{ $fullName }}-announce-{{ $i }}:{{ $root.Values.redis.port }} check inter 1s fall 1 rise 1
       {{- end }}
-    {{ if .Values.haproxy.readOnly.enabled }}
+    {{- if .Values.haproxy.readOnly.enabled }}
     backend bk_redis_slave
       mode tcp
       option tcp-check
@@ -221,6 +221,17 @@
       server R{{ $i }} {{ $fullName }}-announce-{{ $i }}:{{ $root.Values.redis.port }} check inter 1s fall 1 rise 1
       {{- end }}
     {{- end }}
+    {{- if .Values.haproxy.metrics.enabled }}
+    frontend metrics
+      mode http
+      bind *:{{ .Values.haproxy.metrics.port }}
+      option http-use-htx
+      http-request use-service prometheus-exporter if { path {{ .Values.haproxy.metrics.scrapePath }} }
+    {{- end }}
+{{- if .Values.haproxy.extraConfig }}
+    # Additional configuration
+{{ .Values.haproxy.extraConfig | indent 4 }}
+{{- end }}
 {{- end }}
 {{- end }}
 
