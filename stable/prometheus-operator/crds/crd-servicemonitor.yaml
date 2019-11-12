@@ -6,6 +6,8 @@ metadata:
   name: servicemonitors.monitoring.coreos.com
   labels:
     app: prometheus-operator
+  annotations:
+    "helm.sh/hook": crd-install
 spec:
   group: monitoring.coreos.com
   names:
