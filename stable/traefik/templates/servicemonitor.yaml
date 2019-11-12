@@ -30,5 +30,11 @@ spec:
     matchLabels:
       app: {{ template "traefik.name" . }}
       release: {{ .Release.Name | quote }}
+{{- if .Values.metrics.serviceMonitor.targetLabels }}
+{{- range .Values.metrics.serviceMonitor.targetLabels }}
+  targetLabels: 
+    - {{ . }}
+{{- end }}
+{{- end }}
 {{- end }}
 {{- end }}

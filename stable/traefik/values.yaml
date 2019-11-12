@@ -411,7 +411,7 @@ metrics:
   prometheus:
     enabled: false
     # buckets: [0.1,0.3,1.2,5]
-   # serviceMonitor:
+  # serviceMonitor:
     # When set true and if Prometheus Operator is installed then use a ServiceMonitor to configure scraping
     # enabled: false
     # Set the namespace the ServiceMonitor should be deployed
@@ -420,6 +420,8 @@ metrics:
     # interval: 30s
     # Set labels for the ServiceMonitor, use this to define your scrape label for Prometheus Operator
     # labels:
+    # Set of labels to transfer on the Kubernetes Service onto the target.
+    # targetLabels: []
   datadog:
     enabled: false
     # address: localhost:8125
