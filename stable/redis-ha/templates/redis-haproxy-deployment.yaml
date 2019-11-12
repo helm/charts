@@ -21,9 +21,11 @@ spec:
         app: {{ template "redis-ha.name" . }}-haproxy
         release: {{ .Release.Name }}
       annotations:
+      {{- if .Values.haproxy.exporter.enabled }}
         prometheus.io/path: /metrics
-        prometheus.io/port: "9101"
+        prometheus.io/port: {{ default 9101 .Values.haproxy.exporter.port | toString }}
         prometheus.io/scrape: "true"
+      {{- end }}
         checksum/config: {{ print (include "config-haproxy.cfg" .) (include "config-haproxy_init.sh" .) | sha256sum }}
       {{- if .Values.haproxy.annotations }}
 {{ toYaml .Values.haproxy.annotations | indent 8 }}
