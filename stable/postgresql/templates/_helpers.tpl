@@ -391,7 +391,7 @@ Compile all warnings into a single message, and call fail.
 Validate values of Postgresql - If ldap.url is used then you don't need the other settings for ldap
 */}}
 {{- define "postgresql.validateValues.ldapConfigurationMethod" -}}
-{{- if and .Values.ldap.enabled (and (not empty .Values.ldap.url) (not empty .Values.ldap.server)) }}
+{{- if and .Values.ldap.enabled (and (not (empty .Values.ldap.url)) (not (empty .Values.ldap.server))) }}
 postgresql: ldap.url, ldap.server
     You cannot set both `ldap.url` and `ldap.server` at the same time.
     Please provide a unique way to configure LDAP.
