@@ -188,6 +188,14 @@ The [Bitnami Magento](https://github.com/bitnami/bitnami-docker-magento) image s
 
 ## Upgrading
 
+### To 6.0.0
+
+Helm performs a lookup for the object based on its group (apps), version (v1), and kind (Deployment). Also known as its GroupVersionKind, or GVK. Changing the GVK is considered a compatibility breaker from Kubernetes' point of view, so you cannot "upgrade" those objects to the new GVK in-place. Earlier versions of Helm 3 did not perform the lookup correctly which has since been fixed to match the spec.
+
+This version updates the `apiVersion` of the deployment resources was updated to `apps/v1` in tune with the api's deprecated, resulting in compatibility breakage.
+
+This major version signifies this change.
+
 ### To 5.0.0
 
 Manual intervention is needed if configuring Elasticsearch 6 as Magento search engine is desired.
