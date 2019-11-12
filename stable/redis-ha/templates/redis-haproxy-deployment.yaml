@@ -22,9 +22,9 @@ spec:
         release: {{ .Release.Name }}
       annotations:
       {{- if .Values.haproxy.metrics.enabled }}
-        prometheus.io/port: {{ .Values.haproxy.metrics.port | toString }}
+        prometheus.io/port: "{{ .Values.haproxy.metrics.port }}"
         prometheus.io/scrape: "true"
-        prometheus.io/path: {{ .Values.haproxy.metrics.scrapePath | toString }}
+        prometheus.io/path: "{{ .Values.haproxy.metrics.scrapePath }}"
       {{- end }}
         checksum/config: {{ print (include "config-haproxy.cfg" .) (include "config-haproxy_init.sh" .) | sha256sum }}
       {{- if .Values.haproxy.annotations }}
