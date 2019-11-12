@@ -242,11 +242,11 @@ agent:
     fsGroup: 0
   # agent.replicaCount is the GoCD Agent replicas Count. Specify the number of GoCD agents to run
   replicaCount: 0
-  # agent.preStop - array of commands to use in the agent pre-stop lifecycle hook
+  # agent.preStop - array of command and arguments to run in the agent pre-stop lifecycle hook
   # preStop:
   #  - "/bin/bash"
   #  - "/disable_and_stop.sh"
-  # agent.postStart - array of commands to use in agent post-start lifecycle hook
+  # agent.postStart - array of command and arguments to run in agent post-start lifecycle hook
   # postStart:
   #  - "/bin/bash"
   #  - "/agent_startup.sh"
