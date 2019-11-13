@@ -83,19 +83,6 @@ spec:
         periodSeconds: 60
    nodeSelector:
     beta.kubernetes.io/os: linux
-   affinity:
-     nodeAffinity:
-       requiredDuringSchedulingIgnoredDuringExecution:
-         nodeSelectorTerms:
-         - matchExpressions:
-           - key: kubernetes.io/role
-             operator: NotIn
-             values:
-             - master
-           - key: node-role.kubernetes.io/master
-             operator: DoesNotExist
-           - key: node-role.kubernetes.io/controlplane
-             operator: DoesNotExist
    volumes:
     - name: docker-sock
       hostPath:
