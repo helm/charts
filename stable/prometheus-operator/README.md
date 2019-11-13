@@ -33,7 +33,7 @@ This chart bootstraps a [prometheus-operator](https://github.com/coreos/promethe
 
 ## Prerequisites
   - Kubernetes 1.10+ with Beta APIs
-  - Helm 2.10+ (For a workaround using an earlier version see [below](#helm-210-workaround))
+  - Helm 2.12+ (If using Helm < 2.14, [see below for CRD workaround](#Helm-fails-to-create-CRDs))
 
 ## Installing the Chart
 
@@ -173,6 +173,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheusOperator.admissionWebhooks.patch.image.pullPolicy` | Image pull policy for the webhook integration jobs | `IfNotPresent` |
 | `prometheusOperator.admissionWebhooks.patch.image.repository` | Repository to use for the webhook integration jobs | `jettech/kube-webhook-certgen` |
 | `prometheusOperator.admissionWebhooks.patch.image.tag` | Tag to use for the webhook integration jobs | `v1.0.0` |
+| `prometheusOperator.admissionWebhooks.patch.resources` | Resource limits for admission webhook | `{}` |
 | `prometheusOperator.admissionWebhooks.patch.nodeSelector` | Node selector for running admission hook patch jobs | `nil` |
 | `prometheusOperator.admissionWebhooks.patch.podAnnotations` | Annotations for the webhook job pods | `nil` |
 | `prometheusOperator.admissionWebhooks.patch.priorityClassName` | Priority class for the webhook integration jobs | `nil` |
@@ -416,6 +417,7 @@ For a full list of configurable values please refer to the [Grafana chart](https
 | `grafana.serviceMonitor.selfMonitor` | Create a `serviceMonitor` to automatically monitor the grafana instance | `true` |
 | `grafana.sidecar.dashboards.enabled` | Enable the Grafana sidecar to automatically load dashboards with a label `{{ grafana.sidecar.dashboards.label }}=1` | `true` |
 | `grafana.sidecar.dashboards.label` | If the sidecar is enabled, configmaps with this label will be loaded into Grafana as dashboards | `grafana_dashboard` |
+| `grafana.sidecar.datasources.annotations` | Create annotations on datasource configmaps | `{}` |
 | `grafana.sidecar.datasources.createPrometheusReplicasDatasources` | Create datasource for each Pod of Prometheus StatefulSet i.e. `Prometheus-0`, `Prometheus-1` | `false` |
 | `grafana.sidecar.datasources.defaultDatasourceEnabled` | Enable Grafana `Prometheus` default datasource | `true` |
 | `grafana.sidecar.datasources.enabled` | Enable the Grafana sidecar to automatically load datasources with a label `{{ grafana.sidecar.datasources.label }}=1` | `true` |
@@ -642,7 +644,9 @@ The PVC will take ownership of the PV and when you create a release using a pers
 
 ### KubeProxy
 
-The metrics bind address of kube-proxy is default to `127.0.0.1:10249` that prometheus instances **cannot** access to. You should expose metrics by changing `metricsBindAddress` field value to `0.0.0.0:10249` in ConfigMap `kube-system/kube-proxy` if you want to collect them. For example:
+The metrics bind address of kube-proxy is default to `127.0.0.1:10249` that prometheus instances **cannot** access to. You should expose metrics by changing `metricsBindAddress` field value to `0.0.0.0:10249` if you want to collect them.
+
+Depending on the cluster, the relevant part `config.conf` will be in ConfigMap `kube-system/kube-proxy` or `kube-system/kube-proxy-config`. For example:
 
 ```
 kubectl -n kube-system edit cm kube-proxy

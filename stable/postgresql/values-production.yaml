@@ -15,7 +15,7 @@ global:
 image:
   registry: docker.io
   repository: bitnami/postgresql
-  tag: 11.5.0-debian-9-r82
+  tag: 11.5.0-debian-9-r84
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -175,6 +175,10 @@ postgresqlDataDir: /bitnami/postgresql/data
 #      #!/bin/sh
 #      echo "Do something."
 
+## Specify the PostgreSQL username and password to execute the initdb scripts
+# initdbUser:
+# initdbPassword:
+
 ## ConfigMap with scripts to be run at first boot
 ## NOTE: This will override initdbScripts
 # initdbScriptsConfigMap:
@@ -187,6 +191,23 @@ postgresqlDataDir: /bitnami/postgresql/data
 ## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods
 ##
 # terminationGracePeriodSeconds: 30
+
+## LDAP configuration
+##
+ldap:
+  enabled: false
+  url: ""
+  server: ""
+  port: ""
+  prefix: ""
+  suffix: ""
+  baseDN: ""
+  bindDN: ""
+  bind_password:
+  search_attr: ""
+  search_filter: ""
+  scheme: ""
+  tls: false
 
 ## PostgreSQL service configuration
 service:
