@@ -18,7 +18,6 @@ image:
   tag: 0.1.0
   pullPolicy: IfNotPresent
 
-
 command: ["kube-bench", "--version", "1.13"]
 
 resources: {}
@@ -32,4 +31,3 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
-

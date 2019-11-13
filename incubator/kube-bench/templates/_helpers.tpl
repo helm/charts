@@ -44,8 +44,6 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
-
-
 {{/*
 Return the appropriate apiVersion for cronjob APIs.
 */}}
