@@ -31,6 +31,17 @@ the `values.yaml` depending on your setup.
 Please read the comments in the `values.yaml` file for more details on how to configure your reverse
 proxy or load balancer.
 
+#### Customizable Ingress Rules
+
+This chart enables you to add various paths in the ingress. It includes two values for you to customize these paths, `precedingPaths` and `succeedingPaths`. The reason there are two possible paths values is because order of paths in an ingress rule matters and because we always add a default path in this chart that routes to the web interface we need loops that allow us to possibly add routes after or before this default one. An example of this happening is if an instance of traffic is routed to a path that covers multiple paths in the http ingress rule, the instance of traffic will be routed to the first one and then the second one. A common case of this will appear when enabling https for this chart using the ingress controller. For example the aws alb ingress controller's ssl-redirect [here](https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/tasks/ssl_redirect/) needs the redirect route path to be hit before the airflow-web one. So you will set the values of `precedingPaths` as the following:
+
+```yaml
+precedingPaths:
+  - path: "/*"
+    serviceName: "ssl-redirect"
+    servicePort: "use-annotation"
+```
+
 ### Chart Prefix
 
 This Helm automatically prefixes all names using the release name to avoid collisions.
