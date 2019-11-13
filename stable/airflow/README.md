@@ -200,7 +200,7 @@ Next, you can use those secrets with the Helm chart:
 ```yaml
 # values.yaml
 
-postgres:
+postgresql:
   existingSecret: airflow-postgres
 
 redis:
@@ -352,10 +352,14 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.extraVolumes`                   | additional volumes for the scheduler, worker & web pods | `[]`                      |
 | `airflow.initdb`                         | run `airflow initdb` when starting the scheduler        | `true`                    |
 | `flower.resources`                       | custom resource configuration for flower pod            | `{}`                      |
+| `flower.labels`                          | labels for the flower deployment                        | `{}`                      |
+| `flower.annotations`                     | annotations for the flower deployment                   | `{}`                      |
 | `flower.service.type`                    | service type for Flower UI                              | `ClusterIP`               |
 | `flower.service.annotations`             | (optional) service annotations for Flower UI            | `{}`                      |
 | `flower.service.externalPort`            | (optional) external port for Flower UI                  | `5555`                    |
 | `web.resources`                          | custom resource configuration for web pod               | `{}`                      |
+| `web.labels`                             | labels for the web deployment                           | `{}`                      |
+| `web.annotations`                        | annotations for the web deployment                      | `{}`                      |
 | `web.initialStartupDelay`                | amount of time webserver pod should sleep before initializing webserver             | `60`  |
 | `web.livenessProbe.periodSeconds`        | interval between probes                         | `60`  |
 | `web.livenessProbe.timeoutSeconds`       | time allowed for a result to return             | `1`  |
@@ -369,10 +373,16 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `web.secretsDir`                         | directory in which to mount secrets on webserver nodes  | /var/airflow/secrets      |
 | `web.secrets`                            | secrets to mount as volumes on webserver nodes          | []                        |
 | `scheduler.resources`                    | custom resource configuration for scheduler pod         | `{}`                      |
+| `scheduler.labels`                       | labels for the scheduler deployment                     | `{}`                      |
+| `scheduler.annotations`                  | annotations for the scheduler deployment                | `{}`                      |
 | `workers.enabled`                        | enable workers                                          | `true`                    |
 | `workers.replicas`                       | number of workers pods to launch                        | `1`                       |
+| `workers.terminationPeriod`              | gracefull termination period for workers to stop        | `30`                      |
 | `workers.resources`                      | custom resource configuration for worker pod            | `{}`                      |
 | `workers.celery.instances`               | number of parallel celery tasks per worker              | `1`                       |
+| `workers.labels`                         | labels for the worker statefulSet                       | `{}`                      |
+| `workers.annotations`                    | annotations for the worker statefulSet                  | `{}`                      |
+| `workers.celery.gracefullTermination`    | cancel the consumer and wait for the current task to finish before stopping the worker      | `false`     |
 | `workers.podAnnotations`                 | annotations for the worker pods                         | `{}`                      |
 | `workers.secretsDir`                     | directory in which to mount secrets on worker nodes     | /var/airflow/secrets      |
 | `workers.secrets`                        | secrets to mount as volumes on worker nodes             | []                        |
@@ -427,8 +437,8 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `postgresql.postgresPassword`            | PostgreSQL Password                                     | `airflow`                 |
 | `postgresql.postgresDatabase`            | PostgreSQL Database name                                | `airflow`                 |
 | `postgresql.persistence.enabled`         | Enable Postgres PVC                                     | `true`                    |
-| `postgresql.persistance.storageClass`    | Persistant class                                        | (undefined)               |
-| `postgresql.persistance.accessMode`      | Access mode                                             | `ReadWriteOnce`           |
+| `postgresql.persistence.storageClass`    | Persistent class                                        | (undefined)               |
+| `postgresql.persistence.accessMode`      | Access mode                                             | `ReadWriteOnce`           |
 | `redis.enabled`                          | Create a Redis cluster                                  | `true`                    |
 | `redis.existingSecret`                   | The name of an existing secret with a key named `redis.existingSecretKey` to use as the password  | `nil` |
 | `redis.existingSecretKey`                | The name of the key containing the password in the secret named `redis.existingSecret`  | `redis-password` |
