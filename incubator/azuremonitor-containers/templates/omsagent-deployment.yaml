@@ -89,18 +89,13 @@ spec:
          nodeSelectorTerms:
          - matchExpressions:
            - key: kubernetes.io/role
-             operator: In
+             operator: NotIn
              values:
-             - agent
-         - matchExpressions:
-           - key: node-role.kubernetes.io/worker
-             operator: In
-             values:
-             - "true"
-             - worker
-         - matchExpressions:
-           - key: node-role.kubernetes.io/node
-             operator: Exists
+             - master
+           - key: node-role.kubernetes.io/master
+             operator: DoesNotExist
+           - key: node-role.kubernetes.io/controlplane
+             operator: DoesNotExist
    volumes:
     - name: docker-sock
       hostPath:
