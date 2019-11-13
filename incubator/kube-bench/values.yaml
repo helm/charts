@@ -1,0 +1,35 @@
+# Default values for elasticsearch-curator.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+cronjob:
+  # At 01:00 every month
+  schedule: "1 * * * *"
+  annotations: {}
+  concurrencyPolicy: ""
+  failedJobsHistoryLimit: "2"
+  successfulJobsHistoryLimit: "1"
+
+pod:
+  annotations: {}
+
+image:
+  repository: aquasec/kube-bench
+  tag: 0.1.0
+  pullPolicy: IfNotPresent
+
+
+command: ["kube-bench", "--version", "1.11"]
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
