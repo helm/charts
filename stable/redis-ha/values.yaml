@@ -94,6 +94,7 @@ sysctlImage:
   tag: 1.31.1
   pullPolicy: Always
   mountHostSys: false
+  resources: {}
 
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
