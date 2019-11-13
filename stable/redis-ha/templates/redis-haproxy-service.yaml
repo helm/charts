@@ -28,8 +28,8 @@ spec:
     protocol: TCP
     targetPort: {{ .Values.haproxy.readOnly.port }}
 {{- end }}
-{{- if .Values.exporter.enabled }}
-  - name: {{ .Values.metrics.portName }}
+{{- if .Values.haproxy.metrics.enabled }}
+  - name: {{ .Values.haproxy.metrics.portName }}
     port: {{ .Values.haproxy.metrics.port }}
     protocol: TCP
     targetPort: exporter-port
