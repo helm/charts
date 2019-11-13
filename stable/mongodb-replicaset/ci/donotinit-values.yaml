@@ -1,0 +1,2 @@
+## Setting this will skip the replicaset and user creation process during bootstrapping
+doNotInit: true
