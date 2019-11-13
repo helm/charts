@@ -43,7 +43,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The default configuration values for this chart are listed in `values.yaml`. 
+The default configuration values for this chart are listed in `values.yaml`.
 
 The [full image documentation](https://hub.docker.com/_/influxdb/) contains more information about running InfluxDB in docker.
 
@@ -90,3 +90,7 @@ Values `.Values.config.bind_address` and `.Values.exposeRpc` no longer exist. Th
 ### From < 1.5.0 to >= 2.0.0
 
 The Kubernetes API change to support 1.160 may not be backwards compatible and may require the chare to be uninstalled in order to upgrade.  See [this issue](https://github.com/helm/helm/issues/6583) for some background.
+
+### From < 3.0.0 to >= 3.0.0
+
+Since version 3.0.0 this chart uses a StatefulSet instead of a Deployment. As part of this update the existing persistent volume (and all data) is deleted and a new one is created. Make sure to backup and restore the data manually.
