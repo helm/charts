@@ -29,7 +29,7 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release stable/parse
 ```
 
-The command deploys Parse on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys Parse on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
@@ -43,12 +43,12 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
-## Configuration
+## Parameters
 
 The following table lists the configurable parameters of the Parse chart and their default values.
 
 | Parameter                              | Description                                                                                                                                               | Default                                                 |
-| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+|----------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------|
 | `global.imageRegistry`                 | Global Docker image registry                                                                                                                              | `nil`                                                   |
 | `global.imagePullSecrets`              | Global Docker registry secret names as an array                                                                                                           | `[]` (does not add image pull secrets to deployed pods) |
 | `global.storageClass`                  | Global storage class for dynamic provisioning                                                                                                             | `nil`                                                   |
@@ -87,6 +87,9 @@ The following table lists the configurable parameters of the Parse chart and the
 | `server.affinity`                      | Affinity for pod assignment                                                                                                                               | `{}` (The value is evaluated as a template)             |
 | `server.nodeSelector`                  | Node labels for pod assignment                                                                                                                            | `{}` (The value is evaluated as a template)             |
 | `server.tolerations`                   | Tolerations for pod assignment                                                                                                                            | `[]` (The value is evaluated as a template)             |
+| `server.extraEnvVars`                  | Array containing extra env vars (evaluated as a template)                                                                                                 | `nil`                                                   |
+| `server.extraEnvVarsCM`                | ConfigMap containing extra env vars (evaluated as a template)                                                                                             | `nil`                                                   |
+| `server.extraEnvVarsSecret`            | Secret containing extra env vars  (evaluated as a template)                                                                                               | `nil`                                                   |
 | `dashboard.enabled`                    | Enable parse dashboard                                                                                                                                    | `true`                                                  |
 | `dashboard.image.registry`             | Dashboard image registry                                                                                                                                  | `docker.io`                                             |
 | `dashboard.image.repository`           | Dashboard image name                                                                                                                                      | `bitnami/parse-dashboard`                               |
@@ -105,6 +108,9 @@ The following table lists the configurable parameters of the Parse chart and the
 | `dashboard.affinity`                   | Affinity for pod assignment                                                                                                                               | `{}` (The value is evaluated as a template)             |
 | `dashboard.nodeSelector`               | Node labels for pod assignment                                                                                                                            | `{}` (The value is evaluated as a template)             |
 | `dashboard.tolerations`                | Tolerations for pod assignment                                                                                                                            | `[]` (The value is evaluated as a template)             |
+| `dashboard.extraEnvVars`               | Array containing extra env vars (evaluated as a template)                                                                                                 | `nil`                                                   |
+| `dashboard.extraEnvVarsCM`             | ConfigMap containing extra env vars (evaluated as a template)                                                                                             | `nil`                                                   |
+| `dashboard.extraEnvVarsSecret`         | Secret containing extra env vars  (evaluated as a template)                                                                                               | `nil`                                                   |
 | `persistence.enabled`                  | Enable Parse persistence using PVC                                                                                                                        | `true`                                                  |
 | `persistence.storageClass`             | PVC Storage Class for Parse volume                                                                                                                        | `nil` (uses alpha storage class annotation)             |
 | `persistence.accessMode`               | PVC Access Mode for Parse volume                                                                                                                          | `ReadWriteOnce`                                         |
@@ -166,18 +172,28 @@ $ helm install --name my-release -f values.yaml stable/parse
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+## Configuration and installation details
+
 ### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
 
 It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
 
 Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
 
+### Deploy your Cloud functions with Parse Cloud Code
+
+The [Bitnami Parse](https://github.com/bitnami/bitnami-docker-parse) image allows you to deploy your Cloud functions with Parse Cloud Code (a feature which allows running a piece of code in your Parse Server instead of the user's mobile devices). In order to add your custom scripts, they must be located inside the chart folder `files/cloud` so they can be consumed as a ConfigMap.
+
+Alternatively, you can specify custom scripts using the `cloudCodeScripts` parameter as dict.
+
+In addition to these options, you can also set an external ConfigMap with all the Cloud Code scripts. This is done by setting the `existingCloudCodeScriptsCM` parameter. Note that this will override the two previous options.
+
 ## Persistence
 
 The [Bitnami Parse](https://github.com/bitnami/bitnami-docker-parse) image stores the Parse data and configurations at the `/bitnami/parse` path of the container.
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
-See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+See the [Parameters](#parameters) section to configure the PVC or to disable persistence.
 
 ### Adjust permissions of persistent volume mountpoint
 
@@ -188,13 +204,17 @@ As an alternative, this chart supports using an initContainer to change the owne
 
 You can enable this initContainer by setting `volumePermissions.enabled` to `true`.
 
-### Deploy your Cloud functions with Parse Cloud Code
+### Adding extra environment variables
 
-The [Bitnami Parse](https://github.com/bitnami/bitnami-docker-parse) image allows you to deploy your Cloud functions with Parse Cloud Code (a feature which allows running a piece of code in your Parse Server instead of the user's mobile devices). In order to add your custom scripts, they must be located inside the chart folder `files/cloud` so they can be consumed as a ConfigMap.
+In case you want to add extra environment variables (useful for advanced operations like custom init scripts), you can use the `extraEnvVars` (available in the `server` and `dashboard` sections) property.
 
-Alternatively, you can specify custom scripts using the `cloudCodeScripts` parameter as dict.
+```yaml
+extraEnvVars:
+  - name: PARSE_SERVER_ALLOW_CLIENT_CLASS_CREATION
+    value: true
+```
 
-In addition to these options, you can also set an external ConfigMap with all the Cloud Code scripts. This is done by setting the `existingCloudCodeScriptsCM` parameter. Note that this will override the two previous options.
+Alternatively, you can use a ConfigMap or a Secret with the environment variables. To do so, use the `extraEnvVarsCM` or the `extraEnvVarsSecret` values.
 
 ## Upgrading
 
@@ -216,7 +236,7 @@ $ helm upgrade my-release stable/parse
 If you use a previous container image (previous to **3.1.2-r14** for Parse or **1.2.0-r69** for Parse Dashboard), disable the `securityContext` by running the command below:
 
 ```
-$ helm upgrade my-release stable/parse --set server.securityContext.enabled=fase,dashboard.securityContext.enabled=fase,server.image.tag=XXX,dashboard.image.tag=YYY
+$ helm upgrade my-release stable/parse --set server.securityContext.enabled=false,dashboard.securityContext.enabled=false,server.image.tag=XXX,dashboard.image.tag=YYY
 ```
 
 ### To 3.0.0

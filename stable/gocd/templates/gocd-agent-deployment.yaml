@@ -144,12 +144,20 @@ spec:
               readOnly: true
               mountPath: /home/go/.ssh
           {{- end }}
-          {{- if .Values.agent.preStop }}
+          {{- if or .Values.agent.preStop .Values.agent.postStart }}
           lifecycle:
+            {{- if .Values.agent.preStop }}
             preStop:
               exec:
                command:
 {{ toYaml .Values.agent.preStop | indent 18 }}
+            {{- end }}
+            {{- if .Values.agent.postStart }}
+            postStart:
+              exec:
+               command:
+{{ toYaml .Values.agent.postStart | indent 18 }}
+            {{- end }}
           {{- end }}
           securityContext:
             privileged: {{ .Values.agent.privileged }}
@@ -164,6 +172,10 @@ spec:
     {{- if .Values.agent.affinity }}
       affinity:
 {{ toYaml .Values.agent.affinity | indent 8 }}
+    {{- end }}
+    {{- if .Values.agent.tolerations }}
+      tolerations:
+{{ toYaml .Values.agent.tolerations | indent 8 }}
     {{- end }}
     {{- if .Values.agent.hostAliases }}
       hostAliases:

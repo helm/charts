@@ -37,7 +37,7 @@ spec:
           command: ["chown", "-R", "{{ .Values.server.securityContext.runAsUser }}:{{ .Values.server.securityContext.fsGroup }}", "/bitnami/parse"]
           securityContext:
             runAsUser: 0
-          resources: {{ toYaml .Values.volumePermissions.resources | nindent 10 }}
+          resources: {{ toYaml .Values.volumePermissions.resources | nindent 12 }}
           volumeMounts:
             - name: parse-data
               mountPath: /bitnami/parse
@@ -73,6 +73,20 @@ spec:
                   name: {{ include "parse.mongodb.fullname" . }}
                   key: mongodb-root-password
             {{- end }}
+            {{- if .Values.server.extraEnvVars }}
+              {{- include "parse.tplValue" ( dict "value" .Values.server.extraEnvVars "context" $ ) | nindent 12 }}
+            {{- end }}
+          {{- if or .Values.server.extraEnvVarsCM .Values.server.extraEnvVarsSecret }}
+          envFrom:
+            {{- if .Values.server.extraEnvVarsCM }}
+            - configMapRef:
+                name: {{ include "parse.tplValue" ( dict "value" .Values.server.extraEnvVarsCM "context" $ ) }}
+            {{- end }}
+            {{- if .Values.server.extraEnvVarsSecret }}
+            - secretRef:
+                name: {{ include "parse.tplValue" ( dict "value" .Values.server.extraEnvVarsSecret "context" $ ) }}
+            {{- end }}
+          {{- end }}
           ports:
             - name: server-http
               containerPort: {{ .Values.server.port }}

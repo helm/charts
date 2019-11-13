@@ -88,7 +88,7 @@ ndm:
   sparse:
     path: "/var/openebs/sparse"
     size: "10737418240"
-    count: "1"
+    count: "0"
   filters:
     excludeVendors: "CLOUDBYT,OpenEBS"
     includePaths: ""
