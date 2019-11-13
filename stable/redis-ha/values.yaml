@@ -54,7 +54,7 @@ haproxy:
   ## Ref: https://github.com/haproxy/haproxy/tree/master/contrib/prometheus-exporter
   ##
   metrics:
-    enabled: true
+    enabled: false
     # prometheus port & scrape path
     port: 9101
     portName: exporter-port
