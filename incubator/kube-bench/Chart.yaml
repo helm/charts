@@ -5,7 +5,7 @@ name: kube-bench
 version: 0.1.0
 keywords:
 - kube-bench
-home: https://github.com/aquasecurity/kube-bench  
+home: https://github.com/aquasecurity/kube-bench
 icon: https://raw.githubusercontent.com/aquasecurity/kube-bench/master/images/kube-bench.png
 sources:
 - https://github.com/aquasecurity/kube-bench
