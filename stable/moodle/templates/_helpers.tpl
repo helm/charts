@@ -28,16 +28,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 {{- define "moodle.mariadb.fullname" -}}
-{{- if .Values.fullnameOverride -}}
-{{- printf "%s-%s" .Values.fullnameOverride "mariadb" | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- if contains $name .Release.Name -}}
 {{- printf "%s-%s" .Release.Name "mariadb" | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- printf "%s-%s-%s" .Release.Name $name "mariadb" | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-{{- end -}}
 {{- end -}}
 
 {{/*
