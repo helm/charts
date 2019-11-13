@@ -33,7 +33,7 @@ spec:
             backend:
               serviceName: {{ template "airflow.fullname" . }}-web
               servicePort: web
-          {{- range .Values.ingress.web.paths }}
+          {{- range .Values.ingress.web.succeedingPaths }}
           - path: {{ .path }}
             backend:
               serviceName: {{ .serviceName }}

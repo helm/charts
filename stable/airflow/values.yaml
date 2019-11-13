@@ -371,8 +371,8 @@ ingress:
       ## - path: "/*"
       ##   serviceName: "ssl-redirect"
       ##   servicePort: "use-annotation"
-    paths:
-      ## Different http paths to add to the ingress
+    succeedingPaths:
+      ## Different http paths to add to the ingress after the default path
       ## Example:
       ## - path: "/*"
       ##   serviceName: "ssl-redirect"
