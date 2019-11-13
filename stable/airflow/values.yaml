@@ -366,7 +366,7 @@ ingress:
       ## Example:
       ## secretName: example-com-crt
     precedingPaths:
-      ## Different http paths to add to the ingress before the default path 
+      ## Different http paths to add to the ingress before the default path
       ## Example:
       ## - path: "/*"
       ##   serviceName: "ssl-redirect"
@@ -377,7 +377,7 @@ ingress:
       ## - path: "/*"
       ##   serviceName: "ssl-redirect"
       ##   servicePort: "use-annotation"
-    
+
   ##
   ## Configure the flower endpoind
   flower:
