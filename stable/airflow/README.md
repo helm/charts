@@ -352,10 +352,14 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.extraVolumes`                   | additional volumes for the scheduler, worker & web pods | `[]`                      |
 | `airflow.initdb`                         | run `airflow initdb` when starting the scheduler        | `true`                    |
 | `flower.resources`                       | custom resource configuration for flower pod            | `{}`                      |
+| `flower.labels`                          | labels for the flower deployment                        | `{}`                      |
+| `flower.annotations`                     | annotations for the flower deployment                   | `{}`                      |
 | `flower.service.type`                    | service type for Flower UI                              | `ClusterIP`               |
 | `flower.service.annotations`             | (optional) service annotations for Flower UI            | `{}`                      |
 | `flower.service.externalPort`            | (optional) external port for Flower UI                  | `5555`                    |
 | `web.resources`                          | custom resource configuration for web pod               | `{}`                      |
+| `web.labels`                             | labels for the web deployment                           | `{}`                      |
+| `web.annotations`                        | annotations for the web deployment                      | `{}`                      |
 | `web.initialStartupDelay`                | amount of time webserver pod should sleep before initializing webserver             | `60`  |
 | `web.livenessProbe.periodSeconds`        | interval between probes                         | `60`  |
 | `web.livenessProbe.timeoutSeconds`       | time allowed for a result to return             | `1`  |
@@ -369,10 +373,16 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `web.secretsDir`                         | directory in which to mount secrets on webserver nodes  | /var/airflow/secrets      |
 | `web.secrets`                            | secrets to mount as volumes on webserver nodes          | []                        |
 | `scheduler.resources`                    | custom resource configuration for scheduler pod         | `{}`                      |
+| `scheduler.labels`                       | labels for the scheduler deployment                     | `{}`                      |
+| `scheduler.annotations`                  | annotations for the scheduler deployment                | `{}`                      |
 | `workers.enabled`                        | enable workers                                          | `true`                    |
 | `workers.replicas`                       | number of workers pods to launch                        | `1`                       |
+| `workers.terminationPeriod`              | gracefull termination period for workers to stop        | `30`                      |
 | `workers.resources`                      | custom resource configuration for worker pod            | `{}`                      |
 | `workers.celery.instances`               | number of parallel celery tasks per worker              | `1`                       |
+| `workers.labels`                         | labels for the worker statefulSet                       | `{}`                      |
+| `workers.annotations`                    | annotations for the worker statefulSet                  | `{}`                      |
+| `workers.celery.gracefullTermination`    | cancel the consumer and wait for the current task to finish before stopping the worker      | `false`     |
 | `workers.podAnnotations`                 | annotations for the worker pods                         | `{}`                      |
 | `workers.secretsDir`                     | directory in which to mount secrets on worker nodes     | /var/airflow/secrets      |
 | `workers.secrets`                        | secrets to mount as volumes on worker nodes             | []                        |
@@ -386,6 +396,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `ingress.web.livenessPath`               | path to the web liveness probe                          | `{{ ingress.web.path }}/health` |
 | `ingress.web.tls.enabled`                | enables TLS termination at the ingress                  | `false`                   |
 | `ingress.web.tls.secretName`             | name of the secret containing the TLS certificate & key | ``                        |
+| `ingress.web.paths`                      | additional paths for the ingress                        | `{}`                      |
 | `ingress.flower.host`                    | hostname for the flower ui                              | ""                        |
 | `ingress.flower.path`                    | path of the flower ui (read `values.yaml`)              | ``                        |
 | `ingress.flower.livenessPath`            | path to the liveness probe (read `values.yaml`)         | `/`                       |
