@@ -1,0 +1,6 @@
+env:
+  AMBASSADOR_NO_KUBEWATCH: no_kubewatch
+
+crds:
+  create: true
+  keep: false
