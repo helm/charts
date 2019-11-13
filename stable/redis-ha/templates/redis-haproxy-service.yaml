@@ -22,14 +22,14 @@ spec:
   {{- if and (eq .Values.haproxy.service.type "NodePort") .Values.haproxy.service.nodePort }}
     nodePort: {{ .Values.haproxy.service.nodePort }}
   {{- end }}
-{{- if .Values.haproxy.readOnly.enabled }}  
+{{- if .Values.haproxy.readOnly.enabled }}
   - name: haproxyreadonly
     port: {{ .Values.haproxy.readOnly.port }}
     protocol: TCP
     targetPort: {{ .Values.haproxy.readOnly.port }}
 {{- end }}
-{{- if .Values.exporter.enabled }}
-  - name: {{ .Values.metrics.portName }}
+{{- if .Values.haproxy.metrics.enabled }}
+  - name: {{ .Values.haproxy.metrics.portName }}
     port: {{ .Values.haproxy.metrics.port }}
     protocol: TCP
     targetPort: exporter-port
