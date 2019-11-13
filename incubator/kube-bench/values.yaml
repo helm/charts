@@ -4,9 +4,9 @@
 
 cronjob:
   # At 01:00 every month
-  schedule: "1 * * * *"
+  schedule: "0 0 1 * *"
   annotations: {}
-  concurrencyPolicy: ""
+  concurrencyPolicy: "Forbid"
   failedJobsHistoryLimit: "2"
   successfulJobsHistoryLimit: "1"
 

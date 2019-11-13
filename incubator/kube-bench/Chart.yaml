@@ -1,5 +1,10 @@
 apiVersion: v1
 appVersion: "0.1.0"
-description: A Helm chart for Kubernetes
+description: A Helm chart for kube-bench
 name: kube-bench
 version: 0.1.0
+keywords:
+- kube-bench
+icon: https://raw.githubusercontent.com/aquasecurity/kube-bench/master/images/kube-bench.png
+sources:
+- https://github.com/aquasecurity/kube-bench
