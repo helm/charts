@@ -397,6 +397,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `ingress.web.tls.enabled`                | enables TLS termination at the ingress                  | `false`                   |
 | `ingress.web.tls.secretName`             | name of the secret containing the TLS certificate & key | ``                        |
 | `ingress.web.paths`                      | additional paths for the ingress                        | `{}`                      |
+| `ingress.web.precedingPaths`                      | additional paths for the ingress that come before default path to airflow-web                      | `{}`                      |
 | `ingress.flower.host`                    | hostname for the flower ui                              | ""                        |
 | `ingress.flower.path`                    | path of the flower ui (read `values.yaml`)              | ``                        |
 | `ingress.flower.livenessPath`            | path to the liveness probe (read `values.yaml`)         | `/`                       |
