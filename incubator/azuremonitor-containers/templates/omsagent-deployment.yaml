@@ -83,7 +83,24 @@ spec:
         periodSeconds: 60
    nodeSelector:
     beta.kubernetes.io/os: linux
-    kubernetes.io/role: agent
+   affinity:
+     nodeAffinity:
+       requiredDuringSchedulingIgnoredDuringExecution:
+         nodeSelectorTerms:
+         - matchExpressions:
+           - key: kubernetes.io/role
+             operator: In
+             values:
+             - agent
+         - matchExpressions:
+           - key: node-role.kubernetes.io/worker
+             operator: In
+             values:
+             - "true"
+             - worker
+         - matchExpressions:
+           - key: node-role.kubernetes.io/node
+             operator: Exists
    volumes:
     - name: docker-sock
       hostPath:
