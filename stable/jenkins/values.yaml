@@ -489,7 +489,7 @@ backup:
   annotations:
     # Example for authorization to AWS S3 using kube2iam
     # Can also be done using environment variables
-    #iam.amazonaws.com/role: "jenkins"
+    # iam.amazonaws.com/role: "jenkins"
   image:
     repository: "maorfr/kube-tasks"
     tag: "0.2.0"
@@ -510,8 +510,8 @@ backup:
      # gcpcredentials: credentials.json
   env:
   # Example environment variable required for AWS credentials chain
-  #- name: "AWS_REGION"
-  #  value: "us-east-1"
+  # - name: "AWS_REGION"
+  #   value: "us-east-1"
   resources:
     requests:
       memory: 1Gi
