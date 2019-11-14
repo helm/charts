@@ -65,7 +65,8 @@ rbac:
   ## If true, create and use RBAC resources
   create: false
   pspEnabled: false
-
+  ## Annotations to add to the service account if rbac.create is true
+  serviceAccountAnnotations: {}
   ## Ignored if rbac.create is true
   serviceAccountName: default
 # Add extra environment variables if specified (must be specified as a single line object and be quoted)
