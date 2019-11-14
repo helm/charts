@@ -49,12 +49,22 @@ spec:
               name: "{{ template "mongodb-replicaset.adminSecret" . }}"
               key: password
       {{- end }}
+      {{- if .Values.tls.enabled }}
+        - name: CACERT
+          value: {{ .Values.tls.cacert }}
+        - name: CAKEY
+          value: {{ .Values.tls.cakey }}
+      {{- end }}
       volumeMounts:
+        - name: workdir
+          mountPath: /work-dir
         - name: tools
           mountPath: /tools
         - name: tests
           mountPath: /tests
   volumes:
+    - name: workdir
+      emptyDir: {}
     - name: tools
       emptyDir: {}
     - name: tests
