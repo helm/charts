@@ -47,11 +47,13 @@ their default values.
 | `hooks`                              | Whether to run job on selected hooks                        | `{ "install": false, "upgrade": false }`     |
 | `cronjob.schedule`                   | Schedule for the CronJob                                    | `0 1 * * *`                                  |
 | `cronjob.annotations`                | Annotations to add to the cronjob                           | {}                                           |
+| `cronjob.labels`                     | Labels to add to the cronjob                                | {}                                           |
 | `cronjob.concurrencyPolicy`          | `Allow|Forbid|Replace` concurrent jobs                      | `nil`                                        |
 | `cronjob.failedJobsHistoryLimit`     | Specify the number of failed Jobs to keep                   | `nil`                                        |
 | `cronjob.successfulJobsHistoryLimit` | Specify the number of completed Jobs to keep                | `nil`                                        |
 | `cronjob.jobRestartPolicy`           | Control the Job restartPolicy                               | `Never`                                        |
 | `pod.annotations`                    | Annotations to add to the pod                               | {}                                           |
+| `pod.labels`                         | Labels to add to the pod                                    | {}                                           |
 | `dryrun`                             | Run Curator in dry-run mode                                 | `false`                                      |
 | `env`                                | Environment variables to add to the cronjob container       | {}                                           |
 | `envFromSecrets`                     | Environment variables from secrets to the cronjob container | {}                                           |
