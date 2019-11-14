@@ -23,30 +23,30 @@ spec:
         chart: {{ template "metallb.chart" . }}
         app: {{ template "metallb.name" . }}
         component: controller
-{{- if .Values.prometheus.scrapeAnnotations }}
+      {{- if .Values.prometheus.scrapeAnnotations }}
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "7472"
-{{- end }}
+      {{- end }}
     spec:
+      priorityClassName: metallb 
       serviceAccountName: {{ template "metallb.controllerServiceAccountName" . }}
       terminationGracePeriodSeconds: 0
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534 # nobody
+      {{- with .Values.controller.nodeSelector }}
       nodeSelector:
-        "beta.kubernetes.io/os": linux
-        {{- with .Values.controller.nodeSelector }}
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.controller.tolerations }}
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.controller.tolerations }}
       tolerations:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.controller.affinity }}
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.controller.affinity }}
       affinity:
-{{ toYaml . | indent 8 }}
-    {{- end }}
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: controller
         image: {{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}
@@ -58,7 +58,7 @@ spec:
         - name: monitoring
           containerPort: 7472
         resources:
-{{ toYaml .Values.controller.resources | indent 10 }}
+          {{ toYaml .Values.controller.resources | nindent 10 }}
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:

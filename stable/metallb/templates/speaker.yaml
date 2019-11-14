@@ -28,16 +28,13 @@ spec:
         prometheus.io/port: "7472"
 {{- end }}
     spec:
+      priorityClassName: metallb
       tolerations:
       - key: node-role.kubernetes.io/master
         effect: NoSchedule
       serviceAccountName: {{ template "metallb.speakerServiceAccountName" . }}
       terminationGracePeriodSeconds: 0
       hostNetwork: true
-{{- if gt (len .Values.speaker.initContainers) 0 }}
-      initContainers:
-{{ toYaml .Values.speaker.initContainers | indent 8 }}
-{{- end }}
       containers:
       - name: speaker
         image: {{ .Values.speaker.image.repository }}:{{ .Values.speaker.image.tag }}
@@ -58,7 +55,7 @@ spec:
         - name: monitoring
           containerPort: 7472
         resources:
-{{ toYaml .Values.speaker.resources | indent 10 }}
+          {{ toYaml .Values.speaker.resources | nindent 10 }}
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
@@ -69,16 +66,15 @@ spec:
             - NET_ADMIN
             - NET_RAW
             - SYS_ADMIN
+      {{- with .Values.speaker.nodeSelector }}
       nodeSelector:
-        "beta.kubernetes.io/os": linux
-        {{- with .Values.speaker.nodeSelector }}
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.speaker.tolerations }}
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.speaker.tolerations }}
       tolerations:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.speaker.affinity }}
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.speaker.affinity }}
       affinity:
-{{ toYaml . | indent 8 }}
-    {{- end }}
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
