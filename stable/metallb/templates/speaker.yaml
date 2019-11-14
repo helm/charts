@@ -28,7 +28,6 @@ spec:
         prometheus.io/port: "7472"
 {{- end }}
     spec:
-      priorityClassName: metallb
       tolerations:
       - key: node-role.kubernetes.io/master
         effect: NoSchedule
