@@ -102,7 +102,7 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
             - name: data
-              mountPath: /data
+              mountPath: {{ .Values.mountPath }}
             {{- range $secret := .Values.secrets }}
               {{- if $secret.mountPath }}
                 {{- range $key := $secret.keys }}

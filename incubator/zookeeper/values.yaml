@@ -60,6 +60,8 @@ resources: {}  # Optionally specify how much CPU and memory (RAM) each zookeeper
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+volumeMounts:
+    mountPath: /data
 
 priorityClassName: ""
 
