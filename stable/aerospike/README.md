@@ -1,33 +1,24 @@
 # Aerospike Helm Chart
 
 This is an implementation of Aerospike StatefulSet found here:
-
 * <https://github.com/aerospike/aerospike-kubernetes>
 
 ## Pre Requisites
-
 * Kubernetes 1.9+
-
 * PV support on underlying infrastructure (only if you are provisioning persistent volume).
-
 * Requires at least `v2.5.0` version of helm to support
 
 ## StatefulSet Details
-
 * <https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/>
 
 ## StatefulSet Caveats
-
 * <https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#limitations>
 
 ## Chart Details
-
 This chart will do the following:
-
 * Implement a dynamically scalable Aerospike cluster using Kubernetes StatefulSets
 
 ### Installing the Chart
-
 To install the chart with the release name `my-aerospike` using a dedicated namespace(recommended):
 
 ```sh
@@ -57,7 +48,13 @@ The chart can be customized using the following configurable parameters:
 | `service.annotations`           | Kubernetes service annotations, evaluated as a template         | `{}`                         |
 | `service.loadBalancerIP`        | Static IP Address to use for LoadBalancer service type          | `nil`                        |
 | `service.clusterIP`             | Static clusterIP or None for headless services                  | `None`                       |
-| `meshService.annotations`       | Kubernetes service annotations, evaluated as a template         | `{}`                         |
+| `service.nodePort.enabled`       | Enable NodePort to make aerospike cluster available outside the Kubernetes cluster         | `false`                         |
+| `service.nodePort.port`       | The NodePort port to expose         | `{}`                         |
+| `metrics.enabled`       | Enabled the metric sidecar that scrapes Aerospike at `localhost:3000`. Needs to be provided a sidecar image/repo. [This]() is a good place to start: https://github.com/alicebob/asprom         | `false`                         |
+| `metrics.image.repository`       | Metric sidecar image repository         | `{}`                         |
+| `metrics.image.tag`       | Metric sidecar image tag         | `{}`                         |
+| `metrics.serviceMonitor.enabled`       | Enable metrics service monitor. For more info, check [Prometheus Operator]([https://github.com/coreos/prometheus-operator](https://github.com/coreos/prometheus-operator))         | `false`                         |
+| `metrics.serviceMonitor.targetLabels`       | Add these additional labels from your service to the service monitor.  For more info, check [Prometheus Operator]([https://github.com/coreos/prometheus-operator](https://github.com/coreos/prometheus-operator))         | `{}`                         |
 
 Specify parameters using `--set key=value[,key=value]` argument to `helm install`
 
@@ -68,12 +65,6 @@ helm install --name my-aerospike -f values.yaml stable/aerospike
 ```
 
 ### Conf files for Aerospike
-
 There is one conf file added to each Aerospike release. This conf file can be replaced with a custom file and updating the `confFile` value.
 
 If you modify the `aerospike.conf` (and you use more than 1 replica), you want to add the `#REPLACE_THIS_LINE_WITH_MESH_CONFIG` comment to the config file (see the default conf file). This will update your mesh to connect each replica.
-
-## Known Limitations
-
-* Persistent volume claims tested only on GCP
-* Aerospike cluster is not accessible via an external endpoint
