@@ -485,10 +485,11 @@ backup:
   # Schedule to run jobs. Must be in cron time format
   # Ref: https://crontab.guru/
   schedule: "0 2 * * *"
+  labels:
   annotations:
     # Example for authorization to AWS S3 using kube2iam
     # Can also be done using environment variables
-    iam.amazonaws.com/role: "jenkins"
+    # iam.amazonaws.com/role: "jenkins"
   image:
     repository: "maorfr/kube-tasks"
     tag: "0.2.0"
@@ -504,10 +505,13 @@ backup:
   ## Use this key for AWS secret access key
      # awssecretkey: jenkins_aws_secret_key
   # Add additional environment variables
+   # jenkinsgcp:
+  ## Use this key for GCP credentials
+     # gcpcredentials: credentials.json
   env:
   # Example environment variable required for AWS credentials chain
-  - name: "AWS_REGION"
-    value: "us-east-1"
+  # - name: "AWS_REGION"
+  #   value: "us-east-1"
   resources:
     requests:
       memory: 1Gi
