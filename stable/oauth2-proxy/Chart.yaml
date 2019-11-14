@@ -19,3 +19,4 @@ maintainers:
 sources:
 - https://github.com/pusher/oauth2_proxy
 engine: gotpl
+kubeVersion: ">=1.9.0-0"
