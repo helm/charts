@@ -86,6 +86,10 @@ spec:
         - name: readonlyport
           containerPort: {{ default "6380" .Values.haproxy.readOnly.port }}
         {{- end }}
+        {{- if .Values.haproxy.metrics.enabled }}
+        - name: metrics-port
+          containerPort: {{ default "9101" .Values.haproxy.metrics.port }}
+        {{- end }}
         resources:
 {{ toYaml .Values.haproxy.resources | indent 10 }}
         volumeMounts:
