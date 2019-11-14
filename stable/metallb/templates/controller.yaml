@@ -29,7 +29,6 @@ spec:
         prometheus.io/port: "7472"
       {{- end }}
     spec:
-      priorityClassName: metallb 
       serviceAccountName: {{ template "metallb.controllerServiceAccountName" . }}
       terminationGracePeriodSeconds: 0
       securityContext:
