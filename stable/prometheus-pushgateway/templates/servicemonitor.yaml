@@ -7,8 +7,12 @@ metadata:
   namespace: {{ .Values.serviceMonitor.namespace }}
   {{- end }}
   labels:
-    {{- range $key, $value := .Values.serviceMonitor.selector }}
-    {{ $key }}: {{ $value | quote }}
+    app: {{ template "prometheus-pushgateway.name" . }}
+    chart: {{ template "prometheus-pushgateway.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    {{- if .Values.serviceMonitor.additionalLabels }}
+{{ toYaml .Values.serviceMonitor.additionalLabels | indent 4 }}
     {{- end }}
 spec:
   endpoints:
@@ -17,7 +21,13 @@ spec:
     interval: {{ .Values.serviceMonitor.interval }}
     {{- end }}
     honorLabels: {{ .Values.serviceMonitor.honorLabels }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
   selector:
     matchLabels:
       app: {{ template "prometheus-pushgateway.name" . }}
+      chart: {{ template "prometheus-pushgateway.chart" . }}
+      release: {{ .Release.Name }}
+      heritage: {{ .Release.Service }}
 {{- end -}}
