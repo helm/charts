@@ -109,6 +109,7 @@ Parameter                                            | Description              
 `email.password`                                     | SMTP password                                                                                              | `nil`
 `email.use_tls`                                      | SMTP TLS for security                                                                                      | `false`
 `email.enable_replies`                               | Allow email replies                                                                                        | `false`
+`email.existingSecret`                               | SMTP password from an existing secret (key must be `smtp-password`)                                        | `nil`
 `service.type`                                       | Kubernetes service type                                                                                    | `LoadBalancer`
 `service.name`                                       | Kubernetes service name                                                                                    | `sentry`
 `service.externalPort`                               | Kubernetes external service port                                                                           | `9000`
