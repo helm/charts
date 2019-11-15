@@ -96,8 +96,12 @@ affinity: {}
 serviceMonitor:
   enabled: false
   namespace: monitoring
-  # fallback to the prometheus default unless specified
+
+  # Fallback to the prometheus default unless specified
   # interval: 10s
+
+  # Fallback to the prometheus default unless specified
+  # scrapeTimeout: 30s
 
   ## Used to pass Labels that are used by the Prometheus installed in your cluster to select Service Monitors to work with
   ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
