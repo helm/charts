@@ -20,6 +20,10 @@ spec:
     {{- if .Values.serviceMonitor.interval }}
     interval: {{ .Values.serviceMonitor.interval }}
     {{- end }}
+    {{- if .Values.serviceMonitor.scrapeTimeout }}
+    scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
+    {{- end }}
+    path: /metrics
     honorLabels: {{ .Values.serviceMonitor.honorLabels }}
   namespaceSelector:
     matchNames:
