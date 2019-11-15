@@ -253,6 +253,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `forwardAuth.trustForwardHeader`       | Trust X-Forwarded-* headers                                                                                                  |                                                   |
 | `extraVolumeMounts`      | Any extra volumes mounts to define for the Traefik container                                                                                                                                                                                                               | `[]`                                                                                                                      |
 | `extraVolumes`           | Any extra volumes to define for the pod                                                                                                                                                                                                                                     | `[]`                                                                                                                      |
+| `networkPolicy.enabled`       | Enable NetworkPolicy                                                                                                 | `false`                                                  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 

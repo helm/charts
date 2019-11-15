@@ -510,3 +510,6 @@ extraVolumes: []
 extraVolumeMounts: []
 #   - name: example-name
 #     mountPath: /path/in/container
+
+networkPolicy:
+  enabled: false
