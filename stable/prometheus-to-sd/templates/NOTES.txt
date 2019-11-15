@@ -1,2 +1,0 @@
-Check prometheus-to-sd pod
-  $ kubectl get pods --namespace={{ .Release.Namespace }}

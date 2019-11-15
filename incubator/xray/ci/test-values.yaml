@@ -1,4 +1,0 @@
-# CI values for Xray.
-
-rabbitmq-ha:
-  rabbitmqPassword: "guest"

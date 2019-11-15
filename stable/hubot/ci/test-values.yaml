@@ -1,7 +1,0 @@
-# CI values for Hubot.
-
-args:
-  - --name
-  - "test-bot"
-
-tty: true

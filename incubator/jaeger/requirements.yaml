@@ -1,9 +1,0 @@
-dependencies:
-  - name: cassandra
-    version: ^0.13.1
-    repository: https://kubernetes-charts-incubator.storage.googleapis.com/
-    condition: provisionDataStore.cassandra
-  - name: elasticsearch
-    version: ^1.19.1
-    repository: https://kubernetes-charts.storage.googleapis.com/
-    condition: provisionDataStore.elasticsearch

@@ -1,3 +1,0 @@
-To verify that k8s-spot-termination-handler has started, run:
-
-  kubectl --namespace={{ .Release.Namespace }} get pods -l "app.kubernetes.io/name={{ include "k8s-spot-termination-handler.name" . }},app.kubernetes.io/instance={{ .Release.Name }}"

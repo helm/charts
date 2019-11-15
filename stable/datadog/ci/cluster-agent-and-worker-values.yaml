@@ -1,9 +1,0 @@
-# Empty values file for testing default parameters.
-clusterAgent:
-  enabled: true
-
-clusterChecks:
-  enabled: true
-
-clusterchecksDeployment:
-  enabled: true

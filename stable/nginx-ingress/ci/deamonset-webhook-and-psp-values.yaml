@@ -1,7 +1,0 @@
-controller:
-  kind: DaemonSet
-  admissionWebhooks:
-    enabled: true
-
-podSecurityPolicy:
-  enabled: true

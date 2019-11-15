@@ -1,6 +1,0 @@
-controller:
-  admissionWebhooks:
-    enabled: true
-
-podSecurityPolicy:
-  enabled: true

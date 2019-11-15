@@ -1,9 +1,0 @@
-master:
-  persistence:
-    enabled: false
-
-cluster:
-  enabled: true
-  slaveCount: 1
-
-usePassword: false

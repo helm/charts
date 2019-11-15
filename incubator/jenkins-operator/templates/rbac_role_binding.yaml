@@ -1,4 +1,0 @@
-{{- if .Values.rbac }}
-{{- $roleBindingText := .Files.Get "RBAC/rbac_role_binding.yaml" -}}
-{{ tpl $roleBindingText . }}
-{{- end }}

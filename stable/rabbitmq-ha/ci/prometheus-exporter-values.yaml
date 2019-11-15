@@ -1,8 +1,0 @@
-# Testing Prometheus exporter
-
-prometheus:
-  exporter:
-    enabled: true
-
-  operator:
-    enabled: false

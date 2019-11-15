@@ -1,8 +1,0 @@
-** Please be patient while the chart is being deployed **
-
-To verify that external-dns has started, run:
-
-  kubectl --namespace={{ .Release.Namespace }} get pods -l "app.kubernetes.io/name={{ template "external-dns.name" . }},app.kubernetes.io/instance={{ .Release.Name }}"
-
-{{ include "external-dns.validateValues" . }}
-{{ include "external-dns.checkRollingTags" . }}

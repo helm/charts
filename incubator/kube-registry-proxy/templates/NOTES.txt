@@ -1,1 +1,0 @@
-kubernetes-registry-proxy has been installed.

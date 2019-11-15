@@ -1,5 +1,0 @@
-The Prometheus Operator has been installed. Check its status by running:
-  kubectl --namespace {{ $.Release.Namespace }} get pods -l "release={{ $.Release.Name }}"
-
-Visit https://github.com/coreos/prometheus-operator for instructions on how
-to create & configure Alertmanager and Prometheus instances using the Operator.

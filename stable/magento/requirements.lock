@@ -1,9 +1,0 @@
-dependencies:
-- name: mariadb
-  repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 7.0.0
-- name: elasticsearch
-  repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 1.32.0
-digest: sha256:8463cdb928ac8f1714775c8f3d7d5239754c960a9c4e6419494a370ac6c7fae4
-generated: "2019-11-09T10:14:06.599699784+05:30"

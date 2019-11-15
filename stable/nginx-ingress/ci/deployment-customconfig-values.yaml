@@ -1,3 +1,0 @@
-controller:
-  config:
-    use-proxy-protocol: "true"
