@@ -77,6 +77,10 @@ es:
   ##
   indices: true
 
+  ## If true, query settings stats for all indices in the cluster.
+  ##
+  indices_settings: true
+
   ## If true, query stats for shards in the cluster.
   ##
   shards: true
