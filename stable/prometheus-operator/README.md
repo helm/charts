@@ -430,6 +430,7 @@ For a full list of configurable values please refer to the [Grafana chart](https
 | `coreDns.service.port` | CoreDns port | `9153` |
 | `coreDns.service.selector` | CoreDns service selector | `{"k8s-app" : "kube-dns" }` |
 | `coreDns.service.targetPort` | CoreDns targetPort | `9153` |
+| `coreDns.serviceMonitor.jobLabel` | The name of the label on the target service to use as the job name in prometheus | `jobLabel` |
 | `coreDns.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `coreDns.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping CoreDns. | `` |
 | `coreDns.serviceMonitor.relabelings` | The `relabel_configs` for scraping CoreDNS. | `` |
@@ -449,6 +450,7 @@ For a full list of configurable values please refer to the [Grafana chart](https
 | `kubeControllerManager.service.port` | Controller-manager port for the service runs on | `10252` |
 | `kubeControllerManager.service.selector` | Controller-manager service selector | `{"component" : "kube-controller-manager" }` |
 | `kubeControllerManager.service.targetPort` | Controller-manager targetPort for the service runs on | `10252` |
+| `kubeControllermanager.serviceMonitor.jobLabel` | The name of the label on the target service to use as the job name in prometheus | `jobLabel` |
 | `kubeControllerManager.serviceMonitor.https` | Controller-manager service scrape over https | `false` |
 | `kubeControllerManager.serviceMonitor.insecureSkipVerify` | Skip TLS certificate validation when scraping | `null` |
 | `kubeControllerManager.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
@@ -461,6 +463,7 @@ For a full list of configurable values please refer to the [Grafana chart](https
 | `kubeDns.service.skydns.port` | Skydns service port | `10055` |
 | `kubeDns.service.skydns.targetPort` | Skydns service targetPort | `10055` |
 | `kubeDns.service.selector` | kubeDns service selector | `{"k8s-app" : "kube-dns" }` |
+| `kubeDns.serviceMonitor.jobLabel` | The name of the label on the target service to use as the job name in prometheus | `jobLabel` |
 | `kubeDns.serviceMonitor.dnsmasqMetricRelabelings` | The `metric_relabel_configs` for scraping dnsmasq kubeDns. | `` |
 | `kubeDns.serviceMonitor.dnsmasqRelabelings` | The `relabel_configs` for scraping dnsmasq kubeDns. | `` |
 | `kubeDns.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
@@ -471,6 +474,7 @@ For a full list of configurable values please refer to the [Grafana chart](https
 | `kubeEtcd.service.port` | Etcd port | `4001` |
 | `kubeEtcd.service.selector` | Selector for etcd if running inside the cluster | `{"component":"etcd"}` |
 | `kubeEtcd.service.targetPort` | Etcd targetPort | `4001` |
+| `kubeEtcd.serviceMonitor.jobLabel` | The name of the label on the target service to use as the job name in prometheus | `jobLabel` |
 | `kubeEtcd.serviceMonitor.caFile` | Certificate authority file to use when connecting to etcd. See `prometheus.prometheusSpec.secrets` | `""` |
 | `kubeEtcd.serviceMonitor.certFile` | Client certificate file to use when connecting to etcd. See `prometheus.prometheusSpec.secrets` | `""` |
 | `kubeEtcd.serviceMonitor.insecureSkipVerify` | Skip validating etcd TLS certificate when scraping | `false` |
@@ -485,6 +489,7 @@ For a full list of configurable values please refer to the [Grafana chart](https
 | `kubeProxy.service.port` | Kubernetes proxy port for the service runs on | `10249` |
 | `kubeProxy.service.selector` | Kubernetes proxy service selector | `{"k8s-app" : "kube-proxy" }` |
 | `kubeProxy.service.targetPort` | Kubernetes proxy targetPort for the service runs on | `10249` |
+| `kubeProxy.serviceMonitor.jobLabel` | The name of the label on the target service to use as the job name in prometheus | `jobLabel` |
 | `kubeProxy.serviceMonitor.https` | Kubernetes proxy service scrape over https | `false` |
 | `kubeProxy.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `kubeProxy.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping the Kubernetes proxy. | `` |
@@ -494,6 +499,7 @@ For a full list of configurable values please refer to the [Grafana chart](https
 | `kubeScheduler.service.port` | Scheduler port for the service runs on | `10251` |
 | `kubeScheduler.service.selector` | Scheduler service selector | `{"component" : "kube-scheduler" }` |
 | `kubeScheduler.service.targetPort` | Scheduler targetPort for the service runs on | `10251` |
+| `kubeScheduler.serviceMonitor.jobLabel` | The name of the label on the target service to use as the job name in prometheus | `jobLabel` |
 | `kubeScheduler.serviceMonitor.https` | Scheduler service scrape over https | `false` |
 | `kubeScheduler.serviceMonitor.insecureSkipVerify` | Skip TLS certificate validation when scraping | `null` |
 | `kubeScheduler.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
@@ -506,6 +512,7 @@ For a full list of configurable values please refer to the [Grafana chart](https
 | `kubeStateMetrics.serviceMonitor.relabelings` | The `relabel_configs` for scraping `kube-state-metrics`. | `` |
 | `kubelet.enabled` | Deploy servicemonitor to scrape the kubelet service. See also `prometheusOperator.kubeletService` | `true` |
 | `kubelet.namespace` | Namespace where the kubelet is deployed. See also `prometheusOperator.kubeletService.namespace` | `kube-system` |
+| `kubelet.serviceMonitor.jobLabel` | The name of the label on the target service to use as the job name in prometheus | `k8s-app` |
 | `kubelet.serviceMonitor.cAdvisorMetricRelabelings` | The `metric_relabel_configs` for scraping cAdvisor. | `` |
 | `kubelet.serviceMonitor.cAdvisorRelabelings` | The `relabel_configs` for scraping cAdvisor. | `` |
 | `kubelet.serviceMonitor.https` | Enable scraping of the kubelet over HTTPS. For more information, see https://github.com/coreos/prometheus-operator/issues/926 | `true` |
@@ -513,7 +520,7 @@ For a full list of configurable values please refer to the [Grafana chart](https
 | `kubelet.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping kubelet. | `` |
 | `kubelet.serviceMonitor.relabelings` | The `relabel_configs` for scraping kubelet. | `` |
 | `nodeExporter.enabled` | Deploy the `prometheus-node-exporter` and scrape it | `true` |
-| `nodeExporter.jobLabel` | The name of the label on the target service to use as the job name in prometheus. See `prometheus-node-exporter.podLabels.jobLabel=node-exporter` default | `jobLabel` |
+| `nodeExporter.serviceMonitor.jobLabel` | The name of the label on the target service to use as the job name in prometheus. See `prometheus-node-exporter.podLabels.jobLabel=node-exporter` default | `node-exporter` |
 | `nodeExporter.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `nodeExporter.serviceMonitor.scrapeTimeout` | How long until a scrape request times out. If not set, the Prometheus default scape timeout is used | `nil` |
 | `nodeExporter.serviceMonitor.metricRelabelings` | Metric relablings for the `prometheus-node-exporter` ServiceMonitor | `[]` |
