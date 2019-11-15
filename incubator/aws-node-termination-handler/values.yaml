@@ -1,0 +1,39 @@
+image:
+  # image.repository -- container image repository
+  repository: amazon/aws-node-termination-handler
+  # image.tag -- container image tag
+  tag: "v1.0.0"
+  # image.pullPolicy -- controller container image pull policy
+  pullPolicy: IfNotPresent
+
+rbac:
+  # rbac.create -- if true, create & use RBAC resources
+  create: true
+  # rbac.serviceAccountName -- service account used by the daemon set (ignored if rbac.create=true)
+  serviceAccountName: default
+  # rbac.serviceAccountName -- service account annotations
+  serviceAccountAnnotations: {}
+
+# resources -- pod resource requests & limits
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 64Mi
+  #   memory: 50m
+
+# podAnnotations -- pod annotations
+podAnnotations: {}
+
+# podLabels -- pod labels
+podLabels: {}
+
+# nameOverride -- name override
+nameOverride: ""
+
+# fullnameOverride -- full name override
+fullnameOverride: ""
+
+# priorityClassName -- priority class name (see https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption)
+priorityClassName: ""

@@ -1,0 +1,15 @@
+apiVersion: v1
+name: aws-node-termination-handler
+description: A Helm chart for AWS node termination handler
+version: 0.1.0
+appVersion: "v1.0.0"
+home: https://github.com/aws/aws-node-termination-handler
+sources:
+  - https://github.com/aws/aws-node-termination-handler
+keywords:
+  - aws
+  - ec2
+  - spot
+maintainers:
+  - name: eddycharly
+    email: ceb@agriconomie.com

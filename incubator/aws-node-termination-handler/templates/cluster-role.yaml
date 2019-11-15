@@ -1,0 +1,46 @@
+{{- if .Values.rbac.create }}
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "aws-node-termination-handler.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "aws-node-termination-handler.name" . }}
+    helm.sh/chart: {{ include "aws-node-termination-handler.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+rules:
+- apiGroups:
+    - ''
+  resources:
+    - nodes
+  verbs:
+    - get
+    - patch
+    - update
+- apiGroups:
+    - ''
+  resources:
+    - pods
+  verbs:
+    - list
+- apiGroups:
+    - ''
+  resources:
+    - pods/eviction
+  verbs:
+    - create
+- apiGroups:
+    - extensions
+  resources:
+    - replicasets
+    - daemonsets
+  verbs:
+    - get
+- apiGroups:
+    - apps
+  resources:
+    - daemonsets
+  verbs:
+    - get
+    - delete
+{{- end }}
