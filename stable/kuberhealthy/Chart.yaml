@@ -1,4 +1,4 @@
-apiVersion: v2
+apiVersion: v1
 name: kuberhealthy
 appVersion: "2.0.0"
 version: 2.0.0
