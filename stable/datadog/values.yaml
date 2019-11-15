@@ -16,9 +16,9 @@ image:
 
   ## @param tag - string - required
   ## Define the Agent version to use.
-  ## Use 6.14.0-jmx to enable jmx fetch collection
+  ## Use 6.15.0-jmx to enable jmx fetch collection
   #
-  tag: 6.14.0
+  tag: 6.15.0
 
   ## @param pullPolicy - string - required
   ## The Kubernetes pull policy.
@@ -703,8 +703,14 @@ daemonset:
   #     enabled: false
   #     apm_non_local_traffic: true
   #
-  #   # Use java cgroup memory awareness
-  #   jmx_use_cgroup_memory_limit: true
+  #   # Enable java cgroup handling. Only one of those options should be enabled,
+  #   # depending on the agent version you are using along that chart.
+  #
+  #   # agent version < 1.15
+  #   # jmx_use_cgroup_memory_limit: true
+  #
+  #   # agent version >= 1.15
+  #   # jmx_use_container_support: true
 
 deployment:
   ## @param enabled - boolean - required
