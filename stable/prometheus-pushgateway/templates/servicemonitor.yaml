@@ -27,7 +27,5 @@ spec:
   selector:
     matchLabels:
       app: {{ template "prometheus-pushgateway.name" . }}
-      chart: {{ template "prometheus-pushgateway.chart" . }}
       release: {{ .Release.Name }}
-      heritage: {{ .Release.Service }}
 {{- end -}}
