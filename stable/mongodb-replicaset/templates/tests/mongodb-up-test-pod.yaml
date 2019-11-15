@@ -49,25 +49,29 @@ spec:
               name: "{{ template "mongodb-replicaset.adminSecret" . }}"
               key: password
       {{- end }}
-      {{- if .Values.tls.enabled }}
-        - name: CACERT
-          value: {{ .Values.tls.cacert }}
-        - name: CAKEY
-          value: {{ .Values.tls.cakey }}
-      {{- end }}
       volumeMounts:
-        - name: workdir
-          mountPath: /work-dir
         - name: tools
           mountPath: /tools
         - name: tests
           mountPath: /tests
+      {{- if .Values.tls.enabled }}
+        - name: tls
+          mountPath: /tls
+      {{- end }}
   volumes:
-    - name: workdir
-      emptyDir: {}
     - name: tools
       emptyDir: {}
     - name: tests
       configMap:
         name: {{ template "mongodb-replicaset.fullname" . }}-tests
+  {{- if .Values.tls.enabled }}
+    - name: tls
+      secret:
+        secretName: {{ template "mongodb-replicaset.fullname" . }}-ca
+        items:
+          - key: tls.crt
+            path: tls.crt
+          - key: tls.key
+            path: tls.key
+  {{- end }}
   restartPolicy: Never

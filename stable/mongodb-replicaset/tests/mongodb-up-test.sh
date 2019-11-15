@@ -1,15 +1,21 @@
 #!/usr/bin/env bash
 
+set -ex
+
+mkdir -p /work-dir
+cp /tls/tls.crt /work-dir/tls.crt
+cp /tls/tls.key /work-dir/tls.key
+
 CACRT_FILE=/work-dir/tls.crt
 CAKEY_FILE=/work-dir/tls.key
 MONGOPEM=/work-dir/mongo.pem
 
 MONGOARGS="--quiet"
 
-if [ -n "${CACRT}" ]; then
-    log "Generating certificate"
-    echo "${CACRT}" > ${CACRT_FILE}
-    echo "${CAKEY}" > ${CAKEY_FILE}
+if [ -e "${CACRT_FILE}" ]; then
+    # log "Generating certificate"
+    # echo "${CACERT}" | base64 --decode > ${CACRT_FILE}
+    # echo "${CAKEY}" | base64 --decode > ${CAKEY_FILE}
 
     # Move into /work-dir
     pushd /work-dir
