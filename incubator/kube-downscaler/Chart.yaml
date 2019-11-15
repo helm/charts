@@ -1,7 +1,7 @@
 name: kube-downscaler
 apiVersion: v1
-version: 0.1.0
-appVersion: 0.6
+version: 0.3.0
+appVersion: 19.10.1
 description: A Helm chart for kube-downscaler
 home: https://github.com/hjacobs/kube-downscaler
 sources:

@@ -11,9 +11,6 @@ controller:
     runAsUser: 33
     allowPrivilegeEscalation: true
 
-  # Can be changed to old api for compatibility reasons: extensions/v1beta1
-  apiVersion: apps/v1
-
   # Configures the ports the nginx-controller listens on
   containerPort:
     http: 80
@@ -341,6 +338,8 @@ controller:
       nodeSelector: {}
 
   metrics:
+    port: 10254
+    # if this port is changed, change healthz-port: in extraArgs: accordingly
     enabled: false
 
     service:
@@ -365,6 +364,11 @@ controller:
       enabled: false
       additionalLabels: {}
       namespace: ""
+      namespaceSelector: {}
+      # Default: scrape .Release.Namespace only
+      # To scrape all, use the following:
+      # namespaceSelector:
+      #   any: true
       scrapeInterval: 30s
       # honorLabels: true
 
@@ -407,9 +411,6 @@ defaultBackend:
   ## If false, controller.defaultBackendService must be provided
   ##
   enabled: true
-
-  # Can be changed to old api for compatibility reasons: extensions/v1beta1
-  apiVersion: apps/v1
 
   name: default-backend
   image:

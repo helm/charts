@@ -13,7 +13,7 @@
 image:
   registry: docker.io
   repository: bitnami/external-dns
-  tag: 0.5.17-debian-9-r0
+  tag: 0.5.17-debian-9-r25
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -40,7 +40,7 @@ sources:
 # - crd
 
 ## DNS provider where the DNS records will be created. Available providers are:
-## - aws, azure, cloudflare, coredns, designate, digitalocoean, google, infoblox, rfc2136
+## - aws, azure, cloudflare, coredns, designate, digitalocean, google, infoblox, rfc2136
 ##
 provider: aws
 
@@ -348,7 +348,7 @@ service:
 ## https://kubernetes.io/docs/reference/access-authn-authz/rbac/
 ##
 rbac:
-  create: false
+  create: true
   ## Service Account for pods
   ## https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
   ##

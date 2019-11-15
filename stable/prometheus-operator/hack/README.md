@@ -8,7 +8,7 @@ Currently following imported:
 
 - [coreos/kube-prometheus rules set](https://github.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml)
   - In order to modify these rules:
-    - prepare and merge PR into [kubernetes-mixin](https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/rules)
+    - prepare and merge PR into [kubernetes-mixin](https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/rules) master and/or release branch
     - run import inside your fork of [coreos/kube-prometheus](https://github.com/coreos/kube-prometheus/tree/master)
 
      ```bash
@@ -16,7 +16,7 @@ Currently following imported:
      make generate-in-docker
      ```
 
-    - prepare and merge PR with imported changes into coreos/kube-prometheus
+    - prepare and merge PR with imported changes into coreos/kube-prometheus master and/or release branch
     - run sync_prometheus_rules.py inside your fork of this repo
     - send PR with changes to this repo
 - [etcd-io/etc rules set](https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/etcd3_alert.rules.yml)
@@ -33,7 +33,7 @@ Currently following imported:
 
 - [coreos/kube-prometheus dashboards](https://github.com/coreos/kube-prometheus/manifests/grafana-deployment.yaml)
   - In order to modify these dashboards:
-    - prepare and merge PR into [kubernetes-mixin](https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/dashboards)
+    - prepare and merge PR into [kubernetes-mixin](https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/dashboards) master and/or release branch
     - run import inside your fork of [coreos/kube-prometheus](https://github.com/coreos/kube-prometheus/tree/master)
 
      ```bash
@@ -41,7 +41,7 @@ Currently following imported:
      make generate-in-docker
      ```
 
-    - prepare and merge PR with imported changes into coreos/kube-prometheus
+    - prepare and merge PR with imported changes into coreos/kube-prometheus master and/or release branch
     - run sync_grafana_dashboards.py inside your fork of this repo
     - send PR with changes to this repo
 - [etcd-io/etc dashboard](https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/grafana.json)

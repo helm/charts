@@ -11,11 +11,15 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 {{- define "cluster-autoscaler.fullname" -}}
+{{- if .Values.fullnameOverride -}}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
 {{- $name := default (printf "%s-%s" .Values.cloudProvider .Chart.Name) .Values.nameOverride -}}
 {{- if ne $name .Release.Name -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
 {{- printf "%s" $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
 {{- end -}}
 {{- end -}}
 
@@ -48,7 +52,8 @@ helm.sh/chart: {{ include "cluster-autoscaler.chart" . | quote }}
 Return the appropriate apiVersion for deployment.
 */}}
 {{- define "deployment.apiVersion" -}}
-{{- if semverCompare "<1.9-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
+{{- if semverCompare "<1.9-0" $kubeTargetVersion -}}
 {{- print "apps/v1beta2" -}}
 {{- else -}}
 {{- print "apps/v1" -}}
@@ -59,7 +64,8 @@ Return the appropriate apiVersion for deployment.
 Return the appropriate apiVersion for podsecuritypolicy.
 */}}
 {{- define "podsecuritypolicy.apiVersion" -}}
-{{- if semverCompare "<1.10-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
+{{- if semverCompare "<1.10-0" $kubeTargetVersion -}}
 {{- print "extensions/v1beta1" -}}
 {{- else -}}
 {{- print "policy/v1beta1" -}}
