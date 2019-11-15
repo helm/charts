@@ -502,6 +502,9 @@ kubeApiServer:
   #   replacement: kubernetes.default.svc:443
 
   serviceMonitor:
+    # Specify a ServiceMonitor JobLabel, default: component
+    jobLabel: component
+
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
     ##
     interval: ""
@@ -517,9 +520,6 @@ kubeApiServer:
     #   regex: 'kube_(daemonset|deployment|pod|namespace|node|statefulset).+'
     #   sourceLabels: [__name__]
 
-    # Specify a ServiceMonitor JobLabel, default: component
-    jobLabel: component
-
 ## Component scraping the kubelet and kubelet-hosted cAdvisor
 ##
 kubelet:
@@ -527,6 +527,9 @@ kubelet:
   namespace: kube-system
 
   serviceMonitor:
+    # Specify a ServiceMonitor JobLabel, default: k8s-app
+    jobLabel: k8s-app
+
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
     ##
     interval: ""
@@ -582,9 +585,6 @@ kubelet:
     #   replacement: $1
     #   action: replace
 
-    # Specify a ServiceMonitor JobLabel, default: k8s-app
-    jobLabel: k8s-app
-
 ## Component scraping the kube controller manager
 ##
 kubeControllerManager:
@@ -606,6 +606,9 @@ kubeControllerManager:
     #   component: kube-controller-manager
 
   serviceMonitor:
+    # Specify a ServiceMonitor JobLabel, default: jobLabel
+    jobLabel: jobLabel
+
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
     ##
     interval: ""
@@ -638,9 +641,6 @@ kubeControllerManager:
     #   replacement: $1
     #   action: replace
 
-    # Specify a ServiceMonitor JobLabel, default: jobLabel
-    jobLabel: jobLabel
-
 ## Component scraping coreDns. Use either this or kubeDns
 ##
 coreDns:
@@ -651,6 +651,9 @@ coreDns:
     # selector:
     #   k8s-app: kube-dns
   serviceMonitor:
+    # Specify a ServiceMonitor Job Label, default: jobLabel
+    jobLabel: jobLabel
+
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
     ##
     interval: ""
@@ -672,9 +675,6 @@ coreDns:
     #   replacement: $1
     #   action: replace
 
-    # Specify a ServiceMonitor Job Label, default: jobLabel
-    jobLabel: jobLabel
-
 ## Component scraping kubeDns. Use either this or coreDns
 ##
 kubeDns:
@@ -689,6 +689,9 @@ kubeDns:
     # selector:
     #   k8s-app: kube-dns
   serviceMonitor:
+    # Specify a ServiceMonitor JobLabel, default: jobLabel
+    jobLabel: jobLabel
+
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
     ##
     interval: ""
@@ -724,9 +727,6 @@ kubeDns:
     #   replacement: $1
     #   action: replace
 
-    # Specify a ServiceMonitor JobLabel, default: jobLabel
-    jobLabel: jobLabel
-
 ## Component scraping etcd
 ##
 kubeEtcd:
@@ -759,6 +759,9 @@ kubeEtcd:
   ##   keyFile: /etc/prometheus/secrets/etcd-client-cert/etcd-client-key
   ##
   serviceMonitor:
+    # Specify a ServiceMonitor JobLabel, default: jobLabel
+    jobLabel: jobLabel
+
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
     ##
     interval: ""
@@ -786,10 +789,6 @@ kubeEtcd:
     #   replacement: $1
     #   action: replace
 
-    # Specify a ServiceMonitor JobLabel, default: jobLabel
-    jobLabel: jobLabel
-
-
 ## Component scraping kube scheduler
 ##
 kubeScheduler:
@@ -811,6 +810,9 @@ kubeScheduler:
     #   component: kube-scheduler
 
   serviceMonitor:
+    # Specify a ServiceMonitor JobLabel, default: jobLabel
+    jobLabel: jobLabel
+
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
     ##
     interval: ""
@@ -842,10 +844,6 @@ kubeScheduler:
     #   replacement: $1
     #   action: replace
 
-    # Specify a ServiceMonitor JobLabel, default: jobLabel
-    jobLabel: jobLabel
-
-
 ## Component scraping kube proxy
 ##
 kubeProxy:
@@ -865,6 +863,9 @@ kubeProxy:
     #   k8s-app: kube-proxy
 
   serviceMonitor:
+    # Specify a ServiceMonitor JobLabel, default: jobLabel
+    jobLabel: jobLabel
+
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
     ##
     interval: ""
@@ -888,15 +889,14 @@ kubeProxy:
     #   regex: 'kube_(daemonset|deployment|pod|namespace|node|statefulset).+'
     #   sourceLabels: [__name__]
 
-    # Specify a ServiceMonitor JobLabel, default: jobLabel
-    jobLabel: jobLabel
-
-
 ## Component scraping kube state metrics
 ##
 kubeStateMetrics:
   enabled: true
   serviceMonitor:
+    # Specify a ServiceMonitor JobLabel, default: app.kubernetes.io/name
+    jobLabel: app.kubernetes.io/name
+
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
     ##
     interval: ""
@@ -918,9 +918,6 @@ kubeStateMetrics:
     #   replacement: $1
     #   action: replace
 
-    # Specify a ServiceMonitor JobLabel, default: app.kubernetes.io/name
-    jobLabel: app.kubernetes.io/name
-
 ## Configuration for kube-state-metrics subchart
 ##
 kube-state-metrics:
@@ -935,6 +932,11 @@ nodeExporter:
   enabled: true
 
   serviceMonitor:
+    ## Specify a ServiceMonitor JobLabel, default: node-exporter
+    ## Use the value configured in prometheus-node-exporter.podLabels
+    ##
+    jobLabel: node-exporter
+
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
     ##
     interval: ""
@@ -961,11 +963,6 @@ nodeExporter:
     #   target_label: nodename
     #   replacement: $1
     #   action: replace
-
-    ## Specify a ServiceMonitor JobLabel, default: node-exporter
-    ## Use the value configured in prometheus-node-exporter.podLabels
-    ##
-    jobLabel: node-exporter
 
 ## Configuration for prometheus-node-exporter subchart
 ##
