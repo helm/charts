@@ -79,7 +79,7 @@ spec:
                           type: integer
                         regex:
                           description: Regular expression against which the extracted
-                            value is matched. defailt is '(.*)'
+                            value is matched. default is '(.*)'
                           type: string
                         replacement:
                           description: Replacement value against which a regex replace
@@ -139,7 +139,7 @@ spec:
                           type: integer
                         regex:
                           description: Regular expression against which the extracted
-                            value is matched. defailt is '(.*)'
+                            value is matched. default is '(.*)'
                           type: string
                         replacement:
                           description: Replacement value against which a regex replace
