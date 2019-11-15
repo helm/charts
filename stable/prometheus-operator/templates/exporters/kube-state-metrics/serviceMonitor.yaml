@@ -8,7 +8,7 @@ metadata:
     app: {{ template "prometheus-operator.name" . }}-kube-state-metrics
 {{ include "prometheus-operator.labels" . | indent 4 }}
 spec:
-  jobLabel: app.kubernetes.io/name
+  jobLabel: {{ default "app.kubernetes.io/name" .Values.kubeStateMetrics.serviceMonitor.jobLabel }}
   endpoints:
   - port: http
     {{- if .Values.kubeStateMetrics.serviceMonitor.interval }}

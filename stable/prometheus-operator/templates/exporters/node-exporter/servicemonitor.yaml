@@ -8,7 +8,7 @@ metadata:
     app: {{ template "prometheus-operator.name" . }}-node-exporter
 {{ include "prometheus-operator.labels" . | indent 4 }}
 spec:
-  jobLabel: {{ .Values.nodeExporter.jobLabel }}
+  jobLabel: {{ default "node-exporter" .Values.nodeExporter.serviceMonitor.jobLabel }}
   selector:
     matchLabels:
       app: prometheus-node-exporter

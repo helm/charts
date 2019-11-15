@@ -8,7 +8,7 @@ metadata:
     app: {{ template "prometheus-operator.name" . }}-kube-controller-manager
 {{ include "prometheus-operator.labels" . | indent 4 }}
 spec:
-  jobLabel: jobLabel
+  jobLabel: {{ default "jobLabel" .Values.kubeControllerManager.serviceMonitor.jobLabel }}
   selector:
     matchLabels:
       app: {{ template "prometheus-operator.name" . }}-kube-controller-manager
