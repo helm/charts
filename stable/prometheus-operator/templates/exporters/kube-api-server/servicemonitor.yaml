@@ -27,7 +27,7 @@ spec:
       caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
       serverName: {{ .Values.kubeApiServer.tlsConfig.serverName }}
       insecureSkipVerify: {{ .Values.kubeApiServer.tlsConfig.insecureSkipVerify }}
-  jobLabel: {{ .Values.kubeApiServer.serviceMonitor.jobLabel }}
+  jobLabel: {{ default "component" .Values.kubeApiServer.serviceMonitor.jobLabel }}
   namespaceSelector:
     matchNames:
     - default

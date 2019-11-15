@@ -76,7 +76,7 @@ spec:
 {{ toYaml .Values.kubelet.serviceMonitor.cAdvisorRelabelings | indent 4 }}
 {{- end }}
   {{- end }}
-  jobLabel: k8s-app
+  jobLabel: {{ default "k8s-app" .Values.kubelet.serviceMonitor.jobLabel }}
   namespaceSelector:
     matchNames:
     - {{ .Values.kubelet.namespace }}

@@ -8,7 +8,7 @@ metadata:
     app: {{ template "prometheus-operator.name" . }}-coredns
 {{ include "prometheus-operator.labels" . | indent 4 }}
 spec:
-  jobLabel: jobLabel
+  jobLabel: {{ default "jobLabel" .Values.coreDns.serviceMonitor.jobLabel }}
   selector:
     matchLabels:
       app: {{ template "prometheus-operator.name" . }}-coredns
