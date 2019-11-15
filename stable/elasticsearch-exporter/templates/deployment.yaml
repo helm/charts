@@ -65,6 +65,9 @@ spec:
                     {{- if .Values.es.indices }}
                     "--es.indices",
                     {{- end }}
+                    {{- if .Values.es.indices_settings }}
+                    "--es.indices_settings",
+                    {{- end }}
                     {{- if .Values.es.shards }}
                     "--es.shards",
                     {{- end }}
