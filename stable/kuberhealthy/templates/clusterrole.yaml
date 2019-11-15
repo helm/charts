@@ -1,12 +1,58 @@
+---
 apiVersion: {{ template "rbac.apiVersion" . }}
 kind: ClusterRole
 metadata:
   name: {{ template "kuberhealthy.name" . }}
 rules:
   - apiGroups:
+    - apps
+    resources:
+    - daemonsets
+    verbs:
+    - create
+    - delete
+    - deletecollection
+    - get
+    - list
+    - patch
+    - update
+    - watch
+  - apiGroups:
+    - extensions
+    resources:
+    - daemonsets
+    verbs:
+    - create
+    - delete
+    - deletecollection
+    - get
+    - list
+    - patch
+    - update
+    - watch
+  - apiGroups:
     - ""
     resources:
     - pods
+    verbs:
+    - create
+    - delete
+    - deletecollection
+    - get
+    - list
+    - patch
+    - update
+    - watch
+  - apiGroups:
+    - comcast.github.io
+    resources:
+    - khstates
+    - khchecks
+    verbs:
+    - "*"
+  - apiGroups:
+    - ""
+    resources:
     - namespaces
     - componentstatuses
     - nodes
@@ -14,4 +60,3 @@ rules:
     - get
     - list
     - watch
-  

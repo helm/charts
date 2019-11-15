@@ -5,21 +5,21 @@
 prometheus:
   enabled: false
   name: "prometheus"
-  enableScraping: true
+  enableScraping: false
   serviceMonitor: false
-  enableAlerting: true
+  enableAlerting: false
 
 image:
   repository: quay.io/comcast/kuberhealthy
-  tag: v1.0.2
+  tag: 2.0.0
 
 resources:
   requests:
-    cpu: 100m
-    memory: 80Mi
-  limits:
     cpu: 400m
-    memory: 200Mi
+    memory: 300Mi
+  limits:
+    cpu: 2
+    memory: 1G1
 
 tolerations:
   # change to true to tolerate and deploy to masters
@@ -33,10 +33,7 @@ deployment:
   podAnnotations: {}
   command:
   - /app/kuberhealthy
-  # use this to override location of the test-image, see: https://github.com/Comcast/kuberhealthy/blob/master/docs/FLAGS.md
   # args:
-  # - -dsPauseContainerImageOverride
-  # - your-repo/google_containers/pause:0.8.0
 
 securityContext:
   runAsNonRoot: true
@@ -54,3 +51,10 @@ service:
   externalPort: 80
   type: ClusterIP
   annotations: {}
+
+check:
+  daemonset: true
+  deployment: true
+  dnsInternal: true
+  podRestarts: true
+  podStatus: true

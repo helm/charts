@@ -1,0 +1,26 @@
+{{- if .Values.check.podRestarts }}
+---
+apiVersion: comcast.github.io/v1
+kind: KuberhealthyCheck
+metadata:
+  name: pod-restarts
+spec:
+  runInterval: 60m
+  timeout: 62m
+  podSpec:
+    containers:
+      - env:
+          - name: POD_NAMESPACE
+            value: "kube-system"
+          - name: CHECK_RUN_WINDOW
+            value: "55m"
+          - name: MAX_FAILURES_ALLOWED
+            value: "5"
+        image: quay.io/comcast/pod-restarts-check:1.0.0
+        imagePullPolicy: IfNotPresent
+        name: main
+        resources:
+          requests:
+            cpu: 10m
+            memory: 50Mi
+{{- end }}

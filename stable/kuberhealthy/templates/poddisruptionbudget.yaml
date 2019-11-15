@@ -1,3 +1,4 @@
+---
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
@@ -8,5 +9,3 @@ spec:
     matchLabels:
       app: {{ template "kuberhealthy.name" . }}
       chart: {{ .Chart.Name }}
-      release: {{ .Release.Name }}
-      heritage: {{ .Release.Service }}

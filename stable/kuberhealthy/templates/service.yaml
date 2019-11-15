@@ -1,12 +1,17 @@
+---
 apiVersion: v1
 kind: Service
 metadata:
   labels:
     app: {{ template "kuberhealthy.name" . }}
-    release: {{ .Release.Name }}
   name: {{ template "kuberhealthy.name" . }}
-  {{- if .Values.service.annotations }}
+  {{- if or .Values.prometheus.enabled .Values.service.annotations }}
   annotations:
+  {{- if .Values.prometheus.enabled }}
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "80"
+    prometheus.io/path: "/metrics"
+  {{- end }}
   {{- range $key, $value := .Values.service.annotations }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
@@ -19,4 +24,3 @@ spec:
     targetPort: http
   selector:
     app: {{ template "kuberhealthy.name" . }}
-    release: {{ .Release.Name }}

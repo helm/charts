@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -5,14 +6,11 @@ metadata:
   labels:
     app: {{ template "kuberhealthy.name" . }}
     chart: {{ .Chart.Name }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.deployment.replicas }}
   selector:
     matchLabels:
       app: {{ template "kuberhealthy.name" . }}
-      release: {{ .Release.Name }}
   strategy:
     rollingUpdate:
       maxSurge: {{ .Values.deployment.maxSurge }}
@@ -30,7 +28,7 @@ spec:
       {{- if .Values.prometheus.enableScraping -}}
       {{- if not .Values.deployment.podAnnotations }}
       annotations:
-      {{- end}}
+      {{- end }}
         prometheus.io/scrape: "true"
         prometheus.io/path: "/metrics"
         prometheus.io/port: "8080"
@@ -39,8 +37,6 @@ spec:
       labels:
         app: {{ template "kuberhealthy.name" . }}
         chart: {{ .Chart.Name }}
-        release: {{ .Release.Name }}
-        heritage: {{ .Release.Service }}
     spec:
       serviceAccountName: kuberhealthy
       automountServiceAccountToken: true
@@ -90,7 +86,7 @@ spec:
             cpu: {{ .Values.resources.requests.cpu }}
             memory: {{ .Values.resources.requests.memory }}
       restartPolicy: Always
-      terminationGracePeriodSeconds: 310
+      terminationGracePeriodSeconds: 60
 {{- if .Values.tolerations.master }}
       tolerations:
       - effect: NoSchedule

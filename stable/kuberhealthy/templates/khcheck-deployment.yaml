@@ -1,0 +1,84 @@
+{{- if .Values.check.deployment }}
+---
+apiVersion: comcast.github.io/v1
+kind: KuberhealthyCheck
+metadata:
+  name: deployment
+spec:
+  runInterval: 30m
+  timeout: 10m
+  podSpec:
+    containers:
+    - name: deployment
+      image: quay.io/comcast/deployment-check:1.0.0
+      imagePullPolicy: IfNotPresent
+      env:
+        - name: CHECK_DEPLOYMENT_REPLICAS
+          value: "4"
+        - name: CHECK_DEPLOYMENT_ROLLING_UPDATE
+          value: "true"
+      resources:
+        requests:
+          cpu: 25m
+          memory: 15Mi
+        limits:
+          cpu: 40m
+      restartPolicy: Always
+    serviceAccountName: deployment-sa
+    terminationGracePeriodSeconds: 60
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: deployment-check-rb
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: deployment-service-role
+subjects:
+  - kind: ServiceAccount
+    name: deployment-sa
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: deployment-service-role
+rules:
+  - apiGroups:
+      - "apps"
+    resources:
+      - deployments
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - services
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+    verbs:
+      - get
+      - list
+      - watch
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: deployment-sa
+{{- end }}

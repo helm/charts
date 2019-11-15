@@ -1,9 +1,10 @@
-apiVersion: v1
-appVersion: "v1.0.2"
-home: https://comcast.github.io/kuberhealthy/
-description: The official Helm chart for Kuberhealthy.
+apiVersion: v2
 name: kuberhealthy
-version: 1.2.6
+appVersion: "2.0.0"
+version: 2.0.0
+home: https://comcast.github.io/kuberhealthy/
+description: "An operator for synthetic test and monitoring.  Works great with Prometheus."
+type: application
 maintainers:
   - name: integrii
     email: eric.greer@comcast.com
@@ -11,16 +12,21 @@ maintainers:
     email: jacob.martin@comcast.com
   - name: ihoegen
     email: ianhoegen@gmail.com
+  - name: jonnydawg
+    email: jonathan_phan@comcast.com
+  - name: joshulyne
+    email: joshulyne_park@comcast.com
 keywords:
 - kuberhealthy
 - kubernetes
+- operator
 - monitoring
 - synthetic
+- testing
 - comcast
 - health
-- cluster
 - prometheus
 sources:
 - https://github.com/Comcast/kuberhealthy
 - https://github.com/helm/charts/tree/master/stable/kuberhealthy
-icon: https://raw.githubusercontent.com/Comcast/kuberhealthy/helm/deploy/helm/kuberhealthy/kh-logo.png
+icon: https://raw.githubusercontent.com/Comcast/kuberhealthy/master/images/logo-square.png
