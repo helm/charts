@@ -56,5 +56,5 @@ check:
   daemonset: true
   deployment: true
   dnsInternal: true
-  podRestarts: true
-  podStatus: true
+  podRestarts: false
+  podStatus: false
