@@ -18,11 +18,6 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- define "kong.cassandra.fullname" -}}
-{{- $name := default "cassandra" .Values.cassandra.nameOverride -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-
 {{- define "kong.dblessConfig.fullname" -}}
 {{- $name := default "kong-custom-dbless-config" .Values.dblessConfig.nameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
@@ -123,6 +118,21 @@ Create the ingress servicePort value string
 {{- end -}}
 {{- end -}}
 
+{{/*
+Generate an appropriate external URL from a Kong service's ingress configuration
+Strips trailing slashes from the path. Manager at least does not handle these
+intelligently and will append its own slash regardless, and the admin API cannot handle
+the extra slash.
+*/}}
+
+{{- define "kong.ingress.serviceUrl" -}}
+{{- if .tls -}}
+    https://{{ .hostname }}{{ .path | trimSuffix "/" }}
+{{- else -}}
+    http://{{ .hostname }}{{ .path | trimSuffix "/" }}
+{{- end -}}
+{{- end -}}
+
 
 {{- define "kong.env" -}}
 {{- range $key, $val := .Values.env }}
@@ -134,6 +144,68 @@ Create the ingress servicePort value string
   value: {{ $val | quote -}}
 {{- end -}}
 {{- end -}}
+{{- end -}}
+
+{{- define "kong.volumes" -}}
+{{- range .Values.plugins.configMaps }}
+- name: kong-plugin-{{ .pluginName }}
+  configMap:
+    name: {{ .name }}
+{{- end }}
+{{- range .Values.plugins.secrets }}
+- name: kong-plugin-{{ .pluginName }}
+  secret:
+    secretName: {{ .name }}
+{{- end }}
+- name: custom-nginx-template-volume
+  configMap:
+    name: {{ template "kong.fullname" . }}-default-custom-server-blocks
+{{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
+- name: kong-custom-dbless-config-volume
+  configMap:
+    {{- if .Values.dblessConfig.configMap }}
+    name: {{ .Values.dblessConfig.configMap }}
+    {{- else }}
+    name: {{ template "kong.dblessConfig.fullname" . }}
+    {{- end }}
+{{- end }}
+{{- range $secretVolume := .Values.secretVolumes }}
+- name: {{ . }}
+  secret:
+    secretName: {{ . }}
+{{- end }}
+{{- end -}}
+
+{{- define "kong.volumeMounts" -}}
+- name: custom-nginx-template-volume
+  mountPath: /kong
+{{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
+- name: kong-custom-dbless-config-volume
+  mountPath: /kong_dbless/
+{{- end }}
+{{- range .Values.secretVolumes }}
+- name:  {{ . }}
+  mountPath: /etc/secrets/{{ . }}
+{{- end }}
+{{- range .Values.plugins.configMaps }}
+- name:  kong-plugin-{{ .pluginName }}
+  mountPath: /opt/kong/plugins/{{ .pluginName }}
+{{- end }}
+{{- range .Values.plugins.secrets }}
+- name:  kong-plugin-{{ .pluginName }}
+  mountPath: /opt/kong/plugins/{{ .pluginName }}
+{{- end }}
+{{- end -}}
+
+{{- define "kong.plugins" -}}
+{{ $myList := list "bundled" }}
+{{- range .Values.plugins.configMaps -}}
+{{- $myList = append $myList .pluginName -}}
+{{- end -}}
+{{- range .Values.plugins.secrets -}}
+  {{ $myList = append $myList .pluginName -}}
+{{- end }}
+{{- $myList | join "," -}}
 {{- end -}}
 
 {{- define "kong.wait-for-db" -}}
@@ -149,18 +221,18 @@ Create the ingress servicePort value string
     value: {{ template "kong.postgresql.fullname" . }}
   - name: KONG_PG_PORT
     value: "{{ .Values.postgresql.service.port }}"
+  - name: KONG_LUA_PACKAGE_PATH
+    value: "/opt/?.lua;;"
   - name: KONG_PG_PASSWORD
     valueFrom:
       secretKeyRef:
         name: {{ template "kong.postgresql.fullname" . }}
         key: postgresql-password
   {{- end }}
-  {{- if .Values.cassandra.enabled }}
-  - name: KONG_CASSANDRA_CONTACT_POINTS
-    value: {{ template "kong.cassandra.fullname" . }}
-  {{- end }}
   {{- include "kong.env" .  | nindent 2 }}
   command: [ "/bin/sh", "-c", "until kong start; do echo 'waiting for db'; sleep 1; done; kong stop" ]
+  volumeMounts:
+  {{- include "kong.volumeMounts" . | nindent 4 }}
 {{- end -}}
 
 {{- define "kong.controller-container" -}}

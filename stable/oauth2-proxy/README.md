@@ -67,6 +67,7 @@ Parameter | Description | Default
 `htpasswdFile.enabled` | enable htpasswd-file option | `false`
 `htpasswdFile.entries` | list of [SHA encrypted user:passwords](https://pusher.github.io/oauth2_proxy/configuration#command-line-options) | `{}`
 `htpasswdFile.existingSecret` | existing Kubernetes secret to use for OAuth2 htpasswd file | `""`
+`httpScheme` | `http` or `https`. `name` used for port on the deployment. `httpGet` port `name` and `scheme` used for `liveness`- and `readinessProbes`. `name` and `targetPort` used for the service. | `http`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.repository` | Image repository | `quay.io/pusher/oauth2_proxy`
 `image.tag` | Image tag | `v4.0.0`
@@ -96,6 +97,9 @@ Parameter | Description | Default
 `service.loadBalancerIP` | ip of load balancer | `nil`
 `service.loadBalancerSourceRanges` | allowed source ranges in load balancer | `nil`
 `tolerations` | list of node taints to tolerate | `[]`
+`securityContext.enabled` | enable Kubernetes security context | `false`
+`securityContext.runAsNonRoot` | make sure that the container runs as a non-root user | `true`
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

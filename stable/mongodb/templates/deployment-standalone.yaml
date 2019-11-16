@@ -8,6 +8,13 @@ metadata:
     chart: {{ template "mongodb.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+    {{- with .Values.labels }}
+{{ toYaml . | indent 4 }}
+    {{- end }}
+  {{- with .Values.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
 spec:
   selector:
     matchLabels:
@@ -129,7 +136,7 @@ spec:
         {{- end }}
         {{- if .Values.mongodbExtraFlags }}
         - name: MONGODB_EXTRA_FLAGS
-          value: {{ .Values.mongodbExtraFlags | join " " }}
+          value: {{ .Values.mongodbExtraFlags | join " " | quote }}
         {{- end }}
         ports:
         - name: mongodb

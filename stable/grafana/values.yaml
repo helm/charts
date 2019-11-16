@@ -15,13 +15,14 @@ serviceAccount:
   create: true
   name:
   nameTest:
+#  annotations:
 
 replicas: 1
 
 ## See `kubectl explain poddisruptionbudget.spec` for more
 ## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
 podDisruptionBudget: {}
-#  minAvailble: 1
+#  minAvailable: 1
 #  maxUnavailable: 1
 
 ## See `kubectl explain deployment.spec.strategy` for more
@@ -246,9 +247,13 @@ admin:
 ## Extra environment variables that will be pass onto deployment pods
 env: {}
 
-## Sensible environment variables that will be stored as secret
+## The name of a secret in the same kubernetes namespace which contain values to be added to the environment
 ## This can be useful for auth tokens, etc
-envFromSecret: {}
+envFromSecret: ""
+
+## Sensible environment variables that will be rendered as new secret object
+## This can be useful for auth tokens, etc
+envRenderSecret: {}
 
 ## Additional grafana server secret mounts
 # Defines additional mounts with secrets. Secrets must be manually created in the namespace.
@@ -384,6 +389,7 @@ grafana.ini:
 ## ref: http://docs.grafana.org/installation/configuration/#auth-ldap
 ## ref: http://docs.grafana.org/installation/ldap/#configuration
 ldap:
+  enabled: false
   # `existingSecret` is a reference to an existing secret containing the ldap configuration
   # for Grafana in a key `ldap-toml`.
   existingSecret: ""

@@ -1,3 +1,14 @@
+{{/*
+Return the appropriate apiVersion for statefulset.
+*/}}
+{{- define "mariadb.statefulset.apiVersion" -}}
+{{- if semverCompare "<1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "apps/v1beta1" -}}
+{{- else -}}
+{{- print "apps/v1" -}}
+{{- end -}}
+{{- end -}}
+
 {{/* vim: set filetype=mustache: */}}
 {{/*
 Expand the name of the chart.
@@ -240,5 +251,16 @@ but Helm 2.9 and 2.10 does not support it, so we need to implement this if-else 
             {{- printf "storageClassName: %s" .Values.slave.persistence.storageClass -}}
         {{- end -}}
     {{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the name of the Secret used to store the passwords
+*/}}
+{{- define "mariadb.secretName" -}}
+{{- if .Values.existingSecret -}}
+{{ .Values.existingSecret }}
+{{- else -}}
+{{ template "mariadb.fullname" . -}}
 {{- end -}}
 {{- end -}}

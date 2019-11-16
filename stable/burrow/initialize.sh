@@ -13,7 +13,7 @@ then
 fi
 
 export CHAIN_NODES=${CHAIN_NODES:-4}
-export CHAIN_NAME=${CHAIN_NAME:-"my-release"}
+export CHAIN_NAME=${CHAIN_NAME:-"my-release-burrow"}
 if [ -z $CHAIN_OUTPUT_DIRECTORY ]; then
   export CHAIN_OUTPUT_DIRECTORY=`pwd`
 fi

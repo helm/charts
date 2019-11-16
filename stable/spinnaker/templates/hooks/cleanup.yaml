@@ -20,6 +20,12 @@ spec:
       - name: halyard-config
         configMap:
           name: {{ template "spinnaker.fullname" . }}-halyard-config
+      {{- if .Values.halyard.image.pullSecrets }}
+      imagePullSecrets:
+        {{- range .Values.halyard.image.pullSecrets }}
+        - name: {{ . }}
+        {{- end}}
+      {{- end}}
       containers:
       - name: halyard-install
         image: {{ .Values.halyard.image.repository }}:{{ .Values.halyard.image.tag }}

@@ -2,12 +2,19 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
+  name: {{ template "mongodb.fullname" . }}-primary
   labels:
     app: {{ template "mongodb.name" . }}
     chart: {{ template "mongodb.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "mongodb.fullname" . }}-primary
+    {{- with .Values.labels }}
+{{ toYaml . | indent 4 }}
+    {{- end }}
+  {{- with .Values.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
 spec:
   serviceName: {{ template "mongodb.fullname" . }}-headless
   replicas: 1
@@ -158,7 +165,7 @@ spec:
           {{- end }}
           {{- if .Values.mongodbExtraFlags }}
           - name: MONGODB_EXTRA_FLAGS
-            value: {{ .Values.mongodbExtraFlags | join " " }}
+            value: {{ .Values.mongodbExtraFlags | join " " | quote }}
           {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:

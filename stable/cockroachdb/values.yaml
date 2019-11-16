@@ -59,6 +59,9 @@ NetworkPolicy:
 Service:
   type: ClusterIP
   annotations: {}
+  labels: {}
+ServiceDiscovery:
+  labels: {}
 PodManagementPolicy: Parallel
 UpdateStrategy:
   type: RollingUpdate
