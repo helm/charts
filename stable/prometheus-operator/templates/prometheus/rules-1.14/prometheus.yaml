@@ -167,7 +167,7 @@ spec:
         severity: critical
     - alert: PrometheusRemoteWriteDesiredShards
       annotations:
-        description: Prometheus {{`{{$labels.namespace}}`}}/{{`{{$labels.pod}}`}} remote write desired shards calculation wants to run {{`{{ printf $value }}`}} shards, which is more than the max of {{print `{{ printf ` "`" `prometheus_remote_storage_shards_max{instance="%s",job="{{ $prometheusJob }}",namespace="{{ $namespace }}"}` "`" ` $labels.instance | query | first | value }}`}}.
+        description: Prometheus {{`{{$labels.namespace}}`}}/{{`{{$labels.pod}}`}} remote write desired shards calculation wants to run {{`{{ $value }}`}} shards, which is more than the max of {{`{{ printf `prometheus_remote_storage_shards_max{instance="%s",job="{{ $prometheusJob }}",namespace="{{ $namespace }}"}` $labels.instance | query | first | value }}`}}.
         summary: Prometheus remote write desired shards calculation wants to run more than configured max shards.
       expr: |-
         # Without max_over_time, failed scrapes could create false negatives, see

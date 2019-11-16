@@ -1559,7 +1559,7 @@ data:
                         "text": "5m",
                         "value": "5m"
                     },
-                    "datasource": "$datasource",
+                    "datasource": "prometheus",
                     "hide": 2,
                     "includeAll": false,
                     "label": null,
