@@ -1,8 +1,10 @@
 {{- $workerNum := .Values.worker.number -}}
 {{- $name := include "horovod.fullname" . }}
 {{- $slots := 1 }}
+{{- if index .Values.resources "requests" }}
 {{- if index .Values.resources.requests "nvidia.com/gpu" }}
 {{- $slots = index .Values.resources.requests "nvidia.com/gpu" }}
+{{- end }}
 {{- end }}
 apiVersion: v1
 kind: ConfigMap
