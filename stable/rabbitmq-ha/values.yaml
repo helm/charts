@@ -396,6 +396,26 @@ persistentVolume:
   size: 8Gi
   annotations: {}
 
+# To use a hostPath for data:
+# 1. Set persistentVolume.enabled to false
+# 2. Add "ha-mode":"all" for all policies for queues and exchnges
+# 3. Add "ha-sync-mode":"automatic" for all policies for queues and exchnges
+# and define hostPath.path.
+# Warning: this might overwrite existing folders on the host system!
+hostPath:
+  enabled: false
+  ## path is evaluated as template so placeholders are replaced
+  path: "/data/{{ .Release.Name }}"
+  # if chown is true, an init-container with root permissions is launched to
+  # change the owner of the hostPath folder to the user defined in the
+  # security context
+  chown: true
+  #We need to use an universal path on all hosts to save data
+  mnesiaDir: $RABBITMQ_MNESIA_BASE/mnesia_dir
+  pluginsExpandDir: $RABBITMQ_MNESIA_BASE/plugins-expand
+  type: Directory
+
+
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 ##
@@ -559,3 +579,5 @@ clusterDomain: cluster.local
 podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 1
+
+#Add possibility to use hostPath for persistant data

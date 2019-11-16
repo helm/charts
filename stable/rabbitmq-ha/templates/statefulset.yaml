@@ -76,8 +76,15 @@ spec:
               fieldRef:
                 apiVersion: v1
                 fieldPath: metadata.name
+{{- if .Values.hostPath.enabled }}
+          - name: RABBITMQ_MNESIA_DIR
+            value: {{ .Values.hostPath.mnesiaDir }}
+          - name: RABBITMQ_PLUGINS_EXPAND_DIR
+            value: {{ .Values.hostPath.pluginsExpandDir }}
+{{- else }}
           - name: RABBITMQ_MNESIA_DIR
             value: /var/lib/rabbitmq/mnesia/rabbit@$(POD_NAME).{{ template "rabbitmq-ha.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
+{{- end }}
           - name: RABBITMQ_ERLANG_COOKIE
             valueFrom:
               secretKeyRef:
@@ -178,6 +185,12 @@ spec:
                 secretKeyRef:
                   name: {{ template "rabbitmq-ha.secretName" . }}
                   key: rabbitmq-management-password
+{{- if .Values.hostPath.enabled }}
+            - name: RABBITMQ_MNESIA_DIR
+              value: {{ .Values.hostPath.mnesiaDir }}
+            - name: RABBITMQ_PLUGINS_EXPAND_DIR
+              value: {{ .Values.hostPath.pluginsExpandDir }}
+{{- end }}
             {{- if .Values.rabbitmqHipeCompile }}
             - name: RABBITMQ_HIPE_COMPILE
               value: {{ .Values.rabbitmqHipeCompile | quote }}
@@ -249,7 +262,7 @@ spec:
       {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
       {{- end }}
-      {{- if eq .Values.podAntiAffinity "hard" }}
+      {{- if or (eq .Values.podAntiAffinity "hard") (Values.hostPath.enabled)  }}
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -317,6 +330,11 @@ spec:
         storageClassName: "{{ .Values.persistentVolume.storageClass }}"
       {{- end }}
       {{- end }}
+{{- else if .Values.hostPath.enabled }}
+        - name: {{ .Values.persistentVolume.name }}
+          hostPath:
+            path: {{ .Values.hostPath.path }}
+            type: {{ .Values.hostPath.type }}
 {{- else }}
         - name: {{ .Values.persistentVolume.name }}
           emptyDir: {}
