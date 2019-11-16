@@ -40,7 +40,7 @@ The chart can be customized using the following configurable parameters:
 | `annotations`                   | Map of annotations to add to the statefulset                    | `{}`                         |
 | `tolerations`                   | List of node taints to tolerate                                 | `[]`                         |
 | `persistentVolume`              | Config of persistent volumes for storage-engine                 | `{}`                         |
-| `confFile`                      | Config filename. This file should be included in the chart path | `aerospike.conf`             |
+| `confFile`                      | Config filename. This file should be included in the chart path. If the config is updated, the statefulset will be redeployed with the new config | `aerospike.conf`             |
 | `resources`                     | Resource requests and limits                                    | `{}`                         |
 | `nodeSelector`                  | Labels for pod assignment                                       | `{}`                         |
 | `terminationGracePeriodSeconds` | Wait time before forcefully terminating container               | `30`                         |
