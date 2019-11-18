@@ -120,8 +120,8 @@ spec:
               value: {{ .Values.replicaSetName }}
             - name: TIMEOUT
               value: "{{ .Values.init.timeout }}"
-            - name: DO_NOT_INIT
-              value: "{{ .Values.doNotInit }}"
+            - name: SKIP_INIT
+              value: "{{ .Values.skipInitialization }}"
           {{- if .Values.auth.enabled }}
             - name: AUTH
               value: "true"

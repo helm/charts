@@ -2,7 +2,7 @@ replicas: 3
 port: 27017
 
 ## Setting this will skip the replicaset and user creation process during bootstrapping
-doNotInit: false
+skipInitialization: false
 
 replicaSetName: rs0
 
