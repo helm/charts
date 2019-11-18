@@ -147,6 +147,12 @@ data:
           <retentionTimeout>5</retentionTimeout>
           <connectTimeout>0</connectTimeout>
           <readTimeout>0</readTimeout>
+          <podLabels>
+            <org.csanchez.jenkins.plugins.kubernetes.PodLabel>
+              <key>jenkins/{{ .Release.Name }}-{{ .Values.agent.componentName }}</key>
+              <value>true</value>
+            </org.csanchez.jenkins.plugins.kubernetes.PodLabel>
+          </podLabels>
           <podRetention class="org.csanchez.jenkins.plugins.kubernetes.pod.retention.{{ .Values.agent.podRetention }}"/>
         </org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud>
       </clouds>
