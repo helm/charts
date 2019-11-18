@@ -83,6 +83,12 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.stackdriver.google_service_credentials`           | Contents of a Google Cloud credentials JSON file. | `` |
 | `backend.stackdriver.service_account_email`           | Account email associated to the service. Only available if no credentials file has been provided. | `` |
 | `backend.stackdriver.service_account_secret`            | Private key content associated with the service account. Only available if no credentials file has been provided. | `` |
+| **GELF Backend** |
+| `backend.gelf.match` | Pattern to match which tags of logs to be outputted by this plugin | `` |
+| `backend.gelf.host` | IP address or hostname of the target Graylog server | `` |
+| `backend.gelf.port` | The port that your Graylog GELF input is listening on | `` |
+| `backend.gelf.mode` | The protocol to use (`tls`, `tcp` or `udp`) | `` |
+| `backend.gelf.gelf_short_message_key` | Key to use for the "short message" in the GELF payload | `` |
 | **Parsers**                   |
 | `parsers.enabled`                  | Enable custom parsers | `false` |
 | `parsers.regex`                    | List of regex parsers | `NULL` |
