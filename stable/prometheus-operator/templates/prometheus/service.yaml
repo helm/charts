@@ -30,7 +30,7 @@ spec:
   {{- end }}
 {{- end }}
   ports:
-  - name: web
+  - name: http
     {{- if eq .Values.prometheus.service.type "NodePort" }}
     nodePort: {{ .Values.prometheus.service.nodePort }}
     {{- end }}
