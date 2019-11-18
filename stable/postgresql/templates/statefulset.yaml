@@ -155,6 +155,18 @@ spec:
             - name: POSTGRES_CLUSTER_APP_NAME
               value: {{ .Values.replication.applicationName }}
             {{- end }}
+            {{- if and .Values.postgresqlPostgresPassword (not (eq .Values.postgresqlUsername "postgres")) }}
+            {{- if .Values.usePasswordFile }}
+            - name: POSTGRES_POSTGRES_PASSWORD_FILE
+              value: "/opt/bitnami/postgresql/secrets/postgresql-postgres-password"
+            {{- else }}
+            - name: POSTGRES_POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "postgresql.secretName" . }}
+                  key: postgresql-postgres-password
+            {{- end }}
+            {{- end }}
             - name: POSTGRES_USER
               value: {{ include "postgresql.username" . | quote }}
             {{- if .Values.usePasswordFile }}
