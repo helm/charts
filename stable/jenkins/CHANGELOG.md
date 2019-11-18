@@ -15,7 +15,7 @@ Google application credentials are kept in a file, which has to be mounted to a 
       gcpcredentials: application_default_credentials.json
 ```
       
-Helm template then creates the necessary volume mounts and `GOOGLE_APPLICATION_CREDENTIALS` envrionmental variable. 
+Helm template then creates the necessary volume mounts and `GOOGLE_APPLICATION_CREDENTIALS` environmental variable. 
 
 ## 1.9.3 Fix `JAVA_OPTS` when config auto-reload is enabled
 
