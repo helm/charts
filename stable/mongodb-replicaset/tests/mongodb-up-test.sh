@@ -10,8 +10,6 @@ MONGOARGS="--quiet"
 
 if [ -e "/tls/tls.crt" ]; then
     # log "Generating certificate"
-    # echo "${CACERT}" | base64 --decode > ${CACRT_FILE}
-    # echo "${CAKEY}" | base64 --decode > ${CAKEY_FILE}
     mkdir -p /work-dir
     cp /tls/tls.crt /work-dir/tls.crt
     cp /tls/tls.key /work-dir/tls.key
@@ -52,7 +50,7 @@ fi
 pod_name() {
     local full_name="${FULL_NAME?Environment variable FULL_NAME not set}"
     local index="$1"
-    echo "$full_name-$index.$full_name"
+    echo "$full_name-$index.$full_name.default.svc.cluster.local"
 }
 
 replicas() {
