@@ -20,6 +20,9 @@ spec:
 {{- if .Values.yarn.nodeManager.parallelCreate }}
   podManagementPolicy: Parallel
 {{- end }}
+  selector:
+    matchLabels:
+      app: {{ include "hadoop.name" . }}
   template:
     metadata:
       labels:
