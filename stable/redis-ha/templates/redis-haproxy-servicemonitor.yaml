@@ -2,9 +2,8 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-{{- if .Values.haproxy.metrics.serviceMonitor.labels }}
-  labels:
-{{ toYaml .Values.haproxy.metrics.serviceMonitor.labels | indent 4}}
+{{- with .Values.haproxy.metrics.serviceMonitor.labels }}
+  labels: {{ toYaml . | nindent 4}}
 {{- end }}
   name: {{ template "redis-ha.fullname" . }}-haproxy
 {{- if .Values.haproxy.metrics.serviceMonitor.namespace }}
