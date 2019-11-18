@@ -375,17 +375,17 @@ Adds a backup CronJob for jenkins, along with required RBAC resources.
 | ---------------------------------------- | ----------------------------------------------------------------- | --------------------------------- |
 | `backup.enabled`                         | Enable the use of a backup CronJob                                | `false`                           |
 | `backup.schedule`                        | Schedule to run jobs                                              | `0 2 * * *`                       |
-| `backup.labels`                          | Backup pod labels                                                 |                                   |
-| `backup.annotations`                     | Backup pod annotations                                            |                                   |
+| `backup.labels`                          | Backup pod labels                                                 | `{}`                              |
+| `backup.annotations`                     | Backup pod annotations                                            | `{}`                              |
 | `backup.image.repo`                      | Backup image repository                                           | `maorfr/kube-tasks`               |
 | `backup.image.tag`                       | Backup image tag                                                  | `0.2.0`                           |
 | `backup.extraArgs`                       | Additional arguments for kube-tasks                               | `[]`                              |
-| `backup.existingSecret`                  | Environment variables to add to the cronjob container             | {}                                |
+| `backup.existingSecret`                  | Environment variables to add to the cronjob container             | `{}`                              |
 | `backup.existingSecret.*`                | Specify the secret name containing the AWS or GCP credentials     | `jenkinsaws`                      |
 | `backup.existingSecret.*.awsaccesskey`   | `secretKeyRef.key` used for `AWS_ACCESS_KEY_ID`                   | `jenkins_aws_access_key`          |
 | `backup.existingSecret.*.awssecretkey`   | `secretKeyRef.key` used for `AWS_SECRET_ACCESS_KEY`               | `jenkins_aws_secret_key`          |
 | `backup.existingSecret.*.gcpcredentials` | Mounts secret as volume and sets `GOOGLE_APPLICATION_CREDENTIALS` | `credentials.json`                |
-| `backup.env`                             | Backup environment variables                                      |                                   |
+| `backup.env`                             | Backup environment variables                                      | `[]`                              |
 | `backup.resources`                       | Backup CPU/Memory resource requests/limits                        | Memory: `1Gi`, CPU: `1`           |
 | `backup.destination`                     | Destination to store backup artifacts                             | `s3://jenkins-data/backup`        |
 
