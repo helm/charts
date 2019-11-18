@@ -13,13 +13,11 @@ spec:
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: {{ template "weave-cloud.name" . }}
-      release: {{ .Release.Name }}
+      name: weave-agent
   template:
     metadata:
       labels:
-        app: {{ template "weave-cloud.name" . }}
-        release: {{ .Release.Name }}
+        name: weave-agent
     spec:
       {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ template "weave-cloud.serviceAccountName" . }}
