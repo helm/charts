@@ -258,7 +258,7 @@ vault:
         # tls_cert_file: /vault/tls/server.crt
         # tls_key_file: /vault/tls/server.key
     # See https://www.vaultproject.io/docs/configuration/storage/ for storage backends
-    storage: []
+    storage: {}
       # consul:
       #   address: ""
       #   path: ""
