@@ -4,7 +4,6 @@ kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: psp-{{ template "prometheus-node-exporter.fullname" . }}
-  namespace: {{ template "prometheus-node-exporter.namespace" . }}
   labels: {{ include "prometheus-node-exporter.labels" . | indent 4 }}
 rules:
 - apiGroups: ['extensions']
