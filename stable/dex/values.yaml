@@ -156,7 +156,7 @@ config:
     tlsCert: /etc/dex/tls/grpc/server/tls.crt
     tlsKey: /etc/dex/tls/grpc/server/tls.key
     tlsClientCA: /etc/dex/tls/grpc/ca/tls.crt
-  connectors: {}
+  connectors: []
 #  - type: github
 #    id: github
 #    name: GitHub
@@ -168,6 +168,10 @@ config:
   oauth2:
     alwaysShowLoginScreen: false
     skipApprovalScreen: true
+
+#  expiry:
+#    signingKeys: "6h"
+#    idTokens: "24h"
 
 #  staticClients:
 #  - id: example-app

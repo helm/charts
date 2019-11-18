@@ -272,6 +272,9 @@ workers:
   ## Number of workers pod to launch
   replicas: 1
   ##
+  ## Gracefull termination period
+  terminationPeriod: 30
+  ##
   ## Custom resource configuration
   resources: {}
     # limits:
@@ -297,6 +300,11 @@ workers:
     ##
     ## number of parallel celery tasks per worker
     instances: 1
+    ##
+    ## Gracefull termination of workers
+    ## Wait for the worker to finish the current task within the gracefull period
+    gracefullTermination: false
+
   ##
   ## Directory in which to mount secrets on worker nodes.
   secretsDir: /var/airflow/secrets
@@ -357,12 +365,19 @@ ingress:
       ## If enabled, set "secretName" to the secret containing the TLS private key and certificate
       ## Example:
       ## secretName: example-com-crt
-    paths:
-      ## Different http paths to add to the ingress
+    precedingPaths:
+      ## Different http paths to add to the ingress before the default path
       ## Example:
       ## - path: "/*"
       ##   serviceName: "ssl-redirect"
       ##   servicePort: "use-annotation"
+    succeedingPaths:
+      ## Different http paths to add to the ingress after the default path
+      ## Example:
+      ## - path: "/*"
+      ##   serviceName: "ssl-redirect"
+      ##   servicePort: "use-annotation"
+
   ##
   ## Configure the flower endpoind
   flower:

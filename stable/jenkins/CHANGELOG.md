@@ -3,8 +3,29 @@
 This file documents all notable changes to Jenkins Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
-
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
+
+## 1.9.3 Fix `JAVA_OPTS` when config auto-reload is enabled
+
+## 1.9.2 Add support for kubernetes-credentials-provider-plugin
+
+[kubernetes-credentials-provider-plugin](https://jenkinsci.github.io/kubernetes-credentials-provider-plugin/) needs permissions to get/watch/list kubernetes secrets in the namespaces where Jenkins is running.
+
+The necessary role binding can be created using `rbac.readSecrets` when `rbac.create` is `true`.
+
+To quote from the plugin documentation:
+
+> Because granting these permissions for secrets is not something that should be done lightly it is highly advised for security reasons that you both create a unique service account to run Jenkins as, and run Jenkins in a unique namespace.
+
+Therefor this is disabled by default.
+
+## 1.9.1 Update kubernetes plugin URL
+
+## 1.9.0 Change default serviceType to ClusterIP
+
+## 1.8.2
+
+Revert fix in `1.7.10` since direct connection is now disabled by default.
 
 ## 1.8.1
 
@@ -16,6 +37,7 @@ We make use of the fact that the Jenkins Configuration as Code Plugin can be tri
 The sidecar container responsible for reloading config changes is now `kiwigrid/k8s-sidecar:0.1.20` instead of it's fork `shadwell/k8s-sidecar`.
 
 References:
+
 - [Triggering Configuration Reload](https://github.com/jenkinsci/configuration-as-code-plugin/blob/master/docs/features/configurationReload.md)
 - [kiwigrid/k8s-sidecar](https://hub.docker.com/r/kiwigrid/k8s-sidecar)
 
@@ -40,15 +62,16 @@ Add persistentvolumeclaim permission to the role to support new dynamic pvc work
 
 ## 1.7.6
 
-Updated  `master.slaveKubernetesNamespace` to parse helm templates.
+Updated `master.slaveKubernetesNamespace` to parse helm templates.
 Defined an sensible empty value to the following variables, to silence invalid warnings:
-  - master.extraPorts
-  - master.scriptApproval
-  - master.initScripts
-  - master.JCasC.configScripts
-  - master.sidecars.other
-  - agent.envVars
-  - agent.volumes
+
+- master.extraPorts
+- master.scriptApproval
+- master.initScripts
+- master.JCasC.configScripts
+- master.sidecars.other
+- agent.envVars
+- agent.volumes
 
 ## 1.7.5
 
@@ -71,54 +94,55 @@ Update the default requirements for jenkins-slave to 512Mi which fixes frequentl
 [Jenkins Configuration as Code Plugin](https://github.com/jenkinsci/configuration-as-code-plugin) default configuration can now be enabled via `master.JCasC.defaultConfig`.
 
 JCasC default configuration includes:
-  - Jenkins url
-  - Admin email `master.jenkinsAdminEmail`
-  - crumbIssuer
-  - disableRememberMe: false
-  - mode: NORMAL
-  - numExecutors: {{ .Values.master.numExecutors }}
-  - projectNamingStrategy: "standard"
-  - kubernetes plugin
-    - containerCapStr via `agent.containerCap`
-    - jenkinsTunnel
-    - jenkinsUrl
-    - maxRequestsPerHostStr: "32"
-    - name: "kubernetes"
-    - namespace
-    - serverUrl: "https://kubernetes.default"
-    - template
-      - containers
-        - alwaysPullImage: `agent.alwaysPullImage`
-        - args
-        - command
-        - envVars
-        - image: `agent.image:agent.imageTag`
-        - name: `.agent.sideContainerName`
-        - privileged: `.agent.privileged`
-        - resourceLimitCpu: `agent.resources.limits.cpu`
-        - resourceLimitMemory: `agent.resources.limits.memory`
-        - resourceRequestCpu: `agent.resources.requests.cpu`
-        - resourceRequestMemory: `agent.resources.requests.memory`
-        - ttyEnabled: `agent.TTYEnabled`
-        - workingDir: "/home/jenkins"
-      - idleMinutes: `agent.idleMinutes`
-      - instanceCap: 2147483647
-      - imagePullSecrets:
-        - name: `.agent.imagePullSecretName`
-      - label
-      - name
-      - nodeUsageMode: "NORMAL"
-      - podRetention: `agent.podRetention`
-      - serviceAccount
-      - showRawYaml: true
-      - slaveConnectTimeoutStr: "100"
-      - yaml: `agent.yamlTemplate`
-      - yamlMergeStrategy: "override"
-  - security:
-    - apiToken:
-      - creationOfLegacyTokenEnabled: false
-      - tokenGenerationOnCreationEnabled: false
-      - usageStatisticsEnabled: true
+
+- Jenkins url
+- Admin email `master.jenkinsAdminEmail`
+- crumbIssuer
+- disableRememberMe: false
+- mode: NORMAL
+- numExecutors: {{ .Values.master.numExecutors }}
+- projectNamingStrategy: "standard"
+- kubernetes plugin
+  - containerCapStr via `agent.containerCap`
+  - jenkinsTunnel
+  - jenkinsUrl
+  - maxRequestsPerHostStr: "32"
+  - name: "kubernetes"
+  - namespace
+  - serverUrl: "https://kubernetes.default"
+  - template
+    - containers
+      - alwaysPullImage: `agent.alwaysPullImage`
+      - args
+      - command
+      - envVars
+      - image: `agent.image:agent.imageTag`
+      - name: `.agent.sideContainerName`
+      - privileged: `.agent.privileged`
+      - resourceLimitCpu: `agent.resources.limits.cpu`
+      - resourceLimitMemory: `agent.resources.limits.memory`
+      - resourceRequestCpu: `agent.resources.requests.cpu`
+      - resourceRequestMemory: `agent.resources.requests.memory`
+      - ttyEnabled: `agent.TTYEnabled`
+      - workingDir: "/home/jenkins"
+    - idleMinutes: `agent.idleMinutes`
+    - instanceCap: 2147483647
+    - imagePullSecrets:
+      - name: `.agent.imagePullSecretName`
+    - label
+    - name
+    - nodeUsageMode: "NORMAL"
+    - podRetention: `agent.podRetention`
+    - serviceAccount
+    - showRawYaml: true
+    - slaveConnectTimeoutStr: "100"
+    - yaml: `agent.yamlTemplate`
+    - yamlMergeStrategy: "override"
+- security:
+  - apiToken:
+    - creationOfLegacyTokenEnabled: false
+    - tokenGenerationOnCreationEnabled: false
+    - usageStatisticsEnabled: true
 
 Example `values.yaml` which enables JCasC, it's default config and configAutoReload:
 
@@ -675,8 +699,8 @@ commit: 846b589a9
 
 ## 0.26.1
 
-* fixes #10267 when executed with helm template - otherwise produces an invalid template. (#10403)
-commit: 266f9d839
+- fixes #10267 when executed with helm template - otherwise produces an invalid template. (#10403)
+  commit: 266f9d839
 
 ## 0.26.0
 
@@ -1111,7 +1135,7 @@ commit: 572b36c6d
 ## 0.7.2
 
 - Workflow plugin pin (#1178)
-commit: ac3a0c7bc
+  commit: ac3a0c7bc
 
 ## 0.7.1
 
@@ -1305,7 +1329,7 @@ commit: 2f63fd524
 
 ## 0.1.1
 
-docs(*): update READMEs to reference chart repos (#119)
+docs(\*): update READMEs to reference chart repos (#119)
 commit: c7d1bff05
 
 ## 0.1.0

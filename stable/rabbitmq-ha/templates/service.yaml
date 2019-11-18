@@ -17,7 +17,9 @@ metadata:
 {{- end }}
 spec:
 {{- if ne .Values.service.type "NodePort" }}
+{{- if and (eq .Values.service.type "LoadBalancer") (ne .Values.service.clusterIP "None") }}
   clusterIP: "{{ .Values.service.clusterIP }}"
+{{- end }}
 {{- end }}
 {{- if .Values.service.externalIPs }}
   externalIPs:

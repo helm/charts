@@ -3,7 +3,7 @@
 ##
 image:
   repository: redis
-  tag: 5.0.5-alpine
+  tag: 5.0.6-alpine
   pullPolicy: IfNotPresent
 ## replicas number for each component
 replicas: 3
@@ -33,7 +33,7 @@ haproxy:
   readOnly:
     enabled: false
     port: 6380
-  replicas: 1
+  replicas: 3
   image:
     repository: haproxy
     tag: 2.0.4
@@ -50,14 +50,15 @@ haproxy:
     annotations: {}
   serviceAccount:
     create: true
-  ## Prometheus metric exporter for HAProxy.
+  ## Official HAProxy embedded prometheus metrics settings.
+  ## Ref: https://github.com/haproxy/haproxy/tree/master/contrib/prometheus-exporter
   ##
-  exporter:
-    image:
-      repository: quay.io/prometheus/haproxy-exporter
-      tag: v0.9.0
+  metrics:
     enabled: false
+    # prometheus port & scrape path
     port: 9101
+    portName: exporter-port
+    scrapePath: /metrics
   init:
     resources: {}
   timeout:
@@ -68,6 +69,15 @@ haproxy:
     runAsUser: 1000
     fsGroup: 1000
     runAsNonRoot: true
+  ## Custom config-haproxy.cfg files used to override default settings. If this file is
+  ## specified then the config-haproxy.cfg above will be ignored.
+  ##
+  # customConfig: |-
+      # Define configuration here
+  ## Place any additional configuration section to add to the default config-haproxy.cfg
+  ##
+  # extraConfig: |-
+      # Define configuration here
 
 
 ## Role Based Access
@@ -80,8 +90,8 @@ sysctlImage:
   enabled: false
   command: []
   registry: docker.io
-  repository: bitnami/minideb
-  tag: latest
+  repository: busybox
+  tag: 1.31.1
   pullPolicy: Always
   mountHostSys: false
 
@@ -208,7 +218,7 @@ affinity: |
 exporter:
   enabled: false
   image: oliver006/redis_exporter
-  tag: v0.31.0
+  tag: v1.3.2
   pullPolicy: IfNotPresent
 
   # prometheus port & scrape path

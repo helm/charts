@@ -205,7 +205,7 @@ service:
   managerPort: 15672
 
   ## Service annotations
-  annotations:
+  annotations: {}
     # service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
 
   ## Load Balancer sources
@@ -285,8 +285,30 @@ nodeSelector:
 tolerations: []
 affinity: {}
 
+## affinity: |
+##   podAntiAffinity:
+##     requiredDuringSchedulingIgnoredDuringExecution:
+##       - labelSelector:
+##           matchLabels:
+##             app: {{ template "rabbitmq.name" . }}
+##             release: {{ .Release.Name | quote }}
+##         topologyKey: kubernetes.io/hostname
+##     preferredDuringSchedulingIgnoredDuringExecution:
+##       - weight: 100
+##         podAffinityTerm:
+##           labelSelector:
+##             matchLabels:
+##               app:  {{ template "rabbitmq.name" . }}
+##               release: {{ .Release.Name | quote }}
+##           topologyKey: failure-domain.beta.kubernetes.io/zone
+
 ## annotations for rabbitmq pods
 podAnnotations: {}
+
+## Configure the podDisruptionBudget
+podDisruptionBudget: {}
+# maxUnavailable: 1
+# minAvailable: 1
 
 ## Configure the ingress resource that allows you to access the
 ## Wordpress installation. Set up the URL
@@ -316,7 +338,7 @@ ingress:
   ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/annotations.md
   ##
   ## If tls is set to true, annotation ingress.kubernetes.io/secure-backends: "true" will automatically be set
-  annotations:
+  annotations: {}
   #  kubernetes.io/ingress.class: nginx
   #  kubernetes.io/tls-acme: true
 
@@ -429,7 +451,7 @@ forceBoot:
 ## This can be useful when combined with load_definitions to automatically create the secret containing the definitions to be loaded.
 ##
 extraSecrets: {}
-  # load_definition:
+  # load-definition:
   #   load_definition.json: |
   #     {
   #       ...

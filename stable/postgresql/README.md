@@ -70,6 +70,20 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `volumePermissions.image.pullPolicy`          | Init container volume-permissions image pull policy                                                                    | `Always`                                                    |
 | `volumePermissions.securityContext.runAsUser` | User ID for the init container                                                                                         | `0`                                                         |
 | `usePasswordFile`                             | Have the secrets mounted as a file instead of env vars                                                                 | `false`                                                     |
+| `ldap.enabled`                                | Enable LDAP support                                          | `false`                                                      |
+| `ldap.existingSecret`                         | Name of existing secret to use for LDAP passwords            | `nil`                                                        |
+| `ldap.url`                                    | LDAP URL beginning in the form `ldap[s]://host[:port]/basedn[?[attribute][?[scope][?[filter]]]]` | `nil`                    |
+| `ldap.server`                                 | IP address or name of the LDAP server.                       | `nil`                                                        |
+| `ldap.port`                                   | Port number on the LDAP server to connect to                 | `nil`                                                        |
+| `ldap.scheme`                                 | Set to `ldaps` to use LDAPS.                                 | `nil`                                                        |
+| `ldap.tls`                                    | Set to `1` to use TLS encryption                             | `nil`                                                        |
+| `ldap.prefix`                                 | String to prepend to the user name when forming the DN to bind | `nil`                                                      |
+| `ldap.suffix`                                 | String to append to the user name when forming the DN to bind | `nil`                                                       |
+| `ldap.search_attr`                            | Attribute to match agains the user name in the search        | `nil`                                                        |
+| `ldap.search_filter`                          | The search filter to use when doing search+bind authentication | `nil`                                                      |
+| `ldap.baseDN`                                 | Root DN to begin the search for the user in                  | `nil`                                                        |
+| `ldap.bindDN`                                 | DN of user to bind to LDAP                                   | `nil`                                                        |
+| `ldap.bind_password`                          | Password for the user to bind to LDAP                        | `nil`                                                        |
 | `replication.enabled`                         | Enable replication                                                                                                     | `false`                                                     |
 | `replication.user`                            | Replication user                                                                                                       | `repl_user`                                                 |
 | `replication.password`                        | Replication user password                                                                                              | `repl_password`                                             |
@@ -90,6 +104,8 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `configurationConfigMap`                      | ConfigMap with the PostgreSQL configuration files (Note: Overrides `postgresqlConfiguration` and `pgHbaConfiguration`). The value is evaluated as a template. | `nil`                |
 | `extendedConfConfigMap`                       | ConfigMap with the extended PostgreSQL configuration files. The value is evaluated as a template.                      | `nil`                                                       |
 | `initdbScripts`                               | Dictionary of initdb scripts                                                                                           | `nil`                                                       |
+| `initdbUsername`                              | PostgreSQL user to execute the .sql and sql.gz scripts                                                                 | `nil`                                                       |
+| `initdbPassword`                              | Password for the user specified in `initdbUsername`                                                                    | `nil`                                                       |
 | `initdbScriptsConfigMap`                      | ConfigMap with the initdb scripts (Note: Overrides `initdbScripts`). The value is evaluated as a template.             | `nil`                                                       |
 | `initdbScriptsSecret`                         | Secret with initdb scripts that contain sensitive information (Note: can be used with `initdbScriptsConfigMap` or `initdbScripts`). The value is evaluated as a template. | `nil`    |
 | `service.type`                                | Kubernetes Service type                                                                                                | `ClusterIP`                                                 |
@@ -325,6 +341,8 @@ The [Bitnami PostgreSQL](https://github.com/bitnami/bitnami-docker-postgresql) i
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Parameters](#parameters) section to configure the PVC or to disable persistence.
 
+If you already have data in it, you will fail to sync to standby nodes for all commits, details can refer to [code](https://github.com/bitnami/bitnami-docker-postgresql/blob/8725fe1d7d30ebe8d9a16e9175d05f7ad9260c93/9.6/debian-9/rootfs/libpostgresql.sh#L518-L556). If you need to use those data, please covert them to sql and import after `helm install` finished.
+
 ## NetworkPolicy
 
 To enable network policy for PostgreSQL, install [a networking plugin that implements the Kubernetes NetworkPolicy spec](https://kubernetes.io/docs/tasks/administer-cluster/declare-network-policy#before-you-begin), and set `networkPolicy.enabled` to `true`.
@@ -371,6 +389,27 @@ $ helm upgrade my-release bitnami/influxdb \
 
 > Note: you need to substitute the placeholders _[POSTGRESQL_PASSWORD]_, and _[REPLICATION_PASSWORD]_ with the values obtained from instructions in the installation notes.
 
+## 7.1.0
+
+Adds support for LDAP configuration.
+
+## 7.0.0
+
+Helm performs a lookup for the object based on its group (apps), version (v1), and kind (Deployment). Also known as its GroupVersionKind, or GVK. Changing the GVK is considered a compatibility breaker from Kubernetes' point of view, so you cannot "upgrade" those objects to the new GVK in-place. Earlier versions of Helm 3 did not perform the lookup correctly which has since been fixed to match the spec.
+
+In https://github.com/helm/charts/pull/17281 the `apiVersion` of the statefulset resources was updated to `apps/v1` in tune with the api's deprecated, resulting in compatibility breakage.
+
+This major version bump signifies this change.
+
+## 6.5.7
+
+In this version, the chart will use PostgreSQL with the Postgis extension included. The version used with Postgresql version 10, 11 and 12 is Postgis 2.5. It has been compiled with the following dependencies:
+
+ - protobuf
+ - protobuf-c
+ - json-c
+ - geos
+ - proj
 
 ## 5.0.0
 

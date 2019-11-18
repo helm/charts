@@ -183,7 +183,11 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
         {{- if .Values.pro.enabled }}
         - name: ambassador-pro
+          {{ if .Values.pro.image.customBuildTag }}
+          image: "{{ .Values.pro.image.repository }}:{{ .Values.pro.image.customBuildTag }}"
+          {{ else }}
           image: "{{ .Values.pro.image.repository }}:amb-sidecar-{{ .Values.pro.image.tag }}"
+          {{ end }}
           ports:
           - name: grpc-auth
             containerPort: {{ .Values.pro.ports.auth }}
