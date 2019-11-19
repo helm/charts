@@ -19,7 +19,7 @@ spec:
 {{- else if .Values.alertmanager.enabled }}
       - namespace: {{ $.Release.Namespace }}
         name: {{ template "prometheus-operator.fullname" . }}-alertmanager
-        port: http
+        port: {{ .Values.alertmanager.alertmanagerSpec.portName }}
         {{- if .Values.alertmanager.alertmanagerSpec.routePrefix }}
         pathPrefix: "{{ .Values.alertmanager.alertmanagerSpec.routePrefix }}"
         {{- end }}

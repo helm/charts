@@ -371,7 +371,7 @@ alertmanager:
     ##
     additionalPeers: []
 
-    ## 	PortName to use for Alert Manager. 
+    ## PortName to use for Alert Manager.
     ##
     portName: "web"
 
@@ -1709,7 +1709,7 @@ prometheus:
     ##
     additionalScrapeConfigsExternal: false
 
-    ## 	PortName to use for Prometheus. 
+    ## PortName to use for Prometheus.
     ##
     portName: "web"
 
