@@ -17,6 +17,12 @@ livenessProbe:
 readinessProbe:
   probePath: "/ping"
 
+startupProbe:
+  enabled: false
+  probePath: "/ping"
+  # failureThreshold: 6
+  # periodSeconds: 5
+
 ## Specify a service type
 ## NodePort is default
 ## ref: http://kubernetes.io/docs/user-guide/services/
@@ -38,10 +44,6 @@ service:
 ##
 persistence:
   enabled: true
-  ## If true will use an existing PVC instead of creating one
-  # useExisting: false
-  ## Name of existing PVC to be used in the influx deployment
-  # name:
   ## influxdb data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -50,6 +52,7 @@ persistence:
   ##   GKE, AWS & OpenStack)
   ##
   # storageClass: "-"
+  annotations:
   accessMode: ReadWriteOnce
   size: 8Gi
 
@@ -285,9 +288,9 @@ backup:
   annotations: {}
 
   ## Google Cloud Storage
-  ## Secret is expected to have key stored in `key.json` field
   # gcs:
   #    serviceAccountSecret: influxdb-backup-key
+  #    serviceAccountSecretKey: key.json
   #    destination: gs://bucket/influxdb
 
   ## Azure

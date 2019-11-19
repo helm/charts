@@ -15,7 +15,7 @@ global:
 image:
   registry: docker.io
   repository: bitnami/postgresql
-  tag: 11.5.0-debian-9-r60
+  tag: 11.6.0-debian-9-r0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -100,7 +100,11 @@ replication:
   ## Replication Cluster application name. Useful for defining multiple replication policies
   applicationName: my_application
 
-## PostgreSQL admin user
+## PostgreSQL admin password (used when `postgresqlUsername` is not `postgres`)
+## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md#creating-a-database-user-on-first-run (see note!)
+# postgresqlPostgresPassword:
+
+## PostgreSQL user (has superuser privileges if username is `postgres`)
 ## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md#setting-the-root-password-on-first-run
 postgresqlUsername: postgres
 
@@ -175,6 +179,10 @@ postgresqlDataDir: /bitnami/postgresql/data
 #      #!/bin/sh
 #      echo "Do something."
 
+## Specify the PostgreSQL username and password to execute the initdb scripts
+# initdbUser:
+# initdbPassword:
+
 ## ConfigMap with scripts to be run at first boot
 ## NOTE: This will override initdbScripts
 # initdbScriptsConfigMap:
@@ -188,6 +196,23 @@ postgresqlDataDir: /bitnami/postgresql/data
 ##
 # terminationGracePeriodSeconds: 30
 
+## LDAP configuration
+##
+ldap:
+  enabled: false
+  url: ""
+  server: ""
+  port: ""
+  prefix: ""
+  suffix: ""
+  baseDN: ""
+  bindDN: ""
+  bind_password:
+  search_attr: ""
+  search_filter: ""
+  scheme: ""
+  tls: false
+
 ## PostgreSQL service configuration
 service:
   ## PosgresSQL service type
@@ -200,7 +225,8 @@ service:
   ##
   # nodePort:
 
-  ## Provide any additional annotations which may be required. This can be used to
+  ## Provide any additional annotations which may be required.
+  ## The value is evaluated as a template, so, for example, the value can depend on .Release or .Chart
   annotations: {}
   ## Set the LoadBalancer service type to internal only.
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
@@ -351,7 +377,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/postgres-exporter
-    tag: 0.5.1-debian-9-r73
+    tag: 0.7.0-debian-9-r12
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -359,6 +385,18 @@ metrics:
     ##
     # pullSecrets:
     #   - myRegistryKeySecretName
+  ## Define additional custom metrics
+  ## ref: https://github.com/wrouesnel/postgres_exporter#adding-new-metrics-via-a-config-file
+  # customMetrics:
+  #   pg_database:
+  #     query: "SELECT d.datname AS name, CASE WHEN pg_catalog.has_database_privilege(d.datname, 'CONNECT') THEN pg_catalog.pg_database_size(d.datname) ELSE 0 END AS size FROM pg_catalog.pg_database d where datname not in ('template0', 'template1', 'postgres')"
+  #     metrics:
+  #       - name:
+  #           usage: "LABEL"
+  #           description: "Name of the database"
+  #       - size_bytes:
+  #           usage: "GAUGE"
+  #           description: "Size of the database in bytes"
   ## Pod Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
   ##
@@ -384,4 +422,4 @@ metrics:
     successThreshold: 1
 
 # Define custom environment variables to pass to the image here
-extraEnv: {}
+extraEnv: []

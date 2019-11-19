@@ -12,7 +12,7 @@ $ helm install stable/influxdb --name foo --namespace bar
 
 ## Introduction
 
-This chart bootstraps an InfluxDB deployment and service on a Kubernetes cluster using the Helm Package manager.
+This chart bootstraps an InfluxDB statefulset and service on a Kubernetes cluster using the Helm Package manager.
 
 ## Prerequisites
 
@@ -43,7 +43,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The default configuration values for this chart are listed in `values.yaml`. 
+The default configuration values for this chart are listed in `values.yaml`.
 
 The [full image documentation](https://hub.docker.com/_/influxdb/) contains more information about running InfluxDB in docker.
 
@@ -69,7 +69,7 @@ $ helm install --name my-release -f values.yaml stable/influxdb
 
 The [InfluxDB](https://hub.docker.com/_/influxdb/) image stores data in the `/var/lib/influxdb` directory in the container.
 
-The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) at this location. The volume is created using dynamic volume provisioning.
+If persistence is enabled, a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) associated with Statefulset will be provisioned. The volume is created using dynamic volume provisioning. In case of a disruption e.g. a node drain, kubernetes ensures that the same volume will be reatached to the Pod, preventing any data loss. Althought, when persistence is not enabled, InfluxDB data will be stored in an empty directory thus, in a Pod restart, data will be lost.
 
 ## Starting with authentication
 
@@ -86,3 +86,11 @@ Make sure to uncomment or configure the job settings after enabling it. If a pas
 ### From < 1.0.0 To >= 1.0.0
 
 Values `.Values.config.bind_address` and `.Values.exposeRpc` no longer exist. They have been replaced with `.Values.config.rpc.bind_address` and `.Values.config.rpc.enabled` respectively. Please adjust your values file accordingly.
+
+### From < 1.5.0 to >= 2.0.0
+
+The Kubernetes API change to support 1.160 may not be backwards compatible and may require the chare to be uninstalled in order to upgrade.  See [this issue](https://github.com/helm/helm/issues/6583) for some background.
+
+### From < 3.0.0 to >= 3.0.0
+
+Since version 3.0.0 this chart uses a StatefulSet instead of a Deployment. As part of this update the existing persistent volume (and all data) is deleted and a new one is created. Make sure to backup and restore the data manually.

@@ -48,6 +48,12 @@ spec:
       priorityClassName: {{ .Values.priorityClassName | quote }}
       {{- end }}
       volumes:
+        - name: ambassador-pod-info
+          downwardAPI:
+            items:
+              - fieldRef:
+                  fieldPath: metadata.labels
+                path: labels
         {{- if .Values.prometheusExporter.enabled }}
         - name: stats-exporter-mapping-config
           configMap:
@@ -162,6 +168,9 @@ spec:
             initialDelaySeconds: 30
             periodSeconds: 3
           volumeMounts:
+            - name: ambassador-pod-info
+              mountPath: /tmp/ambassador-pod-info
+              readOnly: true
           {{- if .Values.ambassadorConfig }}
             - name: ambassador-config
               mountPath: /ambassador/ambassador-config/ambassador-config.yaml
@@ -174,7 +183,11 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
         {{- if .Values.pro.enabled }}
         - name: ambassador-pro
+          {{ if .Values.pro.image.customBuildTag }}
+          image: "{{ .Values.pro.image.repository }}:{{ .Values.pro.image.customBuildTag }}"
+          {{ else }}
           image: "{{ .Values.pro.image.repository }}:amb-sidecar-{{ .Values.pro.image.tag }}"
+          {{ end }}
           ports:
           - name: grpc-auth
             containerPort: {{ .Values.pro.ports.auth }}

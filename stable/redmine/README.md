@@ -31,7 +31,7 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release stable/redmine
 ```
 
-The command deploys Redmine on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys Redmine on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
@@ -53,7 +53,7 @@ This chart includes the option to use a PostgreSQL database for Redmine instead 
 helm install --name my-release stable/redmine --set databaseType.mariadb=false,databaseType.postgresql=true
 ```
 
-## Configuration
+## Parameters
 
 The following table lists the configurable parameters of the Redmine chart and their default values.
 
@@ -143,18 +143,17 @@ $ helm install --name my-release -f values.yaml stable/redmine
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+## Configuration and installation details
+
 ### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
 
 It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
 
 Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
 
-## Replicas
+### Replicas
 
-Redmine writes uploaded files to a persistent volume. By default that volume
-cannot be shared between pods (RWO). In such a configuration the `replicas` option
-must be set to `1`. If the persistent volume supports more than one writer
-(RWX), ie NFS, `replicas` can be greater than `1`.
+Redmine writes uploaded files to a persistent volume. By default that volume cannot be shared between pods (RWO). In such a configuration the `replicas` option must be set to `1`. If the persistent volume supports more than one writer (RWX), ie NFS, `replicas` can be greater than `1`.
 
 ## Persistence
 
@@ -162,7 +161,7 @@ The [Bitnami Redmine](https://github.com/bitnami/bitnami-docker-redmine) image s
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube. The volume is created using dynamic volume provisioning. Clusters configured with NFS mounts require manually managed volumes and claims.
 
-See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+See the [Parameters](#parameters) section to configure the PVC or to disable persistence.
 
 ### Existing PersistentVolumeClaims
 
@@ -178,6 +177,14 @@ $ helm install --name test --set persistence.existingClaim=PVC_REDMINE,mariadb.p
 ```
 
 ## Upgrading
+
+### 13.0.0
+
+Helm performs a lookup for the object based on its group (apps), version (v1), and kind (Deployment). Also known as its GroupVersionKind, or GVK. Changing the GVK is considered a compatibility breaker from Kubernetes' point of view, so you cannot "upgrade" those objects to the new GVK in-place. Earlier versions of Helm 3 did not perform the lookup correctly which has since been fixed to match the spec.
+
+In https://github.com/helm/charts/pull/17309 the `apiVersion` of the deployment resources was updated to `apps/v1` in tune with the api's deprecated, resulting in compatibility breakage.
+
+This major version signifies this change.
 
 ### To 5.0.0
 

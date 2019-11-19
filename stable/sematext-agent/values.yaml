@@ -71,10 +71,9 @@ logsToken: null
 region: US
 
 # support for custom URLs
-customUrl: {}
-  # serverBaseUrl: https://metrics-receiver.apps.test.sematext.com
-  # eventsRecieverUrl: https://event-receiver.apps.test.sematext.com
-  # logsReceiverUrl: https://logs-token-receiver.apps.test.sematext.com
+serverBaseUrl: null
+eventsReceiverUrl: null
+logsReceiverUrl: null
 
 tolerations: []
 
