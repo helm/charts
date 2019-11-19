@@ -290,6 +290,10 @@ master:
   annotations: {}
   podLabels: {}
   podAnnotations: {}
+  extraInitContainers: |
+  # - name: do-something
+  #   image: busybox
+  #   command: ['do', 'something']
   ## Additional PostgreSQL Master Volume mounts
   ##
   extraVolumeMounts: []
@@ -312,6 +316,10 @@ slave:
   annotations: {}
   podLabels: {}
   podAnnotations: {}
+  extraInitContainers: |
+  # - name: do-something
+  #   image: busybox
+  #   command: ['do', 'something']
   ## Additional PostgreSQL Slave Volume mounts
   ##
   extraVolumeMounts: []
