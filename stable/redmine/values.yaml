@@ -178,6 +178,9 @@ externalDatabase:
   ## Database Password
   password: ""
 
+# # Use existing secret (ignores externalDatabase.password) with key "db-password" defined
+# existingSecret:
+
   ## Database port number (use 5432 when using PostgreSQL)
   port: 3306
 

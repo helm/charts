@@ -143,3 +143,14 @@ Return the appropriate apiVersion for deployment.
 {{- print "apps/v1" -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return the name of the Secret used to store the passwords
+*/}}
+{{- define "redmine.externalDatabase.secretName" -}}
+{{- if .Values.externalDatabase.existingSecret -}}
+{{ .Values.externalDatabase.existingSecret }}
+{{- else -}}
+{{ printf "%s-%s" .Release.Name "externaldb" }}
+{{- end -}}
+{{- end -}}

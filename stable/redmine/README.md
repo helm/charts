@@ -91,6 +91,7 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `externalDatabase.name`             | Name of the external database              | `localhost`                                             |
 | `externalDatabase.user`             | External db user                           | `user`                                                  |
 | `externalDatabase.password`         | Password for the db user                   | `""`                                                    |
+| `externalDatabase.existingSecret`   | Use existing secret for externalDatabase password (`externalDatabase.password` will be ignored and picked up from this secret). The secret has to contain the keys `db-password`. | `nil`
 | `externalDatabase.port`             | Database port number                       | `3306`                                                  |
 | `service.type`                      | Kubernetes Service type                    | `LoadBalancer`                                          |
 | `service.port`                      | Service HTTP port                          | `80`                                                    |
