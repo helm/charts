@@ -40,6 +40,8 @@ airflow:
   fernetKey: ""
   service:
     annotations: {}
+    sessionAffinity: "None"
+    sessionAffinityConfig: {}
     type: ClusterIP
     externalPort: 8080
     nodePort:
@@ -108,6 +110,7 @@ airflow:
   ##
   ## Configure pod disruption budget for the scheduler
   podDisruptionBudget:
+    enabled: true
     maxUnavailable: 1
   ## Add custom connections
   ## Use this to add Airflow connections for operators you use

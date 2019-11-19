@@ -259,6 +259,13 @@ Get the initialization scripts Secret name.
 {{- end -}}
 
 {{/*
+Get the metrics ConfigMap name.
+*/}}
+{{- define "postgresql.metricsCM" -}}
+{{- printf "%s-metrics" (include "postgresql.fullname" .) -}}
+{{- end -}}
+
+{{/*
 Return the proper Docker Image Registry Secret Names
 */}}
 {{- define "postgresql.imagePullSecrets" -}}
