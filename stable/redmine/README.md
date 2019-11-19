@@ -79,6 +79,7 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `smtpUser`                          | SMTP user                                  | `nil`                                                   |
 | `smtpPassword`                      | SMTP password                              | `nil`                                                   |
 | `smtpTls`                           | Use TLS encryption with SMTP               | `nil`                                                   |
+| `existingSecret`                    | Use existing secret for password details (`smtpPassword` and `redminePassword` will be ignored and picked up from this secret). The secret has to contain the keys `redmine-password` and `smtp-password`. | `nil`                        |
 | `databaseType.postgresql`           | Select PostgreSQL as database              | `false`                                                 |
 | `databaseType.mariadb`              | Select MariaDB as database                 | `true`                                                  |
 | `mariadb.enabled`                   | Whether to deploy a MariaDB server to satisfy the applications database requirements     | `true`    |
