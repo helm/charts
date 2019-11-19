@@ -298,8 +298,9 @@ resources: {}
   #   cpu: "2"
   #   memory: "1G"
 
-## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
 ## Configure extra options for liveness probe
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
+##
 livenessProbe:
   enabled: true
   initialDelaySeconds: 300
@@ -308,8 +309,9 @@ livenessProbe:
   successThreshold: 1
   failureThreshold: 3
 
-## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
 ## Configure extra options for readiness probe
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
+##
 readinessProbe:
   enabled: true
   initialDelaySeconds: 5
