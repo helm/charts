@@ -31,7 +31,7 @@ items:
       {{- end }}
       {{- end }}
       ports:
-        - name: web
+        - name: {{ .Values.prometheus.prometheusSpec.portName }}
           {{- if eq $serviceValues.type "NodePort" }}
           nodePort: {{ $serviceValues.nodePort }}
           {{- end }}
