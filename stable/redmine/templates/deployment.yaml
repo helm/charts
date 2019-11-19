@@ -154,4 +154,5 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
+      serviceAccountName: {{ template "redmine.serviceAccountName" . }}
 {{- end }}

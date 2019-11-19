@@ -98,8 +98,10 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `service.externalTrafficPolicy`     | Enable client source IP preservation       | `Cluster`                                               |
 | `service.loadBalancerIP`            | LoadBalancer service IP address            | `""`                                                    |
 | `service.loadBalancerSourceRanges`  | An array of load balancer sources          | `0.0.0.0/0`                                             |
+| `serviceAccount.create`             | Specifies whether a ServiceAccount should be created | `false`                                       |
+| `serviceAccount.name`               | The name of the ServiceAccount to create   | Generated using the redmine.fullname template         |
 | `ingress.enabled`                   | Enable or disable the ingress              | `false`                                                 |
-| `ingress.hosts[0].name`             | Hostname to your Redmine installation      | `redmine.local  `                                       |
+| `ingress.hosts[0].name`             | Hostname to your Redmine installation      | `redmine.local`                                       |
 | `ingress.hosts[0].path`             | Path within the url structure              | `/`                                                     |
 | `ingress.hosts[0].tls`              | Utilize TLS backend in ingress             | `false`                                                 |
 | `ingress.hosts[0].certManager`      | Add annotations for cert-manager           | `false`                                                 |
