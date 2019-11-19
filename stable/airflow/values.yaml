@@ -241,6 +241,7 @@ web:
   annotations: {}
   initialStartupDelay: "60"
   initialDelaySeconds: "360"
+  minReadySeconds: 120
   readinessProbe:
     periodSeconds: 60
     timeoutSeconds: 1
