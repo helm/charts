@@ -59,6 +59,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `image.pullSecrets`                        | Specify image pull secrets                                             | `nil`                                 |
 | `commandline.args`                         | add additional commandline args                                        | `nil`                                 |
 | `ingress.enabled`                          | Enables Ingress                                                        | `false`                               |
+| `ingress.apiVersion`                       | Ingress API Version                                                    | `networking.k8s.io/v1beta1`                               |
 | `ingress.annotations`                      | Ingress annotations                                                    | None:                                 |
 | `ingress.hosts`                            | Ingress accepted hostnames                                             | None:                                 |
 | `ingress.tls`                              | Ingress TLS configuration                                              | None:                                 |
