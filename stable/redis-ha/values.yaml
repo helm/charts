@@ -83,6 +83,16 @@ haproxy:
     runAsUser: 1000
     fsGroup: 1000
     runAsNonRoot: true
+
+  ## Whether the haproxy pods should be forced to run on separate nodes.
+  hardAntiAffinity: true
+
+  ## Additional affinities to add to the haproxy pods.
+  additionalAffinities: {}
+
+  ## Override all other affinity settings for the haproxy pods with a string.
+  affinity: |
+
   ## Custom config-haproxy.cfg files used to override default settings. If this file is
   ## specified then the config-haproxy.cfg above will be ignored.
   # customConfig: |-
