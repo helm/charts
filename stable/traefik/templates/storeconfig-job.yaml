@@ -19,6 +19,8 @@ spec:
         chart: {{ template "traefik.chart" . }}
     spec:
       restartPolicy: Never
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
       containers:
         - name: storeconfig-job
           image: "{{ .Values.image }}:{{ .Values.imageTag }}"
