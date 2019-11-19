@@ -68,6 +68,11 @@ spec:
         - name: git-clone
           image: {{ .Values.dags.initContainer.image.repository }}:{{ .Values.dags.initContainer.image.tag }} # Any image with git will do
           imagePullPolicy: {{ .Values.dags.initContainer.image.pullPolicy }}
+          envFrom:
+          - configMapRef:
+              name: "{{ template "airflow.fullname" . }}-env"
+          env:
+          {{- include "airflow.mapenvsecrets" . | indent 10 }}
           command:
             - /usr/local/git/git-clone.sh
           args:
