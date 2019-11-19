@@ -100,4 +100,5 @@ spec:
 {{- if .Values.alertmanager.alertmanagerSpec.additionalPeers }}
   additionalPeers: {{.Values.alertmanager.alertmanagerSpec.additionalPeers }}
 {{- end }}
+  portName: {{ .Values.alertmanager.alertmanagerSpec.portName }}
 {{- end }}
