@@ -109,8 +109,8 @@ airflow:
   config: {}
   ##
   ## Configure pod disruption budget for the scheduler
+  podDisruptionBudgetEnabled: true
   podDisruptionBudget:
-    enabled: true
     maxUnavailable: 1
   ## Add custom connections
   ## Use this to add Airflow connections for operators you use
