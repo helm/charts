@@ -39,6 +39,40 @@ spec:
 {{ toYaml .Values.nodeSelector | indent 8 }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
+      affinity:
+    {{- if .Values.haproxy.affinity }}
+    {{- with .Values.haproxy.affinity }}
+{{ tpl . $ | indent 8 }}
+    {{- end }}
+    {{- else }}
+    {{- if .Values.haproxy.additionalAffinities }}
+{{ toYaml .Values.haproxy.additionalAffinities | indent 8 }}
+    {{- end }}
+        podAntiAffinity:
+    {{- if .Values.haproxy.hardAntiAffinity }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: {{ template "redis-ha.name" . }}-haproxy
+                  release: {{ .Release.Name }}
+              topologyKey: kubernetes.io/hostname
+    {{- else }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: {{ template "redis-ha.name" . }}-haproxy
+                  release: {{ .Release.Name }}
+              topologyKey: kubernetes.io/hostname
+    {{- end }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app:  {{ template "redis-ha.name" . }}-haproxy
+                    release: {{ .Release.Name }}
+                topologyKey: failure-domain.beta.kubernetes.io/zone
+    {{- end }}
       initContainers:
       - name: config-init
         image: {{ .Values.haproxy.image.repository }}:{{ .Values.haproxy.image.tag }}
