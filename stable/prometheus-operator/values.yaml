@@ -371,6 +371,11 @@ alertmanager:
     ##
     additionalPeers: []
 
+    ## 	PortName to use for Alert Manager. 
+    ##
+    portName: "web"
+
+
 ## Using default values from https://github.com/helm/charts/blob/master/stable/grafana/values.yaml
 ##
 grafana:
@@ -1703,6 +1708,10 @@ prometheus:
     ## will fail to provision if the correct secret does not exist.
     ##
     additionalScrapeConfigsExternal: false
+
+    ## 	PortName to use for Prometheus. 
+    ##
+    portName: "web"
 
   additionalServiceMonitors: []
   ## Name of the ServiceMonitor to create

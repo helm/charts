@@ -222,4 +222,5 @@ spec:
   thanos:
 {{ toYaml .Values.prometheus.prometheusSpec.thanos | indent 4 }}
 {{- end }}
+  portName: {{ .Values.prometheus.prometheusSpec.portName }}
 {{- end }}
