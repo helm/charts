@@ -1,4 +1,4 @@
-{{- if .Values.airflow.podDisruptionBudget.enabled }}
+{{- if .Values.airflow.podDisruptionBudgetEnabled }}
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
