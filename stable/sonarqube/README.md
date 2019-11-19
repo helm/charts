@@ -66,10 +66,11 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `persistence.enabled`                       | Flag for enabling persistent storage      | false                                      |
 | `persistence.annotations`                   | Kubernetes pvc annotations                | `{}`                                      |
 | `persistence.existingClaim`                 | Do not create a new PVC but use this one  | None                                       |
-| `persistence.storageClass`                  | Storage class to be used                  | "-"                                        |
+| `persistence.storageClass`                  | Storage class to be used                  | ""                                         |
 | `persistence.accessMode`                    | Volumes access mode to be set             | `ReadWriteOnce`                            |
-| `persistence.size`                          | Size of the volume                        | None                                     |
+| `persistence.size`                          | Size of the volume                        | 10Gi                                       |
 | `sonarProperties`                           | Custom `sonar.properties` file            | None                                       |
+| `sonarSecretProperties`                     | Additional `sonar.properties` file to load from a secret | None                                       |
 | `customCerts.enabled`                       | Use `customCerts.secretName`              | false                                      |
 | `customCerts.secretName`                    | Name of the secret which conatins your `cacerts` | false                                      |
 | `sonarSecretKey`                            | Name of existing secret used for settings encryption | None                            |
@@ -106,7 +107,7 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `tolerations`                               | List of node taints to tolerate           | `[]`                                       |
 | `plugins.install`                           | List of plugins to install                | `[]`                                       |
 | `plugins.resources`                         | Plugin Pod resource requests & limits     | `{}`                                       |
-| `plugins.initContainerImage`                | Change init container image               | `joosthofman/wget:1.0`                     |
+| `plugins.initContainerImage`                | Change init container image               | `alpine:3.10.3`                            |
 | `plugins.initSysctlContainerImage`          | Change init sysctl container image        | `busybox:1.31`                             |
 | `plugins.deleteDefaultPlugins`              | Remove default plugins and use plugins.install list | `[]`                             |
 | `podLabels`                                 | Map of labels to add to the pods          | `{}`                                       |

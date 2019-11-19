@@ -64,8 +64,8 @@ Parameter                                            | Description              
 :--------------------------------------------------- | :--------------------------------------------------------------------------------------------------------- | :---------------------------------------------------
 `image.repository`                                   | Sentry image                                                                                               | `library/sentry`
 `image.tag`                                          | Sentry image tag                                                                                           | `9.1.2`
-`imagePullPolicy`                                    | Image pull policy                                                                                          | `IfNotPresent`
-`imagePullSecrets`                                   | Specify image pull secrets                                                                                 | `[]`
+`image.pullPolicy`                                   | Image pull policy                                                                                          | `IfNotPresent`
+`image.imagePullSecrets`                             | Specify image pull secrets                                                                                 | `[]`
 `sentrySecret`                                       | Specify SENTRY_SECRET_KEY. If isn't specified it will be generated automatically.                          | `nil`
 `web.podAnnotations`                                 | Web pod annotations                                                                                        | `{}`
 `web.podLabels`                                      | Worker pod extra labels                                                                                    | `{}`
@@ -109,6 +109,7 @@ Parameter                                            | Description              
 `email.password`                                     | SMTP password                                                                                              | `nil`
 `email.use_tls`                                      | SMTP TLS for security                                                                                      | `false`
 `email.enable_replies`                               | Allow email replies                                                                                        | `false`
+`email.existingSecret`                               | SMTP password from an existing secret (key must be `smtp-password`)                                        | `nil`
 `service.type`                                       | Kubernetes service type                                                                                    | `LoadBalancer`
 `service.name`                                       | Kubernetes service name                                                                                    | `sentry`
 `service.externalPort`                               | Kubernetes external service port                                                                           | `9000`

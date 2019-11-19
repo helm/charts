@@ -265,12 +265,14 @@ spec:
           {{- end }}
           {{- if .Values.repoConfig }}
           - name: repo-config
-            mountPath: /etc/atlantis
+            mountPath: /etc/atlantis/repos.yaml
+            subPath: repos.yaml
             readOnly: true
           {{- end }}
           {{- if .Values.config }}
           - name: config
-            mountPath: /etc/atlantis
+            mountPath: /etc/atlantis/atlantis.yaml
+            subPath: atlantis.yaml
             readOnly: true
           {{- end }}
           {{- if .Values.extraVolumeMounts }}

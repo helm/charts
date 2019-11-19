@@ -18,11 +18,6 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- define "kong.cassandra.fullname" -}}
-{{- $name := default "cassandra" .Values.cassandra.nameOverride -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-
 {{- define "kong.dblessConfig.fullname" -}}
 {{- $name := default "kong-custom-dbless-config" .Values.dblessConfig.nameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
@@ -123,6 +118,21 @@ Create the ingress servicePort value string
 {{- end -}}
 {{- end -}}
 
+{{/*
+Generate an appropriate external URL from a Kong service's ingress configuration
+Strips trailing slashes from the path. Manager at least does not handle these
+intelligently and will append its own slash regardless, and the admin API cannot handle
+the extra slash.
+*/}}
+
+{{- define "kong.ingress.serviceUrl" -}}
+{{- if .tls -}}
+    https://{{ .hostname }}{{ .path | trimSuffix "/" }}
+{{- else -}}
+    http://{{ .hostname }}{{ .path | trimSuffix "/" }}
+{{- end -}}
+{{- end -}}
+
 
 {{- define "kong.env" -}}
 {{- range $key, $val := .Values.env }}
@@ -218,10 +228,6 @@ Create the ingress servicePort value string
       secretKeyRef:
         name: {{ template "kong.postgresql.fullname" . }}
         key: postgresql-password
-  {{- end }}
-  {{- if .Values.cassandra.enabled }}
-  - name: KONG_CASSANDRA_CONTACT_POINTS
-    value: {{ template "kong.cassandra.fullname" . }}
   {{- end }}
   {{- include "kong.env" .  | nindent 2 }}
   command: [ "/bin/sh", "-c", "until kong start; do echo 'waiting for db'; sleep 1; done; kong stop" ]

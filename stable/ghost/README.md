@@ -100,10 +100,10 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `ingress.secrets[0].name`           | TLS Secret Name                                               | `nil`                                                    |
 | `ingress.secrets[0].certificate`    | TLS Secret Certificate                                        | `nil`                                                    |
 | `ingress.secrets[0].key`            | TLS Secret Key                                                | `nil`                                                    |
-| `externalDatabase.host`             | Host of the external database                                 | `nil`                                                    |
-| `externalDatabase.port`             | Port of the external database                                 | `nil`                                                    |
+| `externalDatabase.host`             | Host of the external database                                 | `localhost`                                              |
+| `externalDatabase.port`             | Port of the external database                                 | `3306`                                                   |
 | `externalDatabase.user`             | Existing username in the external db                          | `bn_ghost`                                               |
-| `externalDatabase.password`         | Password for the above username                               | `nil`                                                    |
+| `externalDatabase.password`         | Password for the above username                               | `""`                                                     |
 | `externalDatabase.database`         | Name of the existing database                                 | `bitnami_ghost`                                          |
 | `mariadb.enabled`                   | Whether or not to install MariaDB (disable if using external) | `true`                                                   |
 | `mariadb.rootUser.password`         | MariaDB admin password                                        | `nil`                                                    |
@@ -180,6 +180,14 @@ Persistent Volume Claims are used to keep the data across deployments. This is k
 See the [Parameters](#parameters) section to configure the PVC or to disable persistence.
 
 ## Upgrading
+
+### To 9.0.0
+
+Helm performs a lookup for the object based on its group (apps), version (v1), and kind (Deployment). Also known as its GroupVersionKind, or GVK. Changing the GVK is considered a compatibility breaker from Kubernetes' point of view, so you cannot "upgrade" those objects to the new GVK in-place. Earlier versions of Helm 3 did not perform the lookup correctly which has since been fixed to match the spec.
+
+In https://github.com/helm/charts/pulls/17297 the `apiVersion` of the deployment resources was updated to `apps/v1` in tune with the api's deprecated, resulting in compatibility breakage.
+
+This major version signifies this change.
 
 ### To 5.0.0
 
