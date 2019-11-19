@@ -16,6 +16,11 @@ image:
 securityContext:
   fsGroup: 999
 
+# Settings to configure elasticsearch host requirements
+elasticsearch:
+  configureNode: true
+  bootstrapChecks: true
+
 service:
   type: ClusterIP
   externalPort: 9000
@@ -121,9 +126,9 @@ persistence:
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   ##
-  # storageClass: "-"
-  # accessMode: ReadWriteOnce
-  # size: 10Gi
+  storageClass:
+  accessMode: ReadWriteOnce
+  size: 10Gi
 
 # List of plugins to install.
 # For example:
@@ -134,7 +139,7 @@ persistence:
 plugins:
   install: []
 
-  # initContainerImage: alpine:3.9
+  # initContainerImage: alpine:3.10.3
   # deleteDefaultPlugins: true
   resources: {}
   # We allow the plugins init container to have a separate resources declaration because
@@ -146,6 +151,9 @@ plugins:
 #   sonar.forceAuthentication: true
 #   sonar.security.realm: LDAP
 #   ldap.url: ldaps://organization.com
+
+# Additional sonar properties to load from a secret with a key "secret.properties" (must be a string)
+# sonarSecretProperties:
 
 # Kubernetes secret that contains the encryption key for the sonarqube instance.
 # The secret must contain the key 'sonar-secret.txt'.

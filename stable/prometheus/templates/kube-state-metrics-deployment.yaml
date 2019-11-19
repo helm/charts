@@ -1,5 +1,5 @@
 {{- if .Values.kubeStateMetrics.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "prometheus.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
 {{- if .Values.kubeStateMetrics.deploymentAnnotations }}

@@ -31,7 +31,7 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release stable/moodle
 ```
 
-The command deploys Moodle on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys Moodle on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
@@ -45,7 +45,7 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
-## Configuration
+## Parameters
 
 The following table lists the configurable parameters of the Moodle chart and their default values.
 
@@ -110,11 +110,13 @@ The following table lists the configurable parameters of the Moodle chart and th
 | `mariadb.persistence.existingClaim`   | If PVC exists&bounded for MariaDB                                                            | `nil` (when nil, new one is requested)         |
 | `mariadb.affinity`                    | Set affinity for the MariaDB pods                                                            | `nil`                                          |
 | `mariadb.resources`                   | CPU/Memory resource requests/limits                                                          | Memory: `256Mi`, CPU: `250m`                   |
+| `livenessProbe.enabled`               | Turn on and off liveness probe                                                               | `true`                                         |
 | `livenessProbe.initialDelaySeconds`   | Delay before liveness probe is initiated                                                     | 600                                            |
 | `livenessProbe.periodSeconds`         | How often to perform the probe                                                               | 3                                              |
 | `livenessProbe.timeoutSeconds`        | When the probe times out                                                                     | 5                                              |
 | `livenessProbe.failureThreshold`      | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 6                                              |
 | `livenessProbe.successThreshold`      | Minimum consecutive successes for the probe to be considered successful after having failed. | 1                                              |
+| `readinessProbe.enabled`              | Turn on and off readiness probe                                                              | `true`                                         |
 | `readinessProbe.initialDelaySeconds`  | Delay before readiness probe is initiated                                                    | 30                                             |
 | `readinessProbe.periodSeconds`        | How often to perform the probe                                                               | 3                                              |
 | `readinessProbe.timeoutSeconds`       | When the probe times out                                                                     | 5                                              |
@@ -150,6 +152,8 @@ $ helm install --name my-release -f values.yaml stable/moodle
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+## Configuration and installation details
+
 ### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
 
 It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
@@ -161,26 +165,23 @@ Bitnami will release a new chart updating its containers if a new version of the
 For using ingress (example without TLS):
 
 ```console
-$ helm install --name my-release \
-  --set ingress.enabled=True,ingress.hosts[0]=moodle.domain.com,serviceType=ClusterIP,moodleUsername=admin,moodlePassword=password,mariadb.mariadbRootPassword=secretpassword stable/moodle
+ingress.enabled=True
+ingress.hosts[0]=moodle.domain.com
+serviceType=ClusterIP
+moodleUsername=admin
+moodlePassword=password
+mariadb.mariadbRootPassword=secretpassword
 ```
 
-These are the *3 mandatory parameters* when *Ingress* is desired:
-`ingress.enabled=True,ingress.hosts[0]=moodle.domain.com,serviceType=ClusterIP`
+These are the *3 mandatory parameters* when *Ingress* is desired: `ingress.enabled=True`, `ingress.hosts[0]=moodle.domain.com` and `serviceType=ClusterIP`
 
 ### Ingress TLS
 
 If your cluster allows automatic creation/retrieval of TLS certificates (e.g. [kube-lego](https://github.com/jetstack/kube-lego)), please refer to the documentation for that mechanism.
 
-To manually configure TLS, first create/retrieve a key & certificate pair for the address(es) you wish to protect. Then create a TLS secret in the namespace:
+To manually configure TLS, first create/retrieve a key & certificate pair for the address(es) you wish to protect. Then create a TLS secret (named `moodle-server-tls` in this example) in the namespace. Include the secret's name, along with the desired hostnames, in the Ingress TLS section of your custom `values.yaml` file:
 
-```console
-$ kubectl create secret tls moodle-server-tls --cert=path/to/tls.cert --key=path/to/tls.key
-```
-
-Include the secret's name, along with the desired hostnames, in the Ingress TLS section of your custom `values.yaml` file:
-
-```console
+```yaml
 ingress:
   ## If true, Moodle server Ingress will be created
   ##
@@ -212,10 +213,18 @@ ingress:
 The [Bitnami Moodle](https://github.com/bitnami/bitnami-docker-moodle) image stores the Moodle data and configurations at the `/bitnami/moodle` and `/bitnami/apache` paths of the container.
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, vpshere, and minikube.
-See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+See the [Parameters](#parameters) section to configure the PVC or to disable persistence.
 You may want to review the [PV reclaim policy](https://kubernetes.io/docs/tasks/administer-cluster/change-pv-reclaim-policy/) and update as required. By default, it's set to delete, and when Moodle is uninstalled, data is also removed.
 
 ## Upgrading
+
+### To 7.0.0
+
+Helm performs a lookup for the object based on its group (apps), version (v1), and kind (Deployment). Also known as its GroupVersionKind, or GVK. Changing the GVK is considered a compatibility breaker from Kubernetes' point of view, so you cannot "upgrade" those objects to the new GVK in-place. Earlier versions of Helm 3 did not perform the lookup correctly which has since been fixed to match the spec.
+
+In https://github.com/helm/charts/pull/17301 the `apiVersion` of the deployment resources was updated to `apps/v1` in tune with the api's deprecated, resulting in compatibility breakage.
+
+This major version signifies this change.
 
 ### To 3.0.0
 

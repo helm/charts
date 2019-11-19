@@ -182,7 +182,7 @@ serviceAccount:
   annotations: {}
   ## The name of the ServiceAccount to use.
   ## If not set and create is true, a name is generated using the fullname template
-  name:
+  # name:
 
 vault:
   # Only used to enable dev mode. When in dev mode, the rest of this config
@@ -241,6 +241,10 @@ vault:
     readyIfUninitialized: true
     initialDelaySeconds: 10
     periodSeconds: 10
+  # Set the `VAULT_API_ADDR` environment variable to the Pod IP Address
+  # This is the address (full URL) to advertise to other Vault servers in the cluster for client redirection.
+  # See https://www.vaultproject.io/docs/configuration/#api_addr
+  podApiAddress: true
   ## Use an existing config in a named ConfigMap
   # existingConfigName: vault-cm
   config:
@@ -251,12 +255,10 @@ vault:
         address: '[::]:8200'
         cluster_address: '[::]:8201'
         tls_disable: true
-        tls_prefer_server_cipher_suites: true
-        tls_cipher_suites: TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA
         # tls_cert_file: /vault/tls/server.crt
         # tls_key_file: /vault/tls/server.key
     # See https://www.vaultproject.io/docs/configuration/storage/ for storage backends
-    storage:
+    storage: {}
       # consul:
       #   address: ""
       #   path: ""
@@ -278,7 +280,7 @@ vault:
       #   bucket: ""
       #   # Use a custom secret to mount this file.
       #   credentials_file: ""
-    backendPolicy:
+  backendPolicy: []
 
 rbac:
    ## Enable RBAC

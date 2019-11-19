@@ -64,8 +64,8 @@ Parameter                                            | Description              
 :--------------------------------------------------- | :--------------------------------------------------------------------------------------------------------- | :---------------------------------------------------
 `image.repository`                                   | Sentry image                                                                                               | `library/sentry`
 `image.tag`                                          | Sentry image tag                                                                                           | `9.1.2`
-`imagePullPolicy`                                    | Image pull policy                                                                                          | `IfNotPresent`
-`imagePullSecrets`                                   | Specify image pull secrets                                                                                 | `[]`
+`image.pullPolicy`                                   | Image pull policy                                                                                          | `IfNotPresent`
+`image.imagePullSecrets`                             | Specify image pull secrets                                                                                 | `[]`
 `sentrySecret`                                       | Specify SENTRY_SECRET_KEY. If isn't specified it will be generated automatically.                          | `nil`
 `web.podAnnotations`                                 | Web pod annotations                                                                                        | `{}`
 `web.podLabels`                                      | Worker pod extra labels                                                                                    | `{}`
@@ -109,6 +109,7 @@ Parameter                                            | Description              
 `email.password`                                     | SMTP password                                                                                              | `nil`
 `email.use_tls`                                      | SMTP TLS for security                                                                                      | `false`
 `email.enable_replies`                               | Allow email replies                                                                                        | `false`
+`email.existingSecret`                               | SMTP password from an existing secret (key must be `smtp-password`)                                        | `nil`
 `service.type`                                       | Kubernetes service type                                                                                    | `LoadBalancer`
 `service.name`                                       | Kubernetes service name                                                                                    | `sentry`
 `service.externalPort`                               | Kubernetes external service port                                                                           | `9000`
@@ -122,11 +123,11 @@ Parameter                                            | Description              
 `ingress.path`                                       | path to address your Sentry installation                                                                   | `/`
 `ingress.tls`                                        | Ingress TLS configuration                                                                                  | `[]`
 `postgresql.enabled`                                 | Deploy postgres server (see below)                                                                         | `true`
-`postgresql.postgresDatabase`                        | Postgres database name                                                                                     | `sentry`
-`postgresql.postgresUser`                            | Postgres username                                                                                          | `sentry`
-`postgresql.postgresHost`                            | External postgres host                                                                                     | `nil`
-`postgresql.postgresPassword`                        | External postgres password                                                                                 | `nil`
-`postgresql.postgresPort`                            | External postgres port                                                                                     | `5432`
+`postgresql.postgresqlDatabase`                      | Postgres database name                                                                                     | `sentry`
+`postgresql.postgresqlUsername`                      | Postgres username                                                                                          | `postgres`
+`postgresql.postgresqlHost`                          | External postgres host                                                                                     | `nil`
+`postgresql.postgresqlPassword`                      | External postgres password                                                                                 | `nil`
+`postgresql.postgresqlPort`                          | External postgres port                                                                                     | `5432`
 `redis.enabled`                                      | Deploy redis server (see below)                                                                            | `true`
 `redis.host`                                         | External redis host                                                                                        | `nil`
 `redis.password`                                     | External redis password                                                                                    | `nil`
@@ -188,7 +189,7 @@ $ helm install --name my-release -f values.yaml stable/sentry
 
 ## PostgresSQL
 
-By default, PostgreSQL is installed as part of the chart. To use an external PostgreSQL server set `postgresql.enabled` to `false` and then set `postgresql.postgresHost` and `postgresql.postgresPassword`. The other options (`postgresql.postgresDatabase`, `postgresql.postgresUser` and `postgresql.postgresPort`) may also want changing from their default values.
+By default, PostgreSQL is installed as part of the chart. To use an external PostgreSQL server set `postgresql.enabled` to `false` and then set `postgresql.postgresHost` and `postgresql.postgresqlPassword`. The other options (`postgresql.postgresqlDatabase`, `postgresql.postgresqlUsername` and `postgresql.postgresqlPort`) may also want changing from their default values.
 
 ## Redis
 

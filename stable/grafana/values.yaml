@@ -22,7 +22,7 @@ replicas: 1
 ## See `kubectl explain poddisruptionbudget.spec` for more
 ## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
 podDisruptionBudget: {}
-#  minAvailble: 1
+#  minAvailable: 1
 #  maxUnavailable: 1
 
 ## See `kubectl explain deployment.spec.strategy` for more
