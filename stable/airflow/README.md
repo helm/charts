@@ -344,7 +344,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.service.annotations`            | (optional) service annotations for Airflow UI           | `{}`                      |
 | `airflow.service.externalPort`           | (optional) external port for Airflow UI                 | `8080`                    |
 | `airflow.service.nodePort.http`          | (optional) when using service.type == NodePort, an optional NodePort to request | ``|
-| `airflow.service.serviceSessionAffinity` | The session affinity for the airflow UI                 | `None`                    |
+| `airflow.service.sessionAffinity`        | The session affinity for the airflow UI                 | `None`                    |
 | `airflow.service.sessionAffinityConfig`  | The session affinity config for the airflow UI          | `None`                    |
 | `airflow.executor`                       | the executor to run                                     | `Celery`                  |
 | `airflow.initRetryLoop`                  | max number of retries during container init             |                           |
