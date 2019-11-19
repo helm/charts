@@ -122,6 +122,7 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `podDisruptionBudget.maxUnavailable`| Maximum unavailable pods                   | `nil`                                                   |
 | `replicas`                          | The number of pod replicas                 | `1`                                                     |
 | `resources`                         | Resources allocation (Requests and Limits) | `{}`                                                    |
+| `securityContext`                   | Security Context                           | `{}`                                                    |
 
 The above parameters map to the env variables defined in [bitnami/redmine](http://github.com/bitnami/bitnami-docker-redmine). For more information please refer to the [bitnami/redmine](http://github.com/bitnami/bitnami-docker-redmine) image documentation.
 

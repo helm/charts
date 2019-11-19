@@ -297,3 +297,8 @@ resources: {}
   # limits:
   #   cpu: "2"
   #   memory: "1G"
+
+## Pod Security Context
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+##
+securityContext: {}
