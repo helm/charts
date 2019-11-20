@@ -45,7 +45,7 @@ This version upgrade oauth2-proxy to v4.0.0. Please see the [changelog](https://
 
 Version 2.0.0 of this chart introduces support for Kubernetes v1.16.x by way of addressing the deprecation of the Deployment object apiVersion `apps/v1beta2`.  See [the v1.16 API deprecations page](https://kubernetes.io/blog/2019/07/18/api-deprecations-in-1-16/) for more information.
 
-Due to [this issue](https://github.com/helm/helm/issues/6583) there may be errors performing a `helm upgrade` of this chart from versions earlier than 2.0.0.  Therefore, it may be necessary to first remove the chart by running `helm delete --purge <chart name>` and then installing the chart fresh as done originally.
+Due to [this issue](https://github.com/helm/helm/issues/6583) there may be errors performing a `helm upgrade`of this chart from versions earlier than 2.0.0.
 
 ## Configuration
 
