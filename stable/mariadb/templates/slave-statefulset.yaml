@@ -223,10 +223,14 @@ spec:
           configMap:
             name: {{ template "slave.fullname" . }}
         {{- end }}
-{{- if not .Values.slave.persistence.enabled }}
-        - name: "data"
+{{- if and .Values.slave.persistence.enabled .Values.slave.persistence.existingClaim }}
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ .Values.slave.persistence.existingClaim }}
+{{- else if not .Values.slave.persistence.enabled }}
+        - name: data
           emptyDir: {}
-{{- else }}
+{{- else if and .Values.slave.persistence.enabled (not .Values.slave.persistence.existingClaim) }}
   volumeClaimTemplates:
     - metadata:
         name: data

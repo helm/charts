@@ -354,8 +354,24 @@ slave:
     ## If true, use a Persistent Volume Claim, If false, use emptyDir
     ##
     enabled: true
+    # Enable persistence using an existing PVC
+    # existingClaim:
+    # Subdirectory of the volume to mount
+    # subPath:
+    mountPath: /bitnami/mariadb
+    ## Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
     # storageClass: "-"
-    annotations:
+    ## Persistent Volume Claim annotations
+    ##
+    annotations: {}
+    ## Persistent Volume Access Mode
+    ##
     accessModes:
     - ReadWriteOnce
     ## Persistent Volume size
