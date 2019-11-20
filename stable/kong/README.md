@@ -137,32 +137,33 @@ for the service definition to work properly.
 
 ### Kong-specific parameters
 
-Kong has a choice of either Postgres or Cassandra as a backend datatstore.
-This chart allows you to choose either of them with the `env.database`
-parameter.  Postgres is chosen by default.
+Kong can run and store all it's configuration in-memory or it can be backed 
+using a database. Kong supports Postgres and Cassandra.
+This chart by default installs Kong without a database, storing all the
+configuration in-memory. If you'd like to use a database, you can deploy one
+and set the 'env.database` property accordingly.
 
-Additionally, this chart allows you to use your own database or spin up a new
-instance by using the `postgres.enabled` or `cassandra.enabled` parameters.
-Enabling both will create both databases in your cluster, but only one
-will be used by Kong based on the `env.database` parameter.
-Postgres is enabled by default.
+This chart allows you to bring your own database that you manage or spin up
+separately (recommended) or spin up a new Postgres instance using 
+the `postgres.enabled` parameter.
+
+Note: Cassandra deployment via a sub-chart was previously supported but
+the support has now been dropped due to stability issues.
+You can still deploy Cassandra on your own and configure Kong to use
+that via the `env.database` parameter.
 
 | Parameter                     | Description                                                             | Default               |
 | ------------------------------| ------------------------------------------------------------------------| ----------------------|
-| cassandra.enabled             | Spin up a new cassandra cluster for Kong                                | `false`               |
-| postgresql.enabled            | Spin up a new postgres instance for Kong                                | `true`                |
+| postgresql.enabled            | Spin up a new postgres instance for Kong                                | `false`               |
 | waitImage.repository          | Image used to wait for database to become ready                         | `busybox`             |
 | waitImage.tag                 | Tag for image used to wait for database to become ready                 | `latest`              |
-| env.database                  | Choose either `postgres`, `cassandra` or `"off"` (for dbless mode)      | `postgres`            |
+| waitImage.pullPolicy          | Wait image pull policy                                                  | `IfNotPresent`        |
+| env.database                  | Choose either `postgres`, `cassandra` or `"off"` (for dbless mode)      | `off`                 |
 | env.pg_user                   | Postgres username                                                       | `kong`                |
 | env.pg_database               | Postgres database name                                                  | `kong`                |
 | env.pg_password               | Postgres database password (required if you are using your own database)| `kong`                |
 | env.pg_host                   | Postgres database host (required if you are using your own database)    | ``                    |
 | env.pg_port                   | Postgres database port                                                  | `5432`                |
-| env.cassandra_contact_points  | Cassandra contact points (required if you are using your own database)  | ``                    |
-| env.cassandra_port            | Cassandra query port                                                    | `9042`                |
-| env.cassandra_keyspace        | Cassandra keyspace                                                      | `kong`                |
-| env.cassandra_repl_factor     | Replication factor for the Kong keyspace                                | `2`                   |
 | dblessConfig.configMap        | Name of an existing ConfigMap containing the `kong.yml` file. This must have the key `kong.yml`.| `` |
 | dblessConfig.config           | Yaml configuration file for the dbless (declarative) configuration of Kong | see in `values.yaml`    |
 
@@ -182,13 +183,13 @@ kong:
 ```
 
 
-For complete list of Kong configurations please check https://getkong.org/docs/latest/configuration/.
+For complete list of Kong configurations please check https://docs.konghq.com/latest/configuration/.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
 $ helm install stable/kong --name my-release \
-  --set=image.tag=1.3,env.database=cassandra,cassandra.enabled=true
+  --set=image.tag=1.3,env.database=postgres,postgres.enabled=true
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters
@@ -389,7 +390,7 @@ You can can learn about kong ingress custom resource definitions [here](https://
 
 | Parameter                          | Description                                                                           | Default                                                                      |
 | ---------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| enabled                            | Deploy the ingress controller, rbac and crd                                           | false                                                                        |
+| enabled                            | Deploy the ingress controller, rbac and crd                                           | true                                                                         |
 | replicaCount                       | Number of desired ingress controllers                                                 | 1                                                                            |
 | image.repository                   | Docker image with the ingress controller                                              | kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller |
 | image.tag                          | Version of the ingress controller                                                     | 0.6.0                                                                        |
@@ -399,3 +400,13 @@ You can can learn about kong ingress custom resource definitions [here](https://
 | podDisruptionBudget.enabled        | Enable PodDisruptionBudget for ingress controller                                     | `false`                                                                      |
 | podDisruptionBudget.maxUnavailable | Represents the minimum number of Pods that can be unavailable (integer or percentage) | `50%`                                                                        |
 | podDisruptionBudget.minAvailable   | Represents the number of Pods that must be available (integer or percentage)          |                                                                              |
+
+
+## Changelog
+
+### 0.27.0
+
+#### Breaking changes
+
+- DB-less mode is enabled by default.
+- Kong is installed as an Ingress Controller for the cluster by default.

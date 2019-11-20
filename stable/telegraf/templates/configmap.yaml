@@ -11,5 +11,6 @@ data:
   telegraf.conf: |+
     {{ template "global_tags" .Values.config.global_tags }}
     {{ template "agent" .Values.config.agent }}
+    {{ template "processors" .Values.config.processors }}
     {{ template "outputs" .Values.config.outputs }}
     {{ template "inputs" .Values.config.inputs -}}
