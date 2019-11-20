@@ -1,3 +1,4 @@
+{{- if .Values.webhook.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -43,18 +44,14 @@ spec:
       containers:
         - name: admission-webhook
           image: "{{ .Values.webhook.image }}:{{ .Values.webhook.imageTag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          imagePullPolicy: Always 
           args:
-            - -tlsCertFile=/etc/webhook/certs/cert.pem
-            - -tlsKeyFile=/etc/webhook/certs/key.pem
             - -alsologtostderr
-            - -v=8
+            - -v=2
             - 2>&1
-          volumeMounts:
-            - name: webhook-certs
-              mountPath: /etc/webhook/certs
-              readOnly: true
-      volumes:
-        - name: webhook-certs
-          secret:
-            secretName: admission-server-certs
+          env:
+            - name: OPENEBS_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+{{- end }}

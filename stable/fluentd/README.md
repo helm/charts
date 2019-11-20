@@ -48,7 +48,7 @@ Parameter | Description | Default
 `configMaps` | Fluentd configuration | See [values.yaml](values.yaml)
 `output.host` | output host | `elasticsearch-client.default.svc.cluster.local`
 `output.port` | output port | `9200`
-`output.scheme` | output port | `http`
+`output.scheme` | output scheme | `http`
 `output.sslVersion` | output ssl version | `TLSv1`
 `output.buffer_chunk_limit` | output buffer chunk limit | `2M`
 `output.buffer_queue_limit` | output buffer queue limit | `8`
@@ -65,10 +65,13 @@ Parameter | Description | Default
 `nodeSelector` | node labels for pod assignment | `{}`
 `replicaCount` | desired number of pods | `1` ???
 `resources` | pod resource requests & limits | `{}`
+`plugins.enabled` | Enable Plugins Installation | `false`
+`plugins.pluginsList` | List of plugins to install | `[]`
 `rbac.create` | Specifies whether RBAC resources should be created | `true`
 `serviceAccount.create` | Specifies whether a service account should be created. | `true`
 `serviceAccount.name` | Name of the service account.
 `priorityClassName` | priorityClassName | `nil`
+`service.loadBalancerIP` | If `service.type` is `LoadBalancer` set custom IP load balancer IP address | `nil`
 `service.ports` | port definition for the service | See [values.yaml](values.yaml)
 `service.type` | type of service | `ClusterIP`
 `service.annotations` | list of annotations for the service | `{}`

@@ -24,8 +24,12 @@ spec:
    serviceAccountName: omsagent
    {{- end }}
    containers:
-     - name: omsagent 
+     - name: omsagent
+       {{- if eq (.Values.omsagent.domain | lower) "opinsights.azure.cn" }}
+       image: "dockerhub.azk8s.cn/microsoft/oms:{{ .Values.omsagent.image.tag }}"
+       {{- else }}
        image: "mcr.microsoft.com/azuremonitor/containerinsights/ciprod:{{ .Values.omsagent.image.tag }}"
+       {{- end }}
        imagePullPolicy: IfNotPresent
        resources:
 {{ toYaml .Values.omsagent.resources.daemonset | indent 9 }}
@@ -54,7 +58,7 @@ spec:
          privileged: true
        ports:
        - containerPort: 25225
-         protocol: TCP 
+         protocol: TCP
        - containerPort: 25224
          protocol: UDP
        volumeMounts:
@@ -63,9 +67,9 @@ spec:
           readOnly: true
         - mountPath: /var/run/host
           name: docker-sock
-        - mountPath: /var/log 
+        - mountPath: /var/log
           name: host-log
-        - mountPath: /var/lib/docker/containers 
+        - mountPath: /var/lib/docker/containers
           name: containerlog-path
         - mountPath: /etc/kubernetes/host
           name: azure-json-path
@@ -84,18 +88,20 @@ spec:
         initialDelaySeconds: 60
         periodSeconds: 60
    nodeSelector:
-    beta.kubernetes.io/os: linux    
-   # Tolerate a NoSchedule taint on master that ACS Engine sets.
+    beta.kubernetes.io/os: linux
+   # Tolerate below taints on nodes of k8s clusters to schedule ds pod.
    tolerations:
-    - key: "node-role.kubernetes.io/master"
-      operator: "Equal"
-      value: "true"
-      effect: "NoSchedule"     
+     - operator: "Exists"
+       effect: "NoSchedule"
+     - operator: "Exists"
+       effect: "NoExecute"
+     - operator: "Exists"
+       effect: "PreferNoSchedule"
    volumes:
     - name: host-root
       hostPath:
        path: /
-    - name: docker-sock 
+    - name: docker-sock
       hostPath:
        path: /var/run
     - name: container-hostname
@@ -117,4 +123,4 @@ spec:
       configMap:
         name: container-azm-ms-agentconfig
         optional: true
-{{- end }} 
+{{- end }}

@@ -8,7 +8,7 @@ deploymentStrategy: {}
 
 image:
   repository: sonarqube
-  tag: 7.9-community
+  tag: 7.9.1-community
   # If using a private repository, the name of the imagePullSecret to use
   # pullSecret: my-repo-secret
 
@@ -16,17 +16,21 @@ image:
 securityContext:
   fsGroup: 999
 
+# Settings to configure elasticsearch host requirements
+elasticsearch:
+  configureNode: true
+  bootstrapChecks: true
+
 service:
-  name: sonarqube
-  type: LoadBalancer
+  type: ClusterIP
   externalPort: 9000
   internalPort: 9000
   labels:
   annotations: {}
   # May be used in example for internal load balancing in GCP:
   # cloud.google.com/load-balancer-type: Internal
-  loadBalancerSourceRanges:
-  - 0.0.0.0/0
+  # loadBalancerSourceRanges:
+  #   - 0.0.0.0/0
   # loadBalancerIP: 1.2.3.4
 ingress:
   enabled: false
@@ -122,9 +126,9 @@ persistence:
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   ##
-  # storageClass: "-"
-  # accessMode: ReadWriteOnce
-  # size: 10Gi
+  storageClass:
+  accessMode: ReadWriteOnce
+  size: 10Gi
 
 # List of plugins to install.
 # For example:
@@ -135,7 +139,7 @@ persistence:
 plugins:
   install: []
 
-  # initContainerImage: alpine:3.9
+  # initContainerImage: alpine:3.10.3
   # deleteDefaultPlugins: true
   resources: {}
   # We allow the plugins init container to have a separate resources declaration because
@@ -147,6 +151,9 @@ plugins:
 #   sonar.forceAuthentication: true
 #   sonar.security.realm: LDAP
 #   ldap.url: ldaps://organization.com
+
+# Additional sonar properties to load from a secret with a key "secret.properties" (must be a string)
+# sonarSecretProperties:
 
 # Kubernetes secret that contains the encryption key for the sonarqube instance.
 # The secret must contain the key 'sonar-secret.txt'.

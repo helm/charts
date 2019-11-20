@@ -30,5 +30,11 @@ spec:
     app: {{ template "nexus.name" . }}
     release: {{ .Release.Name }}
   type: {{ .Values.service.serviceType }}
+  {{ if .Values.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+    {{- range .Values.service.loadBalancerSourceRanges }}
+    - {{ . }}
+    {{- end }}
+  {{ end }}
 {{- end}}
 

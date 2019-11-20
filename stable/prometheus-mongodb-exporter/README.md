@@ -39,7 +39,7 @@ podAnnotations:
 | `fullnameOverride` | Override the full chart name | `` |
 | `image.pullPolicy` | MongoDB Exporter image pull policy | `IfNotPresent` |
 | `image.repository` | MongoDB Exporter image name | `ssheehy/mongodb-exporter` |
-| `image.tag` | MongoDB Exporter image tag | `0.7.0` |
+| `image.tag` | MongoDB Exporter image tag | `0.10.0` |
 | `imagePullSecrets` | List of container registry secrets | `[]` |
 | `mongodb.uri` | The required [URI](https://docs.mongodb.com/manual/reference/connection-string) to connect to MongoDB | `` |
 | `nameOverride` | Override the application name  | `` |
@@ -54,6 +54,8 @@ podAnnotations:
 | `service.annotations` | Annotations to be added to the service | `{}` |
 | `service.port` | The port to expose | `9216` |
 | `service.type` | The type of service to expose | `ClusterIP` |
+| `serviceAccount.create` | If `true`, create the service account | `true` |
+| `serviceAccount.name` | Name of the service account | `` |
 | `serviceMonitor.enabled` | Set to true if using the Prometheus Operator | `true` |
 | `serviceMonitor.interval` | Interval at which metrics should be scraped | `30s` |
 | `serviceMonitor.scrapeTimeout` | Interval at which metric scrapes should time out | `10s` |

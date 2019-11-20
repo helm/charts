@@ -15,8 +15,15 @@ serviceAccount:
   create: true
   name:
   nameTest:
+#  annotations:
 
 replicas: 1
+
+## See `kubectl explain poddisruptionbudget.spec` for more
+## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+podDisruptionBudget: {}
+#  minAvailable: 1
+#  maxUnavailable: 1
 
 ## See `kubectl explain deployment.spec.strategy` for more
 ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
@@ -43,7 +50,7 @@ livenessProbe:
 
 image:
   repository: grafana/grafana
-  tag: 6.3.5
+  tag: 6.4.2
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -54,6 +61,7 @@ image:
   #   - myRegistrKeySecretName
 
 testFramework:
+  enabled: true
   image: "dduportal/bats"
   tag: "0.4.0"
   securityContext: {}
@@ -89,6 +97,9 @@ downloadDashboards:
 
 ## Pod Annotations
 # podAnnotations: {}
+
+## Pod Labels
+# podLabels: {}
 
 podPortName: grafana
 
@@ -240,6 +251,10 @@ env: {}
 ## This can be useful for auth tokens, etc
 envFromSecret: ""
 
+## Sensible environment variables that will be rendered as new secret object
+## This can be useful for auth tokens, etc
+envRenderSecret: {}
+
 ## Additional grafana server secret mounts
 # Defines additional mounts with secrets. Secrets must be manually created in the namespace.
 extraSecretMounts: []
@@ -374,6 +389,7 @@ grafana.ini:
 ## ref: http://docs.grafana.org/installation/configuration/#auth-ldap
 ## ref: http://docs.grafana.org/installation/ldap/#configuration
 ldap:
+  enabled: false
   # `existingSecret` is a reference to an existing secret containing the ldap configuration
   # for Grafana in a key `ldap-toml`.
   existingSecret: ""

@@ -3,6 +3,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name:  {{ template "prometheus-operator.fullname" . }}-admission-patch
+  namespace: {{ $.Release.Namespace }}
   annotations:
     "helm.sh/hook": post-install,post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
@@ -10,7 +11,10 @@ metadata:
     app: {{ template "prometheus-operator.name" $ }}-admission-patch
 {{- include "prometheus-operator.labels" $ | indent 4 }}
 spec:
+  {{- if .Capabilities.APIVersions.Has "batch/v1alpha1" }}
+  # Alpha feature since k8s 1.12
   ttlSecondsAfterFinished: 0
+  {{- end }}
   template:
     metadata:
       name:  {{ template "prometheus-operator.fullname" . }}-admission-patch
@@ -32,9 +36,11 @@ spec:
           args:
             - patch
             - --webhook-name={{ template "prometheus-operator.fullname" . }}-admission
-            - --namespace={{ .Release.Namespace }}
+            - --namespace={{ $.Release.Namespace }}
             - --secret-name={{ template "prometheus-operator.fullname" . }}-admission
             - --patch-failure-policy={{ .Values.prometheusOperator.admissionWebhooks.failurePolicy }}
+          resources:
+{{ toYaml .Values.prometheusOperator.admissionWebhooks.patch.resources | indent 12 }}
       restartPolicy: OnFailure
       serviceAccountName: {{ template "prometheus-operator.fullname" . }}-admission
       {{- with .Values.prometheusOperator.admissionWebhooks.patch.nodeSelector }}

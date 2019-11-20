@@ -40,8 +40,12 @@ airflow:
   fernetKey: ""
   service:
     annotations: {}
+    sessionAffinity: "None"
+    sessionAffinityConfig: {}
     type: ClusterIP
     externalPort: 8080
+    nodePort:
+      http:
   ##
   ## The executor to use.
   ##
@@ -105,6 +109,7 @@ airflow:
   config: {}
   ##
   ## Configure pod disruption budget for the scheduler
+  podDisruptionBudgetEnabled: true
   podDisruptionBudget:
     maxUnavailable: 1
   ## Add custom connections
@@ -137,6 +142,17 @@ airflow:
   podAnnotations: {}
     ## Example:
     ## iam.amazonaws.com/role: airflow-Role
+
+  extraInitContainers: []
+  ## Additional init containers to run before the Scheduler pods.
+  ## for example, be used to run a sidecar that chown Logs storage .
+  # - name: volume-mount-hack
+  #   image: busybox
+  #   command: ["sh", "-c", "chown -R 1000:1000 logs"]
+  #   volumeMounts:
+  #     - mountPath: /usr/local/airflow/logs
+  #       name: logs-data
+
   extraContainers: []
   ## Additional containers to run alongside the Scheduler, Worker and Web pods
   ## This could, for example, be used to run a sidecar that syncs DAGs from object storage.
@@ -167,6 +183,12 @@ scheduler:
     # requests:
     #   cpu: "500m"
     #   memory: "512Mi"
+  ##
+  ## Labels for the scheduler deployment
+  labels: {}
+  ##
+  ## Annotations for the scheduler deployment
+  annotations: {}
 
   ## Support Node, affinity and tolerations for scheduler pod assignment
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
@@ -184,6 +206,12 @@ flower:
     # requests:
     #   cpu: "100m"
     #   memory: "128Mi"
+  ##
+  ## Labels for the flower deployment
+  labels: {}
+  ##
+  ## Annotations for the flower deployment
+  annotations: {}
   service:
     annotations: {}
     type: ClusterIP
@@ -205,8 +233,26 @@ web:
     # requests:
     #   cpu: "100m"
     #   memory: "512Mi"
+  ##
+  ## Labels for the web deployment
+  labels: {}
+  ##
+  ## Annotations for the web deployment
+  annotations: {}
   initialStartupDelay: "60"
   initialDelaySeconds: "360"
+  minReadySeconds: 120
+  readinessProbe:
+    periodSeconds: 60
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 5
+  livenessProbe:
+    periodSeconds: 60
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 5
+
 
   ## Support Node, affinity and tolerations for web pod assignment
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
@@ -230,6 +276,9 @@ workers:
   ## Number of workers pod to launch
   replicas: 1
   ##
+  ## Gracefull termination period
+  terminationPeriod: 30
+  ##
   ## Custom resource configuration
   resources: {}
     # limits:
@@ -238,6 +287,12 @@ workers:
     # requests:
     #   cpu: "0.5"
     #   memory: "512Mi"
+  ##
+  ## Labels for the Worker statefulSet
+  labels: {}
+  ##
+  ## Annotations for the Worker statefulSet
+  annotations: {}
   ##
   ## Annotations for the Worker pods
   podAnnotations: {}
@@ -249,6 +304,11 @@ workers:
     ##
     ## number of parallel celery tasks per worker
     instances: 1
+    ##
+    ## Gracefull termination of workers
+    ## Wait for the worker to finish the current task within the gracefull period
+    gracefullTermination: false
+
   ##
   ## Directory in which to mount secrets on worker nodes.
   secretsDir: /var/airflow/secrets
@@ -309,6 +369,19 @@ ingress:
       ## If enabled, set "secretName" to the secret containing the TLS private key and certificate
       ## Example:
       ## secretName: example-com-crt
+    precedingPaths:
+      ## Different http paths to add to the ingress before the default path
+      ## Example:
+      ## - path: "/*"
+      ##   serviceName: "ssl-redirect"
+      ##   servicePort: "use-annotation"
+    succeedingPaths:
+      ## Different http paths to add to the ingress after the default path
+      ## Example:
+      ## - path: "/*"
+      ##   serviceName: "ssl-redirect"
+      ##   servicePort: "use-annotation"
+
   ##
   ## Configure the flower endpoind
   flower:

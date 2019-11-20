@@ -74,6 +74,9 @@ spec:
         configMap:
           name:  {{ template "atlantis.fullname" . }}
       {{- end }}
+      {{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+      {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
       {{- range .Values.imagePullSecrets }}
@@ -262,13 +265,18 @@ spec:
           {{- end }}
           {{- if .Values.repoConfig }}
           - name: repo-config
-            mountPath: /etc/atlantis
+            mountPath: /etc/atlantis/repos.yaml
+            subPath: repos.yaml
             readOnly: true
           {{- end }}
           {{- if .Values.config }}
           - name: config
-            mountPath: /etc/atlantis
+            mountPath: /etc/atlantis/atlantis.yaml
+            subPath: atlantis.yaml
             readOnly: true
+          {{- end }}
+          {{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 10 }}
           {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}

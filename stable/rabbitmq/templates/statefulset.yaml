@@ -41,10 +41,12 @@ spec:
       {{- if .Values.rbacEnabled}}
       serviceAccountName: {{ template "rabbitmq.fullname" . }}
       {{- end }}
-      {{- if .Values.affinity }}
       affinity:
-{{ toYaml .Values.affinity | indent 8 }}
-      {{- end }}
+{{- if .Values.affinity }}
+    {{- with .Values.affinity }}
+{{ tpl . $ | indent 8 }}
+    {{- end }}
+{{- end }}
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
       {{- end }}
@@ -95,34 +97,6 @@ spec:
             {{- end }}
             #replace the default password that is generated
             sed -i "/CHANGEME/cdefault_pass=${RABBITMQ_PASSWORD//\\/\\\\}" /opt/bitnami/rabbitmq/etc/rabbitmq/rabbitmq.conf
-            #api check for probes
-            cat > /opt/bitnami/rabbitmq/sbin/rabbitmq-api-check <<EOF
-            #!/bin/sh
-            set -e
-            URL=\$1
-            EXPECTED=\$2
-            ACTUAL=\$(curl --silent --show-error --fail "\${URL}")
-            echo "\${ACTUAL}"
-            test "\${EXPECTED}" = "\${ACTUAL}"
-            EOF
-            chmod a+x /opt/bitnami/rabbitmq/sbin/rabbitmq-api-check
-            #health check for probes, handle period during rabbtmq sync
-            cat > /opt/bitnami/rabbitmq/sbin/rabbitmq-health-check <<EOF
-            #!/bin/sh
-            START_FLAG=/opt/bitnami/rabbitmq/var/lib/rabbitmq/.start
-            if [ -f \${START_FLAG} ]; then
-               rabbitmqctl node_health_check
-               RESULT=\$?
-               if [ \$RESULT -ne 0 ]; then
-                  rabbitmqctl status
-                  exit $?
-               fi
-               rm -f \${START_FLAG}
-               exit \${RESULT}
-            fi
-            rabbitmq-api-check \$1 \$2
-            EOF
-            chmod a+x /opt/bitnami/rabbitmq/sbin/rabbitmq-health-check
             {{- if and .Values.persistence.enabled .Values.forceBoot.enabled }}
             if [ -d "{{ .Values.persistence.path }}/mnesia/${RABBITMQ_NODENAME}" ]; then rabbitmqctl force_boot; fi
             {{- end }}
@@ -134,9 +108,19 @@ spec:
         volumeMounts:
           - name: config-volume
             mountPath: /opt/bitnami/rabbitmq/conf
+          - name: healthchecks
+            mountPath: /usr/local/sbin/rabbitmq-api-check
+            subPath: rabbitmq-api-check
+          - name: healthchecks
+            mountPath: /usr/local/sbin/rabbitmq-health-check
+            subPath: rabbitmq-health-check
           {{- if .Values.rabbitmq.tls.enabled }}
           - name: {{ template "rabbitmq.fullname" . }}-certs
             mountPath: /opt/bitnami/rabbitmq/certs
+          {{- end }}
+          {{- if .Values.ldap.tls.enabled }}
+          - name: {{ template "rabbitmq.fullname" . }}-ldap-certs
+            mountPath: /opt/bitnami/rabbitmq/certs-ldap
           {{- end }}
           - name: data
             mountPath: "{{ .Values.persistence.path }}"
@@ -158,6 +142,9 @@ spec:
           containerPort: {{ .Values.service.distPort }}
         - name: stats
           containerPort: {{ .Values.service.managerPort }}
+{{- if .Values.service.extraContainerPorts }}
+{{ toYaml .Values.service.extraContainerPorts | indent 8 }}
+{{- end }}
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           exec:
@@ -216,6 +203,18 @@ spec:
             value: "rabbit@$(MY_POD_NAME)"
             {{- end }}
           {{- end }}
+          {{- if .Values.ldap.enabled }}
+          - name: RABBITMQ_LDAP_ENABLE
+            value: "yes"
+          - name: RABBITMQ_LDAP_TLS
+            value: {{ ternary "yes" "no" .Values.ldap.tls.enabled | quote }}
+          - name: RABBITMQ_LDAP_SERVER
+            value: {{ .Values.ldap.server }}
+          - name: RABBITMQ_LDAP_SERVER_PORT
+            value: {{ .Values.ldap.port | quote }}
+          - name: RABBITMQ_LDAP_USER_DN_PATTERN
+            value: {{ .Values.ldap.user_dn_pattern }}
+          {{- end }}
           - name: RABBITMQ_LOGS
             value: {{ .Values.rabbitmq.logs | quote }}
           - name: RABBITMQ_ULIMIT_NOFILES
@@ -264,19 +263,29 @@ spec:
         {{- end }}
         ports:
         - name: metrics
-          containerPort: 9090
+          containerPort: {{ .Values.metrics.port }}
+        {{- if .Values.metrics.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
             path: /metrics
             port: metrics
-          initialDelaySeconds: 15
-          timeoutSeconds: 5
+          initialDelaySeconds: {{ .Values.metrics.livenessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.metrics.livenessProbe.timeoutSeconds }}
+          periodSeconds: {{ .Values.metrics.livenessProbe.periodSeconds }}
+          failureThreshold: {{ .Values.metrics.livenessProbe.failureThreshold }}
+          successThreshold: {{ .Values.metrics.livenessProbe.successThreshold }}
+        {{- end }}
+        {{- if .Values.metrics.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
             path: /metrics
             port: metrics
-          initialDelaySeconds: 5
-          timeoutSeconds: 5
+          initialDelaySeconds: {{ .Values.metrics.readinessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.metrics.readinessProbe.timeoutSeconds }}
+          periodSeconds: {{ .Values.metrics.readinessProbe.periodSeconds }}
+          failureThreshold: {{ .Values.metrics.readinessProbe.failureThreshold }}
+          successThreshold: {{ .Values.metrics.readinessProbe.successThreshold }}
+        {{- end }}
         resources:
 {{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
@@ -300,7 +309,19 @@ spec:
               path: server_certificate.pem
             - key: server_key.pem
               path: server_key.pem
-          {{- end }}
+        {{- end }}
+        {{- if and .Values.ldap.enabled .Values.ldap.tls.enabled }}
+        - name: {{ template "rabbitmq.fullname" . }}-ldap-certs
+          secret:
+            secretName: {{ if .Values.ldap.tls.existingSecret }}{{ .Values.ldap.tls.existingSecret }}{{- else }}{{ template "rabbitmq.fullname" . }}-ldap-certs{{- end }}
+            items:
+            - key: ca_certificate.pem
+              path: ca_certificate.pem
+            - key: server_certificate.pem
+              path: server_certificate.pem
+            - key: server_key.pem
+              path: server_key.pem
+        {{- end }}
         - name: config-volume
           configMap:
             name: {{ template "rabbitmq.fullname" . }}-config
@@ -313,6 +334,16 @@ spec:
         {{- end }}
             - key: enabled_plugins
               path: enabled_plugins
+        - name: healthchecks
+          configMap:
+            name: {{ template "rabbitmq.fullname" . }}-healthchecks
+            items:
+            - key: rabbitmq-health-check
+              path: rabbitmq-health-check
+              mode: 111
+            - key: rabbitmq-api-check
+              path: rabbitmq-api-check
+              mode: 111
         {{- if .Values.rabbitmq.loadDefinition.enabled }}
         - name: load-definition-volume
           secret:

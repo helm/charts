@@ -64,6 +64,9 @@ spec:
 {{ toYaml .Values.server.initContainers | indent 8 }}
       {{- end }}
       containers:
+      {{- if .Values.server.sidecarContainers }}
+{{ toYaml .Values.server.sidecarContainers | indent 8 }}
+      {{- end }}
         - name: {{ template "gocd.name" . }}-server
           {{- if .Values.server.image.tag }}
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
@@ -151,6 +154,10 @@ spec:
     {{- if .Values.server.affinity }}
       affinity:
 {{ toYaml .Values.server.affinity | indent 8 }}
+    {{- end }}
+    {{- if .Values.server.tolerations }}
+      tolerations:
+{{ toYaml .Values.server.tolerations | indent 8 }}
     {{- end }}
     {{- if .Values.server.hostAliases }}
       hostAliases:

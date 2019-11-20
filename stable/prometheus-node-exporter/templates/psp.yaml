@@ -1,10 +1,11 @@
 {{- if .Values.rbac.create }}
 {{- if .Values.rbac.pspEnabled }}
-apiVersion: extensions/v1beta1
+apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
-  labels: {{ include "prometheus-node-exporter.labels" . | indent 4 }}
   name: {{ template "prometheus-node-exporter.fullname" . }}
+  namespace: {{ template "prometheus-node-exporter.namespace" . }}
+  labels: {{ include "prometheus-node-exporter.labels" . | indent 4 }}
 spec:
   privileged: false
   # Required to prevent escalations to root.

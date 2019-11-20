@@ -77,6 +77,10 @@ es:
   ##
   indices: true
 
+  ## If true, query settings stats for all indices in the cluster.
+  ##
+  indices_settings: true
+
   ## If true, query stats for shards in the cluster.
   ##
   shards: true
@@ -177,3 +181,15 @@ prometheusRule:
     #   annotations:
     #     description: The heap usage is over 90% for 15m
     #     summary: ElasticSearch node {{$labels.node}} heap usage is high
+
+# Create a service account
+# To use a service account not handled by the chart, set the name here
+# and set create to false
+serviceAccount:
+  create: false
+  name: default
+
+# Creates a PodSecurityPolicy and the role/rolebinding
+# allowing the serviceaccount to use it
+podSecurityPolicies:
+  enabled: false

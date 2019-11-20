@@ -65,3 +65,14 @@ Return the appropriate apiGroup for PodSecurityPolicy.
 {{- print "policy" -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return the appropriate apiVersion for DaemonSet.
+*/}}
+{{- define "daemonSet.apiVersion" -}}
+{{- if semverCompare "<1.9-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "extensions/v1beta1" -}}
+{{- else -}}
+{{- print "apps/v1" -}}
+{{- end -}}
+{{- end -}}
