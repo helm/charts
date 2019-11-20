@@ -60,6 +60,7 @@ The following table lists the configurable parameters of the Goldpinger chart an
 | `ingress.path`                 | Ingress path                                 | `/`                    |
 | `ingress.hosts`                | URLs to address your Goldpinger installation | `goldpinger.local`     |
 | `ingress.tls`                  | Ingress TLS configuration                    | `[]`                   |
+| `priorityClassName`            | Set a priorityClassName for pod              | ``                     |
 | `podAnnotations`               | Pod annotations                              | `{}`                   |
 | `nodeSelector`                 | Node labels for pod assignment               | `{}`                   |
 | `tolerations`                  | List of node taints to tolerate              | `[]`                   |
