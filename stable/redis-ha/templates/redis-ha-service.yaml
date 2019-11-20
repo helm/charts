@@ -5,12 +5,17 @@ metadata:
   labels:
 {{ include "labels.standard" . | indent 4 }}
   annotations:
-  {{- if .Values.serviceAnnotations }}
-{{ toYaml .Values.serviceAnnotations | indent 4 }}
+  {{- if .Values.redis.service.annotations }}
+{{ toYaml .Values.redis.service.annotations | indent 4 }}
   {{- end }}
 spec:
-  type: ClusterIP
-  clusterIP: None
+  type: {{ default "ClusterIP" .Values.redis.service.type }}
+  {{- if and (eq .Values.redis.service.type "LoadBalancer") .Values.redis.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.redis.service.loadBalancerIP }}
+  {{- end }}
+  {{- if and (eq .Values.redis.service.type "ClusterIP") .Values.redis.service.clusterIP }}
+  clusterIP: {{ .Values.redis.service.clusterIP }}
+  {{- end }}
   ports:
   - name: server
     port: {{ .Values.redis.port }}

@@ -114,6 +114,11 @@ sysctlImage:
 redis:
   port: 6379
   masterGroupName: mymaster
+  service:
+    type: ClusterIP
+    clusterIP: None
+    loadBalancerIP:
+    annotations: {}
   config:
     ## Additional redis conf options can be added below
     ## For all available options see http://download.redis.io/redis-stable/redis.conf
