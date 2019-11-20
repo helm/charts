@@ -55,6 +55,20 @@ spec:
 {{ toYaml .Values.securityContext | indent 10 }}
       serviceAccountName: {{ template "rabbitmq-ha.serviceAccountName" . }}
       initContainers:
+{{- if and .Values.hostPath.enabled .Values.hostPath.chown }}
+        - name: hostpath-chown
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          securityContext:
+            runAsNonRoot: false
+            runAsUser: 0
+          command:
+          - chown
+          - "{{ .Values.securityContext.runAsUser }}"
+          - /data
+          volumeMounts:
+          - name: data
+            mountPath: /data
+{{- end }}
         - name: bootstrap
           image: {{ .Values.busyboxImage.repository}}:{{ .Values.busyboxImage.tag}}
           imagePullPolicy: {{ .Values.busyboxImage.pullPolicy }}
@@ -262,7 +276,7 @@ spec:
       {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
       {{- end }}
-      {{- if or (eq .Values.podAntiAffinity "hard") (Values.hostPath.enabled)  }}
+      {{- if or (eq .Values.podAntiAffinity "hard") (.Values.hostPath.enabled) }}
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
