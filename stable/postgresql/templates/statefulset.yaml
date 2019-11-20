@@ -87,12 +87,19 @@ spec:
               chmod 700 {{ .Values.persistence.mountPath }}/data
               find {{ .Values.persistence.mountPath }} -mindepth 0 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" | \
                 xargs chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }}
+{{- if .Values.shmVolume.enable }}
+              chmod -R 777 /dev/shm
+{{- end }}
           securityContext:
             runAsUser: {{ .Values.volumePermissions.securityContext.runAsUser }}
           volumeMounts:
             - name: data
               mountPath: {{ .Values.persistence.mountPath }}
               subPath: {{ .Values.persistence.subPath }}
+{{- if .Values.shmVolume.enable }}
+            - name: dshm
+              mountPath: /dev/shm
+{{- end }}
       {{- end }}
       {{- if .Values.master.extraInitContainers }}
 {{ tpl .Values.master.extraInitContainers . | indent 8 }}
@@ -277,6 +284,10 @@ spec:
             - name: postgresql-password
               mountPath: /opt/bitnami/postgresql/secrets/
             {{- end }}
+            {{- if .Values.shmVolume.enable }}
+            - name: dshm
+              mountPath: /dev/shm
+            {{- end }}
             {{- if .Values.persistence.enabled }}
             - name: data
               mountPath: {{ .Values.persistence.mountPath }}
@@ -386,6 +397,12 @@ spec:
         - name: custom-metrics
           configMap:
             name: {{ template "postgresql.metricsCM" . }}
+{{- end }}
+{{- if .Values.shmVolume.enable }}
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Gi
 {{- end }}
 {{- if and .Values.persistence.enabled .Values.persistence.existingClaim }}
         - name: data

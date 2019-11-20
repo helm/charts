@@ -239,6 +239,15 @@ service:
   # loadBalancerSourceRanges:
   # - 10.10.10.0/24
 
+## Start a database pod without limitations on shm memory. By default docker
+## limit `/dev/shm` to `64M` (see e.g. the [docker
+## issue](https://github.com/docker-library/postgres/issues/416), which could be
+## not enough if PostgreSQL uses parallel workers heavily. If this option is
+## present and value is `true`, to the target database pod will be mounted a new
+## tmpfs volume to remove this limitation.
+shmVolume:
+  enable: true
+
 ## PostgreSQL data Persistent Volume Storage Class
 ## If defined, storageClassName: <storageClass>
 ## If set to "-", storageClassName: "", which disables dynamic provisioning
