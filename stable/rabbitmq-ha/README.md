@@ -84,6 +84,16 @@ and their default values.
 | `definitions.policies`                         | HA policies to add to definitions.json | `""` |
 | `definitionsSource`                            | Use this key within an existing secret to reference the definitions specification | `"definitions.json"` |
 | `forceBoot`                                    | [Force](https://www.rabbitmq.com/rabbitmqctl.8.html#force_boot) the cluster to start even if it was shutdown in an unexpected order, preferring availability over integrity | `false` |
+| `hostPath.path`                                | Use this path on the host for data storage                   | `/data/rabbitmq-ha` |
+
+| `hostPath.chown`                               | Run an init-container as root to set ownership on the hostPath | `true`         |
+
+| `hostPath.type`                                | Type for a hostPath volume                                   | `DirectoryOrCreate` |
+
+| `hostPath.mnesiaDir`                           | If we use hostPath for persistent data, we must set the path for mnesia directory | `$RABBITMQ_MNESIA_BASE/mnesia`  | 
+
+| `hostPath.pluginsExpandDir`           | If we use hostPath for persistent data, we must set the path for plugins expand directory  | `$RABBITMQ_MNESIA_BASE/plugins-expand`  | 
+
 | `image.pullPolicy`                             | Image pull policy                                                                                                                                                                                     | `IfNotPresent`   |
 | `image.repository`                             | RabbitMQ container image repository                                                                                                                                                                   | `rabbitmq`                                                 |
 | `image.tag`                                    | RabbitMQ container image tag                                                                                                                                                                          | `3.8.0-alpine`                                            |
