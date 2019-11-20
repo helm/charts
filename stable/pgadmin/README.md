@@ -22,7 +22,7 @@ pgAdmin is a web based administration tool for PostgreSQL database.
 | --------- | ----------- | ------- |
 | `replicaCount` | Number of pgadmin replicas | `1` |
 | `image.repository` | Docker image | `dpage/pgadmin4` |
-| `image.tag` | Docker image tag | `4.14` |
+| `image.tag` | Docker image tag | `4.15` |
 | `image.pullPolicy` | Docker image pull policy | `IfNotPresent` |
 | `service.type` | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP` |
 | `service.port` | Service port | `80` |
