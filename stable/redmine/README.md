@@ -79,6 +79,7 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `smtpUser`                          | SMTP user                                  | `nil`                                                   |
 | `smtpPassword`                      | SMTP password                              | `nil`                                                   |
 | `smtpTls`                           | Use TLS encryption with SMTP               | `nil`                                                   |
+| `existingSecret`                    | Use existing secret for password details (`smtpPassword` and `redminePassword` will be ignored and picked up from this secret). The secret has to contain the keys `redmine-password` and `smtp-password`. | `nil`                        |
 | `databaseType.postgresql`           | Select PostgreSQL as database              | `false`                                                 |
 | `databaseType.mariadb`              | Select MariaDB as database                 | `true`                                                  |
 | `mariadb.enabled`                   | Whether to deploy a MariaDB server to satisfy the applications database requirements     | `true`    |
@@ -122,6 +123,7 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `podDisruptionBudget.maxUnavailable`| Maximum unavailable pods                   | `nil`                                                   |
 | `replicas`                          | The number of pod replicas                 | `1`                                                     |
 | `resources`                         | Resources allocation (Requests and Limits) | `{}`                                                    |
+| `securityContext`                   | Security Context                           | `{}`                                                    |
 
 The above parameters map to the env variables defined in [bitnami/redmine](http://github.com/bitnami/bitnami-docker-redmine). For more information please refer to the [bitnami/redmine](http://github.com/bitnami/bitnami-docker-redmine) image documentation.
 
@@ -177,6 +179,14 @@ $ helm install --name test --set persistence.existingClaim=PVC_REDMINE,mariadb.p
 ```
 
 ## Upgrading
+
+### 13.0.0
+
+Helm performs a lookup for the object based on its group (apps), version (v1), and kind (Deployment). Also known as its GroupVersionKind, or GVK. Changing the GVK is considered a compatibility breaker from Kubernetes' point of view, so you cannot "upgrade" those objects to the new GVK in-place. Earlier versions of Helm 3 did not perform the lookup correctly which has since been fixed to match the spec.
+
+In https://github.com/helm/charts/pull/17309 the `apiVersion` of the deployment resources was updated to `apps/v1` in tune with the api's deprecated, resulting in compatibility breakage.
+
+This major version signifies this change.
 
 ### To 5.0.0
 
