@@ -46,12 +46,14 @@ The following table lists the configurable parameters of the jaeger-operator cha
 | `image.repository`      | Controller container image repository                                                                       | `jaegertracing/jaeger-operator` |
 | `image.tag`             | Controller container image tag                                                                              | `1.14.0`                        |
 | `image.pullPolicy`      | Controller container image pull policy                                                                      | `IfNotPresent`                  |
+| `jaeger.create`         | Jaeger instance will be created                                                                             | `false`                         |
+| `jaeger.spec`           | Jaeger instance specification                                                                               | `{}`                            |
 | `rbac.create`           | All required roles and rolebindings will be created                                                         | `true`                          |
 | `serviceAccount.create` | Service account to use                                                                                      | `true`                          |
 | `rbac.pspEnabled`       | Pod security policy for pod will be created and included in rbac role                                       | `false`                         |
 | `rbac.clusterRole`      | ClusterRole will be used by operator ServiceAccount                                                         | `false`                         |
-| `serviceAccount.name`   | Service account name to use. If not set and create is true, a name is generated using the fullname template | ``                              |
-| `resources`             | K8s pod resorces                                                                                            | `None`                          |
+| `serviceAccount.name`   | Service account name to use. If not set and create is true, a name is generated using the fullname template | `nil`                           |
+| `resources`             | K8s pod resources                                                                                           | `None`                          |
 | `nodeSelector`          | Node labels for pod assignment                                                                              | `{}`                            |
 | `tolerations`           | Toleration labels for pod assignment                                                                        | `[]`                            |
 | `affinity`              | Affinity settings for pod assignment                                                                        | `{}`                            |
