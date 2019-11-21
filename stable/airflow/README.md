@@ -333,6 +333,21 @@ To be able to expose metrics to prometheus you need install a plugin, this can b
 This exposes dag and task based metrics from Airflow.
 For service monitor configuration see the generic [Helm chart Configuration](#helm-chart-configuration).
 
+## Additional manifests 
+
+It is possible to add additional manifests into a deployment, to extend the chart. One of the reason is to deploy a manifest specific to a cloud provider ( BackendConfig on GKE for example ).
+
+```yaml
+extraManifests:
+  - apiVersion: cloud.google.com/v1beta1
+    kind: BackendConfig
+    metadata:
+      name: "{{ .Release.Name }}-test"
+    spec:
+      securityPolicy:
+        name: "gcp-cloud-armor-policy-test"
+```
+
 ## Helm chart Configuration
 
 The following table lists the configurable parameters of the Airflow chart and their default values.
@@ -469,6 +484,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `prometheusRule.enabled`                 | enable prometheus rule                                  | `false`                   |
 | `prometheusRule.groups`                  | define alerting rules                                   | `{}`                      |
 | `prometheusRule.additionalLabels`        | add additional labels to the prometheus rule            | `{}`                      |
+| `extraManifests`                         | add additional manifests to deploy                      | `[]`                      |
 
 
 Full and up-to-date documentation can be found in the comments of the `values.yaml` file.
