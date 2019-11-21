@@ -65,6 +65,9 @@ redmineLanguage: en
 # smtpPassword:
 # smtpTls:
 
+# # Use existing secret (ignores redminePassword and smtpPassword) with keys "redmine-password" and "smtp-password" defined
+# existingSecret:
+
 ## Environment variables, to pass to the entry point
 ##
 # extraVars:
@@ -307,3 +310,9 @@ serviceAccount:
   ## The name of the ServiceAccount to use.
   ## If not set and create is true, a name is generated using the redmine.fullname template
   # name:
+
+## Pod Security Context
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+##
+securityContext: {}
+

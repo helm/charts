@@ -79,6 +79,7 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `smtpUser`                          | SMTP user                                  | `nil`                                                   |
 | `smtpPassword`                      | SMTP password                              | `nil`                                                   |
 | `smtpTls`                           | Use TLS encryption with SMTP               | `nil`                                                   |
+| `existingSecret`                    | Use existing secret for password details (`smtpPassword` and `redminePassword` will be ignored and picked up from this secret). The secret has to contain the keys `redmine-password` and `smtp-password`. | `nil`                        |
 | `databaseType.postgresql`           | Select PostgreSQL as database              | `false`                                                 |
 | `databaseType.mariadb`              | Select MariaDB as database                 | `true`                                                  |
 | `mariadb.enabled`                   | Whether to deploy a MariaDB server to satisfy the applications database requirements     | `true`    |
@@ -124,6 +125,7 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `podDisruptionBudget.maxUnavailable`| Maximum unavailable pods                   | `nil`                                                   |
 | `replicas`                          | The number of pod replicas                 | `1`                                                     |
 | `resources`                         | Resources allocation (Requests and Limits) | `{}`                                                    |
+| `securityContext`                   | Security Context                           | `{}`                                                    |
 
 The above parameters map to the env variables defined in [bitnami/redmine](http://github.com/bitnami/bitnami-docker-redmine). For more information please refer to the [bitnami/redmine](http://github.com/bitnami/bitnami-docker-redmine) image documentation.
 
