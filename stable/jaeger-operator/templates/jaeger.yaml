@@ -1,0 +1,10 @@
+{{- if .Values.jaeger.create }}
+apiVersion: jaegertracing.io/v1
+kind: Jaeger
+metadata:
+  name: {{ include "jaeger-operator.fullname" . }}-jaeger
+{{- with .Values.jaeger.spec }}
+spec:
+{{ toYaml . | indent 2}}
+{{- end }}
+{{- end }}
