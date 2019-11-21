@@ -147,6 +147,17 @@ Return the appropriate apiVersion for deployment.
 {{/*
 Return the name of the Secret used to store the passwords
 */}}
+{{- define "redmine.secretName" -}}
+{{- if .Values.existingSecret -}}
+{{ .Values.existingSecret }}
+{{- else -}}
+{{ template "redmine.fullname" . }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the name of the Secret used to store the external database passwords
+*/}}
 {{- define "redmine.externalDatabase.secretName" -}}
 {{- if .Values.externalDatabase.existingSecret -}}
 {{ .Values.externalDatabase.existingSecret }}

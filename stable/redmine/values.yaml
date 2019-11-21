@@ -65,6 +65,9 @@ redmineLanguage: en
 # smtpPassword:
 # smtpTls:
 
+# # Use existing secret (ignores redminePassword and smtpPassword) with keys "redmine-password" and "smtp-password" defined
+# existingSecret:
+
 ## Environment variables, to pass to the entry point
 ##
 # extraVars:
@@ -300,3 +303,8 @@ resources: {}
   # limits:
   #   cpu: "2"
   #   memory: "1G"
+
+## Pod Security Context
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+##
+securityContext: {}

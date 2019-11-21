@@ -34,6 +34,21 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- if .Values.lifecycle }}
+        lifecycle:
+        {{-   if .Values.lifecycle.postStartCommand }}
+          postStart:
+            exec:
+              command:
+                {{- toYaml .Values.lifecycle.postStartCommand | nindent 16 -}}
+        {{-   end }}
+        {{-   if .Values.lifecycle.preStopCommand }}
+          preStop:
+            exec:
+              command:
+                {{- toYaml .Values.lifecycle.preStopCommand | nindent 16 -}}
+        {{-   end }}
+        {{- end }}
         env:
         {{- if .Values.internalDatabase.enabled }}
         - name: SQLITE_DATABASE
@@ -137,6 +152,9 @@ spec:
           value: {{ template "nextcloud.redis.fullname" . }}-master
         - name: REDIS_HOST_PORT
           value: {{ .Values.redis.redisPort | quote }}
+        {{- end }}
+        {{- if .Values.nextcloud.extraEnv }}
+{{ toYaml .Values.nextcloud.extraEnv | indent 8 }}
         {{- end }}
         ports:
         - name: http
