@@ -734,8 +734,12 @@ daemonset:
   #   # agent version < 6.15
   #   # jmx_use_cgroup_memory_limit: true
   #
+<<<<<<< HEAD
   #   # agent version >= 6.15
   #   # jmx_use_container_support: true
+=======
+    dogstatsd_port:
+>>>>>>> leave dogstatsd port empty in values.yaml
 
 deployment:
   ## @param enabled - boolean - required
