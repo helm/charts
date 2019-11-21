@@ -37,7 +37,7 @@ spec:
       {{- if or .Values.customLdifFiles .Values.tls.enabled }}
       initContainers:
       {{- end }}
-      {{- if .Values.customLdifFiles }}
+      {{- if or .Values.customLdifFiles .Values.customLdifMap }}
       - name: {{ .Chart.Name }}-init-ldif
         image: busybox
         command: ['sh', '-c', 'cp /customldif/* /ldifworkingdir']
@@ -79,7 +79,7 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-{{- if .Values.customLdifFiles }}
+{{- if or .Values.customLdifFiles .Values.customLdifMap }}
           args: [--copy-service]
 {{- end }}
           ports:
@@ -99,7 +99,7 @@ spec:
             - name: data
               mountPath: /etc/ldap/slapd.d
               subPath: config-data
-            {{- if .Values.customLdifFiles }}
+            {{- if or .Values.customLdifFiles .Values.customLdifMap }}
             - name: ldifworkingdir
               mountPath: /container/service/slapd/assets/config/bootstrap/ldif/custom
             {{- end }}
@@ -145,10 +145,14 @@ spec:
 {{ toYaml . | indent 8 }}
     {{- end }}
       volumes:
-        {{- if .Values.customLdifFiles }}
+        {{- if or .Values.customLdifFiles .Values.customLdifMap }}
         - name: customldif
           configMap:
+        {{- if and .Values.customLdifFiles (not .Values.customLdifMap) }}
             name: {{ template "openldap.fullname" . }}-customldif
+        {{- else }}
+            name: {{ .Values.customLdifMap }}
+        {{- end }}
         - name: ldifworkingdir
           emptyDir: {}
         {{- end }}

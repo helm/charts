@@ -67,6 +67,10 @@ env:
 # adminPassword: admin
 # configPassword: config
 
+# Custom openldap configuration configMap name, which takes preference if defined
+# over customLdifFiles.
+customLdifMap: ""
+
 # Custom openldap configuration files used to override default settings
 # customLdifFiles:
   # 01-default-users.ldif: |-

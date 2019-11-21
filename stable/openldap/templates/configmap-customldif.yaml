@@ -2,7 +2,7 @@
 # A ConfigMap spec for openldap slapd that map directly to files under
 # /container/service/slapd/assets/config/bootstrap/ldif/custom
 #
-{{- if .Values.customLdifFiles }}
+{{- if and .Values.customLdifFiles (not .Values.customLdifMap) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
