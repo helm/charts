@@ -408,7 +408,7 @@ hostPath:
   # security context
   chown: true
   type: DirectoryOrCreate
-  #We need to use path on all hosts to save data
+  # we need to use path on all hosts to save data
   mnesiaDir: $RABBITMQ_MNESIA_BASE/mnesia_dir
   pluginsExpandDir: $RABBITMQ_MNESIA_BASE/plugins-expand
 
