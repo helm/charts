@@ -88,7 +88,7 @@ and their default values.
 | `hostPath.chown`                               | Run an init-container as root to set ownership on the hostPath | `true`         |
 | `hostPath.type`                                | Type for a hostPath volume                                   | `DirectoryOrCreate` |
 | `hostPath.mnesiaDir`                           | If we use hostPath for persistent data, we must set the path for mnesia directory | `$RABBITMQ_MNESIA_BASE/mnesia`  | 
-| `hostPath.pluginsExpandDir`           | If we use hostPath for persistent data, we must set the path for plugins expand directory  | `$RABBITMQ_MNESIA_BASE/plugins-expand`  | 
+| `hostPath.pluginsExpandDir`           | If we use hostPath for persistent data, we must set the path to the plugins  | `$RABBITMQ_MNESIA_BASE/plugins-expand`  | 
 | `image.pullPolicy`                             | Image pull policy                                                                                                                                                                                     | `IfNotPresent`   |
 | `image.repository`                             | RabbitMQ container image repository                                                                                                                                                                   | `rabbitmq`                                                 |
 | `image.tag`                                    | RabbitMQ container image tag                                                                                                                                                                          | `3.8.0-alpine`                                            |
