@@ -14,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/redmine
-  tag: 4.0.5-debian-9-r7
+  tag: 4.0.5-debian-9-r8
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -64,6 +64,9 @@ redmineLanguage: en
 # smtpUser:
 # smtpPassword:
 # smtpTls:
+
+# # Use existing secret (ignores redminePassword and smtpPassword) with keys "redmine-password" and "smtp-password" defined
+# existingSecret:
 
 ## Environment variables, to pass to the entry point
 ##
@@ -297,3 +300,8 @@ resources: {}
   # limits:
   #   cpu: "2"
   #   memory: "1G"
+
+## Pod Security Context
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+##
+securityContext: {}

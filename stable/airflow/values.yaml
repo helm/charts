@@ -40,6 +40,8 @@ airflow:
   fernetKey: ""
   service:
     annotations: {}
+    sessionAffinity: "None"
+    sessionAffinityConfig: {}
     type: ClusterIP
     externalPort: 8080
     nodePort:
@@ -107,6 +109,7 @@ airflow:
   config: {}
   ##
   ## Configure pod disruption budget for the scheduler
+  podDisruptionBudgetEnabled: true
   podDisruptionBudget:
     maxUnavailable: 1
   ## Add custom connections
@@ -238,6 +241,7 @@ web:
   annotations: {}
   initialStartupDelay: "60"
   initialDelaySeconds: "360"
+  minReadySeconds: 120
   readinessProbe:
     periodSeconds: 60
     timeoutSeconds: 1
@@ -365,12 +369,19 @@ ingress:
       ## If enabled, set "secretName" to the secret containing the TLS private key and certificate
       ## Example:
       ## secretName: example-com-crt
-    paths:
-      ## Different http paths to add to the ingress
+    precedingPaths:
+      ## Different http paths to add to the ingress before the default path
       ## Example:
       ## - path: "/*"
       ##   serviceName: "ssl-redirect"
       ##   servicePort: "use-annotation"
+    succeedingPaths:
+      ## Different http paths to add to the ingress after the default path
+      ## Example:
+      ## - path: "/*"
+      ##   serviceName: "ssl-redirect"
+      ##   servicePort: "use-annotation"
+
   ##
   ## Configure the flower endpoind
   flower:
@@ -652,6 +663,7 @@ serviceMonitor:
 
 # Enable this if you're using https://github.com/coreos/prometheus-operator
 prometheusRule:
+
   enabled: false
   ## Namespace in which the prometheus rule is created
   # namespace: monitoring
@@ -663,3 +675,14 @@ prometheusRule:
   ## Used to pass Labels that are used by the Prometheus installed in your cluster to select Prometheus Rules to work with
   ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
   additionalLabels: {}
+
+extraManifests: []
+##
+## Example:
+##  - apiVersion: cloud.google.com/v1beta1
+##    kind: BackendConfig
+##    metadata:
+##      name: "{{ .Release.Name }}-test"
+##    spec:
+##      securityPolicy:
+##        name: "gcp-cloud-armor-policy-test"
