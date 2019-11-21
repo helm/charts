@@ -264,7 +264,7 @@ spec:
         {{- if (.Values.initConfigMap) }}
         - name: custom-init-scripts
           configMap:
-            name: {{ template "mongodb.initConfigMapName" $ }}
+            name: "{{- tpl .Values.initConfigMap.name . }}"
         {{- end }}
         {{- if .Values.configmap }}
         - name: config
