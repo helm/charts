@@ -396,11 +396,8 @@ persistentVolume:
   size: 8Gi
   annotations: {}
 
-# To use a hostPath for data:
-# 1. Set persistentVolume.enabled to false
-# 2. Add "ha-mode":"all" for all policies for queues and exchnges
-# 3. Add "ha-sync-mode":"automatic" for all policies for queues and exchnges
-# and define hostPath.path.
+# To use a hostPath for data, you need to set persistentVolume.enabled: false
+# and define hostPath.path
 # Warning: this might overwrite existing folders on the host system!
 hostPath:
   enabled: false
@@ -411,7 +408,7 @@ hostPath:
   # security context
   chown: true
   type: DirectoryOrCreate
-  #We need to use an universal path on all hosts to save data
+  #We need to use path on all hosts to save data
   mnesiaDir: $RABBITMQ_MNESIA_BASE/mnesia_dir
   pluginsExpandDir: $RABBITMQ_MNESIA_BASE/plugins-expand
 
@@ -579,5 +576,3 @@ clusterDomain: cluster.local
 podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 1
-
-#Add possibility to use hostPath for persistant data
