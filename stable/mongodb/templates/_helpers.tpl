@@ -237,3 +237,14 @@ in the values file. If the name is not explicitly set it will take the "mongodb.
     {{ template "mongodb.fullname" .}}
   {{- end -}}
 {{- end -}}
+
+{{/*
+Returns the proper initConfigMap name with the release name
+*/}}
+{{- define "mongodb.initConfigMapName" -}}
+  {{- if .Values.initConfigMap -}}
+  {{- .Release.Name | trunc 63  -}}-{{ .Values.initConfigMap.name}}
+  {{- else -}}
+   ""
+  {{- end -}}
+{{- end -}}

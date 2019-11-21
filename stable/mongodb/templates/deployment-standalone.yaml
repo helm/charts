@@ -239,7 +239,7 @@ spec:
       {{- if (.Values.initConfigMap) }}
       - name: custom-init-scripts
         configMap:
-          name: {{ .Values.initConfigMap.name }}
+          name: {{ template "mongodb.initConfigMapName" $ }}
       {{- end }}
       - name: data
       {{- if .Values.persistence.enabled }}
