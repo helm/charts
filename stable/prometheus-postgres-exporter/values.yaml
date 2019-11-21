@@ -75,8 +75,10 @@ config:
     database: ''
     sslmode: disable
   disableDefaultMetrics: false
+  disableSettingstMetrics: false
   autoDiscoverDatabases: false
   excludeDatabases: []
+  logLevel: "info"
   # this are the defaults queries that the exporter will run, extracted from: https://github.com/wrouesnel/postgres_exporter/blob/master/queries.yaml
   queries: |-
     pg_replication:
