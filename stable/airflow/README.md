@@ -343,7 +343,9 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.service.type`                   | service type for Airflow UI                             | `ClusterIP`               |
 | `airflow.service.annotations`            | (optional) service annotations for Airflow UI           | `{}`                      |
 | `airflow.service.externalPort`           | (optional) external port for Airflow UI                 | `8080`                    |
-| `airflow.service.nodePort.http`               | (optional) when using service.type == NodePort, an optional NodePort to request | ``|
+| `airflow.service.nodePort.http`          | (optional) when using service.type == NodePort, an optional NodePort to request | ``|
+| `airflow.service.serviceSessionAffinity` | The session affinity for the airflow UI                 | `None`                    |
+| `airflow.service.sessionAffinityConfig`  | The session affinity config for the airflow UI          | `None`                    |
 | `airflow.executor`                       | the executor to run                                     | `Celery`                  |
 | `airflow.initRetryLoop`                  | max number of retries during container init             |                           |
 | `airflow.image.repository`               | Airflow docker image                                    | `puckel/docker-airflow`   |
@@ -353,8 +355,8 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.schedulerNumRuns`               | -1 to loop indefinitively, 1 to restart after each exec |                           |
 | `airflow.webReplicas`                    | how many replicas for web server                        | `1`                       |
 | `airflow.config`                         | custom airflow configuration env variables              | `{}`                      |
-| `airflow.podDisruptionBudget.enabled`        | enable pod disruption budget                            | `true`                    |
-| `airflow.podDisruptionBudget.maxUnavailable` | control pod disruption budget                           | `1`                       |
+| `airflow.podDisruptionBudgetEnabled`     | enable pod disruption budget                            | `true`                    |
+| `airflow.podDisruptionBudget`            | control pod disruption budget                           | `{'maxUnavailable': 1}`   |
 | `airflow.extraEnv`                       | specify additional environment variables to mount       | `{}`                      |
 | `airflow.extraConfigmapMounts`           | Additional configMap volume mounts on the airflow pods. | `[]`                      |
 | `airflow.podAnnotations`                 | annotations for scheduler, worker and web pods          | `{}`                      |
@@ -373,6 +375,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `web.labels`                             | labels for the web deployment                           | `{}`                      |
 | `web.annotations`                        | annotations for the web deployment                      | `{}`                      |
 | `web.initialStartupDelay`                | amount of time webserver pod should sleep before initializing webserver             | `60`  |
+| `web.minReadySeconds`                    | minReadySeconds in the web deployment                   | `120`
 | `web.livenessProbe.periodSeconds`        | interval between probes                         | `60`  |
 | `web.livenessProbe.timeoutSeconds`       | time allowed for a result to return             | `1`  |
 | `web.livenessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful             | `1`  |

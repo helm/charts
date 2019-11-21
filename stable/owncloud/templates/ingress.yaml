@@ -1,26 +1,28 @@
 {{- if .Values.ingress.enabled }}
-{{- range .Values.ingress.hosts }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: "{{- printf "%s-%s" .name $.Release.Name | trunc 63 | trimSuffix "-" -}}"
+  name: {{ template "owncloud.fullname" . }}
   labels:
-    app: {{ template "owncloud.fullname" $ }}
-    chart: {{ template "owncloud.chart" $ }}
+    app: {{ template "owncloud.fullname" . }}
+    chart: {{ template "owncloud.chart" . }}
     release: "{{ $.Release.Name }}"
     heritage: "{{ $.Release.Service }}"
   annotations:
+    {{- range .Values.ingress.hosts }}
     {{- if .tls }}
     ingress.kubernetes.io/secure-backends: "true"
     {{- end }}
-    {{- if .certManager }}
+    {{- end }}
+    {{- if .Values.ingress.certManager }}
     kubernetes.io/tls-acme: "true"
     {{- end }}
-    {{- range $key, $value := .annotations }}
+    {{- range $key, $value := .Values.ingress.annotations }}
     {{ $key }}: {{ $value | quote }}
     {{- end }}
 spec:
   rules:
+  {{- range .Values.ingress.hosts }}
   - host: {{ .name }}
     http:
       paths:
@@ -28,12 +30,13 @@ spec:
           backend:
             serviceName: {{ template "owncloud.fullname" $ }}
             servicePort: 80
-{{- if .tls }}
+  {{- end }}
   tls:
+{{- range .Values.ingress.hosts }}
   - hosts:
+{{- if .tls }}
     - {{ .name }}
     secretName: {{ .tlsSecret }}
 {{- end }}
----
 {{- end }}
 {{- end }}

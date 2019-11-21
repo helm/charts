@@ -153,6 +153,7 @@ external:
   firstListenerPort: 31090
   domain: cluster.local
   loadBalancerIP: []
+  loadBalancerSourceRanges: []
   init:
     image: "lwolf/kubectl_deployer"
     imageTag: "0.4"

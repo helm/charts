@@ -99,7 +99,7 @@ spec:
         - name: REDMINE_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "redmine.fullname" . }}
+              name: {{ template "redmine.secretName" . }}
               key: redmine-password
         - name: REDMINE_EMAIL
           value: {{ .Values.redmineEmail | quote }}
@@ -121,7 +121,7 @@ spec:
         - name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "redmine.fullname" . }}
+              name: {{ template "redmine.secretName" . }}
               key: smtp-password
         {{- end }}
         {{- if .Values.smtpTls }}
