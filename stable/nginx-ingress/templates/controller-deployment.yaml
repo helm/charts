@@ -1,10 +1,10 @@
 {{- if or (eq .Values.controller.kind "Deployment") (eq .Values.controller.kind "Both") }}
-apiVersion: {{ .Values.controller.apiVersion }}
+apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   labels:
     app: {{ template "nginx-ingress.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "nginx-ingress.chart" . }}
     component: "{{ .Values.controller.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
@@ -136,7 +136,7 @@ spec:
           {{- end }}
           {{- if .Values.controller.metrics.enabled }}
             - name: metrics
-              containerPort: 10254
+              containerPort: {{ .Values.controller.metrics.port }}
               protocol: TCP
           {{- end }}
           {{- if .Values.controller.admissionWebhooks.enabled }}
@@ -204,7 +204,7 @@ spec:
     {{- end }}
       serviceAccountName: {{ template "nginx-ingress.serviceAccountName" . }}
       terminationGracePeriodSeconds: {{ .Values.controller.terminationGracePeriodSeconds }}
-{{- if (or .Values.controller.customTemplate.configMapName .Values.controller.extraVolumeMounts .Values.controller.admissionWebhooks.enabled) }}
+{{- if (or .Values.controller.customTemplate.configMapName .Values.controller.extraVolumeMounts .Values.controller.admissionWebhooks.enabled .Values.controller.extraVolumes) }}
       volumes:
 {{- end }}
 {{- if .Values.controller.customTemplate.configMapName }}

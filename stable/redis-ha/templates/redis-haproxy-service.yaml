@@ -19,15 +19,18 @@ spec:
     port: {{ .Values.redis.port }}
     protocol: TCP
     targetPort: redis
-{{- if .Values.haproxy.readOnly.enabled }}  
+  {{- if and (eq .Values.haproxy.service.type "NodePort") .Values.haproxy.service.nodePort }}
+    nodePort: {{ .Values.haproxy.service.nodePort }}
+  {{- end }}
+{{- if .Values.haproxy.readOnly.enabled }}
   - name: haproxyreadonly
     port: {{ .Values.haproxy.readOnly.port }}
     protocol: TCP
     targetPort: {{ .Values.haproxy.readOnly.port }}
 {{- end }}
-{{- if .Values.exporter.enabled }}
-  - name: exporter-port
-    port: {{ .Values.haproxy.exporter.port }}
+{{- if .Values.haproxy.metrics.enabled }}
+  - name: {{ .Values.haproxy.metrics.portName }}
+    port: {{ .Values.haproxy.metrics.port }}
     protocol: TCP
     targetPort: exporter-port
 {{- end }}

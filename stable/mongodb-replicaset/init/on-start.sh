@@ -51,7 +51,7 @@ retry_until() {
         creds=()
     fi
 
-    until [[ $(mongo admin --host "${host}" "${creds[@]}" "${ssl_args[@]}" --quiet --eval "${command}") == "${expected}" ]]; do
+    until [[ $(mongo admin --host "${host}" "${creds[@]}" "${ssl_args[@]}" --quiet --eval "${command}" | tail -n1) == "${expected}" ]]; do
         sleep 1
 
         if (! ps "${pid}" &>/dev/null); then

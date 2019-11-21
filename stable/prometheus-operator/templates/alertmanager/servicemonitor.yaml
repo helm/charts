@@ -1,8 +1,9 @@
 {{- if and .Values.alertmanager.enabled .Values.alertmanager.serviceMonitor.selfMonitor }}
-apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
+apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-alertmanager
+  namespace: {{ $.Release.Namespace }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-alertmanager
 {{ include "prometheus-operator.labels" . | indent 4 }}
@@ -10,12 +11,12 @@ spec:
   selector:
     matchLabels:
       app: {{ template "prometheus-operator.name" . }}-alertmanager
-      release: {{ .Release.Name | quote }}
+      release: {{ $.Release.Name | quote }}
   namespaceSelector:
     matchNames:
-      - {{ .Release.Namespace | quote }}
+      - {{ $.Release.Namespace | quote }}
   endpoints:
-  - port: web
+  - port: {{ .Values.alertmanager.alertmanagerSpec.portName }}
     {{- if .Values.alertmanager.serviceMonitor.interval }}
     interval: {{ .Values.alertmanager.serviceMonitor.interval }}
     {{- end }}

@@ -90,7 +90,7 @@ master:
   targetPort: 8080
   # For minikube, set this to NodePort, elsewhere use LoadBalancer
   # Use ClusterIP if your setup includes ingress controller
-  serviceType: LoadBalancer
+  serviceType: ClusterIP
   # Jenkins master service annotations
   serviceAnnotations: {}
   # Jenkins master custom labels
@@ -155,7 +155,7 @@ master:
   #   -Dcom.sun.management.jmxremote.ssl=false
   # jmxPort: 4000
   # Optionally configure other ports to expose in the master container
-  extraPorts:
+  extraPorts: []
   # - name: BuildInfoProxy
   #   port: 9000
 
@@ -173,11 +173,11 @@ master:
   # The plugin is not installed by default, please update master.installPlugins.
   enableRawHtmlMarkupFormatter: false
   # Used to approve a list of groovy functions in pipelines used the script-security plugin. Can be viewed under /scriptApproval
-  scriptApproval:
+  scriptApproval: []
   #  - "method groovy.json.JsonSlurperClassic parseText java.lang.String"
   #  - "new groovy.json.JsonSlurperClassic"
   # List of groovy init scripts to be executed during Jenkins master start
-  initScripts:
+  initScripts: []
   #  - |
   #    print 'adding global pipeline libraries, register properties, bootstrap jobs...'
   # Kubernetes secret that contains a 'credentials.xml' for Jenkins
@@ -205,10 +205,10 @@ master:
     # it's only used when plugin version is <=1.18 for later version the
     # configuration as code support plugin is no longer needed
     supportPluginVersion: "1.18"
-    configScripts:
-      welcome-message: |
-        jenkins:
-          systemMessage: Welcome to our CI\CD server.  This Jenkins is configured and managed 'as code'.
+    configScripts: {}
+    # welcome-message: |
+    #   jenkins:
+    #     systemMessage: Welcome to our CI\CD server.  This Jenkins is configured and managed 'as code'.
 
   # Optionally specify additional init-containers
   customInitContainers: []
@@ -224,7 +224,7 @@ master:
       # over SSH to reapply config when changes to the configScripts are detected.  The admin user (or account you specify in
       # master.adminUser) will have a random SSH private key (RSA 4096) assigned unless you specify adminSshKey.  This will be saved to a k8s secret.
       enabled: false
-      image: shadwell/k8s-sidecar:0.0.2
+      image: kiwigrid/k8s-sidecar:0.1.20
       imagePullPolicy: IfNotPresent
       resources: {}
         #   limits:
@@ -247,7 +247,7 @@ master:
       # searchNamespace:
 
     # Allows you to inject additional/other sidecars
-    other:
+    other: []
     ## The example below runs the client for https://smee.io as sidecar container next to Jenkins,
     ## that allows to trigger build behind a secure firewall.
     ## https://jenkins.io/blog/2019/01/07/webhook-firewalls/#triggering-builds-with-webhooks-behind-a-secure-firewall
@@ -382,10 +382,10 @@ agent:
   # Configure the attributes as they appear in the corresponding Java class for that type
   # https://github.com/jenkinsci/kubernetes-plugin/tree/master/src/main/java/org/csanchez/jenkins/plugins/kubernetes/volumes
   # Pod-wide ennvironment, these vars are visible to any container in the agent pod
-  envVars:
+  envVars: []
   # - name: PATH
   #   value: /usr/local/bin
-  volumes:
+  volumes: []
   # - type: Secret
   #   secretName: mysecret
   #   mountPath: /var/myapp/mysecret
@@ -458,6 +458,7 @@ networkPolicy:
 ## Install Default RBAC roles and bindings
 rbac:
   create: true
+  readSecrets: false
 
 serviceAccount:
   create: true
@@ -484,10 +485,11 @@ backup:
   # Schedule to run jobs. Must be in cron time format
   # Ref: https://crontab.guru/
   schedule: "0 2 * * *"
-  annotations:
+  labels: {}
+  annotations: {}
     # Example for authorization to AWS S3 using kube2iam
     # Can also be done using environment variables
-    iam.amazonaws.com/role: "jenkins"
+    # iam.amazonaws.com/role: "jenkins"
   image:
     repository: "maorfr/kube-tasks"
     tag: "0.2.0"
@@ -503,10 +505,13 @@ backup:
   ## Use this key for AWS secret access key
      # awssecretkey: jenkins_aws_secret_key
   # Add additional environment variables
-  env:
+   # jenkinsgcp:
+  ## Use this key for GCP credentials
+     # gcpcredentials: credentials.json
+  env: []
   # Example environment variable required for AWS credentials chain
-  - name: "AWS_REGION"
-    value: "us-east-1"
+  # - name: "AWS_REGION"
+  #   value: "us-east-1"
   resources:
     requests:
       memory: 1Gi

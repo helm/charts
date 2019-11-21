@@ -1,5 +1,5 @@
 {{- if or .Values.databaseType.mariadb .Values.databaseType.postgresql }}
-apiVersion: apps/v1
+apiVersion: {{ template "redmine.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "redmine.fullname" . }}
@@ -99,7 +99,7 @@ spec:
         - name: REDMINE_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "redmine.fullname" . }}
+              name: {{ template "redmine.secretName" . }}
               key: redmine-password
         - name: REDMINE_EMAIL
           value: {{ .Values.redmineEmail | quote }}
@@ -121,7 +121,7 @@ spec:
         - name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "redmine.fullname" . }}
+              name: {{ template "redmine.secretName" . }}
               key: smtp-password
         {{- end }}
         {{- if .Values.smtpTls }}
@@ -153,5 +153,9 @@ spec:
           claimName: {{ .Values.persistence.existingClaim | default (include "redmine.fullname" .) }}
       {{- else }}
         emptyDir: {}
+      {{- end }}
+      {{- with .Values.securityContext }}
+      securityContext:
+{{ toYaml . | indent 8 }}
       {{- end }}
 {{- end }}

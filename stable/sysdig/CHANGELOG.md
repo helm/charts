@@ -3,6 +3,34 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.4.22
+
+### Minor changes
+
+* Use the latest image from Agent (0.93.0) by default.
+
+## v1.4.21
+
+* Add 'How to upgrade to last version' to the README
+
+## v1.4.20
+
+### Minor changes
+
+* Fixes compatibility errors introduced in v1.4.19.
+
+## v1.4.19
+
+### Minor changes
+
+* Fixes compatibility with kubernetes 1.16.
+
+## v1.4.18
+
+### Minor changes
+
+* Use the latest image from Agent (0.92.3) by default.
+
 ## v1.4.17
 
 ### Minor changes

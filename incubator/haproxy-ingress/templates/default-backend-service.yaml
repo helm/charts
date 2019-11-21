@@ -13,6 +13,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   name: {{ template "haproxy-ingress.defaultBackend.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
 {{- if .Values.defaultBackend.service.clusterIP }}
   clusterIP: "{{ .Values.defaultBackend.service.clusterIP }}"

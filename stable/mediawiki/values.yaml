@@ -14,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/mediawiki
-  tag: 1.33.0-debian-9-r67
+  tag: 1.33.1-debian-9-r25
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -151,7 +151,8 @@ service:
   # HTTP Port
   port: 80
   # HTTPS Port
-  httpsPort: 443
+  ## Set this to any value (recommended: 443) to enable the https service port
+  # httpsPort: 443
   ## Use nodePorts to requets some specific ports when usin NodePort
   ## nodePorts:
   ##   http: <to set explicitly, choose port between 30000-32767>
@@ -274,7 +275,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/apache-exporter
-    tag: 0.7.0-debian-9-r50
+    tag: 0.7.0-debian-9-r104
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.

@@ -3,7 +3,7 @@
 ##
 image:
   repository: nextcloud
-  tag: 16.0.3-apache
+  tag: 17.0.0-apache
   pullPolicy: IfNotPresent
   # pullSecrets:
   #   - myRegistrKeySecretName
@@ -57,6 +57,13 @@ ingress:
   #      hosts:
   #        - nextcloud.kube.home
   labels: {}
+
+
+# Allow configuration of lifecycle hooks
+# ref: https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/
+lifecycle: {}
+  # postStartCommand: []
+  # preStopCommand: []
 
 nextcloud:
   host: nextcloud.kube.home
@@ -120,6 +127,16 @@ nextcloud:
   #          )
   #        )
   #      );
+
+  ##
+  ## Extra environment variables
+  extraEnv:
+  #  - name: SOME_SECRET_ENV
+  #    valueFrom:
+  #      secretKeyRef:
+  #        name: nextcloud
+  #        key: secret_key
+
 
 internalDatabase:
   enabled: true

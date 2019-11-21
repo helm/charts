@@ -10,6 +10,9 @@ metadata:
 {{- end }}
 spec:
   type: {{ .Values.serviceType }}
+  {{- if and (eq .Values.serviceType "LoadBalancer") .Values.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+  {{- end }}
   ports:
   - port: {{ .Values.service.httpPort | int }}
     targetPort: 3000
