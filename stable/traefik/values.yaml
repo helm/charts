@@ -1,6 +1,6 @@
 ## Default values for Traefik
 image: traefik
-imageTag: 1.7.14
+imageTag: 1.7.19
 
 ## Optionally specify an array of imagePullSecrets.
 ## Secrets must be manually created in the namespace.
@@ -10,6 +10,7 @@ imageTag: 1.7.14
 
 
 testFramework:
+  enabled: true
   image: "dduportal/bats"
   tag: "0.4.0"
 
@@ -242,7 +243,7 @@ acme:
   ## certain circumstances) DISABLED by Let's Encrypt. It remains as a default
   ## value in this chart to preserve legacy behavior and avoid a breaking
   ## change. Users of this chart should strongly consider making the switch to
-  ## the recommended "tls-alpn-01" (avaialbe since v1.7), dns-01 or http-01
+  ## the recommended "tls-alpn-01" (available since v1.7), dns-01 or http-01
   ## (available since v1.5) challenge.
   challengeType: tls-sni-01
   ## Configure dnsProvider to perform domain verification using dns challenge
