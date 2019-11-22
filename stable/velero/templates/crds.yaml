@@ -2,3 +2,4 @@
 {{ $.Files.Get $path }}
 ---
 {{- end }}
+
