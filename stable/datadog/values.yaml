@@ -706,10 +706,10 @@ daemonset:
   #   # Enable java cgroup handling. Only one of those options should be enabled,
   #   # depending on the agent version you are using along that chart.
   #
-  #   # agent version < 1.15
+  #   # agent version < 6.15
   #   # jmx_use_cgroup_memory_limit: true
   #
-  #   # agent version >= 1.15
+  #   # agent version >= 6.15
   #   # jmx_use_container_support: true
 
 deployment:

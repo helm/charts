@@ -38,11 +38,11 @@ data:
       apm_non_local_traffic: true
 
     {{- with $v := splitn "." 2 .Values.image.tag }}
-    {{ if and (ge $v._0 "1") (ge $v._1 "15") }}
-    # Enable java container awareness (agent version >= 1.15)
+    {{ if and (ge $v._0 "6") (ge $v._1 "15") }}
+    # Enable java container awareness (agent version >= 6.15)
     jmx_use_container_support: true
     {{ else }}
-    # Enable java cgroup memory awareness (agent version < 1.15)
+    # Enable java cgroup memory awareness (agent version < 6.15)
     jmx_use_cgroup_memory_limit: true
     {{ end }}
     {{- end }}
