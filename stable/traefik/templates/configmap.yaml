@@ -105,6 +105,13 @@ data:
           [[entryPoints.https.tls.certificates]]
           CertFile = "/ssl/tls.crt"
           KeyFile = "/ssl/tls.key"
+          {{- if .Values.ssl.extraCerts }}
+          {{- range $i, $cert := .Values.ssl.extraCerts }}
+          [[entryPoints.https.tls.certificates]]
+          CertFile = "{{ $cert.certFile }}"
+          KeyFile = "{{ $cert.keyFile }}"
+          {{- end }}
+          {{- end }}
       {{- end }}
         {{- if .Values.ssl.auth }}
         {{- if .Values.ssl.auth.basic }}

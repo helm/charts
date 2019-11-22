@@ -37,6 +37,9 @@ spec:
         checksum/config-scripts: {{ include (print $.Template.BasePath "/configmap-scripts.yaml") . | sha256sum }}
         checksum/config-variables-pools: {{ include (print $.Template.BasePath "/configmap-variables-pools.yaml") . | sha256sum }}
         checksum/secret-connections: {{ include (print $.Template.BasePath "/secret-connections.yaml") . | sha256sum }}
+        {{- if and ( .Values.dags.git.url ) ( .Values.dags.git.ref ) }}
+        checksum/dags-git-ref: {{ .Values.dags.git.ref }}
+        {{- end }}
 {{- if .Values.airflow.podAnnotations }}
 {{ toYaml .Values.airflow.podAnnotations | indent 8 }}
 {{- end }}
@@ -68,6 +71,11 @@ spec:
         - name: git-clone
           image: {{ .Values.dags.initContainer.image.repository }}:{{ .Values.dags.initContainer.image.tag }} # Any image with git will do
           imagePullPolicy: {{ .Values.dags.initContainer.image.pullPolicy }}
+          envFrom:
+          - configMapRef:
+              name: "{{ template "airflow.fullname" . }}-env"
+          env:
+          {{- include "airflow.mapenvsecrets" . | indent 10 }}
           command:
             - /usr/local/git/git-clone.sh
           args:
