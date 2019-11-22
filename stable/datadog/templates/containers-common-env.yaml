@@ -22,4 +22,12 @@
 {{- end }}
 - name: KUBERNETES
   value: "yes"
+{{- if .Values.datadog.site }}
+- name: DD_SITE
+  value: {{ .Values.datadog.site | quote }}
+{{- end }}
+{{- if .Values.datadog.dd_url }}
+- name: DD_DD_URL
+  value: {{ .Values.datadog.dd_url | quote }}
+{{- end }}
 {{- end -}}
