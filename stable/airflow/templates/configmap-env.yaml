@@ -18,7 +18,7 @@ data:
   ## Redis DB configuration
   REDIS_HOST: "{{ template "airflow.redis.host" . }}"
   REDIS_PORT: "{{ .Values.redis.master.port }}"
-  AIRFLOW__CELERY__FLOWER_URL_PREFIX: "{{ .Values.ingress.flower.path }}"
+  AIRFLOW__CELERY__FLOWER_URL_PREFIX: "{{ .Values.flower.urlPrefix }}"
   AIRFLOW__CELERY__WORKER_CONCURRENCY: "{{ .Values.workers.celery.instances }}"
   ## Flower PORT
   FLOWER_PORT: "5555"
@@ -35,7 +35,7 @@ data:
   AIRFLOW__CORE__BASE_LOG_FOLDER: "{{ .Values.logs.path }}"
   AIRFLOW__CORE__DAG_PROCESSOR_MANAGER_LOG_LOCATION: "{{ printf "%s/%s" .Values.logs.path "dag_processor_manager/dag_processor_manager.log" }}"
   AIRFLOW__SCHEDULER__CHILD_PROCESS_LOG_DIRECTORY: "{{ printf "%s/%s" .Values.logs.path "scheduler" }}"
-  AIRFLOW__WEBSERVER__BASE_URL: "{{ .Values.ingress.web.host }}{{ .Values.ingress.web.path }}"
+  AIRFLOW__WEBSERVER__BASE_URL: "{{ .Values.web.baseUrl }}"
   # Disabling XCom pickling for forward compatibility
   AIRFLOW__CORE__ENABLE_XCOM_PICKLING: "false"
   # Note: changing `Values.airflow.config` won't change the configmap checksum and so won't make
