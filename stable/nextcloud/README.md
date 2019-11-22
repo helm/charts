@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `ingress.enabled`                                            | Enable use of ingress controllers                       | `false`                                                 |
 | `ingress.servicePort`                                        | Ingress' backend servicePort                            | `http`                                                  |
 | `ingress.annotations`                                        | An array of service annotations                         | `nil`                                                   |
-| `ingress.labels`                                        | An array of service labels                         | `nil`                                                   |
+| `ingress.labels`                                             | An array of service labels                              | `nil`                                                   |
 | `ingress.tls`                                                | Ingress TLS configuration                               | `[]`                                                    |
 | `nextcloud.host`                                             | nextcloud host to create application URLs               | `nextcloud.kube.home`                                   |
 | `nextcloud.username`                                         | User of the application                                 | `admin`                                                 |
@@ -80,6 +80,9 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `nextcloud.defaultConfigs.\.apps\.config\.php`               | Default configuration for apps                          | `true`                                                  |
 | `nextcloud.defaultConfigs.\.autoconfig\.php`                 | Default auto-configuration for databases                | `true`                                                  |
 | `nextcloud.defaultConfigs.\.smtp\.config\.php`               | Default configuration for smtp                          | `true`                                                  |
+| `nextcloud.extraEnv`                                         | specify additional environment variables                | `{}`                                                    |
+| `lifecycle.postStartCommand`                                 | Specify deployment lifecycle hook postStartCommand      | `nil`                                                   |
+| `lifecycle.preStopCommand`                                   | Specify deployment lifecycle hook preStopCommand        | `nil`                                                   |
 | `internalDatabase.enabled`                                   | Whether to use internal sqlite database                 | `true`                                                  |
 | `internalDatabase.database`                                  | Name of the existing database                           | `nextcloud`                                             |
 | `externalDatabase.enabled`                                   | Whether to use external database                        | `false`                                                 |

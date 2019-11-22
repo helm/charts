@@ -333,6 +333,21 @@ To be able to expose metrics to prometheus you need install a plugin, this can b
 This exposes dag and task based metrics from Airflow.
 For service monitor configuration see the generic [Helm chart Configuration](#helm-chart-configuration).
 
+## Additional manifests 
+
+It is possible to add additional manifests into a deployment, to extend the chart. One of the reason is to deploy a manifest specific to a cloud provider ( BackendConfig on GKE for example ).
+
+```yaml
+extraManifests:
+  - apiVersion: cloud.google.com/v1beta1
+    kind: BackendConfig
+    metadata:
+      name: "{{ .Release.Name }}-test"
+    spec:
+      securityPolicy:
+        name: "gcp-cloud-armor-policy-test"
+```
+
 ## Helm chart Configuration
 
 The following table lists the configurable parameters of the Airflow chart and their default values.
@@ -343,7 +358,9 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.service.type`                   | service type for Airflow UI                             | `ClusterIP`               |
 | `airflow.service.annotations`            | (optional) service annotations for Airflow UI           | `{}`                      |
 | `airflow.service.externalPort`           | (optional) external port for Airflow UI                 | `8080`                    |
-| `airflow.service.nodePort.http`               | (optional) when using service.type == NodePort, an optional NodePort to request | ``|
+| `airflow.service.nodePort.http`          | (optional) when using service.type == NodePort, an optional NodePort to request | ``|
+| `airflow.service.serviceSessionAffinity` | The session affinity for the airflow UI                 | `None`                    |
+| `airflow.service.sessionAffinityConfig`  | The session affinity config for the airflow UI          | `None`                    |
 | `airflow.executor`                       | the executor to run                                     | `Celery`                  |
 | `airflow.initRetryLoop`                  | max number of retries during container init             |                           |
 | `airflow.image.repository`               | Airflow docker image                                    | `puckel/docker-airflow`   |
@@ -353,6 +370,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.schedulerNumRuns`               | -1 to loop indefinitively, 1 to restart after each exec |                           |
 | `airflow.webReplicas`                    | how many replicas for web server                        | `1`                       |
 | `airflow.config`                         | custom airflow configuration env variables              | `{}`                      |
+| `airflow.podDisruptionBudgetEnabled`     | enable pod disruption budget                            | `true`                    |
 | `airflow.podDisruptionBudget`            | control pod disruption budget                           | `{'maxUnavailable': 1}`   |
 | `airflow.extraEnv`                       | specify additional environment variables to mount       | `{}`                      |
 | `airflow.extraConfigmapMounts`           | Additional configMap volume mounts on the airflow pods. | `[]`                      |
@@ -372,6 +390,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `web.labels`                             | labels for the web deployment                           | `{}`                      |
 | `web.annotations`                        | annotations for the web deployment                      | `{}`                      |
 | `web.initialStartupDelay`                | amount of time webserver pod should sleep before initializing webserver             | `60`  |
+| `web.minReadySeconds`                    | minReadySeconds in the web deployment                   | `120`
 | `web.livenessProbe.periodSeconds`        | interval between probes                         | `60`  |
 | `web.livenessProbe.timeoutSeconds`       | time allowed for a result to return             | `1`  |
 | `web.livenessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful             | `1`  |
@@ -465,6 +484,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `prometheusRule.enabled`                 | enable prometheus rule                                  | `false`                   |
 | `prometheusRule.groups`                  | define alerting rules                                   | `{}`                      |
 | `prometheusRule.additionalLabels`        | add additional labels to the prometheus rule            | `{}`                      |
+| `extraManifests`                         | add additional manifests to deploy                      | `[]`                      |
 
 
 Full and up-to-date documentation can be found in the comments of the `values.yaml` file.
