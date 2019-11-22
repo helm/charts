@@ -69,12 +69,12 @@ image.
 Please also note that the Airflow UI and Flower do not behave the same:
 
 - Airflow Web UI behaves transparently, to configure it one just needs to specify the
-  `ingress.web.path` value.
+  `web.baseUrl` value. Ingress can be configured with `ingress.web.host` and `ingress.web.path`.
 - Flower cannot handle this scheme directly and requires a URL rewrite mechanism in front
   of it. In short, it is able to generate the right URLs in the returned HTML file but cannot
   respond to these URL. It is commonly found in software that wasn't intended to work under
   something else than a root URL or localhost port. To use it, see the `values.yaml` for how
-  to configure your ingress controller to rewrite the URL (or "strip" the prefix path).
+  to configure your ingress controller to rewrite the URL (or "strip" the prefix path) and `flower.urlPrefix`.
 
   Note: unreleased Flower (as of June 2018) does not need the prefix strip feature anymore. It is
   integrated in `docker-airflow-dev:2.0dev` image.
@@ -333,6 +333,21 @@ To be able to expose metrics to prometheus you need install a plugin, this can b
 This exposes dag and task based metrics from Airflow.
 For service monitor configuration see the generic [Helm chart Configuration](#helm-chart-configuration).
 
+## Additional manifests 
+
+It is possible to add additional manifests into a deployment, to extend the chart. One of the reason is to deploy a manifest specific to a cloud provider ( BackendConfig on GKE for example ).
+
+```yaml
+extraManifests:
+  - apiVersion: cloud.google.com/v1beta1
+    kind: BackendConfig
+    metadata:
+      name: "{{ .Release.Name }}-test"
+    spec:
+      securityPolicy:
+        name: "gcp-cloud-armor-policy-test"
+```
+
 ## Helm chart Configuration
 
 The following table lists the configurable parameters of the Airflow chart and their default values.
@@ -365,12 +380,14 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.extraVolumeMounts`              | additional volumeMounts to the main container in scheduler, worker & web pods | `[]`|
 | `airflow.extraVolumes`                   | additional volumes for the scheduler, worker & web pods | `[]`                      |
 | `airflow.initdb`                         | run `airflow initdb` when starting the scheduler        | `true`                    |
+| `flower.urlPrefix`                       | path of the flower ui                                   | ""                        |
 | `flower.resources`                       | custom resource configuration for flower pod            | `{}`                      |
 | `flower.labels`                          | labels for the flower deployment                        | `{}`                      |
 | `flower.annotations`                     | annotations for the flower deployment                   | `{}`                      |
 | `flower.service.type`                    | service type for Flower UI                              | `ClusterIP`               |
 | `flower.service.annotations`             | (optional) service annotations for Flower UI            | `{}`                      |
 | `flower.service.externalPort`            | (optional) external port for Flower UI                  | `5555`                    |
+| `web.baseUrl`                            | webserver UI URL                                        | `http://localhost:8080`   |
 | `web.resources`                          | custom resource configuration for web pod               | `{}`                      |
 | `web.labels`                             | labels for the web deployment                           | `{}`                      |
 | `web.annotations`                        | annotations for the web deployment                      | `{}`                      |
@@ -469,11 +486,21 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `prometheusRule.enabled`                 | enable prometheus rule                                  | `false`                   |
 | `prometheusRule.groups`                  | define alerting rules                                   | `{}`                      |
 | `prometheusRule.additionalLabels`        | add additional labels to the prometheus rule            | `{}`                      |
+| `extraManifests`                         | add additional manifests to deploy                      | `[]`                      |
 
 
 Full and up-to-date documentation can be found in the comments of the `values.yaml` file.
 
 ## Upgrading
+
+### To 5.0.0
+This version splits the configuration for webserver and flower web UI from ingress configurations for separation of concerns.
+
+Two new parameters:
+  - `web.baseUrl`
+  - `flower.urlPrefix`
+
+This upgrade will fail if a custom ingress path is set for web and/or flower and `web.baseUrl` and/or `flower.urlPrefix`
 
 ### To 4.0.0
 This version splits the specs for the NodeSelector, Affinity and Toleration features. Instead of being global, and injected in every component, they are now defined _by component_ to provide more flexibility for your deployments. As such, the migration steps are really simple. Just copy and paste your node/affinity/tolerance definitions in the four airflow components, which are `worker`, `scheduler`, `flower` and `web`. The default values file should help you with locating those.

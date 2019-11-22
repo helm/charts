@@ -125,7 +125,18 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `podDisruptionBudget.maxUnavailable`| Maximum unavailable pods                   | `nil`                                                   |
 | `replicas`                          | The number of pod replicas                 | `1`                                                     |
 | `resources`                         | Resources allocation (Requests and Limits) | `{}`                                                    |
-| `securityContext`                   | Security Context                           | `{}`                                                    |
+| `livenessProbe.enabled`             | would you like a livenessProbe to be enabled                                                | `true` |
+| `livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated                                                    | 300    |
+| `livenessProbe.periodSeconds`       | How often to perform the probe                                                              | 10     |
+| `livenessProbe.timeoutSeconds`      | When the probe times out                                                                    | 5      |
+| `livenessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful after having failed | 1      |
+| `livenessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded.  | 3      |
+| `readinessProbe.enabled`            | would you like a readinessProbe to be enabled                                               | `true` |
+| `readinessProbe.initialDelaySeconds`| Delay before readiness probe is initiated                                                   | 5      |
+| `readinessProbe.periodSeconds`      | How often to perform the probe                                                              | 10     |
+| `readinessProbe.timeoutSeconds`     | When the probe times out                                                                    | 1      |
+| `readinessProbe.successThreshold`   | Minimum consecutive successes for the probe to be considered successful after having failed | 1      |
+| `readinessProbe.failureThreshold`   | Minimum consecutive failures for the probe to be considered failed after having succeeded.  | 3      |
 
 The above parameters map to the env variables defined in [bitnami/redmine](http://github.com/bitnami/bitnami-docker-redmine). For more information please refer to the [bitnami/redmine](http://github.com/bitnami/bitnami-docker-redmine) image documentation.
 

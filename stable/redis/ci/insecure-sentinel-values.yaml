@@ -2,12 +2,10 @@
 ## Please, note that this will override the image parameters, including dependencies, configured to use the global value
 ## Current available global Docker image parameters: imageRegistry and imagePullSecrets
 ##
-global:
+# global:
 #   imageRegistry: myRegistryName
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
-#   storageClass: myStorageClass
-  redis: {}
 
 ## Bitnami Redis image version
 ## ref: https://hub.docker.com/r/bitnami/redis/tags/
@@ -18,7 +16,7 @@ image:
   ## Bitnami Redis image tag
   ## ref: https://github.com/bitnami/bitnami-docker-redis#supported-tags-and-respective-dockerfile-links
   ##
-  tag: 5.0.7-debian-9-r0
+  tag: 5.0.5-debian-9-r36
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -31,26 +29,24 @@ image:
   # pullSecrets:
   #   - myRegistryKeySecretName
 
-## String to partially override redis.fullname template (will maintain the release name)
-##
-# nameOverride:
-
-## String to fully override redis.fullname template
-##
-# fullnameOverride:
+## Redis pod Security Context
+securityContext:
+  enabled: true
+  fsGroup: 1001
+  runAsUser: 1001
 
 ## Cluster settings
 cluster:
   enabled: true
-  slaveCount: 2
+  slaveCount: 3
 
 ## Use redis sentinel in the redis pod. This will disable the master and slave services and
 ## create one redis service with ports to the sentinel and the redis instances
 sentinel:
-  enabled: false
+  enabled: true
   ## Require password authentication on the sentinel itself
   ## ref: https://redis.io/topics/sentinel
-  usePassword: true
+  usePassword: false
   ## Bitnami Redis Sentintel image version
   ## ref: https://hub.docker.com/r/bitnami/redis-sentinel/tags/
   ##
@@ -60,7 +56,7 @@ sentinel:
     ## Bitnami Redis image tag
     ## ref: https://github.com/bitnami/bitnami-docker-redis-sentinel#supported-tags-and-respective-dockerfile-links
     ##
-    tag: 5.0.6-debian-9-r6
+    tag: 5.0.5-debian-9-r37
     ## Specify a imagePullPolicy
     ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
     ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -79,10 +75,6 @@ sentinel:
   failoverTimeout: 18000
   parallelSyncs: 1
   port: 26379
-  ## Additional Redis configuration for the sentinel nodes
-  ## ref: https://redis.io/topics/config
-  ##
-  configmap:
   ## Configure extra options for Redis Sentinel liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
   ##
@@ -124,17 +116,12 @@ sentinel:
     ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
     ##
     annotations: {}
-    labels: {}
     loadBalancerIP:
-
-## Specifies the Kubernetes Cluster's Domain Name.
-##
-clusterDomain: cluster.local
 
 networkPolicy:
   ## Specifies whether a NetworkPolicy should be created
   ##
-  enabled: false
+  enabled: true
 
   ## The Policy model to apply. When set to false, only pods with the correct
   ## client label will have network access to the port Redis is listening
@@ -169,18 +156,6 @@ rbac:
     #      - gce.unprivileged
     rules: []
 
-## Redis pod Security Context
-securityContext:
-  enabled: true
-  fsGroup: 1001
-  runAsUser: 1001
-  ## sysctl settings for master and slave pods
-  ##
-  ## Uncomment the setting below to increase the net.core.somaxconn value
-  ##
-  # sysctls:
-  # - name: net.core.somaxconn
-  #   value: "10000"
 
 ## Use password authentication
 usePassword: true
@@ -198,7 +173,7 @@ password:
 ## Mount secrets as files instead of environment variables
 usePasswordFile: false
 
-## Persist data to a persistent volume (Redis Master)
+## Persist data to a persistent volume
 persistence: {}
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
@@ -217,10 +192,6 @@ master:
   ## Can be used to specify command line arguments, for example:
   ##
   command: "/run.sh"
-  ## Additional Redis configuration for the master nodes
-  ## ref: https://redis.io/topics/config
-  ##
-  configmap:
   ## Redis additional command line flags
   ##
   ## Can be used to specify command line flags, for example:
@@ -299,9 +270,7 @@ master:
     ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
     ##
     annotations: {}
-    labels: {}
     loadBalancerIP:
-    # loadBalancerSourceRanges: ["10.0.0.0/8"]
 
   ## Enable persistence using Persistent Volume Claims
   ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
@@ -337,6 +306,7 @@ master:
   ## Redis Master pod priorityClassName
   # priorityClassName: {}
 
+
 ##
 ## Redis Slave properties
 ## Note: service.type is a mandatory parameter
@@ -359,19 +329,14 @@ slave:
     ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
     ##
     annotations: {}
-    labels: {}
     loadBalancerIP:
-    # loadBalancerSourceRanges: ["10.0.0.0/8"]
 
   ## Redis slave port
   port: 6379
+
   ## Can be used to specify command line arguments, for example:
   ##
   command: "/run.sh"
-  ## Additional Redis configuration for the slave nodes
-  ## ref: https://redis.io/topics/config
-  ##
-  configmap:
   ## Redis extra flags
   extraFlags: []
   ## List of Redis commands to disable
@@ -407,22 +372,6 @@ slave:
   #     memory: 256Mi
   #     cpu: 100m
 
-  ## Redis slave selectors and tolerations for pod assignment
-  # nodeSelector: {"beta.kubernetes.io/arch": "amd64"}
-  # tolerations: []
-
-  ## Use an alternate scheduler, e.g. "stork".
-  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
-  ##
-  # schedulerName:
-
-  ## Redis slave pod Annotation and Labels
-  podLabels: {}
-  podAnnotations: {}
-
-  ## Redis slave pod priorityClassName
-  # priorityClassName: {}
-
   ## Enable persistence using Persistent Volume Claims
   ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
   ##
@@ -454,15 +403,31 @@ slave:
     ## https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#partitions
     # rollingUpdatePartition:
 
+  ## Redis slave selectors and tolerations for pod assignment
+  # nodeSelector: {"beta.kubernetes.io/arch": "amd64"}
+  # tolerations: []
+
+  ## Use an alternate scheduler, e.g. "stork".
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  # schedulerName:
+
+  ## Redis slave pod Annotation and Labels
+  podLabels: {}
+  podAnnotations: {}
+
+  ## Redis slave pod priorityClassName
+  # priorityClassName: {}
+
 ## Prometheus Exporter / Metrics
 ##
 metrics:
-  enabled: false
+  enabled: true
 
   image:
     registry: docker.io
     repository: bitnami/redis-exporter
-    tag: 1.3.4-debian-9-r4
+    tag: 1.0.3-debian-9-r0
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -475,6 +440,14 @@ metrics:
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##
   # resources: {}
+  ## Metrics exporter pod priorityClassName
+  # priorityClassName: {}
+  service:
+    type: ClusterIP
+    ## Use serviceLoadBalancerIP to request a specific static IP,
+    ## otherwise leave blank
+    # loadBalancerIP:
+    annotations: {}
 
   ## Extra arguments for Metrics exporter, for example:
   ## extraArgs:
@@ -499,17 +472,6 @@ metrics:
     ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
     selector:
       prometheus: kube-prometheus
-
-  ## Metrics exporter pod priorityClassName
-  # priorityClassName: {}
-  service:
-    type: ClusterIP
-    ## Use serviceLoadBalancerIP to request a specific static IP,
-    ## otherwise leave blank
-    # loadBalancerIP:
-    annotations: {}
-    labels: {}
-
 ##
 ## Init containers parameters:
 ## volumePermissions: Change the owner of the persist volume mountpoint to RunAsUser:fsGroup
@@ -537,10 +499,7 @@ volumePermissions:
 ## ref: https://redis.io/topics/config
 ##
 configmap: |-
-  # Enable AOF https://redis.io/topics/persistence#append-only-file
-  appendonly yes
-  # Disable RDB persistence, AOF persistence already enabled.
-  save ""
+  # maxmemory-policy volatile-lru
 
 ## Sysctl InitContainer
 ## used to perform sysctl operation to modify Kernel settings (needed sometimes to avoid warnings)
@@ -563,11 +522,3 @@ sysctlImage:
   #   requests:
   #     memory: 128Mi
   #     cpu: 100m
-
-## PodSecurityPolicy configuration
-## ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
-##
-podSecurityPolicy:
-  ## Specifies whether a PodSecurityPolicy should be created
-  ##
-  create: false

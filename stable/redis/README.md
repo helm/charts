@@ -190,6 +190,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `slave.affinity`                              | Enable node/pod affinity for slaves                                                                                                                 | {}                                                      |
 | `slave.priorityClassName`                     | Redis Slave pod priorityClassName                                                                                                                   | {}                                                      |
 | `sentinel.enabled`                            | Enable sentinel containers                                                                                                                          | `false`                                                 |
+| `sentinel.usePassword`                        | Use password for sentinel containers                                                                                                      | `true`                                                  |
 | `sentinel.masterSet`                          | Name of the sentinel master set                                                                                                                     | `mymaster`                                              |
 | `sentinel.initialCheckTimeout`                | Timeout for querying the redis sentinel service for the active sentinel list                                                                        | `5`                                                     |
 | `sentinel.quorum`                             | Quorum for electing a new master                                                                                                                    | `2`                                                     |
@@ -390,6 +391,14 @@ after a successful install.
 
 A major chart version change (like v1.2.3 -> v2.0.0) indicates that there is an
 incompatible breaking change needing manual actions.
+
+### To 10.0.0
+
+For releases with `usePassword: true`, the value `sentinel.usePassword` controls whether the password authentication also applies to the sentinel port. This defaults to `true` for a secure configuration, however it is possible to disable to account for the following cases:
+* Using a version of redis-sentinel prior to `5.0.1` where the authentication feature was introduced.
+* Where redis clients need to be updated to support sentinel authentication.
+
+If using a master/slave topology, or with `usePassword: false`, no action is required.
 
 ### To 8.0.18
 
