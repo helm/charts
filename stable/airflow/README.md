@@ -386,6 +386,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `flower.service.type`                    | service type for Flower UI                              | `ClusterIP`               |
 | `flower.service.annotations`             | (optional) service annotations for Flower UI            | `{}`                      |
 | `flower.service.externalPort`            | (optional) external port for Flower UI                  | `5555`                    |
+| `web.base_url`                           | base_url of the web server                              | `http://localhost:8080`   |
 | `web.resources`                          | custom resource configuration for web pod               | `{}`                      |
 | `web.labels`                             | labels for the web deployment                           | `{}`                      |
 | `web.annotations`                        | annotations for the web deployment                      | `{}`                      |

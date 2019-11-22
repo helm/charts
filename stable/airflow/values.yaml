@@ -226,6 +226,7 @@ flower:
   tolerations: []
 
 web:
+  base_url: "http://localhost:8080"
   resources: {}
     # limits:
     #   cpu: "300m"
