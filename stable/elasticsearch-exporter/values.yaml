@@ -41,6 +41,8 @@ affinity: {}
 service:
   type: ClusterIP
   httpPort: 9108
+  ## targetPort: 9108
+  ## nodePort: 9108
   metricsPort:
     name: http
   annotations: {}

@@ -66,8 +66,10 @@ Parameter | Description | Default
 `podSecurityPolicies.enabled` | Enable/disable PodSecurityPolicy and associated Role/Rolebinding creation | `false`
 `serviceAccount.create` | Create a ServiceAccount for the pod | `false`
 `serviceAccount.name` | Name of a ServiceAccount to use that is not handled by this chart | `default`
-`service.type` | type of service to create | `ClusterIP`
+`service.type` | type of service to create, `ClusterIP` or `NodePort` | `ClusterIP`
 `service.httpPort` | port for the http service | `9108`
+`service.targetPort` | port for the http service that the pod exported | `9108`
+`service.nodePort` | port for the http service that node exported in NodePort mode | `9108`
 `service.metricsPort.name` | name for the http service | `http`
 `service.annotations` | Annotations on the http service | `{}`
 `service.labels` | Additional labels for the service definition | `{}`

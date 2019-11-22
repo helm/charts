@@ -19,6 +19,10 @@ spec:
   ports:
     - name: {{ .Values.service.metricsPort.name }}
       port: {{ .Values.service.httpPort }}
+      {{- if eq .Values.service.type "NodePort"}}
+      targetPort: {{ .Values.service.targetPort }}
+      nodePort: {{ .Values.service.nodePort }}
+      {{- end }}
       protocol: TCP
   selector:
     app: {{ template "elasticsearch-exporter.name" . }}
