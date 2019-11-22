@@ -429,6 +429,8 @@ metrics:
     # interval: 30s
     # Set labels for the ServiceMonitor, use this to define your scrape label for Prometheus Operator
     # labels:
+    # Specify additional yaml for the endpoint configuration (e.g. for re-labeling)
+    # endpointConfig: {}
   datadog:
     enabled: false
     # address: localhost:8125

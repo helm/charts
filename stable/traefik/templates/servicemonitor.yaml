@@ -22,6 +22,9 @@ spec:
 {{- if .Values.metrics.serviceMonitor.interval }}
     interval: {{ .Values.metrics.serviceMonitor.interval }}
 {{- end }}
+{{- with .Values.metrics.serviceMonitor.endpointConfig }}
+{{ toYaml . | indent 4 }}
+{{- end }}
   jobLabel: {{ template "traefik.fullname" . }}-prometheus-exporter
   namespaceSelector:
     matchNames:
