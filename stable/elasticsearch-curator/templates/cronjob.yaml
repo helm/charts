@@ -83,11 +83,13 @@ spec:
               command:
 {{ toYaml .Values.command | indent 16 }}
 {{- end }}
+              args:
 {{- if .Values.dryrun }}
-              args: [ "--dry-run", "--config", "/etc/es-curator/config.yml", "/etc/es-curator/action_file.yml" ]
-{{- else }}
-              args: [ "--config", "/etc/es-curator/config.yml", "/etc/es-curator/action_file.yml" ]
+              - --dry-run
 {{- end }}
+              - --config
+              - /etc/es-curator/config.yml
+              - /etc/es-curator/action_file.yml
               env:
 {{- if .Values.env }}
 {{- range $key,$value := .Values.env }}

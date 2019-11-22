@@ -40,6 +40,8 @@ image:
 hooks:
   install: false
   upgrade: false
+  # run only hooks in dry-run mode - useful to validate config post install/upgrade
+  dryrun: false
 
 # run curator in dry-run mode
 dryrun: false
