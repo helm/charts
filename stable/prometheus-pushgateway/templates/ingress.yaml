@@ -1,7 +1,11 @@
 {{- if .Values.ingress.enabled -}}
 {{- $serviceName := include "prometheus-pushgateway.fullname" . }}
 {{- $servicePort := .Values.service.port -}}
+{{- if semverCompare ">=1.14.0-0" .Capabilities.KubeVersion.GitVersion }}
+apiVersion: networking.k8s.io/v1beta1
+{{- else }}
 apiVersion: extensions/v1beta1
+{{- end }}
 kind: Ingress
 metadata:
 {{- if .Values.ingress.annotations }}

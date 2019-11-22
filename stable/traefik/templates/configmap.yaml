@@ -105,6 +105,13 @@ data:
           [[entryPoints.https.tls.certificates]]
           CertFile = "/ssl/tls.crt"
           KeyFile = "/ssl/tls.key"
+          {{- if .Values.ssl.extraCerts }}
+          {{- range $i, $cert := .Values.ssl.extraCerts }}
+          [[entryPoints.https.tls.certificates]]
+          CertFile = "{{ $cert.certFile }}"
+          KeyFile = "{{ $cert.keyFile }}"
+          {{- end }}
+          {{- end }}
       {{- end }}
         {{- if .Values.ssl.auth }}
         {{- if .Values.ssl.auth.basic }}
@@ -146,6 +153,10 @@ data:
             users = [{{ range $key, $value := .Values.dashboard.auth.basic }}"{{ $key }}:{{ $value }}",{{ end }}]
         {{- end }}
         {{- end }}
+      {{- end }}
+      {{- if .Values.metrics.prometheus.enabled }}
+      [entryPoints.prometheus]
+      address = ":9100"
       {{- end }}
     [ping]
     entryPoint = "{{ .Values.pingEntryPoint | default "http" }}"
@@ -325,7 +336,7 @@ data:
     {{- end }}
       {{- if .Values.metrics.prometheus.enabled }}
       [metrics.prometheus]
-        entryPoint = "traefik"
+        entryPoint = "prometheus"
         {{- if .Values.metrics.prometheus.buckets }}
         buckets = [
           {{- range $idx, $element := .Values.metrics.prometheus.buckets }}

@@ -67,7 +67,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `image.tag`                        | Ambassador image tag                                                            | `0.85.0`                          |
 | `imagePullSecrets`                 | Image pull secrets                                                              | `[]`                              |
 | `namespace.name`                   | Set the `AMBASSADOR_NAMESPACE` environment variable                             | `metadata.namespace`              |
-| `scope.singleNamespace`            | Set the `AMBASSADOR_SINGLE_NAMESPACE` environment variable and create namespaced RBAC if `rbac.enabled: true` | `false`                           |
+| `scope.singleNamespace`            | Set the `AMBASSADOR_SINGLE_NAMESPACE` environment variable and create namespaced RBAC if `rbac.enabled: true` | `false`|
 | `podAnnotations`                   | Additional annotations for ambassador pods                                      | `{}`                              |
 | `deploymentAnnotations`            | Additional annotations for ambassador DaemonSet/Deployment                      | `{}`                              |
 | `podLabels`                        | Additional labels for ambassador pods                                           |                                   |
@@ -92,7 +92,8 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `volumes`                          | Volumes for the ambassador service                                              | `[]`                              |
 | `pro.enabled`                      | Installs the Ambassador Pro container as a sidecar to Ambassador                | `false`                           |
 | `pro.image.repository`             | Ambassador Pro image                                                            | `quay.io/datawire/ambassador_pro` |
-| `pro.image.tag`                    | Ambassador Pro image tag                                                        | `0.9.1`                           |
+| `pro.image.tag`                    | Ambassador Pro image tag                                                        | `0.10.0`                          |
+| `pro.image.customBuildTag`         | Image for a custom build of Ambassador Pro using a `Plugin`                     | ``                                |
 | `pro.ports.auth`                   | Ambassador Pro authentication port                                              | `8500`                            |
 | `pro.ports.ratelimit`              | Ambassador Pro ratelimit port                                                   | `8500`                            |
 | `pro.logLevel`                     | Log level for Ambassador Pro                                                    | `"info"`                          |
@@ -107,7 +108,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `pro.rateLimit.redis.annotations.deployment` | Annotations for the redis deployment                                  | `{}`                              |
 | `pro.rateLimit.redis.annotations.service` | Annotations for the redis service                                        | `{}`                              |
 | `pro.rateLimit.redis.resources`    | Set resource requests and limits for the rate limit service's redis instance    | `{}`                              |
-| `pro.devPortal.enabled`            | Enables the Ambassador Developer Portal                                         | `false`                              |
+| `pro.devPortal.enabled`            | Enables the Ambassador Developer Portal                                         | `false`                           |
 | `autoscaling.enabled`              | If true, creates Horizontal Pod Autoscaler                                      | `false`                           |
 | `autoscaling.minReplica`           | If autoscaling enabled, this field sets minimum replica count                   | `2`                               |
 | `autoscaling.maxReplica`           | If autoscaling enabled, this field sets maximum replica count                   | `5`                               |
@@ -120,6 +121,18 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `prometheusExporter.resources`     | DEPRECATED: CPU/memory resource requests/limits                                 | `{}`                              |
 
 **NOTE:** Make sure the configured `service.http.targetPort` and `service.https.targetPort` ports match your [Ambassador Module's](https://www.getambassador.io/reference/modules/#the-ambassador-module) `service_port` and `redirect_cleartext_from` configurations.
+
+### CRDs
+
+This helm chart includes the creation of the core CRDs Ambassador uses for
+configuration. 
+
+The `crds` flags let you configure how a release manages crds.
+- `crds.create` Can only be set on your first/master Ambassador release. 
+- `crds.enabled` Should be set on all releases using Ambassador CRDs
+- `crds.keep` Configures if the CRDs are deleted when the master release is 
+  purged. This value is only checked for the master release and can be set to
+  any value on secondary releases. 
 
 ### Annotations
 

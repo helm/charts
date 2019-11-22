@@ -43,7 +43,7 @@ spec:
     - name: "{{ .port }}-http"
       port: {{ .port }}
       protocol: TCP
-      targetPort: http
+      targetPort: {{ .targetPort }}
       {{- if (not (empty .nodePort)) }}
       nodePort: {{ .nodePort }}
       {{- end }}
@@ -52,7 +52,7 @@ spec:
     - name: "{{ .port }}-https"
       port: {{ .port }}
       protocol: TCP
-      targetPort: https
+      targetPort: {{ .targetPort }}
       {{- if (not (empty .nodePort)) }}
       nodePort: {{ .nodePort }}
       {{- end }}

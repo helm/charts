@@ -6,6 +6,11 @@ image:
   tag: 1.14.0
   pullPolicy: IfNotPresent
 
+jaeger:
+  # Specifies whether Jaeger instance should be created
+  create: false
+  spec: {}
+
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
@@ -19,7 +24,7 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
 
-resources:
+resources: {}
   # limits:
   #  cpu: 100m
   #  memory: 128Mi

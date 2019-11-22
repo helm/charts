@@ -14,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/rabbitmq
-  tag: 3.8.0-debian-9-r0
+  tag: 3.8.1-debian-9-r0
 
   ## set to true if you would like to see extra information on logs
   ## it turns BASH and NAMI debugging in minideb
@@ -108,7 +108,7 @@ rabbitmq:
 
   ## Extra plugins to enable
   ## Use this instead of `plugins` to add new plugins
-  # extraPlugins: ""
+  extraPlugins: "rabbitmq_auth_backend_ldap"
 
   ## Clustering settings
   clustering:
@@ -159,6 +159,20 @@ rabbitmq:
     serverKey: |-
     # existingSecret: name-of-existing-secret-to-rabbitmq
 
+## LDAP configuration
+##
+ldap:
+  enabled: false
+  server: ""
+  port: "389"
+  user_dn_pattern: cn=${username},dc=example,dc=org
+  tls:
+    enabled: false
+    caCertificate: |-
+    serverCertificate: |-
+    serverKey: |-
+    # existingSecret: name-of-existing-secret-to-rabbitmq
+
 ## Kubernetes service type
 service:
   type: ClusterIP
@@ -191,7 +205,7 @@ service:
   managerPort: 15672
 
   ## Service annotations
-  annotations:
+  annotations: {}
     # service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
 
   ## Load Balancer sources
@@ -266,7 +280,9 @@ updateStrategy:
 nodeSelector: {}
 tolerations: []
 affinity: {}
-
+podDisruptionBudget: {}
+  # maxUnavailable: 1
+  # minAvailable: 1
 ## annotations for rabbitmq pods
 podAnnotations: {}
 
@@ -298,7 +314,7 @@ ingress:
   ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/annotations.md
   ##
   ## If tls is set to true, annotation ingress.kubernetes.io/secure-backends: "true" will automatically be set
-  annotations:
+  annotations: {}
   #  kubernetes.io/ingress.class: nginx
   #  kubernetes.io/tls-acme: true
 
@@ -324,7 +340,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/rabbitmq-exporter
-    tag: 0.29.0-debian-9-r61
+    tag: 0.29.0-debian-9-r82
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -348,6 +364,22 @@ metrics:
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "9090"
+
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 15
+    timeoutSeconds: 5
+    periodSeconds: 30
+    failureThreshold: 6
+    successThreshold: 1
+
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 5
+    timeoutSeconds: 5
+    periodSeconds: 30
+    failureThreshold: 3
+    successThreshold: 1
 
   ## Prometheus Service Monitor
   ## ref: https://github.com/coreos/prometheus-operator
@@ -399,7 +431,7 @@ forceBoot:
 ## This can be useful when combined with load_definitions to automatically create the secret containing the definitions to be loaded.
 ##
 extraSecrets: {}
-  # load_definition:
+  # load-definition:
   #   load_definition.json: |
   #     {
   #       ...

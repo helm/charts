@@ -1,0 +1,25 @@
+{{- if .Values.service.nodePort.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "aerospike.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    {{- with .Values.labels }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
+  name: {{ template "aerospike.name" . }}-nodeport
+spec:
+  ports:
+  - name: client
+    nodePort: {{ .Values.service.nodePort.port }}
+    port: 3000
+    protocol: TCP
+    targetPort: 3000
+  selector:
+    app: {{ template "aerospike.name" . }}
+    release: {{ .Release.Name }}
+  type: NodePort
+{{- end }}
