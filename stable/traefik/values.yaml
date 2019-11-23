@@ -252,6 +252,10 @@ acme:
   resolvers: []
     # - 1.1.1.1:53
     # - 8.8.8.8:53
+  ## Configure the endpoint used for the HTTP challenge
+  ## Applicable only if using the http-01 challenge type
+  httpChallenge:
+    entrypoint: http
   dnsProvider:
     name: nil
     existingSecretName: ""
