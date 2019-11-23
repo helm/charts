@@ -256,6 +256,10 @@ enterprise:
       # your SMTP password and specify its name here.
       smtp_username: ''  # e.g. postmaster@example.com
       smtp_password_secret: you-must-create-an-smtp-password
+  # When the ingress controller is enabled it can only configure the default workspace, 
+  # for multi workspace support set the list of workspaces (don't add the default workspace, is added by default).
+  # workspaces:
+  #   - myworkspace
 
 # Set runMigrations to run Kong migrations
 runMigrations: true

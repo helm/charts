@@ -1,0 +1,57 @@
+{{- if .Values.ingressController.enabled }}
+{{- range .Values.enterprise.workspaces -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ template "kong.fullname" $ }}-{{ . }}"
+  labels:
+    app: "{{ template "kong.name" $ }}-{{ . }}"
+    chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
+    release: "{{ $.Release.Name }}"
+    heritage: "{{ $.Release.Service }}"
+    component: app
+spec:
+  replicas: {{ $.Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "kong.name" $ }}-{{ . }}
+      release: {{ $.Release.Name }}
+      component: app
+  {{- if $.Values.updateStrategy }}
+  strategy:
+{{ toYaml $.Values.updateStrategy | indent 4 }}
+  {{- end }}
+
+  template:
+    metadata:
+      annotations:
+        {{- if $.Values.podAnnotations }}
+{{ toYaml $.Values.podAnnotations | indent 8 }}
+        {{- end }}
+      labels:
+        app: {{ template "kong.name" $ }}-{{ . }}
+        release: {{ $.Release.Name }}
+        component: app
+    spec:
+      serviceAccountName: {{ template "kong.serviceAccountName" $ }}
+      {{- if $.Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range $.Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
+      containers:
+      {{- include "kong.controller-container-workspace" (dict "root" $ "workspace" . ) | nindent 6 }}
+    {{- if $.Values.affinity }}
+      affinity:
+{{ toYaml $.Values.affinity | indent 8 }}
+    {{- end }}
+    {{- if $.Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml $.Values.nodeSelector | indent 8 }}
+    {{- end }}
+      tolerations:
+{{ toYaml $.Values.tolerations | indent 8 }}
+---
+{{- end }}
+{{- end }}

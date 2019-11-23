@@ -28,7 +28,11 @@ rules:
       # Here: "<kong-ingress-controller-leader-nginx>-<nginx>"
       # This has to be adapted if you change either parameter
       # when launching the nginx-ingress-controller.
-      - "kong-ingress-controller-leader-{{ .Values.ingressController.ingressClass }}-{{ .Values.ingressController.ingressClass }}"
+      {{- $ingressClass:= .Values.ingressController.ingressClass }}
+      - "kong-ingress-controller-leader-{{ $ingressClass }}-{{ $ingressClass }}"
+      {{- range .Values.enterprise.workspaces }}
+      - "kong-ingress-controller-leader-{{ $ingressClass }}-{{ . }}-{{ $ingressClass }}-{{ . }}"
+      {{- end }}
     verbs:
       - get
       - update

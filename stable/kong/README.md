@@ -338,6 +338,21 @@ If your SMTP server requires authentication, you should the `username` and
 `smtp_password_secret` must be a Secret containing an `smtp_password` key whose
 value is your SMTP password.
 
+#### Workspaces
+
+Multiple Ingress Controllers pointing to the same database configuring different workspaces, requires the `ingresController.enabled: true`.
+
+Each workspace can be configure using the annotation `kubernetes.io/ingress.class` using the configured `ingressController.ingressClass` and the `workspace` name.
+
+For example:
+```yaml
+enterprise.workspaces:
+  - myworkspace-1
+  - myworkspace-2
+  ```
+Two ingress controllers will be created and can be configured with the `kubernetes.io/ingress.class:kong-myworkspace-1` and `kubernetes.io/ingress.class:kong-myworkspace-2` (apart from the default `kubernetes.io/ingress.class:kong`).
+
+
 ### DB-less Configuration
 
 
@@ -396,7 +411,7 @@ You can can learn about kong ingress custom resource definitions [here](https://
 | image.tag                          | Version of the ingress controller                                                     | 0.6.0                                                                        |
 | readinessProbe                     | Kong ingress controllers readiness probe                                              |                                                                              |
 | livenessProbe                      | Kong ingress controllers liveness probe                                               |                                                                              |
-| ingressClass                       | The ingress-class value for controller                                                | kong                                                                        |
+| ingressClass                       | The ingress-class value for controller                                                | kong                                                                         |
 | podDisruptionBudget.enabled        | Enable PodDisruptionBudget for ingress controller                                     | `false`                                                                      |
 | podDisruptionBudget.maxUnavailable | Represents the minimum number of Pods that can be unavailable (integer or percentage) | `50%`                                                                        |
 | podDisruptionBudget.minAvailable   | Represents the number of Pods that must be available (integer or percentage)          |                                                                              |
@@ -410,3 +425,8 @@ You can can learn about kong ingress custom resource definitions [here](https://
 
 - DB-less mode is enabled by default.
 - Kong is installed as an Ingress Controller for the cluster by default.
+
+### 0.28.0
+
+- Multiple Ingress Controllers Deployment for Kong Enterprise.If you are using Kong Enterprise, you can run multiple Ingress Controllers pointing to the same database and configuring different Workspaces inside Kong Enterprise.
+More info [here](https://github.com/Kong/kubernetes-ingress-controller/blob/master/docs/concepts/deployment.md#multiple-ingress-controllers)

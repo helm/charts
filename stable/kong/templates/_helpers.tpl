@@ -272,6 +272,43 @@ the extra slash.
 {{ toYaml .Values.ingressController.resources | indent 4 }}
 {{- end -}}
 
+{{- define "kong.controller-container-workspace" -}}
+{{- $root := index . "root" -}}
+{{- $workspace := index . "workspace" -}}
+- name: ingress-controller
+  args:
+  - /kong-ingress-controller
+  - --publish-service={{ $root.Release.Namespace }}/{{ template "kong.fullname" $root }}-proxy
+  - --ingress-class={{ $root.Values.ingressController.ingressClass }}-{{ $workspace }}
+  - --election-id=kong-ingress-controller-leader-{{ $root.Values.ingressController.ingressClass }}-{{ $workspace }}
+  {{- if $root.Values.admin.useTLS }}
+  - --kong-url=https://{{ template "kong.fullname" $root }}-admin:{{ $root.Values.admin.containerPort }}
+  - --admin-tls-skip-verify # TODO make this configurable
+  {{- else }}
+  - --kong-url=http://{{ template "kong.fullname" $root }}-admin:{{ $root.Values.admin.containerPort }}
+  {{- end }}
+  - --kong-workspace={{ $workspace }}
+  env:
+  - name: POD_NAME
+    valueFrom:
+      fieldRef:
+        apiVersion: v1
+        fieldPath: metadata.name
+  - name: POD_NAMESPACE
+    valueFrom:
+      fieldRef:
+        apiVersion: v1
+        fieldPath: metadata.namespace
+  image: "{{ $root.Values.ingressController.image.repository }}:{{ $root.Values.ingressController.image.tag }}"
+  imagePullPolicy: {{ $root.Values.image.pullPolicy }}
+  readinessProbe:
+{{ toYaml $root.Values.ingressController.readinessProbe | indent 4 }}
+  livenessProbe:
+{{ toYaml $root.Values.ingressController.livenessProbe | indent 4 }}
+  resources:
+{{ toYaml $root.Values.ingressController.resources | indent 4 }}
+{{- end -}}
+
 {{/*
 Retrieve Kong Enterprise license from a secret and make it available in env vars
 */}}
