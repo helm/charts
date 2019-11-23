@@ -220,7 +220,7 @@ alertmanager:
     # - sourceLabels: [__meta_kubernetes_pod_node_name]
     #   separator: ;
     #   regex: ^(.*)$
-    #   target_label: nodename
+    #   targetLabel: nodename
     #   replacement: $1
     #   action: replace
 
@@ -482,7 +482,7 @@ grafana:
     # - sourceLabels: [__meta_kubernetes_pod_node_name]
     #   separator: ;
     #   regex: ^(.*)$
-    #   target_label: nodename
+    #   targetLabel: nodename
     #   replacement: $1
     #   action: replace
 
@@ -559,7 +559,7 @@ kubelet:
     # - sourceLabels: [__meta_kubernetes_pod_node_name]
     #   separator: ;
     #   regex: ^(.*)$
-    #   target_label: nodename
+    #   targetLabel: nodename
     #   replacement: $1
     #   action: replace
 
@@ -581,7 +581,7 @@ kubelet:
     # - sourceLabels: [__meta_kubernetes_pod_node_name]
     #   separator: ;
     #   regex: ^(.*)$
-    #   target_label: nodename
+    #   targetLabel: nodename
     #   replacement: $1
     #   action: replace
 
@@ -634,7 +634,7 @@ kubeControllerManager:
     # - sourceLabels: [__meta_kubernetes_pod_node_name]
     #   separator: ;
     #   regex: ^(.*)$
-    #   target_label: nodename
+    #   targetLabel: nodename
     #   replacement: $1
     #   action: replace
 
@@ -665,7 +665,7 @@ coreDns:
     # - sourceLabels: [__meta_kubernetes_pod_node_name]
     #   separator: ;
     #   regex: ^(.*)$
-    #   target_label: nodename
+    #   targetLabel: nodename
     #   replacement: $1
     #   action: replace
 
@@ -700,7 +700,7 @@ kubeDns:
     # - sourceLabels: [__meta_kubernetes_pod_node_name]
     #   separator: ;
     #   regex: ^(.*)$
-    #   target_label: nodename
+    #   targetLabel: nodename
     #   replacement: $1
     #   action: replace
     dnsmasqMetricRelabelings: []
@@ -714,7 +714,7 @@ kubeDns:
     # - sourceLabels: [__meta_kubernetes_pod_node_name]
     #   separator: ;
     #   regex: ^(.*)$
-    #   target_label: nodename
+    #   targetLabel: nodename
     #   replacement: $1
     #   action: replace
 
@@ -773,7 +773,7 @@ kubeEtcd:
     # - sourceLabels: [__meta_kubernetes_pod_node_name]
     #   separator: ;
     #   regex: ^(.*)$
-    #   target_label: nodename
+    #   targetLabel: nodename
     #   replacement: $1
     #   action: replace
 
@@ -826,7 +826,7 @@ kubeScheduler:
     # - sourceLabels: [__meta_kubernetes_pod_node_name]
     #   separator: ;
     #   regex: ^(.*)$
-    #   target_label: nodename
+    #   targetLabel: nodename
     #   replacement: $1
     #   action: replace
 
@@ -896,7 +896,7 @@ kubeStateMetrics:
     # - sourceLabels: [__meta_kubernetes_pod_node_name]
     #   separator: ;
     #   regex: ^(.*)$
-    #   target_label: nodename
+    #   targetLabel: nodename
     #   replacement: $1
     #   action: replace
 
@@ -941,7 +941,7 @@ nodeExporter:
     # - sourceLabels: [__meta_kubernetes_pod_node_name]
     #   separator: ;
     #   regex: ^(.*)$
-    #   target_label: nodename
+    #   targetLabel: nodename
     #   replacement: $1
     #   action: replace
 
@@ -1099,7 +1099,7 @@ prometheusOperator:
     # - sourceLabels: [__meta_kubernetes_pod_node_name]
     #   separator: ;
     #   regex: ^(.*)$
-    #   target_label: nodename
+    #   targetLabel: nodename
     #   replacement: $1
     #   action: replace
 
@@ -1342,7 +1342,7 @@ prometheus:
     # - sourceLabels: [__meta_kubernetes_pod_node_name]
     #   separator: ;
     #   regex: ^(.*)$
-    #   target_label: nodename
+    #   targetLabel: nodename
     #   replacement: $1
     #   action: replace
 
@@ -1635,7 +1635,7 @@ prometheus:
     #     regex: __meta_kubernetes_node_label_(.+)
     #   - source_labels: [__address__]
     #     action: replace
-    #     target_label: __address__
+    #     targetLabel: __address__
     #     regex: ([^:;]+):(\d+)
     #     replacement: ${1}:2379
     #   - source_labels: [__meta_kubernetes_node_name]
@@ -1643,7 +1643,7 @@ prometheus:
     #     regex: .*mst.*
     #   - source_labels: [__meta_kubernetes_node_name]
     #     action: replace
-    #     target_label: node
+    #     targetLabel: node
     #     regex: (.*)
     #     replacement: ${1}
     #   metric_relabel_configs:
