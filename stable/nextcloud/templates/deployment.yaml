@@ -233,7 +233,7 @@ spec:
           mountPath: /usr/local/etc/php/conf.d/{{ $key }}
           subPath: {{ $key }}
         {{- end }}
-            {{- if .Values.nginx.enabled }}
+        {{- if .Values.nginx.enabled }}
       - name: {{ .Chart.Name }}-nginx
         image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
