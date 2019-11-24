@@ -1,5 +1,5 @@
 {{- if .Values.serviceAccount.create -}}
-# Taken from system:kube-scheduler with: 
+# Taken from system:kube-scheduler with:
 #   $ kubectl get clusterrole system:kube-scheduler -o=yaml
 #   and removed some metadata
 apiVersion: rbac.authorization.k8s.io/v1

@@ -34,7 +34,7 @@ predicates:
 # The scoring/priorities and weights for the scheduler to work
 #   with, possible configuration settings can be found
 #   [here](<https://kubernetes.io/docs/concepts/scheduling/kube-scheduler/>)
-priorities: 
+priorities:
 - name: MostRequestedPriority
   weight: 1
 - name: EqualPriority

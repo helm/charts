@@ -48,7 +48,7 @@ spec:
         name: {{ .Values.schedulerName }}
         securityContext:
           {{- toYaml .Values.securityContext | nindent 12 }}
-        # gcr.io/google-containers/kube-scheduler, can be viewed in 
+        # gcr.io/google-containers/kube-scheduler, can be viewed in
         # https://console.cloud.google.com/gcr/images/google-containers/GLOBAL/kube-scheduler?gcrImageListsize=30
         image: {{ .Values.image.repository }}:{{ .Chart.AppVersion }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
