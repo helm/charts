@@ -1,0 +1,79 @@
+{{- $highAvailability := gt (int .Values.replicaCount) 1 -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.schedulerName }}
+  labels:
+    app.kubernetes.io/managed-by: {{.Release.Service | quote }}
+    app.kubernetes.io/instance: {{.Release.Name | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    helm.sh/chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+  {{- with .Values.labels }}
+      {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "custom-scheduler.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "custom-scheduler.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "custom-scheduler.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+      # Kubescheduler command line reference: https://kubernetes.io/docs/reference/command-line-tools-reference/kube-scheduler/
+      - command:
+        - /usr/local/bin/kube-scheduler
+        - --address=0.0.0.0
+        - --leader-elect=false
+        - --scheduler-name={{ .Values.schedulerName }}
+        - --policy-configmap={{ include "custom-scheduler.fullname" . }}
+        - --policy-configmap-namespace={{ .Release.Namespace }}
+        {{- if $highAvailability }}
+        - --leader-elect=true
+        - --lock-object-namespace={{ .Release.Namespace }}
+        - --lock-object-name={{ .Values.schedulerName }}
+        {{- end }}
+        {{- with .Values.logging }}
+        - --v={{ .verbosity }}
+        {{- end }}
+        name: {{ .Values.schedulerName }}
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+        # gcr.io/google-containers/kube-scheduler, can be viewed in 
+        # https://console.cloud.google.com/gcr/images/google-containers/GLOBAL/kube-scheduler?gcrImageListsize=30
+        image: {{ .Values.image.repository }}:{{ .Chart.AppVersion }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 10251
+          initialDelaySeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 10251
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+        securityContext:
+          privileged: false
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

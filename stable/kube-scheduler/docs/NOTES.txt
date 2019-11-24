@@ -1,0 +1,7 @@
+1. Install helm chart
+2. Deploy your application/job/deployment with the following spec:
+
+spec:
+  schedulerName: {{ .Values.schedulerName }}
+
+3. Done. Your application should be scheduled by the custom scheduler.

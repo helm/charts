@@ -1,0 +1,42 @@
+apiVersion: v2
+name: kube-scheduler
+description: A Helm chart for Kubernetes to deploy a custom scheduler
+
+# A chart can be either an 'application' or a 'library' chart.
+#
+# Application charts are a collection of templates that can be packaged into versioned archives
+# to be deployed.
+#
+# Library charts provide useful utilities or functions for the chart developer. They're included as
+# a dependency of application charts to inject those utilities and functions into the rendering
+# pipeline. Library charts do not define any templates and therefore cannot be deployed.
+type: application
+
+# This is the chart version. This version number should be incremented each time you make changes
+# to the chart and its templates, including the app version.
+version: 1.0.0
+
+# This is the version number of the application being deployed. This version number should be
+# incremented each time you make changes to the application.
+# kube-scheduler binary releases can be found here - should fit to cluster version number, of course: 
+# https://github.com/kubernetes/kube-scheduler/releases
+appVersion: v1.16.3
+
+# Keyword collection
+keywords:
+  - kubernetes
+  - scheduler
+  - scheduling
+
+# Maintainer
+maintainers:
+  - name: stefanjacobs
+    email: stefan_j@gmx.de
+
+# home: https://www.keycloak.org/
+# icon: https://www.keycloak.org/resources/images/keycloak_logo_480x108.png
+# sources:
+#   - https://github.com/jboss-dockerfiles/keycloak
+# home: https://github.com/kubernetes-sigs/aws-iam-authenticator
+# sources:
+#   - https://github.com/kubernetes-sigs/aws-iam-authenticator

@@ -1,0 +1,76 @@
+# Default values for custom-scheduler.
+
+# The Image to use
+image:
+  repository: k8s.gcr.io/kube-scheduler
+  pullPolicy: IfNotPresent
+
+# Number of scheduler replicas. Settings greater than one defines 
+#   high availability with leader election.
+replicaCount: 1
+
+imagePullSecrets: []
+
+# Optional: Custom labels for the scheduler objects
+labels: {}
+  # component: custom-scheduler
+  # tier: control-plane
+
+# The name of the scheduler. This is the string that is for configuring 
+#   the scheduler for the object, e.g. a pod, a deployment, etc.
+#   See README.md for example configuration.
+schedulerName: my-scheduler
+
+# The filters/predicates for the scheduler to work with, possible 
+#   configuration settings can be found 
+#   [here](<https://kubernetes.io/docs/concepts/scheduling/kube-scheduler/>)
+predicates:
+- name: PodFitsPorts
+- name: PodFitsResources
+- name: NoDiskConflict
+- name: MatchNodeSelector
+- name: HostName
+
+
+# The scoring/priorities and weights for the scheduler to work 
+#   with, possible configuration settings can be found 
+#   [here](<https://kubernetes.io/docs/concepts/scheduling/kube-scheduler/>)
+priorities: 
+- name: MostRequestedPriority
+  weight: 1
+- name: EqualPriority
+  weight: 1
+
+# Enable/Disable verbose logging of kube-scheduler. Verbosity can be configured up to 10
+logging: {}
+#  verbosity: 10
+
+serviceAccount:
+  # Specifies whether a service account should be created (case of rbac active)
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: sa-custom-scheduler
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+# Ressource usage of kube-scheduler
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
