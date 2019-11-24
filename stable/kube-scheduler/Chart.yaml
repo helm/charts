@@ -2,17 +2,14 @@ apiVersion: v1
 name: kube-scheduler
 description: A Helm chart for Kubernetes to deploy a custom scheduler
 type: application
-
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 version: 1.0.0
-
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application.
 # kube-scheduler binary releases can be found here - should fit to cluster version number, of course: 
 # https://github.com/kubernetes/kube-scheduler/releases
 appVersion: v1.16.3
-
 keywords:
 - kubernetes
 - scheduler
