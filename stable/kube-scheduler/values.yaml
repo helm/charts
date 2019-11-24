@@ -1,8 +1,11 @@
 # Default values for custom-scheduler.
 
-# The Image to use
+# The Image to use:
+# kube-scheduler binary releases can be found here - should fit to cluster version number, of course:
+# https://github.com/kubernetes/kube-scheduler/releases
 image:
   repository: k8s.gcr.io/kube-scheduler
+  tag: v1.16.3
   pullPolicy: IfNotPresent
 
 # Number of scheduler replicas. Settings greater than one defines

@@ -50,7 +50,7 @@ spec:
           {{- toYaml .Values.securityContext | nindent 12 }}
         # gcr.io/google-containers/kube-scheduler, can be viewed in
         # https://console.cloud.google.com/gcr/images/google-containers/GLOBAL/kube-scheduler?gcrImageListsize=30
-        image: {{ .Values.image.repository }}:{{ .Chart.AppVersion }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         livenessProbe:
           httpGet:

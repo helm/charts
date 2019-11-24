@@ -3,7 +3,7 @@ name: kube-scheduler
 description: A Helm chart for Kubernetes to deploy a custom scheduler
 type: application
 version: 1.0.0
-appVersion: v1.16.3
+appVersion: 1.0.0
 keywords:
 - kubernetes
 - scheduler
