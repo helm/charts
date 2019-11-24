@@ -236,7 +236,7 @@ spec:
         {{- if .Values.nginx.enabled }}
       - name: {{ .Chart.Name }}-nginx
         image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
         ports:
         - name: http
           containerPort: 80

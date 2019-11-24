@@ -143,6 +143,7 @@ nginx:
   image:
     repository: nginx
     tag: alpine
+    pullPolicy: IfNotPresent
 
   config:
     # This generates the default nginx config as per the nextcloud documentation
