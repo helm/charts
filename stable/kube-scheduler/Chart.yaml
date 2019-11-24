@@ -33,10 +33,6 @@ maintainers:
   - name: stefanjacobs
     email: stefan_j@gmx.de
 
-# home: https://www.keycloak.org/
-# icon: https://www.keycloak.org/resources/images/keycloak_logo_480x108.png
-# sources:
-#   - https://github.com/jboss-dockerfiles/keycloak
-# home: https://github.com/kubernetes-sigs/aws-iam-authenticator
-# sources:
-#   - https://github.com/kubernetes-sigs/aws-iam-authenticator
+home: https://github.com/stefanjacobs/custom-scheduler
+sources:
+  - https://github.com/stefanjacobs/custom-scheduler
