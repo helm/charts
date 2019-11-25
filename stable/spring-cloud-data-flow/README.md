@@ -121,6 +121,7 @@ The following tables list the configurable parameters and their default values.
 | deployer.resourceLimits.memory              | Deployer resource limit for memory     | 1024Mi
 | deployer.readinessProbe.initialDelaySeconds | Deployer readiness probe initial delay | 120
 | deployer.livenessProbe.initialDelaySeconds  | Deployer liveness probe initial delay  | 90
+| deployer.imagePullPolicy                    | Deployer image pull policy             | IfNotPresent
 
 ### RabbitMQ Configuration
 
