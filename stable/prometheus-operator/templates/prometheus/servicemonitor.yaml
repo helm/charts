@@ -17,7 +17,7 @@ spec:
     matchNames:
       - {{ $.Release.Namespace | quote }}
   endpoints:
-  - port: web
+  - port: {{ .Values.prometheus.prometheusSpec.portName }}
     {{- if .Values.prometheus.serviceMonitor.interval }}
     interval: {{ .Values.prometheus.serviceMonitor.interval }}
     {{- end }}
