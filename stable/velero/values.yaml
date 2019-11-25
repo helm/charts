@@ -123,6 +123,12 @@ configuration:
   # additional key/value pairs to be used as environment variables such as "AWS_CLUSTER_NAME: 'yourcluster.domain.tld'"
   extraEnvVars: {}
 
+  # Set log-level for Velero pod. Default: info. Other options: debug, warning, error, fatal, panic.
+  logLevel:
+
+  # Set log-format for Velero pod. Default: text. Other option: json.
+  logFormat:
+
 ##
 ## End of backup/snapshot location settings.
 ##

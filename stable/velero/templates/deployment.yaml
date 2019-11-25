@@ -63,6 +63,12 @@ spec:
             {{- with .restoreResourcePriorities }}
             - --restore-resource-priorities={{ . }}
             {{- end }}
+            {{- with .logLevel }}
+            - --log-level={{ . }}
+            {{- end }}
+            {{- with .logFormat }}
+            - --log-format={{ . }}
+            {{- end }}
           {{- end }}
           {{- if eq $provider "azure" }}
           envFrom:
