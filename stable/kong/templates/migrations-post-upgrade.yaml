@@ -23,7 +23,9 @@ spec:
         release: "{{ .Release.Name }}"
         component: post-upgrade-migrations
     spec:
+      {{- if .Values.podSecurityPolicy.enabled }}
       serviceAccountName: {{ template "kong.serviceAccountName" . }}
+      {{- end }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range .Values.image.pullSecrets }}
