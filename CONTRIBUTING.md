@@ -76,11 +76,10 @@ your PR will be rejected by the automated DCO check.
 
 This repository is used by Chart developers for maintaining the official charts for Kubernetes Helm. If your issue is in the Helm tool itself, please use the issue tracker in the [helm/helm](https://github.com/helm/helm) repository.
 
-## How to Contribute a Chart
+## How to Contribute to an existing Chart
 
-1. Fork this repository, develop and test your Chart. Remember to sign off your commits as described in the "Sign Your Work" chapter.
-1. Choose the correct folder for your chart based on the information in the [Repository Structure](README.md#repository-structure) section
-1. Ensure your Chart follows the [technical](#technical-requirements) and [documentation](#documentation-requirements) guidelines, described below.
+1. Fork this repository, develop and test your Chart changes. Remember to sign off your commits as described in the "Sign Your Work" chapter.
+1. Ensure your Chart changes follow the [technical](#technical-requirements) and [documentation](#documentation-requirements) guidelines, described below.
 1. Submit a pull request.
 
 ***NOTE***: In order to make testing and merging of PRs easier, please submit changes to multiple charts in separate PRs.
@@ -121,7 +120,7 @@ This repository is used by Chart developers for maintaining the official charts 
 
 ### Merge approval and release process
 
-A Kubernetes Charts maintainer will review the Chart submission, and start a validation job in the CI to verify the technical requirements of the Chart. A maintainer may add "LGTM" (Looks Good To Me) or an equivalent comment to indicate that a PR is acceptable. Any change requires at least one LGTM. No pull requests can be merged until at least one maintainer signs off with an LGTM.
+A Kubernetes Charts maintainer will review the Chart change submission, and start a validation job in the CI to verify the technical requirements of the Chart. A maintainer may add "LGTM" (Looks Good To Me) or an equivalent comment to indicate that a PR is acceptable. Any change requires at least one LGTM. No pull requests can be merged until at least one maintainer signs off with an LGTM.
 
 Once the Chart has been merged, the release job will automatically run in the CI to package and release the Chart in the [`gs://kubernetes-charts` Google Storage bucket](https://console.cloud.google.com/storage/browser/kubernetes-charts/).
 
@@ -130,6 +129,7 @@ Once the Chart has been merged, the release job will automatically run in the CI
 Whether you are a user or contributor, official support channels include:
 
 - GitHub issues: https://github.com/helm/charts/issues
+- Slack: Charts - #Charts room in the [Kubernetes Slack](http://slack.kubernetes.io/)
 - Slack: Helm Users - #Helm-users room in the [Kubernetes Slack](http://slack.kubernetes.io/)
 - Slack: Helm Developers - #Helm-dev room in the [Kubernetes Slack](http://slack.kubernetes.io/)
 
