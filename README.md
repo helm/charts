@@ -5,7 +5,7 @@ Use this repository to submit official Charts for Helm. Charts are curated appli
 
 ## Where to find us
 
-For general Helm Chart discussions join the Helm Charts (#charts) room in the [Kubernetes](http://slack.kubernetes.io/).
+For general Helm Chart discussions join the Helm Charts (#charts) room in the [Kubernetes Slack instance](http://slack.kubernetes.io/).
 
 For issues and support for Helm and Charts see [Support Channels](CONTRIBUTING.md#support-channels).
 
