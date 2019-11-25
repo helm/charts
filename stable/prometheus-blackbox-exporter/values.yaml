@@ -42,6 +42,14 @@ config:
         no_follow_redirects: false
         preferred_ip_protocol: "ip4"
 
+## Additional secret mounts
+# Defines additional mounts with secrets. Secrets must be manually created in the namespace.
+extraSecretMounts: []
+  # - name: secret-files
+  #   mountPath: /etc/secrets
+  #   secretName: blackbox-secret-files
+  #   readOnly: true
+
 resources: {}
   # limits:
   #   memory: 300Mi

@@ -46,6 +46,7 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 | `config`                               | Prometheus blackbox configuration                 | {}                            |
 | `secretConfig`                         | Whether to treat blackbox configuration as secret | `false`                       |
 | `extraArgs`                            | Optional flags for blackbox                       | `[]`                          |
+| `extraSecretMounts`                    | Additional secret mounts                          | `[]`                          |
 | `image.repository`                     | container image repository                        | `prom/blackbox-exporter`      |
 | `image.tag`                            | container image tag                               | `v0.15.1`                     |
 | `image.pullPolicy`                     | container image pull policy                       | `IfNotPresent`                |

@@ -85,6 +85,11 @@ spec:
           volumeMounts:
             - mountPath: /config
               name: config
+          {{- range .Values.extraSecretMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
       volumes:
         - name: config
 {{- if .Values.secretConfig }}
@@ -94,3 +99,9 @@ spec:
           configMap:
             name: {{ template "prometheus-blackbox-exporter.fullname" . }}
 {{- end }}
+      {{- range .Values.extraSecretMounts }}
+        - name: {{ .name }}
+          secret:
+            secretName: {{ .secretName }}
+            defaultMode: {{ .defaultMode }}
+      {{- end }}
