@@ -1,0 +1,34 @@
+{{- if .Values.ingress.enabled -}}
+{{- $servicePort := .Values.service.endpointPort -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "cpi.name" . }}
+  labels:
+    app: {{ template "cpi.name" . }}
+    vsphere-cpi-infra: ingress
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    component: cloud-controller
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  namespace: kube-system
+  {{- if .Values.ingress.annotations }}
+  annotations:
+{{ toYaml .Values.ingress.annotations | indent 4 }}
+  {{- end }}
+spec:
+  rules:
+    {{- range $host := .Values.ingress.hosts }}
+    - host: {{ $host }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ template "cpi.name" $ }}
+              servicePort: {{ $servicePort }}
+    {{- end -}}
+  {{- if .Values.ingress.tls }}
+  tls:
+{{ toYaml .Values.ingress.tls | indent 4 }}
+  {{- end -}}
+{{- end -}}

@@ -338,6 +338,8 @@ controller:
       nodeSelector: {}
 
   metrics:
+    port: 10254
+    # if this port is changed, change healthz-port: in extraArgs: accordingly
     enabled: false
 
     service:
@@ -362,6 +364,11 @@ controller:
       enabled: false
       additionalLabels: {}
       namespace: ""
+      namespaceSelector: {}
+      # Default: scrape .Release.Namespace only
+      # To scrape all, use the following:
+      # namespaceSelector:
+      #   any: true
       scrapeInterval: 30s
       # honorLabels: true
 

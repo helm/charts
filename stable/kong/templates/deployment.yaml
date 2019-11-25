@@ -181,10 +181,6 @@ spec:
               name: {{ template "kong.postgresql.fullname" . }}
               key: postgresql-password
         {{- end }}
-        {{- if .Values.cassandra.enabled }}
-        - name: KONG_CASSANDRA_CONTACT_POINTS
-          value: {{ template "kong.cassandra.fullname" . }}
-        {{- end }}
         {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
         - name: KONG_DECLARATIVE_CONFIG
           value: "/kong_dbless/kong.yml"

@@ -6,6 +6,11 @@ image:
   tag: 1.14.0
   pullPolicy: IfNotPresent
 
+jaeger:
+  # Specifies whether Jaeger instance should be created
+  create: false
+  spec: {}
+
 rbac:
   # Specifies whether RBAC resources should be created
   create: true

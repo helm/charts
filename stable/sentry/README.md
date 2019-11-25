@@ -68,7 +68,7 @@ Parameter                                            | Description              
 `image.imagePullSecrets`                             | Specify image pull secrets                                                                                 | `[]`
 `sentrySecret`                                       | Specify SENTRY_SECRET_KEY. If isn't specified it will be generated automatically.                          | `nil`
 `web.podAnnotations`                                 | Web pod annotations                                                                                        | `{}`
-`web.podLabels`                                      | Worker pod extra labels                                                                                    | `{}`
+`web.podLabels`                                      | Web pod extra labels                                                                                       | `{}`
 `web.replicacount`                                   | Amount of web pods to run                                                                                  | `1`
 `web.resources.limits`                               | Web resource limits                                                                                        | `{cpu: 500m, memory: 500Mi}`
 `web.resources.requests`                             | Web resource requests                                                                                      | `{cpu: 300m, memory: 300Mi}`
@@ -77,7 +77,7 @@ Parameter                                            | Description              
 `web.affinity`                                       | Affinity settings for web pod assignment                                                                   | `{}`
 `web.schedulerName`                                  | Name of an alternate scheduler for web pod                                                                 | `nil`
 `web.tolerations`                                    | Toleration labels for web pod assignment                                                                   | `[]`
-`web.probeInitialDelaySeconds`                       | The number of seconds before the probe doing healthcheck                                          | `50`
+`web.probeInitialDelaySeconds`                       | The number of seconds before the probe doing healthcheck                                                   | `50`
 `web.priorityClassName`                              | The priorityClassName on web deployment                                                                    | `nil`
 `cron.podAnnotations`                                | Cron pod annotations                                                                                       | `{}`
 `cron.podLabels`                                     | Worker pod extra labels                                                                                    | `{}`
@@ -109,6 +109,7 @@ Parameter                                            | Description              
 `email.password`                                     | SMTP password                                                                                              | `nil`
 `email.use_tls`                                      | SMTP TLS for security                                                                                      | `false`
 `email.enable_replies`                               | Allow email replies                                                                                        | `false`
+`email.existingSecret`                               | SMTP password from an existing secret (key must be `smtp-password`)                                        | `nil`
 `service.type`                                       | Kubernetes service type                                                                                    | `LoadBalancer`
 `service.name`                                       | Kubernetes service name                                                                                    | `sentry`
 `service.externalPort`                               | Kubernetes external service port                                                                           | `9000`

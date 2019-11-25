@@ -44,6 +44,9 @@ spec:
 {{ toYaml .Values.master.podAnnotations | indent 8 }}
         {{- end }}
     spec:
+      {{- if .Values.master.schedulerName }}
+      schedulerName: {{ .Values.master.schedulerName }}
+      {{- end }}
       {{- if .Values.master.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.master.nodeSelector | indent 8 }}
@@ -165,7 +168,7 @@ spec:
             - name: JAVA_OPTS
               value: >
                 {{ default "" .Values.master.javaOpts }}
-                {{- if .Values.master.sidecars.configAutoReload.enabled }} -Dcasc.reload.token=$(POD_NAME) {{end}}
+                {{ if .Values.master.sidecars.configAutoReload.enabled }} -Dcasc.reload.token=$(POD_NAME) {{ end }}
             - name: JENKINS_OPTS
               value: "{{ if .Values.master.jenkinsUriPrefix }}--prefix={{ .Values.master.jenkinsUriPrefix }} {{ end }}{{ default "" .Values.master.jenkinsOpts}}"
             - name: JENKINS_SLAVE_AGENT_PORT

@@ -39,7 +39,7 @@ podAnnotations:
 | `fullnameOverride` | Override the full chart name | `` |
 | `image.pullPolicy` | MongoDB Exporter image pull policy | `IfNotPresent` |
 | `image.repository` | MongoDB Exporter image name | `ssheehy/mongodb-exporter` |
-| `image.tag` | MongoDB Exporter image tag | `0.7.0` |
+| `image.tag` | MongoDB Exporter image tag | `0.10.0` |
 | `imagePullSecrets` | List of container registry secrets | `[]` |
 | `mongodb.uri` | The required [URI](https://docs.mongodb.com/manual/reference/connection-string) to connect to MongoDB | `` |
 | `nameOverride` | Override the application name  | `` |

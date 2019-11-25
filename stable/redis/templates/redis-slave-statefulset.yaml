@@ -226,6 +226,9 @@ spec:
             cp /opt/bitnami/redis-sentinel/mounted-etc/sentinel.conf /opt/bitnami/redis-sentinel/etc/sentinel.conf
             {{- if .Values.usePassword }}
             printf "\nsentinel auth-pass {{ .Values.sentinel.masterSet }} $REDIS_PASSWORD" >> /opt/bitnami/redis-sentinel/etc/sentinel.conf
+            {{- if .Values.sentinel.usePassword }}
+            printf "\nrequirepass $REDIS_PASSWORD" >> /opt/bitnami/redis-sentinel/etc/sentinel.conf
+            {{- end }}
             {{- end }}
           fi
 
@@ -305,11 +308,7 @@ spec:
           if [[ -f '/secrets/redis-password' ]]; then
            export REDIS_PASSWORD=$(cat /secrets/redis-password)
           fi
-          redis_exporter
-        args:
-        {{- range $key, $value := .Values.metrics.extraArgs }}
-          - --{{ $key }}={{ $value }}
-        {{- end }}
+          redis_exporter{{- range $key, $value := .Values.metrics.extraArgs }} --{{ $key }}={{ $value }}{{- end }}
         env:
         - name: REDIS_ALIAS
           value: {{ template "redis.fullname" . }}

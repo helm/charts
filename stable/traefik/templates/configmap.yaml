@@ -105,6 +105,13 @@ data:
           [[entryPoints.https.tls.certificates]]
           CertFile = "/ssl/tls.crt"
           KeyFile = "/ssl/tls.key"
+          {{- if .Values.ssl.extraCerts }}
+          {{- range $i, $cert := .Values.ssl.extraCerts }}
+          [[entryPoints.https.tls.certificates]]
+          CertFile = "{{ $cert.certFile }}"
+          KeyFile = "{{ $cert.keyFile }}"
+          {{- end }}
+          {{- end }}
       {{- end }}
         {{- if .Values.ssl.auth }}
         {{- if .Values.ssl.auth.basic }}
@@ -305,7 +312,7 @@ data:
       {{- end }}
     {{- else if eq .Values.acme.challengeType "http-01" }}
       [acme.httpChallenge]
-      entryPoint = "http"
+      entryPoint = {{ .Values.acme.httpChallenge.entrypoint }}
     {{- else if eq .Values.acme.challengeType "tls-alpn-01" }}
       [acme.tlsChallenge]
     {{- end }}

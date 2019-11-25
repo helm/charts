@@ -83,7 +83,7 @@ ingress:
 # Global configuration shared by all anchore-engine services.
 anchoreGlobal:
   # Image used for all anchore engine deployments (excluding enterprise components).
-  image: docker.io/anchore/anchore-engine:v0.5.1
+  image: docker.io/anchore/anchore-engine:v0.5.2
   imagePullPolicy: IfNotPresent
 
   # Set this value to True to setup the chart for OpenShift deployment compatability.
@@ -121,6 +121,9 @@ anchoreGlobal:
   serviceDir: /anchore_service
   logLevel: INFO
   cleanupImages: true
+
+  # Define timeout, in seconds, for image analysis
+  imageAnalyzeTimeoutSeconds: 36000
 
   # If true, when a user adds an ECR registry with username = awsauto then the system will look for an instance profile to use for auth against the registry
   allowECRUseIAMRole: false
@@ -468,7 +471,7 @@ anchoreEnterpriseGlobal:
   # Create this secret with the following command - kubectl create secret generic anchore-license --from-file=license.yaml=<PATH TO LICENSE.YAML>
   licenseSecretName: anchore-enterprise-license
 
-  image: docker.io/anchore/enterprise:v0.5.0
+  image: docker.io/anchore/enterprise:v0.5.2
   imagePullPolicy: IfNotPresent
   # Name of the kubernetes secret containing your dockerhub creds with access to the anchore enterprise images.
   # Create this secret with the following command - kubectl create secret docker-registry anchore-dockerhub-creds --docker-server=docker.io --docker-username=<USERNAME> --docker-password=<PASSWORD> --docker-email=<EMAIL_ADDRESS>
