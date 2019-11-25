@@ -168,10 +168,6 @@ ldap:
   user_dn_pattern: cn=${username},dc=example,dc=org
   tls:
     enabled: false
-    caCertificate: |-
-    serverCertificate: |-
-    serverKey: |-
-    # existingSecret: name-of-existing-secret-to-rabbitmq
 
 ## Kubernetes service type
 service:

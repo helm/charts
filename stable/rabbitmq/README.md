@@ -91,10 +91,6 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `ldap.port`                                  | LDAP port                                        | `389`                                                   |
 | `ldap.user_dn_pattern`                       | DN used to bind to LDAP                          | `cn=${username},dc=example,dc=org`                      |
 | `ldap.tls.enabled`                           | Enable TLS for LDAP connections                  | `false`                                                 |
-| `ldap.tls.caCertificate`                     | CA certificate for LDAP connections              | `nil`                                                   |
-| `ldap.tls.serverCertificate`                 | Server certificate for LDAP connections          | `nil`                                                   |
-| `ldap.tls.serverKey`                         | Server key for LDAP connections                  | `nil`                                                   |
-| `ldap.tls.existingSecret`                    | Existing secret with certificate content to LDAP credentials   | `nil`                                     |
 | `service.type`                               | Kubernetes Service type                          | `ClusterIP`                                             |
 | `service.port`                               | Amqp port                                        | `5672`                                                  |
 | `service.tlsPort`                            | Amqp TLS port                                    | `5671`                                                  |
@@ -353,14 +349,7 @@ LDAP support can be enabled in the chart by specifying the `ldap.` parameters wh
 - `ldap.server`: LDAP server host. No defaults.
 - `ldap.port`: LDAP server port. `389`.
 - `ldap.user_dn_pattern`: DN used to bind to LDAP. `cn=${username},dc=example,dc=org`.
-
-It's also possible to connect to LDAP servers using TLS. The following parameters allow this configuration:
-
 - `ldap.tls.enabled`: Enable TLS for LDAP connections. Defaults to `false`.
-- `ldap.tls.caCertificate`: CA certificate for LDAP connections. No defaults.
-- `ldap.tls.serverCertificate`: Server certificate for LDAP connections. No defaults.
-- `ldap.tls.serverKey`: Server key for LDAP connections. No defaults.
-- `ldap.tls.existingSecret`: Existing secret with certificate content to LDAP credentials. No defaults.
 
 For example:
 
