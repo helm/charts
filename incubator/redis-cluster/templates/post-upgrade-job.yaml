@@ -1,0 +1,45 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ template "redis-cluster.fullname" . }}-post-upgrade"
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+  annotations:
+    "helm.sh/hook": post-upgrade
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": "hook-succeeded,before-hook-creation"
+spec:
+  backoffLimit: 1
+  template:
+    metadata:
+      name: "{{ template "redis-cluster.fullname" . }}-post-upgrade"
+      labels:
+        app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    spec:
+      restartPolicy: Never
+      volumes:
+      - name: config
+        configMap:
+          name: {{ template "redis-cluster.fullname" . }}-configmap
+      containers:
+      - name: post-upgrade-job
+        image: {{ .Values.image.name }}:{{ .Values.image.tag }}
+        command: 
+        - sh
+        - "/configmap/scale-cluster.sh"
+        volumeMounts:
+        - mountPath: /configmap
+          name: config
+        env:
+        {{- if .Values.auth }}
+        - name: AUTH
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "redis-cluster.fullname" . }}
+              key: auth
+        {{- end }}  

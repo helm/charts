@@ -1,0 +1,303 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "redis-cluster.fullname" . }}-configmap
+  labels:
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app: {{ template "redis-cluster.fullname" . }}
+data:
+  redis.conf: |
+    {{- if .Values.redis.customConfig }}
+{{ tpl .Values.redis.customConfig . | indent 4 }}
+    {{- end}}
+    dir "/data"
+    port 6379
+    cluster-enabled yes
+    cluster-config-file "/data/conf/nodes.conf"
+    cluster-node-timeout 5000
+
+  create-cluster.sh: |
+    #!/bin/sh
+    SHARDS={{ .Values.shards }}
+    REPLICA={{ .Values.shardReplicas }}
+    PORT={{ .Values.redis.port }}
+    MASTER_TEMPFILE=/tmp/master_ips.txt
+    SLAVE_TEMPFILE=/tmp/slave_ips.txt
+    CLUSTER_TEMPFILE=/tmp/cluster_info.txt
+    
+    check_nodes_ready() {
+      if [ "`timeout 2 redis-cli -h "$1" -p ${PORT}{{ if .Values.auth }} -a "$AUTH" --no-auth-warning{{ end }} ping`" != "PONG" ];then
+          echo "  Node $1 is still not ready."
+          return 1
+      fi
+    }
+    
+    if [ $SHARDS -lt 3 ];then
+      echo "ERROR: The cluster must have 3 shards at least, only '$SHARDS' shards can not create the cluster."
+      exit 1
+    fi
+    
+    masters=""
+    slaves=""
+    shard_idx=0
+    
+    echo "# Generate service name of masters and slaves..."
+    while [ $shard_idx -lt $SHARDS ];
+    do
+      masters=${masters}"{{ template "redis-cluster.fullname" . }}-shard${shard_idx}-announce-0 "
+      replica_idx=1
+      while [ $replica_idx -le $REPLICA ];
+      do
+        slaves=${slaves}"{{ template "redis-cluster.fullname" . }}-shard${shard_idx}-announce-${replica_idx} "
+        replica_idx=`expr $replica_idx + 1`
+      done
+      shard_idx=`expr $shard_idx + 1`
+    done
+    echo "  Masters: $masters"
+    echo "  Slaves: $slaves"
+    
+    echo "# Checking if all nodes ready..."
+    # Check if all nodes ready
+    count=0
+    timeout=300
+    while [ $count -lt $timeout ]
+    do
+      ok=1
+      
+      for master in $masters
+      do
+        check_nodes_ready $master
+        if [ $? -ne 0 ];then
+          ok=0
+        fi
+      done
+      
+      for slave in $slaves
+      do
+        check_nodes_ready $slave
+        if [ $? -ne 0 ];then
+          ok=0
+        fi
+      done
+      
+      if [ $ok -eq 1 ];then
+        echo "  All nodes are ready to join into the cluster"
+        break;
+      fi
+      count=`expr $count + 1`
+      sleep 1
+    done
+    
+    if [ $count -ge $timeout ];then
+      echo "ERROR: Some nodes are not ready in $timeout seconds, can not create the cluster."
+      exit 1
+    fi
+    
+    echo "# Generate ip addresses of masters and slaves..."
+    >${MASTER_TEMPFILE}
+    >${SLAVE_TEMPFILE}
+    echo " Masters:"
+    for master in $masters
+    do
+      echo "$master `getent hosts $master | awk '{ print $1 }'`" |tee -a ${MASTER_TEMPFILE}
+    done
+    
+    echo " Slaves:"
+    for slave in $slaves
+    do
+      echo "$slave `getent hosts $slave | awk '{ print $1 }'`" |tee -a ${SLAVE_TEMPFILE}
+    done
+    
+    set -e
+    echo "# Create cluster with masters..."
+    # Create cluster with masters
+    create_cluster_cmd="redis-cli --cluster create "
+    while read hostname ip
+    do
+      create_cluster_cmd="${create_cluster_cmd}${ip}:${PORT} "
+    done <${MASTER_TEMPFILE}
+    
+    echo "  $create_cluster_cmd"
+    $create_cluster_cmd{{ if .Values.auth }} -a "$AUTH" --no-auth-warning{{ end }} <<-EOF
+    yes
+    EOF
+    
+    echo "  Cluster created successfully."
+    node_ip=`head -n 1 ${MASTER_TEMPFILE}|awk '{print $2}'`
+    redis-cli --cluster check ${node_ip}:${PORT}{{ if .Values.auth }} -a "$AUTH" --no-auth-warning{{ end }} |grep "M:" |tee ${CLUSTER_TEMPFILE}
+    
+    echo "# Join slaves into cluster..."
+    # Join slaves into cluster
+    cat ${SLAVE_TEMPFILE}|while read hostname ip
+    do
+      prefix=`echo ${hostname}|sed "s/-.$//"`
+      master_ip=`grep ${prefix} ${MASTER_TEMPFILE}|awk '{print $2}'`
+      master_id=`grep ${master_ip} ${CLUSTER_TEMPFILE}|awk '{print $2}'`
+      echo "  Join $hostname as slave of master $master_ip"
+      redis-cli --cluster add-node ${ip}:${PORT} ${node_ip}:${PORT} --cluster-slave --cluster-master-id ${master_id}{{ if .Values.auth }} -a "$AUTH" --no-auth-warning{{ end }}
+    done
+    
+    redis-cli --cluster check ${node_ip}:${PORT}{{ if .Values.auth }} -a "$AUTH" --no-auth-warning{{ end }}
+    echo "All nodes joined into cluster."
+    
+  scale-cluster.sh: |
+    #!/bin/sh
+    set -eu
+    
+    SHARDS={{ .Values.shards }}  
+    REPLICA={{ .Values.shardReplicas }}
+    NODE0_IP=`getent hosts {{ template "redis-cluster.fullname" . }}-shard0-announce-0 | awk '{ print $1 }'`
+    PORT={{ .Values.redis.port }}
+    MASTER_TEMPFILE=/tmp/master_ips.txt
+    SLAVE_TEMPFILE=/tmp/slave_ips.txt
+    CLUSTER_TEMPFILE=/tmp/cluster_info.txt
+    
+    echo "# Check how may shards cluster has..."
+    
+    redis-cli --cluster check ${NODE0_IP}:${PORT}{{ if .Values.auth }} -a "$AUTH" --no-auth-warning{{ end }} |grep "M:" |tee ${CLUSTER_TEMPFILE}
+    current_shards=`cat ${CLUSTER_TEMPFILE} | wc -l`
+    
+    check_nodes_ready() {
+      if [ "`timeout 2 redis-cli -h "$1" -p ${PORT}{{ if .Values.auth }} -a "$AUTH" --no-auth-warning{{ end }} ping`" != "PONG" ];then
+          echo "  Node $1 is still not ready."
+          return 1
+      fi
+    }
+    
+    if [ $current_shards -lt 3 ];then
+      echo "ERROR: The cluster have only $current_shards shards, less than 3 shards. please check the cluster state."
+      exit 1
+    fi    
+    
+    if [ $SHARDS -le $current_shards ];then
+      echo "No shard need to add into the cluster."
+      exit 0
+    fi
+    
+    masters=""
+    slaves=""
+    shard_idx=$current_shards
+    
+    echo "# Generate service name of new masters and slaves..."
+    while [ $shard_idx -lt $SHARDS ];
+    do
+      masters=${masters}"{{ template "redis-cluster.fullname" . }}-shard${shard_idx}-announce-0 "
+      replica_idx=1
+      while [ $replica_idx -le $REPLICA ];
+      do
+        slaves=${slaves}"{{ template "redis-cluster.fullname" . }}-shard${shard_idx}-announce-${replica_idx} "
+        replica_idx=`expr $replica_idx + 1`
+      done
+      shard_idx=`expr $shard_idx + 1`
+    done
+    echo "  Masters: $masters"
+    echo "  Slaves: $slaves"
+    
+    echo "# Checking if all nodes ready..."
+    set +e
+    # Check if all nodes ready
+    count=0
+    timeout=300
+    while [ $count -lt $timeout ]
+    do
+      ok=1
+      
+      for master in $masters
+      do
+        check_nodes_ready $master
+        if [ $? -ne 0 ];then
+          ok=0
+        fi
+      done
+      
+      for slave in $slaves
+      do
+        check_nodes_ready $slave
+        if [ $? -ne 0 ];then
+          ok=0
+        fi
+      done
+      
+      if [ $ok -eq 1 ];then
+        echo "  All nodes are ready to join into the cluster"
+        break;
+      fi
+      count=`expr $count + 1`
+      sleep 1
+    done
+    
+    if [ $count -ge $timeout ];then
+      echo "ERROR: Some nodes are not ready in $timeout seconds, can not create the cluster."
+      exit 1
+    fi
+    
+    echo "# Generate ip addresses of masters and slaves..."
+    >${MASTER_TEMPFILE}
+    >${SLAVE_TEMPFILE}
+    echo " Masters:"
+    for master in $masters
+    do
+      echo "$master `getent hosts $master | awk '{ print $1 }'`" |tee -a ${MASTER_TEMPFILE}
+    done
+    
+    echo " Slaves:"
+    for slave in $slaves
+    do
+      echo "$slave `getent hosts $slave | awk '{ print $1 }'`" |tee -a ${SLAVE_TEMPFILE}
+    done
+    
+    set -e
+    echo "# Join masters into cluster..."
+    cat ${MASTER_TEMPFILE}|while read hostname ip
+    do
+      echo "  Join $hostname as master into cluster."
+      redis-cli --cluster add-node ${ip}:${PORT} ${NODE0_IP}:${PORT}{{ if .Values.auth }} -a "$AUTH" --no-auth-warning{{ end }}
+    done
+    
+    # Wait for masters get their node id
+    echo "Get new masters node ID.."
+    set +e
+    >${CLUSTER_TEMPFILE}
+    cat ${MASTER_TEMPFILE}|while read hostname ip
+    do
+      timeout=300
+      count=0
+      while [ $count -lt $timeout ]
+      do
+        master_info=`redis-cli --cluster check ${NODE0_IP}:${PORT}{{ if .Values.auth }} -a "$AUTH" --no-auth-warning{{ end }} |grep "M:.*${ip}"` 
+        if [ $? -eq 0 ];then
+          echo "$master_info" |tee -a ${CLUSTER_TEMPFILE}
+          break
+        fi
+        sleep 1
+        count=`expr $count + 1`
+      done
+    done
+    
+    master_cnt=`cat ${MASTER_TEMPFILE} | wc -l`
+    master_id_cnt=`cat ${CLUSTER_TEMPFILE} | wc -l`
+    if [ $master_cnt -ne $master_id_cnt ];then
+      echo "ERROR: Some masters didn't get their ID."
+      exit 1
+    fi
+    
+    set -e
+    echo "# Join slaves into cluster..."
+    # Join slaves into cluster
+    cat ${SLAVE_TEMPFILE}|while read hostname ip
+    do
+      prefix=`echo ${hostname}|sed "s/-.$//"`
+      master_ip=`grep ${prefix} ${MASTER_TEMPFILE}|awk '{print $2}'`
+      master_id=`grep ${master_ip} ${CLUSTER_TEMPFILE}|awk '{print $2}'`
+      echo "  Join $hostname as slave of master $master_ip"
+      redis-cli --cluster add-node ${ip}:${PORT} ${NODE0_IP}:${PORT} --cluster-slave --cluster-master-id ${master_id}{{ if .Values.auth }} -a "$AUTH" --no-auth-warning{{ end }}
+    done
+    
+    redis-cli --cluster check ${NODE0_IP}:${PORT}{{ if .Values.auth }} -a "$AUTH" --no-auth-warning{{ end }}
+    echo "All nodes joined into cluster."
+    
+    
+    
+    

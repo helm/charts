@@ -1,0 +1,33 @@
+Redis cluster can be accessed via port {{ .Values.redis.port }} on the following DNS names from within your cluster:
+{{- $fullName := include "redis-cluster.fullname" . }}
+{{- $shards := int (toString .Values.shards) }}
+{{- $replicas := int (toString (add .Values.shardReplicas 1)) }}
+{{- $root := . }}
+{{- range $i := until $shards }}
+{{- range $j := until $replicas }}
+{{ $fullName }}-shard{{ $i }}-announce-{{ $j }}.{{ $root.Release.Namespace }}.svc.cluster.local
+{{- end }}
+{{- end }}
+
+To connect to your Redis Cluster:
+
+{{- if .Values.auth }}
+1. To retrieve the redis password:
+   echo $(kubectl get secret {{ template "redis-cluster.fullname" . }} -o "jsonpath={.data['auth']}" | base64 --decode)
+   
+2. Run a Redis pod that you can use as a client:
+
+   kubectl exec -it {{ include "redis-cluster.fullname" . }}-shard0-0 sh -n {{ .Release.Namespace }}
+
+3. Connect using the Redis CLI (inside container):
+
+   redis-cli -a <REDIS-PASS-FROM-SECRET> -c -h {{ include "redis-cluster.fullname" . }}-shard0-announce-0.{{ .Release.Namespace }}.svc.cluster.local -p {{ .Values.redis.port }}
+{{- else }}
+1. Run a Redis pod that you can use as a client:
+
+   kubectl exec -it {{ include "redis-cluster.fullname" . }}-shard0-0 sh -n {{ .Release.Namespace }}
+   
+2. Connect using the Redis CLI:
+
+  redis-cli -c -h {{ include "redis-cluster.fullname" . }}-shard0-announce-0.{{ .Release.Namespace }}.svc.cluster.local -p {{ .Values.redis.port }}
+{{- end }}

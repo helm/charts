@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "redis-cluster.fullname" . }}-test-connection"
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+  annotations:
+    "helm.sh/hook": test-success
+    "helm.sh/hook-delete-policy": "hook-succeeded,before-hook-creation"
+spec:
+  containers:
+    - name: test
+      image: {{ .Values.image.name }}:{{ .Values.image.tag }}
+      command: 
+      - sh
+      - "-c"
+      - |
+        #!/bin/sh
+        if [ "`redis-cli -c -h "{{ include "redis-cluster.fullname" . }}-shard0-announce-0.{{ .Release.Namespace }}.svc.cluster.local" -p {{ .Values.redis.port }}{{ if .Values.auth }} -a "$AUTH" --no-auth-warning{{ end }} ping`" != "PONG" ];then
+          exit 1
+        fi
+  restartPolicy: Never
