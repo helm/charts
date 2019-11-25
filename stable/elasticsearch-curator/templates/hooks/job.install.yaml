@@ -52,7 +52,7 @@ spec:
           command:
 {{ toYaml $.Values.command | indent 12 }}
           args:
-{{- if or $.Values.dryrun $.Values.hooks.dryrun }}
+{{- if $.Values.hooks.dryrun }}
           - --dry-run
 {{- end }}
           - --config
