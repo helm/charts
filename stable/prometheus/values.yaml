@@ -615,7 +615,7 @@ server:
   ##     secretKeyRef:
   ##       name: mysecret
   ##       key: username
-  env: {}
+  env: []
 
   extraFlags:
     - web.enable-lifecycle
