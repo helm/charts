@@ -1,4 +1,8 @@
 
+*******************
+****DEPRECATED*****
+*******************
+* The Concourse chart is deprecated. Future development has been moved to github.com/concourse/concourse-chart
 * Concourse can be accessed:
 
   * Within your cluster, at the following DNS name at port {{ .Values.concourse.web.bindPort }}:
@@ -70,3 +74,8 @@ Please see `README.md` for examples.
 
 {{- end }}
 {{- end }}
+
+*******************
+****DEPRECATED*****
+*******************
+* The Concourse chart is deprecated. Future development has been moved to github.com/concourse/concourse-chart
