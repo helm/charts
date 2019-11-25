@@ -30,6 +30,7 @@ data:
                       cpu: {{ .Values.deployer.resourceLimits.cpu }}
                     readinessProbeDelay: {{ .Values.deployer.readinessProbe.initialDelaySeconds }}
                     livenessProbeDelay: {{ .Values.deployer.livenessProbe.initialDelaySeconds }}
+                    imagePullPolicy: {{ .Values.deployer.imagePullPolicy }}
       datasource:
         url: 'jdbc:{{ template "scdf.database.scheme" . }}://{{ template "scdf.database.host" . }}:{{ template "scdf.database.port" . }}/{{ template "scdf.database.skipper" . }}'
         driverClassName: {{ template "scdf.database.driver" . }}

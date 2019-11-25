@@ -64,6 +64,7 @@ deployer:
     initialDelaySeconds: 120
   livenessProbe:
     initialDelaySeconds: 90
+  imagePullPolicy: IfNotPresent
 
 rabbitmq:
   enabled: true
