@@ -64,6 +64,10 @@ spec:
               value: "{{ .Values.rabbitmq.timeout }}"
             - name: MAX_QUEUES
               value: "{{ .Values.rabbitmq.max_queues }}"
+            {{- if .Values.rabbitmq.cafile_secret }}
+            - name: CAFILE
+              value: "/etc/ssl/certs/ca.pem"
+            {{- end }}
           ports:
             - containerPort: {{ .Values.service.internalPort }}
               name: publish
@@ -84,6 +88,12 @@ spec:
             readOnlyRootFilesystem: true
             runAsNonRoot: true
             runAsUser: 10002
+          {{- if .Values.rabbitmq.cafile_secret }}
+          volumeMounts:
+          - name: mgmt-plugin-root-cafile
+            mountPath: "/etc/ssl/certs"
+            readOnly: true
+          {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
@@ -95,4 +105,10 @@ spec:
     {{- with .Values.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- if .Values.rabbitmq.cafile_secret }}
+      volumes:
+      - name: mgmt-plugin-root-cafile
+        secret:
+          secretName: "{{ .Values.rabbitmq.cafile_secret }}"
     {{- end }}

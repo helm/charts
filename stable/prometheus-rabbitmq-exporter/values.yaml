@@ -45,6 +45,7 @@ rabbitmq:
   output_format: "TTY"
   timeout: 30
   max_queues: 0
+  cafile_secret: null
 
 annotations: {}
 #  prometheus.io/scrape: "true"

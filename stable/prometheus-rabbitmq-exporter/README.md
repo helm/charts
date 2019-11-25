@@ -65,6 +65,7 @@ The following table lists the configurable parameters and their default values.
 | `rabbitmq.output_format` | Log ouput format. TTY and JSON are suported                            | `TTY`                     |
 | `rabbitmq.timeout`       | timeout in seconds for retrieving data from management plugin          | `30`                      |
 | `rabbitmq.max_queues`    | max number of queues before we drop metrics (disabled if set to 0)     | `0`                       |
+| `rabbitmq.cafile_secret` | The name of the secret containing a `ca.pem` key with the root certificate's value. | `null`       |
 | `annotations`            | pod annotations for easier discovery                                   | {}                        |
 | `prometheus.monitor.enabled` | Set this to `true` to create ServiceMonitor for Prometheus operator | `false` |
 | `prometheus.monitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | {} |
