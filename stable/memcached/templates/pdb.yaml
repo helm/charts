@@ -7,15 +7,10 @@ metadata:
     helm.sh/hook: "post-upgrade, post-install"
     helm.sh/hook-delete-policy: "before-hook-creation"
   labels:
-    app: {{ template "memcached.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+{{ include "memcached.labels" . | indent 4 }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "memcached.fullname" . }}
-      chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-      release: "{{ .Release.Name }}"
-      heritage: "{{ .Release.Service }}"
+      app.kubernetes.io/name: {{ include "memcached.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   minAvailable: {{ .Values.pdbMinAvailable }}
