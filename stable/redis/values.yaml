@@ -470,6 +470,7 @@ metrics:
     ##
     # pullSecrets:
     #   - myRegistryKeySecretName
+
   ## Metrics exporter resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##

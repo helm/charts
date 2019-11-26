@@ -157,7 +157,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `defaultRules.rules.node` | Create Node default rules | `true` |
 | `defaultRules.rules.prometheus` | Create Prometheus  default rules| `true` |
 | `defaultRules.rules.time` | Create time default rules | `true` |
-| `fullNameOverride` | Provide a name to substitute for the full names of resources |`""`|
+| `fullnameOverride` | Provide a name to substitute for the full names of resources |`""`|
 | `global.imagePullSecrets` | Reference to one or more secrets to be used when pulling images | `[]` |
 | `global.rbac.create` | Create RBAC resources | `true` |
 | `global.rbac.pspEnabled` | Create pod security policy resources | `true` |
