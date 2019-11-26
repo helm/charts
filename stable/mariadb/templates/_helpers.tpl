@@ -164,10 +164,10 @@ imagePullSecrets:
 {{/*
 Return the proper test image name
 */}}
-{{- define "mariadb.testFramework.image" -}}
-{{- $registryName := .Values.testFramework.image.registry -}}
-{{- $repositoryName := .Values.testFramework.image.repository -}}
-{{- $tag := .Values.testFramework.image.tag | toString -}}
+{{- define "mariadb.tests.testFramework.image" -}}
+{{- $registryName := .Values.tests.testFramework.image.registry -}}
+{{- $repositoryName := .Values.tests.testFramework.image.repository -}}
+{{- $tag := .Values.tests.testFramework.image.tag | toString -}}
 {{/*
 Helm 2.11 supports the assignment of a value to a variable defined in a different scope,
 but Helm 2.9 and 2.10 doesn't support it, so we need to implement this if-else logic.

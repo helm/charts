@@ -7,7 +7,7 @@ metadata:
 spec:
   initContainers:
     - name: "test-framework"
-      image: {{ template "mariadb.testFramework.image" . }}
+      image: {{ template "mariadb.tests.testFramework.image" . }}
       command:
         - "bash"
         - "-c"
@@ -15,6 +15,9 @@ spec:
           set -ex
           # copy bats to tools dir
           cp -R /usr/local/libexec/ /tools/bats/
+      {{- if .Values.tests.testFramework.resources }}
+      resources: {{ toYaml .Values.tests.testFramework.resources | nindent 8 }}
+      {{- end }}
       volumeMounts:
       - mountPath: /tools
         name: tools
@@ -29,6 +32,9 @@ spec:
             secretKeyRef:
               name: {{ template "mariadb.secretName" . }}
               key: mariadb-root-password
+      {{- if .Values.tests.resources }}
+      resources: {{ toYaml .Values.tests.resources | nindent 8 }}
+      {{- end }}
       volumeMounts:
       - mountPath: /tests
         name: tests

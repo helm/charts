@@ -537,9 +537,13 @@ metrics:
       prometheus: kube-prometheus
 
 ## Bats Framework (= Bash Automated Testing System) is needed to test if MariaDB is accessible
-## See test-runner.yaml and tests.yaml
-testFramework:
-  image:
-    registry: docker.io
-    repository: dduportal/bats
-    tag: 0.4.0
+## See test-runner.yaml and tests.yaml for details.
+## To run the tests after the deployment, enter "helm test <release-name>".
+tests:
+  # resources: {}
+  testFramework:
+    image:
+      registry: docker.io
+      repository: dduportal/bats
+      tag: 0.4.0
+    # resources: {}
