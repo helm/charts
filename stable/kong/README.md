@@ -403,6 +403,13 @@ You can can learn about kong ingress custom resource definitions [here](https://
 
 
 ## Changelog
+### 0.27.2
+
+#### Fixes
+
+- Do not create a ServiceAccount if it is not necessary.
+- If a configuration change requires creating a ServiceAccount, create a temporary ServiceAccount to allow pre-upgrade tasks to complete before the regular ServiceAccount is created.
+
 ### 0.27.1
 
 #### Documentation updates
@@ -414,6 +421,13 @@ You can can learn about kong ingress custom resource definitions [here](https://
 
 - DB-less mode is enabled by default.
 - Kong is installed as an Ingress Controller for the cluster by default.
+
+### 0.25.0
+
+#### New features
+
+- Add support for PodSecurityPolicy
+- Require creation of a ServiceAccount
 
 ### 0.24.0
 
