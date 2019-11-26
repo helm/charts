@@ -76,7 +76,7 @@ your PR will be rejected by the automated DCO check.
 
 This repository is used by Chart developers for maintaining the official charts for Kubernetes Helm. If your issue is in the Helm tool itself, please use the issue tracker in the [helm/helm](https://github.com/helm/helm) repository.
 
-## How to Contribute to an existing Chart
+## How to Contribute to an Existing Chart
 
 1. Fork this repository, develop and test your Chart changes. Remember to sign off your commits as described in the "Sign Your Work" chapter.
 1. Ensure your Chart changes follow the [technical](#technical-requirements) and [documentation](#documentation-requirements) guidelines, described below.
@@ -84,7 +84,7 @@ This repository is used by Chart developers for maintaining the official charts 
 
 ***NOTE***: In order to make testing and merging of PRs easier, please submit changes to multiple charts in separate PRs.
 
-### Technical requirements
+### Technical Requirements
 
 * All Chart dependencies should also be submitted independently
 * Must pass the linter (`helm lint`)
@@ -108,7 +108,7 @@ This repository is used by Chart developers for maintaining the official charts 
   (especially for [labels](https://github.com/helm/helm/blob/master/docs/chart_best_practices/labels.md)
   and [values](https://github.com/helm/helm/blob/master/docs/chart_best_practices/values.md))
 
-### Documentation requirements
+### Documentation Requirements
 
 * Must include an in-depth `README.md`, including:
     * Short description of the Chart
@@ -118,7 +118,7 @@ This repository is used by Chart developers for maintaining the official charts 
     * Any relevant post-installation information for the Chart
     * Instructions on how to access the application or service provided by the Chart
 
-### Merge approval and release process
+### Merge Approval and Release Process
 
 A Kubernetes Charts maintainer will review the Chart change submission, and start a validation job in the CI to verify the technical requirements of the Chart. A maintainer may add "LGTM" (Looks Good To Me) or an equivalent comment to indicate that a PR is acceptable. Any change requires at least one LGTM. No pull requests can be merged until at least one maintainer signs off with an LGTM.
 
