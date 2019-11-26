@@ -95,7 +95,7 @@ Parameter | Description | Default
 `controller.publishService.enabled` | if true, the controller will set the endpoint records on the ingress objects to reflect those on the service | `false`
 `controller.publishService.pathOverride` | override of the default publish-service name | `""`
 `controller.service.enabled` | if disabled no service will be created. This is especially useful when `controller.kind` is set to `DaemonSet` and `controller.daemonset.useHostPorts` is `true` | true
-`controller.service.clusterIP` | internal controller cluster service IP | `""`
+`controller.service.clusterIP` | internal controller cluster service IP | `nil`
 `controller.service.omitClusterIP` | To omit the `clusterIP` from the controller service | `false`
 `controller.service.externalIPs` | controller service external IP addresses. Do not set this when `controller.hostNetwork` is set to `true` and `kube-proxy` is used as there will be a port-conflict for port `80` | `[]`
 `controller.service.externalTrafficPolicy` | If `controller.service.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable [source IP preservation](https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typenodeport) | `"Cluster"`
@@ -127,7 +127,7 @@ Parameter | Description | Default
 `controller.readinessProbe.port` | The port number that the readiness probe will listen on. | 10254
 `controller.metrics.enabled` | if `true`, enable Prometheus metrics | `false`
 `controller.metrics.service.annotations` | annotations for Prometheus metrics service | `{}`
-`controller.metrics.service.clusterIP` | cluster IP address to assign to service | `""`
+`controller.metrics.service.clusterIP` | cluster IP address to assign to service | `nil`
 `controller.metrics.service.omitClusterIP` | To omit the `clusterIP` from the metrics service | `false`
 `controller.metrics.service.externalIPs` | Prometheus metrics service external IP addresses | `[]`
 `controller.metrics.service.labels` | labels for metrics service | `{}`
@@ -150,7 +150,7 @@ Parameter | Description | Default
 `controller.admissionWebhooks.port` | Admission webhook port | `8080`
 `controller.admissionWebhooks.service.annotations` | Annotations for admission webhook service | `{}`
 `controller.admissionWebhooks.service.omitClusterIP` | To omit the `clusterIP` from the admission webhook service | `false`
-`controller.admissionWebhooks.service.clusterIP` | cluster IP address to assign to admission webhook service | `""`
+`controller.admissionWebhooks.service.clusterIP` | cluster IP address to assign to admission webhook service | `nil`
 `controller.admissionWebhooks.service.externalIPs` | Admission webhook service external IP addresses | `[]`
 `controller.admissionWebhooks.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `controller.admissionWebhooks.service.loadBalancerSourceRanges` | List of IP CIDRs allowed access to load balancer (if supported) | `[]`
@@ -202,7 +202,7 @@ Parameter | Description | Default
 `defaultBackend.priorityClassName` | default backend  priorityClassName | `nil`
 `defaultBackend.podSecurityContext` | Security context policies to add to the default backend | `{}`
 `defaultBackend.service.annotations` | annotations for default backend service | `{}`
-`defaultBackend.service.clusterIP` | internal default backend cluster service IP | `""`
+`defaultBackend.service.clusterIP` | internal default backend cluster service IP | `nil`
 `defaultBackend.service.omitClusterIP` | To omit the `clusterIP` from the default backend service | `false`
 `defaultBackend.service.externalIPs` | default backend service external IP addresses | `[]`
 `defaultBackend.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
