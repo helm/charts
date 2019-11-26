@@ -92,7 +92,7 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if or ( .Values.gitconfig ) ( .Values.gitconfigSecretName ) }}
+          {{- if or .Values.gitconfig .Values.gitconfigSecretName }}
           lifecycle:
             postStart:
               exec:
@@ -254,7 +254,7 @@ spec:
             readOnly: true
             mountPath: /var/secrets/{{ .name }}
           {{- end }}
-          {{- if .Values.gitconfig}}
+          {{- if or .Values.gitconfig .Values.gitconfigSecretName }}
           - name: gitconfig-volume
             readOnly: true
             mountPath: /etc/secret-gitconfig
