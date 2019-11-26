@@ -164,6 +164,7 @@ config:
     compact_full_write_cold_duration: 4h0m0s
     max_series_per_database: 1000000
     max_values_per_tag: 100000
+    index_version: inmem
     trace_logging_enabled: false
   coordinator:
     write_timeout: 10s
