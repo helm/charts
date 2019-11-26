@@ -21,7 +21,7 @@ Similar to the [Helm 2 Support Plan](https://helm.sh/blog/2019-10-22-helm-2150-r
 
 This gives the community (chart OWNERS, organizations, groups or individuals who want to host charts) 6 months to move charts to new Helm repos, and list these new repos on the Helm Hub before `stable` and `incubator` are de-listed.
 
-Note that this project has been under active development for some time, so you might run into [issues](https://github.com/helm/charts/issues). If you do, please don't be shy about letting us know, or better yet, contribute a fix or feature (within the deprecation timeline of course). Also be aware the repo and chart OWNERS are volunteer so reviews are as time allows, and acceptance is up to the chart OWNERS - you may [reach out](#where-to-find-us) but please be patient and courteous.
+Note that this project has been under active development for some time, so you might run into [issues](https://github.com/helm/charts/issues). If you do, please don't be shy about letting us know, or better yet, contribute a fix or feature (within the deprecation timeline of course). Also be aware the repo and chart OWNERS are volunteers so reviews are as time allows, and acceptance is up to the chart OWNERS - you may [reach out](#where-to-find-us) but please be patient and courteous.
 
 ## Where to Find Us
 
