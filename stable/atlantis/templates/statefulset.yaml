@@ -59,6 +59,11 @@ spec:
         secret:
           secretName: {{ template "atlantis.fullname" . }}-gitconfig
       {{- end }}
+      {{- if .Values.gitConfigSecretName }}
+      - name: gitconfig-volume
+        secret:
+          secretName: {{- if .Values.gitConfigSecretName }}
+      {{- end }}
       {{- if or .Values.aws .Values.awsSecretName}}
       - name: aws-volume
         secret:
@@ -87,7 +92,7 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if .Values.gitconfig }}
+          {{- if or ( .Values.gitconfig ) ( .Values.gitConfigSecretName ) }}
           lifecycle:
             postStart:
               exec:
