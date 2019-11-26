@@ -14,10 +14,10 @@ Similar to the [Helm 2 Support Plan](https://helm.sh/blog/2019-10-22-helm-2150-r
 ### Deprecation Timeline
 
 | | |
-| --- | --- |
-| Nov 13, 2019 | At [Helm 3's public release](https://helm.sh/blog/helm-3-released/), new charts are no longer accepted to `stable` or `incubator`. Patches to existing charts may continue to be submitted by the community, and (time permitting) reviewed by chart OWNERS for acceptance |
-| May 13, 2020 | At 6 months – when helm v2 goes security fix only – the `stable` and `incubator` repos will be de-listed from the Helm Hub. Chart OWNERS are encouraged to accept security fixes only |
-| Nov 13, 2020 | At 1 year, support for this project will formally end, and this repo will be marked obsolete |
+| - | - |
+| **Nov 13, 2019** | At [Helm 3's public release](https://helm.sh/blog/helm-3-released/), new charts are no longer accepted to `stable` or `incubator`. Patches to existing charts may continue to be submitted by the community, and (time permitting) reviewed by chart OWNERS for acceptance |
+| **May 13, 2020** | At 6 months – when helm v2 goes security fix only – the `stable` and `incubator` repos will be de-listed from the Helm Hub. Chart OWNERS are encouraged to accept security fixes only |
+| **Nov 13, 2020** | At 1 year, support for this project will formally end, and this repo will be marked obsolete |
 
 This gives the community (chart OWNERS, organizations, groups or individuals who want to host charts) 6 months to move charts to new Helm repos, and list these new repos on the Helm Hub before `stable` and `incubator` are de-listed.
 
