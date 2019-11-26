@@ -403,6 +403,10 @@ You can can learn about kong ingress custom resource definitions [here](https://
 
 
 ## Changelog
+### 0.27.1
+
+#### Documentation updates
+- Retroactive changelog update for 0.24 breaking changes.
 
 ### 0.27.0
 
@@ -410,3 +414,15 @@ You can can learn about kong ingress custom resource definitions [here](https://
 
 - DB-less mode is enabled by default.
 - Kong is installed as an Ingress Controller for the cluster by default.
+
+### 0.24.0
+
+#### Breaking changes
+
+- The configuration format for ingresses in values.yaml has changed. 
+Previously, all ingresses accepted an array of hostnames, and would create
+ingress rules for each. Ingress configuration for services other than the proxy
+now accepts a single hostname, which allows simpler TLS configuration and
+automatic population of `admin_api_uri` and similar settings. Configuration for
+the proxy ingress is unchanged, but its documentation now accurately reflects
+the TLS configuration needed.
