@@ -1,0 +1,36 @@
+{{- $fullName := include "redis-cluster.fullname" . }}
+{{- $shards := int (toString .Values.shards) }}
+{{- $replicas := int (toString (add .Values.shardReplicas 1)) }}
+{{- $root := . }}
+{{- range $i := until $shards }}
+{{- range $j := until $replicas }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $fullName }}-shard{{ $i }}-announce-{{ $j }}
+  labels:
+{{ include "labels.standard" $root | indent 4 }}
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+  {{- if $root.Values.serviceAnnotations }}
+{{ toYaml $root.Values.serviceAnnotations | indent 4 }}
+  {{- end }}
+spec:
+  publishNotReadyAddresses: true
+  type: ClusterIP
+  ports:
+  - name: server
+    port: {{ $root.Values.redis.port }}
+    protocol: TCP
+    targetPort: redis
+  - name: cluster-bus
+    port: 16379
+    protocol: TCP
+    targetPort: cluster-bus
+  selector:
+    release: {{ $root.Release.Name }}
+    app: {{ include "redis-cluster.name" $root }}
+    "statefulset.kubernetes.io/pod-name": {{ $fullName }}-shard{{ $i }}-{{ $j }}
+{{- end }}
+{{- end }}

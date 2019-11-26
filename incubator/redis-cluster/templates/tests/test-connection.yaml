@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "redis-cluster.fullname" . }}-test-connection"
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+  annotations:
+    "helm.sh/hook": test-success
+    "helm.sh/hook-delete-policy": "hook-succeeded,before-hook-creation"
+spec:
+  containers:
+    - name: test
+      image: {{ .Values.image.name }}:{{ .Values.image.tag }}
+      command: 
+      - sh
+      - "-c"
+      - |
+        #!/bin/sh
+        set -eux
+        SHARDS={{ .Values.shards }}
+        REPLICAS={{ .Values.shardReplicas }}
+        redis-cli -h {{ include "redis-cluster.fullname" . }}-shard0-announce-0.{{ .Release.Namespace }}.svc.cluster.local -p {{ .Values.redis.port }}{{ if .Values.auth }} -a "$AUTH" --no-auth-warning{{ end }} cluster nodes >/tmp/cluster_nodes.tmp
+        masters=`grep "master" /tmp/cluster_nodes.tmp|wc -l`
+        if [  $masters -ne $SHARDS ];then
+          exit 1
+        fi
+        
+        slaves=`grep "slave" /tmp/cluster_nodes.tmp|wc -l`
+        real_replicas=`expr $slaves / $masters`
+        
+        # command 'expr' will round down the result, need to verify again.
+        if [ `expr $real_replicas * $masters` -ne $slaves ];then
+          exit 1
+        fi
+
+  restartPolicy: Never

@@ -1,0 +1,108 @@
+image:
+  name: redis
+  tag: 5.0.6-alpine
+  pullPolicy: IfNotPresent
+## Shards number for redis cluster, must be equal or greater than 3
+shards: 3
+## Replicas of shard
+shardReplicas: 1
+
+## Kubernetes priorityClass name for the redis-cluster-server pod
+# priorityClassName: ""
+
+## Custom labels for the redis pod
+labels: {}
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
+
+## Redis specific configuration options
+redis:
+  port: 6379
+  ## Configure resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources:
+    requests:
+      cpu: 100m
+      memory: 200Mi
+    limits:
+      cpu: 1000m
+      memory: 700Mi
+  ## Custom redis.conf files used to override default settings.
+  # customConfig: |
+      # Define configuration here
+
+## Configures redis with AUTH (requirepass conf params)
+auth: null
+
+## Node labels, tolerations for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+nodeSelector: {}
+tolerations: {}
+
+hardAntiAffinity: false
+
+persistentVolume:
+  enabled: false
+  ## redis-cluster data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  storageClass: "-"
+  accessModes:
+    - ReadWriteOnce
+  size: 1Gi
+  annotations: {}
+
+sysctl:
+  enabled: false
+  image: busybox
+  tag: 1.31.1
+  pullPolicy: Always
+  command:
+  - /bin/sh
+  - -xc
+  - |
+    sysctl -w net.core.somaxconn=10000
+    echo never > /host-sys/kernel/mm/transparent_hugepage/enabled
+  mountHostSys: false
+
+# NOTE: Prometheus exporter is NOT SUPPORTED right now, Do Not use the configurations below!
+
+# Prometheus exporter specific configuration options
+# exporter:
+#  enabled: false
+#  image: oliver006/redis_exporter
+#  tag: v1.3.2
+#  pullPolicy: IfNotPresent
+#
+#  # prometheus port & scrape path
+#  port: 9121
+#  scrapePath: /metrics
+#
+#  # cpu/memory resource limits/requests
+#  resources: {}
+#
+#  # Additional args for redis exporter
+#  extraArgs: {}
+#
+#  serviceMonitor:
+#    # When set true then use a ServiceMonitor to configure scraping
+#    enabled: false
+#    # Set the namespace the ServiceMonitor should be deployed
+#    # namespace: monitoring
+#    # Set how frequently Prometheus should scrape
+#    # interval: 30s
+#    # Set path to redis-exporter telemtery-path
+#    # telemetryPath: /metrics
+#    # Set labels for the ServiceMonitor, use this to define your scrape label for Prometheus Operator
+#    # labels: {}
+#    # Set timeout for scrape
+#    # timeout: 10s
