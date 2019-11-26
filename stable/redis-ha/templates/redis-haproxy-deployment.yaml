@@ -21,10 +21,10 @@ spec:
         app: {{ template "redis-ha.name" . }}-haproxy
         release: {{ .Release.Name }}
       annotations:
-      {{- if .Values.exporter.enabled }}
-        prometheus.io/port: {{ .Values.haproxy.metrics.port | toString }}
+      {{- if .Values.haproxy.metrics.enabled }}
+        prometheus.io/port: "{{ .Values.haproxy.metrics.port }}"
         prometheus.io/scrape: "true"
-        prometheus.io/path: {{ .Values.haproxy.metrics.scrapePath | toString }}
+        prometheus.io/path: "{{ .Values.haproxy.metrics.scrapePath }}"
       {{- end }}
         checksum/config: {{ print (include "config-haproxy.cfg" .) (include "config-haproxy_init.sh" .) | sha256sum }}
       {{- if .Values.haproxy.annotations }}
@@ -39,6 +39,40 @@ spec:
 {{ toYaml .Values.nodeSelector | indent 8 }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
+      affinity:
+    {{- if .Values.haproxy.affinity }}
+    {{- with .Values.haproxy.affinity }}
+{{ tpl . $ | indent 8 }}
+    {{- end }}
+    {{- else }}
+    {{- if .Values.haproxy.additionalAffinities }}
+{{ toYaml .Values.haproxy.additionalAffinities | indent 8 }}
+    {{- end }}
+        podAntiAffinity:
+    {{- if .Values.haproxy.hardAntiAffinity }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: {{ template "redis-ha.name" . }}-haproxy
+                  release: {{ .Release.Name }}
+              topologyKey: kubernetes.io/hostname
+    {{- else }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: {{ template "redis-ha.name" . }}-haproxy
+                  release: {{ .Release.Name }}
+              topologyKey: kubernetes.io/hostname
+    {{- end }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app:  {{ template "redis-ha.name" . }}-haproxy
+                    release: {{ .Release.Name }}
+                topologyKey: failure-domain.beta.kubernetes.io/zone
+    {{- end }}
       initContainers:
       - name: config-init
         image: {{ .Values.haproxy.image.repository }}:{{ .Values.haproxy.image.tag }}
@@ -85,6 +119,10 @@ spec:
         {{- if .Values.haproxy.readOnly.enabled }}
         - name: readonlyport
           containerPort: {{ default "6380" .Values.haproxy.readOnly.port }}
+        {{- end }}
+        {{- if .Values.haproxy.metrics.enabled }}
+        - name: metrics-port
+          containerPort: {{ default "9101" .Values.haproxy.metrics.port }}
         {{- end }}
         resources:
 {{ toYaml .Values.haproxy.resources | indent 10 }}
