@@ -49,8 +49,10 @@ spec:
     {{- if $.Values.extraVolumeMounts }}
 {{ toYaml $.Values.extraVolumeMounts | indent 12 }}
     {{- end }}
+{{ if .Values.command }}
           command:
 {{ toYaml $.Values.command | indent 12 }}
+{{- end }}
           args:
 {{- if $.Values.hooks.dryrun }}
           - --dry-run
