@@ -58,6 +58,10 @@ spec:
       - name: gitconfig-volume
         secret:
           secretName: {{ template "atlantis.fullname" . }}-gitconfig
+      {{- else if .Values.gitconfigSecretName }}
+      - name: gitconfig-volume
+        secret:
+          secretName: {{ .Values.gitconfigSecretName }}
       {{- end }}
       {{- if or .Values.aws .Values.awsSecretName}}
       - name: aws-volume
@@ -87,7 +91,7 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if .Values.gitconfig }}
+          {{- if or .Values.gitconfig .Values.gitconfigSecretName }}
           lifecycle:
             postStart:
               exec:
@@ -249,7 +253,7 @@ spec:
             readOnly: true
             mountPath: /var/secrets/{{ .name }}
           {{- end }}
-          {{- if .Values.gitconfig}}
+          {{- if or .Values.gitconfig .Values.gitconfigSecretName }}
           - name: gitconfig-volume
             readOnly: true
             mountPath: /etc/secret-gitconfig
