@@ -62,7 +62,7 @@ spec:
       {{- if .Values.gitconfigSecretName }}
       - name: gitconfig-volume
         secret:
-          secretName: {{- if .Values.gitconfigSecretName }}
+          secretName: {{ .Values.gitconfigSecretName }}
       {{- end }}
       {{- if or .Values.aws .Values.awsSecretName}}
       - name: aws-volume
