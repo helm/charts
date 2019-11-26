@@ -99,7 +99,7 @@ spec:
             {{- toYaml .Values.prometheusExporter.resources | nindent 12 }}
         {{- end }}
         - name: {{ .Chart.Name }}
-          {{- if and .Values.pro.enabled (gt .Values.pro.image.tag "0.6.0") }}
+          {{- if and .Values.pro.enabled (semverCompare ">0.6.0" .Values.pro.image.tag) }}
           image: "{{ .Values.pro.image.repository }}:amb-core-{{ .Values.pro.image.tag }}"
           {{ else }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -120,7 +120,7 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.hostIP
-            {{- if and .Values.pro.enabled (gt .Values.pro.image.tag "0.6.0") }}
+            {{- if and .Values.pro.enabled (semverCompare ">0.6.0" .Values.pro.image.tag) }}
             - name: AMBASSADOR_LICENSE_KEY
             {{- if .Values.pro.licenseKey.secret.enabled }}
               valueFrom:
