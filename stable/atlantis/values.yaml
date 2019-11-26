@@ -53,6 +53,9 @@ orgWhitelist: <replace-me>
   #   insteadOf = ssh://git@gitlab.com
 # Source: https://stackoverflow.com/questions/42148841/github-clone-with-oauth-access-token
 
+# If managing secrets outside the chart for the gitconfig, use this variable to reference the secret name
+# gitConfigSecretName: 'mygitconfigsecret'
+
 # To specify AWS credentials to be mapped to ~/.aws:
 # aws:
 #   credentials: |
