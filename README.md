@@ -23,19 +23,19 @@ This gives the community (chart OWNERS, organizations, groups or individuals who
 
 Note that this project has been under active development for some time, so you might run into [issues](https://github.com/helm/charts/issues). If you do, please don't be shy about letting us know, or better yet, contribute a fix or feature (within the deprecation timeline of course). Also be aware the repo and chart OWNERS are volunteer so reviews are as time allows, and acceptance is up to the chart OWNERS - you may [reach out](#where-to-find-us) but please be patient and courteous.
 
-## Where to find us
+## Where to Find Us
 
 For general Helm Chart discussions join the Helm Charts (#charts) room in the [Kubernetes](http://slack.kubernetes.io/).
 
 For issues and support for Helm and Charts see [Support Channels](CONTRIBUTING.md#support-channels).
 
-## How do I install these charts?
+## How Do I Install These Charts?
 
 Just `helm install stable/<chart>`. This is the default repository for Helm which is located at https://kubernetes-charts.storage.googleapis.com/ and is installed by default.
 
 For more information on using Helm, refer to the [Helm documentation](https://github.com/kubernetes/helm#docs).
 
-## How do I enable the Incubator repository?
+## How Do I Enable the Incubator Repository?
 
 To add the Incubator charts for your local client, run `helm repo add`:
 
@@ -71,7 +71,7 @@ Incubator Charts are those that do not meet these criteria. Having the incubator
 
 In order to get a Chart from incubator to stable, Chart maintainers should open a pull request that moves the chart folder.
 
-## Contributing to an existing Chart
+## Contributing to an Existing Chart
 
 We'd love for you to contribute to an existing Chart that you find provides a useful application or service for Kubernetes. Please read our [Contribution Guide](CONTRIBUTING.md) for more information on how you can contribute Charts.
 
