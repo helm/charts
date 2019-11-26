@@ -13,7 +13,7 @@ For issues and support for Helm and Charts see [Support Channels](CONTRIBUTING.m
 
 Just `helm install stable/<chart>`. This is the default repository for Helm which is located at https://kubernetes-charts.storage.googleapis.com/ and is installed by default.
 
-For more information on using Helm, refer to the [Helm's documentation](https://github.com/kubernetes/helm#docs).
+For more information on using Helm, refer to the [Helm documentation](https://github.com/kubernetes/helm#docs).
 
 ## How do I enable the Incubator repository?
 
@@ -28,7 +28,7 @@ You can then run `helm search incubator` to see the charts.
 
 ## Chart Format
 
-Take a look at the [alpine example chart](https://github.com/helm/helm/tree/master/docs/examples/alpine) and the [nginx example chart](https://github.com/helm/helm/tree/master/docs/examples/nginx) for reference when you're writing your first few charts.
+Take a look at the [alpine example chart](https://github.com/helm/helm/tree/master/cmd/helm/testdata/testcharts/alpine) for reference when you're writing your first few charts.
 
 Before contributing a Chart, become familiar with the format. Note that the project is still under active development and the format may still evolve a bit.
 
@@ -99,3 +99,7 @@ To provide that support the API versions of objects should be those that work fo
 ## Status of the Project
 
 This project is still under active development, so you might run into [issues](https://github.com/helm/charts/issues). If you do, please don't be shy about letting us know, or better yet, contribute a fix or feature.
+
+## Happy Helming in China
+
+If you are in China, there are some problems to use upstream Helm Charts directly (e.g. images hosted on `gcr.io`, `quay.io`, and Charts hosted on `googleapis.com` etc), you can use this mirror repo at https://github.com/cloudnativeapp/charts which automatically sync & replace unavailable image & repo URLs in every Chart.

@@ -21,6 +21,9 @@ spec:
     {{- with .Values.serviceMonitor.interval }}
     interval: {{ . }}
     {{- end }}
+    {{- with .Values.serviceMonitor.scrapeTimeout }}
+    scrapeTimeout: {{ . }}
+    {{- end }}
   namespaceSelector:
     matchNames:
     - {{ .Release.Namespace }}

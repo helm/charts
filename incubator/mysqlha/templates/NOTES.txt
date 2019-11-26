@@ -12,8 +12,16 @@ To connect to your database:
 
 2. Run a pod to use as a client:
 
-    kubectl run mysql-client --image={{ .Values.mysqlImage }} -it --rm --restart=Never -- /bin/sh
+    kubectl run mysql-client --image={{ .Values.mysqlImage }} -it --rm --restart='Never' --namespace {{ .Release.Namespace }} -- /bin/sh
 
-2. Open a connection to one of the MySQL pods
+3. To connect to Master service (read/write):
 
-    mysql -h {{ template "fullname" . }}-0.{{ template "fullname" . }} -p
+    mysql -h {{ template "fullname" . }}-0.{{ template "fullname" . }} -u root -p
+
+{{- if lt 1 (.Values.mysqlha.replicaCount | int64) }}
+
+4. To connect to slave service (read-only):
+   
+   mysql -h {{ template "fullname" . }}-readonly -u root -p
+
+{{- end }}

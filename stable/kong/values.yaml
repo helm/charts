@@ -4,7 +4,7 @@
 image:
   repository: kong
   # repository: kong-docker-kong-enterprise-edition-docker.bintray.io/kong-enterprise-edition
-  tag: 1.2
+  tag: 1.3
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -17,6 +17,7 @@ image:
 waitImage:
   repository: busybox
   tag: latest
+  pullPolicy: IfNotPresent
 
 # Specify Kong admin and proxy services configurations
 admin:
@@ -40,8 +41,8 @@ admin:
     enabled: false
     # TLS secret name.
     # tls: kong-admin.example.com-tls
-    # Array of ingress hosts.
-    hosts: []
+    # Ingress hostname
+    hostname:
     # Map of ingress annotations.
     annotations: {}
     # Ingress path.
@@ -65,6 +66,9 @@ proxy:
     enabled: true
     servicePort: 443
     containerPort: 8443
+    # Set a target port for the TLS port in proxy service, useful when using TLS
+    # termination on an ELB.
+    # overrideServiceTargetPort: 8000
     # Set a nodePort which is available if service type is NodePort
     # nodePort: 32443
 
@@ -74,10 +78,15 @@ proxy:
   ingress:
     # Enable/disable exposure using ingress.
     enabled: false
-    # TLS secret name.
-    # tls: kong-proxy.example.com-tls
-    # Array of ingress hosts.
     hosts: []
+    # TLS section. Unlike other ingresses, this follows the format at
+    # https://kubernetes.io/docs/concepts/services-networking/ingress/#tls
+    # tls:
+    #   hosts:
+    #     - example.com
+    #     secretName: example-com-tls-secret
+    #     - example.net
+    #     secretName: example-net-tls-secret
     # Map of ingress annotations.
     annotations: {}
     # Ingress path.
@@ -114,8 +123,8 @@ manager:
     enabled: false
     # TLS secret name.
     # tls: kong-proxy.example.com-tls
-    # Array of ingress hosts.
-    hosts: []
+    # Ingress hostname
+    hostname:
     # Map of ingress annotations.
     annotations: {}
     # Ingress path.
@@ -152,8 +161,8 @@ portal:
     enabled: false
     # TLS secret name.
     # tls: kong-proxy.example.com-tls
-    # Array of ingress hosts.
-    hosts: []
+    # Ingress hostname
+    hostname:
     # Map of ingress annotations.
     annotations: {}
     # Ingress path.
@@ -190,8 +199,8 @@ portalapi:
     enabled: false
     # TLS secret name.
     # tls: kong-proxy.example.com-tls
-    # Array of ingress hosts.
-    hosts: []
+    # Ingress hostname
+    hostname:
     # Map of ingress annotations.
     annotations: {}
     # Ingress path.
@@ -229,7 +238,7 @@ enterprise:
     # The key value must be a secret configuration, following the example at https://docs.konghq.com/enterprise/0.35-x/kong-manager/authentication/sessions/
     session_conf_secret: you-must-create-an-rbac-session-conf-secret
     # Set to the appropriate plugin config JSON if not using basic-auth
-    # admin_gui_auth_conf: ''
+    admin_gui_auth_conf: {}
   smtp:
     enabled: false
     portal_emails_from: none@example.com
@@ -251,10 +260,21 @@ enterprise:
 # Set runMigrations to run Kong migrations
 runMigrations: true
 
+# update strategy
+updateStrategy: {}
+  # type: RollingUpdate
+  # rollingUpdate:
+  #   maxSurge: "100%"
+  #   maxUnavailable: "0%"
+
 # Specify Kong configurations
 # Kong configurations guide https://getkong.org/docs/latest/configuration/
+# Values here take precedence over values from other sections of values.yaml,
+# e.g. setting pg_user here will override the value normally set when postgresql.enabled
+# is set below. In general, you should not set values here if they are set elsewhere.
 env:
-  database: postgres
+  database: "off"
+  nginx_worker_processes: "1"
   proxy_access_log: /dev/stdout
   admin_access_log: /dev/stdout
   admin_gui_access_log: /dev/stdout
@@ -279,9 +299,9 @@ resources: {}
 readinessProbe:
   httpGet:
     path: "/status"
-    port: admin
-    scheme: HTTPS
-  initialDelaySeconds: 30
+    port: metrics
+    scheme: HTTP
+  initialDelaySeconds: 10
   timeoutSeconds: 1
   periodSeconds: 10
   successThreshold: 1
@@ -292,9 +312,9 @@ readinessProbe:
 livenessProbe:
   httpGet:
     path: "/status"
-    port: admin
-    scheme: HTTPS
-  initialDelaySeconds: 30
+    port: metrics
+    scheme: HTTP
+  initialDelaySeconds: 10
   timeoutSeconds: 5
   periodSeconds: 30
   successThreshold: 1
@@ -318,6 +338,14 @@ podAnnotations: {}
 # Kong pod count
 replicaCount: 1
 
+# Kong Pod Disruption Budget
+podDisruptionBudget:
+  enabled: false
+  maxUnavailable: "50%"
+
+podSecurityPolicy:
+  enabled: false
+
 # Kong has a choice of either Postgres or Cassandra as a backend datatstore.
 # This chart allows you to choose either of them with the `database.type`
 # parameter.  Postgres is chosen by default.
@@ -328,26 +356,37 @@ replicaCount: 1
 # will be used by Kong based on the `env.database` parameter.
 # Postgres is enabled by default.
 
-# Cassandra chart configs
-cassandra:
-  enabled: false
 
 # PostgreSQL chart configs
 postgresql:
-  enabled: true
-  postgresqlUsername: kong
-  postgresqlDatabase: kong
-  service:
-    port: 5432
+  enabled: false
+  # postgresqlUsername: kong
+  # postgresqlDatabase: kong
+  # service:
+  #   port: 5432
 
+# Custom Kong plugins can be loaded into Kong by mounting the plugin code
+# into the file-system of Kong container.
+# The plugin code should be present in ConfigMap or Secret inside the same
+# namespace as Kong is being installed.
+# The `name` property refers to the name of the ConfigMap or Secret
+# itself, while the pluginName refers to the name of the plugin as it appears
+# in Kong.
+plugins: {}
+  # configMaps:
+  # - pluginName: rewriter
+  #   name: kong-plugin-rewriter
+  # secrets:
+  # - pluginName: rewriter
+  #   name: kong-plugin-rewriter
 # Kong Ingress Controller's primary purpose is to satisfy Ingress resources
 # created in k8s.  It uses CRDs for more fine grained control over routing and
 # for Kong specific configuration.
 ingressController:
-  enabled: false
+  enabled: true
   image:
     repository: kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller
-    tag: 0.5.0
+    tag: 0.6.0
   replicaCount: 1
   livenessProbe:
     failureThreshold: 3
@@ -355,7 +394,7 @@ ingressController:
       path: "/healthz"
       port: 10254
       scheme: HTTP
-    initialDelaySeconds: 30
+    initialDelaySeconds: 10
     periodSeconds: 10
     successThreshold: 1
     timeoutSeconds: 5
@@ -365,10 +404,11 @@ ingressController:
       path: "/healthz"
       port: 10254
       scheme: HTTP
-      initialDelaySeconds: 30
+    initialDelaySeconds: 10
     periodSeconds: 10
     successThreshold: 1
     timeoutSeconds: 5
+  resources: {}
 
   installCRDs: true
 
@@ -384,3 +424,40 @@ ingressController:
     name:
 
   ingressClass: kong
+
+  podDisruptionBudget:
+    enabled: false
+    maxUnavailable: "50%"
+
+# We pass the dbless (declarative) config over here.
+dblessConfig:
+  # Either Kong's configuration is managed from an existing ConfigMap (with Key: kong.yml)
+  configMap: ""
+  # Or the configuration is passed in full-text below
+  config:
+    _format_version: "1.1"
+    services:
+      # Example configuration
+      # - name: example.com
+      #   url: http://example.com
+      #   routes:
+      #   - name: example
+      #     paths:
+      #     - "/example"
+
+# Inject specified secrets as a volume in Kong Container at path /etc/secrets/{secret-name}/
+# This can be used to override default SSL certificates
+# Example configuration
+# secretVolumes:
+# - kong-proxy-tls
+# - kong-admin-tls
+secretVolumes: []
+
+serviceMonitor:
+  # Specifies whether ServiceMonitor for Prometheus operator should be created
+  enabled: false
+  # interval: 10s
+  # Specifies namespace, where ServiceMonitor should be installed
+  # namespace: monitoring
+  # labels:
+  #   foo: bar

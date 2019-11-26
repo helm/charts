@@ -41,8 +41,9 @@ Parameter | Description | Default
 `serviceAccount.name` | ServiceAccount to be used | ``
 `controller.name` | name of the controller component | `controller`
 `controller.image.repository` | controller container image repository | `quay.io/jcmoraisjr/haproxy-ingress`
-`controller.image.tag` | controller container image tag | `v0.7.1`
+`controller.image.tag` | controller container image tag | `v0.7.2`
 `controller.image.pullPolicy` | controller container image pullPolicy | `IfNotPresent`
+`controller.imagePullSecrets` | controller image pull secrets | `[]`
 `controller.initContainers` | extra containers that can initialize the haproxy-ingress-controller | `[]`
 `controller.extraArgs` | extra command line arguments for the haproxy-ingress-controller | `{}`
 `controller.extraEnv` | extra environment variables for the haproxy-ingress-controller | `{}`
@@ -102,8 +103,8 @@ Parameter | Description | Default
 `controller.service.externalIPs` | list of IP addresses at which the controller services are available | `[]`
 `controller.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `controller.service.loadBalancerSourceRanges` |  | `[]`
-`controller.service.httpPorts` | The http ports to open, that map to the Ingress' port 80. Each entry specifies a `port` and an optional `nodePort`. | `[ port: 80 ]`
-`controller.service.httpsPorts` | The https ports to open, that map to the Ingress' port 443. Each entry specifies a `port` and an optional `nodePort`. | `[ port: 443 ]`
+`controller.service.httpPorts` | The http ports to open, that map to the Ingress' port 80. Each entry specifies a `port`, `targetPort` and an optional `nodePort`. | `[ port: 80, targetPort: http ]`
+`controller.service.httpsPorts` | The https ports to open, that map to the Ingress' port 443. Each entry specifies a `port`, `targetPort` and an optional `nodePort`. | `[ port: 443 , targetPort: https]`
 `controller.service.type` | type of controller service to create | `LoadBalancer`
 `controller.stats.enabled` | whether to enable exporting stats |  `false`
 `controller.stats.port` | The port number used haproxy-ingress-controller for haproxy statistics | `1936`

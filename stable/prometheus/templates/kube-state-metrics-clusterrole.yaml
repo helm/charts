@@ -6,6 +6,16 @@ metadata:
     {{- include "prometheus.kubeStateMetrics.labels" . | nindent 4 }}
   name: {{ template "prometheus.kubeStateMetrics.fullname" . }}
 rules:
+{{- if .Values.podSecurityPolicy.enabled }}
+  - apiGroups:
+    - extensions
+    resources:
+    - podsecuritypolicies
+    verbs:
+    - use
+    resourceNames:
+    - {{ template "prometheus.kubeStateMetrics.fullname" . }}
+{{- end }}
   - apiGroups:
       - ""
     resources:

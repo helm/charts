@@ -1,15 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-{{- if or .Values.service.annotations (and .Values.prometheus.exporter.enabled (not .Values.prometheus.operator.enabled)) }}
-  annotations:
-{{- end }}
 {{- if .Values.service.annotations }}
+  annotations:
 {{ toYaml .Values.service.annotations | indent 4 }}
-{{- end }}
-{{- if and .Values.prometheus.exporter.enabled (not .Values.prometheus.operator.enabled) }}
-    prometheus.io/scrape: "true"
-    prometheus.io/port: {{ .Values.prometheus.exporter.port | quote }}
 {{- end }}
   name: {{ template "rabbitmq-ha.fullname" . }}
   namespace: {{ .Release.Namespace }}
@@ -23,7 +17,9 @@ metadata:
 {{- end }}
 spec:
 {{- if ne .Values.service.type "NodePort" }}
+{{- if and (eq .Values.service.type "LoadBalancer") (ne .Values.service.clusterIP "None") }}
   clusterIP: "{{ .Values.service.clusterIP }}"
+{{- end }}
 {{- end }}
 {{- if .Values.service.externalIPs }}
   externalIPs:
@@ -40,17 +36,23 @@ spec:
     - name: http
       protocol: TCP
       port: {{ .Values.rabbitmqManagerPort }}
+      {{- if eq .Values.service.type "NodePort" "LoadBalancer" }}
       nodePort: {{ .Values.service.managerNodePort }}
+      {{- end }}
       targetPort: http
     - name: amqp
       protocol: TCP
       port: {{ .Values.rabbitmqNodePort }}
+      {{- if eq .Values.service.type "NodePort" "LoadBalancer" }}
       nodePort: {{ .Values.service.amqpNodePort }}
+      {{- end }}
       targetPort: amqp
     - name: epmd
       protocol: TCP
       port: {{ .Values.rabbitmqEpmdPort }}
+      {{- if eq .Values.service.type "NodePort" "LoadBalancer" }}
       nodePort: {{ .Values.service.epmdNodePort }}
+      {{- end }}
       targetPort: epmd
     {{- if .Values.rabbitmqSTOMPPlugin.enabled }}
     - name: stomp-tcp
@@ -96,6 +98,15 @@ spec:
       port: {{ .Values.prometheus.exporter.port }}
       targetPort: exporter
     {{ end }}
+    {{- if .Values.rabbitmqPrometheusPlugin.enabled }}
+    - name: metrics
+      protocol: TCP
+      {{- if eq .Values.service.type "NodePort" "LoadBalancer" }}
+      nodePort: {{ .Values.rabbitmqPrometheusPlugin.nodePort }}
+      {{- end }}
+      port: {{ .Values.rabbitmqPrometheusPlugin.port }}
+      targetPort: metrics
+    {{- end }}
   selector:
     app: {{ template "rabbitmq-ha.name" . }}
     release: {{ .Release.Name }}

@@ -17,7 +17,7 @@ cluster using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
 
-- Kubernetes 1.8+ with Beta APIs enabled
+- Kubernetes 1.10+
 
 ## Installing the Chart
 
@@ -38,6 +38,14 @@ $ helm delete --purge my-release
 ```
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
+## Upgrading an existing Release to a new major version
+
+A major chart version change (like v1.2.3 -> v2.0.0) indicates that there is an incompatible breaking change needing manual actions.
+
+### To 2.0.0
+
+Some kubernetes apis used from 1.x have been deprecated. You need to update your claster to kubernetes 1.10+ to support new definitions used in 2.x.
+
 ## Configuration
 
 The following table lists the configurable parameters of the Elasticsearch-Exporter chart and their default values.
@@ -47,7 +55,7 @@ Parameter | Description | Default
 `replicaCount` | desired number of pods | `1`
 `restartPolicy` | container restart policy | `Always`
 `image.repository` | container image repository | `justwatch/elasticsearch_exporter`
-`image.tag` | container image tag | `1.0.2`
+`image.tag` | container image tag | `1.1.0`
 `image.pullPolicy` | container image pull policy | `IfNotPresent`
 `image.pullSecret` | container image pull secret | `""`
 `resources` | resource requests & limits | `{}`
@@ -55,20 +63,33 @@ Parameter | Description | Default
 `nodeSelector` | Node labels for pod assignment | `{}`
 `tolerations` | Node tolerations for pod assignment | `{}`
 `podAnnotations` | Pod annotations | `{}` |
+`podSecurityPolicies.enabled` | Enable/disable PodSecurityPolicy and associated Role/Rolebinding creation | `false`
+`serviceAccount.create` | Create a ServiceAccount for the pod | `false`
+`serviceAccount.name` | Name of a ServiceAccount to use that is not handled by this chart | `default`
 `service.type` | type of service to create | `ClusterIP`
 `service.httpPort` | port for the http service | `9108`
 `service.metricsPort.name` | name for the http service | `http`
 `service.annotations` | Annotations on the http service | `{}`
 `service.labels` | Additional labels for the service definition | `{}`
 `env` | Extra environment variables passed to pod | `{}`
+`secretMounts` |  list of secrets and their paths to mount inside the pod | `[]`
+`affinity` | Affinity rules | `{}`
 `es.uri` | address of the Elasticsearch node to connect to | `localhost:9200`
 `es.all` | if `true`, query stats for all nodes in the cluster, rather than just the node we connect to | `true`
 `es.indices` | if true, query stats for all indices in the cluster | `true`
+`es.indices_settings` | if true, query settings stats for all indices in the cluster | `true`
+`es.shards` | if true, query stats for shards in the cluster | `true`
+`es.cluster_settings` | if true, query stats for cluster settings | `true`
+`es.snapshots` | if true, query stats for snapshots in the cluster | `true`
 `es.timeout` | timeout for trying to get stats from Elasticsearch | `30s`
-`es.ssl.enabled` | If true, a secure connection to E cluster is used | `false`
-`es.ssl.client.ca.pem` | PEM that contains trusted CAs used for setting up secure Elasticsearch connection |
+`es.ssl.enabled` | If true, a secure connection to Elasticsearch cluster is used | `false`
+`es.ssl.useExistingSecrets` | If true, certs from secretMounts will be used | `false`
+`es.ssl.ca.pem` | PEM that contains trusted CAs used for setting up secure Elasticsearch connection |
+`es.ssl.ca.path` | Path of ca pem file which should match a secretMount path |
 `es.ssl.client.pem` | PEM that contains the client cert to connect to Elasticsearch |
+`es.ssl.client.pemPath` | Path of client pem file which should match a secretMount path |
 `es.ssl.client.key` | Private key for client auth when connecting to Elasticsearch |
+`es.ssl.client.keyPath` | Path of client key file which should match a secretMount path |
 `web.path` | path under which to expose metrics | `/metrics`
 `serviceMonitor.enabled` | If true, a ServiceMonitor CRD is created for a prometheus operator | `false`
 `serviceMonitor.namespace` | If set, the ServiceMonitor will be installed in a different namespace  | `""`

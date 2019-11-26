@@ -8,7 +8,7 @@ restartPolicy: Always
 
 image:
   repository: justwatch/elasticsearch_exporter
-  tag: 1.0.2
+  tag: 1.1.0
   pullPolicy: IfNotPresent
   pullSecret: ""
 
@@ -36,6 +36,8 @@ tolerations: {}
 
 podAnnotations: {}
 
+affinity: {}
+
 service:
   type: ClusterIP
   httpPort: 9108
@@ -50,6 +52,13 @@ service:
 ##   KEY_1: value1
 ##   KEY_2: value2
 # env:
+
+# A list of secrets and their paths to mount inside the pod
+# This is useful for mounting certificates for security
+secretMounts: []
+#  - name: elastic-certs
+#    secretName: elastic-certs
+#    path: /ssl
 
 es:
   ## Address (host and port) of the Elasticsearch node we should connect to.
@@ -68,6 +77,22 @@ es:
   ##
   indices: true
 
+  ## If true, query settings stats for all indices in the cluster.
+  ##
+  indices_settings: true
+
+  ## If true, query stats for shards in the cluster.
+  ##
+  shards: true
+
+  ## If true, query stats for snapshots in the cluster.
+  ##
+  snapshots: true
+
+  ## If true, query stats for cluster settings.
+  ##
+  cluster_settings: false
+
   ## Timeout for trying to get stats from Elasticsearch. (ex: 20s)
   ##
   timeout: 30s
@@ -83,22 +108,33 @@ es:
     ##
     enabled: false
 
+    ## If true, certs from secretMounts will be need to be referenced instead of certs below
+    ##
+    useExistingSecrets: false
+
     ca:
 
       ## PEM that contains trusted CAs used for setting up secure Elasticsearch connection
       ##
       # pem:
 
+      # Path of ca pem file which should match a secretMount path
+      # path: /ssl/ca.pem
     client:
 
       ## PEM that contains the client cert to connect to Elasticsearch.
       ##
       # pem:
 
+      # Path of client pem file which should match a secretMount path
+      # pemPath: /ssl/client.pem
+
       ## Private key for client auth when connecting to Elasticsearch
       ##
       # key:
 
+      # Path of client key file which should match a secretMount path
+      # keyPath: /ssl/client.key
 web:
   ## Path under which to expose metrics.
   ##
@@ -145,3 +181,15 @@ prometheusRule:
     #   annotations:
     #     description: The heap usage is over 90% for 15m
     #     summary: ElasticSearch node {{$labels.node}} heap usage is high
+
+# Create a service account
+# To use a service account not handled by the chart, set the name here
+# and set create to false
+serviceAccount:
+  create: false
+  name: default
+
+# Creates a PodSecurityPolicy and the role/rolebinding
+# allowing the serviceaccount to use it
+podSecurityPolicies:
+  enabled: false

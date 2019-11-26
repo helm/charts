@@ -70,6 +70,15 @@ server:
   #     cpu: 100m
   #     memory: 1024Mi
 
+  # Sidecar containers that runs alongside GoCD server.
+  # https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/
+  sidecarContainers: []
+  # - name: sidecar-container
+  #   image: sidecar-image:latest
+  #   volumeMounts:
+  #     - name: goserver-vol
+  #     mountPath: /godata
+
   # specify init containers, e.g. to prepopulate home directories etc
   initContainers: []
   #  - name: download-kubectl
@@ -95,6 +104,10 @@ server:
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   affinity: {}
 
+  ## Tolerations for allowing pods to be scheduled on nodes with matching taints
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: {}
+
   healthCheck:
     # server.healthCheck.initialDelaySeconds is the initial delays in seconds to start the health checks
     initialDelaySeconds: 90
@@ -109,7 +122,7 @@ server:
     #  server.env.extraEnvVars is the list of environment variables passed to GoCD Server
     extraEnvVars:
       - name: GOCD_PLUGIN_INSTALL_kubernetes-elastic-agents
-        value: https://github.com/gocd/kubernetes-elastic-agents/releases/download/v3.0.0-156/kubernetes-elastic-agent-3.0.0-156.jar
+        value: https://github.com/gocd/kubernetes-elastic-agents/releases/download/v3.4.0-196/kubernetes-elastic-agent-3.4.0-196.jar
       - name: GOCD_PLUGIN_INSTALL_docker-registry-artifact-plugin
         value: https://github.com/gocd/docker-registry-artifact-plugin/releases/download/v1.1.0-104/docker-registry-artifact-plugin-1.1.0-104.jar
   service:
@@ -238,10 +251,14 @@ agent:
     fsGroup: 0
   # agent.replicaCount is the GoCD Agent replicas Count. Specify the number of GoCD agents to run
   replicaCount: 0
-  # agent.preStop - array of commands to use in the agent pre-stop lifecycle hook
+  # agent.preStop - array of command and arguments to run in the agent pre-stop lifecycle hook
   # preStop:
   #  - "/bin/bash"
   #  - "/disable_and_stop.sh"
+  # agent.postStart - array of command and arguments to run in agent post-start lifecycle hook
+  # postStart:
+  #  - "/bin/bash"
+  #  - "/agent_startup.sh"
   # agent.deployStrategy is the strategy explained in detail at https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
   # agent.terminationGracePeriodSeconds is the optional duration in seconds the gocd agent pods need to terminate gracefully.
   # Note: SIGTERM is issued immediately after the pod deletion request is sent. If the pod doesn't terminate, k8s waits for terminationGracePeriodSeconds before issuing SIGKILL.
@@ -382,3 +399,7 @@ agent:
   ## Affinity for assigning pods to specific nodes
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   affinity: {}
+
+  ## Tolerations for allowing pods to be scheduled on nodes with matching taints
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: {}

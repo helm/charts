@@ -1,14 +1,52 @@
+global:
+  ## Reference to one or more secrets to be used when pulling images
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  imagePullSecrets: []
+  # - name: "image-pull-secret"
+
+kubernetes:
+  host: https://kubernetes.default
+
 reloader:
+  isOpenshift: false
+  ignoreSecrets: false
+  ignoreConfigMaps: false
   watchGlobally: true
+  # Set to true if you have a pod security policy that enforces readOnlyRootFilesystem
+  readOnlyRootFileSystem: false
   matchLabels: {}
   deployment:
+    nodeSelector:
+    # cloud.google.com/gke-nodepool: default-pool
+
+    # An affinity stanza to be applied to the Deployment.
+    # Example:
+    #   affinity:
+    #     nodeAffinity:
+    #       requiredDuringSchedulingIgnoredDuringExecution:
+    #         nodeSelectorTerms:
+    #         - matchExpressions:
+    #           - key: "node-role.kubernetes.io/infra-worker"
+    #             operator: "Exists"
+    affinity: {}
+
+    # A list of tolerations to be applied to the Deployment.
+    # Example:
+    #   tolerations:
+    #   - key: "node-role.kubernetes.io/infra-worker"
+    #     operator: "Exists"
+    #     effect: "NoSchedule"
+    tolerations: []
+
     annotations: {}
     labels:
       provider: stakater
       group: com.stakater.platform
+      version: v0.0.41
     image:
       name: stakater/reloader
-      tag: "v0.0.29"
+      tag: "v0.0.41"
       pullPolicy: IfNotPresent
     # Support for extra environment variables.
     env:
@@ -18,6 +56,21 @@ reloader:
       secret:
       # field supports Key value pair as environment variables. It gets the values from other fields of pod.
       field:
+
+    # Specify resource requests/limits for the deployment.
+    # Example:
+    # resources:
+    #   limits:
+    #     cpu: "100m"
+    #     memory: "512Mi"
+    #   requests:
+    #     cpu: "10m"
+    #     memory: "128Mi"
+    resources: {}
+    # https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+    securityContext: {}
+    # runAsUser: 1000
+
   rbac:
     enabled: true
     labels: {}
@@ -28,7 +81,7 @@ reloader:
     labels: {}
     # The name of the ServiceAccount to use.
     # If not set and create is true, a name is generated using the fullname template
-    name: reloader
+    name:
   # Optional flags to pass to the Reloader entrypoint
   # Example:
   #   custom_annotations:

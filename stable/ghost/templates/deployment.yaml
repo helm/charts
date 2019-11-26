@@ -1,5 +1,5 @@
 {{- if include "ghost.host" . -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "ghost.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "ghost.fullname" . }}
@@ -171,5 +171,9 @@ spec:
           claimName: {{ template "ghost.fullname" . }}
       {{- else }}
         emptyDir: {}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
       {{- end }}
 {{- end -}}

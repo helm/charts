@@ -1,7 +1,11 @@
 {{- if .Values.ingress.enabled -}}
 {{- $serviceName := include "kibana.fullname" . -}}
 {{- $servicePort := .Values.service.externalPort -}}
+{{- if semverCompare ">=1.14" .Capabilities.KubeVersion.GitVersion }}
+apiVersion: networking.k8s.io/v1beta1
+{{ else }}
 apiVersion: extensions/v1beta1
+{{- end }}
 kind: Ingress
 metadata:
   labels:

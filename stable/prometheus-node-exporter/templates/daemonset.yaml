@@ -1,7 +1,8 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ template "prometheus-node-exporter.fullname" . }}
+  namespace: {{ template "prometheus-node-exporter.namespace" . }}
   labels: {{ include "prometheus-node-exporter.labels" . | indent 4 }}
 spec:
   selector:
@@ -68,6 +69,12 @@ spec:
             {{- end }}
             {{- end }}
             {{- end }}
+            {{- if .Values.configmaps }}
+            {{- range $_, $mount := .Values.configmaps }}
+            - name: {{ $mount.name }}
+              mountPath: {{ $mount.mountPath }}
+            {{- end }}
+            {{- end }}
       hostNetwork: {{ .Values.hostNetwork }}
       hostPID: true
 {{- if .Values.affinity }}
@@ -94,5 +101,12 @@ spec:
         - name: {{ $mount.name }}
           hostPath:
             path: {{ $mount.hostPath }}
+        {{- end }}
+        {{- end }}
+        {{- if .Values.configmaps }}
+        {{- range $_, $mount := .Values.configmaps }}
+        - name: {{ $mount.name }}
+          configMap:
+            name: {{ $mount.name }}
         {{- end }}
         {{- end }}

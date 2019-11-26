@@ -1,3 +1,4 @@
+{{- if .Values.server.enabled -}}
 {{- if (empty .Values.server.configMapOverrideName) -}}
 apiVersion: v1
 kind: ConfigMap
@@ -13,13 +14,25 @@ data:
     global:
 {{ $root.Values.server.global | toYaml | trimSuffix "\n" | indent 6 }}
 {{- end }}
-{{ toYaml $value | default "{}" | indent 4 }}
+{{- if and (eq $key "alerts") (empty $value.groups) }}
+    groups:
+{{- range $ruleKey, $ruleValue := $value }}
+    - name: {{ $ruleKey -}}.rules
+      rules:
+{{ $ruleValue | toYaml | trimSuffix "\n" | indent 6 }}
+{{- end }}
+{{ else }}
+{{ toYaml $value | indent 4 }}
+{{- end }}
 {{- if eq $key "prometheus.yml" -}}
 {{- if $root.Values.extraScrapeConfigs }}
 {{ tpl $root.Values.extraScrapeConfigs $root | indent 4 }}
 {{- end -}}
 {{- if $root.Values.alertmanager.enabled }}
     alerting:
+{{- if $root.Values.alertRelabelConfigs }}
+{{ $root.Values.alertRelabelConfigs | toYaml  | trimSuffix "\n" | indent 6 }}
+{{- end }}
       alertmanagers:
       - kubernetes_sd_configs:
           - role: pod
@@ -42,6 +55,7 @@ data:
         - source_labels: [__meta_kubernetes_pod_container_port_number]
           regex:
           action: drop
+{{- end -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}

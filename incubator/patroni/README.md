@@ -3,7 +3,7 @@
 This directory contains a Kubernetes chart to deploy a five node [Patroni](https://github.com/zalando/patroni/) cluster using a [Spilo](https://github.com/zalando/spilo) and a StatefulSet.
 
 ## Prerequisites Details
-* Kubernetes 1.5+
+* Kubernetes 1.9+
 * PV support on the underlying infrastructure
 
 ## StatefulSet Details
@@ -94,6 +94,7 @@ The following table lists the configurable parameters of the patroni chart and t
 | `tolerations`                     | List of node taints to tolerate             | `[]`                                                |
 | `affinityTemplate`                | A template string to use to generate the affinity settings | Anti-affinity preferred on hostname  |
 | `affinity`                        | Affinity settings. Overrides `affinityTemplate` if set. | `{}`                                    |
+| `schedulerName`                   | Alternate scheduler name                    | `nil`                                               |
 | `persistentVolume.accessModes`    | Persistent Volume access modes              | `[ReadWriteOnce]`                                   |
 | `persistentVolume.annotations`    | Annotations for Persistent Volume Claim`    | `{}`                                                |
 | `persistentVolume.mountPath`      | Persistent Volume mount root path           | `/home/postgres/pgdata`                             |

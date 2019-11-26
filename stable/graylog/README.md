@@ -86,7 +86,7 @@ Set the following values in `values.yaml`
 
 ```yaml
 graylog:
-  tolerations: 
+  tolerations:
     - key: graylog
       value: "true"
       operator: "Equal"
@@ -94,11 +94,11 @@ graylog:
 
 ## Configuration
 
-The following table lists the configurable parameters of the Cassandra chart and their default values.
+The following table lists the configurable parameters of the Graylog chart and their default values.
 
 | Parameter                               | Description                                                                                                                                           | Default                               |
 |-----------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------|
-| `graylog.image`                         | `graylog` image repository                                                                                                                            | `graylog/graylog:2.4`                 |
+| `graylog.image.repository`              | `graylog` image repository   | `graylog/graylog:3.1.2-1`                 |
 | `graylog.imagePullPolicy`               | Image pull policy                                                                                                                                     | `IfNotPresent`                        |
 | `graylog.replicas`                      | The number of Graylog instances in the cluster. The chart will automatic create assign master to one of replicas                                      | `2`                                   |
 | `graylog.resources`                     | CPU/Memory resource requests/limits                                                                                                                   | Memory: `1024Mi`, CPU: `500m`         |
@@ -114,7 +114,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `graylog.service.master.annotations`    | Graylog Master Service annotations                                                                                                                    | `{}`                                  |
 | `graylog.podAnnotations`                | Kubernetes Pod annotations                                                                                                                            | `{}`                                  |
 | `graylog.terminationGracePeriodSeconds` | Pod termination grace period                                                                                                                          | `120`                                 |
-| `graylog.updateStrategy`                | Update Strategy of the StatefulSet                                                                                                                    | `OnDelete`                            |
+| `graylog.updateStrategy`                | Update Strategy of the StatefulSet                                                                                                                    | `RollingUpdate`                           |
 | `graylog.persistence.enabled`           | Use a PVC to persist data                                                                                                                             | `true`                                |
 | `graylog.persistence.storageClass`      | Storage class of backing PVC                                                                                                                          | `nil` (uses storage class annotation) |
 | `graylog.persistence.accessMode`        | Use volume as ReadOnly or ReadWrite                                                                                                                   | `ReadWriteOnce`                       |
@@ -124,6 +124,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `graylog.ingress.annotations`           | Graylog Ingress annotations                                                                                                                           | `{}`                                  |
 | `graylog.ingress.hosts`                 | Graylog Ingress host names                                                                                                                            | `[]`                                  |
 | `graylog.ingress.tls`                   | Graylog Ingress TLS configuration (YAML)                                                                                                              | `[]`                                  |
+| `graylog.ingress.extraPaths`            | Ingress extra paths to prepend to every host configuration. Useful when configuring [custom actions with AWS ALB Ingress Controller](https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/ingress/annotation/#actions). | `[]`                                  |
 | `graylog.input`                         | Graylog Input configuration (YAML) Sees #Input section for detail                                                                                     | `{}`                                  |
 | `graylog.metrics.enabled`               | If true, add Prometheus annotations to pods                                                                                                           | `false`                               |
 | `graylog.geoip.enabled`                 | If true, Maxmind Geoip Lite will be installed to ${GRAYLOG_HOME}/etc/GeoLite2-City.mmdb                                                               | `false`                               |
@@ -131,6 +132,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `graylog.rootUsername`                  | Graylog root user name                                                                                                                                | `admin`                               |
 | `graylog.rootPassword`                  | Graylog root password. If not set, random 10-character alphanumeric string                                                                            | ``                                    |
 | `graylog.rootEmail`                     | Graylog root email.                                                                                                                                   | ``                                    |
+| `graylog.existingRootSecret`            | Graylog existing root secret                                                                                                                          | ``                                    |
 | `graylog.rootTimezone`                  | Graylog root timezone.                                                                                                                                | `UTC`                                 |
 | `graylog.elasticsearch.hosts`           | Graylog Elasticsearch host name. You need to specific where data will be stored.                                                                      | ``                                    |
 | `graylog.mongodb.uri`                   | Graylog MongoDB connection string. You need to specific where data will be stored.                                                                    | ``                                    |
@@ -138,8 +140,9 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `graylog.config`                        | Add additional server configuration to `graylog.conf` file.                                                                                           | ``                                    |
 | `graylog.serverFiles`                   | Add additional server files on /etc/graylog/server. This is useful for enable TLS on input                                                            | `{}`                                  |
 | `graylog.journal.deleteBeforeStart`     | Delete all journal files before start Graylog                                                                                                         | `false`                               |
+| `graylog.init.resources`                | Configure resource requests and limits for the Graylog StatefulSet initContainer                                                                      | `{}`                                  |
 | `graylog.provisioner.enabled`           | Enable optional Job to run an arbitrary Bash script                                                                                                   | `false`                               |
-| `graylog.provisioner.script             | The contents of the provisioner Bash script                                                                                                           | ``                                    |
+| `graylog.provisioner.script`            | The contents of the provisioner Bash script                                                                                                           | ``                                    |
 | `rbac.create`                           | If true, create & use RBAC resources                                                                                                                  | `true`                                |
 | `rbac.serviceAccount.create`            | If true, create the Graylog service account                                                                                                           | `true`                                |
 | `rbac.serviceAccount.name`              | Name of the server service account to use or create                                                                                                   | `{{ graylog.fullname }}`              |

@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "orangehrm.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "orangehrm.fullname" . }}
@@ -139,4 +139,8 @@ spec:
           claimName: {{ template "orangehrm.fullname" . }}-orangehrm
       {{- else }}
         emptyDir: {}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
       {{- end }}

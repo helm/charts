@@ -90,7 +90,7 @@ The following table lists the configurable parameters of the Kubeless chart and 
 | `kafkaTrigger.env.kafkaBrokers`                                   | Kafka Brokers Environment Variable         | `localhost:9092`                          |
 | `kafkaTrigger.deployment.ui.image.repository`                     | Kubeless Kafka Trigger image               | `bitnami/kubeless-ui`                     |
 | `kafkaTrigger.deployment.ui.image.pullPolicy`                     | Kubeless Kafka Trigger image pull policy   | `IfNotPresent`                            |
-| `kafkaTrigger.deployment.ui.image.tag`                            | Kubeless Kafka Trigger image tag           | `v1.0.1`                          |
+| `kafkaTrigger.deployment.ui.image.tag`                            | Kubeless Kafka Trigger image tag           | `v1.0.1`                                  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

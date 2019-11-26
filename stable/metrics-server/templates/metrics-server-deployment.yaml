@@ -48,19 +48,19 @@ spec:
             - --logtostderr
             - --secure-port=8443
             {{- range .Values.args }}
-            - {{ . | quote }}
+            - {{ . }}
             {{- end }}
           ports:
           - containerPort: 8443
             name: https
           livenessProbe:
-            {{- toYaml .Values.livenessProbe | nindent 12 }}
+            {{- toYaml .Values.livenessProbe | trim | nindent 12 }}
           readinessProbe:
-            {{- toYaml .Values.readinessProbe | nindent 12 }}
+            {{- toYaml .Values.readinessProbe | trim | nindent 12 }}
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- toYaml .Values.resources | trim | nindent 12 }}
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
+            {{- toYaml .Values.securityContext | trim | nindent 12 }}
           volumeMounts:
           - name: tmp
             mountPath: /tmp
@@ -68,11 +68,11 @@ spec:
           {{- toYaml . | nindent 10 }}
           {{- end }}
       nodeSelector:
-        {{- toYaml .Values.nodeSelector | nindent 8 }}
+        {{- toYaml .Values.nodeSelector | trim | nindent 8 }}
       affinity:
-        {{- toYaml .Values.affinity | nindent 8 }}
+        {{- toYaml .Values.affinity | trim | nindent 8 }}
       tolerations:
-        {{- toYaml .Values.tolerations | nindent 8 }}
+        {{- toYaml .Values.tolerations | trim | nindent 8 }}
       volumes:
       - name: tmp
         emptyDir: {}

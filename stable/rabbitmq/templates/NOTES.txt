@@ -7,7 +7,7 @@ Credentials:
     echo "Password      : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq.fullname" . }} -o jsonpath="{.data.rabbitmq-password}" | base64 --decode)"
     echo "ErLang Cookie : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq.fullname" . }} -o jsonpath="{.data.rabbitmq-erlang-cookie}" | base64 --decode)"
 
-RabbitMQ can be accessed within the cluster on port {{ .Values.service.nodePort }} at {{ template "rabbitmq.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+RabbitMQ can be accessed within the cluster on port {{ .Values.service.nodePort }} at {{ template "rabbitmq.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.rabbitmq.clustering.k8s_domain }}
 
 To access for outside the cluster, perform the following steps:
 
@@ -57,6 +57,19 @@ To Access the RabbitMQ Management interface:
     echo "URL : http://127.0.0.1:{{ .Values.service.managerPort }}/"
 
 {{- end }}
+
+{{- if .Values.metrics.enabled }}
+
+To access the RabbitMQ Prometheus metrics, get the RabbitMQ Prometheus exporter URL by running:
+
+    echo "Prometheus Metrics URL: http://127.0.0.1:{{ .Values.metrics.port }}/metrics"
+    kubectl port-forward --namespace {{ .Release.Namespace }} {{ template "rabbitmq.fullname" . }}-0 {{ .Values.metrics.port }}:{{ .Values.metrics.port }}
+
+Then, open the URL obtained in a browser.
+
+{{- end }}
+
+{{- include "rabbitmq.validateValues" . -}}
 
 {{- if and (contains "bitnami/" .Values.image.repository) (not (.Values.image.tag | toString | regexFind "-r\\d+$|sha256:")) }}
 

@@ -1,0 +1,27 @@
+{{- if or (has "receiver" .Values.daemon.args) (not .Values.daemon.args) -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "honeydipper.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "honeydipper.name" . }}
+    helm.sh/chart: {{ include "honeydipper.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  {{- with .Values.drivers.webhook.service.annotations }}
+  annotations: {{ . | toJson }}
+  {{- end }}
+spec:
+  type: {{ .Values.drivers.webhook.service.type }}
+  ports:
+    - port: {{ .Values.drivers.webhook.service.port }}
+      targetPort: {{ .Values.drivers.webhook.service.port }}
+      {{- if .Values.drivers.webhook.service.nodePort }}
+      nodePort: {{ .Values.drivers.webhook.service.nodePort }}
+      {{- end }}
+      protocol: TCP
+      name: webhook
+  selector:
+    app.kubernetes.io/name: {{ include "honeydipper.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end -}}

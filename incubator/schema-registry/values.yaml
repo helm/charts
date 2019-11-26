@@ -42,6 +42,8 @@ servicePort: 8081
 
 ## Provides schema registry service settings
 service:
+  ## Any annotations to add to the service
+  annotations: {}
   ## Any additional labels to add to the service
   labels: {}
 
@@ -132,6 +134,7 @@ external:
   servicePort: 443
   loadBalancerIP: ""
   nodePort: ""
+  annotations: {}
 
 ## Provide JMX Port
 jmx:

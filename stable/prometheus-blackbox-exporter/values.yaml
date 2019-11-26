@@ -1,8 +1,18 @@
 restartPolicy: Always
 
+podDisruptionBudget:
+  enabled: true
+  maxUnavailable: 0
+
+strategy:
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0
+  type: RollingUpdate
+
 image:
   repository: prom/blackbox-exporter
-  tag: v0.14.0
+  tag: v0.15.1
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -11,6 +21,11 @@ image:
   ##
   # pullSecrets:
   #   - myRegistrKeySecretName
+
+## User to run blackbox-exporter container as
+runAsUser: 1000
+readOnlyRootFilesystem: true
+runAsNonRoot: true
 
 nodeSelector: {}
 tolerations: []
@@ -32,6 +47,8 @@ resources: {}
   #   memory: 300Mi
   # requests:
   #   memory: 50Mi
+
+priorityClassName: ""
 
 service:
   annotations: {}
@@ -61,22 +78,17 @@ extraArgs: []
 #  --history.limit=1000
 
 replicas: 1
-## Monitors ConfigMap changes and POSTs to a URL
-## Ref: https://github.com/jimmidyson/configmap-reload
-##
-configmapReload:
-  ## configmap-reload container name
-  ##
-  name: configmap-reload
 
-  ## configmap-reload container image
+serviceMonitor:
+  ## If true, a ServiceMonitor CRD is created for a prometheus operator
+  ## https://github.com/coreos/prometheus-operator
   ##
-  image:
-    repository: jimmidyson/configmap-reload
-    tag: v0.2.2
-    pullPolicy: IfNotPresent
-
-  ## configmap-reload resource requests and limits
-  ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
-  ##
-  resources: {}
+  enabled: false
+  labels: {}
+  interval: 30s
+  scrapeTimeout: 30s
+  module: http_2xx
+  # The URL that blackbox will scrape
+  url: http://example.com/healthz
+  # Optional human readable URL that will appear in Prometheus / AlertManager
+  urlHumanReadable:  # www.changemeoriwillfail.com

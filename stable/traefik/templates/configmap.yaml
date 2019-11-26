@@ -15,6 +15,9 @@ data:
     {{- else }}
     logLevel = {{ .Values.logLevel | default "info" | quote }}
     {{- end }}
+    {{- if .Values.maxIdleConnsPerHost }}
+    maxIdleConnsPerHost = {{ .Values.maxIdleConnsPerHost }}
+    {{- end }}
     {{- if .Values.sendAnonymousUsage }}
     sendAnonymousUsage = true
     {{- end }}
@@ -92,9 +95,23 @@ data:
           {{- if .Values.ssl.sniStrict }}
           sniStrict = true
           {{- end }}
+          {{- if .Values.ssl.mtls }}
+          {{- if .Values.ssl.mtls.enabled }}
+          [entryPoints.https.tls.ClientCA]
+          {{ template "traefik.ssl.mtls.clientCAs" . }}
+          optional = {{ .Values.ssl.mtls.optional }}
+          {{- end }}
+          {{- end }}
           [[entryPoints.https.tls.certificates]]
           CertFile = "/ssl/tls.crt"
           KeyFile = "/ssl/tls.key"
+          {{- if .Values.ssl.extraCerts }}
+          {{- range $i, $cert := .Values.ssl.extraCerts }}
+          [[entryPoints.https.tls.certificates]]
+          CertFile = "{{ $cert.certFile }}"
+          KeyFile = "{{ $cert.keyFile }}"
+          {{- end }}
+          {{- end }}
       {{- end }}
         {{- if .Values.ssl.auth }}
         {{- if .Values.ssl.auth.basic }}
@@ -137,8 +154,12 @@ data:
         {{- end }}
         {{- end }}
       {{- end }}
+      {{- if .Values.metrics.prometheus.enabled }}
+      [entryPoints.prometheus]
+      address = ":9100"
+      {{- end }}
     [ping]
-    entryPoint = "http"
+    entryPoint = "{{ .Values.pingEntryPoint | default "http" }}"
     [kubernetes]
     {{- if .Values.kubernetes}}
       {{- if .Values.kubernetes.endpoint }}
@@ -262,7 +283,7 @@ data:
     KeyType = {{ .Values.acme.keyType | quote }}
     email = {{ .Values.acme.email | quote }}
     {{- if .Values.kvprovider.storeAcme }}
-    storage = "traefik/acme/account"
+    storage = "{{ .Values.kvprovider.acmeStorageLocation }}"
     {{- if .Values.kvprovider.importAcme }}
     storageFile = "/acme/acme.json"
     {{- end }}
@@ -291,7 +312,7 @@ data:
       {{- end }}
     {{- else if eq .Values.acme.challengeType "http-01" }}
       [acme.httpChallenge]
-      entryPoint = "http"
+      entryPoint = {{ .Values.acme.httpChallenge.entrypoint }}
     {{- else if eq .Values.acme.challengeType "tls-alpn-01" }}
       [acme.tlsChallenge]
     {{- end }}
@@ -315,12 +336,12 @@ data:
     {{- end }}
       {{- if .Values.metrics.prometheus.enabled }}
       [metrics.prometheus]
-        entryPoint = "traefik"
+        entryPoint = "prometheus"
         {{- if .Values.metrics.prometheus.buckets }}
         buckets = [
           {{- range $idx, $element := .Values.metrics.prometheus.buckets }}
               {{- if $idx }},{{ end }}
-              {{- printf "%.1f" $element }}
+              {{- printf "%f" $element }}
           {{- end -}}
           ]
         {{- end -}}

@@ -1,7 +1,7 @@
 # Consul Helm Chart
 
 ## Prerequisites Details
-* Kubernetes 1.6+
+* Kubernetes 1.10+
 * PV support on underlying infrastructure
 
 ## StatefulSet Details
@@ -36,6 +36,8 @@ The following table lists the configurable parameters of the consul chart and th
 | `Cpu`                   | container requested cpu               | `100m`                                                     |
 | `DatacenterName`        | Consul Datacenter Name                | `dc1` (The consul default)                                 |
 | `DisableHostNodeId`     | Disable Node Id creation (uses random)| `false`                                                    |
+| `joinPeers`             | Set list of hosts for -retry-join     | `[]`                                                       |
+| `joinWan`               | Set list of hosts for -retry-join-wan | `[]`                                                       |
 | `EncryptGossip`         | Whether or not gossip is encrypted    | `true`                                                     |
 | `GossipKey`             | Gossip-key to use by all members      | `nil`                                                      |
 | `Storage`               | Persistent volume size                | `1Gi`                                                      |
@@ -53,6 +55,7 @@ The following table lists the configurable parameters of the consul chart and th
 | `affinity`              | Consul affinity settings              | `see values.yaml`                                          |
 | `nodeSelector`          | Node labels for pod assignment        | `{}`                                                       |
 | `tolerations`           | Tolerations for pod assignment        | `[]`                                                       |
+| `podAnnotations`        | Annotations for pod                   | `{}`                                                       |
 | `maxUnavailable`        | Pod disruption Budget maxUnavailable  | `1`                                                        |
 | `ui.enabled`            | Enable Consul Web UI                  | `true`                                                     |
 | `uiIngress.enabled`     | Create Ingress for Consul Web UI      | `false`                                                    |
@@ -71,6 +74,8 @@ The following table lists the configurable parameters of the consul chart and th
 | `test.rbac.create`                      | Create rbac for test container                 | `false`                           |
 | `test.rbac.serviceAccountName`          | Name of existed service account for test container    | ``                         |
 | `additionalLabels`      | Add labels to Pod and StatefulSet     | `{}`                                                       |
+| `lifecycle`             | Lifecycle configuration, in YAML, for StatefulSet | `nil`                                          |
+| `forceIpv6`             | force to listen on IPv6 address                                                                    |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

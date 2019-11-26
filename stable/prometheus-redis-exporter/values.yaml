@@ -13,7 +13,7 @@ serviceAccount:
 replicaCount: 1
 image:
   repository: oliver006/redis_exporter
-  tag: v1.0.3
+  tag: v1.0.4
   pullPolicy: IfNotPresent
 extraArgs: {}
 # Additional Environment variables
@@ -51,6 +51,8 @@ serviceMonitor:
   # labels:
   # Set timeout for scrape
   # timeout: 10s
+  # Set of labels to transfer on the Kubernetes Service onto the target.
+  # targetLabels: []
 
 # Used to mount a LUA-Script via config map and use it for metrics-collection
 # script:

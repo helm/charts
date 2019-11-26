@@ -1,5 +1,5 @@
 {{- if eq (include "drone.providerOK" .) "true" }}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "drone.fullname" . }}-server
@@ -10,6 +10,11 @@ metadata:
     heritage: "{{ .Release.Service }}"
     component: server
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "drone.name" . }}
+      release: "{{ .Release.Name }}"
+      component: server
   replicas: 1
   template:
     metadata:
@@ -82,6 +87,11 @@ spec:
               secretKeyRef:
                 name: {{ template "drone.fullname" . }}
                 key: secret
+          {{- range $key, $value := .Values.server.env }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
+          {{ template "drone.providerEnvs" . }}
           {{- range $secret, $keys := .Values.server.envSecrets }}
           {{- range $keys }}
           - name: {{ . }}
@@ -91,11 +101,6 @@ spec:
                 key: {{ . | quote }}
           {{- end }}
           {{- end }}
-          {{- range $key, $value := .Values.server.env }}
-          - name: {{ $key }}
-            value: {{ $value | quote }}
-          {{- end }}
-          {{ template "drone.providerEnvs" . }}
         ports:
         - name: http
           containerPort: 80

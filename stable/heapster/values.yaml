@@ -2,8 +2,8 @@
 ##
 replicaCount: 1
 image:
-  repository: k8s.gcr.io/heapster
-  tag: v1.5.2
+  repository: k8s.gcr.io/heapster-amd64
+  tag: v1.5.4
   pullPolicy: IfNotPresent
 ## Here labels can be added to the heapster deployment
 # labels:

@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "moodle.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "moodle.fullname" . }}
