@@ -318,3 +318,5 @@ Error: UPGRADE FAILED: Service "?????-controller" is invalid: spec.clusterIP: In
 ```
 
 Detail of how and why are in [this issue](https://github.com/helm/charts/pull/13646) but to resolve this you can set `xxxx.service.omitClusterIP` to `true` where `xxxx` is the service referenced in the error.
+
+As of version `1.26.0` of this chart, by simply not providing any clusterIP, no `invalid: spec.clusterIP: Invalid value: "": field is immutable` will happen since `clusterIP: ""` will not be rendered. If you do wish to provide a clusterIP value in your values file, ensure that it is quoted.

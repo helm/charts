@@ -227,7 +227,7 @@ controller:
 
     annotations: {}
     labels: {}
-    omitClusterIP: false
+    omitClusterIP: false # Deprecated, instead simply do not provide a clusterIP value
     # clusterIP: ""
 
     ## List of IP addresses at which the controller services are available
@@ -317,7 +317,7 @@ controller:
 
     service:
       annotations: {}
-      omitClusterIP: false
+      omitClusterIP: false # Deprecated, instead simply do not provide a clusterIP value
       # clusterIP: ""
       externalIPs: []
       loadBalancerIP: ""
@@ -347,7 +347,7 @@ controller:
       # prometheus.io/scrape: "true"
       # prometheus.io/port: "10254"
 
-      omitClusterIP: false
+      omitClusterIP: false # Deprecated, instead simply do not provide a clusterIP value
       # clusterIP: ""
 
       ## List of IP addresses at which the stats-exporter service is available
@@ -490,7 +490,7 @@ defaultBackend:
 
   service:
     annotations: {}
-    omitClusterIP: false
+    omitClusterIP: false # Deprecated, instead simply do not provide a clusterIP value
     # clusterIP: ""
 
     ## List of IP addresses at which the default backend service is available
