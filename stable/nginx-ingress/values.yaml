@@ -350,7 +350,7 @@ controller:
       # prometheus.io/port: "10254"
 
       ## Deprecated, instead simply do not provide a clusterIP value
-      omitClusterIP: false 
+      omitClusterIP: false
       # clusterIP: ""
 
       ## List of IP addresses at which the stats-exporter service is available
@@ -494,7 +494,7 @@ defaultBackend:
   service:
     annotations: {}
     ## Deprecated, instead simply do not provide a clusterIP value
-    omitClusterIP: false 
+    omitClusterIP: false
     # clusterIP: ""
 
     ## List of IP addresses at which the default backend service is available
