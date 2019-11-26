@@ -1,6 +1,6 @@
 image:
   name: redis
-  tag: 5.0.6
+  tag: 5.0.6-alpine
   pullPolicy: IfNotPresent
 ## Shards number for redis cluster, must be equal or greater than 3
 shards: 3

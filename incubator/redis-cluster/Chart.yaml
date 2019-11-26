@@ -9,7 +9,7 @@ keywords:
 - cluster
 version: 0.0.1
 appVersion: 5.0.6
-description: Highly available Kubernetes implementation of Redis Cluster
+description: Distributed highly available Kubernetes implementation of Redis Cluster
 icon: https://upload.wikimedia.org/wikipedia/en/thumb/6/6b/Redis_Logo.svg/1200px-Redis_Logo.svg.png
 maintainers:
 - email: zhaoshan@inspur.com
