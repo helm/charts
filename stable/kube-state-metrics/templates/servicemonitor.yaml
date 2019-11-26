@@ -3,6 +3,9 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ template "kube-state-metrics.fullname" . }}
+  {{- if .Values.prometheus.monitor.namespace }}
+  namespace: {{ .Values.prometheus.monitor.namespace }}
+  {{- end }}
   labels:
     app.kubernetes.io/name: {{ template "kube-state-metrics.name" . }}
     helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -21,4 +24,7 @@ spec:
       {{- if .Values.prometheus.monitor.honorLabels }}
       honorLabels: true
       {{- end }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
 {{- end }}
