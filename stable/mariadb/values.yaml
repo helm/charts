@@ -540,6 +540,7 @@ metrics:
 ## See test-runner.yaml and tests.yaml for details.
 ## To run the tests after the deployment, enter "helm test <release-name>".
 tests:
+  enabled: true
   # resources: {}
   testFramework:
     image:
