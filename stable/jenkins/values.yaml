@@ -204,7 +204,7 @@ master:
     pluginVersion: "1.27"
     # it's only used when plugin version is <=1.18 for later version the
     # configuration as code support plugin is no longer needed
-    supportPluginVersion: "1.18"
+    # supportPluginVersion: "1.18"
     configScripts: {}
     # welcome-message: |
     #   jenkins:
