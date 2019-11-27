@@ -185,6 +185,12 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `metrics.serviceMonitor.namespace`        | Optional namespace which Prometheus is running in   | `nil`                                                             |
 | `metrics.serviceMonitor.interval`         | How frequently to scrape metrics (use by default, falling back to Prometheus' default)  | `nil`                         |
 | `metrics.serviceMonitor.selector`         | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install   | `{ prometheus: kube-prometheus }` |
+| `tests.enabled`                           | Provide tests to check if connect and authentication is possible | `true`                                               |
+| `tests.resources`                         | Resource definition for the test-runner pod         | `nil`                                                             |
+| `tests.testFramework.image.registry`      | Test framework image registry (init container)      | `docker.io`                                                       |
+| `tests.testFramework.image.repository`    | Test framework image name                           | `dduportal/bats`                                                  |
+| `tests.testFramework.image.tag`           | Test framework image tag                            | `0.4.0`                                                           |
+| `tests.testFramework.resources`           | Resource definition for the test framework          | `nil`                                                             |
 
 The above parameters map to the env variables defined in [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb). For more information please refer to the [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb) image documentation.
 

@@ -1,7 +1,7 @@
 apiVersion: v1
 name: sparkoperator
 description: A Helm chart for Spark on Kubernetes operator
-version: 0.4.7
+version: 0.5.0
 appVersion: v1beta2-1.0.1-2.4.4
 keywords:
   - spark

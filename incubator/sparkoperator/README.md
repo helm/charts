@@ -35,6 +35,7 @@ The following table lists the configurable parameters of the Spark operator char
 | `ingressUrlFormat`        | Ingress URL format                                           | ""                                     |
 | `logLevel`                | Logging verbosity level                                      | 2                                      |
 | `installCrds`             | Whether to install CRDs                                      | true                                   |
+| `cleanupCrdsBeforeInstall` | Remove CRDs before running the crd-install hook on changes. | `false` |
 | `metricsPort`             | Port for the metrics endpoint                                | 10254                                  |
 | `metricsEndpoint`         | Metrics endpoint                                             | "/metrics"                             |
 | `metricsPrefix`           | Prefix for the metrics                                       | ""                                     |
@@ -48,3 +49,7 @@ The following table lists the configurable parameters of the Spark operator char
 | `securityContext`         | Defines security context for operator container               | `{}`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
+
+#### Contributing
+
+When making changes to values.yaml, update the files in `ci/` by running `hack/update-ci.sh`.
