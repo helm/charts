@@ -196,6 +196,12 @@ $ helm upgrade --install --wait my-release -f values.yaml stable/ambassador
 
 # Upgrading
 
+## To 5.0.0
+
+### Breaking changes
+
+- Helm 3 support for CRDs was added. Specifically, the CRD templates were moved to non-templated files in the `/crds` directory, and to keep Helm 2 support they are globbed from there by `/templates/crds.yaml`. However, because Helm 3 CRDs are not templated, the labels have necessarily changed. Because of this, you must manually delete any ambassador CRDs installed by previous versions of this chart before upgrading
+
 ## To 4.0.0
 
 The 4.0.0 chart contains a number of changes to the way Ambassador Pro is installed.
