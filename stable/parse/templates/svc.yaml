@@ -1,24 +1,23 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "parse.fullname" . }}
+  name: {{ include "parse.fullname" . }}-server
   labels: {{ include "parse.labels" . | nindent 4 }}
+    app.kubernetes.io/component: server
 spec:
-  type: {{ .Values.service.type }}
-  {{- if and (.Values.service.loadBalancerIP) (eq .Values.service.type "LoadBalancer") }}
-  loadBalancerIP: {{ .Values.service.loadBalancerIP | quote }}
+  type: {{ .Values.server.service.type }}
+  {{- if and (.Values.server.service.loadBalancerIP) (eq .Values.server.service.type "LoadBalancer") }}
+  loadBalancerIP: {{ .Values.server.service.loadBalancerIP | quote }}
   {{- end }}
-  {{- if (or (eq .Values.service.type "LoadBalancer") (eq .Values.service.type "NodePort")) }}
-  externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy | quote }}
+  {{- if (or (eq .Values.server.service.type "LoadBalancer") (eq .Values.server.service.type "NodePort")) }}
+  externalTrafficPolicy: {{ .Values.server.service.externalTrafficPolicy | quote }}
   {{- end }}
   ports:
     - name: server-http
       port: {{ .Values.server.port }}
       targetPort: server-http
-    - name: dashboard-http
-      port: {{ .Values.service.port }}
-      targetPort: dashboard-http
-      {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePorts.http)))}}
-      nodePort: {{ .Values.service.nodePorts.http }}
+      {{- if (and (eq .Values.server.service.type "NodePort") (not (empty .Values.server.service.nodePorts.http)))}}
+      nodePort: {{ .Values.server.service.nodePorts.http }}
       {{- end }}
   selector: {{ include "parse.matchLabels" . | nindent 4 }}
+    app.kubernetes.io/component: server

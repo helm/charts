@@ -34,24 +34,6 @@ volumePermissions:
     #   - myRegistryKeySecretName
   resources: {}
 
-## Kubernetes serviceType for Parse Deployment
-## ref: http://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
-##
-service:
-  type: LoadBalancer
-  # Parse dashboard HTTP Port
-  port: 80
-  ## loadBalancerIP:
-  ##
-  ## nodePorts:
-  ##   http: <to set explicitly, choose port between 30000-32767>
-  nodePorts:
-    http: ""
-  ## Enable client source IP preservation
-  ## ref http://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
-  ##
-  externalTrafficPolicy: Cluster
-
 ## loadBalancerIP for the Parse Service (optional, cloud specific)
 ## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
 ##
@@ -174,6 +156,22 @@ server:
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   ##
   tolerations: {}
+  
+  ## Kubernetes serviceType for Parse Server
+  ## ref: http://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
+  ##
+  service:
+    type: LoadBalancer
+    ## loadBalancerIP:
+    ##
+    ## nodePorts:
+    ##   http: <to set explicitly, choose port between 30000-32767>
+    nodePorts:
+      http: ""
+    ## Enable client source IP preservation
+    ## ref http://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+    ##
+    externalTrafficPolicy: Cluster
 
 dashboard:
   ## Enable deployment of Parse Dashboard
@@ -273,6 +271,24 @@ dashboard:
   ## Name of a Secret containing extra env vars
   ##
   extraEnvVarsSecret:
+  
+  ## Kubernetes serviceType for Parse Dashboard
+  ## ref: http://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
+  ##
+  service:
+    type: LoadBalancer
+    # Parse dashboard HTTP Port
+    port: 80
+    ## loadBalancerIP:
+    ##
+    ## nodePorts:
+    ##   http: <to set explicitly, choose port between 30000-32767>
+    nodePorts:
+      http: ""
+    ## Enable client source IP preservation
+    ## ref http://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+    ##
+    externalTrafficPolicy: Cluster
 
 ## Configure the ingress resource that allows you to access the
 ## Parse installation.

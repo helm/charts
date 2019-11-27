@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "parse.fullname" . }}-dashboard
+  labels: {{ include "parse.labels" . | nindent 4 }}
+    app.kubernetes.io/component: dashboard
+spec:
+  type: {{ .Values.dashboard.service.type }}
+  {{- if and (.Values.dashboard.service.loadBalancerIP) (eq .Values.dashboard.service.type "LoadBalancer") }}
+  loadBalancerIP: {{ .Values.dashboard.service.loadBalancerIP | quote }}
+  {{- end }}
+  {{- if (or (eq .Values.dashboard.service.type "LoadBalancer") (eq .Values.dashboard.service.type "NodePort")) }}
+  externalTrafficPolicy: {{ .Values.dashboard.service.externalTrafficPolicy | quote }}
+  {{- end }}
+  ports:
+    - name: dashboard-http
+      port: {{ .Values.dashboard.service.port }}
+      targetPort: dashboard-http
+      {{- if (and (eq .Values.dashboard.service.type "NodePort") (not (empty .Values.dashboard.service.nodePorts.http)))}}
+      nodePort: {{ .Values.dashboard.service.nodePorts.http }}
+      {{- end }}
+  selector: {{ include "parse.matchLabels" . | nindent 4 }}
+    app.kubernetes.io/component: dashboard

@@ -16,20 +16,20 @@ Parse Server
 
   export SERVICE_HOST={{ $ingressHost.name }}
 
-{{- else if contains "NodePort" .Values.service.type }}
+{{- else if contains "NodePort" .Values.server.service.type }}
 
-  export NODE_PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" {{ include "parse.fullname" . }})
+  export NODE_PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" {{ include "parse.fullname" . }}-server)
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   export SERVICE_HOST=$NODE_IP:$NODE_PORT
 
-{{- else if contains "LoadBalancer" .Values.service.type }}
+{{- else if contains "LoadBalancer" .Values.server.service.type }}
 
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ include "parse.fullname" . }}'
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ include "parse.fullname" . }}-server'
 
-  export SERVICE_HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "parse.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}"):{{ .Values.server.port }}
+  export SERVICE_HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "parse.fullname" . }}-server --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}"):{{ .Values.server.port }}
 
-{{- else if contains "ClusterIP"  .Values.service.type }}
+{{- else if contains "ClusterIP"  .Values.server.service.type }}
 
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l app.kubernetes.io/name={{ template "parse.name" . }},app.kubernetes.io/component=server -o jsonpath="{.items[0].metadata.name}")
   kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 1337:1337 &
@@ -60,9 +60,9 @@ service:
 1. Get the Parse Server URL by running:
 
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ include "parse.fullname" . }}'
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ include "parse.fullname" . }}-server'
 
-  export APP_HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "parse.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  export APP_HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "parse.fullname" . }}-server --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
 
 2. Complete your Parse Dashboard deployment by running:
 
@@ -77,15 +77,25 @@ service:
 
   You should be able to access Parse Dashboard through: {{- range .Values.ingress.dashboard.hosts }} {{ if .tls }}https{{ else }}http{{ end }}://{{ .name }} {{- end }}
 
-{{- else if eq .Values.service.type "ClusterIP" }}
+{{- else if eq .Values.dashboard.service.type "ClusterIP" }}
 
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l app.kubernetes.io/name={{ template "parse.name" . }},app.kubernetes.io/component=dashboard -o jsonpath="{.items[0].metadata.name}")
   kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 4040:4040 &
   echo "Parse Dashboard URL: http://127.0.0.1:4040/"
 
+{{- else if eq .Values.dashboard.service.type "NodePort" }}
+
+  export NODE_PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" {{ include "parse.fullname" . }}-dashboard)
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo "Parse Dashboard URL: http://$NODE_IP:$NODE_PORT"
+
 {{- else }}
 
-  echo "Parse Dashboard URL: http://{{ include "parse.host" . }}/"
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ include "parse.fullname" . }}-dashboard'
+
+  export DASHBOARD_HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "parse.fullname" . }}-dashboard --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}"):{{ .Values.server.port }}
+  echo "Parse Dashboard URL: http://$DASHBOARD_HOST/"
 
 {{- end }}
 

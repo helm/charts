@@ -20,7 +20,7 @@ spec:
         paths:
           - path: {{ default "/" .path }}
             backend:
-              serviceName: {{ include "parse.fullname" $ }}
+              serviceName: {{ include "parse.fullname" $ }}-dashboard
               servicePort: dashboard-http
     {{- end }}
     {{- end }}
@@ -30,7 +30,7 @@ spec:
         paths:
           - path: {{ default "/" .path }}
             backend:
-              serviceName: {{ include "parse.fullname" $ }}
+              serviceName: {{ include "parse.fullname" $ }}-server
               servicePort: server-http
     {{- end }}
   tls:
