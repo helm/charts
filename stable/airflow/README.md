@@ -457,6 +457,8 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `dags.git.url`                           | url to clone the git repository                         | nil                       |
 | `dags.git.ref`                           | branch name, tag or sha1 to reset to                    | `master`                  |
 | `dags.git.secret`                        | name of a secret containing an ssh deploy key           | nil                       |
+| `dags.git.privateKeyName`                        | name of private key mounted in secret(only needed if using ssh to connect to git)   | ''                        |
+| `dags.git.repoHost`                        | Host of git repo you are establish an ssh connection to ex. github.com (only needed if using ssh to connect to git)            | ''                        |
 | `logs.path`                              | mount path for logs persistent volume                   | `/usr/local/airflow/logs` |
 | `rbac.create`                            | create RBAC resources                                   | `true`                    |
 | `serviceAccount.create`                  | create a service account                                | `true`                    |
