@@ -162,6 +162,29 @@ imagePullSecrets:
 {{- end -}}
 
 {{/*
+Return the proper test image name
+*/}}
+{{- define "mariadb.tests.testFramework.image" -}}
+{{- $registryName := .Values.tests.testFramework.image.registry -}}
+{{- $repositoryName := .Values.tests.testFramework.image.repository -}}
+{{- $tag := .Values.tests.testFramework.image.tag | toString -}}
+{{/*
+Helm 2.11 supports the assignment of a value to a variable defined in a different scope,
+but Helm 2.9 and 2.10 doesn't support it, so we need to implement this if-else logic.
+Also, we can't use a single if because lazy evaluation is not an option
+*/}}
+{{- if .Values.global }}
+    {{- if .Values.global.imageRegistry }}
+        {{- printf "%s/%s:%s" .Values.global.imageRegistry $repositoryName $tag -}}
+    {{- else -}}
+        {{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
+    {{- end -}}
+{{- else -}}
+    {{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Return the proper image name (for the init container volume-permissions image)
 */}}
 {{- define "mariadb.volumePermissions.image" -}}

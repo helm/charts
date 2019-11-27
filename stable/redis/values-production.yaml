@@ -2,11 +2,12 @@
 ## Please, note that this will override the image parameters, including dependencies, configured to use the global value
 ## Current available global Docker image parameters: imageRegistry and imagePullSecrets
 ##
-# global:
+global:
 #   imageRegistry: myRegistryName
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
 #   storageClass: myStorageClass
+  redis: {}
 
 ## Bitnami Redis image version
 ## ref: https://hub.docker.com/r/bitnami/redis/tags/
@@ -47,6 +48,9 @@ cluster:
 ## create one redis service with ports to the sentinel and the redis instances
 sentinel:
   enabled: false
+  ## Require password authentication on the sentinel itself
+  ## ref: https://redis.io/topics/sentinel
+  usePassword: true
   ## Bitnami Redis Sentintel image version
   ## ref: https://hub.docker.com/r/bitnami/redis-sentinel/tags/
   ##
@@ -477,16 +481,6 @@ metrics:
   ##   check-keys: myKey,myOtherKey
   # extraArgs: {}
 
-  ## Metrics exporter pod priorityClassName
-  # priorityClassName: {}
-  service:
-    type: ClusterIP
-    ## Use serviceLoadBalancerIP to request a specific static IP,
-    ## otherwise leave blank
-    # loadBalancerIP:
-    annotations: {}
-    labels: {}
-
   ## Metrics exporter pod Annotation and Labels
   podAnnotations:
     prometheus.io/scrape: "true"
@@ -505,6 +499,16 @@ metrics:
     ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
     selector:
       prometheus: kube-prometheus
+
+  ## Metrics exporter pod priorityClassName
+  # priorityClassName: {}
+  service:
+    type: ClusterIP
+    ## Use serviceLoadBalancerIP to request a specific static IP,
+    ## otherwise leave blank
+    # loadBalancerIP:
+    annotations: {}
+    labels: {}
 
 ##
 ## Init containers parameters:

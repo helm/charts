@@ -348,7 +348,7 @@ resources:
     cpu: 250m
 
 networkPolicy:
-  ## Enable creation of NetworkPolicy resources.
+  ## Enable creation of NetworkPolicy resources. Only Ingress traffic is filtered for now.
   ##
   enabled: false
 
@@ -358,6 +358,17 @@ networkPolicy:
   ## (with the correct destination port).
   ##
   allowExternal: true
+
+  ## if explicitNamespacesSelector is missing or set to {}, only Pods that are in the networkPolicy's namespace
+  ## and that match other criteria, the ones that can be selected by one of the podSelectors, can reach the DB.
+  ## But sometimes, we want the DB to be accessible from other namespaces, in this case, we can use this
+  ## LabelSelector to select these namespaces, note that the networkPolicy's should also be explicitly added.
+  ##
+  # explicitNamespacesSelector:
+    # matchLabels:
+      # role: frontend
+    # matchExpressions:
+      # - {key: role, operator: In, values: [frontend]}
 
 ## Configure extra options for liveness and readiness probes
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
@@ -394,6 +405,24 @@ metrics:
     # namespace: monitoring
     # interval: 30s
     # scrapeTimeout: 10s
+  ## Custom PrometheusRule to be defined
+  ## The value is evaluated as a template, so, for example, the value can depend on .Release or .Chart
+  ## ref: https://github.com/coreos/prometheus-operator#customresourcedefinitions
+  prometheusRule:
+    enabled: false
+    additionalLabels: {}
+    namespace: ""
+    rules: []
+      ## These are just examples rules, please adapt them to your needs.
+      ## Make sure to constraint the rules to the current postgresql service.
+      # - alert: HugeReplicationLag
+      #   expr: pg_replication_lag{service="{{ template "postgresql.fullname" . }}-metrics"} / 3600 > 1
+      #   for: 1m
+      #   labels:
+      #     severity: critical
+      #   annotations:
+      #     description: replication for {{ template "postgresql.fullname" . }} PostgreSQL is lagging by {{ "{{ $value }}" }} hour(s).
+      #     summary: PostgreSQL replication is lagging by {{ "{{ $value }}" }} hour(s).
   image:
     registry: docker.io
     repository: bitnami/postgres-exporter
