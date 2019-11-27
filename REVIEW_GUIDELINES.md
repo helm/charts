@@ -1,6 +1,6 @@
 # Chart Review Guidelines
 
-Anyone is welcome to review pull requests. Besides our [technical requirements](https://github.com/helm/charts/blob/master/CONTRIBUTING.md#technical-requirements) and [best practices](https://helm.sh/docs/chart_best_practices), here's an overview of process and review guidelines.
+Anyone is welcome to review pull requests. Besides our [technical requirements](https://github.com/helm/charts/blob/master/CONTRIBUTING.md#technical-requirements) and [best practices](https://helm.sh/docs/topics/chart_best_practices/), here's an overview of process and review guidelines.
 
 ## Process
 

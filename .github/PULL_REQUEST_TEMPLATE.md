@@ -3,7 +3,7 @@ Thank you for contributing to helm/charts. Before you submit this PR we'd like t
 make sure you are aware of our technical requirements and best practices:
 
 * https://github.com/helm/charts/blob/master/CONTRIBUTING.md#technical-requirements
-* https://helm.sh/docs/chart_best_practices
+* https://helm.sh/docs/topics/chart_best_practices/
 
 For a quick overview across what we will look at reviewing your PR, please read
 our review guidelines:
