@@ -432,6 +432,7 @@ sidecar:
   # skipTlsVerify: true
   dashboards:
     enabled: false
+    SCProvider: false
     # label that the configmaps with dashboards are marked with
     label: grafana_dashboard
     # folder in the pod that should hold the collected dashboards (unless `defaultFolderName` is set)
