@@ -1,4 +1,6 @@
-# Concourse Helm Chart
+# Deprecated - Concourse Helm Chart
+
+The Concourse helm chart is deprecated. Future chart development is now at [github.com/concourse/concourse-chart](https://github.com/concourse/concourse-chart).
 
 [Concourse](https://concourse-ci.org/) is a simple and scalable CI system.
 
