@@ -25,7 +25,7 @@ data:
     {{- end }}
     {{- end }}
 
-    $HAL_COMMAND deploy apply
+    $HAL_COMMAND deploy apply{{ if .Values.halyard.additionalInstallParameters }} {{ .Values.halyard.additionalInstallParameters }}{{ end }}
   clean.sh: |
     export HAL_COMMAND='hal --daemon-endpoint http://{{ template "spinnaker.fullname" . }}-halyard:8064'
     $HAL_COMMAND deploy clean -q
