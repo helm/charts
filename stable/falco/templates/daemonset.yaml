@@ -127,7 +127,7 @@ spec:
             {{- end }}
       {{- if .Values.integrations.natsOutput.enabled }}
         - name: {{ .Chart.Name }}-nats
-          image: sysdig/falco-nats:latest
+          image: {{ .Values.integrations.natsOutput.image }}
           imagePullPolicy: Always
           args: [ "/bin/falco-nats", "-s", {{ .Values.integrations.natsOutput.natsUrl | quote }}]
           volumeMounts:
@@ -136,7 +136,7 @@ spec:
       {{- end }}
       {{- if .Values.integrations.snsOutput.enabled }}
         - name: {{ .Chart.Name }}-sns
-          image: sysdig/falco-sns:latest
+          image: {{ .Values.integrations.snsOutput.image }}
           imagePullPolicy: Always
           args: [ "/bin/falco-sns", "-t", {{ .Values.integrations.snsOutput.topic | quote }}]
           volumeMounts:
@@ -161,7 +161,7 @@ spec:
       {{- end }}
       {{- if .Values.integrations.pubsubOutput.enabled }}
         - name: {{ .Chart.Name }}-pubsub
-          image: sysdiglabs/falco-pubsub:latest
+          image: {{ .Values.integrations.pubsubOutput.image }}
           imagePullPolicy: Always
           args: [ "/bin/falco-pubsub", "-t", {{ .Values.integrations.pubsubOutput.topic | quote }}]
           volumeMounts:
@@ -182,7 +182,7 @@ spec:
       {{- if (or .Values.integrations.natsOutput.enabled .Values.integrations.snsOutput.enabled .Values.integrations.pubsubOutput.enabled) }}
       initContainers:
           - name: init-pipe
-            image: busybox
+            image: {{ .Values.integrations.init.image }}
             command: ['mkfifo','/var/run/falco/nats']
             volumeMounts:
             - mountPath: /var/run/falco/

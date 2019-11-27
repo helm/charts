@@ -17,5 +17,5 @@ spec:
     spec:
       containers:
       - name: {{ template "falco.fullname" . }}-event-generator
-        image: sysdig/falco-event-generator:latest
+        image: {{ .Values.fakeEventGenerator.image }}
 {{- end }}

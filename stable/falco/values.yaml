@@ -43,6 +43,7 @@ serviceAccount:
 
 fakeEventGenerator:
   enabled: false
+  image: "sysdig/falco-event-generator:latest"
   replicas: 1
 
 daemonset:
@@ -222,6 +223,10 @@ customRules: {}
   #   [ rule body ]
 
 integrations:
+  # Init configuration, only used when one of the integrations is enabled
+  init:
+    image: "busybox"
+
   # If Google Cloud Security Command Center integration is enabled, falco will
   # be configured to use this integration as program_output and sets the following values:
   # * json_output: true
@@ -243,6 +248,7 @@ integrations:
   #     filename: /var/run/falco/nats
   natsOutput:
     enabled: false
+    image: "sysdig/falco-nats:latest"
     natsUrl: "nats://nats.nats-io.svc.cluster.local:4222"
   # If SNS Output integration is enabled, falco will be configured to use this
   # integration as file_output and sets the following values:
@@ -254,6 +260,7 @@ integrations:
   #     filename: /var/run/falco/nats
   snsOutput:
     enabled: false
+    image: "sysdig/falco-sns:latest"
     topic: ""
     aws_access_key_id: ""
     aws_secret_access_key: ""
@@ -270,6 +277,7 @@ integrations:
   #     filename: /var/run/falco/nats
   pubsubOutput:
     enabled: false
+    image: "sysdiglabs/falco-pubsub:latest"
     topic: ""
     credentialsData: ""
     projectID: ""
