@@ -525,6 +525,10 @@ dags:
     ref: master
     ## pre-created secret with key, key.pub and known_hosts file for private repos
     secret: ""
+    ## The host of the repo so for example if a github repo put github.com (Only need if using ssh not https git sync)
+    repoHost: ""
+    ## The name of the private key in your git sync secret (Only need if using ssh not https git sync)
+    privateKeyName: ""
   initContainer:
     ## Fetch the source code when the pods starts
     enabled: false
