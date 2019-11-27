@@ -247,6 +247,8 @@ web:
   ##
   ## Annotations for the web deployment
   annotations: {}
+  ## Pod Annotations for the web deployment
+  podAnnotations: {}
   initialStartupDelay: "60"
   initialDelaySeconds: "360"
   minReadySeconds: 120
