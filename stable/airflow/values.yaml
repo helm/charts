@@ -541,7 +541,7 @@ dags:
         ## Image pull policy
         ## values: Always or IfNotPresent
         pullPolicy: IfNotPresent
-      ## The amount of time in seconds to git pull dags  
+      ## The amount of time in seconds to git pull dags
       refreshTime:
   initContainer:
     ## Fetch the source code when the pods starts
@@ -557,7 +557,6 @@ dags:
       pullPolicy: IfNotPresent
     ## install requirements.txt dependencies automatically
     installRequirements: true
-
 
 ##
 ## Configure logs
