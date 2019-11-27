@@ -43,8 +43,8 @@ spec:
 {{- if .Values.airflow.podAnnotations }}
 {{ toYaml .Values.airflow.podAnnotations | indent 8 }}
 {{- end }}
-{{- if .Values.airflow.scheduler.podAnnotations }}
-{{ toYaml .Values.airflow.scheduler.podAnnotations | indent 8 }}
+{{- if .Values.scheduler.podAnnotations }}
+{{ toYaml .Values.scheduler.podAnnotations | indent 8 }}
 {{- end }}
       labels:
         app: {{ template "airflow.name" . }}

@@ -41,8 +41,8 @@ spec:
 {{- if .Values.airflow.podAnnotations }}
 {{ toYaml .Values.airflow.podAnnotations | indent 8 }}
 {{- end }}
-{{- if .Values.airflow.web.podAnnotations }}
-{{ toYaml .Values.airflow.web.podAnnotations | indent 8 }}
+{{- if .Values.web.podAnnotations }}
+{{ toYaml .Values.web.podAnnotations | indent 8 }}
 {{- end }}
       labels:
         app: {{ template "airflow.name" . }}
