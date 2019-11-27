@@ -86,6 +86,8 @@ spec:
           - "{{ .Values.dags.git.url }}"
           - "{{ .Values.dags.git.ref }}"
           - "/dags"
+          - "{{ .Values.dags.git.repoHost}}"
+          - "{{ .Values.dags.git.privateKeyName }}"
           volumeMounts:
           - name: git-clone
             mountPath: /usr/local/git
