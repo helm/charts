@@ -186,6 +186,8 @@ scheduler:
   ##
   ## Labels for the scheduler deployment
   labels: {}
+  ## Pod Annotations for the web deployment
+  podAnnotations: {}
   ##
   ## Annotations for the scheduler deployment
   annotations: {}
