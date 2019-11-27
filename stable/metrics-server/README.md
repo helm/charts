@@ -2,6 +2,14 @@
 
 [Metrics Server](https://github.com/kubernetes-incubator/metrics-server) is a cluster-wide aggregator of resource usage data. Resource metrics are used by components like `kubectl top` and the [Horizontal Pod Autoscaler](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale) to scale workloads. To autoscale based upon a custom metric, see the [Prometheus Adapter chart](https://github.com/helm/charts/blob/master/stable/prometheus-adapter).
 
+## To install the chart with release name `my-release`:
+```bash
+$ helm install --name my-release stable/metrics-server
+```
+Helm 3:
+```bash
+$ helm install my-release stable/metrics-server
+```
 ## Configuration
 
 Parameter | Description | Default
@@ -35,3 +43,13 @@ Parameter | Description | Default
 `podDisruptionBudget.enabled` | Create a PodDisruptionBudget | `false`
 `podDisruptionBudget.minAvailable` | Minimum available instances; ignored if there is no PodDisruptionBudget |
 `podDisruptionBudget.maxUnavailable` | Maximum unavailable instances; ignored if there is no PodDisruptionBudget |
+
+## Uninstalling the chart
+In order to delete `metrics-server` chart you need to delete its apiservice first:
+```bash
+$ kubectl delete apiservice v1beta1.metrics.k8s.io
+```
+Then it is safe to delete charts resources:
+```bash
+$ helm delete metrics-server
+```
