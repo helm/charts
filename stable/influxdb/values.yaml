@@ -146,7 +146,7 @@ env: {}
 
 ## Change InfluxDB configuration parameters below:
 ## Defaults are indicated
-## ref: https://docs.influxdata.com/influxdb/v1.1/administration/config/
+## ref: https://docs.influxdata.com/influxdb/v1.7/administration/config
 config:
   reporting_disabled: false
   storage_directory: /var/lib/influxdb
