@@ -8,7 +8,9 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Release.Name }}-{{ .Values.Worker.Component }}"
 spec:
+{{- if not .Values.Worker.Autoscaling.Enabled }}
   replicas: {{ default 1 .Values.Worker.Replicas }}
+{{- end }}
   strategy:
     type: RollingUpdate
   selector:
