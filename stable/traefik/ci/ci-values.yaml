@@ -1,1 +1,3 @@
 serviceType: NodePort
+testFramework:
+  enabled: true
