@@ -274,6 +274,10 @@ To share a PV with multiple Pods, the PV needs to have accessMode 'ReadOnlyMany'
 
 Since you're unlikely to be using init-container with this configuration, you'll need to mount a file to /requirements.txt to get additional Python modules for your DAGs to be installed on container start. Use the extraConfigMapMounts configuration option for this.
 
+### Git-Sync sidecar container
+
+This is probably the most popular way for airflow users to syncronize there dags. Its a pretty simple set up just a sidecar container in the pods that pulls dags from your repository of choice using git. To do this you must set up all the git values in this chart to a point where you can successfully connect to the repo. These are the values you will definitley need to set after enabling `dags.git.gitSync.enabled`. `dags.git.url` `dags.git.ref` `dags.git.gitSync.refreshTime`. If you are going the ssh connect route make sure to set the following `dags.git.privateKeyName`, `dags.git.repoHost`, `dags.git.secret`. In the secret have the private key and the known_hosts file as well so the host does not mistake the containers connection as a man in the middle attack and deny connection.
+
 ### Use init-container
 
 If you enable set `dags.init_container.enabled=true`, the pods will try upon startup to fetch the
@@ -463,8 +467,12 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `dags.git.url`                           | url to clone the git repository                         | nil                       |
 | `dags.git.ref`                           | branch name, tag or sha1 to reset to                    | `master`                  |
 | `dags.git.secret`                        | name of a secret containing an ssh deploy key           | nil                       |
-| `dags.git.privateKeyName`                        | name of private key mounted in secret(only needed if using ssh to connect to git)   | ''                        |
-| `dags.git.repoHost`                        | Host of git repo you are establish an ssh connection to ex. github.com (only needed if using ssh to connect to git)            | ''                        |
+| `dags.git.privateKeyName`                | name of private key mounted in secret(only needed if using ssh to connect to git)   | ''                        |
+| `dags.git.repoHost`                      | Host of git repo you are establish an ssh connection to ex. github.com (only needed if using ssh to connect to git)            | ''                        |
+| `dags.git.gitSync.enabled`               | Enables a sidecar container that syncs dags             | `false`                   |
+| `dags.git.gitSync.image.repository`      | Image of the sidecar container that syncs dags          | `alpine/git`                  |
+| `dags.git.gitSync.image.tag`             | Image tag of sidecar container that syncs dags          | `1.0.4`                  |
+| `dags.git.gitSync.refreshTime`           | How often the sidecar container syncs dags up with repository(in seconds)         | nil                  |
 | `logs.path`                              | mount path for logs persistent volume                   | `/usr/local/airflow/logs` |
 | `rbac.create`                            | create RBAC resources                                   | `true`                    |
 | `serviceAccount.create`                  | create a service account                                | `true`                    |

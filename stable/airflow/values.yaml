@@ -529,6 +529,20 @@ dags:
     repoHost: ""
     ## The name of the private key in your git sync secret (Only need if using ssh not https git sync)
     privateKeyName: ""
+    gitSync:
+      ## Turns on the side car container
+      enabled: false
+      ## Image for the side car container
+      image:
+        ## docker-airflow image
+        repository: alpine/git
+        ## image tag
+        tag: 1.0.7
+        ## Image pull policy
+        ## values: Always or IfNotPresent
+        pullPolicy: IfNotPresent
+      ## The amount of time in seconds to git pull dags  
+      refreshTime:
   initContainer:
     ## Fetch the source code when the pods starts
     enabled: false
@@ -543,6 +557,7 @@ dags:
       pullPolicy: IfNotPresent
     ## install requirements.txt dependencies automatically
     installRequirements: true
+
 
 ##
 ## Configure logs
