@@ -374,8 +374,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.podDisruptionBudget`            | control pod disruption budget                           | `{'maxUnavailable': 1}`   |
 | `airflow.extraEnv`                       | specify additional environment variables to mount       | `{}`                      |
 | `airflow.extraConfigmapMounts`           | Additional configMap volume mounts on the airflow pods. | `[]`                      |
-| `airflow.podAnnotations`                 | annotations for scheduler, worker and web pods          | `{}`    
-|
+| `airflow.podAnnotations`                 | annotations for scheduler, worker and web pods          | `{}`                      |
 | `airflow.extraInitContainers`            | additional Init Containers to run in the scheduler pods | `[]`                      |
 | `airflow.extraContainers`                | additional containers to run in the scheduler, worker & web pods | `[]`             |
 | `airflow.extraVolumeMounts`              | additional volumeMounts to the main container in scheduler, worker & web pods | `[]`|
