@@ -19,7 +19,9 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
+{{- if not .Values.autoscaling }}
   replicas: {{ default 1 .Values.replicas }}
+{{- end }}
   selector:
     matchLabels:
       app: {{ template "traefik.name" . }}
