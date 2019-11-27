@@ -1,4 +1,4 @@
-{{- if .Values.falco.webserver.enabled }}
+{{- if (and .Values.falco.webserver.enabled (not .Values.platform.aws.eks)) }}
 kind: Service
 apiVersion: v1
 metadata:

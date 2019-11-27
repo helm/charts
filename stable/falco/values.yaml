@@ -80,6 +80,15 @@ ebpf:
     # Set to false if not running on Google COS
     mountEtcVolume: true
 
+# Target platform for Falco. Setting a platform to true, activates
+# certain features that are specific for the platform. For example, AWS
+# EKS does not support auditregistration.k8s.io but if you still want
+# the webserver to be UP without enabling the Service and the AuditSink then
+# set platform:aws:eks to true.
+platform:
+  aws:
+    eks: false
+
 falco:
   # The location of the rules file(s). This can contain one or more paths to
   # separate rules files.
