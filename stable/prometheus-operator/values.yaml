@@ -257,7 +257,7 @@ alertmanager:
     ## ConfigSecret is the name of a Kubernetes Secret in the same namespace as the Alertmanager object, which contains configuration for
     ## this Alertmanager instance. Defaults to 'alertmanager-' The secret is mounted into /etc/alertmanager/config.
     ##
-    configSecret:
+    # configSecret:
 
     ## Define Log Format
     # Use logfmt (default) or json-formatted logging
