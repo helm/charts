@@ -40,8 +40,8 @@ spec:
         {{- if and ( .Values.dags.git.url ) ( .Values.dags.git.ref ) }}
         checksum/dags-git-ref: {{ .Values.dags.git.ref }}
         {{- end }}
-{{- if .Values.airflow.podAnnotations }}
-{{ toYaml .Values.airflow.podAnnotations | indent 8 }}
+{{- if .Values.airflow.scheduler.podAnnotations }}
+{{ toYaml .Values.airflow.scheduler.podAnnotations | indent 8 }}
 {{- end }}
       labels:
         app: {{ template "airflow.name" . }}
