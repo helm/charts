@@ -163,6 +163,8 @@ data:
             "socket",
             "socketcall",
             "socketpair",
+            "stat",
+            "stat64",
             "umask",
             "uname",
             "unlink",

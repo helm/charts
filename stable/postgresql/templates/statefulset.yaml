@@ -70,8 +70,9 @@ spec:
       {{- if .Values.serviceAccount.enabled }}
       serviceAccountName: {{ default (include "postgresql.fullname" . ) .Values.serviceAccount.name }}
       {{- end }}
-      {{- if and .Values.volumePermissions.enabled .Values.persistence.enabled }}
+      {{- if or .Values.master.extraInitContainers (and .Values.volumePermissions.enabled .Values.persistence.enabled) .Values.shmVolume.enabled }}
       initContainers:
+      {{- if or (and .Values.volumePermissions.enabled .Values.persistence.enabled) .Values.shmVolume.enabled }}
         - name: init-chmod-data
           image: {{ template "postgresql.volumePermissions.image" . }}
           imagePullPolicy: "{{ .Values.volumePermissions.image.pullPolicy }}"
@@ -86,12 +87,23 @@ spec:
               chmod 700 {{ .Values.persistence.mountPath }}/data
               find {{ .Values.persistence.mountPath }} -mindepth 0 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" | \
                 xargs chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }}
+              {{- if .Values.shmVolume.enabled }}
+              chmod -R 777 /dev/shm
+              {{- end }}
           securityContext:
             runAsUser: {{ .Values.volumePermissions.securityContext.runAsUser }}
           volumeMounts:
             - name: data
               mountPath: {{ .Values.persistence.mountPath }}
               subPath: {{ .Values.persistence.subPath }}
+            {{- if .Values.shmVolume.enabled }}
+            - name: dshm
+              mountPath: /dev/shm
+            {{- end }}
+      {{- end }}
+      {{- if .Values.master.extraInitContainers }}
+{{ tpl .Values.master.extraInitContainers . | indent 8 }}
+      {{- end }}
       {{- end }}
       containers:
         - name: {{ template "postgresql.fullname" . }}
@@ -154,6 +166,18 @@ spec:
             {{- end }}
             - name: POSTGRES_CLUSTER_APP_NAME
               value: {{ .Values.replication.applicationName }}
+            {{- end }}
+            {{- if and .Values.postgresqlPostgresPassword (not (eq .Values.postgresqlUsername "postgres")) }}
+            {{- if .Values.usePasswordFile }}
+            - name: POSTGRES_POSTGRES_PASSWORD_FILE
+              value: "/opt/bitnami/postgresql/secrets/postgresql-postgres-password"
+            {{- else }}
+            - name: POSTGRES_POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "postgresql.secretName" . }}
+                  key: postgresql-postgres-password
+            {{- end }}
             {{- end }}
             - name: POSTGRES_USER
               value: {{ include "postgresql.username" . | quote }}
@@ -260,6 +284,10 @@ spec:
             - name: postgresql-password
               mountPath: /opt/bitnami/postgresql/secrets/
             {{- end }}
+            {{- if .Values.shmVolume.enabled }}
+            - name: dshm
+              mountPath: /dev/shm
+            {{- end }}
             {{- if .Values.persistence.enabled }}
             - name: data
               mountPath: {{ .Values.persistence.mountPath }}
@@ -323,6 +351,12 @@ spec:
             - name: postgresql-password
               mountPath: /opt/bitnami/postgresql/secrets/
             {{- end }}
+            {{- if .Values.metrics.customMetrics }}
+            - name: custom-metrics
+              mountPath: /conf
+              readOnly: true
+          args: ["--extend.query-path", "/conf/custom-metrics.yaml"]
+            {{- end }}
           ports:
             - name: metrics
               containerPort: 9187
@@ -358,6 +392,17 @@ spec:
         {{- end }}
         {{- if .Values.master.extraVolumes }}
         {{- toYaml .Values.master.extraVolumes | nindent 8 }}
+        {{- end }}
+        {{- if and .Values.metrics.enabled .Values.metrics.customMetrics }}
+        - name: custom-metrics
+          configMap:
+            name: {{ template "postgresql.metricsCM" . }}
+        {{- end }}
+        {{- if .Values.shmVolume.enabled }}
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Gi
         {{- end }}
 {{- if and .Values.persistence.enabled .Values.persistence.existingClaim }}
         - name: data

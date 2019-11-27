@@ -31,7 +31,7 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         resources:
-{{ toYaml .Values.worker.resources | indent 10 }}
+{{ toYaml .Values.master.resources | indent 10 }}
         env:
         {{- range $key, $value :=  .Values.master.config }}
         - name: {{ $key | upper | replace "-" "_" }}
