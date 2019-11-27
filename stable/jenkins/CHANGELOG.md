@@ -5,6 +5,17 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 2.0.0 Multiple agent pod templates and containers
+
+- Allow multiple agent pod templates with multiple containers
+- Option to set agent's pod retention timeout
+- Option to set usage mode for agent: normal, exclusive, etc.
+
+### Breaking changes:
+
+- Agent dictionary object now includes a list of pod templates with multiple
+  containers. Please refer to `values.yaml` or `README.md` for further details.
+
 ## 1.9.4 Option to set existing secret with Google Application Default Credentials
 
 Google application credentials are kept in a file, which has to be mounted to a pod. You can set `gcpcredentials` in `existingSecret` as follows:
@@ -29,7 +40,7 @@ To quote from the plugin documentation:
 
 > Because granting these permissions for secrets is not something that should be done lightly it is highly advised for security reasons that you both create a unique service account to run Jenkins as, and run Jenkins in a unique namespace.
 
-Therefor this is disabled by default.
+Therefore this is disabled by default.
 
 ## 1.9.1 Update kubernetes plugin URL
 

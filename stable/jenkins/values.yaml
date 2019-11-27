@@ -358,70 +358,76 @@ master:
 
 agent:
   enabled: true
-  image: "jenkins/jnlp-slave"
-  tag: "3.27-1"
-  customJenkinsLabels: []
-  # name of the secret to be used for image pulling
-  imagePullSecretName:
-  componentName: "jenkins-slave"
-  privileged: false
-  resources:
-    requests:
-      cpu: "512m"
-      memory: "512Mi"
-    limits:
-      cpu: "512m"
-      memory: "512Mi"
-  # You may want to change this to true while testing a new image
-  alwaysPullImage: false
+  # Max number of spawned agent
+  containerCap: 10
   # Controls how agent pods are retained after the Jenkins build completes
   # Possible values: Always, Never, OnFailure
   podRetention: "Never"
-  # You can define the volumes that you want to mount for this container
-  # Allowed types are: ConfigMap, EmptyDir, HostPath, Nfs, Pod, Secret
-  # Configure the attributes as they appear in the corresponding Java class for that type
-  # https://github.com/jenkinsci/kubernetes-plugin/tree/master/src/main/java/org/csanchez/jenkins/plugins/kubernetes/volumes
-  # Pod-wide ennvironment, these vars are visible to any container in the agent pod
-  envVars: []
-  # - name: PATH
-  #   value: /usr/local/bin
-  volumes: []
-  # - type: Secret
-  #   secretName: mysecret
-  #   mountPath: /var/myapp/mysecret
-  # - type: EmptyDir
-  #   mountPath: "/var/lib/containers"
-  #   memory: false
-  nodeSelector: {}
-  # Key Value selectors. Ex:
-  # jenkins-agent: v1
-
-  # Executed command when side container gets started
-  command:
-  args:
-  # Side container name
-  sideContainerName: "jnlp"
-  # Doesn't allocate pseudo TTY by default
-  TTYEnabled: false
-  # Max number of spawned agent
-  containerCap: 10
-  # Pod name
-  podName: "default"
-  # Allows the Pod to remain active for reuse until the configured number of
-  # minutes has passed since the last step was executed on it.
-  idleMinutes: 0
-  # Raw yaml template for the Pod. For example this allows usage of toleration for agent pods.
-  # https://github.com/jenkinsci/kubernetes-plugin#using-yaml-to-define-pod-templates
-  # https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
-  yamlTemplate: ""
-  # yamlTemplate: |-
-  #   apiVersion: v1
-  #   kind: Pod
-  #   spec:
-  #     tolerations:
-  #     - key: "key"
-  #       operator: "Equal"
-  #       value: "value"
+  # Time in minutes to retain pod after completion
+  retentionTimeout: 5
+  # podTemplates
+  templates:
+    - name: "default"
+      # Component name used for label creation
+      componentName: "jenkins-slave"
+      # Extra labels for agent
+      customJenkinsLabels: []
+      # name of the secret to be used for image pulling
+      imagePullSecretName:
+      # Set usage mode for agent: normal, exclusive, etc.
+      usageMode: "Normal"
+      # Allows the Pod to remain active for reuse until the configured number of
+      # minutes has passed since the last step was executed on it.
+      idleMinutes: 0
+      # Raw yaml template for the Pod. For example this allows usage of toleration for agent pods.
+      # https://github.com/jenkinsci/kubernetes-plugin#using-yaml-to-define-pod-templates
+      # https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+      yamlTemplate: ""
+      # yamlTemplate: |-
+      #   apiVersion: v1
+      #   kind: Pod
+      #   spec:
+      #     tolerations:
+      #     - key: "key"
+      #       operator: "Equal"
+      #       value: "value"
+      # Pod-wide environment, these vars are visible to any container in the agent pod
+      envVars: []
+      # - name: PATH
+      #   value: /usr/local/bin
+      # You can define the volumes that you want to mount for this container
+      # Allowed types are: ConfigMap, EmptyDir, HostPath, Nfs, Pod, Secret
+      # Configure the attributes as they appear in the corresponding Java class for that type
+      # https://github.com/jenkinsci/kubernetes-plugin/tree/master/src/main/java/org/csanchez/jenkins/plugins/kubernetes/volumes
+      volumes: []
+      # - type: Secret
+      #   secretName: mysecret
+      #   mountPath: /var/myapp/mysecret
+      # - type: EmptyDir
+      #   mountPath: "/var/lib/containers"
+      #   memory: false
+      nodeSelector: {}
+      # Key Value selectors. Ex:
+      # jenkins-agent: v1
+      containers:
+        - name: "jnlp"
+          image: "jenkins/jnlp-slave"
+          tag: "3.27-1"
+          # You may want to change this to true while testing a new image
+          alwaysPullImage: false
+          # Executed command when side container gets started
+          command:
+          args:
+          # Doesn't allocate pseudo TTY by default
+          TTYEnabled: false
+          privileged: false
+          resources:
+            requests:
+              cpu: "512m"
+              memory: "512Mi"
+            limits:
+              cpu: "512m"
+              memory: "512Mi"
 
 persistence:
   enabled: true

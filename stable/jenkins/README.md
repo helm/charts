@@ -180,28 +180,31 @@ The following tables list the configurable parameters of the Jenkins chart and t
 
 Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload sent to a Jenkins webhooks, e.g. URL of a pull-request being built. To display such data as processed HTML instead of raw text set `master.enableRawHtmlMarkupFormatter` to true. This option requires installation of OWASP Markup Formatter Plugin (antisamy-markup-formatter). The plugin is **not** installed by default, please update `master.installPlugins`.
 
-### Jenkins Agent
+### Jenkins Kubernetes Agent
 
 | Parameter                  | Description                                     | Default                |
 | -------------------------- | ----------------------------------------------- | ---------------------- |
-| `agent.alwaysPullImage`    | Always pull agent container image before build  | `false`                |
-| `agent.customJenkinsLabels`| Append Jenkins labels to the agent              | `{}`                   |
-| `agent.enabled`            | Enable Kubernetes plugin jnlp-agent podTemplate | `true`                 |
-| `agent.image`              | Agent image name                                | `jenkins/jnlp-slave`   |
-| `agent.imagePullSecret`    | Agent image pull secret                         | Not set                |
-| `agent.tag`                | Agent image tag                                 | `3.27-1`               |
-| `agent.privileged`         | Agent privileged container                      | `false`                |
-| `agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 512m, memory: 512Mi}, limits: {cpu: 512m, memory: 512Mi}}`|
-| `agent.volumes`            | Additional volumes                              | `[]`                   |
-| `agent.envVars`            | Environment variables for the agent Pod         | `[]`                   |
-| `agent.command`            | Executed command when side container starts     | Not set                |
-| `agent.args`               | Arguments passed to executed command            | Not set                |
-| `agent.sideContainerName`  | Side container name in agent                    | jnlp                   |
-| `agent.TTYEnabled`         | Allocate pseudo tty to the side container       | false                  |
-| `agent.containerCap`       | Maximum number of agent                         | 10                     |
-| `agent.podName`            | Agent Pod base name                             | Not set                |
-| `agent.idleMinutes`        | Allows the Pod to remain active for reuse       | 0                      |
-| `agent.yamlTemplate`       | The raw yaml of a Pod API Object to merge into the agent spec | Not set                |
+| `agent.enabled`                        | Enable Kubernetes plugin jnlp-agent podTemplate | `true`                 |
+| `agent.containerCap`                   | Maximum number of agent                         | 10                     |
+| `agent.podRetention`                   | Agent pods retention policy                     | `Never`                |
+| `agent.retentionTimeout`               | Time in minutes to retain pod after completion  | 5                      |
+| `agent.templates.*.name`               | Pod name for agent template                     | Not set                |
+| `agent.templates.*.componentName`      | Agent component name used for label creation    |                        |
+| `agent.templates.*.customJenkinsLabels`| Append Jenkins labels to the agent              | `{}`                   |
+| `agent.templates.*.imagePullSecret`    | Agent image pull secret                         | Not set                |
+| `agent.templates.*.idleMinutes`        | Allows the Pod to remain active for reuse       | 0                      |
+| `agent.templates.*.yamlTemplate`       | The raw yaml of a Pod API Object to merge into the agent spec | Not set                |
+| `agent.templates.*.volumes`            | Additional volumes                              | `[]`                   |
+| `agent.templates.*.envVars`            | Environment variables for the agent Pod         | `[]`                   |
+| `agent.templates.*.containers.*.name`       | Agent container name                            | `jnlp`                 |
+| `agent.templates.*.containers.*.image`      | Agent container image name                      | `jenkins/jnlp-slave`   |
+| `agent.templates.*.containers.*.tag`        | Agent container image tag                       | `3.27-1`               |
+| `agent.templates.*.containers.*.alwaysPullImage` | Always pull agent container image before build  | `false`                |
+| `agent.templates.*.containers.*.command`    | Executed command when side container starts     | Not set                |
+| `agent.templates.*.containers.*.args`       | Arguments passed to executed command            | Not set                |
+| `agent.templates.*.containers.*.TTYEnabled` | Allocate pseudo tty to the side container       | false                  |
+| `agent.templates.*.containers.*.privileged` | Agent privileged container                      | `false`                |
+| `agent.templates.*.containers.*.resources`  | Resources allocation (Requests and Limits)      | `{requests: {cpu: 512m, memory: 512Mi}, limits: {cpu: 512m, memory: 512Mi}}`|
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
@@ -220,10 +223,11 @@ Your Jenkins Agents will run as pods, and it's possible to inject volumes where 
 
 ```yaml
 agent:
-  volumes:
-  - type: Secret
-    secretName: jenkins-mysecrets
-    mountPath: /var/run/secrets/jenkins-mysecrets
+  templates:
+    - volumes:
+      - type: Secret
+        secretName: jenkins-mysecrets
+        mountPath: /var/run/secrets/jenkins-mysecrets
 ```
 
 The supported volume types are: `ConfigMap`, `EmptyDir`, `HostPath`, `Nfs`, `Pod`, `Secret`. Each type supports a different set of configurable attributes, defined by [the corresponding Java class](https://github.com/jenkinsci/kubernetes-plugin/tree/master/src/main/java/org/csanchez/jenkins/plugins/kubernetes/volumes).
