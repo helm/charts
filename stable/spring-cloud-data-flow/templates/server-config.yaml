@@ -12,6 +12,7 @@ metadata:
 data:
   application.yaml: |-
     spring:
+      {{- if .Values.features.batch.enabled }}
       cloud:
         dataflow:
           task:
@@ -22,6 +23,7 @@ data:
                     limits:
                       memory: {{ .Values.deployer.resourceLimits.memory }}
                       cpu: {{ .Values.deployer.resourceLimits.cpu }}
+      {{- end }}
       datasource:
         url: 'jdbc:{{ template "scdf.database.scheme" . }}://{{ template "scdf.database.host" . }}:{{ template "scdf.database.port" . }}/{{ template "scdf.database.dataflow" . }}'
         driverClassName: {{ template "scdf.database.driver" . }}

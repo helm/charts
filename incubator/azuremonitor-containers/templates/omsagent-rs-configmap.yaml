@@ -7,7 +7,7 @@ data:
     #fluent forward plugin
      <source>
       type forward
-      port 25227
+      port "#{ENV['HEALTHMODEL_REPLICASET_SERVICE_SERVICE_PORT']}"
       bind 0.0.0.0
      </source>
 
@@ -61,7 +61,7 @@ data:
      #Kubernetes health
      <source>
       type kubehealth
-      tag oms.api.KubeHealth.ReplicaSet
+      tag kubehealth.ReplicaSet
       run_interval 60s
       log_level debug
      </source>
@@ -89,7 +89,7 @@ data:
      </filter>
 
      #health model aggregation filter
-     <filter oms.api.KubeHealth**>
+     <filter kubehealth**>
       type filter_health_model_builder
      </filter>
 
@@ -178,7 +178,7 @@ data:
       max_retry_wait 9m
      </match>
 
-     <match oms.api.KubePerf**>	
+     <match oms.api.KubePerf**>
       type out_oms
       log_level debug
       num_threads 5
@@ -240,16 +240,19 @@ data:
       retry_mdm_post_wait_minutes 60
      </match>
 
-     <match oms.api.KubeHealth.AgentCollectionTime**>
-      type out_oms_api
+     <match kubehealth.Signals**>
+      type out_oms
       log_level debug
-      buffer_chunk_limit 10m
+      num_threads 5
+      buffer_chunk_limit 20m
       buffer_type file
-      buffer_path %STATE_DIR_WS%/out_oms_api_kubehealth*.buffer
-      buffer_queue_limit 10
+      buffer_path %STATE_DIR_WS%/out_oms_kubehealth*.buffer
+      buffer_queue_limit 20
+      buffer_queue_full_action drop_oldest_chunk
       flush_interval 20s
       retry_limit 10
       retry_wait 30s
+      max_retry_wait 9m
      </match>
 metadata:
   name: omsagent-rs-config
@@ -258,4 +261,4 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-{{- end }} 
+{{- end }}

@@ -1,9 +1,8 @@
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
-    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
 {{- if .Values.service.annotations }}
+  annotations:
 {{ toYaml .Values.service.annotations | indent 4 }}
 {{- end }}
   name: {{ printf "%s-discovery" (include "rabbitmq-ha.fullname" .) | trunc 63 | trimSuffix "-" }}

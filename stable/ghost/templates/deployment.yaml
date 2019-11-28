@@ -1,5 +1,5 @@
 {{- if include "ghost.host" . -}}
-apiVersion: apps/v1
+apiVersion: {{ template "ghost.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "ghost.fullname" . }}

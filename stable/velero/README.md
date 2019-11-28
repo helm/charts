@@ -1,18 +1,18 @@
 # Velero-server
 
 This helm chart installs Velero version v1.1.0
-https://github.com/heptio/velero/tree/v1.1.0
+https://github.com/vmware-tanzu/velero/tree/v1.1.0
 
 
 ## Upgrading to v1.1.0
 
-As of v1.1.0, Heptio Velero is no longer backwards-compatible with Heptio Ark.
+As of v1.1.0, Velero is no longer backwards-compatible with Heptio Ark.
 
 The [instructions found here](https://velero.io/docs/v1.1.0/upgrade-to-1.1/) will assist you in upgrading from version v1.0.0 to v1.1.0
 
 ## Upgrading to v1.0.0
 
-As of v1.0.0, Heptio Velero is no longer backwards-compatible with Heptio Ark.
+As of v1.0.0, Velero is no longer backwards-compatible with Heptio Ark.
 
 The [instructions found here](https://velero.io/docs/v1.0.0/upgrade-to-1.0/) will assist you in upgrading from version v0.11.0 to v1.0.0
 
@@ -66,7 +66,10 @@ Parameter | Description | Default
 `resources` | Resource requests and limits | `{}`
 `initContainers` | InitContainers and their specs to start with the deployment pod | `[]`
 `tolerations` | List of node taints to tolerate | `[]`
+`priorityClassName` | Pod priority class name to use for the Velero deployment | `{}`
 `nodeSelector` | Node labels for pod assignment | `{}`
+`extraVolumes` | Extra volumes for the Velero deployment | `[]`
+`extraVolumeMounts` | Extra volumeMounts for the Velero deployment | `[]`
 `configuration.backupStorageLocation.name` | The name of the cloud provider that will be used to actually store the backups (`aws`, `azure`, `gcp`) | ``
 `configuration.backupStorageLocation.bucket` | The storage bucket where backups are to be uploaded | ``
 `configuration.backupStorageLocation.config.region` | The cloud provider region (AWS only) | ``
@@ -101,11 +104,15 @@ Parameter | Description | Default
 `restic.podVolumePath` | Location of pod volumes on the host | `/var/lib/kubelet/pods`
 `restic.privileged` | Whether restic should run as a privileged pod. Only necessary in special cases (SELinux) | `false`
 `restic.resources` | Restic DaemonSet resource requests and limits | `{}`
+`restic.priorityClassName` | Restic DaemonSet pod priority class name | `{}`
+`restic.tolerations` | Restic DaemonSet tolerations | `[]`
+`restic.extraVolumes` | Extra volumes for the Restic daemonset | `[]`
+`restic.extraVolumeMounts` | Extra volumeMounts for the Restic daemonset | `[]`
 `configMaps` | Velero ConfigMaps | `[]`
 
 ## How to
 ```
-helm install --name velero --namespace velero ./velero
+helm install --name velero --namespace velero stable/velero
 ```
 
 ## Remove heptio/velero

@@ -4,10 +4,11 @@ kind: List
 items:
 {{- if .Values.additionalPrometheusRulesMap }}
 {{- range $prometheusRuleName, $prometheusRule := .Values.additionalPrometheusRulesMap }}
-  - apiVersion: {{ printf "%s/v1" ($.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
+  - apiVersion: monitoring.coreos.com/v1
     kind: PrometheusRule
     metadata:
       name: {{ template "prometheus-operator.name" $ }}-{{ $prometheusRuleName }}
+      namespace: {{ $.Release.Namespace }}
       labels:
         app: {{ template "prometheus-operator.name" $ }}
 {{ include "prometheus-operator.labels" $ | indent 8 }}
@@ -20,10 +21,11 @@ items:
 {{- end }}
 {{- else }}
 {{- range .Values.additionalPrometheusRules }}
-  - apiVersion: {{ printf "%s/v1" ($.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
+  - apiVersion: monitoring.coreos.com/v1
     kind: PrometheusRule
     metadata:
       name: {{ template "prometheus-operator.name" $ }}-{{ .name }}
+      namespace: {{ $.Release.Namespace }}
       labels:
         app: {{ template "prometheus-operator.name" $ }}
 {{ include "prometheus-operator.labels" $ | indent 8 }}

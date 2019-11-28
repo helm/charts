@@ -47,6 +47,9 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
+{{- if .Values.env }}
+{{ toYaml .Values.env | indent 12 }}
+{{- end }}
           volumeMounts:
             - name: log
               mountPath: /var/log
