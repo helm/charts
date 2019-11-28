@@ -3,10 +3,7 @@ kind: CustomResourceDefinition
 metadata:
   name: schedules.ark.heptio.com
   labels:
-    chart: {{ template "ark.chart" . }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-    app: {{ template "ark.name" . }}
+    app: ark
   annotations:
     "helm.sh/hook": crd-install
     "helm.sh/hook-delete-policy": "before-hook-creation"

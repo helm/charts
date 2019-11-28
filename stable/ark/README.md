@@ -90,6 +90,7 @@ Parameter | Description | Default
 `metrics.serviceMonitor.enabled` | Set this to `true` to create ServiceMonitor for Prometheus operator | `false`
 `metrics.serviceMonitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | `{}`
 `schedules` | A dict of schedules | `{}`
+`createCustomResource` | Create custom reousrce, set false if exist which not require if using Helm v3 | `false`
 
 
 ## How to
