@@ -70,6 +70,8 @@ The following table lists the configurable parameters of the pushgateway chart a
 | `serviceMonitor.additionalLables` | Used to pass Labels that are required by the Installed Prometheus Operator                                                    | `{}`                              |
 | `serviceMonitor.honorLabels`      | if `true`, label conflicts are resolved by keeping label values from the scraped data                                         | `true`                            |
 | `podDisruptionBudget`             | If set, create a PodDisruptionBudget with the items in this map set in the spec                                               | ``                                |
+| `networkPolicy.allowAll`          | Allow connectivity from all pods in the cluster                                                                               | ``                                |
+| `networkPolicy.customSelectors`   | Allow connectivity from pods that match a list of podSelectors and namespaceSelectors                                         | ``                                |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

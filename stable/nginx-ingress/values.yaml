@@ -227,8 +227,9 @@ controller:
 
     annotations: {}
     labels: {}
+    ## Deprecated, instead simply do not provide a clusterIP value
     omitClusterIP: false
-    clusterIP: ""
+    # clusterIP: ""
 
     ## List of IP addresses at which the controller services are available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
@@ -317,8 +318,9 @@ controller:
 
     service:
       annotations: {}
+      ## Deprecated, instead simply do not provide a clusterIP value
       omitClusterIP: false
-      clusterIP: ""
+      # clusterIP: ""
       externalIPs: []
       loadBalancerIP: ""
       loadBalancerSourceRanges: []
@@ -347,8 +349,9 @@ controller:
       # prometheus.io/scrape: "true"
       # prometheus.io/port: "10254"
 
+      ## Deprecated, instead simply do not provide a clusterIP value
       omitClusterIP: false
-      clusterIP: ""
+      # clusterIP: ""
 
       ## List of IP addresses at which the stats-exporter service is available
       ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
@@ -490,8 +493,9 @@ defaultBackend:
 
   service:
     annotations: {}
+    ## Deprecated, instead simply do not provide a clusterIP value
     omitClusterIP: false
-    clusterIP: ""
+    # clusterIP: ""
 
     ## List of IP addresses at which the default backend service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
