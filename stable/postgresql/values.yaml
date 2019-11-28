@@ -348,7 +348,7 @@ resources:
     cpu: 250m
 
 networkPolicy:
-  ## Enable creation of NetworkPolicy resources.
+  ## Enable creation of NetworkPolicy resources. Only Ingress traffic is filtered for now.
   ##
   enabled: false
 
@@ -358,6 +358,17 @@ networkPolicy:
   ## (with the correct destination port).
   ##
   allowExternal: true
+
+  ## if explicitNamespacesSelector is missing or set to {}, only Pods that are in the networkPolicy's namespace
+  ## and that match other criteria, the ones that can be selected by one of the podSelectors, can reach the DB.
+  ## But sometimes, we want the DB to be accessible from other namespaces, in this case, we can use this
+  ## LabelSelector to select these namespaces, note that the networkPolicy's should also be explicitly added.
+  ##
+  # explicitNamespacesSelector:
+    # matchLabels:
+      # role: frontend
+    # matchExpressions:
+      # - {key: role, operator: In, values: [frontend]}
 
 ## Configure extra options for liveness and readiness probes
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
