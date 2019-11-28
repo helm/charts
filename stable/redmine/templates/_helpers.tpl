@@ -149,9 +149,9 @@ Create the name of the service account to use
 */}}
 {{- define "redmine.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}
-    {{ default (include "redmine.fullname" .) .Values.serviceAccount.name }}
+{{ default (include "redmine.fullname" .) .Values.serviceAccount.name }}
 {{- else -}}
-    {{ default "default" .Values.serviceAccount.name }}
+{{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
 
