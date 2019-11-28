@@ -64,6 +64,7 @@ livenessProbe:
   path: "/sample"
   initialDelaySeconds: 60
   periodSeconds: 30
+  failureThreshold: 6
 
 resources: {}
 #  limits:
