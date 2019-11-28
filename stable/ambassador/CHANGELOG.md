@@ -7,7 +7,9 @@ numbering uses [semantic versioning](http://semver.org).
 
 ### Breaking changes
 
-- Helm 3 support for CRDs was added. Specifically, the CRD templates were moved to non-templated files in the `/crds` directory, and to keep Helm 2 support they are globbed from there by `/templates/crds.yaml`. However, because Helm 3 CRDs are not templated, the labels have necessarily changed. Because of this, you must manually delete any ambassador CRDs installed by previous versions of this chart before upgrading
+**Note** If upgrading an existing helm 2 installation no action is needed, previously installed CRDs will not be modified.
+
+- Helm 3 support for CRDs was added. Specifically, the CRD templates were moved to non-templated files in the `/crds` directory, and to keep Helm 2 support they are globbed from there by `/templates/crds.yaml`. However, because Helm 3 CRDs are not templated, the labels for new installations have necessarily changed
 
 ## v4.0.0
 
