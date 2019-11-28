@@ -89,7 +89,7 @@ spec:
         - name: REDMINE_DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "redmine.externalDatabase.secretName" . }}
+              name: {{ template "redmine.secretName" . }}
               key: db-password
         - name: REDMINE_DB_PORT_NUMBER
           value: {{ .Values.externalDatabase.port | quote }}

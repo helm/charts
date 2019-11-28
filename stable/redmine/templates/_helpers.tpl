@@ -154,14 +154,3 @@ Return the name of the Secret used to store the passwords
 {{ template "redmine.fullname" . }}
 {{- end -}}
 {{- end -}}
-
-{{/*
-Return the name of the Secret used to store the external database passwords
-*/}}
-{{- define "redmine.externalDatabase.secretName" -}}
-{{- if .Values.externalDatabase.existingSecret -}}
-{{ .Values.externalDatabase.existingSecret }}
-{{- else -}}
-{{ printf "%s-%s" .Release.Name "externaldb" }}
-{{- end -}}
-{{- end -}}
