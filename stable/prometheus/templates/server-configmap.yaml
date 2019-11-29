@@ -50,7 +50,7 @@ data:
           regex: {{ template "prometheus.name" $root }}
           action: keep
         - source_labels: [__meta_kubernetes_pod_label_component]
-          regex: alertmanager
+          regex: {{ $root.Values.alertmanager.name }}
           action: keep
         - source_labels: [__meta_kubernetes_pod_container_port_number]
           regex:
