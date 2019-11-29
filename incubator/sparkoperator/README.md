@@ -34,8 +34,7 @@ The following table lists the configurable parameters of the Spark operator char
 | `controllerThreads`       | Number of worker threads used by the SparkApplication controller | 10                                 |
 | `ingressUrlFormat`        | Ingress URL format                                           | ""                                     |
 | `logLevel`                | Logging verbosity level                                      | 2                                      |
-| `installCrds`             | Whether to install CRDs                                      | true                                   |
-| `cleanupCrdsBeforeInstall` | Remove CRDs before running the crd-install hook on changes. | `false` |
+| `installCrds`             | Whether to install CRDs                                      | false                                   |
 | `metricsPort`             | Port for the metrics endpoint                                | 10254                                  |
 | `metricsEndpoint`         | Metrics endpoint                                             | "/metrics"                             |
 | `metricsPrefix`           | Prefix for the metrics                                       | ""                                     |

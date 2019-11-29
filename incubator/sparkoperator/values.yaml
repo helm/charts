@@ -16,8 +16,7 @@ serviceAccounts:
     name:
 
 sparkJobNamespace: ""
-installCrds: true
-cleanupCrdsBeforeInstall: false
+installCrds: false
 controllerThreads: 10
 resyncInterval: 30
 ingressUrlFormat: ""
