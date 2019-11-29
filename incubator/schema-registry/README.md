@@ -98,6 +98,7 @@ The following table lists the configurable parameters of the SchemaRegistry char
 | `external.servicePort` | set service port | `443` |
 | `external.loadBalancerIP` | set Static IP for LoadBalancer | `""` |
 | `external.nodePort` | set Nodeport (valid range depends on CLoud Provider) | `""` |
+| `external.annotations` | Additional annotations for the external service | `{}` |
 | `jmx.enabled` | Enable JMX? | `true` |
 | `jmx.port` | set JMX port | `5555` |
 | `prometheus.jmx.enabled` | Enable Prometheus JMX Exporter | `false` |

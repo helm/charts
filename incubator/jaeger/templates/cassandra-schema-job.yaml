@@ -38,6 +38,13 @@ spec:
           value: {{ .Values.cassandra.config.dc_name | quote }}
         - name: CASSANDRA_PORT
           value: {{ .Values.storage.cassandra.port | quote }}
+        - name: CASSANDRA_USERNAME
+          value: {{ .Values.storage.cassandra.user }}
+        - name: CASSANDRA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ if .Values.storage.cassandra.existingSecret }}{{ .Values.storage.cassandra.existingSecret }}{{- else }}{{ include "jaeger.fullname" . }}-cassandra{{- end }}
+              key: password
         resources:
 {{ toYaml .Values.schema.resources | indent 10 }}
       restartPolicy: OnFailure

@@ -44,9 +44,14 @@ data:
       rabbitmq_auth_backend_http,
       {{- end }}
 
+      {{- if .Values.rabbitmqPrometheusPlugin.enabled }}
+      rabbitmq_prometheus,
+      {{- end }}
+
       rabbitmq_consistent_hash_exchange,
       rabbitmq_management,
       rabbitmq_peer_discovery_k8s
+      
     ].
 
   rabbitmq.conf: |
@@ -68,9 +73,11 @@ data:
     cluster_formation.node_cleanup.only_log_warning = true
     cluster_partition_handling = {{ .Values.rabbitmqClusterPartitionHandling }}
 
+    {{- if eq .Values.rabbitmqUsername "guest" }}
     ## The default "guest" user is only permitted to access the server
     ## via a loopback interface (e.g. localhost)
     loopback_users.guest = false
+    {{- end }}
 
     management.load_definitions = /etc/definitions/definitions.json
 
@@ -105,6 +112,13 @@ data:
     ## Web STOMP Plugin
     {{- if .Values.rabbitmqWebSTOMPPlugin.enabled }}
 {{ .Values.rabbitmqWebSTOMPPlugin.config | indent 4 }}
+    {{- end }}
+
+    ## Prometheus Plugin
+    {{- if .Values.rabbitmqPrometheusPlugin.enabled }}
+{{ .Values.rabbitmqPrometheusPlugin.config | indent 4 }}
+    prometheus.path = {{ .Values.rabbitmqPrometheusPlugin.path }}
+    prometheus.tcp.port =  {{ .Values.rabbitmqPrometheusPlugin.port }}
     {{- end }}
 
     ## AMQPS support

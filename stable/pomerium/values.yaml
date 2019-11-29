@@ -61,7 +61,6 @@ proxy:
   authenticateServiceUrl: ""
   authorizeServiceUrl: ""
   authorizeInternalUrl: ""
-  authenticateInternalUrl: ""
 
 service:
   # Service type can be set to ClusterIP, NodePort or LoadBalancer.
@@ -83,6 +82,7 @@ ingress:
     cert: ""
     key: ""
   enabled: true
+  hosts: []
   annotations:
     {}
     # === nginx tweaks
@@ -127,7 +127,7 @@ extraVolumes: {}
 
 image:
   repository: "pomerium/pomerium"
-  tag: "v0.3.1"
+  tag: "v0.4.2"
   pullPolicy: "IfNotPresent"
 
 metrics:

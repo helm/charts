@@ -13,14 +13,14 @@ metadata:
 {{ toYaml .Values.controller.metrics.service.labels | indent 4 }}
 {{- end }}
     app: {{ template "nginx-ingress.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "nginx-ingress.chart" . }}
     component: "{{ .Values.controller.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "nginx-ingress.controller.fullname" . }}-metrics
 spec:
 {{- if not .Values.controller.metrics.service.omitClusterIP }}
-  clusterIP: "{{ .Values.controller.metrics.service.clusterIP }}"
+  {{ with .Values.controller.metrics.service.clusterIP }}clusterIP: {{ . }}{{ end }}
 {{- end }}
 {{- if .Values.controller.metrics.service.externalIPs }}
   externalIPs:

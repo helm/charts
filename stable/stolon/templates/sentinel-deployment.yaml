@@ -60,6 +60,9 @@ spec:
               value: "0.0.0.0:8080"
             - name: STSENTINEL_DEBUG
               value: {{ .Values.debug | quote}}
+{{- if .Values.sentinel.extraEnv }}
+{{ toYaml .Values.sentinel.extraEnv | indent 12 }}
+{{- end }}
           ports:
 {{- range $key, $value := .Values.ports }}
             - name: {{ $key }}

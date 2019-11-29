@@ -15,6 +15,13 @@ spec:
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
+      {{- if .Values.annotations }}
+      # Annotations iteration - Useful for KIAM and others
+      annotations:
+        {{- range $key, $value := .Values.annotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      {{- end }}
       labels:
         app.kubernetes.io/name: {{ include "rundeck.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}

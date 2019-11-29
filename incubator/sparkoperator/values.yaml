@@ -1,6 +1,7 @@
 operatorImageName: gcr.io/spark-operator/spark-operator
 operatorVersion: v1beta2-1.0.1-2.4.4
 imagePullPolicy: IfNotPresent
+imagePullSecrets: []
 replicas: 1
 
 rbac:
@@ -16,10 +17,13 @@ serviceAccounts:
 
 sparkJobNamespace: ""
 installCrds: true
+cleanupCrdsBeforeInstall: false
 controllerThreads: 10
 resyncInterval: 30
 ingressUrlFormat: ""
 logLevel: 2
+
+securityContext: {}
 
 enableWebhook: false
 webhookPort: 8080

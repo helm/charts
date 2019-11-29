@@ -10,7 +10,7 @@ This article describes how to set up and use [Azure Monitor - Containers](https:
 
 ## Pre-requisites
 
-- Kubernetes 1.7+
+- [Kubernetes versions and support policy  same as AKS supported versions](https://docs.microsoft.com/en-us/azure/aks/supported-kubernetes-versions)
 
 - You will need to create a location to store your monitoring data.
 
