@@ -69,36 +69,6 @@
               }
             }
           }
-        },
-        "resources": {
-          "type": "object",
-          "title": "Requested Resources for master replicas",
-          "form": true,
-          "properties": {
-            "requests": {
-              "type": "object",
-              "properties": {
-                "memory": {
-                  "type": "string",
-                  "form": true,
-                  "render": "slider",
-                  "title": "Memory Request",
-                  "sliderMin": 10,
-                  "sliderMax": 2048,
-                  "sliderUnit": "Mi"
-                },
-                "cpu": {
-                  "type": "string",
-                  "form": true,
-                  "render": "slider",
-                  "title": "CPU Request",
-                  "sliderMin": 10,
-                  "sliderMax": 2000,
-                  "sliderUnit": "m"
-                }
-              }
-            }
-          }
         }
       }
     },
@@ -136,36 +106,6 @@
               }
             }
           }
-        },
-        "resources": {
-          "type": "object",
-          "title": "Requested Resources for slave replicas",
-          "form": true,
-          "properties": {
-            "requests": {
-              "type": "object",
-              "properties": {
-                "memory": {
-                  "type": "string",
-                  "form": true,
-                  "render": "slider",
-                  "title": "Memory Request",
-                  "sliderMin": 10,
-                  "sliderMax": 2048,
-                  "sliderUnit": "Mi"
-                },
-                "cpu": {
-                  "type": "string",
-                  "form": true,
-                  "render": "slider",
-                  "title": "CPU Request",
-                  "sliderMin": 10,
-                  "sliderMax": 2000,
-                  "sliderUnit": "m"
-                }
-              }
-            }
-          }
         }
       }
     },
@@ -176,7 +116,7 @@
           "type": "boolean",
           "form": true,
           "title": "Enable Init Containers",
-          "description": "Change the owner of the persist volume mountpoint to RunAsUser:fsGroup"
+          "description": "Use an init container to set required folder permissions on the data volume before mounting it in the final destination"
         }
       }
     },
