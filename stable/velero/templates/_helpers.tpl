@@ -52,3 +52,25 @@ Create the name for the credentials secret.
   {{- include "velero.fullname" . -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create the Velero priority class name.
+*/}}
+{{- define "velero.priorityClassName" -}}
+{{- if .Values.priorityClassName -}}
+  {{- .Values.priorityClassName -}}
+{{- else -}}
+  {{- include "velero.fullname" . -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create the Restic priority class name.
+*/}}
+{{- define "velero.restic.priorityClassName" -}}
+{{- if .Values.restic.priorityClassName -}}
+  {{- .Values.restic.priorityClassName -}}
+{{- else -}}
+  {{- include "velero.fullname" . -}}
+{{- end -}}
+{{- end -}}

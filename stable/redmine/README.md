@@ -125,6 +125,7 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `podDisruptionBudget.maxUnavailable`| Maximum unavailable pods                   | `nil`                                                   |
 | `replicas`                          | The number of pod replicas                 | `1`                                                     |
 | `resources`                         | Resources allocation (Requests and Limits) | `{}`                                                    |
+| `securityContext`                   | SecurityContext                            | `{}`                                                    |
 | `livenessProbe.enabled`             | would you like a livenessProbe to be enabled                                                | `true` |
 | `livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated                                                    | 300    |
 | `livenessProbe.periodSeconds`       | How often to perform the probe                                                              | 10     |
