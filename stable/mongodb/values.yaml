@@ -395,7 +395,7 @@ metrics:
     registry: docker.io
     repository: bitnami/mongodb-exporter
     tag: 0.10.0-debian-9-r49
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
