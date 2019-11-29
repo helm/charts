@@ -5,6 +5,9 @@ numbering uses [semantic versioning](http://semver.org).
 
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
+## 1.9.5
+
+Enables jenkins to use keystore inorder to have native ssl support [#17790](https: https://wiki.jenkins.io/pages/viewpage.action?pageId=135468777)
 
 ## 1.7.4
 
