@@ -1,5 +1,10 @@
 {{- if eq .Values.mode "distributed" }}
+{{ $zoneCount := .Values.zones | int }}
 {{ $nodeCount := .Values.replicas | int }}
+{{ $scheme := "http" }}
+{{- if .Values.tls.enabled }}
+{{ $scheme = "https" }}
+{{ end }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -32,7 +37,7 @@ spec:
     type: {{ .Values.StatefulSetUpdate.updateStrategy }}
   podManagementPolicy: "Parallel"
   serviceName: {{ template "minio.fullname" . }}-svc
-  replicas: {{ .Values.replicas }}
+  replicas: {{ mul $zoneCount $nodeCount }}
   selector:
     matchLabels:
       app: {{ template "minio.name" . }}
@@ -61,21 +66,7 @@ spec:
         - name: {{ .Chart.Name }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if .Values.tls.enabled }}
-          command: [ "/bin/sh",
-          "-ce",
-          "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} server
-          {{- range $i := until $nodeCount }}
-          https://{{ template `minio.fullname` $ }}-{{ $i }}.{{ template `minio.fullname` $ }}-svc.{{ $.Release.Namespace }}.svc.{{ $.Values.clusterDomain }}{{ $.Values.mountPath }}
-          {{- end }}" ]
-          {{ else }}
-          command: [ "/bin/sh",
-          "-ce",
-          "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} server
-          {{- range $i := until $nodeCount }}
-          http://{{ template `minio.fullname` $ }}-{{ $i }}.{{ template `minio.fullname` $ }}-svc.{{ $.Release.Namespace }}.svc.{{ $.Values.clusterDomain }}{{ $.Values.mountPath }}
-          {{- end }}" ]
-          {{ end }}
+          command: [ "/bin/sh", "-ce", "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} server {{- range $i := until $zoneCount }}{{ $factor := mul $i $nodeCount }}{{ $endIndex := add $factor $nodeCount }}{{ $beginIndex := mul $i $nodeCount }}  {{ $scheme }}://{{ template `minio.fullname` $ }}-{{ `{` }}{{ $beginIndex }}...{{ sub $endIndex 1 }}{{ `}`}}.{{ template `minio.fullname` $ }}-svc.{{ $.Release.Namespace }}.svc.{{ $.Values.clusterDomain }}{{ $.Values.mountPath }} {{- end}}" ]
           {{- if .Values.extraArgs }}
           args:
 {{ toYaml .Values.extraArgs | indent 12 }}

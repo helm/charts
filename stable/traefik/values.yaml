@@ -1,6 +1,6 @@
 ## Default values for Traefik
 image: traefik
-imageTag: 1.7.14
+imageTag: 1.7.19
 
 ## Optionally specify an array of imagePullSecrets.
 ## Secrets must be manually created in the namespace.
@@ -10,6 +10,7 @@ imageTag: 1.7.14
 
 
 testFramework:
+  enabled: false
   image: "dduportal/bats"
   tag: "0.4.0"
 
@@ -146,6 +147,14 @@ ssl:
     # basic:
     #   testuser: $apr1$JXRA7j2s$LpVns9vsme8FHN0r.aSt11
 
+  # a list of any extra certificate/key filenames you want included in the traefik instance. This must be used in conjunction with
+  # the "secretFiles" parameter to include the certs on each traefik pod. the expected format is:
+  # extraCerts:
+  #   - certFile: /secrets/cert1.crt
+  #     keyFile: /secrets/key1.key
+  #   - certFile: /secrets/cert2.crt
+  #     keyFile: /secrets/key2.key
+
   # mtls:
   #   enabled: true
   #   optional: false
@@ -234,7 +243,7 @@ acme:
   ## certain circumstances) DISABLED by Let's Encrypt. It remains as a default
   ## value in this chart to preserve legacy behavior and avoid a breaking
   ## change. Users of this chart should strongly consider making the switch to
-  ## the recommended "tls-alpn-01" (avaialbe since v1.7), dns-01 or http-01
+  ## the recommended "tls-alpn-01" (available since v1.7), dns-01 or http-01
   ## (available since v1.5) challenge.
   challengeType: tls-sni-01
   ## Configure dnsProvider to perform domain verification using dns challenge
@@ -243,6 +252,10 @@ acme:
   resolvers: []
     # - 1.1.1.1:53
     # - 8.8.8.8:53
+  ## Configure the endpoint used for the HTTP challenge
+  ## Applicable only if using the http-01 challenge type
+  httpChallenge:
+    entrypoint: http
   dnsProvider:
     name: nil
     existingSecretName: ""

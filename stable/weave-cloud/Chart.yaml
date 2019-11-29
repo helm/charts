@@ -1,7 +1,7 @@
 apiVersion: v1
-appVersion: "1.3.0"
+appVersion: "1.4.0"
 name: weave-cloud
-version: 0.3.5
+version: 0.3.7
 description: |
     Weave Cloud is a add-on to Kubernetes which provides Continuous Delivery, along with hosted Prometheus Monitoring and a visual dashboard for exploring & debugging microservices
 home: https://weave.works

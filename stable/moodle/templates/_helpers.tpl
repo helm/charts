@@ -28,16 +28,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 {{- define "moodle.mariadb.fullname" -}}
-{{- if .Values.fullnameOverride -}}
-{{- printf "%s-%s" .Values.fullnameOverride "mariadb" | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- if contains $name .Release.Name -}}
 {{- printf "%s-%s" .Release.Name "mariadb" | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- printf "%s-%s-%s" .Release.Name $name "mariadb" | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-{{- end -}}
 {{- end -}}
 
 {{/*
@@ -160,5 +151,16 @@ but Helm 2.9 and 2.10 does not support it, so we need to implement this if-else 
             {{- printf "storageClassName: %s" .Values.persistence.storageClass -}}
         {{- end -}}
     {{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the appropriate apiVersion for deployment.
+*/}}
+{{- define "moodle.deployment.apiVersion" -}}
+{{- if semverCompare "<1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "extensions/v1beta1" -}}
+{{- else -}}
+{{- print "apps/v1" -}}
 {{- end -}}
 {{- end -}}

@@ -22,7 +22,7 @@ rules:
   resources: ["pods", "events", "nodes", "namespaces", "services"]
   verbs: ["list", "get", "watch"]
 - apiGroups: ["extensions"]
-  resources: ["deployments"]
+  resources: ["replicasets"]
   verbs: ["list"]
 - apiGroups: ["azmon.container.insights"]
   resources: ["healthstates"]

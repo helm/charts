@@ -4,6 +4,9 @@ metadata:
   name: {{ template "redis-ha.fullname" . }}
   labels:
 {{ include "labels.standard" . | indent 4 }}
+{{- if and ( .Values.exporter.enabled ) ( .Values.exporter.serviceMonitor.enabled ) }}
+    servicemonitor: enabled
+{{- end }}
   annotations:
   {{- if .Values.serviceAnnotations }}
 {{ toYaml .Values.serviceAnnotations | indent 4 }}
