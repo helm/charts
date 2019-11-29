@@ -4,6 +4,10 @@ kind: CustomResourceDefinition
 metadata:
   creationTimestamp: null
   name: sparkapplications.sparkoperator.k8s.io
+annotations:
+{{- if .Values.cleanupCrdsBeforeInstall }}
+  "helm.sh/hook-delete-policy": "before-hook-creation"
+{{- end }}
 spec:
   group: sparkoperator.k8s.io
   names:
@@ -2540,6 +2544,10 @@ kind: CustomResourceDefinition
 metadata:
   creationTimestamp: null
   name: scheduledsparkapplications.sparkoperator.k8s.io
+annotations:
+{{- if .Values.cleanupCrdsBeforeInstall }}
+  "helm.sh/hook-delete-policy": "before-hook-creation"
+{{- end }}
 spec:
   group: sparkoperator.k8s.io
   names:

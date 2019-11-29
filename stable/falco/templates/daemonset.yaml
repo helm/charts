@@ -10,7 +10,8 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: {{ template "falco.fullname" . }}
+      app: {{ template "falco.fullname" .}}
+      role: security
   template:
     metadata:
       name: {{ template "falco.fullname" .}}

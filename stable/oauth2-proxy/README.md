@@ -41,6 +41,12 @@ incompatible breaking change needing manual actions.
 
 This version upgrade oauth2-proxy to v4.0.0. Please see the [changelog](https://github.com/pusher/oauth2_proxy/blob/v4.0.0/CHANGELOG.md#v400) in order to upgrade.
 
+### To 2.0.0
+
+Version 2.0.0 of this chart introduces support for Kubernetes v1.16.x by way of addressing the deprecation of the Deployment object apiVersion `apps/v1beta2`.  See [the v1.16 API deprecations page](https://kubernetes.io/blog/2019/07/18/api-deprecations-in-1-16/) for more information.
+
+Due to [this issue](https://github.com/helm/helm/issues/6583) there may be errors performing a `helm upgrade`of this chart from versions earlier than 2.0.0.
+
 ## Configuration
 
 The following table lists the configurable parameters of the oauth2-proxy chart and their default values.
@@ -97,6 +103,9 @@ Parameter | Description | Default
 `service.loadBalancerIP` | ip of load balancer | `nil`
 `service.loadBalancerSourceRanges` | allowed source ranges in load balancer | `nil`
 `tolerations` | list of node taints to tolerate | `[]`
+`securityContext.enabled` | enable Kubernetes security context | `false`
+`securityContext.runAsNonRoot` | make sure that the container runs as a non-root user | `true`
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

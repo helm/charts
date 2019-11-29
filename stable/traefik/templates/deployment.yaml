@@ -19,7 +19,9 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
+{{- if not .Values.autoscaling }}
   replicas: {{ default 1 .Values.replicas }}
+{{- end }}
   selector:
     matchLabels:
       app: {{ template "traefik.name" . }}
@@ -175,6 +177,11 @@ spec:
           {{- if .Values.deployment.hostPort.dashboardEnabled }}
           hostPort: {{ default 8080 .Values.deployment.hostPort.dashboardPort }}
           {{- end }}
+          protocol: TCP
+        {{- end }}
+        {{- if .Values.metrics.prometheus.enabled }}
+        - name: metrics
+          containerPort: 9100
           protocol: TCP
         {{- end }}
         args:

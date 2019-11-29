@@ -15,6 +15,7 @@ The following configurations may be set. It is recommended to use values.yaml fo
 Parameter | Description | Default
 --------- | ----------- | -------
 replicaCount | How many replicas to run. Riemann can really only work with one. | 1
+annotations | You can pass annotations inside .spec.template.metadata.annotations. Every value under this is iterated as a key/value and used as a parameter. Useful for KIAM/Kube2IAM and others for example. | ""
 image.repository | Name of the image to run, without the tag. | [rundeck/rundeck](https://github.com/rundeck/rundeck)
 image.tag | The image tag to use. | 3.0.16
 image.pullPolicy | The kubernetes image pull policy. | IfNotPresent
