@@ -99,6 +99,9 @@ spec:
           mountPath: /etc/fluent/config.d
         - name: buffer
           mountPath: "/var/log/fluentd-buffers"
+{{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 8 }}
+{{- end }}
       serviceAccountName: {{ template "fluentd.fullname" . }}
       volumes:
         - name: config-volume-{{ template "fluentd.fullname" . }}
@@ -113,6 +116,9 @@ spec:
         - name: buffer
           emptyDir: {}
         {{- end }}
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 8 }}
+{{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
