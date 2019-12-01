@@ -10,4 +10,4 @@ name: express-gateway
 sources:
 - https://github.com/expressgateway/express-gateway
 version: 1.6.3
-appVersion: 1.16.9
+appVersion: 1.16.10
