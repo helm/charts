@@ -77,16 +77,16 @@ spec:
             httpGet:
               path: /
               port: api
-            initialDelaySeconds: 60
-            failureThreshold: 5
-            timeoutSeconds: 10
+            initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
+            failureThreshold: {{ .Values.probes.liveness.failureThreshold }}
+            timeoutSeconds: {{ .Values.probes.liveness.timeoutSeconds }}
           readinessProbe:
             httpGet:
               path: /
               port: api
-            initialDelaySeconds: 60
-            failureThreshold: 5
-            timeoutSeconds: 10
+            initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
+            failureThreshold: {{ .Values.probes.readiness.failureThreshold }}
+            timeoutSeconds: {{ .Values.probes.readiness.timeoutSeconds }}
           env:
             {{- range $key, $value := .Values.extraEnv }}
             - name: {{ $key }}
