@@ -18,7 +18,8 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "chronograf.fullname" . }}
+        app.kubernetes.io/name: {{ include "chronograf.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
