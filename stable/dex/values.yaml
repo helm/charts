@@ -115,6 +115,10 @@ rbac:
   # Specifies whether RBAC resources should be created
   create: true
 
+crd:
+  # Specifies whether cluster role and cluster role binding should be created in order to enable dex to create its CRDs
+  create: true
+
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
   create: true
