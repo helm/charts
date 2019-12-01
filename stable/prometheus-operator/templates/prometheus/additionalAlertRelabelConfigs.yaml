@@ -3,7 +3,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-prometheus-am-relabel-confg
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ $.Release.Namespace }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-prometheus-am-relabel-confg
 {{ include "prometheus-operator.labels" . | indent 4 }}

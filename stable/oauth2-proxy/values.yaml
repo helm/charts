@@ -131,6 +131,12 @@ readinessProbe:
   periodSeconds: 10
   successThreshold: 1
 
+# Configure Kubernetes security context for container
+# Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+securityContext:
+  enabled: false
+  runAsNonRoot: true
+
 podAnnotations: {}
 podLabels: {}
 replicaCount: 1

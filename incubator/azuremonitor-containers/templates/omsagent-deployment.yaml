@@ -83,7 +83,6 @@ spec:
         periodSeconds: 60
    nodeSelector:
     beta.kubernetes.io/os: linux
-    kubernetes.io/role: agent
    volumes:
     - name: docker-sock
       hostPath:

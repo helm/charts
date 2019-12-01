@@ -302,7 +302,7 @@ spec:
         - name: azure-config-file
           {{- if or .Values.azure.secretName (and .Values.azure.resourceGroup .Values.azure.tenantId .Values.azure.subscriptionId) }}
           mountPath: /etc/kubernetes/
-          {{- else }}
+          {{- else if not .Values.azure.useManagedIdentityExtension }}
           mountPath: /etc/kubernetes/azure.json
           {{- end }}
           readOnly: true
@@ -342,7 +342,7 @@ spec:
         {{- else if (and .Values.azure.resourceGroup .Values.azure.tenantId .Values.azure.subscriptionId) }}
         secret:
           secretName: {{ template "external-dns.fullname" . }}
-        {{- else }}
+        {{- else if not .Values.azure.useManagedIdentityExtension }}
         hostPath:
           path: /etc/kubernetes/azure.json
           type: File
