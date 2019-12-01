@@ -24,8 +24,9 @@ spec:
     type: Recreate
   template:
     metadata:
-{{- if .Values.collector.podAnnotations }}
       annotations:
+        checksum/config-env: {{ include (print $.Template.BasePath "/collector-configmap.yaml") . | sha256sum }}
+{{- if .Values.collector.podAnnotations }}
 {{ toYaml .Values.collector.podAnnotations | indent 8 }}
 {{- end }}
       labels:
@@ -82,6 +83,10 @@ spec:
           - name: ES_USERNAME
             value: {{ .Values.storage.elasticsearch.user }}
           {{- end }}
+          {{- if .Values.collector.samplingConfig}}
+          - name: SAMPLING_STRATEGIES_FILE
+            value: /etc/conf/strategies.json
+          {{- end }}
         ports:
         - containerPort: {{ .Values.collector.service.grpcPort }}
           name: grpc
@@ -115,6 +120,10 @@ spec:
             subPath: {{ .subPath }}
             readOnly: {{ .readOnly }}
         {{- end }}
+        {{- if .Values.collector.samplingConfig}}
+          - name: strategies
+            mountPath: /etc/conf/
+        {{- end }}
       dnsPolicy: {{ .Values.collector.dnsPolicy }}
       restartPolicy: Always
       volumes:
@@ -123,4 +132,10 @@ spec:
           configMap:
             name: {{ .configMap }}
       {{- end }}
+      {{- if .Values.collector.samplingConfig}}
+        - name: strategies
+          configMap:
+            name: {{ include "jaeger.fullname" . }}-sampling-strategies
+      {{- end }}
+
 {{- end -}}
