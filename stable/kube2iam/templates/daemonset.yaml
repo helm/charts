@@ -21,6 +21,7 @@ spec:
 {{ toYaml .Values.podLabels | indent 8 }}
       {{- end }}
     spec:
+{{- include "kube2iam.imagePullSecrets" . | indent 6 }}
       containers:
         - name: kube2iam
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
