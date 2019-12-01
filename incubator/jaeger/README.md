@@ -222,6 +222,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `collector.service.type`                 | Service type                        |  `ClusterIP`                             |
 | `collector.service.zipkinPort`           | Zipkin port for JSON/thrift HTTP    |  `9411`                                  |
 | `collector.extraConfigmapMounts`         | Additional collector configMap mounts |  `[]`                                  |
+| `collector.samplingConfig`         | [Sampling strategies json file](https://www.jaegertracing.io/docs/latest/sampling/#collector-sampling-configuration) |  `nil`                                  |
 | `elasticsearch.rbac.create`              | To enable RBAC                      |  `false`                                 |
 | `fullnameOverride`                       | Override full name                  |  `nil`                                 |
 | `hotrod.enabled`                         | Enables the Hotrod demo app         |  `false`                                 |
