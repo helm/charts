@@ -84,7 +84,7 @@ Parameters introduced starting from v2
 | `config.web.tlsKey` | Maps to the dex config `web.tlsKey` param | `/etc/dex/tls/https/server/tls.key` |
 | `config.expiry.signingKeys` | Maps to the dex config `expiry.signingKeys` param | `6h` |
 | `config.expiry.idTokens` | Maps to the dex config `expiry.idTokens` param | `24h` |
-| `crd.create` | Whether to create cluster role and cluster role binding needed to enable dex to create its CRDs. Depends on `rbac.create` | `true` |
+| `crd.present` | Whether dex's CRDs are already present (if not cluster role and cluster role binding will be created to enable dex to create them). Depends on `rbac.create` | `false` |
 | `grpc` | Enable dex grpc endpoint | `true` |
 | `https` | Enable TLS termination for the dex http endpoint | `false` |
 | `ports.grpc.containerPort` | grpc port listened by the dex | `5000` |

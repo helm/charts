@@ -116,8 +116,9 @@ rbac:
   create: true
 
 crd:
-  # Specifies whether cluster role and cluster role binding should be created in order to enable dex to create its CRDs
-  create: true
+  # Specifies whether dex's CRDs are already present (if not cluster role and cluster role binding will be created
+  # to enable dex to create them). Depends on rbac.create
+  present: false
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created

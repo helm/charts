@@ -1,4 +1,5 @@
 {{- if .Values.rbac.create }}
+{{- if or .Values.certs.grpc.create .Values.certs.web.create .Values.crd.present }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
@@ -14,4 +15,5 @@ subjects:
   - kind: ServiceAccount
     name: {{ template "dex.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
+{{- end -}}
 {{- end -}}
