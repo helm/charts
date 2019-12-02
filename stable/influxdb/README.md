@@ -89,8 +89,13 @@ Values `.Values.config.bind_address` and `.Values.exposeRpc` no longer exist. Th
 
 ### From < 1.5.0 to >= 2.0.0
 
-The Kubernetes API change to support 1.160 may not be backwards compatible and may require the chare to be uninstalled in order to upgrade.  See [this issue](https://github.com/helm/helm/issues/6583) for some background.
+The Kubernetes API change to support 1.160 may not be backwards compatible and may require the chart to be uninstalled in order to upgrade.  See [this issue](https://github.com/helm/helm/issues/6583) for some background.
 
 ### From < 3.0.0 to >= 3.0.0
 
 Since version 3.0.0 this chart uses a StatefulSet instead of a Deployment. As part of this update the existing persistent volume (and all data) is deleted and a new one is created. Make sure to backup and restore the data manually.
+
+### From 3.1.0
+
+Since version 3.1.0 this chart already adds back pre-existing volume. This can give two choices for the storage policy, kept to use the existing PVC( `persistence.existingClaim`) or use dynamic PV `StorageClass`.  For  `StorageClass` please back up and restore the data manually. 
+

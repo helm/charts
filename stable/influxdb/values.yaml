@@ -43,7 +43,9 @@ service:
 ## Persist data to a persistent volume
 ##
 persistence:
+  ## this enables PVC templates that will create one per pod
   enabled: true
+
   ## influxdb data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -51,9 +53,15 @@ persistence:
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   ##
-  # storageClass: "-"
-  annotations:
+  # storageClass: ""
+  annotations: {}
   accessMode: ReadWriteOnce
+
+  ## Existing PersistentVolumeClaims
+  ## The value is evaluated as a template
+  ## So, for example, the name can depend on .Release or .Chart
+  # existingClaim: ""
+
   size: 8Gi
 
 ## Create default user through Kubernetes job
