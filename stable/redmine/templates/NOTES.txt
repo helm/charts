@@ -32,11 +32,11 @@ You have 4 alternatives:
 {{- $port:=.Values.service.port | toString }}
   echo "Redmine URL: http://$SERVICE_IP{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}/"
 
-{{- else if .Values.ingress.enabled }}
+{{- else if and .Values.ingress.enabled .Values.ingress.hostname }}
 
-  {{- range .Values.ingress.hosts }}
-    echo "Redmine URL: http://{{ .name }}/"
-  {{- end }}
+  You should be able to access your new Redmine installation through
+
+  http://{{- .Values.ingress.hostname }}/
 
 {{- else if contains "ClusterIP" .Values.service.type }}
 
