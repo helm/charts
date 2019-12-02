@@ -73,6 +73,8 @@ Returns configuration as code default config
 {{- define "jenkins.casc.defaults" -}}
 jenkins:
   disableRememberMe: false
+  remotingSecurity:
+    enabled: true
   mode: NORMAL
   numExecutors: {{ .Values.master.numExecutors }}
   projectNamingStrategy: "standard"

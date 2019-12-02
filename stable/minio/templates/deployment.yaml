@@ -15,8 +15,6 @@ spec:
     rollingUpdate:
       maxSurge: {{ .Values.DeploymentUpdate.maxSurge }}
       maxUnavailable: {{ .Values.DeploymentUpdate.maxUnavailable }}
-    {{- else }}
-    rollingUpdate: null
     {{- end}}
   {{- if .Values.nasgateway.enabled }}
   replicas: {{ .Values.nasgateway.replicas }}

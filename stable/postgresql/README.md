@@ -2,6 +2,8 @@
 
 [PostgreSQL](https://www.postgresql.org/) is an object-relational database management system (ORDBMS) with an emphasis on extensibility and on standards-compliance.
 
+For HA, please see [this repo](https://github.com/bitnami/charts/tree/master/bitnami/postgresql-ha)
+
 ## TL;DR;
 
 ```console
@@ -155,6 +157,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `livenessProbe.enabled`                       | Would you like a livenessProbe to be enabled                                                                                                                              | `true`                                                        |
 | `networkPolicy.enabled`                       | Enable NetworkPolicy                                                                                                                                                      | `false`                                                       |
 | `networkPolicy.allowExternal`                 | Don't require client label for connections                                                                                                                                | `true`                                                        |
+| `networkPolicy.explicitNamespacesSelector`    | A Kubernetes LabelSelector to explicitly select namespaces from which ingress traffic could be allowed                                                                    | `nil`                                                         |
 | `livenessProbe.initialDelaySeconds`           | Delay before liveness probe is initiated                                                                                                                                  | 30                                                            |
 | `livenessProbe.periodSeconds`                 | How often to perform the probe                                                                                                                                            | 10                                                            |
 | `livenessProbe.timeoutSeconds`                | When the probe times out                                                                                                                                                  | 5                                                             |
