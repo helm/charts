@@ -12,6 +12,9 @@ metadata:
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- if .Values.extraLabels }}
+      {{- toYaml .Values.extraLabels | nindent 4 }}
+    {{- end }}
     {{- if .Values.deploymentAnnotations }}
   annotations:
       {{- toYaml .Values.deploymentAnnotations | nindent 4 }}
@@ -30,8 +33,8 @@ spec:
         app.kubernetes.io/name: {{ include "ambassador.name" . }}
         app.kubernetes.io/part-of: {{ .Release.Name }}
         app.kubernetes.io/instance: {{ .Release.Name }}
-      {{- if .Values.podLabels }}
-        {{- toYaml .Values.podLabels | nindent 8 }}
+      {{- if .Values.extraLabels }}
+        {{- toYaml .Values.extraLabels | nindent 8 }}
       {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
