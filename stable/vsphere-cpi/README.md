@@ -11,33 +11,54 @@ This chart deploys all components required to run the external vSphere CPI as de
 - Has been tested on Kubernetes 1.13.X+
 - Assumes your Kubernetes cluster has been configured to use the external cloud provider. Please take a look at configuration guidelines located in the [Kubernetes documentation](https://kubernetes.io/docs/tasks/administer-cluster/running-cloud-controller/#running-cloud-controller-manager).
 
-## Installing the Chart
+## Installing the Chart using Helm 3.0+
 
-To install this chart with the release name `myrel` and by providing a vCenter information/credentials, run the following command:
+In Helm 3.0+, the stable charts repo isn't enabled by default because there is an effort to move the charts repo into a [distributed model](https://github.com/helm/hub/blob/master/Repositories.md). To enable the [stable charts](https://github.com/helm/charts/tree/master/stable), you can run the following command:
 
 ```bash
-$ helm install stable/vsphere-cpi --name myrel --set config.enabled=true --set config.vcenter=<vCenter IP> --set config.username=<vCenter Username> --set config.password=<vCenter Password> --set config.datacenter=<vCenter Datacenter>
+$ helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+$ helm repo update
+```
+
+Then to install this chart and by providing vCenter information/credentials, run the following command:
+
+```bash
+$ helm install vsphere-cpi stable/vsphere-cpi --set config.enabled=true --set config.vcenter=<vCenter IP> --set config.username=<vCenter Username> --set config.password=<vCenter Password> --set config.datacenter=<vCenter Datacenter>
 ```
 
 > **Tip**: List all releases using `helm list --all`
 
-If you want to provide your own `vsphere.conf` and Kubernetes secret `vsphere-cpi` in the `kube-system` namespace (to handle multple datacenters or multiple vCenters), you can learn more about the `vsphere.conf` and `vsphere-cpi` secret by reading the following [doucmentation](https://github.com/kubernetes/cloud-provider-vsphere/blob/master/docs/deploying_cloud_provider_vsphere_with_rbac.md) and then running the following command:
+If you want to provide your own `vsphere.conf` and Kubernetes secret `vsphere-cpi` in the `kube-system` namespace (for example, to handle multple datacenters/vCenters or for using zones), you can learn more about the `vsphere.conf` and `vsphere-cpi` secret by reading the following [documentation](https://github.com/kubernetes/cloud-provider-vsphere/blob/master/docs/book/tutorials/kubernetes-on-vsphere-with-kubeadm.md) and then running the following command:
 
 ```bash
-$ helm install stable/vsphere-cpi --name myrel
+$ helm install vsphere-cpi stable/vsphere-cpi
+```
+
+## Installing the Chart using Helm 2.X
+
+To install this chart with the release name `vsphere-cpi` and by providing a vCenter information/credentials, run the following command:
+
+```bash
+$ helm install stable/vsphere-cpi --name vsphere-cpi --set config.enabled=true --set config.vcenter=<vCenter IP> --set config.username=<vCenter Username> --set config.password=<vCenter Password> --set config.datacenter=<vCenter Datacenter>
+```
+
+If you provide your own `vsphere.conf` and Kubernetes secret `vsphere-cpi` in the `kube-system` namespace, then deploy the chart running the following command:
+
+```bash
+$ helm install stable/vsphere-cpi --name vsphere-cpi
 ```
 
 ## Uninstalling the Chart
 
-To uninstall/delete the `myrel` deployment:
+To uninstall/delete the `vsphere-cpi` deployment:
 
 ```bash
-$ helm delete myrel
+$ helm delete vsphere-cpi
 ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
-> **Tip**: To permanently remove the release, run `helm delete --purge myrel`
+> **Tip**: To permanently remove the release using Helm v2.X, run `helm delete --purge vsphere-cpi`
 
 ## Configuration
 
@@ -53,7 +74,6 @@ The following table lists the configurable parameters of the vSphere CPI chart a
 | `rbac.create`                            | Create roles and role bindings      |  true                                  |
 | `serviceAccount.create`                  | Create the service account          |  true                                  |
 | `serviceAccount.name`                    | Name of the created service account |  cloud-controller-manager              |
-
 | `daemonset.annotations`                  | Annotations for CPI pod             |  nil                                   |
 | `daemonset.image`                        | Image for vSphere CPI               |  gcr.io/cloud-provider-vsphere/        |
 |                                          |                                     |       vsphere-cloud-controller-manager |
@@ -76,12 +96,12 @@ The following table lists the configurable parameters of the vSphere CPI chart a
 | `ingress.enabled`                        | Allow external traffic access       |  false                                 |
 | `ingress.annotations`                    | Annotations for Ingress             |  nil                                   |
 
-Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
+Specify each parameter using the `--set key=value[,key=value]` argument to `helm install` using Helm v3.X. For example,
 
 ```bash
-$ helm install --name myrel \
-    --set daemonset.pullPolicy=Always \
-    stable/vsphere-cpi
+$ helm install vsphere-cpi \
+    stable/vsphere-cpi \
+    --set daemonset.pullPolicy=Always
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart.

@@ -5,6 +5,7 @@ metadata:
   name: {{ template "redis-ha.fullname" . }}-haproxy
   labels:
 {{ include "labels.standard" . | indent 4 }}
+    component: {{ template "redis-ha.fullname" . }}-haproxy
   annotations:
   {{- if .Values.haproxy.service.annotations }}
 {{ toYaml .Values.haproxy.service.annotations | indent 4 }}
@@ -22,17 +23,17 @@ spec:
   {{- if and (eq .Values.haproxy.service.type "NodePort") .Values.haproxy.service.nodePort }}
     nodePort: {{ .Values.haproxy.service.nodePort }}
   {{- end }}
-{{- if .Values.haproxy.readOnly.enabled }}  
+{{- if .Values.haproxy.readOnly.enabled }}
   - name: haproxyreadonly
     port: {{ .Values.haproxy.readOnly.port }}
     protocol: TCP
     targetPort: {{ .Values.haproxy.readOnly.port }}
 {{- end }}
-{{- if .Values.exporter.enabled }}
-  - name: {{ .Values.metrics.portName }}
+{{- if .Values.haproxy.metrics.enabled }}
+  - name: {{ .Values.haproxy.metrics.portName }}
     port: {{ .Values.haproxy.metrics.port }}
     protocol: TCP
-    targetPort: exporter-port
+    targetPort: metrics-port
 {{- end }}
   selector:
     release: {{ .Release.Name }}

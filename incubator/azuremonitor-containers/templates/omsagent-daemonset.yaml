@@ -89,12 +89,14 @@ spec:
         periodSeconds: 60
    nodeSelector:
     beta.kubernetes.io/os: linux
-   # Tolerate a NoSchedule taint on master that ACS Engine sets.
+   # Tolerate below taints on nodes of k8s clusters to schedule ds pod.
    tolerations:
-    - key: "node-role.kubernetes.io/master"
-      operator: "Equal"
-      value: "true"
-      effect: "NoSchedule"
+     - operator: "Exists"
+       effect: "NoSchedule"
+     - operator: "Exists"
+       effect: "NoExecute"
+     - operator: "Exists"
+       effect: "PreferNoSchedule"
    volumes:
     - name: host-root
       hostPath:
