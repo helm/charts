@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "phpmyadmin.fullname" . }}
@@ -19,6 +19,9 @@ spec:
         app: {{ template "phpmyadmin.name" . }}
         chart: {{ template "phpmyadmin.chart" . }}
         release: {{ .Release.Name }}
+  {{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+  {{- end }}
 {{- if or .Values.podAnnotations .Values.metrics.enabled }}
       annotations:
   {{- if .Values.podAnnotations }}
@@ -30,17 +33,26 @@ spec:
 {{- end }}
     spec:
 {{- include "phpmyadmin.imagePullSecrets" . | indent 6 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations: {{ toYaml . | nindent 8 }}
+      {{- end }}
       hostAliases:
-      - ip: "127.0.0.1"
-        hostnames:
-        - "status.localhost"
+        - ip: "127.0.0.1"
+          hostnames:
+            - "status.localhost"
       containers:
         - name: {{ .Chart.Name }}
           image: {{ template "phpmyadmin.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: DATABASE_PORT_NUMBER
-              value: "{{ .Values.db.port }}"
+              value: {{ .Values.db.port | quote }}
             {{- if .Values.db.chartName }}
             - name: DATABASE_HOST
               value: "{{ template "phpmyadmin.dbfullname" . }}"
@@ -49,9 +61,9 @@ spec:
               value: "{{ template "mariadb.fullname" . }}"
             {{- else }}
             - name: DATABASE_HOST
-              value: "{{ .Values.db.host }}"
+              value: {{ .Values.db.host | quote }}
             {{- end }}
-            {{- if and (not .Values.db.chartName) (not .Values.db.host)}}
+            {{- if and (not .Values.db.chartName) (not .Values.db.host) }}
             - name: PHPMYADMIN_ALLOW_NO_PASSWORD
               value: "true"
             - name: PHPMYADMIN_ALLOW_ARBITRARY_SERVER
@@ -59,6 +71,22 @@ spec:
             {{- else }}
             - name: PHPMYADMIN_ALLOW_NO_PASSWORD
               value: "false"
+            {{- end }}
+            - name: DATABASE_ENABLE_SSL
+              value: {{ ternary "yes" "no" .Values.db.enableSsl | quote }}
+            {{- if .Values.db.enableSsl }}
+            - name: DATABASE_SSL_KEY
+              value: "/certs/server_key.pem"
+            - name: DATABASE_SSL_CERT
+              value: "/certs/server_certificate.pem"
+            - name: DATABASE_SSL_CA
+              value: "/certs/ca_certificate.pem"
+            {{- if .Values.db.ssl.ciphers }}
+            - name: DATABASE_SSL_CIPHERS
+              values: {{ .Values.db.ssl.ciphers | quote }}
+            {{- end }}
+            - name: DATABASE_SSL_VERIFY
+              value: {{ ternary "yes" "no" .Values.db.ssl.verify | quote }}
             {{- end }}
           ports:
             - name: http
@@ -77,16 +105,22 @@ spec:
               path: /
               port: http
           {{- end }}
-          resources:
-{{ toYaml .Values.resources | indent 12 }}
+          {{- if .Values.resources }}
+          resources: {{ toYaml .Values.resources | nindent 12 }}
+          {{- end }}
+          {{- if .Values.db.enableSsl }}
+          volumeMounts:
+          - name: ssl-certs
+            mountPath: /certs
+          {{- end }}
 {{- if .Values.metrics.enabled }}
         - name: metrics
           image: {{ template "phpmyadmin.metrics.image" . }}
           imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
           command: [ '/bin/apache_exporter', '-scrape_uri', 'http://status.localhost:80/server-status/?auto']
           ports:
-          - name: metrics
-            containerPort: 9117
+            - name: metrics
+              containerPort: 9117
           livenessProbe:
             httpGet:
               path: /metrics
@@ -99,18 +133,20 @@ spec:
               port: metrics
             initialDelaySeconds: 5
             timeoutSeconds: 1
-          resources:
-{{ toYaml .Values.metrics.resources | indent 12 }}
+          {{- if .Values.metrics.resources }}
+          resources: {{ toYaml .Values.metrics.resources | nindent 12 }}
+          {{- end }}
 {{- end }}
-    {{- with .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.affinity }}
-      affinity:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.tolerations }}
-      tolerations:
-{{ toYaml . | indent 8 }}
-    {{- end }}
+{{- if .Values.db.enableSsl }}
+      volumes:
+        - name: ssl-certs
+          secret:
+            secretName: {{ template "phpmyadmin.fullname" . }}-certs
+            items:
+              - key: server_key.pem
+                path: server_key.pem
+              - key: server_certificate.pem
+                path: server_certificate.pem
+              - key: ca_certificate.pem
+                path: ca_certificate.pem
+{{- end }}

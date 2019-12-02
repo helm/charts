@@ -1,3 +1,4 @@
+{{- if .Values.apiserver.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -66,7 +67,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
-        # If OPENEBS_IO_CREATE_DEFAULT_STORAGE_CONFIG is false then OpenEBS default 
+        # If OPENEBS_IO_CREATE_DEFAULT_STORAGE_CONFIG is false then OpenEBS default
         # storageclass and storagepool will not be created.
         - name: OPENEBS_IO_CREATE_DEFAULT_STORAGE_CONFIG
           value: "{{ .Values.defaultStorageConfig.enabled }}"
@@ -77,27 +78,27 @@ spec:
         # is set to true
         - name: OPENEBS_IO_INSTALL_DEFAULT_CSTOR_SPARSE_POOL
           value: "{{ .Values.apiserver.sparse.enabled }}"
-        # OPENEBS_IO_CSTOR_TARGET_DIR can be used to specify the hostpath 
+        # OPENEBS_IO_CSTOR_TARGET_DIR can be used to specify the hostpath
         # to be used for saving the shared content between the side cars
-        # of cstor volume pod. 
+        # of cstor volume pod.
         # The default path used is /var/openebs/sparse
         - name: OPENEBS_IO_CSTOR_TARGET_DIR
           value: "{{ .Values.ndm.sparse.path }}"
-        # OPENEBS_IO_CSTOR_POOL_SPARSE_DIR can be used to specify the hostpath 
+        # OPENEBS_IO_CSTOR_POOL_SPARSE_DIR can be used to specify the hostpath
         # to be used for saving the shared content between the side cars
-        # of cstor pool pod. This ENV is also used to indicate the location 
-        # of the sparse devices. 
+        # of cstor pool pod. This ENV is also used to indicate the location
+        # of the sparse devices.
         # The default path used is /var/openebs/sparse
         - name: OPENEBS_IO_CSTOR_POOL_SPARSE_DIR
           value: "{{ .Values.ndm.sparse.path }}"
-        # OPENEBS_IO_JIVA_POOL_DIR can be used to specify the hostpath 
+        # OPENEBS_IO_JIVA_POOL_DIR can be used to specify the hostpath
         # to be used for default Jiva StoragePool loaded by OpenEBS
         # The default path used is /var/openebs
         # This value takes effect only if OPENEBS_IO_CREATE_DEFAULT_STORAGE_CONFIG
         # is set to true
         - name: OPENEBS_IO_JIVA_POOL_DIR
           value: "{{ .Values.jiva.defaultStoragePath }}"
-        # OPENEBS_IO_LOCALPV_HOSTPATH_DIR can be used to specify the hostpath 
+        # OPENEBS_IO_LOCALPV_HOSTPATH_DIR can be used to specify the hostpath
         # to be used for default openebs-hostpath storageclass loaded by OpenEBS
         # The default path used is /var/openebs/local
         # This value takes effect only if OPENEBS_IO_CREATE_DEFAULT_STORAGE_CONFIG
@@ -150,4 +151,5 @@ spec:
 {{- if .Values.apiserver.affinity }}
       affinity:
 {{ toYaml .Values.apiserver.affinity | indent 8 }}
+{{- end }}
 {{- end }}

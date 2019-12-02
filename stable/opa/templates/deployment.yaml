@@ -9,6 +9,10 @@ spec:
   selector:
     matchLabels:
       app: {{ template "opa.fullname" . }}
+  {{- with .Values.deploymentStrategy }}
+  strategy:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
   template:
     metadata:
 {{- if or .Values.generateAdmissionControllerCerts .Values.opa }}
@@ -92,9 +96,9 @@ spec:
             - "--ignore=.*"
 {{- end }}
 {{- if .Values.prometheus.enabled }}
-            - "--insecure-addr=0.0.0.0:8181"
+            - "--addr=http://0.0.0.0:8181"
 {{- else if .Values.mgmt.enabled }}
-            - "--insecure-addr=127.0.0.1:8181"
+            - "--addr=http://127.0.0.1:8181"
 {{- end }}
 {{- if or .Values.authz.enabled .Values.bootstrapPolicies }}
             - "/bootstrap"
@@ -158,6 +162,10 @@ spec:
             - proxy
             - --accept-paths=^/apis/authorization.k8s.io/v1/subjectaccessreviews$
 {{- end }}
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        {{- toYaml .Values.securityContext | nindent 8 }}
+      {{- end }}
       serviceAccountName: {{ template "opa.serviceAccountName" .}}
       volumes:
         - name: certs

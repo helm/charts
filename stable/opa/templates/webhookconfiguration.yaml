@@ -34,6 +34,9 @@ webhooks:
 {{- if .Values.admissionControllerSideEffect }}
     sideEffects: {{ .Values.admissionControllerSideEffect }}
 {{- end }}
+{{ if .Values.timeoutSeconds }}
+    timeoutSeconds: {{ .Values.timeoutSeconds }}
+{{ end }}
 {{ if .Values.certManager.enabled }}
 ---
 # Create a selfsigned Issuer, in order to create a root CA certificate for

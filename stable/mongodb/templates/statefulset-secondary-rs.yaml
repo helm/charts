@@ -2,12 +2,19 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
+  name: {{ template "mongodb.fullname" . }}-secondary
   labels:
     app: {{ template "mongodb.name" . }}
     chart: {{ template "mongodb.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "mongodb.fullname" . }}-secondary
+    {{- with .Values.labels }}
+{{ toYaml . | indent 4 }}
+    {{- end }}
+  {{- with .Values.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
 spec:
   selector:
     matchLabels:
@@ -146,15 +153,14 @@ spec:
           {{- end }}
           {{- if .Values.mongodbExtraFlags }}
           - name: MONGODB_EXTRA_FLAGS
-            value: {{ .Values.mongodbExtraFlags | join " " }}
+            value: {{ .Values.mongodbExtraFlags | join " " | quote }}
           {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             exec:
               command:
-                - mongo
-                - --eval
-                - "db.adminCommand('ping')"
+                - pgrep
+                - mongod
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}

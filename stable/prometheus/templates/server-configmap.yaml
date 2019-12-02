@@ -14,13 +14,29 @@ data:
     global:
 {{ $root.Values.server.global | toYaml | trimSuffix "\n" | indent 6 }}
 {{- end }}
+{{- if eq $key "alerts" }}
+{{- if and (not (empty $value)) (empty $value.groups) }}
+    groups:
+{{- range $ruleKey, $ruleValue := $value }}
+    - name: {{ $ruleKey -}}.rules
+      rules:
+{{ $ruleValue | toYaml | trimSuffix "\n" | indent 6 }}
+{{- end }}
+{{- else }}
+{{ toYaml $value | indent 4 }}
+{{- end }}
+{{- else }}
 {{ toYaml $value | default "{}" | indent 4 }}
+{{- end }}
 {{- if eq $key "prometheus.yml" -}}
 {{- if $root.Values.extraScrapeConfigs }}
 {{ tpl $root.Values.extraScrapeConfigs $root | indent 4 }}
 {{- end -}}
 {{- if $root.Values.alertmanager.enabled }}
     alerting:
+{{- if $root.Values.alertRelabelConfigs }}
+{{ $root.Values.alertRelabelConfigs | toYaml  | trimSuffix "\n" | indent 6 }}
+{{- end }}
       alertmanagers:
       - kubernetes_sd_configs:
           - role: pod

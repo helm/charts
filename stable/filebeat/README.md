@@ -4,7 +4,7 @@
 
 ## Prerequisites
 
-- Kubernetes 1.9+
+- Kubernetes 1.10+
 
 ## Note
 

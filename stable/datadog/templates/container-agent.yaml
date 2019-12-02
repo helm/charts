@@ -33,6 +33,8 @@
     {{- if .Values.datadog.nonLocalTraffic }}
     - name: DD_DOGSTATSD_NON_LOCAL_TRAFFIC
       value: {{ .Values.datadog.nonLocalTraffic | quote }}
+    - name: DD_APM_NON_LOCAL_TRAFFIC
+      value: {{ .Values.datadog.nonLocalTraffic | quote }}
     {{- end }}
     {{- if .Values.datadog.dogstatsdOriginDetection }}
     - name: DD_DOGSTATSD_ORIGIN_DETECTION
