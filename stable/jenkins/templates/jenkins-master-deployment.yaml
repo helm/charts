@@ -196,7 +196,7 @@ spec:
             - name: JENKINS_HTTPS_KEYSTORE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "jenkins.fullname" . }}-https-jks
+                  name: {{ if .Values.master.httpsKeyStore.jenkinsHttpsJksSecretName }} {{ .Values.master.httpsKeyStore.jenkinsHttpsJksSecretName }} {{ else }} {{ template "jenkins.fullname" . }}-https-jks  {{ end }}
                   key: {{ "https-jks-password" | quote }}
             {{- end }}
 
@@ -382,7 +382,7 @@ spec:
       {{- if .Values.master.httpsKeyStore.enable }}
       - name: jenkins-https-keystore
         secret: 
-          secretName: {{ template "jenkins.fullname" . }}-https-jks
+          secretName: {{ if .Values.master.httpsKeyStore.jenkinsHttpsJksSecretName }} {{ .Values.master.httpsKeyStore.jenkinsHttpsJksSecretName }} {{ else }} {{ template "jenkins.fullname" . }}-https-jks  {{ end }}
           items:
           - key: jenkins-jks-file
             path: {{ .Values.master.httpsKeyStore.fileName }}
