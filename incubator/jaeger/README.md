@@ -222,6 +222,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `collector.service.type`                 | Service type                        |  `ClusterIP`                             |
 | `collector.service.zipkinPort`           | Zipkin port for JSON/thrift HTTP    |  `9411`                                  |
 | `collector.extraConfigmapMounts`         | Additional collector configMap mounts |  `[]`                                  |
+| `collector.samplingConfig`         | [Sampling strategies json file](https://www.jaegertracing.io/docs/latest/sampling/#collector-sampling-configuration) |  `nil`                                  |
 | `elasticsearch.rbac.create`              | To enable RBAC                      |  `false`                                 |
 | `fullnameOverride`                       | Override full name                  |  `nil`                                 |
 | `hotrod.enabled`                         | Enables the Hotrod demo app         |  `false`                                 |
@@ -250,6 +251,8 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `schema.mode`                            | Schema mode (prod or test)          |  `prod`                                  |
 | `schema.pullPolicy`                      | Schema image pullPolicy             |  `IfNotPresent`                          |
 | `schema.activeDeadlineSeconds`           | Deadline in seconds for cassandra schema creation job to complete |  `120`                            |
+| `schema.traceTtl`                     | Time to live for trace data in seconds      |  `nil`                                |
+| `schema.dependenciesTtl`              | Time to live for dependencies data in seconds  |  `nil`                          |
 | `serviceAccounts.agent.create`              | Create service account   |  `true`                                  |
 | `serviceAccounts.agent.name`              | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template  |  ``                                  |
 | `serviceAccounts.cassandraSchema.create`              | Create service account   |  `true`                                  |
@@ -285,7 +288,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `storage.elasticsearch.user`             | Provisioned elasticsearch user      |  `elastic`                               |
 | `storage.elasticsearch.nodesWanOnly`     | Only access specified es host       |  `false`                                 |
 | `storage.type`                           | Storage type (ES or Cassandra)      |  `cassandra`                             |
-| `tag`                                    | Image tag/version                   |  `1.14.0`                                 |
+| `tag`                                    | Image tag/version                   |  `1.15.1`                                 |
 
 For more information about some of the tunable parameters that Cassandra provides, please visit the helm chart for [cassandra](https://github.com/kubernetes/charts/tree/master/incubator/cassandra) and the official [website](http://cassandra.apache.org/) at apache.org.
 
