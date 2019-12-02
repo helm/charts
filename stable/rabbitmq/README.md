@@ -118,8 +118,11 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `resources`                                  | resource needs and limits to apply to the pod    | {}                                                      |
 | `replicas`                                   | Replica count                                    | `1`                                                     |
 | `priorityClassName`                          | Pod priority class name                          | ``                                                      |
+| `networkPolicy.enabled`                      | Enable NetworkPolicy                             | `false`                                                 |
+| `networkPolicy.allowExternal`                | Don't require client label for connections       | `s`                                                  |
+| `networkPolicy.additionalRules`              | Additional NetworkPolicy rules                   | `nil`                                                   |
 | `nodeSelector`                               | Node labels for pod assignment                   | {}                                                      |
-| `affinity`                                   | Affinity settings for pod assignment             | {}                                                      |
+| `affinity`                                    | Affinity settings for pod assignment              | {}                                                      |
 | `tolerations`                                | Toleration labels for pod assignment             | []                                                      |
 | `updateStrategy`                             | Statefulset update strategy policy               | `RollingUpdate`                                         |
 | `ingress.enabled`                            | Enable ingress resource for Management console   | `false`                                                 |
