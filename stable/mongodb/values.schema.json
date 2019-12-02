@@ -17,14 +17,16 @@
         "value": "usePassword"
       }
     },
-    "mongodbUsername": {
-      "type": "string",
-      "title": "MongoDB custom user",
-      "form": true
-    },
     "mongodbDatabase": {
       "type": "string",
       "title": "MongoDB custom database",
+      "description": "Name of the custom database to be created during the 1st initialization of MongoDB",
+      "form": true
+    },
+    "mongodbUsername": {
+      "type": "string",
+      "title": "MongoDB custom user",
+      "description": "Name of the custom user to be created during the 1st initialization of MongoDB. This user only has permissions on the MongoDB custom database",
       "form": true
     },
     "mongodbPassword": {
@@ -100,6 +102,10 @@
     },
     "volumePermissions": {
       "type": "object",
+      "hidden": {
+        "condition": false,
+        "value": "persistence.enabled"
+      },
       "properties": {
         "enabled": {
           "type": "boolean",
