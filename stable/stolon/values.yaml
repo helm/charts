@@ -66,6 +66,16 @@ ports:
   metrics:
     containerPort: 8080
 
+serviceMonitor:
+  # When set to true then use a ServiceMonitor to collect metrics
+  enabled: false
+  # Set the namespace the ServiceMonitor should be deployed to
+  # namespace: default
+  # Set how frequently Prometheus should scrape
+  # interval: 30s
+  # Set timeout for scrape
+  # scrapeTimeout: 10s
+
 job:
   autoCreateCluster: true
   autoUpdateClusterSpec: true
