@@ -19,7 +19,7 @@ Allow the release namespace to be overridden for multi-namespace deployments in 
 
 {{- define "jenkins.master.slaveKubernetesNamespace" -}}
   {{- if .Values.master.slaveKubernetesNamespace -}}
-    {{- .Values.master.slaveKubernetesNamespace -}}
+    {{- tpl .Values.master.slaveKubernetesNamespace . -}}
   {{- else -}}
     {{- if .Values.namespaceOverride -}}
       {{- .Values.namespaceOverride -}}
@@ -73,6 +73,8 @@ Returns configuration as code default config
 {{- define "jenkins.casc.defaults" -}}
 jenkins:
   disableRememberMe: false
+  remotingSecurity:
+    enabled: true
   mode: NORMAL
   numExecutors: {{ .Values.master.numExecutors }}
   projectNamingStrategy: "standard"

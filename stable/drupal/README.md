@@ -18,8 +18,10 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.12+
+- Helm 2.11+ or Helm 3.0-beta3+
 - PV provisioner support in the underlying infrastructure
+- ReadWriteMany volumes for deployment scaling
 
 ## Installing the Chart
 
@@ -29,7 +31,7 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release stable/drupal
 ```
 
-The command deploys Drupal on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys Drupal on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
@@ -43,7 +45,7 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
-## Configuration
+## Parameters
 
 The following table lists the configurable parameters of the Drupal chart and their default values.
 
@@ -129,11 +131,19 @@ $ helm install --name my-release -f values.yaml stable/drupal
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
-## Image
+## Configuration and installation details
+
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
+
+### Image
 
 The `image` parameter allows specifying which image will be pulled for the chart.
 
-### Private registry
+#### Private registry
 
 If you configure the `image` value to one in a private registry, you will need to [specify an image pull secret](https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod).
 
@@ -147,16 +157,12 @@ imagePullSecrets:
 
 1. Install the chart
 
-```console
-helm install --name my-release -f values.yaml stable/drupal
-```
-
 ## Persistence
 
 The [Bitnami Drupal](https://github.com/bitnami/bitnami-docker-drupal) image stores the Drupal data at the `/bitnami/drupal` path of the container. If you wish to override the `image` value, and your image stores this data in different path, you may specify these paths with `volumeMounts.drupal.mountPath`.
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
-See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+See the [Parameters](#parameters) section to configure the PVC or to disable persistence.
 
 ### Existing PersistentVolumeClaim
 
@@ -188,6 +194,14 @@ $ helm install --name my-release --set persistence.drupal.existingClaim=PVC_NAME
 1. Because the container cannot control the host machine’s directory permissions, you must set the Drupal file directory permissions yourself and disable or clear Drupal cache. See Drupal Core’s [INSTALL.txt](http://cgit.drupalcode.org/drupal/tree/core/INSTALL.txt?h=8.3.x#n152) for setting file permissions, and see [Drupal handbook page](https://www.drupal.org/node/2598914) to disable the cache, or [Drush handbook](https://drushcommands.com/drush-8x/cache/cache-rebuild/) to clear cache.
 
 ## Upgrading
+
+### To 6.0.0
+
+Helm performs a lookup for the object based on its group (apps), version (v1), and kind (Deployment). Also known as its GroupVersionKind, or GVK. Changing the GVK is considered a compatibility breaker from Kubernetes' point of view, so you cannot "upgrade" those objects to the new GVK in-place. Earlier versions of Helm 3 did not perform the lookup correctly which has since been fixed to match the spec.
+
+In https://github.com/helm/charts/pull/17295 the `apiVersion` of the deployment resources was updated to `apps/v1` in tune with the api's deprecated, resulting in compatibility breakage.
+
+This major version signifies this change.
 
 ### To 2.0.0
 

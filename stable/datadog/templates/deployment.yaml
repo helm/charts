@@ -15,6 +15,11 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app.kubernetes.io/name: "{{ template "datadog.fullname" . }}"
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
 spec:
   selector:
     matchLabels:
@@ -78,6 +83,8 @@ spec:
           {{- end }}
           {{- if .Values.datadog.nonLocalTraffic }}
           - name: DD_DOGSTATSD_NON_LOCAL_TRAFFIC
+            value: {{ .Values.datadog.nonLocalTraffic | quote }}
+          - name: DD_APM_NON_LOCAL_TRAFFIC
             value: {{ .Values.datadog.nonLocalTraffic | quote }}
           {{- end }}
           {{- if .Values.datadog.dogstatsdOriginDetection }}

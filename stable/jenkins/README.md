@@ -2,7 +2,7 @@
 
 Jenkins master and agent cluster utilizing the Jenkins Kubernetes plugin
 
-* https://wiki.jenkins-ci.org/display/JENKINS/Kubernetes+Plugin
+* https://plugins.jenkins.io/kubernetes
 
 Inspired by the awesome work of Carlos Sanchez <mailto:carlos@apache.org>
 
@@ -87,7 +87,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.fsGroup`                  | uid that will be used for persistent volume | `0`                                |
 | `master.hostAliases`              | Aliases for IPs in `/etc/hosts`      | `[]`                                      |
 | `master.serviceAnnotations`       | Service annotations                  | `{}`                                      |
-| `master.serviceType`              | k8s service type                     | `LoadBalancer`                            |
+| `master.serviceType`              | k8s service type                     | `ClusterIP`                               |
 | `master.servicePort`              | k8s service port                     | `8080`                                    |
 | `master.targetPort`               | k8s target port                      | `8080`                                    |
 | `master.nodePort`                 | k8s node port                        | Not set                                   |
@@ -110,7 +110,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.loadBalancerSourceRanges` | Allowed inbound IP addresses         | `0.0.0.0/0`                               |
 | `master.loadBalancerIP`           | Optional fixed external IP           | Not set                                   |
 | `master.jmxPort`                  | Open a port, for JMX stats           | Not set                                   |
-| `master.extraPorts`               | Open extra ports, for other uses     | Not set                                   |
+| `master.extraPorts`               | Open extra ports, for other uses     | `[]`                                      |
 | `master.overwriteConfig`          | Replace init scripts and config w/ ConfigMap on boot  | `false`                  |
 | `master.ingress.enabled`          | Enables ingress                      | `false`                                   |
 | `master.ingress.apiVersion`       | Ingress API version                  | `extensions/v1beta1`                      |
@@ -132,13 +132,13 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.jenkinsUrlProtocol`       | Set protocol for JenkinsLocationConfiguration.xml | Set to `https` if `Master.ingress.tls`, `http` otherwise |
 | `master.JCasC.enabled`            | Wheter Jenkins Configuration as Code is enabled or not | `false`                 |
 | `master.JCasC.defaultConfig`      | Enables default Jenkins configuration via configuration as code plugin | `false` |
-| `master.JCasC.configScripts`      | List of Jenkins Config as Code scripts |                                         |
+| `master.JCasC.configScripts`      | List of Jenkins Config as Code scripts | `{}`                                    |
 | `master.enableXmlConfig`          | enables configuration done via XML files | `false`                               |
 | `master.sidecars.configAutoReload` | Jenkins Config as Code auto-reload settings |                                   |
 | `master.sidecars.configAutoReload.enabled` | Jenkins Config as Code auto-reload settings (Attention: rbac needs to be enabled otherwise the sidecar can't read the config map) | `false`                                                      |
-| `master.sidecars.configAutoReload.image` | Image which triggers the reload | `shadwell/k8s-sidecar:0.0.2`            |
-| `master.sidecars.others`          | Configures additional sidecar container(s) for Jenkins master | `{}`             |
-| `master.initScripts`              | List of Jenkins init scripts         | Not set                                   |
+| `master.sidecars.configAutoReload.image` | Image which triggers the reload | `kiwigrid/k8s-sidecar:0.1.20`           |
+| `master.sidecars.other`           | Configures additional sidecar container(s) for Jenkins master | `[]`             |
+| `master.initScripts`              | List of Jenkins init scripts         | `[]`                                      |
 | `master.credentialsXmlSecret`     | Kubernetes secret that contains a 'credentials.xml' file | Not set               |
 | `master.secretsFilesSecret`       | Kubernetes secret that contains 'secrets' files | Not set                        |
 | `master.jobs`                     | Jenkins XML job configs              | `{}`                                      |
@@ -146,9 +146,10 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.installPlugins`           | List of Jenkins plugins to install. If you don't want to install plugins set it to `[]` | `kubernetes:1.18.2 workflow-aggregator:2.6 credentials-binding:1.19 git:3.11.0 workflow-job:2.33` |
 | `master.overwritePlugins`         | Overwrite installed plugins on start.| `false`                                   |
 | `master.enableRawHtmlMarkupFormatter` | Enable HTML parsing using (see below) | false                                |
-| `master.scriptApproval`           | List of groovy functions to approve  | Not set                                   |
+| `master.scriptApproval`           | List of groovy functions to approve  | `[]`                                      |
 | `master.nodeSelector`             | Node labels for pod assignment       | `{}`                                      |
 | `master.affinity`                 | Affinity settings                    | `{}`                                      |
+| `master.schedulerName`            | Kubernetes scheduler name            | Not set                                   |
 | `master.tolerations`              | Toleration labels for pod assignment | `[]`                                      |
 | `master.podAnnotations`           | Annotations for master pod           | `{}`                                      |
 | `master.customConfigMap`          | Deprecated: Use a custom ConfigMap   | `false`                                   |
@@ -168,6 +169,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `networkPolicy.enabled`           | Enable creation of NetworkPolicy resources. | `false`                            |
 | `networkPolicy.apiVersion`        | NetworkPolicy ApiVersion             | `networking.k8s.io/v1`                    |
 | `rbac.create`                     | Whether RBAC resources are created   | `true`                                    |
+| `rbac.readSecrets`                | Whether the Jenkins service account should be able to read Kubernetes secrets    | `false` |
 | `serviceAccount.name`             | name of the ServiceAccount to be used by access-controlled resources | autogenerated |
 | `serviceAccount.create`           | Configures if a ServiceAccount with this name should be created | `true`         |
 | `serviceAccount.annotations`      | Configures annotation for the ServiceAccount | `{}`                              |
@@ -190,8 +192,8 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.tag`                | Agent image tag                                 | `3.27-1`               |
 | `agent.privileged`         | Agent privileged container                      | `false`                |
 | `agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 512m, memory: 512Mi}, limits: {cpu: 512m, memory: 512Mi}}`|
-| `agent.volumes`            | Additional volumes                              | `nil`                  |
-| `agent.envVars`            | Environment variables for the agent Pod         | Not set                |
+| `agent.volumes`            | Additional volumes                              | `[]`                   |
+| `agent.envVars`            | Environment variables for the agent Pod         | `[]`                   |
 | `agent.command`            | Executed command when side container starts     | Not set                |
 | `agent.args`               | Arguments passed to executed command            | Not set                |
 | `agent.sideContainerName`  | Side container name in agent                    | jnlp                   |
@@ -369,21 +371,23 @@ Adds a backup CronJob for jenkins, along with required RBAC resources.
 
 ### Backup Values
 
-| Parameter                              | Description                                            | Default                           |
-| -------------------------------------- | ------------------------------------------------------ | --------------------------------- |
-| `backup.enabled`                       | Enable the use of a backup CronJob                     | `false`                           |
-| `backup.schedule`                      | Schedule to run jobs                                   | `0 2 * * *`                       |
-| `backup.annotations`                   | Backup pod annotations                                 | iam.amazonaws.com/role: `jenkins` |
-| `backup.image.repo`                    | Backup image repository                                | `maorfr/kube-tasks`               |
-| `backup.image.tag`                     | Backup image tag                                       | `0.2.0`                           |
-| `backup.extraArgs`                     | Additional arguments for kube-tasks                    | `[]`                              |
-| `backup.existingSecret`                | Environment variables to add to the cronjob container  | {}                                |
-| `backup.existingSecret.*`              | Specify the secret name containing the AWS credentials | `jenkinsaws`                      |
-| `backup.existingSecret.*.awsaccesskey` | `secretKeyRef.key` used for `AWS_ACCESS_KEY_ID`        | `jenkins_aws_access_key`          |
-| `backup.existingSecret.*.awssecretkey` | `secretKeyRef.key` used for `AWS_SECRET_ACCESS_KEY`    | `jenkins_aws_secret_key`          |
-| `backup.env`                           | Backup environment variables                           | AWS_REGION: `us-east-1`           |
-| `backup.resources`                     | Backup CPU/Memory resource requests/limits             | Memory: `1Gi`, CPU: `1`           |
-| `backup.destination`                   | Destination to store backup artifacts                  | `s3://jenkins-data/backup`        |
+| Parameter                                | Description                                                       | Default                           |
+| ---------------------------------------- | ----------------------------------------------------------------- | --------------------------------- |
+| `backup.enabled`                         | Enable the use of a backup CronJob                                | `false`                           |
+| `backup.schedule`                        | Schedule to run jobs                                              | `0 2 * * *`                       |
+| `backup.labels`                          | Backup pod labels                                                 | `{}`                              |
+| `backup.annotations`                     | Backup pod annotations                                            | `{}`                              |
+| `backup.image.repo`                      | Backup image repository                                           | `maorfr/kube-tasks`               |
+| `backup.image.tag`                       | Backup image tag                                                  | `0.2.0`                           |
+| `backup.extraArgs`                       | Additional arguments for kube-tasks                               | `[]`                              |
+| `backup.existingSecret`                  | Environment variables to add to the cronjob container             | `{}`                              |
+| `backup.existingSecret.*`                | Specify the secret name containing the AWS or GCP credentials     | `jenkinsaws`                      |
+| `backup.existingSecret.*.awsaccesskey`   | `secretKeyRef.key` used for `AWS_ACCESS_KEY_ID`                   | `jenkins_aws_access_key`          |
+| `backup.existingSecret.*.awssecretkey`   | `secretKeyRef.key` used for `AWS_SECRET_ACCESS_KEY`               | `jenkins_aws_secret_key`          |
+| `backup.existingSecret.*.gcpcredentials` | Mounts secret as volume and sets `GOOGLE_APPLICATION_CREDENTIALS` | `credentials.json`                |
+| `backup.env`                             | Backup environment variables                                      | `[]`                              |
+| `backup.resources`                       | Backup CPU/Memory resource requests/limits                        | Memory: `1Gi`, CPU: `1`           |
+| `backup.destination`                     | Destination to store backup artifacts                             | `s3://jenkins-data/backup`        |
 
 ### Restore from backup
 

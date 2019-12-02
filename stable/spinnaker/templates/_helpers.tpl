@@ -43,6 +43,14 @@ Create comma separated list of omitted namespaces in Kubernetes
 {{- join "," .Values.kubeConfig.omittedNameSpaces }}
 {{- end -}}
 
+{{- define "omittedKinds" -}}
+{{- join "," .Values.kubeConfig.omittedKinds }}
+{{- end -}}
+
+{{- define "k8sKinds" -}}
+{{- join "," .Values.kubeConfig.kinds }}
+{{- end -}}
+
 {{/*
 Redis base URL for Spinnaker
 */}}
@@ -60,8 +68,8 @@ Redis base URL for Spinnaker
 Create name of kubeconfig file to use when setting up kubernetes provider
 */}}
 {{- define "spinnaker.kubeconfig" -}}
-{{- if .Values.kubeconfig.encryptedKubeconfig }}
-{{- printf .Values.kubeconfig.encryptedKubeconfig | toString -}}
+{{- if .Values.kubeConfig.encryptedKubeconfig }}
+{{- printf .Values.kubeConfig.encryptedKubeconfig | toString -}}
 {{- else }}
 {{- printf "/opt/kube/%s" .Values.kubeConfig.secretKey  | toString -}}
 {{- end }}

@@ -82,6 +82,8 @@ Parameters introduced starting from v2
 | `config.web.address` | dex http/https listen address | `0.0.0.0` |
 | `config.web.tlsCert` | Maps to the dex config `web.tlsCert` param | `/etc/dex/tls/https/server/tls.crt` |
 | `config.web.tlsKey` | Maps to the dex config `web.tlsKey` param | `/etc/dex/tls/https/server/tls.key` |
+| `config.expiry.signingKeys` | Maps to the dex config `expiry.signingKeys` param | `6h` |
+| `config.expiry.idTokens` | Maps to the dex config `expiry.idTokens` param | `24h` |
 | `grpc` | Enable dex grpc endpoint | `true` |
 | `https` | Enable TLS termination for the dex http endpoint | `false` |
 | `ports.grpc.containerPort` | grpc port listened by the dex | `5000` |

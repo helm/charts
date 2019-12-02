@@ -543,7 +543,7 @@ server:
   ##
   image:
     repository: prom/prometheus
-    tag: v2.11.1
+    tag: v2.13.1
     pullPolicy: IfNotPresent
 
   ## prometheus server priorityClassName
@@ -600,6 +600,10 @@ server:
   ## Additional Prometheus server container arguments
   ##
   extraArgs: {}
+
+  ## Additional InitContainers to initialize the pod
+  ##
+  extraInitContainers: []
 
   ## Additional Prometheus server Volume mounts
   ##
@@ -787,6 +791,14 @@ server:
       annotations: {}
       labels: {}
       servicePort: 80
+
+  ## Prometheus server readiness and liveness probe initial delay and timeout
+  ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+  ##
+  readinessProbeInitialDelay: 30
+  readinessProbeTimeout: 30
+  livenessProbeInitialDelay: 30
+  livenessProbeTimeout: 30
 
   ## Prometheus server resource requests and limits
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -1316,6 +1328,14 @@ extraScrapeConfigs:
   #       target_label: instance
   #     - target_label: __address__
   #       replacement: prometheus-blackbox-exporter:9115
+
+# Adds option to add alert_relabel_configs to avoid duplicate alerts in alertmanager
+# useful in H/A prometheus with different external labels but the same alerts
+alertRelabelConfigs:
+  # alert_relabel_configs:
+  # - source_labels: [dc]
+  #   regex: (.+)\d+
+  #   target_label: dc
 
 networkPolicy:
   ## Enable creation of NetworkPolicy resources.
