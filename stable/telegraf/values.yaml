@@ -48,6 +48,15 @@ config:
     logfile: ""
     hostname: "$HOSTNAME"
     omit_hostname: false
+  processors:
+    - enum:
+        mapping:
+          field: "status"
+          dest: "status_code"
+          value_mappings:
+            healthy: 1
+            problem: 2
+            critical: 3
   outputs:
     - influxdb:
         urls:

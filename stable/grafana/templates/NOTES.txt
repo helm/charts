@@ -6,6 +6,22 @@
 
    {{ template "grafana.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 {{ if .Values.ingress.enabled }}
+   If you bind grafana to 80, please update values in values.yaml and reinstall:
+   ```
+   securityContext:
+     runAsUser: 0
+     fsGroup: 0
+
+   command:
+   - "setcap"
+   - "'cap_net_bind_service=+ep'"
+   - "/usr/sbin/grafana-server &&"
+   - "sh"
+   - "/run.sh"
+   ```
+   Details refer to https://grafana.com/docs/installation/configuration/#http-port.
+   Or grafanfa would always crash.
+
    From outside the cluster, the server URL(s) are:
 {{- range .Values.ingress.hosts }}
      http://{{ . }}

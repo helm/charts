@@ -12,6 +12,13 @@ metadata:
     chart: {{ template "airflow.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    {{- with .Values.workers.labels }}
+{{ toYaml . | indent 4 }}
+    {{- end }}
+  {{- with .Values.workers.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
 spec:
   serviceName: "{{ template "airflow.fullname" . }}-worker"
   updateStrategy:
@@ -48,7 +55,7 @@ spec:
         - name: {{ .Values.airflow.image.pullSecret }}
       {{- end }}
       restartPolicy: Always
-      terminationGracePeriodSeconds: 30
+      terminationGracePeriodSeconds: {{ .Values.workers.terminationPeriod }}
       serviceAccountName: {{ template "airflow.serviceAccountName" . }}
       {{- if .Values.workers.nodeSelector }}
       nodeSelector:
@@ -68,12 +75,19 @@ spec:
         - name: git-clone
           image: {{ .Values.dags.initContainer.image.repository }}:{{ .Values.dags.initContainer.image.tag }} # Any image with git will do
           imagePullPolicy: {{ .Values.dags.initContainer.image.pullPolicy }}
+          envFrom:
+          - configMapRef:
+              name: "{{ template "airflow.fullname" . }}-env"
+          env:
+          {{- include "airflow.mapenvsecrets" . | indent 10 }}
           command:
           - /usr/local/git/git-clone.sh
           args:
           - "{{ .Values.dags.git.url }}"
           - "{{ .Values.dags.git.ref }}"
           - "/dags"
+          - "{{ .Values.dags.git.repoHost}}"
+          - "{{ .Values.dags.git.privateKeyName }}"
           volumeMounts:
           - name: git-clone
             mountPath: /usr/local/git
@@ -85,9 +99,43 @@ spec:
           {{- end }}
       {{- end }}
       containers:
+        {{- if .Values.dags.git.gitSync.enabled }}
+        - name: git-sync
+          image: {{ .Values.dags.git.gitSync.image.repository }}:{{ .Values.dags.git.gitSync.image.tag }} # Any image with git will do
+          imagePullPolicy: {{ .Values.dags.git.gitSync.image.pullPolicy }}
+          envFrom:
+          - configMapRef:
+              name: "{{ template "airflow.fullname" . }}-env"
+          env:
+          {{- include "airflow.mapenvsecrets" . | indent 10 }}
+          command:
+            - /usr/local/git/git-sync.sh
+          args:
+            - "{{ .Values.dags.git.url }}"
+            - "{{ .Values.dags.git.ref }}"
+            - "/dags"
+            - "{{ .Values.dags.git.repoHost}}"
+            - "{{ .Values.dags.git.privateKeyName }}"
+            - "{{ .Values.dags.git.gitSync.refreshTime }}"
+          volumeMounts:
+            - name: git-clone
+              mountPath: /usr/local/git
+            - name: dags-data
+              mountPath: /dags
+            {{- if .Values.dags.git.secret }}
+            - name: git-clone-secret
+              mountPath: /keys
+            {{- end }}
+        {{- end }}
         - name: {{ .Chart.Name }}-worker
           imagePullPolicy: {{ .Values.airflow.image.pullPolicy }}
           image: "{{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}"
+          {{- if and (eq .Values.airflow.executor "Celery") (.Values.workers.celery.gracefullTermination)}}
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/entrypoint.sh","/usr/local/scripts/stop-worker.sh"]
+          {{- end}}
           envFrom:
             - configMapRef:
                 name: "{{ template "airflow.fullname" . }}-env"

@@ -136,7 +136,7 @@ spec:
           name: logcontainerpath
         {{- end }}
         {{- end }}
-        {{- if or .Values.datadog.processAgentEnabled .Values.systemProbe.enabled }}
+        {{- if or (kindIs "invalid" .Values.datadog.processAgentEnabled) .Values.datadog.processAgentEnabled .Values.systemProbe.enabled }}
         - hostPath:
             path: /etc/passwd
           name: passwd

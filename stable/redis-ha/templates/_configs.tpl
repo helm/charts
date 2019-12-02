@@ -150,7 +150,7 @@
 
     {{- $root := . }}
     {{- $fullName := include "redis-ha.fullname" . }}
-    {{- $replicas := int .Values.replicas }}
+    {{- $replicas := int (toString .Values.replicas) }}
     {{- range $i := until $replicas }}
     # Check Sentinel and whether they are nominated master
     backend check_if_redis_is_master_{{ $i }}
@@ -177,7 +177,7 @@
     frontend ft_redis_master
       bind *:{{ $root.Values.redis.port }}
       use_backend bk_redis_master
-    {{ if .Values.haproxy.readOnly.enabled }}
+    {{- if .Values.haproxy.readOnly.enabled }}
     #slave
     frontend ft_redis_slave
       bind *:{{ .Values.haproxy.readOnly.port }}
@@ -189,7 +189,7 @@
       option tcp-check
       tcp-check connect
       {{- if .Values.auth }}
-      tcp-check send AUTH\ {{ .Values.redisPassword }}\r\n
+      tcp-check send AUTH\ REPLACE_AUTH_SECRET\r\n
       tcp-check expect string +OK
       {{- end }}
       tcp-check send PING\r\n
@@ -202,13 +202,13 @@
       use-server R{{ $i }} if { srv_is_up(R{{ $i }}) } { nbsrv(check_if_redis_is_master_{{ $i }}) ge 2 }
       server R{{ $i }} {{ $fullName }}-announce-{{ $i }}:{{ $root.Values.redis.port }} check inter 1s fall 1 rise 1
       {{- end }}
-    {{ if .Values.haproxy.readOnly.enabled }}
+    {{- if .Values.haproxy.readOnly.enabled }}
     backend bk_redis_slave
       mode tcp
       option tcp-check
       tcp-check connect
       {{- if .Values.auth }}
-      tcp-check send AUTH\ {{ .Values.redisPassword }}\r\n
+      tcp-check send AUTH\ REPLACE_AUTH_SECRET\r\n
       tcp-check expect string +OK
       {{- end }}
       tcp-check send PING\r\n
@@ -221,6 +221,17 @@
       server R{{ $i }} {{ $fullName }}-announce-{{ $i }}:{{ $root.Values.redis.port }} check inter 1s fall 1 rise 1
       {{- end }}
     {{- end }}
+    {{- if .Values.haproxy.metrics.enabled }}
+    frontend metrics
+      mode http
+      bind *:{{ .Values.haproxy.metrics.port }}
+      option http-use-htx
+      http-request use-service prometheus-exporter if { path {{ .Values.haproxy.metrics.scrapePath }} }
+    {{- end }}
+{{- if .Values.haproxy.extraConfig }}
+    # Additional configuration
+{{ .Values.haproxy.extraConfig | indent 4 }}
+{{- end }}
 {{- end }}
 {{- end }}
 
@@ -229,7 +240,7 @@
     HAPROXY_CONF=/data/haproxy.cfg
     cp /readonly/haproxy.cfg "$HAPROXY_CONF"
     {{- $fullName := include "redis-ha.fullname" . }}
-    {{- $replicas := int .Values.replicas }}
+    {{- $replicas := int (toString .Values.replicas) }}
     {{- range $i := until $replicas }}
     for loop in $(seq 1 10); do
       getent hosts {{ $fullName }}-announce-{{ $i }} && break
@@ -241,5 +252,11 @@
       exit 1
     fi
     sed -i "s/REPLACE_ANNOUNCE{{ $i }}/$ANNOUNCE_IP{{ $i }}/" "$HAPROXY_CONF"
+
+    if [ "${AUTH:-}" ]; then
+        echo "Setting auth values"
+        ESCAPED_AUTH=$(echo "$AUTH" | sed -e 's/[\/&]/\\&/g');
+        sed -i "s/REPLACE_AUTH_SECRET/${ESCAPED_AUTH}/" "$HAPROXY_CONF"
+    fi
     {{- end }}
 {{- end }}

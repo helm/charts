@@ -66,6 +66,7 @@ Parameter | Description | Default
 `resources` | Resource requests and limits | `{}`
 `initContainers` | InitContainers and their specs to start with the deployment pod | `[]`
 `tolerations` | List of node taints to tolerate | `[]`
+`priorityClassName` | Pod priority class name to use for the Velero deployment | `{}`
 `nodeSelector` | Node labels for pod assignment | `{}`
 `extraVolumes` | Extra volumes for the Velero deployment | `[]`
 `extraVolumeMounts` | Extra volumeMounts for the Velero deployment | `[]`
@@ -90,6 +91,8 @@ Parameter | Description | Default
 `configuration.volumeSnapshotLocation.config.resourceGroup` | The name of the resource group where volume snapshots should be stored, if different from the cluster’s resource group. (Azure only) |
 `configuration.volumeSnapshotLocation.config.project` | The project ID where snapshots should be stored, if different than the project that your IAM account is in. (GCP only) |
 `configuration.volumeSnapshotLocation.config.snapshotLocation` | The location where the snapshots will be stored. (GCP only) |
+`configuration.logLevel` | Set log-level for Velero pod. Default: info. Other options: debug, warning, error, fatal, panic. |
+`configuration.logFormat` | Set log-format for Velero pod. Default: text. Other option: json. |
 `credentials.existingSecret` | If specified and `useSecret` is `true`, uses an existing secret with this name instead of creating one | ``
 `credentials.useSecret` | Whether a secret should be used. Set this to `false` when using `kube2iam` | `true`
 `credentials.secretContents` | Contents for the credentials secret | `{}`
@@ -103,12 +106,15 @@ Parameter | Description | Default
 `restic.podVolumePath` | Location of pod volumes on the host | `/var/lib/kubelet/pods`
 `restic.privileged` | Whether restic should run as a privileged pod. Only necessary in special cases (SELinux) | `false`
 `restic.resources` | Restic DaemonSet resource requests and limits | `{}`
+`restic.priorityClassName` | Restic DaemonSet pod priority class name | `{}`
 `restic.tolerations` | Restic DaemonSet tolerations | `[]`
+`restic.extraVolumes` | Extra volumes for the Restic daemonset | `[]`
+`restic.extraVolumeMounts` | Extra volumeMounts for the Restic daemonset | `[]`
 `configMaps` | Velero ConfigMaps | `[]`
 
 ## How to
 ```
-helm install --name velero --namespace velero ./velero
+helm install --name velero --namespace velero stable/velero
 ```
 
 ## Remove heptio/velero
