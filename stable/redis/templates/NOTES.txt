@@ -45,7 +45,7 @@ Redis can be accessed via port {{ .Values.redisPort }} on the following DNS name
 {{ if .Values.usePassword }}
 To get your password run:
 
-    export REDIS_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "redis.fullname" . }} -o jsonpath="{.data.redis-password}" | base64 --decode)
+    export REDIS_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "redis.secretName" . }} -o jsonpath="{.data.redis-password}" | base64 --decode)
 {{- end }}
 
 To connect to your Redis server:
@@ -95,7 +95,7 @@ To connect to your database from outside the cluster execute the following comma
 
 {{- else if contains "ClusterIP" .Values.master.service.type }}
 
-    kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "redis.fullname" . }} {{ .Values.redisPort }}:{{ .Values.redisPort }} &
+    kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "redis.fullname" . }}-master {{ .Values.redisPort }}:{{ .Values.redisPort }} &
     redis-cli -h 127.0.0.1 -p {{ .Values.redisPort }} {{- if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }}
 
 {{- end }}

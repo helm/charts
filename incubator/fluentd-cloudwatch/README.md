@@ -46,34 +46,36 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the Fluentd Cloudwatch chart and their default values.
 
-| Parameter                    | Description                                                                     | Default                               |
-| ---------------------------- | ------------------------------------------------------------------------------- | --------------------------------------|
-| `image.repository`           | Image repository                                                                | `fluent/fluentd-kubernetes-daemonset` |
-| `image.tag`                  | Image tag                                                                       | `v1.3.3-debian-cloudwatch-1.0`        |
-| `image.pullPolicy`           | Image pull policy                                                               | `IfNotPresent`                        |
-| `resources.limits.cpu`       | CPU limit                                                                       | `100m`                                |
-| `resources.limits.memory`    | Memory limit                                                                    | `200Mi`                               |
-| `resources.requests.cpu`     | CPU request                                                                     | `100m`                                |
-| `resources.requests.memory`  | Memory request                                                                  | `200Mi`                               |
-| `hostNetwork`                | Host network                                                                    | `false`                               |
-| `podAnnotations`             | Annotations                                                                     | `{}`                                  |
-| `podSecurityContext`         | Security Context                                                                | `{}`                                  |
-| `awsRegion`                  | AWS Cloudwatch region                                                           | `us-east-1`                           |
-| `awsRole`                    | AWS IAM Role To Use                                                             | `nil`                                 |
-| `awsAccessKeyId`             | AWS Access Key Id of a AWS user with a policy to access Cloudwatch              | `nil`                                 |
-| `awsSecretAccessKey`         | AWS Secret Access Key of a AWS user with a policy to access Cloudwatch          | `nil`                                 |
-| `data`                       | Fluentd ConfigMap values. The main configuration is defined under `fluent.conf` | `example configuration`               |
-| `logGroupName`               | AWS Cloudwatch log group                                                        | `kubernetes`                          |
-| `rbac.create`                | If true, create & use RBAC resources                                            | `false`                               |
-| `rbac.serviceAccountName`    | existing ServiceAccount to use (ignored if rbac.create=true)                    | `default`                             |
-| `tolerations`                | Add tolerations                                                                 | `[]`                                  |
-| `extraVars`                  | Add pod environment variables (must be specified as a single line object)       | `[]`                                  |
-| `updateStrategy`             | Define daemonset update strategy                                                | `OnDelete`                            |
-| `nodeSelector`               | Node labels for pod assignment                                                  | `{}`                                  |
-| `affinity`                   | Node affinity for pod assignment                                                | `{}`                                  |
-| `priorityClassName`          | Set priority class for daemon set                                               | `nil`                                 |
-| `busybox.repository`         | Image repository of busybox                                                     | `busybox`                             |
-| `busybox.tag`                | Image tag of busybox                                                            | `1.31.0`                              |
+| Parameter                       | Description                                                                     | Default                               |
+| ------------------------------- | ------------------------------------------------------------------------------- | --------------------------------------|
+| `image.repository`              | Image repository                                                                | `fluent/fluentd-kubernetes-daemonset` |
+| `image.tag`                     | Image tag                                                                       | `v1.3.3-debian-cloudwatch-1.0`        |
+| `image.pullPolicy`              | Image pull policy                                                               | `IfNotPresent`                        |
+| `resources.limits.cpu`          | CPU limit                                                                       | `100m`                                |
+| `resources.limits.memory`       | Memory limit                                                                    | `200Mi`                               |
+| `resources.requests.cpu`        | CPU request                                                                     | `100m`                                |
+| `resources.requests.memory`     | Memory request                                                                  | `200Mi`                               |
+| `hostNetwork`                   | Host network                                                                    | `false`                               |
+| `podAnnotations`                | Annotations                                                                     | `{}`                                  |
+| `podSecurityContext`            | Security Context                                                                | `{}`                                  |
+| `awsRegion`                     | AWS Cloudwatch region                                                           | `us-east-1`                           |
+| `awsRole`                       | AWS IAM Role To Use                                                             | `nil`                                 |
+| `awsAccessKeyId`                | AWS Access Key Id of a AWS user with a policy to access Cloudwatch              | `nil`                                 |
+| `awsSecretAccessKey`            | AWS Secret Access Key of a AWS user with a policy to access Cloudwatch          | `nil`                                 |
+| `data`                          | Fluentd ConfigMap values. The main configuration is defined under `fluent.conf` | `example configuration`               |
+| `logGroupName`                  | AWS Cloudwatch log group                                                        | `kubernetes`                          |
+| `rbac.create`                   | If true, create & use RBAC resources                                            | `false`                               |
+| `rbac.serviceAccountName`       | existing ServiceAccount to use (ignored if rbac.create=true)                    | `default`                             |
+| `rbac.pspEnabled`               | PodSecuritypolicy                                                               | `false`                               |
+| `rbac.serviceAccountAnnotations`| Additional Service Account annotations	                                        | `{}`                                  |
+| `tolerations`                   | Add tolerations                                                                 | `[]`                                  |
+| `extraVars`                     | Add pod environment variables (must be specified as a single line object)       | `[]`                                  |
+| `updateStrategy`                | Define daemonset update strategy                                                | `OnDelete`                            |
+| `nodeSelector`                  | Node labels for pod assignment                                                  | `{}`                                  |
+| `affinity`                      | Node affinity for pod assignment                                                | `{}`                                  |
+| `priorityClassName`             | Set priority class for daemon set                                               | `nil`                                 |
+| `busybox.repository`            | Image repository of busybox                                                     | `busybox`                             |
+| `busybox.tag`                   | Image tag of busybox                                                            | `1.31.0`                              |
 
 
 If using fluentd-kubernetes-daemonset v0.12.43-cloudwatch, the container runs as user fluentd. To be able to write pos files to the host system, you'll need to run fluentd as root. Add the following extraVars value to run as root.

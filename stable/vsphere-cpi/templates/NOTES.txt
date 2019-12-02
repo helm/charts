@@ -1,0 +1,27 @@
+The vSphere Cloud Controller Manager API over gRPC exists at the following location:
+
+{{- if not .Values.service.enabled }}
+
+  vSphere CPI API is disabled
+
+{{- else if contains "NodePort" .Values.service.type }}
+
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "cpi.fullname" . }}-query)
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo h$NODE_IP:$NODE_PORT
+
+{{- else if contains "LoadBalancer" .Values.service.type }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "sphere-cpi.fullname" . }}-query'
+
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "sphere-cpi.fullname" . }}-query -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo $SERVICE_IP:50051
+
+{{- else if contains "ClusterIP"  .Values.service.type }}
+
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "release={{ .Release.Name }},component=cloud-controller-manager" -o jsonpath="{.items[0].metadata.name}")
+  echo http://127.0.0.1:8080/
+  kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 43001:43001
+
+{{- end }}

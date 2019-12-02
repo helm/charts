@@ -24,6 +24,11 @@ spec:
       {{if (and (eq .Values.master.serviceType "NodePort") (not (empty .Values.master.nodePort)))}}
       nodePort: {{.Values.master.nodePort}}
       {{end}}
+{{- range $index, $port := .Values.master.extraPorts }}
+    - port: {{ $port.port }}
+      name: {{ $port.name }}
+      targetPort: {{ $port.port }}
+{{- end }}
   selector:
     "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
     "app.kubernetes.io/instance": "{{ .Release.Name }}"

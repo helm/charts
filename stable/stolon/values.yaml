@@ -58,13 +58,23 @@ store:
   kubeResourceKind: configmap
 
 pgParameters: {}
-  # maxConnections: 1000
+  # max_connections: "1000"
 
 ports:
   stolon:
     containerPort: 5432
   metrics:
     containerPort: 8080
+
+serviceMonitor:
+  # When set to true then use a ServiceMonitor to collect metrics
+  enabled: false
+  # Set the namespace the ServiceMonitor should be deployed to
+  # namespace: default
+  # Set how frequently Prometheus should scrape
+  # interval: 30s
+  # Set timeout for scrape
+  # scrapeTimeout: 10s
 
 job:
   autoCreateCluster: true
@@ -73,6 +83,17 @@ job:
 clusterSpec: {}
   # sleepInterval: 1s
   # maxStandbys: 5
+
+## Enable support ssl into postgres, you must specify the certs.
+## ref: https://www.postgresql.org/docs/10/ssl-tcp.html
+##
+tls:
+  enabled: false
+  rootCa: |-
+  serverCrt: |-
+  serverKey: |-
+
+  # existingSecret: name-of-existing-secret-to-postgresql
 
 keeper:
   uid_prefix: "keeper"
@@ -99,6 +120,9 @@ keeper:
   podDisruptionBudget:
     # minAvailable: 1
     # maxUnavailable: 1
+  extraEnv: []
+  #  - name: STKEEPER_LOG_LEVEL
+  #    value: "info"
 
 proxy:
   replicaCount: 2
@@ -120,6 +144,15 @@ proxy:
   podDisruptionBudget:
     # minAvailable: 1
     # maxUnavailable: 1
+  extraEnv: []
+  #  - name: STPROXY_LOG_LEVEL
+  #    value: "info"
+  #  - name: STPROXY_TCP_KEEPALIVE_COUNT
+  #    value: "0"
+  #  - name: STPROXY_TCP_KEEPALIVE_IDLE
+  #    value: "0"
+  #  - name: STPROXY_TCP_KEEPALIVE_INTERVAL
+  #    value: "0"
 
 sentinel:
   replicaCount: 2
@@ -132,3 +165,24 @@ sentinel:
   podDisruptionBudget:
     # minAvailable: 1
     # maxUnavailable: 1
+  extraEnv: []
+  #  - name: STSENTINEL_LOG_LEVEL
+  #    value: "info"
+
+## initdb scripts
+## Specify dictionary of scripts to be run at first boot, the entry point script is create_script.sh
+## i.e. you can use pgsql to run sql script on the cluster.
+##
+# initdbScripts:
+#   create_script.sh: |
+#      #!/bin/sh
+#      echo "Do something."
+
+## nodePostStart scripts
+## Specify dictionary of scripts to be run at first boot, the entry point script is postStartScript.sh
+## i.e. you can create tablespace directory here.
+##
+# nodePostStartScript:
+#  postStartScript.sh: |
+#    #!/bin/bash
+#     echo "Do something."

@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 image:
   repository: prom/pushgateway
-  tag: v0.9.1
+  tag: v1.0.0
   pullPolicy: IfNotPresent
 
 service:
@@ -96,13 +96,17 @@ affinity: {}
 serviceMonitor:
   enabled: false
   namespace: monitoring
-  # fallback to the prometheus default unless specified
+
+  # Fallback to the prometheus default unless specified
   # interval: 10s
-  ## Defaults to what's used if you follow CoreOS [Prometheus Install Instructions](https://github.com/helm/charts/tree/master/stable/prometheus-operator#tldr)
-  ## [Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#prometheus-operator-1)
-  ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
-  selector:
-    prometheus: kube-prometheus
+
+  # Fallback to the prometheus default unless specified
+  # scrapeTimeout: 30s
+
+  ## Used to pass Labels that are used by the Prometheus installed in your cluster to select Service Monitors to work with
+  ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
+  additionalLabels: {}
+
   # Retain the job and instance labels of the metrics pushed to the Pushgateway
   # [Scraping Pushgateway](https://github.com/prometheus/pushgateway#configure-the-pushgateway-as-a-target-to-scrape)
   honorLabels: true
@@ -110,3 +114,17 @@ serviceMonitor:
 # The values to set in the PodDisruptionBudget spec (minAvailable/maxUnavailable)
 # If not set then a PodDisruptionBudget will not be created
 podDisruptionBudget:
+
+# Configuration for clusters with restrictive network policies in place:
+# - allowAll allows access to the PushGateway from any namespace
+# - customSelector is a list of pod/namespaceSelectors to allow access from
+# These options are mutually exclusive and the latter will take precedence.
+networkPolicy:
+  # allowAll: true
+  # customSelectors:
+  #   - namespaceSelector:
+  #       matchLabels:
+  #         type: admin
+  #   - podSelector:
+  #       matchLabels:
+  #         app: myapp

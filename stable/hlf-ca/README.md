@@ -71,7 +71,7 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | Parameter                          | Description                                     | Default                                                    |
 | ---------------------------------- | ------------------------------------------------ | ---------------------------------------------------------- |
 | `image.repository`                 | `hlf-ca` image repository                        | `hyperledger/fabric-ca`                                    |
-| `image.tag`                        | `hlf-ca` image tag                               | `x86_64-1.1.0`                                             |
+| `image.tag`                        | `hlf-ca` image tag                               | `1.4.3`                                             |
 | `image.pullPolicy`                 | Image pull policy                                | `IfNotPresent`                                             |
 | `service.port`                     | TCP port                                         | `7054`                                                     |
 | `service.type`                     | K8S service type exposing ports, e.g. `ClusterIP`| `ClusterIP`                                                |
@@ -97,7 +97,7 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `externalDatabase.password`        | Password for the above username                  | ``                                                         |
 | `externalDatabase.database`        | Name of the existing database                    | ``                                                         |
 | `externalDatabase.port`            | Database port number                             | ``                                                         |
-| `config.hlfToolsVersion`           | Version of Hyperledger Fabric tools used         | `1.1.0`                                                    |
+| `config.hlfToolsVersion`           | Version of Hyperledger Fabric tools used         | `1.4.3`                                                    |
 | `config.mountTLS`                  | If TLS secrets are generated, do we mount them?  | `false`                                                    |
 | `config.debug`                     | Enable debug logging                             | `true`                                                     |
 | `config.csr.ca.pathlength`         | Pathlength of CA certificate hierarchy           | `1`                                                        |
@@ -118,9 +118,9 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 
 ## Database
 
-The Fabric CA server needs a database to store the users registered. 
+The Fabric CA server needs a database to store the users registered.
 
-By default the chart is configured to use an in-memory `sqlite3` database, but you can also configure the helm chart to install a `PostgreSQL` or a `MySQL` database along the Fabric CA server. 
+By default the chart is configured to use an in-memory `sqlite3` database, but you can also configure the helm chart to install a `PostgreSQL` or a `MySQL` database along the Fabric CA server.
 
 ### PostgreSQL
 
@@ -151,7 +151,7 @@ In case you already setup a database (`postgres` or `mysql`), you can enable and
    --set externalDatabase.database=mydatabase
 ```
 
-Please consult the [documentation](https://hyperledger-fabric-ca.readthedocs.io/en/latest/users-guide.html?highlight=database#configuring-the-database) for mode details. 
+Please consult the [documentation](https://hyperledger-fabric-ca.readthedocs.io/en/latest/users-guide.html?highlight=database#configuring-the-database) for mode details.
 
 ## Persistence
 

@@ -1,0 +1,27 @@
+{{- if .Values.jupyter.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "dask.fullname" . }}-jupyter
+  labels:
+    app: {{ template "dask.fullname" . }}-jupyter
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+{{ toYaml .Values.jupyter.ingress.annotations | indent 4 }}
+spec:
+{{- if .Values.jupyter.ingress.tls }}
+  tls:
+    - hosts:
+      - {{ .Values.jupyter.ingress.hostname | quote }}
+      secretName: {{ .Values.jupyter.ingress.secretName | default (printf "%s-jupyter-tls" (include "dask.fullname" .)) }}
+{{- end }}
+  rules:
+  - host: {{ .Values.jupyter.ingress.hostname }}
+    http:
+      paths:
+      - backend:
+          serviceName: {{ template "dask.fullname" . }}-jupyter
+          servicePort: {{ .Values.jupyter.servicePort }}
+{{- end -}}

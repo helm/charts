@@ -6,7 +6,7 @@ provisionDataStore:
   cassandra: true
   elasticsearch: false
 
-tag: 1.13.1
+tag: 1.15.1
 
 nameOverride: ""
 fullnameOverride: ""
@@ -88,8 +88,10 @@ schema:
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
-  # Deadline for cassandra schema creation job
+  ## Deadline for cassandra schema creation job
   activeDeadlineSeconds: 120
+  # traceTtl: 172800
+  # dependenciesTtl: 0
 
 # Begin: Override values on the Elasticsearch subchart to customize for Jaeger
 elasticsearch:
@@ -182,6 +184,37 @@ collector:
   #   subPath: ""
   #   configMap: jaeger-tls
   #   readOnly: true
+  # samplingConfig: |-
+  #   {
+  #     "service_strategies": [
+  #       {
+  #         "service": "foo",
+  #         "type": "probabilistic",
+  #         "param": 0.8,
+  #         "operation_strategies": [
+  #           {
+  #             "operation": "op1",
+  #             "type": "probabilistic",
+  #             "param": 0.2
+  #           },
+  #           {
+  #             "operation": "op2",
+  #             "type": "probabilistic",
+  #             "param": 0.4
+  #           }
+  #         ]
+  #       },
+  #       {
+  #         "service": "bar",
+  #         "type": "ratelimiting",
+  #         "param": 5
+  #       }
+  #     ],
+  #     "default_strategy": {
+  #       "type": "probabilistic",
+  #       "param": 1
+  #     }
+  #   }
 
 query:
   enabled: true

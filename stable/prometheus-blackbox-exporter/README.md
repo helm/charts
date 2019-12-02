@@ -45,18 +45,9 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 | -------------------------------------- | ------------------------------------------------- | ----------------------------- |
 | `config`                               | Prometheus blackbox configuration                 | {}                            |
 | `secretConfig`                         | Whether to treat blackbox configuration as secret | `false`                       |
-| `configmapReload.name`                 | configmap-reload container name                   | `configmap-reload`            |
-| `configmapReload.runAsUser`            | User to run configmap-reload container as         | `65534`                       |
-| `configmapReload.runAsNonRoot`         | Run configmap-reload container as non-root        | `true`                        |
-| `configmapReload.image.repository`     | configmap-reload container image repository       | `jimmidyson/configmap-reload` |
-| `configmapReload.image.tag`            | configmap-reload container image tag              | `v0.2.2`                      |
-| `configmapReload.image.pullPolicy`     | configmap-reload container image pull policy      | `IfNotPresent`                |
-| `configmapReload.extraArgs`            | Additional configmap-reload container arguments   | `{}`                          |
-| `configmapReload.extraConfigmapMounts` | Additional configmap-reload configMap mounts      | `[]`                          |
-| `configmapReload.resources`            | configmap-reload pod resource requests & limits   | `{}`                          |
 | `extraArgs`                            | Optional flags for blackbox                       | `[]`                          |
 | `image.repository`                     | container image repository                        | `prom/blackbox-exporter`      |
-| `image.tag`                            | container image tag                               | `v0.15.0`                     |
+| `image.tag`                            | container image tag                               | `v0.15.1`                     |
 | `image.pullPolicy`                     | container image pull policy                       | `IfNotPresent`                |
 | `image.pullSecrets`                    | container image pull secrets                      | `[]`                          |
 | `ingress.annotations`                  | Ingress annotations                               | None                          |

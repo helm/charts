@@ -1,5 +1,5 @@
 {{- if eq true .Values.chromeDebug.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "selenium.chromeDebug.fullname" . }}
@@ -7,6 +7,10 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
   replicas: {{ .Values.chromeDebug.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "selenium.chromeDebug.fullname" . }}
+      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
@@ -90,7 +94,7 @@ spec:
           resources:
 {{ toYaml .Values.chromeDebug.resources | indent 12 }}
 {{- if or .Values.global.imagePullSecrets .Values.chromeDebug.imagePullSecrets }}
-      imagePullSecrets: 
+      imagePullSecrets:
       - name: {{ .Values.chromeDebug.imagePullSecrets | default .Values.global.imagePullSecrets | quote }}
 {{- end }}
       volumes:

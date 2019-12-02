@@ -30,6 +30,15 @@ scheduler:
 webUI:
   name: webui
   servicePort: 80
+  ingress:
+    enabled: false
+    tls: false
+    # secretName: dask-scheduler-tls
+    hostname: dask-ui.example.com
+    annotations:
+     # kubernetes.io/ingress.class: "nginx"
+     # secretName: my-tls-cert
+     # kubernetes.io/tls-acme: "true"
 
 worker:
   name: worker
@@ -95,3 +104,12 @@ jupyter:
   tolerations: []
   nodeSelector: {}
   affinity: {}
+  ingress:
+    enabled: false
+    tls: false
+    # secretName: dask-jupyter-tls
+    hostname: dask-jupyter.example.com
+    annotations:
+      # kubernetes.io/ingress.class: "nginx"
+      # secretName: my-tls-cert
+      # kubernetes.io/tls-acme: "true"

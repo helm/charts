@@ -2,6 +2,13 @@
 
 Installs [kiam](https://github.com/uswitch/kiam) to integrate AWS IAM with Kubernetes.
 
+## Deprecation Notice
+
+As mentioned in #16664, this chart has been deprecated in favour of the [uSwitch-hosted Helm chart](https://github.com/uswitch/kiam/tree/master/helm/kiam).
+Please open new [issues](https://github.com/uswitch/kiam/issues/new) and pull requests in the [uSwitch repository](https://github.com/uswitch/kiam).
+
+The chart is also available in [Helm Hub](https://hub.helm.sh/charts/uswitch/kiam).
+
 ## TL;DR;
 
 ```console

@@ -57,6 +57,7 @@ The following table lists the configurable parameters of the mysql exporter char
 | `mysql.port`                           | MySQL connection port                               | `3306`                             |
 | `mysql.protocol`                       | MySQL connection protocol (optional)                | `""`                               |
 | `mysql.user`                           | MySQL connection username                           | `exporter`                         |
+| `mysql.existingSecret`                 | Use existing kubernetes secret for DATA_SOURCE_NAME | `false`                            |
 | `cloudsqlproxy.enabled`                | Flag to enable the connection using Cloud SQL Proxy | `false`                            |
 | `cloudsqlproxy.image.repo`             | Cloud SQL Proxy image repository                    | `gcr.io/cloudsql-docker/gce-proxy` |
 | `cloudsqlproxy.image.tag`              | Cloud SQL Proxy image tag                           | `1.14`                             |

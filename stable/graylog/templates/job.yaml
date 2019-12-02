@@ -11,14 +11,14 @@ metadata:
     app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
 spec:
   template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ template "graylog.name" . }}
+        helm.sh/chart: {{ template "graylog.chart" . }}
+        app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+        app.kubernetes.io/instance: "{{ .Release.Name }}"
+        app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
     spec:
-      metadata:
-        labels:
-          app.kubernetes.io/name: {{ template "graylog.name" . }}
-          helm.sh/chart: {{ template "graylog.chart" . }}
-          app.kubernetes.io/managed-by: "{{ .Release.Service }}"
-          app.kubernetes.io/instance: "{{ .Release.Name }}"
-          app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
       containers:
       - name: {{ template "graylog.fullname" . }}-provisioner-job
         image: alpine:latest
@@ -27,7 +27,8 @@ spec:
           - name: GRAYLOG_PASSWORD_SECRET
             valueFrom:
               secretKeyRef:
-                name: {{ template "graylog.fullname" . }}
+                name: {{ .Values.existingRootSecret | default (include "graylog.fullname" .) }}
+
                 key: graylog-password-secret
         args:
           - -c

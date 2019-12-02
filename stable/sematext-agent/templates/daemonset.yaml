@@ -50,10 +50,6 @@ spec:
               secretKeyRef:
                 name: {{ template "sematext-agent.fullname" . }}
                 key: logs-token
-          - name: NODE_NAME
-            valueFrom:
-              fieldRef:
-                fieldPath: spec.nodeName
           - name: STA_NAMESPACE
             valueFrom:
             fieldRef:
