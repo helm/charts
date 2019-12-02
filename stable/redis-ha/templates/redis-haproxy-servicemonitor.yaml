@@ -6,6 +6,7 @@ metadata:
   labels: {{ toYaml . | nindent 4}}
 {{- end }}
   name: {{ template "redis-ha.fullname" . }}-haproxy
+  namespace: {{ .Release.Namespace }}
 {{- if .Values.haproxy.metrics.serviceMonitor.namespace }}
   namespace: {{ .Values.haproxy.metrics.serviceMonitor.namespace }}
 {{- end }}
