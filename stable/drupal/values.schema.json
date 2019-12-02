@@ -21,14 +21,19 @@
     "persistence": {
       "type": "object",
       "properties": {
-        "size": {
-          "type": "string",
-          "title": "Persistent Volume Size",
-          "form": true,
-          "render": "slider",
-          "sliderMin": 1,
-          "sliderMax": 100,
-          "sliderUnit": "Gi"
+        "drupal": {
+          "type": "object",
+          "properties": {
+            "size": {
+              "type": "string",
+              "title": "Persistent Volume Size",
+              "form": true,
+              "render": "slider",
+              "sliderMin": 1,
+              "sliderMax": 100,
+              "sliderUnit": "Gi"
+            }
+          }
         }
       }
     },
