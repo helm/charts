@@ -14,15 +14,19 @@ data:
     global:
 {{ $root.Values.server.global | toYaml | trimSuffix "\n" | indent 6 }}
 {{- end }}
-{{- if and (eq $key "alerts") (empty $value.groups) }}
+{{- if eq $key "alerts" }}
+{{- if and (not (empty $value)) (empty $value.groups) }}
     groups:
 {{- range $ruleKey, $ruleValue := $value }}
     - name: {{ $ruleKey -}}.rules
       rules:
 {{ $ruleValue | toYaml | trimSuffix "\n" | indent 6 }}
 {{- end }}
-{{ else }}
+{{- else }}
 {{ toYaml $value | indent 4 }}
+{{- end }}
+{{- else }}
+{{ toYaml $value | default "{}" | indent 4 }}
 {{- end }}
 {{- if eq $key "prometheus.yml" -}}
 {{- if $root.Values.extraScrapeConfigs }}
