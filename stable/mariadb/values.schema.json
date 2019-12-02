@@ -20,14 +20,16 @@
     "db": {
       "type": "object",
       "properties": {
-        "user": {
-          "type": "string",
-          "title": "MariaDB custom user",
-          "form": true
-        },
         "name": {
           "type": "string",
           "title": "MariaDB custom database",
+          "description": "Name of the custom database to be created during the 1st initialization of MariaDB",
+          "form": true
+        },
+        "user": {
+          "type": "string",
+          "title": "MariaDB custom user",
+          "description": "Name of the custom user to be created during the 1st initialization of MariaDB. This user only has permissions on the MariaDB custom database",
           "form": true
         },
         "password": {
