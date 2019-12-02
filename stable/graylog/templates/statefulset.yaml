@@ -66,11 +66,16 @@ spec:
               rm -rf /usr/share/graylog/data/journal/messagejournal-0
               rm -rf /usr/share/graylog/data/journal/recovery-point-offset-checkpoint
             {{- end }}
-              wget https://storage.googleapis.com/kubernetes-release/release/v1.14.0/bin/linux/amd64/kubectl -O /k8s/kubectl
+              wget https://storage.googleapis.com/kubernetes-release/release/v1.16.3/bin/linux/amd64/kubectl -O /k8s/kubectl
               chmod +x /k8s/kubectl
 
               GRAYLOG_HOME=/usr/share/graylog
               chown -R 1100:1100 ${GRAYLOG_HOME}/data/
+          env:
+            {{- range $key, $value :=  .Values.graylog.init.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
           securityContext:
             privileged: true
           volumeMounts:
