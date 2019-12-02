@@ -15,9 +15,10 @@ collector:
       selectors:
         images:
         - "*activemq*"
+      port: 8161
       conf: |
         server = "${host}"
-        port = 8161
+        port = ${port}
         username = "admin"
         password = "admin"
         webadmin = "admin"
@@ -112,7 +113,7 @@ collector:
       type: telegraf/mysql
       selectors:
         images:
-        - "*sql*"
+        - "mysql*"
       collection:
         interval: "180s"
       port: 3306
@@ -155,8 +156,9 @@ collector:
       selectors:
         images:
         - 'rabbitmq*'
+      port: 15672
       conf: |
-        url = "http://${host}:15672"
+        url = "http://${host}:${port}"
         username = "guest"
         password = "guest"
 
