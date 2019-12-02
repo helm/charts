@@ -110,3 +110,11 @@ app.kubernetes.io/component: kafka-monitor
 {{ include "kafka.common.metaLabels" . }}
 {{ include "kafka.monitor.matchLabels" . }}
 {{- end -}}
+
+{{- define "serviceMonitor.namespace" -}}
+{{- if .Values.prometheus.operator.serviceMonitor.releaseNamespace -}}
+{{ .Release.Namespace }}
+{{- else -}}
+{{ .Values.prometheus.operator.serviceMonitor.namespace }}
+{{- end -}}
+{{- end -}}

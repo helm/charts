@@ -3,7 +3,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ include "kafka.fullname" . }}
-  namespace: {{ .Values.prometheus.operator.serviceMonitor.namespace }}
+  namespace: {{ include "serviceMonitor.namespace" . }}
   labels:
   {{- include "kafka.monitor.labels" . | nindent 4 }}
 {{ toYaml .Values.prometheus.operator.serviceMonitor.selector | indent 4 }}
@@ -27,7 +27,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ include "kafka.fullname" . }}-exporter
-  namespace: {{ .Values.prometheus.operator.serviceMonitor.namespace }}
+  namespace: {{ include "serviceMonitor.namespace" . }}
   labels:
   {{- include "kafka.monitor.labels" . | nindent 4 }}
 {{ toYaml .Values.prometheus.operator.serviceMonitor.selector | indent 4 }}
