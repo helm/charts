@@ -54,6 +54,11 @@ deploymentStrategy: {}
   # type: RollingUpdate
 
 securityContext: {}
+  # capabilities:
+  #   drop:
+  #     - ALL
+  #   add:
+  #     - NET_BIND_SERVICE
 useNonPriviledgedPorts: false
 env: {}
 
@@ -98,8 +103,6 @@ fileBackend: ""
 dnsPolicy: ClusterFirst
 hostNetwork:
   enable: false
-net_bind_service:
-  enabled: false
 proxyProtocol:
   enabled: false
   # trustedIPs is required when enabled
