@@ -301,7 +301,7 @@ spec:
             - name: jenkins-home
               mountPath: /var/jenkins_home
               {{- if .Values.persistence.subPath }}
-                subPath: {{ .Values.persistence.subPath }}
+              subPath: {{ .Values.persistence.subPath }}
               {{- end }}
 {{- end}}
 
