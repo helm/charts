@@ -56,15 +56,15 @@ spec:
             {{- end }}
           command: ["sh",
             "-c",
-            "mkdir -p /opt/sonarqube/extensions/plugins/tmp &&
-            rm -f /opt/sonarqube/extensions/plugins/tmp/* &&
-            cp /tmp/scripts/install_plugins.sh /opt/sonarqube/extensions/plugins/tmp/install_plugins.sh &&
-            chmod 0775 /opt/sonarqube/extensions/plugins/tmp/install_plugins.sh &&
-            /opt/sonarqube/extensions/plugins/tmp/install_plugins.sh && pwd && ls -lah
+            "mkdir -p {{ .Values.sonarqubeFolder }}/extensions/plugins/tmp &&
+            rm -f {{ .Values.sonarqubeFolder }}/extensions/plugins/tmp/* &&
+            cp /tmp/scripts/install_plugins.sh {{ .Values.sonarqubeFolder }}/extensions/plugins/tmp/install_plugins.sh &&
+            chmod 0775 {{ .Values.sonarqubeFolder }}/extensions/plugins/tmp/install_plugins.sh &&
+            {{ .Values.sonarqubeFolder }}/extensions/plugins/tmp/install_plugins.sh && pwd && ls -lah
             "
            ]
           volumeMounts:
-            - mountPath: /opt/sonarqube/extensions/plugins/tmp
+            - mountPath: {{ .Values.sonarqubeFolder }}/extensions/plugins/tmp
               name: sonarqube
               subPath: tmp
             - name: install-plugins
@@ -102,7 +102,7 @@ spec:
             "
            ]
           volumeMounts:
-            - mountPath: /tmp/props/sonar.properties 
+            - mountPath: /tmp/props/sonar.properties
               name: config
               subPath: sonar.properties
             - mountPath: /tmp/props/secret.properties
@@ -169,14 +169,14 @@ spec:
             failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           volumeMounts:
             {{- if and .Values.sonarProperties .Values.sonarSecretProperties }}
-            - mountPath: /opt/sonarqube/conf/
+            - mountPath: {{ .Values.sonarqubeFolder }}/conf/
               name: concat-dir
             {{- else if or .Values.sonarProperties (not .Values.elasticsearch.bootstrapChecks) }}
-            - mountPath: /opt/sonarqube/conf/
+            - mountPath: {{ .Values.sonarqubeFolder }}/conf/
               name: config
             {{- end }}
             {{- if .Values.sonarSecretKey }}
-            - mountPath: /opt/sonarqube/secret/
+            - mountPath: {{ .Values.sonarqubeFolder }}/secret/
               name: secret
             {{- end }}
             {{- if .Values.customCerts.enabled }}
@@ -184,22 +184,22 @@ spec:
               subPath: cacerts
               name: cacerts
             {{- end }}
-            - mountPath: /opt/sonarqube/data
+            - mountPath: {{ .Values.sonarqubeFolder }}/data
               name: sonarqube
               subPath: data
-            - mountPath: /opt/sonarqube/extensions/plugins/tmp
+            - mountPath: {{ .Values.sonarqubeFolder }}/extensions/plugins/tmp
               name: sonarqube
               subPath: tmp
-            - mountPath: /opt/sonarqube/extensions/downloads
+            - mountPath: {{ .Values.sonarqubeFolder }}/extensions/downloads
               name: sonarqube
               subPath: downloads
-            - mountPath: /opt/sonarqube/extensions/plugins
+            - mountPath: {{ .Values.sonarqubeFolder }}/extensions/plugins
               name: sonarqube
               subPath: plugins
-            - mountPath: /opt/sonarqube/temp
+            - mountPath: {{ .Values.sonarqubeFolder }}/temp
               name: sonarqube
               subPath: temp
-            - mountPath: /opt/sonarqube/logs
+            - mountPath: {{ .Values.sonarqubeFolder }}/logs
               name: sonarqube
               subPath: logs
             - mountPath: /tmp
