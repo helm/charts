@@ -1,0 +1,11 @@
+networkPolicy:
+  enable: true
+  allowExternal: false
+  additionalRules:
+    - matchLabels:
+      - role: foo
+    - matchExpressions:
+      - key: role
+        operator: In
+        values:
+          - bar
