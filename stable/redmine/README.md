@@ -47,10 +47,10 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Using PostgreSQL instead of MariaDB
 
-This chart includes the option to use a PostgreSQL database for Redmine instead of MariaDB. To use this, MariaDB must be explicitly disabled and PostgreSQL enabled:
+This chart includes the option to use a PostgreSQL database for Redmine instead of MariaDB. To use this, set the `databaseType` parameter to `postgresql`:
 
 ```
-helm install --name my-release stable/redmine --set databaseType.mariadb=false,databaseType.postgresql=true
+helm install --name my-release stable/redmine --set databaseType=postgresql
 ```
 
 ## Parameters
@@ -79,10 +79,8 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `smtpUser`                           | SMTP user                                                                  | `nil`                                                   |
 | `smtpPassword`                       | SMTP password                                                              | `nil`                                                   |
 | `smtpTls`                            | Use TLS encryption with SMTP                                               | `nil`                                                   |
-| `existingSecret`                     | Use existing secret for password details                                   | `nil`                                                   |
 | `existingSecret`                     | Use existing secret for password details (`redminePassword`, `smtpPassword` and `externalDatabase.password` will be ignored and picked up from this secret). It must contain the keys `redmine-password` and `smtp-password` when `postgresql.enabled=true` or `mariadb.enabled=true`. In case `postgresql.enabled=false` and `mariadb.enabled=false` it must contain the key `external-db-password` | `nil`                                                   |
-| `databaseType.postgresql`            | Select PostgreSQL as database                                              | `false`                                                 |
-| `databaseType.mariadb`               | Select MariaDB as database                                                 | `true`                                                  |
+| `databaseType`                       | Select database type                                                       | `mariadb` (allowed values: "mariadb" and "postgresql")  |
 | `mariadb.enabled`                    | Whether to deploy a MariaDB server to satisfy the database requirements    | `true`                                                  |
 | `mariadb.rootUser.password`          | MariaDB admin password                                                     | `nil`                                                   |
 | `postgresql.enabled`                 | Whether to deploy a PostgreSQL server to satisfy the database requirements | `false`                                                 |

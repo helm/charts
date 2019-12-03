@@ -67,21 +67,10 @@
       }
     },
     "databaseType": {
-      "type": "object",
+      "type": "string",
       "form": true,
       "title": "Database Type",
-      "properties": {
-        "mariadb": {
-          "type": "boolean",
-          "title": "Use MariaDB as database",
-          "form": true
-        },
-        "postgresql": {
-          "type": "boolean",
-          "title": "Use PostgreSQL as database",
-          "form": true
-        }
-      }
+      "description": "Allowed values: \"mariadb\" and \"postgresql\""
     },
     "mariadb": {
       "type": "object",
@@ -89,7 +78,7 @@
       "form": true,
       "hidden": {
         "condition": false,
-        "value": "databaseType.mariadb"
+        "value": "eq databaseType \"mariadb\""
       },
       "properties": {
         "enabled": {
@@ -129,7 +118,7 @@
       "form": true,
       "hidden": {
         "condition": false,
-        "value": "databaseType.postgresql"
+        "value": "eq databaseType \"mariadb\""
       },
       "properties": {
         "enabled": {
@@ -163,7 +152,7 @@
       "title": "External Database Details",
       "description": "If MariaDB is disabled. Use this section to specify the external database details",
       "form": true,
-      "hidden": "mariadb.enabled and postgresql.enabled",
+      "hidden": "and mariadb.enabled postgresql.enabled",
       "properties": {
         "host": {
           "type": "string",

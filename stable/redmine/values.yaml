@@ -75,12 +75,10 @@ redmineLanguage: en
 #   - name: NAMI_DEBUG
 #     value: --log-level trace
 
-## Database configuration. Please note that only one of the following databases should be selected.
+## Database type. Allowed values: "mariadb" and "postgresql"
 ## ref: https://github.com/bitnami/bitnami-docker-redmine#run-the-application-using-postgresql-database
 ##
-databaseType:
-  mariadb: true
-  postgresql: false
+databaseType: mariadb
 
 ##
 ## MariaDB chart configuration
