@@ -8,10 +8,10 @@ This chart will deploy the New Relic Infrastructure agent as a Daemonset.
 
 | Parameter                       | Description                                                  | Default                    |
 | ------------------------------- | ------------------------------------------------------------ | -------------------------- |
-| `global.cluster`                | The cluster name for the Kubernetes cluster.                 |                            |
-| `global.licenseKey`             | The [license key](https://docs.newrelic.com/docs/accounts/install-new-relic/account-setup/license-key) for your New Relic Account. This will be preferred configuration option if both `licenseKey` and `customSecret` are specified. | |
-| `global.customSecretName`       | Name of the Secret object where the license key is stored    |                            |
-| `global.customSecretLicenseKey` | Key in the Secret object where the license key is stored.    |                            |
+| `cluster`                       | The cluster name for the Kubernetes cluster.                 |                            |
+| `licenseKey`                    | The [license key](https://docs.newrelic.com/docs/accounts/install-new-relic/account-setup/license-key) for your New Relic Account. This will be preferred configuration option if both `licenseKey` and `customSecret` are specified. | |
+| `customSecretName`              | Name of the Secret object where the license key is stored    |                            |
+| `customSecretLicenseKey`        | Key in the Secret object where the license key is stored.    |                            |
 | `config`                        | A `newrelic.yml` file if you wish to provide.                |                            |
 | `kubeStateMetricsUrl`           | If provided, the discovery process for kube-state-metrics endpoint won't be triggered. Example: http://172.17.0.3:8080 |
 | `kubeStateMetricsTimeout`       | Timeout for accessing kube-state-metrics in milliseconds. If not set the newrelic default is 5000 | |
@@ -37,6 +37,22 @@ helm install stable/newrelic-infrastructure \
 --set licenseKey=<enter_new_relic_license_key> \
 --set cluster=my-k8s-cluster
 ```
+
+## Globals
+
+**Important:** global variables have higher precedence than locals.
+
+These are meant to be used when you are writing a chart with subcharts. It helps to avoid
+setting values multiple times on different subcharts.
+
+More information on globals and subcharts can be found at [Helm's official documentation](https://helm.sh/docs/topics/chart_template_guide/subcharts_and_globals/).
+
+| Variable name                   |
+| ------------------------------- |
+| `global.cluster`                |
+| `global.licenseKey`             |
+| `global.customSecretName`       |
+| `global.customSecretLicenseKey` |
 
 ## Resources
 
