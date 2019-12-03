@@ -44,7 +44,7 @@ spec:
       affinity:
 {{- if .Values.affinity }}
     {{- with .Values.affinity }}
-{{ tpl . $ | indent 8 }}
+{{ tpl (toYaml .) $ | indent 8 }}
     {{- end }}
 {{- end }}
       {{- if .Values.priorityClassName }}
