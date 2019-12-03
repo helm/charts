@@ -1,12 +1,12 @@
 #应用名称
-appName: zookeeper                                                     #同一个ns下不可重复 
-namespace: default                                                     #实际命名空间
+appName: 'zookeeper'                                                     #同一个ns下不可重复 
+namespace: 'default'                                                     #实际命名空间
 #以下定义容器调度资源需求
 memoryRequests: 512Mi
-cpuRequests: 0.1
+cpuRequests: '0.1'
 #以下定义容器资源限制
 memoryLimits: 1024Mi
-cpuLimits: 1
+cpuLimits: '1'
 secret: ""                                                             #镜像仓库secret,poc集群空着就可以 
 image:
   repository: ruguodangshi/csmp/zookeeper
