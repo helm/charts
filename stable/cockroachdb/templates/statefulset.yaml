@@ -253,7 +253,7 @@ spec:
             periodSeconds: 5
             failureThreshold: 2
         {{- with .Values.statefulset.resources }}
-          resources: {{- toYaml . | indent 12 }}
+          resources: {{- toYaml . | nindent 12 }}
         {{- end }}
       volumes:
         - name: datadir
