@@ -1,0 +1,39 @@
+{{- if .Values.networkPolicy.enabled }}
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: {{ template "rabbitmq.fullname" . }}
+  labels:
+    app: {{ template "rabbitmq.name" . }}
+    chart: {{ template "rabbitmq.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ template "rabbitmq.name" . }}
+      release: {{ .Release.Name | quote }}
+  ingress:
+    # Allow inbound connections
+
+    - ports:
+        - port: 4369  # EPMD
+        - port: {{ .Values.service.port }}
+        - port: {{ .Values.service.tlsPort }}
+        - port: {{ .Values.service.distPort }}
+        - port: {{ .Values.service.managerPort }}
+
+      {{- if not .Values.networkPolicy.allowExternal }}
+      from:
+        - podSelector:
+            matchLabels:
+              {{ template "rabbitmq.fullname" . }}-client: "true"
+        {{- with .Values.networkPolicy.additionalRules }}
+{{ toYaml . | indent 8 }}
+        {{- end }}
+      {{- end }}
+
+    # Allow prometheus scrapes
+    - ports:
+        - port: {{ .Values.metrics.port }}
+{{- end }}
