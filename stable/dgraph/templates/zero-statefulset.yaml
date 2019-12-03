@@ -28,17 +28,17 @@ spec:
   template:
     metadata:
       name: {{ template "dgraph.zero.fullname" . }}
-    {{- if or .Values.zero.annotations .Values.zero.metrics.enabled }}
-    annotations:
-    {{- if .Values.zero.annotations }}
+      {{- if or .Values.zero.annotations .Values.zero.metrics.enabled }}
+      annotations:
+      {{- if .Values.zero.annotations }}
 {{ toYaml .Values.zero.annotations | indent 6 }}
-    {{- end }}
-    {{- if .Values.zero.metrics.enabled }}
-      prometheus.io/port: "6080"
-      prometheus.io/path: "/debug/prometheus_metrics"
-      prometheus.io/scrape: "true"
-    {{- end }}
-    {{- end }}
+      {{- end }}
+      {{- if .Values.zero.metrics.enabled }}
+        prometheus.io/port: "6080"
+        prometheus.io/path: "/debug/prometheus_metrics"
+        prometheus.io/scrape: "true"
+      {{- end }}
+      {{- end }}
       labels:
         app.kubernetes.io/name: {{ include "dgraph.name" . }}
         app.kubernetes.io/component: {{ .Values.zero.name }}
@@ -164,7 +164,6 @@ spec:
           app.kubernetes.io/name: {{ template "dgraph.name" . }}
           app.kubernetes.io/instance: {{ .Release.Name }}
           app.kubernetes.io/component: {{ .Values.zero.name }}
-          helm.sh/chart: {{ template "dgraph.chart" . }}
       spec:
         accessModes:
         {{- range .Values.zero.persistence.accessModes }}

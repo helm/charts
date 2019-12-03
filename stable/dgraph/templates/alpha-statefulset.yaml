@@ -29,16 +29,16 @@ spec:
     metadata:
       name: {{ template "dgraph.alpha.fullname" . }}
     {{- if or .Values.alpha.annotations .Values.alpha.metrics.enabled }}
-    annotations:
-    {{- if .Values.alpha.annotations }}
-{{ toYaml .Values.alpha.annotations | indent 6 }}
-    {{- end }}
-    {{- if .Values.alpha.metrics.enabled }}
-      prometheus.io/port: "8080"
-      prometheus.io/path: "/debug/prometheus_metrics"
-      prometheus.io/scrape: "true"
-    {{- end }}
-    {{- end }}
+      annotations:
+      {{- if .Values.alpha.annotations }}
+{{ toYaml .Values.alpha.annotations | indent 8 }}
+      {{- end }}
+      {{- if .Values.alpha.metrics.enabled }}
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/debug/prometheus_metrics"
+        prometheus.io/scrape: "true"
+      {{- end }}
+      {{- end }}
       labels:
         app.kubernetes.io/name: {{ include "dgraph.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
@@ -156,7 +156,6 @@ spec:
           app.kubernetes.io/name: {{ template "dgraph.name" . }}
           app.kubernetes.io/instance: {{ .Release.Name }}
           app.kubernetes.io/component: {{ .Values.alpha.name }}
-          helm.sh/chart: {{ template "dgraph.chart" . }}
       spec:
         accessModes:
         {{- range .Values.alpha.persistence.accessModes }}
