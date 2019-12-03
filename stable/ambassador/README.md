@@ -196,6 +196,14 @@ $ helm upgrade --install --wait my-release -f values.yaml stable/ambassador
 
 # Upgrading
 
+## To 5.0.0
+
+### Breaking changes
+
+**Note** If upgrading an existing helm 2 installation no action is needed, previously installed CRDs will not be modified.
+
+- Helm 3 support for CRDs was added. Specifically, the CRD templates were moved to non-templated files in the `/crds` directory, and to keep Helm 2 support they are globbed from there by `/templates/crds.yaml`. However, because Helm 3 CRDs are not templated, the labels for new installations have necessarily changed
+
 ## To 4.0.0
 
 The 4.0.0 chart contains a number of changes to the way Ambassador Pro is installed.

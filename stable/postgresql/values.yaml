@@ -359,10 +359,10 @@ networkPolicy:
   ##
   allowExternal: true
 
-  ## if explicitNamespacesSelector is missing or set to {}, only Pods that are in the networkPolicy's namespace
-  ## and that match other criteria, the ones that can be selected by one of the podSelectors, can reach the DB.
-  ## But sometimes, we want the DB to be accessible from other namespaces, in this case, we can use this
-  ## LabelSelector to select these namespaces, note that the networkPolicy's should also be explicitly added.
+  ## if explicitNamespacesSelector is missing or set to {}, only client Pods that are in the networkPolicy's namespace
+  ## and that match other criteria, the ones that have the good label, can reach the DB.
+  ## But sometimes, we want the DB to be accessible to clients from other namespaces, in this case, we can use this
+  ## LabelSelector to select these namespaces, note that the networkPolicy's namespace should also be explicitly added.
   ##
   # explicitNamespacesSelector:
     # matchLabels:

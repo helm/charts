@@ -17,7 +17,7 @@ metadata:
       {{- toYaml .Values.deploymentAnnotations | nindent 4 }}
     {{- end }}
 spec:
-{{- if not .Values.daemonSet }}
+{{- if and (not .Values.autoscaling.enabled) (not .Values.daemonSet) }}
   replicas: {{ .Values.replicaCount }}
 {{- end }}
   selector:

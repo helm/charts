@@ -1,24 +1,27 @@
-CockroachDB can be accessed via port {{ .Values.ExternalGrpcPort }} at the
+CockroachDB can be accessed via port {{ .Values.service.ports.grpc.external.port }} at the
 following DNS name from within your cluster:
 
-{{ .Release.Name }}-public.{{ .Release.Namespace }}.svc.cluster.local
+{{ template "cockroachdb.fullname" . }}-public.{{ .Release.Namespace }}.svc.cluster.local
 
 Because CockroachDB supports the PostgreSQL wire protocol, you can connect to
 the cluster using any available PostgreSQL client.
 
-{{- if not .Values.Secure.Enabled }}
+{{- if not .Values.tls.enabled }}
 
 For example, you can open up a SQL shell to the cluster by running:
 
     kubectl run -it --rm cockroach-client \
         --image=cockroachdb/cockroach \
-        --restart=Never \{{- if and (.Values.NetworkPolicy.Enabled) (not .Values.NetworkPolicy.AllowExternal) }}
-        --labels="{{.Release.Name}}-{{.Values.Component}}-client=true" \{{- end }}
-        --command -- ./cockroach sql --insecure --host {{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}-public.{{ .Release.Namespace }}
+        --restart=Never \
+      {{- if .Values.networkPolicy.enabled }}
+        --labels="{{ template "cockroachdb.fullname" . }}-client=true" \
+      {{- end }}
+        --command -- \
+        ./cockroach sql --insecure --host={{ template "cockroachdb.fullname" . }}-public.{{ .Release.Namespace }}
 
-From there, you can interact with the SQL shell as you would any other SQL shell,
-confident that any data you write will be safe and available even if parts of
-your cluster fail.
+From there, you can interact with the SQL shell as you would any other SQL
+shell, confident that any data you write will be safe and available even if
+parts of your cluster fail.
 {{- else }}
 
 Note that because the cluster is running in secure mode, any client application
@@ -26,25 +29,22 @@ that you attempt to connect will either need to have a valid client certificate
 or a valid username and password.
 {{- end }}
 
-{{- if and (.Values.NetworkPolicy.Enabled) (not .Values.NetworkPolicy.AllowExternal) }}
+{{- if and (.Values.networkPolicy.enabled) (not (empty .Values.networkPolicy.ingress.grpc)) }}
 
-Note: Since NetworkPolicy is enabled, only pods with label
-{{.Release.Name}}-{{.Values.Component}}-client=true"
-will be able to connect to this cockroachdb cluster.
+Note: Since NetworkPolicy is enabled, the only Pods allowed to connect to this
+CockroachDB cluster are:
+
+1. Having the label: "{{ template "cockroachdb.fullname" . }}-client=true"
+
+2. Matching the following rules: {{- toYaml .Values.networkPolicy.ingress.grpc | nindent 0 }}
 {{- end }}
 
 Finally, to open up the CockroachDB admin UI, you can port-forward from your
 local machine into one of the instances in the cluster:
 
-    kubectl port-forward {{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}-0 {{ .Values.InternalHttpPort }}
+    kubectl port-forward {{ template "cockroachdb.fullname" . }}-0 {{ index .Values.conf `http-port` | int64 }}
 
-{{- if not .Values.Secure.Enabled }}
+Then you can access the admin UI at http{{ if .Values.tls.enabled }}s{{ end }}://localhost:{{ index .Values.conf `http-port` | int64 }}/ in your web browser.
 
-Then you can access the admin UI at http://localhost:{{ .Values.InternalHttpPort }}/ in your web browser.
-{{- else }}
-
-Then you can access the admin UI at https://localhost:{{ .Values.InternalHttpPort }}/ in your web browser.
-{{- end }}
-
-For more information on using CockroachDB, please see the project's docs at
+For more information on using CockroachDB, please see the project's docs at:
 https://www.cockroachlabs.com/docs/
