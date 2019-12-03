@@ -34,7 +34,7 @@ The following table lists the configurable parameters of the Spark operator char
 | `controllerThreads`       | Number of worker threads used by the SparkApplication controller | 10                                 |
 | `ingressUrlFormat`        | Ingress URL format                                           | ""                                     |
 | `logLevel`                | Logging verbosity level                                      | 2                                      |
-| `installCrds`             | Whether to install CRDs                                      | true                                   |
+| `installCrds`             | Wether the release should install CRDs. Regardless of this value, Helm v3+ will install the CRDs if those are not present already. Use `--skip-crds` with `helm install` if you want to skip CRD creation                                         | true                                   |
 | `metricsPort`             | Port for the metrics endpoint                                | 10254                                  |
 | `metricsEndpoint`         | Metrics endpoint                                             | "/metrics"                             |
 | `metricsPrefix`           | Prefix for the metrics                                       | ""                                     |
