@@ -1,0 +1,6 @@
+The address of the three nodes is:
+{{ .Values.appName  }}-0.{{ .Values.appName  }}.{{ .Values.namespace  }}.svc.cluster.local:2181
+{{ .Values.appName  }}-1.{{ .Values.appName  }}.{{ .Values.namespace  }}.svc.cluster.local:2181
+{{ .Values.appName  }}-2.{{ .Values.appName  }}.{{ .Values.namespace  }}.svc.cluster.local:2181
+View the status of the zookeeper pod by kubectl:
+kubectl get pod --namespace {{ .Release.Namespace }} -o wide|grep {{ .Values.appName  }}
