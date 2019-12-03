@@ -88,6 +88,9 @@ spec:
 {{ toYaml .Values.securityContext | indent 8 }}
       serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}
       initContainers:
+      {{- if .Values.redis.extraInitContainers }}
+{{ toYaml .Values.redis.extraInitContainers | indent 6 }}
+      {{- end }}
       {{- if .Values.sysctlImage.enabled }}
       - name: init-sysctl
         image: {{ template "redis.sysctl.image" . }}

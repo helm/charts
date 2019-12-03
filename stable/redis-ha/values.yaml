@@ -152,6 +152,10 @@ redis:
   # customConfig: |-
       # Define configuration here
 
+  ## Additional InitContainers to initialize the pod
+  ##
+  extraInitContainers: []
+
   resources: {}
   #  requests:
   #    memory: 200Mi
