@@ -10,9 +10,10 @@ image:
   tag: 3.2
   pullPolicy: IfNotPresent
 
-
+# restart policy
 restartPolicy: Never
 
+# unleash service configure
 service:
   name: unleash
   #type: ClusterIP
@@ -30,10 +31,14 @@ service:
   # clusterIP: None
   annotations: {}
 
+
+# unleash node selector
 nodeSelector:
   enabled: false
 #  matchLabels: test
 
+
+#unleash resource configurtion
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -60,6 +65,7 @@ postgresql:
     #type: NodePort
     port: 5432
 
+#unleash ingress configurtion
 ingress:
   enabled: false
   labels: {}
@@ -74,4 +80,4 @@ ingress:
   #   Secrets must be manually created in the namespace.
   #   - secretName: chart-example-tls
   #     hosts:
-  #       - chart-example.local
+  #       - chart-exampleå.localå

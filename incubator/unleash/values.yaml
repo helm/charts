@@ -10,9 +10,10 @@ image:
   tag: 3.2
   pullPolicy: IfNotPresent
 
-
+# restart policy
 restartPolicy: Never
 
+# unleash service configure
 service:
   name: unleash
   #type: ClusterIP
@@ -30,10 +31,14 @@ service:
   # clusterIP: None
   annotations: {}
 
+
+# unleash node selector
 nodeSelector:
   enabled: false
 #  matchLabels: test
 
+
+#unleash resource configurtion
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -43,15 +48,15 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
   # requests:
-  #   cpu: 100m
+#   cpu: 100m
 #   memory: 128Mi
 
 
 # values for postgresql chart for FT persistence .
 postgresql:
   # Inorder for unleash to save data we will connect data base to it
-  postgresqlUsername: unleash
-  postgresqlPassword: unleash
+  postgresqlUsername: unleash-prod-username
+  postgresqlPassword: unleash-prod-password
   postgresqlDatabase: unleash
   #incase no storage class for production
   persistence:
@@ -60,6 +65,7 @@ postgresql:
     #type: NodePort
     port: 5432
 
+#unleash ingress configurtion
 ingress:
   enabled: false
   labels: {}
@@ -74,4 +80,4 @@ ingress:
   #   Secrets must be manually created in the namespace.
   #   - secretName: chart-example-tls
   #     hosts:
-  #       - chart-example.local
+  #       - chart-exampleå.localå
