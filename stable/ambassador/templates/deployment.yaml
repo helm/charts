@@ -159,14 +159,16 @@ spec:
             httpGet:
               path: /ambassador/v0/check_alive
               port: admin
-            initialDelaySeconds: 30
-            periodSeconds: 3
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           readinessProbe:
             httpGet:
               path: /ambassador/v0/check_ready
               port: admin
-            initialDelaySeconds: 30
-            periodSeconds: 3
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           volumeMounts:
             - name: ambassador-pod-info
               mountPath: /tmp/ambassador-pod-info
