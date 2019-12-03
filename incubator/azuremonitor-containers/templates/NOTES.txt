@@ -14,21 +14,37 @@
 
 {{- end }}
 
-{{- if eq .Values.omsagent.env.clusterName "<your_cluster_name>" }}
+{{- if and (eq .Values.omsagent.env.clusterName "<your_cluster_name>") (eq .Values.omsagent.env.clusterId  "<your_cluster_id>") }}
 
 ##############################################################################
-####   ERROR: You did not provide cluster name                            ####
+####   ERROR: You did not provide cluster name or id                      ####
 ##############################################################################
 
 {{- end }}
 
-{{- if or (eq .Values.omsagent.secret.key "<your_workspace_key>") (eq .Values.omsagent.secret.wsid "<your_workspace_id>") (eq .Values.omsagent.env.clusterName "<your_cluster_name>")}}
+{{- if and (eq .Values.omsagent.env.clusterName "<your_cluster_name>") (ne .Values.omsagent.env.clusterId  "<your_cluster_id>") (eq .Values.omsagent.env.clusterRegion  "<your_cluster_region>") }}
+
+##############################################################################
+####   ERROR: You did not provide azure region of the cluster             ####
+##############################################################################
+
+{{- end }}
+
+{{- if or (eq .Values.omsagent.secret.key "<your_workspace_key>") (eq .Values.omsagent.secret.wsid "<your_workspace_id>") (and (eq .Values.omsagent.env.clusterName "<your_cluster_name>") (eq .Values.omsagent.env.clusterId "<your_cluster_id>"))}}
 
 This deployment will not complete. To proceed, run
  helm upgrade {{ .Release.Name }} \
    --set omsagent.secret.wsid=<your_workspace_id> \
    --set omsagent.secret.key=<your_workspace_key> \
    --set omsagent.env.clusterName=<your_cluster_name> \
+   incubator/azuremonitor-containers
+
+       or
+  helm upgrade {{ .Release.Name }} \
+   --set omsagent.secret.wsid=<your_workspace_id> \
+   --set omsagent.secret.key=<your_workspace_key> \
+   --set omsagent.env.clusterId=<your_cluster_id> \
+   --set omsagent.env.clusterRegion=<your_cluster_region> \
    incubator/azuremonitor-containers
 
 {{- else -}}
