@@ -1,7 +1,7 @@
-# Default values for vault.
+# Default values for unleash.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-replicaCount: 1
+
 
 ## The name of the secret to use if pulling images from a private registry.
 # imagePullSecret:
@@ -10,9 +10,9 @@ image:
   tag: 3.2
   pullPolicy: IfNotPresent
 
-# restart policy
+# restart policy and replica count
 restartPolicy: Never
-
+replicaCount: 1
 # unleash service configure
 service:
   name: unleash
@@ -38,7 +38,7 @@ nodeSelector:
 #  matchLabels: test
 
 
-#unleash resource configurtion
+#unleash resource config
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
