@@ -1,0 +1,9 @@
+apiVersion: v1
+appVersion: "3.4.10"
+description: A Helm chart for three-node zookeeper cluster
+name: zookeeper-3Nodes
+version: 0.1
+maintainers:
+- email: shih5@chinaunicom.cn
+  name: 史浩(shih5@chinaunicom.cn)
+icon: http://s1.51cto.com/oss/201711/06/d2af296e2e07468e42ddd8237f72b1b8.jpg-wh_651x-s_2831311669.jpg
