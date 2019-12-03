@@ -49,6 +49,17 @@ The default set of resources assigned to the pods is shown below:
         cpu: 100m
         memory: 30M
 
+## Tolerations
+
+The default set of relations assigned to our daemonset is shown below:
+
+```yaml
+- operator: "Exists"
+  effect: "NoSchedule"
+- operator: "Exists"
+  effect: "NoExecute"
+```
+
 # Config file
 
 If you wish to provide your own `newrelic.yml` you may do so under `config`. There are a few notable exceptions you should be aware of. Some options have been omitted because they are handled either by variables, or a secret. They are display_name, license_key, log_file and verbose.
