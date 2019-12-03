@@ -12,7 +12,7 @@ image:
   repository: ruguodangshi/csmp/zookeeper
   tag: v0.1
   pullPolicy: Always
-ippool: '"cni.projectcalico.org/ipv4pools": "[\"10.124.224.0/23\"]"'   #自定义ip资源池
+ippool: '"cni.projectcalico.org/ipv4pools": "[\"10.124.224.0/23\"]"'   #自定义ip资源池，仅适用于calico  cni
 storageClassName: "local-storage"                                      #自定义存储类 
 volumeStorage: "2G"                                                    #pvc申请的存储
 nameOverride: ""
