@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Values.appName }} 
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.appName }}  # has to match .spec.template.metadata.labels
+  podManagementPolicy: OrderedReady  #Parallel
+  serviceName: {{ .Values.appName }}  #声明它属于哪个Headless Service.
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appName }}  # has to match .spec.selector.matchLabels
+      annotations:               #指定ippool
+        {{ .Values.ippool }}
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: {{ .Values.appName }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }} 
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: ZKNAME
+          value: "{{ .Values.appName }}"
+        ports:
+        - containerPort: 2181
+          name: client
+        - containerPort: 2888
+          name: server
+        - containerPort: 3888
+          name: leader-election
+        resources:
+          requests:
+            memory: {{ .Values.memoryRequests }}
+            cpu: {{ .Values.cpuRequests }}
+          limits:
+            memory: {{ .Values.memoryLimits }}
+            cpu: {{ .Values.cpuLimits }}
+        livenessProbe:
+          tcpSocket:
+            port: 2181
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        volumeMounts:        #容器内挂载点
+        - mountPath: /etc/localtime 
+          name: time
+        - mountPath: /data/
+          name: data
+      volumes:
+      - name: time       #跟上面的名称对应
+        hostPath:
+          path: /etc/localtime
+  volumeClaimTemplates:   #可看作pvc的模板
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: '{{ .Values.storageClassName }}'  #存储类名，改为集群中已存在的
+      resources:
+        requests:
+          storage: "{{ .Values.volumeStorage }}"
