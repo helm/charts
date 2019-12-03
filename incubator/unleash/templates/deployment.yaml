@@ -27,7 +27,6 @@ spec:
           env:
             - name: DATABASE_URL
               value: postgres://{{ .Values.postgresql.postgresqlUsername }}:{{ .Values.postgresql.postgresqlPassword }}@{{ .Release.Name }}-postgresql:{{ .Values.postgresql.service.port }}/unleash
-
           ports:
             - name: http
               containerPort: 4242
