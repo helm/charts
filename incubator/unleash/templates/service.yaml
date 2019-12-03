@@ -1,0 +1,21 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app_name: {{ .Release.Name }}-{{ .Chart.Name }}
+    app_version: {{ .Chart.Name }}-{{ .Chart.Version }}
+    helm_chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+spec:
+  type: {{ .Values.service.type  }}
+  selector:
+    app_name: {{ .Release.Name }}-{{ .Chart.Name }}
+    app_version: {{ .Chart.Name }}-{{ .Chart.Version }}
+    helm_chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.service.port  }}
+      targetPort: {{ .Values.service.port  }}
+  {{- if .Values.service.externalPort }}
+  nodePort: {{ .Values.service.externalPort }}
+  {{- end }}

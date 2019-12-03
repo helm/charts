@@ -1,0 +1,77 @@
+# Default values for vault.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+
+## The name of the secret to use if pulling images from a private registry.
+# imagePullSecret:
+image:
+  repository: unleashorg/unleash-server
+  tag: 3.2
+  pullPolicy: IfNotPresent
+
+
+restartPolicy: Never
+
+service:
+  name: unleash
+  #type: ClusterIP
+  type: NodePort
+  # type: LoadBalancer
+  # Assign a static LB IP
+  # loadBalancerIP: 203.0.113.32
+  loadBalancerSourceRanges: []
+  #  - 10.0.0.0/8
+  #  - 130.211.204.2/32
+  #externalPort: 8200
+  port: 4242
+  # clusterExternalPort: 8201
+  clusterPort: 8201
+  # clusterIP: None
+  annotations: {}
+
+nodeSelector:
+  enabled: false
+#  matchLabels: test
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+#   memory: 128Mi
+
+
+# values for postgresql chart for FT persistence .
+postgresql:
+  # Inorder for unleash to save data we will connect data base to it
+  postgresqlUsername: unleash
+  postgresqlPassword: unleash
+  postgresqlDatabase: unleash
+  #incase no storage class for production
+  persistence:
+    enabled: false
+  service:
+    #type: NodePort
+    port: 5432
+
+ingress:
+  enabled: false
+  labels: {}
+  # Used to create Ingress record (should used with service.type: ClusterIP).
+  # hosts:
+  #  - chart-example.local
+  # annotations:
+  #   kubernetes.io/ingress.class: nginx
+  #   kubernetes.io/tls-acme: "true"
+  # path: /
+  # tls:
+  #   Secrets must be manually created in the namespace.
+  #   - secretName: chart-example-tls
+  #     hosts:
+  #       - chart-example.local

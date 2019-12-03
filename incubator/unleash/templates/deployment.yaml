@@ -1,0 +1,56 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ .Chart.Name }}
+  labels:
+    app_name: {{ .Release.Name }}-{{ .Chart.Name }}
+    app_version: {{ .Chart.Name }}-{{ .Chart.Version }}
+    helm_chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app_name: {{ .Release.Name }}-{{ .Chart.Name }}
+      app_version: {{ .Chart.Name }}-{{ .Chart.Version }}
+      helm_chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+  template:
+    metadata:
+      labels:
+        app_name: {{ .Release.Name }}-{{ .Chart.Name }}
+        app_version: {{ .Chart.Name }}-{{ .Chart.Version }}
+        helm_chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    spec:
+      containers:
+        - name: {{ .Release.Name }}-{{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: DATABASE_URL
+              value: postgres://{{ .Values.postgresql.postgresqlUsername }}:{{ .Values.postgresql.postgresqlPassword }}@{{ .Release.Name }}-postgresql:{{ .Values.postgresql.service.port }}/unleash
+
+          ports:
+            - name: http
+              containerPort: 4242
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+  {{ toYaml .Values.resources | indent 12 }}
+  {{- with .Values.nodeSelector }}
+nodeSelector:
+  {{ toYaml . | indent 8 }}
+  {{- end }}
+  {{- with .Values.affinity }}
+affinity:
+  {{ toYaml . | indent 8 }}
+  {{- end }}
+  {{- with .Values.tolerations }}
+tolerations:
+  {{ toYaml . | indent 8 }}
+  {{- end }}

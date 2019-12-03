@@ -1,0 +1,8 @@
+apiVersion: v1
+name: unleash
+description: Unleash is a feature toggle system, that gives you a great overview over all feature toggles across all your applications and services. It comes with official client implementations for Java, Node.js, Go, Ruby and Python.
+version: 0.1.0
+home: https://github.com/shdowofdeath/charts.git
+sources:
+  - https://github.com/Unleash/unleash.git
+
