@@ -130,6 +130,11 @@ persistence:
   accessMode: ReadWriteOnce
   size: 10Gi
 
+  ## Specify extra volumes. Refer to ".spec.volumes" specification : https://kubernetes.io/fr/docs/concepts/storage/volumes/
+  volumes: []
+  ## Specify extra mounts. Refer to ".spec.containers.volumeMounts" specification : https://kubernetes.io/fr/docs/concepts/storage/volumes/
+  mounts: []
+
 # List of plugins to install.
 # For example:
 # plugins:
