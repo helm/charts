@@ -40,14 +40,14 @@ helm install stable/newrelic-infrastructure \
 
 ## Globals
 
-**Important:** global variables have higher precedence than locals.
+**Important:** global parameters have higher precedence than locals with the same name.
 
 These are meant to be used when you are writing a chart with subcharts. It helps to avoid
 setting values multiple times on different subcharts.
 
 More information on globals and subcharts can be found at [Helm's official documentation](https://helm.sh/docs/topics/chart_template_guide/subcharts_and_globals/).
 
-| Variable name                   |
+| Parameter                       |
 | ------------------------------- |
 | `global.cluster`                |
 | `global.licenseKey`             |
