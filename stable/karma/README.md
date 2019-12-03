@@ -48,6 +48,7 @@ The following table lists the configurable parameters of the karma chart and the
 | `service.type`                      | Type of Service                                        | `ClusterIP`                               |
 | `service.port`                      | Port for kubernetes service                            | `80`                                      |
 | `service.annotations`               | Annotations to add to the service                      | `{}`                                      |
+| `deployment.annotations`            | Annotations to add to the deployment                   | `{}`                                      |
 | `resources.requests.cpu`            | CPU resource requests                                  |                                           |
 | `resources.limits.cpu`              | CPU resource limits                                    |                                           |
 | `resources.requests.memory`         | Memory resource requests                               |                                           |

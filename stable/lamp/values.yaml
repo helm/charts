@@ -130,10 +130,14 @@ sftp:
   ## sftp.enabled Enables sftp service
   enabled: false
 
+  ## sftp.serviceType Type of sftp service in Ingress mode
+  serviceType: NodePort
+
   ## sftp.port Port to advertise service in LoadBalancer mode
   port: 22
 
   ## sftp.nodePort  Port to advertise service in Ingress mode
+  ## `sftp.serviceType` must be set to `NodePort`
   # nodePort: 30111
 
   ## sftp.user SFTP User

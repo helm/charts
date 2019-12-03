@@ -29,7 +29,7 @@ spec:
   {{- end }}
 {{- end }}
   ports:
-    - name: web
+    - name: {{ .Values.alertmanager.alertmanagerSpec.portName }}
     {{- if eq .Values.alertmanager.service.type "NodePort" }}
       nodePort: {{ .Values.alertmanager.service.nodePort }}
     {{- end }}

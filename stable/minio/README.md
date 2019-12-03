@@ -104,7 +104,8 @@ The following table lists the configurable parameters of the MinIO chart and the
 | `ingress.tls`                             | Ingress TLS configuration                                                                                                               | `[]`                                       |
 | `mode`                                    | MinIO server mode (`standalone` or `distributed`)                                                                                       | `standalone`                               |
 | `extraArgs`                               | Additional command line arguments to pass to the MinIO server                                                                           | `[]`                                       |
-| `replicas`                                | Number of nodes (applicable only for MinIO distributed mode). Should be 4 <= x <= 32                                                    | `4`                                        |
+| `replicas`                                | Number of nodes (applicable only for MinIO distributed mode).                                                                           | `4`                                        |
+| `zones`                                   | Number of zones (applicable only for MinIO distributed mode).                                                                           | `1`                                        |
 | `existingSecret`                          | Name of existing secret with access and secret key.                                                                                     | `""`                                       |
 | `accessKey`                               | Default access key (5 to 20 characters)                                                                                                 | `AKIAIOSFODNN7EXAMPLE`                     |
 | `secretKey`                               | Default secret key (8 to 40 characters)                                                                                                 | `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY` |
@@ -205,7 +206,13 @@ This provisions MinIO server in distributed mode with 4 nodes. To change the num
 $ helm install --set mode=distributed,replicas=8 stable/minio
 ```
 
-This provisions MinIO server in distributed mode with 8 nodes. Note that the `replicas` value should be an integer between 4 and 16 (inclusive).
+This provisions MinIO server in distributed mode with 8 nodes. Note that the `replicas` value should be a minimum value of 4, there is no limit on number of servers you can run.
+
+You can also expand an existing deployment by adding new zones, following command will create a total of 16 nodes with each zone running 8 nodes.
+
+```bash
+$ helm install --set mode=distributed,replicas=8,zones=2 stable/minio
+```
 
 ### StatefulSet [limitations](http://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/#limitations) applicable to distributed MinIO
 

@@ -7,6 +7,10 @@ metadata:
     helm.sh/chart: {{ include "nextcloud.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+  {{- if .Values.deploymentAnnotations }}
+  annotations:
+{{ toYaml .Values.deploymentAnnotations | indent 4 }}
+  {{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
@@ -23,6 +27,10 @@ spec:
         {{- if .Values.redis.enabled }}
         {{ template "nextcloud.redis.fullname" . }}-client: "true"
         {{- end }}
+      {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+      {{- end }}
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -34,6 +42,21 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- if .Values.lifecycle }}
+        lifecycle:
+        {{-   if .Values.lifecycle.postStartCommand }}
+          postStart:
+            exec:
+              command:
+                {{- toYaml .Values.lifecycle.postStartCommand | nindent 16 -}}
+        {{-   end }}
+        {{-   if .Values.lifecycle.preStopCommand }}
+          preStop:
+            exec:
+              command:
+                {{- toYaml .Values.lifecycle.preStopCommand | nindent 16 -}}
+        {{-   end }}
+        {{- end }}
         env:
         {{- if .Values.internalDatabase.enabled }}
         - name: SQLITE_DATABASE
@@ -138,11 +161,16 @@ spec:
         - name: REDIS_HOST_PORT
           value: {{ .Values.redis.redisPort | quote }}
         {{- end }}
+        {{- if .Values.nextcloud.extraEnv }}
+{{ toYaml .Values.nextcloud.extraEnv | indent 8 }}
+        {{- end }}
+        {{- if not .Values.nginx.enabled }}
         ports:
         - name: http
           containerPort: 80
           protocol: TCP
-        {{- if .Values.livenessProbe.enabled }}
+        {{- end }}
+        {{- if and .Values.livenessProbe.enabled (not .Values.nginx.enabled) }}
         livenessProbe:
           httpGet:
             path: /status.php
@@ -156,7 +184,7 @@ spec:
           successThreshold: {{ .Values.livenessProbe.successThreshold }}
           failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
         {{- end }}
-        {{- if .Values.readinessProbe.enabled }}
+        {{- if and .Values.readinessProbe.enabled (not .Values.nginx.enabled) }}
         readinessProbe:
           httpGet:
             path: /status.php
@@ -213,6 +241,70 @@ spec:
           mountPath: /usr/local/etc/php/conf.d/{{ $key }}
           subPath: {{ $key }}
         {{- end }}
+        {{- if .Values.nginx.enabled }}
+      - name: {{ .Chart.Name }}-nginx
+        image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
+        imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+        {{- if .Values.livenessProbe.enabled }}
+        livenessProbe:
+          httpGet:
+            path: /status.php
+            port: http
+            httpHeaders:
+            - name: Host
+              value: {{ .Values.nextcloud.host | quote }}
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+        {{- end }}
+        {{- if .Values.readinessProbe.enabled }}
+        readinessProbe:
+          httpGet:
+            path: /status.php
+            port: http
+            httpHeaders:
+            - name: Host
+              value: {{ .Values.nextcloud.host | quote }}
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+        {{- end }}
+        resources:
+{{ toYaml .Values.nginx.resources | indent 10 }}
+        volumeMounts:
+        - name: nextcloud-data
+          mountPath: /var/www/
+          subPath: root
+        - name: nextcloud-data
+          mountPath: /var/www/html
+          subPath: html
+        - name: nextcloud-data
+          mountPath: {{ .Values.nextcloud.datadir }}
+          subPath: data
+        - name: nextcloud-data
+          mountPath: /var/www/html/config
+          subPath: config
+        - name: nextcloud-data
+          mountPath: /var/www/html/custom_apps
+          subPath: custom_apps
+        - name: nextcloud-data
+          mountPath: /var/www/tmp
+          subPath: tmp
+        - name: nextcloud-data
+          mountPath: /var/www/html/themes
+          subPath: themes
+        - name: nextcloud-nginx-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -243,6 +335,17 @@ spec:
         configMap:
           name: {{ template "nextcloud.fullname" . }}-phpconfig
       {{- end }}
+      {{- if .Values.nginx.enabled }}
+      - name: nextcloud-nginx-config
+        configMap:
+          name: {{ template "nextcloud.fullname" . }}-nginxconfig
+      {{- end }}
+      {{- if .Values.nginx.enabled }}
+      # Will mount configuration files as www-data (id: 82) for nextcloud
+      securityContext:
+        fsGroup: 82
+      {{- else }}
       # Will mount configuration files as www-data (id: 33) for nextcloud
       securityContext:
         fsGroup: 33
+      {{- end }}
