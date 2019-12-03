@@ -27,6 +27,9 @@ spec:
           imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
           args:
             - "--no-probe"
+            {{- range $arg := .Values.flags }}
+            - {{ $arg | quote }}
+            {{- end }}
           ports:
             - name: http
               containerPort: 4040

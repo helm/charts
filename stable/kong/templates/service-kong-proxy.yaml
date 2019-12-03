@@ -41,13 +41,15 @@ spec:
   {{- if or .Values.proxy.tls.enabled }}
   - name: kong-proxy-tls
     port: {{ .Values.proxy.tls.servicePort }}
-    targetPort: {{ .Values.proxy.tls.containerPort }}
+    targetPort: {{ .Values.proxy.tls.overrideServiceTargetPort | default .Values.proxy.tls.containerPort }}
   {{- if (and (eq .Values.proxy.type "NodePort") (not (empty .Values.proxy.tls.nodePort))) }}
     nodePort: {{ .Values.proxy.tls.nodePort }}
   {{- end }}
     protocol: TCP
   {{- end }}
-
+  {{- if .Values.proxy.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ .Values.proxy.externalTrafficPolicy }}
+  {{- end }}
 
   selector:
     app: {{ template "kong.name" . }}

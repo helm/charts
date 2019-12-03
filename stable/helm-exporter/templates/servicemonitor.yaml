@@ -17,8 +17,12 @@ metadata:
 spec:
   endpoints:
   - port: metrics
+    honorLabels: true
     {{- with .Values.serviceMonitor.interval }}
     interval: {{ . }}
+    {{- end }}
+    {{- with .Values.serviceMonitor.scrapeTimeout }}
+    scrapeTimeout: {{ . }}
     {{- end }}
   namespaceSelector:
     matchNames:

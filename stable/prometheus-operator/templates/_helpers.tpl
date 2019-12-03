@@ -47,8 +47,8 @@ The longest name that gets created adds and extra 37 characters, so truncation s
 {{/* Generate basic labels */}}
 {{- define "prometheus-operator.labels" }}
 chart: {{ template "prometheus-operator.chartref" . }}
-release: {{ .Release.Name | quote }}
-heritage: {{ .Release.Service | quote }}
+release: {{ $.Release.Name | quote }}
+heritage: {{ $.Release.Service | quote }}
 {{- if .Values.commonLabels}}
 {{ toYaml .Values.commonLabels }}
 {{- end }}
@@ -56,7 +56,7 @@ heritage: {{ .Release.Service | quote }}
 
 {{/* Create the name of prometheus-operator service account to use */}}
 {{- define "prometheus-operator.operator.serviceAccountName" -}}
-{{- if and .Values.global.rbac.create .Values.prometheusOperator.serviceAccount.create -}}
+{{- if .Values.prometheusOperator.serviceAccount.create -}}
     {{ default (include "prometheus-operator.operator.fullname" .) .Values.prometheusOperator.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.prometheusOperator.serviceAccount.name }}
@@ -65,7 +65,7 @@ heritage: {{ .Release.Service | quote }}
 
 {{/* Create the name of prometheus service account to use */}}
 {{- define "prometheus-operator.prometheus.serviceAccountName" -}}
-{{- if and .Values.global.rbac.create .Values.prometheus.serviceAccount.create -}}
+{{- if .Values.prometheus.serviceAccount.create -}}
     {{ default (include "prometheus-operator.prometheus.fullname" .) .Values.prometheus.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.prometheus.serviceAccount.name }}
@@ -74,18 +74,9 @@ heritage: {{ .Release.Service | quote }}
 
 {{/* Create the name of alertmanager service account to use */}}
 {{- define "prometheus-operator.alertmanager.serviceAccountName" -}}
-{{- if and .Values.global.rbac.create .Values.alertmanager.serviceAccount.create -}}
+{{- if .Values.alertmanager.serviceAccount.create -}}
     {{ default (include "prometheus-operator.alertmanager.fullname" .) .Values.alertmanager.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.alertmanager.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
-
-{{/* Workaround for https://github.com/helm/helm/issues/3117 */}}
-{{- define "prometheus-operator.rangeskipempty" -}}
-{{- range $key, $value := . }}
-{{- if $value }}
-{{ $key }}: {{ $value }}
-{{- end }}
-{{- end }}
-{{- end }}

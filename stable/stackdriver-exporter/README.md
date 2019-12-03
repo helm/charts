@@ -64,6 +64,8 @@ Parameter                           | Description                               
 `image.tag`                         | Container image tag                                                             | `v0.6.0`
 `image.pullPolicy`                  | Container image pull policy                                                     | `IfNotPresent`
 `resources`                         | Resource requests & limits                                                      | `{}`
+`serviceAccount.name`               | Name of Kubernetes service account to use                                       | `""` (defaults to `default`)
+`serviceAccount.create`             | Toggle for service account creation                                             | `false`
 `service.type`                      | Type of service to create                                                       | `ClusterIP`
 `service.httpPort`                  | Port for the http service                                                       | `9255`
 `stackdriver.projectId`             | GCP Project ID                                                                  | ``
@@ -83,6 +85,10 @@ Parameter                           | Description                               
 `affinity`                          | Pod affinity                                                                    | `{}`
 `nodeSelector`                      | Node labels for pod assignment												  | `{}`
 `tolerations`                       | Node taints to tolerate (requires Kubernetes >=1.6) 							  | `[]`
+`serviceMonitor.enabled`            | if `true`, creates a Prometheus Operator ServiceMonitor                         | `false`
+`serviceMonitor.namespace`          | Namespace where you want to create the ServiceMonitor                           | `monitoring`
+`serviceMonitor.interval`           | How frequently to scrape metrics (not set: fall back to Prometheus' default)    |  `nil`
+`serviceMonitor.honorLabels`        | if `true`, label conflicts are resolved by keeping label values from the scraped data | `true`
 
 
 

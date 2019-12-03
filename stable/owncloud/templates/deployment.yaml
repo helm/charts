@@ -1,5 +1,5 @@
 {{- if include "owncloud.host" . -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "owncloud.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "owncloud.fullname" . }}
@@ -111,8 +111,6 @@ spec:
         volumeMounts:
         - name: owncloud-data
           mountPath: /bitnami/owncloud
-        - name: apache-data
-          mountPath: /bitnami/apache
 {{- if .Values.metrics.enabled }}
       - name: metrics
         image: {{ template "owncloud.metrics.image" . }}
@@ -144,11 +142,8 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
-      - name: apache-data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ if .Values.persistence.apache.existingClaim }}{{ .Values.persistence.apache.existingClaim }}{{- else }}{{ template "owncloud.fullname" . }}-apache{{- end }}
-      {{- else }}
-        emptyDir: {}
+      {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
       {{- end }}
 {{- end -}}

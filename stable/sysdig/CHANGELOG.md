@@ -3,6 +3,123 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.4.23
+
+### Minor changes
+
+* Update NOTES.txt to use the newest URL for finding the infrastructure.
+
+## v1.4.22
+
+### Minor changes
+
+* Use the latest image from Agent (0.93.0) by default.
+
+## v1.4.21
+
+* Add 'How to upgrade to last version' to the README
+
+## v1.4.20
+
+### Minor changes
+
+* Fixes compatibility errors introduced in v1.4.19.
+
+## v1.4.19
+
+### Minor changes
+
+* Fixes compatibility with kubernetes 1.16.
+
+## v1.4.18
+
+### Minor changes
+
+* Use the latest image from Agent (0.92.3) by default.
+
+## v1.4.17
+
+### Minor changes
+
+* Use the latest image from Agent (0.92.2) by default.
+
+## v1.4.16
+
+### Minor changes
+
+* Allow the DaemonSet to schedule using affinity rules
+
+## v1.4.15
+
+### Minor changes
+
+* Add configmaps and secrets to the resources we can read
+* Add support for priorityClassName, httpProxy, timezone and any env variable settings
+
+## v1.4.14
+
+### Minor changes
+
+* Update REAMED.md to fix the example in how to use the `sysdig.settings.tags` in the command line with `--set`
+
+## v1.4.13
+
+### Minor changes
+
+* Use the latest image from Agent (0.92.1) by default.
+* Increase `resources.requests` and `resources.limits` to match the [values
+  provided by Sysdig's agent team.](https://github.com/draios/sysdig-cloud-scripts/blob/master/agent_deploy/kubernetes/sysdig-agent-daemonset-v2.yaml#L70)
+
+## v1.4.12
+
+### Minor changes
+
+* Use the latest image from Agent (0.92.0) by default.
+
+## v1.4.11
+
+### Minor Changes
+
+* Add nestorsalceda as an approver in the OWNERS file
+
+## v1.4.10
+
+### Minor Changes
+
+* Use the latest image from Agent (0.90.3) by default.
+
+## v1.4.9
+
+### Minor Changes
+
+* Use the latest image from Agent (0.90.2) by default.
+
+## v1.4.8
+
+### Minor Changes
+
+* Add a volume with the os release information.
+* Use the latest image from Agent (0.90.1) by default.
+
+## v1.4.7
+
+### Minor Changes
+
+* Add apiVersion to Chart.yaml.
+
+## v1.4.6
+
+### Minor Changes
+
+* Dont allow to change the value of `new_k8s` flag.
+
+## v1.4.5
+
+### Minor Changes
+
+* Enable `new_k8s` flag by default.  This allows kube state metrics to be
+  automatically detected, monitored, and displayed in Sysdig Monitor.
+
 ## v1.4.4
 
 ### Minor Changes

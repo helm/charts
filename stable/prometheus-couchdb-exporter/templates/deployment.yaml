@@ -24,11 +24,18 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["/couchdb-prometheus-exporter",
-                    "-telemetry.address=0.0.0.0:9984",
-                    "-logtostderr",
-                    "-couchdb.uri={{ .Values.couchdb.uri }}",
-                    "-databases={{ .Values.couchdb.databases }}"]
+          command:
+            - "/couchdb-prometheus-exporter"
+            - "-telemetry.address=0.0.0.0:9984"
+            - "-logtostderr"
+            - "-couchdb.uri={{ .Values.couchdb.uri }}"
+            - "-databases={{ .Values.couchdb.databases }}"
+          {{- if .Values.couchdb.username }}
+            - "-couchdb.username={{ .Values.couchdb.username }}"
+          {{- end }}
+          {{- if .Values.couchdb.password }}
+            - "-couchdb.password={{ .Values.couchdb.password }}"
+          {{- end }}
           ports:
             - name: http
               containerPort: 9984

@@ -47,17 +47,14 @@
             valueFrom:
               secretKeyRef:
                 name: {{ template "drone.sourceControlSecret" . }}
-                key: {{ .Values.sourceControl.bitbucketCloud.passwordKey }}
+                key: {{ .Values.sourceControl.bitbucketServer.passwordKey }}
           - name: DRONE_STASH_CONSUMER_KEY
             valueFrom:
               secretKeyRef:
                 name: {{ template "drone.sourceControlSecret" . }}
-                key: {{ .Values.sourceControl.bitbucketCloud.consumerKey }}
+                key: {{ .Values.sourceControl.bitbucketServer.consumerKey }}
           - name: DRONE_STASH_PRIVATE_KEY
-            valueFrom:
-              secretKeyRef:
-                name: {{ template "drone.sourceControlSecret" . }}
-                key: {{ .Values.sourceControl.bitbucketCloud.privateKey }}
+            value: /etc/bitbucket/key.pem
 {{- end -}}
 {{- end -}}
 

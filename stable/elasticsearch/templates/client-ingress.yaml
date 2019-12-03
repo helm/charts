@@ -11,8 +11,8 @@ metadata:
     component: "{{ .Values.client.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-{{- with .Values.client.ingress.annotations }}
   annotations:
+{{- with .Values.client.ingress.annotations }}
 {{ toYaml . | indent 4 }}
 {{- end }}
 {{- if and ( .Values.client.ingress.user ) ( .Values.client.ingress.password ) }}

@@ -1,0 +1,35 @@
+{{- if .Values.psp.create }}
+apiVersion: {{ template "podsecuritypolicy.apiVersion" . }}
+kind: PodSecurityPolicy
+metadata:
+  labels:
+    app: {{ template "elasticsearch-curator.name" . }}
+    chart: {{ template "elasticsearch-curator.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  name: {{ template "elasticsearch-curator.fullname" . }}-psp
+spec:
+  privileged: true
+  #requiredDropCapabilities:
+  volumes:
+    - 'configMap'
+    - 'secret'
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
+  runAsUser:
+    rule: 'RunAsAny'
+  seLinux:
+    rule: 'RunAsAny'
+  supplementalGroups:
+    rule: 'MustRunAs'
+    ranges:
+      - min: 1
+        max: 65535
+  fsGroup:
+    rule: 'MustRunAs'
+    ranges:
+      - min: 1
+        max: 65535
+  readOnlyRootFilesystem: false
+{{- end }}

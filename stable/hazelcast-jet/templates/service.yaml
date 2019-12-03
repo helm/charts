@@ -3,18 +3,18 @@ kind: Service
 metadata:
   name: {{ template "hazelcast-jet.fullname" . }}
   labels:
-    app: {{ template "hazelcast-jet.name" . }}
-    chart: {{ template "hazelcast-jet.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ template "hazelcast-jet.name" . }}
+    helm.sh/chart: {{ template "hazelcast-jet.chart" . }}
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
 spec:
   type: {{ .Values.service.type }}
   {{- if .Values.service.clusterIP }}
   clusterIP: {{ .Values.service.clusterIP }}
   {{- end }}
   selector:
-    app: {{ template "hazelcast-jet.name" . }}
-    release: "{{ .Release.Name }}"
+    app.kubernetes.io/name: {{ template "hazelcast-jet.name" . }}
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
   ports:
   - protocol: TCP
     port: {{ .Values.service.port }}

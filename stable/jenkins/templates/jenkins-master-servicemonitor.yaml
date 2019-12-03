@@ -1,0 +1,37 @@
+{{- if and .Values.master.prometheus.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+
+metadata:
+  name: {{ template "jenkins.fullname" . }}
+{{- if .Values.master.prometheus.serviceMonitorNamespace }}
+  namespace: {{ .Values.master.prometheus.serviceMonitorNamespace }}
+{{- else }}
+  namespace: {{ template "jenkins.namespace" . }}
+{{- end }}
+  labels:
+    "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+    "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    "app.kubernetes.io/managed-by": "{{ .Release.Service }}"
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
+    "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
+    {{- range $key, $val := .Values.master.prometheus.serviceMonitorAdditionalLabels }}
+    {{ $key }}: {{ $val | quote }}
+    {{- end}}
+
+spec:
+  endpoints:
+  - interval: {{ .Values.master.prometheus.scrapeInterval }}
+    port: http
+    path: {{ .Values.master.jenkinsUriPrefix }}{{ .Values.master.prometheus.scrapeEndpoint }}
+  jobLabel: {{ template "jenkins.fullname" . }}
+  namespaceSelector:
+    matchNames:
+    - "{{ template "jenkins.namespace" $ }}"
+  selector:
+    matchLabels:
+      "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+      "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
+      "app.kubernetes.io/instance": "{{ .Release.Name }}"
+      "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
+{{- end }}

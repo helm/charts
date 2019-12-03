@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "sonarqube.fullname" . }}
@@ -9,6 +9,14 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "sonarqube.name" . }}
+      release: {{ .Release.Name }}
+{{- if .Values.deploymentStrategy }}
+  strategy:
+{{ toYaml .Values.deploymentStrategy | indent 4 }}
+{{- end }}
   template:
     metadata:
       labels:
@@ -17,13 +25,30 @@ spec:
 {{- with .Values.podLabels }}
 {{ toYaml . | indent 8 }}
 {{- end }}
+{{ if .Values.annotations}}
+      annotations:
+      {{- range $key, $value := .Values.annotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
+{{- end }}
     spec:
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
-      {{- if .Values.plugins.install }}
       initContainers:
+      {{- if .Values.elasticsearch.configureNode }}
+        - name: init-sysctl
+          image: {{ default "busybox:1.31" .Values.plugins.initSysctlContainerImage }}
+          command:
+          - sysctl
+          - -w
+          - vm.max_map_count=262144
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true
+      {{- end }}
+      {{- if .Values.plugins.install }}
         - name: install-plugins
-          image: {{ default "joosthofman/wget:1.0" .Values.plugins.initContainerImage }}
+          image: {{ default "alpine:3.10.3" .Values.plugins.initContainerImage }}
           env:
             {{- range $key, $value := .Values.extraEnv }}
             - name: {{ $key }}
@@ -63,6 +88,29 @@ spec:
 {{ toYaml .Values.affinity | indent 8 }}
     {{- end }}
       {{- end }}
+      {{- if and .Values.sonarProperties .Values.sonarSecretProperties }}
+        - name: concat-properties
+          image: {{ default "alpine:3.10.3" .Values.plugins.initContainerImage }}
+          env:
+            {{- range $key, $value := .Values.extraEnv }}
+            - name: {{ $key }}
+              value: {{ $value }}
+            {{- end }}
+          command: ["sh",
+            "-c",
+            "awk 1 /tmp/props/sonar.properties /tmp/props/secret.properties > /tmp/result/sonar.properties
+            "
+           ]
+          volumeMounts:
+            - mountPath: /tmp/props/sonar.properties 
+              name: config
+              subPath: sonar.properties
+            - mountPath: /tmp/props/secret.properties
+              name: secret-config
+              subPath: secret.properties
+            - mountPath: /tmp/result
+              name: concat-dir
+      {{- end }}
       {{- if .Values.image.pullSecret }}
       imagePullSecrets:
       - name: {{ .Values.image.pullSecret }}
@@ -72,10 +120,12 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: {{ .Values.service.internalPort }}
+            - name: http
+              containerPort: {{ .Values.service.internalPort }}
+              protocol: TCP
           {{- if .Values.plugins.install }}
           command:
-            - /usr/local/copy_plugins.sh
+            - /tmp/scripts/copy_plugins.sh
           {{- end }}
           env:
             {{- range $key, $value := .Values.extraEnv }}
@@ -107,24 +157,32 @@ spec:
           livenessProbe:
             httpGet:
               path: {{ .Values.livenessProbe.sonarWebContext }}sessions/new
-              port: {{ .Values.service.internalPort }}
+              port: http
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
           readinessProbe:
             httpGet:
               path: {{ .Values.readinessProbe.sonarWebContext }}sessions/new
-              port: {{ .Values.service.internalPort }}
+              port: http
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           volumeMounts:
-            {{- if .Values.sonarProperties }}
+            {{- if and .Values.sonarProperties .Values.sonarSecretProperties }}
+            - mountPath: /opt/sonarqube/conf/
+              name: concat-dir
+            {{- else if or .Values.sonarProperties (not .Values.elasticsearch.bootstrapChecks) }}
             - mountPath: /opt/sonarqube/conf/
               name: config
             {{- end }}
             {{- if .Values.sonarSecretKey }}
             - mountPath: /opt/sonarqube/secret/
               name: secret
+            {{- end }}
+            {{- if .Values.customCerts.enabled }}
+            - mountPath: /etc/ssl/certs/java/cacerts
+              subPath: cacerts
+              name: cacerts
             {{- end }}
             - mountPath: /opt/sonarqube/data
               name: sonarqube
@@ -147,7 +205,7 @@ spec:
             - mountPath: /tmp
               name: tmp-dir
             - name: copy-plugins
-              mountPath: /usr/local/
+              mountPath: /tmp/scripts
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- if .Values.nodeSelector }}
@@ -163,7 +221,7 @@ spec:
 {{ toYaml .Values.affinity | indent 8 }}
     {{- end }}
       volumes:
-      {{- if .Values.sonarProperties }}
+      {{- if or .Values.sonarProperties (not .Values.elasticsearch.bootstrapChecks) }}
       - name: config
         configMap:
           name: {{ template "sonarqube.fullname" . }}-config
@@ -171,13 +229,29 @@ spec:
           - key: sonar.properties
             path: sonar.properties
       {{- end }}
+      {{- if .Values.sonarSecretProperties }}
+      - name: secret-config
+        secret:
+          secretName: {{ .Values.sonarSecretProperties }}
+          items:
+          - key: secret.properties
+            path: secret.properties
+      {{- end }}
       {{- if .Values.sonarSecretKey }}
       - name: secret
-        secret: 
+        secret:
           secretName: {{ .Values.sonarSecretKey }}
           items:
           - key: sonar-secret.txt
             path: sonar-secret.txt
+      {{- end }}
+      {{- if .Values.customCerts.enabled }}
+      - name: cacerts
+        secret:
+          secretName: {{ .Values.customCerts.secretName }}
+          items:
+          - key: cacerts
+            path: cacerts
       {{- end }}
       - name: install-plugins
         configMap:
@@ -201,3 +275,7 @@ spec:
         {{- end  }}
       - name : tmp-dir
         emptyDir: {}
+        {{- if .Values.sonarSecretProperties }}
+      - name : concat-dir
+        emptyDir: {}
+        {{- end }}

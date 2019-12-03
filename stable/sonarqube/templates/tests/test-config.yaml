@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "sonarqube.fullname" . }}-tests
+  labels:
+    app: {{ template "sonarqube.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  run.sh: |-
+    @test "Testing Sonarqube UI is accessible" {
+      curl --connect-timeout 5 --retry 12 --retry-delay 1 --retry-max-time 60 {{ template "sonarqube.fullname" . }}:{{ .Values.service.internalPort }}/sessions/new
+    }

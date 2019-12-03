@@ -28,7 +28,7 @@ The following table lists the configurable parameters of the TensorFlow inceptio
 | Parameter               | Description                        | Default                                                    |
 | ----------------------- | ---------------------------------- | ---------------------------------------------------------- |
 | `image.repository`          | Container image name               | `quay.io/thomasjungblut/tfs-inception`                              |
-| `image.tag`       | Container image tag                | `tfs-1.8.0-gpu`                                                          |
+| `image.tag`       | Container image tag                | `tfs-1.8.0-cpu`                                                          |
 | `replicas`       | k8s deployment replicas            | `1`                                                               |
 | `component`      | k8s selector key                   | `tensorflow-inception`                                            |
 | `resources`      | Set the resource to be allocated and allowed for the Pods                   | `{}`                                            |
@@ -36,6 +36,8 @@ The following table lists the configurable parameters of the TensorFlow inceptio
 | `containerPort`  | Container listening port           | `9090`                                                            |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
+
+> **Note**: For the GPU version, use `image.tag=tfs-1.8.0-gpu`.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 

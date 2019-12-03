@@ -1,0 +1,40 @@
+# Generated from 'prometheus-operator' group from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml
+# Do not change in-place! In order to change this file first read following link:
+# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
+{{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
+{{- if and (semverCompare ">=1.14.0-0" $kubeTargetVersion) (semverCompare "<9.9.9-9" $kubeTargetVersion) .Values.defaultRules.create .Values.defaultRules.rules.prometheusOperator }}
+{{- $operatorJob := printf "%s-%s" (include "prometheus-operator.fullname" .) "operator" }}
+{{- $namespace := .Release.Namespace }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ printf "%s-%s" (include "prometheus-operator.fullname" .) "prometheus-operator" | trunc 63 | trimSuffix "-" }}
+  labels:
+    app: {{ template "prometheus-operator.name" . }}
+{{ include "prometheus-operator.labels" . | indent 4 }}
+{{- if .Values.defaultRules.labels }}
+{{ toYaml .Values.defaultRules.labels | indent 4 }}
+{{- end }}
+{{- if .Values.defaultRules.annotations }}
+  annotations:
+{{ toYaml .Values.defaultRules.annotations | indent 4 }}
+{{- end }}
+spec:
+  groups:
+  - name: prometheus-operator
+    rules:
+    - alert: PrometheusOperatorReconcileErrors
+      annotations:
+        message: Errors while reconciling {{`{{ $labels.controller }}`}} in {{`{{ $labels.namespace }}`}} Namespace.
+      expr: rate(prometheus_operator_reconcile_errors_total{job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[5m]) > 0.1
+      for: 10m
+      labels:
+        severity: warning
+    - alert: PrometheusOperatorNodeLookupErrors
+      annotations:
+        message: Errors while reconciling Prometheus in {{`{{ $labels.namespace }}`}} Namespace.
+      expr: rate(prometheus_operator_node_address_lookup_errors_total{job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[5m]) > 0.1
+      for: 10m
+      labels:
+        severity: warning
+{{- end }}

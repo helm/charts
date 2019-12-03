@@ -178,7 +178,7 @@ data:
     # Note: Affiliations are case sensitive except for the non-leaf affiliations.
     #############################################################################
     affiliations:
-    {{ toYaml .Values.config.affiliations | indent 4 }}
+    {{- toYaml .Values.config.affiliations | nindent 6 }}
     #############################################################################
     #  Signing section
     #

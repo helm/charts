@@ -1,0 +1,12 @@
+{{ if and .Values.pro.enabled .Values.crds.enabled  }}
+---
+apiVersion: getambassador.io/v1
+kind: RateLimitService
+metadata:
+  name: {{ include "ambassador.fullname" . }}-pro-ratelimit
+spec:
+  {{- if hasKey .Values.env "AMBASSADOR_ID" }}
+  ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
+  {{- end }}
+  service: 127.0.0.1:{{ .Values.pro.ports.ratelimit }}
+{{ end }}

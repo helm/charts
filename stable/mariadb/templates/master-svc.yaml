@@ -8,15 +8,20 @@ metadata:
     chart: "{{ template "mariadb.chart" . }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
-{{- if .Values.metrics.enabled }}
+{{- if or .Values.metrics.enabled .Values.master.service.annotations }}
   annotations:
+{{- if .Values.metrics.enabled }}
 {{ toYaml .Values.metrics.annotations | indent 4 }}
+{{- end }}
+{{- if .Values.master.service.annotations }}
+{{ toYaml .Values.master.service.annotations | indent 4 }}
+{{- end }}
 {{- end }}
 spec:
   type: {{ .Values.service.type }}
   {{- if eq .Values.service.type "ClusterIP" }}
   {{- if .Values.service.clusterIp }}
-  clusterIP: {{ .Values.service.clusterIp }}
+  clusterIP: {{ .Values.service.clusterIp.master }}
   {{- end }}
   {{- end }}
   ports:

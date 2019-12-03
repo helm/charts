@@ -4,12 +4,23 @@
 
 image:
   repository: homeassistant/home-assistant
-  tag: 0.92.1
+  tag: 0.101.2
   pullPolicy: IfNotPresent
   pullSecrets: []
 
 # upgrade strategy type (e.g. Recreate or RollingUpdate)
 strategyType: Recreate
+
+# Probes configuration
+probes:
+  liveness:
+    initialDelaySeconds: 60
+    failureThreshold: 5
+    timeoutSeconds: 10
+  readiness:
+    initialDelaySeconds: 60
+    failureThreshold: 5
+    timeoutSeconds: 10
 
 service:
   type: ClusterIP
@@ -54,6 +65,9 @@ persistence:
   ## If you want to reuse an existing claim, you can pass the name of the PVC using
   ## the existingClaim variable
   # existingClaim: your-claim
+  ##
+  ## If you want to use a volume on the host machine instead of a PVC:
+  # hostPath: /path/to/the/config/folder
   accessMode: ReadWriteOnce
   size: 5Gi
 
@@ -87,13 +101,26 @@ git:
   ##
   image:
     repository: causticlab/hass-configurator-docker
-    tag: x86_64-0.3.1
+    tag: 0.3.5-x86_64
     pullPolicy: IfNotPresent
+
+  ## Specify the command that runs in the git-sync container to pull in configuration.
+  # command: []
 
   # repo:
   secret: git-creds
   syncPath: /config
   keyPath: /root/.ssh
+
+zwave:
+  enabled: false
+  device: ttyACM0
+
+# Mount devices or folders from the host machine. Can be used for USB device mounting.
+hostMounts: []
+  # Example
+  # - name: zha
+  #   hostPath: /dev/serial/by-id/usb-Silicon_Labs_HubZ_Smart_Home_Controller_6120245D-if01-port0
 
 configurator:
   enabled: false
@@ -102,7 +129,7 @@ configurator:
   ##
   image:
     repository: causticlab/hass-configurator-docker
-    tag: x86_64-0.3.1
+    tag: 0.3.5-x86_64
     pullPolicy: IfNotPresent
 
   ## URL for the home assistant API endpoint
@@ -151,6 +178,74 @@ configurator:
     loadBalancerSourceRanges: []
     # nodePort: 30000
 
+## Add support for Prometheus
+# settings has to be enabled in configuration.yaml
+# https://www.home-assistant.io/components/prometheus/
+monitoring:
+  enabled: false
+  serviceMonitor:
+    # When set true and if Prometheus Operator is installed then use a ServiceMonitor to configure scraping
+    enabled: true
+    # Set the namespace the ServiceMonitor should be deployed
+    # namespace: monitoring
+    # Set how frequently Prometheus should scrape
+    # interval: 30s
+    # Set path to beats-exporter telemtery-path
+    # telemetryPath: /metrics
+    # Set labels for the ServiceMonitor, use this to define your scrape label for Prometheus Operator
+    # labels:
+
+vscode:
+  enabled: false
+
+  ## code-server container image
+  ##
+  image:
+    repository: codercom/code-server
+    tag: 2.1665-vsc1.39.2
+    pullPolicy: IfNotPresent
+
+  ## VSCode password
+  # password:
+
+  ## path where the home assistant configuration is stored
+  hassConfig: /config
+
+  ## path where the VS Code data should reside
+  vscodePath: /config/.vscode
+
+  ## Additional hass-vscode container environment variable
+  ## For instance to add a http_proxy
+  ##
+  extraEnv: {}
+
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - home-assistant.local
+    tls: []
+    #  - secretName: home-assistant-tls
+    #    hosts:
+    #      - home-assistant.local
+
+  service:
+    type: ClusterIP
+    port: 80
+    annotations: {}
+    labels: {}
+    clusterIP: ""
+    ## List of IP addresses at which the hass-vscode service is available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
+    externalIPs: []
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+    # nodePort: 30000
+
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -168,3 +263,5 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+podAnnotations: {}

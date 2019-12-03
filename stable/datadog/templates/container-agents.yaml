@@ -1,0 +1,216 @@
+{{- define "container-agents" -}}
+- name: {{ default .Chart.Name .Values.datadog.name }}
+  image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+  imagePullPolicy: {{ .Values.image.pullPolicy }}
+  resources:
+{{ toYaml .Values.datadog.resources | indent 4 }}
+  ports:
+  - containerPort: 8125
+    {{- if .Values.daemonset.useHostPort }}
+    hostPort: 8125
+    {{- end }}
+    name: dogstatsdport
+    protocol: UDP
+  {{- if .Values.datadog.apmEnabled }}
+  - containerPort: 8126
+    {{- if .Values.daemonset.useHostPort }}
+    hostPort: 8126
+    {{- end }}
+    name: traceport
+    protocol: TCP
+  {{- end }}
+  env:
+    - name: DD_API_KEY
+      valueFrom:
+        secretKeyRef:
+          name: {{ template "datadog.apiSecretName" . }}
+          key: api-key
+    {{- if .Values.datadog.clusterName }}
+    - name: DD_CLUSTER_NAME
+      value: {{ .Values.datadog.clusterName | quote }}
+    {{- end }}
+    {{- if .Values.datadog.site }}
+    - name: DD_SITE
+      value: {{ .Values.datadog.site | quote }}
+    {{- end }}
+    {{- if .Values.datadog.dd_url }}
+    - name: DD_DD_URL
+      value: {{ .Values.datadog.dd_url | quote }}
+    {{- end }}
+    {{- if .Values.datadog.logLevel }}
+    - name: DD_LOG_LEVEL
+      value: {{ .Values.datadog.logLevel | quote }}
+    {{- end }}
+    {{- if .Values.datadog.nonLocalTraffic }}
+    - name: DD_DOGSTATSD_NON_LOCAL_TRAFFIC
+      value: {{ .Values.datadog.nonLocalTraffic | quote }}
+    - name: DD_APM_NON_LOCAL_TRAFFIC
+      value: {{ .Values.datadog.nonLocalTraffic | quote }}
+    {{- end }}
+    {{- if .Values.datadog.dogstatsdOriginDetection }}
+    - name: DD_DOGSTATSD_ORIGIN_DETECTION
+      value: {{ .Values.datadog.dogstatsdOriginDetection | quote }}
+    {{- end }}
+    {{- if .Values.datadog.tags }}
+    - name: DD_TAGS
+      value: {{ .Values.datadog.tags | quote }}
+    {{- end }}
+    {{- if .Values.datadog.apmEnabled }}
+    - name: DD_APM_ENABLED
+      value: {{ .Values.datadog.apmEnabled | quote }}
+    {{- end }}
+    {{- if .Values.datadog.processAgentEnabled }}
+    - name: DD_PROCESS_AGENT_ENABLED
+      value: {{ .Values.datadog.processAgentEnabled | quote }}
+    {{- end }}
+    {{- if .Values.datadog.hostname }}
+    - name: DD_HOSTNAME
+      value: {{ .Values.datadog.hostname | quote }}
+    {{- end }}
+    {{- if .Values.datadog.acInclude }}
+    - name: DD_AC_INCLUDE
+      value: {{ .Values.datadog.acInclude | quote }}
+    {{- end }}
+    {{- if .Values.datadog.acExclude }}
+    - name: DD_AC_EXCLUDE
+      value: {{ .Values.datadog.acExclude | quote }}
+    {{- end }}
+    {{- if not .Values.clusterAgent.enabled }}
+    {{- if .Values.datadog.leaderElection }}
+    - name: DD_LEADER_ELECTION
+      value: {{ .Values.datadog.leaderElection | quote}}
+    {{- end }}
+    {{- if .Values.datadog.leaderLeaseDuration }}
+    - name: DD_LEADER_LEASE_DURATION
+      value: {{ .Values.datadog.leaderLeaseDuration | quote }}
+    {{- end }}
+    {{- if .Values.datadog.collectEvents }}
+    - name: DD_COLLECT_KUBERNETES_EVENTS
+      value: {{.Values.datadog.collectEvents | quote}}
+    {{- end }}
+    {{- else }}
+    - name: DD_CLUSTER_AGENT_ENABLED
+      value: {{ .Values.clusterAgent.enabled | quote }}
+    - name: DD_CLUSTER_AGENT_KUBERNETES_SERVICE_NAME
+      value: {{ template "datadog.fullname" . }}-cluster-agent
+    - name: DD_CLUSTER_AGENT_AUTH_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: {{ template "clusterAgent.tokenSecretName" . }}
+          key: token
+    {{- end }}
+    - name: KUBERNETES
+      value: "yes"
+    {{- if .Values.datadog.nodeLabelsAsTags }}
+    - name: DD_KUBERNETES_NODE_LABELS_AS_TAGS
+      value: '{{ toJson .Values.datadog.nodeLabelsAsTags }}'
+    {{- end }}
+    {{- if .Values.datadog.podLabelsAsTags }}
+    - name: DD_KUBERNETES_POD_LABELS_AS_TAGS
+      value: '{{ toJson .Values.datadog.podLabelsAsTags }}'
+    {{- end }}
+    {{- if .Values.datadog.podAnnotationsAsTags }}
+    - name: DD_KUBERNETES_POD_ANNOTATIONS_AS_TAGS
+      value: '{{ toJson .Values.datadog.podAnnotationsAsTags }}'
+    {{- end }}
+    {{- if semverCompare "^1.7-0" .Capabilities.KubeVersion.GitVersion }}
+    - name: DD_KUBERNETES_KUBELET_HOST
+      valueFrom:
+        fieldRef:
+          fieldPath: status.hostIP
+    {{- end }}
+    {{- if .Values.datadog.logsEnabled }}
+    - name: DD_LOGS_ENABLED
+      value: {{.Values.datadog.logsEnabled | quote}}
+    {{- end }}
+    {{- if .Values.datadog.logsConfigContainerCollectAll }}
+    - name: DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL
+      value: {{.Values.datadog.logsConfigContainerCollectAll | quote}}
+    {{- end }}
+    {{- if .Values.datadog.criSocketPath }}
+    - name: DD_CRI_SOCKET_PATH
+      value: {{ .Values.datadog.criSocketPath | quote }}
+    {{- end }}
+    {{- if not .Values.datadog.livenessProbe }}
+    - name: DD_HEALTH_PORT
+      value: "5555"
+    {{- end }}
+    {{- if .Values.datadog.useDogStatsDSocketVolume }}
+    - name: DD_DOGSTATSD_SOCKET
+      value: {{ default "/var/run/datadog/dsd.socket" .Values.datadog.dogStatsDSocketPath | quote }}
+    {{- end }}
+    {{- if and .Values.clusterAgent.clusterChecks.enabled  (not .Values.clusterchecksDeployment.enabled) }}
+    - name: DD_EXTRA_CONFIG_PROVIDERS
+      value: "clusterchecks"
+    {{- end }}
+{{- if .Values.datadog.env }}
+{{ toYaml .Values.datadog.env | indent 4 }}
+{{- end }}
+  volumeMounts:
+    {{- if .Values.datadog.useCriSocketVolume }}
+    - name: runtimesocket
+      mountPath: {{ default "/var/run/docker.sock" .Values.datadog.criSocketPath | quote }}
+      readOnly: true
+    {{- end }}
+    {{- if .Values.datadog.useDogStatsDSocketVolume }}
+    - name: dsdsocket
+      mountPath: "/var/run/datadog"
+    {{- end }}
+    - name: procdir
+      mountPath: /host/proc
+      readOnly: true
+    - name: cgroups
+      mountPath: /host/sys/fs/cgroup
+      readOnly: true
+    - name: s6-run
+      mountPath: /var/run/s6
+    {{- if (or (.Values.datadog.confd) (.Values.datadog.autoconf)) }}
+    - name: confd
+      mountPath: /conf.d
+      readOnly: true
+    {{- end }}
+    {{- if .Values.datadog.checksd }}
+    - name: checksd
+      mountPath: /checks.d
+      readOnly: true
+    {{- end }}
+    {{- if .Values.datadog.logsEnabled }}
+    - name: pointerdir
+      mountPath: /opt/datadog-agent/run
+    - name: logpodpath
+      mountPath: /var/log/pods
+      readOnly: true
+    {{- if .Values.datadog.containerLogsPath }}
+    - name: logcontainerpath
+      mountPath: {{ .Values.datadog.containerLogsPath | quote }}
+      readOnly: true
+    {{- end }}
+    {{- end }}
+    {{- if .Values.datadog.processAgentEnabled }}
+    - name: passwd
+      mountPath: /etc/passwd
+      readOnly: true
+    {{- end }}
+    {{- if .Values.daemonset.useConfigMap }}
+    - name: {{ template "datadog.fullname" . }}-datadog-yaml
+      mountPath: /etc/datadog-agent/datadog.yaml
+      subPath: datadog.yaml
+    {{- end }}
+{{- if .Values.datadog.volumeMounts }}
+{{ toYaml .Values.datadog.volumeMounts | indent 4 }}
+{{- end }}
+{{- if .Values.datadog.livenessProbe }}
+  livenessProbe:
+{{ toYaml .Values.datadog.livenessProbe | indent 4 }}
+{{- else }}
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: 5555
+    initialDelaySeconds: 15
+    periodSeconds: 15
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 6
+{{- end }}
+{{- end -}}

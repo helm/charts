@@ -1,0 +1,28 @@
+{{- if and ( .Values.monitoring.serviceMonitor.enabled ) ( .Values.monitoring.enabled ) }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+{{- if .Values.monitoring.serviceMonitor.labels }}
+  labels:
+{{ toYaml .Values.monitoring.serviceMonitor.labels | indent 4}}
+{{- end }}
+  name: {{ template "home-assistant.fullname" . }}-prometheus-exporter
+{{- if .Values.monitoring.serviceMonitor.namespace }}
+  namespace: {{ .Values.monitoring.serviceMonitor.namespace }}
+{{- end }}
+spec:
+  endpoints:
+  - targetPort: api
+    path: /api/prometheus
+{{- if .Values.monitoring.serviceMonitor.interval }}
+    interval: {{ .Values.monitoring.serviceMonitor.interval }}
+{{- end }}
+  jobLabel: {{ template "home-assistant.fullname" . }}-prometheus-exporter
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "home-assistant.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}

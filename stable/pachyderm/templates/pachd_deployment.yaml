@@ -8,19 +8,23 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-    suite: pachyderm
+    suite: {{ template "fullname" . }}
 spec:
   replicas: {{ .Values.pachd.replicaCount }}
   selector:
     matchLabels:
       app: pachd
-      suite: pachyderm
+      suite: {{ template "fullname" . }}
   template:
     metadata:
       name: pachd
+      annotations:
+        {{- if .Values.amazon.roleArn }}
+        iam.amazonaws.com/role: {{ .Values.amazon.roleArn }}
+        {{- end }}
       labels:
         app: pachd
-        suite: pachyderm
+        suite: {{ template "fullname" . }}
     spec:
       volumes:
       - name: pachdvol
@@ -43,6 +47,8 @@ spec:
         - name: api-http-port
           containerPort: 652
         env:
+        - name: EXPOSE_OBJECT_API
+          value: {{ .Values.pachd.exposeObjApi | quote }}
         - name: PACH_ROOT
           value: "/pach"
         - name: NUM_SHARDS
@@ -63,6 +69,108 @@ spec:
           {{- if eq .Values.credentials "local" }}
           value: "/var/pachyderm/pachd"
           {{- end }}
+        - name: GOOGLE_BUCKET
+          valueFrom:
+            secretKeyRef:
+              name: pachyderm-storage-secret
+              key: google-bucket
+              optional: true
+        - name: GOOGLE_CRED
+          valueFrom:
+            secretKeyRef:
+              name: pachyderm-storage-secret
+              key: google-cred
+              optional: true
+        - name: AMAZON_BUCKET
+          valueFrom:
+            secretKeyRef:
+              name: pachyderm-storage-secret
+              key: amazon-bucket
+              optional: true
+        - name: AMAZON_DISTRIBUTION
+          valueFrom:
+            secretKeyRef:
+              name: pachyderm-storage-secret
+              key: amazon-distribution
+              optional: true
+        - name: AMAZON_ID
+          valueFrom:
+            secretKeyRef:
+              name: pachyderm-storage-secret
+              key: amazon-id
+              optional: true
+        - name: AMAZON_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: pachyderm-storage-secret
+              key: amazon-secret
+              optional: true
+        - name: AMAZON_REGION
+          valueFrom:
+            secretKeyRef:
+              name: pachyderm-storage-secret
+              key: amazon-region
+              optional: true
+        - name: AMAZON_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: pachyderm-storage-secret
+              key: amazon-token
+              optional: true
+        - name: MICROSOFT_CONTAINER
+          valueFrom:
+            secretKeyRef:
+              name: pachyderm-storage-secret
+              key: microsoft-container
+              optional: true
+        - name: MICROSOFT_ID
+          valueFrom:
+            secretKeyRef:
+              name: pachyderm-storage-secret
+              key: microsoft-id
+              optional: true
+        - name: MICROSOFT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: pachyderm-storage-secret
+              key: microsoft-secret
+              optional: true
+        - name: MINIO_ENDPOINT
+          valueFrom:
+            secretKeyRef:
+              name: pachyderm-storage-secret
+              key: minio-endpoint
+              optional: true
+        - name: MINIO_BUCKET
+          valueFrom:
+            secretKeyRef:
+              name: pachyderm-storage-secret
+              key: minio-bucket
+              optional: true
+        - name: MINIO_SECURE
+          valueFrom:
+            secretKeyRef:
+              name: pachyderm-storage-secret
+              key: minio-secure
+              optional: true
+        - name: MINIO_ID
+          valueFrom:
+            secretKeyRef:
+              name: pachyderm-storage-secret
+              key: minio-id
+              optional: true
+        - name: MINIO_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: pachyderm-storage-secret
+              key: minio-secret
+              optional: true
+        - name: MINIO_SIGNATURE
+          valueFrom:
+            secretKeyRef:
+              name: pachyderm-storage-secret
+              key: minio-signature
+              optional: true
         - name: PACHD_POD_NAMESPACE
           valueFrom:
             fieldRef:
@@ -82,13 +190,21 @@ spec:
           value: info
         - name: BLOCK_CACHE_BYTES
           value: '{{ .Values.pachd.pfsCache }}'
+        {{- if eq .Values.credentials "amazon" }}
         - name: IAM_ROLE
+          value: {{ .Values.amazon.roleArn }}
+        {{- end }}
         - name: PACHYDERM_AUTHENTICATION_DISABLED_FOR_TESTING
           value: 'false'
         resources:
           requests:
             cpu: '{{ .Values.pachd.resources.requests.cpu }}'
             memory: {{ .Values.pachd.resources.requests.memory }}
+        {{- if .Values.pachd.resources.limits }}
+          limits:
+            cpu: '{{ .Values.pachd.resources.limits.cpu }}'
+            memory: {{ .Values.pachd.resources.limits.memory }}
+        {{- end }}
         volumeMounts:
         - name: pachdvol
           mountPath: "/pach"
@@ -97,6 +213,6 @@ spec:
         imagePullPolicy: {{ .Values.pachd.image.pullPolicy }}
         securityContext:
           privileged: true
-      serviceAccountName: pachyderm
+      serviceAccountName: {{ template "fullname" . }}
   strategy: {}
 status: {}

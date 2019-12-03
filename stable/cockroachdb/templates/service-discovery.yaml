@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Service
+metadata:
+  # This service only exists to create DNS entries for each pod in the stateful
+  # set such that they can resolve each other's IP addresses. It does not
+  # create a load-balanced ClusterIP and should not be used directly by clients
+  # in most circumstances.
+  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+{{- if .Values.ServiceDiscovery.labels }}
+{{ toYaml .Values.ServiceDiscovery.labels | indent 4 }}
+{{- end }}
+  annotations:
+    # Use this annotation in addition to the actual field below because the
+    # annotation will stop being respected soon but the field is broken in
+    # some versions of Kubernetes:
+    # https://github.com/kubernetes/kubernetes/issues/58662
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+    # Enable automatic monitoring of all instances when Prometheus is running in the cluster.
+    prometheus.io/scrape: "true"
+    prometheus.io/path: "_status/vars"
+    prometheus.io/port: "{{ .Values.ExternalHttpPort }}"
+spec:
+  ports:
+  - port: {{ .Values.ExternalGrpcPort }}
+    targetPort: {{ .Values.InternalGrpcPort }}
+    name: {{ .Values.ExternalGrpcName }}
+  # The secondary port serves the UI as well as health and debug endpoints.
+  - port: {{ .Values.ExternalHttpPort }}
+    targetPort: {{ .Values.InternalHttpPort }}
+    name: {{ .Values.HttpName }}
+    {{- if ne .Values.InternalGrpcPort .Values.ExternalGrpcPort }}
+  - port: {{ .Values.InternalGrpcPort }}
+    targetPort: {{ .Values.InternalGrpcPort }}
+    name: {{ .Values.InternalGrpcName }}
+    {{- end }}
+  # We want all pods in the StatefulSet to have their addresses published for
+  # the sake of the other CockroachDB pods even before they're ready, since they
+  # have to be able to talk to each other in order to become ready.
+  publishNotReadyAddresses: true
+  clusterIP: None
+  selector:
+    component: "{{ .Release.Name }}-{{ .Values.Component }}"

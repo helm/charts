@@ -1,0 +1,19 @@
+{{- if .Values.db.enableSsl }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ template "phpmyadmin.fullname" . }}-certs
+  labels:
+    app: {{ template "phpmyadmin.name" . }}
+    chart: {{ template "phpmyadmin.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+type: Opaque
+data:
+  server_key.pem:
+    {{ required "A valid .Values.db.ssl.clientKey entry required!" .Values.db.ssl.clientKey | b64enc | quote }}
+  server_certificate.pem:
+    {{ required "A valid .Values.db.ssl.clientCertificate entry required!" .Values.db.ssl.clientCertificate | b64enc | quote }}
+  ca_certificate.pem:
+    {{ required "A valid .Values.db.ssl.caCertificate entry required!" .Values.db.ssl.caCertificate | b64enc | quote }}
+{{- end }}

@@ -13,3 +13,15 @@ You can also connect to the influx cli from inside the container. To open a shel
 To tail the logs for the InfluxDB pod run the following:
 
 - kubectl logs -f --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "influxdb.fullname" . }} -o jsonpath='{ .items[0].metadata.name }')
+
+{{- if .Values.setDefaultUser.enabled }}
+
+To retrieve the default user name:
+
+- echo $(kubectl get secret {{ template "influxdb.fullname" . }}-auth -o "jsonpath={.data['influxdb-user']}" --namespace {{ .Release.Namespace }} | base64 --decode)
+
+To retrieve the default user password:
+
+- echo $(kubectl get secret {{ template "influxdb.fullname" . }}-auth -o "jsonpath={.data['influxdb-password']}" --namespace {{ .Release.Namespace }} | base64 --decode)
+
+{{- end }}

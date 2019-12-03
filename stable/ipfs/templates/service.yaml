@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -20,3 +21,40 @@ spec:
   selector:
     app: {{ template "ipfs.name" . }}
     release: {{ .Release.Name }}
+
+{{- if .Values.swarm.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "ipfs.servicename" . }}-swarm
+  labels:
+    app: {{ template "ipfs.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "5001"
+    prometheus.io/path: /debug/metrics/prometheus
+spec:
+  type: {{ .Values.swarm.type }}
+  {{- if .Values.swarm.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.swarm.loadBalancerIP }}
+  {{- end }}
+  {{- if .Values.swarm.externalIP }}
+  externalIPs:
+    - {{ .Values.swarm.externalIP }}
+  {{- end }}
+  ports:
+  - port: 4001
+    {{- if (and (eq .Values.swarm.type "NodePort") (not (empty .Values.swarm.nodePort)))}}
+    nodePort: {{ .Values.swarm.nodePort }}
+    {{- end }}
+    targetPort: 4001
+    protocol: TCP
+    name: swarm
+  selector:
+    app: {{ template "ipfs.name" . }}
+    release: {{ .Release.Name }}
+{{- end -}}

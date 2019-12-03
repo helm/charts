@@ -12,6 +12,17 @@ Return the appropriate apiVersion for cronjob APIs.
 {{- end -}}
 
 {{/*
+Return the appropriate apiVersion for podsecuritypolicy.
+*/}}
+{{- define "podsecuritypolicy.apiVersion" -}}
+{{- if semverCompare "<1.10-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "extensions/v1beta1" -}}
+{{- else -}}
+{{- print "policy/v1beta1" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Expand the name of the chart.
 */}}
 {{- define "elasticsearch-curator.name" -}}
@@ -41,4 +52,15 @@ Create chart name and version as used by the chart label.
 */}}
 {{- define "elasticsearch-curator.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "elasticsearch-curator.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "elasticsearch-curator.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
 {{- end -}}

@@ -12,6 +12,19 @@ serviceAccount:
   ##
   name: ""
 
+livenessProbe:
+  httpGet:
+    path: /api/health
+    port: kafka-manager
+  initialDelaySeconds: 60
+  timeoutSeconds: 30
+  failureThreshold: 10
+
+readinessProbe:
+  httpGet:
+    path: /api/health
+    port: kafka-manager
+
 ## Specs for the Kafka-manager image
 ##
 image:
@@ -37,7 +50,7 @@ clusters:
     # zkHosts: ""
 
     ## The following parameters can be configured for your cluster.
-    ## See '_helpers.tpl' for the default values
+    ## See '_helpers.tpl' for the default values. Supported values for kafkaVersion: 0.8.1.1, 0.8.2.0, 0.8.2.1, 0.8.2.2, 0.9.0.0, 0.9.0.1, 0.10.0.0, 0.10.0.1, 0.10.1.0, 0.10.1.1, 0.10.2.0, 0.10.2.1, 0.11.0.0, 0.11.0.2, 1.0.0, 1.0.1, 1.1.0, 1.1.1, 2.0.0. Default: 2.0.0
     ##
     # kafkaVersion: ""
     # jmxEnabled: ""

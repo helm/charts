@@ -1,0 +1,95 @@
+{{- if .Values.backup.enabled }}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: "{{ template "influxdb.fullname" . }}-backup"
+  labels:
+    app: "{{ template "influxdb.fullname" . }}"
+    chart: "{{ template "influxdb.chart" . }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    {{- toYaml .Values.backup.annotations | nindent 4 }}
+spec:
+  schedule: {{.Values.backup.schedule | quote }}
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: {{ template "influxdb.fullname" . }}
+            release: "{{ .Release.Name }}"
+        spec:
+          restartPolicy: OnFailure
+          volumes:
+          - name: backups
+            emptyDir: {}
+          {{- if and .Values.backup.gcs }}
+          - name: google-cloud-key
+            secret:
+              secretName: {{ .Values.backup.gcs.serviceAccountSecret | quote }}
+          {{- end }}
+          initContainers:
+          - name: influxdb-backup
+            image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+            volumeMounts:
+            - name: backups
+              mountPath: /backups
+            command:
+            - /bin/sh
+            args:
+            - '-c'
+            - |
+              influxd backup -host {{ template "influxdb.fullname" . }}.{{ .Release.Namespace }}.svc:{{ .Values.config.rpc.bind_address }} -portable /backups/backup_$(date +%Y%m%d_%H%M%S)
+          containers:
+          {{- if .Values.backup.gcs}}
+          - name: gsutil-cp
+            image: google/cloud-sdk:alpine
+            command:
+            - /bin/sh
+            args:
+            - '-c'
+            - |
+              gcloud auth activate-service-account --key-file $KEY_FILE
+              gsutil -m cp -r "$SRC_URL" "$DST_URL"
+            volumeMounts:
+            - name: backups
+              mountPath: /backups
+            - name: google-cloud-key
+              mountPath: /var/secrets/google/
+            env:
+              - name: SRC_URL
+                value: /backups
+              - name: DST_URL
+                value: {{ .Values.backup.gcs.destination}}
+              - name: KEY_FILE
+                value: /var/secrets/google/{{ .Values.backup.gcs.serviceAccountSecretKey }}
+          {{- end }}
+          {{- if .Values.backup.azure }}
+          - name: azure-cli
+            image: microsoft/azure-cli
+            command:
+            - /bin/sh
+            args:
+            - '-c'
+            - |
+              az storage container create --name "$DST_CONTAINER"
+              az storage blob upload-batch --destination "$DST_CONTAINER" --destination-path "$DST_PATH" --source "$SRC_URL"
+            volumeMounts:
+            - name: backups
+              mountPath: /backups
+            env:
+              - name: SRC_URL
+                value: /backups
+              - name: DST_CONTAINER
+                value: {{ .Values.backup.azure.destination_container }}
+              - name: DST_PATH
+                value: {{ .Values.backup.azure.destination_path }}
+              - name: AZURE_STORAGE_CONNECTION_STRING
+                valueFrom:
+                  secretKeyRef:
+                    name: {{ .Values.backup.azure.storageAccountSecret }}
+                    key: connection-string
+          {{- end }}
+{{- end }}

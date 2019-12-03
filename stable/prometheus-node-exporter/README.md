@@ -39,11 +39,11 @@ The following table lists the configurable parameters of the Node Exporter chart
 |             Parameter             |                                                          Description                                                          |                 Default                 |     |
 | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- | --- |
 | `image.repository`                | Image repository                                                                                                              | `quay.io/prometheus/node-exporter`      |     |
-| `image.tag`                       | Image tag                                                                                                                     | `v0.16.0`                               |     |
+| `image.tag`                       | Image tag                                                                                                                     | `v0.18.1`                               |     |
 | `image.pullPolicy`                | Image pull policy                                                                                                             | `IfNotPresent`                          |     |
 | `extraArgs`                       | Additional container arguments                                                                                                | `[]`                                    |     |
-| `extraHostVolumeMounts`           | Additional host volume mounts                                                                                                 | {}                                      |     |
-| `podLabels`                       | Additional labels to be added to pods                                                                                         | {}                                      |     |
+| `extraHostVolumeMounts`           | Additional host volume mounts                                                                                                 | `[]`                                    |     |
+| `podLabels`                       | Additional labels to be added to pods                                                                                         | `{}`                                    |     |
 | `rbac.create`                     | If true, create & use RBAC resources                                                                                          | `true`                                  |     |
 | `rbac.pspEnabled`                 | Specifies whether a PodSecurityPolicy should be created.                                                                      | `true`                                  |     |
 | `resources`                       | CPU/Memory resource requests/limits                                                                                           | `{}`                                    |     |
@@ -65,6 +65,9 @@ The following table lists the configurable parameters of the Node Exporter chart
 | `prometheus.monitor.enabled` | Set this to `true` to create ServiceMonitor for Prometheus operator | `false` | |
 | `prometheus.monitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | `{}` | |
 | `prometheus.monitor.namespace` | namespace where servicemonitor resource should be created | `the same namespace as prometheus node exporter` | |
+| `prometheus.monitor.scrapeTimeout` | Timeout after which the scrape is ended | `10s` | |
+| `configmaps`                      | Allow mounting additional configmaps.                                                                                         | `[]`                                    |     |
+| `namespaceOverride`               | Override the deployment namespace     | `""` (`Release.Namespace`)             |  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

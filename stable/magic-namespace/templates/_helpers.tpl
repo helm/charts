@@ -38,6 +38,6 @@ Allow a custom secretName to be defined
 {{- if .Values.tiller.tls.secretName -}}
 {{- .Values.tiller.tls.secretName }}
 {{- else -}}
-{{- template "magic-namespace.chart" . }}-tiller-secret
+{{- template "magic-namespace.fullname" . }}-tiller-secret
 {{- end -}}
 {{- end -}}

@@ -23,6 +23,9 @@ spec:
         heritage: {{ .Release.Service }}
       annotations:
         checksum/secrets: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        {{- with .Values.deploymentAnnotations }}
+        {{- . | toYaml | nindent 8 }}
+        {{- end }}
     spec:
       securityContext:
         runAsUser: 1000

@@ -1,0 +1,15 @@
+description: A Helm chart for the Weave Scope cluster visualizer node agent.
+name: weave-scope-cluster-agent
+version: 1.1.6
+appVersion: 1.11.6
+keywords:
+  - containers
+  - dashboard
+  - monitoring
+home: https://www.weave.works/oss/scope/
+sources:
+  - https://github.com/weaveworks/scope
+maintainers:
+  - name: omkensey
+    email: github@orion-com.com
+icon: https://avatars1.githubusercontent.com/u/9976052?s=64

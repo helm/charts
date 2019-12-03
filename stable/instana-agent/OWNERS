@@ -5,6 +5,7 @@ approvers:
 - fstab
 - mdonkers
 - dlbock
+- nfisher
 reviewers:
 - jbrisbin
 - wiggzz
@@ -12,3 +13,4 @@ reviewers:
 - fstab
 - mdonkers
 - dlbock
+- nfisher

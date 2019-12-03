@@ -1,11 +1,12 @@
 {{- if .Values.query.ingress.enabled -}}
-{{- $servicePort := .Values.query.service.queryPort -}}
+{{- $servicePort := .Values.query.service.port -}}
+{{- $basePath := .Values.query.basePath -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ template "jaeger.query.name" . }}
   labels:
-    app.kubernetes.io/name: {{ template "jaeger.name" . }}
+    app.kubernetes.io/name: {{ include "jaeger.name" . }}
     helm.sh/chart: {{ include "jaeger.chart" . }}
     app.kubernetes.io/component: query
     app.kubernetes.io/managed-by: {{ .Release.Service }}
@@ -20,7 +21,7 @@ spec:
     - host: {{ $host }}
       http:
         paths:
-          - path: /
+          - path: {{ $basePath }}
             backend:
               serviceName: {{ template "jaeger.query.name" $ }}
               servicePort: {{ $servicePort }}

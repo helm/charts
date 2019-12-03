@@ -1,10 +1,11 @@
+{{- if .Values.testFramework.enabled  }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "traefik.fullname" . }}-test
   labels:
     app: {{ template "traefik.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "traefik.chart" . }}
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
 data:
@@ -12,4 +13,4 @@ data:
     @test "Test Access" {
       curl -D - http://{{ template "traefik.fullname" . }}/
     }
-
+{{- end }}

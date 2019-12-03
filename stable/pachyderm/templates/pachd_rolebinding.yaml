@@ -3,13 +3,13 @@
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
-  name: pachyderm
+  name: {{ template "fullname" . }}
 roleRef:
   apiGroup: ''
   kind: ClusterRole
-  name: pachyderm
+  name: {{ template "fullname" . }}
 subjects:
   - kind: ServiceAccount
-    name: pachyderm
+    name: {{ template "fullname" . }}
     namespace: {{ .Release.Namespace }}
 {{- end }}

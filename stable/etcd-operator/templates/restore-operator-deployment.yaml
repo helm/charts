@@ -1,6 +1,6 @@
 {{- if .Values.deployments.restoreOperator }}
 ---
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "etcd-restore-operator.fullname" . }}
@@ -22,7 +22,7 @@ spec:
         app: {{ template "etcd-restore-operator.name" . }}
         release: {{ .Release.Name }}
     spec:
-      serviceAccountName: {{ template "etcd-restore-operator.serviceAccountName" . }}
+      serviceAccountName: {{ template "etcd-operator.serviceAccountName" . }}
       containers:
       - name: {{ .Values.restoreOperator.name }}
         image: "{{ .Values.restoreOperator.image.repository }}:{{ .Values.restoreOperator.image.tag }}"
@@ -53,11 +53,12 @@ spec:
             cpu: {{ .Values.restoreOperator.resources.cpu }}
             memory: {{ .Values.restoreOperator.resources.memory }}
     {{- if .Values.restoreOperator.nodeSelector }}
-      nodeSelector:
-{{ toYaml .Values.restoreOperator.nodeSelector | indent 8 }}
+      nodeSelector: {{ toYaml .Values.restoreOperator.nodeSelector | nindent 8 }}
+    {{- end }}
+    {{- if .Values.restoreOperator.securityContext }}
+      securityContext: {{ toYaml .Values.restoreOperator.securityContext | nindent 8 }}
     {{- end }}
     {{- if .Values.restoreOperator.tolerations }}
-      tolerations:
-{{ toYaml .Values.restoreOperator.tolerations | indent 8 }}
+      tolerations: {{ toYaml .Values.restoreOperator.tolerations | nindent 8 }}
     {{- end }}
 {{- end }}

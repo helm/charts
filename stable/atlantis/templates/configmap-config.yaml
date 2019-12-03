@@ -1,0 +1,14 @@
+{{- if .Values.config -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "atlantis.fullname" . }}
+  labels:
+    app: {{ template "atlantis.name" . }}
+    chart: {{ template "atlantis.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  atlantis.yaml: |
+{{ .Values.config | indent 4 }}
+{{- end -}}

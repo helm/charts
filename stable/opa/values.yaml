@@ -3,19 +3,51 @@
 #
 # The 'opa' key embeds an OPA configuration file. See
 # https://www.openpolicyagent.org/docs/configuration.html for more details.
-# If no default config wanted just set opa: false
-opa:
-  services:
-    controller:
-      url: "https://www.openpolicyagent.org"
-  bundle:
-    service: controller
-    name: "helm-kubernetes-quickstart"
-  default_decision: "/helm_kubernetes_quickstart/main"
+# Default value is no default config. For custom config, the opa key
+# needs to include the opa config yaml, eg:
+# opa:
+#   services:
+#     controller:
+#       url: https://some.bundle.host
+#   bundle:
+#     service: controller
+#     name: some-bundle-name.tgz
+#   default_decision: "/some_bundle_name/main"
+opa: false
 
 # Setup the webhook using cert-manager
 certManager:
   enabled: false
+
+# Expose the prometheus scraping endpoint
+prometheus:
+  enabled: false
+
+## ServiceMonitor consumed by prometheus-operator
+serviceMonitor:
+  ## If the operator is installed in your cluster, set to true to create a Service Monitor Entry
+  enabled: false
+  interval: "15s"
+  ## Namespace in which the service monitor is created
+  # namespace: monitoring
+  # Added to the ServiceMonitor object so that prometheus-operator is able to discover it
+  ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
+  additionalLabels: {}
+
+# Annotations in the deployment template
+annotations:
+  {}
+
+# Bootstrap policies to load upon startup
+# Define policies in the form of:
+# <policyName> : |-
+#   <regoBody>
+# For example, to mask the entire input body in the decision logs:
+# bootstrapPolicies:
+#   log: |-
+#     package system.log
+#     mask["/input"]
+bootstrapPolicies: {}
 
 # To enforce mutating policies, change to MutatingWebhookConfiguration.
 admissionControllerKind: ValidatingWebhookConfiguration
@@ -23,6 +55,14 @@ admissionControllerKind: ValidatingWebhookConfiguration
 # To _fail closed_ on failures, change to Fail. During initial testing, we
 # recommend leaving the failure policy as Ignore.
 admissionControllerFailurePolicy: Ignore
+
+# Adds a namespace selector to the admission controller webhook
+admissionControllerNamespaceSelector:
+  matchExpressions:
+    - {key: openpolicyagent.org/webhook, operator: NotIn, values: [ignore]}
+
+# SideEffectClass for the webhook, setting to None enables dry-run
+admissionControllerSideEffect: Unknown
 
 # To restrict the kinds of operations and resources that are subject to OPA
 # policy checks, see the settings below. By default, all resources and
@@ -63,7 +103,7 @@ authz:
 
 # Docker image and tag to deploy.
 image: openpolicyagent/opa
-imageTag: 0.10.7
+imageTag: 0.14.1
 imagePullPolicy: IfNotPresent
 
 # Port to which the opa pod will bind itself
@@ -74,7 +114,7 @@ port: 443
 mgmt:
   enabled: true
   image: openpolicyagent/kube-mgmt
-  imageTag: 0.8
+  imageTag: 0.9
   imagePullPolicy: IfNotPresent
   extraArgs: []
   resources: {}
@@ -150,15 +190,35 @@ sar:
 # To control the liveness and readiness probes change the fields below.
 readinessProbe:
   httpGet:
-    path: /
+    path: /health
     scheme: HTTPS
     port: 443
-    initialDelaySeconds: 3
-    periodSeconds: 5
+  initialDelaySeconds: 3
+  periodSeconds: 5
 livenessProbe:
   httpGet:
-    path: /
+    path: /health
     scheme: HTTPS
     port: 443
-    initialDelaySeconds: 3
-    periodSeconds: 5
+  initialDelaySeconds: 3
+  periodSeconds: 5
+
+# Set a priorityClass using priorityClassName
+# priorityClassName:
+
+# Timeout for a webhook call in seconds.
+# Starting in kubernetes 1.14 you can set the timeout and it is
+# encouraged to use a small timeout for webhooks. If the webhook call times out, the request
+# the request is handled according to the webhook'sfailure policy.
+# timeoutSeconds: 20
+
+securityContext:
+  enabled: false
+  runAsNonRoot: true
+  runAsUser: 1
+
+deploymentStrategy: {}
+  # rollingUpdate:
+  #   maxSurge: 1
+  #   maxUnavailable: 0
+  # type: RollingUpdate

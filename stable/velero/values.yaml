@@ -6,7 +6,7 @@
 # enabling restic). Required.
 image:
   repository: gcr.io/heptio-images/velero
-  tag: v0.11.0
+  tag: v1.1.0
   pullPolicy: IfNotPresent
 
 # Annotations to add to the Velero deployment's pod template. Optional.
@@ -18,6 +18,9 @@ podAnnotations: {}
 
 # Resource requests/limits to specify for the Velero deployment. Optional.
 resources: {}
+
+# Pod priority class name to use for the Velero deployment. Optional.
+priorityClassName: {}
 
 # Init containers to add to the Velero deployment's pod spec. Optional.
 initContainers: []
@@ -32,6 +35,12 @@ tolerations: []
 
 # Node selector to use for the Velero deployment. Optional.
 nodeSelector: {}
+
+# Extra volumes for the Velero deployment. Optional.
+extraVolumes: []
+
+# Extra volumeMounts for the Velero deployment. Optional.
+extraVolumeMounts: []
 
 # Settings for Velero's prometheus metrics. Disabled by default.
 metrics:
@@ -62,7 +71,7 @@ configuration:
   provider:
 
   # Parameters for the `default` BackupStorageLocation. See
-  # https://heptio.github.io/velero/v0.11.0/api-types/backupstoragelocation.html
+  # https://velero.io/docs/v1.0.0/api-types/backupstoragelocation/
   backupStorageLocation:
     # Cloud provider where backups should be stored. Usually should
     # match `configuration.provider`. Required.
@@ -83,7 +92,7 @@ configuration:
     #  publicUrl:
 
   # Parameters for the `default` VolumeSnapshotLocation. See
-  # https://heptio.github.io/velero/v0.11.0/api-types/volumesnapshotlocation.html
+  # https://velero.io/docs/v1.0.0/api-types/volumesnapshotlocation/
   volumeSnapshotLocation:
     # Cloud provider where volume snapshots are being taken. Usually
     # should match `configuration.provider`. Required.,
@@ -93,6 +102,9 @@ configuration:
     config: {}
   #    region:
   #    apitimeout:
+  #    resourceGroup:
+  #    snapshotLocation:
+  #    project:
 
   # These are server-level settings passed as CLI flags to the `velero server` command. Velero
   # uses default values if they're not passed in, so they only need to be explicitly specified
@@ -110,6 +122,12 @@ configuration:
 
   # additional key/value pairs to be used as environment variables such as "AWS_CLUSTER_NAME: 'yourcluster.domain.tld'"
   extraEnvVars: {}
+
+  # Set log-level for Velero pod. Default: info. Other options: debug, warning, error, fatal, panic.
+  logLevel:
+
+  # Set log-format for Velero pod. Default: text. Other option: json.
+  logFormat:
 
 ##
 ## End of backup/snapshot location settings.
@@ -146,8 +164,27 @@ credentials:
   # of your IAM credentials file.
   secretContents: {}
 
+# Wheter to create volumesnapshotlocation crd, if false => disable snapshot feature
+snapshotsEnabled: true
+
 # Whether to deploy the restic daemonset.
 deployRestic: false
+
+restic:
+  podVolumePath: /var/lib/kubelet/pods
+  privileged: false
+  # Pod priority class name to use for the Restic daemonset. Optional.
+  priorityClassName: {}
+  # Resource requests/limits to specify for the Restic daemonset deployment. Optional.
+  resources: {}
+  # Tolerations to use for the Restic daemonset. Optional.
+  tolerations: []
+
+  # Extra volumes for the Restic daemonset. Optional.
+  extraVolumes: []
+
+  # Extra volumeMounts for the Restic daemonset. Optional.
+  extraVolumeMounts: []
 
 # Backup schedules to create.
 # Eg:
@@ -159,6 +196,17 @@ deployRestic: false
 #       includedNamespaces:
 #        - foo
 schedules: {}
+
+# Velero ConfigMaps.
+# Eg:
+# configMaps:
+#   restic-restore-action-config:
+#     labels:
+#       velero.io/plugin-config: ""
+#       velero.io/restic: RestoreItemAction
+#     data:
+#       image: gcr.io/heptio-images/velero-restic-restore-help
+configMaps: {}
 
 ##
 ## End of additional Velero resource settings.

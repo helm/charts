@@ -1,0 +1,16 @@
+{{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
+{{- if not .Values.dblessConfig.configMap }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "kong.dblessConfig.fullname" . }}
+  labels:
+    app: {{ template "kong.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  kong.yml: |
+{{ .Values.dblessConfig.config | toYaml | indent 4 }}
+{{- end }}
+{{- end }}

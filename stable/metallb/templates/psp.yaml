@@ -1,6 +1,6 @@
 {{- if .Values.psp.create -}}
 
-apiVersion: extensions/v1beta1
+apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: {{ template "metallb.fullname" . }}-speaker

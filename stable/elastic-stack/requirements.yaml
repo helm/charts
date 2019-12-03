@@ -4,11 +4,11 @@ dependencies:
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: elasticsearch.enabled
 - name: kibana
-  version: ^2.2.0
+  version: ^3.0.0
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: kibana.enabled
 - name: filebeat
-  version: ^1.5.0
+  version: ^1.7.0
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: filebeat.enabled
 - name: logstash

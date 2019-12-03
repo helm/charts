@@ -23,6 +23,9 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.tillerNamespaces }}
+          args: ["-tiller-namespaces", {{ .Values.tillerNamespaces | quote }}]
+          {{- end }}
           ports:
             - name: http
               containerPort: 9571

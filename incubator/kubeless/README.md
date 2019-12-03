@@ -29,7 +29,7 @@ $ helm install --name my-release --namespace kubeless incubator/kubeless
 >
 > While the chart supports deploying Kubeless to any namespace, Kubeless expects to be deployed under a namespace named `kubeless`.
 
-The command deploys Kubernetes on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys Kubeless on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
@@ -59,8 +59,8 @@ The following table lists the configurable parameters of the Kubeless chart and 
 | `config.functionsNamespace`                                       | Functions namespace                        | ""                                        |
 | `config.builderImage`                                             | Function builder image                     | `kubeless/function-image-builder`         |
 | `config.builderImagePullSecret`                                   | Secret to pull builder image               | ""                                        |
-| `config.builderImage`                                             | Provision image                            | `kubeless/unzip`                          |
-| `config.builderImagePullSecret`                                   | Secret to pull provision image             | ""                                        |
+| `config.provisionImage`                                           | Provision image                            | `kubeless/unzip`                          |
+| `config.provisionImagePullSecret`                                 | Secret to pull provision image             | ""                                        |
 | `config.deploymentTemplate`                                       | Deployment template for functions          | `{}`                                      |
 | `config.enableBuildStep`                                          | Enable builder functionality               | `false`                                   |
 | `config.functionRegistryTLSVerify`                                | Enable TLS verification for image registry | `{}`                                      |
@@ -90,7 +90,7 @@ The following table lists the configurable parameters of the Kubeless chart and 
 | `kafkaTrigger.env.kafkaBrokers`                                   | Kafka Brokers Environment Variable         | `localhost:9092`                          |
 | `kafkaTrigger.deployment.ui.image.repository`                     | Kubeless Kafka Trigger image               | `bitnami/kubeless-ui`                     |
 | `kafkaTrigger.deployment.ui.image.pullPolicy`                     | Kubeless Kafka Trigger image pull policy   | `IfNotPresent`                            |
-| `kafkaTrigger.deployment.ui.image.tag`                            | Kubeless Kafka Trigger image tag           | `v1.0.0-alpha.3`                          |
+| `kafkaTrigger.deployment.ui.image.tag`                            | Kubeless Kafka Trigger image tag           | `v1.0.1`                                  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

@@ -7,13 +7,14 @@ extraArgs:
 - --collect.database
 - --collect.indexusage
 - --collect.topmetrics
+- --collect.connpoolstats
 
 fullnameOverride: ""
 
 image:
   pullPolicy: IfNotPresent
   repository: ssheehy/mongodb-exporter
-  tag: 0.7.0
+  tag: 0.10.0
 
 imagePullSecrets: []
 
@@ -49,10 +50,10 @@ replicas: 1
 
 resources: {}
 # limits:
-#   cpu: 250mm
+#   cpu: 250m
 #   memory: 192Mi
 # requests:
-#   cpu: 100mm
+#   cpu: 100m
 #   memory: 128Mi
 
 # Extra environment variables that will be passed into the exporter pod
@@ -66,6 +67,17 @@ securityContext:
   runAsGroup: 10000
   runAsNonRoot: true
   runAsUser: 10000
+
+service:
+  annotations: {}
+  port: 9216
+  type: ClusterIP
+
+serviceAccount:
+  create: true
+  # If create is true and name is not set, then a name is generated using the
+  # fullname template.
+  name:
 
 serviceMonitor:
   enabled: true

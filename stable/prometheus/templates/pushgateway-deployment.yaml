@@ -1,5 +1,5 @@
 {{- if .Values.pushgateway.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "prometheus.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   labels:
@@ -7,6 +7,9 @@ metadata:
   name: {{ template "prometheus.pushgateway.fullname" . }}
 spec:
   selector:
+    {{- if .Values.schedulerName }}
+    schedulerName: "{{ .Values.schedulerName }}"
+    {{- end }}
     matchLabels:
       {{- include "prometheus.pushgateway.matchLabels" . | nindent 6 }}
   replicas: {{ .Values.pushgateway.replicaCount }}
@@ -50,7 +53,7 @@ spec:
             - name: storage-volume
               mountPath: "{{ .Values.pushgateway.persistentVolume.mountPath }}"
               subPath: "{{ .Values.pushgateway.persistentVolume.subPath }}"
-          {{- end }}  
+          {{- end }}
     {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
       {{ toYaml .Values.imagePullSecrets | indent 2 }}

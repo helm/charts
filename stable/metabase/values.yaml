@@ -3,9 +3,10 @@
 # https://github.com/metabase/metabase/issues/2754
 # NOTE: Should remain 1
 replicaCount: 1
+podAnnotations: {}
 image:
   repository: metabase/metabase
-  tag: v0.31.2
+  tag: v0.32.9
   pullPolicy: IfNotPresent
 
 # Config Jetty web server
@@ -91,3 +92,18 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+
+## Node labels for pod assignment
+## ref: https://kubernetes.io/docs/user-guide/node-selection/
+#
+nodeSelector: {}
+
+## Tolerations for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+##
+tolerations: []
+
+## Affinity for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+##
+affinity: {}

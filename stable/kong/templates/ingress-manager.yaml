@@ -1,0 +1,37 @@
+{{- if .Values.enterprise.enabled }}
+{{- if .Values.manager.ingress.enabled -}}
+{{- $serviceName := include "kong.fullname" . -}}
+{{- $servicePort := include "kong.ingress.servicePort" .Values.manager -}}
+{{- $path := .Values.manager.ingress.path -}}
+{{- $tls := .Values.manager.ingress.tls -}}
+{{- $hostname := .Values.manager.ingress.hostname -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "kong.fullname" . }}-manager
+  labels:
+    app: {{ template "kong.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    {{- range $key, $value := .Values.manager.ingress.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  rules:
+  - host: {{ $hostname }}
+    http:
+      paths:
+        - path: {{ $path }}
+          backend:
+            serviceName: {{ $serviceName }}-manager
+            servicePort: {{ $servicePort }}
+  {{- if $tls }}
+  tls:
+  - hosts:
+    - {{ $hostname }}
+    secretName: {{ $tls }}
+  {{- end -}}
+{{- end -}}
+{{- end -}}

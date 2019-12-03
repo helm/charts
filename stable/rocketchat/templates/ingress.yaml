@@ -1,29 +1,35 @@
-{{- if .Values.ingress.enabled -}}
+{{- $ingress := .Values.ingress -}}
+{{- if $ingress.enabled -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ template "rocketchat.fullname" . }}
-  labels:
-    app: {{ template "rocketchat.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+{{- with $ingress.annotations }}
   annotations:
-{{ toYaml .Values.ingress.annotations | indent 4 }}
-{{- if .Values.ingress.tls }}
-    kubernetes.io/tls-acme: "true"
+{{ toYaml . | indent 4 }}
 {{- end }}
+  labels:
+    app.kubernetes.io/name: {{ include "rocketchat.name" . }}
+    helm.sh/chart: {{ include "rocketchat.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
+{{- if $ingress.tls }}
+  tls:
+  {{- range $ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
   rules:
   - host: {{ .Values.host }}
     http:
       paths:
-      - path: /
+      - path: {{ $ingress.path }}
         backend:
           serviceName: {{ template "rocketchat.fullname" . }}
-          servicePort: 3000
-{{- if .Values.ingress.tls }}
-  tls:
-{{ toYaml .Values.ingress.tls | indent 4 }}
+          servicePort: http
 {{- end }}
-{{- end -}}

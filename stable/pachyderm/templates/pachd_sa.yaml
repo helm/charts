@@ -2,10 +2,10 @@
 kind: ServiceAccount
 apiVersion: v1
 metadata:
-  name: pachyderm
+  name: {{ template "fullname" . }}
   labels:
     app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-    suite: pachyderm
+    suite: {{ template "fullname" . }}

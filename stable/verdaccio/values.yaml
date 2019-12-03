@@ -23,6 +23,9 @@ service:
 ##
 nodeSelector: {}
 
+## Tolerations for nodes
+tolerations: []
+
 podAnnotations: {}
 replicaCount: 1
 

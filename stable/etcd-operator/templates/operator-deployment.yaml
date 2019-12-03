@@ -1,6 +1,6 @@
 {{- if .Values.deployments.etcdOperator }}
 ---
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "etcd-operator.fullname" . }}
@@ -21,6 +21,7 @@ spec:
       labels:
         app: {{ template "etcd-operator.fullname" . }}
         release: {{ .Release.Name }}
+      annotations: {{ toYaml .Values.etcdOperator.podAnnotations | nindent 8}}
     spec:
       serviceAccountName: {{ template "etcd-operator.serviceAccountName" . }}
       containers:
@@ -71,11 +72,12 @@ spec:
           failureThreshold: {{ .Values.etcdOperator.readinessProbe.failureThreshold }}
         {{- end }}
     {{- if .Values.etcdOperator.nodeSelector }}
-      nodeSelector:
-{{ toYaml .Values.etcdOperator.nodeSelector | indent 8 }}
+      nodeSelector: {{ toYaml .Values.etcdOperator.nodeSelector | nindent 8 }}
+    {{- end }}
+    {{- if .Values.etcdOperator.securityContext }}
+      securityContext: {{ toYaml .Values.etcdOperator.securityContext | nindent 8 }}
     {{- end }}
     {{- if .Values.etcdOperator.tolerations }}
-      tolerations:
-{{ toYaml .Values.etcdOperator.tolerations | indent 8 }}
+      tolerations: {{ toYaml .Values.etcdOperator.tolerations | nindent 8 }}
     {{- end }}
 {{- end }}

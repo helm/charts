@@ -34,6 +34,9 @@ rules:
 - apiGroups: [""]
   resources: ["services", "endpoints", "nodes"]
   verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["events"]
+  verbs: ["create", "patch"]
 {{- if .Values.psp.create }}
 - apiGroups: ["extensions"]
   resources: ["podsecuritypolicies"]
@@ -54,9 +57,6 @@ rules:
 - apiGroups: [""]
   resources: ["configmaps"]
   verbs: ["get", "list", "watch"]
-- apiGroups: [""]
-  resources: ["events"]
-  verbs: ["create"]
 ---
 
 ## Role bindings

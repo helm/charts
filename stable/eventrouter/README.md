@@ -25,3 +25,4 @@ The following table lists the configurable parameters of the eventrouter chart a
 | `sink`                  | Sink to send the events to                                                                                                  | `glog`                             |
 | `podAnnotations`        | Annotations for pod metadata                                                                                                | `{}`                               |
 | `containerPorts`        | List of ports for the container                                                                                             | `[]`                               |
+| `securityContext`       | Security context for the pod                                                                                                | `{}`                               |

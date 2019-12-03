@@ -25,10 +25,10 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 
 {{/*
-Create chart name and version as used by the chart label.
+Create chart name as used by the chart label.
 */}}
 {{- define "hazelcast-jet.chart" -}}
-{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s" .Chart.Name | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
@@ -40,4 +40,14 @@ Create the name of the service account to use
 {{- else -}}
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
+{{- end -}}
+
+
+{{/*
+Create a default fully qualified Hazelcast Jet Management Center app name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+If release name contains chart name it will be used as a full name.
+*/}}
+{{- define "hazelcast-jet-management-center.fullname" -}}
+{{ (include "hazelcast-jet.fullname" .) | trunc 45 | }}-management-center
 {{- end -}}

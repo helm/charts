@@ -4,10 +4,7 @@ kind: ConfigMap
 metadata:
   name: {{ include "kafka.fullname" . }}-metrics
   labels:
-    app: {{ include "kafka.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+  {{- include "kafka.monitor.labels" . | nindent 4 }}
 data:
   jmx-kafka-prometheus.yml: |+
 {{- if .Values.jmx.configMap.overrideConfig }}

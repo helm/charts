@@ -1,0 +1,19 @@
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ template "vault.serviceAccountName" . }}
+  labels:
+    app: {{ template "vault.name" . }}
+    chart: {{ template "vault.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:auth-delegator
+subjects:
+- kind: ServiceAccount
+  name: {{ template "vault.serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}
+{{- end -}}
