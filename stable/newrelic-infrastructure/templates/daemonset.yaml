@@ -104,6 +104,8 @@ spec:
               name: tmpfs-user-data
             - mountPath: /tmp
               name: tmpfs-tmp
+            - mountPath: /var/cache/nr-kubernetes
+              name: tmpfs-cache
             {{- end }}
           {{- if .Values.resources }}
           resources:
@@ -129,6 +131,8 @@ spec:
         - name: tmpfs-user-data
           emptyDir: {}
         - name: tmpfs-tmp
+          emptyDir: {}
+        - name: tmpfs-cache
           emptyDir: {}
         {{- end }}
         {{- if .Values.config }}
