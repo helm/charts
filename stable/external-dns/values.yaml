@@ -421,3 +421,7 @@ metrics:
   enabled: false
   ## Metrics exporter pod Annotation and Labels
   ##
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}
+    pollInterval: 30s
