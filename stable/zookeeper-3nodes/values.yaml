@@ -9,8 +9,8 @@ memoryLimits: 1024Mi
 cpuLimits: '1'
 secret: ""                                                             #镜像仓库secret,poc集群空着就可以 
 image:
-  repository: ruguodangshi/csmp/zookeeper
-  tag: v0.1
+  repository: ruguodangshi//zookeeper
+  tag: 3.4.10
   pullPolicy: Always
 ippool: '"cni.projectcalico.org/ipv4pools": "[\"10.124.224.0/23\"]"'   #自定义ip资源池，仅适用于calico  cni
 storageClassName: "local-storage"                                      #自定义存储类 
