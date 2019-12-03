@@ -97,7 +97,7 @@ serviceAccount:
 # Ref: https://kubernetes.io/docs/user-guide/node-selection/
 nodeSelector: {}
 
-# These are default tolerations to be able to run the New Relic Kubernetes	tolerations: []
+# These are default tolerations to be able to run the New Relic Kubernetes
 # integration.
 tolerations:
   - operator: "Exists"
