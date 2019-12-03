@@ -45,6 +45,13 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The default configuration values for this chart are listed in `values.yaml`. 
 
+#### General
+
+| Parameter | Description | Default |
+|---|---|---|
+| image.repository | Image repository url | influxdb |
+| image.tag| Image tag | 1.7.6-alpine |
+
 The [full image documentation](https://hub.docker.com/_/influxdb/) contains more information about running InfluxDB in docker.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
