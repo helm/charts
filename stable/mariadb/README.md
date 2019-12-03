@@ -81,7 +81,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `existingSecret`                          | Use existing secret for password details (`rootUser.password`, `db.password`, `replication.password` will be ignored and picked up from this secret). The secret has to contain the keys `mariadb-root-password`, `mariadb-replication-password` and `mariadb-password`. | `nil`                        |
 | `rootUser.password`                       | Password for the `root` user. Ignored if existing secret is provided. | _random 10 character alphanumeric string_       |
 | `rootUser.forcePassword`                  | Force users to specify a password                   | `false`                                                           |
-| `db.user`                                 | Username of new user to create                      | `nil`                                                             |
+| `db.user`                                 | Username of new user to create                      | `""`                                                             |
 | `db.password`                             | Password for the new user. Ignored if existing secret is provided.    | _random 10 character alphanumeric string if `db.user` is defined_ |
 | `db.forcePassword`                        | Force users to specify a password                   | `false`                                                           |
 | `db.name`                                 | Name for new database to create                     | `my_database`                                                     |

@@ -116,7 +116,7 @@ spec:
                 secretKeyRef:
                   name: {{ template "mariadb.secretName" . }}
                   key: mariadb-root-password
-            {{- if .Values.db.user }}
+            {{- if not (empty .Values.db.user) }}
             - name: MARIADB_USER
               value: "{{ .Values.db.user }}"
             - name: MARIADB_PASSWORD
