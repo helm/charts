@@ -42,12 +42,14 @@ helm install stable/newrelic-infrastructure \
 
 The default set of resources assigned to the pods is shown below:
 
+```yaml
     resources:
       limits:
         memory: 150M
       requests:
         cpu: 100m
         memory: 30M
+```
 
 ## Tolerations
 
