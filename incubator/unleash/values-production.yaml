@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 replicaCount: 5
 
-## The name of the secret to use if pulling images from a private registry.
+#  The name of the secret to use if pulling images from a private registry.
 # imagePullSecret:
 image:
   repository: unleashorg/unleash-server
@@ -16,7 +16,7 @@ restartPolicy: Never
 # unleash service configure
 service:
   name: unleash
-  #type: ClusterIP
+  # type: ClusterIP
   type: NodePort
   # type: LoadBalancer
   # Assign a static LB IP
@@ -24,7 +24,7 @@ service:
   loadBalancerSourceRanges: []
   #  - 10.0.0.0/8
   #  - 130.211.204.2/32
-  #externalPort: 8200
+  # externalPort: 8200
   port: 4242
   # clusterExternalPort: 8201
   clusterPort: 8201
@@ -38,7 +38,7 @@ nodeSelector:
 #  matchLabels: test
 
 
-#unleash resource configurtion
+# unleash resource configurtion
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -49,7 +49,7 @@ resources: {}
   #   memory: 128Mi
   # requests:
   #   cpu: 100m
-#   memory: 128Mi
+  #   memory: 128Mi
 
 
 # values for postgresql chart for FT persistence .
@@ -58,14 +58,14 @@ postgresql:
   postgresqlUsername: unleash-prod-username
   postgresqlPassword: unleash-prod-password
   postgresqlDatabase: unleash
-  #incase no storage class for production
+  # incase no storage class for production
   persistence:
     enabled: false
   service:
-    #type: NodePort
+    # type: NodePort
     port: 5432
 
-#unleash ingress configurtion
+# unleash ingress configurtion
 ingress:
   enabled: false
   labels: {}
