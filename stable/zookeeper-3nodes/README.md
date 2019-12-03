@@ -1,4 +1,4 @@
-# A Helm chart for three-node zookeeper cluster
+# A Helm chart for three-nodes zookeeper cluster
 This is a helm chart for three-node zookeeper cluster which uses localPv to store data. 
 ## Before you use this chart, please make sure 3 pv has been created.
 Following is an example of creating locaPv：
