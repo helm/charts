@@ -165,7 +165,14 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.prometheus.alertingrules` | Array of prometheus alerting rules | `[]`                                        |
 | `master.prometheus.alertingRulesAdditionalLabels` | Additional labels to add to the prometheus rule object     | `{}`                                   |
 | `master.priorityClassName`        | The name of a `priorityClass` to apply to the master pod | Not set               |
-| `master.testEnabled`              | Can be used to disable rendering test resources when using helm template | `true`                                 |
+| `master.testEnabled`              | Can be used to disable rendering test resources when using helm template | `true`                         |
+| `master.httpsKeyStore.enable`     | Enables https keystore on jenkins master      | `false`      | 
+| `master.httpsKeyStore.jenkinsHttpsJksSecretName`     | Name of the secret that already has ssl keystore      | ``      | 
+| `master.httpsKeyStore.httpPort`   | Http Port that Jenkins should listen on along with https, it also serves liveness and readiness probs port. When https keystore is enabled servicePort and targetPort will be used as https port  | `8081`   |
+| `master.httpsKeyStore.path`       | Path of https keystore file                  |     `/var/jenkins_keystore`     |
+| `master.httpsKeyStore.fileName`  | Jenkins keystore filename which will apear under master.httpsKeyStore.path      | `keystore.jks` |
+| `master.httpsKeyStore.password`   | Jenkins keystore password                                           | `password` |
+| `master.httpsKeyStore.jenkinsKeyStoreBase64Encoded`  | Base64 ecoded Keystore content. Keystore must be converted to base64 then being pasted here  | a self signed cert |
 | `networkPolicy.enabled`           | Enable creation of NetworkPolicy resources. | `false`                            |
 | `networkPolicy.apiVersion`        | NetworkPolicy ApiVersion             | `networking.k8s.io/v1`                    |
 | `rbac.create`                     | Whether RBAC resources are created   | `true`                                    |
@@ -515,3 +522,26 @@ and provide the file `templates/config.tpl` in your parent chart for your use ca
     <CONTENTS_HERE>
 {{ end }}
 ```
+
+## Https keystore configuration
+This configuration enable jenkins to use keystore inorder to serve https: https://wiki.jenkins.io/pages/viewpage.action?pageId=135468777 <br />
+Here is the value file section related to keystore configuration. <br />
+Keystore itself should be placed in front of `jenkinsKeyStoreBase64Encoded` key and in base64 encoded format. To achive that after having `keystore.jks` file simply do this: `cat keystore.jks | base64` and paste the output in front of `jenkinsKeyStoreBase64Encoded` . <br />
+After enabling `httpsKeyStore.enable` make sure that `httpPort` and `targetPort` are not the same as `targetPort` will serve https. <br />
+Do not set `master.httpsKeyStore.httpPort` to `-1` because it will cause readiness and liveliness prob to fail. <br />
+If you already have a kubernetes secret that has keystore and its password you can specify its' name in front of `jenkinsHttpsJksSecretName`, You need to remember that your secret should have proper data key names `jenkins-jks-file` and `https-jks-password`. <br /> 
+
+```yaml
+master:
+   httpsKeyStore:
+       enable: true
+       jenkinsHttpsJksSecretName: ''
+       httpPort: 8081
+       path: "/var/jenkins_keystore"
+       fileName: "keystore.jks"
+       password: "changeit"
+       jenkinsKeyStoreBase64Encoded: ''
+```
+
+
+
