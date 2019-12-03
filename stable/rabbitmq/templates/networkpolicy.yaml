@@ -1,6 +1,6 @@
 {{- if .Values.networkPolicy.enabled }}
 kind: NetworkPolicy
-apiVersion: {{ template "rabbitmq.networkPolicy.apiVersion" . }}
+apiVersion: networking.k8s.io/v1
 metadata:
   name: {{ template "rabbitmq.fullname" . }}
   labels:
@@ -16,9 +16,8 @@ spec:
   ingress:
     # Allow inbound connections
 
-    # EPMD
     - ports:
-        - port: 4369
+        - port: 4369  # EPMD
         - port: {{ .Values.service.port }}
         - port: {{ .Values.service.tlsPort }}
         - port: {{ .Values.service.distPort }}

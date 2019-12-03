@@ -265,7 +265,6 @@ resources:
     memory: 256Mi
     cpu: 100m
 
-
 networkPolicy:
   ## Enable creation of NetworkPolicy resources. Only Ingress traffic is filtered for now.
   ## ref: https://kubernetes.io/docs/concepts/services-networking/network-policies/
