@@ -60,21 +60,23 @@ drupalEmail: user@example.com
 ## ref: https://github.com/bitnami/bitnami-docker-drupal#environment-variables
 allowEmptyPassword: "yes"
 
-##
 ## External database configuration
 ##
 externalDatabase:
   ## Database host
-  # host:
+  host: localhost
+
+  ## Database host
+  port: 3306
 
   ## Database user
-  # user: bn_drupal
+  user: bn_drupal
 
   ## Database password
-  # password:
+  password: ""
 
   ## Database name
-  # database: bitnami_drupal
+  database: bitnami_drupal
 
 ##
 ## MariaDB chart configuration
