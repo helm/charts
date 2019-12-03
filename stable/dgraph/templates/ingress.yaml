@@ -1,0 +1,56 @@
+---
+{{- if .Values.ingress.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+{{- with .Values.ingress.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+    kubernetes.io/ingress.class: {{ .Values.ingress.class | quote }}
+    kubernetes.io/tls-acme: {{ .Values.ingress.acme | quote }}
+    nginx.ingress.kubernetes.io/ssl-redirect: {{ .Values.ingress.tls.enabled | quote }}
+  labels:
+    app.kubernetes.io/name: {{ include "dgraph.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "dgraph.chart" . }}
+  name: {{ template "dgraph.fullname" . }}
+spec:
+  rules:
+  - host: {{ .Values.ingress.host }}
+    http:
+      paths:
+      - backend:
+          serviceName: {{ template "dgraph.ratel.fullname" . }}
+          servicePort: 8000
+      - backend:
+          serviceName: {{ template "dgraph.alpha.fullname" . }}
+          servicePort: 8080
+        path: /alter
+      - backend:
+          serviceName: {{ template "dgraph.alpha.fullname" . }}
+          servicePort: 8080
+        path: /health
+      - backend:
+          serviceName: {{ template "dgraph.alpha.fullname" . }}
+          servicePort: 8080
+        path: /query
+      - backend:
+          serviceName: {{ template "dgraph.alpha.fullname" . }}
+          servicePort: 8080
+          servicePort: 8080
+        path: /mutate
+      - backend:
+          serviceName: {{ template "dgraph.alpha.fullname" . }}
+          servicePort: 8080
+        path: /ui
+  {{- if .Values.ingress.tls.enabled }}
+  tls:
+  - hosts:
+    - {{ .Values.ingress.host }}
+    {{- if .Values.ingress.tls.secretName }}
+    secretName: {{ .Values.ingress.tls.secretName }}
+    {{- end }}
+  {{- end }}
+{{- end }}

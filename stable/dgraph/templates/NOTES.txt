@@ -1,0 +1,50 @@
+1. Get Dgraph URL
+{{- if and .Values.ingress.enabled .Values.ingress.host }}
+  http{{ if $.Values.ingress.tls.enabled }}s{{ end }}://{{ .Values.ingress.host }}
+{{- else }}
+Ratel serves the UI to run queries, mutations & altering schema.
+  {{- if contains "LoadBalancer" .Values.ratel.service.type }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "dgraph.ratel.fullname" . }}'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "dgraph.ratel.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  echo "Ratel server URL: http://${SERVICE_IP}:8080/"
+
+  {{- else }}
+
+  echo "Ratel server URL: http://127.0.0.1:8000"
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "dgraph.ratel.fullname" . }} 6080:6080
+
+  {{- end }}
+
+Alpha service hosts predicates and indexes.
+  {{- if contains "LoadBalancer" .Values.alpha.service.type }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "dgraph.alpha.fullname" . }}'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "dgraph.alpha.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  echo "Alpha server URL: http://${SERVICE_IP}:8080/"
+
+  {{- else }}
+
+  echo "Alpha server URL: http://127.0.0.1:8080"
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "dgraph.alpha.fullname" . }} 6080:6080
+
+  {{- end }}
+
+Zero service controls the Dgraph cluster, assigns servers to a group and re-balances data between server groups
+  {{- if contains "LoadBalancer" .Values.zero.service.type }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "dgraph.zero.fullname" . }}'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "dgraph.zero.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  echo "Zero server URL: http://${SERVICE_IP}:6080/"
+
+  {{- else }}
+
+  echo "Zero server URL: http://127.0.0.1:6080"
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "dgraph.zero.fullname" . }} 6080:6080
+
+  {{- end }}
+
+{{- end }}

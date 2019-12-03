@@ -1,0 +1,68 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "dgraph.ratel.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "dgraph.name" . }}
+    app.kubernetes.io/component: {{ .Values.ratel.name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "dgraph.chart" . }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "dgraph.name" . }}
+      app.kubernetes.io/component: {{ .Values.ratel.name }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  replicas: {{ .Values.ratel.replicaCount }}
+  template:
+    metadata:
+      {{- if or .Values.ratel.annotations }}
+      annotations:
+{{ toYaml .Values.ratel.annotations | indent 8 }}
+      {{- end }}
+      labels:
+        app.kubernetes.io/name: {{ include "dgraph.name" . }}
+        app.kubernetes.io/component: {{ .Values.ratel.name }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        helm.sh/chart: {{ include "dgraph.chart" . }}
+    spec:
+      {{- if .Values.ratel.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.ratel.securityContext.fsGroup }}
+        runAsUser: {{ .Values.ratel.securityContext.runAsUser }}
+      {{- end }}
+{{- include "dgraph.imagePullSecrets" . | indent 6 }}
+      containers:
+      - name: {{ include "dgraph.ratel.fullname" . }}
+        image: {{ include "dgraph.image" . }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        command:
+          - dgraph-ratel
+        ports:
+        - name: http
+          containerPort: 8000
+        {{- if .Values.ratel.livenessProbe.enabled }}
+        livenessProbe:
+          httpGet:
+            port: {{ .Values.ratel.livenessProbe.port }}
+            path: {{ .Values.ratel.livenessProbe.path }}
+          initialDelaySeconds: {{ .Values.ratel.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.ratel.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.ratel.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.ratel.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.ratel.livenessProbe.failureThreshold }}
+        {{- end }}
+        {{- if .Values.ratel.readinessProbe.enabled }}
+        readinessProbe:
+          httpGet:
+            port: {{ .Values.ratel.livenessProbe.port }}
+            path: {{ .Values.ratel.livenessProbe.path }}
+          initialDelaySeconds: {{ .Values.ratel.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.ratel.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.ratel.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.ratel.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.ratel.readinessProbe.failureThreshold }}
+        {{- end }}
+        resources:
+{{ toYaml .Values.ratel.resources | indent 10 }}

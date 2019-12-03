@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "dgraph.ratel.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "dgraph.name" . }}
+    app.kubernetes.io/component: {{ .Values.ratel.name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "dgraph.chart" . }}
+spec:
+  type: {{ .Values.ratel.service.type }}
+  ports:
+  - port: 8000
+    targetPort: 8000
+    name: ratel-http
+  selector:
+    app.kubernetes.io/name: {{ include "dgraph.name" . }}
+    app.kubernetes.io/component: {{ .Values.ratel.name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
