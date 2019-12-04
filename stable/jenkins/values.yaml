@@ -470,6 +470,8 @@ agent:
   #     - key: "key"
   #       operator: "Equal"
   #       value: "value"
+  # Timeout in seconds for an agent to be online
+  slaveConnectTimeout: 100
 
 persistence:
   enabled: true

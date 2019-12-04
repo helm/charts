@@ -209,6 +209,7 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.podName`            | Agent Pod base name                             | Not set                |
 | `agent.idleMinutes`        | Allows the Pod to remain active for reuse       | 0                      |
 | `agent.yamlTemplate`       | The raw yaml of a Pod API Object to merge into the agent spec | Not set                |
+| `agent.slaveConnectTimeout`| Timeout in seconds for an agent to be online    | 100                    |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
