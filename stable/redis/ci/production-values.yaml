@@ -44,6 +44,9 @@ cluster:
 ## create one redis service with ports to the sentinel and the redis instances
 sentinel:
   enabled: false
+  ## Require password authentication on the sentinel itself
+  ## ref: https://redis.io/topics/sentinel
+  usePassword: true
   ## Bitnami Redis Sentintel image version
   ## ref: https://hub.docker.com/r/bitnami/redis-sentinel/tags/
   ##

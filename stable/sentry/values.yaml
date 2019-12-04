@@ -161,6 +161,9 @@ filestore:
   #  secretKey:
   #  bucketName:
   #  endpointUrl:
+  #  signature_version:
+  #  region_name:
+  #  default_acl:
 
 ## Configure ingress resource that allow you to access the
 ## Sentry installation. Set up the URL
