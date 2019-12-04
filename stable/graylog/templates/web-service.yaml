@@ -19,7 +19,7 @@ spec:
       port: {{ default 9000 .Values.graylog.service.port }}
       protocol: TCP
       targetPort: 9000
-{{- if contains "NodePort" .Values.graylog.service.type }}
+{{- if eq "NodePort" .Values.graylog.service.type }}
   {{- if .Values.graylog.service.nodePort }}
       nodePort:  {{ .Values.graylog.service.nodePort }}
   {{- end }}

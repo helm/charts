@@ -14,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/rabbitmq
-  tag: 3.8.1-debian-9-r0
+  tag: 3.8.2-debian-9-r0
 
   ## set to true if you would like to see extra information on logs
   ## it turns BASH and NAMI debugging in minideb
@@ -265,6 +265,30 @@ resources:
     memory: 256Mi
     cpu: 100m
 
+networkPolicy:
+  ## Enable creation of NetworkPolicy resources. Only Ingress traffic is filtered for now.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/network-policies/
+  ##
+  enabled: false
+
+  ## The Policy model to apply. When set to false, only pods with the correct
+  ## client label will have network access to the port RabbitMQ is listening
+  ## on. When true, RabbitMQ will accept connections from any source
+  ## (with the correct destination port).
+  ##
+  allowExternal: true
+
+  ## Additional NetworkPolicy Ingress "from" rules to set. Note that all rules are OR-ed.
+  ##
+  # additionalRules:
+  #  - matchLabels:
+  #    - role: frontend
+  #  - matchExpressions:
+  #    - key: role
+  #      operator: In
+  #      values:
+  #        - frontend
+
 ## Replica count, set to 3 to provide a default available cluster
 replicas: 3
 
@@ -364,7 +388,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/rabbitmq-exporter
-    tag: 0.29.0-debian-9-r82
+    tag: 0.29.0-debian-9-r104
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
