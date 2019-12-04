@@ -42,7 +42,7 @@ spec:
       serviceAccountName: {{ template "rabbitmq.fullname" . }}
       {{- end }}
       {{- if .Values.affinity }}
-      affinity: {{- include "rabbitmq.tplValue" (dict "value" .Values.affinity "context" $) | nindent 8 }}
+      affinity: {{- include "rabbitmq.tplValue" (dict "value" .Values.affinity "context" .) | nindent 8 }}
       {{- end }}
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
