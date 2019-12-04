@@ -89,6 +89,8 @@ Parameter | Description | Default
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to add to each pod | `{}`
 `podLabels` | additional labesl to add to each pod | `{}`
+`podDisruptionBudget.enabled`| Enabled creation of PodDisruptionBudget (only if replicaCount > 1) | true
+`podDisruptionBudget.minAvailable`| minAvailable parameter for PodDisruptionBudget | 1
 `priorityClassName` | priorityClassName | `nil`
 `readinessProbe.enabled` | enable Kubernetes readinessProbe. Disable to use oauth2-proxy with Istio mTLS. See [Istio FAQ](https://istio.io/help/faq/security/#k8s-health-checks) | `true`
 `readinessProbe.initialDelaySeconds` | number of seconds | 0

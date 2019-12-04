@@ -141,6 +141,12 @@ podAnnotations: {}
 podLabels: {}
 replicaCount: 1
 
+## PodDisruptionBudget settings
+## ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
 # whether to use http or https
 httpScheme: http
 
