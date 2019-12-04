@@ -63,12 +63,32 @@
             "condition": false,
             "value": "ingress.enabled"
           }
+        },
+        "tls": {
+          "type": "boolean",
+          "form": true,
+          "title": "Enable TLS configuration",
+          "hidden": {
+            "condition": false,
+            "value": "ingress.enabled"
+          }
+        },
+        "certManager": {
+          "type": "boolean",
+          "form": true,
+          "title": "Use cert-manager to auto-generate the TLS certificate",
+          "description": "Add the corresponding annotations for cert-manager to auto-generate the TLS certificate",
+          "hidden": {
+            "condition": false,
+            "value": "ingress.enabled"
+          }
         }
       }
     },
     "databaseType": {
       "type": "string",
       "form": true,
+      "enum": ["mariadb", "postgresql"],
       "title": "Database Type",
       "description": "Allowed values: \"mariadb\" and \"postgresql\""
     },
@@ -77,8 +97,8 @@
       "title": "MariaDB Details",
       "form": true,
       "hidden": {
-        "condition": false,
-        "value": "eq databaseType \"mariadb\""
+        "condition": "postgresql",
+        "value": "databaseType"
       },
       "properties": {
         "enabled": {
@@ -117,8 +137,8 @@
       "title": "PostgreSQL Details",
       "form": true,
       "hidden": {
-        "condition": false,
-        "value": "eq databaseType \"mariadb\""
+        "condition": "mariadb",
+        "value": "databaseType"
       },
       "properties": {
         "enabled": {
@@ -144,40 +164,6 @@
               "sliderUnit": "Gi"
             }
           }
-        }
-      }
-    },
-    "externalDatabase": {
-      "type": "object",
-      "title": "External Database Details",
-      "description": "If MariaDB is disabled. Use this section to specify the external database details",
-      "form": true,
-      "hidden": "and mariadb.enabled postgresql.enabled",
-      "properties": {
-        "host": {
-          "type": "string",
-          "form": true,
-          "title": "Database Host"
-        },
-        "user": {
-          "type": "string",
-          "form": true,
-          "title": "Database Username"
-        },
-        "password": {
-          "type": "string",
-          "form": true,
-          "title": "Database Password"
-        },
-        "database": {
-          "type": "string",
-          "form": true,
-          "title": "Database Name"
-        },
-        "port": {
-          "type": "integer",
-          "form": true,
-          "title": "Database Port"
         }
       }
     }

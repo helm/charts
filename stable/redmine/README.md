@@ -103,11 +103,12 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `ingress.enabled`                    | Enable ingress controller resource                                         | `false`                                                 |
 | `ingress.certManager`                | Add annotations for cert-manager                                           | `false`                                                 |
 | `ingress.hostname`                   | Default host for the ingress resource                                      | `redmine.local`                                         |
+| `ingress.tls`                        | Enable TLS configuration                                                   | `false`                                                 |
 | `ingress.annotations`                | Ingress annotations                                                        | `{}`                                                    |
-| `ingress.hosts[0].name`              | Hostname to your Redmine installation                                      | `nil`                                                   |
-| `ingress.hosts[0].path`              | Path within the url structure                                              | `nil`                                                   |
-| `ingress.tls[0].hosts[0]`            | TLS hosts                                                                  | `nil`                                                   |
-| `ingress.tls[0].secretName`          | TLS Secret (certificates)                                                  | `nil`                                                   |
+| `ingress.extraHosts[0].name`         | Extra hosts for your Redmine installation                                  | `nil`                                                   |
+| `ingress.extraHosts[0].path`         | Path within the url structure                                              | `nil`                                                   |
+| `ingress.extraTls[0].hosts[0]`       | Extra TLS hosts                                                            | `nil`                                                   |
+| `ingress.extraTls[0].secretName`     | TLS Secret (certificates) for extra TLS hosts                              | `nil`                                                   |
 | `ingress.secrets[0].name`            | TLS Secret Name                                                            | `nil`                                                   |
 | `ingress.secrets[0].certificate`     | TLS Secret Certificate                                                     | `nil`                                                   |
 | `ingress.secrets[0].key`             | TLS Secret Key                                                             | `nil`                                                   |
