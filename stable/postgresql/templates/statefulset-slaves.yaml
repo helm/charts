@@ -114,7 +114,7 @@ spec:
           {{- end }}
           env:
             - name: BITNAMI_DEBUG
-              value: {{ ternary "true" "false" .Values.image.debug | quote }}
+              value: {{ .Values.image.debug | quote }}
             - name: POSTGRESQL_VOLUME_DIR
               value: "{{ .Values.persistence.mountPath }}"
             - name: POSTGRESQL_PORT_NUMBER
