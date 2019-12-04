@@ -14,18 +14,10 @@
 
 {{- end }}
 
-{{- if and (eq .Values.omsagent.env.clusterName "<your_cluster_name>") (eq .Values.omsagent.env.clusterId  "<your_cluster_id>") }}
+{{- if and (ne .Values.omsagent.env.clusterName "<your_cluster_name>") (ne .Values.omsagent.env.clusterId "<your_cluster_id>") }}
 
 ##############################################################################
-####   ERROR: You did not provide cluster name or id                      ####
-##############################################################################
-
-{{- end }}
-
-{{- if and (eq .Values.omsagent.env.clusterName "<your_cluster_name>") (ne .Values.omsagent.env.clusterId  "<your_cluster_id>") (eq .Values.omsagent.env.clusterRegion  "<your_cluster_region>") }}
-
-##############################################################################
-####   ERROR: You did not provide azure region of the cluster             ####
+####   ERROR: You did not provide cluster name                            ####
 ##############################################################################
 
 {{- end }}
@@ -37,14 +29,6 @@ This deployment will not complete. To proceed, run
    --set omsagent.secret.wsid=<your_workspace_id> \
    --set omsagent.secret.key=<your_workspace_key> \
    --set omsagent.env.clusterName=<your_cluster_name> \
-   incubator/azuremonitor-containers
-
-       or
-  helm upgrade {{ .Release.Name }} \
-   --set omsagent.secret.wsid=<your_workspace_id> \
-   --set omsagent.secret.key=<your_workspace_key> \
-   --set omsagent.env.clusterId=<your_cluster_id> \
-   --set omsagent.env.clusterRegion=<your_cluster_region> \
    incubator/azuremonitor-containers
 
 {{- else -}}
