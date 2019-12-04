@@ -41,8 +41,10 @@ spec:
        {{- if ne .Values.omsagent.env.clusterId "<your_cluster_id>" }}
        - name: AKS_RESOURCE_ID
          value: {{ .Values.omsagent.env.clusterId | quote }}
+       {{- if ne .Values.omsagent.env.clusterRegion "<your_cluster_region>" }}
        - name: AKS_REGION
          value: {{ .Values.omsagent.env.clusterRegion | quote }}
+       {{- end }}
        {{- else }}
        - name: ACS_RESOURCE_NAME
          value: {{ .Values.omsagent.env.clusterName | quote }}
