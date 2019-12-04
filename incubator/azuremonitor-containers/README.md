@@ -57,7 +57,7 @@ $ helm install --name myrelease-1 \
 
 ## Uninstalling the Chart
 
-To uninstall/delete the installed azure monitor for container release:
+To uninstall/delete the `myrelease-1` release:
 > Note: `--purge` flag not required in Helm3 since this flag deprecated
 ```bash
 
