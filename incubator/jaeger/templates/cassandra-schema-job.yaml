@@ -43,7 +43,7 @@ spec:
         {{ if .Values.storage.cassandra.tls_ca }}
         - name: CASSANDRA_TLS_CA
           value: {{ .Values.storage.cassandra.tls_ca }}
-        {{ - end }}
+        {{- end }}
         - name: CASSANDRA_USERNAME
           value: {{ .Values.storage.cassandra.user }}
         - name: CASSANDRA_PASSWORD
