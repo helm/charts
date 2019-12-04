@@ -38,6 +38,8 @@ spec:
           value: {{ .Values.cassandra.config.dc_name | quote }}
         - name: CASSANDRA_PORT
           value: {{ .Values.storage.cassandra.port | quote }}
+        - name: CASSANDRA_TLS
+          value: {{ .Values.storage.cassandra.tls }}
         - name: CASSANDRA_USERNAME
           value: {{ .Values.storage.cassandra.user }}
         - name: CASSANDRA_PASSWORD

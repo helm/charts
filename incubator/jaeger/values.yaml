@@ -40,6 +40,7 @@ storage:
     user: user
     usePassword: true
     password: password
+    tls: false
     ## Use existing secret (ignores previous password)
     # existingSecret:
   elasticsearch:
