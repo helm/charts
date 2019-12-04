@@ -2,7 +2,7 @@ chaoskube is running and will kill arbitrary pods every {{ .Values.interval }}.
 
 You can follow the logs to see what chaoskube does:
 
-    POD=$(kubectl -n {{ .Release.Namespace }} get pods -l='app.kubernetes.io/instance={{ template "chaoskube.fullname" . }}' --output=jsonpath='{.items[0].metadata.name}')
+    POD=$(kubectl -n {{ .Release.Namespace }} get pods -l='app.kubernetes.io/instance={{ .Release.Name }}' --output=jsonpath='{.items[0].metadata.name}')
     kubectl -n {{ .Release.Namespace }} logs -f $POD 
 {{ if .Values.dryRun }}
 You are running in dry-run mode. No pod is actually terminated.
