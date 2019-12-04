@@ -21,7 +21,7 @@ spec:
       port: {{ .port }}
       protocol: TCP
       targetPort: {{ .port }}
-    {{- if contains "NodePort" $.Values.graylog.input.tcp.service.type }}
+    {{- if eq "NodePort" $.Values.graylog.input.tcp.service.type }}
       {{- if .nodePort }}
       nodePort:  {{ .nodePort }}
       {{- end }}
