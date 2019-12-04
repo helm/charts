@@ -159,9 +159,10 @@ The following table lists the configurable parameters of the external-dns chart 
 | `readinessProbe`                    | Deployment Readiness Probe                                                                               | See `values.yaml`                                           |
 | `metrics.enabled`                   | Enable prometheus to access external-dns metrics endpoint                                                | `false`                                                     |
 | `metrics.podAnnotations`            | Annotations for enabling prometheus to access the metrics endpoint                                       |                                          |
-| `metrics.serviceMonitor.enabled`            | Create ServiceMonitor object                                                                     | `false`                                                     |
-| `metrics.serviceMonitor.additionalLabels`            | Additional labels for ServiceMonitor object                                             | `{}`                                                     |
-| `metrics.serviceMonitor.pollInterval`                | Poll interval set in ServiceMonitor object                                              | `30s`                                                     |
+| `metrics.serviceMonitor.enabled`    | Create ServiceMonitor object                                                                             | `false`                                                     |
+| `metrics.serviceMonitor.selector`   | Additional labels for ServiceMonitor object                                                              | `{}`                                                     |
+| `metrics.serviceMonitor.interval`   | Interval at which metrics should be scraped                                                              | `30s`                                                     |
+| `metrics.serviceMonitor.scrapeTimeout`   | Timeout after which the scrape is ended                                                             | `30s`                                                     |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
