@@ -126,7 +126,7 @@ Parameter                                            | Description              
 `postgresql.postgresqlDatabase`                      | Postgres database name                                                                                     | `sentry`
 `postgresql.postgresqlUsername`                      | Postgres username                                                                                          | `postgres`
 `postgresql.postgresqlHost`                          | External postgres host                                                                                     | `nil`
-`postgresql.postgresqlPassword`                      | External postgres password                                                                                 | `nil`
+`postgresql.postgresqlPassword`                      | External/Internal postgres password                                                                                 | `nil`
 `postgresql.postgresqlPort`                          | External postgres port                                                                                     | `5432`
 `redis.enabled`                                      | Deploy redis server (see below)                                                                            | `true`
 `redis.host`                                         | External redis host                                                                                        | `nil`
@@ -191,6 +191,8 @@ $ helm install --name my-release -f values.yaml stable/sentry
 
 By default, PostgreSQL is installed as part of the chart. To use an external PostgreSQL server set `postgresql.enabled` to `false` and then set `postgresql.postgresHost` and `postgresql.postgresqlPassword`. The other options (`postgresql.postgresqlDatabase`, `postgresql.postgresqlUsername` and `postgresql.postgresqlPort`) may also want changing from their default values.
 
+To avoid issues when upgrade this chart, provide `postgresql.postgresqlPassword` for subsequent upgrades. This is due to an issue in the PostgreSQL chart where password will be overwritten with randomly generated passwords otherwise. See https://github.com/helm/charts/tree/master/stable/postgresql#upgrade for more detail.
+
 ## Redis
 
 By default, Redis is installed as part of the chart. To use an external Redis server/cluster set `redis.enabled` to `false` and then set `redis.host`. If your redis cluster uses password define it with `redis.password`, otherwise just omit it. Check the table above for more configuration options.
@@ -215,7 +217,7 @@ You may enable mounting of the sentry-data PV across worker and cron pods by cha
 
 The `persistence` keys have changed in charts 2.0.0 and newer, the following shows the mapping of keys from pre-2.0.0 to their current form:
 
-Previous Key                    | New Key 
+Previous Key                    | New Key
 :-------------------------------|---------
 `persistence.enabled`           | `filestore.filesystem.persistence.enabled`
 `persistence.existingClaim`     | `filestore.filesystem.persistence.existingClaim`

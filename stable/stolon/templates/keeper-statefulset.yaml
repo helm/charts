@@ -97,7 +97,7 @@ spec:
               value: "/etc/secrets/stolon/pg_su_password"
 {{ end }}
             - name: STKEEPER_METRICS_LISTEN_ADDRESS
-              value: "0.0.0.0:8080"
+              value: "0.0.0.0:{{ .Values.ports.metrics.containerPort }}"
             - name: STKEEPER_DEBUG
               value: {{ .Values.debug | quote}}
 {{- if .Values.keeper.extraEnv }}

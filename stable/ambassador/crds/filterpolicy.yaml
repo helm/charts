@@ -1,15 +1,9 @@
-{{- if .Values.pro.enabled -}}
----
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
   name: filterpolicies.getambassador.io
   labels:
-    app.kubernetes.io/name: {{ include "ambassador.name" . }}
-    app.kubernetes.io/part-of: {{ .Release.Name }}
-    helm.sh/chart: {{ include "ambassador.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/name: ambassador
   annotations:
     "helm.sh/hook": crd-install
 spec:
@@ -26,4 +20,3 @@ spec:
     kind: FilterPolicy
     shortNames:
     - fp
-{{- end -}}
