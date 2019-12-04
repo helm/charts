@@ -1,0 +1,14 @@
+{{- if .Values.service.account.enabled }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ template "telegraf.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "telegraf.fullname" . }}-service-account
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "telegraf.fullname" . }}-cluster-role
+{{- end }}

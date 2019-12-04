@@ -32,6 +32,11 @@ service:
   type: ClusterIP
   annotations: {}
 
+  ## Creates a service account for this telegraf deployment and adds the given array of rules
+  account:
+    enabled: false
+    rules: []
+
 ## Exposed telegraf configuration
 ## For full list of possible values see `/docs/all-config-values.yaml` and `/docs/all-config-values.toml`
 ## ref: https://docs.influxdata.com/telegraf/v1.1/administration/configuration/
