@@ -155,11 +155,11 @@ spec:
                 - sh
                 - -c
                 - |
-                  if [[ -n $MARIADB_MASTER_ROOT_PASSWORD_FILE ]]; then
-                      password_aux=`cat ${MARIADB_MASTER_ROOT_PASSWORD_FILE}`
-                      export MARIADB_MASTER_ROOT_PASSWORD=$password_aux
+                  password_aux="${MARIADB_MASTER_ROOT_PASSWORD:-}"
+                  if [ -f "${MARIADB_MASTER_ROOT_PASSWORD_FILE:-}" ]; then
+                      password_aux=$(cat $MARIADB_MASTER_ROOT_PASSWORD_FILE)
                   fi
-                  exec mysqladmin status -uroot -p$MARIADB_MASTER_ROOT_PASSWORD
+                  mysqladmin status -uroot -p$password_aux
             initialDelaySeconds: {{ .Values.slave.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.slave.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.slave.livenessProbe.timeoutSeconds }}
@@ -173,11 +173,11 @@ spec:
                 - sh
                 - -c
                 - |
-                  if [[ -n $MARIADB_MASTER_ROOT_PASSWORD_FILE ]]; then
-                      password_aux=`cat ${MARIADB_MASTER_ROOT_PASSWORD_FILE}`
-                      export MARIADB_MASTER_ROOT_PASSWORD=$password_aux
+                  password_aux="${MARIADB_MASTER_ROOT_PASSWORD:-}"
+                  if [ -f "${MARIADB_MASTER_ROOT_PASSWORD_FILE:-}" ]; then
+                      password_aux=$(cat $MARIADB_MASTER_ROOT_PASSWORD_FILE)
                   fi
-                  exec mysqladmin status -uroot -p$MARIADB_MASTER_ROOT_PASSWORD
+                  mysqladmin status -uroot -p$password_aux
             initialDelaySeconds: {{ .Values.slave.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.slave.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.slave.readinessProbe.timeoutSeconds }}
@@ -217,12 +217,12 @@ spec:
           command:
             - sh
             - -c
-            - >-
-              if [[ -n $MARIADB_ROOT_PASSWORD_FILE ]]; then
-                  password_aux=`cat ${MARIADB_ROOT_PASSWORD_FILE}`
-                  export MARIADB_ROOT_PASSWORD=$password_aux
+            - |
+              password_aux="${MARIADB_ROOT_PASSWORD:-}"
+              if [ -f "${MARIADB_ROOT_PASSWORD_FILE:-}" ]; then
+                  password_aux=$(cat $MARIADB_ROOT_PASSWORD_FILE)
               fi
-              DATA_SOURCE_NAME="root:$MARIADB_ROOT_PASSWORD@(localhost:3306)/"
+              DATA_SOURCE_NAME="root:$password_aux@(localhost:3306)/"
               /bin/mysqld_exporter
               {{- range .Values.metrics.extraArgs.slave }}
               {{ . }}
