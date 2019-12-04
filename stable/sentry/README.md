@@ -147,6 +147,9 @@ Parameter                                            | Description              
 `filestore.s3.secretKey`                             | S3 secret key                                                                                              | `nil`
 `filestore.s3.bucketName`                            | The name of the S3 bucket                                                                                  | `nil`
 `filestore.s3.endpointUrl`                           | The endpoint url of the S3 (using for "MinIO S3 Backend")                                                  | `nil`
+`filestore.s3.signature_version`                     | S3 signature version (optional)                                                                            | `nil`
+`filestore.s3.region_name`                           | S3 region name (optional)                                                                                  | `nil`
+`filestore.s3.default_acl`                           | S3 default acl (optional)                                                                                  | `nil`
 `config.configYml`                                   | Sentry config.yml file                                                                                     | ``
 `config.sentryConfPy`                                | Sentry sentry.conf.py file                                                                                 | ``
 `metrics.enabled`                                    | Start an exporter for sentry metrics                                                                       | `false`

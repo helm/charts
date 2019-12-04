@@ -80,7 +80,9 @@ data:
       secret_key: '{{ .Values.filestore.s3.secretKey }}'
       bucket_name: '{{ .Values.filestore.s3.bucketName }}'
       endpoint_url: '{{ .Values.filestore.s3.endpointUrl }}'
-
+      signature_version: '{{ .Values.filestore.s3.signature_version }}'
+      region_name: '{{ .Values.filestore.s3.region_name }}'
+      default_acl: '{{ .Values.filestore.s3.default_acl }}'
     {{ end }}
 
 {{ .Values.config.configYml | indent 4 }}
