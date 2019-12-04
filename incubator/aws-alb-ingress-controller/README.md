@@ -4,7 +4,7 @@
 
 ## TL;DR:
 ```bash
-helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com
 helm install incubator/aws-alb-ingress-controller --set clusterName=MyClusterName --set autoDiscoverAwsRegion=true --set autoDiscoverAwsVpcID=true
 ```
 
@@ -18,7 +18,7 @@ This chart bootstraps an alb-ingress-controller deployment on a [Kubernetes](htt
 
 ## Enable helm incubator repository
 ```bash
-helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com
 ```
 
 ## Installing the Chart
