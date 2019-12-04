@@ -80,6 +80,12 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `securityContext`                  | Set security context for pod                                                    | `{ "runAsUser": "8888" }`         |
 | `initContainers`                   | Containers used to initialize context for pods                                  | `[]`                              |
 | `sidecarContainers`                | Containers that share the pod context                                           | `[]`                              |
+| `livenessProbe.initialDelaySeconds` | Initial delay (s) for Ambassador pod's liveness probe                          | `30`                              |
+| `livenessProbe.periodSeconds`       | Probe period (s) for Ambassador pod's liveness probe                           | `3`                               |
+| `livenessProbe.failureThreshold`    | Failure threshold for Ambassador pod's liveness probe                          | `3`                               |
+| `readinessProbe.initialDelaySeconds`| Initial delay (s) for Ambassador pod's readiness probe                         | `30`                              |
+| `readinessProbe.periodSeconds`      | Probe period (s) for Ambassador pod's readiness probe                          | `3`                               |
+| `readinessProbe.failureThreshold`   | Failure threshold for Ambassador pod's readiness probe                         | `3`                               |
 | `service.annotations`              | Annotations to apply to Ambassador service                                      | `""`                              |
 | `service.externalTrafficPolicy`    | Sets the external traffic policy for the service                                | `""`                              |
 | `service.ports`                    | List of ports Ambassador is listening on                                        |  `[{"name": "http","port": 80,"targetPort": 8080},{"name": "https","port": 443,"targetPort": 8443}]` |
@@ -195,6 +201,14 @@ $ helm upgrade --install --wait my-release -f values.yaml stable/ambassador
 ---
 
 # Upgrading
+
+## To 5.0.0
+
+### Breaking changes
+
+**Note** If upgrading an existing helm 2 installation no action is needed, previously installed CRDs will not be modified.
+
+- Helm 3 support for CRDs was added. Specifically, the CRD templates were moved to non-templated files in the `/crds` directory, and to keep Helm 2 support they are globbed from there by `/templates/crds.yaml`. However, because Helm 3 CRDs are not templated, the labels for new installations have necessarily changed
 
 ## To 4.0.0
 
