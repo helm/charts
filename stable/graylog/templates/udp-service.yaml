@@ -21,7 +21,7 @@ spec:
       port: {{ .port }}
       protocol: UDP
       targetPort: {{ .port }}
-    {{- if contains "NodePort" $.Values.graylog.input.udp.service.type }}
+    {{- if eq "NodePort" $.Values.graylog.input.udp.service.type }}
       {{- if .nodePort }}
       nodePort:  {{ .nodePort }}
       {{- end }}
