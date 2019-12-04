@@ -170,6 +170,16 @@ service:
   # nodePort: 32000
   # loadBalancerIP:
 
+## Pods Service Account
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+serviceAccount:
+  ## Specifies whether a ServiceAccount should be created
+  ##
+  create: false
+  ## The name of the ServiceAccount to use.
+  ## If not set and create is true, a name is generated using the mariadb.fullname template
+  # name:
+
 ssl:
   enabled: false
   secret: mysql-ssl-certs
