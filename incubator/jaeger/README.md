@@ -247,6 +247,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `query.basePath`                         | Base path of Query UI, used for ingress as well (if it is enabled)   |  `/`    |
 | `query.extraConfigmapMounts`             | Additional query configMap mounts   |  `[]`                                    |
 | `schema.annotations`                     | Annotations for the schema job      |  `nil`                                   |
+| `schema.extraConfigmapMounts`            | Additional cassandra schema job configMap mounts |  `[]`                                  |
 | `schema.image`                           | Image to setup cassandra schema     |  `jaegertracing/jaeger-cassandra-schema` |
 | `schema.mode`                            | Schema mode (prod or test)          |  `prod`                                  |
 | `schema.pullPolicy`                      | Schema image pullPolicy             |  `IfNotPresent`                          |
@@ -277,7 +278,8 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `storage.cassandra.host`                 | Provisioned cassandra host          |  `cassandra`                             |
 | `storage.cassandra.password`             | Provisioned cassandra password  (ignored if storage.cassandra.existingSecret set)     |  `password`                              |
 | `storage.cassandra.port`                 | Provisioned cassandra port          |  `9042`                                  |
-| `storage.cassandra.tls`                  | Provisioned cassandra connection protocol (`true` for TLS, `false` for non-TLS)|  `false`                                   |
+| `storage.cassandra.tls`                  | Provisioned cassandra connection protocol (`true` for TLS, `false` for non-TLS)|  `false`                                    |
+| `storage.cassandra.tls_ca`               | Provisioned cassandra connection TLS CA certificate file path                  |  `nil`                                      |
 | `storage.cassandra.usePassword`                 | Use password          |  `true`                                 |
 | `storage.cassandra.user`                 | Provisioned cassandra username      |  `user`                                  |
 | `storage.elasticsearch.existingSecret`                 | Name of existing password secret object (for password authentication)          |  `nil`                                 |

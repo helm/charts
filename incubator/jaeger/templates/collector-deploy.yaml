@@ -62,6 +62,10 @@ spec:
             value: {{ .Values.storage.cassandra.port | quote }}
           - name: CASSANDRA_TLS
             value: {{ .Values.storage.cassandra.tls }}
+          {{ if .Values.storage.cassandra.tls_ca }}
+          - name: CASSANDRA_TLS_CA
+            value: {{ .Values.storage.cassandra.tls_ca }}
+          {{ - end }}
           - name: CASSANDRA_KEYSPACE
             value: {{ printf "%s_%s" "jaeger_v1" .Values.cassandra.config.dc_name | quote }}
           - name: CASSANDRA_USERNAME
