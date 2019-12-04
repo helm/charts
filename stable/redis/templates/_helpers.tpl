@@ -193,9 +193,9 @@ Get the password key to be retrieved from Redis secret.
 Return Redis password
 */}}
 {{- define "redis.password" -}}
-{{- if .Values.global.redis.password }}
+{{- if not (empty .Values.global.redis.password) }}
     {{- .Values.global.redis.password -}}
-{{- else if .Values.password -}}
+{{- else if not (empty .Values.password) -}}
     {{- .Values.password -}}
 {{- else -}}
     {{- randAlphaNum 10 -}}
