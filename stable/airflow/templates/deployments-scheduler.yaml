@@ -43,6 +43,9 @@ spec:
 {{- if .Values.airflow.podAnnotations }}
 {{ toYaml .Values.airflow.podAnnotations | indent 8 }}
 {{- end }}
+{{- if .Values.scheduler.podAnnotations }}
+{{ toYaml .Values.scheduler.podAnnotations | indent 8 }}
+{{- end }}
       labels:
         app: {{ template "airflow.name" . }}
         component: scheduler
