@@ -438,6 +438,10 @@ serviceAccount:
   ## If not set and create is true, a name is generated using the fullname template
   # name:
 
+  ## Automount API credentials for a service account.
+  ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#use-the-default-service-account-to-access-the-api-server
+  automountServiceAccountToken: true
+
 ingress:
   ## Set to true to enable ingress record generation
   enabled: false

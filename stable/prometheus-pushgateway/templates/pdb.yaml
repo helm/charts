@@ -3,7 +3,8 @@ apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
   name: {{ template "prometheus-pushgateway.fullname" . }}
-  labels: {{ include "prometheus-pushgateway.defaultLabels" . | indent 4 }}
+  labels:
+{{ template "prometheus-pushgateway.defaultLabels" merge (dict "extraLabels" .Values.podLabels) .  }}
 spec:
   selector:
     matchLabels:

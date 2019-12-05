@@ -1,0 +1,31 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: {{ template "cockroachdb.fullname" . }}-test
+  namespace: {{ .Release.Namespace | quote }}
+{{- if .Values.networkPolicy.enabled }}
+  labels:
+    {{ template "cockroachdb.fullname" . }}-client: "true"
+{{- end }}
+  annotations:
+    helm.sh/hook: test-success
+spec:
+  restartPolicy: Never
+{{- if .Values.image.credentials }}
+  imagePullSecrets:
+    - name: {{ template "cockroachdb.fullname" . }}.db.registry
+{{- end }}
+  containers:
+    - name: client-test
+      image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+      imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+      command:
+        - /cockroach/cockroach
+        - sql
+        - --insecure
+        - --host
+        - {{ template "cockroachdb.fullname" . }}-public.{{ .Release.Namespace }}
+        - --port
+        - {{ .Values.service.ports.grpc.external.port | quote }}
+        - -e
+        - SHOW DATABASES;

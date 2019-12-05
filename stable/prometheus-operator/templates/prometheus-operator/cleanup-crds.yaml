@@ -3,7 +3,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-operator-cleanup
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ $.Release.Namespace }}
   annotations:
     "helm.sh/hook": pre-delete
     "helm.sh/hook-weight": "3"
