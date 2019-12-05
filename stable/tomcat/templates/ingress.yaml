@@ -1,6 +1,5 @@
 {{- if .Values.ingress.enabled }}
 {{- if .Values.service.enabled }}
-{{- $serviceName := template "tomcat.fullname" . -}}
 {{- $servicePort := .Values.service.externalPort -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -32,7 +31,7 @@ spec:
   {{- end }}
 {{- end }}
   backend:
-    serviceName: {{ $serviceName }}
+    serviceName: {{ template "tomcat.name" . }}
     servicePort: {{ $servicePort }}
 {{- if .Values.ingress.hosts }}
   rules:
@@ -42,7 +41,7 @@ spec:
       paths:
         - path: {{ .Values.ingress.path }}
           backend:
-            serviceName: {{ $serviceName }}
+            serviceName: {{ template "tomcat.name" . }}
             servicePort: {{ $servicePort }}
   {{- end -}}
 {{- end -}}
