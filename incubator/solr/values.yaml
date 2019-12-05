@@ -103,3 +103,10 @@ exporter:
   service:
     type: "ClusterIP"
     annotations: {}
+
+## Additional jars volume for plugins
+#  plugins:
+#   storageClassName: ""
+#   storageSize: "100Mi"
+#   accessModes:
+#     - "ReadWriteMany"

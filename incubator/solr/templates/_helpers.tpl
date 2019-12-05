@@ -73,6 +73,15 @@ Create chart name and version as used by the chart label.
 {{ printf "%s-%s" (include "solr.fullname" .) "pvc" | trunc 63 | trimSuffix "-"  }}
 {{- end -}}
 
+
+{{/*
+  Define the name of the solr PVC for plugins
+*/}}
+{{- define "solr.pvc-plugin-name" -}}
+{{ printf "%s-%s" .Release.Name "plugin-pvc" | trunc 63 | trimSuffix "-"  }}
+{{- end -}}
+
+
 {{/*
   Define the name of the solr.xml configmap
 */}}
