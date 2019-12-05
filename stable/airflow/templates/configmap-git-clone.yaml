@@ -41,5 +41,6 @@ data:
     chmod 600 ~/.ssh/*
     echo -e "HOST $REPO_HOST\n  IdentityFile ~/.ssh/$PRIVATE_KEY" > ~/.ssh/config
     {{- end }}
+    git clone $REPO -b $REF $DIR
     cd $DIR
     while true; do git pull; date; sleep $SYNC_TIME; done
