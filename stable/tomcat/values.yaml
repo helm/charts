@@ -26,6 +26,7 @@ hostPort: 8009
 
 ingress:
   enabled: false
+  labels: {}
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
