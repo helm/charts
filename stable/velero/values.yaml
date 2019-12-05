@@ -5,8 +5,8 @@
 # Details of the container image to use in the Velero deployment & daemonset (if
 # enabling restic). Required.
 image:
-  repository: gcr.io/heptio-images/velero
-  tag: v1.1.0
+  repository: velero/velero
+  tag: v1.2.0
   pullPolicy: IfNotPresent
 
 # Annotations to add to the Velero deployment's pod template. Optional.
