@@ -15,6 +15,7 @@ image:
 
 deploy:
   directory: /usr/local/tomcat/webapps
+  labels: {}
 
 service:
   enabled: true
@@ -81,3 +82,7 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+podLabels: {}
+
+podAnnotations: {}
