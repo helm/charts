@@ -81,7 +81,7 @@ spec:
             readOnly: true
           - name: {{ .Values.storage.cassandra.tls.secretName }}
             mountPath: "/root/.cassandra/cqlshrc"
-            subPath: "cqlrhsc"
+            subPath: "cqlshrc"
             readOnly: true
         {{- end }}
       restartPolicy: OnFailure
