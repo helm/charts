@@ -63,7 +63,7 @@ server:
   image:
     registry: docker.io
     repository: bitnami/parse
-    tag: 3.9.0-debian-9-r8
+    tag: 3.9.0-debian-9-r26
     ## Specify a imagePullPolicy
     ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
     ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -103,6 +103,20 @@ server:
   ## ref: https://github.com/bitnami/bitnami-docker-parse#configuration
   ##
   # masterKey:
+
+  ## An array to add extra env vars
+  ## For example:
+  ## extraEnvVars:
+  ##  - name: PARSE_SERVER_ALLOW_CLIENT_CLASS_CREATION
+  ##    value: "true"
+  ##
+  extraEnvVars: []
+  ## Name of a ConfigMap containing extra env vars
+  ##
+  extraEnvVarsCM:
+  ## Name of a Secret containing extra env vars
+  ##
+  extraEnvVarsSecret:
 
   ## Enable Cloud Clode
   ## ref: https://github.com/bitnami/bitnami-docker-parse#how-to-deploy-your-cloud-functions-with-parse-cloud-code
@@ -172,7 +186,7 @@ dashboard:
   image:
     registry: docker.io
     repository: bitnami/parse-dashboard
-    tag: 2.0.3-debian-9-r1
+    tag: 2.0.5-debian-9-r25
     ## Specify a imagePullPolicy
     ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
     ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -245,6 +259,20 @@ dashboard:
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   ##
   tolerations: {}
+
+  ## An array to add extra env vars
+  ## For example:
+  ## extraEnvVars:
+  ##  - name: KIBANA_ELASTICSEARCH_URL
+  ##    value: test
+  ##
+  extraEnvVars: []
+  ## Name of a ConfigMap containing extra env vars
+  ##
+  extraEnvVarsCM:
+  ## Name of a Secret containing extra env vars
+  ##
+  extraEnvVarsSecret:
 
 ## Configure the ingress resource that allows you to access the
 ## Parse installation.

@@ -26,20 +26,36 @@ spec:
     - expr: |-
         sum by (namespace, pod, container) (
           rate(container_cpu_usage_seconds_total{job="kubelet", image!="", container!="POD"}[5m])
-        )
-      record: namespace_pod_container:container_cpu_usage_seconds_total:sum_rate
+        ) * on (namespace, pod) group_left(node) max by(namespace, pod, node) (kube_pod_info)
+      record: node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate
+    - expr: |-
+        container_memory_working_set_bytes{job="kubelet", image!=""}
+        * on (namespace, pod) group_left(node) max by(namespace, pod, node) (kube_pod_info)
+      record: node_namespace_pod_container:container_memory_working_set_bytes
+    - expr: |-
+        container_memory_rss{job="kubelet", image!=""}
+        * on (namespace, pod) group_left(node) max by(namespace, pod, node) (kube_pod_info)
+      record: node_namespace_pod_container:container_memory_rss
+    - expr: |-
+        container_memory_cache{job="kubelet", image!=""}
+        * on (namespace, pod) group_left(node) max by(namespace, pod, node) (kube_pod_info)
+      record: node_namespace_pod_container:container_memory_cache
+    - expr: |-
+        container_memory_swap{job="kubelet", image!=""}
+        * on (namespace, pod) group_left(node) max by(namespace, pod, node) (kube_pod_info)
+      record: node_namespace_pod_container:container_memory_swap
     - expr: sum(container_memory_usage_bytes{job="kubelet", image!="", container!="POD"}) by (namespace)
       record: namespace:container_memory_usage_bytes:sum
     - expr: |-
         sum by (namespace, label_name) (
-            sum(kube_pod_container_resource_requests_memory_bytes{job="kube-state-metrics"} * on (endpoint, instance, job, namespace, pod, service) group_left(phase) (kube_pod_status_phase{phase=~"^(Pending|Running)$"} == 1)) by (namespace, pod)
+            sum(kube_pod_container_resource_requests_memory_bytes{job="kube-state-metrics"} * on (endpoint, instance, job, namespace, pod, service) group_left(phase) (kube_pod_status_phase{phase=~"Pending|Running"} == 1)) by (namespace, pod)
           * on (namespace, pod)
             group_left(label_name) kube_pod_labels{job="kube-state-metrics"}
         )
       record: namespace:kube_pod_container_resource_requests_memory_bytes:sum
     - expr: |-
         sum by (namespace, label_name) (
-            sum(kube_pod_container_resource_requests_cpu_cores{job="kube-state-metrics"} * on (endpoint, instance, job, namespace, pod, service) group_left(phase) (kube_pod_status_phase{phase=~"^(Pending|Running)$"} == 1)) by (namespace, pod)
+            sum(kube_pod_container_resource_requests_cpu_cores{job="kube-state-metrics"} * on (endpoint, instance, job, namespace, pod, service) group_left(phase) (kube_pod_status_phase{phase=~"Pending|Running"} == 1)) by (namespace, pod)
           * on (namespace, pod)
             group_left(label_name) kube_pod_labels{job="kube-state-metrics"}
         )

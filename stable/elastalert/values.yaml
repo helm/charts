@@ -30,7 +30,11 @@ image:
   # docker image tag
   tag: 0.2.1
   pullPolicy: IfNotPresent
+
 resources: {}
+
+# Annotations to be added to pods
+podAnnotations: {}
 
 elasticsearch:
   # elasticsearch endpoint e.g. (svc.namespace||svc)

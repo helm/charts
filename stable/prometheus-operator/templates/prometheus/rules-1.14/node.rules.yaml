@@ -32,6 +32,15 @@ spec:
           node_namespace_pod:kube_pod_info:
         ))
       record: node:node_num_cpu:sum
-    - expr: sum(node_memory_MemFree_bytes{job="node-exporter"} + node_memory_Cached_bytes{job="node-exporter"} + node_memory_Buffers_bytes{job="node-exporter"})
-      record: :node_memory_MemFreeCachedBuffers_bytes:sum
+    - expr: |-
+        sum(
+          node_memory_MemAvailable_bytes{job="node-exporter"} or
+          (
+            node_memory_Buffers_bytes{job="node-exporter"} +
+            node_memory_Cached_bytes{job="node-exporter"} +
+            node_memory_MemFree_bytes{job="node-exporter"} +
+            node_memory_Slab_bytes{job="node-exporter"}
+          )
+        )
+      record: :node_memory_MemAvailable_bytes:sum
 {{- end }}

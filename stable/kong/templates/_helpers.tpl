@@ -18,11 +18,6 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- define "kong.cassandra.fullname" -}}
-{{- $name := default "cassandra" .Values.cassandra.nameOverride -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-
 {{- define "kong.dblessConfig.fullname" -}}
 {{- $name := default "kong-custom-dbless-config" .Values.dblessConfig.nameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
@@ -233,10 +228,6 @@ the extra slash.
       secretKeyRef:
         name: {{ template "kong.postgresql.fullname" . }}
         key: postgresql-password
-  {{- end }}
-  {{- if .Values.cassandra.enabled }}
-  - name: KONG_CASSANDRA_CONTACT_POINTS
-    value: {{ template "kong.cassandra.fullname" . }}
   {{- end }}
   {{- include "kong.env" .  | nindent 2 }}
   command: [ "/bin/sh", "-c", "until kong start; do echo 'waiting for db'; sleep 1; done; kong stop" ]
