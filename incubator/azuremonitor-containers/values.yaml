@@ -19,6 +19,9 @@ omsagent:
   domain: opinsights.azure.com
   env:
     clusterName: <your_cluster_name>
+## Applicable for only managed clusters hosted in Azure
+    clusterId: <your_cluster_id>
+    clusterRegion: <your_cluster_region>
   rbac: true
   logsettings:
     logflushintervalsecs: ""

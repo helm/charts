@@ -4,7 +4,9 @@
 
 ## Introduction
 
-This article describes how to set up and use [Azure Monitor - Containers](https://docs.microsoft.com/en-us/azure/monitoring/monitoring-container-health) to monitor the health and performance of your workloads deployed to Kubernetes environments. Monitoring your Kubernetes cluster and containers is critical, especially when running a production cluster, at scale, with multiple applications.
+This article describes how to set up and use [Azure Monitor - Containers](https://docs.microsoft.com/en-us/azure/monitoring/monitoring-container-health) to monitor the health and performance of your workloads deployed to Kubernetes environments.
+
+Monitoring your Kubernetes cluster and containers is critical, especially when running a production cluster, at scale, with multiple applications.
 
 ---
 
@@ -27,13 +29,13 @@ This article describes how to set up and use [Azure Monitor - Containers](https:
 
 ## Installing the Chart
 
+> Note: `--name` flag not required in Helm3 since this flag is deprecated
 ### To Use Azure Log Analytics Workspace in Public Cloud
 
 ```bash
 $ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
 $ helm install --name myrelease-1 \
 --set omsagent.secret.wsid=<your_workspace_id>,omsagent.secret.key=<your_workspace_key>,omsagent.env.clusterName=<my_prod_cluster>  incubator/azuremonitor-containers
-
 ```
 
 ### To Use Azure Log Analytics Workspace in Azure China Cloud
@@ -56,7 +58,7 @@ $ helm install --name myrelease-1 \
 ## Uninstalling the Chart
 
 To uninstall/delete the `myrelease-1` release:
-
+> Note: `--purge` flag not required in Helm3 since this flag deprecated
 ```bash
 
 $ helm del --purge myrelease-1
@@ -77,7 +79,7 @@ The following table lists the configurable parameters of the MSOMS chart and the
 | `omsagent.image.pullPolicy`| `msoms` image pull policy.                              | IfNotPresent                                                                     |
 | `omsagent.secret.wsid`     | Azure Log analytics workspace id                        | Does not have a default value, needs to be provided                              |
 | `omsagent.secret.key`      | Azure Log analytics workspace key                       | Does not have a default value, needs to be provided                              |
-| `omsagent.domain`          | Azure Log analytics cloud domain (public,china, us govt)   | opinsights.azure.com (Public cloud as default), opinsights.azure.cn (China Cloud), opinsights.azure.us (US Govt Cloud) |
+| `omsagent.domain`          | Azure Log analytics cloud domain (public,china, us govt)| opinsights.azure.com (Public cloud as default), opinsights.azure.cn (China Cloud), opinsights.azure.us (US Govt Cloud) |
 | `omsagent.env.clusterName` | Name of your cluster                                    | Does not have a default value, needs to be provided                                                                 |
 | `omsagent.rbac`            | rbac enabled/disabled                                   | true  (i.e enabled)                                                                                                 |
 
@@ -94,6 +96,7 @@ Staring with chart version 1.0.0, agent data collection settings are controlled 
 You can create a Azure Loganalytics workspace from portal.azure.com and get its ID & PRIMARY KEY from 'Advanced Settings' tab in the Ux.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
+
 
 ```bash
 
