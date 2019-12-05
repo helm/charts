@@ -79,7 +79,8 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `smtpUser`                          | SMTP user                                  | `nil`                                                   |
 | `smtpPassword`                      | SMTP password                              | `nil`                                                   |
 | `smtpTls`                           | Use TLS encryption with SMTP               | `nil`                                                   |
-| `existingSecret`                    | Use existing secret for password details (`smtpPassword` and `redminePassword` will be ignored and picked up from this secret). The secret has to contain the keys `redmine-password` and `smtp-password`. | `nil`                        |
+| `existingSecret`                    | Use existing secret for password details (`redminePassword`, `smtpPassword` and `externalDatabase.password` will be ignored and picked up from this secret). It must contain the keys `redmine-password` and `smtp-password` when `postgresql.enabled=true` or `mariadb.enabled=true`. In case `postgresql.enabled=false` and `mariadb.enabled=false` it must contain the key `external-db-password`.
+ | `nil`                        |
 | `databaseType.postgresql`           | Select PostgreSQL as database              | `false`                                                 |
 | `databaseType.mariadb`              | Select MariaDB as database                 | `true`                                                  |
 | `mariadb.enabled`                   | Whether to deploy a MariaDB server to satisfy the applications database requirements     | `true`    |
@@ -123,6 +124,7 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `podDisruptionBudget.maxUnavailable`| Maximum unavailable pods                   | `nil`                                                   |
 | `replicas`                          | The number of pod replicas                 | `1`                                                     |
 | `resources`                         | Resources allocation (Requests and Limits) | `{}`                                                    |
+| `securityContext`                   | SecurityContext                            | `{}`                                                    |
 | `livenessProbe.enabled`             | would you like a livenessProbe to be enabled                                                | `true` |
 | `livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated                                                    | 300    |
 | `livenessProbe.periodSeconds`       | How often to perform the probe                                                              | 10     |

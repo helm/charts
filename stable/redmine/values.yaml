@@ -65,7 +65,8 @@ redmineLanguage: en
 # smtpPassword:
 # smtpTls:
 
-# # Use existing secret (ignores redminePassword and smtpPassword) with keys "redmine-password" and "smtp-password" defined
+## Use an existing secret with keys "redmine-password", "smtp-password" and "external-db-password" defined.
+## This ignores redminePassword, smtpPassword and externalDatabase.password
 # existingSecret:
 
 ## Environment variables, to pass to the entry point
@@ -300,6 +301,11 @@ resources: {}
   # limits:
   #   cpu: "2"
   #   memory: "1G"
+
+## Configure extra options for liveness probe
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
+##
+securityContext: {}
 
 ## Configure extra options for liveness probe
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)

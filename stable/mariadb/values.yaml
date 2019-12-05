@@ -19,7 +19,7 @@
 image:
   registry: docker.io
   repository: bitnami/mariadb
-  tag: 10.3.20-debian-9-r0
+  tag: 10.3.20-debian-9-r19
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -90,7 +90,6 @@ serviceAccount:
 ## Role Based Access
 ## Ref: https://kubernetes.io/docs/admin/authorization/rbac/
 ##
-
 rbac:
   create: false
 
@@ -102,39 +101,52 @@ securityContext:
   fsGroup: 1001
   runAsUser: 1001
 
-# # Use existing secret (ignores root, db and replication passwords)
+## Use existing secret (ignores root, db and replication passwords)
+##
 # existingSecret:
 
+## MariaDB admin credentials
+##
 rootUser:
   ## MariaDB admin password
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb#setting-the-root-password-on-first-run
   ##
-  password:
-  ##
+  password: ""
   ## Option to force users to specify a password. That is required for 'helm upgrade' to work properly.
   ## If it is not force, a random password will be generated.
+  ##
   forcePassword: false
+  ## Mount admin password as a file instead of using an environment variable
+  ##
+  injectSecretsAsVolume: false
 
+## Custom user/db credentials
+##
 db:
   ## MariaDB username and password
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb#creating-a-database-user-on-first-run
   ##
-  user:
-  password:
-  ## Password is ignored if existingSecret is specified.
+  user: ""
+  password: ""
   ## Database to create
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb#creating-a-database-on-first-run
   ##
   name: my_database
   ## Option to force users to specify a password. That is required for 'helm upgrade' to work properly.
   ## If it is not force, a random password will be generated.
+  ##
   forcePassword: false
+  ## Mount user password as a file instead of using an environment variable
+  ##
+  injectSecretsAsVolume: false
 
+## Replication configuration
+##
 replication:
   ## Enable replication. This enables the creation of replicas of MariaDB. If false, only a
   ## master deployment would be created
-  enabled: true
   ##
+  enabled: true
   ## MariaDB replication user
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb#setting-up-a-replication-cluster
   ##
@@ -142,12 +154,14 @@ replication:
   ## MariaDB replication user password
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb#setting-up-a-replication-cluster
   ##
-  password:
-  ## Password is ignored if existingSecret is specified.
-  ##
+  password: ""
   ## Option to force users to specify a password. That is required for 'helm upgrade' to work properly.
   ## If it is not force, a random password will be generated.
+  ##
   forcePassword: false
+  ## Mount replication user password as a file instead of using an environment variable
+  ##
+  injectSecretsAsVolume: false
 
 ## initdb scripts
 ## Specify dictionary of scripts to be run at first boot
@@ -447,7 +461,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/mysqld-exporter
-    tag: 0.12.1-debian-9-r96
+    tag: 0.12.1-debian-9-r123
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -535,3 +549,16 @@ metrics:
     ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
     selector:
       prometheus: kube-prometheus
+
+## Bats Framework (= Bash Automated Testing System) is needed to test if MariaDB is accessible
+## See test-runner.yaml and tests.yaml for details.
+## To run the tests after the deployment, enter "helm test <release-name>".
+tests:
+  enabled: true
+  # resources: {}
+  testFramework:
+    image:
+      registry: docker.io
+      repository: dduportal/bats
+      tag: 0.4.0
+    # resources: {}
