@@ -165,8 +165,8 @@ postgresql:
     size: 8Gi
 
 ## All of these values are only used when:
-## a) mariadb.enabled is set to false and databaseType.mariadb is set to true
-## b) postgresql.enabled is set to false and databaseType.postgresql is set to true
+## a) mariadb.enabled is set to false and databaseType=mariadb
+## b) postgresql.enabled is set to false and databaseType=postgresql
 externalDatabase:
   ## Database host
   host: localhost
