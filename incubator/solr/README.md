@@ -60,6 +60,9 @@ The following table shows the configuration options for the Solr helm chart:
 | `tls.certSecret.certPath`                     | The key in the Kubernetes secret that contains the TLS certificate | `tls.crt`                                                             |
 | `service.type`                                | The type of service for the solr client service | `ClusterIP`                                                           |
 | `service.annotations`                         | Annotations to apply to the solr client service | `{}` |
+| `plugins.storageClassName`                    | The name of the storage class for the Solr Plugins PVC | `nil`                                                             |
+| `plugins.storageSize`                         | The size of the Plugins PVC | `nil`                                                                |
+| `plugins.accessModes`                         | The access mode of the Plugins PVC| `nil`                                                       |
 | `exporter.enabled`                            | Whether to enable the Solr Prometheus exporter | `false`                                                               |
 | `exporter.configFile`                         | The path in the docker image that the exporter loads the config from | `/opt/solr/contrib/prometheus-exporter/conf/solr-exporter-config.xml` |
 | `exporter.updateStrategy`                     | Update strategy for the exporter deployment | `{}` |

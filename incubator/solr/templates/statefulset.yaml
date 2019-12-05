@@ -48,6 +48,11 @@ spec:
             secretName: {{ .Values.tls.caSecret.name }}
 {{- end }}
 {{- end }}
+{{- if .Values.plugins }}
+        - name: {{ include "solr.pvc-plugin-name" . }}
+          persistentVolumeClaim:
+            claimName: {{ include "solr.pvc-plugin-name" . }}
+{{- end }}            
         - name: solr-xml
           configMap:
             name: {{ include "solr.configmap-name" . }}
@@ -202,6 +207,10 @@ spec:
             - name: "keystore-volume"
               mountPath: "/etc/ssl/keystores"
 {{ end }}
+{{- if .Values.plugins }}
+            - name: {{ include "solr.pvc-plugin-name" . }}
+              mountPath: "/opt/solr/server/home/lib"
+{{- end }}
   volumeClaimTemplates:
     - metadata:
         name: {{ include "solr.pvc-name" . }}
