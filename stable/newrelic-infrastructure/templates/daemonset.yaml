@@ -1,4 +1,4 @@
-{{ if and (or .Values.licenseKey (and .Values.customSecretName .Values.customSecretKey)) .Values.cluster }}
+{{- if (include "newrelic.areValuesValid" .) }}
 apiVersion: apps/v1beta2
 kind: DaemonSet
 metadata:
@@ -26,10 +26,6 @@ spec:
         mode: {{ template "newrelic.mode" . }}
     spec:
       serviceAccountName: {{ template "newrelic.serviceAccountName" . }}
-      {{- if .Values.privileged }}
-      hostNetwork: true # This option is a requirement for the Infrastructure Agent to report the proper hostname in New Relic.
-      dnsPolicy: ClusterFirstWithHostNet
-      {{- end }}
       containers:
         - name: {{ template "newrelic.name" . }}
           image: {{ template "newrelic.image" . }}
@@ -46,15 +42,15 @@ spec:
             - name: NRIA_LICENSE_KEY
               valueFrom:
                 secretKeyRef:
-                  {{- if .Values.licenseKey }}
+                  {{- if (include "newrelic.licenseKey" .) }}
                   name: {{ template "newrelic.fullname" . }}-config
                   key: license
                   {{- else }}
-                  name: {{ .Values.customSecretName }}
-                  key: {{ .Values.customSecretKey }}
+                  name: {{ include "newrelic.customSecretName" . }}
+                  key: {{ include "newrelic.customSecretLicenseKey" . }}
                   {{- end }}
             - name: "CLUSTER_NAME"
-              value: "{{ .Values.cluster }}"
+              value: {{ include "newrelic.cluster" . }}
             {{- if .Values.kubeStateMetricsUrl }}
             - name: "KUBE_STATE_METRICS_URL"
               value: "{{ .Values.kubeStateMetricsUrl }}"
@@ -85,10 +81,6 @@ spec:
             - name: NRIA_LOG_FILE
               value: {{ .Values.logFile }}
             {{- end }}
-            {{- if not .Values.privileged }}
-            - name: "DISCOVERY_CACHE_DIR"
-              value: "/tmp/nr-kubernetes"
-            {{- end }}
           volumeMounts:
             {{- if .Values.config }}
             - name: config
@@ -96,6 +88,8 @@ spec:
               subPath: newrelic-infra.yml
             {{- end }}
             {{- if .Values.privileged }}
+            - name: dev
+              mountPath: /dev
             - name: host-docker-socket
               mountPath: /var/run/docker.sock
             - name: log
@@ -110,6 +104,8 @@ spec:
               name: tmpfs-user-data
             - mountPath: /tmp
               name: tmpfs-tmp
+            - mountPath: /var/cache/nr-kubernetes
+              name: tmpfs-cache
             {{- end }}
           {{- if .Values.resources }}
           resources:
@@ -117,6 +113,9 @@ spec:
           {{- end }}
       volumes:
         {{- if .Values.privileged }}
+        - name: dev
+          hostPath:
+            path: /dev
         - name: host-docker-socket
           hostPath:
             path: /var/run/docker.sock
@@ -132,6 +131,8 @@ spec:
         - name: tmpfs-user-data
           emptyDir: {}
         - name: tmpfs-tmp
+          emptyDir: {}
+        - name: tmpfs-cache
           emptyDir: {}
         {{- end }}
         {{- if .Values.config }}

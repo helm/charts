@@ -18,7 +18,7 @@ initContainers:
 
 server:
   image: springcloud/spring-cloud-dataflow-server
-  version: 2.2.1.RELEASE
+  version: 2.2.2.RELEASE
   imagePullPolicy: IfNotPresent
   platformName: default
   trustCerts: false
@@ -37,10 +37,12 @@ server:
   #    memory: 640Mi
 
 skipper:
+  enabled: true
   image: springcloud/spring-cloud-skipper-server
-  version: 2.1.2.RELEASE
+  version: 2.1.3.RELEASE
   imagePullPolicy: IfNotPresent
   platformName: default
+  trustCerts: false
   service:
     type: ClusterIP
     annotations: {}
@@ -95,3 +97,9 @@ database:
   password:
   dataflow: dataflow
   skipper: skipper
+
+features:
+  streaming:
+    enabled: true
+  batch:
+    enabled: true

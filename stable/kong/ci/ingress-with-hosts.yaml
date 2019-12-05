@@ -1,0 +1,13 @@
+admin:
+  ingress:
+    enabled: true
+    hosts: ["test.com", "test2.com"]
+    annotations: {}
+    path: /
+
+proxy:
+  ingress:
+    enabled: true
+    hosts: ["test.com", "test2.com"]
+    annotations: {}
+    path: /

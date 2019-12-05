@@ -16,7 +16,7 @@ spec:
       app.kubernetes.io/name: {{ template "graylog.name" . }}
       app.kubernetes.io/instance: "{{ .Release.Name }}"
       app.kubernetes.io/managed-by: "{{ .Release.Service }}"
-  updateStrategy: 
+  updateStrategy:
     type: {{ .Values.graylog.updateStrategy }}
   template:
     metadata:
@@ -53,8 +53,8 @@ spec:
 {{- end }}
       initContainers:
         - name: "setup"
-          image: "busybox"
-          imagePullPolicy: IfNotPresent
+          image: "alpine"
+          imagePullPolicy: "IfNotPresent"
           # Graylog journal will recursive in every subdirectories. Any invalid format directories will cause errors
           command:
             - /bin/sh
@@ -66,13 +66,16 @@ spec:
               rm -rf /usr/share/graylog/data/journal/messagejournal-0
               rm -rf /usr/share/graylog/data/journal/recovery-point-offset-checkpoint
             {{- end }}
-              wget https://storage.googleapis.com/kubernetes-release/release/v1.14.0/bin/linux/amd64/kubectl -O /k8s/kubectl
+              wget https://storage.googleapis.com/kubernetes-release/release/v1.16.3/bin/linux/amd64/kubectl -O /k8s/kubectl
               chmod +x /k8s/kubectl
 
               GRAYLOG_HOME=/usr/share/graylog
               chown -R 1100:1100 ${GRAYLOG_HOME}/data/
-          securityContext:
-            privileged: true
+          env:
+            {{- range $key, $value := .Values.graylog.init.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
           volumeMounts:
             - name: journal
               mountPath: /usr/share/graylog/data/journal
@@ -99,14 +102,14 @@ spec:
             - name: GRAYLOG_PASSWORD_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "graylog.fullname" . }}
+                  name: {{ .Values.existingRootSecret | default (include "graylog.fullname" .) }}
                   key: graylog-password-secret
             - name: GRAYLOG_ROOT_PASSWORD_SHA2
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "graylog.fullname" . }}
+                  name: {{ .Values.existingRootSecret | default (include "graylog.fullname" .) }}
                   key: graylog-password-sha2
-            {{- range $key, $value :=  .Values.graylog.env }}
+            {{- range $key, $value := .Values.graylog.env }}
             - name: {{ $key }}
               value: {{ $value | quote }}
             {{- end }}
@@ -170,8 +173,7 @@ spec:
                   - bash
                   - -ec
                   - |
-                      ROOT_PASSWORD=`/k8s/kubectl get secret {{ template "graylog.fullname" . }} -o "jsonpath={.data['graylog-password-secret']}" | base64 -d`
-                      curl -XPOST -sS -u "{{ .Values.graylog.rootUsername }}:${ROOT_PASSWORD}" "localhost:9000/api/system/shutdown/shutdown"
+                    curl -XPOST -sS -u "{{ .Values.graylog.rootUsername }}:${GRAYLOG_PASSWORD_SECRET}" -H "X-Requested-By: {{ template "graylog.fullname" . }}" "localhost:9000/api/system/shutdown/shutdown"
       terminationGracePeriodSeconds: {{ default 30 .Values.graylog.terminationGracePeriodSeconds }}
       volumes:
         - name: config

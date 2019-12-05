@@ -19,7 +19,7 @@ If you want to avoid doing that upgrade to Elasticsearch 5.6 first before moving
 
 ## Prerequisites Details
 
-* Kubernetes 1.6+
+* Kubernetes 1.10+
 * PV dynamic provisioning support on the underlying infrastructure
 
 ## StatefulSets Details

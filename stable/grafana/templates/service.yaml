@@ -38,7 +38,7 @@ spec:
 {{ toYaml .Values.service.externalIPs | indent 4 }}
 {{- end }}
   ports:
-    - name: service
+    - name: {{ .Values.service.portName }}
       port: {{ .Values.service.port }}
       protocol: TCP
       targetPort: {{ .Values.service.targetPort }}

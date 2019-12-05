@@ -41,7 +41,6 @@ Please also see https://github.com/kubernetes-helm/chartmuseum
 
 ## Prerequisites
 
-* Kubernetes with extensions/v1beta1 available
 * [If enabled] A persistent storage resource and RW access to it
 * [If enabled] Kubernetes StorageClass for dynamic provisioning
 
@@ -592,9 +591,9 @@ env:
 
 Or by using values from an existing secret in the cluster that can be created using:
 
-'''shell
+```shell
 kubectl create secret generic chartmuseum-secret --from-literal="basic-auth-user=curator" --from-literal="basic-auth-pass=mypassword"
-'''
+```
 
 This secret can be used in the values file as follows:
 

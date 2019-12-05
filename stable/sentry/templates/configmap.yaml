@@ -79,7 +79,10 @@ data:
       access_key: '{{ .Values.filestore.s3.accessKey }}'
       secret_key: '{{ .Values.filestore.s3.secretKey }}'
       bucket_name: '{{ .Values.filestore.s3.bucketName }}'
-
+      endpoint_url: '{{ .Values.filestore.s3.endpointUrl }}'
+      signature_version: '{{ .Values.filestore.s3.signature_version }}'
+      region_name: '{{ .Values.filestore.s3.region_name }}'
+      default_acl: '{{ .Values.filestore.s3.default_acl }}'
     {{ end }}
 
 {{ .Values.config.configYml | indent 4 }}
@@ -110,19 +113,37 @@ data:
     #  SENTRY_EMAIL_USER
     #  SENTRY_EMAIL_PASSWORD
     #  SENTRY_EMAIL_USE_TLS
+    #  SENTRY_EMAIL_LIST_NAMESPACE
     #  SENTRY_ENABLE_EMAIL_REPLIES
     #  SENTRY_SMTP_HOSTNAME
     #  SENTRY_MAILGUN_API_KEY
     #  SENTRY_SINGLE_ORGANIZATION
     #  SENTRY_SECRET_KEY
+    #  (slack integration)
+    #  SENTRY_SLACK_CLIENT_ID
+    #  SENTRY_SLACK_CLIENT_SECRET
+    #  SENTRY_SLACK_VERIFICATION_TOKEN
+    #  (github plugin, sso)
     #  GITHUB_APP_ID
     #  GITHUB_API_SECRET
+    #  (github integration)
+    #  SENTRY_GITHUB_APP_ID
+    #  SENTRY_GITHUB_APP_CLIENT_ID
+    #  SENTRY_GITHUB_APP_CLIENT_SECRET
+    #  SENTRY_GITHUB_APP_WEBHOOK_SECRET
+    #  SENTRY_GITHUB_APP_PRIVATE_KEY
+    #  (azure devops integration)
+    #  SENTRY_VSTS_CLIENT_ID
+    #  SENTRY_VSTS_CLIENT_SECRET
+    #  (bitbucket plugin)
     #  BITBUCKET_CONSUMER_KEY
     #  BITBUCKET_CONSUMER_SECRET
     from sentry.conf.server import *  # NOQA
+    from sentry.utils.types import Bool, Int
 
     import os
     import os.path
+    import six
 
     CONF_ROOT = os.path.dirname(__file__)
 
@@ -151,9 +172,6 @@ data:
                     env('SENTRY_POSTGRES_PORT')
                     or ''
                 ),
-                'OPTIONS': {
-                    'autocommit': True,
-                },
             },
         }
 
@@ -318,6 +336,12 @@ data:
     SENTRY_WEB_HOST = '0.0.0.0'
     SENTRY_WEB_PORT = 9000
     SENTRY_WEB_OPTIONS = {
+        'http': '%s:%s' % (SENTRY_WEB_HOST, SENTRY_WEB_PORT),
+        'protocol': 'uwsgi',
+        # This is need to prevent https://git.io/fj7Lw
+        'uwsgi-socket': None,
+        'http-keepalive': True,
+        'memory-report': False,
         # 'workers': 3,  # the number of web workers
     }
 
@@ -325,33 +349,83 @@ data:
     # Mail Server #
     ###############
 
-
     email = env('SENTRY_EMAIL_HOST') or (env('SMTP_PORT_25_TCP_ADDR') and 'smtp')
     if email:
         SENTRY_OPTIONS['mail.backend'] = 'smtp'
         SENTRY_OPTIONS['mail.host'] = email
-        SENTRY_OPTIONS['mail.password'] = env('SENTRY_EMAIL_PASSWORD') or ''
+        SENTRY_OPTIONS['mail.from'] = env('SENTRY_SERVER_EMAIL')
         SENTRY_OPTIONS['mail.username'] = env('SENTRY_EMAIL_USER') or ''
+        SENTRY_OPTIONS['mail.password'] = env('SENTRY_EMAIL_PASSWORD') or ''
         SENTRY_OPTIONS['mail.port'] = int(env('SENTRY_EMAIL_PORT') or 25)
         SENTRY_OPTIONS['mail.use-tls'] = env('SENTRY_EMAIL_USE_TLS', False)
+        SENTRY_OPTIONS['mail.list-namespace'] = env('SENTRY_EMAIL_LIST_NAMESPACE') or 'localhost'
     else:
         SENTRY_OPTIONS['mail.backend'] = 'dummy'
 
     # The email address to send on behalf of
     SENTRY_OPTIONS['mail.from'] = env('SENTRY_SERVER_EMAIL') or 'root@localhost'
-
     # If you're using mailgun for inbound mail, set your API key and configure a
     # route to forward to /api/hooks/mailgun/inbound/
     SENTRY_OPTIONS['mail.mailgun-api-key'] = env('SENTRY_MAILGUN_API_KEY') or ''
-
     # If you specify a MAILGUN_API_KEY, you definitely want EMAIL_REPLIES
     if SENTRY_OPTIONS['mail.mailgun-api-key']:
         SENTRY_OPTIONS['mail.enable-replies'] = True
     else:
         SENTRY_OPTIONS['mail.enable-replies'] = env('SENTRY_ENABLE_EMAIL_REPLIES', False)
-
     if SENTRY_OPTIONS['mail.enable-replies']:
         SENTRY_OPTIONS['mail.reply-hostname'] = env('SENTRY_SMTP_HOSTNAME') or ''
+
+
+
+    ##########
+    # Docker #
+    ##########
+
+    # Docker's environment configuration needs to happen
+    # prior to anything that might rely on these values to
+    # enable more "smart" configuration.
+
+    ENV_CONFIG_MAPPING = {
+        'SENTRY_SECRET_KEY': 'system.secret-key',
+
+        'SENTRY_SLACK_CLIENT_ID': 'slack.client-id',
+        'SENTRY_SLACK_CLIENT_SECRET': 'slack.client-secret',
+        'SENTRY_SLACK_VERIFICATION_TOKEN': 'slack.verification-token',
+
+        'SENTRY_GITHUB_APP_ID': ('github-app.id', Int),
+        'SENTRY_GITHUB_APP_CLIENT_ID': 'github-app.client-id',
+        'SENTRY_GITHUB_APP_CLIENT_SECRET': 'github-app.client-secret',
+        'SENTRY_GITHUB_APP_WEBHOOK_SECRET': 'github-app.webhook-secret',
+        'SENTRY_GITHUB_APP_PRIVATE_KEY': 'github-app.private-key',
+
+        'SENTRY_VSTS_CLIENT_ID': 'vsts.client-id',
+        'SENTRY_VSTS_CLIENT_SECRET': 'vsts.client-secret',
+        'GOOGLE_CLIENT_ID': 'auth-google.client-id',
+        'GOOGLE_CLIENT_SECRET': 'auth-google.client-secret',    
+    }
+
+
+    def bind_env_config(config=SENTRY_OPTIONS, mapping=ENV_CONFIG_MAPPING):
+        """
+        Automatically bind SENTRY_OPTIONS from a set of environment variables.
+        """
+        for env_var, item in six.iteritems(mapping):
+            # HACK: we need to check both in `os.environ` and `env._cache`.
+            # This is very much an implementation detail leaking out
+            # due to assumptions about how `env` would be used previously.
+            # `env` will pop values out of `os.environ` when they are seen,
+            # so checking against `os.environ` only means it's likely
+            # they won't exist if `env()` has been called on the variable
+            # before at any point. So we're choosing to check both, but this
+            # behavior is different since we're trying to only conditionally
+            # apply variables, instead of setting them always.
+            if env_var not in os.environ and env_var not in env._cache:
+                continue
+            if isinstance(item, tuple):
+                opt_key, type_ = item
+            else:
+                opt_key, type_ = item, None
+            config[opt_key] = env(env_var, type=type_)
 
     # If this value ever becomes compromised, it's important to regenerate your
     # SENTRY_SECRET_KEY. Changing this value will result in all current sessions
@@ -368,7 +442,13 @@ data:
         print('!!     Regenerate with `generate-secret-key`.       !!')
         print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
 
-    SENTRY_OPTIONS['system.secret-key'] = secret_key
+    # Grab the easy configuration first - these are all fixed
+    # key=value with no logic behind them
+    bind_env_config()
+
+    # If you specify a MAILGUN_API_KEY, you definitely want EMAIL_REPLIES
+    if SENTRY_OPTIONS.get('mail.mailgun-api-key'):
+        SENTRY_OPTIONS.setdefault('mail.enable-replies', True)
 
     if 'GITHUB_APP_ID' in os.environ:
         GITHUB_EXTENDED_PERMISSIONS = ['repo']

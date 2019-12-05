@@ -41,4 +41,11 @@ rules:
   resources:
     - "endpoints"
   verbs: ["create", "update", "patch"]
+{{- if .Values.podSecurityPolicy.enable}}
+- apiGroups: ["policy"]
+  resources: ["podsecuritypolicies"]
+  verbs:     ["use"]
+  resourceNames:
+  - {{ template "instana-agent.podSecurityPolicyName" . }}
+{{- end -}}
 {{- end -}}

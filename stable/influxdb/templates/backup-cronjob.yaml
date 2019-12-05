@@ -62,9 +62,9 @@ spec:
               - name: SRC_URL
                 value: /backups
               - name: DST_URL
-                value: {{ .Values.gcs.backup.destination}}
+                value: {{ .Values.backup.gcs.destination}}
               - name: KEY_FILE
-                value: /var/secrets/google/key.json
+                value: /var/secrets/google/{{ .Values.backup.gcs.serviceAccountSecretKey }}
           {{- end }}
           {{- if .Values.backup.azure }}
           - name: azure-cli

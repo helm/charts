@@ -27,9 +27,24 @@ extraEnvVars:
 #        name: secret_name
 #        key: secret_key
 
+# extraVolumes:
+#   - name: es-certs
+#     secret:
+#       defaultMode: 420
+#       secretName: es-certs
+# extraVolumeMounts:
+#   - name: es-certs
+#     mountPath: /certs
+#     readOnly: true
+
+plugins:
+  enabled: false
+  pluginsList: []
+
 service:
   annotations: {}
   type: ClusterIP
+  # loadBalancerIP:
   # type: NodePort
   # nodePort:
   # Used to create Service records
