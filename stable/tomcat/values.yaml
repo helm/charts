@@ -17,10 +17,12 @@ deploy:
   directory: /usr/local/tomcat/webapps
 
 service:
+  enabled: true
   name: http
   type: LoadBalancer
   externalPort: 80
   internalPort: 8080
+  labels: {}
 
 hostPort: 8009
 
