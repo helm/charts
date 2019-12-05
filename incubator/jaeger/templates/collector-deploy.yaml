@@ -67,22 +67,13 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.storage.cassandra.tls.secretName }}
-                key: serverName
+                key: commonName
           - name: CASSANDRA_TLS_KEY
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.storage.cassandra.tls.secretName }}
-                key: key
+            value: "/cassandra-tls/client_key.pem"
           - name: CASSANDRA_TLS_CERT
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.storage.cassandra.tls.secretName }}
-                key: cert
+            value: "/cassandra-tls/client_cert.pem"
           - name: CASSANDRA_TLS_CA
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.storage.cassandra.tls.secretName }}
-                key: ca
+            value: "/cassandra-tls/ca_cert.pem"
           {{- end }}
           - name: CASSANDRA_KEYSPACE
             value: {{ printf "%s_%s" "jaeger_v1" .Values.cassandra.config.dc_name | quote }}
@@ -143,6 +134,20 @@ spec:
             mountPath: {{ .mountPath }}
             subPath: {{ .subPath }}
             readOnly: {{ .readOnly }}
+        {{- end }}
+        {{- if .Values.storage.cassandra.tls.enabled }}
+          - name: {{ .Values.storage.cassandra.tls.secretName }}
+            mountPath: "/cassandra-tls/ca_cert.pem"
+            subPath: "ca_cert.pem"
+            readOnly: true
+          - name: {{ .Values.storage.cassandra.tls.secretName }}
+            mountPath: "/cassandra-tls/client_cert.pem"
+            subPath: "client_cert.pem"
+            readOnly: true
+          - name: {{ .Values.storage.cassandra.tls.secretName }}
+            mountPath: "/cassandra-tls/client_key.pem"
+            subPath: "client_key.pem"
+            readOnly: true
         {{- end }}
         {{- if .Values.collector.samplingConfig}}
           - name: strategies
