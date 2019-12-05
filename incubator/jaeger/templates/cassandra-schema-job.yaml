@@ -32,27 +32,16 @@ spec:
         env:
         - name: CQLSH_HOST
           value: {{ template "cassandra.host" . }}
+        {{ if .Values.storage.cassandra.tls.enabled }}
+        - name: CQLSH_SSL
+          value: "--ssl"
+        {{- end }}
         - name: MODE
           value: {{ .Values.schema.mode | quote }}
         - name: DATACENTER
           value: {{ .Values.cassandra.config.dc_name | quote }}
         - name: CASSANDRA_PORT
           value: {{ .Values.storage.cassandra.port | quote }}
-        {{ if .Values.storage.cassandra.tls.enabled }}
-          - name: CASSANDRA_TLS
-            value: {{ .Values.storage.cassandra.tls.enabled }}
-          - name: CASSANDRA_TLS_SERVER_NAME
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.storage.cassandra.tls.secretName }}
-                key: commonName
-          - name: CASSANDRA_TLS_KEY
-            value: "/cassandra-tls/client_key.pem"
-          - name: CASSANDRA_TLS_CERT
-            value: "/cassandra-tls/client_cert.pem"
-          - name: CASSANDRA_TLS_CA
-            value: "/cassandra-tls/ca_cert.pem"
-        {{- end }}
         - name: CASSANDRA_USERNAME
           value: {{ .Values.storage.cassandra.user }}
         - name: CASSANDRA_PASSWORD
@@ -79,16 +68,20 @@ spec:
         {{- end }}
         {{- if .Values.storage.cassandra.tls.enabled }}
           - name: {{ .Values.storage.cassandra.tls.secretName }}
-            mountPath: "/cassandra-tls/ca_cert.pem"
+            mountPath: "/root/.cassandra/ca_cert.pem"
             subPath: "ca_cert.pem"
             readOnly: true
           - name: {{ .Values.storage.cassandra.tls.secretName }}
-            mountPath: "/cassandra-tls/client_cert.pem"
+            mountPath: "/root/.cassandra/client_cert.pem"
             subPath: "client_cert.pem"
             readOnly: true
           - name: {{ .Values.storage.cassandra.tls.secretName }}
-            mountPath: "/cassandra-tls/client_key.pem"
+            mountPath: "/root/.cassandra/client_key.pem"
             subPath: "client_key.pem"
+            readOnly: true
+          - name: {{ .Values.storage.cassandra.tls.secretName }}
+            mountPath: "/root/.cassandra/cqlshrc"
+            subPath: "cqlrhsc"
             readOnly: true
         {{- end }}
       restartPolicy: OnFailure
