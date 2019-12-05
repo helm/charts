@@ -224,7 +224,7 @@ spec:
           env:
             {{- if .Values.rootUser.injectSecretsAsVolume }}
             - name: MARIADB_ROOT_PASSWORD_FILE
-              value: "/opt/bitnami/mariadb/secrets/mariadb-root-password"
+              value: "/opt/bitnami/mysqld-exporter/secrets/mariadb-root-password"
             {{- else }}
             - name: MARIADB_ROOT_PASSWORD
               valueFrom:
@@ -240,8 +240,7 @@ spec:
               if [ -f "${MARIADB_ROOT_PASSWORD_FILE:-}" ]; then
                   password_aux=$(cat $MARIADB_ROOT_PASSWORD_FILE)
               fi
-              DATA_SOURCE_NAME="root:$password_aux@(localhost:3306)/"
-              /bin/mysqld_exporter
+              DATA_SOURCE_NAME="root:${password_aux}@(localhost:3306)/" /bin/mysqld_exporter
               {{- range .Values.metrics.extraArgs.master }}
               {{ . }}
               {{- end }}
@@ -276,7 +275,7 @@ spec:
           {{- if .Values.rootUser.injectSecretsAsVolume }}
           volumeMounts:
             - name: mariadb-credentials
-              mountPath: /opt/bitnami/mariadb/secrets/
+              mountPath: /opt/bitnami/mysqld-exporter/secrets/
           {{- end }}
         {{- end }}
       volumes:
