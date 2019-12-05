@@ -27,7 +27,6 @@ data:
         rm -rf $( find $DIR -mindepth 1 )
     fi
     git clone $REPO -b $REF $DIR
-    cd $DIR
   git-sync.sh: |
     #!/bin/sh -e
     REPO=$1
