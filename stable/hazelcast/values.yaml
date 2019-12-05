@@ -146,7 +146,7 @@ service:
   port: 5701
   # clusterIP set to None makes the service headless
   # It is required if DNS Lookup is used (https://github.com/hazelcast/hazelcast-kubernetes#dns-lookup)
-  # clusterIP: "None"
+  clusterIP: "None"
 
 
 # Role-based Access Control
