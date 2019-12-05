@@ -6,7 +6,7 @@ metadata:
     "helm.sh/hook": crd-install
     "helm.sh/hook-delete-policy": "before-hook-creation"
   labels:
-{{ include "jaeger-operator.labels" . | indent 4 }}
+    app: jaeger-operator
 spec:
   group: jaegertracing.io
   names:
