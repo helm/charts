@@ -279,7 +279,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `storage.cassandra.password`             | Provisioned cassandra password  (ignored if storage.cassandra.existingSecret set)     |  `password`                              |
 | `storage.cassandra.port`                 | Provisioned cassandra port          |  `9042`                                  |
 | `storage.cassandra.tls.enabled`          | Provisioned cassandra TLS connection enabled |  `false`                                    |
-| `storage.cassandra.tls.secretName`       | Provisioned cassandra TLS connection existing secret name (possible keys in secret: `ca_cert.pem`, `client_key.pem`, `client_cert.pem`, `commonName`) |  ``                                      |
+| `storage.cassandra.tls.secretName`       | Provisioned cassandra TLS connection existing secret name (possible keys in secret: `ca_cert.pem`, `client_key.pem`, `client_cert.pem`, `cqlshrc`, `commonName`) |  ``                                      |
 | `storage.cassandra.usePassword`                 | Use password          |  `true`                                 |
 | `storage.cassandra.user`                 | Provisioned cassandra username      |  `user`                                  |
 | `storage.elasticsearch.existingSecret`                 | Name of existing password secret object (for password authentication)          |  `nil`                                 |
