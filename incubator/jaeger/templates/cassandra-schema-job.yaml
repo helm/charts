@@ -38,12 +38,30 @@ spec:
           value: {{ .Values.cassandra.config.dc_name | quote }}
         - name: CASSANDRA_PORT
           value: {{ .Values.storage.cassandra.port | quote }}
-        - name: CASSANDRA_TLS
-          value: {{ .Values.storage.cassandra.tls }}
-        {{ if .Values.storage.cassandra.tls_ca }}
-        - name: CASSANDRA_TLS_CA
-          value: {{ .Values.storage.cassandra.tls_ca }}
-        {{- end }}
+        {{ if .Values.storage.cassandra.tls.enabled }}
+          - name: CASSANDRA_TLS
+            value: {{ .Values.storage.cassandra.tls.enabled }}
+          - name: CASSANDRA_TLS_SERVER_NAME
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.storage.cassandra.tls.secretName }}
+                key: serverName
+          - name: CASSANDRA_TLS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.storage.cassandra.tls.secretName }}
+                key: key
+          - name: CASSANDRA_TLS_CERT
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.storage.cassandra.tls.secretName }}
+                key: cert
+          - name: CASSANDRA_TLS_CA
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.storage.cassandra.tls.secretName }}
+                key: ca
+          {{- end }}
         - name: CASSANDRA_USERNAME
           value: {{ .Values.storage.cassandra.user }}
         - name: CASSANDRA_PASSWORD

@@ -40,7 +40,9 @@ storage:
     user: user
     usePassword: true
     password: password
-    tls: false
+    tls:
+      enabled: false
+      secretName: cassandra-tls-secret
     ## Use existing secret (ignores previous password)
     # existingSecret:
   elasticsearch:

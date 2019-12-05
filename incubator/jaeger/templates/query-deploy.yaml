@@ -59,12 +59,30 @@ spec:
             value: {{ template "cassandra.host" . }}
           - name: CASSANDRA_PORT
             value: {{ .Values.storage.cassandra.port | quote }}
+          {{ if .Values.storage.cassandra.tls.enabled }}
           - name: CASSANDRA_TLS
-            value: {{ .Values.storage.cassandra.tls }}
-          {{ if .Values.storage.cassandra.tls_ca }}
+            value: {{ .Values.storage.cassandra.tls.enabled }}
+          - name: CASSANDRA_TLS_SERVER_NAME
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.storage.cassandra.tls.secretName }}
+                key: serverName
+          - name: CASSANDRA_TLS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.storage.cassandra.tls.secretName }}
+                key: key
+          - name: CASSANDRA_TLS_CERT
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.storage.cassandra.tls.secretName }}
+                key: cert
           - name: CASSANDRA_TLS_CA
-            value: {{ .Values.storage.cassandra.tls_ca }}
-          {{- end }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.storage.cassandra.tls.secretName }}
+                key: ca
+          {{- end }}       
           - name: CASSANDRA_KEYSPACE
             value: {{ printf "%s_%s" "jaeger_v1" .Values.cassandra.config.dc_name | quote }}
           - name: CASSANDRA_USERNAME
