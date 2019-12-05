@@ -50,20 +50,25 @@ Parameter                       | Description                           | Defaul
 `image.pullPolicy`              | Image pull policy                     | `IfNotPresent`
 `image.pullSecrets`             | Image pull secrets                    | `[]`
 `deploy.directory`              | Webarchive deployment directory       | `/usr/local/tomcat/webapps`
+`deploy.labels`                 | Deployment labels                     | `{}`
 `env`                           | Environment variables                 | `[]`
 `extraVolumes`                  | Extra volumes                         | `[]`
 `extraVolumeMounts`             | Extra volume mounts                   | `[]`
 `extraInitContainers`           | Extra init containers                 | `[]`
 `hostPort`                      | hostPort                              | `8009`
+`service.enabled`               | Tomcat service active                 | `true`
 `service.name`                  | Tomcat service name                   | `http`
 `service.externalPort`          | Kubernetes service port               | `80`
 `service.internalPort`          | Tomcat front port                     | `8080`
+`service.labels`                | Service labels                        | `{}`
 `service.type`                  | Kubernetes service type               | `LoadBalancer`
 `readinessProbe.path`           | HTTP path to check for readiness      | `/sample`
 `livenessProbe.path`            | HTTP path to check for readiness      | `/sample`
 `resources`                     | CPU/Memory resource requests/limits   | `{}`
 `nodeSelector`                  | Node affinity                         | `{}`
 `tolerations`                   | Node tolerations                      | `{}`
+`podLabels`                     | Pod labels                            | `{}`
+`podAnnotations`                | Pod annotations                       | `{}`
 
 Refer to [values.yaml](values.yaml) for the full run-down on defaults. These are a mixture of Kubernetes and tomcat-related directives that map to environment variables. 
 
