@@ -208,6 +208,11 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `agent.service.zipkinThriftPort`         | zipkin.thrift over compact thrift   |  `5775`                                  |
 | `agent.useHostNetwork`                   | Enable hostNetwork for agents       |  `false`                                 |
 | `agent.tolerations`                      | Node Tolerations                    | `[]`                                   |
+| `collector.autoscaling.enabled`       | Enable horizontal pod autoscaling |  `false`                                   |
+| `collector.autoscaling.minReplicas`   | Minimum replicas |  2                                   |
+| `collector.autoscaling.maxReplicas`   | Maximum replicas |  10                                   |
+| `collector.autoscaling.targetCPUUtilizationPercentage` | Target CPU utilization |  80                                  |
+| `collector.autoscaling.targetMemoryUtilizationPercentage` | Target memory utilization |  `nil`                                   |
 | `collector.cmdlineParams`                | Additional command line parameters  |  `nil`                                   |
 | `collector.podAnnotations`               | Annotations for Collector pod       |  `nil`                                   |
 | `collector.service.httpPort`             | Client port for HTTP thrift         |  `14268`                                 |

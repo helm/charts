@@ -14,7 +14,9 @@ metadata:
 {{ toYaml .Values.collector.annotations | indent 4 }}
 {{- end }}
 spec:
+{{- if not .Values.collector.autoscaling.enabled }}
   replicas: {{ .Values.collector.replicaCount }}
+{{- end }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "jaeger.name" . }}
