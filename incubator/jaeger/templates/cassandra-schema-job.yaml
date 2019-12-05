@@ -68,16 +68,16 @@ spec:
         {{- end }}
         {{- if .Values.storage.cassandra.tls.enabled }}
           - name: {{ .Values.storage.cassandra.tls.secretName }}
-            mountPath: "/root/.cassandra/ca_cert.pem"
-            subPath: "ca_cert.pem"
+            mountPath: "/root/.cassandra/ca-cert.pem"
+            subPath: "ca-cert.pem"
             readOnly: true
           - name: {{ .Values.storage.cassandra.tls.secretName }}
-            mountPath: "/root/.cassandra/client_cert.pem"
-            subPath: "client_cert.pem"
+            mountPath: "/root/.cassandra/client-cert.pem"
+            subPath: "client-cert.pem"
             readOnly: true
           - name: {{ .Values.storage.cassandra.tls.secretName }}
-            mountPath: "/root/.cassandra/client_key.pem"
-            subPath: "client_key.pem"
+            mountPath: "/root/.cassandra/client-key.pem"
+            subPath: "client-key.pem"
             readOnly: true
           - name: {{ .Values.storage.cassandra.tls.secretName }}
             mountPath: "/root/.cassandra/cqlshrc"

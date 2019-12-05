@@ -37,12 +37,12 @@ storage:
   cassandra:
     host: cassandra
     port: 9042
-    user: user
-    usePassword: true
-    password: password
     tls:
       enabled: false
       secretName: cassandra-tls-secret
+    user: user
+    usePassword: true
+    password: password
     ## Use existing secret (ignores previous password)
     # existingSecret:
   elasticsearch:
