@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
@@ -16,6 +16,10 @@ spec:
     {{- else }}
     type: RollingUpdate
     {{- end }}
+  selector:
+    matchLabels:
+      app: {{ template "verdaccio.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       annotations:
