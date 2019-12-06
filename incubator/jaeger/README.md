@@ -94,6 +94,61 @@ helm install incubator/jaeger --name myrel --set provisionDataStore.cassandra=fa
 
 > **Tip**: It is highly encouraged to run the Cassandra cluster with storage persistence.
 
+## Installing the Chart using an Existing Cassandra Cluster with TLS
+
+If you already have an existing running Cassandra cluster with TLS, you can configure the chart as follows to use it as your backing store:
+
+Content of the `values.yaml` file:
+
+```YAML
+storage:
+  type: cassandra
+  cassandra:
+    host: <HOST>
+    port: <PORT>
+    user: <USER>
+    password: <PASSWORD>
+    tls:
+      enabled: true
+      secretName: cassandra-tls-secret
+
+provisionDataStore:
+  cassandra: false
+```
+
+Content of the `jaeger-tls-cassandra-secret.yaml` file:
+
+```YAML
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cassandra-tls-secret
+data:
+  commonName: <SERVER NAME>
+  ca-cert.pem: |
+    -----BEGIN CERTIFICATE-----
+    <CERT>
+    -----END CERTIFICATE-----
+  client-cert.pem: |
+    -----BEGIN CERTIFICATE-----
+    <CERT>
+    -----END CERTIFICATE-----
+  client-key.pem: |
+    -----BEGIN RSA PRIVATE KEY-----
+    -----END RSA PRIVATE KEY-----
+  cqlshrc: |
+    [ssl]
+    certfile = ~/.cassandra/ca-cert.pem
+    userkey = ~/.cassandra/client-key.pem
+    usercert = ~/.cassandra/client-cert.pem
+
+```
+
+```bash
+kubectl apply -f jaeger-tls-cassandra-secret.yaml
+helm install incubator/jaeger --name myrel --values values.yaml
+```
+
 ## Installing the Chart using a New ElasticSearch Cluster
 
 To install the chart with the release name `myrel` using a new ElasticSearch cluster instead of Cassandra (default), run the following command:
