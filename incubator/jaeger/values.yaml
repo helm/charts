@@ -37,6 +37,9 @@ storage:
   cassandra:
     host: cassandra
     port: 9042
+    tls:
+      enabled: false
+      secretName: cassandra-tls-secret
     user: user
     usePassword: true
     password: password
