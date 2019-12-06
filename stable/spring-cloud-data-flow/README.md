@@ -1,8 +1,8 @@
 # Spring Cloud Data Flow Chart
 
-[Spring Cloud Data Flow](https://cloud.spring.io/spring-cloud-dataflow/) is a toolkit for building data integration and real-time data processing pipelines.
+[Spring Cloud Data Flow](https://cloud.spring.io/spring-cloud-dataflow/) is a toolkit for microservices-based Streaming and Batch data processing pipelines in Cloud Foundry and Kubernetes
 
-Pipelines consist of [Spring Boot](https://projects.spring.io/spring-boot/) apps, built using the [Spring Cloud Stream](https://cloud.spring.io/spring-cloud-stream/) or [Spring Cloud Task](https://cloud.spring.io/spring-cloud-task/) microservice frameworks. This makes Spring Cloud Data Flow suitable for a range of data processing use cases, from import/export to event streaming and predictive analytics.
+Data processing pipelines consist of [Spring Boot](https://projects.spring.io/spring-boot/) apps, built using the [Spring Cloud Stream](https://cloud.spring.io/spring-cloud-stream/) or [Spring Cloud Task](https://cloud.spring.io/spring-cloud-task/) microservice frameworks. This makes Spring Cloud Data Flow suitable for a range of data processing use cases, from import/export to event streaming and predictive analytics.
 
 ## Chart Details
 This chart will provision a fully functional and fully featured Spring Cloud Data Flow installation
@@ -10,7 +10,7 @@ that can deploy and manage data processing pipelines in the cluster that it is d
 
 Either the default MySQL deployment or an external database can be used as the data store for Spring Cloud Data Flow state and either RabbitMQ or Kafka can be used as the messaging layer for streaming apps to communicate with one another.
 
-For more information on Spring Cloud Data Flow and its capabilities, see it's [documentation](https://docs.spring.io/spring-cloud-dataflow/docs/current/reference/htmlsingle/).
+For more information on Spring Cloud Data Flow and its capabilities, see it's [documentation](https://dataflow.spring.io/).
 
 ## Prerequisites
 
@@ -69,7 +69,7 @@ If you only need to deploy streams, tasks and schedules can be disabled:
 
 NOTE: Both `features.streaming.enabled` and `features.batch.enabled` should not be set to `false` at the same time.
 
-Applications and tasks can be monitored through Prometheus and Grafana. To deploy these components and enable monitoring, set the following:
+Streaming and batch applications can be monitored through Prometheus and Grafana. To deploy these components and enable monitoring, set the following:
 
 `--set features.monitoring.enabled=true`
 
@@ -77,7 +77,7 @@ When using Minikube, the Grafana URL can be obtained for example, via:
 
 `minikube service my-release-grafana --url`
 
-On a platform that provides a LoadBalancer such as GKE, the following can be checked against until the `EXTERNAL-IP` field is populated with the assigned load balancer IP:
+On a platform that provides a LoadBalancer such as GKE, the following can be checked against until the `EXTERNAL-IP` field is populated with the assigned load balancer IP address:
 
 `kubectl get svc my-release-grafana`
 
