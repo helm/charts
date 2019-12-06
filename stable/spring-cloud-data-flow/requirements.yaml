@@ -15,3 +15,11 @@ dependencies:
   version: 0.13.11
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
   condition: kafka.enabled
+- name: prometheus
+  version: 9.3.1
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  condition: features.monitoring.enabled
+- name: grafana
+  version: 4.0.2
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  condition: features.monitoring.enabled
