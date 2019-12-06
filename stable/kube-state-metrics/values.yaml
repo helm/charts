@@ -109,3 +109,6 @@ collectors:
 
 # Namespace to be enabled for collecting resources. By default all namespaces are collected.
 # namespace: ""
+
+# Only collect metrics in the release namespace (overrides .Values.namespace)
+releaseNamespace: false

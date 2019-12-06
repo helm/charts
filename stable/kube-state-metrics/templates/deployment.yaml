@@ -113,7 +113,9 @@ spec:
 {{  if .Values.collectors.verticalpodautoscalers  }}
         - --collectors=verticalpodautoscalers
 {{  end  }}
-{{ if .Values.namespace }}
+{{ if .Values.releaseNamespace }}
+        - --namespace={{ .Release.Namespace }}
+{{ else if .Values.namespace }}
         - --namespace={{ .Values.namespace }}
 {{ end }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}

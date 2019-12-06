@@ -66,3 +66,4 @@ $ helm install stable/kube-state-metrics
 | `prometheus.monitor.additionalLabels`   | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | `{}`                                       |
 | `prometheus.monitor.namespace`          | Namespace where servicemonitor resource should be created                             | `the same namespace as kube-state-metrics` |
 | `prometheus.monitor.honorLabels`        | Honor metric labels                                                                   | `false`                                    |
+| `releaseNamespace`                      | Only collect metrics in the release namespace (overrides .Values.namespace)      | `false`                                    |
