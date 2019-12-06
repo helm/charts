@@ -16,5 +16,7 @@ spec:
       - sh
       - -c
       - redis-cli -h {{ template "redis-ha.fullname" . }} -p {{ .Values.redis.port }} info server
+    securityContext:
+      runAsUser: 1
   restartPolicy: Never
 {{- end -}}
