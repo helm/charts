@@ -143,6 +143,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `sysctlImage.mountHostSys`| Mount the host `/sys` folder to `/host-sys`                                                                                                                                                              | `false`                                                                                    |
 | `sysctlImage.resources`   | sysctlImage resources                                                                                                                                                                                    | `{}`                                                                                       |
 | `schedulerName`           | Alternate scheduler name                                                                                                                                                                                 | `nil`                                                                                      |
+| `tests.enabled`           | Deploy onetime test pods                                                                                                                                                                                 | `true`                                                                                      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

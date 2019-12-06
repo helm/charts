@@ -313,3 +313,7 @@ hostPath:
   # change the owner of the hostPath folder to the user defined in the
   # security context
   chown: true
+
+# By default, testing pods are run after deployments
+tests:
+  enabled: true

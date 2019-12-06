@@ -1,3 +1,4 @@
+{{- if .Values.tests.enabled -}}
 apiVersion: v1
 kind: Pod
 metadata:
@@ -22,3 +23,4 @@ spec:
     configMap:
       name: {{ template "redis-ha.fullname" . }}-configmap
   restartPolicy: Never
+{{- end -}}
