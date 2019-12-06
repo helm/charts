@@ -116,11 +116,11 @@ grafana:
     defaultUsername: YWRtaW4=
     defaultPassword: cGFzc3dvcmQ=
   extraConfigmapMounts:
-   - name: scdf-grafana-ds-cm
-     mountPath: /etc/grafana/provisioning/datasources/datasources.yaml
-     subPath: datasources.yaml
-     configMap: scdf-grafana-ds-cm
-     readOnly: true
+    - name: scdf-grafana-ds-cm
+      mountPath: /etc/grafana/provisioning/datasources/datasources.yaml
+      subPath: datasources.yaml
+      configMap: scdf-grafana-ds-cm
+      readOnly: true
   dashboardProviders:
     dashboardproviders.yaml:
       apiVersion: 1
@@ -192,4 +192,3 @@ prometheus:
         - source_labels: [__meta_kubernetes_pod_name]
           action: replace
           target_label: kubernetes_pod_name
-
