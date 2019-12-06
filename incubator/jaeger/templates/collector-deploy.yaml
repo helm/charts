@@ -64,7 +64,7 @@ spec:
             value: {{ .Values.storage.cassandra.port | quote }}
           {{ if .Values.storage.cassandra.tls.enabled }}
           - name: CASSANDRA_TLS
-            value: {{ .Values.storage.cassandra.tls.enabled }}
+            value: "true"
           - name: CASSANDRA_TLS_SERVER_NAME
             valueFrom:
               secretKeyRef:
