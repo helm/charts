@@ -32,9 +32,9 @@ Breaking changes:
 
 - values have been renamed to follow helm chart best practices for naming conventions so
   that all variables start with a lowercase letter and words are separated with camelcase
-  https://helm.sh/docs/chart_best_practices/#naming-conventions
+  https://helm.sh/docs/topics/chart_best_practices/values/#naming-conventions
 - all resources are now using recommended standard labels
-  https://helm.sh/docs/chart_best_practices/#standard-labels
+  https://helm.sh/docs/topics/chart_best_practices/labels/#standard-labels
 
 As a result of the label changes also the selectors of the deployment have been updated.
 Those are immutable so trying an updated will cause an error like:
