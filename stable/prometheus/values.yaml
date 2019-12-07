@@ -112,6 +112,13 @@ alertmanager:
     #   - alertmanager.domain.com
     #   - domain.com/alertmanager
 
+    ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
+    extraPaths: []
+    # - path: /*
+    #   backend:
+    #     serviceName: ssl-redirect
+    #     servicePort: use-annotation
+
     ## alertmanager Ingress TLS configuration
     ## Secrets must be manually created in the namespace
     ##
@@ -666,6 +673,13 @@ server:
     #   - prometheus.domain.com
     #   - domain.com/prometheus
 
+    ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
+    extraPaths: []
+    # - path: /*
+    #   backend:
+    #     serviceName: ssl-redirect
+    #     servicePort: use-annotation
+
     ## Prometheus server Ingress TLS configuration
     ## Secrets must be manually created in the namespace
     ##
@@ -889,6 +903,13 @@ pushgateway:
     hosts: []
     #   - pushgateway.domain.com
     #   - domain.com/pushgateway
+
+    ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
+    extraPaths: []
+    # - path: /*
+    #   backend:
+    #     serviceName: ssl-redirect
+    #     servicePort: use-annotation
 
     ## pushgateway Ingress TLS configuration
     ## Secrets must be manually created in the namespace
