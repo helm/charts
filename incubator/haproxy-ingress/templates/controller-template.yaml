@@ -9,6 +9,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   name: {{ template "haproxy-ingress.controller.fullname" . }}-template
+  namespace: {{ .Release.Namespace }}
 data:
   haproxy.tmpl: |-
 {{ .Values.controller.template | indent 4 }}

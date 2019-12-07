@@ -31,5 +31,11 @@ spec:
     matchLabels:
       app: {{ template "prometheus-redis-exporter.name" . }}
       release: {{ .Release.Name }}
+{{- if .Values.serviceMonitor.targetLabels }}
+{{- range .Values.serviceMonitor.targetLabels }}
+  targetLabels: 
+    - {{ . }}
+{{- end }}
+{{- end }}
 {{- end }}
 {{- end }}

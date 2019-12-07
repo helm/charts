@@ -9,7 +9,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 data:
-  fluent-bit-service.conf: |-
+  fluent-bit-service.conf: |
     [SERVICE]
         Flush        {{ .Values.service.flush }}
         Daemon       Off
@@ -24,7 +24,7 @@ data:
         HTTP_Port    2020
 {{- end }}
 
-  fluent-bit-input.conf: |-
+  fluent-bit-input.conf: |
     [INPUT]
         Name             tail
         Path             {{ .Values.input.tail.path }}
@@ -52,7 +52,7 @@ data:
 {{- end }}
 {{ .Values.extraEntries.input | indent 8 }}
 
-  fluent-bit-filter.conf: |-
+  fluent-bit-filter.conf: |
     [FILTER]
         Name                kubernetes
         Match               {{ .Values.filter.kubeTag }}.*
@@ -76,7 +76,7 @@ data:
 {{- end }}
 {{ .Values.extraEntries.filter | indent 8 }}
 
-  fluent-bit-output.conf: |-
+  fluent-bit-output.conf: |
 {{ if eq .Values.backend.type "test" }}
     [OUTPUT]
         Name  file
@@ -92,6 +92,15 @@ data:
 {{- if .Values.backend.forward.shared_key }}
         Shared_Key    {{ .Values.backend.forward.shared_key }}
 {{- end }}
+{{- if .Values.backend.forward.tls }}
+        tls           {{ .Values.backend.forward.tls }}
+{{- end }}
+{{- if .Values.backend.forward.tls_verify }}
+        tls.verify    {{ .Values.backend.forward.tls_verify }}
+{{- end }}
+{{- if .Values.backend.forward.tls_debug }}
+        tls.debug     {{ .Values.backend.forward.tls_debug }}
+{{- end }}
 {{ else if eq .Values.backend.type "es" }}
     [OUTPUT]
         Name  es
@@ -99,7 +108,7 @@ data:
         Host  {{ .Values.backend.es.host }}
         Port  {{ .Values.backend.es.port }}
         Logstash_Format {{ default "On" .Values.backend.es.logstash_format  }}
-        Retry_Limit False
+        Retry_Limit {{ .Values.backend.es.retry_limit }}
         Type  {{ .Values.backend.es.type }}
 {{- if .Values.backend.es.time_key }}
         Time_Key {{ .Values.backend.es.time_key }}
@@ -140,6 +149,17 @@ data:
         TLS.Verify   {{ .Values.backend.splunk.tls_verify }}
         tls.debug {{ .Values.backend.splunk.tls_debug }}
         Message_Key   {{ .Values.backend.splunk.message_key }}
+{{ else if eq .Values.backend.type "stackdriver" }}
+    [OUTPUT]
+        Name  stackdriver
+        Match *
+        resource global
+{{- if .Values.backend.stackdriver.google_service_credentials }}
+        google_service_credentials /secure/google_service_credentials.json
+{{- else }}
+        service_account_email  {{ .Values.backend.stackdriver.service_account_email }}
+        service_account_secret  {{ .Values.backend.stackdriver.service_account_secret }}
+{{- end }}
 {{ else if eq .Values.backend.type "http" }}
     [OUTPUT]
         Name  http
@@ -165,10 +185,10 @@ data:
 {{ .Values.extraEntries.output | indent 8 }}
 
 
-  fluent-bit.conf: |-
+  fluent-bit.conf: |
 {{ .Values.rawConfig | indent 4 }}
 
-  parsers.conf: |-
+  parsers.conf: |
 {{- if .Values.parsers.regex }}
 {{- range .Values.parsers.regex }}
     [PARSER]

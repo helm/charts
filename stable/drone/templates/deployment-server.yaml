@@ -87,6 +87,11 @@ spec:
               secretKeyRef:
                 name: {{ template "drone.fullname" . }}
                 key: secret
+          {{- range $key, $value := .Values.server.env }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
+          {{ template "drone.providerEnvs" . }}
           {{- range $secret, $keys := .Values.server.envSecrets }}
           {{- range $keys }}
           - name: {{ . }}
@@ -96,11 +101,6 @@ spec:
                 key: {{ . | quote }}
           {{- end }}
           {{- end }}
-          {{- range $key, $value := .Values.server.env }}
-          - name: {{ $key }}
-            value: {{ $value | quote }}
-          {{- end }}
-          {{ template "drone.providerEnvs" . }}
         ports:
         - name: http
           containerPort: 80

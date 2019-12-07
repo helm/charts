@@ -1,0 +1,5 @@
+# CI test for Ingress controller basic installation and PodSecurityPolicy
+ingressController:
+  enabled: true
+podSecurityPolicy:
+  enabled: true

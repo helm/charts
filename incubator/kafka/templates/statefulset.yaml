@@ -177,7 +177,7 @@ spec:
         {{- range $secret := .Values.secrets }}
           {{- if not $secret.mountPath }}
             {{- range $key := $secret.keys }}
-        - name: {{ (print $secret.name "_" $key) | upper }}
+        - name: {{ (print ($secret.name | replace "-" "_") "_" $key) | upper }}
           valueFrom:
             secretKeyRef:
               name: {{ $secret.name }}
@@ -205,7 +205,7 @@ spec:
           {{- if eq .Values.external.type "NodePort" }}
           export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_IP}:9092{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
           {{- else }}
-          export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_NAME}.{{ include "kafka.fullname" . }}-headless.${POD_NAMESPACE}:9092{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
+          export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_NAME}.{{ include "kafka.fullname" . }}-headless.${POD_NAMESPACE}.svc.cluster.local:9092{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
           {{- end }}
           exec /etc/confluent/docker/run
         volumeMounts:
@@ -246,9 +246,11 @@ spec:
 {{ toYaml .Values.securityContext | indent 8 }}
       {{- end }}
       {{- range .Values.secrets }}
+      {{- if .mountPath }}
       - name: {{ include "kafka.fullname" $ }}-{{ .name }}
         secret:
           secretName: {{ .name }}
+      {{- end }}
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
   {{- if .Values.persistence.enabled }}

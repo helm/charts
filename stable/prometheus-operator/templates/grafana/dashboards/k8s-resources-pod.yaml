@@ -896,7 +896,7 @@ data:
                     "options": [
 
                     ],
-                    "query": "label_values(kube_pod_info, cluster)",
+                    "query": "label_values(:kube_pod_info_node_count:, cluster)",
                     "refresh": 1,
                     "regex": "",
                     "sort": 2,
