@@ -153,8 +153,15 @@ spec:
           image: "{{ .Values.master.image }}:{{ .Values.master.tag }}"
 {{- end }}
           imagePullPolicy: "{{ .Values.master.imagePullPolicy }}"
-          {{- if .Values.master.useSecurity }}
-          args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)",  "--argumentsRealm.roles.$(ADMIN_USER)=admin"]
+          {{- if .Values.master.httpsKeyStore.enable }}
+          {{- $httpsJKSFilePath :=  printf "%s/%s" .Values.master.httpsKeyStore.path .Values.master.httpsKeyStore.fileName -}}
+              {{- if .Values.master.useSecurity }} 
+          args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)",  "--argumentsRealm.roles.$(ADMIN_USER)=admin", "--httpPort={{.Values.master.httpsKeyStore.httpPort}}", "--httpsPort={{.Values.master.targetPort}}", '--httpsKeyStore={{ $httpsJKSFilePath }}', "--httpsKeyStorePassword=$(JENKINS_HTTPS_KEYSTORE_PASSWORD)" ]
+              {{- else }}
+          args: [ "--httpPort={{.Values.master.httpsKeyStore.httpPort}}", "--httpsPort={{.Values.master.targetPort}}", '--httpsKeyStore={{ $httpsJKSFilePath | quote }}', "--httpsKeyStorePassword=$(JENKINS_HTTPS_KEYSTORE_PASSWORD)" ]
+              {{- end }}
+          {{- else if .Values.master.useSecurity }}
+          args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)",  "--argumentsRealm.roles.$(ADMIN_USER)=admin", "--httpPort={{.Values.master.targetPort}}"]
           {{- end }}
           {{- if .Values.master.lifecycle }}
           lifecycle:
@@ -185,6 +192,14 @@ spec:
                   name: {{ template "jenkins.fullname" . }}
                   key: jenkins-admin-user
             {{- end }}
+            {{- if .Values.master.httpsKeyStore.enable }}
+            - name: JENKINS_HTTPS_KEYSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ if .Values.master.httpsKeyStore.jenkinsHttpsJksSecretName }} {{ .Values.master.httpsKeyStore.jenkinsHttpsJksSecretName }} {{ else }} {{ template "jenkins.fullname" . }}-https-jks  {{ end }}
+                  key: {{ "https-jks-password" | quote }}
+            {{- end }}
+
             {{- if .Values.master.containerEnv }}
 {{ toYaml .Values.master.containerEnv | indent 12 }}
             {{- end }}
@@ -193,7 +208,11 @@ spec:
               value: {{ .Values.master.sidecars.configAutoReload.folder | default "/var/jenkins_home/casc_configs" | quote }}
             {{- end }}
           ports:
-            - containerPort: 8080
+            {{- if .Values.master.httpsKeyStore.enable }}
+            - containerPort: {{.Values.master.httpsKeyStore.httpPort}}
+            {{- else }}
+            - containerPort: {{.Values.master.targetPort}}
+            {{- end }}
               name: http
             - containerPort: {{ .Values.master.slaveListenerPort }}
               name: slavelistener
@@ -233,6 +252,10 @@ spec:
 {{- if .Values.persistence.mounts }}
 {{ toYaml .Values.persistence.mounts | indent 12 }}
 {{- end }}
+            {{- if .Values.master.httpsKeyStore.enable }}
+            - mountPath: {{ .Values.master.httpsKeyStore.path }}
+              name: jenkins-https-keystore
+            {{- end }}
             - mountPath: /tmp
               name: tmp
             - mountPath: /var/jenkins_home
@@ -355,6 +378,16 @@ spec:
       - name: sc-config-volume
         emptyDir: {}
       {{- end }}
+
+      {{- if .Values.master.httpsKeyStore.enable }}
+      - name: jenkins-https-keystore
+        secret: 
+          secretName: {{ if .Values.master.httpsKeyStore.jenkinsHttpsJksSecretName }} {{ .Values.master.httpsKeyStore.jenkinsHttpsJksSecretName }} {{ else }} {{ template "jenkins.fullname" . }}-https-jks  {{ end }}
+          items:
+          - key: jenkins-jks-file
+            path: {{ .Values.master.httpsKeyStore.fileName }}
+      {{- end }}
+
 {{- if .Values.master.imagePullSecretName }}
       imagePullSecrets:
       - name: {{ .Values.master.imagePullSecretName }}
