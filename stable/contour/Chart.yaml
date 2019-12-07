@@ -2,7 +2,7 @@ apiVersion: v1
 appVersion: "v0.15.0"
 description: Contour Ingress controller for Kubernetes
 name: contour
-version: 0.1.0
+version: 0.1.1
 home: https://projectcontour.io
 keywords:
   - ingress

@@ -15,7 +15,11 @@
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
         You can watch the status of by running 'kubectl get svc --namespace {{ template "jenkins.namespace" . }} -w {{ template "jenkins.fullname" . }}'
   export SERVICE_IP=$(kubectl get svc --namespace {{ template "jenkins.namespace" . }} {{ template "jenkins.fullname" . }} --template "{{ "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}" }}")
+{{- if .Values.master.httpsKeyStore.enable }}
+  echo https://$SERVICE_IP:{{ .Values.master.servicePort }}/login
+{{- else }}
   echo http://$SERVICE_IP:{{ .Values.master.servicePort }}/login
+{{- end }}
 
 {{- else if contains "ClusterIP"  .Values.master.serviceType }}
   export POD_NAME=$(kubectl get pods --namespace {{ template "jenkins.namespace" . }} -l "app.kubernetes.io/component={{ .Values.master.componentName }}" -l "app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")

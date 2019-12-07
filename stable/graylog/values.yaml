@@ -30,8 +30,7 @@ graylog:
   ## Make sure you strict with the `x` version of Graylog where `x` is ${version}-${x}
   ##
   image:
-    # repository: "graylog/graylog:2.5.1-3"
-    repository: "graylog/graylog:3.1.2-1"
+    repository: "graylog/graylog:3.1"
     pullPolicy: "IfNotPresent"
 
   ## Number of Graylog instance
@@ -198,7 +197,7 @@ graylog:
   rootUsername: "admin"
 
   ## Graylog root password
-  ## Defaults to a random 10-character alphanumeric string if not set
+  ## Defaults to a random 16-character alphanumeric string if not set
   ##
   # rootPassword: ""
 
@@ -267,6 +266,9 @@ graylog:
     deleteBeforeStart: false
 
   init:
+    # Additional environment variables to be added to Graylog initContainer
+    env: {}
+
     # Configure resource requests and limits for the Graylog StatefulSet initContainer
     resources: {}
 
