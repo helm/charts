@@ -4,6 +4,9 @@
 image: "mysql"
 imageTag: "5.7.14"
 
+strategy:
+  type: Recreate
+
 busybox:
   image: "busybox"
   tag: "1.29.3"
