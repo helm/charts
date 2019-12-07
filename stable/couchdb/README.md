@@ -1,4 +1,13 @@
-# CouchDB
+
+
+# CouchDB - DEPRECATED
+
+**This chart is deprecated! You can find the new chart in:**
+- **Sources:** https://github.com/apache/couchdb-helm
+- **Charts repository:** https://apache.github.io/couchdb-helm
+```bash
+helm repo add couchdb https://apache.github.io/couchdb-helm
+```
 
 Apache CouchDB is a database featuring seamless multi-master sync, that scales
 from big data to mobile, with an intuitive HTTP/JSON API and designed for
@@ -108,11 +117,8 @@ A variety of other parameters are also configurable. See the comments in the
 | `adminUsername`                 | admin                                  |
 | `adminPassword`                 | auto-generated                         |
 | `cookieAuthSecret`              | auto-generated                         |
-| `helperImage.repository`        | kocolosk/couchdb-statefulset-assembler |
-| `helperImage.tag`               | 1.2.0                                  |
-| `helperImage.pullPolicy`        | IfNotPresent                           |
 | `image.repository`              | couchdb                                |
-| `image.tag`                     | 2.3.0                                  |
+| `image.tag`                     | 2.3.1                                  |
 | `image.pullPolicy`              | IfNotPresent                           |
 | `searchImage.repository`        | kocolosk/couchdb-search                |
 | `searchImage.tag`               | 0.1.0                                  |
@@ -133,3 +139,4 @@ A variety of other parameters are also configurable. See the comments in the
 | `service.enabled`               | true                                   |
 | `service.type`                  | ClusterIP                              |
 | `service.externalPort`          | 5984                                   |
+| `dns.clusterDomainSuffix`       | cluster.local                          |

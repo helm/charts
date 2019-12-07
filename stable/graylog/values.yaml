@@ -30,8 +30,7 @@ graylog:
   ## Make sure you strict with the `x` version of Graylog where `x` is ${version}-${x}
   ##
   image:
-    # repository: "graylog/graylog:2.5.1-3"
-    repository: "graylog/graylog:3.0.2-2"
+    repository: "graylog/graylog:3.1"
     pullPolicy: "IfNotPresent"
 
   ## Number of Graylog instance
@@ -90,12 +89,10 @@ graylog:
   ## Additional plugins you need to install on Graylog.
   ##
   plugins: []
-    # - name: graylog-plugin-slack-2.7.1.jar
-    #   url: https://github.com/omise/graylog-plugin-slack/releases/download/2.7.1/graylog-plugin-slack-2.7.1.jar
+    # - name: graylog-plugin-slack-notification-3.1.0.jar
+    #   url: https://github.com/omise/graylog-plugin-slack-notification/releases/download/v3.1.0/graylog-plugin-slack-notification-3.1.0.jar
     # - name: graylog-plugin-function-check-diff-1.0.0.jar
     #   url: https://github.com/omise/graylog-plugin-function-check-diff/releases/download/1.0.0/graylog-plugin-function-check-diff-1.0.0.jar
-    # - name: graylog-plugin-custom-alert-condition-1.0.0.jar
-    #   url: https://github.com/omise/graylog-plugin-custom-alert-condition/releases/download/v1.0.0/graylog-plugin-custom-alert-condition-1.0.0.jar
     # - name: graylog-plugin-auth-sso-3.0.0.jar
     #   url: https://github.com/Graylog2/graylog-plugin-auth-sso/releases/download/3.0.0/graylog-plugin-auth-sso-3.0.0.jar
 
@@ -146,6 +143,13 @@ graylog:
     hosts: []
     #   - graylog.yourdomain.com
 
+    ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
+    extraPaths: []
+    # - path: /*
+    #   backend:
+    #     serviceName: ssl-redirect
+    #     servicePort: use-annotation
+
     ## Graylog server Ingress TLS configuration
     ## Secrets must be manually created in the namespace
     ##
@@ -171,9 +175,9 @@ graylog:
   # heapSize: "1024g"
 
   ## RollingUpdate update strategy
-  ## ref: https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#updating-statefulsets
+  ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
   ##
-  updateStrategy: OnDelete
+  updateStrategy: RollingUpdate
   ## Graylog server pod termination grace period
   ##
   terminationGracePeriodSeconds: 120
@@ -193,7 +197,7 @@ graylog:
   rootUsername: "admin"
 
   ## Graylog root password
-  ## Defaults to a random 10-character alphanumeric string if not set
+  ## Defaults to a random 16-character alphanumeric string if not set
   ##
   # rootPassword: ""
 
@@ -204,6 +208,10 @@ graylog:
   ## Graylog root timezone
   ##
   rootTimezone: "UTC"
+
+  ## Grayog existing root secret
+  ##
+  existingRootSecret: ""
 
   elasticsearch:
     ## List of Elasticsearch hosts Graylog should connect to.
@@ -258,6 +266,9 @@ graylog:
     deleteBeforeStart: false
 
   init:
+    # Additional environment variables to be added to Graylog initContainer
+    env: {}
+
     # Configure resource requests and limits for the Graylog StatefulSet initContainer
     resources: {}
 

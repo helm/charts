@@ -47,16 +47,18 @@ The following table lists the configurable parameters of the postgres Exporter c
 | `service.targetPort`                      | The target port of the container                               | `9187`                                        |
 | `service.name`                  | Name of the service port                   | `http`                                                     |
 | `service.labels`                | Labels to add to the service               | `{}`                                                       |
-| `servicemonitor.enabled`          | Use servicemonitor from prometheus operator                             | `false`                     |
-| `servicemonitor.namespace`        | Namespace thes Servicemonitor  is installed in                          |                             |
-| `servicemonitor.interval`         | How frequently Prometheus should scrape                                 |                             |
-| `servicemonitor.telemetryPath`    | path to cloudwatch-exporter telemtery-path                              |                             |
-| `servicemonitor.labels`           | labels for the ServiceMonitor passed to Prometheus Operator             | `{}`                        |
-| `servicemonitor.timeout`          | Timeout after which the scrape is ended                                 |                             |
+| `serviceMonitor.enabled`          | Use servicemonitor from prometheus operator                             | `false`                     |
+| `serviceMonitor.namespace`        | Namespace thes Servicemonitor  is installed in                          |                             |
+| `serviceMonitor.interval`         | How frequently Prometheus should scrape                                 |                             |
+| `serviceMonitor.telemetryPath`    | path to cloudwatch-exporter telemtery-path                              |                             |
+| `serviceMonitor.labels`           | labels for the ServiceMonitor passed to Prometheus Operator             | `{}`                        |
+| `serviceMonitor.timeout`          | Timeout after which the scrape is ended                                 |                             |
 | `resources`          |                                  |                    `{}`                                  |
 | `config.datasource`                 | Postgresql datasource configuration                      |  see [values.yaml](values.yaml)              |
 | `config.queries`                | SQL queries that the exporter will run | [postgres exporter defaults](https://github.com/wrouesnel/postgres_exporter/blob/master/queries.yaml) |
 | `config.disableDefaultMetrics`  | Specifies whether to use only metrics from `queries.yaml`| `false` |
+| `config.autoDiscoverDatabases`  | Specifies whether to autodiscover all databases | `false` |
+| `config.excludeDatabases`  | When autodiscover is enabled, list databases to exclude| `[]` |
 | `rbac.create`                   | Specifies whether RBAC resources should be created.| `true` |
 | `rbac.pspEnabled`               | Specifies whether a PodSecurityPolicy should be created.| `true` |
 | `serviceAccount.create`         | Specifies whether a service account should be created.| `true` |

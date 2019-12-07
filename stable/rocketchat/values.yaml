@@ -3,7 +3,7 @@
 ##
 image:
   repository: docker.io/rocketchat/rocket.chat
-  tag: 1.3.1
+  tag: 2.1.1
   pullPolicy: IfNotPresent
 
 ## Host for the application
@@ -73,7 +73,15 @@ mongodb:
 
   replicaSet:
     enabled: true
-    # key:
+    replicas:
+      secondary: 0
+      arbiter: 0
+    pdb:
+      minAvailable:
+        secondary: 0
+        arbiter: 0
+
+   # key:
 
   persistence:
     enabled: true
@@ -153,3 +161,12 @@ service:
   # nodePort: 30000
 
   port: 80
+
+## Optional Pod Labels.
+podLabels: {}
+
+## Optional Pod Annotations.
+podAnnotations: {}
+  # prometheus.io/port: "9458"
+  # prometheus.io/path: "/metrics"
+  # prometheus.io/scrape: "true"

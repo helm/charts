@@ -1,3 +1,39 @@
+### 1.20.1
+* [671812f5a](https://github.com/kubernetes/charts/commit/671812f5a): Update OWNERS list
+
+### 1.20.0
+* [83552c9](https://github.com/kubernetes/charts/commit/83552c9): Bump up GoCD Version to 19.11.0
+
+### 1.19.3
+* [afd78ccd8](https://github.com/kubernetes/charts/commit/afd78ccd8): GoCD server sidecar containers
+
+### 1.19.2
+* [cacab5e62](https://github.com/kubernetes/charts/commit/cacab5e62): GoCD agents postStart lifecycle hooks
+
+### 1.19.1
+* [00e10170c](https://github.com/kubernetes/charts/commit/00e10170c): Add support for specifying tolerations on both the GoCD server and agent pods
+
+### 1.19.0
+* [9cfa1b98b](https://github.com/kubernetes/charts/commit/9cfa1b98b): Bump up GoCD Version to 19.10.0
+* [10e7c8e3a](https://github.com/kubernetes/charts/commit/10e7c8e3a): Use latest GoCD APIs in preconfigure script
+* [7cba0ba63](https://github.com/kubernetes/charts/commit/7cba0ba63): Bump up kubernetes elastic agent plugin version to v3.4.0
+
+### 1.18.2
+* [f8cf63789](https://github.com/kubernetes/charts/commit/f8cf63789): Add information about adding plugins
+
+### 1.18.1
+* [a01bba93b](https://github.com/kubernetes/charts/commit/a01bba93b): Bump up kubernetes plugin version to v3.2.0
+
+### 1.18.0
+* [d890eaf](https://github.com/kubernetes/charts/commit/d890eaf): Bump up GoCD Version to 19.9.0
+
+### 1.17.0
+* [5916a7b](https://github.com/kubernetes/charts/commit/5916a7b): Bump up GoCD Version to 19.8.0
+
+### 1.16.1
+
+* [c70a0b189](https://github.com/kubernetes/charts/commit/c70a0b189): Bump up kubernetes plugin version to v3.1.0
+
 ### 1.16.0
 
 * [7872692](https://github.com/kubernetes/charts/commit/7872692): Update Pipeline config API version, use getting started repo's script for task

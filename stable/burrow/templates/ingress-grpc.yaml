@@ -1,7 +1,7 @@
 {{- if .Values.grpc.ingress.enabled -}}
 {{- $serviceName := printf "%s-grpc" (include "burrow.fullname" .) -}}
 {{- $servicePort := .Values.config.RPC.GRPC.ListenPort -}}
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   labels:

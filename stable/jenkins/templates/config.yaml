@@ -168,7 +168,7 @@ data:
         <string>{{ . }}</string>
 {{- end }}
       </disabledAgentProtocols>
-      <label></label>
+      <label>{{ .Values.master.customJenkinsLabels | join " " }}</label>
 {{- if .Values.master.csrf.defaultCrumbIssuer.enabled }}
       <crumbIssuer class="hudson.security.csrf.DefaultCrumbIssuer">
 {{- if .Values.master.csrf.defaultCrumbIssuer.proxyCompatability }}
@@ -214,8 +214,8 @@ data:
     </jenkins.CLI>
 {{- end }}
   apply_config.sh: |-
-{{- if .Values.master.enableXmlConfig }}
     mkdir -p /usr/share/jenkins/ref/secrets/;
+{{- if .Values.master.enableXmlConfig }}
     echo "false" > /usr/share/jenkins/ref/secrets/slave-to-master-security-kill-switch;
 {{- if .Values.master.overwriteConfig }}
     cp /var/jenkins_config/config.xml /var/jenkins_home;
@@ -236,6 +236,12 @@ data:
   {{- end }}
   {{- end }}
 {{- end }}
+{{- else }}
+{{- if .Values.master.JCasC.enabled }}
+    # Prevent Setup Wizard when JCasC is enabled
+    echo $JENKINS_VERSION > /var/jenkins_home/jenkins.install.UpgradeWizard.state
+    echo $JENKINS_VERSION > /var/jenkins_home/jenkins.install.InstallUtil.lastExecVersion
+{{- end }}
 {{- end }}
 {{- if .Values.master.overwritePlugins }}
     # remove all plugins from shared volume
@@ -252,12 +258,6 @@ data:
 {{- if .Values.master.scriptApproval }}
     yes n | cp -i /var/jenkins_config/scriptapproval.xml /var/jenkins_home/scriptApproval.xml;
 {{- end }}
-{{- if and (.Values.master.JCasC.enabled) (.Values.master.sidecars.configAutoReload.enabled) }}
-  {{- if not .Values.master.initScripts }}
-    mkdir -p /var/jenkins_home/init.groovy.d/;
-    yes n | cp -i /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/;
-  {{- end }}
-{{- end }}
 {{- if .Values.master.initScripts }}
     mkdir -p /var/jenkins_home/init.groovy.d/;
     {{- if .Values.master.overwriteConfig }}
@@ -265,10 +265,8 @@ data:
     {{- end }}
     yes n | cp -i /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/;
 {{- end }}
-{{- if .Values.master.JCasC.enabled }}
-  {{- if .Values.master.sidecars.configAutoReload.enabled }}
-    bash -c 'ssh-keygen -y -f <(echo "${ADMIN_PRIVATE_KEY}") > /var/jenkins_home/key.pub'
-  {{- else }}
+{{- if .Values.master.JCasC.enabled}}
+  {{- if not .Values.master.sidecars.configAutoReload.enabled }}
     mkdir -p /var/jenkins_home/casc_configs;
     rm -rf /var/jenkins_home/casc_configs/*
     cp -v /var/jenkins_config/*.yaml /var/jenkins_home/casc_configs
@@ -278,9 +276,6 @@ data:
 {{- if .Values.master.credentialsXmlSecret }}
     yes n | cp -i /var/jenkins_credentials/credentials.xml /var/jenkins_home;
 {{- end }}
-{{- if .Values.master.secretsFilesSecret }}
-    yes n | cp -i /var/jenkins_secrets/* /usr/share/jenkins/ref/secrets/;
-{{- end }}
 {{- if .Values.master.jobs }}
     for job in $(ls /var/jenkins_jobs); do
       mkdir -p /var/jenkins_home/jobs/$job
@@ -288,29 +283,20 @@ data:
     done
 {{- end }}
 {{- end }}
+{{- if .Values.master.secretsFilesSecret }}
+    yes n | cp -i /var/jenkins_secrets/* /usr/share/jenkins/ref/secrets/;
+{{- end }}
 {{- range $key, $val := .Values.master.initScripts }}
   init{{ $key }}.groovy: |-
 {{ $val | indent 4 }}
 {{- end }}
 {{- if .Values.master.JCasC.enabled }}
-  {{- if .Values.master.sidecars.configAutoReload.enabled }}
-  init-add-ssh-key-to-admin.groovy: |-
-    import jenkins.security.*
-    import hudson.model.User
-    import jenkins.security.ApiTokenProperty
-    import jenkins.model.Jenkins
-    User u = User.get("{{ .Values.master.adminUser | default "admin" }}")
-    ApiTokenProperty t = u.getProperty(ApiTokenProperty.class)
-    String sshKeyString = new File('/var/jenkins_home/key.pub').text
-    keys_param = new org.jenkinsci.main.modules.cli.auth.ssh.UserPropertyImpl(sshKeyString)
-    u.addProperty(keys_param)
-    def inst = Jenkins.getInstance()
-    def sshDesc = inst.getDescriptor("org.jenkinsci.main.modules.sshd.SSHD")
-    sshDesc.setPort({{ .Values.master.sidecars.configAutoReload.sshTcpPort | default 1044 }})
-    sshDesc.getActualPort()
-    sshDesc.save()
-  {{- else }}
+  {{- if not .Values.master.sidecars.configAutoReload.enabled }}
 # Only add config to this script if we aren't auto-reloading otherwise the pod will restart upon each config change:
+{{- if .Values.master.JCasC.defaultConfig }}
+  jcasc-default-config.yaml: |-
+    {{- include "jenkins.casc.defaults" . |nindent 4}}
+{{- end }}
 {{- range $key, $val := .Values.master.JCasC.configScripts }}
   {{ $key }}.yaml: |-
 {{ tpl $val $| indent 4 }}

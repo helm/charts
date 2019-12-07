@@ -20,7 +20,7 @@ spec:
     scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
     params:
       module:
-      - http_2xx
+      - {{ .Values.serviceMonitor.module }}
       target:
       - {{ .Values.serviceMonitor.url }}
     metricRelabelings:

@@ -1,8 +1,9 @@
 {{- if .Values.alertmanager.enabled }}
-apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
+apiVersion: monitoring.coreos.com/v1
 kind: Alertmanager
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-alertmanager
+  namespace: {{ $.Release.Namespace }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-alertmanager
 {{ include "prometheus-operator.labels" . | indent 4 }}
@@ -16,10 +17,10 @@ spec:
   serviceAccountName: {{ template "prometheus-operator.alertmanager.serviceAccountName" . }}
 {{- if .Values.alertmanager.alertmanagerSpec.externalUrl }}
   externalUrl: "{{ .Values.alertmanager.alertmanagerSpec.externalUrl }}"
-{{- else if .Values.alertmanager.ingress.enabled }}
+{{- else if and .Values.alertmanager.ingress.enabled .Values.alertmanager.ingress.hosts }}
   externalUrl: "http://{{ index .Values.alertmanager.ingress.hosts 0 }}{{ .Values.alertmanager.alertmanagerSpec.routePrefix }}"
 {{- else }}
-  externalUrl: http://{{ template "prometheus-operator.fullname" . }}-alertmanager.{{ .Release.Namespace }}:9093
+  externalUrl: http://{{ template "prometheus-operator.fullname" . }}-alertmanager.{{ $.Release.Namespace }}:{{ .Values.alertmanager.service.port }}
 {{- end }}
 {{- if .Values.alertmanager.alertmanagerSpec.nodeSelector }}
   nodeSelector:
@@ -32,6 +33,9 @@ spec:
 {{- if .Values.alertmanager.alertmanagerSpec.secrets }}
   secrets:
 {{ toYaml .Values.alertmanager.alertmanagerSpec.secrets | indent 4 }}
+{{- end }}
+{{- if .Values.alertmanager.alertmanagerSpec.configSecret }}
+  configSecret: {{ .Values.alertmanager.alertmanagerSpec.configSecret }}
 {{- end }}
 {{- if .Values.alertmanager.alertmanagerSpec.configMaps }}
   configMaps:
@@ -99,4 +103,5 @@ spec:
 {{- if .Values.alertmanager.alertmanagerSpec.additionalPeers }}
   additionalPeers: {{.Values.alertmanager.alertmanagerSpec.additionalPeers }}
 {{- end }}
+  portName: {{ .Values.alertmanager.alertmanagerSpec.portName }}
 {{- end }}

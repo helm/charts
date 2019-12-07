@@ -66,6 +66,9 @@ logSubPath: "logs"
 ## Useful when using images in custom repositories
 # serviceAccountName:
 
+## Set a pod priorityClassName
+# priorityClassName: high-priority
+
 ## Pod scheduling preferences (by default keep pods within a release on separate nodes).
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 ## By default we don't set affinity
@@ -150,6 +153,7 @@ external:
   firstListenerPort: 31090
   domain: cluster.local
   loadBalancerIP: []
+  loadBalancerSourceRanges: []
   init:
     image: "lwolf/kubectl_deployer"
     imageTag: "0.4"
@@ -163,6 +167,8 @@ podLabels: {}
   # service: broker
   # team: developers
 
+podDisruptionBudget: {}
+  # maxUnavailable: 1  # Limits how many Kafka pods may be unavailable due to voluntary disruptions.
 
 ## Configuration Overrides. Specify any Kafka settings you would like set on the StatefulSet
 ## here in map format, as defined in the official docs.
@@ -364,6 +370,8 @@ prometheus:
     serviceMonitor:
       # Namespace Prometheus is installed in
       namespace: monitoring
+      # Use release namespace instead
+      releaseNamespace: false
 
       ## Defaults to whats used if you follow CoreOS [Prometheus Install Instructions](https://github.com/coreos/prometheus-operator/tree/master/helm#tldr)
       ## [Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/prometheus/templates/prometheus.yaml#L65)

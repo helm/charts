@@ -15,7 +15,7 @@ metadata:
 {{ toYaml .Values.annotations | indent 4 }}
 {{- end }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ default .Values.replicaCount .Values.authorize.replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ template "pomerium.authorize.name" . }}
@@ -64,21 +64,31 @@ spec:
             secretKeyRef:
               name: {{ $secretName }}
               key: shared-secret
+{{- /* TODO in future: Remove legacy logic */ -}}
+{{- if .Values.config.existingLegacyTLSSecret }}
         - name: CERTIFICATE
           valueFrom:
             secretKeyRef:
-              name: {{ $secretName }}
-              key: authorize-cert
+              name:  {{ template "pomerium.authorize.tlsSecret.name" . }}
+              key:  {{ template "pomerium.authorize.tlsSecret.certName" . }}
         - name: CERTIFICATE_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ $secretName }}
-              key: authorize-key
+              name:  {{ template "pomerium.authorize.tlsSecret.name" . }}
+              key:  {{ template "pomerium.authorize.tlsSecret.keyName" . }}
         - name: CERTIFICATE_AUTHORITY
           valueFrom:
             secretKeyRef:
-              name: {{ $secretName }}
-              key: ca-cert
+              name:  {{ template "pomerium.caSecret.name" . }}
+              key:  {{ template "pomerium.caSecret.certName" . }}
+{{- else }}
+        - name: CERTIFICATE_FILE
+          value: "/pomerium/cert.pem"
+        - name: CERTIFICATE_KEY_FILE
+          value: "/pomerium/privkey.pem"
+        - name: CERTIFICATE_AUTHORITY_FILE
+          value: "/pomerium/ca.pem"
+{{- end }}
 {{- range $name, $value := .Values.extraEnv }}
         - name: {{ $name }}
           value: {{ quote $value }}
@@ -91,25 +101,45 @@ spec:
             name: metrics
             protocol: TCP
         livenessProbe:
-          httpGet:
-            path: /ping
+          tcpSocket:
             port: https
-            scheme: HTTPS
+          initialDelaySeconds: 15
         readinessProbe:
-          httpGet:
-            path: /ping
+          tcpSocket:
             port: https
-            scheme: HTTPS
         resources:
 {{ toYaml .Values.resources | indent 10 }}
-{{- if or .Values.config.existingConfig .Values.config.policy }}
         volumeMounts:
+{{- if or .Values.config.existingConfig .Values.config.policy }}
         - mountPath: /etc/pomerium/
           name: config
+{{- end }}
+{{- /* TODO in future: Remove legacy logic */ -}}
+{{- if not .Values.config.existingLegacyTLSSecret }}
+        - mountPath: /pomerium/cert.pem
+          name: service-tls
+          subPath: {{ template "pomerium.authorize.tlsSecret.certName" . }}
+        - mountPath: /pomerium/privkey.pem
+          name: service-tls
+          subPath: {{ template "pomerium.authorize.tlsSecret.keyName" . }}
+        - mountPath: /pomerium/ca.pem
+          name: ca-tls
+          subPath: {{ template "pomerium.caSecret.certName" . }}
+{{- end }}
       volumes:
+{{- if or .Values.config.existingConfig .Values.config.policy }}
       - name: config
         configMap:
           name: {{ $configName }}
+{{- end }}
+{{- /* TODO in future: Remove legacy logic */ -}}
+{{- if not .Values.config.existingLegacyTLSSecret }}
+      - name: service-tls
+        secret:
+          secretName: {{ template "pomerium.authorize.tlsSecret.name" . }}
+      - name: ca-tls
+        secret:
+          secretName: {{ template "pomerium.caSecret.name" . }}
 {{- end }}
 {{- if .Values.extraVolumes }}
       volumes:

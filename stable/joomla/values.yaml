@@ -6,6 +6,7 @@
 #   imageRegistry: myRegistryName
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
+#   storageClass: myStorageClass
 
 ## Bitnami Joomla! image version
 ## ref: https://hub.docker.com/r/bitnami/dokuwiki/tags/
@@ -13,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/joomla
-  tag: 3.9.11-debian-9-r0
+  tag: 3.9.13-debian-9-r0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -96,7 +97,7 @@ mariadb:
   image:
     registry: docker.io
     repository: bitnami/mariadb
-    tag: 10.1.41-debian-9-r17
+    tag: 10.1.43-debian-9-r3
   ## Disable MariaDB replication
   replication:
     enabled: false
@@ -185,31 +186,39 @@ service:
 ##
 ingress:
   ## Set to true to enable ingress record generation
+  ##
   enabled: false
 
-  ## The list of hostnames to be covered with this ingress record.
-  ## Most likely this will be just one host, but in the event more hosts are needed, this is an array
-  hosts:
-  - name: joomla.local
+  ## Set this to true in order to add the corresponding annotations for cert-manager
+  ##
+  certManager: false
 
-    ## Set this to true in order to enable TLS on the ingress record
-    ## A side effect of this will be that the backend joomla service will be connected at port 443
-    tls: false
+  ## When the ingress is enabled, a host pointing to this will be created
+  ##
+  hostname: joomla.local
 
-    ## Set this to true in order to add the corresponding annotations for cert-manager
-    certManager: false
+  ## Ingress annotations done as key:value pairs
+  ## For a full list of possible ingress annotations, please see
+  ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/annotations.md
+  ##
+  ## If tls is set to true, annotation ingress.kubernetes.io/secure-backends: "true" will automatically be set
+  ## If certManager is set to true, annotation kubernetes.io/tls-acme: "true" will automatically be set
+  ##
+  annotations: {}
+  #  kubernetes.io/ingress.class: nginx
 
-    ## If TLS is set to true, you must declare what secret will store the key/certificate for TLS
-    tlsSecret: joomla.local-tls
+  ## The list of additional hostnames to be covered with this ingress record.
+  ## Most likely the hostname above will be enough, but in the event more hosts are needed, this is an array
+  ## hosts:
+  ## - name: joomla.local
+  ##   path: /
 
-    ## Ingress annotations done as key:value pairs
-    ## For a full list of possible ingress annotations, please see
-    ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/annotations.md
-    ##
-    ## If certManager is set to true, annotation kubernetes.io/tls-acme: "true" will automatically be set
-    ## If tls is set to true, annotation ingress.kubernetes.io/secure-backends: "true" will automatically be set
-    annotations:
-    #  kubernetes.io/ingress.class: nginx
+  ## The tls configuration for the ingress
+  ## see: https://kubernetes.io/docs/concepts/services-networking/ingress/#tls
+  ## tls:
+  ## - hosts:
+  ##     - joomla.local
+  ##   secretName: joomla.local-tls
 
   secrets:
   ## If you're providing your own certificates, please use this to add the certificates as secrets
@@ -277,7 +286,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/apache-exporter
-    tag: 0.7.0-debian-9-r23
+    tag: 0.7.0-debian-9-r108
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.

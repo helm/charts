@@ -1,6 +1,6 @@
 apiVersion: v1
 appVersion: "1.0"
-version: 1.0.15
+version: 1.0.21
 description: Helm chart for deploying Sematext Agent to Kubernetes
 keywords:
   - sematext
@@ -10,7 +10,7 @@ keywords:
   - containers
   - ebpf
 home: https://sematext.com/cloud
-icon: https://sematext.com/wp-content/uploads/2017/09/octi-square-logo-200x200-2.png
+icon: https://cdn.sematext.com/octi-square-logo.png
 maintainers:
   - name: hakman
     email: ciprian.hacman@sematext.com

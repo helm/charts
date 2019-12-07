@@ -27,7 +27,7 @@ spec:
       {{- end }}
     - name: https
       port: {{ .Values.service.httpsPort }}
-      targetPort: https
+      targetPort: {{ .Values.service.httpsTargetPort }}
       {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePorts.https)))}}
       nodePort: {{ .Values.service.nodePorts.https }}
       {{- else if eq .Values.service.type "ClusterIP" }}

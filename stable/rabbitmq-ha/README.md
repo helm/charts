@@ -17,7 +17,7 @@ deployment on a [Kubernetes](http://kubernetes.io) cluster using the
 
 ## Prerequisites
 
-- Kubernetes 1.5+ with Beta APIs enabled
+- Kubernetes 1.9+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
@@ -69,6 +69,7 @@ and their default values.
 | `existingSecret`                               | Use an existing secret for password, managementPassword & erlang cookie                                                                                                                                                   | `""`                                                       |
 | `extraPlugins`                                 | Additional plugins to add to the default configmap                                                                                                                                                    | `rabbitmq_shovel, rabbitmq_shovel_management, rabbitmq_federation, rabbitmq_federation_management,` |
 | `extraConfig`                                  | Additional configuration to add to default configmap                                                                                                                                                  | `{}`                                                         |
+| `extraContainers`                              | Additional containers passed through the tpl 	                                                                                                                                                 | `[]`                                                         |
 | `extraInitContainers`                          | Additional init containers passed through the tpl 	                                                                                                                                                   | `[]`                                                         |
 | `env`                                          | Environment variables to set for Rabbitmq container                                                                                                                                                   | `{}`                                                         |
 | `advancedConfig`                               | Additional configuration in classic config format                                                                                                                                                   | `""`                                                           |
@@ -85,7 +86,7 @@ and their default values.
 | `forceBoot`                                    | [Force](https://www.rabbitmq.com/rabbitmqctl.8.html#force_boot) the cluster to start even if it was shutdown in an unexpected order, preferring availability over integrity | `false` |
 | `image.pullPolicy`                             | Image pull policy                                                                                                                                                                                     | `IfNotPresent`   |
 | `image.repository`                             | RabbitMQ container image repository                                                                                                                                                                   | `rabbitmq`                                                 |
-| `image.tag`                                    | RabbitMQ container image tag                                                                                                                                                                          | `3.7.15-alpine`                                            |
+| `image.tag`                                    | RabbitMQ container image tag                                                                                                                                                                          | `3.8.0-alpine`                                            |
 | `image.pullSecrets`                            | Specify docker-registry secret names as an array                                                                                                                                                      | `[]`                                                       |
 | `managementPassword`                           | Management user password.                                                                                                                                                                             | _random 24 character long alphanumeric string_             |
 | `managementUsername`                           | Management user with minimal permissions used for health checks                                                                                                                                       | `management`                                               |
@@ -96,7 +97,7 @@ and their default values.
 | `persistentVolume.name`                        | Persistent volume name                                                                                                                                                                                | `data`                                                     |
 | `persistentVolume.size`                        | Persistent volume size                                                                                                                                                                                | `8Gi`                                                      |
 | `persistentVolume.storageClass`                | Persistent volume storage class                                                                                                                                                                       | `-`                                                        |
-| `podAntiAffinity`                              | Pod antiaffinity, `hard` or `soft`                                                                                                                                                                    | `hard`                                                     |
+| `podAntiAffinity`                              | Pod antiaffinity, `hard` or `soft`                                                                                                                                                                    | `soft`                                                     |
 | `podAntiAffinityTopologyKey`                   | TopologyKey for antiaffinity, default is hostname
 | `podDisruptionBudget`                          | Pod Disruption Budget rules                                                                                                                                                                           | `{}`                                                       |
 | `podManagementPolicy`                          | Whether the pods should be restarted in parallel or one at a time. Either `OrderedReady` or `Parallel`.                                                                                               | `OrderedReady`                                             |
@@ -141,6 +142,11 @@ and their default values.
 | `rabbitmqWebMQTTPlugin.enabled`                | Enable MQTT over websocket plugin                                                                                                                                                                     | `false`                                                    |
 | `rabbitmqWebSTOMPPlugin.config`                | STOMP over websocket configuration                                                                                                                                                                    | ``                                                         |
 | `rabbitmqWebSTOMPPlugin.enabled`               | Enable STOMP over websocket plugin                                                                                                                                                                    | `false`                                                    |
+| `rabbitmqPrometheusPlugin.enabled`             | Enable native RabbitMQ prometheus plugin. (Available in RabbitMQ 3.8)                                                                                                                                 | `false`                                                    |
+| `rabbitmqPrometheusPlugin.nodePort`            | Exposes the native prometheus metrics port on the given NodePort                                                                                                                                      | `null`                                                     |
+| `rabbitmqPrometheusPlugin.port`                | The port RabbitMQ prometheus plugin will use                                                                                                                                                          | `15692`                                                    |
+| `rabbitmqPrometheusPlugin.path`                | The path RabbitMQ prometheus plugin will use                                                                                                                                                          | `/metrics`                                                 |
+| `rabbitmqPrometheusPlugin.config`              | RabbitMQ prometheus plugin aditional configuration                                                                                                                                                    | ``                                                         |
 | `rbac.create`                                  | If true, create & use RBAC resources                                                                                                                                                                  | `true`                                                     |
 | `replicaCount`                                 | Number of replica                                                                                                                                                                                     | `3`                                                        |
 | `resources`                                    | CPU/Memory resource requests/limits                                                                                                                                                                   | `{}`                                                       |
@@ -150,9 +156,10 @@ and their default values.
 | `securityContext.runAsNonRoot`                 | Enforce non-root user ID for the container                                                                                                                                                            | `true`                                                     |
 | `securityContext.runAsUser`                    | User ID for the container                                                                                                                                                                             | `100`                                                      |
 | `serviceAccount.create`                        | Create service account                                                                                                                                                                                | `true`                                                     |
+| `serviceAccount.automountServiceAccountToken`  | Automount API credentials for a service account                                                                                                                                                       | `true`                                                     |
 | `serviceAccount.name`                          | Service account name to use                                                                                                                                                                           | _name of the release_                                      |
 | `service.annotations`                          | Annotations to add to the service                                                                                                                                                                     | `{}`                                                       |
-| `service.clusterIP`                            | IP address to assign to the service                                                                                                                                                                   | `None`                                                     |
+| `service.clusterIP`                            | IP address to assign to the service                                                                                                                                                                   | None                                                      |
 | `service.externalIPs`                          | Service external IP addresses                                                                                                                                                                         | `[]`                                                       |
 | `service.loadBalancerIP`                       | IP address to assign to load balancer (if supported)                                                                                                                                                  | `""`                                                       |
 | `service.loadBalancerSourceRanges`             | List of IP CIDRs allowed access to load balancer (if supported)                                                                                                                                       | `[]`                                                       |
@@ -246,19 +253,26 @@ Similar to custom ConfigMap, `existingSecret` can be used to override the defaul
 `rabbitmqCert.existingSecret` can be used to override the default certificates. The custom secret must provide
 the following keys:
 
-* `rabbitmq-user`
+* `rabbitmq-username`
 * `rabbitmq-password`
-* `rabbitmq-management-user`
+* `rabbitmq-management-username`
 * `rabbitmq-management-password`
 * `rabbitmq-erlang-cookie`
 * `definitions.json` (the name can be altered by setting the `definitionsSource`)
 
 ### Prometheus Monitoring & Alerts
 
-Prometheus and its features can be enabled by setting `prometheus.enabled` to `true`.  See values.yaml for more details and configuration options
+As of RabbitMQ 3.8.0, it is possible to enable Prometheus metrics natively, no need to run an external exporter. To enable native Prometheus metrics, set `rabbitmqPrometheusPlugin.enabled` to `true`. This will expose all RabbitMQ node metrics via the `<<rabbitmqhost>>:15692/metrics` URL. Since all metrics are node local, they add the least pressure on RabbitMQ and will be available for as long as RabbitMQ is running, regardless of inter-node pressure or other nodes in the cluster going away.
+
+To learn more about RabbitMQ's native support for Prometheus, please refer to the official [Monitoring with Prometheus & Grafana guide](https://www.rabbitmq.com/prometheus.html).
+
+Team RabbitMQ manages Grafana dashboards that are meant to be used with the native Prometheus support. They are publicly available at [grafana.com/orgs/rabbitmq](https://grafana.com/orgs/rabbitmq).
+
+To enable metrics via the traditional [rabbitmq_exporter](https://github.com/kbudde/rabbitmq_exporter) sidecar container, set `prometheus.enabled` to `true`. See `values.yaml` file for more details and configuration options.
 
 ### Usage of the `tpl` Function
 
 The `tpl` function allows us to pass values from `values.yaml` through the templating engine. It is used for the following values:
 
+* `extraContainers`
 * `extraInitContainers`

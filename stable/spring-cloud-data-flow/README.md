@@ -1,8 +1,8 @@
 # Spring Cloud Data Flow Chart
 
-[Spring Cloud Data Flow](http://cloud.spring.io/spring-cloud-dataflow/) is a toolkit for building data integration and real-time data processing pipelines.
+[Spring Cloud Data Flow](https://cloud.spring.io/spring-cloud-dataflow/) is a toolkit for microservices-based Streaming and Batch data processing pipelines in Cloud Foundry and Kubernetes
 
-Pipelines consist of [Spring Boot](http://projects.spring.io/spring-boot/) apps, built using the [Spring Cloud Stream](http://cloud.spring.io/spring-cloud-stream/) or [Spring Cloud Task](http://cloud.spring.io/spring-cloud-task/) microservice frameworks. This makes Spring Cloud Data Flow suitable for a range of data processing use cases, from import/export to event streaming and predictive analytics.
+Data processing pipelines consist of [Spring Boot](https://projects.spring.io/spring-boot/) apps, built using the [Spring Cloud Stream](https://cloud.spring.io/spring-cloud-stream/) or [Spring Cloud Task](https://cloud.spring.io/spring-cloud-task/) microservice frameworks. This makes Spring Cloud Data Flow suitable for a range of data processing use cases, from import/export to event streaming and predictive analytics.
 
 ## Chart Details
 This chart will provision a fully functional and fully featured Spring Cloud Data Flow installation
@@ -10,7 +10,7 @@ that can deploy and manage data processing pipelines in the cluster that it is d
 
 Either the default MySQL deployment or an external database can be used as the data store for Spring Cloud Data Flow state and either RabbitMQ or Kafka can be used as the messaging layer for streaming apps to communicate with one another.
 
-For more information on Spring Cloud Data Flow and its capabilities, see it's [documentation](http://docs.spring.io/spring-cloud-dataflow/docs/current/reference/htmlsingle/).
+For more information on Spring Cloud Data Flow and its capabilities, see it's [documentation](https://dataflow.spring.io/).
 
 ## Prerequisites
 
@@ -57,6 +57,32 @@ Only one messaging layer can be used at a given time. If RabbitMQ and Kafka are 
 
 Note that this chart pulls in many different Docker images so can take a while to fully install.
 
+### Feature Toggles
+
+If you only need to deploy tasks and schedules, streams can be disabled:
+
+`--set features.streaming.enabled=false --set rabbitmq.enabled=false`
+
+If you only need to deploy streams, tasks and schedules can be disabled:
+
+`--set features.batch.enabled=false`
+
+NOTE: Both `features.streaming.enabled` and `features.batch.enabled` should not be set to `false` at the same time.
+
+Streaming and batch applications can be monitored through Prometheus and Grafana. To deploy these components and enable monitoring, set the following:
+
+`--set features.monitoring.enabled=true`
+
+When using Minikube, the Grafana URL can be obtained for example, via:
+
+`minikube service my-release-grafana --url`
+
+On a platform that provides a LoadBalancer such as GKE, the following can be checked against until the `EXTERNAL-IP` field is populated with the assigned load balancer IP address:
+
+`kubectl get svc my-release-grafana`
+
+See the Grafana table below for default credentials and override parameters.
+
 ## Configuration
 
 The following tables list the configurable parameters and their default values.
@@ -76,23 +102,30 @@ The following tables list the configurable parameters and their default values.
 
 ### Data Flow Server Configuration
 
-| Parameter                         | Description                                        | Default          |
-| --------------------------------- | -------------------------------------------------- | ---------------- |
-| server.version                    | The version/tag of the Data Flow server            | 2.2.0.RELEASE
-| server.imagePullPolicy            | The imagePullPolicy of the Data Flow server        | IfNotPresent
-| server.service.type               | The service type for the Data Flow server          | LoadBalancer
-| server.service.annotations        | Extra annotations for service resources            | {}
-| server.platformName               | The name of the configured platform account        | default
-| server.service.externalPort       | The external port for the Data Flow server         | 80
+| Parameter                         | Description                                                        | Default          |
+| --------------------------------- | ------------------------------------------------------------------ | ---------------- |
+| server.version                    | The version/tag of the Data Flow server                            | 2.3.0.RELEASE
+| server.imagePullPolicy            | The imagePullPolicy of the Data Flow server                        | IfNotPresent
+| server.service.type               | The service type for the Data Flow server                          | LoadBalancer
+| server.service.annotations        | Extra annotations for service resource                             | {}
+| server.service.externalPort       | The external port for the Data Flow server                         | 80
+| server.service.labels             | Extra labels for the service resource                              | {}
+| server.platformName               | The name of the configured platform account                        | default
+| server.configMap                  | Custom ConfigMap name for Data Flow server configuration           |
+| server.trustCerts                 | Trust self signed certs                                            | false
 
 ### Skipper Server Configuration
 
-| Parameter                          | Description                                       | Default          |
-| ---------------------------------- | ------------------------------------------------- | ---------------- |
-| skipper.version                    | The version/tag of the Skipper server             | 2.1.0.RELEASE
-| skipper.imagePullPolicy            | The imagePullPolicy of the Skipper server         | IfNotPresent
-| skipper.platformName               | The name of the configured platform account       | default
-| skipper.service.type               | The service type for the Skipper server           | ClusterIP
+| Parameter                         | Description                                                      | Default          |
+| --------------------------------- | ---------------------------------------------------------------- | ---------------- |
+| skipper.version                   | The version/tag of the Skipper server                            | 2.2.1.RELEASE
+| skipper.imagePullPolicy           | The imagePullPolicy of the Skipper server                        | IfNotPresent
+| skipper.platformName              | The name of the configured platform account                      | default
+| skipper.service.type              | The service type for the Skipper server                          | ClusterIP
+| skipper.service.annotations       | Extra annotations for service resources                          | {}
+| skipper.service.labels            | Extra labels for the service resource                            | {}
+| skipper.configMap                 | Custom ConfigMap name for Skipper server configuration           |
+| skipper.trustCerts                | Trust self signed certs                                          | false
 
 ### Spring Cloud Deployer for Kubernetes Configuration
 
@@ -145,3 +178,38 @@ The following tables list the configurable parameters and their default values.
 | database.password   | Database password              | nil
 | database.dataflow   | Database name for SCDF server  | dataflow
 | database.skipper    | Database name for SCDF skipper | skipper
+
+### Feature Toggles
+
+| Parameter                    | Description                             | Default                   |
+| ---------------------------- | --------------------------------------- | ------------------------- |
+| features.streaming.enabled   | Enables or disables streams             | true
+| features.batch.enabled       | Enables or disables tasks and schedules | true
+| features.monitoring.enabled  | Enables or disables monitoring          | false
+
+### Grafana
+
+| Parameter                            | Description                                                  | Default                    |
+| ------------------------------------ | ------------------------------------------------------------ | -------------------------- |
+| grafana.service.type                 | Service type to use                                          | LoadBalancer
+| grafana.admin.existingSecret         | Existing Secret to use for login credentials                 | scdf-grafana-secret
+| grafana.admin.userKey                | Secret userKey field                                         | admin-user
+| grafana.admin.passwordKey            | Secret passwordKey field                                     | admin-password
+| grafana.admin.defaultUsername        | The default base64 encoded login username used in the secret | admin
+| grafana.admin.defaultPassword        | The default base64 encoded login password used in the secret | password
+| grafana.extraConfigmapMounts         | ConfigMap mount for datasources                              | scdf-grafana-ds-cm
+| grafana.dashboardProviders           | Dashboard provider for imported dashboards                   | default
+| grafana.dashboards                   | Dashboards to auto import                                    | SCDF Apps, Streams & Tasks
+
+### Prometheus
+| Parameter                                    | Description                                        | Default                                |
+| -------------------------------------------- | -------------------------------------------------- | -------------------------------------- |
+| prometheus.server.global.scrape_interval     | Scrape interval                                    | 10s
+| prometheus.server.global.scrape_timeout      | Scrape timeout                                     | 9s
+| prometheus.server.global.evaluation_interval | Evaluation interval                                | 10s
+| prometheus.extraScrapeConfigs                | Additional scrape configs for proxied applications | `proxied-applications` & `proxies` jobs
+| prometheus.podSecurityPolicy                 | Enable or disable PodSecurityContext               | true
+| prometheus.alertmanager                      | Enable or disable alert manager                    | false
+| prometheus.kubeStateMetrics                  | Enable or disable kube state metrics               | false
+| prometheus.nodeExporter                      | Enable or disable node exporter                    | false
+| prometheus.pushgateway                       | Enable or disable push gateway                     | false

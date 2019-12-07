@@ -18,4 +18,7 @@ spec:
       app.kubernetes.io/instance: {{ .Release.Name }}
   endpoints:
     - port: http
+      {{- if .Values.prometheus.monitor.honorLabels }}
+      honorLabels: true
+      {{- end }}
 {{- end }}

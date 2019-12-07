@@ -20,6 +20,12 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "node-red.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- if .Values.podAnnotations }}
+      annotations:
+        {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      {{- end }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -40,10 +46,17 @@ spec:
           env:
             - name: FLOWS
               value: "{{ .Values.flows }}"
+            - name: NODE_RED_ENABLE_SAFE_MODE
+              value: "{{ .Values.safeMode }}"
+            - name: NODE_RED_ENABLE_PROJECTS
+              value: "{{ .Values.enableProjects }}"
             - name: NODE_OPTIONS
               value: "{{ .Values.nodeOptions }}"
             - name: TZ
               value: "{{ .Values.timezone }}"
+          {{- with .Values.extraEnvs }}
+{{ toYaml . | indent 12 }}
+          {{- end }}
           volumeMounts:
             - name: data
               mountPath: /data

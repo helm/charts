@@ -49,6 +49,11 @@ spec:
         secret:
           secretName: {{ $name }}
       {{- end }}
+      {{- range .Values.googleServiceAccountSecrets }}
+      - name: {{ .name }}
+        secret:
+          secretName: {{ .secretName }}
+      {{- end }}
       {{- if .Values.gitconfig }}
       - name: gitconfig-volume
         secret:
@@ -68,6 +73,9 @@ spec:
       - name: config
         configMap:
           name:  {{ template "atlantis.fullname" . }}
+      {{- end }}
+      {{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
       {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -94,7 +102,7 @@ spec:
           args:
             - server
             {{- if .Values.config }}
-            - --config /etc/atlantis/atlantis.yaml
+            - --config=/etc/atlantis/atlantis.yaml
             {{- end }}
           ports:
           - name: atlantis
@@ -236,6 +244,11 @@ spec:
             readOnly: true
             mountPath: /etc/{{ $name }}
           {{- end }}
+          {{- range .Values.googleServiceAccountSecrets }}
+          - name: {{ .name }}
+            readOnly: true
+            mountPath: /var/secrets/{{ .name }}
+          {{- end }}
           {{- if .Values.gitconfig}}
           - name: gitconfig-volume
             readOnly: true
@@ -252,13 +265,18 @@ spec:
           {{- end }}
           {{- if .Values.repoConfig }}
           - name: repo-config
-            mountPath: /etc/atlantis
+            mountPath: /etc/atlantis/repos.yaml
+            subPath: repos.yaml
             readOnly: true
           {{- end }}
           {{- if .Values.config }}
           - name: config
-            mountPath: /etc/atlantis
+            mountPath: /etc/atlantis/atlantis.yaml
+            subPath: atlantis.yaml
             readOnly: true
+          {{- end }}
+          {{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 10 }}
           {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}

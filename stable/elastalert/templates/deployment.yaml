@@ -1,5 +1,5 @@
 {{ if .Values.elasticsearch.host }}
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "elastalert.fullname" . }}
@@ -9,6 +9,10 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "elastalert.name" . }}
+      release: {{ .Release.Name }}
   replicas: {{ .Values.replicaCount }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   template:
@@ -16,6 +20,9 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
         checksum/rules: {{ include (print $.Template.BasePath "/rules.yaml") . | sha256sum }}
+{{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
       labels:
         name: {{ template "elastalert.fullname" . }}-elastalert
         app: {{ template "elastalert.name" . }}
@@ -46,6 +53,10 @@ spec:
 {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}
+{{- if .Values.optEnv }}
+        env:
+{{ .Values.optEnv | toYaml | indent 10}}
+{{- end }}
       restartPolicy: Always
 {{- if .Values.tolerations }}
       tolerations:

@@ -1,12 +1,16 @@
 image:
   repository: quay.io/bitnami/sealed-secrets-controller
-  tag: v0.8.1
+  tag: v0.9.6
   pullPolicy: IfNotPresent
 
 resources: {}
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
+controller:
+  # controller.create: `true` if Sealed Secrets controller should be created
+  create: true
 
 serviceAccount:
   # serviceAccount.create: Whether to create a service account or not
@@ -29,3 +33,7 @@ crd:
   keep: true
 
 networkPolicy: false
+
+securityContext:
+  # securityContext.runAsUser defines under which user the operator Pod and its containers/processes run.
+  runAsUser: 1001

@@ -14,10 +14,7 @@ spec:
       app.kubernetes.io/name: {{ include "prometheus-blackbox-exporter.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
   strategy:
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
-    type: RollingUpdate
+{{ toYaml .Values.strategy | indent 4 }}
   template:
     metadata:
       labels:
@@ -26,7 +23,10 @@ spec:
         app.kubernetes.io/managed-by: {{ .Release.Service }}
         helm.sh/chart: {{ include "prometheus-blackbox-exporter.chart" . }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
+        {{- end }}
     spec:
     {{- if .Values.nodeSelector }}
       nodeSelector:
@@ -48,6 +48,10 @@ spec:
     {{- end }}
 
       restartPolicy: {{ .Values.restartPolicy }}
+
+      {{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+      {{- end }}
       containers:
         - name: blackbox-exporter
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -81,21 +85,6 @@ spec:
           volumeMounts:
             - mountPath: /config
               name: config
-        - name: configmap-reload
-          image: "{{ .Values.configmapReload.image.repository }}:{{ .Values.configmapReload.image.tag }}"
-          imagePullPolicy: "{{ .Values.configmapReload.image.pullPolicy }}"
-          securityContext:
-            runAsNonRoot: {{ .Values.configmapReload.runAsNonRoot }}
-            runAsUser: {{ .Values.configmapReload.runAsUser }}
-          args:
-            - --volume-dir=/etc/config
-            - --webhook-url=http://localhost:{{ .Values.service.port }}/-/reload
-          resources:
-{{ toYaml .Values.configmapReload.resources | indent 12 }}
-          volumeMounts:
-            - mountPath: /etc/config
-              name: config
-              readOnly: true
       volumes:
         - name: config
 {{- if .Values.secretConfig }}

@@ -1,13 +1,17 @@
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "metabase.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "metabase.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "metabase.name" . }}
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
@@ -108,7 +112,7 @@ spec:
               path: /
               port: {{ .Values.service.internalPort }}
             initialDelaySeconds: 120
-            timeoutSeconds: 5
+            timeoutSeconds: 30
             failureThreshold: 6
           readinessProbe:
             httpGet:

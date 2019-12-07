@@ -23,6 +23,9 @@ spec:
         release: "{{ .Release.Name }}"
         component: post-upgrade-migrations
     spec:
+      {{- if .Values.podSecurityPolicy.enabled }}
+      serviceAccountName: {{ template "kong.serviceAccountName" . }}
+      {{- end }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range .Values.image.pullSecrets }}
@@ -33,6 +36,7 @@ spec:
       initContainers:
       - name: wait-for-postgres
         image: "{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
+        imagePullPolicy: {{ .Values.waitImage.pullPolicy }}
         env:
         - name: KONG_PG_HOST
           value: {{ template "kong.postgresql.fullname" . }}
@@ -50,6 +54,10 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
+        - name: KONG_LUA_PACKAGE_PATH
+          value: "/opt/?.lua;;"
+        - name: KONG_PLUGINS
+          value: {{ template "kong.plugins" . }}
         - name: KONG_NGINX_DAEMON
           value: "off"
         {{- if .Values.enterprise.enabled }}
@@ -66,11 +74,11 @@ spec:
               name: {{ template "kong.postgresql.fullname" . }}
               key: postgresql-password
         {{- end }}
-        {{- if .Values.cassandra.enabled }}
-        - name: KONG_CASSANDRA_CONTACT_POINTS
-          value: {{ template "kong.cassandra.fullname" . }}
-        {{- end }}
         {{- include "kong.env" .  | indent 8 }}
         command: [ "/bin/sh", "-c", "kong migrations finish" ]
+        volumeMounts:
+        {{- include "kong.volumeMounts" . | nindent 8 }}
       restartPolicy: OnFailure
+      volumes:
+      {{- include "kong.volumes" . | nindent 6 -}}
 {{- end }}

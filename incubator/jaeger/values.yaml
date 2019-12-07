@@ -6,7 +6,7 @@ provisionDataStore:
   cassandra: true
   elasticsearch: false
 
-tag: 1.13.1
+tag: 1.15.1
 
 nameOverride: ""
 fullnameOverride: ""
@@ -37,6 +37,9 @@ storage:
   cassandra:
     host: cassandra
     port: 9042
+    tls:
+      enabled: false
+      secretName: cassandra-tls-secret
     user: user
     usePassword: true
     password: password
@@ -88,6 +91,10 @@ schema:
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
+  ## Deadline for cassandra schema creation job
+  activeDeadlineSeconds: 120
+  # traceTtl: 172800
+  # dependenciesTtl: 0
 
 # Begin: Override values on the Elasticsearch subchart to customize for Jaeger
 elasticsearch:
@@ -147,6 +154,12 @@ collector:
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
   replicaCount: 1
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 10
+    # targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
   service:
     annotations: {}
     # List of IP ranges that are allowed to access the load balancer (if supported)
@@ -180,6 +193,37 @@ collector:
   #   subPath: ""
   #   configMap: jaeger-tls
   #   readOnly: true
+  # samplingConfig: |-
+  #   {
+  #     "service_strategies": [
+  #       {
+  #         "service": "foo",
+  #         "type": "probabilistic",
+  #         "param": 0.8,
+  #         "operation_strategies": [
+  #           {
+  #             "operation": "op1",
+  #             "type": "probabilistic",
+  #             "param": 0.2
+  #           },
+  #           {
+  #             "operation": "op2",
+  #             "type": "probabilistic",
+  #             "param": 0.4
+  #           }
+  #         ]
+  #       },
+  #       {
+  #         "service": "bar",
+  #         "type": "ratelimiting",
+  #         "param": 5
+  #       }
+  #     ],
+  #     "default_strategy": {
+  #       "type": "probabilistic",
+  #       "param": 1
+  #     }
+  #   }
 
 query:
   enabled: true

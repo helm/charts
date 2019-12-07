@@ -22,3 +22,4 @@ ps:
 hyperparams:
   batchsize: 20
   learningrate: 0.001
+  trainsteps: 0
