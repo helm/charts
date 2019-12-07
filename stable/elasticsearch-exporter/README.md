@@ -77,6 +77,7 @@ Parameter | Description | Default
 `es.uri` | address of the Elasticsearch node to connect to | `localhost:9200`
 `es.all` | if `true`, query stats for all nodes in the cluster, rather than just the node we connect to | `true`
 `es.indices` | if true, query stats for all indices in the cluster | `true`
+`es.indices_settings` | if true, query settings stats for all indices in the cluster | `true`
 `es.shards` | if true, query stats for shards in the cluster | `true`
 `es.cluster_settings` | if true, query stats for cluster settings | `true`
 `es.snapshots` | if true, query stats for snapshots in the cluster | `true`

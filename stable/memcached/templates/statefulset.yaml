@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: {{ .Values.kind }}
 metadata:
   name: {{ template "memcached.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "memcached.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"

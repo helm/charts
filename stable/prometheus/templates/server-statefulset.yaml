@@ -71,6 +71,10 @@ spec:
         - name: {{ template "prometheus.name" . }}-{{ .Values.server.name }}
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
           imagePullPolicy: "{{ .Values.server.image.pullPolicy }}"
+          {{- if .Values.server.env }}
+          env:
+{{ toYaml .Values.server.env | indent 12}}
+          {{- end }}
           args:
           {{- if .Values.server.retention }}
             - --storage.tsdb.retention.time={{ .Values.server.retention }}
@@ -98,14 +102,14 @@ spec:
             httpGet:
               path: {{ .Values.server.prefixURL }}/-/ready
               port: 9090
-            initialDelaySeconds: 30
-            timeoutSeconds: 30
+            initialDelaySeconds: {{ .Values.server.readinessProbeInitialDelay }}
+            timeoutSeconds: {{ .Values.server.readinessProbeTimeout }}
           livenessProbe:
             httpGet:
               path: {{ .Values.server.prefixURL }}/-/healthy
               port: 9090
-            initialDelaySeconds: 30
-            timeoutSeconds: 30
+            initialDelaySeconds: {{ .Values.server.livenessProbeInitialDelay }}
+            timeoutSeconds: {{ .Values.server.livenessProbeTimeout }}
           resources:
 {{ toYaml .Values.server.resources | indent 12 }}
           volumeMounts:
