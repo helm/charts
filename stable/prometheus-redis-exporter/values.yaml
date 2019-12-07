@@ -58,3 +58,13 @@ serviceMonitor:
 # script:
 #   configmap: prometheus-redis-exporter-script
 #   keyname: script
+
+auth:
+  # when redis use password to attach
+  enabled: false
+  # redis password stored in Secret
+  secret:
+    name: ""
+    key: ""
+  # when redis password not be stored in Secret, point it directly
+  redisPassword: ""
