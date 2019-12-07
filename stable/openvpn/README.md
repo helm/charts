@@ -113,6 +113,7 @@ Parameter | Description | Default
 `openvpn.istio.proxy.port`           | Istio proxy port                                                     | `15001`
 `openvpn.iptablesExtra`              | Custom iptables rules for clients                                    | `[]`
 `nodeSelector`                       | Node labels for pod assignment                                       | `{}`
+`tolerations`                        | Tolerations for node taints                                          | `[]`
 
 This chart has been engineered to use kube-dns and route all network traffic to kubernetes pods and services,
 to disable this behaviour set `openvpn.OVPN_K8S_POD_NETWORK` and `openvpn.OVPN_K8S_POD_SUBNET` to `null`.
