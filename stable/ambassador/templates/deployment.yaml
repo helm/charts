@@ -17,7 +17,7 @@ metadata:
       {{- toYaml .Values.deploymentAnnotations | nindent 4 }}
     {{- end }}
 spec:
-{{- if not .Values.daemonSet }}
+{{- if and (not .Values.autoscaling.enabled) (not .Values.daemonSet) }}
   replicas: {{ .Values.replicaCount }}
 {{- end }}
   selector:
@@ -99,7 +99,7 @@ spec:
             {{- toYaml .Values.prometheusExporter.resources | nindent 12 }}
         {{- end }}
         - name: {{ .Chart.Name }}
-          {{- if and .Values.pro.enabled (gt .Values.pro.image.tag "0.6.0") }}
+          {{- if and .Values.pro.enabled (semverCompare ">0.6.0" .Values.pro.image.tag) }}
           image: "{{ .Values.pro.image.repository }}:amb-core-{{ .Values.pro.image.tag }}"
           {{ else }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -120,7 +120,7 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.hostIP
-            {{- if and .Values.pro.enabled (gt .Values.pro.image.tag "0.6.0") }}
+            {{- if and .Values.pro.enabled (semverCompare ">0.6.0" .Values.pro.image.tag) }}
             - name: AMBASSADOR_LICENSE_KEY
             {{- if .Values.pro.licenseKey.secret.enabled }}
               valueFrom:
@@ -159,14 +159,16 @@ spec:
             httpGet:
               path: /ambassador/v0/check_alive
               port: admin
-            initialDelaySeconds: 30
-            periodSeconds: 3
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           readinessProbe:
             httpGet:
               path: /ambassador/v0/check_ready
               port: admin
-            initialDelaySeconds: 30
-            periodSeconds: 3
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           volumeMounts:
             - name: ambassador-pod-info
               mountPath: /tmp/ambassador-pod-info
