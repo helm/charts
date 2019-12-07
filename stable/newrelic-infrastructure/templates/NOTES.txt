@@ -1,10 +1,10 @@
-{{ if and (or .Values.licenseKey (and .Values.customSecretName .Values.customSecretKey)) .Values.cluster }}
+{{- if (include "newrelic.areValuesValid" .) }}
 Your deployment of the New Relic Infrastructure agent is complete. You can check on the progress of this by running the following command:
 
     kubectl get daemonset -o wide -w --namespace {{ .Release.Namespace }} {{ template "newrelic.fullname" . }}
 {{- else -}}
 ##############################################################################
-####     ERROR: You did not set a licenseKey and/or cluster name.         ####
+####       ERROR: You did not set a licenseKey and/or cluster name.       ####
 ##############################################################################
 
 This deployment will be incomplete until you get your API key from New Relic.
