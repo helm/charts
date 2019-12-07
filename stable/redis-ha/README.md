@@ -141,6 +141,8 @@ The following table lists the configurable parameters of the Redis chart and the
 | `sysctlImage.pullPolicy`  | sysctlImage Init container pull policy                                                                                                                                                                   | `Always`                                                                                   |
 | `sysctlImage.mountHostSys`| Mount the host `/sys` folder to `/host-sys`                                                                                                                                                              | `false`                                                                                    |
 | `schedulerName`           | Alternate scheduler name                                                                                                                                                                                 | `nil`                                                                                      |
+| `persistentVolume.storageClass`   | Type of persistent volume claim     | `nil`
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
