@@ -1,0 +1,16 @@
+{{- if .Values.features.monitoring.enabled }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ .Release.Name }}-prometheus-proxy
+  labels:
+    app: {{ .Release.Name }}-prometheus-proxy
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Release.Name }}-prometheus-proxy
+    namespace: default
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}
