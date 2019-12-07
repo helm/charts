@@ -137,6 +137,35 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `readinessProbe.timeoutSeconds`     | When the probe times out                                                                    | 1      |
 | `readinessProbe.successThreshold`   | Minimum consecutive successes for the probe to be considered successful after having failed | 1      |
 | `readinessProbe.failureThreshold`   | Minimum consecutive failures for the probe to be considered failed after having succeeded.  | 3      |
+| `mailReceiver.enabled`              | Whether to enable scheduled mail-to-task CronJob | `false` |
+| `mailReceiver.schedule`             | Kubernetes CronJob schedule                      | `*/5 * * * *` |
+| `mailReceiver.suspend`              | Whether to create suspended CronJob              | `true`        |
+| `mailReceiver.image.registry`       | Mail to Task image registry                      | `docker.io`   |
+| `mailReceiver.image.repository`     | Mail to Task image repository                    | `demonihin/redmine-mail-receiver`    |
+| `mailReceiver.image.tag`            | Mail to Task image tag                           | `4.0.5-alpine-r12` |
+| `mailReceiver.image.pullPolicy`     | Mail to Task image pull policy                   | `IfNotPresent`   |
+| `mailReceiver.mailProtocol`         | Mail protocol to use for reading emails: `IMAP` or `POP3`          | `IMAP` |
+| `mailReceiver.host`                 | Server to receive emails from                    | `""`             |
+| `mailReceiver.port`                 | TCP port on the `host`                           | `143`            |
+| `mailReceiver.username`             | Login to authenticate on the `host`              | `""`             |
+| `mailReceiver.password`             | Password to authenticate on the `host`           | `""`             |
+| `mailReceiver.ssl`                  | Whether use SSL/TLS to connect to the `host`     | `true`           |
+| `mailReceiver.startTLS`             | Whether use StartTLS to connect to the `host`    | `false`          |
+| `mailReceiver.imapFolder`           | IMAP only. Folder to read emails from            | `INBOX`          |
+| `mailReceiver.moveOnsuccess`        | IMAP only. Folder to move processed emails to    | `""`             |
+| `mailReceiver.moveOnFailure`        | IMAP only. Folder to move emails with processing errors to | `""`   |
+| `mailReceiver.unknownUserAction`    | Action to perform is an email received from unregistered user | `ignore` |
+| `mailReceiver.noPermissionCheck`    | Whether skip permission check during creating a new task | `0`      |
+| `mailReceiver.noAccountNotice`      | Whether send an email to an unregistered user created during a new task creation | `1` |
+| `mailReceiver.defaultGroup`         | Defines a group list to add created user to              | `""`     |
+| `mailReceiver.project`              | Defines identifier of the target project for a new task  | `""`     |
+| `mailReceiver.projectFromSubaddress` | Defines email address to select project from subaddress | `""`     |
+| `mailReceiver.status`               | Defines a new task status                                | `""`     |
+| `mailReceiver.tracker`              | Defines a new task tracker                               | `""`     |
+| `mailReceiver.category`             | Defines a new task category                              | `""`     |
+| `mailReceiver.priority`             | Defines a new task priority                              | `""`     |
+| `mailReceiver.assignedTo`           | Defines a new task priority                              | `""`     |
+| `mailReceiver.allowOverride`        | Defines if email content is allowed to set attributes values. Values is a comma separated list of attributes or `all` to alllow all attributes                             | `""`     |
 
 The above parameters map to the env variables defined in [bitnami/redmine](http://github.com/bitnami/bitnami-docker-redmine). For more information please refer to the [bitnami/redmine](http://github.com/bitnami/bitnami-docker-redmine) image documentation.
 
@@ -183,9 +212,9 @@ See the [Parameters](#parameters) section to configure the PVC or to disable per
 The following example includes two PVCs, one for Redmine and another for MariaDB.
 
 1. Create the PersistentVolume
-1. Create the PersistentVolumeClaim
-1. Create the directory, on a worker
-1. Install the chart
+2. Create the PersistentVolumeClaim
+3. Create the directory, on a worker
+4. Install the chart
 
 ```bash
 $ helm install --name test --set persistence.existingClaim=PVC_REDMINE,mariadb.persistence.existingClaim=PVC_MARIADB  redmine
