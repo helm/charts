@@ -61,6 +61,8 @@ condition_map = {
     'kubernetes-resources': ' .Values.defaultRules.rules.kubernetesResources',
     'kubernetes-storage': ' .Values.defaultRules.rules.kubernetesStorage',
     'kubernetes-system': ' .Values.defaultRules.rules.kubernetesSystem',
+    'kubernetes-system-apiserver': ' .Values.defaultRules.rules.kubernetesSystem', # kubernetes-system was split into more groups in 1.14, one of them is kubernetes-system-apiserver
+    'kubernetes-system-kubelet': ' .Values.defaultRules.rules.kubernetesSystem', # kubernetes-system was split into more groups in 1.14, one of them is kubernetes-system-kubelet
     'kubernetes-system-controller-manager': ' .Values.kubeControllerManager.enabled',
     'kubernetes-system-scheduler': ' .Values.kubeScheduler.enabled .Values.defaultRules.rules.kubeScheduler',
     'node-exporter.rules': ' .Values.nodeExporter.enabled .Values.defaultRules.rules.node',
@@ -70,6 +72,7 @@ condition_map = {
     'node-time': ' .Values.defaultRules.rules.time',
     'prometheus-operator': ' .Values.defaultRules.rules.prometheusOperator',
     'prometheus.rules': ' .Values.defaultRules.rules.prometheus',
+    'prometheus': ' .Values.defaultRules.rules.prometheus', # kube-prometheus >= 1.14 uses prometheus as group instead of prometheus.rules
     'kubernetes-apps': ' .Values.kubeStateMetrics.enabled .Values.defaultRules.rules.kubernetesApps',
     'etcd': ' .Values.kubeEtcd.enabled .Values.defaultRules.rules.etcd',
 }
