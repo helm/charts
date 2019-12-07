@@ -5,6 +5,10 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.9.5 Enable remoting security
+
+`Manage Jenkins` -> `Configure Global Security` -> `Enable Agent → Master Access Control` is now enabled via configuration as code plugin
+
 ## 1.9.4 Option to set existing secret with Google Application Default Credentials
 
 Google application credentials are kept in a file, which has to be mounted to a pod. You can set `gcpcredentials` in `existingSecret` as follows:
