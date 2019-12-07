@@ -92,6 +92,15 @@ data:
 {{- if .Values.backend.forward.shared_key }}
         Shared_Key    {{ .Values.backend.forward.shared_key }}
 {{- end }}
+{{- if .Values.backend.forward.tls }}
+        tls           {{ .Values.backend.forward.tls }}
+{{- end }}
+{{- if .Values.backend.forward.tls_verify }}
+        tls.verify    {{ .Values.backend.forward.tls_verify }}
+{{- end }}
+{{- if .Values.backend.forward.tls_debug }}
+        tls.debug     {{ .Values.backend.forward.tls_debug }}
+{{- end }}
 {{ else if eq .Values.backend.type "es" }}
     [OUTPUT]
         Name  es
