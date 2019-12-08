@@ -32,10 +32,17 @@ service:
   type: ClusterIP
   annotations: {}
 
-  ## Creates a service account for this telegraf deployment and adds the given array of rules
-  account:
-    enabled: false
-    rules: []
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+  rules: []
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
 
 ## Exposed telegraf configuration
 ## For full list of possible values see `/docs/all-config-values.yaml` and `/docs/all-config-values.toml`
