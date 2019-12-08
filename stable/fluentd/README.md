@@ -57,6 +57,8 @@ Parameter | Description | Default
 `image.tag` | Image tag | `v2.4.0`
 `imagePullSecrets` | Specify image pull secrets | `nil` (does not add image pull secrets to deployed pods)
 `extraEnvVars` | Adds additional environment variables to the deployment (in yaml syntax) | `{}` See [values.yaml](values.yaml)
+`extraVolumeMounts` | Mount extra volumes (in yaml syntax) | `` See [values.yaml](values.yaml)
+`extraVolumes` | Extra volumes (in yaml syntax) | `` See [values.yaml](values.yaml)
 `ingress.enabled` | enable ingress | `false`
 `ingress.labels` | list of labels for the ingress rule | See [values.yaml](values.yaml)
 `ingress.annotations` | list of annotations for the ingress rule | `kubernetes.io/ingress.class: nginx` See [values.yaml](values.yaml)

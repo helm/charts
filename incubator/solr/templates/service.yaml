@@ -14,6 +14,6 @@ spec:
     - port: {{ .Values.port }}
       name: "solr-client"
   selector:
-    app.kubernetes.io/instance: "{{ include "solr.name" . }}"
+    app.kubernetes.io/name: "{{ include "solr.name" . }}"
     app.kubernetes.io/instance: "{{ .Release.Name }}"
     app.kubernetes.io/component: "server"

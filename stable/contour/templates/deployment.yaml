@@ -12,7 +12,9 @@ spec:
   selector:
     matchLabels:
       app: {{ template "contour.fullname" . }}
+{{- if not .Values.hpa.create }}
   replicas: 2
+{{- end }}
   template:
     metadata:
       labels:

@@ -1,4 +1,11 @@
 ---
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imagePullSecrets
+##
+# global:
+#   imagePullSecrets:
+#     - myRegistryKeySecretName
 
 # Which port should solr listen on
 port: 8983
@@ -24,6 +31,13 @@ image:
   repository: solr
   tag: 7.7.2
   pullPolicy: IfNotPresent
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistryKeySecretName
+
 
 # Solr pod liveness
 livenessProbe:
@@ -87,6 +101,13 @@ service:
 
 # Configuration for the solr prometheus exporter
 exporter:
+  image: {}
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  #   pullSecrets:
+  #     - myRegistryKeySecretName
   enabled: false  # Deploy the exporter
   configFile: "/opt/solr/contrib/prometheus-exporter/conf/solr-exporter-config.xml"  # The config file to point the exporter to
   updateStrategy: {}

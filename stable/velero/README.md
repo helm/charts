@@ -1,8 +1,14 @@
 # Velero-server
 
-This helm chart installs Velero version v1.1.0
-https://github.com/vmware-tanzu/velero/tree/v1.1.0
+This helm chart installs Velero version v1.2.0
+https://github.com/vmware-tanzu/velero/tree/v1.120
 
+
+## Upgrading to v1.2.0
+
+As of v1.0.0, Velero is no longer backwards-compatible with Heptio Ark.
+
+The [instructions found here](https://velero.io/docs/v1.2.0/upgrade-to-1.2/) will assist you in upgrading from version v1.1.0 to v1.2.0
 
 ## Upgrading to v1.1.0
 
@@ -26,7 +32,7 @@ The [instructions found here](https://velero.io/docs/v0.11.0/migrating-to-velero
 
 ### Secret for cloud provider credentials
 Velero server needs an IAM service account in order to run, if you don't have it you must create it.
-Please follow the official documentation: https://velero.io/docs/v1.0.0/install-overview/
+Please follow the official documentation: https://velero.io/docs/v1.2.0/install-overview/
 
 Don't forget the step to create the secret
 ```
@@ -35,7 +41,7 @@ kubectl create secret generic cloud-credentials --namespace <VELERO_NAMESPACE> -
 
 ### Configuration
 Please change the values.yaml according to your setup
-See here for the official documentation https://velero.io/docs/v1.0.0/install-overview/
+See here for the official documentation https://velero.io/docs/v1.2.0/install-overview/
 
 #### Required Parameters
 Parameter | Description | Default | Required
@@ -56,8 +62,8 @@ Parameter | Description | Default | Required
 #### All Parameters
 Parameter | Description | Default
 --- | --- | ---
-`image.repository` | Image repository | `gcr.io/heptio-images/velero`
-`image.tag` | Image tag | `v1.0.0`
+`image.repository` | Image repository | `velero/velero`
+`image.tag` | Image tag | `v1.2.0`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `podAnnotations` | Annotations for the Velero server pod | `{}`
 `rbac.create` | If true, create and use RBAC resources | `true`
@@ -91,6 +97,8 @@ Parameter | Description | Default
 `configuration.volumeSnapshotLocation.config.resourceGroup` | The name of the resource group where volume snapshots should be stored, if different from the cluster’s resource group. (Azure only) |
 `configuration.volumeSnapshotLocation.config.project` | The project ID where snapshots should be stored, if different than the project that your IAM account is in. (GCP only) |
 `configuration.volumeSnapshotLocation.config.snapshotLocation` | The location where the snapshots will be stored. (GCP only) |
+`configuration.logLevel` | Set log-level for Velero pod. Default: info. Other options: debug, warning, error, fatal, panic. |
+`configuration.logFormat` | Set log-format for Velero pod. Default: text. Other option: json. |
 `credentials.existingSecret` | If specified and `useSecret` is `true`, uses an existing secret with this name instead of creating one | ``
 `credentials.useSecret` | Whether a secret should be used. Set this to `false` when using `kube2iam` | `true`
 `credentials.secretContents` | Contents for the credentials secret | `{}`
