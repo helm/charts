@@ -1,5 +1,4 @@
-{{- if .Values.kubeStateMetrics.enabled -}}
-{{- if .Values.rbac.create }}
+{{- if and .Values.kubeStateMetrics.enabled .Values.rbac.create -}}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
@@ -85,5 +84,4 @@ rules:
     verbs:
       - list
       - watch
-{{- end }}
 {{- end }}
