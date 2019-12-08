@@ -164,6 +164,7 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
+      serviceAccountName: {{ template "redmine.serviceAccountName" . }}
       {{- with .Values.securityContext }}
       securityContext:
 {{ toYaml . | indent 8 }}
