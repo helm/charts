@@ -1,4 +1,4 @@
-{{- if and .Values.pushgateway.enabled .Values.rbac.create .Values.podSecurityPolicy.enabled -}}
+{{- if and .Values.pushgateway.enabled .Values.rbac.create -}}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
@@ -6,6 +6,7 @@ metadata:
     {{- include "prometheus.pushgateway.labels" . | nindent 4 }}
   name: {{ template "prometheus.pushgateway.fullname" . }}
 rules:
+{{- if .Values.podSecurityPolicy.enabled }}
   - apiGroups:
     - extensions
     resources:
@@ -14,4 +15,7 @@ rules:
     - use
     resourceNames:
     - {{ template "prometheus.pushgateway.fullname" . }}
+{{- else }}
+  []
+{{- end }}
 {{- end }}
