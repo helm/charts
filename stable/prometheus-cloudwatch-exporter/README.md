@@ -67,6 +67,7 @@ The following table lists the configurable parameters of the Cloudwatch Exporter
 | `aws.secret.includesSessionToken` | Whether or not the pre-created secret contains an AWS STS session token |                             |
 | `config`                          | Cloudwatch exporter configuration                                       | `example configuration`     |
 | `rbac.create`                     | If true, create & use RBAC resources                                    | `false`                     |
+| `serviceAccount.annotations`      | Add annotations to the created service account                          | `{}`                        |
 | `serviceAccount.create`           | Specifies whether a service account should be created.                  | `true`                      |
 | `serviceAccount.name`             | Name of the service account.                                            |                             |
 | `tolerations`                     | Add tolerations                                                         | `[]`                        |
