@@ -145,6 +145,7 @@ rbac:
 # Information about the Kubernetes service account Velero uses.
 serviceAccount:
   server:
+    annotations: {}
     create: true
     name:
 

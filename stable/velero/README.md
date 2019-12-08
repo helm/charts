@@ -67,8 +67,9 @@ Parameter | Description | Default
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `podAnnotations` | Annotations for the Velero server pod | `{}`
 `rbac.create` | If true, create and use RBAC resources | `true`
-`rbac.server.serviceAccount.create` | Whether a new service account name that the server will use should be created | `true`
-`rbac.server.serviceAccount.name` | Service account to be used for the server. If not set and `rbac.server.serviceAccount.create` is `true` a name is generated using the fullname template | ``
+`server.serviceAccount.create` | Whether a new service account name that the server will use should be created | `true`
+`server.serviceAccount.name` | Service account to be used for the server. If not set and `rbac.server.serviceAccount.create` is `true` a name is generated using the fullname template | ``
+`server.serviceAccount.annotations` | Annotations to be added to the created service account | `{}`
 `resources` | Resource requests and limits | `{}`
 `initContainers` | InitContainers and their specs to start with the deployment pod | `[]`
 `tolerations` | List of node taints to tolerate | `[]`
