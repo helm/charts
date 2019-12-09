@@ -1,0 +1,63 @@
+{{- if .Values.sentinel.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "redis.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "redis.name" . }}
+    chart: {{ template "redis.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    {{- if .Values.sentinel.service.labels }}
+    {{ toYaml .Values.sentinel.service.labels | nindent 4 }}
+    {{- end }}
+  annotations:
+    "helm.sh/hook": post-install, post-upgrade
+    "helm.sh/hook-delete-policy": hook-succeeded , before-hook-creation
+    checksum/health: {{ include (print $.Template.BasePath "/health-configmap.yaml") . | sha256sum }}
+spec:
+  backoffLimit: 1
+  #activeDeadlineSeconds: 120
+  template:
+    spec: 
+{{- include "redis.imagePullSecrets" . | indent 6 }}
+      restartPolicy: Never
+      containers:
+      - name: sentinel-reset
+        image: "{{ template "sentinel.image" . }}"
+        imagePullPolicy: {{ .Values.sentinel.image.pullPolicy | quote }}
+        {{- if .Values.securityContext.enabled }}
+        securityContext:
+          runAsUser: {{ .Values.securityContext.runAsUser }}
+        {{- end }}
+        command:
+        - /bin/bash
+        - -c
+        - |
+          $(timeout -s 9 {{ .Values.sentinel.initialCheckTimeout }} redis-cli --raw -h $REDIS_MASTER_HOST -a \"$REDIS_PASSWORD\" -p {{ .Values.sentinel.service.sentinelPort }} SENTINEL sentinels {{ .Values.sentinel.masterSet }} | awk -f /health/parse_sentinels_reset.awk)
+          redis-cli --raw -h $REDIS_MASTER_HOST -a \"$REDIS_PASSWORD\" -p 26379 SENTINEL reset {{ .Values.sentinel.masterSet }}
+        env:
+        - name: REDIS_MASTER_HOST
+          value: {{ template "redis.fullname" . }}-master-0.{{ template "redis.fullname" . }}-headless.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
+        {{- if .Values.usePassword }}
+        {{- if .Values.usePasswordFile }}
+        - name: REDIS_PASSWORD_FILE
+          value: "/opt/bitnami/redis/secrets/redis-password"
+        {{- else }}
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "redis.secretName" . }}
+              key: {{ template "redis.secretPasswordKey" . }}
+        {{- end }}
+        {{- end }}
+        volumeMounts:
+        - name: health
+          mountPath: /health
+      volumes:
+      - name: health
+        configMap:
+          name: {{ template "redis.fullname" . }}-health
+          defaultMode: 0755
+{{- end }}
