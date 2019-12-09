@@ -81,6 +81,17 @@ data:
         printf "\nsentinel known-sentinel {{ .Values.sentinel.masterSet }} %s %s %s", IP, PORT, $0; FOUND_RUNID=0;
       }
     }
+  parse_sentinels_reset.awk: |-
+    /ip/ {FOUND_IP=1}
+    /port/ {FOUND_PORT=1}
+    !/ip|port/ {
+      if (FOUND_IP==1) {
+        IP=$1; FOUND_IP=0;
+      }
+      else if (FOUND_PORT==1) {
+        printf "redis-cli --raw -h %s -a \"$REDIS_PASSWORD\" -p %s SENTINEL reset {{ .Values.sentinel.masterSet }}; ", IP, $1; FOUND_PORT=0;
+      }
+    }
 {{- end }}
   ping_readiness_master.sh: |-
 {{- if .Values.usePasswordFile }}
