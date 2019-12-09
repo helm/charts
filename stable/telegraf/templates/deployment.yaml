@@ -23,7 +23,7 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
         {{- end }}
     spec:
-      {{- if .Values.service.account.enabled }}
+      {{- if .Values.rbac.create }}
       serviceAccountName: {{ template "telegraf.fullname" . }}
       {{- end }}
       containers:
