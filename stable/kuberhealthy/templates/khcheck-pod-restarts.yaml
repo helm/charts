@@ -5,22 +5,23 @@ kind: KuberhealthyCheck
 metadata:
   name: pod-restarts
 spec:
-  runInterval: 60m
-  timeout: 62m
+  runInterval: 5m
+  timeout: 10m
   podSpec:
     containers:
       - env:
           - name: POD_NAMESPACE
             value: "kube-system"
-          - name: CHECK_RUN_WINDOW
-            value: "55m"
+          - name: CHECK_POD_TIMEOUT
+            value: "10m"
           - name: MAX_FAILURES_ALLOWED
-            value: "5"
-        image: quay.io/comcast/pod-restarts-check:1.0.0
+            value: "10"
+        image: quay.io/comcast/pod-restarts-check:2.0.0
         imagePullPolicy: IfNotPresent
         name: main
         resources:
           requests:
             cpu: 10m
             memory: 50Mi
+    restartPolicy: Never
 {{- end }}

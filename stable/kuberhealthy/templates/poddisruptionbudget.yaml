@@ -9,3 +9,4 @@ spec:
     matchLabels:
       app: {{ template "kuberhealthy.name" . }}
       chart: {{ .Chart.Name }}
+

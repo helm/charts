@@ -24,3 +24,4 @@ spec:
     targetPort: http
   selector:
     app: {{ template "kuberhealthy.name" . }}
+

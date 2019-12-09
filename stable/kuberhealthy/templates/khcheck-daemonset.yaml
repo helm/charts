@@ -16,7 +16,7 @@ spec:
                 fieldPath: metadata.namespace
           - name: CHECK_POD_TIMEOUT
             value: "10m"
-        image: quay.io/comcast/kh-daemonset-check:1.0.0
+        image: quay.io/comcast/kh-daemonset-check:2.0.0
         imagePullPolicy: IfNotPresent
         name: main
         resources:

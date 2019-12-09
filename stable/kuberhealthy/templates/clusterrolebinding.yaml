@@ -11,4 +11,4 @@ subjects:
 - kind: ServiceAccount
   name: {{ template "kuberhealthy.name" . }}
   namespace: {{ .Release.Namespace }}
-  
+
