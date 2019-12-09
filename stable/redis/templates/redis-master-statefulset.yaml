@@ -211,7 +211,8 @@ spec:
             existing_sentinels=$(timeout -s 9 {{ .Values.sentinel.initialCheckTimeout }} redis-cli --raw -h {{ template "redis.fullname" . }} -a "$REDIS_PASSWORD" -p {{ .Values.sentinel.service.sentinelPort }} SENTINEL sentinels {{ .Values.sentinel.masterSet }})
             echo "$existing_sentinels" | awk -f /health/parse_sentinels.awk | tee -a  /opt/bitnami/redis-sentinel/etc/sentinel.conf
           fi
-          
+          bash -c "sleep 120; $(timeout -s 9 {{ .Values.sentinel.initialCheckTimeout }} redis-cli --raw -h localhost -a \"$REDIS_PASSWORD\" -p {{ .Values.sentinel.service.sentinelPort }} SENTINEL sentinels {{ .Values.sentinel.masterSet }} | awk -f /health/parse_sentinels_reset.awk) echo; redis-cli --raw -h localhost -a \"$REDIS_PASSWORD\" -p 26379 SENTINEL reset {{ .Values.sentinel.masterSet }}" &
+
           redis-server /opt/bitnami/redis-sentinel/etc/sentinel.conf --sentinel
         env:
         {{- if .Values.usePassword }}
