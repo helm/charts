@@ -3,6 +3,12 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.4.23
+
+### Minor changes
+
+* Update NOTES.txt to use the newest URL for finding the infrastructure.
+
 ## v1.4.22
 
 ### Minor changes

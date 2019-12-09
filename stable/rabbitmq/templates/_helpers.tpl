@@ -243,3 +243,16 @@ rabbitmq: LDAP
 {{- end -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Renders a value that contains template.
+Usage:
+{{ include "rabbitmq.tplValue" (dict "value" .Values.path.to.the.Value "context" $) }}
+*/}}
+{{- define "rabbitmq.tplValue" -}}
+    {{- if typeIs "string" .value }}
+        {{- tpl .value .context }}
+    {{- else }}
+        {{- tpl (.value | toYaml) .context }}
+    {{- end }}
+{{- end -}}

@@ -89,8 +89,8 @@ spec:
         - name: REDMINE_DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ printf "%s-%s" .Release.Name "externaldb" }}
-              key: db-password
+              name: {{ template "redmine.secretName" . }}
+              key: external-db-password
         - name: REDMINE_DB_PORT_NUMBER
           value: {{ .Values.externalDatabase.port | quote }}
         {{- end }}
@@ -164,6 +164,7 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
+      serviceAccountName: {{ template "redmine.serviceAccountName" . }}
       {{- with .Values.securityContext }}
       securityContext:
 {{ toYaml . | indent 8 }}
