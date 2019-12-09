@@ -42,5 +42,5 @@ spec:
             - --store-endpoints={{ .Values.store.endpoints }}
             {{- end }}
             - -p
-            - '{ {{- range $key, $value := .Values.clusterSpec }} {{ $key | quote }}: {{ if typeIs "string" $value }} {{ $value | quote }} {{ else }} {{ $value }} {{ end }}, {{- end }} "pgParameters": {{ toJson .Values.pgParameters }} }'
+            - '{ {{- range $key, $value := .Values.clusterSpec }} {{ $key | quote }}: {{ if typeIs "string" $value }} {{ $value | quote }} {{ else }} {{ $value }} {{ end }}, {{- end }} {{ if .Values.tls.enabled }}"pgParameters": {{- $pgParameters := .Values.pgParameters -}}{{ $all := set $pgParameters "ssl" "on" }}{{ $all := set $all "ssl_cert_file" "/certs/serverCrt.crt" }} {{ $all := set $all "ssl_key_file" "/certs/serverKey.key" }}{{ $all := set $all "ssl_ca_file" "/certs/rootCa.crt" }}{{ toJson $all }} {{ else }}"pgParameters": {{- $pgParameters := .Values.pgParameters -}}{{ $all := set $pgParameters "ssl" nil }}{{ $all := set $all "ssl_cert_file" nil }} {{ $all := set $all "ssl_key_file" nil }}{{ $all := set $all "ssl_ca_file" "null" }}{{ toJson $all }}{{ end}}}'
 {{ end }}

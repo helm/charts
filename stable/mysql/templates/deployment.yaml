@@ -14,6 +14,8 @@ metadata:
 {{- end }}
 
 spec:
+  strategy:
+{{ toYaml .Values.strategy | indent 4 }}
   selector:
     matchLabels:
       app: {{ template "mysql.fullname" . }}
@@ -46,6 +48,7 @@ spec:
         fsGroup: {{ .Values.securityContext.fsGroup }}
         runAsUser: {{ .Values.securityContext.runAsUser }}
       {{- end }}
+      serviceAccountName: {{ template "mysql.serviceAccountName" . }}
       initContainers:
       - name: "remove-lost-found"
         image: "{{ .Values.busybox.image}}:{{ .Values.busybox.tag }}"

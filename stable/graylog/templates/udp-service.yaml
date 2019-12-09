@@ -21,12 +21,12 @@ spec:
       port: {{ .port }}
       protocol: UDP
       targetPort: {{ .port }}
+    {{- if eq "NodePort" $.Values.graylog.input.udp.service.type }}
+      {{- if .nodePort }}
+      nodePort:  {{ .nodePort }}
+      {{- end }}
+    {{- end }}
   {{- end }}
-{{- if contains "NodePort" .Values.graylog.input.udp.service.type }}
-  {{- if .Values.graylog.input.udp.service.nodePort }}
-      nodePort:  {{ .Values.graylog.input.udp.service.nodePort }}
-  {{- end }}
-{{- end }}
 {{- if .Values.graylog.input.udp.service.externalIPs }}
   externalIPs:
 {{ toYaml .Values.graylog.input.udp.service.externalIPs | indent 4 }}

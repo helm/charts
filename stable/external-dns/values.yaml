@@ -13,7 +13,7 @@
 image:
   registry: docker.io
   repository: bitnami/external-dns
-  tag: 0.5.17-debian-9-r25
+  tag: 0.5.17-debian-9-r50
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -87,6 +87,9 @@ azure:
   ##
   secretName: ""
   ## Azure resource group to use
+  ##
+  cloud: ""
+  ## Azure Cloud to use
   ##
   resourceGroup: ""
   ## Azure tenant ID to use
@@ -418,3 +421,30 @@ metrics:
   enabled: false
   ## Metrics exporter pod Annotation and Labels
   ##
+  # podAnnotations:
+  #   prometheus.io/scrape: "true"
+  #   prometheus.io/port: "7979"
+
+  ## Prometheus Operator ServiceMonitor configuration
+  ##
+  serviceMonitor:
+    enabled: false
+    ## Namespace in which Prometheus is running
+    ##
+    # namespace: monitoring
+
+    ## Interval at which metrics should be scraped.
+    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#endpoint
+    ##
+    # interval: 10s
+
+    ## Timeout after which the scrape is ended
+    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#endpoint
+    ##
+    # scrapeTimeout: 10s
+
+    ## ServiceMonitor selector labels
+    ## ref: https://github.com/bitnami/charts/tree/master/bitnami/prometheus-operator#prometheus-configuration
+    ##
+    # selector:
+    #   prometheus: my-prometheus

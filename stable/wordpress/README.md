@@ -80,6 +80,9 @@ The following table lists the configurable parameters of the WordPress chart and
 | `smtpUsername`                            | User name for SMTP emails                                                     | `nil`                                                        |
 | `smtpProtocol`                            | SMTP protocol [`tls`, `ssl`, `none`]                                          | `nil`                                                        |
 | `replicaCount`                            | Number of WordPress Pods to run                                               | `1`                                                          |
+| `extraEnv`                                | Additional container environment variables                                    | `[]`                                                         |
+| `extraVolumeMounts`                       | Additional volume mounts                                                      | `[]`                                                         |
+| `extraVolumes`                            | Additional volumes                                                            | `[]`                                                         |
 | `mariadb.enabled`                         | Deploy MariaDB container(s)                                                   | `true`                                                       |
 | `mariadb.rootUser.password`               | MariaDB admin password                                                        | `nil`                                                        |
 | `mariadb.db.name`                         | Database name to create                                                       | `bitnami_wordpress`                                          |
@@ -340,7 +343,7 @@ For performance and security reasons, it is a good practice to configure Apache 
 However, some plugins may include `.htaccess` directives that will not be loaded when `AllowOverride` is set to `None`. A way to make them work would be to create your own `wordpress-htaccess.conf` file with all the required dircectives to make the plugin work. After creating it, then create a ConfigMap with it and install the chart with the correct parameters:
 
 ```console
-allowOverrideNone=yes
+allowOverrideNone=true
 customHTAccessCM=custom-htaccess
 ```
 
@@ -352,6 +355,14 @@ Persistent Volume Claims are used to keep the data across deployments. This is k
 See the [Parameters](#parameters) section to configure the PVC or to disable persistence.
 
 ## Upgrading
+
+### To 8.0.0
+
+Helm performs a lookup for the object based on its group (apps), version (v1), and kind (Deployment). Also known as its GroupVersionKind, or GVK. Changing the GVK is considered a compatibility breaker from Kubernetes' point of view, so you cannot "upgrade" those objects to the new GVK in-place. Earlier versions of Helm 3 did not perform the lookup correctly which has since been fixed to match the spec.
+
+In https://github.com/helm/charts/pulls/12642 the `apiVersion` of the deployment resources was updated to `apps/v1` in tune with the api's deprecated, resulting in compatibility breakage.
+
+This major version signifies this change.
 
 ### To 3.0.0
 
