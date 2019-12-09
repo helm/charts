@@ -5,15 +5,15 @@
 # https://www.openpolicyagent.org/docs/configuration.html for more details.
 # Default value is no default config. For custom config, the opa key
 # needs to include the opa config yaml, eg:
-# opa:
-#   services:
-#     controller:
-#       url: https://some.bundle.host
-#   bundle:
-#     service: controller
-#     name: some-bundle-name.tgz
-#   default_decision: "/some_bundle_name/main"
-opa: false
+opa:
+  services:
+    controller:
+      url: 'https://www.openpolicyagent.org'
+  bundles:
+    quickstart:
+      service: controller
+      resource: /bundles/helm-kubernetes-quickstart
+  default_decision: /helm_kubernetes_quickstart/main
 
 # Setup the webhook using cert-manager
 certManager:
