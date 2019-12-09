@@ -49,9 +49,9 @@ spec:
     {{- if $.Values.extraVolumeMounts }}
 {{ toYaml $.Values.extraVolumeMounts | indent 12 }}
     {{- end }}
-{{ if .Values.command }}
+{{ if $.Values.command }}
           command:
-{{ toYaml .Values.command | indent 12 }}
+{{ toYaml $.Values.command | indent 12 }}
 {{- end }}
           args: [ "--config", "/etc/es-curator/config.yml", "/etc/es-curator/action_file.yml" ]
           resources:
