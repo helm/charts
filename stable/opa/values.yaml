@@ -103,7 +103,7 @@ authz:
 
 # Docker image and tag to deploy.
 image: openpolicyagent/opa
-imageTag: 0.14.1
+imageTag: 0.15.1
 imagePullPolicy: IfNotPresent
 
 # Port to which the opa pod will bind itself
@@ -114,7 +114,7 @@ port: 443
 mgmt:
   enabled: true
   image: openpolicyagent/kube-mgmt
-  imageTag: 0.9
+  imageTag: "0.10"
   imagePullPolicy: IfNotPresent
   extraArgs: []
   resources: {}
