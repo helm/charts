@@ -29,6 +29,8 @@ This chart will deploy the New Relic Infrastructure agent as a Daemonset.
 | `updateStrategy`                | Strategy for DaemonSet updates (requires Kubernetes >= 1.6)  | `RollingUpdate`            |
 | `serviveAccount.create`         | If true, a service account would be created and assigned to the deployment | true |
 | `serviveAccount.name`           | The service account to assign to the deployment. If `serviveAccount.create` is true then this name will be used when creating the service account | |
+| `etcdTlsSecretName`             | Name of the secret containing the cacert, cert and key used for setting the mTLS config for retrieving metrics from ETCD. | |
+| `etcdTlsSecretNamespace`        | Namespace where the the secret specified in `etcdTlsSecretName` was created. | `default`  |
 
 ## Example
 

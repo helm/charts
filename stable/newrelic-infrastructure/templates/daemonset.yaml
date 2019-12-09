@@ -59,6 +59,14 @@ spec:
             - name: TIMEOUT
               value: {{ .Values.kubeStateMetricsTimeout | quote }}
             {{- end }}
+            {{- if .Values.etcdTlsSecretName }}
+            - name: ETCD_TLS_SECRET_NAME
+              value: {{ .Values.etcdTlsSecretName | quote }}
+            {{- if .Values.etcdTlsSecretNamespace }}
+            - name: ETCD_TLS_SECRET_NAMESPACE
+              value: {{ .Values.etcdTlsSecretNamespace | quote }}
+            {{- end }}
+            {{- end }}
             - name: "NRIA_DISPLAY_NAME"
               valueFrom:
                 fieldRef:
