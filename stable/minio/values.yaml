@@ -6,7 +6,7 @@ clusterDomain: cluster.local
 ##
 image:
   repository: minio/minio
-  tag: RELEASE.2019-08-07T01-59-21Z
+  tag: edge
   pullPolicy: IfNotPresent
 
 ## Set default image, imageTag, and imagePullPolicy for the `mc` (the minio
@@ -14,7 +14,7 @@ image:
 ##
 mcImage:
   repository: minio/mc
-  tag: RELEASE.2019-08-07T23-14-43Z
+  tag: edge
   pullPolicy: IfNotPresent
 
 ## minio server mode, i.e. standalone or distributed.
@@ -52,6 +52,7 @@ configPath: "/root/.minio/"
 configPathmc: "/root/.mc/"
 mountPath: "/export"
 replicas: 4
+zones: 1
 
 ## TLS Settings for Minio
 tls:

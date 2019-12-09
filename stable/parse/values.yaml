@@ -63,7 +63,7 @@ server:
   image:
     registry: docker.io
     repository: bitnami/parse
-    tag: 3.9.0-debian-9-r8
+    tag: 3.9.0-debian-9-r26
     ## Specify a imagePullPolicy
     ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
     ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -186,7 +186,7 @@ dashboard:
   image:
     registry: docker.io
     repository: bitnami/parse-dashboard
-    tag: 2.0.3-debian-9-r1
+    tag: 2.0.5-debian-9-r25
     ## Specify a imagePullPolicy
     ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
     ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images

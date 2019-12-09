@@ -79,6 +79,10 @@ spec:
 {{ toYaml .Values.server.env | indent 12}}
           {{- end }}
           imagePullPolicy: "{{ .Values.server.image.pullPolicy }}"
+          {{- if .Values.server.env }}
+          env:
+{{ toYaml .Values.server.env | indent 12}}
+          {{- end }}
           args:
           {{- if .Values.server.retention }}
             - --storage.tsdb.retention.time={{ .Values.server.retention }}

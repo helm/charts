@@ -60,6 +60,7 @@ backend:
     logstash_prefix: kubernetes_cluster
     replace_dots: "On"
     logstash_format: "On"
+    retry_limit: "False"
     time_key: "@timestamp"
     # Optional username credential for Elastic X-Pack access
     http_user:

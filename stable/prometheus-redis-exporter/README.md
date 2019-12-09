@@ -66,6 +66,7 @@ The following table lists the configurable parameters and their default values.
 | `serviceMonitor.telemetryPath` | Path to redis-exporter telemtery-path                  |                            |
 | `serviceMonitor.labels`        | Labels for the servicemonitor passed to Prometheus Operator      |  `{}`            |
 | `serviceMonitor.timeout`       | Timeout after which the scrape is ended                |                            |
+| `serviceMonitor.targetLabels`  | Set of labels to transfer on the Kubernetes Service onto the target.  |             |
 | `script.configmap`     | Let you run a custom lua script from a configmap. The corresponding environment variable `REDIS_EXPORTER_SCRIPT` will be set automatically ||
 | `script.keyname`       | Name of the key inside configmap which contains your script ||
 

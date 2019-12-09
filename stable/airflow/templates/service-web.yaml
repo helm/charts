@@ -18,6 +18,11 @@ spec:
     app: {{ template "airflow.name" . }}
     component: web
     release: {{ .Release.Name }}
+  sessionAffinity: {{ .Values.airflow.service.sessionAffinity }}
+  sessionAffinityConfig:
+{{- if .Values.airflow.service.sessionAffinityConfig }}
+{{ toYaml .Values.airflow.service.sessionAffinityConfig | indent 4 }}
+{{- end }}
   ports:
     - name: web
       protocol: TCP
