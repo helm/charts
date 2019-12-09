@@ -24,7 +24,7 @@ spec:
         {{- end }}
     spec:
       {{- if .Values.service.account.enabled }}
-      serviceAccountName: {{ template "telegraf.fullname" . }}-service-account
+      serviceAccountName: {{ template "telegraf.fullname" . }}
       {{- end }}
       containers:
       - name: {{ .Chart.Name }}

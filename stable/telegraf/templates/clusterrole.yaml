@@ -1,8 +1,8 @@
-{{- if .Values.service.account.enabled }}
+{{- if .Values.rbac.create }}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
-  name: {{ template "telegraf.fullname" . }}-cluster-role
+  name: {{ template "telegraf.fullname" . }}
 rules:
-{{ toYaml .Values.service.account.rules | indent 2 }}
+{{ toYaml .Values.rbac.rules | indent 2 }}
 {{- end }}
