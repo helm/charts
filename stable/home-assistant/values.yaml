@@ -11,6 +11,17 @@ image:
 # upgrade strategy type (e.g. Recreate or RollingUpdate)
 strategyType: Recreate
 
+# Probes configuration
+probes:
+  liveness:
+    initialDelaySeconds: 60
+    failureThreshold: 5
+    timeoutSeconds: 10
+  readiness:
+    initialDelaySeconds: 60
+    failureThreshold: 5
+    timeoutSeconds: 10
+
 service:
   type: ClusterIP
   port: 8123

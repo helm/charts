@@ -95,8 +95,8 @@ Parameter | Description | Default
 `controller.publishService.enabled` | if true, the controller will set the endpoint records on the ingress objects to reflect those on the service | `false`
 `controller.publishService.pathOverride` | override of the default publish-service name | `""`
 `controller.service.enabled` | if disabled no service will be created. This is especially useful when `controller.kind` is set to `DaemonSet` and `controller.daemonset.useHostPorts` is `true` | true
-`controller.service.clusterIP` | internal controller cluster service IP | `""`
-`controller.service.omitClusterIP` | To omit the `clusterIP` from the controller service | `false`
+`controller.service.clusterIP` | internal controller cluster service IP | `nil`
+`controller.service.omitClusterIP` | (Deprecated) To omit the `clusterIP` from the controller service | `false`
 `controller.service.externalIPs` | controller service external IP addresses. Do not set this when `controller.hostNetwork` is set to `true` and `kube-proxy` is used as there will be a port-conflict for port `80` | `[]`
 `controller.service.externalTrafficPolicy` | If `controller.service.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable [source IP preservation](https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typenodeport) | `"Cluster"`
 `controller.service.healthCheckNodePort` | If `controller.service.type` is `NodePort` or `LoadBalancer` and `controller.service.externalTrafficPolicy` is set to `Local`, set this to [the managed health-check port the kube-proxy will expose](https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typenodeport). If blank, a random port in the `NodePort` range will be assigned | `""`
@@ -127,8 +127,8 @@ Parameter | Description | Default
 `controller.readinessProbe.port` | The port number that the readiness probe will listen on. | 10254
 `controller.metrics.enabled` | if `true`, enable Prometheus metrics | `false`
 `controller.metrics.service.annotations` | annotations for Prometheus metrics service | `{}`
-`controller.metrics.service.clusterIP` | cluster IP address to assign to service | `""`
-`controller.metrics.service.omitClusterIP` | To omit the `clusterIP` from the metrics service | `false`
+`controller.metrics.service.clusterIP` | cluster IP address to assign to service | `nil`
+`controller.metrics.service.omitClusterIP` | (Deprecated) To omit the `clusterIP` from the metrics service | `false`
 `controller.metrics.service.externalIPs` | Prometheus metrics service external IP addresses | `[]`
 `controller.metrics.service.labels` | labels for metrics service | `{}`
 `controller.metrics.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
@@ -149,8 +149,8 @@ Parameter | Description | Default
 `controller.admissionWebhooks.failurePolicy` | Failure policy for admission webhooks | `Fail`
 `controller.admissionWebhooks.port` | Admission webhook port | `8080`
 `controller.admissionWebhooks.service.annotations` | Annotations for admission webhook service | `{}`
-`controller.admissionWebhooks.service.omitClusterIP` | To omit the `clusterIP` from the admission webhook service | `false`
-`controller.admissionWebhooks.service.clusterIP` | cluster IP address to assign to admission webhook service | `""`
+`controller.admissionWebhooks.service.omitClusterIP` | (Deprecated) To omit the `clusterIP` from the admission webhook service | `false`
+`controller.admissionWebhooks.service.clusterIP` | cluster IP address to assign to admission webhook service | `nil`
 `controller.admissionWebhooks.service.externalIPs` | Admission webhook service external IP addresses | `[]`
 `controller.admissionWebhooks.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `controller.admissionWebhooks.service.loadBalancerSourceRanges` | List of IP CIDRs allowed access to load balancer (if supported) | `[]`
@@ -202,19 +202,19 @@ Parameter | Description | Default
 `defaultBackend.priorityClassName` | default backend  priorityClassName | `nil`
 `defaultBackend.podSecurityContext` | Security context policies to add to the default backend | `{}`
 `defaultBackend.service.annotations` | annotations for default backend service | `{}`
-`defaultBackend.service.clusterIP` | internal default backend cluster service IP | `""`
-`defaultBackend.service.omitClusterIP` | To omit the `clusterIP` from the default backend service | `false`
+`defaultBackend.service.clusterIP` | internal default backend cluster service IP | `nil`
+`defaultBackend.service.omitClusterIP` | (Deprecated) To omit the `clusterIP` from the default backend service | `false`
 `defaultBackend.service.externalIPs` | default backend service external IP addresses | `[]`
 `defaultBackend.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `defaultBackend.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `defaultBackend.service.type` | type of default backend service to create | `ClusterIP`
+`defaultBackend.serviceAccount.create` | if `true`, create a backend service account. Only useful if you need a pod security policy to run the backend. | `true`
+`defaultBackend.serviceAccount.name` | The name of the backend service account to use. If not set and `create` is `true`, a name is generated using the fullname template. Only useful if you need a pod security policy to run the backend. | ``
 `imagePullSecrets` | name of Secret resource containing private registry credentials | `nil`
 `rbac.create` | if `true`, create & use RBAC resources | `true`
 `podSecurityPolicy.enabled` | if `true`, create & use Pod Security Policy resources | `false`
 `serviceAccount.create` | if `true`, create a service account for the controller | `true`
 `serviceAccount.name` | The name of the controller service account to use. If not set and `create` is `true`, a name is generated using the fullname template. | ``
-`serviceAccount.backend.create` | if `true`, create a backend service account. Only useful if you need a pod security policy to run the backend. | `true`
-`serviceAccount.backend.name` | The name of the backend service account to use. If not set and `create` is `true`, a name is generated using the fullname template. Only useful if you need a pod security policy to run the backend. | ``
 `revisionHistoryLimit` | The number of old history to retain to allow rollback. | `10`
 `tcp` | TCP service key:value pairs. The value is evaluated as a template. | `{}`
 `udp` | UDP service key:value pairs The value is evaluated as a template. | `{}`
@@ -318,3 +318,5 @@ Error: UPGRADE FAILED: Service "?????-controller" is invalid: spec.clusterIP: In
 ```
 
 Detail of how and why are in [this issue](https://github.com/helm/charts/pull/13646) but to resolve this you can set `xxxx.service.omitClusterIP` to `true` where `xxxx` is the service referenced in the error.
+
+As of version `1.26.0` of this chart, by simply not providing any clusterIP value, `invalid: spec.clusterIP: Invalid value: "": field is immutable` will no longer occur since `clusterIP: ""` will not be rendered. If you do wish to provide a clusterIP value in your values file, ensure that it is quoted.

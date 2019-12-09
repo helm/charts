@@ -79,7 +79,8 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `smtpUser`                          | SMTP user                                  | `nil`                                                   |
 | `smtpPassword`                      | SMTP password                              | `nil`                                                   |
 | `smtpTls`                           | Use TLS encryption with SMTP               | `nil`                                                   |
-| `existingSecret`                    | Use existing secret for password details (`smtpPassword` and `redminePassword` will be ignored and picked up from this secret). The secret has to contain the keys `redmine-password` and `smtp-password`. | `nil`                        |
+| `existingSecret`                    | Use existing secret for password details (`redminePassword`, `smtpPassword` and `externalDatabase.password` will be ignored and picked up from this secret). It must contain the keys `redmine-password` and `smtp-password` when `postgresql.enabled=true` or `mariadb.enabled=true`. In case `postgresql.enabled=false` and `mariadb.enabled=false` it must contain the key `external-db-password`.
+ | `nil`                        |
 | `databaseType.postgresql`           | Select PostgreSQL as database              | `false`                                                 |
 | `databaseType.mariadb`              | Select MariaDB as database                 | `true`                                                  |
 | `mariadb.enabled`                   | Whether to deploy a MariaDB server to satisfy the applications database requirements     | `true`    |
@@ -99,8 +100,10 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `service.externalTrafficPolicy`     | Enable client source IP preservation       | `Cluster`                                               |
 | `service.loadBalancerIP`            | LoadBalancer service IP address            | `""`                                                    |
 | `service.loadBalancerSourceRanges`  | An array of load balancer sources          | `0.0.0.0/0`                                             |
+| `serviceAccount.create`             | Specifies whether a ServiceAccount should be created | `false`                                       |
+| `serviceAccount.name`               | The name of the ServiceAccount to create   | Generated using the redmine.fullname template         |
 | `ingress.enabled`                   | Enable or disable the ingress              | `false`                                                 |
-| `ingress.hosts[0].name`             | Hostname to your Redmine installation      | `redmine.local  `                                       |
+| `ingress.hosts[0].name`             | Hostname to your Redmine installation      | `redmine.local`                                       |
 | `ingress.hosts[0].path`             | Path within the url structure              | `/`                                                     |
 | `ingress.hosts[0].tls`              | Utilize TLS backend in ingress             | `false`                                                 |
 | `ingress.hosts[0].certManager`      | Add annotations for cert-manager           | `false`                                                 |
@@ -123,6 +126,7 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `podDisruptionBudget.maxUnavailable`| Maximum unavailable pods                   | `nil`                                                   |
 | `replicas`                          | The number of pod replicas                 | `1`                                                     |
 | `resources`                         | Resources allocation (Requests and Limits) | `{}`                                                    |
+| `securityContext`                   | SecurityContext                            | `{}`                                                    |
 | `livenessProbe.enabled`             | would you like a livenessProbe to be enabled                                                | `true` |
 | `livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated                                                    | 300    |
 | `livenessProbe.periodSeconds`       | How often to perform the probe                                                              | 10     |

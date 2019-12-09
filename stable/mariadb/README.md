@@ -48,143 +48,152 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the MariaDB chart and their default values.
 
-|             Parameter                     |                     Description                     |                              Default                              |
-|-------------------------------------------|-----------------------------------------------------|-------------------------------------------------------------------|
-| `global.imageRegistry`                    | Global Docker image registry                        | `nil`                                                             |
-| `global.imagePullSecrets`                 | Global Docker registry secret names as an array     | `[]` (does not add image pull secrets to deployed pods)           |
-| `global.storageClass`                     | Global storage class for dynamic provisioning       | `nil`                                                             |
-| `image.registry`                          | MariaDB image registry                              | `docker.io`                                                       |
-| `image.repository`                        | MariaDB Image name                                  | `bitnami/mariadb`                                                 |
-| `image.tag`                               | MariaDB Image tag                                   | `{TAG_NAME}`                                                      |
-| `image.pullPolicy`                        | MariaDB image pull policy                           | `IfNotPresent`                                                    |
-| `image.pullSecrets`                       | Specify docker-registry secret names as an array    | `[]` (does not add image pull secrets to deployed pods)           |
-| `image.debug`                             | Specify if debug logs should be enabled             | `false`                                                           |
-| `nameOverride`                            | String to partially override mariadb.fullname template with a string (will prepend the release name) | `nil`            |
-| `fullnameOverride`                        | String to fully override mariadb.fullname template with a string                                     | `nil`            |
-| `volumePermissions.enabled`               | Enable init container that changes volume permissions in the data directory (for cases where the default k8s `runAsUser` and `fsUser` values do not work) | `false`             |
-| `volumePermissions.image.registry`        | Init container volume-permissions image registry    | `docker.io`                                                       |
-| `volumePermissions.image.repository`      | Init container volume-permissions image name        | `bitnami/minideb`                                                 |
-| `volumePermissions.image.tag`             | Init container volume-permissions image tag         | `stretch`                                                         |
-| `volumePermissions.image.pullPolicy`      | Init container volume-permissions image pull policy | `Always`                                                          |
-| `volumePermissions.resources`             | Init container resource requests/limit              | `nil`                                                             |
-| `service.type`                            | Kubernetes service type                             | `ClusterIP`                                                       |
-| `service.clusterIp.master`                | Specific cluster IP for master when service type is cluster IP. Use None for headless service | `nil`                   |
-| `service.clusterIp.slave`                 | Specific cluster IP for slave when service type is cluster IP. Use None for headless service | `nil`                    |
-| `service.port`                            | MySQL service port                                  | `3306`                                                            |
-| `serviceAccount.create`                   | Specifies whether a ServiceAccount should be created | `false`                                                          |
-| `serviceAccount.name`                     | The name of the ServiceAccount to create            | Generated using the mariadb.fullname template                     |
-| `schedulerName`                           | Name of the k8s scheduler (other than default)      | `nil`                                                             |
-| `rbac.create`                             | Create and use RBAC resources                       | `false`                                                           |
-| `securityContext.enabled`                 | Enable security context                             | `true`                                                            |
-| `securityContext.fsGroup`                 | Group ID for the container                          | `1001`                                                            |
-| `securityContext.runAsUser`               | User ID for the container                           | `1001`                                                            |
-| `existingSecret`                          | Use existing secret for password details (`rootUser.password`, `db.password`, `replication.password` will be ignored and picked up from this secret). The secret has to contain the keys `mariadb-root-password`, `mariadb-replication-password` and `mariadb-password`. | `nil`                        |
-| `rootUser.password`                       | Password for the `root` user. Ignored if existing secret is provided. | _random 10 character alphanumeric string_       |
-| `rootUser.forcePassword`                  | Force users to specify a password                   | `false`                                                           |
-| `db.user`                                 | Username of new user to create                      | `nil`                                                             |
-| `db.password`                             | Password for the new user. Ignored if existing secret is provided.    | _random 10 character alphanumeric string if `db.user` is defined_ |
-| `db.forcePassword`                        | Force users to specify a password                   | `false`                                                           |
-| `db.name`                                 | Name for new database to create                     | `my_database`                                                     |
-| `replication.enabled`                     | MariaDB replication enabled                         | `true`                                                            |
-| `replication.user`                        |MariaDB replication user                             | `replicator`                                                      |
-| `replication.password`                    | MariaDB replication user password. Ignored if existing secret is provided. | _random 10 character alphanumeric string_  |
-| `replication.forcePassword`               | Force users to specify a password                   | `false`                                                           |
-| `initdbScripts`                           | Dictionary of initdb scripts                        | `nil`                                                             |
-| `initdbScriptsConfigMap`                  | ConfigMap with the initdb scripts (Note: Overrides `initdbScripts`) | `nil`                                             |
-| `master.annotations[].key`                | key for the the annotation list item                |  `nil`                                                            |
-| `master.annotations[].value`              | value for the the annotation list item              |  `nil`                                                            |
-| `master.extraFlags`                       | MariaDB master additional command line flags        |  `nil`                                                            |
-| `master.affinity`                         | Master affinity (in addition to master.antiAffinity when set)  | `{}`                                                   |
-| `master.antiAffinity`                     | Master pod anti-affinity policy                     | `soft`                                                            |
-| `master.nodeSelector`                     | Master node labels for pod assignment               | `{}`                                                              |
-| `master.tolerations`                      | List of node taints to tolerate (master)            | `[]`                                                              |
-| `master.updateStrategy`                   | Master statefulset update strategy policy           | `RollingUpdate`                                                   |
-| `master.persistence.enabled`              | Enable persistence using PVC                        | `true`                                                            |
-| `master.persistence.existingClaim`        | Provide an existing `PersistentVolumeClaim`         | `nil`                                                             |
-| `master.persistence.subPath`              | Subdirectory of the volume to mount                 | `nil`                                                             |
-| `master.persistence.mountPath`            | Path to mount the volume at                         | `/bitnami/mariadb`                                                |
-| `master.persistence.annotations`          | Persistent Volume Claim annotations                 | `{}`                                                              |
-| `master.persistence.storageClass`         | Persistent Volume Storage Class                     | ``                                                                |
-| `master.persistence.accessModes`          | Persistent Volume Access Modes                      | `[ReadWriteOnce]`                                                 |
-| `master.persistence.size`                 | Persistent Volume Size                              | `8Gi`                                                             |
-| `master.extraInitContainers`              | Additional init containers as a string to be passed to the `tpl` function (master) |                                    |
-| `master.extraEnvVars`                     | Array containing extra env vars to configure MariaDB master replicas          | `nil`                                   |
-| `master.config`                           | Config file for the MariaDB Master server           | `_default values in the values.yaml file_`                        |
-| `master.resources`                        | CPU/Memory resource requests/limits for master node | `{}`                                                              |
-| `master.livenessProbe.enabled`            | Turn on and off liveness probe (master)             | `true`                                                            |
-| `master.livenessProbe.initialDelaySeconds`| Delay before liveness probe is initiated (master)   | `120`                                                             |
-| `master.livenessProbe.periodSeconds`      | How often to perform the probe (master)             | `10`                                                              |
-| `master.livenessProbe.timeoutSeconds`     | When the probe times out (master)                   | `1`                                                               |
-| `master.livenessProbe.successThreshold`   | Minimum consecutive successes for the probe (master)| `1`                                                               |
-| `master.livenessProbe.failureThreshold`   | Minimum consecutive failures for the probe (master) | `3`                                                               |
-| `master.readinessProbe.enabled`           | Turn on and off readiness probe (master)            | `true`                                                            |
-| `master.readinessProbe.initialDelaySeconds`| Delay before readiness probe is initiated (master) | `30`                                                              |
-| `master.readinessProbe.periodSeconds`     | How often to perform the probe (master)             | `10`                                                              |
-| `master.readinessProbe.timeoutSeconds`    | When the probe times out (master)                   | `1`                                                               |
-| `master.readinessProbe.successThreshold`  | Minimum consecutive successes for the probe (master)| `1`                                                               |
-| `master.readinessProbe.failureThreshold`  | Minimum consecutive failures for the probe (master) | `3`                                                               |
-| `master.podDisruptionBudget.enabled`      | If true, create a pod disruption budget for master pods. | `false`                                                      |
-| `master.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `1`                                                  |
-| `master.podDisruptionBudget.maxUnavailable`| Maximum number / percentage of pods that may be made unavailable | `nil`                                               |
-| `master.service.annotations`              | Master service annotations                          | `{}`                                                              |
-| `slave.replicas`                          | Desired number of slave replicas                    | `1`                                                               |
-| `slave.annotations[].key`                 | key for the the annotation list item                | `nil`                                                             |
-| `slave.annotations[].value`               | value for the the annotation list item              | `nil`                                                             |
-| `slave.extraFlags`                        | MariaDB slave additional command line flags         | `nil`                                                             |
-| `slave.affinity`                          | Slave affinity (in addition to slave.antiAffinity when set) | `{}`                                                      |
-| `slave.antiAffinity`                      | Slave pod anti-affinity policy                      | `soft`                                                            |
-| `slave.nodeSelector`                      | Slave node labels for pod assignment                | `{}`                                                              |
-| `slave.tolerations`                       | List of node taints to tolerate for (slave)         | `[]`                                                              |
-| `slave.updateStrategy`                    | Slave statefulset update strategy policy            | `RollingUpdate`                                                   |
-| `slave.persistence.enabled`               | Enable persistence using a `PersistentVolumeClaim`  | `true`                                                            |
-| `slave.persistence.annotations`           | Persistent Volume Claim annotations                 | `{}`                                                              |
-| `slave.persistence.storageClass`          | Persistent Volume Storage Class                     | ``                                                                |
-| `slave.persistence.accessModes`           | Persistent Volume Access Modes                      | `[ReadWriteOnce]`                                                 |
-| `slave.persistence.size`                  | Persistent Volume Size                              | `8Gi`                                                             |
-| `slave.extraInitContainers`               | Additional init containers as a string to be passed to the `tpl` function (slave)  | `nil`                              |
-| `slave.extraEnvVars`                      | Array containing extra env vars to configure MariaDB slave replicas          | `nil`                                    |
-| `slave.config`                            | Config file for the MariaDB Slave replicas          | `_default values in the values.yaml file_`                        |
-| `slave.resources`                         | CPU/Memory resource requests/limits for slave node  | `{}`                                                              |
-| `slave.livenessProbe.enabled`             | Turn on and off liveness probe (slave)              | `true`                                                            |
-| `slave.livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated (slave)    | `120`                                                             |
-| `slave.livenessProbe.periodSeconds`       | How often to perform the probe (slave)              | `10`                                                              |
-| `slave.livenessProbe.timeoutSeconds`      | When the probe times out (slave)                    | `1`                                                               |
-| `slave.livenessProbe.successThreshold`    | Minimum consecutive successes for the probe (slave) | `1`                                                               |
-| `slave.livenessProbe.failureThreshold`    | Minimum consecutive failures for the probe (slave)  | `3`                                                               |
-| `slave.readinessProbe.enabled`            | Turn on and off readiness probe (slave)             | `true`                                                            |
-| `slave.readinessProbe.initialDelaySeconds`| Delay before readiness probe is initiated (slave)   | `45`                                                              |
-| `slave.readinessProbe.periodSeconds`      | How often to perform the probe (slave)              | `10`                                                              |
-| `slave.readinessProbe.timeoutSeconds`     | When the probe times out (slave)                    | `1`                                                               |
-| `slave.readinessProbe.successThreshold`   | Minimum consecutive successes for the probe (slave) | `1`                                                               |
-| `slave.readinessProbe.failureThreshold`   | Minimum consecutive failures for the probe (slave)  | `3`                                                               |
-| `slave.podDisruptionBudget.enabled`       | If true, create a pod disruption budget for slave pods. | `false`                                                       |
-| `slave.podDisruptionBudget.minAvailable`  | Minimum number / percentage of pods that should remain scheduled | `1`                                                  |
-| `slave.podDisruptionBudget.maxUnavailable`| Maximum number / percentage of pods that may be made unavailable | `nil`                                                |
-| `slave.service.annotations`               | Slave service annotations                           | `{}`                                                              |
-| `metrics.enabled`                         | Start a side-car prometheus exporter                | `false`                                                           |
-| `metrics.image.registry`                  | Exporter image registry                             | `docker.io`                                                       |
-| `metrics.image.repository`                | Exporter image name                                 | `bitnami/mysqld-exporter`                                         |
-| `metrics.image.tag`                       | Exporter image tag                                  | `{TAG_NAME}`                                                      |
-| `metrics.image.pullPolicy`                | Exporter image pull policy                          | `IfNotPresent`                                                    |
-| `metrics.resources`                       | Exporter resource requests/limit                    | `nil`                                                             |
-| `metrics.extraArgs.master`                | Extra args to be passed to mysqld_exporter          | `[]`                                                              |
-| `metrics.extraArgs.slave`                 | Extra args to be passed to mysqld_exporter          | `[]`                                                              |
-| `metrics.livenessProbe.enabled`            | Turn on and off liveness probe (metrics)             | `true`                                                          |
-| `metrics.livenessProbe.initialDelaySeconds`| Delay before liveness probe is initiated (metrics)   | `120`                                                           |
-| `metrics.livenessProbe.periodSeconds`      | How often to perform the probe (metrics)             | `10`                                                            |
-| `metrics.livenessProbe.timeoutSeconds`     | When the probe times out (metrics)                   | `1`                                                             |
-| `metrics.livenessProbe.successThreshold`   | Minimum consecutive successes for the probe (metrics)| `1`                                                             |
-| `metrics.livenessProbe.failureThreshold`   | Minimum consecutive failures for the probe (metrics) | `3`                                                             |
-| `metrics.readinessProbe.enabled`           | Turn on and off readiness probe (metrics)            | `true`                                                          |
-| `metrics.readinessProbe.initialDelaySeconds`| Delay before readiness probe is initiated (metrics) | `30`                                                            |
-| `metrics.readinessProbe.periodSeconds`     | How often to perform the probe (metrics)             | `10`                                                            |
-| `metrics.readinessProbe.timeoutSeconds`    | When the probe times out (metrics)                   | `1`                                                             |
-| `metrics.readinessProbe.successThreshold`  | Minimum consecutive successes for the probe (metrics)| `1`                                                             |
-| `metrics.readinessProbe.failureThreshold`  | Minimum consecutive failures for the probe (metrics) | `3`                                                             |
-| `metrics.serviceMonitor.enabled`          | if `true`, creates a Prometheus Operator ServiceMonitor (also requires `metrics.enabled` to be `true`)  | `false`       |
-| `metrics.serviceMonitor.namespace`        | Optional namespace which Prometheus is running in   | `nil`                                                             |
-| `metrics.serviceMonitor.interval`         | How frequently to scrape metrics (use by default, falling back to Prometheus' default)  | `nil`                         |
-| `metrics.serviceMonitor.selector`         | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install   | `{ prometheus: kube-prometheus }` |
+| Parameter                                   | Description                                         | Default                                                           |
+|---------------------------------------------|-----------------------------------------------------|-------------------------------------------------------------------|
+| `global.imageRegistry`                      | Global Docker image registry                        | `nil`                                                             |
+| `global.imagePullSecrets`                   | Global Docker registry secret names as an array     | `[]` (does not add image pull secrets to deployed pods)           |
+| `global.storageClass`                       | Global storage class for dynamic provisioning       | `nil`                                                             |
+| `image.registry`                            | MariaDB image registry                              | `docker.io`                                                       |
+| `image.repository`                          | MariaDB Image name                                  | `bitnami/mariadb`                                                 |
+| `image.tag`                                 | MariaDB Image tag                                   | `{TAG_NAME}`                                                      |
+| `image.pullPolicy`                          | MariaDB image pull policy                           | `IfNotPresent`                                                    |
+| `image.pullSecrets`                         | Specify docker-registry secret names as an array    | `[]` (does not add image pull secrets to deployed pods)           |
+| `image.debug`                               | Specify if debug logs should be enabled             | `false`                                                           |
+| `nameOverride`                              | String to partially override mariadb.fullname template with a string (will prepend the release name) | `nil`            |
+| `fullnameOverride`                          | String to fully override mariadb.fullname template with a string                                     | `nil`            |
+| `volumePermissions.enabled`                 | Enable init container that changes volume permissions in the data directory (for cases where the default k8s `runAsUser` and `fsUser` values do not work) | `false`             |
+| `volumePermissions.image.registry`          | Init container volume-permissions image registry    | `docker.io`                                                       |
+| `volumePermissions.image.repository`        | Init container volume-permissions image name        | `bitnami/minideb`                                                 |
+| `volumePermissions.image.tag`               | Init container volume-permissions image tag         | `stretch`                                                         |
+| `volumePermissions.image.pullPolicy`        | Init container volume-permissions image pull policy | `Always`                                                          |
+| `volumePermissions.resources`               | Init container resource requests/limit              | `nil`                                                             |
+| `service.type`                              | Kubernetes service type                             | `ClusterIP`                                                       |
+| `service.clusterIp.master`                  | Specific cluster IP for master when service type is cluster IP. Use None for headless service | `nil`                   |
+| `service.clusterIp.slave`                   | Specific cluster IP for slave when service type is cluster IP. Use None for headless service | `nil`                    |
+| `service.port`                              | MySQL service port                                  | `3306`                                                            |
+| `serviceAccount.create`                     | Specifies whether a ServiceAccount should be created | `false`                                                          |
+| `serviceAccount.name`                       | The name of the ServiceAccount to create            | Generated using the mariadb.fullname template                     |
+| `schedulerName`                             | Name of the k8s scheduler (other than default)      | `nil`                                                             |
+| `rbac.create`                               | Create and use RBAC resources                       | `false`                                                           |
+| `securityContext.enabled`                   | Enable security context                             | `true`                                                            |
+| `securityContext.fsGroup`                   | Group ID for the container                          | `1001`                                                            |
+| `securityContext.runAsUser`                 | User ID for the container                           | `1001`                                                            |
+| `existingSecret`                            | Use existing secret for password details (`rootUser.password`, `db.password`, `replication.password` will be ignored and picked up from this secret). The secret has to contain the keys `mariadb-root-password`, `mariadb-replication-password` and `mariadb-password`. | `nil`                        |
+| `rootUser.password`                         | Password for the `root` user. Ignored if existing secret is provided. | _random 10 character alphanumeric string_       |
+| `rootUser.forcePassword`                    | Force users to specify a password                   | `false`                                                           |
+| `rootUser.injectSecretsAsVolume`            | Mount admin user password as a file instead of using an environment variable | `false`                                  |
+| `db.name`                                   | Name for new database to create                     | `my_database`                                                     |
+| `db.user`                                   | Username of new user to create                      | `""`                                                              |
+| `db.password`                               | Password for the new user. Ignored if existing secret is provided.    | _random 10 character alphanumeric string if `db.user` is defined_ |
+| `db.forcePassword`                          | Force users to specify a password                   | `false`                                                           |
+| `db.injectSecretsAsVolume`                  | Mount user password as a file instead of using an environment variable | `false`                                        |
+| `replication.enabled`                       | MariaDB replication enabled                         | `true`                                                            |
+| `replication.user`                          | MariaDB replication user                            | `replicator`                                                      |
+| `replication.password`                      | MariaDB replication user password. Ignored if existing secret is provided. | _random 10 character alphanumeric string_  |
+| `replication.forcePassword`                 | Force users to specify a password                   | `false`                                                           |
+| `replication.injectSecretsAsVolume`         | Mount replication user password as a file instead of using an environment variable | `false`                            |
+| `initdbScripts`                             | Dictionary of initdb scripts                        | `nil`                                                             |
+| `initdbScriptsConfigMap`                    | ConfigMap with the initdb scripts (Note: Overrides `initdbScripts`) | `nil`                                             |
+| `master.annotations[].key`                  | key for the the annotation list item                |  `nil`                                                            |
+| `master.annotations[].value`                | value for the the annotation list item              |  `nil`                                                            |
+| `master.extraFlags`                         | MariaDB master additional command line flags        |  `nil`                                                            |
+| `master.affinity`                           | Master affinity (in addition to master.antiAffinity when set)  | `{}`                                                   |
+| `master.antiAffinity`                       | Master pod anti-affinity policy                     | `soft`                                                            |
+| `master.nodeSelector`                       | Master node labels for pod assignment               | `{}`                                                              |
+| `master.tolerations`                        | List of node taints to tolerate (master)            | `[]`                                                              |
+| `master.updateStrategy`                     | Master statefulset update strategy policy           | `RollingUpdate`                                                   |
+| `master.persistence.enabled`                | Enable persistence using PVC                        | `true`                                                            |
+| `master.persistence.existingClaim`          | Provide an existing `PersistentVolumeClaim`         | `nil`                                                             |
+| `master.persistence.subPath`                | Subdirectory of the volume to mount                 | `nil`                                                             |
+| `master.persistence.mountPath`              | Path to mount the volume at                         | `/bitnami/mariadb`                                                |
+| `master.persistence.annotations`            | Persistent Volume Claim annotations                 | `{}`                                                              |
+| `master.persistence.storageClass`           | Persistent Volume Storage Class                     | ``                                                                |
+| `master.persistence.accessModes`            | Persistent Volume Access Modes                      | `[ReadWriteOnce]`                                                 |
+| `master.persistence.size`                   | Persistent Volume Size                              | `8Gi`                                                             |
+| `master.extraInitContainers`                | Additional init containers as a string to be passed to the `tpl` function (master) |                                    |
+| `master.extraEnvVars`                       | Array containing extra env vars to configure MariaDB master replicas          | `nil`                                   |
+| `master.config`                             | Config file for the MariaDB Master server           | `_default values in the values.yaml file_`                        |
+| `master.resources`                          | CPU/Memory resource requests/limits for master node | `{}`                                                              |
+| `master.livenessProbe.enabled`              | Turn on and off liveness probe (master)             | `true`                                                            |
+| `master.livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated (master)   | `120`                                                             |
+| `master.livenessProbe.periodSeconds`        | How often to perform the probe (master)             | `10`                                                              |
+| `master.livenessProbe.timeoutSeconds`       | When the probe times out (master)                   | `1`                                                               |
+| `master.livenessProbe.successThreshold`     | Minimum consecutive successes for the probe (master)| `1`                                                               |
+| `master.livenessProbe.failureThreshold`     | Minimum consecutive failures for the probe (master) | `3`                                                               |
+| `master.readinessProbe.enabled`             | Turn on and off readiness probe (master)            | `true`                                                            |
+| `master.readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated (master)  | `30`                                                              |
+| `master.readinessProbe.periodSeconds`       | How often to perform the probe (master)             | `10`                                                              |
+| `master.readinessProbe.timeoutSeconds`      | When the probe times out (master)                   | `1`                                                               |
+| `master.readinessProbe.successThreshold`    | Minimum consecutive successes for the probe (master)| `1`                                                               |
+| `master.readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe (master) | `3`                                                               |
+| `master.podDisruptionBudget.enabled`        | If true, create a pod disruption budget for master pods. | `false`                                                      |
+| `master.podDisruptionBudget.minAvailable`   | Minimum number / percentage of pods that should remain scheduled | `1`                                                  |
+| `master.podDisruptionBudget.maxUnavailable` | Maximum number / percentage of pods that may be made unavailable | `nil`                                                |
+| `master.service.annotations`                | Master service annotations                          | `{}`                                                              |
+| `slave.replicas`                            | Desired number of slave replicas                    | `1`                                                               |
+| `slave.annotations[].key`                   | key for the the annotation list item                | `nil`                                                             |
+| `slave.annotations[].value`                 | value for the the annotation list item              | `nil`                                                             |
+| `slave.extraFlags`                          | MariaDB slave additional command line flags         | `nil`                                                             |
+| `slave.affinity`                            | Slave affinity (in addition to slave.antiAffinity when set) | `{}`                                                      |
+| `slave.antiAffinity`                        | Slave pod anti-affinity policy                      | `soft`                                                            |
+| `slave.nodeSelector`                        | Slave node labels for pod assignment                | `{}`                                                              |
+| `slave.tolerations`                         | List of node taints to tolerate for (slave)         | `[]`                                                              |
+| `slave.updateStrategy`                      | Slave statefulset update strategy policy            | `RollingUpdate`                                                   |
+| `slave.persistence.enabled`                 | Enable persistence using a `PersistentVolumeClaim`  | `true`                                                            |
+| `slave.persistence.annotations`             | Persistent Volume Claim annotations                 | `{}`                                                              |
+| `slave.persistence.storageClass`            | Persistent Volume Storage Class                     | ``                                                                |
+| `slave.persistence.accessModes`             | Persistent Volume Access Modes                      | `[ReadWriteOnce]`                                                 |
+| `slave.persistence.size`                    | Persistent Volume Size                              | `8Gi`                                                             |
+| `slave.extraInitContainers`                 | Additional init containers as a string to be passed to the `tpl` function (slave)  | `nil`                              |
+| `slave.extraEnvVars`                        | Array containing extra env vars to configure MariaDB slave replicas          | `nil`                                    |
+| `slave.config`                              | Config file for the MariaDB Slave replicas          | `_default values in the values.yaml file_`                        |
+| `slave.resources`                           | CPU/Memory resource requests/limits for slave node  | `{}`                                                              |
+| `slave.livenessProbe.enabled`               | Turn on and off liveness probe (slave)              | `true`                                                            |
+| `slave.livenessProbe.initialDelaySeconds`   | Delay before liveness probe is initiated (slave)    | `120`                                                             |
+| `slave.livenessProbe.periodSeconds`         | How often to perform the probe (slave)              | `10`                                                              |
+| `slave.livenessProbe.timeoutSeconds`        | When the probe times out (slave)                    | `1`                                                               |
+| `slave.livenessProbe.successThreshold`      | Minimum consecutive successes for the probe (slave) | `1`                                                               |
+| `slave.livenessProbe.failureThreshold`      | Minimum consecutive failures for the probe (slave)  | `3`                                                               |
+| `slave.readinessProbe.enabled`              | Turn on and off readiness probe (slave)             | `true`                                                            |
+| `slave.readinessProbe.initialDelaySeconds`  | Delay before readiness probe is initiated (slave)   | `45`                                                              |
+| `slave.readinessProbe.periodSeconds`        | How often to perform the probe (slave)              | `10`                                                              |
+| `slave.readinessProbe.timeoutSeconds`       | When the probe times out (slave)                    | `1`                                                               |
+| `slave.readinessProbe.successThreshold`     | Minimum consecutive successes for the probe (slave) | `1`                                                               |
+| `slave.readinessProbe.failureThreshold`     | Minimum consecutive failures for the probe (slave)  | `3`                                                               |
+| `slave.podDisruptionBudget.enabled`         | If true, create a pod disruption budget for slave pods. | `false`                                                       |
+| `slave.podDisruptionBudget.minAvailable`    | Minimum number / percentage of pods that should remain scheduled | `1`                                                  |
+| `slave.podDisruptionBudget.maxUnavailable`  | Maximum number / percentage of pods that may be made unavailable | `nil`                                                |
+| `slave.service.annotations`                 | Slave service annotations                           | `{}`                                                              |
+| `metrics.enabled`                           | Start a side-car prometheus exporter                | `false`                                                           |
+| `metrics.image.registry`                    | Exporter image registry                             | `docker.io`                                                       |
+| `metrics.image.repository`                  | Exporter image name                                 | `bitnami/mysqld-exporter`                                         |
+| `metrics.image.tag`                         | Exporter image tag                                  | `{TAG_NAME}`                                                      |
+| `metrics.image.pullPolicy`                  | Exporter image pull policy                          | `IfNotPresent`                                                    |
+| `metrics.resources`                         | Exporter resource requests/limit                    | `nil`                                                             |
+| `metrics.extraArgs.master`                  | Extra args to be passed to mysqld_exporter          | `[]`                                                              |
+| `metrics.extraArgs.slave`                   | Extra args to be passed to mysqld_exporter          | `[]`                                                              |
+| `metrics.livenessProbe.enabled`             | Turn on and off liveness probe (metrics)              | `true`                                                          |
+| `metrics.livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated (metrics)    | `120`                                                           |
+| `metrics.livenessProbe.periodSeconds`       | How often to perform the probe (metrics)              | `10`                                                            |
+| `metrics.livenessProbe.timeoutSeconds`      | When the probe times out (metrics)                    | `1`                                                             |
+| `metrics.livenessProbe.successThreshold`    | Minimum consecutive successes for the probe (metrics) | `1`                                                             |
+| `metrics.livenessProbe.failureThreshold`    | Minimum consecutive failures for the probe (metrics)  | `3`                                                             |
+| `metrics.readinessProbe.enabled`            | Turn on and off readiness probe (metrics)             | `true`                                                          |
+| `metrics.readinessProbe.initialDelaySeconds`| Delay before readiness probe is initiated (metrics)   | `30`                                                            |
+| `metrics.readinessProbe.periodSeconds`      | How often to perform the probe (metrics)              | `10`                                                            |
+| `metrics.readinessProbe.timeoutSeconds`     | When the probe times out (metrics)                    | `1`                                                             |
+| `metrics.readinessProbe.successThreshold`   | Minimum consecutive successes for the probe (metrics) | `1`                                                             |
+| `metrics.readinessProbe.failureThreshold`   | Minimum consecutive failures for the probe (metrics)  | `3`                                                             |
+| `metrics.serviceMonitor.enabled`            | if `true`, creates a Prometheus Operator ServiceMonitor (also requires `metrics.enabled` to be `true`)  | `false`       |
+| `metrics.serviceMonitor.namespace`          | Optional namespace which Prometheus is running in     | `nil`                                                           |
+| `metrics.serviceMonitor.interval`           | How frequently to scrape metrics (use by default, falling back to Prometheus' default)  | `nil`                         |
+| `metrics.serviceMonitor.selector`           | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install   | `{ prometheus: kube-prometheus }` |
+| `tests.enabled`                             | Provide tests to check if connect and authentication is possible | `true`                                               |
+| `tests.resources`                           | Resource definition for the test-runner pod           | `nil`                                                           |
+| `tests.testFramework.image.registry`        | Test framework image registry (init container)        | `docker.io`                                                     |
+| `tests.testFramework.image.repository`      | Test framework image name                             | `dduportal/bats`                                                |
+| `tests.testFramework.image.tag`             | Test framework image tag                              | `0.4.0`                                                         |
+| `tests.testFramework.resources`             | Resource definition for the test framework            | `nil`                                                           |
 
 The above parameters map to the env variables defined in [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb). For more information please refer to the [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb) image documentation.
 
@@ -218,23 +227,32 @@ Bitnami will release a new chart updating its containers if a new version of the
 
 This chart includes a `values-production.yaml` file where you can find some parameters oriented to production configuration in comparison to the regular `values.yaml`. You can use this file instead of the default one.
 
-- Force users to specify a password:
+- Force users to specify a password and mount secrets as volumes instead of using environment variables:
+
 ```diff
 - rootUser.forcePassword: false
+- rootUser.injectSecretsAsVolume: false
 + rootUser.forcePassword: true
++ rootUser.injectSecretsAsVolume: true
 - db.forcePassword: false
+- db.injectSecretsAsVolume: false
 + db.forcePassword: true
++ db.injectSecretsAsVolume: true
 - replication.forcePassword: false
+- replication.injectSecretsAsVolume: false
 + replication.forcePassword: true
++ replication.injectSecretsAsVolume: true
 ```
 
 - Desired number of slave replicas:
+
 ```diff
 - slave.replicas: 1
 + slave.replicas: 2
 ```
 
 - Start a side-car prometheus exporter:
+
 ```diff
 - metrics.enabled: false
 + metrics.enabled: true
