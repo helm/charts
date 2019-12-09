@@ -7,6 +7,9 @@ metadata:
   labels:
     app: {{ template "prometheus-operator.name" . }}-operator
 {{ include "prometheus-operator.labels" . | indent 4 }}
+{{- if .Values.prometheusOperator.service.labels }}
+{{ toYaml .Values.prometheusOperator.service.labels | indent 4 }}
+{{- end }}
 {{- if .Values.prometheusOperator.service.annotations }}
   annotations:
 {{ toYaml .Values.prometheusOperator.service.annotations | indent 4 }}
