@@ -22,11 +22,11 @@ resources: {}
 # Init containers to add to the Velero deployment's pod spec. At least one plugin provider image is required.
 initContainers: []
   # - name: velero-plugin-for-aws
-  #   image: velero/velero-plugin-for-aws:v1.0.0-beta.1
+  #   image: velero/velero-plugin-for-aws:v1.0.0
   #   imagePullPolicy: IfNotPresent
   #   volumeMounts:
   #     - mountPath: /target
-  #       name: plugin
+  #       name: plugins
 
 # Tolerations to use for the Velero deployment. Optional.
 tolerations: []
