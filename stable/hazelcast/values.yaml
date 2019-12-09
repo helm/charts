@@ -24,8 +24,6 @@ cluster:
 
 # Hazelcast properties
 hazelcast:
-  # rest is a flag used to enable REST endpoints for Hazelcast member
-  rest: true
   # javaOpts are additional JAVA_OPTS properties for Hazelcast member
   javaOpts:
   # existingConfigMap defines a ConfigMap which contains Hazelcast configuration file(s) that are used instead hazelcast.yaml configuration below
@@ -42,6 +40,11 @@ hazelcast:
             service-name: ${serviceName}
             namespace: ${namespace}
             resolve-not-ready-addresses: true
+        rest-api:
+          enabled: true
+          endpoint-groups:
+            HEALTH_CHECK:
+              enabled: true
       management-center:
         enabled: ${hazelcast.mancenter.enabled}
         url: ${hazelcast.mancenter.url}
@@ -94,6 +97,10 @@ livenessProbe:
   successThreshold: 1
   # failureThreshold is the minimum consecutive failures for the probe to be considered failed after having succeeded
   failureThreshold: 10
+  # url path that will be called to check liveness
+  path: /hazelcast/health/node-state
+  # port that will be used in liveness probe calls
+  # port:
 
 # Hazelcast Readiness probe
 readinessProbe:
@@ -109,6 +116,10 @@ readinessProbe:
   successThreshold: 1
   # failureThreshold is the minimum consecutive failures for the probe to be considered failed after having succeeded
   failureThreshold: 10
+  # url path that will be called to check readiness
+  path: /hazelcast/health/ready
+  # port that will be used in readiness probe calls
+  # port:
 
 # Configure resource requests and limits
 # ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -135,7 +146,7 @@ service:
   port: 5701
   # clusterIP set to None makes the service headless
   # It is required if DNS Lookup is used (https://github.com/hazelcast/hazelcast-kubernetes#dns-lookup)
-  # clusterIP: "None"
+  clusterIP: "None"
 
 
 # Role-based Access Control

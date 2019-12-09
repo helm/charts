@@ -159,6 +159,17 @@ initContainers: []
 
 sidecarContainers: []
 
+livenessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 3
+  failureThreshold: 3
+
+readinessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 3
+  failureThreshold: 3
+
+
 volumes: []
 
 volumeMounts: []

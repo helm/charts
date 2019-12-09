@@ -95,8 +95,6 @@ their default values.
 
 |`+cluster.memberCount+` |Number of Hazelcast members |2
 
-|`+hazelcast.rest+` |Enable REST endpoints for Hazelcast member |`+true+`
-
 |`+hazelcast.javaOpts+` |Additional JAVA_OPTS properties for Hazelcast member
 |`+nil+`
 
@@ -138,6 +136,10 @@ to be considered successful after having failed |`+1+`
 |`+livenessProbe.failureThreshold+` |Minimum consecutive failures for the probe
 to be considered failed after having succeeded. |`+3+`
 
+|`+livenessProbe.path+` |URL path that will be called to check liveness. |`+/hazelcast/health/node-state+`
+
+|`+livenessProbe.port+` |Port that will be used in liveness probe calls. |`+nil+`
+
 |`+readinessProbe.enabled+` |Turn on and off readiness probe |`+true+`
 
 |`+readinessProbe.initialDelaySeconds+` |Delay before readiness probe is
@@ -152,6 +154,10 @@ probe to be considered successful after having failed |`+1+`
 
 |`+readinessProbe.failureThreshold+` |Minimum consecutive failures for the probe
 to be considered failed after having succeeded. |`+3+`
+
+|`+readinessProbe.path+` |URL path that will be called to check readiness. |`+/hazelcast/health/ready+`
+
+|`+readinessProbe.port+` |Port that will be used in readiness probe calls. |`+nil+`
 
 |`+resources.limits.cpu+` |CPU resource limit |`+default+`
 
@@ -170,6 +176,8 @@ fullname template |`+nil+`
 `NodePort') |`+ClusterIP+`
 
 |`+service.port+` |Kubernetes service port |`+5701+`
+
+|`+service.clusterIP+` | IP of the service, "None" makes the service headless |`+None+`
 
 |`+rbac.create+` |Enable installing RBAC Role authorization |`+true+`
 
@@ -301,7 +309,7 @@ ifeval::["{repo}"=="hazelcast/charts"]
 [source,bash]
 ----
 $ helm install --name my-release \
-  --set cluster.memberCount=3,hazelcast.rest=false \
+  --set cluster.memberCount=3 \
     hazelcast/hazelcast
 ----
 endif::[]
@@ -310,13 +318,12 @@ ifeval::["{repo}"=="helm/charts"]
 [source,bash]
 ----
 $ helm install --name my-release \
-  --set cluster.memberCount=3,hazelcast.rest=false \
+  --set cluster.memberCount=3 \
     stable/hazelcast
 ----
 endif::[]
 
-The above command sets number of Hazelcast members to 3 and disables REST
-endpoints.
+The above command sets number of Hazelcast members to 3.
 
 Alternatively, a YAML file that specifies the values for the parameters can be
 provided while installing the chart. For example,
@@ -360,4 +367,23 @@ hazelcast:
             namespace: ${namespace}
             resolve-not-ready-addresses: true
         <!-- Custom Configuration Placeholder -->
+----
+
+== Notable changes
+
+=== 2.8.0
+
+Hazelcast REST Endpoints are no longer enabled by default and the parameter `hazelcast.rest` is no longer available. If you want to enable REST, please add the related `endpoint-groups` to the Hazelcast Configuration. For example:
+
+[source,yaml]
+----
+rest-api:
+  enabled: true
+  endpoint-groups:
+    HEALTH_CHECK:
+      enabled: true
+    CLUSTER_READ:
+      enabled: true
+    CLUSTER_WRITE:
+      enabled: true
 ----
