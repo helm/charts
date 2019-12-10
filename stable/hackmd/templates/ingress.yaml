@@ -2,7 +2,7 @@
 {{- $fullName := include "hackmd.fullname" . -}}
 {{- $servicePort := .Values.service.port -}}
 {{- $ingressPath := .Values.ingress.path -}}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Ingress
 metadata:
   name: {{ $fullName }}
@@ -16,6 +16,9 @@ metadata:
 {{ toYaml . | indent 4 }}
 {{- end }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "hackmd.name" . }}
 {{- if .Values.ingress.tls }}
   tls:
   {{- range .Values.ingress.tls }}
