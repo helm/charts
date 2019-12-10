@@ -137,6 +137,9 @@ spec:
           - name: MONGODB_EXTRA_FLAGS
             value: {{ .Values.mongodbExtraFlags | join " " | quote }}
           {{- end }}
+          {{- if .Values.extraEnvVars }}
+          {{- include "mongodb.tplValue" ( dict "value" .Values.extraEnvVars "context" $ ) | nindent 10 }}
+          {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             tcpSocket:
