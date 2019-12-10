@@ -51,6 +51,9 @@ spec:
         {{- if .Values.logLevel }}
         - --log-level={{ .Values.logLevel }}
         {{- end }}
+        {{- if .Values.logFormat }}
+        - --log-format={{ .Values.logFormat }}
+        {{- end }}
         {{- if .Values.dryRun }}
         - --dry-run
         {{- end }}

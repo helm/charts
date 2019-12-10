@@ -122,7 +122,10 @@ The following table lists the configurable parameters of the external-dns chart 
 | `crd.apiversion`                    | Sets the API version for the CRD to watch                                                                | `""`                                                        |
 | `crd.kind`                          | Sets the kind for the CRD to watch                                                                       | `""`                                                        |
 | `dryRun`                            | When enabled, prints DNS record changes rather than actually performing them (optional)                  | `false`                                                     |
-| `logLevel`                          | Verbosity of the logs (options: panic, debug, info, warn, error, fatal)                                  | `info`                                                      |
+| `logLevel`                          | Verbosity of the logs (options: panic, debug, info, warn, error, fatal)                                  | `info`
+
+| `logFormat`                         | Which format to output logs in (options: text, json)                                                     | `text`
+                                                |
 | `interval`                          | Interval update period to use                                                                            | `1m`                                                        |
 | `istioIngressGateways`              | The fully-qualified name of the Istio ingress gateway services .                                         | `""`                                                        |
 | `policy`                            | Modify how DNS records are sychronized between sources and providers (options: sync, upsert-only )       | `upsert-only`                                               |
