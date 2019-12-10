@@ -144,6 +144,9 @@ service:
   ##
   # loadBalancerSourceRanges: []
 
+# Add custom extra environment variables to all the MongoDB containers
+# extraEnvVars:
+
 ## Setting up replication
 ## ref: https://github.com/bitnami/bitnami-docker-mongodb#setting-up-a-replication
 #
