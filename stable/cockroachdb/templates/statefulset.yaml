@@ -50,6 +50,7 @@ spec:
         - name: {{ template "cockroachdb.fullname" . }}.init-certs.registry
       {{- end }}
     {{- end }}
+      schedulerName: {{ .Values.statefulset.schedulerName }}
     {{- if .Values.tls.enabled }}
       serviceAccountName: {{ template "cockroachdb.tls.serviceAccount.name" . }}
       initContainers:

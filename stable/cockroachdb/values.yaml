@@ -140,6 +140,7 @@ statefulset:
   updateStrategy:
     type: RollingUpdate
   podManagementPolicy: Parallel
+  schedulerName: default
   budget:
     maxUnavailable: 1
 
