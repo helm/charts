@@ -98,7 +98,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `volumes`                          | Volumes for the ambassador service                                              | `[]`                              |
 | `pro.enabled`                      | Installs the Ambassador Pro container as a sidecar to Ambassador                | `false`                           |
 | `pro.image.repository`             | Ambassador Pro image                                                            | `quay.io/datawire/ambassador_pro` |
-| `pro.image.tag`                    | Ambassador Pro image tag                                                        | `0.10.0`                          |
+| `pro.image.tag`                    | Ambassador Pro image tag                                                        | `0.11.0`                          |
 | `pro.image.customBuildTag`         | Image for a custom build of Ambassador Pro using a `Plugin`                     | ``                                |
 | `pro.ports.auth`                   | Ambassador Pro authentication port                                              | `8500`                            |
 | `pro.ports.ratelimit`              | Ambassador Pro ratelimit port                                                   | `8500`                            |
