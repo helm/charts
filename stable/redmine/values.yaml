@@ -329,7 +329,6 @@ readinessProbe:
   successThreshold: 1
   failureThreshold: 3
 
-
 ## Configure CronJob scheduler for receiveing emails and converting them to tasks
 ## ref: http://www.redmine.org/projects/redmine/wiki/RedmineReceivingEmails
 ##
