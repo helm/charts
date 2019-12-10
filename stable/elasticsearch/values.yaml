@@ -313,3 +313,5 @@ chownInitContainer:
   enabled: true
 ## Additional init containers
 extraInitContainers: |
+
+forceIpv6: false

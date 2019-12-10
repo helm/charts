@@ -1,16 +1,22 @@
-{{- if eq .Values.controller.kind "Deployment" }}
-apiVersion: extensions/v1beta1
+{{- if or (eq .Values.controller.kind "Deployment") (eq .Values.controller.kind "Both") }}
+apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   labels:
     app: {{ template "nginx-ingress.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "nginx-ingress.chart" . }}
     component: "{{ .Values.controller.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "nginx-ingress.controller.fullname" . }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "nginx-ingress.name" . }}
+      release: {{ .Release.Name }}
+{{- if not .Values.controller.autoscaling.enabled }}
   replicas: {{ .Values.controller.replicaCount }}
+{{- end }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   strategy:
 {{ toYaml .Values.controller.updateStrategy | indent 4 }}
@@ -80,6 +86,11 @@ spec:
           {{- if and (.Values.controller.reportNodeInternalIp) (.Values.controller.hostNetwork) }}
             - --report-node-internal-ip-address={{ .Values.controller.reportNodeInternalIp }}
           {{- end }}
+          {{- if .Values.controller.admissionWebhooks.enabled }}
+            - --validating-webhook=:{{ .Values.controller.admissionWebhooks.port }}
+            - --validating-webhook-certificate=/usr/local/certificates/cert
+            - --validating-webhook-key=/usr/local/certificates/key
+          {{- end }}
           {{- range $key, $value := .Values.controller.extraArgs }}
             {{- if $value }}
             - --{{ $key }}={{ $value }}
@@ -120,15 +131,19 @@ spec:
             successThreshold: {{ .Values.controller.livenessProbe.successThreshold }}
             failureThreshold: {{ .Values.controller.livenessProbe.failureThreshold }}
           ports:
-            - name: http
-              containerPort: {{ .Values.controller.containerPort.http }}
+          {{- range $key, $value := .Values.controller.containerPort }}
+            - name: {{ $key }}
+              containerPort: {{ $value }}
               protocol: TCP
-            - name: https
-              containerPort: {{ .Values.controller.containerPort.https }}
-              protocol: TCP
+          {{- end }}
           {{- if .Values.controller.metrics.enabled }}
             - name: metrics
-              containerPort: 10254
+              containerPort: {{ .Values.controller.metrics.port }}
+              protocol: TCP
+          {{- end }}
+          {{- if .Values.controller.admissionWebhooks.enabled }}
+            - name: webhook
+              containerPort: {{ .Values.controller.admissionWebhooks.port }}
               protocol: TCP
           {{- end }}
           {{- range $key, $value := .Values.tcp }}
@@ -151,12 +166,17 @@ spec:
             timeoutSeconds: {{ .Values.controller.readinessProbe.timeoutSeconds }}
             successThreshold: {{ .Values.controller.readinessProbe.successThreshold }}
             failureThreshold: {{ .Values.controller.readinessProbe.failureThreshold }}
-{{- if (or .Values.controller.customTemplate.configMapName .Values.controller.extraVolumeMounts) }}
+{{- if (or .Values.controller.customTemplate.configMapName .Values.controller.extraVolumeMounts .Values.controller.admissionWebhooks.enabled) }}
           volumeMounts:
 {{- end }}
 {{- if .Values.controller.customTemplate.configMapName }}
             - mountPath: /etc/nginx/template
               name: nginx-template-volume
+              readOnly: true
+{{- end }}
+{{- if .Values.controller.admissionWebhooks.enabled }}
+            - name: webhook-cert
+              mountPath: "/usr/local/certificates/"
               readOnly: true
 {{- end }}
 {{- if .Values.controller.extraVolumeMounts }}
@@ -186,7 +206,7 @@ spec:
     {{- end }}
       serviceAccountName: {{ template "nginx-ingress.serviceAccountName" . }}
       terminationGracePeriodSeconds: {{ .Values.controller.terminationGracePeriodSeconds }}
-{{- if (or .Values.controller.customTemplate.configMapName .Values.controller.extraVolumes) }}
+{{- if (or .Values.controller.customTemplate.configMapName .Values.controller.extraVolumeMounts .Values.controller.admissionWebhooks.enabled .Values.controller.extraVolumes) }}
       volumes:
 {{- end }}
 {{- if .Values.controller.customTemplate.configMapName }}
@@ -196,6 +216,11 @@ spec:
             items:
             - key: {{ .Values.controller.customTemplate.configMapKey }}
               path: nginx.tmpl
+{{- end }}
+{{- if .Values.controller.admissionWebhooks.enabled }}
+        - name: webhook-cert
+          secret:
+            secretName: {{ template "nginx-ingress.fullname". }}-admission
 {{- end }}
 {{- if .Values.controller.extraVolumes }}
 {{ toYaml .Values.controller.extraVolumes | indent 8}}

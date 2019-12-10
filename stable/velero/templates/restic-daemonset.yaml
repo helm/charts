@@ -31,6 +31,9 @@ spec:
       {{- end }}
       securityContext:
         runAsUser: 0
+      {{- if .Values.restic.priorityClassName }}
+      priorityClassName: {{ include "velero.restic.priorityClassName" . }}
+      {{- end }}
       volumes:
         {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
         - name: cloud-credentials
@@ -42,6 +45,9 @@ spec:
             path: {{ .Values.restic.podVolumePath }}
         - name: scratch
           emptyDir: {}
+        {{- if .Values.restic.extraVolumes }}
+        {{- toYaml .Values.restic.extraVolumes | nindent 8 }}
+        {{- end }}
       containers:
         - name: velero
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -61,6 +67,9 @@ spec:
               mountPropagation: HostToContainer
             - name: scratch
               mountPath: /scratch
+            {{- if .Values.restic.extraVolumeMounts }}
+            {{- toYaml .Values.restic.extraVolumeMounts | nindent 12 }}
+            {{- end }}
           {{- if and .Values.credentials.useSecret (eq $provider "azure") }}
           envFrom:
             - secretRef:
@@ -77,13 +86,14 @@ spec:
                   fieldPath: spec.nodeName
             - name: VELERO_SCRATCH_DIR
               value: /scratch
+            {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
             {{- if eq $provider "aws" }}
             - name: AWS_SHARED_CREDENTIALS_FILE
               value: /credentials/cloud
-            {{- end }}
-            {{- if eq $provider "gcp" }}
+            {{- else }}
             - name: GOOGLE_APPLICATION_CREDENTIALS
               value: /credentials/cloud
+            {{- end }}
             {{- end }}
             {{- if eq $provider "minio" }}
             - name: AWS_SHARED_CREDENTIALS_FILE
@@ -95,4 +105,8 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+      {{- with .Values.restic.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
 {{- end }}

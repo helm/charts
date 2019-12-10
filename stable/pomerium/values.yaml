@@ -7,9 +7,11 @@ config:
   rootDomain: corp.beyondperimeter.com
   # existingSecret:
   # existingConfig:
+  existingLegacyTLSSecret: false
   sharedSecret: ""
   cookieSecret: ""
   generateTLS: true
+  forceGenerateTLS: false
   extraOpts: {}
   existingPolicy: ""
   policy: {}
@@ -17,6 +19,7 @@ config:
 authenticate:
   # fullnameOverride: authenticate
   # nameOverride: authenticate
+  existingTLSSecret: ""
   redirectUrl: ""
   # see https://www.pomerium.io/docs/identity-providers.html
   idp:
@@ -30,31 +33,39 @@ authenticate:
     key: ""
     defaultSANList: []
     defaultIPList: []
+  # replicaCount: 1
+
 
 authorize:
   # fullnameOverride: authorize
   # nameOverride: authorize
+  existingTLSSecret: ""
   tls:
     cert: ""
     key: ""
     defaultSANList: []
     defaultIPList: []
+  # replicaCount: 1
+
 
 proxy:
   # fullnameOverride: proxy
   # nameOverride: proxy
+  existingTLSSecret: ""
   tls:
     cert: ""
     key: ""
     defaultSANList: []
     defaultIPList: []
+  # replicaCount: 1
   authenticateServiceUrl: ""
   authorizeServiceUrl: ""
   authorizeInternalUrl: ""
-  authenticateInternalUrl: ""
 
 service:
   # Service type can be set to ClusterIP, NodePort or LoadBalancer.
+  authorize:
+    headless: true
   type: ClusterIP
   externalPort: 443
   annotations:
@@ -71,6 +82,7 @@ ingress:
     cert: ""
     key: ""
   enabled: true
+  hosts: []
   annotations:
     {}
     # === nginx tweaks
@@ -115,7 +127,7 @@ extraVolumes: {}
 
 image:
   repository: "pomerium/pomerium"
-  tag: "v0.2.1"
+  tag: "v0.5.1"
   pullPolicy: "IfNotPresent"
 
 metrics:

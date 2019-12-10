@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repo: "telegraf"
-  tag: "1.10-alpine"
+  tag: "1.12-alpine"
   pullPolicy: IfNotPresent
 
 podAnnotations: {}
@@ -30,6 +30,8 @@ resources: {}
 service:
   enabled: true
   type: ClusterIP
+  annotations: {}
+
 ## Exposed telegraf configuration
 ## For full list of possible values see `/docs/all-config-values.yaml` and `/docs/all-config-values.toml`
 ## ref: https://docs.influxdata.com/telegraf/v1.1/administration/configuration/
@@ -48,6 +50,15 @@ config:
     logfile: ""
     hostname: "$HOSTNAME"
     omit_hostname: false
+  processors:
+    - enum:
+        mapping:
+          field: "status"
+          dest: "status_code"
+          value_mappings:
+            healthy: 1
+            problem: 2
+            critical: 3
   outputs:
     - influxdb:
         urls:

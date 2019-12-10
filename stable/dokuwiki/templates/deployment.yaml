@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "dokuwiki.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "dokuwiki.fullname" . }}

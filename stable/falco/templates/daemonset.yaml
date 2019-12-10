@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ template "falco.fullname" . }}
@@ -8,12 +8,19 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "falco.fullname" .}}
+      role: security
   template:
     metadata:
       name: {{ template "falco.fullname" .}}
       labels:
         app: {{ template "falco.fullname" .}}
         role: security
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/rules: {{ include (print $.Template.BasePath "/configmap-rules.yaml") . | sha256sum }}
     spec:
       serviceAccountName: {{ template "falco.serviceAccountName" .}}
       {{- if (and .Values.ebpf.enabled .Values.ebpf.settings.hostNetwork) }}
@@ -22,6 +29,14 @@ spec:
       {{- end }}
 {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
+{{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
 {{- end }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
@@ -83,6 +98,7 @@ spec:
             {{- end}}
             - mountPath: /host/dev
               name: dev-fs
+              readOnly: true
             - mountPath: /host/proc
               name: proc-fs
               readOnly: true

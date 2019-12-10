@@ -1,0 +1,15 @@
+{{- if and .Values.server.enableCloudCode (or .Values.server.cloudCodeScripts (.Files.Glob "files/cloud/*.js")) (not .Values.server.existingCloudCodeCM) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "parse.fullname" . }}-cloud-code-scripts
+  labels: {{ include "parse.labels" . | nindent 4 }}
+    app.kubernetes.io/component: server
+data:
+{{- with .Files.Glob "files/cloud/*.js" }}
+{{ .AsConfig | indent 2 }}
+{{- end }}
+{{- if .Values.server.cloudCodeScripts }}
+{{- include "parse.tplValue" (dict "value" .Values.server.cloudCodeScripts "context" $) | nindent 2 }}
+{{- end }}
+{{- end }}

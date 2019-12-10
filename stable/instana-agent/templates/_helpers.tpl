@@ -43,6 +43,15 @@ The name of the ServiceAccount used.
 {{- end -}}
 
 {{/*
+The name of the PodSecurityPolicy used.
+*/}}
+{{- define "instana-agent.podSecurityPolicyName" -}}
+{{- if .Values.podSecurityPolicy.enable -}}
+    {{ default (include "instana-agent.fullname" .) .Values.podSecurityPolicy.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Add Helm metadata to resource labels.
 */}}
 {{- define "instana-agent.commonLabels" -}}

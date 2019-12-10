@@ -1,12 +1,46 @@
 #!/usr/bin/env bash
 
-MONGOCACRT=/ca/tls.crt
+set -ex
+
+CACRT_FILE=/work-dir/tls.crt
+CAKEY_FILE=/work-dir/tls.key
 MONGOPEM=/work-dir/mongo.pem
 
 MONGOARGS="--quiet"
 
-if [ -f "$MONGOPEM" ]; then
-    MONGOARGS="$MONGOARGS --ssl --sslCAFile $MONGOCACRT --sslPEMKeyFile $MONGOPEM"
+if [ -e "/tls/tls.crt" ]; then
+    # log "Generating certificate"
+    mkdir -p /work-dir
+    cp /tls/tls.crt /work-dir/tls.crt
+    cp /tls/tls.key /work-dir/tls.key
+
+    # Move into /work-dir
+    pushd /work-dir
+
+cat >openssl.cnf <<EOL
+[req]
+req_extensions = v3_req
+distinguished_name = req_distinguished_name
+[req_distinguished_name]
+[ v3_req ]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = $(echo -n "$(hostname)" | sed s/-[0-9]*$//)
+DNS.2 = $(hostname)
+DNS.3 = localhost
+DNS.4 = 127.0.0.1
+EOL
+
+    # Generate the certs
+    openssl genrsa -out mongo.key 2048
+    openssl req -new -key mongo.key -out mongo.csr -subj "/OU=MongoDB/CN=$(hostname)" -config openssl.cnf
+    openssl x509 -req -in mongo.csr \
+        -CA "$CACRT_FILE" -CAkey "$CAKEY_FILE" -CAcreateserial \
+        -out mongo.crt -days 3650 -extensions v3_req -extfile openssl.cnf
+    cat mongo.crt mongo.key > $MONGOPEM
+    MONGOARGS="$MONGOARGS --ssl --sslCAFile $CACRT_FILE --sslPEMKeyFile $MONGOPEM"
 fi
 
 if [[ "${AUTH}" == "true" ]]; then
@@ -15,8 +49,9 @@ fi
 
 pod_name() {
     local full_name="${FULL_NAME?Environment variable FULL_NAME not set}"
+    local namespace="${NAMESPACE?Environment variable NAMESPACE not set}"
     local index="$1"
-    echo "$full_name-$index.$full_name"
+    echo "$full_name-$index.$full_name.$namespace.svc.cluster.local"
 }
 
 replicas() {

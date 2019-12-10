@@ -66,3 +66,55 @@ Create chart name and version as used by the chart label.
 {{- define "kafka.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Create unified labels for kafka components
+*/}}
+
+{{- define "kafka.common.matchLabels" -}}
+app.kubernetes.io/name: {{ include "kafka.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end -}}
+
+{{- define "kafka.common.metaLabels" -}}
+helm.sh/chart: {{ include "kafka.chart" . }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end -}}
+
+{{- define "kafka.broker.matchLabels" -}}
+app.kubernetes.io/component: kafka-broker
+{{ include "kafka.common.matchLabels" . }}
+{{- end -}}
+
+{{- define "kafka.broker.labels" -}}
+{{ include "kafka.common.metaLabels" . }}
+{{ include "kafka.broker.matchLabels" . }}
+{{- end -}}
+
+{{- define "kafka.config.matchLabels" -}}
+app.kubernetes.io/component: kafka-config
+{{ include "kafka.common.matchLabels" . }}
+{{- end -}}
+
+{{- define "kafka.config.labels" -}}
+{{ include "kafka.common.metaLabels" . }}
+{{ include "kafka.config.matchLabels" . }}
+{{- end -}}
+
+{{- define "kafka.monitor.matchLabels" -}}
+app.kubernetes.io/component: kafka-monitor
+{{ include "kafka.common.matchLabels" . }}
+{{- end -}}
+
+{{- define "kafka.monitor.labels" -}}
+{{ include "kafka.common.metaLabels" . }}
+{{ include "kafka.monitor.matchLabels" . }}
+{{- end -}}
+
+{{- define "serviceMonitor.namespace" -}}
+{{- if .Values.prometheus.operator.serviceMonitor.releaseNamespace -}}
+{{ .Release.Namespace }}
+{{- else -}}
+{{ .Values.prometheus.operator.serviceMonitor.namespace }}
+{{- end -}}
+{{- end -}}

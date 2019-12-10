@@ -1,7 +1,7 @@
 apiVersion: v1
 name: prometheus
-version: 9.1.0
-appVersion: 2.11.1
+version: 9.5.2
+appVersion: 2.13.1
 description: Prometheus is a monitoring system and time series database.
 home: https://prometheus.io/
 icon: https://raw.githubusercontent.com/prometheus/prometheus.github.io/master/assets/prometheus_logo-cb55bb5c346.png
@@ -12,9 +12,9 @@ sources:
   - https://github.com/prometheus/node_exporter
   - https://github.com/kubernetes/kube-state-metrics
 maintainers:
-  - name: mgoodness
-    email: mgoodness@gmail.com
   - name: gianrubio
     email: gianrubio@gmail.com
+  - name: zanhsieh
+    email: zanhsieh@gmail.com
 engine: gotpl
 tillerVersion: ">=2.8.0"

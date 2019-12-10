@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: {{ template "redis.fullname" . }}-health
   labels:
     app: {{ template "redis.name" . }}
     chart: {{ template "redis.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "redis.fullname" . }}-health
 data:
   ping_readiness_local.sh: |-
 {{- if .Values.usePasswordFile }}

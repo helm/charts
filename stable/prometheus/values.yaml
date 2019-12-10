@@ -112,6 +112,13 @@ alertmanager:
     #   - alertmanager.domain.com
     #   - domain.com/alertmanager
 
+    ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
+    extraPaths: []
+    # - path: /*
+    #   backend:
+    #     serviceName: ssl-redirect
+    #     servicePort: use-annotation
+
     ## alertmanager Ingress TLS configuration
     ## Secrets must be manually created in the namespace
     ##
@@ -270,6 +277,7 @@ alertmanager:
     loadBalancerSourceRanges: []
     servicePort: 80
     # nodePort: 30000
+    sessionAffinity: None
     type: ClusterIP
 
 ## Monitors ConfigMap changes and POSTs to a URL
@@ -543,7 +551,7 @@ server:
   ##
   image:
     repository: prom/prometheus
-    tag: v2.11.1
+    tag: v2.13.1
     pullPolicy: IfNotPresent
 
   ## prometheus server priorityClassName
@@ -600,6 +608,10 @@ server:
   ## Additional Prometheus server container arguments
   ##
   extraArgs: {}
+
+  ## Additional InitContainers to initialize the pod
+  ##
+  extraInitContainers: []
 
   ## Additional Prometheus server Volume mounts
   ##
@@ -661,6 +673,13 @@ server:
     hosts: []
     #   - prometheus.domain.com
     #   - domain.com/prometheus
+
+    ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
+    extraPaths: []
+    # - path: /*
+    #   backend:
+    #     serviceName: ssl-redirect
+    #     servicePort: use-annotation
 
     ## Prometheus server Ingress TLS configuration
     ## Secrets must be manually created in the namespace
@@ -788,6 +807,14 @@ server:
       labels: {}
       servicePort: 80
 
+  ## Prometheus server readiness and liveness probe initial delay and timeout
+  ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+  ##
+  readinessProbeInitialDelay: 30
+  readinessProbeTimeout: 30
+  livenessProbeInitialDelay: 30
+  livenessProbeTimeout: 30
+
   ## Prometheus server resource requests and limits
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##
@@ -820,6 +847,7 @@ server:
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
     servicePort: 80
+    sessionAffinity: None
     type: ClusterIP
 
   ## Prometheus server pod termination grace period
@@ -877,6 +905,13 @@ pushgateway:
     hosts: []
     #   - pushgateway.domain.com
     #   - domain.com/pushgateway
+
+    ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
+    extraPaths: []
+    # - path: /*
+    #   backend:
+    #     serviceName: ssl-redirect
+    #     servicePort: use-annotation
 
     ## pushgateway Ingress TLS configuration
     ## Secrets must be manually created in the namespace
@@ -953,6 +988,10 @@ pushgateway:
     servicePort: 9091
     type: ClusterIP
 
+  ## pushgateway Deployment Strategy type
+  # strategy:
+  #   type: Recreate
+
   persistentVolume:
     ## If true, pushgateway will create/use a Persistent Volume Claim
     ## If false, use emptyDir
@@ -1023,7 +1062,7 @@ serverFiles:
 
   ## Alerts configuration
   ## Ref: https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/
-  alerts: {}
+  alerting_rules.yml: {}
   # groups:
   #   - name: Instances
   #     rules:
@@ -1035,11 +1074,20 @@ serverFiles:
   #         annotations:
   #           description: '{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes.'
   #           summary: 'Instance {{ $labels.instance }} down'
+  ## DEPRECATED DEFAULT VALUE, unless explicitly naming your files, please use alerting_rules.yml
+  alerts: {}
 
+  ## Records configuration
+  ## Ref: https://prometheus.io/docs/prometheus/latest/configuration/recording_rules/
+  recording_rules.yml: {}
+  ## DEPRECATED DEFAULT VALUE, unless explicitly naming your files, please use recording_rules.yml
   rules: {}
 
   prometheus.yml:
     rule_files:
+      - /etc/config/recording_rules.yml
+      - /etc/config/alerting_rules.yml
+    ## Below two files are DEPRECATED will be removed from this default values file
       - /etc/config/rules
       - /etc/config/alerts
 
@@ -1316,6 +1364,14 @@ extraScrapeConfigs:
   #       target_label: instance
   #     - target_label: __address__
   #       replacement: prometheus-blackbox-exporter:9115
+
+# Adds option to add alert_relabel_configs to avoid duplicate alerts in alertmanager
+# useful in H/A prometheus with different external labels but the same alerts
+alertRelabelConfigs:
+  # alert_relabel_configs:
+  # - source_labels: [dc]
+  #   regex: (.+)\d+
+  #   target_label: dc
 
 networkPolicy:
   ## Enable creation of NetworkPolicy resources.

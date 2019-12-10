@@ -1,0 +1,21 @@
+{{- if .Values.features.monitoring.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: scdf-grafana-ds-cm
+  labels:
+    app: scdf-grafana-ds-cm
+data:
+  datasources.yaml: |
+    apiVersion: 1
+    datasources:
+    - name: ScdfPrometheus
+      type: prometheus
+      access: proxy
+      org_id: 1
+      url: http://{{- printf "${%s_PROMETHEUS_SERVER_SERVICE_HOST}" (include "scdf.envrelease" . ) -}}:{{- printf "${%s_PROMETHEUS_SERVER_SERVICE_PORT}" (include "scdf.envrelease" . ) }}
+      is_default: true
+      version: 5
+      editable: true
+      read_only: false
+{{- end }}

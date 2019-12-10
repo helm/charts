@@ -35,6 +35,9 @@ spec:
     spec:
       restartPolicy: Always
       serviceAccountName: {{ include "velero.serverServiceAccount" . }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ include "velero.priorityClassName" . }}
+      {{- end }}
       containers:
         - name: velero
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -61,6 +64,12 @@ spec:
             {{- with .restoreResourcePriorities }}
             - --restore-resource-priorities={{ . }}
             {{- end }}
+            {{- with .logLevel }}
+            - --log-level={{ . }}
+            {{- end }}
+            {{- with .logFormat }}
+            - --log-format={{ . }}
+            {{- end }}
           {{- end }}
           {{- if eq $provider "azure" }}
           envFrom:
@@ -74,12 +83,15 @@ spec:
           volumeMounts:
             - name: plugins
               mountPath: /plugins
-        {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
+        {{- if .Values.credentials.useSecret }}
             - name: cloud-credentials
               mountPath: /credentials
             - name: scratch
               mountPath: /scratch
         {{- end }}
+            {{- if .Values.extraVolumeMounts }}
+            {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
+            {{- end }}
           env:
             - name: VELERO_SCRATCH_DIR
               value: /scratch
@@ -88,11 +100,13 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: metadata.namespace
-          {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
+          {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (or (eq $provider "gcp") (eq $provider "azure"))) }}
             {{- if eq $provider "aws" }}
             - name: AWS_SHARED_CREDENTIALS_FILE
-            {{- else }}
+            {{- else if eq $provider "gcp"}}
             - name: GOOGLE_APPLICATION_CREDENTIALS
+            {{- else }}
+            - name: AZURE_CREDENTIALS_FILE
             {{- end }}
               value: /credentials/cloud
           {{- end }}
@@ -107,7 +121,7 @@ spec:
         {{- toYaml .Values.initContainers | nindent 8 }}
 {{- end }}
       volumes:
-        {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
+        {{- if .Values.credentials.useSecret }}
         - name: cloud-credentials
           secret:
             secretName: {{ include "velero.secretName" . }}
@@ -116,6 +130,9 @@ spec:
           emptyDir: {}
         - name: scratch
           emptyDir: {}
+        {{- if .Values.extraVolumes }}
+        {{- toYaml .Values.extraVolumes | nindent 8 }}
+        {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

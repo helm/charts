@@ -1,5 +1,6 @@
 # Added manually, can be changed in-place.
-{{- if and (semverCompare ">=1.14.0" .Capabilities.KubeVersion.GitVersion) (semverCompare "<1.16.0" .Capabilities.KubeVersion.GitVersion) .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled .Values.coreDns.enabled }}
+{{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
+{{- if and (semverCompare ">=1.14.0" $kubeTargetVersion) (semverCompare "<9.9.9-9" $kubeTargetVersion) .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled .Values.coreDns.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -457,15 +458,15 @@ data:
                 "renderer": "flot",
                 "seriesOverrides": [
                     {
-                        "alias": "tcp:90",
+                        "alias": "tcp:90%",
                         "yaxis": 2
                     },
                     {
-                        "alias": "tcp:99 ",
+                        "alias": "tcp:99%",
                         "yaxis": 2
                     },
                     {
-                        "alias": "tcp:50",
+                        "alias": "tcp:50%",
                         "yaxis": 2
                     }
                 ],
@@ -476,21 +477,21 @@ data:
                     {
                         "expr": "histogram_quantile(0.99, sum(rate(coredns_dns_request_size_bytes_bucket{instance=~\"$instance\",proto=\"udp\"}[5m])) by (le,proto))",
                         "intervalFactor": 2,
-                        "legendFormat": "{{`{{proto}}`}}:99 ",
+                        "legendFormat": "{{`{{proto}}`}}:99%",
                         "refId": "A",
                         "step": 60
                     },
                     {
                         "expr": "histogram_quantile(0.90, sum(rate(coredns_dns_request_size_bytes_bucket{instance=~\"$instance\",proto=\"udp\"}[5m])) by (le,proto))",
                         "intervalFactor": 2,
-                        "legendFormat": "{{`{{proto}}`}}:90",
+                        "legendFormat": "{{`{{proto}}`}}:90%",
                         "refId": "B",
                         "step": 60
                     },
                     {
                         "expr": "histogram_quantile(0.50, sum(rate(coredns_dns_request_size_bytes_bucket{instance=~\"$instance\",proto=\"udp\"}[5m])) by (le,proto))",
                         "intervalFactor": 2,
-                        "legendFormat": "{{`{{proto}}`}}:50",
+                        "legendFormat": "{{`{{proto}}`}}:50%",
                         "refId": "C",
                         "step": 60
                     }
@@ -569,15 +570,15 @@ data:
                 "renderer": "flot",
                 "seriesOverrides": [
                     {
-                        "alias": "tcp:90",
+                        "alias": "tcp:90%",
                         "yaxis": 1
                     },
                     {
-                        "alias": "tcp:99 ",
+                        "alias": "tcp:99%",
                         "yaxis": 1
                     },
                     {
-                        "alias": "tcp:50",
+                        "alias": "tcp:50%",
                         "yaxis": 1
                     }
                 ],
@@ -588,21 +589,21 @@ data:
                     {
                         "expr": "histogram_quantile(0.99, sum(rate(coredns_dns_request_size_bytes_bucket{instance=~\"$instance\",proto=\"tcp\"}[5m])) by (le,proto))",
                         "intervalFactor": 2,
-                        "legendFormat": "{{`{{proto}}`}}:99 ",
+                        "legendFormat": "{{`{{proto}}`}}:99%",
                         "refId": "A",
                         "step": 60
                     },
                     {
                         "expr": "histogram_quantile(0.90, sum(rate(coredns_dns_request_size_bytes_bucket{instance=~\"$instance\",proto=\"tcp\"}[5m])) by (le,proto))",
                         "intervalFactor": 2,
-                        "legendFormat": "{{`{{proto}}`}}:90",
+                        "legendFormat": "{{`{{proto}}`}}:90%",
                         "refId": "B",
                         "step": 60
                     },
                     {
                         "expr": "histogram_quantile(0.50, sum(rate(coredns_dns_request_size_bytes_bucket{instance=~\"$instance\",proto=\"tcp\"}[5m])) by (le,proto))",
                         "intervalFactor": 2,
-                        "legendFormat": "{{`{{proto}}`}}:50",
+                        "legendFormat": "{{`{{proto}}`}}:50%",
                         "refId": "C",
                         "step": 60
                     }
@@ -610,7 +611,7 @@ data:
                 "thresholds": [],
                 "timeFrom": null,
                 "timeShift": null,
-                "title": "Requests (size,tcp)",
+                "title": "Requests (size, tcp)",
                 "tooltip": {
                     "shared": true,
                     "sort": 0,
@@ -896,7 +897,7 @@ data:
                         "step": 40
                     },
                     {
-                        "expr": "histogram_quantile(0.90, sum(rate(coredns_dns_response_size_bytes_bucket{instance=\"$instance\",proto=\"udp\"}[5m])) by (le,proto)) ",
+                        "expr": "histogram_quantile(0.90, sum(rate(coredns_dns_response_size_bytes_bucket{instance=~\"$instance\",proto=\"udp\"}[5m])) by (le,proto)) ",
                         "intervalFactor": 2,
                         "legendFormat": "{{`{{proto}}`}}:90%",
                         "refId": "B",

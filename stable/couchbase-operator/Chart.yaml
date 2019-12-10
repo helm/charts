@@ -1,8 +1,8 @@
 apiVersion: v1
 name: couchbase-operator
 description: A Helm chart to deploy the Couchbase Autonomous Operator for easily deploying, managing, and maintaining Couchbase Clusters.
-version: 1.0.0
-appVersion: 1.2.0
+version: 1.0.2
+appVersion: 1.2.2
 keywords:
 - couchbase
 - operator

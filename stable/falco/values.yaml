@@ -3,7 +3,7 @@
 image:
   registry: docker.io
   repository: falcosecurity/falco
-  tag: 0.17.0
+  tag: 0.17.1
   pullPolicy: IfNotPresent
 
 docker:
@@ -26,6 +26,8 @@ resources:
     memory: 1024Mi
 
 extraArgs: []
+nodeSelector: {}
+affinity: {}
 
 rbac:
   # Create and use rbac resources

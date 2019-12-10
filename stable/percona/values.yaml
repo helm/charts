@@ -73,3 +73,20 @@ tolerations: []
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 ##
 affinity: {}
+
+## Configure resources for the init container
+##
+initResources: {}
+  # limits:
+  #   cpu: 25m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 25m
+  #   memory 128Mi
+
+## Override image used by init container
+##
+initImage:
+  repository: "busybox"
+  tag: "1.25.0"
+  pullPolicy: "IfNotPresent"

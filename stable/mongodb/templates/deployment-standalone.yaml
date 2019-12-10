@@ -1,5 +1,5 @@
 {{- if not .Values.replicaSet.enabled }}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "mongodb.fullname" . }}
@@ -8,6 +8,13 @@ metadata:
     chart: {{ template "mongodb.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+    {{- with .Values.labels }}
+{{ toYaml . | indent 4 }}
+    {{- end }}
+  {{- with .Values.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
 spec:
   selector:
     matchLabels:
@@ -129,7 +136,10 @@ spec:
         {{- end }}
         {{- if .Values.mongodbExtraFlags }}
         - name: MONGODB_EXTRA_FLAGS
-          value: {{ .Values.mongodbExtraFlags | join " " }}
+          value: {{ .Values.mongodbExtraFlags | join " " | quote }}
+        {{- end }}
+        {{- if .Values.extraEnvVars }}
+        {{- include "mongodb.tplValue" ( dict "value" .Values.extraEnvVars "context" $ ) | nindent 8 }}
         {{- end }}
         ports:
         - name: mongodb
