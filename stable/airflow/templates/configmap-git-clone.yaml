@@ -13,16 +13,36 @@ data:
     REPO=$1
     REF=$2
     DIR=$3
+    REPO_HOST=$4
+    PRIVATE_KEY=$5
     {{- if .Values.dags.git.secret }}
     mkdir -p ~/.ssh/
     cp -rL /keys/* ~/.ssh/
     chmod 600 ~/.ssh/*
+    echo -e "HOST $REPO_HOST\n  IdentityFile ~/.ssh/$PRIVATE_KEY" > ~/.ssh/config
     {{- end }}
     # Init Containers will re-run on Pod restart. Remove the directory's contents
     # and reprovision when this happens.
     if [ -d "$DIR" ]; then
         rm -rf $( find $DIR -mindepth 1 )
     fi
-    git clone $REPO $DIR
+    git clone $REPO -b $REF $DIR
+  git-sync.sh: |
+    #!/bin/sh -e
+    REPO=$1
+    REF=$2
+    DIR=$3
+    REPO_HOST=$4
+    PRIVATE_KEY=$5
+    SYNC_TIME=$6
+    {{- if .Values.dags.git.secret }}
+    mkdir -p ~/.ssh/
+    cp -rL /keys/* ~/.ssh/
+    chmod 600 ~/.ssh/*
+    echo -e "HOST $REPO_HOST\n  IdentityFile ~/.ssh/$PRIVATE_KEY" > ~/.ssh/config
+    {{- end }}
+    {{- if eq .Values.dags.initContainer.enabled  false }}
+    git clone $REPO -b $REF $DIR
+    {{- end }}
     cd $DIR
-    git reset --hard $REF
+    while true; do git pull; date; sleep $SYNC_TIME; done

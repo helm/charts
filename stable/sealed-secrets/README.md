@@ -51,7 +51,7 @@ Read about kubeseal usage on [sealed-secrets docs](https://github.com/bitnami-la
 | **serviceAccount.create** | Whether to create a service account or not | `true` |
 | **serviceAccount.name** | The name of the service account to create or use | `"sealed-secrets-controller"` |
 | **secretName** | The name of the TLS secret containing the key used to encrypt secrets | `"sealed-secrets-key"` |
-| **image.tag** | The `Sealed Secrets` image tag | `v0.8.1` |
+| **image.tag** | The `Sealed Secrets` image tag | `v0.9.6` |
 | **image.pullPolicy** | The image pull policy for the deployment | `IfNotPresent` |
 | **image.repository** | The repository to get the controller image from | `quay.io/bitnami/sealed-secrets-controller` |
 | **resources** | CPU/Memory resource requests/limits | `{}` |

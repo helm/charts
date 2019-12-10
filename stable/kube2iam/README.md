@@ -51,6 +51,7 @@ Parameter | Description | Default
 `image.repository` | Image | `jtblin/kube2iam`
 `image.tag` | Image tag | `0.10.7`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
+`image.pullSecrets` | Image pull secrets | `[]`
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to be added to pods | `{}`
 `priorityClassName` | priorityClassName to be added to pods | `{}`
