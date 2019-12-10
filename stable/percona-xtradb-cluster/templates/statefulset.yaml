@@ -25,6 +25,10 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
     {{- end }}
     spec:
+{{- if .Values.affinity }}
+      affinity:
+{{- toYaml .Values.affinity | nindent 8 }}
+{{- end }}
       initContainers:
       - name: "remove-lost-found"
         image: "busybox:1.25.0"

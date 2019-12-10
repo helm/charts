@@ -52,6 +52,7 @@ The following table lists the configurable parameters of the Percona chart and t
 
 | Parameter                  | Description                        | Default                                                    |
 | -----------------------    | ---------------------------------- | ---------------------------------------------------------- |
+| `affinity`                 | statefulset pod affinities (requires Kubernetes >=1.6) | {}                                     |
 | `image.repository`         | `percona-xtradb-cluster` image Repo.                 | 5.7.19 release                                        |
 | `image.tag`                 | `percona-xtradb-cluster` image tag.                 | `percona/percona-xtradb-cluster` |
 | `image.pullPolicy`          | Image pull policy                  | `IfNotPresent` |

@@ -1,5 +1,9 @@
 # Default values for Percona XtraDB Cluster
 
+## Affinity and anti-affinity
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}
+
 ## percona image and version
 ## ref: https://hub.docker.com/r/percona/percona-xtradb-cluster/tags/
 image:
