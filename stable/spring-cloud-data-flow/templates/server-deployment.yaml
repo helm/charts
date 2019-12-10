@@ -84,6 +84,8 @@ spec:
           value: {{ .Values.features.batch.enabled | quote }}
         - name: SPRING_CLOUD_DATAFLOW_FEATURES_SCHEDULES_ENABLED
           value: {{ .Values.features.batch.enabled | quote }}
+        - name: SPRING_CLOUD_DATAFLOW_TASK_SCHEDULER_TASK_LAUNCHER_URL
+          value: 'docker://springcloud/spring-cloud-dataflow-scheduler-task-launcher:{{ .Values.server.version }}'
       volumes:
         - name: database
           secret:
