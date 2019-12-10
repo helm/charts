@@ -14,7 +14,9 @@ spec:
     matchLabels:
       app: {{ template "nginx-ingress.name" . }}
       release: {{ .Release.Name }}
+{{- if not .Values.controller.autoscaling.enabled }}
   replicas: {{ .Values.controller.replicaCount }}
+{{- end }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   strategy:
 {{ toYaml .Values.controller.updateStrategy | indent 4 }}

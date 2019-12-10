@@ -45,5 +45,8 @@ spec:
 {{- end }}
   selector:
     {{- include "prometheus.alertmanager.matchLabels" . | nindent 4 }}
+{{- if .Values.alertmanager.service.sessionAffinity }}
+  sessionAffinity: {{ .Values.alertmanager.service.sessionAffinity }}
+{{- end }}
   type: "{{ .Values.alertmanager.service.type }}"
 {{- end }}

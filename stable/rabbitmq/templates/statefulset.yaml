@@ -41,12 +41,9 @@ spec:
       {{- if .Values.rbacEnabled}}
       serviceAccountName: {{ template "rabbitmq.fullname" . }}
       {{- end }}
-      affinity:
-{{- if .Values.affinity }}
-    {{- with .Values.affinity }}
-{{ tpl . $ | indent 8 }}
-    {{- end }}
-{{- end }}
+      {{- if .Values.affinity }}
+      affinity: {{- include "rabbitmq.tplValue" (dict "value" .Values.affinity "context" .) | nindent 8 }}
+      {{- end }}
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
       {{- end }}
@@ -253,6 +250,8 @@ spec:
           value: "http://{{ .Values.metrics.rabbitmqAddress }}:{{ .Values.service.managerPort }}"
         - name: RABBIT_USER
           value: {{ .Values.rabbitmq.username }}
+        - name: PUBLISH_PORT
+          value: "{{ .Values.metrics.port }}"
         {{ if .Values.metrics.capabilities }}
         - name: RABBIT_CAPABILITIES
           value: "{{ .Values.metrics.capabilities }}"
