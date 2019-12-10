@@ -282,6 +282,9 @@ s3:
   # accessKey: ""
   # secretKey: ""
   # assumeRole: "<role to assume>"
+  ## Here you can pass extra arguments to configure s3 storage options
+  extraArgs: []
+  #  - "--path-style-access true"
 
 # Azure Storage Account
 azs:
