@@ -272,7 +272,6 @@ spec:
           {{- if .Values.metrics.securityContext.enabled }}
           securityContext:
             runAsUser: {{ .Values.metrics.securityContext.runAsUser }}
-            fsGroup: {{ .Values.metrics.securityContext.fsGroup }}
           {{- end }}
           livenessProbe:
             exec:

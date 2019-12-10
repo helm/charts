@@ -64,7 +64,6 @@ metrics:
   securityContext:
     enabled: true
     runAsUser: 1001
-    fsGroup: 1001
 
 # Annotations to be added to MongoDB pods
 podAnnotations: {}
