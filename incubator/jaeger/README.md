@@ -313,6 +313,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `schema.pullPolicy`                      | Schema image pullPolicy             |  `IfNotPresent`                          |
 | `schema.activeDeadlineSeconds`           | Deadline in seconds for cassandra schema creation job to complete |  `120`                            |
 | `schema.traceTtl`                     | Time to live for trace data in seconds      |  `nil`                                |
+| `schema.keyspace`                     | Set implicit keyspace name      |  `nil`                                |
 | `schema.dependenciesTtl`              | Time to live for dependencies data in seconds  |  `nil`                          |
 | `serviceAccounts.agent.create`              | Create service account   |  `true`                                  |
 | `serviceAccounts.agent.name`              | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template  |  ``                                  |
