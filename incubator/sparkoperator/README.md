@@ -55,11 +55,11 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ###### Breaking changes
 
-- `cleanupCrdsBeforeInstall` has been removed for Helm 3 compatibility. If you with to replicate this behavior before upgrading, do so manually (`kubectl delete CustomResourceDefinition sparkapplications.sparkoperator.k8s.io scheduledsparkapplications.sparkoperator.k8s.io`)
+- `cleanupCrdsBeforeInstall` has been removed for Helm 3 compatibility. If you wish to replicate this behavior before upgrading, do so manually (`kubectl delete CustomResourceDefinition sparkapplications.sparkoperator.k8s.io scheduledsparkapplications.sparkoperator.k8s.io`)
 
 ###### Non-breaking changes
 
-- CRDs have moved to `/crds` directory, with template globbing, for both Helm 2 and 3 compatibility
+- CRDs have been moved to `/crds` directory, with template globbing, for both Helm 2 and 3 compatibility
 - `app.kubernetes.io/name=sparkoperator` label is added to CRDs if installed at this version, for easier manual cleanup after chart deletion (`kubectl delete CustomResourceDefinition -l app.kubernetes.io/name=sparkoperator`)
 
 #### Contributing
