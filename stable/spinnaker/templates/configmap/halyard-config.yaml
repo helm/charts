@@ -67,6 +67,9 @@ data:
       {{- if .Values.s3.secretKey }}
       --secret-access-key \
       {{- end }}
+      {{- range .Values.s3.extraArgs }}
+      {{- . }} \
+      {{- end }}
 
     $HAL_COMMAND config storage edit --type s3
     {{ end }}
