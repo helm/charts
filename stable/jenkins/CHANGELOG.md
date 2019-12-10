@@ -5,6 +5,40 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.9.8
+
+Make `agent.slaveConnectTimeout` configurable: by increasing this value Jenkins will not cancel&ask k8s for a pod again, while it's on `ContainerCreating`. Useful when you have big images or autoscaling takes some time.
+
+## 1.9.7 Update plugin versions
+
+plugin                | old version | new version
+--------------------- | ----------- | ----------
+kubernetes            | 1.18.2      | 1.21.2
+workflow-job          | 2.33        | 2.36
+credentials-binding   | 1.19        | 1.20
+git                   | 3.11.0      | 4.0.0
+configuration-as-code | 1.27        | 1.32
+
+## 1.9.6
+
+Enables jenkins to use keystore inorder to have native ssl support [#17790](https: https://wiki.jenkins.io/pages/viewpage.action?pageId=135468777)
+
+## 1.9.5 Enable remoting security
+
+`Manage Jenkins` -> `Configure Global Security` -> `Enable Agent → Master Access Control` is now enabled via configuration as code plugin
+
+## 1.9.4 Option to set existing secret with Google Application Default Credentials
+
+Google application credentials are kept in a file, which has to be mounted to a pod. You can set `gcpcredentials` in `existingSecret` as follows:
+
+```
+ existingSecret:
+    jenkins-service-account:
+      gcpcredentials: application_default_credentials.json
+```
+      
+Helm template then creates the necessary volume mounts and `GOOGLE_APPLICATION_CREDENTIALS` environmental variable. 
+
 ## 1.9.3 Fix `JAVA_OPTS` when config auto-reload is enabled
 
 ## 1.9.2 Add support for kubernetes-credentials-provider-plugin

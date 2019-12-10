@@ -68,7 +68,7 @@ Parameter                                            | Description              
 `image.imagePullSecrets`                             | Specify image pull secrets                                                                                 | `[]`
 `sentrySecret`                                       | Specify SENTRY_SECRET_KEY. If isn't specified it will be generated automatically.                          | `nil`
 `web.podAnnotations`                                 | Web pod annotations                                                                                        | `{}`
-`web.podLabels`                                      | Worker pod extra labels                                                                                    | `{}`
+`web.podLabels`                                      | Web pod extra labels                                                                                       | `{}`
 `web.replicacount`                                   | Amount of web pods to run                                                                                  | `1`
 `web.resources.limits`                               | Web resource limits                                                                                        | `{cpu: 500m, memory: 500Mi}`
 `web.resources.requests`                             | Web resource requests                                                                                      | `{cpu: 300m, memory: 300Mi}`
@@ -77,7 +77,7 @@ Parameter                                            | Description              
 `web.affinity`                                       | Affinity settings for web pod assignment                                                                   | `{}`
 `web.schedulerName`                                  | Name of an alternate scheduler for web pod                                                                 | `nil`
 `web.tolerations`                                    | Toleration labels for web pod assignment                                                                   | `[]`
-`web.probeInitialDelaySeconds`                       | The number of seconds before the probe doing healthcheck                                          | `50`
+`web.probeInitialDelaySeconds`                       | The number of seconds before the probe doing healthcheck                                                   | `50`
 `web.priorityClassName`                              | The priorityClassName on web deployment                                                                    | `nil`
 `cron.podAnnotations`                                | Cron pod annotations                                                                                       | `{}`
 `cron.podLabels`                                     | Worker pod extra labels                                                                                    | `{}`
@@ -126,7 +126,7 @@ Parameter                                            | Description              
 `postgresql.postgresqlDatabase`                      | Postgres database name                                                                                     | `sentry`
 `postgresql.postgresqlUsername`                      | Postgres username                                                                                          | `postgres`
 `postgresql.postgresqlHost`                          | External postgres host                                                                                     | `nil`
-`postgresql.postgresqlPassword`                      | External postgres password                                                                                 | `nil`
+`postgresql.postgresqlPassword`                      | External/Internal postgres password                                                                                 | `nil`
 `postgresql.postgresqlPort`                          | External postgres port                                                                                     | `5432`
 `redis.enabled`                                      | Deploy redis server (see below)                                                                            | `true`
 `redis.host`                                         | External redis host                                                                                        | `nil`
@@ -147,6 +147,9 @@ Parameter                                            | Description              
 `filestore.s3.secretKey`                             | S3 secret key                                                                                              | `nil`
 `filestore.s3.bucketName`                            | The name of the S3 bucket                                                                                  | `nil`
 `filestore.s3.endpointUrl`                           | The endpoint url of the S3 (using for "MinIO S3 Backend")                                                  | `nil`
+`filestore.s3.signature_version`                     | S3 signature version (optional)                                                                            | `nil`
+`filestore.s3.region_name`                           | S3 region name (optional)                                                                                  | `nil`
+`filestore.s3.default_acl`                           | S3 default acl (optional)                                                                                  | `nil`
 `config.configYml`                                   | Sentry config.yml file                                                                                     | ``
 `config.sentryConfPy`                                | Sentry sentry.conf.py file                                                                                 | ``
 `metrics.enabled`                                    | Start an exporter for sentry metrics                                                                       | `false`
@@ -191,6 +194,8 @@ $ helm install --name my-release -f values.yaml stable/sentry
 
 By default, PostgreSQL is installed as part of the chart. To use an external PostgreSQL server set `postgresql.enabled` to `false` and then set `postgresql.postgresHost` and `postgresql.postgresqlPassword`. The other options (`postgresql.postgresqlDatabase`, `postgresql.postgresqlUsername` and `postgresql.postgresqlPort`) may also want changing from their default values.
 
+To avoid issues when upgrade this chart, provide `postgresql.postgresqlPassword` for subsequent upgrades. This is due to an issue in the PostgreSQL chart where password will be overwritten with randomly generated passwords otherwise. See https://github.com/helm/charts/tree/master/stable/postgresql#upgrade for more detail.
+
 ## Redis
 
 By default, Redis is installed as part of the chart. To use an external Redis server/cluster set `redis.enabled` to `false` and then set `redis.host`. If your redis cluster uses password define it with `redis.password`, otherwise just omit it. Check the table above for more configuration options.
@@ -215,7 +220,7 @@ You may enable mounting of the sentry-data PV across worker and cron pods by cha
 
 The `persistence` keys have changed in charts 2.0.0 and newer, the following shows the mapping of keys from pre-2.0.0 to their current form:
 
-Previous Key                    | New Key 
+Previous Key                    | New Key
 :-------------------------------|---------
 `persistence.enabled`           | `filestore.filesystem.persistence.enabled`
 `persistence.existingClaim`     | `filestore.filesystem.persistence.existingClaim`

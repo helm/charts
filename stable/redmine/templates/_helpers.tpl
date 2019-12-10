@@ -143,3 +143,25 @@ Return the appropriate apiVersion for deployment.
 {{- print "apps/v1" -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "redmine.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+{{ default (include "redmine.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+{{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the name of the Secret used to store the passwords
+*/}}
+{{- define "redmine.secretName" -}}
+{{- if .Values.existingSecret -}}
+{{ .Values.existingSecret }}
+{{- else -}}
+{{ template "redmine.fullname" . }}
+{{- end -}}
+{{- end -}}

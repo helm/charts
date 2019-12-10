@@ -10,7 +10,7 @@ You can access the LDAP adminPassword and configPassword using:
 
 
 You can access the LDAP service, from within the cluster (or with kubectl port-forward) with a command like (replace password and domain):
-  ldapsearch -x -H ldap://{{ template "openldap.fullname" . }}-service.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.ldapPort }} -b dc=example,dc=org -D "cn=admin,dc=example,dc=org" -w $LDAP_ADMIN_PASSWORD
+  ldapsearch -x -H ldap://{{ template "openldap.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.ldapPort }} -b dc=example,dc=org -D "cn=admin,dc=example,dc=org" -w $LDAP_ADMIN_PASSWORD
 
 
 Test server health using Helm test:

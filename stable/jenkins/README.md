@@ -165,7 +165,14 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.prometheus.alertingrules` | Array of prometheus alerting rules | `[]`                                        |
 | `master.prometheus.alertingRulesAdditionalLabels` | Additional labels to add to the prometheus rule object     | `{}`                                   |
 | `master.priorityClassName`        | The name of a `priorityClass` to apply to the master pod | Not set               |
-| `master.testEnabled`              | Can be used to disable rendering test resources when using helm template | `true`                                 |
+| `master.testEnabled`              | Can be used to disable rendering test resources when using helm template | `true`                         |
+| `master.httpsKeyStore.enable`     | Enables https keystore on jenkins master      | `false`      | 
+| `master.httpsKeyStore.jenkinsHttpsJksSecretName`     | Name of the secret that already has ssl keystore      | ``      | 
+| `master.httpsKeyStore.httpPort`   | Http Port that Jenkins should listen on along with https, it also serves liveness and readiness probs port. When https keystore is enabled servicePort and targetPort will be used as https port  | `8081`   |
+| `master.httpsKeyStore.path`       | Path of https keystore file                  |     `/var/jenkins_keystore`     |
+| `master.httpsKeyStore.fileName`  | Jenkins keystore filename which will apear under master.httpsKeyStore.path      | `keystore.jks` |
+| `master.httpsKeyStore.password`   | Jenkins keystore password                                           | `password` |
+| `master.httpsKeyStore.jenkinsKeyStoreBase64Encoded`  | Base64 ecoded Keystore content. Keystore must be converted to base64 then being pasted here  | a self signed cert |
 | `networkPolicy.enabled`           | Enable creation of NetworkPolicy resources. | `false`                            |
 | `networkPolicy.apiVersion`        | NetworkPolicy ApiVersion             | `networking.k8s.io/v1`                    |
 | `rbac.create`                     | Whether RBAC resources are created   | `true`                                    |
@@ -202,6 +209,7 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.podName`            | Agent Pod base name                             | Not set                |
 | `agent.idleMinutes`        | Allows the Pod to remain active for reuse       | 0                      |
 | `agent.yamlTemplate`       | The raw yaml of a Pod API Object to merge into the agent spec | Not set                |
+| `agent.slaveConnectTimeout`| Timeout in seconds for an agent to be online    | 100                    |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
@@ -371,21 +379,23 @@ Adds a backup CronJob for jenkins, along with required RBAC resources.
 
 ### Backup Values
 
-| Parameter                              | Description                                            | Default                           |
-| -------------------------------------- | ------------------------------------------------------ | --------------------------------- |
-| `backup.enabled`                       | Enable the use of a backup CronJob                     | `false`                           |
-| `backup.schedule`                      | Schedule to run jobs                                   | `0 2 * * *`                       |
-| `backup.annotations`                   | Backup pod annotations                                 | iam.amazonaws.com/role: `jenkins` |
-| `backup.image.repo`                    | Backup image repository                                | `maorfr/kube-tasks`               |
-| `backup.image.tag`                     | Backup image tag                                       | `0.2.0`                           |
-| `backup.extraArgs`                     | Additional arguments for kube-tasks                    | `[]`                              |
-| `backup.existingSecret`                | Environment variables to add to the cronjob container  | {}                                |
-| `backup.existingSecret.*`              | Specify the secret name containing the AWS credentials | `jenkinsaws`                      |
-| `backup.existingSecret.*.awsaccesskey` | `secretKeyRef.key` used for `AWS_ACCESS_KEY_ID`        | `jenkins_aws_access_key`          |
-| `backup.existingSecret.*.awssecretkey` | `secretKeyRef.key` used for `AWS_SECRET_ACCESS_KEY`    | `jenkins_aws_secret_key`          |
-| `backup.env`                           | Backup environment variables                           | AWS_REGION: `us-east-1`           |
-| `backup.resources`                     | Backup CPU/Memory resource requests/limits             | Memory: `1Gi`, CPU: `1`           |
-| `backup.destination`                   | Destination to store backup artifacts                  | `s3://jenkins-data/backup`        |
+| Parameter                                | Description                                                       | Default                           |
+| ---------------------------------------- | ----------------------------------------------------------------- | --------------------------------- |
+| `backup.enabled`                         | Enable the use of a backup CronJob                                | `false`                           |
+| `backup.schedule`                        | Schedule to run jobs                                              | `0 2 * * *`                       |
+| `backup.labels`                          | Backup pod labels                                                 | `{}`                              |
+| `backup.annotations`                     | Backup pod annotations                                            | `{}`                              |
+| `backup.image.repo`                      | Backup image repository                                           | `maorfr/kube-tasks`               |
+| `backup.image.tag`                       | Backup image tag                                                  | `0.2.0`                           |
+| `backup.extraArgs`                       | Additional arguments for kube-tasks                               | `[]`                              |
+| `backup.existingSecret`                  | Environment variables to add to the cronjob container             | `{}`                              |
+| `backup.existingSecret.*`                | Specify the secret name containing the AWS or GCP credentials     | `jenkinsaws`                      |
+| `backup.existingSecret.*.awsaccesskey`   | `secretKeyRef.key` used for `AWS_ACCESS_KEY_ID`                   | `jenkins_aws_access_key`          |
+| `backup.existingSecret.*.awssecretkey`   | `secretKeyRef.key` used for `AWS_SECRET_ACCESS_KEY`               | `jenkins_aws_secret_key`          |
+| `backup.existingSecret.*.gcpcredentials` | Mounts secret as volume and sets `GOOGLE_APPLICATION_CREDENTIALS` | `credentials.json`                |
+| `backup.env`                             | Backup environment variables                                      | `[]`                              |
+| `backup.resources`                       | Backup CPU/Memory resource requests/limits                        | Memory: `1Gi`, CPU: `1`           |
+| `backup.destination`                     | Destination to store backup artifacts                             | `s3://jenkins-data/backup`        |
 
 ### Restore from backup
 
@@ -513,3 +523,26 @@ and provide the file `templates/config.tpl` in your parent chart for your use ca
     <CONTENTS_HERE>
 {{ end }}
 ```
+
+## Https keystore configuration
+This configuration enable jenkins to use keystore inorder to serve https: https://wiki.jenkins.io/pages/viewpage.action?pageId=135468777 <br />
+Here is the value file section related to keystore configuration. <br />
+Keystore itself should be placed in front of `jenkinsKeyStoreBase64Encoded` key and in base64 encoded format. To achive that after having `keystore.jks` file simply do this: `cat keystore.jks | base64` and paste the output in front of `jenkinsKeyStoreBase64Encoded` . <br />
+After enabling `httpsKeyStore.enable` make sure that `httpPort` and `targetPort` are not the same as `targetPort` will serve https. <br />
+Do not set `master.httpsKeyStore.httpPort` to `-1` because it will cause readiness and liveliness prob to fail. <br />
+If you already have a kubernetes secret that has keystore and its password you can specify its' name in front of `jenkinsHttpsJksSecretName`, You need to remember that your secret should have proper data key names `jenkins-jks-file` and `https-jks-password`. <br /> 
+
+```yaml
+master:
+   httpsKeyStore:
+       enable: true
+       jenkinsHttpsJksSecretName: ''
+       httpPort: 8081
+       path: "/var/jenkins_keystore"
+       fileName: "keystore.jks"
+       password: "changeit"
+       jenkinsKeyStoreBase64Encoded: ''
+```
+
+
+

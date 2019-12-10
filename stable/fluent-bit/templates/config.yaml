@@ -49,6 +49,7 @@ data:
 {{- end }}
         Max_Entries     {{ .Values.input.systemd.maxEntries }}
         Read_From_Tail  {{ .Values.input.systemd.readFromTail }}
+        Strip_Underscores  {{ .Values.input.systemd.stripUnderscores }}
 {{- end }}
 {{ .Values.extraEntries.input | indent 8 }}
 
@@ -91,6 +92,15 @@ data:
         Retry_Limit False
 {{- if .Values.backend.forward.shared_key }}
         Shared_Key    {{ .Values.backend.forward.shared_key }}
+{{- end }}
+{{- if .Values.backend.forward.tls }}
+        tls           {{ .Values.backend.forward.tls }}
+{{- end }}
+{{- if .Values.backend.forward.tls_verify }}
+        tls.verify    {{ .Values.backend.forward.tls_verify }}
+{{- end }}
+{{- if .Values.backend.forward.tls_debug }}
+        tls.debug     {{ .Values.backend.forward.tls_debug }}
 {{- end }}
 {{ else if eq .Values.backend.type "es" }}
     [OUTPUT]
