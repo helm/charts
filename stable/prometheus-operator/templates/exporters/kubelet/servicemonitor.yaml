@@ -1,9 +1,9 @@
 {{- if .Values.kubelet.enabled }}
-apiVersion: monitoring.coreos.com/v1
+apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
 kind: ServiceMonitor
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-kubelet
-  namespace: {{ $.Release.Namespace }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-kubelet
 {{ include "prometheus-operator.labels" . | indent 4 }}
@@ -33,6 +33,9 @@ spec:
     path: /metrics/cadvisor
     {{- if .Values.kubelet.serviceMonitor.interval }}
     interval: {{ .Values.kubelet.serviceMonitor.interval }}
+    {{- end }}
+    {{- if .Values.kubelet.serviceMonitor.scrapeTimeout }}
+    scrapeTimeout: {{ .Values.kubelet.serviceMonitor.scrapeTimeout }}
     {{- end }}
     honorLabels: true
     tlsConfig:
