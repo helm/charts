@@ -34,6 +34,10 @@ spec:
         volumeMounts:
         - name: config
           mountPath: /etc/telegraf
+        {{- range .Values.volumeMounts}}
+        - name: {{ .name }}
+          mountPath: {{ .mountPath }}
+        {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.imagePullSecrets | indent 8 }}
@@ -42,3 +46,6 @@ spec:
       - name: config
         configMap:
           name: {{ include "telegraf.fullname" . }}
+      {{- if .Values.volumeMounts }}
+{{ toYaml .Values.volumeMounts | indent 6 }}
+      {{- end}}
