@@ -22,8 +22,6 @@ whiteListSourceRange: []
 externalTrafficPolicy: Cluster
 replicas: 1
 # startupArguments:
-#   - "--ping"
-#   - "--ping.entrypoint=http"
 
 # /ping health-check entry point.
 # pingEntryPoint: http
