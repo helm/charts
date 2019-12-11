@@ -16,6 +16,10 @@ metadata:
     {{- range $key, $val := .Values.master.deploymentLabels }}
     {{ $key }}: {{ $val | quote }}
     {{- end}}
+  {{- if .Values.master.deploymentAnnotations }}
+  annotations:
+{{ toYaml .Values.master.deploymentAnnotations | indent 4 }}
+  {{- end }}
 spec:
   replicas: 1
   strategy:
