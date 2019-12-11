@@ -109,9 +109,6 @@ agent:
   annotations: {}
   image: jaegertracing/jaeger-agent
   pullPolicy: IfNotPresent
-  collector:
-    host: null
-    port: null
   cmdlineParams: {}
   daemonset:
     useHostPort: false
