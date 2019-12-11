@@ -21,6 +21,11 @@ spec:
             release: "{{ .Release.Name }}"
             heritage: "{{ .Release.Service }}"
         spec:
+          volumes:
+            - name: mail-receiver
+              configMap:
+                name: {{ template "redmine.fullname" . }}
+                defaultMode: 0744
           restartPolicy: Never
           concurrencyPolicy: Forbid
           imagePullPolicy: {{ .Values.mailReceiver.image.pullPolicy | quote }}
@@ -28,53 +33,65 @@ spec:
           - name: {{ template "redmine.mailReceiver.fullname" . }}
             image: {{ template "redmine.mailReceiver.image" . }}
             imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+            command:
+            - bash
+            args:
+            - -c
+            - /cj/receive.sh
+            volumeMounts:
+            - name: mail-receiver
+              mountPath: /cj
             resources:
   {{ toYaml .Values.resources | indent 12 }}
             env:
             {{- if .Values.databaseType.mariadb }}
-            - name: REDMINE_DB_MYSQL
+            - name: REDMINE_MAIL_RECEIVER_DB_MYSQL
             {{- if .Values.mariadb.enabled }}
               value: {{ template "redmine.mariadb.fullname" . }}
-            - name: REDMINE_DB_DATABASE
+            - name: REDMINE_MAIL_RECEIVER_DB_DATABASE
               value: {{ .Values.mariadb.db.name | quote }}
-            - name: REDMINE_DB_USERNAME
+            - name: REDMINE_MAIL_RECEIVER_DB_USERNAME
               value: {{ .Values.mariadb.db.user | quote }}
-            - name: REDMINE_DB_PASSWORD
+            - name: REDMINE_MAIL_RECEIVER_DB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ template "redmine.mariadb.fullname" . }}
                   key: mariadb-password
+            - name: REDMINE_MAIL_RECEIVER_DB_PORT
+              value: "3306"
             {{- else }}
               value: {{ .Values.externalDatabase.host | quote }}
             {{- end }}
             {{- else if .Values.databaseType.postgresql }}
-            - name: REDMINE_DB_POSTGRES
+            - name: REDMINE_MAIL_RECEIVER_DB_POSTGRES
             {{- if .Values.postgresql.enabled }}
               value: {{ template "redmine.postgresql.fullname" . }}
-            - name: REDMINE_DB_DATABASE
+            - name: REDMINE_MAIL_RECEIVER_DB_DATABASE
               value: {{ .Values.postgresql.postgresqlDatabase | quote }}
-            - name: REDMINE_DB_USERNAME
+            - name: REDMINE_MAIL_RECEIVER_DB_USERNAME
               value: {{ .Values.postgresql.postgresqlUsername | quote }}
-            - name: REDMINE_DB_PASSWORD
+            - name: REDMINE_MAIL_RECEIVER_DB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ template "redmine.postgresql.fullname" . }}
                   key: postgresql-password
+            - name: REDMINE_MAIL_RECEIVER_DB_PORT
+              value: "5432"
             {{- else }}
               value: {{ .Values.externalDatabase.host | quote }}
             {{- end }}
             {{- end }}
             {{- if or (and .Values.databaseType.mariadb (not .Values.mariadb.enabled)) (and .Values.databaseType.postgresql (not .Values.postgresql.enabled)) }}
-            - name: REDMINE_DB_DATABASE
+            - name: REDMINE_MAIL_RECEIVER_DB_DATABASE
               value: {{ .Values.externalDatabase.name | quote }}
-            - name: REDMINE_DB_USERNAME
+            - name: REDMINE_MAIL_RECEIVER_DB_USERNAME
               value: {{ .Values.externalDatabase.user | quote }}
-            - name: REDMINE_DB_PASSWORD
+            - name: REDMINE_MAIL_RECEIVER_DB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ template "redmine.secretName" . }}
                   key: external-db-password
-            - name: REDMINE_DB_PORT
+            - name: REDMINE_MAIL_RECEIVER_DB_PORT
               value: {{ .Values.externalDatabase.port | quote }}
             {{- end }}
             - name: REDMINE_MAIL_RECEIVER_HOST
