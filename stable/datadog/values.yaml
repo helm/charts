@@ -712,7 +712,7 @@ daemonset:
   ## ref: https://docs.datadoghq.com/agent/guide/agent-configuration-files/?tab=agentv6
   ## ref: https://github.com/DataDog/datadog-agent/blob/master/pkg/config/config_template.yaml
   #
-  customAgentConfig:
+  # customAgentConfig:
   #   # Autodiscovery for Kubernetes
   #   listeners:
   #     - name: kubelet
