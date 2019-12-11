@@ -195,6 +195,13 @@ $ helm install --name test --set persistence.existingClaim=PVC_REDMINE,mariadb.p
 
 ## Upgrading
 
+### 14.0.0
+
+- Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+- The `databaseType` parameters is no longer an object but a string. Allowed values are "mariadb" and "postgresql".
+- Ingress configuration was standardized to simplify the way to configure the main host.
+- Ports names were prefixed with the protocol to comply with Istio (see https://istio.io/docs/ops/deployment/requirements/).
+
 ### 13.0.0
 
 Helm performs a lookup for the object based on its group (apps), version (v1), and kind (Deployment). Also known as its GroupVersionKind, or GVK. Changing the GVK is considered a compatibility breaker from Kubernetes' point of view, so you cannot "upgrade" those objects to the new GVK in-place. Earlier versions of Helm 3 did not perform the lookup correctly which has since been fixed to match the spec.

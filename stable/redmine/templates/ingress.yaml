@@ -3,11 +3,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ template "redmine.fullname" . }}
-  labels:
-    app: {{ template "redmine.fullname" . }}
-    chart: {{ template "redmine.chart" . }}
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
+  labels: {{- include "redmine.labels" . | nindent 4 }}
   annotations:
     {{- if .Values.ingress.certManager }}
     kubernetes.io/tls-acme: "true"
@@ -35,28 +31,8 @@ spec:
             serviceName: "{{ template "redmine.fullname" $ }}"
             servicePort: http
     {{- end }}
-    ## The block below is deprecated and must removed on 3.0.0
-    {{- range .Values.ingress.hosts }}
-    - host: {{ .name }}
-      http:
-        paths:
-        - path: {{ default "/" .path }}
-          backend:
-            serviceName: {{ template "redmine.fullname" $ }}
-            servicePort: http
-    {{- end }}
-    ## end of block
   {{- if or .Values.ingress.tls .Values.ingress.extraTls .Values.ingress.hosts }}
   tls:
-    ## The block below is deprecated and must removed on 3.0.0
-    {{- range .Values.ingress.hosts }}
-    {{- if .tls }}
-    - hosts:
-        - {{ .name }}
-      secretName: {{ .tlsSecret }}
-    {{- end }}
-    {{- end }}
-    ## end of block
     {{- if .Values.ingress.tls }}
     - hosts:
         - {{ .Values.ingress.hostname }}
