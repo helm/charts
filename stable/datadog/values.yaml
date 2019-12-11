@@ -307,11 +307,6 @@ systemProbe:
   #
   enableConntrack: true
 
-  ## @param seccompRoot - string - required
-  ## Specify the seccomp profile root directory
-  #
-  seccompRoot: /var/lib/kubelet/seccomp
-
   ## @param bpfDebug - boolean - required
   ## Enable logging for kernel debug
   #
