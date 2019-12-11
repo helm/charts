@@ -401,6 +401,12 @@ $ helm upgrade my-release bitnami/influxdb \
 
 > Note: you need to substitute the placeholders _[POSTGRESQL_PASSWORD]_, and _[REPLICATION_PASSWORD]_ with the values obtained from instructions in the installation notes.
 
+## 8.0.0
+
+Prefixes the port names with their protocols to comply with Istio conventions.
+
+If you depend on the port names in your setup, make sure to update them to reflect this change.
+
 ## 7.1.0
 
 Adds support for LDAP configuration.

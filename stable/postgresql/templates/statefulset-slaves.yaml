@@ -166,7 +166,7 @@ spec:
                   key: postgresql-password
             {{- end }}
           ports:
-            - name: postgresql
+            - name: tcp-postgresql
               containerPort: {{ template "postgresql.port" . }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
