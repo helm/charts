@@ -35,7 +35,7 @@ spec:
         name: tools
   initContainers:
   - name: test-framework
-    image: "dduportal/bats:0.4.0"
+    image: "bats/bats:v1.1.0"
     command: ["bash", "-c", "set -ex\ncp -R /usr/local/libexec/ /tools/bats/"]
     volumeMounts:
       - mountPath: "/tools"

@@ -53,8 +53,8 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `busybox.image`                              | `busybox` image repository.                                                                  | `busybox`                                            |
 | `busybox.tag`                                | `busybox` image tag.                                                                         | `1.29.3`                                             |
 | `testFramework.enabled`                      | `test-framework` switch.                                                                     | `true`                                               |
-| `testFramework.image`                        | `test-framework` image repository.                                                           | `dduportal/bats`                                     |
-| `testFramework.tag`                          | `test-framework` image tag.                                                                  | `0.4.0`                                              |
+| `testFramework.image`                        | `test-framework` image repository.                                                           | `bats/bats`                                     |
+| `testFramework.tag`                          | `test-framework` image tag.                                                                  | `v1.1.0`                                              |
 | `imagePullPolicy`                            | Image pull policy                                                                            | `IfNotPresent`                                       |
 | `existingSecret`                             | Use Existing secret for Password details                                                     | `nil`                                                |
 | `extraVolumes`                               | Additional volumes as a string to be passed to the `tpl` function                            |                                                      |

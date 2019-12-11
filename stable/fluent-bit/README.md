@@ -151,8 +151,8 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `metrics.serviceMonitor.interval`         | Scrape interval. If not set, the Prometheus default scrape interval is used           | `nil`   |
 | `metrics.serviceMonitor.scrapeTimeout`    | Scrape timeout. If not set, the Prometheus default scrape timeout is used             | `nil`   |
 | `trackOffsets`                     | Specify whether to track the file offsets for tailing docker logs. This allows fluent-bit to pick up where it left after pod restarts but requires access to a `hostPath` | `false` |
-| `testFramework.image`              | `test-framework` image repository.         | `dduportal/bats`                                  |
-| `testFramework.tag`                | `test-framework` image tag.                | `0.4.0`                                           |
+| `testFramework.image`              | `test-framework` image repository.         | `bats/bats`                                  |
+| `testFramework.tag`                | `test-framework` image tag.                | `v1.1.0`                                           |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
