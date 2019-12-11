@@ -49,6 +49,7 @@ data:
 {{- end }}
         Max_Entries     {{ .Values.input.systemd.maxEntries }}
         Read_From_Tail  {{ .Values.input.systemd.readFromTail }}
+        Strip_Underscores  {{ .Values.input.systemd.stripUnderscores }}
 {{- end }}
 {{ .Values.extraEntries.input | indent 8 }}
 
