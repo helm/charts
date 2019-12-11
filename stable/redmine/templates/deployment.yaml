@@ -1,25 +1,15 @@
-{{- if or .Values.databaseType.mariadb .Values.databaseType.postgresql }}
 apiVersion: {{ template "redmine.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "redmine.fullname" . }}
-  labels:
-    app: {{ template "redmine.fullname" . }}
-    chart: {{ template "redmine.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+  labels: {{- include "redmine.labels" . | nindent 4 }}
 spec:
   selector:
-    matchLabels:
-      app: {{ template "redmine.fullname" . }}
-      release: "{{ .Release.Name }}"
+    matchLabels: {{- include "redmine.matchLabels" . | nindent 6 }}
   replicas: {{ .Values.replicas }}
   template:
     metadata:
-      labels:
-        app: {{ template "redmine.fullname" . }}
-        chart: {{ template "redmine.chart" . }}
-        release: "{{ .Release.Name }}"
+      labels: {{- include "redmine.labels" . | nindent 8 }}
       {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
@@ -48,7 +38,7 @@ spec:
         {{- if .Values.extraVars }}
 {{ toYaml .Values.extraVars | indent 8 }}
         {{- end }}
-        {{- if .Values.databaseType.mariadb }}
+        {{- if eq .Values.databaseType "mariadb" }}
         - name: REDMINE_DB_MYSQL
         {{- if .Values.mariadb.enabled }}
           value: {{ template "redmine.mariadb.fullname" . }}
@@ -64,7 +54,7 @@ spec:
         {{- else }}
           value: {{ .Values.externalDatabase.host | quote }}
         {{- end }}
-        {{- else if .Values.databaseType.postgresql }}
+        {{- else if eq .Values.databaseType "postgresql" }}
         - name: REDMINE_DB_POSTGRES
         {{- if .Values.postgresql.enabled }}
           value: {{ template "redmine.postgresql.fullname" . }}
@@ -81,7 +71,7 @@ spec:
           value: {{ .Values.externalDatabase.host | quote }}
         {{- end }}
         {{- end }}
-        {{- if or (and .Values.databaseType.mariadb (not .Values.mariadb.enabled)) (and .Values.databaseType.postgresql (not .Values.postgresql.enabled)) }}
+        {{- if or (and (eq .Values.databaseType "mariadb") (not .Values.mariadb.enabled)) (and (eq .Values.databaseType "postgresql") (not .Values.postgresql.enabled)) }}
         - name: REDMINE_DB_NAME
           value: {{ .Values.externalDatabase.name | quote }}
         - name: REDMINE_DB_USERNAME
@@ -129,13 +119,13 @@ spec:
           value: {{ .Values.smtpTls | quote }}
         {{- end }}
         ports:
-        - name: http
+        - name: http-redmine
           containerPort: 3000
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
             path: /
-            port: http
+            port: http-redmine
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -146,7 +136,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /
-            port: http
+            port: http-redmine
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
@@ -169,4 +159,3 @@ spec:
       securityContext:
 {{ toYaml . | indent 8 }}
       {{- end }}
-{{- end }}
