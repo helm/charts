@@ -16,7 +16,7 @@ This chart bootstraps an InfluxDB statefulset and service on a Kubernetes cluste
 
 ## Prerequisites
 
-- Kubernetes 1.4+
+- Kubernetes 1.14+
 - PV provisioner support in the underlying infrastructure (optional)
 
 ## Installing the Chart
