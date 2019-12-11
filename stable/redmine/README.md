@@ -112,9 +112,9 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `ingress.secrets[0].name`            | TLS Secret Name                                                            | `nil`                                                   |
 | `ingress.secrets[0].certificate`     | TLS Secret Certificate                                                     | `nil`                                                   |
 | `ingress.secrets[0].key`             | TLS Secret Key                                                             | `nil`                                                   |
-| `nodeSelector`                       | Node labels for pod assignment                                             | `{}`                                                    |
-| `tolerations`                        | List of node taints to tolerate                                            | `{}`                                                    |
-| `affinity`                           | Map of node/pod affinities                                                 | `{}`                                                    |
+| `nodeSelector`                       | Node labels for pod assignment                                             | `{}` (The value is evaluated as a template)             |
+| `tolerations`                        | List of node taints to tolerate                                            | `[]` (The value is evaluated as a template)             |
+| `affinity`                           | Map of node/pod affinities                                                 | `{}` (The value is evaluated as a template)             |
 | `podAnnotations`                     | Pod annotations                                                            | `{}`                                                    |
 | `persistence.enabled`                | Enable persistence using PVC                                               | `true`                                                  |
 | `persistence.existingClaim`          | The name of an existing PVC                                                | `nil`                                                   |
