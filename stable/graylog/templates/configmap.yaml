@@ -140,8 +140,7 @@ data:
     GRAYLOG_HOME=/usr/share/graylog
     MASTER_NAME="{{ template "graylog.fullname" . }}-master.{{ .Release.Namespace }}.svc.cluster.local"
     # Looking for Master IP
-    MASTER_IP=`/k8s/kubectl --namespace {{ .Release.Namespace }} get pod -o jsonpath='{range .items[*]}{.metadata.name} {.status.podIP}{"\n"}{end}' -l graylog-role=
-    --field-selector=status.phase=Running|awk '{print $2}'`
+    MASTER_IP=`/k8s/kubectl --namespace {{ .Release.Namespace }} get pod -o jsonpath='{range .items[*]}{.metadata.name} {.status.podIP}{"\n"}{end}' -l graylog-role=master --field-selector=status.phase=Running|awk '{print $2}'`
     SELF_IP=`/k8s/kubectl --namespace {{ .Release.Namespace }} get pod $HOSTNAME -o jsonpath='{.status.podIP}'`
     echo "Current master is $MASTER_IP"
     echo "Self IP is $SELF_IP"
