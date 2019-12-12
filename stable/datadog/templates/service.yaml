@@ -23,7 +23,7 @@ spec:
     app: {{ template "datadog.fullname" . }}
     type: deployment
   ports:
-  - port: {{ default 8125 .Values.datadog.dogstatsd_port }}
+  - port: {{ default 8125 .Values.datadog.dogStatsDPort }}
     name: dogstatsdport
     protocol: UDP
   {{- if .Values.deployment.dogstatsdNodePort }}
