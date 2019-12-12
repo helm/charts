@@ -133,6 +133,13 @@ the extra slash.
 {{- end -}}
 {{- end -}}
 
+{{/*
+The name of the service used for the ingress controller's validation webhook
+*/}}
+
+{{- define "kong.service.validationWebhook" -}}
+{{ include "kong.fullname" . }}-validation-webhook
+{{- end -}}
 
 {{- define "kong.env" -}}
 {{- range $key, $val := .Values.env }}
@@ -168,6 +175,11 @@ the extra slash.
     {{- else }}
     name: {{ template "kong.dblessConfig.fullname" . }}
     {{- end }}
+{{- end }}
+{{- if .Values.ingressController.admissionWebhook.enabled }}
+- name: webhook-cert
+  secret:
+    secretName: {{ template "kong.fullname" . }}-validation-webhook-keypair
 {{- end }}
 {{- range $secretVolume := .Values.secretVolumes }}
 - name: {{ . }}
@@ -251,6 +263,9 @@ the extra slash.
   {{- else }}
   - --kong-url=http://localhost:{{ .Values.admin.containerPort }}
   {{- end }}
+  {{- if .Values.ingressController.admissionWebhook.enabled }}
+  - --admission-webhook-listen=0.0.0.0:{{ .Values.ingressController.admissionWebhook.port }}
+  {{- end }}
   env:
   - name: POD_NAME
     valueFrom:
@@ -270,6 +285,12 @@ the extra slash.
 {{ toYaml .Values.ingressController.livenessProbe | indent 4 }}
   resources:
 {{ toYaml .Values.ingressController.resources | indent 4 }}
+{{- if .Values.ingressController.admissionWebhook.enabled }}
+  volumeMounts:
+  - name: webhook-cert
+    mountPath: /admission-webhook
+    readOnly: true
+{{- end }}
 {{- end -}}
 
 {{/*

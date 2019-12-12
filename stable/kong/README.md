@@ -396,13 +396,23 @@ You can can learn about kong ingress custom resource definitions [here](https://
 | image.tag                          | Version of the ingress controller                                                     | 0.6.0                                                                        |
 | readinessProbe                     | Kong ingress controllers readiness probe                                              |                                                                              |
 | livenessProbe                      | Kong ingress controllers liveness probe                                               |                                                                              |
-| ingressClass                       | The ingress-class value for controller                                                | kong                                                                        |
+| ingressClass                       | The ingress-class value for controller                                                | kong                                                                         |
 | podDisruptionBudget.enabled        | Enable PodDisruptionBudget for ingress controller                                     | `false`                                                                      |
 | podDisruptionBudget.maxUnavailable | Represents the minimum number of Pods that can be unavailable (integer or percentage) | `50%`                                                                        |
 | podDisruptionBudget.minAvailable   | Represents the number of Pods that must be available (integer or percentage)          |                                                                              |
+| admissionWebhook.enabled           | Whether to enable the validating admission webhook                                    | false                                                                        |
+| admissionWebhook.failurePolicy     | How unrecognized errors from the admission endpoint are handled (Ignore or Fail)      | Fail                                                                         |
+| admissionWebhook.port              | The port the ingress controller will listen on for admission webhooks                 | 8080                                                                         |
 
 
 ## Changelog
+
+### 0.28.0
+
+#### New Features
+
+- Added support for the Validating Admission Webhook with the Ingress Controller.
+
 ### 0.27.2
 
 #### Fixes
