@@ -1,0 +1,40 @@
+{{- if and .Values.crds.enabled (not .Values.crds.keep)}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "ambassador.fullname" . }}-crd-cleanup
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-weight": "3"
+    "helm.sh/hook-delete-policy": hook-succeeded
+  labels:
+    app.kubernetes.io/name: {{ include "ambassador.name" . }}
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+    helm.sh/chart: {{ include "ambassador.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  template:
+    metadata:
+      name: {{ include "ambassador.fullname" . }}-crd-cleanup
+      labels:
+        app.kubernetes.io/name: {{ include "ambassador.name" . }}
+        app.kubernetes.io/part-of: {{ .Release.Name }}
+        helm.sh/chart: {{ include "ambassador.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+    spec:
+      {{- if .Values.rbac.create }}
+      serviceAccountName: {{ include "ambassador.serviceAccountName" . }}
+      {{- end }}
+      containers:
+        - name: kubectl
+          image: "k8s.gcr.io/hyperkube:v1.12.1"
+          command:
+          - /bin/sh
+          - -c
+          - >
+              kubectl delete crds -l app.kubernetes.io/name=ambassador
+      restartPolicy: OnFailure
+{{- end }}

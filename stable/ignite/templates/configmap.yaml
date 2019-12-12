@@ -37,11 +37,11 @@ data:
 
             <property name="peerClassLoadingEnabled" value="{{ .Values.peerClassLoadingEnabled | default false }}"/>
 
-{{- if (.Values.persistence.enabled) }}
-            <!-- Enabling Apache Ignite Persistent Store. -->
+            <!-- Ignite Data Storage Configuration -->
             <property name="dataStorageConfiguration">
                 <bean class="org.apache.ignite.configuration.DataStorageConfiguration">
-
+{{- if (.Values.persistence.enabled) }}
+                    <!-- Ignite Persistent Storage -->
                     <property name="defaultDataRegionConfiguration">
                         <bean class="org.apache.ignite.configuration.DataRegionConfiguration">
                             <property name="persistenceEnabled" value="true"/>
@@ -65,10 +65,11 @@ data:
                         It's assumed the directory is on the same drive with the WAL files.
                     -->
                     <property name="walArchivePath" value="/wal/archive"/>
+{{- end }}
+{{ .Values.dataStorage.config | indent 20 }}
                 </bean>
             </property>
 
-{{- end }}
             <!-- Explicitly configure TCP discovery SPI to provide list of initial nodes. -->
             <property name="discoverySpi">
                 <bean class="org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi">

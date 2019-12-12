@@ -14,7 +14,7 @@ rules:
   - apiGroups:     ["extensions"]
     resources:     ["daemonsets"]
     resourceNames: ["{{ template "kured.fullname" . }}"]
-    verbs:         ["update"]
+    verbs:         ["update", "patch"]
   - apiGroups:     ["apps"]
     resources:     ["daemonsets"]
     resourceNames: ["{{ template "kured.fullname" . }}"]

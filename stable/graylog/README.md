@@ -98,7 +98,7 @@ The following table lists the configurable parameters of the Graylog chart and t
 
 | Parameter                               | Description                                                                                                                                           | Default                               |
 |-----------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------|
-| `graylog.image.repository`              | `graylog` image repository   | `graylog/graylog:3.1.2-1`                 |
+| `graylog.image.repository`              | `graylog` image repository   | `graylog/graylog:3.1`                 |
 | `graylog.imagePullPolicy`               | Image pull policy                                                                                                                                     | `IfNotPresent`                        |
 | `graylog.replicas`                      | The number of Graylog instances in the cluster. The chart will automatic create assign master to one of replicas                                      | `2`                                   |
 | `graylog.resources`                     | CPU/Memory resource requests/limits                                                                                                                   | Memory: `1024Mi`, CPU: `500m`         |
@@ -130,7 +130,7 @@ The following table lists the configurable parameters of the Graylog chart and t
 | `graylog.geoip.enabled`                 | If true, Maxmind Geoip Lite will be installed to ${GRAYLOG_HOME}/etc/GeoLite2-City.mmdb                                                               | `false`                               |
 | `graylog.plugins`                       | A list of Graylog installation plugins                                                                                                                | `[]`                                  |
 | `graylog.rootUsername`                  | Graylog root user name                                                                                                                                | `admin`                               |
-| `graylog.rootPassword`                  | Graylog root password. If not set, random 10-character alphanumeric string                                                                            | ``                                    |
+| `graylog.rootPassword`                  | Graylog root password. If not set, random 16-character alphanumeric string                                                                            | ``                                    |
 | `graylog.rootEmail`                     | Graylog root email.                                                                                                                                   | ``                                    |
 | `graylog.existingRootSecret`            | Graylog existing root secret                                                                                                                          | ``                                    |
 | `graylog.rootTimezone`                  | Graylog root timezone.                                                                                                                                | `UTC`                                 |

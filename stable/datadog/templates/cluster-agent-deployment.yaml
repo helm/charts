@@ -12,7 +12,7 @@ metadata:
     app.kubernetes.io/name: "{{ template "datadog.fullname" . }}"
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
-    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 spec:
   replicas: {{ .Values.clusterAgent.replicas }}
   strategy:
@@ -57,6 +57,10 @@ spec:
       {{- if .Values.clusterAgent.image.pullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.clusterAgent.image.pullSecrets | indent 8 }}
+      {{- end }}
+      {{- if .Values.clusterAgent.useHostNetwork }}
+      hostNetwork: {{ .Values.clusterAgent.useHostNetwork }}
+      dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
       containers:
       - name: {{ .Values.clusterAgent.containerName }}

@@ -25,6 +25,7 @@ The following table shows the configuration options for the Solr helm chart:
 
 | Parameter                                     | Description                           | Default Value                                                       |
 | --------------------------------------------- | ------------------------------------- | --------------------------------------------------------------------- |
+| `global.imagePullSecrets`                     | Global Docker registry secret names as an array       | `[]` (does not add image pull secrets to deployed pods)      |
 | `port`                                        | The port that Solr will listen on | `8983`                                                                |
 | `replicaCount`                                | The number of replicas in the Solr statefulset | `3`                                                                   |
 | `javaMem`                                     | JVM memory settings to pass to Solr | `-Xms2g -Xmx3g`                                                       |
@@ -34,6 +35,7 @@ The following table shows the configuration options for the Solr helm chart:
 | `image.repository`                            | The repository to pull the docker image from| `solr`                                                                |
 | `image.tag`                                   | The tag on the repository to pull | `7.7.2`                                                               |
 | `image.pullPolicy`                            | Solr pod pullPolicy | `IfNotPresent`                                                              |
+| `image.pullSecrets`                           | Specify docker-registry secret names as an array      | `[]` (does not add image pull secrets to deployed pods)      |
 | `livenessProbe.initialDelaySeconds`           | Initial Delay for Solr pod liveness probe | `20`                                                                  |
 | `livenessProbe.periodSeconds`                 | Poll rate for liveness probe | `10`                                                                  |
 | `readinessProbe.initialDelaySeconds`          | Initial Delay for Solr pod readiness probe | `15`                                                                  |
@@ -61,6 +63,7 @@ The following table shows the configuration options for the Solr helm chart:
 | `service.type`                                | The type of service for the solr client service | `ClusterIP`                                                           |
 | `service.annotations`                         | Annotations to apply to the solr client service | `{}` |
 | `exporter.enabled`                            | Whether to enable the Solr Prometheus exporter | `false`                                                               |
+| `exporter.image.pullSecrets`                  | Specify docker-registry secret names as an array      | `[]` (does not add image pull secrets to deployed pods)      |
 | `exporter.configFile`                         | The path in the docker image that the exporter loads the config from | `/opt/solr/contrib/prometheus-exporter/conf/solr-exporter-config.xml` |
 | `exporter.updateStrategy`                     | Update strategy for the exporter deployment | `{}` |
 | `exporter.podAnnotations`                     | Annotations to set on the exporter pods | `{}`

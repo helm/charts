@@ -54,24 +54,12 @@ Create default labels
 {{- end -}}
 
 {{/*
-Create unified labels for prometheus components
+Return the appropriate apiVersion for networkpolicy.
 */}}
-{{- define "prometheus-pushgateway.common.matchLabels" -}}
-app: {{ template "prometheus-pushgateway.name" . }}
-release: {{ .Release.Name }}
+{{- define "prometheus-pushgateway.networkPolicy.apiVersion" -}}
+{{- if semverCompare ">=1.4-0, <1.7-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "extensions/v1beta1" -}}
+{{- else if semverCompare "^1.7-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "networking.k8s.io/v1" -}}
 {{- end -}}
-
-{{- define "prometheus-pushgateway.labels" -}}
-{{ include "prometheus-pushgateway.common.matchLabels" . }}
-{{ include "prometheus-pushgateway.common.metaLabels" . }}
-{{- end -}}
-
-{{- define "prometheus-pushgateway.matchLabels" -}}
-component: {{ .Values.name | quote }}
-{{ include "prometheus-pushgateway.common.matchLabels" . }}
-{{- end -}}
-
-{{- define "prometheus-pushgateway.common.metaLabels" -}}
-chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-heritage: {{ .Release.Service }}
 {{- end -}}
