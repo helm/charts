@@ -7,7 +7,7 @@ Credentials:
     echo "Password      : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq.fullname" . }} -o jsonpath="{.data.rabbitmq-password}" | base64 --decode)"
     echo "ErLang Cookie : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq.fullname" . }} -o jsonpath="{.data.rabbitmq-erlang-cookie}" | base64 --decode)"
 
-RabbitMQ can be accessed within the cluster on port {{ .Values.service.nodePort }} at {{ template "rabbitmq.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+RabbitMQ can be accessed within the cluster on port {{ .Values.service.nodePort }} at {{ template "rabbitmq.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.rabbitmq.clustering.k8s_domain }}
 
 To access for outside the cluster, perform the following steps:
 

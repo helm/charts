@@ -43,6 +43,9 @@ image:
 ##
 # fullnameOverride:
 
+# Add custom extra environment variables to all the MongoDB containers
+# extraEnvVars:
+
 ## Init containers parameters:
 ## volumePermissions: Change the owner and group of the persistent volume mountpoint to runAsUser:fsGroup values from the securityContext section.
 ##
@@ -393,7 +396,7 @@ metrics:
     registry: docker.io
     repository: bitnami/mongodb-exporter
     tag: 0.10.0-debian-9-r49
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/

@@ -21,12 +21,11 @@
 {{ tpl .Values.sentinel.customConfig . | indent 4 }}
 {{- else }}
     dir "/data"
-    {{- $root := . -}}
     {{- range $key, $value := .Values.sentinel.config }}
-    sentinel {{ $key }} {{ $root.Values.redis.masterGroupName }} {{ $value }}
+    sentinel {{ $key }} {{ template "redis-ha.masterGroupName" $ }} {{ $value }}
     {{- end }}
 {{- if .Values.auth }}
-    sentinel auth-pass {{ .Values.redis.masterGroupName }} replace-default-auth
+    sentinel auth-pass {{ template "redis-ha.masterGroupName" . }} replace-default-auth
 {{- end }}
 {{- end }}
 {{- end }}
@@ -34,8 +33,8 @@
 {{- define "config-init.sh" }}
     HOSTNAME="$(hostname)"
     INDEX="${HOSTNAME##*-}"
-    MASTER="$(redis-cli -h {{ template "redis-ha.fullname" . }} -p {{ .Values.sentinel.port }} sentinel get-master-addr-by-name {{ .Values.redis.masterGroupName }} | grep -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')"
-    MASTER_GROUP="{{ .Values.redis.masterGroupName }}"
+    MASTER="$(redis-cli -h {{ template "redis-ha.fullname" . }} -p {{ .Values.sentinel.port }} sentinel get-master-addr-by-name {{ template "redis-ha.masterGroupName" . }} | grep -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')"
+    MASTER_GROUP="{{ template "redis-ha.masterGroupName" . }}"
     QUORUM="{{ .Values.sentinel.quorum }}"
     REDIS_CONF=/data/conf/redis.conf
     REDIS_PORT={{ .Values.redis.port }}
@@ -151,6 +150,7 @@
     {{- $root := . }}
     {{- $fullName := include "redis-ha.fullname" . }}
     {{- $replicas := int (toString .Values.replicas) }}
+    {{- $masterGroupName := include "redis-ha.masterGroupName" . }}
     {{- range $i := until $replicas }}
     # Check Sentinel and whether they are nominated master
     backend check_if_redis_is_master_{{ $i }}
@@ -163,7 +163,7 @@
       {{- end }}
       tcp-check send PING\r\n
       tcp-check expect string +PONG
-      tcp-check send SENTINEL\ get-master-addr-by-name\ mymaster\r\n
+      tcp-check send SENTINEL\ get-master-addr-by-name\ {{ $masterGroupName }}\r\n
       tcp-check expect string REPLACE_ANNOUNCE{{ $i }}
       tcp-check send QUIT\r\n
       tcp-check expect string +OK

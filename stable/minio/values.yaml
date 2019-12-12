@@ -6,7 +6,7 @@ clusterDomain: cluster.local
 ##
 image:
   repository: minio/minio
-  tag: RELEASE.2019-08-07T01-59-21Z
+  tag: edge
   pullPolicy: IfNotPresent
 
 ## Set default image, imageTag, and imagePullPolicy for the `mc` (the minio
@@ -14,7 +14,7 @@ image:
 ##
 mcImage:
   repository: minio/mc
-  tag: RELEASE.2019-08-07T23-14-43Z
+  tag: edge
   pullPolicy: IfNotPresent
 
 ## minio server mode, i.e. standalone or distributed.
@@ -51,7 +51,10 @@ secretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 configPath: "/root/.minio/"
 configPathmc: "/root/.mc/"
 mountPath: "/export"
+# Number of drives attached to a node
+drivesPerNode: 1
 replicas: 4
+zones: 1
 
 ## TLS Settings for Minio
 tls:
@@ -263,6 +266,13 @@ environment:
 networkPolicy:
   enabled: false
   allowExternal: true
+
+## PodDisruptionBudget settings
+## ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+##
+podDisruptionBudget:
+  enabled: false
+  maxUnavailable: 1
 
 ## Specify the service account to use for the Minio pods. If 'create' is set to 'false'
 ## and 'name' is left unspecified, the account 'default' will be used.

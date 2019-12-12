@@ -7,6 +7,9 @@ metadata:
   labels:
     app: {{ template "prometheus-operator.name" . }}-alertmanager
 {{ include "prometheus-operator.labels" . | indent 4 }}
+{{- if .Values.alertmanager.service.labels }}
+{{ toYaml .Values.alertmanager.service.labels | indent 4 }}
+{{- end }}
 {{- if .Values.alertmanager.service.annotations }}
   annotations:
 {{ toYaml .Values.alertmanager.service.annotations | indent 4 }}
@@ -29,7 +32,7 @@ spec:
   {{- end }}
 {{- end }}
   ports:
-    - name: web
+    - name: {{ .Values.alertmanager.alertmanagerSpec.portName }}
     {{- if eq .Values.alertmanager.service.type "NodePort" }}
       nodePort: {{ .Values.alertmanager.service.nodePort }}
     {{- end }}

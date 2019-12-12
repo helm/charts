@@ -28,8 +28,8 @@ spec:
         app: {{ template "sentry.fullname" . }}
         release: "{{ .Release.Name }}"
         role: web
-        {{- if .Values.worker.podLabels }}
-{{ toYaml .Values.worker.podLabels | indent 8 }}
+        {{- if .Values.web.podLabels }}
+{{ toYaml .Values.web.podLabels | indent 8 }}
         {{- end }}
     spec:
       {{- if .Values.web.affinity }}
