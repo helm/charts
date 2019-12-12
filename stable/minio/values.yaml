@@ -52,7 +52,7 @@ configPath: "/root/.minio/"
 configPathmc: "/root/.mc/"
 mountPath: "/export"
 # Number of drives attached to a node
-drivesPerNode: 8
+drivesPerNode: 1
 replicas: 4
 zones: 1
 
