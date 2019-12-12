@@ -43,9 +43,9 @@ spec:
           readinessProbe:
             httpGet:
             {{- if (index .Values "pushgateway" "extraArgs" "web.route-prefix") }}
-              path: /{{ index .Values "pushgateway" "extraArgs" "web.route-prefix" }}/#/status
+              path: /{{ index .Values "pushgateway" "extraArgs" "web.route-prefix" }}/-/ready
             {{- else }}
-              path: /#/status
+              path: /-/ready
             {{- end }}
               port: 9091
             initialDelaySeconds: 10
