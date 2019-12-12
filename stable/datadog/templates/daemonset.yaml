@@ -44,8 +44,8 @@ spec:
         {{- end }}
         {{- if and .Values.systemProbe.enabled .Values.daemonset.useDedicatedContainers }}
         container.apparmor.security.beta.kubernetes.io/system-probe: {{ .Values.systemProbe.apparmor }}
-        {{- if .Values.systemProbe.seccompHardened }}
-        container.seccomp.security.alpha.kubernetes.io/system-probe: localhost/system-probe
+        {{- if .Values.systemProbe.seccomp }}
+        container.seccomp.security.alpha.kubernetes.io/system-probe: {{ .Values.systemProbe.seccomp }}
         {{- end }}
         {{- end }}
       {{- if .Values.daemonset.podAnnotations }}
@@ -88,7 +88,7 @@ spec:
       {{- if .Values.daemonset.useDedicatedContainers }}
       initContainers:
         {{ include "containers-init" . | nindent 8 }}
-        {{- if and .Values.systemProbe.enabled .Values.systemProbe.seccompHardened }}
+        {{- if and .Values.systemProbe.enabled (eq .Values.systemProbe.seccomp "localhost/system-probe") }}
           {{ include "system-probe-init" . | nindent 8 }}
         {{- end }}
       {{- end }}
@@ -147,7 +147,7 @@ spec:
         - name: sysprobe-config
           configMap:
             name: system-probe-config
-        {{- if .Values.systemProbe.seccompHardened }}
+        {{- if eq .Values.systemProbe.seccomp "localhost/system-probe" }}
         - name: datadog-agent-security
           configMap:
             name: datadog-agent-security
