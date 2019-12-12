@@ -138,6 +138,9 @@ spec:
         - name: MONGODB_EXTRA_FLAGS
           value: {{ .Values.mongodbExtraFlags | join " " | quote }}
         {{- end }}
+        {{- if .Values.extraEnvVars }}
+        {{- include "mongodb.tplValue" ( dict "value" .Values.extraEnvVars "context" $ ) | nindent 8 }}
+        {{- end }}
         ports:
         - name: mongodb
           containerPort: 27017

@@ -231,3 +231,5 @@ cloudsql:
 # podLabels:
 #   key: value
 podLabels: {}
+# For compatibility with 8.0 replace by "/opt/sq"
+sonarqubeFolder: /opt/sonarqube

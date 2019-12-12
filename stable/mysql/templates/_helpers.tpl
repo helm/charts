@@ -30,3 +30,14 @@ Generate chart secret name
 {{- define "mysql.secretName" -}}
 {{ default (include "mysql.fullname" .) .Values.existingSecret }}
 {{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "mysql.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+{{ default (include "mysql.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+{{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
