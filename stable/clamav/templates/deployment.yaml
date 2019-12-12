@@ -32,6 +32,12 @@ spec:
             mountPath: /etc/clamav/freshclam.conf
             subPath: freshclam.conf
 {{- end }}
+{{- if .Values.clamdConfig }}
+          volumeMounts:
+          - name: clamd-config-volume
+            mountPath: /etc/clamav/clamd.conf
+            subPath: clamd.conf
+{{- end }}
           ports:
             - name: clamavport
               containerPort: 3310
@@ -51,6 +57,12 @@ spec:
         - name: freshclam-config-volume
           configMap:
             name: {{ include "clamav.fullname" . }}-freshclam
+{{- end }}
+{{- if .Values.clamdConfig }}
+      volumes:
+        - name: clamd-config-volume
+          configMap:
+            name: {{ include "clamav.fullname" . }}-clamd
 {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:

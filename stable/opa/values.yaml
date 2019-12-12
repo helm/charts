@@ -3,15 +3,17 @@
 #
 # The 'opa' key embeds an OPA configuration file. See
 # https://www.openpolicyagent.org/docs/configuration.html for more details.
-# If no default config wanted just set opa: false
+# Default value is no default config. For custom config, the opa key
+# needs to include the opa config yaml, eg:
 opa:
   services:
     controller:
-      url: "https://www.openpolicyagent.org"
-  bundle:
-    service: controller
-    name: "helm-kubernetes-quickstart"
-  default_decision: "/helm_kubernetes_quickstart/main"
+      url: 'https://www.openpolicyagent.org'
+  bundles:
+    quickstart:
+      service: controller
+      resource: /bundles/helm-kubernetes-quickstart
+  default_decision: /helm_kubernetes_quickstart/main
 
 # Setup the webhook using cert-manager
 certManager:
@@ -20,6 +22,17 @@ certManager:
 # Expose the prometheus scraping endpoint
 prometheus:
   enabled: false
+
+## ServiceMonitor consumed by prometheus-operator
+serviceMonitor:
+  ## If the operator is installed in your cluster, set to true to create a Service Monitor Entry
+  enabled: false
+  interval: "15s"
+  ## Namespace in which the service monitor is created
+  # namespace: monitoring
+  # Added to the ServiceMonitor object so that prometheus-operator is able to discover it
+  ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
+  additionalLabels: {}
 
 # Annotations in the deployment template
 annotations:
@@ -90,7 +103,7 @@ authz:
 
 # Docker image and tag to deploy.
 image: openpolicyagent/opa
-imageTag: 0.10.7
+imageTag: 0.15.1
 imagePullPolicy: IfNotPresent
 
 # Port to which the opa pod will bind itself
@@ -101,7 +114,7 @@ port: 443
 mgmt:
   enabled: true
   image: openpolicyagent/kube-mgmt
-  imageTag: 0.8
+  imageTag: "0.10"
   imagePullPolicy: IfNotPresent
   extraArgs: []
   resources: {}
@@ -192,3 +205,20 @@ livenessProbe:
 
 # Set a priorityClass using priorityClassName
 # priorityClassName:
+
+# Timeout for a webhook call in seconds.
+# Starting in kubernetes 1.14 you can set the timeout and it is
+# encouraged to use a small timeout for webhooks. If the webhook call times out, the request
+# the request is handled according to the webhook'sfailure policy.
+# timeoutSeconds: 20
+
+securityContext:
+  enabled: false
+  runAsNonRoot: true
+  runAsUser: 1
+
+deploymentStrategy: {}
+  # rollingUpdate:
+  #   maxSurge: 1
+  #   maxUnavailable: 0
+  # type: RollingUpdate

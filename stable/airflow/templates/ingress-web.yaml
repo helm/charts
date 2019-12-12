@@ -23,9 +23,21 @@ spec:
   rules:
     - http:
         paths:
+          {{- range .Values.ingress.web.precedingPaths }}
+          - path: {{ .path }}
+            backend:
+              serviceName: {{ .serviceName }}
+              servicePort: {{ .servicePort }}
+          {{- end }}
           - path: {{ .Values.ingress.web.path }}
             backend:
               serviceName: {{ template "airflow.fullname" . }}-web
               servicePort: web
+          {{- range .Values.ingress.web.succeedingPaths }}
+          - path: {{ .path }}
+            backend:
+              serviceName: {{ .serviceName }}
+              servicePort: {{ .servicePort }}
+          {{- end }}
       host: {{ .Values.ingress.web.host }}
 {{- end }}

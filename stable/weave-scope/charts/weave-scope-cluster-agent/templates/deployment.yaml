@@ -1,5 +1,5 @@
 {{- if .Values.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   labels:
@@ -14,7 +14,7 @@ spec:
       app: {{ template "toplevel.name" . }}
       release: {{ .Release.Name }}
       component: cluster-agent
-  updateStrategy:
+  strategy:
     type: RollingUpdate
   template:
     metadata:

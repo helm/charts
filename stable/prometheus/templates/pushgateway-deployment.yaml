@@ -1,5 +1,5 @@
 {{- if .Values.pushgateway.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "prometheus.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   labels:
@@ -13,6 +13,10 @@ spec:
     matchLabels:
       {{- include "prometheus.pushgateway.matchLabels" . | nindent 6 }}
   replicas: {{ .Values.pushgateway.replicaCount }}
+  {{- if .Values.pushgateway.strategy }}
+  strategy:
+{{ toYaml .Values.pushgateway.strategy | indent 4 }}
+  {{- end }}
   template:
     metadata:
     {{- if .Values.pushgateway.podAnnotations }}

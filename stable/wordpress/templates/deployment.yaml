@@ -1,4 +1,4 @@
-apiVersion: apps/v1
+apiVersion: {{ template "wordpress.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "wordpress.fullname" . }}
@@ -131,6 +131,9 @@ spec:
         - name: SMTP_PROTOCOL
           value: {{ .Values.smtpProtocol | quote }}
         {{- end }}
+        {{- with .Values.extraEnv }}
+{{ toYaml . | indent 8 }}
+        {{- end }}
         ports:
         - name: http
           containerPort: 80
@@ -164,10 +167,12 @@ spec:
         - mountPath: /bitnami/wordpress
           name: wordpress-data
           subPath: wordpress
-        {{- if and .Values.allowOverrideNone .Values.customHTAccessCM}}
-        - mountPath: /opt/bitnami/wordpress/wordpress-htaccess.conf
+        {{- if and .Values.allowOverrideNone .Values.customHTAccessCM }}
+        - mountPath: /htaccess
           name: custom-htaccess
-          subPath: wordpress-htaccess.conf
+        {{- end }}
+        {{- with .Values.extraVolumeMounts }}
+{{ toYaml . | indent 8 }}
         {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
@@ -198,10 +203,13 @@ spec:
 {{ toYaml .Values.sidecars | indent 6 }}
 {{- end }}
       volumes:
-      {{- if and .Values.allowOverrideNone .Values.customHTAccessCM}}
+      {{- if and .Values.allowOverrideNone .Values.customHTAccessCM }}
       - name: custom-htaccess
         configMap:
           name: {{ template "wordpress.customHTAccessCM" . }}
+          items:
+            - key: wordpress-htaccess.conf
+              path: wordpress-htaccess.conf
       {{- end }}
       - name: wordpress-data
       {{- if .Values.persistence.enabled }}
@@ -210,6 +218,9 @@ spec:
       {{- else }}
         emptyDir: {}
       {{ end }}
+      {{- with .Values.extraVolumes }}
+{{ toYaml . | indent 6 }}
+      {{- end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}

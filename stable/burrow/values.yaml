@@ -119,7 +119,7 @@ info:
 
 livenessProbe:
   enabled: true
-  path: /status?block_seen_time_within=3m
+  path: /status?block_seen_time_within=10m
   initialDelaySeconds: 240
   timeoutSeconds: 1
   periodSeconds: 30

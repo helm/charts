@@ -8,9 +8,16 @@ metadata:
     chart: {{ template "airflow.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    {{- with .Values.web.labels }}
+{{ toYaml . | indent 4 }}
+    {{- end }}
+  {{- with .Values.web.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
 spec:
   replicas: {{ .Values.airflow.webReplicas }}
-  minReadySeconds: 120
+  minReadySeconds: {{ .Values.web.minReadySeconds }}
   strategy:
     # Smooth rolling update of the Web UI
     type: RollingUpdate
@@ -28,8 +35,14 @@ spec:
         checksum/config-env: {{ include (print $.Template.BasePath "/configmap-env.yaml") . | sha256sum }}
         checksum/config-git-clone: {{ include (print $.Template.BasePath "/configmap-git-clone.yaml") . | sha256sum }}
         checksum/config-scripts: {{ include (print $.Template.BasePath "/configmap-scripts.yaml") . | sha256sum }}
+        {{- if and ( .Values.dags.git.url ) ( .Values.dags.git.ref ) }}
+        checksum/dags-git-ref: {{ .Values.dags.git.ref }}
+        {{- end }}
 {{- if .Values.airflow.podAnnotations }}
 {{ toYaml .Values.airflow.podAnnotations | indent 8 }}
+{{- end }}
+{{- if .Values.web.podAnnotations }}
+{{ toYaml .Values.web.podAnnotations | indent 8 }}
 {{- end }}
       labels:
         app: {{ template "airflow.name" . }}
@@ -58,12 +71,19 @@ spec:
         - name: git-clone
           image: {{ .Values.dags.initContainer.image.repository }}:{{ .Values.dags.initContainer.image.tag }} # Any image with git will do
           imagePullPolicy: {{ .Values.dags.initContainer.image.pullPolicy }}
+          envFrom:
+          - configMapRef:
+              name: "{{ template "airflow.fullname" . }}-env"
+          env:
+          {{- include "airflow.mapenvsecrets" . | indent 10 }}
           command:
             - /usr/local/git/git-clone.sh
           args:
             - "{{ .Values.dags.git.url }}"
             - "{{ .Values.dags.git.ref }}"
             - "/dags"
+            - "{{ .Values.dags.git.repoHost}}"
+            - "{{ .Values.dags.git.privateKeyName }}"
           volumeMounts:
             - name: git-clone
               mountPath: /usr/local/git
@@ -75,6 +95,34 @@ spec:
             {{- end }}
       {{- end }}
       containers:
+        {{- if .Values.dags.git.gitSync.enabled }}
+        - name: git-sync
+          image: {{ .Values.dags.git.gitSync.image.repository }}:{{ .Values.dags.git.gitSync.image.tag }} # Any image with git will do
+          imagePullPolicy: {{ .Values.dags.git.gitSync.image.pullPolicy }}
+          envFrom:
+          - configMapRef:
+              name: "{{ template "airflow.fullname" . }}-env"
+          env:
+          {{- include "airflow.mapenvsecrets" . | indent 10 }}
+          command:
+            - /usr/local/git/git-sync.sh
+          args:
+            - "{{ .Values.dags.git.url }}"
+            - "{{ .Values.dags.git.ref }}"
+            - "/dags"
+            - "{{ .Values.dags.git.repoHost}}"
+            - "{{ .Values.dags.git.privateKeyName }}"
+            - "{{ .Values.dags.git.gitSync.refreshTime }}"
+          volumeMounts:
+            - name: git-clone
+              mountPath: /usr/local/git
+            - name: dags-data
+              mountPath: /dags
+            {{- if .Values.dags.git.secret }}
+            - name: git-clone-secret
+              mountPath: /keys
+            {{- end }}
+        {{- end }}
         - name: {{ .Chart.Name }}-web
           image: {{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}
           imagePullPolicy: {{ .Values.airflow.image.pullPolicy}}
@@ -154,19 +202,20 @@ spec:
               port: web
             ## Keep 6 minutes the delay to allow clean wait of postgres and redis containers
             initialDelaySeconds: {{ .Values.web.initialDelaySeconds }}
-            periodSeconds: 60
-            timeoutSeconds: 1
-            successThreshold: 1
-            failureThreshold: 5
+            periodSeconds: {{ .Values.web.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.web.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.web.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.web.livenessProbe.failureThreshold }}
+
           readinessProbe:
             httpGet:
               path: "{{ .Values.ingress.web.path }}/health"
               port: web
             initialDelaySeconds: {{ .Values.web.initialDelaySeconds }}
-            periodSeconds: 60
-            timeoutSeconds: 1
-            successThreshold: 1
-            failureThreshold: 5
+            periodSeconds: {{ .Values.web.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.web.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.web.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.web.readinessProbe.failureThreshold }}
 {{- if .Values.airflow.extraContainers }}
 {{ toYaml .Values.airflow.extraContainers | indent 8 }}
 {{- end }}

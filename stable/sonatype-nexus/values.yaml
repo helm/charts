@@ -10,7 +10,7 @@ deploymentStrategy: {}
 
 nexus:
   imageName: quay.io/travelaudience/docker-nexus
-  imageTag: 3.17.0
+  imageTag: 3.19.1
   imagePullPolicy: IfNotPresent
   env:
     - name: install4jAddVmParams
@@ -36,6 +36,15 @@ nexus:
     type: NodePort
     # clusterIP: None
   # annotations: {}
+    ## When using LoadBalancer service type, use the following AWS certificate from ACM
+    ## https://aws.amazon.com/documentation/acm/
+    # service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:eu-west-1:123456789:certificate/abc123-abc123-abc123-abc123"
+    # service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "https"
+    # service.beta.kubernetes.io/aws-load-balancer-backend-port: "https"
+  ## When using LoadBalancer service type, whitelist these source IP ranges
+  ## https://kubernetes.io/docs/tasks/access-application-cluster/configure-cloud-provider-firewall/
+  # loadBalancerSourceRanges:
+  #   - 192.168.1.10/32
   # labels: {}
   # securityContext:
   #   fsGroup: 2000

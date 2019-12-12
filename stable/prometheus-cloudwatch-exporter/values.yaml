@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: prom/cloudwatch-exporter
-  tag: cloudwatch_exporter-0.5.0
+  tag: cloudwatch_exporter-0.6.0
   pullPolicy: IfNotPresent
 
 # Example proxy configuration:
