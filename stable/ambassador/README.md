@@ -70,7 +70,8 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `scope.singleNamespace`            | Set the `AMBASSADOR_SINGLE_NAMESPACE` environment variable and create namespaced RBAC if `rbac.enabled: true` | `false`|
 | `podAnnotations`                   | Additional annotations for ambassador pods                                      | `{}`                              |
 | `deploymentAnnotations`            | Additional annotations for ambassador DaemonSet/Deployment                      | `{}`                              |
-| `extraLabels`                      | Additional labels for ambassador Deployment/Pods                                |                                   |
+| `podLabels`                        | Additional labels for ambassador pods                                           |                                   |
+| `extraLabels`                      | Additional labels for ambassador Kubernetes resources                           |                                   |
 | `affinity`                         | Affinity for ambassador pods                                                    | `{}`                              |
 | `priorityClassName`                | The name of the priorityClass for the ambassador DaemonSet/Deployment           | `""`                              |
 | `rbac.create`                      | If `true`, create and use RBAC resources                                        | `true`                            |

@@ -33,6 +33,9 @@ spec:
         app.kubernetes.io/name: {{ include "ambassador.name" . }}
         app.kubernetes.io/part-of: {{ .Release.Name }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- if .Values.podLabels }}
+        {{- toYaml .Values.podLabels | nindent 8 }}
+      {{- end }}
       {{- if .Values.extraLabels }}
         {{- toYaml .Values.extraLabels | nindent 8 }}
       {{- end }}
