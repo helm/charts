@@ -124,6 +124,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `input.systemd.filters.systemdUnit` | Please see https://docs.fluentbit.io/manual/input/systemd | `[docker.service, kubelet.service`, `node-problem-detector.service]`                                       |
 | `input.systemd.maxEntries`         | Please see https://docs.fluentbit.io/manual/input/systemd | `1000`                             |
 | `input.systemd.readFromTail`       | Please see https://docs.fluentbit.io/manual/input/systemd | `true`                             |
+| `input.systemd.stripUnderscores`       | Please see https://docs.fluentbit.io/manual/input/systemd | `false`                             |
 | `input.systemd.tag`                | Please see https://docs.fluentbit.io/manual/input/systemd | `host.*`                           |
 | `rbac.create`                      | Specifies whether RBAC resources should be created.   | `true`                                 |
 | `rbac.pspEnabled`                  | Specifies whether a PodSecurityPolicy should be created. | `false`                             |

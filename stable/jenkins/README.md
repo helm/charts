@@ -152,6 +152,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.schedulerName`            | Kubernetes scheduler name            | Not set                                   |
 | `master.tolerations`              | Toleration labels for pod assignment | `[]`                                      |
 | `master.podAnnotations`           | Annotations for master pod           | `{}`                                      |
+| `master.deploymentAnnotations`           | Annotations for master deployment           | `{}`                                      |
 | `master.customConfigMap`          | Deprecated: Use a custom ConfigMap   | `false`                                   |
 | `master.additionalConfig`         | Deprecated: Add additional config files | `{}`                                   |
 | `master.jenkinsUriPrefix`         | Root Uri Jenkins will be served on   | Not set                                   |
