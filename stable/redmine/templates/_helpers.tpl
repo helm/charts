@@ -47,6 +47,24 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/*
+Common labels
+*/}}
+{{- define "redmine.labels" -}}
+app.kubernetes.io/name: {{ template "redmine.name" . }}
+helm.sh/chart: {{ template "redmine.chart" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end -}}
+
+{{/*
+Labels to use on deploy.spec.selector.matchLabels and svc.spec.selector
+*/}}
+{{- define "redmine.matchLabels" -}}
+app.kubernetes.io/name: {{ template "redmine.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end -}}
+
+{{/*
 Return the proper Redmine image name
 */}}
 {{- define "redmine.image" -}}
@@ -164,4 +182,17 @@ Return the name of the Secret used to store the passwords
 {{- else -}}
 {{ template "redmine.fullname" . }}
 {{- end -}}
+{{- end -}}
+
+{{/*
+Renders a value that contains template.
+Usage:
+{{ include "redmine.tplValue" (dict "value" .Values.path.to.the.Value "context" $) }}
+*/}}
+{{- define "redmine.tplValue" -}}
+    {{- if typeIs "string" .value }}
+        {{- tpl .value .context }}
+    {{- else }}
+        {{- tpl (.value | toYaml) .context }}
+    {{- end }}
 {{- end -}}
