@@ -11,6 +11,7 @@ contour:
     #   cpu: "200m"
 customResourceDefinitions:
   create: true
+  cleanup: false
 envoy:
   image:
     registry: docker.io/envoyproxy/envoy

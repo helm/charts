@@ -320,6 +320,8 @@ master:
   # ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
   # priorityClass: system-cluster-critical
   podAnnotations: {}
+  # Add deployment annotation
+  deploymentAnnotations: {}
 
   # The below two configuration-related values are deprecated and replaced by Jenkins Configuration as Code (see above
   # JCasC key).  They will be deleted in an upcoming version.
@@ -470,6 +472,8 @@ agent:
   #     - key: "key"
   #       operator: "Equal"
   #       value: "value"
+  # Timeout in seconds for an agent to be online
+  slaveConnectTimeout: 100
 
 persistence:
   enabled: true

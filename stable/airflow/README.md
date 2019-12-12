@@ -369,7 +369,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.service.annotations`            | (optional) service annotations for Airflow UI           | `{}`                      |
 | `airflow.service.externalPort`           | (optional) external port for Airflow UI                 | `8080`                    |
 | `airflow.service.nodePort.http`          | (optional) when using service.type == NodePort, an optional NodePort to request | ``|
-| `airflow.service.serviceSessionAffinity` | The session affinity for the airflow UI                 | `None`                    |
+| `airflow.service.sessionAffinity`        | The session affinity for the airflow UI                 | `None`                    |
 | `airflow.service.sessionAffinityConfig`  | The session affinity config for the airflow UI          | `None`                    |
 | `airflow.executor`                       | the executor to run                                     | `Celery`                  |
 | `airflow.initRetryLoop`                  | max number of retries during container init             |                           |
@@ -401,6 +401,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `web.resources`                          | custom resource configuration for web pod               | `{}`                      |
 | `web.labels`                             | labels for the web deployment                           | `{}`                      |
 | `web.annotations`                        | annotations for the web deployment                      | `{}`                      |
+| `web.podAnnotations`                     | pod-annotations for the web deployment                  | `{}`                      |
 | `web.initialStartupDelay`                | amount of time webserver pod should sleep before initializing webserver             | `60`  |
 | `web.minReadySeconds`                    | minReadySeconds in the web deployment                   | `120`
 | `web.livenessProbe.periodSeconds`        | interval between probes                         | `60`  |
@@ -417,6 +418,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `scheduler.resources`                    | custom resource configuration for scheduler pod         | `{}`                      |
 | `scheduler.labels`                       | labels for the scheduler deployment                     | `{}`                      |
 | `scheduler.annotations`                  | annotations for the scheduler deployment                | `{}`                      |
+| `scheduler.podAnnotations`               | podAnnotations for the scheduler deployment             | `{}`                      |
 | `workers.enabled`                        | enable workers                                          | `true`                    |
 | `workers.replicas`                       | number of workers pods to launch                        | `1`                       |
 | `workers.terminationPeriod`              | gracefull termination period for workers to stop        | `30`                      |
@@ -424,6 +426,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `workers.celery.instances`               | number of parallel celery tasks per worker              | `1`                       |
 | `workers.labels`                         | labels for the worker statefulSet                       | `{}`                      |
 | `workers.annotations`                    | annotations for the worker statefulSet                  | `{}`                      |
+| `workers.podAnnotations`                 | podAnnotations for the worker statefulSet               | `{}`                      |
 | `workers.celery.gracefullTermination`    | cancel the consumer and wait for the current task to finish before stopping the worker      | `false`     |
 | `workers.podAnnotations`                 | annotations for the worker pods                         | `{}`                      |
 | `workers.secretsDir`                     | directory in which to mount secrets on worker nodes     | /var/airflow/secrets      |

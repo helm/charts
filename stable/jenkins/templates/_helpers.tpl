@@ -138,7 +138,7 @@ jenkins:
         podRetention: {{ .Values.agent.podRetention }}
         showRawYaml: true
         serviceAccount: "{{ include "jenkins.serviceAccountAgentName" . }}"
-        slaveConnectTimeoutStr: "100"
+        slaveConnectTimeoutStr: "{{ .Values.agent.slaveConnectTimeout }}"
         yaml: |-
           {{ tpl .Values.agent.yamlTemplate . | nindent 10 | trim }}
         yamlMergeStrategy: "override"
