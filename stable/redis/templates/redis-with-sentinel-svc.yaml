@@ -17,10 +17,15 @@ metadata:
 {{- end }}
 spec:
   type: {{ .Values.sentinel.service.type }}
-  {{ if eq .Values.sentinel.service.type "LoadBalancer" -}} {{ if .Values.sentinel.service.loadBalancerIP -}}
+  {{- if and (eq .Values.sentinel.service.type "LoadBalancer") .Values.sentinel.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.sentinel.service.loadBalancerIP }}
-  {{ end -}}
-  {{- end -}}
+  {{- end }}
+  {{- if and (eq .Values.sentinel.service.type "LoadBalancer") .Values.sentinel.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- with .Values.sentinel.service.loadBalancerSourceRanges }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+  {{- end }}
   ports:
   - name: redis
     port: {{ .Values.sentinel.service.redisPort }}
