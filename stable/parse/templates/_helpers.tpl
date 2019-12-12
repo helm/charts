@@ -93,10 +93,14 @@ but Helm 2.9 and 2.10 does not support it, so we need to implement this if-else 
 
 {{/*
 Gets the port to access Parse outside the cluster.
-When using ingress, we should use the port 80 instead of service.port
+When using ingress, we should use the port 80/443 instead of service.port
 */}}
 {{- define "parse.external-port" -}}
-{{- ternary "80" .Values.server.port .Values.ingress.enabled -}}
+{{- $ingressPort := "80" -}}
+{{- if eq .Values.dashboard.parseServerUrlProtocol "https" -}}
+{{- $ingressPort = "443" -}}
+{{- end -}}
+{{- ternary $ingressPort .Values.server.port .Values.ingress.enabled -}}
 {{- end -}}
 
 {{/*
@@ -278,4 +282,37 @@ Usage:
     {{- else }}
         {{- tpl (.value | toYaml) .context }}
     {{- end }}
+{{- end -}}
+
+{{/*
+Compile all warnings into a single message, and call fail.
+*/}}
+{{- define "parse.validateValues" -}}
+{{- $messages := list -}}
+{{- $messages := append $messages (include "parse.validateValues.dashboard.serverUrlProtocol" .) -}}
+{{- $messages := without $messages "" -}}
+{{- $message := join "\n" $messages -}}
+
+{{- if $message -}}
+{{-   printf "\nVALUES VALIDATION:\n%s" $message | fail -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Validate values of Parse Dashboard - if tls is enable on server side must provide https protocol
+*/}}
+{{- define "parse.validateValues.dashboard.serverUrlProtocol" -}}
+{{- $shouldSetHttpsProtocol := false -}}
+
+{{- if .Values.ingress.enabled -}}
+{{- range .Values.ingress.server.hosts -}}
+    {{- $shouldSetHttpsProtocol = or ($shouldSetHttpsProtocol) (and (.tls) (ne $.Values.dashboard.parseServerUrlProtocol "https")) -}}
+{{- end -}}
+{{- end -}}
+
+{{- if $shouldSetHttpsProtocol -}}
+parse: dashboard.parseServerUrlProtocol
+    If Parse Server is using ingress with tls enable then It must be set as "https"
+    in order to form the URLs with this protocol, in another case, Parse Dashboard will always redirect to "http".
+{{- end -}}
 {{- end -}}
