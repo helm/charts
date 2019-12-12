@@ -119,3 +119,9 @@ volumes: []
 # ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
 # PriorityClass: system-cluster-critical
 priorityClassName: ""
+
+# ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+pdb:
+  enabled: false
+  minAvailable:
+  maxUnavailable:

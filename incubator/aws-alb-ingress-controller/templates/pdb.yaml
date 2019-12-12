@@ -1,0 +1,22 @@
+{{- if .Values.pdb.enabled -}}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  labels:
+    app.kubernetes.io/name: {{ include "aws-alb-ingress-controller.name" . }}
+    helm.sh/chart: {{ include "aws-alb-ingress-controller.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  name: {{ include "aws-alb-ingress-controller.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  {{- if .Values.pdb.minAvailable }}
+  minAvailable: {{ .Values.pdb.minAvailable }}
+  {{- end  }}
+  {{- if .Values.pdb.maxUnavailable }}
+  maxUnavailable: {{ .Values.pdb.maxUnavailable }}
+  {{- end  }}
+  selector:
+    matchLabels:
+      app: {{ include "aws-alb-ingress-controller.fullname" . }}
+{{- end -}}
