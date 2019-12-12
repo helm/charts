@@ -55,7 +55,7 @@ spec:
         resources:
 {{ toYaml .Values.datadog.resources | indent 10 }}
         ports:
-        - containerPort: {{ default 8125 .Values.daemonset.customAgentConfig.dogstatsd_port }}
+        - containerPort: {{ default 8125 .Values.datadog.dogstatsd_port }}
           name: dogstatsdport
           protocol: UDP
         {{- if .Values.datadog.apmEnabled }}

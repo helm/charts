@@ -255,6 +255,7 @@ helm install --name <RELEASE_NAME> \
 | `rbac.serviceAccountName`                | existing ServiceAccount to use (ignored if rbac.create=true)                              | `default`                                   |
 | `daemonset.podLabels`                    | labels to add to each pod                                                                 | `nil`                                       |
 | `datadog.name`                           | Container name if Daemonset or Deployment                                                 | `datadog`                                   |
+| `datadog.dogstatsd_port`                 | Used to override the default agent DogStatsD Port                                         | `8125`                                      |
 | `datadog.site`                           | Site ('datadoghq.com' or 'datadoghq.eu')                                                  | `nil`                                       |
 | `datadog.dd_url`                         | Datadog intake server                                                                     | `nil`                                       |
 | `datadog.env`                            | Additional Datadog environment variables                                                  | `nil`                                       |
@@ -322,7 +323,6 @@ helm install --name <RELEASE_NAME> \
 | `daemonset.priorityClassName`            | Which Priority Class to associate with the daemonset                                      | `nil`                                       |
 | `daemonset.useConfigMap`                 | Configures a configmap to provide the agent configuration                                 | `false`                                     |
 | `daemonset.customAgentConfig`            | Specify custom contents for the datadog agent config (datadog.yaml).                      | `{}`                                        |
-| `daemonset.customAgentConfig.dogstatsd_port`            | Used to override the default agent DogStatsD Port                          | `8125`                                      |
 | `daemonset.updateStrategy`               | Which update strategy to deploy the daemonset                                             | RollingUpdate with 10% maxUnavailable       |
 | `datadog.leaderElection`                 | Enable the leader Election feature                                                        | `false`                                     |
 | `datadog.leaderLeaseDuration`            | The duration for which a leader stays elected.                                            | 60 sec, 15 if Cluster Checks enabled        |
