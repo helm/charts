@@ -1,0 +1,5 @@
+# CI test for Ingress controller basic installation and admission webhook
+ingressController:
+  enabled: true
+  admissionWebhook:
+    enabled: true

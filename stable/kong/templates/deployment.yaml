@@ -220,6 +220,11 @@ spec:
         - name: metrics
           containerPort: 9542
           protocol: TCP
+        {{- if .Values.ingressController.admissionWebhook.enabled }}
+        - name: webhook
+          containerPort: {{ .Values.ingressController.admissionWebhook.port }}
+          protocol: TCP
+        {{- end }}
         {{- if .Values.enterprise.enabled }}
         {{- if .Values.manager.http.enabled }}
         - name: manager
