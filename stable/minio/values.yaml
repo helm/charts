@@ -51,6 +51,8 @@ secretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 configPath: "/root/.minio/"
 configPathmc: "/root/.mc/"
 mountPath: "/export"
+# Number of drives attached to a node
+drivesPerNode: 8
 replicas: 4
 zones: 1
 
