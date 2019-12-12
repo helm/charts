@@ -18,5 +18,5 @@ spec:
   {{- end  }}
   selector:
     matchLabels:
-      app: {{ include "aws-alb-ingress-controller.fullname" . }}
+      app.kubernetes.io/name: {{ include "aws-alb-ingress-controller.name" . }}
 {{- end -}}
