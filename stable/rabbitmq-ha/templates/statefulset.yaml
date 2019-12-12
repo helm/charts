@@ -40,6 +40,11 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: {{ .Values.prometheus.exporter.port | quote }}
         {{- end }}
+        {{- if and .Values.rabbitmqPrometheusPlugin.enabled (not .Values.prometheus.operator.enabled) }}
+        prometheus.io/scrape: "true"
+        prometheus.io/port: {{ .Values.rabbitmqPrometheusPlugin.port | quote }}
+        prometheus.io/path: {{ .Values.rabbitmqPrometheusPlugin.path | quote }}
+        {{- end }}
 {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
