@@ -169,6 +169,10 @@ kubeConfig:
   contexts:
   - default
   deploymentContext: default
+  # If enabled, this sets the flag --live-manifest-calls=true when adding contexts
+  # See https://www.spinnaker.io/reference/halyard/commands/#hal-config-provider-kubernetes-account-edit
+  liveManifestCalls:
+    enabled: false
   omittedNameSpaces:
   - kube-system
   - kube-public

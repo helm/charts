@@ -122,6 +122,7 @@ data:
                 --context {{ $context }} {{ if not $.Values.kubeConfig.enabled }}--service-account true{{ end }} \
                 {{ if $.Values.kubeConfig.enabled }}--kubeconfig-file {{ template "spinnaker.kubeconfig" $ }}{{ end }} \
                 {{ if $.Values.kubeConfig.onlySpinnakerManaged.enabled }}--only-spinnaker-managed true{{ end }} \
+                {{ if $.Values.kubeConfig.liveManifestCalls.enabled }}--live-manifest-calls true{{ end }} \
                 {{ if not $.Values.kubeConfig.checkPermissionsOnStartup }}--check-permissions-on-startup false{{ end }} \
                 --omit-namespaces={{ template "omittedNameSpaces" $ }} \
                 {{ if $.Values.kubeConfig.omittedKinds }}--omit-kinds={{ template "omittedKinds" $ }}{{ end }} \
