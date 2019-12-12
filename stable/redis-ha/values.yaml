@@ -59,6 +59,20 @@ haproxy:
     port: 9101
     portName: exporter-port
     scrapePath: /metrics
+
+    serviceMonitor:
+      # When set true then use a ServiceMonitor to configure scraping
+      enabled: false
+      # Set the namespace the ServiceMonitor should be deployed
+      # namespace: monitoring
+      # Set how frequently Prometheus should scrape
+      # interval: 30s
+      # Set path to redis-exporter telemtery-path
+      # telemetryPath: /metrics
+      # Set labels for the ServiceMonitor, use this to define your scrape label for Prometheus Operator
+      # labels: {}
+      # Set timeout for scrape
+      # timeout: 10s
   init:
     resources: {}
   timeout:
@@ -69,13 +83,21 @@ haproxy:
     runAsUser: 1000
     fsGroup: 1000
     runAsNonRoot: true
+
+  ## Whether the haproxy pods should be forced to run on separate nodes.
+  hardAntiAffinity: true
+
+  ## Additional affinities to add to the haproxy pods.
+  additionalAffinities: {}
+
+  ## Override all other affinity settings for the haproxy pods with a string.
+  affinity: |
+
   ## Custom config-haproxy.cfg files used to override default settings. If this file is
   ## specified then the config-haproxy.cfg above will be ignored.
-  ##
   # customConfig: |-
       # Define configuration here
   ## Place any additional configuration section to add to the default config-haproxy.cfg
-  ##
   # extraConfig: |-
       # Define configuration here
 
@@ -103,7 +125,7 @@ sysctlImage:
 ## Redis specific configuration options
 redis:
   port: 6379
-  masterGroupName: mymaster
+  masterGroupName: "mymaster"       # must match ^[\\w-\\.]+$) and can be templated
   config:
     ## Additional redis conf options can be added below
     ## For all available options see http://download.redis.io/redis-stable/redis.conf

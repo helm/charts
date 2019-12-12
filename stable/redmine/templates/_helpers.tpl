@@ -47,6 +47,24 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/*
+Common labels
+*/}}
+{{- define "redmine.labels" -}}
+app.kubernetes.io/name: {{ template "redmine.name" . }}
+helm.sh/chart: {{ template "redmine.chart" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end -}}
+
+{{/*
+Labels to use on deploy.spec.selector.matchLabels and svc.spec.selector
+*/}}
+{{- define "redmine.matchLabels" -}}
+app.kubernetes.io/name: {{ template "redmine.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end -}}
+
+{{/*
 Return the proper Redmine image name
 */}}
 {{- define "redmine.image" -}}
@@ -142,4 +160,39 @@ Return the appropriate apiVersion for deployment.
 {{- else -}}
 {{- print "apps/v1" -}}
 {{- end -}}
+{{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "redmine.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+{{ default (include "redmine.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+{{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the name of the Secret used to store the passwords
+*/}}
+{{- define "redmine.secretName" -}}
+{{- if .Values.existingSecret -}}
+{{ .Values.existingSecret }}
+{{- else -}}
+{{ template "redmine.fullname" . }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Renders a value that contains template.
+Usage:
+{{ include "redmine.tplValue" (dict "value" .Values.path.to.the.Value "context" $) }}
+*/}}
+{{- define "redmine.tplValue" -}}
+    {{- if typeIs "string" .value }}
+        {{- tpl .value .context }}
+    {{- else }}
+        {{- tpl (.value | toYaml) .context }}
+    {{- end }}
 {{- end -}}

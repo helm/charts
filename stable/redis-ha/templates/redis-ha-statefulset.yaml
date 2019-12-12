@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "redis-ha.fullname" . }}-server
+  namespace: {{ .Release.Namespace }}
   labels:
     {{ template "redis-ha.fullname" . }}: replica
 {{ include "labels.standard" . | indent 4 }}
@@ -217,7 +218,7 @@ spec:
         image: "{{ .Values.exporter.image }}:{{ .Values.exporter.tag }}"
         imagePullPolicy: {{ .Values.exporter.pullPolicy }}
         args:
-        {{- range $key, $value := .Values.extraArgs }}
+        {{- range $key, $value := .Values.exporter.extraArgs }}
           - --{{ $key }}={{ $value }}
         {{- end }}
         env:

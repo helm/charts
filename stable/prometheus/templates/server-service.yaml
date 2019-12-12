@@ -39,5 +39,8 @@ spec:
     {{- end }}
   selector:
     {{- include "prometheus.server.matchLabels" . | nindent 4 }}
+{{- if .Values.server.service.sessionAffinity }}
+  sessionAffinity: {{ .Values.server.service.sessionAffinity }}
+{{- end }}
   type: "{{ .Values.server.service.type }}"
 {{- end -}}

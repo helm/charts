@@ -153,6 +153,7 @@ external:
   firstListenerPort: 31090
   domain: cluster.local
   loadBalancerIP: []
+  loadBalancerSourceRanges: []
   init:
     image: "lwolf/kubectl_deployer"
     imageTag: "0.4"
@@ -369,6 +370,8 @@ prometheus:
     serviceMonitor:
       # Namespace Prometheus is installed in
       namespace: monitoring
+      # Use release namespace instead
+      releaseNamespace: false
 
       ## Defaults to whats used if you follow CoreOS [Prometheus Install Instructions](https://github.com/coreos/prometheus-operator/tree/master/helm#tldr)
       ## [Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/prometheus/templates/prometheus.yaml#L65)

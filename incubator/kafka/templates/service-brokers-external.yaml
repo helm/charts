@@ -61,6 +61,12 @@ spec:
   {{- if and (eq $root.Values.external.type "LoadBalancer") (eq $loadBalancerIPLen $replicas) }}
   loadBalancerIP: {{ index $root.Values.external.loadBalancerIP $i }} 
   {{- end }}
+  {{- if $root.Values.external.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+    {{- range $root.Values.external.loadBalancerSourceRanges }}
+    - {{ . | quote}}
+    {{- end }}
+  {{- end }}
   selector:
     {{- include "kafka.broker.matchLabels" $root | nindent 4 }}
     statefulset.kubernetes.io/pod-name: {{ $responsiblePod | quote }}
