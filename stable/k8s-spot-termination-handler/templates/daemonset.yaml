@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ template "k8s-spot-termination-handler.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     app.kubernetes.io/name: {{ template "k8s-spot-termination-handler.name" . }}
     helm.sh/chart: {{ template "k8s-spot-termination-handler.chart" . }}
