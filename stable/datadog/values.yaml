@@ -402,6 +402,13 @@ clusterAgent:
 
   # priorityClassName: system-cluster-critical
 
+  ## @param nodeSelector - object - optional
+  ## Allow the Cluster Agent Deployment to schedule on selected nodes
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  #
+  # nodeSelector: {}
+
   ## @param livenessProbe - object - optional
   ## Override the agent's liveness probe logic from the default:
   ## In case of issues with the probe, you can disable it with the
