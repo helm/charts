@@ -307,6 +307,12 @@ systemProbe:
   #
   enableConntrack: true
 
+  ## @param seccomp - string - required
+  ## Apply an ad-hoc seccomp profile to the system-probe agent to restrict its privileges
+  ## Note that this will break `kubectl exec … -c system-probe -- /bin/bash`
+  #
+  seccomp: localhost/system-probe
+
   ## @param seccompRoot - string - required
   ## Specify the seccomp profile root directory
   #

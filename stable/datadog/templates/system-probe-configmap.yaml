@@ -23,6 +23,7 @@ data:
       sysprobe_socket: /opt/datadog-agent/run/sysprobe.sock
       enable_conntrack : {{ $.Values.systemProbe.enableConntrack }}
       bpf_debug: {{ $.Values.systemProbe.bpfDebug }}
+{{- if eq .Values.systemProbe.seccomp "localhost/system-probe" }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -196,4 +197,5 @@ data:
         }
       ]
     }
+{{- end }}
 {{- end }}
