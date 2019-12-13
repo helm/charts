@@ -180,4 +180,8 @@ spec:
 {{ toYaml .Values.clusterAgent.affinity | indent 8 }}
       {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "datadog.fullname" . }}-cluster-agent{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      {{- if .Values.clusterAgent.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.clusterAgent.nodeSelector | indent 8 }}
+      {{- end }}
 {{ end }}
