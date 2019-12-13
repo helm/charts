@@ -1,3 +1,9 @@
+### 1.20.1
+* [671812f5a](https://github.com/kubernetes/charts/commit/671812f5a): Update OWNERS list
+
+### 1.20.0
+* [83552c9](https://github.com/kubernetes/charts/commit/83552c9): Bump up GoCD Version to 19.11.0
+
 ### 1.19.3
 * [afd78ccd8](https://github.com/kubernetes/charts/commit/afd78ccd8): GoCD server sidecar containers
 

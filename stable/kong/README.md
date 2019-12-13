@@ -396,13 +396,34 @@ You can can learn about kong ingress custom resource definitions [here](https://
 | image.tag                          | Version of the ingress controller                                                     | 0.6.0                                                                        |
 | readinessProbe                     | Kong ingress controllers readiness probe                                              |                                                                              |
 | livenessProbe                      | Kong ingress controllers liveness probe                                               |                                                                              |
-| ingressClass                       | The ingress-class value for controller                                                | kong                                                                        |
+| ingressClass                       | The ingress-class value for controller                                                | kong                                                                         |
 | podDisruptionBudget.enabled        | Enable PodDisruptionBudget for ingress controller                                     | `false`                                                                      |
 | podDisruptionBudget.maxUnavailable | Represents the minimum number of Pods that can be unavailable (integer or percentage) | `50%`                                                                        |
 | podDisruptionBudget.minAvailable   | Represents the number of Pods that must be available (integer or percentage)          |                                                                              |
+| admissionWebhook.enabled           | Whether to enable the validating admission webhook                                    | false                                                                        |
+| admissionWebhook.failurePolicy     | How unrecognized errors from the admission endpoint are handled (Ignore or Fail)      | Fail                                                                         |
+| admissionWebhook.port              | The port the ingress controller will listen on for admission webhooks                 | 8080                                                                         |
 
 
 ## Changelog
+
+### 0.28.0
+
+#### New Features
+
+- Added support for the Validating Admission Webhook with the Ingress Controller.
+
+### 0.27.2
+
+#### Fixes
+
+- Do not create a ServiceAccount if it is not necessary.
+- If a configuration change requires creating a ServiceAccount, create a temporary ServiceAccount to allow pre-upgrade tasks to complete before the regular ServiceAccount is created.
+
+### 0.27.1
+
+#### Documentation updates
+- Retroactive changelog update for 0.24 breaking changes.
 
 ### 0.27.0
 
@@ -410,3 +431,22 @@ You can can learn about kong ingress custom resource definitions [here](https://
 
 - DB-less mode is enabled by default.
 - Kong is installed as an Ingress Controller for the cluster by default.
+
+### 0.25.0
+
+#### New features
+
+- Add support for PodSecurityPolicy
+- Require creation of a ServiceAccount
+
+### 0.24.0
+
+#### Breaking changes
+
+- The configuration format for ingresses in values.yaml has changed. 
+Previously, all ingresses accepted an array of hostnames, and would create
+ingress rules for each. Ingress configuration for services other than the proxy
+now accepts a single hostname, which allows simpler TLS configuration and
+automatic population of `admin_api_uri` and similar settings. Configuration for
+the proxy ingress is unchanged, but its documentation now accurately reflects
+the TLS configuration needed.

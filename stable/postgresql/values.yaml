@@ -129,6 +129,15 @@ postgresqlUsername: postgres
 ##
 postgresqlDataDir: /bitnami/postgresql/data
 
+## An array to add extra environment variables
+## For example:
+## extraEnv:
+##   - name: FOO
+##     value: "bar"
+##
+# extraEnv:
+extraEnv: []
+
 ## Specify extra initdb args
 ## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md
 ##
@@ -348,7 +357,7 @@ resources:
     cpu: 250m
 
 networkPolicy:
-  ## Enable creation of NetworkPolicy resources.
+  ## Enable creation of NetworkPolicy resources. Only Ingress traffic is filtered for now.
   ##
   enabled: false
 
@@ -358,6 +367,17 @@ networkPolicy:
   ## (with the correct destination port).
   ##
   allowExternal: true
+
+  ## if explicitNamespacesSelector is missing or set to {}, only client Pods that are in the networkPolicy's namespace
+  ## and that match other criteria, the ones that have the good label, can reach the DB.
+  ## But sometimes, we want the DB to be accessible to clients from other namespaces, in this case, we can use this
+  ## LabelSelector to select these namespaces, note that the networkPolicy's namespace should also be explicitly added.
+  ##
+  # explicitNamespacesSelector:
+    # matchLabels:
+      # role: frontend
+    # matchExpressions:
+      # - {key: role, operator: In, values: [frontend]}
 
 ## Configure extra options for liveness and readiness probes
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
@@ -458,6 +478,3 @@ metrics:
     timeoutSeconds: 5
     failureThreshold: 6
     successThreshold: 1
-
-# Define custom environment variables to pass to the image here
-extraEnv: []
