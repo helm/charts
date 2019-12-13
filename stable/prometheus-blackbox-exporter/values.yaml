@@ -48,6 +48,7 @@ extraConfigmapMounts: []
   #   subPath: certificates.crt # (optional)
   #   configMap: certs-configmap
   #   readOnly: true
+  #   defaultMode: 420
 
 ## Additional secret mounts
 # Defines additional mounts with secrets. Secrets must be manually created in the namespace.
@@ -56,6 +57,7 @@ extraSecretMounts: []
   #   mountPath: /etc/secrets
   #   secretName: blackbox-secret-files
   #   readOnly: true
+  #   defaultMode: 420
 
 resources: {}
   # limits:
