@@ -312,7 +312,7 @@ data:
       {{- end }}
     {{- else if eq .Values.acme.challengeType "http-01" }}
       [acme.httpChallenge]
-      entryPoint = {{ .Values.acme.httpChallenge.entrypoint }}
+      entryPoint = {{ .Values.acme.httpChallenge.entrypoint | quote }}
     {{- else if eq .Values.acme.challengeType "tls-alpn-01" }}
       [acme.tlsChallenge]
     {{- end }}
