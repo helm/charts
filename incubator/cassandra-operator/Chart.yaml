@@ -5,7 +5,7 @@ name: cassandra-operator
 home: https://github.com/Orange-OpenSource/cassandra-k8s-operator
 sources:
   - https://github.com/Orange-OpenSource/cassandra-k8s-operator
-version: 0.3.2
+version: 0.3.3
 appVersion: 0.3.1-mater
 maintainers:
   - name: allamand
