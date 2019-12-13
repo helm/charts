@@ -25,6 +25,7 @@ rules:
     - kubernetesendpointresolvers.getambassador.io
     - kubernetesserviceresolvers.getambassador.io
     - consulresolvers.getambassador.io
+    - logservices.getambassador.io
     {{- if .Values.pro.enabled }}
     - filters.getambassador.io
     - filterpolicies.getambassador.io
