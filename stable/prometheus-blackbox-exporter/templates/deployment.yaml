@@ -94,6 +94,7 @@ spec:
           {{- range .Values.extraSecretMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
+              subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
       volumes:
@@ -109,6 +110,7 @@ spec:
         - name: {{ .name }}
           configMap:
             name: {{ .configMap }}
+            defaultMode: {{ .defaultMode }}
       {{- end }}
       {{- range .Values.extraSecretMounts }}
         - name: {{ .name }}
