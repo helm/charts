@@ -236,6 +236,9 @@ service:
   ##
   externalTrafficPolicy: Local
   annotations: {}
+  ## Limits which cidr blocks can connect to service's load balancer
+  ## Only valid if service.type: LoadBalancer
+  loadBalancerSourceRanges: []
   ## Extra ports to expose (normally used with the `sidecar` value)
   # extraPorts:
 
