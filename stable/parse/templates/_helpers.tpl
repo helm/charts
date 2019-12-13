@@ -96,11 +96,21 @@ Gets the port to access Parse outside the cluster.
 When using ingress, we should use the port 80/443 instead of service.port
 */}}
 {{- define "parse.external-port" -}}
-{{- $ingressPort := "80" -}}
+{{/*
+Helm 2.11 supports the assignment of a value to a variable defined in a different scope,
+but Helm 2.9 and 2.10 does not support it, so we need to implement this if-else logic.
+*/}}
+{{- if .Values.ingress.enabled -}}
+{{- $ingressHttpPort := "80" -}}
+{{- $ingressHttpsPort := "443" -}}
 {{- if eq .Values.dashboard.parseServerUrlProtocol "https" -}}
-{{- $ingressPort = "443" -}}
+{{- $ingressHttpsPort -}}
+{{- else -}}
+{{- $ingressHttpPort -}}
 {{- end -}}
-{{- ternary $ingressPort .Values.server.port .Values.ingress.enabled -}}
+{{- else -}}
+{{ .Values.server.port }}
+{{- end -}}
 {{- end -}}
 
 {{/*
@@ -302,17 +312,13 @@ Compile all warnings into a single message, and call fail.
 Validate values of Parse Dashboard - if tls is enable on server side must provide https protocol
 */}}
 {{- define "parse.validateValues.dashboard.serverUrlProtocol" -}}
-{{- $shouldSetHttpsProtocol := false -}}
-
 {{- if .Values.ingress.enabled -}}
 {{- range .Values.ingress.server.hosts -}}
-    {{- $shouldSetHttpsProtocol = or ($shouldSetHttpsProtocol) (and (.tls) (ne $.Values.dashboard.parseServerUrlProtocol "https")) -}}
-{{- end -}}
-{{- end -}}
-
-{{- if $shouldSetHttpsProtocol -}}
+{{- if and (.tls) (ne $.Values.dashboard.parseServerUrlProtocol "https") -}}
 parse: dashboard.parseServerUrlProtocol
     If Parse Server is using ingress with tls enable then It must be set as "https"
     in order to form the URLs with this protocol, in another case, Parse Dashboard will always redirect to "http".
+{{- end -}}
+{{- end -}}
 {{- end -}}
 {{- end -}}
