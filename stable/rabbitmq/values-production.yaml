@@ -145,6 +145,21 @@ rabbitmq:
 
   ## Configuration file content: advanced configuration
   ## Use this as additional configuraton in classic config format (Erlang term configuration format)
+  ## If you set LDAP with TLS/SSL enabled and you are using self-signed certificates, uncomment these lines.
+  ## advancedConfiguration: |-
+  ##   [{
+  ##     rabbitmq_auth_backend_ldap,
+  ##     [{
+  ##         ssl_options,
+  ##         [{
+  ##             verify, verify_none
+  ##         }, {
+  ##             fail_if_no_peer_cert,
+  ##             false
+  ##         }]
+  ##     ]}
+  ##   }].
+  ##
   advancedConfiguration: |-
 
   ## Enable encryption to rabbitmq
@@ -167,11 +182,8 @@ ldap:
   port: "389"
   user_dn_pattern: cn=${username},dc=example,dc=org
   tls:
+    # If you enabled TLS/SSL you can set advaced options using the advancedConfiguration parameter.
     enabled: false
-    caCertificate: |-
-    serverCertificate: |-
-    serverKey: |-
-    # existingSecret: name-of-existing-secret-to-rabbitmq
 
 ## Kubernetes service type
 service:
