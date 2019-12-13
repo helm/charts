@@ -71,6 +71,12 @@ datadog:
 
   ## @param clusterName - string - optional
   ## Set a unique cluster name to allow scoping hosts and Cluster Checks easily
+  ## The name must be unique and can be up to 40 characters with the following restrictions:
+  ## * Lowercase letters, numbers, and hyphens only.
+  ## * Must start with a letter.
+  ## * Must end with a number or a letter.
+  ## These are the same rules as the one enforced by GKE on the same cluster name parameter:
+  ## https://cloud.google.com/kubernetes-engine/docs/reference/rest/v1beta1/projects.locations.clusters#Cluster.FIELDS.name
   #
   # clusterName: <CLUSTER_NAME>
 
@@ -307,6 +313,12 @@ systemProbe:
   #
   enableConntrack: true
 
+  ## @param seccomp - string - required
+  ## Apply an ad-hoc seccomp profile to the system-probe agent to restrict its privileges
+  ## Note that this will break `kubectl exec … -c system-probe -- /bin/bash`
+  #
+  seccomp: localhost/system-probe
+
   ## @param seccompRoot - string - required
   ## Specify the seccomp profile root directory
   #
@@ -401,6 +413,13 @@ clusterAgent:
   ## Name of the priorityClass to apply to the Cluster Agent
 
   # priorityClassName: system-cluster-critical
+
+  ## @param nodeSelector - object - optional
+  ## Allow the Cluster Agent Deployment to schedule on selected nodes
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  #
+  # nodeSelector: {}
 
   ## @param livenessProbe - object - optional
   ## Override the agent's liveness probe logic from the default:
