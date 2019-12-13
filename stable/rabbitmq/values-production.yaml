@@ -145,6 +145,21 @@ rabbitmq:
 
   ## Configuration file content: advanced configuration
   ## Use this as additional configuraton in classic config format (Erlang term configuration format)
+  ## If you set LDAP with TLS/SSL enabled and you are using self-signed certificates, uncomment these lines.
+  ## advancedConfiguration: |-
+  ##   [{
+  ##     rabbitmq_auth_backend_ldap,
+  ##     [{
+  ##         ssl_options,
+  ##         [{
+  ##             verify, verify_none
+  ##         }, {
+  ##             fail_if_no_peer_cert,
+  ##             false
+  ##         }]
+  ##     ]}
+  ##   }].
+  ##
   advancedConfiguration: |-
 
   ## Enable encryption to rabbitmq
@@ -167,11 +182,8 @@ ldap:
   port: "389"
   user_dn_pattern: cn=${username},dc=example,dc=org
   tls:
+    # If you enabled TLS/SSL you can set advaced options using the advancedConfiguration parameter.
     enabled: false
-    caCertificate: |-
-    serverCertificate: |-
-    serverKey: |-
-    # existingSecret: name-of-existing-secret-to-rabbitmq
 
 ## Kubernetes service type
 service:
@@ -264,6 +276,30 @@ resources:
   requests:
     memory: 256Mi
     cpu: 100m
+
+networkPolicy:
+  ## Enable creation of NetworkPolicy resources. Only Ingress traffic is filtered for now.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/network-policies/
+  ##
+  enabled: false
+
+  ## The Policy model to apply. When set to false, only pods with the correct
+  ## client label will have network access to the port RabbitMQ is listening
+  ## on. When true, RabbitMQ will accept connections from any source
+  ## (with the correct destination port).
+  ##
+  allowExternal: true
+
+  ## Additional NetworkPolicy Ingress "from" rules to set. Note that all rules are OR-ed.
+  ##
+  # additionalRules:
+  #  - matchLabels:
+  #    - role: frontend
+  #  - matchExpressions:
+  #    - key: role
+  #      operator: In
+  #      values:
+  #        - frontend
 
 ## Replica count, set to 3 to provide a default available cluster
 replicas: 3

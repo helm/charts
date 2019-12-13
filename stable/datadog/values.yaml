@@ -16,9 +16,9 @@ image:
 
   ## @param tag - string - required
   ## Define the Agent version to use.
-  ## Use 6.14.0-jmx to enable jmx fetch collection
+  ## Use 6-jmx to enable jmx fetch collection
   #
-  tag: 6.14.0
+  tag: "6"
 
   ## @param pullPolicy - string - required
   ## The Kubernetes pull policy.
@@ -313,6 +313,12 @@ systemProbe:
   #
   enableConntrack: true
 
+  ## @param seccomp - string - required
+  ## Apply an ad-hoc seccomp profile to the system-probe agent to restrict its privileges
+  ## Note that this will break `kubectl exec … -c system-probe -- /bin/bash`
+  #
+  seccomp: localhost/system-probe
+
   ## @param seccompRoot - string - required
   ## Specify the seccomp profile root directory
   #
@@ -344,7 +350,7 @@ clusterAgent:
   containerName: cluster-agent
   image:
     repository: datadog/cluster-agent
-    tag: 1.3.2
+    tag: 1.4.0
     pullPolicy: IfNotPresent
 
   ## @param token - string - required
@@ -407,6 +413,13 @@ clusterAgent:
   ## Name of the priorityClass to apply to the Cluster Agent
 
   # priorityClassName: system-cluster-critical
+
+  ## @param nodeSelector - object - optional
+  ## Allow the Cluster Agent Deployment to schedule on selected nodes
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  #
+  # nodeSelector: {}
 
   ## @param livenessProbe - object - optional
   ## Override the agent's liveness probe logic from the default:
@@ -709,8 +722,14 @@ daemonset:
   #     enabled: false
   #     apm_non_local_traffic: true
   #
-  #   # Use java cgroup memory awareness
-  #   jmx_use_cgroup_memory_limit: true
+  #   # Enable java cgroup handling. Only one of those options should be enabled,
+  #   # depending on the agent version you are using along that chart.
+  #
+  #   # agent version < 6.15
+  #   # jmx_use_cgroup_memory_limit: true
+  #
+  #   # agent version >= 6.15
+  #   # jmx_use_container_support: true
 
 deployment:
   ## @param enabled - boolean - required

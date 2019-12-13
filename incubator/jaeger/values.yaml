@@ -37,6 +37,9 @@ storage:
   cassandra:
     host: cassandra
     port: 9042
+    tls:
+      enabled: false
+      secretName: cassandra-tls-secret
     user: user
     usePassword: true
     password: password
@@ -151,6 +154,12 @@ collector:
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
   replicaCount: 1
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 10
+    # targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
   service:
     annotations: {}
     # List of IP ranges that are allowed to access the load balancer (if supported)

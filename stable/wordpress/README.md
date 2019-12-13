@@ -98,6 +98,7 @@ The following table lists the configurable parameters of the WordPress chart and
 | `service.port`                            | Service HTTP port                                                             | `80`                                                         |
 | `service.httpsPort`                       | Service HTTPS port                                                            | `443`                                                        |
 | `service.httpsTargetPort`                 | Service Target HTTPS port                                                     | `https`                                                      |
+| `service.loadBalancerSourceRanges`        | Restricts access for LoadBalancer (only with `service.type: LoadBalancer`)    | `[]`                                                         |
 | `service.metricsPort`                     | Service Metrics port                                                          | `9117`                                                       |
 | `service.externalTrafficPolicy`           | Enable client source IP preservation                                          | `Cluster`                                                    |
 | `service.nodePorts.http`                  | Kubernetes http node port                                                     | `""`                                                         |

@@ -33,6 +33,7 @@ data:
     auto_restart_services: false
     metrics:
       enabled: {{ .Values.anchoreGlobal.enableMetrics }}
+      auth_disabled: {{ .Values.anchoreGlobal.metricsAuthDisabled }}
     {{ if .Values.anchoreGlobal.webhooksEnabled }}
     webhooks:
       {{- toYaml .Values.anchoreGlobal.webhooks | nindent 6 }}
@@ -173,7 +174,24 @@ data:
         port: {{ .Values.anchoreCatalog.service.port }}
         cycle_timer_seconds: 1
         cycle_timers:
-          {{- toYaml .Values.anchoreCatalog.cycleTimers | nindent 10 }}
+          # Interval to check for an update to a tag
+          image_watcher: {{ .Values.anchoreCatalog.cycleTimers.image_watcher }}
+          # Interval to run a policy evaluation on images with the policy_eval subscription activated.
+          policy_eval: {{ .Values.anchoreCatalog.cycleTimers.policy_eval }}
+          # Interval to run a vulnerability scan on images with the vuln_update subscription activated.
+          vulnerability_scan: {{ .Values.anchoreCatalog.cycleTimers.vulnerability_scan }}
+          # Interval at which the catalog looks for new work to put on the image analysis queue.
+          analyzer_queue: {{ .Values.anchoreCatalog.cycleTimers.analyzer_queue }}
+          # Interval notifications will be processed for state changes
+          {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseNotifications.enabled }}
+          notifications: 0
+          {{- else }}
+          notifications: {{ .Values.anchoreCatalog.cycleTimers.notifications }}
+          {{- end }}
+          # Intervals service state updates are polled for the system status
+          service_watcher: {{ .Values.anchoreCatalog.cycleTimers.service_watcher }}
+          # Interval between checks to repo for new tags
+          repo_watcher: {{ .Values.anchoreCatalog.cycleTimers.repo_watcher }}
         event_log:
           {{- toYaml .Values.anchoreCatalog.events | nindent 10 }}
         archive:
