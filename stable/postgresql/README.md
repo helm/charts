@@ -99,6 +99,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `postgresqlPassword`                          | PostgreSQL admin password                                                                                                                                                 | _random 10 character alphanumeric string_                     |
 | `postgresqlDatabase`                          | PostgreSQL database                                                                                                                                                       | `nil`                                                         |
 | `postgresqlDataDir`                           | PostgreSQL data dir folder                                                                                                                                                | `/bitnami/postgresql` (same value as persistence.mountPath)   |
+| `extraEnv`                                    | Any extra environment variables you would like to pass on to the pod. The value is evaluated as a template.                                                               | `[]`                                                          |
 | `postgresqlInitdbArgs`                        | PostgreSQL initdb extra arguments                                                                                                                                         | `nil`                                                         |
 | `postgresqlInitdbWalDir`                      | PostgreSQL location for transaction log                                                                                                                                   | `nil`                                                         |
 | `postgresqlConfiguration`                     | Runtime Config Parameters                                                                                                                                                 | `nil`                                                         |
@@ -202,7 +203,6 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `metrics.readinessProbe.timeoutSeconds`       | When the probe times out                                                                                                                                                  | 5                                                             |
 | `metrics.readinessProbe.failureThreshold`     | Minimum consecutive failures for the probe to be considered failed after having succeeded.                                                                                | 6                                                             |
 | `metrics.readinessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful after having failed                                                                               | 1                                                             |
-| `extraEnv`                                    | Any extra environment variables you would like to pass on to the pod. The value is evaluated as a template.                                                               | `{}`                                                          |
 | `updateStrategy`                              | Update strategy policy                                                                                                                                                    | `{type: "RollingUpdate"}`                                     |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
@@ -400,6 +400,12 @@ $ helm upgrade my-release bitnami/influxdb \
 ```
 
 > Note: you need to substitute the placeholders _[POSTGRESQL_PASSWORD]_, and _[REPLICATION_PASSWORD]_ with the values obtained from instructions in the installation notes.
+
+## 8.0.0
+
+Prefixes the port names with their protocols to comply with Istio conventions.
+
+If you depend on the port names in your setup, make sure to update them to reflect this change.
 
 ## 7.1.0
 

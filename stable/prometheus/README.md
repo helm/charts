@@ -144,6 +144,7 @@ Parameter | Description | Default
 `alertmanager.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `alertmanager.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `alertmanager.service.servicePort` | alertmanager service port | `80`
+`alertmanager.service.sessionAffinity` | Session Affinity for alertmanager service, can be `None` or `ClientIP` | `None`
 `alertmanager.service.type` | type of alertmanager service to create | `ClusterIP`
 `alertmanagerFiles.alertmanager.yml` | Prometheus alertmanager configuration | example configuration
 `configmapReload.name` | configmap-reload container name | `configmap-reload`
@@ -244,6 +245,7 @@ Parameter | Description | Default
 `pushgateway.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `pushgateway.service.servicePort` | pushgateway service port | `9091`
 `pushgateway.service.type` | type of pushgateway service to create | `ClusterIP`
+`pushgateway.strategy.type` | Deployment strategy | `{ "type": "RollingUpdate" }`
 `rbac.create` | If true, create & use RBAC resources | `true`
 `server.enabled` | If false, Prometheus server will not be created | `true`
 `server.name` | Prometheus server container name | `server`
@@ -308,6 +310,7 @@ Parameter | Description | Default
 `server.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `server.service.nodePort` | Port to be used as the service NodePort (ignored if `server.service.type` is not `NodePort`) | `0`
 `server.service.servicePort` | Prometheus server service port | `80`
+`server.service.sessionAffinity` | Session Affinity for server service, can be `None` or `ClientIP` | `None`
 `server.service.type` | type of Prometheus server service to create | `ClusterIP`
 `server.sidecarContainers` | array of snippets with your sidecar containers for prometheus server | `""`
 `serviceAccounts.alertmanager.create` | If true, create the alertmanager service account | `true`
@@ -322,8 +325,10 @@ Parameter | Description | Default
 `serviceAccounts.server.name` | name of the server service account to use or create | `{{ prometheus.server.fullname }}`
 `server.terminationGracePeriodSeconds` | Prometheus server Pod termination grace period | `300`
 `server.retention` | (optional) Prometheus data retention | `"15d"`
-`serverFiles.alerts` | Prometheus server alerts configuration | `{}`
-`serverFiles.rules` | Prometheus server rules configuration | `{}`
+`serverFiles.alerts` | (Deprecated) Prometheus server alerts configuration | `{}`
+`serverFiles.rules` | (Deprecated) Prometheus server rules configuration | `{}`
+`serverFiles.alerting_rules.yml` | Prometheus server alerts configuration | `{}`
+`serverFiles.recording_rules.yml` | Prometheus server rules configuration | `{}`
 `serverFiles.prometheus.yml` | Prometheus server scrape configuration | example configuration
 `extraScrapeConfigs` | Prometheus server additional scrape configuration | ""
 `alertRelabelConfigs` | Prometheus server [alert relabeling configs](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#alert_relabel_configs) for H/A prometheus | ""

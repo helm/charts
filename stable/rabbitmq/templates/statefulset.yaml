@@ -115,10 +115,6 @@ spec:
           - name: {{ template "rabbitmq.fullname" . }}-certs
             mountPath: /opt/bitnami/rabbitmq/certs
           {{- end }}
-          {{- if .Values.ldap.tls.enabled }}
-          - name: {{ template "rabbitmq.fullname" . }}-ldap-certs
-            mountPath: /opt/bitnami/rabbitmq/certs-ldap
-          {{- end }}
           - name: data
             mountPath: "{{ .Values.persistence.path }}"
           {{- if .Values.rabbitmq.loadDefinition.enabled }}
@@ -301,18 +297,6 @@ spec:
         - name: {{ template "rabbitmq.fullname" . }}-certs
           secret:
             secretName: {{ if .Values.rabbitmq.tls.existingSecret }}{{ .Values.rabbitmq.tls.existingSecret }}{{- else }}{{ template "rabbitmq.fullname" . }}-certs{{- end }}
-            items:
-            - key: ca_certificate.pem
-              path: ca_certificate.pem
-            - key: server_certificate.pem
-              path: server_certificate.pem
-            - key: server_key.pem
-              path: server_key.pem
-        {{- end }}
-        {{- if and .Values.ldap.enabled .Values.ldap.tls.enabled }}
-        - name: {{ template "rabbitmq.fullname" . }}-ldap-certs
-          secret:
-            secretName: {{ if .Values.ldap.tls.existingSecret }}{{ .Values.ldap.tls.existingSecret }}{{- else }}{{ template "rabbitmq.fullname" . }}-ldap-certs{{- end }}
             items:
             - key: ca_certificate.pem
               path: ca_certificate.pem
