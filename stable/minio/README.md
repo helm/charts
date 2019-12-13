@@ -92,6 +92,8 @@ The following table lists the configurable parameters of the MinIO chart and the
 
 | Parameter                                 | Description                                                                                                                             | Default                                    |
 |:------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------|:-------------------------------------------|
+| `nameOverride`                            | Provide a name in place of `minio`                                                                                                      | `""`                                       |
+| `fullnameOverride`                        | Provide a name to substitute for the full names of resources                                                                            | `""`                                       |
 | `image.repository`                        | Image repository                                                                                                                        | `minio/minio`                              |
 | `image.tag`                               | MinIO image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).                                             | `RELEASE.2019-08-07T01-59-21Z`             |
 | `image.pullPolicy`                        | Image pull policy                                                                                                                       | `IfNotPresent`                             |

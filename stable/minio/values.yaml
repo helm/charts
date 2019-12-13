@@ -1,3 +1,11 @@
+## Provide a name in place of minio for `app:` labels
+##
+nameOverride: ""
+
+## Provide a name to substitute for the full names of resources
+##
+fullnameOverride: ""
+
 ## set kubernetes cluster domain where minio is running
 ##
 clusterDomain: cluster.local
@@ -73,7 +81,7 @@ persistence:
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
   ## If defined, PVC must be created manually before volume will be bound
-  # existingClaim:
+  existingClaim: ""
 
   ## minio data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
@@ -84,8 +92,8 @@ persistence:
   ##
   ## Storage class of PV to bind. By default it looks for standard storage class.
   ## If the PV uses a different storage class, specify that here.
-  # storageClass: standard
-  # VolumeName: ""
+  storageClass: ""
+  VolumeName: ""
   accessMode: ReadWriteOnce
   size: 10Gi
 
@@ -104,8 +112,13 @@ service:
   clusterIP: ~
   port: 9000
   nodePort: 31311
-  # externalIPs:
+
+  ## List of IP addresses at which the Prometheus server service is available
+  ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+  ##
+  externalIPs: []
   #   - externalIp1
+
   annotations: {}
     # prometheus.io/scrape: 'true'
     # prometheus.io/path:   '/minio/prometheus/metrics'
