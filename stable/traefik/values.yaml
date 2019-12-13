@@ -223,6 +223,9 @@ acme:
   email: admin@example.com
   onHostRule: true
   staging: true
+  ## Specify a custom ACME server endpoint
+  ## Optional
+  # caServer: https://acme-staging-v02.api.letsencrypt.org/directory
   logging: false
   # Configure a Let's Encrypt certificate to be managed by default.
   # This is the only way to request wildcard certificates (works only with dns challenge).
