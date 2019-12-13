@@ -236,3 +236,13 @@ Also, we can't use a single if because lazy evaluation is not an option
     {{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Mail Receiver CronJob labels
+*/}}
+{{- define "redmine.mailReceiver.labels" -}}
+app.kubernetes.io/name: {{ template "redmine.mailReceiver.fullname" . }}
+helm.sh/chart: {{ template "redmine.chart" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end -}}

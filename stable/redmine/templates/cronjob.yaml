@@ -3,11 +3,7 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: {{ template "redmine.mailReceiver.fullname" . }}
-  labels:
-    app: {{ template "redmine.mailReceiver.fullname" . }}
-    chart: {{ template "redmine.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+  labels: {{- include "redmine.mailReceiver.labels" . | nindent 4 }}
 spec:
   schedule: "{{ .Values.mailReceiver.schedule }}"
   suspend: {{ .Values.mailReceiver.suspend }}
@@ -15,11 +11,7 @@ spec:
     spec:
       template:
         metadata:
-          labels:
-            app: {{ template "redmine.mailReceiver.fullname" . }}
-            chart: {{ template "redmine.chart" . }}
-            release: "{{ .Release.Name }}"
-            heritage: "{{ .Release.Service }}"
+          labels: {{- include "redmine.mailReceiver.labels" . | nindent 12 }}
         spec:
           volumes:
             - name: mail-receiver
@@ -44,7 +36,7 @@ spec:
             resources:
   {{ toYaml .Values.resources | indent 12 }}
             env:
-            {{- if .Values.databaseType.mariadb }}
+            {{- if eq .Values.databaseType "mariadb" }}
             - name: REDMINE_MAIL_RECEIVER_DB_MYSQL
             {{- if .Values.mariadb.enabled }}
               value: {{ template "redmine.mariadb.fullname" . }}
@@ -62,7 +54,7 @@ spec:
             {{- else }}
               value: {{ .Values.externalDatabase.host | quote }}
             {{- end }}
-            {{- else if .Values.databaseType.postgresql }}
+            {{- else if eq .Values.databaseType "postgresql" }}
             - name: REDMINE_MAIL_RECEIVER_DB_POSTGRES
             {{- if .Values.postgresql.enabled }}
               value: {{ template "redmine.postgresql.fullname" . }}
@@ -81,7 +73,7 @@ spec:
               value: {{ .Values.externalDatabase.host | quote }}
             {{- end }}
             {{- end }}
-            {{- if or (and .Values.databaseType.mariadb (not .Values.mariadb.enabled)) (and .Values.databaseType.postgresql (not .Values.postgresql.enabled)) }}
+            {{- if or (and (eq .Values.databaseType "mariadb") (not .Values.mariadb.enabled)) (and (eq .Values.databaseType "postgresql") (not .Values.postgresql.enabled)) }}
             - name: REDMINE_MAIL_RECEIVER_DB_DATABASE
               value: {{ .Values.externalDatabase.name | quote }}
             - name: REDMINE_MAIL_RECEIVER_DB_USERNAME
