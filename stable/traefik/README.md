@@ -150,6 +150,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `acme.email`                           | Email address to be used in certificates obtained from Let's Encrypt                                                         | `admin@example.com`                               |
 | `acme.onHostRule`                      | Whether to generate a certificate for each frontend with Host rule                                                           | `true`                                            |
 | `acme.staging`                         | Whether to get certs from Let's Encrypt's staging environment                                                                | `true`                                            |
+| `acme.caServer`                        | (Advanced) Specify a custom ACME server endpoint. Overrides `acme.staging` behavior if specified.    | `nil` |
 | `acme.logging`                         | Display debug log messages from the ACME client library                                                                      | `false`                                           |
 | `acme.domains.enabled`                 | Enable certificate creation by default for specific domain                                                                   | `false`                                           |
 | `acme.domains.domainsList`             | List of domains & (optional) subject names                                                                                   | `[]`                                              |
