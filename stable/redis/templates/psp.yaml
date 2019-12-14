@@ -1,5 +1,5 @@
 {{- if .Values.podSecurityPolicy.create }}
-apiVersion: {{ include "podSecurityPolicy.apiVersion" . }}
+apiVersion: {{ template "podSecurityPolicy.apiVersion" . }}
 kind: PodSecurityPolicy
 metadata:
   name: {{ template "redis.fullname" . }}
@@ -35,5 +35,8 @@ spec:
       - min: {{ .Values.securityContext.runAsUser }}
         max: {{ .Values.securityContext.runAsUser }}
   volumes:
-    - '*'
+    - 'configMap'
+    - 'secret'
+    - 'emptyDir'
+    - 'persistentVolumeClaim'
 {{- end }}

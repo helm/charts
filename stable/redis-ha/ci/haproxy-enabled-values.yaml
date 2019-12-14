@@ -7,4 +7,4 @@ haproxy:
   serviceAccount:
     create: true
   metrics:
-    enabled: false
+    enabled: true
