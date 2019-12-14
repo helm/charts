@@ -40,9 +40,9 @@ extraVolumes: []
 # Extra volumeMounts for the Velero deployment. Optional.
 extraVolumeMounts: []
 
-# Settings for Velero's prometheus metrics. Disabled by default.
+# Settings for Velero's prometheus metrics. Enabled by default.
 metrics:
-  enabled: false
+  enabled: true
   scrapeInterval: 30s
 
   # Pod annotations for Prometheus
