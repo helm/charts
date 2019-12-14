@@ -23,7 +23,9 @@ spec:
         release: "{{ .Release.Name }}"
         component: pre-upgrade-migrations
     spec:
+      {{- if .Values.podSecurityPolicy.enabled }}
       serviceAccountName: {{ template "kong.serviceAccountName" . }}
+      {{- end }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range .Values.image.pullSecrets }}
@@ -34,6 +36,7 @@ spec:
       initContainers:
       - name: wait-for-postgres
         image: "{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
+        imagePullPolicy: {{ .Values.waitImage.pullPolicy }}
         env:
         - name: KONG_PG_HOST
           value: {{ template "kong.postgresql.fullname" . }}
@@ -79,3 +82,20 @@ spec:
       volumes:
       {{- include "kong.volumes" . | nindent 6 -}}
 {{- end }}
+
+{{- if or .Values.podSecurityPolicy.enabled (and .Values.ingressController.enabled .Values.ingressController.serviceAccount.create) -}}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ template "kong.serviceAccountName" . }}
+  namespace: {{ .Release.namespace }}
+  annotations:
+    "helm.sh/hook": pre-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+  labels:
+    app: {{ template "kong.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+{{- end -}}

@@ -42,8 +42,7 @@ spec:
       serviceAccountName: {{ template "rabbitmq.fullname" . }}
       {{- end }}
       {{- if .Values.affinity }}
-      affinity:
-{{ toYaml .Values.affinity | indent 8 }}
+      affinity: {{- include "rabbitmq.tplValue" (dict "value" .Values.affinity "context" .) | nindent 8 }}
       {{- end }}
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
@@ -115,10 +114,6 @@ spec:
           {{- if .Values.rabbitmq.tls.enabled }}
           - name: {{ template "rabbitmq.fullname" . }}-certs
             mountPath: /opt/bitnami/rabbitmq/certs
-          {{- end }}
-          {{- if .Values.ldap.tls.enabled }}
-          - name: {{ template "rabbitmq.fullname" . }}-ldap-certs
-            mountPath: /opt/bitnami/rabbitmq/certs-ldap
           {{- end }}
           - name: data
             mountPath: "{{ .Values.persistence.path }}"
@@ -251,6 +246,8 @@ spec:
           value: "http://{{ .Values.metrics.rabbitmqAddress }}:{{ .Values.service.managerPort }}"
         - name: RABBIT_USER
           value: {{ .Values.rabbitmq.username }}
+        - name: PUBLISH_PORT
+          value: "{{ .Values.metrics.port }}"
         {{ if .Values.metrics.capabilities }}
         - name: RABBIT_CAPABILITIES
           value: "{{ .Values.metrics.capabilities }}"
@@ -261,7 +258,7 @@ spec:
         {{- end }}
         ports:
         - name: metrics
-          containerPort: 9090
+          containerPort: {{ .Values.metrics.port }}
         {{- if .Values.metrics.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
@@ -300,18 +297,6 @@ spec:
         - name: {{ template "rabbitmq.fullname" . }}-certs
           secret:
             secretName: {{ if .Values.rabbitmq.tls.existingSecret }}{{ .Values.rabbitmq.tls.existingSecret }}{{- else }}{{ template "rabbitmq.fullname" . }}-certs{{- end }}
-            items:
-            - key: ca_certificate.pem
-              path: ca_certificate.pem
-            - key: server_certificate.pem
-              path: server_certificate.pem
-            - key: server_key.pem
-              path: server_key.pem
-        {{- end }}
-        {{- if and .Values.ldap.enabled .Values.ldap.tls.enabled }}
-        - name: {{ template "rabbitmq.fullname" . }}-ldap-certs
-          secret:
-            secretName: {{ if .Values.ldap.tls.existingSecret }}{{ .Values.ldap.tls.existingSecret }}{{- else }}{{ template "rabbitmq.fullname" . }}-ldap-certs{{- end }}
             items:
             - key: ca_certificate.pem
               path: ca_certificate.pem

@@ -18,7 +18,9 @@ spec:
         release: "{{ .Release.Name }}"
         component: init-migrations
     spec:
+      {{- if .Values.podSecurityPolicy.enabled }}
       serviceAccountName: {{ template "kong.serviceAccountName" . }}
+      {{- end }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range .Values.image.pullSecrets }}
@@ -29,6 +31,7 @@ spec:
       initContainers:
       - name: wait-for-postgres
         image: "{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
+        imagePullPolicy: {{ .Values.waitImage.pullPolicy }}
         env:
         - name: KONG_PG_HOST
           value: {{ template "kong.postgresql.fullname" . }}
