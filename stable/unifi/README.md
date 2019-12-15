@@ -132,9 +132,22 @@ Read through the [values.yaml](values.yaml) file. It has several commented out s
   with the controller using UDP. See [this article][ubnt 3] and [this other
   article][ubnt 4] for more information.
 
+## Ingress and HTTPS
+Unifi does [not support HTTP][unifi] so if you wish to use the guiService, you
+need to ensure that you use a backend transport of HTTPS.
+
+An example entry in `values.yaml` to achieve this is as follows:
+```
+ingress:
+  enabled: true
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+```
+
 [docker]: https://hub.docker.com/r/jacobalberty/unifi/tags/
 [github]: https://github.com/jacobalberty/unifi-docker
 [ubnt]: https://www.ubnt.com/
 [ubnt 2]: https://unifi-sdn.ubnt.com/
 [ubnt 3]: https://help.ubnt.com/hc/en-us/articles/204976094-UniFi-What-protocol-does-the-controller-use-to-communicate-with-the-UAP-
 [ubnt 4]: https://help.ubnt.com/hc/en-us/articles/115015457668-UniFi-Troubleshooting-STUN-Communication-Errors
+[unifi]: https://community.ui.com/questions/Controller-how-to-deactivate-http-to-https/c5e247d8-b5b9-4c84-a3bb-28a90fd65668
