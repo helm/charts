@@ -52,6 +52,8 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `adminService.nodePort`            | If explicit NodePort for admin service is required                              | `true`                            |
 | `adminService.type`                | Ambassador's admin service type to be used                                      | `ClusterIP`                       |
 | `adminService.annotations`         | Annotations to apply to Ambassador admin service                                | `{}`                              |
+| `adminService.loadBalancerIP`      | IP address to assign (if cloud provider supports it)                            | `""`                              |
+| `adminService.loadBalancerSourceRanges` | Passed to cloud provider load balancer if created (e.g: AWS ELB)           | None                              |
 | `ambassadorConfig`                 | Config thats mounted to `/ambassador/ambassador-config`                         | `""`                              |
 | `crds.enabled`                     | If `true`, enables CRD resources for the installation.                          | `true`                            |
 | `crds.create`                      | If `true`, Creates CRD resources                                                | `true`                            |
@@ -62,25 +64,28 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `env`                              | Any additional environment variables for ambassador pods                        | `{}`                              |
 | `image.pullPolicy`                 | Ambassador image pull policy                                                    | `IfNotPresent`                    |
 | `image.repository`                 | Ambassador image                                                                | `quay.io/datawire/ambassador`     |
-| `image.tag`                        | Ambassador image tag                                                            | `0.75.0`                          |
+| `image.tag`                        | Ambassador image tag                                                            | `0.86.1`                          |
 | `imagePullSecrets`                 | Image pull secrets                                                              | `[]`                              |
 | `namespace.name`                   | Set the `AMBASSADOR_NAMESPACE` environment variable                             | `metadata.namespace`              |
-| `scope.singleNamespace`            | Set the `AMBASSADOR_SINGLE_NAMESPACE` environment variable and create namespaced RBAC if `rbac.enabled: true` | `false`                           |
+| `scope.singleNamespace`            | Set the `AMBASSADOR_SINGLE_NAMESPACE` environment variable and create namespaced RBAC if `rbac.enabled: true` | `false`|
 | `podAnnotations`                   | Additional annotations for ambassador pods                                      | `{}`                              |
 | `deploymentAnnotations`            | Additional annotations for ambassador DaemonSet/Deployment                      | `{}`                              |
 | `podLabels`                        | Additional labels for ambassador pods                                           |                                   |
+| `affinity`                         | Affinity for ambassador pods                                                    | `{}`                              |
 | `priorityClassName`                | The name of the priorityClass for the ambassador DaemonSet/Deployment           | `""`                              |
-| `prometheusExporter.enabled`       | Prometheus exporter side-car enabled                                            | `false`                           |
-| `prometheusExporter.pullPolicy`    | Image pull policy                                                               | `IfNotPresent`                    |
-| `prometheusExporter.repository`    | Prometheus exporter image                                                       | `prom/statsd-exporter`            |
-| `prometheusExporter.tag`           | Prometheus exporter image                                                       | `v0.8.1`                          |
-| `prometheusExporter.resources`     | CPU/memory resource requests/limits                                             | `{}`                              |
 | `rbac.create`                      | If `true`, create and use RBAC resources                                        | `true`                            |
 | `rbac.podSecurityPolicies`         | pod security polices to bind to                                                 |                                   |
 | `replicaCount`                     | Number of Ambassador replicas                                                   | `3`                               |
 | `resources`                        | CPU/memory resource requests/limits                                             | `{}`                              |
 | `securityContext`                  | Set security context for pod                                                    | `{ "runAsUser": "8888" }`         |
 | `initContainers`                   | Containers used to initialize context for pods                                  | `[]`                              |
+| `sidecarContainers`                | Containers that share the pod context                                           | `[]`                              |
+| `livenessProbe.initialDelaySeconds` | Initial delay (s) for Ambassador pod's liveness probe                          | `30`                              |
+| `livenessProbe.periodSeconds`       | Probe period (s) for Ambassador pod's liveness probe                           | `3`                               |
+| `livenessProbe.failureThreshold`    | Failure threshold for Ambassador pod's liveness probe                          | `3`                               |
+| `readinessProbe.initialDelaySeconds`| Initial delay (s) for Ambassador pod's readiness probe                         | `30`                              |
+| `readinessProbe.periodSeconds`      | Probe period (s) for Ambassador pod's readiness probe                          | `3`                               |
+| `readinessProbe.failureThreshold`   | Failure threshold for Ambassador pod's readiness probe                         | `3`                               |
 | `service.annotations`              | Annotations to apply to Ambassador service                                      | `""`                              |
 | `service.externalTrafficPolicy`    | Sets the external traffic policy for the service                                | `""`                              |
 | `service.ports`                    | List of ports Ambassador is listening on                                        |  `[{"name": "http","port": 80,"targetPort": 8080},{"name": "https","port": 443,"targetPort": 8443}]` |
@@ -93,25 +98,59 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `volumes`                          | Volumes for the ambassador service                                              | `[]`                              |
 | `pro.enabled`                      | Installs the Ambassador Pro container as a sidecar to Ambassador                | `false`                           |
 | `pro.image.repository`             | Ambassador Pro image                                                            | `quay.io/datawire/ambassador_pro` |
-| `pro.image.tag`                    | Ambassador Pro image tag                                                        | `amb-sidecar-0.6.0`               |
+| `pro.image.tag`                    | Ambassador Pro image tag                                                        | `0.11.0`                          |
+| `pro.image.customBuildTag`         | Image for a custom build of Ambassador Pro using a `Plugin`                     | ``                                |
 | `pro.ports.auth`                   | Ambassador Pro authentication port                                              | `8500`                            |
 | `pro.ports.ratelimit`              | Ambassador Pro ratelimit port                                                   | `8500`                            |
 | `pro.logLevel`                     | Log level for Ambassador Pro                                                    | `"info"`                          |
 | `pro.licenseKey.value`             | License key for Ambassador Pro                                                  | ""                                |
-| `pro.licenseKey.secret`            | Stores the license key as a base64-encoded string in a Kubernetes secret        | `false`                           |
+| `pro.licenseKey.secret.enabled`    | Reads the license key as a base64-encoded string in a Kubernetes secret         | `true`                            |
+| `pro.licenseKey.secret.create`     | Stores the license key as a base64-encoded string in a Kubernetes secret        | `true`                            |
 | `pro.env`                          | Set additional environment variables for Ambassador Pro. (See below)            | `{}`                              |
+| `pro.resources`                    | Set resource requests and limits from Ambassador Pro                            | `{}`                              |
+| `pro.authService.enabled`          | Enables the Ambassador Pro authentication service                               | `true`                            |
+| `pro.authService.optional_configurations` | Exposes [additional configuration options](https://www.getambassador.io/reference/services/auth-service/) for the `AuthService` | `""` | 
+| `pro.rateLimit.enabled`            | Enables the Ambassador Pro rate limit service                                   | `true`                            |
+| `pro.rateLimit.redis.annotations.deployment` | Annotations for the redis deployment                                  | `{}`                              |
+| `pro.rateLimit.redis.annotations.service` | Annotations for the redis service                                        | `{}`                              |
+| `pro.rateLimit.redis.resources`    | Set resource requests and limits for the rate limit service's redis instance    | `{}`                              |
+| `pro.devPortal.enabled`            | Enables the Ambassador Developer Portal                                         | `false`                           |
 | `autoscaling.enabled`              | If true, creates Horizontal Pod Autoscaler                                      | `false`                           |
 | `autoscaling.minReplica`           | If autoscaling enabled, this field sets minimum replica count                   | `2`                               |
 | `autoscaling.maxReplica`           | If autoscaling enabled, this field sets maximum replica count                   | `5`                               |
 | `autoscaling.metrics`              | If autoscaling enabled, configure hpa metrics                                   |                                   |
+| `podDisruptionBudget`              | Pod disruption budget rules                                                     | `{}`                              |
+| `prometheusExporter.enabled`       | DEPRECATED: Prometheus exporter side-car enabled                                | `false`                           |
+| `prometheusExporter.pullPolicy`    | DEPRECATED: Image pull policy                                                   | `IfNotPresent`                    |
+| `prometheusExporter.repository`    | DEPRECATED: Prometheus exporter image                                           | `prom/statsd-exporter`            |
+| `prometheusExporter.tag`           | DEPRECATED: Prometheus exporter image                                           | `v0.8.1`                          |
+| `prometheusExporter.resources`     | DEPRECATED: CPU/memory resource requests/limits                                 | `{}`                              |
 
 **NOTE:** Make sure the configured `service.http.targetPort` and `service.https.targetPort` ports match your [Ambassador Module's](https://www.getambassador.io/reference/modules/#the-ambassador-module) `service_port` and `redirect_cleartext_from` configurations.
+
+### CRDs
+
+This helm chart includes the creation of the core CRDs Ambassador uses for
+configuration. 
+
+The `crds` flags let you configure how a release manages crds.
+- `crds.create` Can only be set on your first/master Ambassador release. 
+- `crds.enabled` Should be set on all releases using Ambassador CRDs
+- `crds.keep` Configures if the CRDs are deleted when the master release is 
+  purged. This value is only checked for the master release and can be set to
+  any value on secondary releases. 
 
 ### Annotations
 
 Ambassador configuration is done through annotations on Kubernetes services or Custom Resource Definitions (CRDs). The `service.annotations` section of the values file contains commented out examples of [Ambassador Module](https://www.getambassador.io/reference/core/ambassador) and a global [TLSContext](https://www.getambassador.io/reference/core/tls) configurations which are typically created in the Ambassador service.
 
 If you intend to use `service.annotations`, remember to include the `getambassador.io/config` annotation key as above.
+
+### Prometheus Metrics
+
+Using the Prometheus Exporter has been deprecated and is no longer recommended.
+
+Please see Ambassador's [monitoring with Prometheus](https://www.getambassador.io/user-guide/monitoring/) docs for more information on using the `/metrics` endpoint for metrics collection.
 
 ### Ambassador Pro
 
@@ -162,6 +201,55 @@ $ helm upgrade --install --wait my-release -f values.yaml stable/ambassador
 ---
 
 # Upgrading
+
+## To 5.0.0
+
+### Breaking changes
+
+**Note** If upgrading an existing helm 2 installation no action is needed, previously installed CRDs will not be modified.
+
+- Helm 3 support for CRDs was added. Specifically, the CRD templates were moved to non-templated files in the `/crds` directory, and to keep Helm 2 support they are globbed from there by `/templates/crds.yaml`. However, because Helm 3 CRDs are not templated, the labels for new installations have necessarily changed
+
+## To 4.0.0
+
+The 4.0.0 chart contains a number of changes to the way Ambassador Pro is installed.
+
+- Introduces the performance tuned and certified build of open source Ambassador, Ambassador core
+- The license key is now stored and read from a Kubernetes secret by default
+- Added `.Values.pro.licenseKey.secret.enabled` `.Values.pro.licenseKey.secret.create` fields to allow multiple releases in the same namespace to use the same license key secret.
+- Introduces the ability to configure resource limits for both Ambassador Pro and it's redis instance
+- Introduces the ability to configure additional `AuthService` options (see [AuthService documentation](https://www.getambassador.io/reference/services/auth-service/))
+- The ambassador-pro-auth `AuthService` and ambassador-pro-ratelimit `RateLimitService` and now created as CRDs when `.Values.crds.enabled: true`
+- Fixed misnamed selector for redis instance that failed in an edge case
+- Exposes annotations for redis deployment and service
+
+### Breaking changes
+
+The value of `.Values.pro.image.tag` has been shortened to assume `amb-sidecar` (and `amb-core` for Ambassador core)
+`values.yaml`
+```diff
+<3.0.0>
+  image:
+    repository: quay.io/datawire/ambassador_pro
+-    tag: amb-sidecar-0.6.0
+
+<4.0.0+>
+  image:
+    repository: quay.io/datawire/ambassador_pro
++    tag: 0.7.0
+```
+
+Method for creating a Kubernetes secret to hold the license key has been changed
+
+`values.yaml`
+```diff
+<3.0.0>
+-    secret: false
+<4.0.0>
++    secret:
++      enabled: true
++      create: true
+```
 
 ## To 3.0.0
 

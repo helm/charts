@@ -1,6 +1,12 @@
 # CI test for testing dbless deployment
+
+podDisruptionBudget:
+  enabled: true
+
 ingressController:
   enabled: true
+  podDisruptionBudget:
+    enabled: true
 env:
   database: "off"
 postgresql:

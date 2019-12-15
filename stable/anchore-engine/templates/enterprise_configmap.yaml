@@ -11,7 +11,7 @@ metadata:
     heritage: {{ .Release.Service }}
     component: {{ $component }}
     {{- with .Values.anchoreGlobal.labels }}
-    {{ toYaml . | nindent 4 | trim }}
+    {{ toYaml . | nindent 4 }}
     {{- end }}
 data:
   config.yaml: |
@@ -28,22 +28,49 @@ data:
     allow_awsecr_iam_auto: {{ .Values.anchoreGlobal.allowECRUseIAMRole }}
     host_id: "${ANCHORE_POD_NAME}"
     internal_ssl_verify: {{ .Values.anchoreGlobal.internalServicesSsl.verifyCerts }}
-    auto_restart_services: False
+    auto_restart_services: false
     license_file: /home/anchore/license.yaml
 
     metrics:
       enabled: {{ .Values.anchoreGlobal.enableMetrics }}
 
+    # Locations for keys used for signing and encryption. Only one of 'secret' or 'public_key_path'/'private_key_path' needs to be set. If all are set then the keys take precedence over the secret value
+    # Secret is for a shared secret and if set, all components in anchore should have the exact same value in their configs.
+    keys:
+      secret: {{ .Values.anchoreGlobal.saml.secret }}
+      {{- with .Values.anchoreGlobal.saml.publicKeyName }}
+      public_key_path: /home/anchore/certs/{{- . }}
+      {{- end }}
+      {{- with .Values.anchoreGlobal.saml.privateKeyName }}
+      private_key_path: /home/anchore/certs/{{- . }}
+      {{- end }}
+
+    # Configuring supported user authentication and credential management
+    user_authentication:
+      oauth:
+        enabled: {{ .Values.anchoreGlobal.oauthEnabled }}
+        default_token_expiration_seconds: {{ .Values.anchoreGlobal.oauthTokenExpirationSeconds }}
+
+      # Set this to True to enable storing user passwords only as secure hashes in the db. This can dramatically increase CPU usage if you
+      # don't also use oauth and tokens for internal communications (which requires keys/secret to be configured as well)
+      # WARNING: you should not change this after a system has been initialized as it may cause a mismatch in existing passwords
+      hashed_passwords: {{ .Values.anchoreGlobal.hashedPasswords }}
+
     credentials:
       database:
+        {{- if .Values.anchoreGlobal.dbConfig.ssl }}
+        db_connect: "postgresql://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@${ANCHORE_DB_HOST}/${ANCHORE_DB_NAME}?sslmode={{- .Values.anchoreGlobal.dbConfig.sslMode -}}&sslrootcert=/home/anchore/certs/{{- .Values.anchoreGlobal.dbConfig.sslRootCertName }}"
+        {{- else }}
         db_connect: "postgresql://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@${ANCHORE_DB_HOST}/${ANCHORE_DB_NAME}"
+        {{- end }}
         db_connect_args:
           timeout: {{ .Values.anchoreGlobal.dbConfig.timeout }}
-          ssl: {{ .Values.anchoreGlobal.dbConfig.ssl }}
+          ssl: false
         db_pool_size: {{ .Values.anchoreGlobal.dbConfig.connectionPoolSize }}
         db_pool_max_overflow: {{ .Values.anchoreGlobal.dbConfig.connectionPoolSize }}
 
     services:
+      {{- if .Values.anchoreEnterpriseRbac.enabled }}
       # This should never be exposed outside of linked containers/localhost. It is used only for internal service access
       rbac_authorizer:
         enabled: true
@@ -51,9 +78,6 @@ data:
         endpoint_hostname: localhost
         listen: 127.0.0.1
         port: {{ .Values.anchoreEnterpriseRbac.service.authPort }}
-        ssl_cert: "{{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}"
-        ssl_key: "{{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}"
-        ssl_enable: {{ .Values.anchoreGlobal.internalServicesSslEnabled }}
       rbac_manager:
         enabled: true
         require_auth: true
@@ -62,10 +86,14 @@ data:
         port: {{ .Values.anchoreEnterpriseRbac.service.apiPort }}
         authorization_handler: external
         authorization_handler_config:
-          endpoint: "http://localhost:{{ .Values.anchoreEnterpriseRbac.service.authPort }}"
-        ssl_cert: "{{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}"
-        ssl_key: "{{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}"
-        ssl_enable: {{ .Values.anchoreGlobal.internalServicesSslEnabled }}
+          endpoint: "http://localhost:{{- .Values.anchoreEnterpriseRbac.service.authPort }}"
+        {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
+        ssl_enable: {{ .Values.anchoreGlobal.internalServicesSsl.enabled }}
+        ssl_cert: "/home/anchore/certs/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}"
+        ssl_key: "/home/anchore/certs/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}"
+        {{- end }}
+      {{- end }}
+      {{- if .Values.anchoreEnterpriseReports.enabled }}
       reports:
         enabled: true
         require_auth: true
@@ -75,10 +103,30 @@ data:
         enable_graphiql: "{{ .Values.anchoreEnterpriseReports.enableGraphql }}"
         enable_data_ingress: "{{ .Values.anchoreEnterpriseReports.enableDataIngress }}"
         cycle_timers:
-          {{ toYaml .Values.anchoreEnterpriseReports.cycleTimers | nindent 10 | trim }}
+          {{- toYaml .Values.anchoreEnterpriseReports.cycleTimers | nindent 10 }}
         {{- if .Values.anchoreEnterpriseRbac.enabled }}
         authorization_handler: external
         authorization_handler_config:
-          endpoint: "http://localhost:{{ .Values.anchoreEnterpriseRbac.service.authPort }}"
+          endpoint: "http://localhost:{{- .Values.anchoreEnterpriseRbac.service.authPort }}"
         {{- end }}
+        {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
+        ssl_enable: {{ .Values.anchoreGlobal.internalServicesSsl.enabled }}
+        ssl_cert: "/home/anchore/certs/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}"
+        ssl_key: "/home/anchore/certs/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}"
+        {{- end }}
+      {{- end }}
+      {{- if .Values.anchoreEnterpriseNotifications.enabled }}
+      notifications:
+        enabled: true
+        require_auth: true
+        endpoint_hostname: {{ template "anchore-engine.enterprise-notifications.fullname" . }}
+        listen: '0.0.0.0'
+        port: {{ .Values.anchoreEnterpriseNotifications.service.port }}
+        authorization_handler: external
+        authorization_handler_config:
+          endpoint: "http://localhost:{{- .Values.anchoreEnterpriseRbac.service.authPort }}"
+        cycle_timers:
+          {{- toYaml .Values.anchoreEnterpriseNotifications.cycleTimers | nindent 10 }}
+        ui_url: {{ include "anchore-engine.enterprise-ui.fullname" . | quote }}
+      {{- end }}
 {{- end -}}

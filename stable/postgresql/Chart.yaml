@@ -1,22 +1,22 @@
 apiVersion: v1
 name: postgresql
-version: 6.2.1
-appVersion: 11.5.0
+version: 8.0.0
+appVersion: 11.6.0
 description: Chart for PostgreSQL, an object-relational database management system (ORDBMS) with an emphasis on extensibility and on standards-compliance.
 keywords:
-- postgresql
-- postgres
-- database
-- sql
-- replication
-- cluster
+  - postgresql
+  - postgres
+  - database
+  - sql
+  - replication
+  - cluster
 home: https://www.postgresql.org/
 icon: https://bitnami.com/assets/stacks/postgresql/img/postgresql-stack-110x117.png
 sources:
-- https://github.com/bitnami/bitnami-docker-postgresql
+  - https://github.com/bitnami/bitnami-docker-postgresql
 maintainers:
-- name: Bitnami
-  email: containers@bitnami.com
-- name: desaintmartin
-  email: cedric@desaintmartin.fr
+  - name: Bitnami
+    email: containers@bitnami.com
+  - name: desaintmartin
+    email: cedric@desaintmartin.fr
 engine: gotpl

@@ -32,6 +32,12 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
+## Autoscaling
+
+By enabling autoscaling the chart will use statefulset with hpa instead of ceployment with PVC.
+Please be noted to [statefulset limitation](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#limitations)
+The autoscaling is disabled by default for backward compatibility
+
 ## Configuration
 
 The following table lists the configurable parameters of the fluentd chart and their default values.
@@ -42,7 +48,7 @@ Parameter | Description | Default
 `configMaps` | Fluentd configuration | See [values.yaml](values.yaml)
 `output.host` | output host | `elasticsearch-client.default.svc.cluster.local`
 `output.port` | output port | `9200`
-`output.scheme` | output port | `http`
+`output.scheme` | output scheme | `http`
 `output.sslVersion` | output ssl version | `TLSv1`
 `output.buffer_chunk_limit` | output buffer chunk limit | `2M`
 `output.buffer_queue_limit` | output buffer queue limit | `8`
@@ -51,6 +57,8 @@ Parameter | Description | Default
 `image.tag` | Image tag | `v2.4.0`
 `imagePullSecrets` | Specify image pull secrets | `nil` (does not add image pull secrets to deployed pods)
 `extraEnvVars` | Adds additional environment variables to the deployment (in yaml syntax) | `{}` See [values.yaml](values.yaml)
+`extraVolumeMounts` | Mount extra volumes (in yaml syntax) | `` See [values.yaml](values.yaml)
+`extraVolumes` | Extra volumes (in yaml syntax) | `` See [values.yaml](values.yaml)
 `ingress.enabled` | enable ingress | `false`
 `ingress.labels` | list of labels for the ingress rule | See [values.yaml](values.yaml)
 `ingress.annotations` | list of annotations for the ingress rule | `kubernetes.io/ingress.class: nginx` See [values.yaml](values.yaml)
@@ -59,7 +67,13 @@ Parameter | Description | Default
 `nodeSelector` | node labels for pod assignment | `{}`
 `replicaCount` | desired number of pods | `1` ???
 `resources` | pod resource requests & limits | `{}`
+`plugins.enabled` | Enable Plugins Installation | `false`
+`plugins.pluginsList` | List of plugins to install | `[]`
+`rbac.create` | Specifies whether RBAC resources should be created | `true`
+`serviceAccount.create` | Specifies whether a service account should be created. | `true`
+`serviceAccount.name` | Name of the service account.
 `priorityClassName` | priorityClassName | `nil`
+`service.loadBalancerIP` | If `service.type` is `LoadBalancer` set custom IP load balancer IP address | `nil`
 `service.ports` | port definition for the service | See [values.yaml](values.yaml)
 `service.type` | type of service | `ClusterIP`
 `service.annotations` | list of annotations for the service | `{}`
@@ -67,6 +81,11 @@ Parameter | Description | Default
 `persistence.enabled` | Enable buffer persistence | `false`
 `persistence.accessMode` | Access mode for buffer persistence | `ReadWriteOnce`
 `persistence.size` | Volume size for buffer persistence | `10Gi`
+`autoscaling.enabled` | Set this to `true` to enable autoscaling | `false`
+`autoscaling.minReplicas` | Set minimum number of replicas | `2`
+`autoscaling.maxReplicas` | Set maximum number of replicas | `5`
+`autoscaling.metrics` | metrics used for autoscaling | See [values.yaml](values.yaml)
+`terminationGracePeriodSeconds` | Optional duration in seconds the pod needs to terminate gracefully | `30`
 `metrics.enabled`                         | Set this to `true` to enable Prometheus metrics HTTP endpoint                         | `false`
 `metrics.service.port`                    | Prometheus metrics HTTP endpoint port                                                 | `24231`
 `metrics.serviceMonitor.enabled`          | Set this to `true` to create ServiceMonitor for Prometheus operator                   | `false`

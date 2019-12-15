@@ -92,6 +92,8 @@ The following table lists the configurable parameters of the MinIO chart and the
 
 | Parameter                                 | Description                                                                                                                             | Default                                    |
 |:------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------|:-------------------------------------------|
+| `nameOverride`                            | Provide a name in place of `minio`                                                                                                      | `""`                                       |
+| `fullnameOverride`                        | Provide a name to substitute for the full names of resources                                                                            | `""`                                       |
 | `image.repository`                        | Image repository                                                                                                                        | `minio/minio`                              |
 | `image.tag`                               | MinIO image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).                                             | `RELEASE.2019-08-07T01-59-21Z`             |
 | `image.pullPolicy`                        | Image pull policy                                                                                                                       | `IfNotPresent`                             |
@@ -103,7 +105,10 @@ The following table lists the configurable parameters of the MinIO chart and the
 | `ingress.hosts`                           | Ingress accepted hostnames                                                                                                              | `[]`                                       |
 | `ingress.tls`                             | Ingress TLS configuration                                                                                                               | `[]`                                       |
 | `mode`                                    | MinIO server mode (`standalone` or `distributed`)                                                                                       | `standalone`                               |
-| `replicas`                                | Number of nodes (applicable only for MinIO distributed mode). Should be 4 <= x <= 32                                                    | `4`                                        |
+| `extraArgs`                               | Additional command line arguments to pass to the MinIO server                                                                           | `[]`                                       |
+| `replicas`                                | Number of nodes (applicable only for MinIO distributed mode).                                                                           | `4`                                        |
+| `zones`                                   | Number of zones (applicable only for MinIO distributed mode).                                                                           | `1`                                        |
+| `drivesPerNode`                           | Number of drives per node (applicable only for MinIO distributed mode).                                                                           | `1`                                        |
 | `existingSecret`                          | Name of existing secret with access and secret key.                                                                                     | `""`                                       |
 | `accessKey`                               | Default access key (5 to 20 characters)                                                                                                 | `AKIAIOSFODNN7EXAMPLE`                     |
 | `secretKey`                               | Default secret key (8 to 40 characters)                                                                                                 | `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY` |
@@ -160,6 +165,8 @@ The following table lists the configurable parameters of the MinIO chart and the
 | `ossgateway.endpointURL`                  | OSS server endpoint.                                                                                                                    | `""`                                       |
 | `nasgateway.enabled`                      | Use MinIO as a [NAS gateway](https://docs.MinIO.io/docs/minio-gateway-for-nas)                                                          | `false`                                    |
 | `nasgateway.replicas`                     | Number of NAS gateway instances to be run in parallel on a PV                                                                           | `4`                                        |
+| `b2gateway.enabled`                       | Use MinIO as a [Backblaze B2 gateway](https://github.com/minio/minio/blob/master/docs/gateway/b2.md)                                    | `false`                                    |
+| `b2gateway.replicas`                      | Number of b2 gateway instances to run in parallel                                                                                       | `4`                                        |
 | `environment`                             | Set MinIO server relevant environment variables in `values.yaml` file. MinIO containers will be passed these variables when they start. | `MINIO_BROWSER: "on"`                      |
 | `metrics.serviceMonitor.enabled`          | Set this to `true` to create ServiceMonitor for Prometheus operator                                                                     | `false`                                    |
 | `metrics.serviceMonitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus                                                   | `{}`                                       |
@@ -202,7 +209,13 @@ This provisions MinIO server in distributed mode with 4 nodes. To change the num
 $ helm install --set mode=distributed,replicas=8 stable/minio
 ```
 
-This provisions MinIO server in distributed mode with 8 nodes. Note that the `replicas` value should be an integer between 4 and 16 (inclusive).
+This provisions MinIO server in distributed mode with 8 nodes. Note that the `replicas` value should be a minimum value of 4, there is no limit on number of servers you can run.
+
+You can also expand an existing deployment by adding new zones, following command will create a total of 16 nodes with each zone running 8 nodes.
+
+```bash
+$ helm install --set mode=distributed,replicas=8,zones=2 stable/minio
+```
 
 ### StatefulSet [limitations](http://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/#limitations) applicable to distributed MinIO
 

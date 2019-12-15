@@ -3,10 +3,13 @@
 ##
 image:
   repository: redis
-  tag: 5.0.5-alpine
+  tag: 5.0.6-alpine
   pullPolicy: IfNotPresent
 ## replicas number for each component
 replicas: 3
+
+## Kubernetes priorityClass name for the redis-ha-server pod
+# priorityClassName: ""
 
 ## Custom labels for the redis pod
 labels: {}
@@ -21,10 +24,87 @@ serviceAccount:
   ## If not set and create is true, a name is generated using the redis-ha.fullname template
   # name:
 
+## Enables a HA Proxy for better LoadBalancing / Sentinel Master support. Automatically proxies to Redis master.
+## Recommend for externally exposed Redis clusters.
+## ref: https://cbonte.github.io/haproxy-dconv/1.9/intro.html
+haproxy:
+  enabled: false
+  # Enable if you want a dedicated port in haproxy for redis-slaves
+  readOnly:
+    enabled: false
+    port: 6380
+  replicas: 3
+  image:
+    repository: haproxy
+    tag: 2.0.4
+    pullPolicy: IfNotPresent
+  annotations: {}
+  resources: {}
+  ## Kubernetes priorityClass name for the haproxy pod
+  # priorityClassName: ""
+  ## Service type for HAProxy
+  ##
+  service:
+    type: ClusterIP
+    loadBalancerIP:
+    annotations: {}
+  serviceAccount:
+    create: true
+  ## Official HAProxy embedded prometheus metrics settings.
+  ## Ref: https://github.com/haproxy/haproxy/tree/master/contrib/prometheus-exporter
+  ##
+  metrics:
+    enabled: false
+    # prometheus port & scrape path
+    port: 9101
+    portName: exporter-port
+    scrapePath: /metrics
+
+    serviceMonitor:
+      # When set true then use a ServiceMonitor to configure scraping
+      enabled: false
+      # Set the namespace the ServiceMonitor should be deployed
+      # namespace: monitoring
+      # Set how frequently Prometheus should scrape
+      # interval: 30s
+      # Set path to redis-exporter telemtery-path
+      # telemetryPath: /metrics
+      # Set labels for the ServiceMonitor, use this to define your scrape label for Prometheus Operator
+      # labels: {}
+      # Set timeout for scrape
+      # timeout: 10s
+  init:
+    resources: {}
+  timeout:
+    connect: 4s
+    server: 30s
+    client: 30s
+  securityContext:
+    runAsUser: 1000
+    fsGroup: 1000
+    runAsNonRoot: true
+
+  ## Whether the haproxy pods should be forced to run on separate nodes.
+  hardAntiAffinity: true
+
+  ## Additional affinities to add to the haproxy pods.
+  additionalAffinities: {}
+
+  ## Override all other affinity settings for the haproxy pods with a string.
+  affinity: |
+
+  ## Custom config-haproxy.cfg files used to override default settings. If this file is
+  ## specified then the config-haproxy.cfg above will be ignored.
+  # customConfig: |-
+      # Define configuration here
+  ## Place any additional configuration section to add to the default config-haproxy.cfg
+  # extraConfig: |-
+      # Define configuration here
+
+
 ## Role Based Access
 ## Ref: https://kubernetes.io/docs/admin/authorization/rbac/
 ##
-
 rbac:
   create: true
 
@@ -32,10 +112,11 @@ sysctlImage:
   enabled: false
   command: []
   registry: docker.io
-  repository: bitnami/minideb
-  tag: latest
+  repository: busybox
+  tag: 1.31.1
   pullPolicy: Always
   mountHostSys: false
+  resources: {}
 
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
@@ -45,12 +126,12 @@ sysctlImage:
 ## Redis specific configuration options
 redis:
   port: 6379
-  masterGroupName: mymaster
+  masterGroupName: "mymaster"       # must match ^[\\w-\\.]+$) and can be templated
   config:
     ## Additional redis conf options can be added below
     ## For all available options see http://download.redis.io/redis-stable/redis.conf
-    min-slaves-to-write: 1
-    min-slaves-max-lag: 5   # Value in seconds
+    min-replicas-to-write: 1
+    min-replicas-max-lag: 5   # Value in seconds
     maxmemory: "0"       # Max memory to use for each redis instance. Default is unlimited.
     maxmemory-policy: "volatile-lru"  # Max memory policy to use for each redis instance. Default is volatile-lru.
     # Determines if scheduled RDB backups are created. Default is false.
@@ -60,6 +141,7 @@ redis:
     repl-diskless-sync: "yes"
     rdbcompression: "yes"
     rdbchecksum: "yes"
+
 
   ## Custom redis.conf files used to override default settings. If this file is
   ## specified then the redis.config above will be ignored.
@@ -108,6 +190,7 @@ securityContext:
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+nodeSelector: {}
 
 ## Whether the Redis server pods should be forced to run on separate nodes.
 ## This is accomplished by setting their AntiAffinity with requiredDuringSchedulingIgnoredDuringExecution as opposed to preferred.
@@ -158,7 +241,7 @@ affinity: |
 exporter:
   enabled: false
   image: oliver006/redis_exporter
-  tag: v0.31.0
+  tag: v1.3.2
   pullPolicy: IfNotPresent
 
   # prometheus port & scrape path
@@ -170,6 +253,20 @@ exporter:
 
   # Additional args for redis exporter
   extraArgs: {}
+
+  serviceMonitor:
+    # When set true then use a ServiceMonitor to configure scraping
+    enabled: false
+    # Set the namespace the ServiceMonitor should be deployed
+    # namespace: monitoring
+    # Set how frequently Prometheus should scrape
+    # interval: 30s
+    # Set path to redis-exporter telemtery-path
+    # telemetryPath: /metrics
+    # Set labels for the ServiceMonitor, use this to define your scrape label for Prometheus Operator
+    # labels: {}
+    # Set timeout for scrape
+    # timeout: 10s
 
 podDisruptionBudget: {}
   # maxUnavailable: 1

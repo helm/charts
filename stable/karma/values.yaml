@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: lmierzwa/karma
-  tag: v0.42
+  tag: v0.50
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -21,6 +21,7 @@ service:
   port: 80
   annotations: {}
     # prometheus.io/scrape: "true"
+  labels: {}
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
@@ -41,6 +42,9 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+
+deployment:
+  annotations: {}
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -125,3 +129,11 @@ configMap:
   #   sentry:
   #     private: secret
   #   public: 123456789
+
+# Names of secrets that will be mounted to `/etc/certs/<secret_name>` in the karma container.
+# These secrets can be used to configure TLS for Karma's Alertmanagers by passing their paths to
+# the appropriate Karma configuration parameters. For example, secret `foo` containing a `ca.crt`
+# will yield a file at `/etc/certs/foo/ca.crt`. That path can then be provided as the value to
+# `configMap.rawConfig.alertmanager.servers[].tls.ca`.
+# See <https://github.com/prymitive/karma/blob/master/docs/CONFIGURATION.md#alertmanagers>.
+certSecretNames: []

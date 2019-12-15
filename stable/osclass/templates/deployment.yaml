@@ -1,5 +1,5 @@
 {{- if include "osclass.host" . -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "osclass.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "osclass.fullname" . }}
@@ -161,5 +161,9 @@ spec:
           claimName: {{ template "osclass.fullname" . }}-osclass
       {{- else }}
         emptyDir: {}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
       {{- end }}
 {{- end -}}

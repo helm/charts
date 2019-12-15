@@ -1,10 +1,11 @@
 # Generated from 'prometheus' group from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml
 # Do not change in-place! In order to change this file first read following link:
 # https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
-{{- if and (semverCompare ">=1.14.0-0" .Capabilities.KubeVersion.GitVersion) (semverCompare "<1.16.0-0" .Capabilities.KubeVersion.GitVersion) .Values.defaultRules.create }}
+{{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
+{{- if and (semverCompare ">=1.14.0-0" $kubeTargetVersion) (semverCompare "<9.9.9-9" $kubeTargetVersion) .Values.defaultRules.create .Values.defaultRules.rules.prometheus }}
 {{- $prometheusJob := printf "%s-%s" (include "prometheus-operator.fullname" .) "prometheus" }}
 {{- $namespace := .Release.Namespace }}
-apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
+apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: {{ printf "%s-%s" (include "prometheus-operator.fullname" .) "prometheus" | trunc 63 | trimSuffix "-" }}
@@ -105,14 +106,6 @@ spec:
       for: 4h
       labels:
         severity: warning
-    - alert: PrometheusTSDBWALCorruptions
-      annotations:
-        description: Prometheus {{`{{$labels.namespace}}`}}/{{`{{$labels.pod}}`}} has detected {{`{{$value | humanize}}`}} corruptions of the write-ahead log (WAL) over the last 3h.
-        summary: Prometheus is detecting WAL corruptions.
-      expr: increase(tsdb_wal_corruptions_total{job="{{ $prometheusJob }}",namespace="{{ $namespace }}"}[3h]) > 0
-      for: 4h
-      labels:
-        severity: warning
     - alert: PrometheusNotIngestingSamples
       annotations:
         description: Prometheus {{`{{$labels.namespace}}`}}/{{`{{$labels.pod}}`}} is not ingesting samples.
@@ -123,7 +116,7 @@ spec:
         severity: warning
     - alert: PrometheusDuplicateTimestamps
       annotations:
-        description: Prometheus {{`{{$labels.namespace}}`}}/{{`{{$labels.pod}}`}} is dropping {{`{{$value | humanize}}`}} samples/s with different values but duplicated timestamp.
+        description: Prometheus {{`{{$labels.namespace}}`}}/{{`{{$labels.pod}}`}} is dropping {{`{{ printf "%.4g" $value  }}`}} samples/s with different values but duplicated timestamp.
         summary: Prometheus is dropping samples with duplicate timestamps.
       expr: rate(prometheus_target_scrapes_sample_duplicate_timestamp_total{job="{{ $prometheusJob }}",namespace="{{ $namespace }}"}[5m]) > 0
       for: 10m
@@ -131,7 +124,7 @@ spec:
         severity: warning
     - alert: PrometheusOutOfOrderTimestamps
       annotations:
-        description: Prometheus {{`{{$labels.namespace}}`}}/{{`{{$labels.pod}}`}} is dropping {{`{{$value | humanize}}`}} samples/s with timestamps arriving out of order.
+        description: Prometheus {{`{{$labels.namespace}}`}}/{{`{{$labels.pod}}`}} is dropping {{`{{ printf "%.4g" $value  }}`}} samples/s with timestamps arriving out of order.
         summary: Prometheus drops samples with out-of-order timestamps.
       expr: rate(prometheus_target_scrapes_sample_out_of_order_total{job="{{ $prometheusJob }}",namespace="{{ $namespace }}"}[5m]) > 0
       for: 10m
@@ -172,6 +165,21 @@ spec:
       for: 15m
       labels:
         severity: critical
+    - alert: PrometheusRemoteWriteDesiredShards
+      annotations:
+        description: Prometheus {{`{{$labels.namespace}}`}}/{{`{{$labels.pod}}`}} remote write desired shards calculation wants to run {{`{{ printf $value }}`}} shards, which is more than the max of {{print `{{ printf ` "`" `prometheus_remote_storage_shards_max{instance="%s",job="{{ $prometheusJob }}",namespace="{{ $namespace }}"}` "`" ` $labels.instance | query | first | value }}`}}.
+        summary: Prometheus remote write desired shards calculation wants to run more than configured max shards.
+      expr: |-
+        # Without max_over_time, failed scrapes could create false negatives, see
+        # https://www.robustperception.io/alerting-on-gauges-in-prometheus-2-0 for details.
+        (
+          max_over_time(prometheus_remote_storage_shards_desired{job="{{ $prometheusJob }}",namespace="{{ $namespace }}"}[5m])
+        >
+          max_over_time(prometheus_remote_storage_shards_max{job="{{ $prometheusJob }}",namespace="{{ $namespace }}"}[5m])
+        )
+      for: 15m
+      labels:
+        severity: warning
     - alert: PrometheusRuleFailures
       annotations:
         description: Prometheus {{`{{$labels.namespace}}`}}/{{`{{$labels.pod}}`}} has failed to evaluate {{`{{ printf "%.0f" $value }}`}} rules in the last 5m.

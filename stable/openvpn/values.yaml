@@ -17,8 +17,10 @@ service:
   type: LoadBalancer
   externalPort: 443
   internalPort: 443
+  # hostPort: 443
   externalIPs: []
   nodePort: 32085
+  # clusterIP: None
   # LoadBalancerSourceRanges: 0.0.0.0/0
   # loadBalancerIP: 10.0.0.1
 
@@ -30,7 +32,6 @@ service:
 # podAnnotations:
 #   backup.ark.heptio.com/backup-volumes: certs
 podAnnotations: {}
-
 resources:
   limits:
     cpu: 300m
@@ -38,6 +39,12 @@ resources:
   requests:
     cpu: 300m
     memory: 128Mi
+
+readinessProbe:
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  successThreshold: 2
+
 persistence:
   enabled: true
   # subPath: openvpn
@@ -103,3 +110,4 @@ openvpn:
 
 
 nodeSelector: {}
+tolerations: []

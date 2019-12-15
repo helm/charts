@@ -7,6 +7,7 @@ global:
 #   imageRegistry: myRegistryName
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
+#   storageClass: myStorageClass
 
 ## Bitnami PostgreSQL image version
 ## ref: https://hub.docker.com/r/bitnami/postgresql/tags/
@@ -14,7 +15,7 @@ global:
 image:
   registry: docker.io
   repository: bitnami/postgresql
-  tag: 11.5.0-debian-9-r1
+  tag: 11.6.0-debian-9-r0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -49,7 +50,7 @@ volumePermissions:
   image:
     registry: docker.io
     repository: bitnami/minideb
-    tag: latest
+    tag: stretch
     ## Specify a imagePullPolicy
     ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
     ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -99,7 +100,11 @@ replication:
   ## Replication Cluster application name. Useful for defining multiple replication policies
   applicationName: my_application
 
-## PostgreSQL admin user
+## PostgreSQL admin password (used when `postgresqlUsername` is not `postgres`)
+## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md#creating-a-database-user-on-first-run (see note!)
+# postgresqlPostgresPassword:
+
+## PostgreSQL user (has superuser privileges if username is `postgres`)
 ## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md#setting-the-root-password-on-first-run
 postgresqlUsername: postgres
 
@@ -123,6 +128,15 @@ postgresqlUsername: postgres
 ## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md
 ##
 postgresqlDataDir: /bitnami/postgresql/data
+
+## An array to add extra environment variables
+## For example:
+## extraEnv:
+##   - name: FOO
+##     value: "bar"
+##
+# extraEnv:
+extraEnv: []
 
 ## Specify extra initdb args
 ## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md
@@ -182,10 +196,31 @@ postgresqlDataDir: /bitnami/postgresql/data
 ## NOTE: This can work along initdbScripts or initdbScriptsConfigMap
 # initdbScriptsSecret:
 
+## Specify the PostgreSQL username and password to execute the initdb scripts
+# initdbUser:
+# initdbPassword:
+
 ## Optional duration in seconds the pod needs to terminate gracefully.
 ## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods
 ##
 # terminationGracePeriodSeconds: 30
+
+## LDAP configuration
+##
+ldap:
+  enabled: false
+  url: ""
+  server: ""
+  port: ""
+  prefix: ""
+  suffix: ""
+  baseDN: ""
+  bindDN: ""
+  bind_password:
+  search_attr: ""
+  search_filter: ""
+  scheme: ""
+  tls: false
 
 ## PostgreSQL service configuration
 service:
@@ -199,7 +234,8 @@ service:
   ##
   # nodePort:
 
-  ## Provide any additional annotations which may be required. This can be used to
+  ## Provide any additional annotations which may be required.
+  ## The value is evaluated as a template, so, for example, the value can depend on .Release or .Chart
   annotations: {}
   ## Set the LoadBalancer service type to internal only.
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
@@ -211,6 +247,18 @@ service:
   ##
   # loadBalancerSourceRanges:
   # - 10.10.10.0/24
+
+## Start master and slave(s) pod(s) without limitations on shm memory.
+## By default docker and containerd (and possibly other container runtimes)
+## limit `/dev/shm` to `64M` (see e.g. the
+## [docker issue](https://github.com/docker-library/postgres/issues/416) and the
+## [containerd issue](https://github.com/containerd/containerd/issues/3654),
+## which could be not enough if PostgreSQL uses parallel workers heavily.
+## If this option is present and value is `true`,
+## to the target database pod will be mounted a new tmpfs volume to remove
+## this limitation.
+shmVolume:
+  enabled: true
 
 ## PostgreSQL data Persistent Volume Storage Class
 ## If defined, storageClassName: <storageClass>
@@ -259,8 +307,14 @@ master:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+  labels: {}
+  annotations: {}
   podLabels: {}
   podAnnotations: {}
+  extraInitContainers: |
+  # - name: do-something
+  #   image: busybox
+  #   command: ['do', 'something']
   ## Additional PostgreSQL Master Volume mounts
   ##
   extraVolumeMounts: []
@@ -279,8 +333,14 @@ slave:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+  labels: {}
+  annotations: {}
   podLabels: {}
   podAnnotations: {}
+  extraInitContainers: |
+  # - name: do-something
+  #   image: busybox
+  #   command: ['do', 'something']
   ## Additional PostgreSQL Slave Volume mounts
   ##
   extraVolumeMounts: []
@@ -297,7 +357,7 @@ resources:
     cpu: 250m
 
 networkPolicy:
-  ## Enable creation of NetworkPolicy resources.
+  ## Enable creation of NetworkPolicy resources. Only Ingress traffic is filtered for now.
   ##
   enabled: false
 
@@ -307,6 +367,17 @@ networkPolicy:
   ## (with the correct destination port).
   ##
   allowExternal: true
+
+  ## if explicitNamespacesSelector is missing or set to {}, only client Pods that are in the networkPolicy's namespace
+  ## and that match other criteria, the ones that have the good label, can reach the DB.
+  ## But sometimes, we want the DB to be accessible to clients from other namespaces, in this case, we can use this
+  ## LabelSelector to select these namespaces, note that the networkPolicy's namespace should also be explicitly added.
+  ##
+  # explicitNamespacesSelector:
+    # matchLabels:
+      # role: frontend
+    # matchExpressions:
+      # - {key: role, operator: In, values: [frontend]}
 
 ## Configure extra options for liveness and readiness probes
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
@@ -343,10 +414,28 @@ metrics:
     # namespace: monitoring
     # interval: 30s
     # scrapeTimeout: 10s
+  ## Custom PrometheusRule to be defined
+  ## The value is evaluated as a template, so, for example, the value can depend on .Release or .Chart
+  ## ref: https://github.com/coreos/prometheus-operator#customresourcedefinitions
+  prometheusRule:
+    enabled: false
+    additionalLabels: {}
+    namespace: ""
+    rules: []
+      ## These are just examples rules, please adapt them to your needs.
+      ## Make sure to constraint the rules to the current postgresql service.
+      # - alert: HugeReplicationLag
+      #   expr: pg_replication_lag{service="{{ template "postgresql.fullname" . }}-metrics"} / 3600 > 1
+      #   for: 1m
+      #   labels:
+      #     severity: critical
+      #   annotations:
+      #     description: replication for {{ template "postgresql.fullname" . }} PostgreSQL is lagging by {{ "{{ $value }}" }} hour(s).
+      #     summary: PostgreSQL replication is lagging by {{ "{{ $value }}" }} hour(s).
   image:
     registry: docker.io
     repository: bitnami/postgres-exporter
-    tag: 0.5.1-debian-9-r17
+    tag: 0.7.0-debian-9-r12
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -354,6 +443,18 @@ metrics:
     ##
     # pullSecrets:
     #   - myRegistryKeySecretName
+  ## Define additional custom metrics
+  ## ref: https://github.com/wrouesnel/postgres_exporter#adding-new-metrics-via-a-config-file
+  # customMetrics:
+  #   pg_database:
+  #     query: "SELECT d.datname AS name, CASE WHEN pg_catalog.has_database_privilege(d.datname, 'CONNECT') THEN pg_catalog.pg_database_size(d.datname) ELSE 0 END AS size FROM pg_catalog.pg_database d where datname not in ('template0', 'template1', 'postgres')"
+  #     metrics:
+  #       - name:
+  #           usage: "LABEL"
+  #           description: "Name of the database"
+  #       - size_bytes:
+  #           usage: "GAUGE"
+  #           description: "Size of the database in bytes"
   ## Pod Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
   ##
@@ -377,6 +478,3 @@ metrics:
     timeoutSeconds: 5
     failureThreshold: 6
     successThreshold: 1
-
-# Define custom environment variables to pass to the image here
-extraEnv: {}

@@ -211,6 +211,8 @@ backup:
 ## Cassandra exported configuration
 ## ref: https://github.com/criteo/cassandra_exporter
 exporter:
+  # If exporter is enabled this will create a ServiceMonitor by default as well
+  servicemonitor: true
   enabled: false
   image:
     repo: criteord/cassandra_exporter

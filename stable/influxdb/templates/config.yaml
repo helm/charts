@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "influxdb.fullname" . }}
+  name: "{{ template "influxdb.fullname" . }}"
   labels:
-    app: {{ template "influxdb.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "influxdb.fullname" . }}"
+    chart: "{{ template "influxdb.chart" . }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 data:
@@ -28,6 +28,7 @@ data:
       compact-full-write-cold-duration = "{{ .Values.config.data.compact_full_write_cold_duration }}"
       max-series-per-database = {{ .Values.config.data.max_series_per_database | int64 }}
       max-values-per-tag = {{ .Values.config.data.max_values_per_tag | int64 }}
+      index-version = "{{ .Values.config.data.index_version }}"
       trace-logging-enabled = {{ .Values.config.data.trace_logging_enabled }}
 
     [coordinator]

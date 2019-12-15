@@ -5,8 +5,8 @@
 # Details of the container image to use in the Velero deployment & daemonset (if
 # enabling restic). Required.
 image:
-  repository: gcr.io/heptio-images/velero
-  tag: v1.0.0
+  repository: velero/velero
+  tag: v1.2.0
   pullPolicy: IfNotPresent
 
 # Annotations to add to the Velero deployment's pod template. Optional.
@@ -19,13 +19,14 @@ podAnnotations: {}
 # Resource requests/limits to specify for the Velero deployment. Optional.
 resources: {}
 
-# Init containers to add to the Velero deployment's pod spec. Optional.
+# Init containers to add to the Velero deployment's pod spec. At least one plugin provider image is required.
 initContainers: []
-  # - name:
-  #   image:
+  # - name: velero-plugin-for-aws
+  #   image: velero/velero-plugin-for-aws:v1.0.0
+  #   imagePullPolicy: IfNotPresent
   #   volumeMounts:
-  #     - name: plugins
-  #       mountPath: /target
+  #     - mountPath: /target
+  #       name: plugins
 
 # Tolerations to use for the Velero deployment. Optional.
 tolerations: []
@@ -33,9 +34,15 @@ tolerations: []
 # Node selector to use for the Velero deployment. Optional.
 nodeSelector: {}
 
-# Settings for Velero's prometheus metrics. Disabled by default.
+# Extra volumes for the Velero deployment. Optional.
+extraVolumes: []
+
+# Extra volumeMounts for the Velero deployment. Optional.
+extraVolumeMounts: []
+
+# Settings for Velero's prometheus metrics. Enabled by default.
 metrics:
-  enabled: false
+  enabled: true
   scrapeInterval: 30s
 
   # Pod annotations for Prometheus
@@ -114,6 +121,12 @@ configuration:
   # additional key/value pairs to be used as environment variables such as "AWS_CLUSTER_NAME: 'yourcluster.domain.tld'"
   extraEnvVars: {}
 
+  # Set log-level for Velero pod. Default: info. Other options: debug, warning, error, fatal, panic.
+  logLevel:
+
+  # Set log-format for Velero pod. Default: text. Other option: json.
+  logFormat:
+
 ##
 ## End of backup/snapshot location settings.
 ##
@@ -158,8 +171,18 @@ deployRestic: false
 restic:
   podVolumePath: /var/lib/kubelet/pods
   privileged: false
+  # Pod priority class name to use for the Restic daemonset. Optional.
+  priorityClassName: {}
   # Resource requests/limits to specify for the Restic daemonset deployment. Optional.
   resources: {}
+  # Tolerations to use for the Restic daemonset. Optional.
+  tolerations: []
+
+  # Extra volumes for the Restic daemonset. Optional.
+  extraVolumes: []
+
+  # Extra volumeMounts for the Restic daemonset. Optional.
+  extraVolumeMounts: []
 
 # Backup schedules to create.
 # Eg:

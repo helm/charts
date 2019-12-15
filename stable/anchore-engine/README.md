@@ -31,18 +31,18 @@ Create a new file named `anchore_values.yaml` and add all desired custom values 
 
 ##### Example anchore_values.yaml - using chart managed PostgreSQL service with custom passwords.
 *Note: Installs with chart managed PostgreSQL database. This is not a guaranteed production ready config.*
-  ```
-  ## anchore_values.yaml
+```
+## anchore_values.yaml
 
-  postgresql:
-    postgresPassword: <PASSWORD>
-    persistence:
-      size: 50Gi
+postgresql:
+  postgresPassword: <PASSWORD>
+  persistence:
+    size: 50Gi
 
-  anchoreGlobal:
-    defaultAdminPassword: <PASSWORD>
-    defaultAdminEmail: <EMAIL>
-  ```
+anchoreGlobal:
+  defaultAdminPassword: <PASSWORD>
+  defaultAdminEmail: <EMAIL>
+```
 
 ## Adding Enterprise Components
 
@@ -78,31 +78,165 @@ To use this Helm chart with the enterprise services enabled, perform these steps
 
     `helm install --name <release_name> -f /path/to/anchore_values.yaml stable/anchore-engine`
 
-##### Example anchore_values.yaml - installing Anchore Enterprise
+#### Example anchore_values.yaml - installing Anchore Enterprise
+
 *Note: Installs with chart managed PostgreSQL & Redis databases. This is not a guaranteed production ready config.*
+```
+## anchore_values.yaml
 
-  ```
-  ## anchore_values.yaml
+postgresql:
+  postgresPassword: <PASSWORD>
+  persistence:
+    size: 50Gi
 
-  postgresql:
+anchoreGlobal:
+  defaultAdminPassword: <PASSWORD>
+  defaultAdminEmail: <EMAIL>
+  enableMetrics: True
+
+anchoreEnterpriseGlobal:
+  enabled: True
+
+anchore-feeds-db:
+  postgresPassword: <PASSWORD>
+  persistence:
+    size: 20Gi
+
+anchore-ui-redis:
+  password: <PASSWORD>
+```
+
+## Installing on OpenShift
+As of chart version 1.3.1 deployments to OpenShift are fully supported. Due to permission constraints when utilizing OpenShift, the official RHEL postgresql image must be utilized, which requires custom environment variables to be configured for compatibility with this chart.
+
+#### Example anchore_values.yaml - deploying on OpenShift
+*Note: Installs with chart managed PostgreSQL database. This is not a guaranteed production ready config.*
+```
+## anchore_values.yaml
+
+postgresql:
+  image: registry.access.redhat.com/rhscl/postgresql-96-rhel7
+  imageTag: latest
+  extraEnv:
+  - name: POSTGRESQL_USER
+    value: anchoreengine
+  - name: POSTGRESQL_PASSWORD
+    value: anchore-postgres,123
+  - name: POSTGRESQL_DATABASE
+    value: anchore
+  - name: PGUSER
+    value: postgres
+  - name: LD_LIBRARY_PATH
+    value: /opt/rh/rh-postgresql96/root/usr/lib64
+  - name: PATH
+     value: /opt/rh/rh-postgresql96/root/usr/bin:/opt/app-root/src/bin:/opt/app-root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+  postgresPassword: <PASSWORD>
+  persistence:
+    size: 50Gi
+
+anchoreGlobal:
+  defaultAdminPassword: <PASSWORD>
+  defaultAdminEmail: <EMAIL>
+  openShiftDeployment: True
+```
+
+To perform an Enterprise deployment on OpenShift use the following anchore_values.yaml configuration
+
+*Note: Installs with chart managed PostgreSQL database. This is not a guaranteed production ready config.*
+```
+## anchore_values.yaml
+
+postgresql:
+  image: registry.access.redhat.com/rhscl/postgresql-96-rhel7
+  imageTag: latest
+  extraEnv:
+  - name: POSTGRESQL_USER
+    value: anchoreengine
+  - name: POSTGRESQL_PASSWORD
+    value: anchore-postgres,123
+  - name: POSTGRESQL_DATABASE
+    value: anchore
+  - name: PGUSER
+    value: postgres
+  - name: LD_LIBRARY_PATH
+    value: /opt/rh/rh-postgresql96/root/usr/lib64
+  - name: PATH
+     value: /opt/rh/rh-postgresql96/root/usr/bin:/opt/app-root/src/bin:/opt/app-root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    postgresPassword: <PASSWORD>
+    persistence:
+      size: 20Gi
+
+anchoreGlobal:
+  defaultAdminPassword: <PASSWORD>
+  defaultAdminEmail: <EMAIL>
+  enableMetrics: True
+  openShiftDeployment: True
+
+anchoreEnterpriseGlobal:
+  enabled: True
+
+anchore-feeds-db:
+  image: registry.access.redhat.com/rhscl/postgresql-96-rhel7
+  imageTag: latest
+  extraEnv:
+  - name: POSTGRESQL_USER
+    value: anchoreengine
+  - name: POSTGRESQL_PASSWORD
+    value: anchore-postgres,123
+  - name: POSTGRESQL_DATABASE
+    value: anchore
+  - name: PGUSER
+    value: postgres
+  - name: LD_LIBRARY_PATH
+    value: /opt/rh/rh-postgresql96/root/usr/lib64
+  - name: PATH
+     value: /opt/rh/rh-postgresql96/root/usr/bin:/opt/app-root/src/bin:/opt/app-root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     postgresPassword: <PASSWORD>
     persistence:
       size: 50Gi
 
-  anchoreGlobal:
-    defaultAdminPassword: <PASSWORD>
-    defaultAdminEmail: <EMAIL>
-    enableMetrics: True
+anchore-ui-redis:
+  password: <PASSWORD>
+```
 
-  anchoreEnterpriseGlobal:
-    enabled: True
+## Chart version 1.4.0
+The following features were added with this chart version:
+  * Enterprise notifications service
+  * Numerous QOL improvements to the Enterprise UI service
 
-  anchore-feeds-db:
-    postgresPassword: <PASSWORD>
+## Upgrading to Chart version 1.3.0
+The following features were added with this chart version:
+  * Allow custom CA certificates for TLS on all system dependencies (postgresql, ldap, registries)
+  * Customization of the analyzer configuration
+  * Improved authentication methods, allowing SAML/token based auth
+  * Enterprise UI reporting improvements
+  * Enterprise SSO integration
+  * Enterprise vulnerability data enhancement using VulnDB
 
-  anchore-ui-redis:
-    password: <PASSWORD>
-  ```
+Internal Service SSL configuration has been changed to support a global certificate storage secret. When upgrading to v1.3.0 of the chart, make sure the values file is updated appropriately.
+
+#### Chart v1.3.0 internal service SSL configuration
+```
+anchoreGlobal:
+  certStoreSecretName: anchore-certs
+  internalServicesSsl:
+    enabled: true
+    verifyCerts: true
+    certSecretKeyName: anchore.example.com.key
+    certSecretCertName: anchore.example.com.crt
+```
+
+#### Chart v1.2.0 internal service SSL configuration
+```
+anchoreGlobal:
+  internalServicesSslEnabled: true
+  internalServicesSsl:
+    verifyCerts: true
+    certSecret: anchore-certs
+    certDir: /home/anchore/certs
+    certSecretKeyName: anchore.example.com.key
+    certSecretCertName: anchore.example.com.crt
+```
 
 ## Upgrading to Chart version 1.0.0
 The following features were added with this chart version:
@@ -448,6 +582,10 @@ Anchore Engine supports exporting prometheus metrics form each container. To ena
 
 When enabled, each service provides the metrics over the existing service port so your prometheus deployment will need to
 know about each pod and the ports it provides to scrape the metrics.
+
+### Using custom certificates
+A secret needs to be created in the same namespace as the anchore-engine chart installation. This secret should contain all custom certs, including CA certs & any certs used for internal TLS communication. 
+This secret will be mounted to all anchore-engine pods at /home/anchore/certs to be utilized by the system.
 
 ### Event Notifications
 

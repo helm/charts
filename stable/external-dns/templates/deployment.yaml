@@ -14,7 +14,7 @@ spec:
         {{- if or .Values.podAnnotations .Values.metrics.enabled }}
         {{ include "external-dns.podAnnotations" . | nindent 8 }}
         {{- end }}
-        {{- if or (and .Values.aws.credentials.secretKey .Values.aws.credentials.accessKey) .Values.cloudflare.apiKey .Values.digitalocean.apiToken (and .Values.infoblox.wapiUsername .Values.infoblox.wapiPassword) .Values.rfc2136.tsigSecret .Values.extraEnv .Values.google.serviceAccountKey }}
+        {{- if or (and .Values.aws.credentials.secretKey .Values.aws.credentials.accessKey) (or .Values.cloudflare.apiToken .Values.cloudflare.apiKey) .Values.digitalocean.apiToken (and .Values.infoblox.wapiUsername .Values.infoblox.wapiPassword) .Values.rfc2136.tsigSecret .Values.extraEnv .Values.google.serviceAccountKey }}
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
         {{- end }}
         {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
@@ -51,6 +51,9 @@ spec:
         {{- if .Values.logLevel }}
         - --log-level={{ .Values.logLevel }}
         {{- end }}
+        {{- if .Values.logFormat }}
+        - --log-format={{ .Values.logFormat }}
+        {{- end }}
         {{- if .Values.dryRun }}
         - --dry-run
         {{- end }}
@@ -78,13 +81,11 @@ spec:
         {{- if .Values.annotationFilter }}
         - --annotation-filter={{ .Values.annotationFilter }}
         {{- end }}
-        {{- if .Values.crd.create }}
-          {{- if .Values.crd.apiversion }}
+        {{- if .Values.crd.apiversion }}
         - --crd-source-apiversion={{ .Values.crd.apiversion }}
-          {{- end }}
-          {{- if .Values.crd.kind }}
+        {{- end }}
+        {{- if .Values.crd.kind }}
         - --crd-source-kind={{ .Values.crd.kind }}
-          {{- end }}
         {{- end }}
         {{- range .Values.istioIngressGateways }}
         - --istio-ingress-gateway={{ . }}
@@ -106,6 +107,9 @@ spec:
         {{- end }}
         {{- range .Values.aws.zoneTags }}
         - --aws-zone-tags={{ . }}
+        {{- end }}
+        {{- if .Values.aws.preferCNAME }}
+        - --aws-prefer-cname
         {{- end }}
         # Azure Arguments
         {{- if eq .Values.provider "azure" }}
@@ -187,13 +191,21 @@ spec:
         {{- end }}
         # Cloudflare environment variables
         {{- if eq .Values.provider "cloudflare" }}
+        {{- if .Values.cloudflare.apiToken }}
+        - name: CF_API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "external-dns.fullname" . }}
+              key: cloudflare_api_token
+        {{- else }}
         - name: CF_API_KEY
           valueFrom:
             secretKeyRef:
               name: {{ template "external-dns.fullname" . }}
               key: cloudflare_api_key
         - name: CF_API_EMAIL
-          value: {{ .Values.cloudflare.email | quote }}
+          value: {{ required "cloudflare.email is required if cloudflare.apiToken is not provided" .Values.cloudflare.email | quote }}
+        {{- end }}
         {{- end }}
         # CoreDNS environment variables
         {{- if eq .Values.provider "coredns" }}
@@ -291,10 +303,10 @@ spec:
         # Azure mountPath(s)
         {{- if eq .Values.provider "azure" }}
         - name: azure-config-file
-          {{- if not .Values.azure.secretName }}
-          mountPath: /etc/kubernetes/azure.json
-          {{- else }}
+          {{- if or .Values.azure.secretName (and .Values.azure.resourceGroup .Values.azure.tenantId .Values.azure.subscriptionId) }}
           mountPath: /etc/kubernetes/
+          {{- else if not .Values.azure.useManagedIdentityExtension }}
+          mountPath: /etc/kubernetes/azure.json
           {{- end }}
           readOnly: true
         {{- end }}
@@ -327,13 +339,16 @@ spec:
       # Azure volume(s)
       {{- if eq .Values.provider "azure" }}
       - name: azure-config-file
-        {{- if (not .Values.azure.secretName) }}
+        {{- if .Values.azure.secretName }}
+        secret:
+          secretName: {{ .Values.azure.secretName }}
+        {{- else if (and .Values.azure.resourceGroup .Values.azure.tenantId .Values.azure.subscriptionId) }}
+        secret:
+          secretName: {{ template "external-dns.fullname" . }}
+        {{- else if not .Values.azure.useManagedIdentityExtension }}
         hostPath:
           path: /etc/kubernetes/azure.json
           type: File
-        {{- else }}
-        secret:
-          secretName: {{ .Values.azure.secretName }}
         {{- end }}
       {{- end }}
       # CoreDNS volume(s)

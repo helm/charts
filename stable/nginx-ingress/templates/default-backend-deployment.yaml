@@ -1,15 +1,19 @@
 {{- if .Values.defaultBackend.enabled }}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   labels:
     app: {{ template "nginx-ingress.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "nginx-ingress.chart" . }}
     component: "{{ .Values.defaultBackend.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "nginx-ingress.defaultBackend.fullname" . }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "nginx-ingress.name" . }}
+      release: {{ .Release.Name }}
   replicas: {{ .Values.defaultBackend.replicaCount }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   template:
@@ -53,6 +57,10 @@ spec:
           {{- end }}
           securityContext:
             runAsUser: {{ .Values.defaultBackend.image.runAsUser }}
+          {{- if .Values.defaultBackend.extraEnvs }}
+          env:
+{{ toYaml .Values.defaultBackend.extraEnvs | indent 12 }}
+          {{- end }}
           livenessProbe:
             httpGet:
               path: /healthz
@@ -83,6 +91,7 @@ spec:
       nodeSelector:
 {{ toYaml .Values.defaultBackend.nodeSelector | indent 8 }}
     {{- end }}
+      serviceAccountName: {{ template "nginx-ingress.defaultBackend.serviceAccountName" . }}
     {{- if .Values.defaultBackend.tolerations }}
       tolerations:
 {{ toYaml .Values.defaultBackend.tolerations | indent 8 }}

@@ -8,6 +8,13 @@ metadata:
     chart: {{ template "airflow.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    {{- with .Values.scheduler.labels }}
+{{ toYaml . | indent 4 }}
+    {{- end }}
+  {{- with .Values.scheduler.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
 spec:
   replicas: 1
   strategy:
@@ -30,8 +37,14 @@ spec:
         checksum/config-scripts: {{ include (print $.Template.BasePath "/configmap-scripts.yaml") . | sha256sum }}
         checksum/config-variables-pools: {{ include (print $.Template.BasePath "/configmap-variables-pools.yaml") . | sha256sum }}
         checksum/secret-connections: {{ include (print $.Template.BasePath "/secret-connections.yaml") . | sha256sum }}
+        {{- if and ( .Values.dags.git.url ) ( .Values.dags.git.ref ) }}
+        checksum/dags-git-ref: {{ .Values.dags.git.ref }}
+        {{- end }}
 {{- if .Values.airflow.podAnnotations }}
 {{ toYaml .Values.airflow.podAnnotations | indent 8 }}
+{{- end }}
+{{- if .Values.scheduler.podAnnotations }}
+{{ toYaml .Values.scheduler.podAnnotations | indent 8 }}
 {{- end }}
       labels:
         app: {{ template "airflow.name" . }}
@@ -61,12 +74,19 @@ spec:
         - name: git-clone
           image: {{ .Values.dags.initContainer.image.repository }}:{{ .Values.dags.initContainer.image.tag }} # Any image with git will do
           imagePullPolicy: {{ .Values.dags.initContainer.image.pullPolicy }}
+          envFrom:
+          - configMapRef:
+              name: "{{ template "airflow.fullname" . }}-env"
+          env:
+          {{- include "airflow.mapenvsecrets" . | indent 10 }}
           command:
             - /usr/local/git/git-clone.sh
           args:
             - "{{ .Values.dags.git.url }}"
             - "{{ .Values.dags.git.ref }}"
             - "/dags"
+            - "{{ .Values.dags.git.repoHost}}"
+            - "{{ .Values.dags.git.privateKeyName }}"
           volumeMounts:
             - name: git-clone
               mountPath: /usr/local/git
@@ -77,7 +97,41 @@ spec:
               mountPath: /keys
             {{- end }}
       {{- end }}
+{{- if and ( .Values.airflow.extraInitContainers ) ( .Values.dags.initContainer.enabled ) }}
+{{ toYaml .Values.airflow.extraInitContainers | indent 8 }}
+{{- else if and ( .Values.airflow.extraInitContainers ) ( not .Values.dags.initContainer.enabled ) }}
+      initContainers:
+{{ toYaml .Values.airflow.extraInitContainers | indent 8 }}
+{{- end }}
       containers:
+        {{- if .Values.dags.git.gitSync.enabled }}
+        - name: git-sync
+          image: {{ .Values.dags.git.gitSync.image.repository }}:{{ .Values.dags.git.gitSync.image.tag }} # Any image with git will do
+          imagePullPolicy: {{ .Values.dags.git.gitSync.image.pullPolicy }}
+          envFrom:
+          - configMapRef:
+              name: "{{ template "airflow.fullname" . }}-env"
+          env:
+          {{- include "airflow.mapenvsecrets" . | indent 10 }}
+          command:
+            - /usr/local/git/git-sync.sh
+          args:
+            - "{{ .Values.dags.git.url }}"
+            - "{{ .Values.dags.git.ref }}"
+            - "/dags"
+            - "{{ .Values.dags.git.repoHost}}"
+            - "{{ .Values.dags.git.privateKeyName }}"
+            - "{{ .Values.dags.git.gitSync.refreshTime }}"
+          volumeMounts:
+            - name: git-clone
+              mountPath: /usr/local/git
+            - name: dags-data
+              mountPath: /dags
+            {{- if .Values.dags.git.secret }}
+            - name: git-clone-secret
+              mountPath: /keys
+            {{- end }}
+        {{- end }}
         - name: {{ .Chart.Name }}-scheduler
           image: {{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}
           imagePullPolicy: {{ .Values.airflow.image.pullPolicy}}
@@ -146,7 +200,7 @@ spec:
               echo "adding variables" &&
               airflow variables -i /usr/local/variables-pools/variables.json &&
             {{- end }}
-            {{- if .Values.airflow.variables }}
+            {{- if .Values.airflow.pools }}
               echo "adding pools" &&
               airflow pool -i /usr/local/variables-pools/pools.json &&
             {{- end }}
@@ -170,7 +224,7 @@ spec:
               echo "adding variables" &&
               airflow variables -i /usr/local/variables-pools/variables.json &&
             {{- end }}
-            {{- if .Values.airflow.variables }}
+            {{- if .Values.airflow.pools }}
               echo "adding pools" &&
               airflow pool -i /usr/local/variables-pools/pools.json &&
             {{- end }}

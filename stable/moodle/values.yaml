@@ -6,6 +6,7 @@
 #   imageRegistry: myRegistryName
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
+#   storageClass: myStorageClass
 
 ## Bitnami Moodle image version
 ## ref: https://hub.docker.com/r/bitnami/moodle/tags/
@@ -13,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/moodle
-  tag: 3.7.1-debian-9-r0
+  tag: 3.8.0-debian-9-r0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -200,7 +201,7 @@ ingress:
 
     ## Ingress annotations done as key:value pairs
     ## For a full list of possible ingress annotations, please see
-    ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/annotations.md
+    ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/annotations.md
     ##
     ## If tls is set to true, annotation ingress.kubernetes.io/secure-backends: "true" will automatically be set
     annotations:
@@ -269,12 +270,14 @@ resources:
 ## Configure extra options for liveness and readiness probes
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
 livenessProbe:
+  enabled: true
   initialDelaySeconds: 600
   periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 6
   successThreshold: 1
 readinessProbe:
+  enabled: true
   initialDelaySeconds: 30
   periodSeconds: 5
   timeoutSeconds: 3
@@ -292,7 +295,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/apache-exporter
-    tag: 0.7.0-debian-9-r2
+    tag: 0.7.0-debian-9-r112
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.

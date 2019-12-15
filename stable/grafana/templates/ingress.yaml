@@ -2,6 +2,7 @@
 {{- $fullName := include "grafana.fullname" . -}}
 {{- $servicePort := .Values.service.port -}}
 {{- $ingressPath := .Values.ingress.path -}}
+{{- $extraPaths := .Values.ingress.extraPaths -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -29,6 +30,9 @@ spec:
     - host: {{ . }}
       http:
         paths:
+{{ if $extraPaths }}
+{{ toYaml $extraPaths | indent 10 }}
+{{- end }}
           - path: {{ $ingressPath }}
             backend:
               serviceName: {{ $fullName }}

@@ -1,3 +1,4 @@
+{{- if not .Values.server.configMap }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -11,6 +12,7 @@ metadata:
 data:
   application.yaml: |-
     spring:
+      {{- if .Values.features.batch.enabled }}
       cloud:
         dataflow:
           task:
@@ -21,6 +23,38 @@ data:
                     limits:
                       memory: {{ .Values.deployer.resourceLimits.memory }}
                       cpu: {{ .Values.deployer.resourceLimits.cpu }}
+      {{- end }}
+          {{- if .Values.features.monitoring.enabled }}
+          applicationProperties:
+          {{- if .Values.features.streaming.enabled }}
+            stream:
+              management:
+                metrics:
+                  export:
+                    prometheus:
+                      enabled: true
+                      rsocket:
+                        enabled: true
+                        host: {{ printf "${%s_PROMETHEUS_PROXY_SERVICE_HOST}" (include "scdf.envrelease" . ) }}
+                        port: {{ printf "${%s_PROMETHEUS_PROXY_SERVICE_PORT_RSOCKET}" (include "scdf.envrelease" . ) }}
+            {{- end }}
+            {{- if .Values.features.batch.enabled }}
+            task:
+              management:
+                metrics:
+                  export:
+                    prometheus:
+                      enabled: true
+                      rsocket:
+                        enabled: true
+                        host: {{ printf "${%s_PROMETHEUS_PROXY_SERVICE_HOST}" (include "scdf.envrelease" . ) }}
+                        port: {{ printf "${%s_PROMETHEUS_PROXY_SERVICE_PORT_RSOCKET}" (include "scdf.envrelease" . ) }}
+            {{- end }}
+          {{- end }}
+          {{- if .Values.features.monitoring.enabled }}
+          grafana-info:
+            url: http://{{- printf "${%s_GRAFANA_SERVICE_HOST}" (include "scdf.envrelease" . ) -}}:{{- printf "${%s_GRAFANA_SERVICE_PORT}" (include "scdf.envrelease" . ) }}
+          {{- end }}
       datasource:
         url: 'jdbc:{{ template "scdf.database.scheme" . }}://{{ template "scdf.database.host" . }}:{{ template "scdf.database.port" . }}/{{ template "scdf.database.dataflow" . }}'
         driverClassName: {{ template "scdf.database.driver" . }}
@@ -28,3 +62,4 @@ data:
         password: {{ template "scdf.database.password" . }}
         testOnBorrow: true
         validationQuery: "SELECT 1"
+{{- end }}

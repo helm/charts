@@ -8,8 +8,22 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app.kubernetes.io/name: "{{ template "datadog.fullname" . }}"
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 spec:
   replicas: {{ .Values.clusterAgent.replicas }}
+  strategy:
+{{- if .Values.clusterAgent.strategy }}
+{{ toYaml .Values.clusterAgent.strategy | indent 4 }}
+{{- else }}
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+{{- end }}
   selector:
     matchLabels:
       app: {{ template "datadog.fullname" . }}-cluster-agent
@@ -43,6 +57,10 @@ spec:
       {{- if .Values.clusterAgent.image.pullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.clusterAgent.image.pullSecrets | indent 8 }}
+      {{- end }}
+      {{- if .Values.clusterAgent.useHostNetwork }}
+      hostNetwork: {{ .Values.clusterAgent.useHostNetwork }}
+      dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
       containers:
       - name: {{ .Values.clusterAgent.containerName }}
@@ -83,6 +101,9 @@ spec:
             value: "kube_services"
           {{- end }}
           {{- if .Values.datadog.clusterName }}
+          {{- if not (regexMatch "^[a-z]([a-z0-9\\-]{0,38}[a-z0-9])?$" .Values.datadog.clusterName) }}
+          {{- fail "Your `clusterName` isn’t valid. It must start with a lowercase letter followed by up to 39 lowercase letters, numbers, or hyphens and cannot end with a hyphen."}}
+          {{- end}}
           - name: DD_CLUSTER_NAME
             value: {{ .Values.datadog.clusterName | quote }}
           {{- end }}
@@ -162,4 +183,8 @@ spec:
 {{ toYaml .Values.clusterAgent.affinity | indent 8 }}
       {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "datadog.fullname" . }}-cluster-agent{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      {{- if .Values.clusterAgent.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.clusterAgent.nodeSelector | indent 8 }}
+      {{- end }}
 {{ end }}

@@ -18,8 +18,10 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.12+
+- Helm 2.11+ or Helm 3.0-beta3+
 - PV provisioner support in the underlying infrastructure
+- ReadWriteMany volumes for deployment scaling
 
 ## Installing the Chart
 
@@ -29,7 +31,7 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release stable/mediawiki
 ```
 
-The command deploys MediaWiki on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys MediaWiki on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
@@ -43,7 +45,7 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
-## Configuration
+## Parameters
 
 The following table lists the configurable parameters of the MediaWiki chart and their default values.
 
@@ -51,6 +53,7 @@ The following table lists the configurable parameters of the MediaWiki chart and
 |--------------------------------------|-------------------------------------------------------------|---------------------------------------------------------|
 | `global.imageRegistry`               | Global Docker image registry                                | `nil`                                                   |
 | `global.imagePullSecrets`            | Global Docker registry secret names as an array             | `[]` (does not add image pull secrets to deployed pods) |
+| `global.storageClass`                     | Global storage class for dynamic provisioning                                               | `nil`                                                        |
 | `image.registry`                     | MediaWiki image registry                                    | `docker.io`                                             |
 | `image.repository`                   | MediaWiki Image name                                        | `bitnami/mediawiki`                                     |
 | `image.tag`                          | MediaWiki Image tag                                         | `{TAG_NAME}`                                            |
@@ -80,7 +83,7 @@ The following table lists the configurable parameters of the MediaWiki chart and
 | `service.type`                       | Kubernetes Service type                                     | `LoadBalancer`                                          |
 | `service.loadBalancer`               | Kubernetes LoadBalancerIP to request                        | `nil`                                                   |
 | `service.port`                       | Service HTTP port                                           | `80`                                                    |
-| `service.httpsPort`                  | Service HTTPS port                                          | `443`                                                   |
+| `service.httpsPort`                  | Service HTTPS port                                          | `""`                                                    |
 | `service.externalTrafficPolicy`      | Enable client source IP preservation                        | `Cluster`                                               |
 | `service.nodePorts.http`             | Kubernetes http node port                                   | `""`                                                    |
 | `service.nodePorts.https`            | Kubernetes https node port                                  | `""`                                                    |
@@ -113,6 +116,7 @@ The following table lists the configurable parameters of the MediaWiki chart and
 | `readinessProbe.failureThreshold`    | Minimum consecutive failures to be considered failed        | 6                                                       |
 | `readinessProbe.successThreshold`    | Minimum consecutive successes to be considered successful   | 1                                                       |
 | `podAnnotations`                     | Pod annotations                                             | `{}`                                                    |
+| `affinity`                           | Map of node/pod affinities                                  | `{}`                                                    |
 | `metrics.enabled`                    | Start a side-car prometheus exporter                        | `false`                                                 |
 | `metrics.image.registry`             | Apache exporter image registry                              | `docker.io`                                             |
 | `metrics.image.repository`           | Apache exporter image name                                  | `bitnami/apache-exporter`                               |
@@ -142,6 +146,8 @@ $ helm install --name my-release -f values.yaml stable/mediawiki
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+## Configuration and installation details
+
 ### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
 
 It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
@@ -153,9 +159,17 @@ Bitnami will release a new chart updating its containers if a new version of the
 The [Bitnami MediaWiki](https://github.com/bitnami/bitnami-docker-mediawiki) image stores the MediaWiki data and configurations at the `/bitnami/mediawiki` path of the container.
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
-See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+See the [Parameters](#parameters) section to configure the PVC or to disable persistence.
 
 ## Upgrading
+
+### To 9.0.0
+
+Helm performs a lookup for the object based on its group (apps), version (v1), and kind (Deployment). Also known as its GroupVersionKind, or GVK. Changing the GVK is considered a compatibility breaker from Kubernetes' point of view, so you cannot "upgrade" those objects to the new GVK in-place. Earlier versions of Helm 3 did not perform the lookup correctly which has since been fixed to match the spec.
+
+In https://github.com/helm/charts/pull/17300 the `apiVersion` of the deployment resources was updated to `apps/v1` in tune with the api's deprecated, resulting in compatibility breakage.
+
+This major version signifies this change.
 
 ### To 4.0.0
 

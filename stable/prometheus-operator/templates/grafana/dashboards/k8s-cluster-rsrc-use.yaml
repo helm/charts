@@ -1,7 +1,8 @@
 # Generated from 'k8s-cluster-rsrc-use' from https://raw.githubusercontent.com/coreos/kube-prometheus/release-0.1/manifests/grafana-dashboardDefinitions.yaml
 # Do not change in-place! In order to change this file first read following link:
 # https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
-{{- if and (semverCompare ">=1.11.0-0" .Capabilities.KubeVersion.GitVersion) (semverCompare "<1.14.0-0" .Capabilities.KubeVersion.GitVersion) .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled }}
+{{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
+{{- if and (semverCompare ">=1.10.0-0" $kubeTargetVersion) (semverCompare "<1.14.0-0" $kubeTargetVersion) .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -75,7 +76,7 @@ data:
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{node}}`}}",
-                                "legendLink": "/d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
+                                "legendLink": "./d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
                                 "step": 10
                             }
                         ],
@@ -161,7 +162,7 @@ data:
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{node}}`}}",
-                                "legendLink": "/d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
+                                "legendLink": "./d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
                                 "step": 10
                             }
                         ],
@@ -259,7 +260,7 @@ data:
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{node}}`}}",
-                                "legendLink": "/d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
+                                "legendLink": "./d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
                                 "step": 10
                             }
                         ],
@@ -345,7 +346,7 @@ data:
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{node}}`}}",
-                                "legendLink": "/d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
+                                "legendLink": "./d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
                                 "step": 10
                             }
                         ],
@@ -443,7 +444,7 @@ data:
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{node}}`}}",
-                                "legendLink": "/d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
+                                "legendLink": "./d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
                                 "step": 10
                             }
                         ],
@@ -529,7 +530,7 @@ data:
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{node}}`}}",
-                                "legendLink": "/d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
+                                "legendLink": "./d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
                                 "step": 10
                             }
                         ],
@@ -627,7 +628,7 @@ data:
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{node}}`}}",
-                                "legendLink": "/d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
+                                "legendLink": "./d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
                                 "step": 10
                             }
                         ],
@@ -713,7 +714,7 @@ data:
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{node}}`}}",
-                                "legendLink": "/d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
+                                "legendLink": "./d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
                                 "step": 10
                             }
                         ],
@@ -811,7 +812,7 @@ data:
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{node}}`}}",
-                                "legendLink": "/d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
+                                "legendLink": "./d/4ac4f123aae0ff6dbaf4f4f66120033b/k8s-node-rsrc-use",
                                 "step": 10
                             }
                         ],
@@ -902,7 +903,7 @@ data:
                     "options": [
 
                     ],
-                    "query": "label_values(kube_node_info, cluster)",
+                    "query": "label_values(:kube_pod_info_node_count:, cluster)",
                     "refresh": 1,
                     "regex": "",
                     "sort": 2,

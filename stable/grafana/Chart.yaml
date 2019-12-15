@@ -1,7 +1,7 @@
 apiVersion: v1
 name: grafana
-version: 3.8.3
-appVersion: 6.2.5
+version: 4.2.0
+appVersion: 6.5.0
 kubeVersion: "^1.8.0-0"
 description: The leading tool for querying and visualizing time series and metrics.
 home: https://grafana.net
@@ -16,3 +16,4 @@ maintainers:
   - name: maorfr
     email: maor.friedman@redhat.com
 engine: gotpl
+tillerVersion: ">=2.12.0"

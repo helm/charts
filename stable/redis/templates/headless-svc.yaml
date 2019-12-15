@@ -5,8 +5,8 @@ metadata:
   labels:
     app: {{ template "redis.name" . }}
     chart: {{ template "redis.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   type: ClusterIP
   clusterIP: None
@@ -21,4 +21,4 @@ spec:
 {{- end }}
   selector:
     app: {{ template "redis.name" . }}
-    release: "{{ .Release.Name }}"
+    release: {{ .Release.Name }}

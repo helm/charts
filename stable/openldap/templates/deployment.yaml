@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name:  {{ template "openldap.fullname" . }}
@@ -47,6 +47,8 @@ spec:
           mountPath: /customldif
         - name: ldifworkingdir
           mountPath: /ldifworkingdir
+        resources:
+{{ toYaml .Values.initResources | indent 10 }}
       {{- end }}
       {{- if .Values.tls.enabled }}
       - name: {{ .Chart.Name }}-init-tls
@@ -58,6 +60,8 @@ spec:
             mountPath: /tls
           - name: certs
             mountPath: /certs
+        resources:
+{{ toYaml .Values.initResources | indent 10 }}
       {{- if .Values.tls.CA.enabled }}
       - name: {{ .Chart.Name }}-init-catls
         image: busybox
@@ -67,6 +71,8 @@ spec:
             mountPath: /catls
           - name: certs
             mountPath: /certs
+        resources:
+{{ toYaml .Values.initResources | indent 10 }}
       {{- end }}
       {{- end }}
       containers:

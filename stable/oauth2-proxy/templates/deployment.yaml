@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
@@ -81,15 +81,19 @@ spec:
             secretKeyRef:
               name:  {{ template "oauth2-proxy.secretName" . }}
               key: cookie-secret
+        {{- if .Values.extraEnv }}
+{{ toYaml .Values.extraEnv | indent 8 }}
+        {{- end }}
         ports:
           - containerPort: 4180
-            name: http
+            name: {{ .Values.httpScheme }}
             protocol: TCP
 {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
             path: /ping
-            port: http
+            port: {{ .Values.httpScheme }}
+            scheme: {{ .Values.httpScheme | upper }}
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
 {{- end }}
@@ -97,7 +101,8 @@ spec:
         readinessProbe:
           httpGet:
             path: /ping
-            port: http
+            port: {{ .Values.httpScheme }}
+            scheme: {{ .Values.httpScheme | upper }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
           successThreshold: {{ .Values.readinessProbe.successThreshold }}
@@ -127,6 +132,13 @@ spec:
           name: {{ template "oauth2-proxy.fullname" . }}-htpasswd-file
           readOnly: true
 {{- end }}
+{{- if ne (len .Values.extraVolumeMounts) 0 }}
+{{ toYaml .Values.extraVolumeMounts | indent 8 }}
+{{- end }}
+{{- if .Values.securityContext.enabled }}
+        securityContext:
+          runAsNonRoot: {{ .Values.securityContext.runAsNonRoot }}
+{{- end}}
       volumes:
 {{- with .Values.config.google }}
 {{- if and .adminEmail (or .serviceAccountJson .existingSecret) }}
@@ -147,6 +159,9 @@ spec:
           defaultMode: 420
           name: {{ if .Values.config.existingConfig }}{{ .Values.config.existingConfig }}{{ else }}{{ template "oauth2-proxy.fullname" . }}{{ end }}
         name: configmain
+{{- end }}
+{{- if ne (len .Values.extraVolumes) 0 }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
 {{- end }}
 {{- if .Values.authenticatedEmailsFile.enabled }}
       - configMap:

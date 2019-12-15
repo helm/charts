@@ -2,12 +2,19 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
+  name: {{ template "mongodb.fullname" . }}-arbiter
   labels:
     app: {{ template "mongodb.name" . }}
     chart: {{ template "mongodb.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "mongodb.fullname" . }}-arbiter
+    {{- with .Values.labels }}
+{{ toYaml . | indent 4 }}
+    {{- end }}
+  {{- with .Values.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
 spec:
   selector:
     matchLabels:
@@ -46,9 +53,9 @@ spec:
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
       {{- end }}
-      {{- if .Values.affinity }}
+      {{- if .Values.affinityArbiter }}
       affinity:
-{{ toYaml .Values.affinity | indent 8 }}
+{{ toYaml .Values.affinityArbiter | indent 8 }}
       {{- end -}}
       {{- if .Values.nodeSelector }}
       nodeSelector:
@@ -128,7 +135,10 @@ spec:
           {{- end }}
           {{- if .Values.mongodbExtraFlags }}
           - name: MONGODB_EXTRA_FLAGS
-            value: {{ .Values.mongodbExtraFlags | join " " }}
+            value: {{ .Values.mongodbExtraFlags | join " " | quote }}
+          {{- end }}
+          {{- if .Values.extraEnvVars }}
+          {{- include "mongodb.tplValue" ( dict "value" .Values.extraEnvVars "context" $ ) | nindent 10 }}
           {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
@@ -157,7 +167,7 @@ spec:
               subPath: mongodb.conf
           {{- end }}
           resources:
-{{ toYaml .Values.resources | indent 12 }}
+{{ toYaml .Values.resourcesArbiter | indent 12 }}
       volumes:
       {{- if .Values.configmap }}
         - name: config

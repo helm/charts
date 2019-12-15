@@ -8,7 +8,7 @@ This chart bootstraps a SonarQube instance with a PostgreSQL database.
 
 ## Prerequisites
 
-- Kubernetes 1.6+
+- Kubernetes 1.10+
 
 ## Installing the chart
 
@@ -39,11 +39,15 @@ The following table lists the configurable parameters of the Sonarqube chart and
 
 | Parameter                                   | Description                               | Default                                    |
 | ------------------------------------------  | ----------------------------------------  | -------------------------------------------|
+| `replicaCount`                              | Number of replicas deployed               | `1`                                        |
+| `deploymentStrategy`                        | Deployment strategy                       | `{}`                                       |
 | `image.repository`                          | image repository                          | `sonarqube`                                |
-| `image.tag`                                 | `sonarqube` image tag.                    | `7.8-community`                                        |
+| `image.tag`                                 | `sonarqube` image tag.                    | `7.9.1-community`                            |
 | `image.pullPolicy`                          | Image pull policy                         | `IfNotPresent`                             |
 | `image.pullSecret`                          | imagePullSecret to use for private repository      |                                   |
 | `command`                                   | command to run in the container           | `nil` (need to be set prior to 6.7.6, and 7.4)      |
+| `elasticsearch.configureNode`               | Modify k8s worker to conform to system requirements | `true`                           |
+| `elasticsearch.bootstrapChecks`             | Enables/disables Elasticsearch bootstrap checks | `true`                               |
 | `securityContext.fsGroup`                   | Group applied to mounted directories/files|  `999`                                     |
 | `ingress.enabled`                           | Flag for enabling ingress                 | false                                      |
 | `ingress.labels`                            | Ingress additional labels                 | `{}`                                       |
@@ -52,18 +56,21 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `ingress.tls`                               | Ingress secrets for TLS certificates      | `[]`                                       |
 | `livenessProbe.sonarWebContext`             | SonarQube web context for livenessProbe   | /                                          |
 | `readinessProbe.sonarWebContext`            | SonarQube web context for readinessProbe  | /                                          |
-| `service.type`                              | Kubernetes service type                   | `LoadBalancer`                             |
+| `service.type`                              | Kubernetes service type                   | `ClusterIP`                                |
+| `service.externalPort`                      | Kubernetes service port                   | `9000`                                     |
+| `service.internalPort`                      | Kubernetes container port                 | `9000`                                     |
 | `service.labels`                            | Kubernetes service labels                 | None                                       |
 | `service.annotations`                       | Kubernetes service annotations            | None                                       |
-| `service.loadBalancerSourceRanges`          | Kubernetes service LB Allowed inbound IP addresses | 0.0.0.0/0                            |
+| `service.loadBalancerSourceRanges`          | Kubernetes service LB Allowed inbound IP addresses | None                            |
 | `service.loadBalancerIP`                    | Kubernetes service LB Optional fixed external IP   | None                                       |
 | `persistence.enabled`                       | Flag for enabling persistent storage      | false                                      |
 | `persistence.annotations`                   | Kubernetes pvc annotations                | `{}`                                      |
 | `persistence.existingClaim`                 | Do not create a new PVC but use this one  | None                                       |
-| `persistence.storageClass`                  | Storage class to be used                  | "-"                                        |
+| `persistence.storageClass`                  | Storage class to be used                  | ""                                         |
 | `persistence.accessMode`                    | Volumes access mode to be set             | `ReadWriteOnce`                            |
-| `persistence.size`                          | Size of the volume                        | None                                     |
+| `persistence.size`                          | Size of the volume                        | 10Gi                                       |
 | `sonarProperties`                           | Custom `sonar.properties` file            | None                                       |
+| `sonarSecretProperties`                     | Additional `sonar.properties` file to load from a secret | None                                       |
 | `customCerts.enabled`                       | Use `customCerts.secretName`              | false                                      |
 | `customCerts.secretName`                    | Name of the secret which conatins your `cacerts` | false                                      |
 | `sonarSecretKey`                            | Name of existing secret used for settings encryption | None                            |
@@ -92,9 +99,11 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `tolerations`                               | List of node taints to tolerate           | `[]`                                       |
 | `plugins.install`                           | List of plugins to install                | `[]`                                       |
 | `plugins.resources`                         | Plugin Pod resource requests & limits     | `{}`                                       |
-| `plugins.initContainerImage`                | Change init container image               | `[]`                                       |
+| `plugins.initContainerImage`                | Change init container image               | `alpine:3.10.3`                            |
+| `plugins.initSysctlContainerImage`          | Change init sysctl container image        | `busybox:1.31`                             |
 | `plugins.deleteDefaultPlugins`              | Remove default plugins and use plugins.install list | `[]`                             |
 | `podLabels`                                 | Map of labels to add to the pods          | `{}`                                       |
+| `sonarqubeFolder`                           | Directory name of Sonarqube               | `/opt/sonarqube`                           |
 
 You can also configure values for the PostgreSQL / MySQL database via the Postgresql [README.md](https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md) / MySQL [README.md](https://github.com/kubernetes/charts/blob/master/stable/mysql/README.md)
 
@@ -130,3 +139,15 @@ In environments with air-gapped setup, especially with internal tooling (repos) 
       enabled: false
       secretName: my-cacerts
    ```
+
+### Elasticsearch Settings
+
+Since SonarQube comes bundled with an Elasticsearch instance, some [bootstrap checks](https://www.elastic.co/guide/en/elasticsearch/reference/master/bootstrap-checks.html) of the host settings are done at start.
+
+This chart offers the option to use an initContainer in privilaged mode to automatically set certain kernel settings on the kube worker.  While this can ensure proper functionality of Elasticsearch, modifying the underlying kernel settings on the Kubernetes node can impact other users.  It may be best to work with your cluster administrator to either provide specific nodes with the proper kernel settings, or ensure they are set cluster wide.
+
+To enable auto-configuration of the kube worker node, set `elasticsearch.configureNode` to `true`
+
+This will run `sysctl -w vm.max_map_count=262144` on the worker where the sonarqube pod(s) get scheduled.  This needs to be set to `262144` but normally defaults to `65530`.  Other kernel settings are recommended by the [docker image](https://hub.docker.com/_/sonarqube/#requirements), but the defaults work fine in most cases.
+
+Note that if node configuration is not enabled, then you will likely need to disable the Elasticsearch bootstrap checks.  These can be explicitly enabled by setting `elasticsearch.bootstrapChecks` to `false`.

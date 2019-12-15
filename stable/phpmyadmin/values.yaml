@@ -13,7 +13,7 @@
 image:
   registry: docker.io
   repository: bitnami/phpmyadmin
-  tag: 4.9.0-1-debian-9-r42
+  tag: 4.9.2-debian-9-r0
   ## Specify a imagePullPolicy
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
@@ -39,32 +39,82 @@ service:
   port: 80
 
 db:
-  ## using default mysql port explicitly
+  ## Database port
+  ##
   port: 3306
-  ## if you are deploying it as part of a release, and the db is also in the release
-  ## you can pass a suffix that will be used to find the DB in releasename-dbSuffix
-  ## please note that this setting precedes dbHost
+
+  ## If you are deploying phpMyAdmin as part of a release and the database is part
+  ## of the release, you can pass a suffix that will be used to find the database
+  ## in releasename-dbSuffix. Please note that this setting precedes db.host
+  ##
   # chartName: mariadb
+
+  ## Database Hostname. Ignored when db.chartName is set.
+  ##
   # host: foo
+
   ## If you want to test phpMyAdmin, you can set it to bundle a MariaDB
   ## instance
+  ##
   bundleTestDB: false
 
+  ## Whether to enable SSL for the connection between phpMyAdmin and the MySQL server to secure the connection
+  ##
+  enableSsl: false
+  ssl:
+    ## Client key file when using SSL
+    ##
+    clientKey: |-
+    ## Client certificate file when using SSL
+    ##
+    clientCertificate: |-
+    ## CA file when using SSL
+    ##
+    caCertificate: |-
+    ## List of allowable ciphers for connections when using SSL
+    ##
+    # ciphers:
+    ## Enable SSL certificate validation
+    ##
+    verify: true
+
 ingress:
+  ## Set to true to enable ingress record generation
+  ##
   enabled: false
+
+  ## Set this to true in order to add the corresponding annotations for cert-manager
+  certManager: false
+
+  ## Ingress annotations done as key:value pairs
+  ## If certManager is set to true, annotation kubernetes.io/tls-acme: "true" will automatically be set
+  ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/annotations.md
+  ##
   annotations:
     ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/rewrite-target: /
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-  ## path you want to map the phpmyadmin interface to
-  path: /
-  # host: foo
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
 
+  ## The list of hostnames to be covered with this ingress record.
+  ## Most likely this will be just one host, but in the event more hosts are needed, this is an array
+  ##
+  hosts:
+  - name: phpmyadmin.local
+    path: /
+
+    ## Set this to true in order to enable TLS on the ingress record
+    tls: false
+
+    ## Optionally specify the TLS hosts for the ingress record
+    ## Useful when the Ingress controller supports www-redirection
+    ## If not specified, the above host name will be used
+    # tlsHosts:
+    # - www.phpmyadmin.local
+    # - phpmyadmin.local
+
+    ## If TLS is set to true, you must declare what secret will store the key/certificate for TLS
+    tlsSecret: phpmyadmin.local-tls
 
 ## Enable liveness and readiness probes
 probesEnabled: true
@@ -96,6 +146,9 @@ tolerations: []
 ##
 affinity: {}
 
+## Pod labels
+podLabels: {}
+
 ## Pod annotations
 podAnnotations: {}
 
@@ -106,7 +159,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/apache-exporter
-    tag: 0.7.0-debian-9-r2
+    tag: 0.7.0-debian-9-r120
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.

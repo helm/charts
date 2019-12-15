@@ -16,6 +16,12 @@ spec:
   {{- if (or (eq .Values.service.type "LoadBalancer") (eq .Values.service.type "NodePort")) }}
   externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy | quote }}
   {{- end }}
+  {{- if (and (eq .Values.service.type "LoadBalancer") .Values.service.loadBalancerSourceRanges) }}
+  loadBalancerSourceRanges:
+  {{- with .Values.service.loadBalancerSourceRanges }}
+{{ toYaml . | indent 4 }}
+  {{- end }}
+  {{- end }}
   ports:
     - name: http
       port: {{ .Values.service.port }}
@@ -27,7 +33,7 @@ spec:
       {{- end }}
     - name: https
       port: {{ .Values.service.httpsPort }}
-      targetPort: https
+      targetPort: {{ .Values.service.httpsTargetPort }}
       {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePorts.https)))}}
       nodePort: {{ .Values.service.nodePorts.https }}
       {{- else if eq .Values.service.type "ClusterIP" }}

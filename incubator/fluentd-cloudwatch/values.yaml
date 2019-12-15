@@ -1,6 +1,6 @@
 image:
   repository: fluent/fluentd-kubernetes-daemonset
-  tag: v1.3.3-debian-cloudwatch-1.0
+  tag: v1.7.3-debian-cloudwatch-1.0
 ## Specify an imagePullPolicy (Required)
 ## It's recommended to change this to 'Always' if the image tag is 'latest'
 ## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
@@ -64,9 +64,13 @@ logGroupName: kubernetes
 rbac:
   ## If true, create and use RBAC resources
   create: false
+  pspEnabled: false
 
   ## Ignored if rbac.create is true
   serviceAccountName: default
+  ## Annotations for the Service Account
+  ##
+  serviceAccountAnnotations: {}
 # Add extra environment variables if specified (must be specified as a single line object and be quoted)
 extraVars: []
 # - "{ name: NODE_NAME, valueFrom: { fieldRef: { fieldPath: spec.nodeName } } }"
@@ -81,11 +85,11 @@ updateStrategy:
 data:
   fluent.conf: |
     <match fluent.**>
-      type null
+      @type null
     </match>
 
     <source>
-      type tail
+      @type tail
       enable_stat_watcher false
       path /var/log/containers/*.log
       pos_file /var/log/fluentd-containers.log.pos
@@ -96,7 +100,7 @@ data:
     </source>
 
     <source>
-      type tail
+      @type tail
       enable_stat_watcher false
       format /^(?<time>[^ ]* [^ ,]*)[^\[]*\[[^\]]*\]\[(?<severity>[^ \]]*) *\] (?<message>.*)$/
       time_format %Y-%m-%d %H:%M:%S
@@ -106,7 +110,7 @@ data:
     </source>
 
     <source>
-      type tail
+      @type tail
       enable_stat_watcher false
       format syslog
       path /var/log/startupscript.log
@@ -115,7 +119,7 @@ data:
     </source>
 
     <source>
-      type tail
+      @type tail
       enable_stat_watcher false
       format /^time="(?<time>[^)]*)" level=(?<severity>[^ ]*) msg="(?<message>[^"]*)"( err="(?<error>[^"]*)")?( statusCode=($<status_code>\d+))?/
       path /var/log/docker.log
@@ -124,7 +128,7 @@ data:
     </source>
 
     <source>
-      type tail
+      @type tail
       enable_stat_watcher false
       format none
       path /var/log/etcd.log
@@ -133,7 +137,7 @@ data:
     </source>
 
     <source>
-      type tail
+      @type tail
       enable_stat_watcher false
       format kubernetes
       multiline_flush_interval 5s
@@ -143,7 +147,7 @@ data:
     </source>
 
     <source>
-      type tail
+      @type tail
       enable_stat_watcher false
       format kubernetes
       multiline_flush_interval 5s
@@ -153,7 +157,7 @@ data:
     </source>
 
     <source>
-      type tail
+      @type tail
       enable_stat_watcher false
       format kubernetes
       multiline_flush_interval 5s
@@ -163,7 +167,7 @@ data:
     </source>
 
     <source>
-      type tail
+      @type tail
       enable_stat_watcher false
       format kubernetes
       multiline_flush_interval 5s
@@ -173,7 +177,7 @@ data:
     </source>
 
     <source>
-      type tail
+      @type tail
       enable_stat_watcher false
       format kubernetes
       multiline_flush_interval 5s
@@ -183,7 +187,7 @@ data:
     </source>
 
     <source>
-      type tail
+      @type tail
       enable_stat_watcher false
       format kubernetes
       multiline_flush_interval 5s
@@ -193,7 +197,7 @@ data:
     </source>
 
     <source>
-      type tail
+      @type tail
       enable_stat_watcher false
       format kubernetes
       multiline_flush_interval 5s
@@ -203,7 +207,7 @@ data:
     </source>
 
     <source>
-      type tail
+      @type tail
       enable_stat_watcher false
       format kubernetes
       multiline_flush_interval 5s
@@ -213,11 +217,11 @@ data:
     </source>
 
     <filter kubernetes.**>
-      type kubernetes_metadata
+      @type kubernetes_metadata
     </filter>
 
     <match **>
-      type cloudwatch_logs
+      @type cloudwatch_logs
       log_group_name "#{ENV['LOG_GROUP_NAME']}"
       auto_create_stream true
       use_tag_as_stream true

@@ -1,5 +1,11 @@
 {{- if and .Values.clusterAgent.enabled .Values.clusterAgent.clusterChecks.enabled .Values.clusterchecksDeployment.enabled -}}
+{{- if .Capabilities.APIVersions.Has "apps/v1" }}
+apiVersion: apps/v1
+{{- else if .Capabilities.APIVersions.Has "extensions/v1beta1" }}
 apiVersion: extensions/v1beta1
+{{- else }}
+apiVersion: apps/v1
+{{- end }}
 kind: Deployment
 metadata:
   name: {{ template "datadog.fullname" . }}-clusterchecks
@@ -8,8 +14,25 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app.kubernetes.io/name: "{{ template "datadog.fullname" . }}"
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 spec:
   replicas: {{ .Values.clusterchecksDeployment.replicas }}
+  strategy:
+{{- if .Values.clusterchecksDeployment.strategy }}
+{{ toYaml .Values.clusterchecksDeployment.strategy | indent 4 }}
+{{- else }}
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+{{- end }}
+  selector:
+    matchLabels:
+      app: {{ template "datadog.fullname" . }}-clusterchecks
   template:
     metadata:
       labels:

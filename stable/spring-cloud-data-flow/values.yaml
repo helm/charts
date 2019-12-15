@@ -18,13 +18,16 @@ initContainers:
 
 server:
   image: springcloud/spring-cloud-dataflow-server
-  version: 2.2.0.RELEASE
+  version: 2.3.0.RELEASE
   imagePullPolicy: IfNotPresent
   platformName: default
+  trustCerts: false
   service:
     type: LoadBalancer
     externalPort: 80
     annotations: {}
+    labels: {}
+  configMap:
   resources: {}
   #  limits:
   #    cpu: 1.0
@@ -34,12 +37,17 @@ server:
   #    memory: 640Mi
 
 skipper:
+  enabled: true
   image: springcloud/spring-cloud-skipper-server
-  version: 2.1.0.RELEASE
+  version: 2.2.1.RELEASE
   imagePullPolicy: IfNotPresent
   platformName: default
+  trustCerts: false
   service:
     type: ClusterIP
+    annotations: {}
+    labels: {}
+  configMap:
   resources: {}
   #  limits:
   #    cpu: 1.0
@@ -89,3 +97,98 @@ database:
   password:
   dataflow: dataflow
   skipper: skipper
+
+features:
+  streaming:
+    enabled: true
+  batch:
+    enabled: true
+  monitoring:
+    enabled: false
+
+grafana:
+  service:
+    type: LoadBalancer
+  admin:
+    existingSecret: scdf-grafana-secret
+    userKey: admin-user
+    passwordKey: admin-password
+    defaultUsername: YWRtaW4=
+    defaultPassword: cGFzc3dvcmQ=
+  extraConfigmapMounts:
+    - name: scdf-grafana-ds-cm
+      mountPath: /etc/grafana/provisioning/datasources/datasources.yaml
+      subPath: datasources.yaml
+      configMap: scdf-grafana-ds-cm
+      readOnly: true
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+        - name: default
+          orgId: 1
+          folder:
+          type: file
+          disableDeletion: true
+          editable: false
+          options:
+            path: /var/lib/grafana/dashboards/default
+  dashboards:
+    default:
+      scdf-applications:
+        url: https://raw.githubusercontent.com/spring-cloud/spring-cloud-dataflow/master/src/grafana/prometheus/docker/grafana/dashboards/scdf-applications.json
+      scdf-streams:
+        url: https://raw.githubusercontent.com/spring-cloud/spring-cloud-dataflow/master/src/grafana/prometheus/docker/grafana/dashboards/scdf-streams.json
+      scdf-task-batch:
+        url: https://raw.githubusercontent.com/spring-cloud/spring-cloud-dataflow/master/src/grafana/prometheus/docker/grafana/dashboards/scdf-task-batch.json
+
+prometheus:
+  podSecurityPolicy:
+    enabled: true
+  alertmanager:
+    enabled: false
+  kubeStateMetrics:
+    enabled: false
+  nodeExporter:
+    enabled: false
+  pushgateway:
+    enabled: false
+  server:
+    global:
+      scrape_interval: 10s
+      scrape_timeout: 9s
+      evaluation_interval: 10s
+  extraScrapeConfigs: |
+    - job_name: 'proxied-applications'
+      metrics_path: '/metrics/connected'
+      kubernetes_sd_configs:
+        - role: pod
+          namespaces:
+            names:
+              - default
+      relabel_configs:
+        - source_labels: [__meta_kubernetes_pod_label_app]
+          action: keep
+          regex: prometheus-proxy
+        - source_labels: [__meta_kubernetes_pod_container_port_number]
+          action: keep
+          regex: 8080
+    - job_name: 'proxies'
+      metrics_path: '/metrics/proxy'
+      kubernetes_sd_configs:
+        - role: pod
+          namespaces:
+            names:
+              - default
+      relabel_configs:
+        - source_labels: [__meta_kubernetes_pod_label_app]
+          action: keep
+          regex: prometheus-proxy
+        - source_labels: [__meta_kubernetes_pod_container_port_number]
+          action: keep
+          regex: 8080
+        - action: labelmap
+          regex: __meta_kubernetes_pod_label_(.+)
+        - source_labels: [__meta_kubernetes_pod_name]
+          action: replace
+          target_label: kubernetes_pod_name

@@ -25,7 +25,13 @@ rules:
     - kubernetesendpointresolvers.getambassador.io
     - kubernetesserviceresolvers.getambassador.io
     - consulresolvers.getambassador.io
-    verbs: ["get", "list", "watch"]
+    - logservices.getambassador.io
+    {{- if .Values.pro.enabled }}
+    - filters.getambassador.io
+    - filterpolicies.getambassador.io
+    - ratelimits.getambassador.io
+    {{- end }}
+    verbs: ["get", "list", "watch", "delete"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding

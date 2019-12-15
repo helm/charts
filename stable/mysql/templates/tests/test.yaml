@@ -1,3 +1,4 @@
+{{- if .Values.testFramework.enabled  }}
 apiVersion: v1
 kind: Pod
 metadata:
@@ -50,3 +51,4 @@ spec:
       secretName: {{ .Values.ssl.secret }}
   {{- end }}
   restartPolicy: Never
+{{- end }}

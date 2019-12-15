@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "stolon.fullname" . }}-keeper
@@ -32,6 +32,8 @@ spec:
 {{- end }}
       serviceAccountName: {{ template "stolon.serviceAccountName" . }}
       terminationGracePeriodSeconds: 10
+      securityContext:
+        fsGroup: 1000
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -95,9 +97,12 @@ spec:
               value: "/etc/secrets/stolon/pg_su_password"
 {{ end }}
             - name: STKEEPER_METRICS_LISTEN_ADDRESS
-              value: "0.0.0.0:8080"
+              value: "0.0.0.0:{{ .Values.ports.metrics.containerPort }}"
             - name: STKEEPER_DEBUG
               value: {{ .Values.debug | quote}}
+{{- if .Values.keeper.extraEnv }}
+{{ toYaml .Values.keeper.extraEnv | indent 12 }}
+{{- end }}
           ports:
 {{- range $key, $value := .Values.ports }}
             - name: {{ $key }}
@@ -108,6 +113,10 @@ spec:
           volumeMounts:
           - name: data
             mountPath: /stolon-data
+{{- if .Values.tls.enabled }}
+          - name: certs
+            mountPath: /certs
+{{- end }}
 {{ if or (empty .Values.superuserSecret.name) (empty .Values.replicationSecret.name) }}
           - name: stolon-secrets
             mountPath: /etc/secrets/stolon
@@ -128,11 +137,23 @@ spec:
           - name: config
             mountPath: /pre-stop-hook.sh
             subPath: pre-stop-hook.sh
+{{- end }}
+{{- if .Values.nodePostStartScript }}
+          - name: config
+            mountPath: /postStartScript.sh
+            subPath: postStartScript.sh
+{{- end }}
           lifecycle:
+{{- if .Values.keeper.hooks.failKeeper.enabled }}
             preStop:
               exec:
                 command: ["/bin/bash", "-e", "/pre-stop-hook.sh"]
-{{ end }}
+{{- end }}
+{{- if .Values.nodePostStartScript }}
+            postStart:
+              exec:
+                command: ["/bin/bash", "-e", "/postStartScript.sh"]
+{{- end }}
 {{- with .Values.keeper.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
@@ -146,6 +167,12 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
       volumes:
+{{- if .Values.tls.enabled }}
+        - name: certs
+          secret:
+            defaultMode: 0600
+            secretName: {{ if .Values.tls.existingSecret }}{{ .Values.tls.existingSecret }}{{ else }}{{ template "stolon.fullname" . }}-certs{{end}}
+{{ end }}
         - name: config
           configMap:
             name: {{ template "stolon.fullname" . }}

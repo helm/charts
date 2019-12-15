@@ -1,6 +1,12 @@
 {{- if .Values.daemonset.enabled }}
 {{- if (or (.Values.datadog.apiKeyExistingSecret) (.Values.datadog.apiKey)) }}
+{{- if .Capabilities.APIVersions.Has "apps/v1" }}
+apiVersion: apps/v1
+{{- else if .Capabilities.APIVersions.Has "extensions/v1beta1" }}
 apiVersion: extensions/v1beta1
+{{- else }}
+apiVersion: apps/v1
+{{- end }}
 kind: DaemonSet
 metadata:
   name: {{ template "datadog.fullname" . }}
@@ -9,7 +15,18 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app.kubernetes.io/name: "{{ template "datadog.fullname" . }}"
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "datadog.fullname" . }}
+        {{- if .Values.daemonset.podLabels }}
+{{ toYaml .Values.daemonset.podLabels | indent 6 }}
+        {{- end }}
   template:
     metadata:
       labels:
@@ -22,6 +39,15 @@ spec:
         checksum/autoconf-config: {{ tpl (toYaml .Values.datadog.autoconf) . | sha256sum }}
         checksum/confd-config: {{ tpl (toYaml .Values.datadog.confd) . | sha256sum }}
         checksum/checksd-config: {{ tpl (toYaml .Values.datadog.checksd) . | sha256sum }}
+        {{- if .Values.daemonset.customAgentConfig }}
+        checksum/agent-config: {{ tpl (toYaml .Values.daemonset.customAgentConfig) . | sha256sum }}
+        {{- end }}
+        {{- if and .Values.systemProbe.enabled .Values.daemonset.useDedicatedContainers }}
+        container.apparmor.security.beta.kubernetes.io/system-probe: {{ .Values.systemProbe.apparmor }}
+        {{- if .Values.systemProbe.seccomp }}
+        container.seccomp.security.alpha.kubernetes.io/system-probe: {{ .Values.systemProbe.seccomp }}
+        {{- end }}
+        {{- end }}
       {{- if .Values.daemonset.podAnnotations }}
 {{ toYaml .Values.daemonset.podAnnotations | indent 8 }}
       {{- end }}
@@ -50,14 +76,22 @@ spec:
         {{- if .Values.datadog.apmEnabled }}
           {{- include "container-trace-agent" . | nindent 8 }}
         {{- end }}
-        {{- if .Values.datadog.processAgentEnabled }}
+        {{- if or (kindIs "invalid" .Values.datadog.processAgentEnabled) .Values.datadog.processAgentEnabled }}
           {{- include "container-process-agent" . | nindent 8 }}
         {{- end }}
-      initContainers:
-        {{ include "containers-init" . | nindent 8 }}
+        {{- if .Values.systemProbe.enabled }}
+          {{- include "container-system-probe" . | nindent 8 }}
+        {{- end }}
       {{- else }}
         {{- include "container-agents" . | nindent 8 }}
       {{- end}}
+      {{- if .Values.daemonset.useDedicatedContainers }}
+      initContainers:
+        {{ include "containers-init" . | nindent 8 }}
+        {{- if and .Values.systemProbe.enabled (eq .Values.systemProbe.seccomp "localhost/system-probe") }}
+          {{ include "system-probe-init" . | nindent 8 }}
+        {{- end }}
+      {{- end }}
       volumes:
         {{- if .Values.daemonset.useDedicatedContainers }}
         - name: config
@@ -104,10 +138,28 @@ spec:
           name: logcontainerpath
         {{- end }}
         {{- end }}
-        {{- if .Values.datadog.processAgentEnabled }}
+        {{- if or (kindIs "invalid" .Values.datadog.processAgentEnabled) .Values.datadog.processAgentEnabled .Values.systemProbe.enabled }}
         - hostPath:
             path: /etc/passwd
           name: passwd
+        {{- end }}
+        {{- if and .Values.systemProbe.enabled .Values.daemonset.useDedicatedContainers }}
+        - name: sysprobe-config
+          configMap:
+            name: system-probe-config
+        {{- if eq .Values.systemProbe.seccomp "localhost/system-probe" }}
+        - name: datadog-agent-security
+          configMap:
+            name: datadog-agent-security
+        - hostPath:
+            path: {{ .Values.systemProbe.seccompRoot }}
+          name: seccomp-root
+        {{- end }}
+        - hostPath:
+            path: /sys/kernel/debug
+          name: debugfs
+        - name: sysprobe-socket-dir
+          emptyDir: {}
         {{- end }}
         {{- if .Values.daemonset.useConfigMap }}
         - name: {{ template "datadog.fullname" . }}-datadog-yaml
@@ -131,6 +183,12 @@ spec:
 {{ toYaml .Values.daemonset.nodeSelector | indent 8 }}
       {{- end }}
   updateStrategy:
-    type: {{ default "RollingUpdate" .Values.daemonset.updateStrategy | quote }}
+{{- if .Values.daemonset.updateStrategy }}
+{{ toYaml .Values.daemonset.updateStrategy | indent 4 }}
+{{- else }}
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: "10%"
+{{- end }}
 {{ end }}
 {{ end }}

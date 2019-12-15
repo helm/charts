@@ -46,6 +46,10 @@ Users of this chart will need to update their alerting rules to the new format b
 
 ## Upgrading from previous chart versions.
 
+Version 9.0 adds a new option to enable or disable the Prometheus Server.
+This supports the use case of running a Prometheus server in one k8s cluster and scraping exporters in another cluster while using the same chart for each deployment.
+To install the server `server.enabled` must be set to `true`.
+
 As of version 5.0, this chart uses Prometheus 2.x. This version of prometheus introduces a new data format and is not compatible with prometheus 1.x. It is recommended to install this as a new release, as updating existing releases will not work. See the [prometheus docs](https://prometheus.io/docs/prometheus/latest/migration/#storage) for instructions on retaining your old data.
 
 ### Example migration
@@ -108,6 +112,7 @@ Parameter | Description | Default
 `alertmanager.ingress.annotations` | alertmanager Ingress annotations | `{}`
 `alertmanager.ingress.extraLabels` | alertmanager Ingress additional labels | `{}`
 `alertmanager.ingress.hosts` | alertmanager Ingress hostnames | `[]`
+`alertmanager.ingress.extraPaths` | Ingress extra paths to prepend to every alertmanager host configuration. Useful when configuring [custom actions with AWS ALB Ingress Controller](https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/ingress/annotation/#actions) | `[]`
 `alertmanager.ingress.tls` | alertmanager Ingress TLS configuration (YAML) | `[]`
 `alertmanager.nodeSelector` | node labels for alertmanager pod assignment | `{}`
 `alertmanager.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
@@ -122,6 +127,7 @@ Parameter | Description | Default
 `alertmanager.persistentVolume.storageClass` | alertmanager data Persistent Volume Storage Class | `unset`
 `alertmanager.persistentVolume.subPath` | Subdirectory of alertmanager data Persistent Volume to mount | `""`
 `alertmanager.podAnnotations` | annotations to be added to alertmanager pods | `{}`
+`alertmanager.podSecurityPolicy.annotations` | Specify pod annotations in the pod security policy | `{}` |
 `alertmanager.replicaCount` | desired number of alertmanager pods | `1`
 `alertmanager.statefulSet.enabled` | If true, use a statefulset instead of a deployment for pod management | `false`
 `alertmanager.statefulSet.podManagementPolicy` | podManagementPolicy of alertmanager pods | `OrderedReady`
@@ -138,6 +144,7 @@ Parameter | Description | Default
 `alertmanager.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `alertmanager.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `alertmanager.service.servicePort` | alertmanager service port | `80`
+`alertmanager.service.sessionAffinity` | Session Affinity for alertmanager service, can be `None` or `ClientIP` | `None`
 `alertmanager.service.type` | type of alertmanager service to create | `ClusterIP`
 `alertmanagerFiles.alertmanager.yml` | Prometheus alertmanager configuration | example configuration
 `configmapReload.name` | configmap-reload container name | `configmap-reload`
@@ -163,6 +170,7 @@ Parameter | Description | Default
 `kubeStateMetrics.nodeSelector` | node labels for kube-state-metrics pod assignment | `{}`
 `kubeStateMetrics.podAnnotations` | annotations to be added to kube-state-metrics pods | `{}`
 `kubeStateMetrics.deploymentAnnotations` | annotations to be added to kube-state-metrics deployment | `{}`
+`kubeStateMetrics.podSecurityPolicy.annotations` | Specify pod annotations in the pod security policy | `{}` |
 `kubeStateMetrics.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `kubeStateMetrics.replicaCount` | desired number of kube-state-metrics pods | `1`
 `kubeStateMetrics.priorityClassName` | kube-state-metrics priorityClassName | `nil`
@@ -202,6 +210,7 @@ Parameter | Description | Default
 `nodeExporter.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `nodeExporter.service.servicePort` | node-exporter service port | `9100`
 `nodeExporter.service.type` | type of node-exporter service to create | `ClusterIP`
+`podSecurityPolicy.enabled` | If true, create & use pod security policies resources | `false`
 `pushgateway.enabled` | If true, create pushgateway | `true`
 `pushgateway.name` | pushgateway container name | `pushgateway`
 `pushgateway.image.repository` | pushgateway container image repository | `prom/pushgateway`
@@ -211,9 +220,11 @@ Parameter | Description | Default
 `pushgateway.ingress.enabled` | If true, pushgateway Ingress will be created | `false`
 `pushgateway.ingress.annotations` | pushgateway Ingress annotations | `{}`
 `pushgateway.ingress.hosts` | pushgateway Ingress hostnames | `[]`
+`pushgateway.ingress.extraPaths` | Ingress extra paths to prepend to every pushgateway host configuration. Useful when configuring [custom actions with AWS ALB Ingress Controller](https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/ingress/annotation/#actions) | `[]`
 `pushgateway.ingress.tls` | pushgateway Ingress TLS configuration (YAML) | `[]`
 `pushgateway.nodeSelector` | node labels for pushgateway pod assignment | `{}`
 `pushgateway.podAnnotations` | annotations to be added to pushgateway pods | `{}`
+`pushgateway.podSecurityPolicy.annotations` | Specify pod annotations in the pod security policy | `{}` |
 `pushgateway.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `pushgateway.replicaCount` | desired number of pushgateway pods | `1`
 `pushgateway.schedulerName` | pushgateway alternate scheduler name | `nil`
@@ -234,10 +245,12 @@ Parameter | Description | Default
 `pushgateway.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `pushgateway.service.servicePort` | pushgateway service port | `9091`
 `pushgateway.service.type` | type of pushgateway service to create | `ClusterIP`
+`pushgateway.strategy.type` | Deployment strategy | `{ "type": "RollingUpdate" }`
 `rbac.create` | If true, create & use RBAC resources | `true`
+`server.enabled` | If false, Prometheus server will not be created | `true`
 `server.name` | Prometheus server container name | `server`
 `server.image.repository` | Prometheus server container image repository | `prom/prometheus`
-`server.image.tag` | Prometheus server container image tag | `v2.11.1`
+`server.image.tag` | Prometheus server container image tag | `v2.13.1`
 `server.image.pullPolicy` | Prometheus server container image pull policy | `IfNotPresent`
 `server.enableAdminApi` |  If true, Prometheus administrative HTTP API will be enabled. Please note, that you should take care of administrative API access protection (ingress or some frontend Nginx with auth) before enabling it. | `false`
 `server.skipTSDBLock` |  If true, Prometheus skip TSDB locking. | `false`
@@ -246,6 +259,7 @@ Parameter | Description | Default
 `server.global.scrape_timeout` | How long until a scrape request times out | `10s`
 `server.global.evaluation_interval` | How frequently to evaluate rules | `1m`
 `server.extraArgs` | Additional Prometheus server container arguments | `{}`
+`server.extraInitContainers` | Init containers to launch alongside the server | `[]`
 `server.prefixURL` | The prefix slug at which the server can be accessed | ``
 `server.baseURL` | The external url at which the server can be accessed | ``
 `server.env` | Prometheus server environment variables | `[]`
@@ -259,6 +273,7 @@ Parameter | Description | Default
 `server.ingress.annotations` | Prometheus server Ingress annotations | `[]`
 `server.ingress.extraLabels` | Prometheus server Ingress additional labels | `{}`
 `server.ingress.hosts` | Prometheus server Ingress hostnames | `[]`
+`server.ingress.extraPaths` | Ingress extra paths to prepend to every Prometheus server host configuration. Useful when configuring [custom actions with AWS ALB Ingress Controller](https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/ingress/annotation/#actions) | `[]`
 `server.ingress.tls` | Prometheus server Ingress TLS configuration (YAML) | `[]`
 `server.nodeSelector` | node labels for Prometheus server pod assignment | `{}`
 `server.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
@@ -277,6 +292,7 @@ Parameter | Description | Default
 `server.podAnnotations` | annotations to be added to Prometheus server pods | `{}`
 `server.podLabels` | labels to be added to Prometheus server pods | `{}`
 `server.deploymentAnnotations` | annotations to be added to Prometheus server deployment | `{}`
+`server.podSecurityPolicy.annotations` | Specify pod annotations in the pod security policy | `{}` |
 `server.replicaCount` | desired number of Prometheus server pods | `1`
 `server.statefulSet.enabled` | If true, use a statefulset instead of a deployment for pod management | `false`
 `server.statefulSet.annotations` | annotations to be added to Prometheus server stateful set | `{}`
@@ -294,6 +310,7 @@ Parameter | Description | Default
 `server.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `server.service.nodePort` | Port to be used as the service NodePort (ignored if `server.service.type` is not `NodePort`) | `0`
 `server.service.servicePort` | Prometheus server service port | `80`
+`server.service.sessionAffinity` | Session Affinity for server service, can be `None` or `ClientIP` | `None`
 `server.service.type` | type of Prometheus server service to create | `ClusterIP`
 `server.sidecarContainers` | array of snippets with your sidecar containers for prometheus server | `""`
 `serviceAccounts.alertmanager.create` | If true, create the alertmanager service account | `true`
@@ -308,10 +325,13 @@ Parameter | Description | Default
 `serviceAccounts.server.name` | name of the server service account to use or create | `{{ prometheus.server.fullname }}`
 `server.terminationGracePeriodSeconds` | Prometheus server Pod termination grace period | `300`
 `server.retention` | (optional) Prometheus data retention | `"15d"`
-`serverFiles.alerts` | Prometheus server alerts configuration | `{}`
-`serverFiles.rules` | Prometheus server rules configuration | `{}`
+`serverFiles.alerts` | (Deprecated) Prometheus server alerts configuration | `{}`
+`serverFiles.rules` | (Deprecated) Prometheus server rules configuration | `{}`
+`serverFiles.alerting_rules.yml` | Prometheus server alerts configuration | `{}`
+`serverFiles.recording_rules.yml` | Prometheus server rules configuration | `{}`
 `serverFiles.prometheus.yml` | Prometheus server scrape configuration | example configuration
 `extraScrapeConfigs` | Prometheus server additional scrape configuration | ""
+`alertRelabelConfigs` | Prometheus server [alert relabeling configs](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#alert_relabel_configs) for H/A prometheus | ""
 `networkPolicy.enabled` | Enable NetworkPolicy | `false` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
@@ -328,6 +348,31 @@ $ helm install stable/prometheus --name my-release -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+Note that you have multiple yaml files. This is particularly useful when you have alerts belonging to multiple services in the cluster. For example,
+
+```yaml
+# values.yaml
+# ...
+
+# service1-alert.yaml
+serverFiles:
+  alerts:
+    service1:
+      - alert: anAlert
+      # ...
+
+# service2-alert.yaml
+serverFiles:
+  alerts:
+    service2:
+      - alert: anAlert
+      # ...
+```
+
+```console
+$ helm install stable/prometheus --name my-release -f values.yaml -f service1-alert.yaml -f service2-alert.yaml
+```
 
 ### RBAC Configuration
 Roles and RoleBindings resources will be created automatically for `server` and `kubeStateMetrics` services.

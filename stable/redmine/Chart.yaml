@@ -1,22 +1,22 @@
 apiVersion: v1
 name: redmine
-version: 12.0.1
-appVersion: 4.0.4
+version: 14.0.1
+appVersion: 4.0.5
 description: A flexible project management web application.
 keywords:
-- redmine
-- project management
-- www
-- http
-- web
-- application
-- ruby
-- rails
+  - redmine
+  - project management
+  - www
+  - http
+  - web
+  - application
+  - ruby
+  - rails
 home: http://www.redmine.org/
 icon: https://bitnami.com/assets/stacks/redmine/img/redmine-stack-220x234.png
 sources:
-- https://github.com/bitnami/bitnami-docker-redmine
+  - https://github.com/bitnami/bitnami-docker-redmine
 maintainers:
-- name: Bitnami
-  email: containers@bitnami.com
+  - name: Bitnami
+    email: containers@bitnami.com
 engine: gotpl

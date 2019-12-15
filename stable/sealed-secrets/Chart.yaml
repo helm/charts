@@ -1,7 +1,7 @@
 name: sealed-secrets
 description: A Helm chart for Sealed Secrets
-version: 1.3.3
-appVersion: 0.8.1
+version: 1.6.1
+appVersion: 0.9.6
 kubeVersion: ">=1.9.0-0"
 home: https://github.com/bitnami-labs/sealed-secrets
 apiVersion: v1

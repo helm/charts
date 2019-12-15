@@ -3,8 +3,12 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-{{- if .Values.metrics.serviceMonitor.labels }}
   labels:
+    app: {{ template "traefik.name" . }}
+    chart: {{ template "traefik.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+{{- if .Values.metrics.serviceMonitor.labels }}
 {{ toYaml .Values.metrics.serviceMonitor.labels | indent 4}}
 {{- end }}
   name: {{ template "traefik.fullname" . }}-prometheus-exporter
@@ -13,7 +17,7 @@ metadata:
 {{- end }}
 spec:
   endpoints:
-  - targetPort: metrics
+  - port: metrics
     path: /metrics
 {{- if .Values.metrics.serviceMonitor.interval }}
     interval: {{ .Values.metrics.serviceMonitor.interval }}

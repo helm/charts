@@ -1,7 +1,7 @@
 apiVersion: v1
 name: mediawiki
-version: 8.0.1
-appVersion: 1.33.0
+version: 9.0.1
+appVersion: 1.33.1
 description: Extremely powerful, scalable software and a feature-rich wiki implementation that uses PHP to process and display data stored in a database.
 home: http://www.mediawiki.org/
 icon: https://bitnami.com/assets/stacks/mediawiki/img/mediawiki-stack-220x234.png

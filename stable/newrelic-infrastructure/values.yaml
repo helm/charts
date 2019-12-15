@@ -1,14 +1,23 @@
-# IMPORTANT: Specify your New Relic API key here.
-# licenseKey:
+# - Specify either the New Relic license key or the secret which
+#   contains it.
 #
-# or Specify secret which contains New Relic API key
-# customSecretName: secret_name
-# customSecretKey: secret_key
-
-# IMPORTANT: The Kubernetes cluster name
-# https://docs.newrelic.com/docs/kubernetes-monitoring-integration
-# cluster: ""
-
+# - Specify the Kubernetes cluster name.
+#   https://docs.newrelic.com/docs/kubernetes-monitoring-integration
+#
+# licenseKey:
+# customSecretName:
+# customSecretLicenseKey:
+# cluster:
+#
+# IMPORTANT: the previous values can also be set as global so that they
+# can be shared by other newrelic product's charts
+#
+# global:
+#   licenseKey:
+#   customSecretName:
+#   customSecretLicenseKey:
+#   cluster:
+#
 # kubeStateMetricsUrl - if provided, the discovery process for kube-state-metrics endpoint won't be triggered
 # Only HTTP is accepted. This is an example value: http://172.17.0.3:8080
 # kubeStateMetricsUrl:
@@ -20,7 +29,7 @@ verboseLog: false
 
 image:
   repository: newrelic/infrastructure-k8s
-  tag: 1.9.3
+  tag: 1.11.0
   pullPolicy: IfNotPresent
 
 resources:
@@ -88,9 +97,18 @@ serviceAccount:
 # Ref: https://kubernetes.io/docs/user-guide/node-selection/
 nodeSelector: {}
 
-tolerations: []
+# These are default tolerations to be able to run the New Relic Kubernetes
+# integration.
+tolerations:
+  - operator: "Exists"
+    effect: "NoSchedule"
+  - operator: "Exists"
+    effect: "NoExecute"
 
 updateStrategy: RollingUpdate
 
 # Custom attributes to be passed to the New Relic agent
 customAttribues: "'{\"clusterName\":\"$(CLUSTER_NAME)\"}'"
+
+# etcdTlsSecretName: newrelic-infra-etcd-tls-secret
+etcdTlsSecretNamespace: default

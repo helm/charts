@@ -1,7 +1,8 @@
 apiVersion: v1
 name: sumologic-fluentd
-version: 1.1.0
-appVersion: 2.3.0
+version: 2.1.0
+appVersion: 2.4.2
+kubeVersion: ">=1.10.0-0"
 description: Sumologic Log Collector
 keywords:
   - monitoring

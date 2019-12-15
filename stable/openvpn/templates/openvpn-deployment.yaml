@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "openvpn.fullname" . }}
@@ -35,15 +35,18 @@ spec:
         command: ["/etc/openvpn/setup/configure.sh"]
         ports:
         - containerPort: {{ .Values.service.internalPort }}
+          {{- if .Values.service.hostPort }}
+          hostPort: {{ .Values.service.hostPort }}
+          {{- end }}
           name: openvpn
         securityContext:
           capabilities:
             add:
               - NET_ADMIN
         readinessProbe:
-          initialDelaySeconds: 5
-          periodSeconds: 5
-          successThreshold: 2
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
           exec:
             command:
             - nc
@@ -82,7 +85,7 @@ spec:
         {{- else if .Values.openvpn.keystoreSecret }}
         secret:
           secretName: "{{ .Values.openvpn.keystoreSecret }}"
-          defaultMode: 448
+          defaultMode: 0600
           items:
           - key: "server.key"
             path: "pki/private/server.key"
@@ -95,6 +98,7 @@ spec:
           {{- if .Values.openvpn.useCrl }}
           - key: "crl.pem"
             path: "crl.pem"
+            mode: 0644
           {{- end }}
           {{- if .Values.openvpn.taKey }}
           - key: "ta.key"
@@ -106,4 +110,8 @@ spec:
       {{- if .Values.nodeSelector }}
       nodeSelector:
         {{ toYaml .Values.nodeSelector }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
       {{- end }}

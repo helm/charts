@@ -8,6 +8,21 @@ image:
   # pullSecrets:
   #   - registry-secret
 
+## Customize livenessProbe and readinessProbe
+## ref: https://docs.influxdata.com/influxdb/v1.7/tools/api/#ping-http-endpoint
+##
+livenessProbe:
+  probePath: "/ping"
+
+readinessProbe:
+  probePath: "/ping"
+
+startupProbe:
+  enabled: false
+  probePath: "/ping"
+  # failureThreshold: 6
+  # periodSeconds: 5
+
 ## Specify a service type
 ## NodePort is default
 ## ref: http://kubernetes.io/docs/user-guide/services/
@@ -29,10 +44,6 @@ service:
 ##
 persistence:
   enabled: true
-  ## If true will use an existing PVC instead of creating one
-  # useExisting: false
-  ## Name of existing PVC to be used in the influx deployment
-  # name:
   ## influxdb data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -41,6 +52,7 @@ persistence:
   ##   GKE, AWS & OpenStack)
   ##
   # storageClass: "-"
+  annotations:
   accessMode: ReadWriteOnce
   size: 8Gi
 
@@ -89,6 +101,9 @@ resources: {}
 #    memory: 16Gi
 #    cpu: 8
 
+# Annotations to be added to InfuxDB pods
+podAnnotations: {}
+
 ingress:
   enabled: false
   tls: false
@@ -131,7 +146,7 @@ env: {}
 
 ## Change InfluxDB configuration parameters below:
 ## Defaults are indicated
-## ref: https://docs.influxdata.com/influxdb/v1.1/administration/config/
+## ref: https://docs.influxdata.com/influxdb/v1.7/administration/config
 config:
   reporting_disabled: false
   storage_directory: /var/lib/influxdb
@@ -149,6 +164,7 @@ config:
     compact_full_write_cold_duration: 4h0m0s
     max_series_per_database: 1000000
     max_values_per_tag: 100000
+    index_version: inmem
     trace_logging_enabled: false
   coordinator:
     write_timeout: 10s
@@ -271,7 +287,17 @@ backup:
   enabled: false
   schedule: "0 0 * * *"
   annotations: {}
-  destination: gs://bucket/influxdb
-  # Google Cloud Storage
-  gcs:
-    serviceAccountSecret: influxdb-backup-key
+
+  ## Google Cloud Storage
+  # gcs:
+  #    serviceAccountSecret: influxdb-backup-key
+  #    serviceAccountSecretKey: key.json
+  #    destination: gs://bucket/influxdb
+
+  ## Azure
+  ## Secret is expected to have connection string stored in `connection-string` field
+  ## Existing container will be used or private one withing storage account will be created.
+  # azure:
+  #   storageAccountSecret: influxdb-backup-azure-key
+  #   destination_container: influxdb-container
+  #   destination_path: ""

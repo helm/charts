@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: "{{ template "kong.fullname" . }}"
@@ -15,6 +15,11 @@ spec:
       app: {{ template "kong.name" . }}
       release: {{ .Release.Name }}
       component: app
+  {{- if .Values.updateStrategy }}
+  strategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}
+  {{- end }}
+
   template:
     metadata:
       annotations:
@@ -31,7 +36,7 @@ spec:
         release: {{ .Release.Name }}
         component: app
     spec:
-      {{- if (and (.Values.ingressController.enabled) (eq .Values.env.database "off")) }}
+      {{- if or .Values.ingressController.enabled .Values.podSecurityPolicy.enabled }}
       serviceAccountName: {{ template "kong.serviceAccountName" . }}
       {{ end }}
       {{- if .Values.image.pullSecrets }}
@@ -45,13 +50,15 @@ spec:
       {{- include "kong.wait-for-db" . | nindent 6 }}
       {{ end }}
       containers:
-      {{- if (and (.Values.ingressController.enabled) (eq .Values.env.database "off")) }}
+      {{- if .Values.ingressController.enabled }}
       {{- include "kong.controller-container" . | nindent 6 }}
       {{ end }}
       - name: {{ template "kong.name" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
+        - name: KONG_LUA_PACKAGE_PATH
+          value: "/opt/?.lua;;"
         {{- if not .Values.env.admin_listen }}
         {{- if .Values.admin.useTLS }}
         - name: KONG_ADMIN_LISTEN
@@ -61,6 +68,10 @@ spec:
           value: 0.0.0.0:{{ .Values.admin.containerPort }}
         {{- end }}
         {{- end }}
+        {{- if .Values.admin.ingress.enabled }}
+        - name: KONG_ADMIN_API_URI
+          value: {{ include "kong.ingress.serviceUrl" .Values.admin.ingress }}
+        {{- end }}
         {{- if not .Values.env.proxy_listen }}
         - name: KONG_PROXY_LISTEN
           value: {{ template "kong.kongProxyListenValue" . }}
@@ -69,13 +80,32 @@ spec:
         - name: KONG_ADMIN_GUI_LISTEN
           value: {{ template "kong.kongManagerListenValue" . }}
         {{- end }}
+        {{- if and (.Values.manager.ingress.enabled) (.Values.enterprise.enabled) }}
+        - name: KONG_ADMIN_GUI_URL
+          value: {{ include "kong.ingress.serviceUrl" .Values.manager.ingress }}
+        {{- end }}
         {{- if and (not .Values.env.portal_gui_listen) (.Values.enterprise.enabled) (.Values.enterprise.portal.enabled) }}
         - name: KONG_PORTAL_GUI_LISTEN
           value: {{ template "kong.kongPortalListenValue" . }}
         {{- end }}
+        {{- if and (.Values.portal.ingress.enabled) (.Values.enterprise.enabled) (.Values.enterprise.portal.enabled) }}
+        - name: KONG_PORTAL_GUI_HOST
+          value: {{ .Values.portal.ingress.hostname }}
+        {{- if .Values.portal.ingress.tls }}
+        - name: KONG_PORTAL_GUI_PROTOCOL
+          value: https
+        {{- else }}
+        - name: KONG_PORTAL_GUI_PROTOCOL
+          value: http
+        {{- end }}
+        {{- end }}
         {{- if and (not .Values.env.portal_api_listen) (.Values.enterprise.enabled) (.Values.enterprise.portal.enabled) }}
         - name: KONG_PORTAL_API_LISTEN
           value: {{ template "kong.kongPortalApiListenValue" . }}
+        {{- end }}
+        {{- if and (.Values.portalapi.ingress.enabled) (.Values.enterprise.enabled) (.Values.enterprise.portal.enabled) }}
+        - name: KONG_PORTAL_API_URL
+          value: {{ include "kong.ingress.serviceUrl" .Values.portalapi.ingress }}
         {{- end }}
         - name: KONG_NGINX_DAEMON
           value: "off"
@@ -103,7 +133,7 @@ spec:
         - name: KONG_ADMIN_GUI_AUTH
           value: {{ .Values.enterprise.rbac.admin_gui_auth | default "basic-auth" }}
         - name: KONG_ADMIN_GUI_AUTH_CONF
-          value: {{ toJson .Values.enterprise.rbac.admin_gui_auth_conf | default "" }}
+          value: '{{ toJson .Values.enterprise.rbac.admin_gui_auth_conf }}'
         - name: KONG_ADMIN_GUI_SESSION_CONF
           valueFrom:
             secretKeyRef:
@@ -122,16 +152,16 @@ spec:
         - name: KONG_SMTP_HOST
           value: {{ .Values.enterprise.smtp.smtp_host }}
         - name: KONG_SMTP_PORT
-          value: {{ .Values.enterprise.smtp.smtp_port }}
+          value: {{ .Values.enterprise.smtp.smtp_port | quote }}
         - name: KONG_SMTP_STARTTLS
-          value: {{ .Values.enterprise.smtp.smtp_starttls }}
+          value: {{ .Values.enterprise.smtp.smtp_starttls | quote }}
         {{- if .Values.enterprise.smtp.auth.smtp_username }}
         - name: KONG_SMTP_USERNAME
           value: {{ .Values.enterprise.smtp.auth.smtp_username }}
         - name: KONG_SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.enterprise.smtp.auth.smtp_password }}
+              name: {{ .Values.enterprise.smtp.auth.smtp_password_secret }}
               key: smtp_password
         {{- end }}
         {{- else }}
@@ -153,15 +183,17 @@ spec:
               name: {{ template "kong.postgresql.fullname" . }}
               key: postgresql-password
         {{- end }}
-        {{- if .Values.cassandra.enabled }}
-        - name: KONG_CASSANDRA_CONTACT_POINTS
-          value: {{ template "kong.cassandra.fullname" . }}
-        {{- end }}
         {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
         - name: KONG_DECLARATIVE_CONFIG
           value: "/kong_dbless/kong.yml"
         {{- end }}
+        - name: KONG_PLUGINS
+          value: {{ template "kong.plugins" . }}
         {{- include "kong.env" .  | indent 8 }}
+        lifecycle:
+          preStop:
+            exec:
+              command: [ "/bin/sh", "-c", "kong quit" ]
         ports:
         - name: admin
           containerPort: {{ .Values.admin.containerPort }}
@@ -188,6 +220,11 @@ spec:
         - name: metrics
           containerPort: 9542
           protocol: TCP
+        {{- if .Values.ingressController.admissionWebhook.enabled }}
+        - name: webhook
+          containerPort: {{ .Values.ingressController.admissionWebhook.port }}
+          protocol: TCP
+        {{- end }}
         {{- if .Values.enterprise.enabled }}
         {{- if .Values.manager.http.enabled }}
         - name: manager
@@ -239,12 +276,7 @@ spec:
         {{- end }}
         {{- end }}
         volumeMounts:
-          - name: custom-nginx-template-volume
-            mountPath: /kong
-          {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
-          - name: kong-custom-dbless-config-volume
-            mountPath: /kong_dbless/
-          {{- end }}
+        {{- include "kong.volumeMounts" . | nindent 10 }}
         readinessProbe:
 {{ toYaml .Values.readinessProbe | indent 10 }}
         livenessProbe:
@@ -262,15 +294,4 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       volumes:
-        - name: custom-nginx-template-volume
-          configMap:
-            name: {{ .Release.Name }}-kong-default-custom-server-blocks
-{{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
-        - name: kong-custom-dbless-config-volume
-          configMap:
-            {{- if .Values.dblessConfig.configMap }}
-            name: {{ .Values.dblessConfig.configMap }}
-            {{- else }}
-            name: {{ template "kong.dblessConfig.fullname" . }}
-            {{- end }}
-{{- end }}
+      {{- include "kong.volumes" . | nindent 8 -}}

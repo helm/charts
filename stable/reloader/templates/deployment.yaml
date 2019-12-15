@@ -7,28 +7,26 @@ metadata:
 {{- end }}
   labels:
 {{ include "reloader-labels.chart" . | indent 4 }}
-{{ include "reloader-labels.selector" . | indent 4 }}
 {{- if .Values.reloader.deployment.labels }}
 {{ toYaml .Values.reloader.deployment.labels | indent 4 }}
 {{- end }}
 {{- if .Values.reloader.matchLabels }}
 {{ toYaml .Values.reloader.matchLabels | indent 4 }}
 {{- end }}
-  name: {{ template "reloader-name" . }}
-  namespace: {{ .Release.Namespace }}
+  name: {{ template "reloader-fullname" . }}
 spec:
   replicas: 1
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-{{ include "reloader-labels.selector" . | indent 6 }}
+      app: {{ template "reloader-fullname" . }}
+      release: {{ .Release.Name | quote }}
 {{- if .Values.reloader.matchLabels }}
 {{ toYaml .Values.reloader.matchLabels | indent 6 }}
 {{- end }}
   template:
     metadata:
       labels:
-{{ include "reloader-labels.selector" . | indent 8 }}
 {{ include "reloader-labels.chart" . | indent 8 }}
 {{- if .Values.reloader.deployment.labels }}
 {{ toYaml .Values.reloader.deployment.labels | indent 8 }}
@@ -37,6 +35,18 @@ spec:
 {{ toYaml .Values.reloader.matchLabels | indent 8 }}
 {{- end }}
     spec:
+      {{- if .Values.reloader.deployment.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.reloader.deployment.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.reloader.deployment.affinity }}
+      affinity:
+{{ toYaml .Values.reloader.deployment.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.reloader.deployment.tolerations }}
+      tolerations:
+{{ toYaml .Values.reloader.deployment.tolerations | indent 8 }}
+      {{- end }}
       containers:
       - env:
       {{- range $name, $value := .Values.reloader.deployment.env.open }}
@@ -71,20 +81,45 @@ spec:
       {{- end }}
         image: "{{ .Values.reloader.deployment.image.name }}:{{ .Values.reloader.deployment.image.tag }}"
         imagePullPolicy: {{ .Values.reloader.deployment.image.pullPolicy }}
-        name: {{ template "reloader-name" . }}
-      {{- if .Values.reloader.custom_annotations }}
+        name: {{ template "reloader-fullname" . }}
+      {{- if eq .Values.reloader.readOnlyRootFileSystem true }}
+        volumeMounts:
+          - mountPath: /tmp/
+            name: tmp-volume
+      {{- end }}
         args:
-          {{- if .Values.reloader.custom_annotations.configmap }}
-          - "--configmap-annotation"
-          - "{{ .Values.reloader.custom_annotations.configmap }}"
+          {{- if .Values.reloader.ignoreSecrets }}
+          - "--resources-to-ignore=secrets"
           {{- end }}
-          {{- if .Values.reloader.custom_annotations.secret }}
-          - "--secret-annotation"
-          - "{{ .Values.reloader.custom_annotations.secret }}"
+          {{- if eq .Values.reloader.ignoreConfigMaps true }}
+          - "--resources-to-ignore=configMaps"
           {{- end }}
-          {{- if .Values.reloader.custom_annotations.auto }}
-          - "--auto-annotation"
-          - "{{ .Values.reloader.custom_annotations.auto }}"
+
+          {{- if .Values.reloader.custom_annotations }}
+            {{- if .Values.reloader.custom_annotations.configmap }}
+            - "--configmap-annotation"
+            - "{{ .Values.reloader.custom_annotations.configmap }}"
+            {{- end }}
+            {{- if .Values.reloader.custom_annotations.secret }}
+            - "--secret-annotation"
+            - "{{ .Values.reloader.custom_annotations.secret }}"
+            {{- end }}
+            {{- if .Values.reloader.custom_annotations.auto }}
+            - "--auto-annotation"
+            - "{{ .Values.reloader.custom_annotations.auto }}"
+            {{- end }}
           {{- end }}
-        {{- end }}
-      serviceAccountName: {{ template "serviceAccountName" . }}
+
+      {{- if .Values.reloader.deployment.resources }}
+        resources:
+{{ toYaml .Values.reloader.deployment.resources | indent 10 }}
+      {{- end }}
+{{- if .Values.reloader.deployment.securityContext }}
+      securityContext: {{ toYaml .Values.reloader.deployment.securityContext | nindent 8 }}
+{{- end }}
+      serviceAccountName: {{ template "reloader-serviceAccountName" . }}
+    {{- if eq .Values.reloader.readOnlyRootFileSystem true }}
+      volumes:
+        - emptyDir: {}
+          name: tmp-volume
+    {{- end }}

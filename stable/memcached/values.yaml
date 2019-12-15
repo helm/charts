@@ -1,7 +1,7 @@
 ## Memcached image and tag
 ## ref: https://hub.docker.com/r/library/memcached/tags/
 ##
-image: memcached:1.5.12-alpine
+image: memcached:1.5.20
 
 ## Specify a imagePullPolicy
 ## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
@@ -42,6 +42,12 @@ serviceAnnotations: {}
 ## StatefulSet or Deployment
 kind: StatefulSet
 
+## Update Strategy for the StatefulSet or Deployment
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#updating-a-deployment
+updateStrategy:
+  type: RollingUpdate
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
@@ -71,9 +77,12 @@ securityContext:
 metrics:
   ## Expose memcached metrics in Prometheus format
   enabled: false
+  serviceMonitor:
+    enabled: false
+    interval: 15s
 
   ## Memcached exporter image and tag
-  image: quay.io/prometheus/memcached-exporter:v0.4.1
+  image: quay.io/prometheus/memcached-exporter:v0.6.0
 
   ## Specify a imagePullPolicy
   ## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
@@ -97,3 +106,6 @@ extraVolumes: |
 
 # To be added to the server pod(s)
 podAnnotations: {}
+
+## Set pod priority class
+# priorityClassName: ""

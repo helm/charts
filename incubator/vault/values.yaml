@@ -16,6 +16,37 @@ vaultExporter:
   pullPolicy: IfNotPresent
   vaultAddress: 127.0.0.1:8200
   # tlsCAFile: /vault/tls/ca.crt
+
+# Prometheus operator Service Monitor:
+serviceMonitor:
+  enabled: false
+  additionalLabels: {}
+    # prometheus-scraper: "default"
+  podPortName: "metrics"
+  interval: 10s
+  jobLabel: "vault-exporter"
+# Prometheus operator Rules:
+prometheusRules:
+  enabled: false
+  defaultRules:
+    # Triggered when pod is not up
+    vaultUp: true
+    # Triggered when vault is not initialzed
+    vaultUninitialized: true
+    # Triggered when vault is sealed
+    vaultSealed: true
+    # Triggered when vault is in standby mode
+    vaultStandby: false
+  extraRules: []
+  # - alert: VaultStandby
+  #   expr: vault_standby{app="vault", release="vault"} == 1
+  #   for: 1m
+  #   labels:
+  #     service: vault
+  #     severity: critical
+  #   annotations:
+  #     summary: "Vault instance {{$labels.pod_name}} is in standby mode"
+
 consulAgent:
   repository: consul
   tag: 1.4.0
@@ -73,6 +104,7 @@ ingress:
   # annotations:
   #   kubernetes.io/ingress.class: nginx
   #   kubernetes.io/tls-acme: "true"
+  # path: /
   # tls:
   #   Secrets must be manually created in the namespace.
   #   - secretName: chart-example-tls
@@ -151,7 +183,7 @@ serviceAccount:
   annotations: {}
   ## The name of the ServiceAccount to use.
   ## If not set and create is true, a name is generated using the fullname template
-  name:
+  # name:
 
 vault:
   # Only used to enable dev mode. When in dev mode, the rest of this config
@@ -210,6 +242,10 @@ vault:
     readyIfUninitialized: true
     initialDelaySeconds: 10
     periodSeconds: 10
+  # Set the `VAULT_API_ADDR` environment variable to the Pod IP Address
+  # This is the address (full URL) to advertise to other Vault servers in the cluster for client redirection.
+  # See https://www.vaultproject.io/docs/configuration/#api_addr
+  podApiAddress: true
   ## Use an existing config in a named ConfigMap
   # existingConfigName: vault-cm
   config:
@@ -220,19 +256,19 @@ vault:
         address: '[::]:8200'
         cluster_address: '[::]:8201'
         tls_disable: true
-        tls_prefer_server_cipher_suites: true
-        tls_cipher_suites: TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA
         # tls_cert_file: /vault/tls/server.crt
         # tls_key_file: /vault/tls/server.key
     # See https://www.vaultproject.io/docs/configuration/storage/ for storage backends
-    storage:
+    storage: {}
       # consul:
       #   address: ""
       #   path: ""
       #
       # etcd:
-      #   address: ""
+      #   address: "http://vault-etcd:2379"
       #   path: "vault/"
+      #   etcd_api: "v3"
+      #   ha_enabled: "true"
       #
       # s3:
       #   bucket: ""
@@ -245,6 +281,7 @@ vault:
       #   bucket: ""
       #   # Use a custom secret to mount this file.
       #   credentials_file: ""
+  backendPolicy: []
 
 rbac:
    ## Enable RBAC

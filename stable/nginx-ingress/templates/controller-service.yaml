@@ -1,3 +1,4 @@
+{{- if .Values.controller.service.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -12,14 +13,14 @@ metadata:
 {{ toYaml .Values.controller.service.labels | indent 4 }}
 {{- end }}
     app: {{ template "nginx-ingress.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "nginx-ingress.chart" . }}
     component: "{{ .Values.controller.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "nginx-ingress.controller.fullname" . }}
 spec:
 {{- if not .Values.controller.service.omitClusterIP }}
-  clusterIP: "{{ .Values.controller.service.clusterIP }}"
+  {{ with .Values.controller.service.clusterIP }}clusterIP: {{ . }}{{ end }}
 {{- end }}
 {{- if .Values.controller.service.externalIPs }}
   externalIPs:
@@ -85,3 +86,4 @@ spec:
     component: "{{ .Values.controller.name }}"
     release: {{ .Release.Name }}
   type: "{{ .Values.controller.service.type }}"
+{{- end }}

@@ -44,6 +44,9 @@ cluster:
 ## create one redis service with ports to the sentinel and the redis instances
 sentinel:
   enabled: true
+  ## Require password authentication on the sentinel itself
+  ## ref: https://redis.io/topics/sentinel
+  usePassword: true
   ## Bitnami Redis Sentintel image version
   ## ref: https://hub.docker.com/r/bitnami/redis-sentinel/tags/
   ##
@@ -163,6 +166,9 @@ usePassword: true
 password:
 ## Use existing secret (ignores previous password)
 # existingSecret:
+## Password key to be retrieved from Redis secret
+##
+# existingSecretPasswordKey:
 
 ## Mount secrets as files instead of environment variables
 usePasswordFile: false
@@ -475,7 +481,7 @@ volumePermissions:
   image:
     registry: docker.io
     repository: bitnami/minideb
-    tag: latest
+    tag: stretch
     pullPolicy: Always
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -502,7 +508,7 @@ sysctlImage:
   command: []
   registry: docker.io
   repository: bitnami/minideb
-  tag: latest
+  tag: stretch
   pullPolicy: Always
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.

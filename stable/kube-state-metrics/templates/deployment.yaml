@@ -132,9 +132,10 @@ spec:
             port: 8080
           initialDelaySeconds: 5
           timeoutSeconds: 5
-
+{{- if .Values.resources }}
         resources:
-{{ toYaml .Values.resources | indent 12 }}
+{{ toYaml .Values.resources | indent 10 }}
+{{- end }}
 {{- if .Values.affinity }}
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}

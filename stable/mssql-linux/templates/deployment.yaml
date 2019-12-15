@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "mssql.fullname" . }}
@@ -72,6 +72,8 @@ spec:
               value: /mssql-data/master/mastlog.ldf
             - name: MSSQL_ENABLE_HADR
               value: "{{ .Values.hadr }}"
+            - name: MSSQL_AGENT_ENABLED
+              value: {{ .Values.agent.enabled | quote }}
             {{ if .Values.resources.limits.memory }}
             - name: MSSQL_MEMORY_LIMIT_MB
               valueFrom:

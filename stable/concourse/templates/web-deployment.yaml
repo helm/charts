@@ -59,9 +59,25 @@ spec:
             - name: CONCOURSE_CLUSTER_NAME
               value: {{ .Values.concourse.web.clusterName | quote }}
             {{- end }}
+            {{- if .Values.concourse.web.maxConns }}
+            - name: CONCOURSE_MAX_CONNS
+              value: {{ .Values.concourse.web.maxConns | quote }}
+            {{- end }}
             {{- if .Values.concourse.web.enableGlobalResources }}
             - name: CONCOURSE_ENABLE_GLOBAL_RESOURCES
               value: {{ .Values.concourse.web.enableGlobalResources | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.enableLidar }}
+            - name: CONCOURSE_ENABLE_LIDAR
+              value: {{ .Values.concourse.web.enableLidar | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.lidarScannerInterval }}
+            - name: CONCOURSE_LIDAR_SCANNER_INTERVAL
+              value: {{ .Values.concourse.web.lidarScannerInterval | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.lidarCheckerInterval }}
+            - name: CONCOURSE_LIDAR_CHECKER_INTERVAL
+              value: {{ .Values.concourse.web.lidarCheckerInterval | quote }}
             {{- end }}
             {{- if .Values.concourse.web.enableBuildAuditing }}
             - name: CONCOURSE_ENABLE_BUILD_AUDITING
@@ -99,6 +115,10 @@ spec:
             - name: CONCOURSE_ENABLE_VOLUME_AUDITING
               value: {{ .Values.concourse.web.enableVolumeAuditing | quote }}
             {{- end }}
+            {{- if .Values.concourse.web.enableRedactSecrets }}
+            - name: CONCOURSE_ENABLE_REDACT_SECRETS
+              value: {{ .Values.concourse.web.enableRedactSecrets | quote }}
+            {{- end }}
             {{- if .Values.concourse.web.secretRetryAttempts }}
             - name: CONCOURSE_SECRET_RETRY_ATTEMPTS
               value: {{ .Values.concourse.web.secretRetryAttempts | quote }}
@@ -110,6 +130,10 @@ spec:
             {{- if .Values.concourse.web.secretCacheDuration }}
             - name: CONCOURSE_SECRET_CACHE_DURATION
               value: {{ .Values.concourse.web.secretCacheDuration | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.secretCacheDurationNotFound }}
+            - name: CONCOURSE_SECRET_CACHE_DURATION_NOTFOUND
+              value: {{ .Values.concourse.web.secretCacheDurationNotFound | quote }}
             {{- end }}
             {{- if .Values.concourse.web.secretCacheEnabled }}
             - name: CONCOURSE_SECRET_CACHE_ENABLED
@@ -126,6 +150,10 @@ spec:
             {{- if .Values.concourse.web.awsSsm.region }}
             - name: CONCOURSE_AWS_SSM_REGION
               value: {{ .Values.concourse.web.awsSsm.region | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.metrics.bufferSize }}
+            - name: CONCOURSE_METRICS_BUFFER_SIZE
+              value: {{ .Values.concourse.web.metrics.bufferSize | quote }}
             {{- end }}
             {{- if .Values.concourse.web.metrics.captureErrorMetrics }}
             - name: CONCOURSE_CAPTURE_ERROR_METRICS
@@ -231,6 +259,10 @@ spec:
             - name: CONCOURSE_CONTAINER_PLACEMENT_STRATEGY
               value: {{ .Values.concourse.web.containerPlacementStrategy | quote }}
             {{- end }}
+            {{- if .Values.concourse.web.limitActiveTasks }}
+            - name: CONCOURSE_MAX_ACTIVE_TASKS_PER_WORKER
+              value: {{ .Values.concourse.web.limitActiveTasks | quote }}
+            {{- end}}
             {{- if .Values.concourse.web.baggageclaimResponseHeaderTimeout }}
             - name: CONCOURSE_BAGGAGECLAIM_RESPONSE_HEADER_TIMEOUT
               value: {{ .Values.concourse.web.baggageclaimResponseHeaderTimeout | quote }}
@@ -242,6 +274,10 @@ spec:
             {{- if .Values.concourse.web.logDbQueries }}
             - name: CONCOURSE_LOG_DB_QUERIES
               value: {{ .Values.concourse.web.logDbQueries | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.logClusterName }}
+            - name: CONCOURSE_LOG_CLUSTER_NAME
+              value: {{ .Values.concourse.web.logClusterName | quote }}
             {{- end }}
             {{- if .Values.concourse.web.buildTrackerInterval }}
             - name: CONCOURSE_BUILD_TRACKER_INTERVAL
@@ -548,6 +584,14 @@ spec:
             {{- if .Values.concourse.web.influxdb.enabled }}
             - name: CONCOURSE_INFLUXDB_URL
               value: {{ .Values.concourse.web.influxdb.url | quote }}
+            {{- if .Values.concourse.web.influxdb.batchSize }}
+            - name: CONCOURSE_INFLUXDB_BATCH_SIZE
+              value: {{.Values.concourse.web.influxdb.batchSize | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.influxdb.batchDuration }}
+            - name: CONCOURSE_INFLUXDB_BATCH_DURATION
+              value: {{.Values.concourse.web.influxdb.batchDuration | quote }}
+            {{- end }}
             - name: CONCOURSE_INFLUXDB_DATABASE
               value: {{ .Values.concourse.web.influxdb.database | quote }}
             - name: CONCOURSE_INFLUXDB_USERNAME
@@ -617,6 +661,10 @@ spec:
             {{- if .Values.concourse.web.gc.missingGracePeriod }}
             - name: CONCOURSE_GC_MISSING_GRACE_PERIOD
               value: {{ .Values.concourse.web.gc.missingGracePeriod | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.gc.checkRecyclePeriod }}
+            - name: CONCOURSE_GC_CHECK_RECYCLE_PERIOD
+              value: {{ .Values.concourse.web.gc.checkRecyclePeriod | quote }}
             {{- end }}
             {{- if .Values.concourse.web.syslog.enabled }}
             {{- if .Values.concourse.web.syslog.hostname }}

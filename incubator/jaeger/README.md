@@ -94,6 +94,61 @@ helm install incubator/jaeger --name myrel --set provisionDataStore.cassandra=fa
 
 > **Tip**: It is highly encouraged to run the Cassandra cluster with storage persistence.
 
+## Installing the Chart using an Existing Cassandra Cluster with TLS
+
+If you already have an existing running Cassandra cluster with TLS, you can configure the chart as follows to use it as your backing store:
+
+Content of the `values.yaml` file:
+
+```YAML
+storage:
+  type: cassandra
+  cassandra:
+    host: <HOST>
+    port: <PORT>
+    user: <USER>
+    password: <PASSWORD>
+    tls:
+      enabled: true
+      secretName: cassandra-tls-secret
+
+provisionDataStore:
+  cassandra: false
+```
+
+Content of the `jaeger-tls-cassandra-secret.yaml` file:
+
+```YAML
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cassandra-tls-secret
+data:
+  commonName: <SERVER NAME>
+  ca-cert.pem: |
+    -----BEGIN CERTIFICATE-----
+    <CERT>
+    -----END CERTIFICATE-----
+  client-cert.pem: |
+    -----BEGIN CERTIFICATE-----
+    <CERT>
+    -----END CERTIFICATE-----
+  client-key.pem: |
+    -----BEGIN RSA PRIVATE KEY-----
+    -----END RSA PRIVATE KEY-----
+  cqlshrc: |
+    [ssl]
+    certfile = ~/.cassandra/ca-cert.pem
+    userkey = ~/.cassandra/client-key.pem
+    usercert = ~/.cassandra/client-cert.pem
+
+```
+
+```bash
+kubectl apply -f jaeger-tls-cassandra-secret.yaml
+helm install incubator/jaeger --name myrel --values values.yaml
+```
+
 ## Installing the Chart using a New ElasticSearch Cluster
 
 To install the chart with the release name `myrel` using a new ElasticSearch cluster instead of Cassandra (default), run the following command:
@@ -208,6 +263,11 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `agent.service.zipkinThriftPort`         | zipkin.thrift over compact thrift   |  `5775`                                  |
 | `agent.useHostNetwork`                   | Enable hostNetwork for agents       |  `false`                                 |
 | `agent.tolerations`                      | Node Tolerations                    | `[]`                                   |
+| `collector.autoscaling.enabled`       | Enable horizontal pod autoscaling |  `false`                                   |
+| `collector.autoscaling.minReplicas`   | Minimum replicas |  2                                   |
+| `collector.autoscaling.maxReplicas`   | Maximum replicas |  10                                   |
+| `collector.autoscaling.targetCPUUtilizationPercentage` | Target CPU utilization |  80                                  |
+| `collector.autoscaling.targetMemoryUtilizationPercentage` | Target memory utilization |  `nil`                                   |
 | `collector.cmdlineParams`                | Additional command line parameters  |  `nil`                                   |
 | `collector.podAnnotations`               | Annotations for Collector pod       |  `nil`                                   |
 | `collector.service.httpPort`             | Client port for HTTP thrift         |  `14268`                                 |
@@ -222,6 +282,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `collector.service.type`                 | Service type                        |  `ClusterIP`                             |
 | `collector.service.zipkinPort`           | Zipkin port for JSON/thrift HTTP    |  `9411`                                  |
 | `collector.extraConfigmapMounts`         | Additional collector configMap mounts |  `[]`                                  |
+| `collector.samplingConfig`         | [Sampling strategies json file](https://www.jaegertracing.io/docs/latest/sampling/#collector-sampling-configuration) |  `nil`                                  |
 | `elasticsearch.rbac.create`              | To enable RBAC                      |  `false`                                 |
 | `fullnameOverride`                       | Override full name                  |  `nil`                                 |
 | `hotrod.enabled`                         | Enables the Hotrod demo app         |  `false`                                 |
@@ -246,9 +307,14 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `query.basePath`                         | Base path of Query UI, used for ingress as well (if it is enabled)   |  `/`    |
 | `query.extraConfigmapMounts`             | Additional query configMap mounts   |  `[]`                                    |
 | `schema.annotations`                     | Annotations for the schema job      |  `nil`                                   |
+| `schema.extraConfigmapMounts`            | Additional cassandra schema job configMap mounts |  `[]`                                  |
 | `schema.image`                           | Image to setup cassandra schema     |  `jaegertracing/jaeger-cassandra-schema` |
 | `schema.mode`                            | Schema mode (prod or test)          |  `prod`                                  |
 | `schema.pullPolicy`                      | Schema image pullPolicy             |  `IfNotPresent`                          |
+| `schema.activeDeadlineSeconds`           | Deadline in seconds for cassandra schema creation job to complete |  `120`                            |
+| `schema.traceTtl`                     | Time to live for trace data in seconds      |  `nil`                                |
+| `schema.keyspace`                     | Set explicit keyspace name      |  `nil`                                |
+| `schema.dependenciesTtl`              | Time to live for dependencies data in seconds  |  `nil`                          |
 | `serviceAccounts.agent.create`              | Create service account   |  `true`                                  |
 | `serviceAccounts.agent.name`              | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template  |  ``                                  |
 | `serviceAccounts.cassandraSchema.create`              | Create service account   |  `true`                                  |
@@ -273,6 +339,8 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `storage.cassandra.host`                 | Provisioned cassandra host          |  `cassandra`                             |
 | `storage.cassandra.password`             | Provisioned cassandra password  (ignored if storage.cassandra.existingSecret set)     |  `password`                              |
 | `storage.cassandra.port`                 | Provisioned cassandra port          |  `9042`                                  |
+| `storage.cassandra.tls.enabled`          | Provisioned cassandra TLS connection enabled |  `false`                                    |
+| `storage.cassandra.tls.secretName`       | Provisioned cassandra TLS connection existing secret name (possible keys in secret: `ca-cert.pem`, `client-key.pem`, `client-cert.pem`, `cqlshrc`, `commonName`) |  ``                                      |
 | `storage.cassandra.usePassword`                 | Use password          |  `true`                                 |
 | `storage.cassandra.user`                 | Provisioned cassandra username      |  `user`                                  |
 | `storage.elasticsearch.existingSecret`                 | Name of existing password secret object (for password authentication)          |  `nil`                                 |
@@ -284,7 +352,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `storage.elasticsearch.user`             | Provisioned elasticsearch user      |  `elastic`                               |
 | `storage.elasticsearch.nodesWanOnly`     | Only access specified es host       |  `false`                                 |
 | `storage.type`                           | Storage type (ES or Cassandra)      |  `cassandra`                             |
-| `tag`                                    | Image tag/version                   |  `1.13.1`                                 |
+| `tag`                                    | Image tag/version                   |  `1.15.1`                                 |
 
 For more information about some of the tunable parameters that Cassandra provides, please visit the helm chart for [cassandra](https://github.com/kubernetes/charts/tree/master/incubator/cassandra) and the official [website](http://cassandra.apache.org/) at apache.org.
 

@@ -8,7 +8,23 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+{{- if (or (eq .Values.minecraftServer.serviceType "ClusterIP") (empty .Values.minecraftServer.serviceType)) }}
+  type: ClusterIP
+{{- else if eq .Values.minecraftServer.serviceType "LoadBalancer" }}
   type: {{ .Values.minecraftServer.serviceType }}
+  {{- if .Values.minecraftServer.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.minecraftServer.loadBalancerIP }}
+  {{- end }}
+  {{- if .Values.minecraftServer.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{ toYaml .Values.minecraftServer.loadBalancerSourceRanges | indent 4 }}
+  {{- end -}}
+{{- else }}
+  type: {{ .Values.minecraftServer.serviceType }}
+{{- end }}
+  {{- if .Values.minecraftServer.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ .Values.minecraftServer.externalTrafficPolicy }}
+  {{- end }}
   ports:
   - name: minecraft
     port: 25565

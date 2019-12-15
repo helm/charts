@@ -1,7 +1,7 @@
 apiVersion: v1
 name: owncloud
-version: 6.0.0
-appVersion: 10.2.1
+version: 8.0.1
+appVersion: 10.3.2
 description: A file sharing server that puts the control and security of your own data back into your hands.
 keywords:
 - owncloud

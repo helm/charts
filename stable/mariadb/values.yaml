@@ -6,6 +6,7 @@
 #   imageRegistry: myRegistryName
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
+#   storageClass: myStorageClass
 
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
@@ -18,7 +19,7 @@
 image:
   registry: docker.io
   repository: bitnami/mariadb
-  tag: 10.3.17-debian-9-r0
+  tag: 10.3.21-debian-9-r0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -52,7 +53,7 @@ volumePermissions:
   image:
     registry: docker.io
     repository: bitnami/minideb
-    tag: latest
+    tag: stretch
     pullPolicy: Always
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -89,7 +90,6 @@ serviceAccount:
 ## Role Based Access
 ## Ref: https://kubernetes.io/docs/admin/authorization/rbac/
 ##
-
 rbac:
   create: false
 
@@ -101,39 +101,52 @@ securityContext:
   fsGroup: 1001
   runAsUser: 1001
 
-# # Use existing secret (ignores root, db and replication passwords)
+## Use existing secret (ignores root, db and replication passwords)
+##
 # existingSecret:
 
+## MariaDB admin credentials
+##
 rootUser:
   ## MariaDB admin password
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb#setting-the-root-password-on-first-run
   ##
-  password:
-  ##
+  password: ""
   ## Option to force users to specify a password. That is required for 'helm upgrade' to work properly.
   ## If it is not force, a random password will be generated.
+  ##
   forcePassword: false
+  ## Mount admin password as a file instead of using an environment variable
+  ##
+  injectSecretsAsVolume: false
 
+## Custom user/db credentials
+##
 db:
   ## MariaDB username and password
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb#creating-a-database-user-on-first-run
   ##
-  user:
-  password:
-  ## Password is ignored if existingSecret is specified.
+  user: ""
+  password: ""
   ## Database to create
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb#creating-a-database-on-first-run
   ##
   name: my_database
   ## Option to force users to specify a password. That is required for 'helm upgrade' to work properly.
   ## If it is not force, a random password will be generated.
+  ##
   forcePassword: false
+  ## Mount user password as a file instead of using an environment variable
+  ##
+  injectSecretsAsVolume: false
 
+## Replication configuration
+##
 replication:
   ## Enable replication. This enables the creation of replicas of MariaDB. If false, only a
   ## master deployment would be created
-  enabled: true
   ##
+  enabled: true
   ## MariaDB replication user
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb#setting-up-a-replication-cluster
   ##
@@ -141,12 +154,14 @@ replication:
   ## MariaDB replication user password
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb#setting-up-a-replication-cluster
   ##
-  password:
-  ## Password is ignored if existingSecret is specified.
-  ##
+  password: ""
   ## Option to force users to specify a password. That is required for 'helm upgrade' to work properly.
   ## If it is not force, a random password will be generated.
+  ##
   forcePassword: false
+  ## Mount replication user password as a file instead of using an environment variable
+  ##
+  injectSecretsAsVolume: false
 
 ## initdb scripts
 ## Specify dictionary of scripts to be run at first boot
@@ -165,8 +180,8 @@ master:
   ## Mariadb Master additional pod annotations
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
   # annotations:
-  #   - key: key1
-  #     value: value1
+  #   key: value
+  #   another-key: another-value
 
   ## MariaDB additional command line flags
   ## Can be used to specify command line flags, for example:
@@ -228,11 +243,19 @@ master:
     ## Persistent Volume size
     ##
     size: 8Gi
-    ##
+
   extraInitContainers: |
   # - name: do-something
   #   image: busybox
   #   command: ['do', 'something']
+
+  ## An array to add extra environment variables
+  ## For example:
+  ## extraEnvVars:
+  ##  - name: TZ
+  ##    value: "Europe/Paris"
+  ##
+  # extraEnvVars:
 
   ## Configure MySQL with a custom my.cnf file
   ## ref: https://mysql.com/kb/en/mysql/configuring-mysql-with-mycnf/#example-of-configuration-file
@@ -242,6 +265,7 @@ master:
     skip-name-resolve
     explicit_defaults_for_timestamp
     basedir=/opt/bitnami/mariadb
+    plugin_dir=/opt/bitnami/mariadb/plugin
     port=3306
     socket=/opt/bitnami/mariadb/tmp/mysql.sock
     tmpdir=/opt/bitnami/mariadb/tmp
@@ -256,6 +280,7 @@ master:
     port=3306
     socket=/opt/bitnami/mariadb/tmp/mysql.sock
     default-character-set=UTF8
+    plugin_dir=/opt/bitnami/mariadb/plugin
 
     [manager]
     port=3306
@@ -292,14 +317,22 @@ master:
     minAvailable: 1
     # maxUnavailable: 1
 
+  ## Allow customization of the service resource
+  ##
+  service:
+    ## Add custom annotations to the service
+    ##
+    annotations: {}
+      # external-dns.alpha.kubernetes.io/hostname: db.example.com
+
 slave:
   replicas: 1
 
   ## Mariadb Slave additional pod annotations
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
   # annotations:
-  #   - key: key1
-  #     value: value1
+  #   key: value
+  #   another-key: another-value
 
   ## MariaDB additional command line flags
   ## Can be used to specify command line flags, for example:
@@ -342,11 +375,19 @@ slave:
     ## Persistent Volume size
     ##
     size: 8Gi
-    ##
+
   extraInitContainers: |
   # - name: do-something
   #   image: busybox
   #   command: ['do', 'something']
+
+  ## An array to add extra environment variables
+  ## For example:
+  ## extraEnvVars:
+  ##  - name: TZ
+  ##    value: "Europe/Paris"
+  ##
+  # extraEnvVars:
 
   ## Configure MySQL slave with a custom my.cnf file
   ## ref: https://mysql.com/kb/en/mysql/configuring-mysql-with-mycnf/#example-of-configuration-file
@@ -407,12 +448,20 @@ slave:
     minAvailable: 1
     # maxUnavailable: 1
 
+  ## Allow customization of the service resource
+  ##
+  service:
+    ## Add custom annotations to the service
+    ##
+    annotations: {}
+      # external-dns.alpha.kubernetes.io/hostname: rodb.example.com
+
 metrics:
   enabled: false
   image:
     registry: docker.io
     repository: bitnami/mysqld-exporter
-    tag: 0.12.1-debian-9-r2
+    tag: 0.12.1-debian-9-r130
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -424,6 +473,68 @@ metrics:
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "9104"
+
+  ## Extra args to be passed to mysqld_exporter
+  ## ref: https://github.com/prometheus/mysqld_exporter/
+  ##
+  extraArgs:
+    master: []
+    slave: []
+      # - --collect.auto_increment.columns
+      # - --collect.binlog_size
+      # - --collect.engine_innodb_status
+      # - --collect.engine_tokudb_status
+      # - --collect.global_status
+      # - --collect.global_variables
+      # - --collect.info_schema.clientstats
+      # - --collect.info_schema.innodb_metrics
+      # - --collect.info_schema.innodb_tablespaces
+      # - --collect.info_schema.innodb_cmp
+      # - --collect.info_schema.innodb_cmpmem
+      # - --collect.info_schema.processlist
+      # - --collect.info_schema.processlist.min_time
+      # - --collect.info_schema.query_response_time
+      # - --collect.info_schema.tables
+      # - --collect.info_schema.tables.databases
+      # - --collect.info_schema.tablestats
+      # - --collect.info_schema.userstats
+      # - --collect.perf_schema.eventsstatements
+      # - --collect.perf_schema.eventsstatements.digest_text_limit
+      # - --collect.perf_schema.eventsstatements.limit
+      # - --collect.perf_schema.eventsstatements.timelimit
+      # - --collect.perf_schema.eventswaits
+      # - --collect.perf_schema.file_events
+      # - --collect.perf_schema.file_instances
+      # - --collect.perf_schema.indexiowaits
+      # - --collect.perf_schema.tableiowaits
+      # - --collect.perf_schema.tablelocks
+      # - --collect.perf_schema.replication_group_member_stats
+      # - --collect.slave_status
+      # - --collect.slave_hosts
+      # - --collect.heartbeat
+      # - --collect.heartbeat.database
+      # - --collect.heartbeat.table
+
+  livenessProbe:
+    enabled: true
+    ##
+    ## Initializing the database could take some time
+    initialDelaySeconds: 120
+    ##
+    ## Default Kubernetes values
+    periodSeconds: 10
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 3
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 30
+    ##
+    ## Default Kubernetes values
+    periodSeconds: 10
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 3
 
   # Enable this if you're using https://github.com/coreos/prometheus-operator
   serviceMonitor:
@@ -438,3 +549,16 @@ metrics:
     ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
     selector:
       prometheus: kube-prometheus
+
+## Bats Framework (= Bash Automated Testing System) is needed to test if MariaDB is accessible
+## See test-runner.yaml and tests.yaml for details.
+## To run the tests after the deployment, enter "helm test <release-name>".
+tests:
+  enabled: true
+  # resources: {}
+  testFramework:
+    image:
+      registry: docker.io
+      repository: dduportal/bats
+      tag: 0.4.0
+    # resources: {}

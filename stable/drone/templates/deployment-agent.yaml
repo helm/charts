@@ -1,5 +1,5 @@
 {{- if not .Values.server.kubernetes.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "drone.fullname" . }}-agent
@@ -10,6 +10,11 @@ metadata:
     heritage: "{{ .Release.Service }}"
     component: agent
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "drone.name" . }}
+      release: "{{ .Release.Name }}"
+      component: agent
   replicas: {{ .Values.agent.replicas }}
   template:
     metadata:
@@ -49,7 +54,7 @@ spec:
           protocol: TCP
         env:
           - name: DRONE_RPC_SERVER
-            value: http://{{ template "drone.fullname" . }}
+            value: "{{ template "drone.rpcServer" . }}"
           - name: DRONE_RPC_SECRET
             valueFrom:
               secretKeyRef:

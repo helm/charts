@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "stolon.fullname" . }}-proxy
@@ -58,9 +58,12 @@ spec:
             - name: STPROXY_LISTEN_ADDRESS
               value: {{ default "0.0.0.0" .Values.proxy.listenAddress | quote }}
             - name: STPROXY_METRICS_LISTEN_ADDRESS
-              value: "0.0.0.0:8080"
+              value: "0.0.0.0:{{ .Values.ports.metrics.containerPort }}"
             - name: STPROXY_DEBUG
               value: {{ .Values.debug | quote}}
+{{- if .Values.proxy.extraEnv }}
+{{ toYaml .Values.proxy.extraEnv | indent 12 }}
+{{- end }}
           ports:
 {{- range $key, $value := .Values.ports }}
             - name: {{ $key }}

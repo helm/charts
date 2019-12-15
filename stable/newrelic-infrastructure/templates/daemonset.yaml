@@ -1,4 +1,4 @@
-{{ if and (or .Values.licenseKey (and .Values.customSecretName .Values.customSecretKey)) .Values.cluster }}
+{{- if (include "newrelic.areValuesValid" .) }}
 apiVersion: apps/v1beta2
 kind: DaemonSet
 metadata:
@@ -42,15 +42,15 @@ spec:
             - name: NRIA_LICENSE_KEY
               valueFrom:
                 secretKeyRef:
-                  {{- if .Values.licenseKey }}
+                  {{- if (include "newrelic.licenseKey" .) }}
                   name: {{ template "newrelic.fullname" . }}-config
                   key: license
                   {{- else }}
-                  name: {{ .Values.customSecretName }}
-                  key: {{ .Values.customSecretKey }}
+                  name: {{ include "newrelic.customSecretName" . }}
+                  key: {{ include "newrelic.customSecretLicenseKey" . }}
                   {{- end }}
             - name: "CLUSTER_NAME"
-              value: "{{ .Values.cluster }}"
+              value: {{ include "newrelic.cluster" . }}
             {{- if .Values.kubeStateMetricsUrl }}
             - name: "KUBE_STATE_METRICS_URL"
               value: "{{ .Values.kubeStateMetricsUrl }}"
@@ -58,6 +58,14 @@ spec:
             {{- if .Values.kubeStateMetricsTimeout }}
             - name: TIMEOUT
               value: {{ .Values.kubeStateMetricsTimeout | quote }}
+            {{- end }}
+            {{- if .Values.etcdTlsSecretName }}
+            - name: ETCD_TLS_SECRET_NAME
+              value: {{ .Values.etcdTlsSecretName | quote }}
+            {{- if .Values.etcdTlsSecretNamespace }}
+            - name: ETCD_TLS_SECRET_NAMESPACE
+              value: {{ .Values.etcdTlsSecretNamespace | quote }}
+            {{- end }}
             {{- end }}
             - name: "NRIA_DISPLAY_NAME"
               valueFrom:
@@ -72,7 +80,7 @@ spec:
             - name: "NRIA_CUSTOM_ATTRIBUTES"
               value: {{ .Values.customAttribues }}
             - name: "NRIA_PASSTHROUGH_ENVIRONMENT"
-              value: "KUBERNETES_SERVICE_HOST,KUBERNETES_SERVICE_PORT,CLUSTER_NAME,CADVISOR_PORT,NRK8S_NODE_NAME,KUBE_STATE_METRICS_URL,TIMEOUT"
+              value: "KUBERNETES_SERVICE_HOST,KUBERNETES_SERVICE_PORT,CLUSTER_NAME,CADVISOR_PORT,NRK8S_NODE_NAME,KUBE_STATE_METRICS_URL,TIMEOUT,ETCD_TLS_SECRET_NAME,ETCD_TLS_SECRET_NAMESPACE"
             {{- if .Values.verboseLog }}
             - name: NRIA_VERBOSE
               value: "1"
@@ -80,10 +88,6 @@ spec:
             {{- if .Values.logFile }}
             - name: NRIA_LOG_FILE
               value: {{ .Values.logFile }}
-            {{- end }}
-            {{- if not .Values.privileged }}
-            - name: "DISCOVERY_CACHE_DIR"
-              value: "/tmp/nr-kubernetes"
             {{- end }}
           volumeMounts:
             {{- if .Values.config }}
@@ -108,6 +112,8 @@ spec:
               name: tmpfs-user-data
             - mountPath: /tmp
               name: tmpfs-tmp
+            - mountPath: /var/cache/nr-kubernetes
+              name: tmpfs-cache
             {{- end }}
           {{- if .Values.resources }}
           resources:
@@ -133,6 +139,8 @@ spec:
         - name: tmpfs-user-data
           emptyDir: {}
         - name: tmpfs-tmp
+          emptyDir: {}
+        - name: tmpfs-cache
           emptyDir: {}
         {{- end }}
         {{- if .Values.config }}

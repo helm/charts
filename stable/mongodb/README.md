@@ -16,8 +16,10 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.12+
+- Helm 2.11+ or Helm 3.0-beta3+
 - PV provisioner support in the underlying infrastructure
+- ReadWriteMany volumes for deployment scaling
 
 ## Installing the Chart
 
@@ -27,7 +29,7 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release stable/mongodb
 ```
 
-The command deploys MongoDB on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys MongoDB on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
@@ -41,14 +43,15 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
-## Configuration
+## Parameters
 
 The following table lists the configurable parameters of the MongoDB chart and their default values.
 
 | Parameter                                          | Description                                                                                                                                               | Default                                                  |
-| -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+|----------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------|
 | `global.imageRegistry`                             | Global Docker image registry                                                                                                                              | `nil`                                                    |
 | `global.imagePullSecrets`                          | Global Docker registry secret names as an array                                                                                                           | `[]` (does not add image pull secrets to deployed pods)  |
+| `global.storageClass`                              | Global storage class for dynamic provisioning                                                                                                             | `nil`                                                    |
 | `image.registry`                                   | MongoDB image registry                                                                                                                                    | `docker.io`                                              |
 | `image.repository`                                 | MongoDB Image name                                                                                                                                        | `bitnami/mongodb`                                        |
 | `image.tag`                                        | MongoDB Image tag                                                                                                                                         | `{TAG_NAME}`                                             |
@@ -60,7 +63,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `volumePermissions.enabled`                        | Enable init container that changes volume permissions in the data directory (for cases where the default k8s `runAsUser` and `fsUser` values do not work) | `false`                                                  |
 | `volumePermissions.image.registry`                 | Init container volume-permissions image registry                                                                                                          | `docker.io`                                              |
 | `volumePermissions.image.repository`               | Init container volume-permissions image name                                                                                                              | `bitnami/minideb`                                        |
-| `volumePermissions.image.tag`                      | Init container volume-permissions image tag                                                                                                               | `latest`                                                 |
+| `volumePermissions.image.tag`                      | Init container volume-permissions image tag                                                                                                               | `stretch`                                                |
 | `volumePermissions.image.pullPolicy`               | Init container volume-permissions image pull policy                                                                                                       | `Always`                                                 |
 | `volumePermissions.resources`                      | Init container resource requests/limit                                                                                                                    | `nil`                                                    |
 | `clusterDomain`                                    | Default Kubernetes cluster domain                                                                                                                         | `cluster.local`                                          |
@@ -75,14 +78,15 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `mongodbSystemLogVerbosity`                        | MongoDB systen log verbosity level                                                                                                                        | `0`                                                      |
 | `mongodbDisableSystemLog`                          | Whether to disable MongoDB system log or not                                                                                                              | `false`                                                  |
 | `mongodbExtraFlags`                                | MongoDB additional command line flags                                                                                                                     | `[]`                                                     |
-| `service.annotations`                              | Kubernetes service annotations                                                                                                                            | `{}`                                                     |
+| `service.name`                                     | Kubernetes service name                                                                                                                                   | `nil`                                                    |
+| `service.annotations`                              | Kubernetes service annotations, evaluated as a template                                                                                                   | `{}`                                                     |
 | `service.type`                                     | Kubernetes Service type                                                                                                                                   | `ClusterIP`                                              |
 | `service.clusterIP`                                | Static clusterIP or None for headless services                                                                                                            | `nil`                                                    |
+| `service.port`                                     | MongoDB service port                                                                                                                                      | `27017`                                                  |
 | `service.nodePort`                                 | Port to bind to for NodePort service type                                                                                                                 | `nil`                                                    |
 | `service.loadBalancerIP`                           | Static IP Address to use for LoadBalancer service type                                                                                                    | `nil`                                                    |
 | `service.externalIPs`                              | External IP list to use with ClusterIP service type                                                                                                       | `[]`                                                     |
 | `service.loadBalancerSourceRanges`                 | List of IP ranges allowed access to load balancer (if supported)                                                                                          | `[]` (does not add IP range restrictions to the service) |
-| `port`                                             | MongoDB service port                                                                                                                                      | `27017`                                                  |
 | `replicaSet.enabled`                               | Switch to enable/disable replica set configuration                                                                                                        | `false`                                                  |
 | `replicaSet.name`                                  | Name of the replica set                                                                                                                                   | `rs0`                                                    |
 | `replicaSet.useHostnames`                          | Enable DNS hostnames in the replica set config                                                                                                            | `true`                                                   |
@@ -94,12 +98,17 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `replicaSet.pdb.minAvailable.arbiter`              | PDB (min available) for the MongoDB Arbiter nodes                                                                                                         | `1`                                                      |
 | `replicaSet.pdb.maxUnavailable.secondary`          | PDB (max unavailable) for the MongoDB Secondary nodes                                                                                                     | `nil`                                                    |
 | `replicaSet.pdb.maxUnavailable.arbiter`            | PDB (max unavailable) for the MongoDB Arbiter nodes                                                                                                       | `nil`                                                    |
+| `annotations`                                      | Annotations to be added to the deployment or statefulsets                                                                                                 | `{}`                                                     |
+| `labels`                                           | Additional labels for the deployment or statefulsets                                                                                                      | `{}`                                                     |
 | `podAnnotations`                                   | Annotations to be added to pods                                                                                                                           | `{}`                                                     |
 | `podLabels`                                        | Additional labels for the pod(s).                                                                                                                         | `{}`                                                     |
 | `resources`                                        | Pod resources                                                                                                                                             | `{}`                                                     |
+| `resourcesArbiter`                                 | Pod resources for arbiter when replica set is enabled                                                                                                     | `{}`                                                     |
 | `priorityClassName`                                | Pod priority class name                                                                                                                                   | ``                                                       |
+| `extraEnvVars`                                     | Array containing extra env vars to be added to all pods in the cluster (evaluated as a template)                                                          | `nil`                                                    |
 | `nodeSelector`                                     | Node labels for pod assignment                                                                                                                            | `{}`                                                     |
 | `affinity`                                         | Affinity for pod assignment                                                                                                                               | `{}`                                                     |
+| `affinityArbiter`                                  | Affinity for arbiter pod assignment                                                                                                                       | `{}`                                                     |
 | `tolerations`                                      | Toleration labels for pod assignment                                                                                                                      | `{}`                                                     |
 | `updateStrategy`                                   | Statefulsets update strategy policy                                                                                                                       | `RollingUpdate`                                          |
 | `securityContext.enabled`                          | Enable security context                                                                                                                                   | `true`                                                   |
@@ -129,16 +138,16 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `readinessProbe.successThreshold`                  | Minimum consecutive successes for the probe to be considered successful after having failed.                                                              | `1`                                                      |
 | `initConfigMap.name`                               | Custom config map with init scripts                                                                                                                       | `nil`                                                    |
 | `configmap`                                        | MongoDB configuration file to be used                                                                                                                     | `nil`                                                    |
-| `ingress.enabled`                         | Enable ingress controller resource                                                          | `false`                                                      |
-| `ingress.certManager`                     | Add annotations for cert-manager                                                            | `false`                                                      |
-| `ingress.annotations`                     | Ingress annotations                                                                         | `[]`                                                         |
-| `ingress.hosts[0].name`                   | Hostname to your MongoDB installation                                                     | `mongodb.local`                                              |
-| `ingress.hosts[0].path`                   | Path within the url structure                                                               | `/`                                                          |
-| `ingress.tls[0].hosts[0]`                 | TLS hosts                                                                                   | `mongodb.local`                                              |
-| `ingress.tls[0].secretName`               | TLS Secret (certificates)                                                                   | `mongodb.local-tls`                                          |
-| `ingress.secrets[0].name`                 | TLS Secret Name                                                                             | `nil`                                                        |
-| `ingress.secrets[0].certificate`          | TLS Secret Certificate                                                                      | `nil`                                                        |
-| `ingress.secrets[0].key`                  | TLS Secret Key                                                                              | `nil`                                                        |
+| `ingress.enabled`                                  | Enable ingress controller resource                                                                                                                        | `false`                                                  |
+| `ingress.certManager`                              | Add annotations for cert-manager                                                                                                                          | `false`                                                  |
+| `ingress.annotations`                              | Ingress annotations                                                                                                                                       | `[]`                                                     |
+| `ingress.hosts[0].name`                            | Hostname to your MongoDB installation                                                                                                                     | `mongodb.local`                                          |
+| `ingress.hosts[0].path`                            | Path within the url structure                                                                                                                             | `/`                                                      |
+| `ingress.tls[0].hosts[0]`                          | TLS hosts                                                                                                                                                 | `mongodb.local`                                          |
+| `ingress.tls[0].secretName`                        | TLS Secret (certificates)                                                                                                                                 | `mongodb.local-tls`                                      |
+| `ingress.secrets[0].name`                          | TLS Secret Name                                                                                                                                           | `nil`                                                    |
+| `ingress.secrets[0].certificate`                   | TLS Secret Certificate                                                                                                                                    | `nil`                                                    |
+| `ingress.secrets[0].key`                           | TLS Secret Key                                                                                                                                            | `nil`                                                    |
 | `metrics.enabled`                                  | Start a side-car prometheus exporter                                                                                                                      | `false`                                                  |
 | `metrics.image.registry`                           | MongoDB exporter image registry                                                                                                                           | `docker.io`                                              |
 | `metrics.image.repository`                         | MongoDB exporter image name                                                                                                                               | `bitnami/mongodb-exporter`                               |
@@ -187,13 +196,17 @@ $ helm install --name my-release -f values.yaml stable/mongodb
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
-### Production configuration
+## Configuration and installation details
 
-This chart includes a `values-production.yaml` file where you can find some parameters oriented to production configuration in comparison to the regular `values.yaml`.
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
 
-```console
-$ helm install --name my-release -f ./values-production.yaml stable/mongodb
-```
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
+
+### Production configuration and horizontal scaling
+
+This chart includes a `values-production.yaml` file where you can find some parameters oriented to production configuration in comparison to the regular `values.yaml`. You can use this file instead of the default one.
 
 - Switch to enable/disable replica set configuration:
 ```diff
@@ -219,25 +232,11 @@ $ helm install --name my-release -f ./values-production.yaml stable/mongodb
 + metrics.readinessProbe.enabled: true
 ```
 
-To horizontally scale this chart, run the following command to scale the number of secondary nodes in your MongoDB replica set.
+To horizontally scale this chart, you can use the `--replicas` flag to modify the number of secondary nodes in your MongoDB replica set.
 
-```console
-$ kubectl scale statefulset my-release-mongodb-secondary --replicas=3
-```
+### Replication
 
-### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
-
-It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
-
-Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
-
-## Replication
-
-You can start the MongoDB chart in replica set mode with the following command:
-
-```bash
-$ helm install --name my-release stable/mongodb --set replicaSet.enabled=true
-```
+You can start the MongoDB chart in replica set mode with the following parameter: `replicaSet.enabled=true`
 
 Some characteristics of this chart are:
 
@@ -245,7 +244,7 @@ Some characteristics of this chart are:
 - The number of secondary and arbiter nodes can be scaled out independently.
 - Easy to move an application from using a standalone MongoDB server to use a replica set.
 
-## Initialize a fresh instance
+### Initialize a fresh instance
 
 The [Bitnami MongoDB](https://github.com/bitnami/bitnami-docker-mongodb) image allows you to use your custom scripts to initialize a fresh instance. In order to execute the scripts, they must be located inside the chart folder `files/docker-entrypoint-initdb.d` so they can be consumed as a ConfigMap.
 Also you can create a custom config map and give it via `initConfigMap`(check options for more details).

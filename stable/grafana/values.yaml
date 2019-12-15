@@ -3,12 +3,27 @@ rbac:
   pspEnabled: true
   pspUseAppArmor: true
   namespaced: false
+  extraRoleRules: []
+  # - apiGroups: []
+  #   resources: []
+  #   verbs: []
+  extraClusterRoleRules: []
+  # - apiGroups: []
+  #   resources: []
+  #   verbs: []
 serviceAccount:
   create: true
   name:
   nameTest:
+#  annotations:
 
 replicas: 1
+
+## See `kubectl explain poddisruptionbudget.spec` for more
+## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+podDisruptionBudget: {}
+#  minAvailable: 1
+#  maxUnavailable: 1
 
 ## See `kubectl explain deployment.spec.strategy` for more
 ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
@@ -35,7 +50,7 @@ livenessProbe:
 
 image:
   repository: grafana/grafana
-  tag: 6.2.5
+  tag: 6.5.0
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -46,6 +61,7 @@ image:
   #   - myRegistrKeySecretName
 
 testFramework:
+  enabled: true
   image: "dduportal/bats"
   tag: "0.4.0"
   securityContext: {}
@@ -82,6 +98,11 @@ downloadDashboards:
 ## Pod Annotations
 # podAnnotations: {}
 
+## Pod Labels
+# podLabels: {}
+
+podPortName: grafana
+
 ## Deployment annotations
 # annotations: {}
 
@@ -96,6 +117,7 @@ service:
     # targetPort: 4181 To be used with a proxy extraContainer
   annotations: {}
   labels: {}
+  portName: service
 
 ingress:
   enabled: false
@@ -106,6 +128,12 @@ ingress:
   path: /
   hosts:
     - chart-example.local
+  ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
+  extraPaths: []
+  # - path: /*
+  #   backend:
+  #     serviceName: ssl-redirect
+  #     servicePort: use-annotation
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -157,6 +185,7 @@ extraContainers: |
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistence:
+  type: pvc
   enabled: false
   # storageClassName: default
   accessModes:
@@ -218,9 +247,23 @@ admin:
 ## Extra environment variables that will be pass onto deployment pods
 env: {}
 
+## "valueFrom" environment variable references that will be added to deployment pods
+## ref: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#envvarsource-v1-core
+## Renders in container spec as:
+##   env:
+##     ...
+##     - name: <key>
+##       valueFrom:
+##         <value rendered as YAML>
+envValueFrom: {}
+
 ## The name of a secret in the same kubernetes namespace which contain values to be added to the environment
 ## This can be useful for auth tokens, etc
 envFromSecret: ""
+
+## Sensible environment variables that will be rendered as new secret object
+## This can be useful for auth tokens, etc
+envRenderSecret: {}
 
 ## Additional grafana server secret mounts
 # Defines additional mounts with secrets. Secrets must be manually created in the namespace.
@@ -356,6 +399,7 @@ grafana.ini:
 ## ref: http://docs.grafana.org/installation/configuration/#auth-ldap
 ## ref: http://docs.grafana.org/installation/ldap/#configuration
 ldap:
+  enabled: false
   # `existingSecret` is a reference to an existing secret containing the ldap configuration
   # for Grafana in a key `ldap-toml`.
   existingSecret: ""
@@ -398,6 +442,7 @@ sidecar:
   # skipTlsVerify: true
   dashboards:
     enabled: false
+    SCProvider: true
     # label that the configmaps with dashboards are marked with
     label: grafana_dashboard
     # folder in the pod that should hold the collected dashboards (unless `defaultFolderName` is set)

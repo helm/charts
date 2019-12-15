@@ -99,19 +99,19 @@ The key names for postgres and redis are fixed, which is consistent with the sub
 {{- define "airflow.mapenvsecrets" }}
   - name: POSTGRES_USER
     value: {{ default "postgres" .Values.postgresql.postgresUser | quote }}
-  {{- if .Values.postgresql.existingSecret }}
+  {{- if or .Values.postgresql.existingSecret .Values.postgresql.enabled }}
   - name: POSTGRES_PASSWORD
     valueFrom:
       secretKeyRef:
         name: {{ default (include "airflow.postgresql.fullname" .) .Values.postgresql.existingSecret }}
-        key: postgres-password
+        key: {{ .Values.postgresql.existingSecretKey }}
   {{- end }}
-  {{- if .Values.redis.existingSecret }}
+  {{- if or .Values.redis.existingSecret .Values.redis.enabled }}
   - name: REDIS_PASSWORD
     valueFrom:
       secretKeyRef:
         name: {{ default (include "airflow.redis.fullname" .) .Values.redis.existingSecret }}
-        key: redis-password
+        key: {{ .Values.redis.existingSecretKey }}
   {{- end }}
   {{- if .Values.airflow.extraEnv }}
 {{ toYaml .Values.airflow.extraEnv | indent 2 }}

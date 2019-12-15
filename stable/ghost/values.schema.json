@@ -1,0 +1,163 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "type": "object",
+  "properties": {
+    "ghostUsername": {
+      "type": "string",
+      "title": "User",
+      "form": true
+    },
+    "ghostPassword": {
+      "type": "string",
+      "title": "Password",
+      "form": true,
+      "description": "Defaults to a random 10-character alphanumeric string if not set"
+    },
+    "ghostEmail": {
+      "type": "string",
+      "title": "Admin email",
+      "form": true
+    },
+    "ghostBlogTitle": {
+      "type": "string",
+      "title": "Blog Name",
+      "form": true
+    },
+    "ghostHost": {
+      "type": "string",
+      "title": "Host",
+      "form": true,
+      "description": "Hostname used to generate application URLs"
+    },
+    "persistence": {
+      "type": "object",
+      "properties": {
+        "size": {
+          "type": "string",
+          "title": "Persistent Volume Size",
+          "form": true,
+          "render": "slider",
+          "sliderMin": 1,
+          "sliderMax": 100,
+          "sliderUnit": "Gi"
+        }
+      }
+    },
+    "mariadb": {
+      "type": "object",
+      "form": true,
+      "title": "MariaDB Details",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Use a new MariaDB database hosted in the cluster",
+          "form": true,
+          "description": "Whether to deploy a mariadb server to satisfy the applications database requirements. To use an external database switch this off and configure the external database parameters"
+        },
+        "master": {
+          "type": "object",
+          "properties": {
+            "persistence": {
+              "type": "object",
+              "properties": {
+                "size": {
+                  "type": "string",
+                  "title": "Volume Size",
+                  "form": true,
+                  "hidden": {
+                    "condition": false,
+                    "value": "mariadb.enabled"
+                  },
+                  "render": "slider",
+                  "sliderMin": 1,
+                  "sliderMax": 100,
+                  "sliderUnit": "Gi"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "externalDatabase": {
+      "type": "object",
+      "title": "External Database Details",
+      "description": "If MariaDB is disabled. Use this section to specify the external database details",
+      "form": true,
+      "properties": {
+        "host": {
+          "type": "string",
+          "form": true,
+          "title": "Database Host",
+          "hidden": "mariadb.enabled"
+        },
+        "user": {
+          "type": "string",
+          "form": true,
+          "title": "Database Username",
+          "hidden": "mariadb.enabled"
+        },
+        "password": {
+          "type": "string",
+          "form": true,
+          "title": "Database Password",
+          "hidden": "mariadb.enabled"
+        },
+        "database": {
+          "type": "string",
+          "form": true,
+          "title": "Database Name",
+          "hidden": "mariadb.enabled"
+        },
+        "port": {
+          "type": "integer",
+          "form": true,
+          "title": "Database Port",
+          "hidden": "mariadb.enabled"
+        }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "title": "Required Resources",
+      "description": "Configure resource requests",
+      "form": true,
+      "properties": {
+        "requests": {
+          "type": "object",
+          "properties": {
+            "memory": {
+              "type": "string",
+              "form": true,
+              "render": "slider",
+              "title": "Memory Request",
+              "sliderMin": 10,
+              "sliderMax": 2048,
+              "sliderUnit": "Mi"
+            },
+            "cpu": {
+              "type": "string",
+              "form": true,
+              "render": "slider",
+              "title": "CPU Request",
+              "sliderMin": 10,
+              "sliderMax": 2000,
+              "sliderUnit": "m"
+            }
+          }
+        }
+      }
+    },
+    "securityContext": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable Pod Security Context",
+          "description": "When disabled, an initContainer will be used to set required folder permissions",
+          "form": true
+        }
+      }
+    }
+  }
+}

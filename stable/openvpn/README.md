@@ -43,7 +43,7 @@ kubectl -n "$NAMESPACE" exec -it "$POD_NAME" /etc/openvpn/setup/newClientCert.sh
 kubectl -n "$NAMESPACE" exec -it "$POD_NAME" cat "/etc/openvpn/certs/pki/$KEY_NAME.ovpn" > "$KEY_NAME.ovpn"
 ```
 
-In order to revoke certificates in later steps: 
+In order to revoke certificates in later steps:
 ```bash
 #!/bin/bash
 
@@ -69,45 +69,51 @@ The following table lists the configurable parameters of the `openvpn` chart and
 and can be overwritten via the helm `--set` flag.
 
 Parameter | Description | Default
----                            | ---                                                                  | ---
-`replicaCount`                 | amount of parallel openvpn replicas to be started                    | `1`
-`updateStrategy`               | update strategy for deployment                                       | `{}`
-`image.repository`             | `openvpn` image repository                                           | `jfelten/openvpn-docker`
-`image.tag`                    | `openvpn` image tag                                                  | `1.1.0`
-`image.pullPolicy`             | Image pull policy                                                    | `IfNotPresent`
-`service.type`                 | k8s service type exposing ports, e.g. `NodePort`                     | `LoadBalancer`
-`service.externalPort`         | TCP port reported when creating configuration files                  | `443`
-`service.internalPort`         | TCP port on which the service works                                  | `443`
-`service.nodePort`             | NodePort value if service.type is `NodePort`                         | `nil` (auto-assigned)
-`service.externalIPs`          | External IPs to listen on                                            | `[]`
-`resources.requests.cpu`       | OpenVPN cpu request                                                  | `300m`
-`resources.requests.memory`    | OpenVPN memory request                                               | `128Mi`
-`resources.limits.cpu`         | OpenVPN cpu limit                                                    | `300m`
-`resources.limits.memory`      | OpenVPN memory limit                                                 | `128Mi`
-`persistence.enabled`          | Use a PVC to persist configuration                                   | `true`
-`persistence.subPath`          | Subdirectory of the volume to mount at                               | `nil`
-`persistence.existingClaim`    | Provide an existing PersistentVolumeClaim                            | `nil`
-`persistence.storageClass`     | Storage class of backing PVC                                         | `nil`
-`persistence.accessMode`       | Use volume as ReadOnly or ReadWrite                                  | `ReadWriteOnce`
-`persistence.size`             | Size of data volume                                                  | `2M`
-`podAnnotations`               | Key-value pairs to add as pod annotations                            | `{}`
-`openvpn.OVPN_NETWORK`         | Network allocated for openvpn clients                                | `10.240.0.0`
-`openvpn.OVPN_SUBNET`          | Network subnet allocated for openvpn                                 | `255.255.0.0`
-`openvpn.OVPN_PROTO`           | Protocol used by openvpn tcp or udp                                  | `tcp`
-`openvpn.OVPN_K8S_POD_NETWORK` | Kubernetes pod network (optional)                                    | `10.0.0.0`
-`openvpn.OVPN_K8S_POD_SUBNET`  | Kubernetes pod network subnet (optional)                             | `255.0.0.0`
-`openvpn.OVPN_K8S_SVC_NETWORK` | Kubernetes service network (optional)                                | `nil`
-`openvpn.OVPN_K8S_SVC_SUBNET`  | Kubernetes service network subnet (optional)                         | `nil`
-`openvpn.dhcpOptionDomain`     | Push a `dhcp-option DOMAIN` config                                   | `true`
-`openvpn.conf`                 | Arbitrary lines appended to the end of the server configuration file | `nil`
-`openvpn.redirectGateway`      | Redirect all client traffic through VPN                              | `true`
-`openvpn.useCrl`               | Use/generate a certificate revocation list (crl.pem)                 | `false`
-`openvpn.taKey`                | Use/generate a ta.key file for hardening security                    | `false`
-`openvpn.cipher`               | Override the default cipher                                          | `nil` (OpenVPN default)
-`openvpn.istio.enabled`        | Enables istio support for openvpn clients                            | `false`
-`openvpn.istio.proxy.port`     | Istio proxy port                                                     | `15001`
-`openvpn.iptablesExtra`        | Custom iptables rules for clients                                    | `[]`
-`nodeSelector`                 | Node labels for pod assignment                                       | `{}`
+---                                  | ---                                                                  | ---
+`replicaCount`                       | amount of parallel openvpn replicas to be started                    | `1`
+`updateStrategy`                     | update strategy for deployment                                       | `{}`
+`image.repository`                   | `openvpn` image repository                                           | `jfelten/openvpn-docker`
+`image.tag`                          | `openvpn` image tag                                                  | `1.1.0`
+`image.pullPolicy`                   | Image pull policy                                                    | `IfNotPresent`
+`service.type`                       | k8s service type exposing ports, e.g. `NodePort`                     | `LoadBalancer`
+`service.externalPort`               | TCP port reported when creating configuration files                  | `443`
+`service.internalPort`               | TCP port on which the service works                                  | `443`
+`service.hostPort`                   | Expose openvpn directly using host port                              | `nil`
+`service.nodePort`                   | NodePort value if service.type is `NodePort`                         | `nil` (auto-assigned)
+`service.clusterIP`                  | clusterIP value if service.type is `ClusterIP`                       | `nil`
+`service.externalIPs`                | External IPs to listen on                                            | `[]`
+`resources.requests.cpu`             | OpenVPN cpu request                                                  | `300m`
+`resources.requests.memory`          | OpenVPN memory request                                               | `128Mi`
+`resources.limits.cpu`               | OpenVPN cpu limit                                                    | `300m`
+`resources.limits.memory`            | OpenVPN memory limit                                                 | `128Mi`
+`readinessProbe.initialDelaySeconds` | Time to wait to start first probe                                    | `5`
+`readinessProbe.periodSeconds`       | Interval of readiness probe                                          | `5`
+`readinessProbe.successThreshold`    | Minimum consecutive successes for probe to be considered healthy     | `2`
+`persistence.enabled`                | Use a PVC to persist configuration                                   | `true`
+`persistence.subPath`                | Subdirectory of the volume to mount at                               | `nil`
+`persistence.existingClaim`          | Provide an existing PersistentVolumeClaim                            | `nil`
+`persistence.storageClass`           | Storage class of backing PVC                                         | `nil`
+`persistence.accessMode`             | Use volume as ReadOnly or ReadWrite                                  | `ReadWriteOnce`
+`persistence.size`                   | Size of data volume                                                  | `2M`
+`podAnnotations`                     | Key-value pairs to add as pod annotations                            | `{}`
+`openvpn.OVPN_NETWORK`               | Network allocated for openvpn clients                                | `10.240.0.0`
+`openvpn.OVPN_SUBNET`                | Network subnet allocated for openvpn                                 | `255.255.0.0`
+`openvpn.OVPN_PROTO`                 | Protocol used by openvpn tcp or udp                                  | `tcp`
+`openvpn.OVPN_K8S_POD_NETWORK`       | Kubernetes pod network (optional)                                    | `10.0.0.0`
+`openvpn.OVPN_K8S_POD_SUBNET`        | Kubernetes pod network subnet (optional)                             | `255.0.0.0`
+`openvpn.OVPN_K8S_SVC_NETWORK`       | Kubernetes service network (optional)                                | `nil`
+`openvpn.OVPN_K8S_SVC_SUBNET`        | Kubernetes service network subnet (optional)                         | `nil`
+`openvpn.dhcpOptionDomain`           | Push a `dhcp-option DOMAIN` config                                   | `true`
+`openvpn.conf`                       | Arbitrary lines appended to the end of the server configuration file | `nil`
+`openvpn.redirectGateway`            | Redirect all client traffic through VPN                              | `true`
+`openvpn.useCrl`                     | Use/generate a certificate revocation list (crl.pem)                 | `false`
+`openvpn.taKey`                      | Use/generate a ta.key file for hardening security                    | `false`
+`openvpn.cipher`                     | Override the default cipher                                          | `nil` (OpenVPN default)
+`openvpn.istio.enabled`              | Enables istio support for openvpn clients                            | `false`
+`openvpn.istio.proxy.port`           | Istio proxy port                                                     | `15001`
+`openvpn.iptablesExtra`              | Custom iptables rules for clients                                    | `[]`
+`nodeSelector`                       | Node labels for pod assignment                                       | `{}`
+`tolerations`                        | Tolerations for node taints                                          | `[]`
 
 This chart has been engineered to use kube-dns and route all network traffic to kubernetes pods and services,
 to disable this behaviour set `openvpn.OVPN_K8S_POD_NETWORK` and `openvpn.OVPN_K8S_POD_SUBNET` to `null`.

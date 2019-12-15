@@ -253,6 +253,27 @@ rabbitmqWebSTOMPPlugin:
     # web_stomp.ws_frame = binary
     # web_stomp.cowboy_opts.max_keepalive = 10
 
+## Prometheus Plugin
+## Ref: https://www.rabbitmq.com/prometheus.html
+rabbitmqPrometheusPlugin:
+  enabled: false
+
+  ## NodePort
+  nodePort: null
+
+  ## metrics port, overrides configuration:
+  ## prometheus.tcp.port
+  port: 15692
+
+  ## metrics path, overrides configuration:
+  ## prometheus.path
+  path: /metrics
+
+  ## Prometheus configuration:
+  ## https://github.com/rabbitmq/rabbitmq-prometheus
+  config: |
+   ## prometheus.path and prometheus.tcp.port can be set above
+
 ## AMQPS support
 ## Ref: http://www.rabbitmq.com/ssl.html
 rabbitmqAmqpsSupport:
@@ -275,7 +296,7 @@ replicaCount: 3
 
 image:
   repository: rabbitmq
-  tag: 3.7.15-alpine
+  tag: 3.8.0-alpine
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -351,6 +372,9 @@ initContainer:
 ## Additional init containers
 extraInitContainers: []
 
+## Additional containers
+extraContainers: []
+
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
 ##
@@ -413,6 +437,10 @@ serviceAccount:
   ## The name of the ServiceAccount to use.
   ## If not set and create is true, a name is generated using the fullname template
   # name:
+
+  ## Automount API credentials for a service account.
+  ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#use-the-default-service-account-to-access-the-api-server
+  automountServiceAccountToken: true
 
 ingress:
   ## Set to true to enable ingress record generation

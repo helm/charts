@@ -40,8 +40,12 @@ airflow:
   fernetKey: ""
   service:
     annotations: {}
+    sessionAffinity: "None"
+    sessionAffinityConfig: {}
     type: ClusterIP
     externalPort: 8080
+    nodePort:
+      http:
   ##
   ## The executor to use.
   ##
@@ -63,7 +67,7 @@ airflow:
     repository: puckel/docker-airflow
     ##
     ## image tag
-    tag: 1.10.3
+    tag: 1.10.4
     ##
     ## Image pull policy
     ## values: Always or IfNotPresent
@@ -105,6 +109,7 @@ airflow:
   config: {}
   ##
   ## Configure pod disruption budget for the scheduler
+  podDisruptionBudgetEnabled: true
   podDisruptionBudget:
     maxUnavailable: 1
   ## Add custom connections
@@ -137,6 +142,17 @@ airflow:
   podAnnotations: {}
     ## Example:
     ## iam.amazonaws.com/role: airflow-Role
+
+  extraInitContainers: []
+  ## Additional init containers to run before the Scheduler pods.
+  ## for example, be used to run a sidecar that chown Logs storage .
+  # - name: volume-mount-hack
+  #   image: busybox
+  #   command: ["sh", "-c", "chown -R 1000:1000 logs"]
+  #   volumeMounts:
+  #     - mountPath: /usr/local/airflow/logs
+  #       name: logs-data
+
   extraContainers: []
   ## Additional containers to run alongside the Scheduler, Worker and Web pods
   ## This could, for example, be used to run a sidecar that syncs DAGs from object storage.
@@ -167,6 +183,14 @@ scheduler:
     # requests:
     #   cpu: "500m"
     #   memory: "512Mi"
+  ##
+  ## Labels for the scheduler deployment
+  labels: {}
+  ## Pod Annotations for the web deployment
+  podAnnotations: {}
+  ##
+  ## Annotations for the scheduler deployment
+  annotations: {}
 
   ## Support Node, affinity and tolerations for scheduler pod assignment
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
@@ -177,6 +201,10 @@ scheduler:
   tolerations: []
 
 flower:
+  ##
+  ## Set AIRFLOW__CELERY__FLOWER_URL_PREFIX
+  ## Prefix should match Ingress configuration ingress.flower.path
+  urlPrefix: ""
   resources: {}
     # limits:
     #   cpu: "100m"
@@ -184,6 +212,12 @@ flower:
     # requests:
     #   cpu: "100m"
     #   memory: "128Mi"
+  ##
+  ## Labels for the flower deployment
+  labels: {}
+  ##
+  ## Annotations for the flower deployment
+  annotations: {}
   service:
     annotations: {}
     type: ClusterIP
@@ -198,6 +232,10 @@ flower:
   tolerations: []
 
 web:
+  ##
+  ## Set AIRFLOW__WEBSERVER__BASE_URL
+  ## Path should match Ingress configuration
+  baseUrl: "http://localhost:8080"
   resources: {}
     # limits:
     #   cpu: "300m"
@@ -205,8 +243,28 @@ web:
     # requests:
     #   cpu: "100m"
     #   memory: "512Mi"
+  ##
+  ## Labels for the web deployment
+  labels: {}
+  ##
+  ## Annotations for the web deployment
+  annotations: {}
+  ## Pod Annotations for the web deployment
+  podAnnotations: {}
   initialStartupDelay: "60"
   initialDelaySeconds: "360"
+  minReadySeconds: 120
+  readinessProbe:
+    periodSeconds: 60
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 5
+  livenessProbe:
+    periodSeconds: 60
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 5
+
 
   ## Support Node, affinity and tolerations for web pod assignment
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
@@ -230,6 +288,9 @@ workers:
   ## Number of workers pod to launch
   replicas: 1
   ##
+  ## Gracefull termination period
+  terminationPeriod: 30
+  ##
   ## Custom resource configuration
   resources: {}
     # limits:
@@ -238,6 +299,12 @@ workers:
     # requests:
     #   cpu: "0.5"
     #   memory: "512Mi"
+  ##
+  ## Labels for the Worker statefulSet
+  labels: {}
+  ##
+  ## Annotations for the Worker statefulSet
+  annotations: {}
   ##
   ## Annotations for the Worker pods
   podAnnotations: {}
@@ -249,6 +316,11 @@ workers:
     ##
     ## number of parallel celery tasks per worker
     instances: 1
+    ##
+    ## Gracefull termination of workers
+    ## Wait for the worker to finish the current task within the gracefull period
+    gracefullTermination: false
+
   ##
   ## Directory in which to mount secrets on worker nodes.
   secretsDir: /var/airflow/secrets
@@ -270,10 +342,10 @@ ingress:
   ##
   ## enable ingress
   ## Note: If you want to change url prefix for web ui or flower even if you do not use ingress,
-  ## you can still change ingress.web.path and ingress.flower.path
+  ## you can change web.baseUrl and flower.urlPrefix
   enabled: false
   ##
-  ## Configure the webserver endpoint
+  ## Configure the Ingress webserver endpoint
   web:
     ## NOTE: This requires an airflow version > 1.9.x
     ## For the moment (March 2018) this is **not** available on official package, you will have
@@ -288,13 +360,13 @@ ingress:
     ## NOTE: do NOT keep trailing slash. For root configuration, set and empty string
     path: ""
     ##
-    ## hostname for the webserver
+    ## Ingress hostname for the webserver
     host: ""
     ##
     ## Annotations for the webserver
     ## Airflow webserver handles relative path completely, just let your load balancer give the HTTP
     ## header like the requested URL (no special configuration neeed)
-    annotations:
+    annotations: {}
       ##
       ## Example for Traefik:
       # traefik.frontend.rule.type: PathPrefix
@@ -309,8 +381,21 @@ ingress:
       ## If enabled, set "secretName" to the secret containing the TLS private key and certificate
       ## Example:
       ## secretName: example-com-crt
+    precedingPaths:
+      ## Different http paths to add to the ingress before the default path
+      ## Example:
+      ## - path: "/*"
+      ##   serviceName: "ssl-redirect"
+      ##   servicePort: "use-annotation"
+    succeedingPaths:
+      ## Different http paths to add to the ingress after the default path
+      ## Example:
+      ## - path: "/*"
+      ##   serviceName: "ssl-redirect"
+      ##   servicePort: "use-annotation"
+
   ##
-  ## Configure the flower endpoind
+  ## Configure the flower Ingress endpoint
   flower:
     ##
     ## If flower is '/airflow/flower':
@@ -357,7 +442,7 @@ ingress:
     ##              }
     ##            }
     ## ==== IF YOU HAVE FLOWER > JANUARY 2018, NO MORE NEED TO STRIP THE PREFIX ====================
-    annotations:
+    annotations: {}
       ##
       ## NOTE: it is important here to have your reverse proxy strip the path/rewrite the URL
       ## Example for Traefik:
@@ -443,7 +528,25 @@ dags:
     ## branch name, tag or sha1 to reset to
     ref: master
     ## pre-created secret with key, key.pub and known_hosts file for private repos
-    secret: {}
+    secret: ""
+    ## The host of the repo so for example if a github repo put github.com (Only need if using ssh not https git sync)
+    repoHost: ""
+    ## The name of the private key in your git sync secret (Only need if using ssh not https git sync)
+    privateKeyName: ""
+    gitSync:
+      ## Turns on the side car container
+      enabled: false
+      ## Image for the side car container
+      image:
+        ## docker-airflow image
+        repository: alpine/git
+        ## image tag
+        tag: 1.0.7
+        ## Image pull policy
+        ## values: Always or IfNotPresent
+        pullPolicy: IfNotPresent
+      ## The amount of time in seconds to git pull dags
+      refreshTime:
   initContainer:
     ## Fetch the source code when the pods starts
     enabled: false
@@ -493,8 +596,10 @@ postgresql:
 
   ##
   ## The name of an existing secret that contains the postgres password.
-  ## Note that the secret must have a key called postgres-password.
   existingSecret:
+
+  ## Name of the key containing the secret.
+  existingSecretKey: postgres-password
 
   ##
   ## If you are bringing your own PostgreSQL, you should set postgresHost and
@@ -538,8 +643,10 @@ redis:
 
   ##
   ## The name of an existing secret that contains the redis password.
-  ## Note that the secret must have a key called redis-password.
   existingSecret:
+
+  ## Name of the key containing the secret.
+  existingSecretKey: redis-password
 
   ##
   ## If you are bringing your own redis, you can set the host in redisHost.
@@ -586,6 +693,7 @@ serviceMonitor:
 
 # Enable this if you're using https://github.com/coreos/prometheus-operator
 prometheusRule:
+
   enabled: false
   ## Namespace in which the prometheus rule is created
   # namespace: monitoring
@@ -597,3 +705,14 @@ prometheusRule:
   ## Used to pass Labels that are used by the Prometheus installed in your cluster to select Prometheus Rules to work with
   ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
   additionalLabels: {}
+
+extraManifests: []
+##
+## Example:
+##  - apiVersion: cloud.google.com/v1beta1
+##    kind: BackendConfig
+##    metadata:
+##      name: "{{ .Release.Name }}-test"
+##    spec:
+##      securityPolicy:
+##        name: "gcp-cloud-armor-policy-test"

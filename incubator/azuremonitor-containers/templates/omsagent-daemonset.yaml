@@ -1,4 +1,4 @@
-{{- if and (ne .Values.omsagent.secret.key "<your_workspace_key>") (ne .Values.omsagent.secret.wsid "<your_workspace_id>") (ne .Values.omsagent.env.clusterName "<your_cluster_name>")}}
+{{- if and (ne .Values.omsagent.secret.key "<your_workspace_key>") (ne .Values.omsagent.secret.wsid "<your_workspace_id>") (or (ne .Values.omsagent.env.clusterName "<your_cluster_name>") (ne .Values.omsagent.env.clusterId "<your_cluster_id>"))}}
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
@@ -24,25 +24,50 @@ spec:
    serviceAccountName: omsagent
    {{- end }}
    containers:
-     - name: omsagent 
+     - name: omsagent
+       {{- if eq (.Values.omsagent.domain | lower) "opinsights.azure.cn" }}
+       image: "dockerhub.azk8s.cn/microsoft/oms:{{ .Values.omsagent.image.tag }}"
+       {{- else }}
        image: "mcr.microsoft.com/azuremonitor/containerinsights/ciprod:{{ .Values.omsagent.image.tag }}"
+       {{- end }}
        imagePullPolicy: IfNotPresent
        resources:
 {{ toYaml .Values.omsagent.resources.daemonset | indent 9 }}
        env:
+       {{- if ne .Values.omsagent.env.clusterId "<your_cluster_id>" }}
+       - name: AKS_RESOURCE_ID
+         value: {{ .Values.omsagent.env.clusterId | quote }}
+       {{- if ne .Values.omsagent.env.clusterRegion "<your_cluster_region>" }}
+       - name: AKS_REGION
+         value: {{ .Values.omsagent.env.clusterRegion | quote }}
+       {{- end }}
+       {{- else }}
        - name: ACS_RESOURCE_NAME
          value: {{ .Values.omsagent.env.clusterName | quote }}
+       {{- end }}
        - name: CONTROLLER_TYPE
          value: "DaemonSet"
        - name: NODE_IP
          valueFrom:
             fieldRef:
-              fieldPath: status.hostIP  
+              fieldPath: status.hostIP
+       {{- if .Values.omsagent.logsettings.logflushintervalsecs }}
+       - name: FBIT_SERVICE_FLUSH_INTERVAL
+         value: {{ .Values.omsagent.logsettings.logflushintervalsecs | quote }}
+       {{- end }}
+       {{- if .Values.omsagent.logsettings.tailbufchunksizemegabytes }}
+       - name: FBIT_TAIL_BUFFER_CHUNK_SIZE
+         value: {{ .Values.omsagent.logsettings.tailbufchunksizemegabytes | quote }}
+       {{- end }}
+       {{- if .Values.omsagent.logsettings.tailbufmaxsizemegabytes }}
+       - name: FBIT_TAIL_BUFFER_MAX_SIZE
+         value: {{ .Values.omsagent.logsettings.tailbufmaxsizemegabytes | quote }}
+       {{- end }}
        securityContext:
          privileged: true
        ports:
        - containerPort: 25225
-         protocol: TCP 
+         protocol: TCP
        - containerPort: 25224
          protocol: UDP
        volumeMounts:
@@ -51,9 +76,9 @@ spec:
           readOnly: true
         - mountPath: /var/run/host
           name: docker-sock
-        - mountPath: /var/log 
+        - mountPath: /var/log
           name: host-log
-        - mountPath: /var/lib/docker/containers 
+        - mountPath: /var/lib/docker/containers
           name: containerlog-path
         - mountPath: /etc/kubernetes/host
           name: azure-json-path
@@ -72,18 +97,20 @@ spec:
         initialDelaySeconds: 60
         periodSeconds: 60
    nodeSelector:
-    beta.kubernetes.io/os: linux    
-   # Tolerate a NoSchedule taint on master that ACS Engine sets.
+    beta.kubernetes.io/os: linux
+   # Tolerate below taints on nodes of k8s clusters to schedule ds pod.
    tolerations:
-    - key: "node-role.kubernetes.io/master"
-      operator: "Equal"
-      value: "true"
-      effect: "NoSchedule"     
+     - operator: "Exists"
+       effect: "NoSchedule"
+     - operator: "Exists"
+       effect: "NoExecute"
+     - operator: "Exists"
+       effect: "PreferNoSchedule"
    volumes:
     - name: host-root
       hostPath:
        path: /
-    - name: docker-sock 
+    - name: docker-sock
       hostPath:
        path: /var/run
     - name: container-hostname
@@ -105,4 +132,4 @@ spec:
       configMap:
         name: container-azm-ms-agentconfig
         optional: true
-{{- end }} 
+{{- end }}

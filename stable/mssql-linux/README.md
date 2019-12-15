@@ -101,6 +101,7 @@ The configuration parameters in this section control the resources requested and
 | nodeSelector     | Node labels for pod assignment                                                                 | `{}`                             |
 | service.headless   | Allows you to setup a headless service  | `false`  |
 | service.type     | Service Type                                                                                   | `ClusterIP`                      |
+| service.loadBalancerIP     | Loadbalancer IP                                                                                   | `nil`                      |
 | service.port     | Service Port                                                                                   | `1433`                           |
 | service.annotations | Kubernetes service annotations                                                              | `{}`                             |
 | service.labels   | Kubernetes service labels                                                                      | `{}`                             |
@@ -111,8 +112,9 @@ The configuration parameters in this section control the resources requested and
 | collation        | Default collation for SQL Server                                                               | `SQL_Latin1_General_CP1_CI_AS`   |
 | lcid             | Default languages for SQL Server                                                               | `1033`                           |
 | hadr             | Enable Availability Group                                                                      | `0`                              |
+| agent.enabled    | Enable Agent                                                                                   | `false`                          |
 | schedulerName    | Name of the k8s scheduler (other than default)                                                 | `nil`                            |
-| persistence.enabled | Persist the Data and Log files for SQL Server                                               | `false`                          |
+| persistence.enabled | Persist the Data and Log files for SQL Server                                               | `true`                          |
 | persistence.existingDataClaim | Identify an existing Claim to be used for the Data Directory                      | `Commented Out`                  |
 | persistence.existingTransactionLogClaim  | Identify an existing Claim to be used for the Log Directory            | `Commented Out`                  |
 | persistence.existingBackupClaim | Identify an existing Claim to be used for the SQL Database Backups              | `Commented Out`                  |

@@ -30,7 +30,7 @@ config:
 
 image:
   repository: "quay.io/pusher/oauth2_proxy"
-  tag: "v3.2.0"
+  tag: "v4.0.0"
   pullPolicy: "IfNotPresent"
 
 # Optionally specify an array of imagePullSecrets.
@@ -40,6 +40,7 @@ image:
   # - name: myRegistryKeySecretName
 
 extraArgs: {}
+extraEnv: []
 
 # To authorize individual email addresses
 # That is part of extraArgs but since this needs special treatment we need to do a separate section
@@ -92,6 +93,15 @@ resources: {}
   #   cpu: 100m
   #   memory: 300Mi
 
+extraVolumes: []
+  # - name: ca-bundle-cert
+  #   secret:
+  #     secretName: <secret-name>
+
+extraVolumeMounts: []
+  # - mountPath: /etc/ssl/certs/
+  #   name: ca-bundle-cert
+
 priorityClassName: ""
 
 # Affinity for pod assignment
@@ -121,9 +131,24 @@ readinessProbe:
   periodSeconds: 10
   successThreshold: 1
 
+# Configure Kubernetes security context for container
+# Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+securityContext:
+  enabled: false
+  runAsNonRoot: true
+
 podAnnotations: {}
 podLabels: {}
 replicaCount: 1
+
+## PodDisruptionBudget settings
+## ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+# whether to use http or https
+httpScheme: http
 
 # Additionally authenticate against a htpasswd file. Entries must be created with "htpasswd -s" for SHA encryption.
 # Alternatively supply an existing secret which contains the required information.

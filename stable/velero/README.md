@@ -1,106 +1,92 @@
-# Velero-server
+# Velero
 
-This helm chart installs Velero version v1.0.0
-https://github.com/heptio/velero/tree/v1.0.0
+Velero is an open source tool to safely backup and restore, perform disaster recovery, and migrate Kubernetes cluster resources and persistent volumes.
 
+Velero has two main components: a CLI, and a server-side Kubernetes deployment. 
 
-## Upgrading to v1.0.0
+## Installing the Velero CLI
 
-As of v1.0.0, Heptio Velero is no longer backwards-compatible with Heptio Ark.
+See the different options for installing the [Velero CLI](https://velero.io/docs/v1.2.0/install-overview/#install-the-cli).
 
-The [instructions found here](https://velero.io/docs/v1.0.0/upgrade-to-1.0/) will assist you in upgrading from version v0.11.0 to v1.0.0
+## Installing the Velero server
 
-## Upgrading to v0.11.0
+This helm chart installs Velero version v1.2.0 https://github.com/vmware-tanzu/velero/tree/v1.2.0. See the [#Upgrading](#upgrading) section for information on how to upgrade from other versions.
 
-As of v0.11.0, Heptio Ark has become Velero.
+### Prerequisites
 
-The [instructions found here](https://velero.io/docs/v0.11.0/migrating-to-velero/) will assist you in upgrading from Ark to Velero
+#### Tiller cluster-admin permissions
 
-## Prerequisites
+A service account and the role binding prerequisite must be added to Tiller when configuring Helm to install Velero:
 
-### Secret for cloud provider credentials
-Velero server needs an IAM service account in order to run, if you don't have it you must create it.
-Please follow the official documentation: https://velero.io/docs/v1.0.0/install-overview/
-
-Don't forget the step to create the secret
 ```
-kubectl create secret generic cloud-credentials --namespace <VELERO_NAMESPACE> --from-file cloud=credentials-velero
+kubectl create sa -n kube-system tiller
+kubectl create clusterrolebinding tiller-cluster-admin --clusterrole cluster-admin --serviceaccount kube-system:tiller
+helm init --service-account=tiller --wait --upgrade
 ```
 
-### Configuration
-Please change the values.yaml according to your setup
-See here for the official documentation https://velero.io/docs/v1.0.0/install-overview/
+#### Provider credentials
 
-#### Required Parameters
-Parameter | Description | Default | Required
---- | --- | --- | ---
-`configuration.provider` | The name of the cloud provider where you are deploying velero to (`aws`, `azure`, `gcp`) | none | yes
-`configuration.backupStorageLocation.name` | The name of the cloud provider that will be used to actually store the backups (`aws`, `azure`, `gcp`) | none | yes
-`configuration.backupStorageLocation.bucket` | The storage bucket where backups are to be uploaded | none | yes
-`configuration.backupStorageLocation.config.region` | The cloud provider region (AWS only) | none | yes, if using AWS
-`configuration.backupStorageLocation.config.resourceGroup` | The resource group containing the storage account (Azure only) | none | yes, if using Azure
-`configuration.backupStorageLocation.config.storageAccount` | The storage account containing the blob container (Azure only) | none | yes, if using Azure
-`configuration.volumeSnapshotLocation.name` | The name of the cloud provider the cluster is using for persistent volumes, if any | none | yes, if using PV snapshots
-`configuration.volumeSnapshotLocation.config.region` | The cloud provider region (AWS only) | none | yes, if using AWS
-`configuration.volumeSnapshotLocation.config.apitimeout` | The API timeout (Azure only) | none | yes, if using Azure
-`credentials.useSecret` | Whether a secret should be used for IAM credentials. Set this to `false` when using `kube2iam` | `true` | yes
-`credentials.existingSecret` | If specified and `useSecret` is `true`, uses an existing secret with this name instead of creating one | none | yes, if `useSecret` is `true` and `secretContents` is empty
-`credentials.secretContents` | If specified and `useSecret` is `true`, contents for the credentials secret | none | yes, if `useSecret` is `true` and `existingSecret` is empty
+When installing using the Helm chart, the provider's credential information will need to be appended into your values. The easiest way to do this is with the `--set-file` argument, available in Helm 2.10 and higher. See your cloud provider's documentation for the contents and creation of the `credentials-velero` file.
 
-#### All Parameters
-Parameter | Description | Default
---- | --- | ---
-`image.repository` | Image repository | `gcr.io/heptio-images/velero`
-`image.tag` | Image tag | `v1.0.0`
-`image.pullPolicy` | Image pull policy | `IfNotPresent`
-`podAnnotations` | Annotations for the Velero server pod | `{}`
-`rbac.create` | If true, create and use RBAC resources | `true`
-`rbac.server.serviceAccount.create` | Whether a new service account name that the server will use should be created | `true`
-`rbac.server.serviceAccount.name` | Service account to be used for the server. If not set and `rbac.server.serviceAccount.create` is `true` a name is generated using the fullname template | ``
-`resources` | Resource requests and limits | `{}`
-`initContainers` | InitContainers and their specs to start with the deployment pod | `[]`
-`tolerations` | List of node taints to tolerate | `[]`
-`nodeSelector` | Node labels for pod assignment | `{}`
-`configuration.backupStorageLocation.name` | The name of the cloud provider that will be used to actually store the backups (`aws`, `azure`, `gcp`) | ``
-`configuration.backupStorageLocation.bucket` | The storage bucket where backups are to be uploaded | ``
-`configuration.backupStorageLocation.config.region` | The cloud provider region (AWS only) | ``
-`configuration.backupStorageLocation.config.s3ForcePathStyle` | Set to `true` for a local storage service like Minio | ``
-`configuration.backupStorageLocation.config.s3Url` | S3 url (primarily used for local storage services like Minio) | ``
-`configuration.backupStorageLocation.config.kmsKeyId` | KMS key for encryption (AWS only) | ``
-`configuration.backupStorageLocation.config.resourceGroup` | The resource group containing the storage account (Azure only) | ``
-`configuration.backupStorageLocation.config.storageAccount` | The storage account containing the blob container (Azure only) | ``
-`configuration.backupStorageLocation.prefix` | The directory inside a storage bucket where backups are to be uploaded | ``
-`configuration.backupSyncPeriod` | How frequently Velero queries the object storage to make sure that the appropriate Backup resources have been created for existing backup files | (uses `velero server` default)
-`configuration.extraEnvVars` | Key/values for extra environment variables such as AWS_CLUSTER_NAME, etc | `{}`
-`configuration.provider` | The name of the cloud provider where you are deploying velero to (`aws`, `azure`, `gcp`) |
-`configuration.restoreResourcePriorities` | An ordered list that describes the order in which Kubernetes resource objects should be restored | (uses `velero server` default)
-`configuration.resticTimeout` | How long backups/restores of pod volumes should be allowed to run before timing out. | (uses `velero server` default)
-`configuration.restoreOnlyMode` | When RestoreOnly mode is on, functionality for backups, schedules, and expired backup deletion is turned off. Restores are made from existing backup files in object storage | (uses `velero server` default)
-`configuration.volumeSnapshotLocation.name` | The name of the cloud provider the cluster is using for persistent volumes, if any | `{}`
-`configuration.volumeSnapshotLocation.config.region` | The cloud provider region (AWS only) | ``
-`configuration.volumeSnapshotLocation.config.apitimeout` | The API timeout (`azure` only) |
-`configuration.volumeSnapshotLocation.config.resourceGroup` | The name of the resource group where volume snapshots should be stored, if different from the cluster’s resource group. (Azure only) |
-`configuration.volumeSnapshotLocation.config.project` | The project ID where snapshots should be stored, if different than the project that your IAM account is in. (GCP only) |
-`configuration.volumeSnapshotLocation.config.snapshotLocation` | The location where the snapshots will be stored. (GCP only) |
-`credentials.existingSecret` | If specified and `useSecret` is `true`, uses an existing secret with this name instead of creating one | ``
-`credentials.useSecret` | Whether a secret should be used. Set this to `false` when using `kube2iam` | `true`
-`credentials.secretContents` | Contents for the credentials secret | `{}`
-`snapshotsEnabled` | If `true`, create volumesnapshotlocation crd. Set this to `false` to disable snapshot feature | `true`
-`deployRestic` | If `true`, enable restic deployment | `false`
-`metrics.enabled` | Set this to `true` to enable exporting Prometheus monitoring metrics | `false`
-`metrics.scrapeInterval` | Scrape interval for the Prometheus ServiceMonitor | `30s`
-`metrics.serviceMonitor.enabled` | Set this to `true` to create ServiceMonitor for Prometheus operator | `false`
-`metrics.serviceMonitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | `{}`
-`schedules` | A dict of schedules | `{}`
-`restic.podVolumePath` | Location of pod volumes on the host | `/var/lib/kubelet/pods`
-`restic.privileged` | Whether restic should run as a privileged pod. Only necessary in special cases (SELinux) | `false`
-`restic.resources` | Restic DaemonSet resource requests and limits | `{}`
-`configMaps` | Velero ConfigMaps | `[]`
+### Installing
 
-## How to
-```
-helm install --name velero --namespace velero ./velero
+The default configuration values for this chart are listed in values.yaml.
+
+See Velero's full [official documentation](https://velero.io/docs/v1.2.0/install-overview/). More specifically, find your provider in the Velero list of [supported providers](https://velero.io/docs/v1.2.0/supported-providers/) for specific configuration information and examples.
+
+#### Option 1) CLI commands
+
+Specify the necessary values using the --set key=value[,key=value] argument to helm install. For example,
+
+```bash
+helm install --namespace <YOUR NAMESPACE> \
+--set configuration.provider=<PROVIDER NAME> \
+--set-file credentials.secretContents.cloud=<FULL PATH TO FILE> \
+--set configuration.backupStorageLocation.name=<PROVIDER NAME> \
+--set configuration.backupStorageLocation.bucket=<BUCKET NAME> \
+--set configuration.backupStorageLocation.config.region=<REGION> \
+--set configuration.volumeSnapshotLocation.name=<PROVIDER NAME> \
+--set configuration.volumeSnapshotLocation.config.region=<REGION> \
+--set image.repository=velero/velero \
+--set image.tag=v1.2.0 \
+--set image.pullPolicy=IfNotPresent \
+--set initContainers[0].name=velero-plugin-for-aws \
+--set initContainers[0].image=velero/velero-plugin-for-aws:v1.0.0 \
+--set initContainers[0].volumeMounts[0].mountPath=/target \
+--set initContainers[0].volumeMounts[0].name=plugins \
+stable/velero
 ```
 
-## Remove heptio/velero
-Remember that when you remove Velero all backups remain untouched
+#### Option 2) YAML file
+
+Add/update the necessary values by changing the values.yaml from this repository, then running:
+
+```bash
+helm install --namespace <NAMESPACE> -f values.yaml stable/velero
+```
+
+#### Upgrade the configuration
+
+If a value needs to be added or changed, you may do so with the `upgrade` command. An example:
+
+```bash
+helm upgrade <RELEASE NAME> --set initContainers.backupStorageLocation.name=aws,initContainers.volumeSnapshotLocation.name=aws stable/velero
+```
+
+## Upgrading
+
+### Upgrading to v1.2.0
+
+The [instructions found here](https://velero.io/docs/v1.2.0/upgrade-to-1.2/) will assist you in upgrading from version v1.0.0 or v1.1.0 to v1.2.0.
+
+### Upgrading to v1.1.0
+
+The [instructions found here](https://velero.io/docs/v1.1.0/upgrade-to-1.1/) will assist you in upgrading from version v1.0.0 to v1.1.0.
+
+## Uninstall Velero
+
+Note: when you uninstall the Velero server, all backups remain untouched.
+
+```bash
+helm delete <RELEASE NAME> --purge
+```

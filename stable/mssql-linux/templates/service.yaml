@@ -21,6 +21,9 @@ spec:
   {{- else }}
   type: {{ .Values.service.type }}
   {{- end }}
+  {{- if (and (eq .Values.service.type "LoadBalancer") (not (empty .Values.service.loadBalancerIP))) }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+  {{- end }}
   ports:
   - name: mssql
     port: {{ .Values.service.port }}
