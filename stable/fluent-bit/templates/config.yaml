@@ -91,6 +91,7 @@ data:
 {{- if .Values.filter.enableExclude }}
         K8S-Logging.Exclude On
 {{- end }}
+{{ .Values.extraEntries.filter | indent 8 }}
 
   fluent-bit-output.conf: |
 {{ if eq .Values.backend.type "test" }}
