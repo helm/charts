@@ -1,7 +1,8 @@
-# Default values for chart.
+# Default values for mercure.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+transportUrl: "bolt://updates.db?size=0&cleanup_frequency=0.3"
 allowAnonymous: "0"
 corsAllowedOrigins: ""
 debug: "0"
@@ -12,37 +13,9 @@ publishAllowedOrigins: ""
 publisherJwtKey: ""
 subscriberJwtKey: ""
 heartbeatInterval: "0s"
-historyCleanupFrequency: 0.3
-historySize: 0
 readTimeout: "0s"
 writeTimeout: "0s"
 useForwardedHeaders: "0"
-
-image:
-  repository: dunglas/mercure
-  tag: v0
-  pullPolicy: IfNotPresent
-
-nameOverride: ""
-fullnameOverride: ""
-
-service:
-  type: NodePort
-  port: 80
-
-ingress:
-  enabled: false
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  paths:
-    - /
-  hosts:
-    - mercure.local
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - mercure.local
 
 # GCP load balancers by default terminate connections after 30 seconds. This can be changed by
 # enabling the following backendConfig and changing the `timeoutSec` property.
@@ -52,6 +25,53 @@ backendConfig:
   enabled: false
   timeoutSec: 30
 
+# replicaCount MUST be 1 if you use the BoltDB transport (the default)
+replicaCount: 1
+
+image:
+  repository: dunglas/mercure
+  tag: v0
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: mercure.local
+      paths: []
+
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -59,11 +79,11 @@ resources: {}
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   # limits:
-  #  cpu: 100m
-  #  memory: 128Mi
+  #   cpu: 100m
+  #   memory: 128Mi
   # requests:
-  #  cpu: 100m
-  #  memory: 128Mi
+  #   cpu: 100m
+  #   memory: 128Mi
 
 nodeSelector: {}
 

@@ -412,6 +412,11 @@ ingressController:
 
   installCRDs: true
 
+  admissionWebhook:
+    enabled: false
+    failurePolicy: Fail
+    port: 8080
+
   rbac:
     # Specifies whether RBAC resources should be created
     create: true

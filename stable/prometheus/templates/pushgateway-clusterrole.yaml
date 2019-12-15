@@ -15,5 +15,7 @@ rules:
     - use
     resourceNames:
     - {{ template "prometheus.pushgateway.fullname" . }}
+{{- else }}
+  []
 {{- end }}
 {{- end }}

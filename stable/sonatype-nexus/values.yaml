@@ -10,7 +10,7 @@ deploymentStrategy: {}
 
 nexus:
   imageName: quay.io/travelaudience/docker-nexus
-  imageTag: 3.17.0
+  imageTag: 3.19.1
   imagePullPolicy: IfNotPresent
   env:
     - name: install4jAddVmParams

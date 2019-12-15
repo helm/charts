@@ -1,4 +1,4 @@
-{{- if and (ne .Values.omsagent.secret.key "<your_workspace_key>") (ne .Values.omsagent.secret.wsid "<your_workspace_id>") (ne .Values.omsagent.env.clusterName "<your_cluster_name>")}}
+{{- if and (ne .Values.omsagent.secret.key "<your_workspace_key>") (ne .Values.omsagent.secret.wsid "<your_workspace_id>") (or (ne .Values.omsagent.env.clusterName "<your_cluster_name>") (ne .Values.omsagent.env.clusterId "<your_cluster_id>"))}}
 kind: ConfigMap
 apiVersion: v1
 data:
