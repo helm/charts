@@ -272,10 +272,10 @@ filter:
 # If true, enable the use of monitoring for a pod annotation of
 # fluentbit.io/exclude: true. If present, discard logs from that pod.
   enableExclude: true
- 
+
 # If set, the filter reads logs coming in Journald format.
   useJournal: ""
- 
+
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
