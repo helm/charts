@@ -345,6 +345,6 @@ spec:
       {{- end }}
       {{- end }}
 {{- else }}
-      - name: datadir
-        emptyDir: {}
+        - name: datadir
+          emptyDir: {}
 {{- end }}
