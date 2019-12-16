@@ -256,7 +256,7 @@ filter:
 # of a parser contained within parsers.conf
   enableParser: true
 
-# If set, the filter reads logs coming in Journald format.
+# If set, the filter reads logs coming in Journald format. 
   useJournal: ""
 
 # If true, enable the use of monitoring for a pod annotation of
