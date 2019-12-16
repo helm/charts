@@ -53,6 +53,22 @@ data:
 {{- end }}
 {{ .Values.extraEntries.input | indent 8 }}
 
+{{- if .Values.audit.enable }}
+    [INPUT]
+        Name              tail
+        Path              {{ .Values.audit.input.path }}
+        Parser            {{ .Values.audit.input.parser }}
+        DB                /var/log/audit.db
+        Tag               audit.*
+        Refresh_Interval  5
+        Mem_Buf_Limit     {{ .Values.audit.input.memBufLimit }}
+        Buffer_Chunk_Size {{ .Values.audit.input.bufferChunkSize }}
+        Buffer_Max_Size   {{ .Values.audit.input.bufferMaxSize }}
+        Skip_Long_Lines   {{ .Values.audit.input.skipLongLines}}
+        Key               {{ .Values.audit.input.key}}
+{{ .Values.extraEntries.audit | indent 8 }}
+{{- end }}
+
   fluent-bit-filter.conf: |
     [FILTER]
         Name                kubernetes
