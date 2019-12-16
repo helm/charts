@@ -276,7 +276,7 @@ Since you're unlikely to be using init-container with this configuration, you'll
 
 ### Git-Sync sidecar container
 
-This is probably the most popular way for airflow users to syncronize there dags. Its a pretty simple set up just a sidecar container in the pods that pulls dags from your repository of choice using git. To do this you must set up all the git values in this chart to a point where you can successfully connect to the repo. These are the values you will definitley need to set after enabling `dags.git.gitSync.enabled`. `dags.git.url` `dags.git.ref` `dags.git.gitSync.refreshTime`. If you are going the ssh connect route make sure to set the following `dags.git.privateKeyName`, `dags.git.repoHost`, `dags.git.secret`. In the secret have the private key and the known_hosts file as well so the host does not mistake the containers connection as a man in the middle attack and deny connection.
+This is probably the most popular way for airflow users to syncronize their dags. Its a pretty simple set up just a sidecar container in the pods that pulls dags from your repository of choice using git. To do this you must set up all the git values in this chart to a point where you can successfully connect to the repo. These are the values you will definitley need to set after enabling `dags.git.gitSync.enabled`. `dags.git.url` `dags.git.ref` `dags.git.gitSync.refreshTime`. If you are going the ssh connect route make sure to set the following `dags.git.privateKeyName`, `dags.git.repoHost`, `dags.git.secret`. In the secret have the private key and the known_hosts file as well so the host does not mistake the containers connection as a man in the middle attack and deny connection.
 
 ### Use init-container
 
