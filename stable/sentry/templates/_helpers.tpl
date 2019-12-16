@@ -121,3 +121,14 @@ Set redis port
 {{- default "6379" .Values.redis.port | quote -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "sentry.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "sentry.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
