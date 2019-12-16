@@ -26,8 +26,8 @@
           name: {{ template "datadog.apiSecretName" . }}
           key: api-key
     {{- if .Values.datadog.clusterName }}
-    {{- if not (regexMatch "^[a-z]([a-z0-9\\-]{0,38}[a-z0-9])?$" .Values.datadog.clusterName) }}
-    {{- fail "Your `clusterName` isn’t valid. It must start with a lowercase letter followed by up to 39 lowercase letters, numbers, or hyphens and cannot end with a hyphen."}}
+    {{- if not (regexMatch "^([a-z]([a-z0-9\\-]{0,38}[a-z0-9])?\\.)*([a-z]([a-z0-9\\-]{0,38}[a-z0-9])?)$" .Values.datadog.clusterName) }}
+    {{- fail "Your `clusterName` isn’t valid. It must be dot-separated tokens where a token start with a lowercase letter followed by up to 39 lowercase letters, numbers, or hyphens and cannot end with a hyphen."}}
     {{- end}}
     - name: DD_CLUSTER_NAME
       value: {{ .Values.datadog.clusterName | quote }}

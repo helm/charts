@@ -71,11 +71,11 @@ datadog:
 
   ## @param clusterName - string - optional
   ## Set a unique cluster name to allow scoping hosts and Cluster Checks easily
-  ## The name must be unique and can be up to 40 characters with the following restrictions:
+  ## The name must be unique and must be dot-separated tokens where a token can be up to 40 characters with the following restrictions:
   ## * Lowercase letters, numbers, and hyphens only.
   ## * Must start with a letter.
   ## * Must end with a number or a letter.
-  ## These are the same rules as the one enforced by GKE on the same cluster name parameter:
+  ## Compared to the rules of GKE, dots are allowed whereas they are not allowed on GKE:
   ## https://cloud.google.com/kubernetes-engine/docs/reference/rest/v1beta1/projects.locations.clusters#Cluster.FIELDS.name
   #
   # clusterName: <CLUSTER_NAME>
