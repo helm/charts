@@ -2,7 +2,7 @@ apiVersion: v1
 description: The easy, open source way for everyone in your company to ask questions
   and learn from data.
 name: metabase
-version: 0.8.1
+version: 0.9.3
 appVersion: v0.32.9
 maintainers:
 - name: pmint93

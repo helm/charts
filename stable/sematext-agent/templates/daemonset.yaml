@@ -52,8 +52,8 @@ spec:
                 key: logs-token
           - name: STA_NAMESPACE
             valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
+              fieldRef:
+                fieldPath: metadata.namespace
           envFrom:
           - configMapRef:
               name: {{ template "sematext-agent.fullname" . }}-agent

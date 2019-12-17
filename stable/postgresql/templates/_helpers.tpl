@@ -259,6 +259,13 @@ Get the initialization scripts Secret name.
 {{- end -}}
 
 {{/*
+Get the metrics ConfigMap name.
+*/}}
+{{- define "postgresql.metricsCM" -}}
+{{- printf "%s-metrics" (include "postgresql.fullname" .) -}}
+{{- end -}}
+
+{{/*
 Return the proper Docker Image Registry Secret Names
 */}}
 {{- define "postgresql.imagePullSecrets" -}}
@@ -370,5 +377,31 @@ Return the appropriate apiVersion for statefulset.
 {{- print "apps/v1beta2" -}}
 {{- else -}}
 {{- print "apps/v1" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Compile all warnings into a single message, and call fail.
+*/}}
+{{- define "postgresql.validateValues" -}}
+{{- $messages := list -}}
+{{- $messages := append $messages (include "postgresql.validateValues.ldapConfigurationMethod" .) -}}
+{{- $messages := without $messages "" -}}
+{{- $message := join "\n" $messages -}}
+
+{{- if $message -}}
+{{- printf "\nVALUES VALIDATION:\n%s" $message | fail -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Validate values of Postgresql - If ldap.url is used then you don't need the other settings for ldap
+*/}}
+{{- define "postgresql.validateValues.ldapConfigurationMethod" -}}
+{{- if and .Values.ldap.enabled (and (not (empty .Values.ldap.url)) (not (empty .Values.ldap.server))) }}
+postgresql: ldap.url, ldap.server
+    You cannot set both `ldap.url` and `ldap.server` at the same time.
+    Please provide a unique way to configure LDAP.
+    More info at https://www.postgresql.org/docs/current/auth-ldap.html
 {{- end -}}
 {{- end -}}

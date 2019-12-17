@@ -412,6 +412,14 @@ ingressController:
 
   installCRDs: true
 
+  admissionWebhook:
+    enabled: false
+    failurePolicy: Fail
+    port: 8080
+
+  # Specify Kong Ingress Controller configuration via environment variables
+  env: {}
+
   rbac:
     # Specifies whether RBAC resources should be created
     create: true

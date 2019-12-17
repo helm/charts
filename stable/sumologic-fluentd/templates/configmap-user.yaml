@@ -1,0 +1,16 @@
+{{- if .Values.sumologic.fluentdUserConfig }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "sumologic-fluentd.fluentdUserConfig.fullname" . }}
+  labels:
+    app: {{ template "sumologic-fluentd.fluentdUserConfig.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    checksum/user-conf-config: {{ toYaml .Values.sumologic.fluentdUserConfig | sha256sum }}
+data:
+{{ toYaml .Values.sumologic.fluentdUserConfig | indent 2 }}
+{{- end -}}
+
