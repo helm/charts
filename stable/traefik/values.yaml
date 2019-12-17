@@ -1,6 +1,6 @@
 ## Default values for Traefik
 image: traefik
-imageTag: 1.7.19
+imageTag: 1.7.20
 
 ## Optionally specify an array of imagePullSecrets.
 ## Secrets must be manually created in the namespace.
@@ -223,6 +223,9 @@ acme:
   email: admin@example.com
   onHostRule: true
   staging: true
+  ## Specify a custom ACME server endpoint
+  ## Optional
+  # caServer: https://acme-staging-v02.api.letsencrypt.org/directory
   logging: false
   # Configure a Let's Encrypt certificate to be managed by default.
   # This is the only way to request wildcard certificates (works only with dns challenge).
@@ -239,13 +242,8 @@ acme:
       #   - "test1.example2.com"
       #   - "test2.example2.com"
   ## ACME challenge type: "tls-sni-01", "tls-alpn-01", "http-01" or "dns-01"
-  ## Note the chart's default of tls-sni-01 has been DEPRECATED and (except in
-  ## certain circumstances) DISABLED by Let's Encrypt. It remains as a default
-  ## value in this chart to preserve legacy behavior and avoid a breaking
-  ## change. Users of this chart should strongly consider making the switch to
-  ## the recommended "tls-alpn-01" (available since v1.7), dns-01 or http-01
-  ## (available since v1.5) challenge.
-  challengeType: tls-sni-01
+  ## Note that "tls-sni-01" has been DEPRECATED.
+  challengeType: tls-alpn-01
   ## Configure dnsProvider to perform domain verification using dns challenge
   ## Applicable only if using the dns-01 challenge type
   delayBeforeCheck: 0
