@@ -103,6 +103,7 @@ keeper:
   annotations: {}
   resources: {}
   priorityClassName: ""
+  fsGroup: ""
   service:
     type: ClusterIP
     annotations: {}
