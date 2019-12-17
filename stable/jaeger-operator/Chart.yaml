@@ -7,8 +7,3 @@ deprecated: true
 home: https://www.jaegertracing.io/
 icon: https://www.jaegertracing.io/img/jaeger-icon-reverse-color.svg
 source: https://github.com/jaegertracing/jaeger-operator
-maintainers:
-  - email: ctadeu@gmail.com
-    name: cpanato
-  - email: batazor111@gmail.com
-    name: batazor
