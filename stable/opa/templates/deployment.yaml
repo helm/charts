@@ -29,6 +29,9 @@ spec:
 {{- end }}
       labels:
         app: {{ template "opa.fullname" . }}
+        {{- if .Values.opa.podLabels }}
+        {{ toYaml .Values.opa.podLabels }}
+        {{- end }}
       name: {{ template "opa.fullname" . }}
     spec:
 {{- if .Values.priorityClassName }}
