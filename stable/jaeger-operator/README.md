@@ -1,4 +1,4 @@
-# jaeger-operator
+# DEPRECATED - jaeger-operator
 
 [jaeger-operator](https://github.com/jaegertracing/jaeger-operator) is a Kubernetes operator.
 
