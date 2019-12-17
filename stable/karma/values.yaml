@@ -76,6 +76,7 @@ livenessProbe:
 # to provide advanced configuration. NOTE, you must use port 8080!
 configMap:
   enabled: false
+  annotations: {}
   # rawConfig:
   #   alertmanager:
   #   interval: 30s
