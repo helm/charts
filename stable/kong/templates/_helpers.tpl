@@ -153,6 +153,18 @@ The name of the service used for the ingress controller's validation webhook
 {{- end -}}
 {{- end -}}
 
+{{- define "kong.ingressController.env" -}}
+{{- range $key, $val := .Values.ingressController.env }}
+- name: CONTROLLER_{{ $key | upper}}
+{{- $valueType := printf "%T" $val -}}
+{{ if eq $valueType "map[string]interface {}" }}
+{{ toYaml $val | indent 2 -}}
+{{- else }}
+  value: {{ $val | quote -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
 {{- define "kong.volumes" -}}
 {{- range .Values.plugins.configMaps }}
 - name: kong-plugin-{{ .pluginName }}
@@ -277,6 +289,7 @@ The name of the service used for the ingress controller's validation webhook
       fieldRef:
         apiVersion: v1
         fieldPath: metadata.namespace
+{{- include "kong.ingressController.env" .  | indent 2 }}
   image: "{{ .Values.ingressController.image.repository }}:{{ .Values.ingressController.image.tag }}"
   imagePullPolicy: {{ .Values.image.pullPolicy }}
   readinessProbe:

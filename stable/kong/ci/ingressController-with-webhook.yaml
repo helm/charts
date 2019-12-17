@@ -3,3 +3,5 @@ ingressController:
   enabled: true
   admissionWebhook:
     enabled: true
+  env:
+    kong_admin_header: "foo:bar"
