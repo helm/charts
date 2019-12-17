@@ -63,11 +63,15 @@ The following table lists the configurable parameters of the drone charts and th
 | `images.dind.repository`    | Docker **dind** image                                                                         | `docker.io/library/docker`  |
 | `images.dind.tag`           | Docker **dind** image tag                                                                     | `18.06.1-ce-dind`           |
 | `images.dind.pullPolicy`    | Docker **dind** image pull policy                                                             | `IfNotPresent`              |
+| `images.kubernetes_secrets.repository`    | Docker **Kubernetes Secrets** image                                             | `docker.io/library/docker`  |
+| `images.kubernetes_secrets.tag`           | Docker **Kubernetes Secrets** image tag                                         | `linux-amd64`               |
+| `images.kubernetes_secrets.pullPolicy`    | Docker **Kubernetes Secrets** image pull policy                                 | `IfNotPresent`              |
 | `service.annotations`       | Service annotations                                                                           | `{}`                        |
 | `service.httpPort`          | Drone's Web GUI HTTP port                                                                     | `80`                        |
 | `service.nodePort`          | If `service.type` is `NodePort` and this is non-empty, sets the http node port of the service | `32015`                     |
 | `service.type`              | Service type (ClusterIP, NodePort or LoadBalancer)                                            | `ClusterIP`                 |
 | `ingress.enabled`           | Enables Ingress for Drone                                                                     | `false`                     |
+| `ingress.apiVersion`        | Enables Override of ingress apiVersion                                                        | `false`                     |
 | `ingress.annotations`       | Ingress annotations                                                                           | `{}`                        |
 | `ingress.hosts`             | Ingress accepted hostnames                                                                    | `nil`                       |
 | `ingress.tls`               | Ingress TLS configuration                                                                     | `[]`                        |
@@ -117,6 +121,9 @@ The following table lists the configurable parameters of the drone charts and th
 | `dind.env`                  | **DinD** environment variables                                                                | `nil`                       |
 | `dind.command`              | **DinD** custom command instead of default entry point                                        | `nil`                       |
 | `dind.args`                 | **DinD** arguments for custom command or entry point                                          | `nil`                       |
+| `kubernetes_secrets.enabled`        | Enable or disable **Kubernetes Secrets**                                                    | `false`            |
+| `kubernetes_secrets.env`            | **Kubernetes Secrets** environment variables                                                | `nil`               |
+| `kubernetes_secrets.ingress.enabled`| **Kubernetes Secrets** enable ingress                                                       | `true`             |
 | `metrics.prometheus.enabled` | Enable Prometheus metrics endpoint                                                          | `false`                     |
 | `persistence.enabled`       | Use a PVC to persist data                                                                     | `true`                      |
 | `persistence.existingClaim` | Use an existing PVC to persist data                                                           | `nil`                       |

@@ -51,7 +51,10 @@ service:
 ingress:
   ## If true, Drone Ingress will be created.
   ##
-  enabled: false
+  enabled: true
+
+  ## Override apiVersion to support older k8s
+  # apiVersion: "extensions/v1beta1"
 
   ## Drone Ingress annotations
   ##
