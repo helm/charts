@@ -23,6 +23,14 @@ images:
     tag: 18.06.1-ce-dind
     pullPolicy: IfNotPresent
 
+  ## The official docker (kubernetes-secrets) image, change tag to use a different version.
+  ## ref: https://hub.docker.com/r/library/docker/tags/
+  ##
+  kubernetes_secrets:
+    repository: "docker.io/drone/kubernetes-secrets"
+    tag: linux-amd64
+    pullPolicy: IfNotPresent
+
 service:
   httpPort: 80
 
@@ -337,6 +345,48 @@ dind:
 metrics:
   prometheus:
     enabled: false
+
+kubernetes_secrets:
+  enabled: true
+
+  ## Drone server configuration.
+  ## Values in here get injected as environment variables.
+  ## You can set up remote database servers etc using environment
+  ## variables.
+  ## ref: https://docs.drone.io/reference/server/
+  ##
+  env: {}
+    # DEBUG: "0"
+
+  ## Secret environment variables are configured in `server.envSecrets`.
+  ## Each item in `server.envSecrets` references a Kubernetes Secret.
+  ## These Secrets should be created before they are referenced.
+  ##
+  envSecrets:
+    # The name of a Kubernetes Secret
+    drone-communications:
+      # A list of Secret keys to include as environment variables
+      - SECRET_KEY
+
+  ingress:
+    enabled: true
+    annotations:
+      ingress.kubernetes.io/rewrite-target: /
+      kubernetes.io/ingress.class: nginx
+      kubernetes.io/ingress.provider: nginx
+
+    ## Drone hostnames must be provided if Ingress is enabled
+    ##
+    hosts:
+      - secret.drone.io
+
+    ## Drone Ingress TLS configuration secrets
+    ## Must be manually created in the namespace
+    ##
+    tls:
+      - secretName: drone-cert
+        hosts:
+          - secret.drone.io
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
