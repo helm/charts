@@ -23,6 +23,14 @@ images:
     tag: 18.06.1-ce-dind
     pullPolicy: IfNotPresent
 
+  ## The official docker (autoscaler) image, change tag to use a different version.
+  ## ref: https://hub.docker.com/r/library/docker/tags/
+  ##
+  autoscaler:
+    repository: "docker.io/drone/autoscaler"
+    tag: 1.5.0
+    pullPolicy: IfNotPresent
+
 service:
   httpPort: 80
 
@@ -332,6 +340,133 @@ dind:
   #  limits:
   #    memory: 2Gi
   #    cpu: 1
+
+autoscaler:
+  enabled: true
+
+  ## Drone server configuration.
+  ## Values in here get injected as environment variables.
+  ## You can set up remote database servers etc using environment
+  ## variables.
+  ## ref: https://autoscale.drone.io/
+  ##
+  env:
+    DRONE_LOGS_DEBUG: "true"
+    DRONE_LOGS_TRACE: "false"
+    DRONE_LOGS_PRETTY: "false"
+    DRONE_AGENT_ENV_FILE: /config/env.conf
+    DRONE_DOCKER_CONFIG: /root/.docker/config.json
+    DRONE_SECRET_ENDPOINT: http://i-drone-secret.dev.icelandairlabs.com
+    DRONE_INTERVAL: 10s
+
+  ## Number of drone agent replicas
+  replicas: 1
+
+  ## Additional agent annotations.
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  ##
+  annotations: {}
+
+  ## Additional volumes e.g. for shared caching between agents on different nodes or
+  ## shared cache between agents on the same node when using dind or
+  ## for a global docker login config as per
+  ## Option 2 ref: https://discourse.drone.io/t/how-to-pull-private-images-with-1-0/3155
+  ## Note: Option 2 also requires DRONE_DOCKER_CONFIG: /root/.docker/config.json env var in agent
+  ## NB: This will make the credentials available globally to all builds and all repositories
+  # volumes:
+  # - name: config
+  #   secret:
+  #     items:
+  #     - key: env_file
+  #       path: env.conf
+  #     secretName: drone-agent-env
+  # - name: docker-config
+  #   secret:
+  #     defaultMode: 420
+  #     items:
+  #     - key: .dockercfg
+  #       path: config.json
+  #     secretName: docker-registry-pull-secret
+
+  ## Volume mount into autoscaler container
+  # volumeMounts:
+  # - name: config
+  #   mountPath: /config
+  # - name: docker-config
+  #   mountPath: /root/.docker
+  #   readOnly: true
+
+  ## CPU and memory limits for drone agent
+  ##
+  resources: {}
+  #  requests:
+  #    memory: 32Mi
+  #    cpu: 40m
+  #  limits:
+  #    memory: 2Gi
+  #    cpu: 1
+
+  ## Liveness and readiness probe values
+  ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
+  ## drone agent does not currently have a health endpoint to check against.
+  livenessProbe: {}
+  readinessProbe: {}
+
+  ## Use an alternate scheduler, e.g. "stork".
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  # schedulerName:
+
+  ## Pod scheduling preferences.
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ##
+  affinity: {}
+
+  ## Node labels for pod assignment
+  ## ref: https://kubernetes.io/docs/user-guide/node-selection
+  ##
+  nodeSelector: {}
+
+  ## Node taints to tolerate
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
+
+  ## Secret environment variables are configured in `server.envSecrets`.
+  ## Each item in `server.envSecrets` references a Kubernetes Secret.
+  ## These Secrets should be created before they are referenced.
+  ##
+  envSecrets:
+    # The name of a Kubernetes Secret
+    drone-communications:
+      - DRONE_SERVER_TOKEN
+      - DRONE_AGENT_TOKEN
+    drone-autoscaler:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - DRONE_AMAZON_USERDATA
+
+  pool:
+    min: 1
+    max: 1
+
+  ## If not set, it will be autofilled with the cluster host.
+  ## protocol will default to http
+  server: {}
+  #   protocol: http
+  #   host: server.drone.io
+
+  aws:
+    enabled: true
+    region: eu-west-1
+    subnet_id: subnet-id
+    sshkey: ssh-key-name
+    tags: tag1:value,tag2:value
+    instance_type: c5.large
+    security_group: sg-id
+    private_ip: true
+
+  agent_volumes: "/root/.docker/config.json:/root/.docker/config.json"
 
 ## Enable scraping of the /metrics endpoint for Prometheus
 metrics:

@@ -63,6 +63,9 @@ The following table lists the configurable parameters of the drone charts and th
 | `images.dind.repository`    | Docker **dind** image                                                                         | `docker.io/library/docker`  |
 | `images.dind.tag`           | Docker **dind** image tag                                                                     | `18.06.1-ce-dind`           |
 | `images.dind.pullPolicy`    | Docker **dind** image pull policy                                                             | `IfNotPresent`              |
+| `images.autoscaler.repository`    | Docker **autoscaler** image                                                             | `docker.io/library/docker`  |
+| `images.autoscaler.tag`           | Docker **autoscaler** image tag                                                         | `1.5.0`             |
+| `images.autoscaler.pullPolicy`    | Docker **autoscaler** image pull policy                                                 | `IfNotPresent`              |
 | `service.annotations`       | Service annotations                                                                           | `{}`                        |
 | `service.httpPort`          | Drone's Web GUI HTTP port                                                                     | `80`                        |
 | `service.nodePort`          | If `service.type` is `NodePort` and this is non-empty, sets the http node port of the service | `32015`                     |
@@ -83,12 +86,12 @@ The following table lists the configurable parameters of the drone charts and th
 | `server.host`               | Drone **server** hostname (should match callback url in oauth config)              | `(internal hostname)`       |
 | `server.protocol`               | Drone **server** scheme/protocol [http,https]                                                         | `http`       |
 | `server.env`                | Drone **server** environment variables                                                        | `(default values)`          |
-| `server.envSecrets`         | Drone **server** secret environment variables                                                 | `(default values)`          |
-| `server.adminUser`         | Initial user to create and set as admin                                                 | ``          |
-| `server.alwaysAuth`         | whether to authenticate when cloning public repositories                                                 | `false`          |
-| `server.kubernetes.enabled`         | whether to use kubernetes to run pipelines (if `false` will run agents instead)                                            | `true`          |
-| `server.kubernetes.namespace`         | namespace in which to run pipelines, defaults to release namespace.                                            | ``          |
-| `server.kubernetes.pipelineServiceAccount`         | if rbac is enabled, what should name of pipeline service account be?                                            | ``          |
+| `server.envSecrets`         | Drone **server** secret environment variables                                                 | `(default values)`          |
+| `server.adminUser`         | Initial user to create and set as admin                                                 | ``          |
+| `server.alwaysAuth`         | whether to authenticate when cloning public repositories                                                 | `false`          |
+| `server.kubernetes.enabled`         | whether to use kubernetes to run pipelines (if `false` will run agents instead)                                            | `true`          |
+| `server.kubernetes.namespace`         | namespace in which to run pipelines, defaults to release namespace.                                            | ``          |
+| `server.kubernetes.pipelineServiceAccount`         | if rbac is enabled, what should name of pipeline service account be?                                            | ``          |
 | `server.annotations`        | Drone **server** annotations                                                                  | `{}`                        |
 | `server.resources`          | Drone **server** pod resource requests & limits                                               | `{}`                        |
 | `server.schedulerName`      | Drone **server** alternate scheduler name                                                     | `nil`                       |
@@ -117,6 +120,22 @@ The following table lists the configurable parameters of the drone charts and th
 | `dind.env`                  | **DinD** environment variables                                                                | `nil`                       |
 | `dind.command`              | **DinD** custom command instead of default entry point                                        | `nil`                       |
 | `dind.args`                 | **DinD** arguments for custom command or entry point                                          | `nil`                       |
+| `autoscaler.enabled`              | Enable or disable **autoscaler**                                                                    | `false`                     |
+| `autoscaler.pool.min`             | **autoscaler** minimum number of nodes                                                              | `1`                         |
+| `autoscaler.pool.max`             | **autoscaler** maximum number of nodes                                                              | `1`                         |
+| `autoscaler.server.protocol`      | **autoscaler** RPC server protocol                                                                  | `http`                      |
+| `autoscaler.server.host`          | **autoscaler** RPC server host                                                                      | see values.yaml             |
+| `autoscaler.volumeMounts`         | Mount points for volumes (defined in autoscaler.volumes)                                            | `nil`                       |
+| `autoscaler.resources`            | **autoscaler** pod resource requests & limits                                                       | `{}`                        |
+| `autoscaler.env`                  | **autoscaler** environment variables                                                                | `nil`                       |
+| `autoscaler.aws.enabled`          | **autoscaler** deploy aws ec2 agents                                                                | `false`                     |
+| `autoscaler.aws.region`           | **autoscaler** AWS Region                                                                           | see values.yaml             |
+| `autoscaler.aws.subnet_id`        | **autoscaler** AWS Subnet ID                                                                        | see values.yaml             |
+| `autoscaler.aws.sshkey`           | **autoscaler** AWS SSH Key name                                                                     | see values.yaml             |
+| `autoscaler.aws.tags`             | **autoscaler** AWS Agent Tags                                                                       | see values.yaml             |
+| `autoscaler.aws.instance_type`    | **autoscaler** AWS Instance Type                                                                    | see values.yaml             |
+| `autoscaler.aws.security_group`   | **autoscaler** AWS Secrurity Group ID                                                               | see values.yaml             |
+| `autoscaler.aws.private_ip`       | **autoscaler** AWS user private ip                                                                  | see values.yaml             |
 | `metrics.prometheus.enabled` | Enable Prometheus metrics endpoint                                                          | `false`                     |
 | `persistence.enabled`       | Use a PVC to persist data                                                                     | `true`                      |
 | `persistence.existingClaim` | Use an existing PVC to persist data                                                           | `nil`                       |
