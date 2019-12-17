@@ -105,6 +105,8 @@ spec:
               mountPath: /sys
             - name: var-log
               mountPath: /var/log
+            - name: var-lib
+              mountPath: /var/lib/containers/storage
             - name: machine-id
               mountPath: /etc/machine-id
             - name: configuration
@@ -116,6 +118,7 @@ spec:
             {{- end }}
           livenessProbe:
             httpGet:
+              host: 127.0.0.1
               path: /status
               port: 42699
             initialDelaySeconds: 75
@@ -147,6 +150,7 @@ spec:
               memory: 64Mi
           livenessProbe:
             httpGet:
+              host: 127.0.0.1
               path: /status
               port: 42699
             initialDelaySeconds: 75
@@ -173,6 +177,9 @@ spec:
         - name: var-log
           hostPath:
             path: /var/log
+        - name: var-lib
+          hostPath:
+            path: /var/lib/containers/storage
         - name: machine-id
           hostPath:
             path: /etc/machine-id
