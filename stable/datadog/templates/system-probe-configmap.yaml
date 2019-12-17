@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: system-probe-config
+  name: {{ template "datadog.fullname" . }}-system-probe-config
   namespace: {{ $.Release.Namespace }}
   labels:
     app: {{ $.Chart.Name }}
@@ -28,7 +28,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: datadog-agent-security
+  name: {{ template "datadog.fullname" . }}-security
   namespace: {{ $.Release.Namespace }}
   labels:
     app: {{ $.Chart.Name }}
