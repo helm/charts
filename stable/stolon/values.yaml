@@ -69,6 +69,8 @@ ports:
 serviceMonitor:
   # When set to true then use a ServiceMonitor to collect metrics
   enabled: false
+  # Custom labels to use in the ServiceMonitor to be matched with a specific Prometheus
+  labels: {}
   # Set the namespace the ServiceMonitor should be deployed to
   # namespace: default
   # Set how frequently Prometheus should scrape
