@@ -72,6 +72,7 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `keeper.replicaCount`                   | Number of keeper nodes                         | `2`                                                          |
 | `keeper.resources`                      | Keeper resource requests/limit                 | `{}`                                                         |
 | `keeper.priorityClassName`              | Keeper priorityClassName                       | `nil`                                                        |
+| `keeper.fsGroup`                        | Keeper securityContext fsGroup, do not set if pg9 or 10 | ``                                                  |
 | `keeper.nodeSelector`                   | Node labels for keeper pod assignment          | `{}`                                                         |
 | `keeper.affinity`                       | Affinity settings for keeper pod assignment    | `{}`                                                         |
 | `keeper.tolerations`                    | Toleration labels for keeper pod assignment    | `[]`                                                         |
