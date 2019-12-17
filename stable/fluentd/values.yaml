@@ -82,7 +82,7 @@ ingress:
 #       protocol: TCP
 #       servicePort: 9880
 #       path: /
-  tls: {}
+  tls: []
   # Secrets must be manually created in the namespace.
 #    - secretName: http-input-tls
 #      hosts:
