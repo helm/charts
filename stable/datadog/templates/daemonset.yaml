@@ -146,11 +146,11 @@ spec:
         {{- if and .Values.systemProbe.enabled .Values.daemonset.useDedicatedContainers }}
         - name: sysprobe-config
           configMap:
-            name: system-probe-config
+            name: {{ template "datadog.fullname" . }}-system-probe-config
         {{- if eq .Values.systemProbe.seccomp "localhost/system-probe" }}
         - name: datadog-agent-security
           configMap:
-            name: datadog-agent-security
+            name: {{ template "datadog.fullname" . }}-security
         - hostPath:
             path: {{ .Values.systemProbe.seccompRoot }}
           name: seccomp-root
