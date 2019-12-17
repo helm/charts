@@ -164,7 +164,11 @@ spec:
 {{- end }}
       {{- if .Values.securityContext.enabled }}
       securityContext:
-        {{- toYaml .Values.securityContext | nindent 8 }}
+        {{- range $key, $val := .Values.securityContext }}
+        {{- if ne $key "enabled" }}
+        {{ $key }}: {{ toYaml $val | nindent 10 }}
+        {{- end }}
+        {{- end }}
       {{- end }}
       serviceAccountName: {{ template "opa.serviceAccountName" .}}
       volumes:
