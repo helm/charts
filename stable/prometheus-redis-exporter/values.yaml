@@ -60,11 +60,11 @@ serviceMonitor:
 #   keyname: script
 
 auth:
-  # when redis use password to attach
+  # Use password authentication
   enabled: false
-  # redis password stored in Secret
+  # Use existing secret (ignores redisPassword)
   secret:
     name: ""
     key: ""
-  # when redis password not be stored in Secret, point it directly
+  # Redis password (when not stored in a secret)
   redisPassword: ""
