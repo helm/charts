@@ -11,6 +11,9 @@ metadata:
   {{ toYaml . | indent 4 }}
   {{- end }}
 spec:
+{{- if .Values.persistence.storageClassName }}
+  storageClassName: {{ .Values.persistence.storageClassName }}
+{{- end }}
   accessModes:
     - {{ .Values.persistence.accessMode | quote }}
   resources:

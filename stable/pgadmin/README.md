@@ -53,9 +53,11 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `ingress.path` | Ingress path mapping | `` |
 | `env.username` | pgAdmin default email | `chart@example.local` |
 | `env.password` | pgAdmin default password | `SuperSecret` |
-| `persistence` | Persistent enabled/disabled | `true` |
+| `persistence.enabled` | Persistent storage enabled/disabled | `true` |
 | `persistence.accessMode` | Persistent Access Mode | `ReadWriteOnce` |
+| `persistence.annotations` | Persistent Volume Claim annotations | `{}` |
 | `persistence.size` | Persistent volume size | `10Gi` |
+| `persistence.storageClassName` | Storage class name for dynamic provisioning | `nil` |
 | `resources` | CPU/memory resource requests/limits | `{}` |
 | `nodeSelector` | Node labels for pod assignment | `{}` |
 | `tolerations` | Node tolerations for pod assignment | `[]` |

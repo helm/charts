@@ -56,7 +56,11 @@ spec:
         - name: pgadmin-data
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
+          {{- if .Values.persistence.existingClaim }}
+            claimName: {{ .Values.persistence.existingClaim |quote }}
+          {{- else }}
             claimName: {{ $fullName }}
+          {{- end }}
         {{- else }}
           emptyDir: {}
         {{- end }}
