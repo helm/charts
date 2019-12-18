@@ -1,0 +1,12 @@
+clusterAgent:
+  enabled: true
+
+  volumes:
+    - name: secrets
+      secret:
+        secretName: test-secrets
+
+  volumeMounts:
+    - name: secrets
+      mountPath: /etc/secrets
+      readOnly: true
