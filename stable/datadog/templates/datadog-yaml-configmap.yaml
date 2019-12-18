@@ -40,7 +40,7 @@ data:
     {{- $version := (.Values.image.tag | toString | trimSuffix "-jmx") }}
     {{- $length := len (split "." $version ) -}} 
     {{- if and (eq $length 1) (ge $version "6") -}}  # tag 6 was introduce with 6.15
-    {{- $version = "6.15" }}  
+    {{- $version := "6.15" }}  
     {{- end -}}
     {{ if semverCompare ">=6.15" $version }}
     # Enable java container awareness (agent version >= 6.15)
