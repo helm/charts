@@ -185,6 +185,10 @@
     {{- end }}
     # Check all redis servers to see if they think they are master
     backend bk_redis_master
+      {{- if .Values.haproxy.stickyBalancing }}
+      balance source
+      hash-type consistent
+      {{- end }}
       mode tcp
       option tcp-check
       tcp-check connect
@@ -204,6 +208,10 @@
       {{- end }}
     {{- if .Values.haproxy.readOnly.enabled }}
     backend bk_redis_slave
+      {{- if .Values.haproxy.stickyBalancing }}
+      balance source
+      hash-type consistent
+      {{- end }}
       mode tcp
       option tcp-check
       tcp-check connect
