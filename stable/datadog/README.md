@@ -255,7 +255,6 @@ helm install --name <RELEASE_NAME> \
 | `rbac.serviceAccountName`                | existing ServiceAccount to use (ignored if rbac.create=true)                              | `default`                                   |
 | `daemonset.podLabels`                    | labels to add to each pod                                                                 | `nil`                                       |
 | `datadog.name`                           | Container name if Daemonset or Deployment                                                 | `datadog`                                   |
-| `datadog.dogStatsDPort`                  | Used to override the default agent DogStatsD Port                                         | `8125`                                      |
 | `datadog.site`                           | Site ('datadoghq.com' or 'datadoghq.eu')                                                  | `nil`                                       |
 | `datadog.dd_url`                         | Datadog intake server                                                                     | `nil`                                       |
 | `datadog.env`                            | Additional Datadog environment variables                                                  | `nil`                                       |
@@ -272,6 +271,7 @@ helm install --name <RELEASE_NAME> \
 | `datadog.nonLocalTraffic`                | Enable statsd reporting and APM from any external ip                                      | `False`                                     |
 | `datadog.useCriSocketVolume`             | Enable mounting the container runtime socket in Agent containers                          | `True`                                      |
 | `datadog.dogstatsdOriginDetection`       | Enable origin detection for container tagging                                             | `False`                                     |
+| `datadog.dogStatsDPort`                  | Used to override the default agent DogStatsD Port                                         | `8125`                                      |
 | `datadog.useDogStatsDSocketVolume`       | Enable dogstatsd over Unix Domain Socket                                                  | `False`                                     |
 | `datadog.dogStatsDSocketPath`            | Custom path to the socket, has to be located in the `/var/run/datadog` folder path        | `/var/run/datadog/dsd.socket`               |
 | `datadog.volumes`                        | Additional volumes for the daemonset or deployment                                        | `nil`                                       |
