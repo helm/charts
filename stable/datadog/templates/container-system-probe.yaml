@@ -24,4 +24,10 @@
     - name: procdir
       mountPath: /host/proc
       readOnly: true
+    - name: modules
+      mountPath: /lib/modules
+      readOnly: true
+    - name: src
+      mountPath: /usr/src
+      readOnly: true
 {{- end -}}

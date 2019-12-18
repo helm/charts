@@ -143,7 +143,7 @@ spec:
             path: /etc/passwd
           name: passwd
         {{- end }}
-        {{- if and .Values.systemProbe.enabled .Values.daemonset.useDedicatedContainers }}
+        {{- if and .Values.systemProbe.enabled }}
         - name: sysprobe-config
           configMap:
             name: system-probe-config
@@ -160,6 +160,12 @@ spec:
           name: debugfs
         - name: sysprobe-socket-dir
           emptyDir: {}
+        - hostPath:
+            path: /lib/modules
+          name: modules
+        - hostPath:
+            path: /usr/src
+          name: src
         {{- end }}
         {{- if .Values.daemonset.useConfigMap }}
         - name: {{ template "datadog.fullname" . }}-datadog-yaml
