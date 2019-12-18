@@ -253,6 +253,12 @@ spec:
       {{- end }}
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- if .Values.init.waitforzk }}
+      initContainers:
+        - name: wait-for-zk
+          image: busybox:1.28
+          command: ['sh', '-c', 'until echo stat | nc {{ include "zookeeper.url" . | replace ":" " "}} | grep Mode > /dev/null; do echo $(date) - Still waiting for zookeeper; sleep 2; done;echo stat | nc {{ include "zookeeper.url" . | replace ":" " "}}']
+      {{- end }}
   {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
   - metadata:

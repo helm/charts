@@ -140,7 +140,7 @@ following configurable parameters:
 | `zookeeper.port`                                      | Port of Zookeeper Cluster                                                                                                                                                | `2181`                                                             |
 | `zookeeper.affinity`                                  | Defines affinities and anti-affinities for pods as defined in: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity preferences | `{}`                                                               |
 | `zookeeper.nodeSelector`                              | Node labels for pod assignment                                                                                                                                           | `{}`                                                               |
-
+| `init.waitforzk`                              | Make Kafka Brokers wait for zookeeper to be fully available before starting                                                                                                                                           | `false`                                                               |
 
 Specify parameters using `--set key=value[,key=value]` argument to `helm install`
 

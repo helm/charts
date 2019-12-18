@@ -468,3 +468,8 @@ zookeeper:
   #       labelSelector:
   #         matchLabels:
   #           release: zookeeper
+
+init:
+  # Enables init containers so kafka will wait till other things are running before starting up.
+  waitforzk: false
+  # Enable this to make the pod wait till zookeeper is 'ok' before starting.
