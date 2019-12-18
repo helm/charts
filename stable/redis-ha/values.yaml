@@ -40,6 +40,9 @@ haproxy:
     pullPolicy: IfNotPresent
   annotations: {}
   resources: {}
+  ## Enable sticky sessions to Redis nodes via HAProxy
+  ## Very useful for long-living connections as in case of Sentry for example
+  stickyBalancing: false
   ## Kubernetes priorityClass name for the haproxy pod
   # priorityClassName: ""
   ## Service type for HAProxy
