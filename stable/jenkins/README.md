@@ -303,6 +303,7 @@ It is possible to mount several volumes using `persistence.volumes` and `persist
 | --------------------------- | ------------------------------- | --------------- |
 | `persistence.enabled`       | Enable the use of a Jenkins PVC | `true`          |
 | `persistence.existingClaim` | Provide the name of a PVC       | `nil`           |
+| `persistence.storageClass`  | Storage class for the PVC       | `nil`           |
 | `persistence.annotations`   | Annotations for the PVC         | `{}`            |
 | `persistence.accessMode`    | The PVC access mode             | `ReadWriteOnce` |
 | `persistence.size`          | The size of the PVC             | `8Gi`           |
@@ -319,6 +320,19 @@ It is possible to mount several volumes using `persistence.volumes` and `persist
 ```bash
 $ helm install --name my-release --set persistence.existingClaim=PVC_NAME stable/jenkins
 ```
+
+#### Storage Class
+
+It is possible to define which storage class to use:
+
+```bash
+$ helm install --name my-release --set persistence.storageClass=customStorageClass stable/jenkins
+```
+
+If set to a dash (`-`, as in `persistence.storageClass=-`), the dynamic provision is disabled.
+
+If the storage class is set to null or left undefined (`persistence.storageClass=`),
+the default provisioner is used (gp2 on AWS, standard on GKE, AWS & OpenStack).
 
 ## Configuration as Code
 Jenkins Configuration as Code is now a standard component in the Jenkins project.  Add a key under configScripts for each configuration area, where each corresponds to a plugin or section of the UI.  The keys (prior to | character) are just labels, and can be any value.  They are only used to give the section a meaningful name.  The only restriction is they must conform to RFC 1123 definition of a DNS label, so may only contain lowercase letters, numbers, and hyphens.  Each key will become the name of a configuration yaml file on the master in /var/jenkins_home/casc_configs (by default) and will be processed by the Configuration as Code Plugin during Jenkins startup.  The lines after each | become the content of the configuration yaml file.  The first line after this is a JCasC root element, eg jenkins, credentials, etc.  Best reference is the Documentation link here: https://<jenkins_url>/configuration-as-code.  The example below creates ldap settings:
