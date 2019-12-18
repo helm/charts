@@ -408,6 +408,13 @@ You can can learn about kong ingress custom resource definitions [here](https://
 
 ## Changelog
 
+### 0.30.0
+
+#### Breaking changes
+
+- `admin_gui_auth_conf_secret` is now required for Kong Manager authentication methods other than `basic-auth`.
+  Users defining values for `admin_gui_auth_conf` should migrate them to an externally-defined secret with a key of `admin_gui_auth_conf` and reference the secret name in `admin_gui_auth_conf_secret`.
+
 ### 0.29.0
 
 #### New Features
