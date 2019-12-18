@@ -858,6 +858,13 @@ server:
     sessionAffinity: None
     type: ClusterIP
 
+    ## If using a statefulSet (statefulSet.enabled=true), configure the
+    ## service to connect to a specific replica to have a consistent view
+    ## of the data.
+    statefulsetReplica:
+      enabled: false
+      replica: 0
+
   ## Prometheus server pod termination grace period
   ##
   terminationGracePeriodSeconds: 300
