@@ -4,10 +4,10 @@ kind: PodDisruptionBudget
 metadata:
   name: {{ template "prometheus.alertmanager.fullname" . }}
   labels:
-  {{- include "prometheus.alertmanager.labels" . | nindent 4 }}
+    {{- include "prometheus.alertmanager.labels" . | nindent 4 }}
 spec:
   maxUnavailable: {{ .Values.alertmanager.podDisruptionBudget.maxUnavailable }}
   selector:
     matchLabels:
-    {{- include "prometheus.alertmanager.labels" . | nindent 6 }}
+      {{- include "prometheus.alertmanager.labels" . | nindent 6 }}
 {{- end }}
