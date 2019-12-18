@@ -153,7 +153,7 @@ alertmanager:
   ## ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
   ##
   podDisruptionBudget:
-    enabled: true
+    enabled: false
     maxUnavailable: 1
 
   ## Use an alternate scheduler, e.g. "stork".
@@ -390,7 +390,7 @@ kubeStateMetrics:
   ## ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
   ##
   podDisruptionBudget:
-    enabled: true
+    enabled: false
     maxUnavailable: 1
 
   ## kube-state-metrics resource requests and limits
@@ -522,7 +522,7 @@ nodeExporter:
   ## ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
   ##
   podDisruptionBudget:
-    enabled: true
+    enabled: false
     maxUnavailable: 1
 
   ## node-exporter resource limits & requests
@@ -736,7 +736,7 @@ server:
   ## ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
   ##
   podDisruptionBudget:
-    enabled: true
+    enabled: false
     maxUnavailable: 1
 
   ## Use an alternate scheduler, e.g. "stork".
@@ -995,7 +995,7 @@ pushgateway:
   ## ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
   ##
   podDisruptionBudget:
-    enabled: true
+    enabled: false
     maxUnavailable: 1
 
   ## pushgateway resource requests and limits
