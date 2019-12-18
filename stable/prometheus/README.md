@@ -117,6 +117,8 @@ Parameter | Description | Default
 `alertmanager.nodeSelector` | node labels for alertmanager pod assignment | `{}`
 `alertmanager.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `alertmanager.affinity` | pod affinity | `{}`
+`alertmanager.podDisruptionBudget.enabled` | If true, create a PodDisruptionBudget | `false`
+`alertmanager.podDisruptionBudget.maxUnavailable` | Maximum unavailable instances in PDB | `1`
 `alertmanager.schedulerName` | alertmanager alternate scheduler name | `nil`
 `alertmanager.persistentVolume.enabled` | If true, alertmanager will create a Persistent Volume Claim | `true`
 `alertmanager.persistentVolume.accessModes` | alertmanager data Persistent Volume access modes | `[ReadWriteOnce]`
@@ -173,6 +175,8 @@ Parameter | Description | Default
 `kubeStateMetrics.podSecurityPolicy.annotations` | Specify pod annotations in the pod security policy | `{}` |
 `kubeStateMetrics.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `kubeStateMetrics.replicaCount` | desired number of kube-state-metrics pods | `1`
+`kubeStateMetrics.podDisruptionBudget.enabled` | If true, create a PodDisruptionBudget | `false`
+`kubeStateMetrics.podDisruptionBudget.maxUnavailable` | Maximum unavailable instances in PDB | `1`
 `kubeStateMetrics.priorityClassName` | kube-state-metrics priorityClassName | `nil`
 `kubeStateMetrics.resources` | kube-state-metrics resource requests and limits (YAML) | `{}`
 `kubeStateMetrics.securityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for kube-state-metrics containers | `{}`
@@ -196,6 +200,8 @@ Parameter | Description | Default
 `nodeExporter.nodeSelector` | node labels for node-exporter pod assignment | `{}`
 `nodeExporter.podAnnotations` | annotations to be added to node-exporter pods | `{}`
 `nodeExporter.pod.labels` | labels to be added to node-exporter pods | `{}`
+`nodeExporter.podDisruptionBudget.enabled` | If true, create a PodDisruptionBudget | `false`
+`nodeExporter.podDisruptionBudget.maxUnavailable` | Maximum unavailable instances in PDB | `1`
 `nodeExporter.podSecurityPolicy.annotations` | Specify pod annotations in the pod security policy | `{}` |
 `nodeExporter.podSecurityPolicy.enabled` | Specify if a Pod Security Policy for node-exporter must be created | `false`
 `nodeExporter.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
@@ -227,6 +233,8 @@ Parameter | Description | Default
 `pushgateway.podSecurityPolicy.annotations` | Specify pod annotations in the pod security policy | `{}` |
 `pushgateway.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `pushgateway.replicaCount` | desired number of pushgateway pods | `1`
+`pushgateway.podDisruptionBudget.enabled` | If true, create a PodDisruptionBudget | `false`
+`pushgateway.podDisruptionBudget.maxUnavailable` | Maximum unavailable instances in PDB | `1`
 `pushgateway.schedulerName` | pushgateway alternate scheduler name | `nil`
 `pushgateway.persistentVolume.enabled` | If true, Prometheus pushgateway will create a Persistent Volume Claim | `false`
 `pushgateway.persistentVolume.accessModes` | Prometheus pushgateway data Persistent Volume access modes | `[ReadWriteOnce]`
@@ -278,6 +286,8 @@ Parameter | Description | Default
 `server.nodeSelector` | node labels for Prometheus server pod assignment | `{}`
 `server.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `server.affinity` | pod affinity | `{}`
+`server.podDisruptionBudget.enabled` | If true, create a PodDisruptionBudget | `false`
+`server.podDisruptionBudget.maxUnavailable` | Maximum unavailable instances in PDB | `1`
 `server.priorityClassName` | Prometheus server priorityClassName | `nil`
 `server.schedulerName` | Prometheus server alternate scheduler name | `nil`
 `server.persistentVolume.enabled` | If true, Prometheus server will create a Persistent Volume Claim | `true`
