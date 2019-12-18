@@ -254,6 +254,11 @@ containers:
       - name: "{{ $key }}"
         value: "{{ $value }}"
 {{- end }}
+    {{- range $key, $value := .Values.envValueFrom }}
+      - name: {{ $key | quote }}
+        valueFrom:
+{{ toYaml $value | indent 10 }}
+    {{- end }}
     {{- if .Values.envFromSecret }}
     envFrom:
       - secretRef:

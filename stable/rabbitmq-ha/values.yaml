@@ -409,6 +409,9 @@ tolerations: []
 ## Extra Annotations to be added to pod
 podAnnotations: {}
 
+## Extra Annotations to be added to the StatefulSet
+statefulSetAnnotations: {}
+
 ## Pod affinity
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 podAntiAffinity: soft

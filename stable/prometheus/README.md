@@ -291,6 +291,7 @@ Parameter | Description | Default
 `server.emptyDir.sizeLimit` | emptyDir sizeLimit if a Persistent Volume is not used | `""`
 `server.podAnnotations` | annotations to be added to Prometheus server pods | `{}`
 `server.podLabels` | labels to be added to Prometheus server pods | `{}`
+`server.alertmanagers` | Prometheus AlertManager configuration for the Prometheus server | `{}`
 `server.deploymentAnnotations` | annotations to be added to Prometheus server deployment | `{}`
 `server.podSecurityPolicy.annotations` | Specify pod annotations in the pod security policy | `{}` |
 `server.replicaCount` | desired number of Prometheus server pods | `1`

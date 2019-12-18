@@ -34,8 +34,7 @@ The following table lists the configurable parameters of the Spark operator char
 | `controllerThreads`       | Number of worker threads used by the SparkApplication controller | 10                                 |
 | `ingressUrlFormat`        | Ingress URL format                                           | ""                                     |
 | `logLevel`                | Logging verbosity level                                      | 2                                      |
-| `installCrds`             | Whether to install CRDs                                      | true                                   |
-| `cleanupCrdsBeforeInstall` | Remove CRDs before running the crd-install hook on changes. | `false` |
+| `installCrds`             | Wether the release should install CRDs. Regardless of this value, Helm v3+ will install the CRDs if those are not present already. Use `--skip-crds` with `helm install` if you want to skip CRD creation                                         | true                                   |
 | `metricsPort`             | Port for the metrics endpoint                                | 10254                                  |
 | `metricsEndpoint`         | Metrics endpoint                                             | "/metrics"                             |
 | `metricsPrefix`           | Prefix for the metrics                                       | ""                                     |
@@ -49,6 +48,19 @@ The following table lists the configurable parameters of the Spark operator char
 | `securityContext`         | Defines security context for operator container               | `{}`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
+
+#### Upgrading
+
+##### To 0.6.0
+
+###### Breaking changes
+
+- `cleanupCrdsBeforeInstall` has been removed for Helm 3 compatibility. If you wish to replicate this behavior before upgrading, do so manually (`kubectl delete CustomResourceDefinition sparkapplications.sparkoperator.k8s.io scheduledsparkapplications.sparkoperator.k8s.io`)
+
+###### Non-breaking changes
+
+- CRDs have been moved to `/crds` directory, with template globbing, for both Helm 2 and 3 compatibility
+- `app.kubernetes.io/name=sparkoperator` label is added to CRDs if installed at this version, for easier manual cleanup after chart deletion (`kubectl delete CustomResourceDefinition -l app.kubernetes.io/name=sparkoperator`)
 
 #### Contributing
 
