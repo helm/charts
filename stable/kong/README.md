@@ -320,7 +320,7 @@ always be changed for both configurations.
 
 After creating your secret, set its name in values.yaml, in the
 `.enterprise.rbac.session_conf_secret` and
-`.enterprise.rbac.session_conf_secret` keys.
+`.enterprise.portal.session_conf_secret` keys.
 
 #### Email/SMTP
 
