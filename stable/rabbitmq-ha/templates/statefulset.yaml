@@ -11,6 +11,12 @@ metadata:
 {{- if .Values.extraLabels }}
 {{ toYaml .Values.extraLabels | indent 4 }}
 {{- end }}
+{{- if .Values.statefulSetAnnotations }}
+  annotations:
+{{- range $key, $value := .Values.statefulSetAnnotations }}
+    {{ $key }}: {{ $value | quote }}
+{{- end }}
+{{- end }}
 spec:
   podManagementPolicy: {{ .Values.podManagementPolicy }}
   serviceName: {{ template "rabbitmq-ha.fullname" . }}-discovery
