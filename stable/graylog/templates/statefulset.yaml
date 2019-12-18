@@ -85,6 +85,9 @@ spec:
           resources:
 {{ toYaml .Values.graylog.init.resources | indent 12 }}
 {{- end }}
+{{- if .Values.graylog.extraInitContainers }}
+{{ toYaml .Values.graylog.extraInitContainers | indent 8 }}
+{{- end }}
       containers:
         - name: graylog-server
           image: "{{ .Values.graylog.image.repository }}"
