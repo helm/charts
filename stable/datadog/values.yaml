@@ -154,6 +154,12 @@ datadog:
   #
   # useDogStatsDSocketVolume: true
 
+  #  # dogStatsDPort - integer - optional - default: 8125
+  #  # Override the Agent DogStatsD port.
+  #  # Note: Make sure your client is sending to the same UDP port.
+  #
+  # dogStatsDPort:
+
   ## @param nonLocalTraffic - boolean - optional - default: false
   ## Enable this to make each node accept non-local statsd traffic.
   ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
