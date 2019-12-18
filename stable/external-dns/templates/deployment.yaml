@@ -197,7 +197,7 @@ spec:
             secretKeyRef:
               name: {{ template "external-dns.fullname" . }}
               key: cloudflare_api_token
-        {{- else }}
+        {{- else if .Values.cloudflare.apiKey }}
         - name: CF_API_KEY
           valueFrom:
             secretKeyRef:
