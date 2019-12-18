@@ -166,6 +166,9 @@ spec:
           {{- end }}
             - name: kubectl
               mountPath: /k8s
+          {{- if .Values.graylog.extraVolumeMounts }}
+          {{ toYaml .Values.graylog.extraVolumeMounts | nindent 12 }}
+          {{- end }}
           lifecycle:
             preStop:
               exec:
@@ -200,6 +203,9 @@ spec:
         {{- end }}
         - name: kubectl
           emptyDir: {}
+{{- if .Values.graylog.extraVolumes }}
+{{ toYaml .Values.graylog.extraVolumes | indent 8}}
+{{- end }}
 {{- if not .Values.graylog.persistence.enabled }}
         - name: journal
           emptyDir: {}

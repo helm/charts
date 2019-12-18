@@ -96,6 +96,14 @@ graylog:
     # - name: graylog-plugin-auth-sso-3.0.0.jar
     #   url: https://github.com/Graylog2/graylog-plugin-auth-sso/releases/download/3.0.0/graylog-plugin-auth-sso-3.0.0.jar
 
+  ## Additional volume mounts
+  ##
+  extraVolumeMounts: []
+
+  ## Additional volumes
+  ##
+  extraVolumes: []
+
   ## A service for Graylog web interface
   ##
   service:
