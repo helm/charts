@@ -313,6 +313,8 @@ Parameter | Description | Default
 `server.service.servicePort` | Prometheus server service port | `80`
 `server.service.sessionAffinity` | Session Affinity for server service, can be `None` or `ClientIP` | `None`
 `server.service.type` | type of Prometheus server service to create | `ClusterIP`
+`server.service.statefulsetReplica.enabled` | If true, send the traffic from the service to only one replica of the replicaset | `false`
+`server.service.statefulsetReplica.replica` | Which replica to send the traffice to | `0`
 `server.sidecarContainers` | array of snippets with your sidecar containers for prometheus server | `""`
 `serviceAccounts.alertmanager.create` | If true, create the alertmanager service account | `true`
 `serviceAccounts.alertmanager.name` | name of the alertmanager service account to use or create | `{{ prometheus.alertmanager.fullname }}`
