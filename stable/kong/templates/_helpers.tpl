@@ -255,14 +255,16 @@ The name of the service used for the ingress controller's validation webhook
     value: {{ template "kong.postgresql.fullname" . }}
   - name: KONG_PG_PORT
     value: "{{ .Values.postgresql.service.port }}"
-  - name: KONG_LUA_PACKAGE_PATH
-    value: "/opt/?.lua;;"
   - name: KONG_PG_PASSWORD
     valueFrom:
       secretKeyRef:
         name: {{ template "kong.postgresql.fullname" . }}
         key: postgresql-password
   {{- end }}
+  - name: KONG_LUA_PACKAGE_PATH
+    value: "/opt/?.lua;;"
+  - name: KONG_PLUGINS
+    value: {{ template "kong.plugins" . }}
   {{- include "kong.env" .  | nindent 2 }}
   command: [ "/bin/sh", "-c", "until kong start; do echo 'waiting for db'; sleep 1; done; kong stop" ]
   volumeMounts:

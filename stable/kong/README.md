@@ -423,6 +423,7 @@ You can can learn about kong ingress custom resource definitions [here](https://
 #### Fixes
 
 - Correct behavior for the Vitals toggle. Vitals defaults to on in all current Kong Enterprise releases, and the existing template only created the Vitals environment variable if `.Values.enterprise.enabled == true`. Inverted template to create it (and set it to "off") if that setting is instead disabled.
+- Correct an issue where custom plugin configurations would block Kong from starting.
 
 ### 0.31.0
 
