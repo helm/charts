@@ -73,7 +73,7 @@ spec:
 {{ tpl (toYaml .) $ | indent 8 }}
     {{- end }}
       containers:
-      - name: {{ template "redis.fullname" . }}
+      - name: redis
         image: {{ template "redis.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         {{- if .Values.securityContext.enabled }}
