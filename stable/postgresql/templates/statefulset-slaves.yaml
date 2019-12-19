@@ -105,7 +105,7 @@ spec:
       priorityClassName: {{ .Values.slave.priorityClassName }}
       {{- end }}
       containers:
-        - name: {{ template "postgresql.fullname" . }}
+        - name: postgresql
           image: {{ template "postgresql.image" . }}
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           {{- if .Values.resources }}
