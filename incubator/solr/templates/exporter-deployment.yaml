@@ -47,6 +47,7 @@ spec:
       annotations:
 {{ toYaml .Values.exporter.podAnnotations | indent 8 }}
     spec:
+{{- include "solr.imagePullSecrets" . | indent 6 }}    
       affinity:
 {{ tpl (toYaml .Values.affinity) .  | indent 8 }}
       containers:

@@ -82,6 +82,7 @@ image:
   pullPolicy: IfNotPresent
 
 ingress:
+  enabled: true
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # certmanager.k8s.io/cluster-issuer: my-letsencrypt-issuer

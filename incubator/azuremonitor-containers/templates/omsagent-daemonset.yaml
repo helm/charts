@@ -1,4 +1,4 @@
-{{- if and (ne .Values.omsagent.secret.key "<your_workspace_key>") (ne .Values.omsagent.secret.wsid "<your_workspace_id>") (ne .Values.omsagent.env.clusterName "<your_cluster_name>")}}
+{{- if and (ne .Values.omsagent.secret.key "<your_workspace_key>") (ne .Values.omsagent.secret.wsid "<your_workspace_id>") (or (ne .Values.omsagent.env.clusterName "<your_cluster_name>") (ne .Values.omsagent.env.clusterId "<your_cluster_id>"))}}
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
@@ -34,8 +34,17 @@ spec:
        resources:
 {{ toYaml .Values.omsagent.resources.daemonset | indent 9 }}
        env:
+       {{- if ne .Values.omsagent.env.clusterId "<your_cluster_id>" }}
+       - name: AKS_RESOURCE_ID
+         value: {{ .Values.omsagent.env.clusterId | quote }}
+       {{- if ne .Values.omsagent.env.clusterRegion "<your_cluster_region>" }}
+       - name: AKS_REGION
+         value: {{ .Values.omsagent.env.clusterRegion | quote }}
+       {{- end }}
+       {{- else }}
        - name: ACS_RESOURCE_NAME
          value: {{ .Values.omsagent.env.clusterName | quote }}
+       {{- end }}
        - name: CONTROLLER_TYPE
          value: "DaemonSet"
        - name: NODE_IP
@@ -89,12 +98,14 @@ spec:
         periodSeconds: 60
    nodeSelector:
     beta.kubernetes.io/os: linux
-   # Tolerate a NoSchedule taint on master that ACS Engine sets.
+   # Tolerate below taints on nodes of k8s clusters to schedule ds pod.
    tolerations:
-    - key: "node-role.kubernetes.io/master"
-      operator: "Equal"
-      value: "true"
-      effect: "NoSchedule"
+     - operator: "Exists"
+       effect: "NoSchedule"
+     - operator: "Exists"
+       effect: "NoExecute"
+     - operator: "Exists"
+       effect: "PreferNoSchedule"
    volumes:
     - name: host-root
       hostPath:

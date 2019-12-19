@@ -1,9 +1,9 @@
 {{- if and .Values.prometheus.enabled .Values.prometheus.serviceMonitor.selfMonitor }}
-apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
+apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-prometheus
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ $.Release.Namespace }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-prometheus
 {{ include "prometheus-operator.labels" . | indent 4 }}
@@ -11,15 +11,18 @@ spec:
   selector:
     matchLabels:
       app: {{ template "prometheus-operator.name" . }}-prometheus
-      release: {{ .Release.Name | quote }}
+      release: {{ $.Release.Name | quote }}
       self-monitor: "true"
   namespaceSelector:
     matchNames:
-      - {{ .Release.Namespace | quote }}
+      - {{ $.Release.Namespace | quote }}
   endpoints:
-  - port: web
+  - port: {{ .Values.prometheus.prometheusSpec.portName }}
     {{- if .Values.prometheus.serviceMonitor.interval }}
     interval: {{ .Values.prometheus.serviceMonitor.interval }}
+    {{- end }}
+    {{- if .Values.prometheus.serviceMonitor.bearerTokenFile }}
+    bearerTokenFile: {{ .Values.prometheus.serviceMonitor.bearerTokenFile }}
     {{- end }}
     path: "{{ trimSuffix "/" .Values.prometheus.prometheusSpec.routePrefix }}/metrics"
 {{- if .Values.prometheus.serviceMonitor.metricRelabelings }}
