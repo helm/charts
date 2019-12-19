@@ -161,6 +161,9 @@ filestore:
   #  secretKey:
   #  bucketName:
   #  endpointUrl:
+  #  signature_version:
+  #  region_name:
+  #  default_acl:
 
 ## Configure ingress resource that allow you to access the
 ## Sentry installation. Set up the URL
@@ -284,3 +287,11 @@ hooks:
         memory: 3200Mi
       requests:
         memory: 3000Mi
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+  annotations: {}
