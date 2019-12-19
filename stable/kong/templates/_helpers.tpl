@@ -133,10 +133,29 @@ the extra slash.
 {{- end -}}
 {{- end -}}
 
+{{/*
+The name of the service used for the ingress controller's validation webhook
+*/}}
+
+{{- define "kong.service.validationWebhook" -}}
+{{ include "kong.fullname" . }}-validation-webhook
+{{- end -}}
 
 {{- define "kong.env" -}}
 {{- range $key, $val := .Values.env }}
 - name: KONG_{{ $key | upper}}
+{{- $valueType := printf "%T" $val -}}
+{{ if eq $valueType "map[string]interface {}" }}
+{{ toYaml $val | indent 2 -}}
+{{- else }}
+  value: {{ $val | quote -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "kong.ingressController.env" -}}
+{{- range $key, $val := .Values.ingressController.env }}
+- name: CONTROLLER_{{ $key | upper}}
 {{- $valueType := printf "%T" $val -}}
 {{ if eq $valueType "map[string]interface {}" }}
 {{ toYaml $val | indent 2 -}}
@@ -168,6 +187,11 @@ the extra slash.
     {{- else }}
     name: {{ template "kong.dblessConfig.fullname" . }}
     {{- end }}
+{{- end }}
+{{- if .Values.ingressController.admissionWebhook.enabled }}
+- name: webhook-cert
+  secret:
+    secretName: {{ template "kong.fullname" . }}-validation-webhook-keypair
 {{- end }}
 {{- range $secretVolume := .Values.secretVolumes }}
 - name: {{ . }}
@@ -251,6 +275,9 @@ the extra slash.
   {{- else }}
   - --kong-url=http://localhost:{{ .Values.admin.containerPort }}
   {{- end }}
+  {{- if .Values.ingressController.admissionWebhook.enabled }}
+  - --admission-webhook-listen=0.0.0.0:{{ .Values.ingressController.admissionWebhook.port }}
+  {{- end }}
   env:
   - name: POD_NAME
     valueFrom:
@@ -262,6 +289,7 @@ the extra slash.
       fieldRef:
         apiVersion: v1
         fieldPath: metadata.namespace
+{{- include "kong.ingressController.env" .  | indent 2 }}
   image: "{{ .Values.ingressController.image.repository }}:{{ .Values.ingressController.image.tag }}"
   imagePullPolicy: {{ .Values.image.pullPolicy }}
   readinessProbe:
@@ -270,6 +298,12 @@ the extra slash.
 {{ toYaml .Values.ingressController.livenessProbe | indent 4 }}
   resources:
 {{ toYaml .Values.ingressController.resources | indent 4 }}
+{{- if .Values.ingressController.admissionWebhook.enabled }}
+  volumeMounts:
+  - name: webhook-cert
+    mountPath: /admission-webhook
+    readOnly: true
+{{- end }}
 {{- end -}}
 
 {{/*

@@ -9,12 +9,16 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "nginx-ingress.controller.fullname" . }}
+  annotations:
+{{ toYaml .Values.controller.deploymentAnnotations | indent 4}}
 spec:
   selector:
     matchLabels:
       app: {{ template "nginx-ingress.name" . }}
       release: {{ .Release.Name }}
+{{- if not .Values.controller.autoscaling.enabled }}
   replicas: {{ .Values.controller.replicaCount }}
+{{- end }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   strategy:
 {{ toYaml .Values.controller.updateStrategy | indent 4 }}
