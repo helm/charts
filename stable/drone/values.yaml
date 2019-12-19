@@ -118,6 +118,10 @@ server:
   ## protocol should be http or https
   protocol: http
 
+  ## http port
+  ## Set to > 1024 if you want to run the pod as non-root user
+  httpPort: 80
+
   ## rpcProtocol for rpc connection to the server should be http or https
   rpcProtocol: http
 
