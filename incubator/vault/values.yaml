@@ -104,6 +104,7 @@ ingress:
   # annotations:
   #   kubernetes.io/ingress.class: nginx
   #   kubernetes.io/tls-acme: "true"
+  # path: /
   # tls:
   #   Secrets must be manually created in the namespace.
   #   - secretName: chart-example-tls
@@ -258,7 +259,7 @@ vault:
         # tls_cert_file: /vault/tls/server.crt
         # tls_key_file: /vault/tls/server.key
     # See https://www.vaultproject.io/docs/configuration/storage/ for storage backends
-    storage: []
+    storage: {}
       # consul:
       #   address: ""
       #   path: ""

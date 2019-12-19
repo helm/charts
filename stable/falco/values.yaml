@@ -26,6 +26,8 @@ resources:
     memory: 1024Mi
 
 extraArgs: []
+nodeSelector: {}
+affinity: {}
 
 rbac:
   # Create and use rbac resources

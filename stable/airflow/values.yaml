@@ -40,6 +40,8 @@ airflow:
   fernetKey: ""
   service:
     annotations: {}
+    sessionAffinity: "None"
+    sessionAffinityConfig: {}
     type: ClusterIP
     externalPort: 8080
     nodePort:
@@ -107,6 +109,7 @@ airflow:
   config: {}
   ##
   ## Configure pod disruption budget for the scheduler
+  podDisruptionBudgetEnabled: true
   podDisruptionBudget:
     maxUnavailable: 1
   ## Add custom connections
@@ -183,6 +186,8 @@ scheduler:
   ##
   ## Labels for the scheduler deployment
   labels: {}
+  ## Pod Annotations for the web deployment
+  podAnnotations: {}
   ##
   ## Annotations for the scheduler deployment
   annotations: {}
@@ -196,6 +201,10 @@ scheduler:
   tolerations: []
 
 flower:
+  ##
+  ## Set AIRFLOW__CELERY__FLOWER_URL_PREFIX
+  ## Prefix should match Ingress configuration ingress.flower.path
+  urlPrefix: ""
   resources: {}
     # limits:
     #   cpu: "100m"
@@ -223,6 +232,10 @@ flower:
   tolerations: []
 
 web:
+  ##
+  ## Set AIRFLOW__WEBSERVER__BASE_URL
+  ## Path should match Ingress configuration
+  baseUrl: "http://localhost:8080"
   resources: {}
     # limits:
     #   cpu: "300m"
@@ -236,8 +249,11 @@ web:
   ##
   ## Annotations for the web deployment
   annotations: {}
+  ## Pod Annotations for the web deployment
+  podAnnotations: {}
   initialStartupDelay: "60"
   initialDelaySeconds: "360"
+  minReadySeconds: 120
   readinessProbe:
     periodSeconds: 60
     timeoutSeconds: 1
@@ -326,10 +342,10 @@ ingress:
   ##
   ## enable ingress
   ## Note: If you want to change url prefix for web ui or flower even if you do not use ingress,
-  ## you can still change ingress.web.path and ingress.flower.path
+  ## you can change web.baseUrl and flower.urlPrefix
   enabled: false
   ##
-  ## Configure the webserver endpoint
+  ## Configure the Ingress webserver endpoint
   web:
     ## NOTE: This requires an airflow version > 1.9.x
     ## For the moment (March 2018) this is **not** available on official package, you will have
@@ -344,7 +360,7 @@ ingress:
     ## NOTE: do NOT keep trailing slash. For root configuration, set and empty string
     path: ""
     ##
-    ## hostname for the webserver
+    ## Ingress hostname for the webserver
     host: ""
     ##
     ## Annotations for the webserver
@@ -379,7 +395,7 @@ ingress:
       ##   servicePort: "use-annotation"
 
   ##
-  ## Configure the flower endpoind
+  ## Configure the flower Ingress endpoint
   flower:
     ##
     ## If flower is '/airflow/flower':
@@ -513,6 +529,24 @@ dags:
     ref: master
     ## pre-created secret with key, key.pub and known_hosts file for private repos
     secret: ""
+    ## The host of the repo so for example if a github repo put github.com (Only need if using ssh not https git sync)
+    repoHost: ""
+    ## The name of the private key in your git sync secret (Only need if using ssh not https git sync)
+    privateKeyName: ""
+    gitSync:
+      ## Turns on the side car container
+      enabled: false
+      ## Image for the side car container
+      image:
+        ## docker-airflow image
+        repository: alpine/git
+        ## image tag
+        tag: 1.0.7
+        ## Image pull policy
+        ## values: Always or IfNotPresent
+        pullPolicy: IfNotPresent
+      ## The amount of time in seconds to git pull dags
+      refreshTime:
   initContainer:
     ## Fetch the source code when the pods starts
     enabled: false
@@ -659,6 +693,7 @@ serviceMonitor:
 
 # Enable this if you're using https://github.com/coreos/prometheus-operator
 prometheusRule:
+
   enabled: false
   ## Namespace in which the prometheus rule is created
   # namespace: monitoring
@@ -670,3 +705,14 @@ prometheusRule:
   ## Used to pass Labels that are used by the Prometheus installed in your cluster to select Prometheus Rules to work with
   ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
   additionalLabels: {}
+
+extraManifests: []
+##
+## Example:
+##  - apiVersion: cloud.google.com/v1beta1
+##    kind: BackendConfig
+##    metadata:
+##      name: "{{ .Release.Name }}-test"
+##    spec:
+##      securityPolicy:
+##        name: "gcp-cloud-armor-policy-test"

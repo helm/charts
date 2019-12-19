@@ -17,7 +17,7 @@ metadata:
   name: {{ template "nginx-ingress.controller.fullname" . }}-admission
 spec:
 {{- if not .Values.controller.admissionWebhooks.service.omitClusterIP }}
-  clusterIP: "{{ .Values.controller.admissionWebhooks.service.clusterIP }}"
+  {{ with .Values.controller.admissionWebhooks.service.clusterIP }}clusterIP: {{ . }}{{ end }}
 {{- end }}
 {{- if .Values.controller.admissionWebhooks.service.externalIPs }}
   externalIPs:
