@@ -36,6 +36,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 | ----------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------- |
 | `replicas`                          | Number of replicas in the replica set                                     | `3`                                                 |
 | `replicaSetName`                    | The name of the replica set                                               | `rs0`                                               |
+| `skipInitialization`                    | If `true` skip replica set initialization during bootstrapping                                              | `false`      
 | `podDisruptionBudget`               | Pod disruption budget                                                     | `{}`                                                |
 | `port`                              | MongoDB port                                                              | `27017`                                             |
 | `imagePullSecrets`                  | Image pull secrets                                                        | `[]`                                                |
@@ -383,3 +384,50 @@ Tail the logs to debug running indexes or to follow their progress
 ```sh
 kubectl exec -it $RELEASE-mongodb-replicaset-0 -c bootstrap -- tail -f /work-dir/log.txt
 ```
+
+### Migrate existing ReplicaSets into Kubernetes
+If you have an existing ReplicaSet that currently is deployed outside of Kubernetes and want to move it into a cluster you can do so by using the `skipInitialization` flag.
+
+First set the `skipInitialization` variable to `true` in values.yaml and install the Helm chart. That way you end up with uninitialized MongoDB pods that can be added to the existing ReplicaSet.
+
+Now take care of realizing the DNS correct resolution of all ReplicaSet members. In Kubernetes you can for example use an `ExternalName`.
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb01
+  namespace: mongo
+spec:
+  type: ExternalName
+  externalName: mongodb01.mydomain.com
+``` 
+
+If you also put each StatefulSet member behind a loadbalancer the ReplicaSet members outside of the cluster will also be able to reach the pods inside the cluster.
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-0
+  namespace: mongo
+spec:
+  selector:
+    statefulset.kubernetes.io/pod-name: mongodb-0
+  ports:
+    - port: 27017
+      targetPort: 27017
+  type: LoadBalancer
+```
+
+Now all that is left to do is to put the LoadBalancer IP into the `/etc/hosts` file (or realize the DNS resolution through another way)
+```
+1.2.3.4       mongodb-0
+5.6.7.8       mongodb-1
+```
+
+With a setup like this each replicaset member can resolve the DNS entry of each other and you can just add the new pods to your existing MongoDB cluster as if they where just normal nodes.
+
+Of course you need to make sure to get your security settings right. Enforced TLS is a good idea in a setup like this. Also make sure that you activate auth and get the firewall settings right.
+
+Once you fully migrated remove the old nodes from the replicaset.
