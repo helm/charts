@@ -1,7 +1,8 @@
 restartPolicy: Always
+global:
+  podDisruptionBudgetEnabled: true
 
 podDisruptionBudget:
-  enabled: true
   maxUnavailable: 0
 
 strategy:

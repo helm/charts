@@ -63,6 +63,7 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 | `tolerations`                          | node tolerations for pod assignment               | `[]`                          |
 | `affinity`                             | node affinity for pod assignment                  | `{}`                          |
 | `podAnnotations`                       | annotations to add to each pod                    | `{}`                          |
+  | `podDisruptionBudgetEnabled`                  | Enable pod disruption budget                             | `true`         |
 | `podDisruptionBudget`                  | pod disruption budget                             | `{maxUnavailable: 0}`         |
 | `priorityClassName`                    | priority class name                               | None                          |
 | `resources`                            | pod resource requests & limits                    | `{}`                          |
