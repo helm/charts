@@ -132,8 +132,13 @@ spec:
           value: "on"
         - name: KONG_ADMIN_GUI_AUTH
           value: {{ .Values.enterprise.rbac.admin_gui_auth | default "basic-auth" }}
+        {{- if not (eq .Values.enterprise.rbac.admin_gui_auth "basic-auth") }}
         - name: KONG_ADMIN_GUI_AUTH_CONF
-          value: '{{ toJson .Values.enterprise.rbac.admin_gui_auth_conf }}'
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.enterprise.rbac.admin_gui_auth_conf_secret }}
+              key: admin_gui_auth_conf
+        {{- end }}
         - name: KONG_ADMIN_GUI_SESSION_CONF
           valueFrom:
             secretKeyRef:
