@@ -111,19 +111,29 @@ spec:
             - name: MARIADB_EXTRA_FLAGS
               value: "{{ .Values.master.extraFlags }}"
             {{- end }}
+            {{- if .Values.rootUser.injectSecretsAsVolume }}
+            - name: MARIADB_ROOT_PASSWORD_FILE
+              value: "/opt/bitnami/mariadb/secrets/mariadb-root-password"
+            {{- else }}
             - name: MARIADB_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ template "mariadb.secretName" . }}
                   key: mariadb-root-password
-            {{- if .Values.db.user }}
+            {{- end }}
+            {{- if not (empty .Values.db.user) }}
             - name: MARIADB_USER
               value: "{{ .Values.db.user }}"
+            {{- if .Values.db.injectSecretsAsVolume }}
+            - name: MARIADB_PASSWORD_FILE
+              value: "/opt/bitnami/mariadb/secrets/mariadb-password"
+            {{- else }}
             - name: MARIADB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ template "mariadb.secretName" . }}
                   key: mariadb-password
+            {{- end }}
             {{- end }}
             - name: MARIADB_DATABASE
               value: "{{ .Values.db.name }}"
@@ -132,11 +142,16 @@ spec:
               value: "master"
             - name: MARIADB_REPLICATION_USER
               value: "{{ .Values.replication.user }}"
+            {{- if .Values.replication.injectSecretsAsVolume }}
+            - name: MARIADB_REPLICATION_PASSWORD_FILE
+              value: "/opt/bitnami/mariadb/secrets/mariadb-replication-password"
+            {{- else }}
             - name: MARIADB_REPLICATION_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ template "mariadb.secretName" . }}
                   key: mariadb-replication-password
+            {{- end }}
             {{- end }}
             {{- if .Values.master.extraEnvVars }}
             {{- tpl (toYaml .Values.master.extraEnvVars) $ | nindent 12 }}
@@ -147,7 +162,15 @@ spec:
           {{- if .Values.master.livenessProbe.enabled }}
           livenessProbe:
             exec:
-              command: ["sh", "-c", "exec mysqladmin status -uroot -p$MARIADB_ROOT_PASSWORD"]
+              command:
+                - sh
+                - -c
+                - |
+                  password_aux="${MARIADB_ROOT_PASSWORD:-}"
+                  if [ -f "${MARIADB_ROOT_PASSWORD_FILE:-}" ]; then
+                      password_aux=$(cat $MARIADB_ROOT_PASSWORD_FILE)
+                  fi
+                  mysqladmin status -uroot -p$password_aux
             initialDelaySeconds: {{ .Values.master.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.master.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.master.livenessProbe.timeoutSeconds }}
@@ -157,7 +180,15 @@ spec:
           {{- if .Values.master.readinessProbe.enabled }}
           readinessProbe:
             exec:
-              command: ["sh", "-c", "exec mysqladmin status -uroot -p$MARIADB_ROOT_PASSWORD"]
+              command:
+                - sh
+                - -c
+                - |
+                  password_aux="${MARIADB_ROOT_PASSWORD:-}"
+                  if [ -f "${MARIADB_ROOT_PASSWORD_FILE:-}" ]; then
+                      password_aux=$(cat $MARIADB_ROOT_PASSWORD_FILE)
+                  fi
+                  mysqladmin status -uroot -p$password_aux
             initialDelaySeconds: {{ .Values.master.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.master.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.master.readinessProbe.timeoutSeconds }}
@@ -182,22 +213,34 @@ spec:
               mountPath: /opt/bitnami/mariadb/conf/my.cnf
               subPath: my.cnf
             {{- end }}
+            {{- if or .Values.rootUser.injectSecretsAsVolume .Values.db.injectSecretsAsVolume .Values.replication.injectSecretsAsVolume }}
+            - name: mariadb-credentials
+              mountPath: /opt/bitnami/mariadb/secrets/
+            {{- end }}
         {{- if .Values.metrics.enabled }}
         - name: metrics
           image: {{ template "mariadb.metrics.image" . }}
           imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
           env:
+            {{- if .Values.rootUser.injectSecretsAsVolume }}
+            - name: MARIADB_ROOT_PASSWORD_FILE
+              value: "/opt/bitnami/mysqld-exporter/secrets/mariadb-root-password"
+            {{- else }}
             - name: MARIADB_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ template "mariadb.secretName" . }}
                   key: mariadb-root-password
+            {{- end }}
           command:
             - sh
             - -c
-            - >-
-              DATA_SOURCE_NAME="root:$MARIADB_ROOT_PASSWORD@(localhost:3306)/"
-              /bin/mysqld_exporter
+            - |
+              password_aux="${MARIADB_ROOT_PASSWORD:-}"
+              if [ -f "${MARIADB_ROOT_PASSWORD_FILE:-}" ]; then
+                  password_aux=$(cat $MARIADB_ROOT_PASSWORD_FILE)
+              fi
+              DATA_SOURCE_NAME="root:${password_aux}@(localhost:3306)/" /bin/mysqld_exporter
               {{- range .Values.metrics.extraArgs.master }}
               {{ . }}
               {{- end }}
@@ -229,6 +272,11 @@ spec:
           {{- if .Values.metrics.resources }}
           resources: {{ toYaml .Values.metrics.resources | nindent 12 }}
           {{- end }}
+          {{- if .Values.rootUser.injectSecretsAsVolume }}
+          volumeMounts:
+            - name: mariadb-credentials
+              mountPath: /opt/bitnami/mysqld-exporter/secrets/
+          {{- end }}
         {{- end }}
       volumes:
         {{- if .Values.master.config }}
@@ -240,6 +288,24 @@ spec:
         - name: custom-init-scripts
           configMap:
             name: {{ template "mariadb.initdbScriptsCM" . }}
+        {{- end }}
+        {{- if or .Values.rootUser.injectSecretsAsVolume .Values.db.injectSecretsAsVolume .Values.replication.injectSecretsAsVolume }}
+        - name: mariadb-credentials
+          secret:
+            secretName: {{ template "mariadb.fullname" . }}
+            items:
+              {{- if .Values.rootUser.injectSecretsAsVolume }}
+              - key: mariadb-root-password
+                path: mariadb-root-password
+              {{- end }}
+              {{- if .Values.db.injectSecretsAsVolume }}
+              - key: mariadb-password
+                path: mariadb-password
+              {{- end }}
+              {{- if .Values.replication.injectSecretsAsVolume }}
+              - key: mariadb-replication-password
+                path: mariadb-replication-password
+              {{- end }}
         {{- end }}
 {{- if and .Values.master.persistence.enabled .Values.master.persistence.existingClaim }}
         - name: data
