@@ -467,6 +467,22 @@ clusterAgent:
   #
   # useHostNetwork: true
 
+  ## @param volumes - list of objects - optional
+  ## Specify additional volumes to mount in the cluster-agent container
+  #
+  # volumes:
+  #   - hostPath:
+  #       path: <HOST_PATH>
+  #     name: <VOLUME_NAME>
+
+  ## @param volumeMounts - list of objects - optional
+  ## Specify additional volumes to mount in the cluster-agent container
+  #
+  # volumeMounts:
+  #   - name: <VOLUME_NAME>
+  #     mountPath: <CONTAINER_PATH>
+  #     readOnly: true
+
 rbac:
 
   ## @param created - boolean - required
