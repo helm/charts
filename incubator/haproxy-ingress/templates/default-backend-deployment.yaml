@@ -11,6 +11,7 @@ metadata:
   name: {{ template "haproxy-ingress.defaultBackend.fullname" . }}
   namespace: {{ .Release.Namespace }}
 spec:
+  replicas: {{ .Values.defaultBackend.replicaCount }}
   selector:
     matchLabels:
       app: {{ template "haproxy-ingress.name" . }}

@@ -51,6 +51,8 @@ serviceMonitor:
   # labels:
   # Set timeout for scrape
   # timeout: 10s
+  # Set of labels to transfer on the Kubernetes Service onto the target.
+  # targetLabels: []
 
 # Used to mount a LUA-Script via config map and use it for metrics-collection
 # script:
