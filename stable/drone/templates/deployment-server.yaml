@@ -144,6 +144,10 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end -}}
+      {{- if .Values.server.securityContext }}
+      securityContext:
+{{ toYaml .Values.server.securityContext | indent 8 }}
+      {{- end }}
 {{- with .Values.server.extraVolumes }}
 {{ tpl . $ | indent 6 }}
 {{- end }}

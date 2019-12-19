@@ -209,6 +209,10 @@ server:
   ##
   extraVolumes: |
 
+  ## securityContext for drone server
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+  securityContext: {}
+
 agent:
   ## Drone agent configuration.
   ## Values in here get injected as environment variables.
