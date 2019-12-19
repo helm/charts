@@ -105,6 +105,8 @@ spec:
               mountPath: /sys
             - name: var-log
               mountPath: /var/log
+            - name: var-lib
+              mountPath: /var/lib/containers/storage
             - name: machine-id
               mountPath: /etc/machine-id
             - name: configuration
@@ -173,6 +175,9 @@ spec:
         - name: var-log
           hostPath:
             path: /var/log
+        - name: var-lib
+          hostPath:
+            path: /var/lib/containers/storage
         - name: machine-id
           hostPath:
             path: /etc/machine-id
