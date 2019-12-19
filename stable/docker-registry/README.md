@@ -56,7 +56,7 @@ their default values.
 | `secrets.s3.secretKey`      | Secret Key for S3 configuration                                                            | `nil`           |
 | `secrets.swift.username`    | Username for Swift configuration                                                           | `nil`           |
 | `secrets.swift.password`    | Password for Swift configuration                                                           | `nil`           |
-| `haSharedSecret`            | Shared secret for Registry                                                                 | `nil`           |
+| `secrets.haSharedSecret`    | Shared secret for Registry                                                                 | `nil`           |
 | `configData`                | Configuration hash for docker                                                              | `nil`           |
 | `s3.region`                 | S3 region                                                                                  | `nil`           |
 | `s3.regionEndpoint`         | S3 region endpoint                                                                         | `nil`           |
