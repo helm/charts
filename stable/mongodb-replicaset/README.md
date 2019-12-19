@@ -25,7 +25,7 @@ To install the chart with the release name `my-release`:
 
 ``` console
 helm repo add stable https://kubernetes-charts.storage.googleapis.com/
-helm install --name my-release stable/mongodb-replicaset
+helm install my-release stable/mongodb-replicaset
 ```
 
 ## Configuration
