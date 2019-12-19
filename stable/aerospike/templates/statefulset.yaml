@@ -26,6 +26,8 @@ spec:
       labels:
         app: {{ template "aerospike.name" . }}
         release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ .Values.confFile | sha256sum }}
     spec:
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       containers:
@@ -38,7 +40,7 @@ spec:
         {{ end }}
         {{ if .Values.args }}
         args:
-{         { toYaml .Values.args | nindent 10 }}
+          {{ toYaml .Values.args | nindent 10 }}
         {{ end }}
         ports:
         - containerPort: 3000
