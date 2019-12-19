@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "aerospike.fullname" . }}
@@ -7,35 +7,48 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    {{- with .Values.labels }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.annotations }}
+  annotations:
+    {{ toYaml . | nindent 4 }}
+  {{- end }}
 spec:
-  serviceName: {{ template "aerospike.fullname" . }}-mesh
+  serviceName: {{ template "aerospike.fullname" . }}
   replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "aerospike.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
         app: {{ template "aerospike.name" . }}
         release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ .Values.confFile | sha256sum }}
     spec:
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       containers:
       - name: {{ template "aerospike.fullname" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-{{ if .Values.command }}
+        {{ if .Values.command }}
         command:
-{{ toYaml .Values.command | indent 10 }}
-{{ end }}
-{{ if .Values.args }}
+          {{ toYaml .Values.command | nindent 10 }}
+        {{ end }}
+        {{ if .Values.args }}
         args:
-{{ toYaml .Values.args | indent 10 }}
-{{ end }}
+          {{ toYaml .Values.args | nindent 10 }}
+        {{ end }}
         ports:
         - containerPort: 3000
-          name: aero-clients
+          name: clients
         - containerPort: 3002
-          name: aero-mesh
+          name: mesh
         - containerPort: 3003
-          name: aero-info
+          name: info
         readinessProbe:
           tcpSocket:
               port: 3000
@@ -49,16 +62,25 @@ spec:
           mountPath: {{ $pv.mountPath | quote }}
         {{- end }}
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+          {{ toYaml .Values.resources | nindent 10 }}
+      {{ if .Values.metrics.enabled }}
+      - name: {{ template "aerospike.fullname" . }}-metrics
+        image: "{{ .Values.metrics.image.repository }}:{{ .Values.metrics.image.tag }}"
+        ports:
+        - containerPort: 9145
+          name: metrics
+      {{- end }}
+      {{- if .Values.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+        {{ toYaml .Values.nodeSelector | nindent 8 }}
+      {{- end }}
       {{- if .Values.affinity }}
       affinity:
-{{ toYaml .Values.affinity | indent 8 }}
+        {{ toYaml .Values.affinity | nindent 8 }}
       {{- end }}
-      {{- with .Values.tolerations }}
+      {{- if .Values.tolerations}}
       tolerations:
-{{ toYaml . | indent 8 }}
+        {{ toYaml .Values.tolerations | nindent 8 }}
       {{- end }}
       volumes:
       - name: config-volume
@@ -67,10 +89,14 @@ spec:
           items:
           - key: aerospike.conf
             path: aerospike.conf
+      {{ if .Values.image.pullSecret }}
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecret }}
+      {{- end }}
   volumeClaimTemplates:
   {{- range $pv := .Values.persistentVolume }}
   - metadata:
       name: {{ $pv.name | quote }}
     spec:
-{{ toYaml $pv.template | indent 6 }}
+      {{ toYaml $pv.template | nindent 6 }}
   {{- end }}

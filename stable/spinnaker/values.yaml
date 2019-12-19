@@ -1,8 +1,9 @@
 halyard:
-  spinnakerVersion: 1.12.5
+  spinnakerVersion: 1.16.1
   image:
     repository: gcr.io/spinnaker-marketplace/halyard
-    tag: 1.20.2
+    tag: 1.23.2
+    pullSecrets: []
   # Set to false to disable persistence data volume for halyard
   persistence:
     enabled: true
@@ -26,6 +27,9 @@ halyard:
     data: {}
     ## Uncomment if you want to use a pre-created ConfigMap rather than feeding data in via helm.
     # name:
+  ## Define custom profiles for Spinnaker services. Read more for details:
+  ## https://www.spinnaker.io/reference/halyard/custom/#custom-profiles
+  ## The contents of the files will be passed through `tpl`, so value interpolation is supported.
   additionalProfileConfigMaps:
     data: {}
       ## if you're running spinnaker behind a reverse proxy such as a GCE ingress
@@ -54,6 +58,45 @@ halyard:
     #   kubernetes:
     #     podAnnotations:
     #       iam.amazonaws.com/role: <role_arn>
+
+  ## Populate to provide a custom local BOM for Halyard to use for deployment. Read more for details:
+  ## https://www.spinnaker.io/guides/operator/custom-boms/#boms-and-configuration-on-your-filesystem
+  bom: ~
+  #   artifactSources:
+  #     debianRepository: https://dl.bintray.com/spinnaker-releases/debians
+  #     dockerRegistry: gcr.io/spinnaker-marketplace
+  #     gitPrefix: https://github.com/spinnaker
+  #     googleImageProject: marketplace-spinnaker-release
+  #   services:
+  #     clouddriver:
+  #       commit: 031bcec52d6c3eb447095df4251b9d7516ed74f5
+  #       version: 6.3.0-20190904130744
+  #     deck:
+  #       commit: b0aac478e13a7f9642d4d39479f649dd2ef52a5a
+  #       version: 2.12.0-20190916141821
+  #     ...
+  #   timestamp: '2019-09-16 18:18:44'
+  #   version: 1.16.1
+
+  ## Define local configuration for Spinnaker services.
+  ## The contents of these files would be copies of the configuration normally retrieved from
+  ## `gs://halconfig/<service-name>`, but instead need to be available locally on the halyard pod to facilitate
+  ## offline installation. This would typically be used along with a custom `bom:` with the `local:` prefix on a
+  ## service version.
+  ## Read more for details:
+  ## https://www.spinnaker.io/guides/operator/custom-boms/#boms-and-configuration-on-your-filesystem
+  ## The key for each entry must be the name of the service and a file name separated by the '_' character.
+  serviceConfigs: {}
+  # clouddriver_clouddriver-ro.yml: |-
+  #   ...
+  # clouddriver_clouddriver-rw.yml: |-
+  #   ...
+  # clouddriver_clouddriver.yml: |-
+  #   ...
+  # deck_settings.json: |-
+  #   ...
+  # echo_echo.yml: |-
+  #   ...
 
   ## Uncomment if you want to add extra commands to the init script
   ## run by the init container before halyard is started.
@@ -117,6 +160,11 @@ kubeConfig:
   enabled: false
   secretName: my-kubeconfig
   secretKey: config
+  # Use this when you want to configure halyard to reference a kubeconfig from s3
+  # This allows you to keep your kubeconfig in an encrypted s3 bucket
+  # For more info visit:
+  #   https://www.spinnaker.io/reference/halyard/secrets/s3-secrets/#secrets-in-s3
+  # encryptedKubeconfig: encrypted:s3!r:us-west-2!b:mybucket!f:mykubeconfig
   # List of contexts from the kubeconfig to make available to Spinnaker
   contexts:
   - default
@@ -126,6 +174,21 @@ kubeConfig:
   - kube-public
   onlySpinnakerManaged:
     enabled: false
+
+  # When false, clouddriver will skip the permission checks for all kubernetes kinds at startup.
+  # This can save a great deal of time during clouddriver startup when you have many kubernetes
+  # accounts configured. This disables the log messages at startup about missing permissions.
+  checkPermissionsOnStartup: true
+
+  # A list of resource kinds this Spinnaker account can deploy to and will cache.
+  # When no kinds are configured, this defaults to ‘all kinds'.
+  # kinds:
+  # -
+
+  # A list of resource kinds this Spinnaker account cannot deploy to or cache.
+  # This can only be set when –kinds is empty or not set.
+  # omittedKinds:
+  # -
 
 # Change this if youd like to expose Spinnaker outside the cluster
 ingress:
@@ -159,7 +222,6 @@ ingressGate:
 #   - pipeline-templates
 spinnakerFeatureFlags:
   - artifacts
-  - jobs
 
 # Node labels for pod assignment
 # Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -219,6 +281,10 @@ s3:
   # endpoint: ""
   # accessKey: ""
   # secretKey: ""
+  # assumeRole: "<role to assume>"
+  ## Here you can pass extra arguments to configure s3 storage options
+  extraArgs: []
+  #  - "--path-style-access true"
 
 # Azure Storage Account
 azs:

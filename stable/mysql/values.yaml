@@ -2,13 +2,17 @@
 ## ref: https://hub.docker.com/r/library/mysql/tags/
 ##
 image: "mysql"
-imageTag: "5.7.14"
+imageTag: "5.7.28"
+
+strategy:
+  type: Recreate
 
 busybox:
   image: "busybox"
   tag: "1.29.3"
 
 testFramework:
+  enabled: true
   image: "dduportal/bats"
   tag: "0.4.0"
 
@@ -168,6 +172,16 @@ service:
   port: 3306
   # nodePort: 32000
   # loadBalancerIP:
+
+## Pods Service Account
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+serviceAccount:
+  ## Specifies whether a ServiceAccount should be created
+  ##
+  create: false
+  ## The name of the ServiceAccount to use.
+  ## If not set and create is true, a name is generated using the mariadb.fullname template
+  # name:
 
 ssl:
   enabled: false

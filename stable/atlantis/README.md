@@ -20,6 +20,21 @@ In order for Atlantis to start and run successfully:
 
 1. Supply a value for `orgWhitelist`, e.g. `github.org/myorg/*`.
 
+## Additional manifests 
+
+It is possible to add additional manifests into a deployment, to extend the chart. One of the reason is to deploy a manifest specific to a cloud provider ( BackendConfig on GKE for example ).
+
+```yaml
+extraManifests:
+  - apiVersion: cloud.google.com/v1beta1
+    kind: BackendConfig
+    metadata:
+      name: "{{ .Release.Name }}-test"
+    spec:
+      securityPolicy:
+        name: "gcp-cloud-armor-policy-test"
+```
+
 ## Customization
 The following options are supported.  See [values.yaml](values.yaml) for more detailed documentation and examples:
 
@@ -35,6 +50,8 @@ The following options are supported.  See [values.yaml](values.yaml) for more de
 | `bitbucket.baseURL`                         | Base URL of Bitbucket Server installation.                                                                                                                                                                                                                                                                | n/a     |
 | `environment`                               | Map of environment variables for the container.                                                                                                                                                                                                                                                           | `{}`    |
 | `environmentSecrets`                         | Array of Kubernetes secrets that can be used to set environment variables. See `values.yaml` for example.                                                                                                                                                                                                                                                          | `{}`    |
+| `extraVolumes`                              | List of additional volumes available to the pod.                                                                                                                                                                                                                                                          | `[]`    |
+| `extraVolumeMounts`                         | List of additional volumes mounted to the container.                                                                                                                                                                                                                                                      | `[]`    |
 | `imagePullSecrets`                          | List of secrets for pulling images from private registries.                                                                                                                                                                                                                                               | `[]`    |
 | `gitconfig`                                 | Contents of a file to be mounted to `~/.gitconfig`.  Use to allow redirection for Terraform modules in private git repositories.                                                                                                                                                                          | n/a     |
 | `command`                                   | Optionally override the [`command` field](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#container-v1-core) of the Atlantis Docker container. If not set, the default Atlantis `ENTRYPOINT` is used. Must be an array.                                                                                                                                  | n/a     |
@@ -53,7 +70,7 @@ The following options are supported.  See [values.yaml](values.yaml) for more de
 | `statefulSet.annotations`                   | Additional annotations to use for StatefulSet. | `{}` |
 | `statefulSet.labels`                        | Additional labels to use for StatefulSet. | `{}` |
 | `logLevel`                                  | Level to use for logging. Either debug, info, warn, or error.                                                                                                                                                                                                                                             | n/a     |
-| `orgWhiteList`                              | Whitelist of repositories from which Atlantis will accept webhooks. **This value must be set for Atlantis to function correctly.** Accepts wildcard characters (`*`). Multiple values may be comma-separated.                                                                                             | none    |
+| `orgWhitelist`                              | Whitelist of repositories from which Atlantis will accept webhooks. **This value must be set for Atlantis to function correctly.** Accepts wildcard characters (`*`). Multiple values may be comma-separated.                                                                                             | none    |
 | `config`                                | Override atlantis main configuration by config map. It's allow some additional functionality like slack notifications.                                                                                                                                                                                | n/a     |
 | `repoConfig`                                | [Server Side Repo Configuration](https://www.runatlantis.io/docs/server-side-repo-config.html) as a raw YAML string. Configuration is stored in ConfigMap.                                                                                                                                                | n/a     |
 | `defaultTFVersion`                          | Default Terraform version to be used by atlantis server                                                                                                                                                                                                                                                   | n/a     |
@@ -75,6 +92,7 @@ The following options are supported.  See [values.yaml](values.yaml) for more de
 | `ingress.host`                              | Domain name Kubernetes Ingress rule looks for. Set it to the domain Atlantis will be hosted on.                                                                                                                                                                                                           | `chart-example.local`     |
 | `ingress.tls`                               | Kubernetes tls block. See [Kubernetes docs](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) for details.                                                                                                                                                                            | `[]`     |
 | `test.enabled`                              | Whether to enable the test. | `true` |
+| `extraManifests`                         | add additional manifests to deploy                      | `[]`                      |
 
 **NOTE**: All the [Server Configurations](https://www.runatlantis.io/docs/server-configuration.html) are passed as [Environment Variables](https://www.runatlantis.io/docs/server-configuration.html#environment-variables).
 

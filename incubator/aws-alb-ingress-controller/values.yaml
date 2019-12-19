@@ -71,10 +71,12 @@ rbac:
   ##
   create: true
   serviceAccountName: default
+  ## Annotations for the Service Account
+  serviceAccountAnnotations: {}
 
 image:
   repository: docker.io/amazon/aws-alb-ingress-controller
-  tag: "v1.1.2"
+  tag: "v1.1.3"
   pullPolicy: IfNotPresent
 
 replicaCount: 1

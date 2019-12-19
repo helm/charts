@@ -1,3 +1,4 @@
+{{- if .Values.testFramework.enabled  }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -19,4 +20,4 @@ data:
       mysql --host={{ template "mysql.fullname" . }} --port={{ .Values.service.port | default "3306" }} -u root -p{{ .Values.mysqlRootPassword }}
     }
     {{- end }}
-
+{{- end }}

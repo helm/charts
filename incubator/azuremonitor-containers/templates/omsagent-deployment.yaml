@@ -1,4 +1,4 @@
-{{- if and (ne .Values.omsagent.secret.key "<your_workspace_key>") (ne .Values.omsagent.secret.wsid "<your_workspace_id>") (ne .Values.omsagent.env.clusterName "<your_cluster_name>")}}
+{{- if and (ne .Values.omsagent.secret.key "<your_workspace_key>") (ne .Values.omsagent.secret.wsid "<your_workspace_id>") (or (ne .Values.omsagent.env.clusterName "<your_cluster_name>") (ne .Values.omsagent.env.clusterId "<your_cluster_id>"))}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -28,33 +28,49 @@ spec:
    serviceAccountName: omsagent
   {{- end }}
    containers:
-     - name: omsagent 
+     - name: omsagent
+       {{- if  eq (.Values.omsagent.domain | lower) "opinsights.azure.cn" }}
+       image: "dockerhub.azk8s.cn/microsoft/oms:{{ .Values.omsagent.image.tag }}"
+       {{- else }}
        image: "mcr.microsoft.com/azuremonitor/containerinsights/ciprod:{{ .Values.omsagent.image.tag }}"
+       {{- end }}
        imagePullPolicy: IfNotPresent
        resources:
 {{ toYaml .Values.omsagent.resources.deployment | indent 9 }}
        env:
+       {{- if ne .Values.omsagent.env.clusterId "<your_cluster_id>" }}
+       - name: AKS_RESOURCE_ID
+         value: {{ .Values.omsagent.env.clusterId | quote }}
+       {{- if ne .Values.omsagent.env.clusterRegion "<your_cluster_region>" }}
+       - name: AKS_REGION
+         value: {{ .Values.omsagent.env.clusterRegion | quote }}
+       {{- end }}
+       {{- else }}
        - name: ACS_RESOURCE_NAME
          value: {{ .Values.omsagent.env.clusterName | quote }}
+       {{- end }}
        - name: CONTROLLER_TYPE
          value: "ReplicaSet"
        - name: NODE_IP
          valueFrom:
             fieldRef:
-              fieldPath: status.hostIP  
+              fieldPath: status.hostIP
        securityContext:
          privileged: true
        ports:
        - containerPort: 25225
-         protocol: TCP 
+         protocol: TCP
        - containerPort: 25224
          protocol: UDP
+       - containerPort: 25227
+         protocol: TCP
+         name: in-rs-tcp
        volumeMounts:
         - mountPath: /var/run/host
           name: docker-sock
-        - mountPath: /var/log 
+        - mountPath: /var/log
           name: host-log
-        - mountPath: /var/lib/docker/containers 
+        - mountPath: /var/lib/docker/containers
           name: containerlog-path
         - mountPath: /etc/kubernetes/host
           name: azure-json-path
@@ -76,9 +92,8 @@ spec:
         periodSeconds: 60
    nodeSelector:
     beta.kubernetes.io/os: linux
-    kubernetes.io/role: agent
    volumes:
-    - name: docker-sock 
+    - name: docker-sock
       hostPath:
        path: /var/run
     - name: container-hostname
@@ -103,4 +118,4 @@ spec:
       configMap:
         name: container-azm-ms-agentconfig
         optional: true
-{{- end }} 
+{{- end }}

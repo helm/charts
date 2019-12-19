@@ -53,6 +53,7 @@ etcdOperator:
   ## additional command arguments go here; will be translated to `--key=value` form
   ## e.g., analytics: true
   commandArgs: {}
+  tolerations: []
   ## Configurable health checks against the /readyz endpoint that etcd-operator exposes
   readinessProbe:
     enabled: false
@@ -68,6 +69,7 @@ etcdOperator:
     timeoutSeconds: 1
     successThreshold: 1
     failureThreshold: 3
+
 # backup spec
 backupOperator:
   name: etcd-backup-operator
@@ -91,7 +93,7 @@ backupOperator:
   ## e.g., analytics: true
   commandArgs: {}
   securityContext: {}
-  tolerations: {}
+  tolerations: []
 
 # restore spec
 restoreOperator:
@@ -118,7 +120,7 @@ restoreOperator:
   ## e.g., analytics: true
   commandArgs: {}
   securityContext: {}
-  tolerations: {}
+  tolerations: []
 
 ## etcd-cluster specific values
 etcdCluster:
@@ -154,4 +156,4 @@ etcdCluster:
     ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
     nodeSelector: {}
     securityContext: {}
-    tolerations: {}
+    tolerations: []
