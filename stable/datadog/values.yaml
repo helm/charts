@@ -9,16 +9,16 @@ image:
 
   ## @param repository - string - required
   ## Define the repository to use:
-  ## use "datadog/agent" for Datadog Agent 6
-  ## use "datadog/dogstatsd" for Standalone Datadog Agent DogStatsD6
+  ## use "datadog/agent" for Datadog Agent 7
+  ## use "datadog/dogstatsd" for Standalone Datadog Agent DogStatsD 7
   #
   repository: datadog/agent
 
   ## @param tag - string - required
   ## Define the Agent version to use.
-  ## Use 6-jmx to enable jmx fetch collection
+  ## Use 7-jmx to enable jmx fetch collection
   #
-  tag: "6"
+  tag: "7"
 
   ## @param pullPolicy - string - required
   ## The Kubernetes pull policy.
