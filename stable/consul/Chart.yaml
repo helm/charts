@@ -10,6 +10,3 @@ description: DEPRECATED Highly available and distributed service discovery and k
 icon: https://raw.githubusercontent.com/hashicorp/consul/bce3809dfca37b883828c3715b84143dd71c0f85/website/source/assets/images/favicons/android-chrome-512x512.png
 sources:
 - https://github.com/kelseyhightower/consul-on-kubernetes
-maintainers:
-- name: lachie83
-  email: lachlan.evenson@microsoft.com
