@@ -204,6 +204,10 @@ server:
   ##
   tolerations: []
 
+  ## securityContext for drone server
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+  securityContext: {}
+
   ## additional siecar containers, e. g. for a database proxy, such as Google's cloudsql-proxy.
   ## ex: https://github.com/kubernetes/charts/tree/master/stable/keycloak
   ##
@@ -212,10 +216,6 @@ server:
   ## additional volumes, e. g. for secrets used in an extraContainers.
   ##
   extraVolumes: |
-
-  ## securityContext for drone server
-  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
-  securityContext: {}
 
 agent:
   ## Drone agent configuration.
