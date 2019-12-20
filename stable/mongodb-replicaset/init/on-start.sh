@@ -21,6 +21,7 @@ replica_set="$REPLICA_SET"
 script_name=${0##*/}
 SECONDS=0
 timeout="${TIMEOUT:-900}"
+tls_mode="${TLS_MODE}"
 
 if [[ "$AUTH" == "true" ]]; then
     admin_user="$ADMIN_USER"
@@ -116,7 +117,7 @@ if [ -f "$ca_crt"  ]; then
     ca_key=/data/configdb/tls.key
     pem=/work-dir/mongo.pem
     ssl_args=(--ssl --sslCAFile "$ca_crt" --sslPEMKeyFile "$pem")
-    ssl_server_args=(--sslMode requireSSL --sslCAFile "$ca_crt" --sslPEMKeyFile "$pem")
+    ssl_server_args=(--sslMode "$tls_mode" --sslCAFile "$ca_crt" --sslPEMKeyFile "$pem")
 
 # Move into /work-dir
 pushd /work-dir

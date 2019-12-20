@@ -122,6 +122,8 @@ spec:
               value: "{{ .Values.init.timeout }}"
             - name: SKIP_INIT
               value: "{{ .Values.skipInitialization }}"
+            - name: TLS_MODE
+              value: {{ .Values.tls.mode }}
           {{- if .Values.auth.enabled }}
             - name: AUTH
               value: "true"
@@ -187,7 +189,7 @@ spec:
             - --keyFile=/data/configdb/key.txt
           {{- end }}
           {{- if .Values.tls.enabled }}
-            - --sslMode=requireSSL
+            - --sslMode={{ .Values.tls.mode }}
             - --sslCAFile=/data/configdb/tls.crt
             - --sslPEMKeyFile=/work-dir/mongo.pem
           {{- end }}

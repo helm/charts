@@ -62,6 +62,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `persistentVolume.annotations`      | Persistent volume annotations                                             | `{}`                                                |
 | `terminationGracePeriodSeconds`     | Duration in seconds the pod needs to terminate gracefully                 | `30`                                                |
 | `tls.enabled`                       | Enable MongoDB TLS support including authentication                       | `false`                                             |
+| `tls.mode`                          | Set the SSL operation mode (disabled, allowSSL, preferSSL, requireSSL)    | `requireSSL`                                        |
 | `tls.cacert`                        | The CA certificate used for the members                                   | Our self signed CA certificate                      |
 | `tls.cakey`                         | The CA key used for the members                                           | Our key for the self signed CA certificate          |
 | `init.resources`                    | Pod resource requests and limits (for init containers)                    | `{}`                                                |
