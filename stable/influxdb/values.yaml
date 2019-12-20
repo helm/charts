@@ -146,7 +146,7 @@ env: {}
 
 ## Change InfluxDB configuration parameters below:
 ## Defaults are indicated
-## ref: https://docs.influxdata.com/influxdb/v1.1/administration/config/
+## ref: https://docs.influxdata.com/influxdb/v1.7/administration/config
 config:
   reporting_disabled: false
   storage_directory: /var/lib/influxdb
@@ -164,6 +164,7 @@ config:
     compact_full_write_cold_duration: 4h0m0s
     max_series_per_database: 1000000
     max_values_per_tag: 100000
+    index_version: inmem
     trace_logging_enabled: false
   coordinator:
     write_timeout: 10s

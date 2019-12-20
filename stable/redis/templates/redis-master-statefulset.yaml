@@ -200,6 +200,9 @@ spec:
             printf "\nrequirepass $REDIS_PASSWORD" >> /opt/bitnami/redis-sentinel/etc/sentinel.conf
             {{- end }}
             {{- end }}
+            {{- if .Values.sentinel.staticID }}
+            printf "\nsentinel myid $(echo $HOSTNAME | openssl sha1 | awk '{ print $2 }')" >> /opt/bitnami/redis-sentinel/etc/sentinel.conf
+            {{- end }}
           fi
           echo "Getting information about current running sentinels"
           # Get information from existing sentinels
