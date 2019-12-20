@@ -43,6 +43,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.es.port`          | TCP port of the target Elasticsearch instance. | `9200` |
 | `backend.es.index`         | Elastic Index name | `kubernetes_cluster` |
 | `backend.es.type`          | Elastic Type name | `flb_type` |
+| `backend.es.retry_limit`   | Max number of retries to attempt (False == no limit) | `False` |
 | `backend.es.time_key`          | Elastic Time Key | `@timestamp` |
 | `backend.es.logstash_format`          | Enable Logstash format compatibility. | `On` |
 | `backend.es.logstash_prefix`  | Index Prefix. If Logstash_Prefix is equals to 'mydata' your index will become 'mydata-YYYY.MM.DD'. | `kubernetes_cluster` |
@@ -87,7 +88,15 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `parsers.json`                     | List of json parsers | `NULL` |
 | `parsers.logfmt`                   | List of logfmt parsers | `NULL` |
 | **General**                   |
-| `annotations`                      | Optional deamonset set annotations        | `NULL`                |
+| `annotations`                      | Optional deamonset set annotations                      | `NULL`                              |
+| `audit.enable`                     | Enable collection of audit logs                         | `false`                             |
+| `audit.input.memBufLimit`          | Specify Mem_Buf_Limit in tail input                     | `35mb`                              |
+| `audit.input.parser`               | Specify Parser in tail input                            | `docker`                            |
+| `audit.input.path`                 | Specify log file(s) through the use of common wildcards | `/var/log/kube-apiserver-audit.log` |
+| `audit.input.bufferChunkSize`      | Specify Buffer_Chunk_Size in tail                       | `2MB`                               |
+| `audit.input.bufferMaxSize`        | Specify Buffer_Max_Size in tail                         | `10MB`                              |
+| `audit.input.skipLongLines`        | Specify Skip_Long_Lines in tail                         | `On`                                |
+| `audit.input.key`                  | Specify Key in tail                                     | `kubernetes-audit`                             |
 | `podAnnotations`                   | Optional pod annotations                  | `NULL`                |
 | `podLabels`                        | Optional pod labels                       | `NULL`                |
 | `fullConfigMap`                    | User has provided entire config (parsers + system)  | `false`      |
@@ -123,6 +132,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `input.systemd.filters.systemdUnit` | Please see https://docs.fluentbit.io/manual/input/systemd | `[docker.service, kubelet.service`, `node-problem-detector.service]`                                       |
 | `input.systemd.maxEntries`         | Please see https://docs.fluentbit.io/manual/input/systemd | `1000`                             |
 | `input.systemd.readFromTail`       | Please see https://docs.fluentbit.io/manual/input/systemd | `true`                             |
+| `input.systemd.stripUnderscores`       | Please see https://docs.fluentbit.io/manual/input/systemd | `false`                             |
 | `input.systemd.tag`                | Please see https://docs.fluentbit.io/manual/input/systemd | `host.*`                           |
 | `rbac.create`                      | Specifies whether RBAC resources should be created.   | `true`                                 |
 | `rbac.pspEnabled`                  | Specifies whether a PodSecurityPolicy should be created. | `false`                             |

@@ -468,7 +468,7 @@ data:
                     "query": "label_values(kubelet_volume_stats_capacity_bytes, cluster)",
                     "refresh": 2,
                     "regex": "",
-                    "sort": 0,
+                    "sort": 1,
                     "tagValuesQuery": "",
                     "tags": [
 
@@ -494,7 +494,7 @@ data:
                     "query": "label_values(kubelet_volume_stats_capacity_bytes{cluster=\"$cluster\", job=\"kubelet\"}, namespace)",
                     "refresh": 2,
                     "regex": "",
-                    "sort": 0,
+                    "sort": 1,
                     "tagValuesQuery": "",
                     "tags": [
 
@@ -520,7 +520,7 @@ data:
                     "query": "label_values(kubelet_volume_stats_capacity_bytes{cluster=\"$cluster\", job=\"kubelet\", namespace=\"$namespace\"}, persistentvolumeclaim)",
                     "refresh": 2,
                     "regex": "",
-                    "sort": 0,
+                    "sort": 1,
                     "tagValuesQuery": "",
                     "tags": [
 

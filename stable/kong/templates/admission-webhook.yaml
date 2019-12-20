@@ -1,0 +1,71 @@
+{{- if .Values.ingressController.admissionWebhook.enabled }}
+{{- $cn := printf "%s.%s.svc" ( include "kong.service.validationWebhook" . ) .Release.Namespace }}
+{{- $ca := genCA "kong-admission-ca" 3650 -}}
+{{- $cert := genSignedCert $cn nil nil 3650 $ca -}}
+kind: ValidatingWebhookConfiguration
+{{- if .Capabilities.APIVersions.Has "admissionregistration.k8s.io/v1" }}
+apiVersion: admissionregistration.k8s.io/v1
+{{- else }}
+apiVersion: admissionregistration.k8s.io/v1beta1
+{{- end }}
+metadata:
+  name: {{ template "kong.fullname" . }}-validations
+  labels:
+    app: {{ template "kong.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+webhooks:
+- name: validations.kong.konghq.com
+  failurePolicy: {{ .Values.ingressController.admissionWebhook.failurePolicy }}
+  rules:
+  - apiGroups:
+    - configuration.konghq.com
+    apiVersions:
+    - '*'
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - kongconsumers
+    - kongplugins
+  clientConfig:
+    caBundle: {{ b64enc $ca.Cert }}
+    service:
+      name: {{ template "kong.service.validationWebhook" . }}
+      namespace: {{ .Release.Namespace }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "kong.service.validationWebhook" . }}
+  labels:
+    app: {{ template "kong.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  ports:
+  - name: webhook
+    port: 443
+    protocol: TCP
+    targetPort: webhook
+  selector:
+    app: {{ template "kong.name" . }}
+    release: {{ .Release.Name }}
+    component: app
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ template "kong.fullname" . }}-validation-webhook-keypair
+  labels:
+    app: {{ template "kong.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+type: kubernetes.io/tls
+data:
+  tls.crt: {{ b64enc $cert.Cert }}
+  tls.key: {{ b64enc $cert.Key }}
+{{ end }}

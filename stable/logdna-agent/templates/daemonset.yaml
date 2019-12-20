@@ -50,42 +50,51 @@ spec:
           - name: LOGDNA_AUTOUPDATE
             value: "{{ .Values.logdna.autoupdate }}"
 {{- end }}
+{{- if .Values.extraEnv }}
+{{ tpl (toYaml .Values.extraEnv) $ | indent 10 }}
+{{- end }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}
         volumeMounts:
-        - name: varlog
-          mountPath: /var/log
-        - name: varlibdockercontainers
-          mountPath: /var/lib/docker/containers
-          readOnly: true
-        - name: mnt
-          mountPath: /mnt
-          readOnly: true
-        - name: docker
-          mountPath: /var/run/docker.sock
-        - name: osrelease
-          mountPath: /etc/os-release
-        - name: logdnahostname
-          mountPath: /etc/logdna-hostname
+          - name: varlog
+            mountPath: /var/log
+          - name: varlibdockercontainers
+            mountPath: /var/lib/docker/containers
+            readOnly: true
+          - name: mnt
+            mountPath: /mnt
+            readOnly: true
+          - name: docker
+            mountPath: /var/run/docker.sock
+          - name: osrelease
+            mountPath: /etc/os-release
+          - name: logdnahostname
+            mountPath: /etc/logdna-hostname
+{{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | nindent 10 }}
+{{- end }}
       volumes:
-      - name: varlog
-        hostPath:
-          path: /var/log
-      - name: varlibdockercontainers
-        hostPath:
-          path: /var/lib/docker/containers
-      - name: mnt
-        hostPath:
-          path: /mnt
-      - name: docker
-        hostPath:
-          path: /var/run/docker.sock
-      - name: osrelease
-        hostPath:
-          path: /etc/os-release
-      - name: logdnahostname
-        hostPath:
-          path: /etc/hostname
+        - name: varlog
+          hostPath:
+            path: /var/log
+        - name: varlibdockercontainers
+          hostPath:
+            path: /var/lib/docker/containers
+        - name: mnt
+          hostPath:
+            path: /mnt
+        - name: docker
+          hostPath:
+            path: /var/run/docker.sock
+        - name: osrelease
+          hostPath:
+            path: /etc/os-release
+        - name: logdnahostname
+          hostPath:
+            path: /etc/hostname
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 8}}
+{{- end }}
       tolerations:
 {{ toYaml .Values.daemonset.tolerations | indent 8 }}
 {{ end }}
