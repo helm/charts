@@ -91,6 +91,12 @@ The Java Virtual Machine used for this chart is the OpenJDK JVM 8u192 JRE (headl
 ## ZooKeeper Details
 The chart defaults to ZooKeeper 3.5 (latest released version).
 
+### ZooKeeper 3.4.x
+Using ZooKeeper 3.4.x with this chart requires the following modifications:
+
+* Setting the environment-variable `ROOT_DIRECTORY` to `/zookeeper-*`
+* Setting the image.tag value to 3.4.x (eg. 3.4.14)
+
 ## Failover
 You can test failover by killing the leader. Insert a key:
 ```console

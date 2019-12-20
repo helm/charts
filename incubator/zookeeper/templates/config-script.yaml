@@ -22,7 +22,8 @@ data:
       #!/bin/bash
 
       set -a
-      ROOT=$(echo /apache-zookeeper-*)
+      ROOT_DIRECTORY=${ROOT_DIRECTORY:-"/apache-zookeeper-*"}
+      ROOT=$(echo $ROOT_DIRECTORY)
 
       ZK_USER=${ZK_USER:-"zookeeper"}
       ZK_LOG_LEVEL=${ZK_LOG_LEVEL:-"INFO"}
