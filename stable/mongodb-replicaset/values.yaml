@@ -124,6 +124,8 @@ terminationGracePeriodSeconds: 30
 tls:
   # Enable or disable MongoDB TLS support
   enabled: false
+  # Set the SSL operation mode (disabled|allowSSL|preferSSL|requireSSL)
+  mode: requireSSL
   # Please generate your own TLS CA by generating it via:
   # $ openssl genrsa -out ca.key 2048
   # $ openssl req -x509 -new -nodes -key ca.key -days 10000 -out ca.crt -subj "/CN=mydomain.com"
