@@ -1,5 +1,7 @@
 # Consul Helm Chart
 
+This chart is DEPRECATED in favor of Hashicorp maintained version - https://github.com/hashicorp/consul-helm
+
 ## Prerequisites Details
 * Kubernetes 1.10+
 * PV support on underlying infrastructure
