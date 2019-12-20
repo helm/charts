@@ -112,14 +112,6 @@ spec:
         lifecycle:
 {{ tpl (toYaml .Values.lifecycle) . | indent 10 }}
         {{- end }}
-        livenessProbe:
-          exec:
-            command:
-            - consul
-            - members
-            - -http-addr=http://127.0.0.1:{{ .Values.HttpPort }}
-          initialDelaySeconds: 300
-          timeoutSeconds: 5
         command:
           - "/bin/sh"
           - "-ec"

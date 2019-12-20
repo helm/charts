@@ -1,6 +1,6 @@
 {{- if .Values.test.rbac.create }}
-apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: ClusterRole
+apiVersion: {{ template "rbac.apiVersion" . }}
+kind: Role
 metadata:
   labels:
     app: {{ template "consul.name" . }}

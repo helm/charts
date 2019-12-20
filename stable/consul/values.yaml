@@ -21,7 +21,7 @@ Domain: consul
 Component: "consul"
 Replicas: 3
 Image: "consul"
-ImageTag: "1.5.3"
+ImageTag: "1.6.2"
 ImagePullPolicy: "Always"
 Resources: {}
  # requests:
@@ -141,7 +141,8 @@ acl:
 ## test container details
 test:
   image: lachlanevenson/k8s-kubectl
-  imageTag: v1.4.8-bash
+  imageTag: v1.16.4-bash
+  imagePullPolicy: "Always"
   rbac:
     create: false
     serviceAccountName: ""
@@ -152,11 +153,11 @@ additionalLabels: {}
 podAnnotations: {}
 
 # Lifecycle for StatefulSet
-# lifecycle:
-#   preStop:
-#     exec:
-#       command:
-#       - sh
-#       - -c
-#       - "sleep 60"
+lifecycle:
+  preStop:
+    exec:
+      command:
+      - /bin/sh
+      - -c
+      - consul leave
 forceIpv6: false

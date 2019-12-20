@@ -24,6 +24,7 @@ spec:
   containers:
     - name: {{ .Release.Name }}-ui-test
       image: {{ .Values.test.image }}:{{ .Values.test.imageTag }}
+      imagePullPolicy: {{ .Values.test.imagePullPolicy }}
       command: ["/tools/bats/bats", "-t", "/tests/run.sh"]
       volumeMounts:
       - mountPath: /tests
