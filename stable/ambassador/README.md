@@ -64,13 +64,14 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `env`                              | Any additional environment variables for ambassador pods                        | `{}`                              |
 | `image.pullPolicy`                 | Ambassador image pull policy                                                    | `IfNotPresent`                    |
 | `image.repository`                 | Ambassador image                                                                | `quay.io/datawire/ambassador`     |
-| `image.tag`                        | Ambassador image tag                                                            | `0.85.0`                          |
+| `image.tag`                        | Ambassador image tag                                                            | `0.86.1`                          |
 | `imagePullSecrets`                 | Image pull secrets                                                              | `[]`                              |
 | `namespace.name`                   | Set the `AMBASSADOR_NAMESPACE` environment variable                             | `metadata.namespace`              |
 | `scope.singleNamespace`            | Set the `AMBASSADOR_SINGLE_NAMESPACE` environment variable and create namespaced RBAC if `rbac.enabled: true` | `false`|
 | `podAnnotations`                   | Additional annotations for ambassador pods                                      | `{}`                              |
 | `deploymentAnnotations`            | Additional annotations for ambassador DaemonSet/Deployment                      | `{}`                              |
 | `podLabels`                        | Additional labels for ambassador pods                                           |                                   |
+| `extraLabels`                      | Additional labels for ambassador Kubernetes resources                           |                                   |
 | `affinity`                         | Affinity for ambassador pods                                                    | `{}`                              |
 | `priorityClassName`                | The name of the priorityClass for the ambassador DaemonSet/Deployment           | `""`                              |
 | `rbac.create`                      | If `true`, create and use RBAC resources                                        | `true`                            |
@@ -80,6 +81,12 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `securityContext`                  | Set security context for pod                                                    | `{ "runAsUser": "8888" }`         |
 | `initContainers`                   | Containers used to initialize context for pods                                  | `[]`                              |
 | `sidecarContainers`                | Containers that share the pod context                                           | `[]`                              |
+| `livenessProbe.initialDelaySeconds` | Initial delay (s) for Ambassador pod's liveness probe                          | `30`                              |
+| `livenessProbe.periodSeconds`       | Probe period (s) for Ambassador pod's liveness probe                           | `3`                               |
+| `livenessProbe.failureThreshold`    | Failure threshold for Ambassador pod's liveness probe                          | `3`                               |
+| `readinessProbe.initialDelaySeconds`| Initial delay (s) for Ambassador pod's readiness probe                         | `30`                              |
+| `readinessProbe.periodSeconds`      | Probe period (s) for Ambassador pod's readiness probe                          | `3`                               |
+| `readinessProbe.failureThreshold`   | Failure threshold for Ambassador pod's readiness probe                         | `3`                               |
 | `service.annotations`              | Annotations to apply to Ambassador service                                      | `""`                              |
 | `service.externalTrafficPolicy`    | Sets the external traffic policy for the service                                | `""`                              |
 | `service.ports`                    | List of ports Ambassador is listening on                                        |  `[{"name": "http","port": 80,"targetPort": 8080},{"name": "https","port": 443,"targetPort": 8443}]` |
@@ -92,7 +99,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `volumes`                          | Volumes for the ambassador service                                              | `[]`                              |
 | `pro.enabled`                      | Installs the Ambassador Pro container as a sidecar to Ambassador                | `false`                           |
 | `pro.image.repository`             | Ambassador Pro image                                                            | `quay.io/datawire/ambassador_pro` |
-| `pro.image.tag`                    | Ambassador Pro image tag                                                        | `0.10.0`                          |
+| `pro.image.tag`                    | Ambassador Pro image tag                                                        | `0.11.0`                          |
 | `pro.image.customBuildTag`         | Image for a custom build of Ambassador Pro using a `Plugin`                     | ``                                |
 | `pro.ports.auth`                   | Ambassador Pro authentication port                                              | `8500`                            |
 | `pro.ports.ratelimit`              | Ambassador Pro ratelimit port                                                   | `8500`                            |

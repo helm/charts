@@ -92,6 +92,8 @@ spec:
       - name: init-sysctl
         image: {{ template "redis.sysctl.image" . }}
         imagePullPolicy: {{ .Values.sysctlImage.pullPolicy }}
+        resources:
+{{ toYaml .Values.sysctlImage.resources | indent 10 }}
         {{- if .Values.sysctlImage.mountHostSys }}
         volumeMounts:
         - name: host-sys
@@ -218,7 +220,7 @@ spec:
         image: "{{ .Values.exporter.image }}:{{ .Values.exporter.tag }}"
         imagePullPolicy: {{ .Values.exporter.pullPolicy }}
         args:
-        {{- range $key, $value := .Values.extraArgs }}
+        {{- range $key, $value := .Values.exporter.extraArgs }}
           - --{{ $key }}={{ $value }}
         {{- end }}
         env:

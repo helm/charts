@@ -30,8 +30,7 @@ graylog:
   ## Make sure you strict with the `x` version of Graylog where `x` is ${version}-${x}
   ##
   image:
-    # repository: "graylog/graylog:2.5.1-3"
-    repository: "graylog/graylog:3.1.2-1"
+    repository: "graylog/graylog:3.1"
     pullPolicy: "IfNotPresent"
 
   ## Number of Graylog instance
@@ -96,6 +95,18 @@ graylog:
     #   url: https://github.com/omise/graylog-plugin-function-check-diff/releases/download/1.0.0/graylog-plugin-function-check-diff-1.0.0.jar
     # - name: graylog-plugin-auth-sso-3.0.0.jar
     #   url: https://github.com/Graylog2/graylog-plugin-auth-sso/releases/download/3.0.0/graylog-plugin-auth-sso-3.0.0.jar
+
+  ## Additional init containers
+  ##
+  extraInitContainers: []
+
+  ## Additional volume mounts
+  ##
+  extraVolumeMounts: []
+
+  ## Additional volumes
+  ##
+  extraVolumes: []
 
   ## A service for Graylog web interface
   ##

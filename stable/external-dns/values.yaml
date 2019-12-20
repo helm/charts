@@ -249,6 +249,10 @@ interval: "1m"
 ## - panic, debug, info, warn, error, fatal
 ##
 logLevel: info
+## Formats of the ExternalDNS logs. Available values are:
+## - text, json
+##
+logFormat: text
 ## Modify how DNS records are sychronized between sources and providers (options: sync, upsert-only)
 ##
 policy: upsert-only
@@ -421,3 +425,30 @@ metrics:
   enabled: false
   ## Metrics exporter pod Annotation and Labels
   ##
+  # podAnnotations:
+  #   prometheus.io/scrape: "true"
+  #   prometheus.io/port: "7979"
+
+  ## Prometheus Operator ServiceMonitor configuration
+  ##
+  serviceMonitor:
+    enabled: false
+    ## Namespace in which Prometheus is running
+    ##
+    # namespace: monitoring
+
+    ## Interval at which metrics should be scraped.
+    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#endpoint
+    ##
+    # interval: 10s
+
+    ## Timeout after which the scrape is ended
+    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#endpoint
+    ##
+    # scrapeTimeout: 10s
+
+    ## ServiceMonitor selector labels
+    ## ref: https://github.com/bitnami/charts/tree/master/bitnami/prometheus-operator#prometheus-configuration
+    ##
+    # selector:
+    #   prometheus: my-prometheus

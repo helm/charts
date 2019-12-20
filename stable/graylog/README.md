@@ -98,7 +98,7 @@ The following table lists the configurable parameters of the Graylog chart and t
 
 | Parameter                               | Description                                                                                                                                           | Default                               |
 |-----------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------|
-| `graylog.image.repository`              | `graylog` image repository   | `graylog/graylog:3.1.2-1`                 |
+| `graylog.image.repository`              | `graylog` image repository   | `graylog/graylog:3.1`                 |
 | `graylog.imagePullPolicy`               | Image pull policy                                                                                                                                     | `IfNotPresent`                        |
 | `graylog.replicas`                      | The number of Graylog instances in the cluster. The chart will automatic create assign master to one of replicas                                      | `2`                                   |
 | `graylog.resources`                     | CPU/Memory resource requests/limits                                                                                                                   | Memory: `1024Mi`, CPU: `500m`         |
@@ -143,6 +143,9 @@ The following table lists the configurable parameters of the Graylog chart and t
 | `graylog.init.resources`                | Configure resource requests and limits for the Graylog StatefulSet initContainer                                                                      | `{}`                                  |
 | `graylog.provisioner.enabled`           | Enable optional Job to run an arbitrary Bash script                                                                                                   | `false`                               |
 | `graylog.provisioner.script`            | The contents of the provisioner Bash script                                                                                                           | ``                                    |
+| `graylog.extraVolumeMounts`             | Additional Volume mounts                                                                                                                              | `[]`                                  |
+| `graylog.extraVolumes`                  | Additional Volumes                                                                                                                                    | `[]`                                  |
+| `graylog.extraInitContainers`           | Additional Init containers                                                                                                                            | `[]`                                  |
 | `rbac.create`                           | If true, create & use RBAC resources                                                                                                                  | `true`                                |
 | `rbac.serviceAccount.create`            | If true, create the Graylog service account                                                                                                           | `true`                                |
 | `rbac.serviceAccount.name`              | Name of the server service account to use or create                                                                                                   | `{{ graylog.fullname }}`              |

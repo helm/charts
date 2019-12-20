@@ -37,6 +37,10 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
         {{- end }}
     spec:
+{{- if .Values.initContainers }}
+      initContainers:
+        {{- toYaml .Values.initContainers | nindent 8 }}
+{{- end }}
       serviceAccountName: {{ template "dex.serviceAccountName" . }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 10 }}

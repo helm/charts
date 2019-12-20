@@ -118,6 +118,10 @@ controller:
   ##
   kind: Deployment
 
+  ## Annotations to be added to the controller deployment
+  ##
+  deploymentAnnotations: {}
+
   # The update strategy to apply to the Deployment or DaemonSet
   ##
   updateStrategy: {}
