@@ -53,7 +53,21 @@ helm install --name my-release stable/cockroachdb
 
 Note that for a production cluster, you are very likely to want to modify the `storage.persistentVolume.size` and `storage.persistentVolume.storageClass` parameters. This chart defaults to `100 GiB` of disk space per Pod, but you may want more or less depending on your use case, and the default PersistentVolume `storageClass` in your environment may not be what you want for a database (e.g. on GCE and Azure the default is not SSD).
 
-If you are running in secure mode (with configuration parameter `tls.enabled` set to `yes`/`true`), then you will have to manually approve the cluster's security certificates as the Pods are created. You can see the pending CSRs (certificate-signing requests) by running `kubectl get csr`, and approve them by running `kubectl certificate approve <csr-name>`. You'll have to approve one certificate for each Node (e.g. `default.node.eerie-horse-cockroachdb-0` and one client certificate for the Job that initializes the cluster (e.g. `default.node.root`).
+If you are running in secure mode (with configuration parameter `tls.enabled` set to `yes`/`true`) and `tls.certs.provided` is set to `no`/`false`, then you will have to manually approve the cluster's security certificates as the Pods are created. You can see the pending CSRs (certificate-signing requests) by running `kubectl get csr`, and approve them by running `kubectl certificate approve <csr-name>`. You'll have to approve one certificate for each Node (e.g. `default.node.eerie-horse-cockroachdb-0` and one client certificate for the Job that initializes the cluster (e.g. `default.node.root`).
+For "Bring your own certs" scenario, please set `tls.certs.provided` is set to `yes`/`true` and create secrets `tls.certs.clientRootSecret` and `tls.certs.nodeSecret` with the following content
+```
+ca.crt
+node.crt
+node.key
+```
+or 
+```
+ca.crt
+client.root.crt
+client.root.key
+```
+for `tls.certs.clientRootSecret` 
+
 
 Confirm that all Pods are `Running` successfully and init has been completed:
 ```shell
@@ -263,6 +277,9 @@ For details see the `values.yml` file.
 | `tls.enabled`                | Whether to run securely using TLS certificates    | `no`  |
 | `tls.serviceAccount.create`  | Whether to create a new RBAC service account      | `yes` |
 | `tls.serviceAccount.name`    | Name of RBAC service account to use               | `""`  |
+| `tls.certs.provided`               | Bring your own certs scenario, i.e certificates are provided    | `no`  |
+| `tls.certs.clientRootSecret`       | If certs are provided, secret name for client root cert   | `cockroachdb-root` |
+| `tls.certs.nodeSecret`             | If certs are provided, secret name for node cert          | `cockroachdb-node`  |
 | `tls.init.image.repository`  | Image to use for requesting TLS certificates      | `cockroachdb/cockroach-k8s-request-cert` |
 | `tls.init.image.tag`         | Image tag to use for requesting TLS certificates  | `0.4`          |
 | `tls.init.image.pullPolicy`  | Requesting TLS certificates container pull policy | `IfNotPresent` |

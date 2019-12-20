@@ -15,17 +15,35 @@ spec:
   imagePullSecrets:
     - name: {{ template "cockroachdb.fullname" . }}.db.registry
 {{- end }}
+  {{- if .Values.tls.certs.provided }}
+  volumes:
+    - name: client-certs
+      secret:
+        secretName: {{ .Values.tls.certs.clientRootSecret }}
+        defaultMode: 256
+  {{- end }}
   containers:
     - name: client-test
       image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
       imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+      {{- if .Values.tls.certs.provided }}
+      volumeMounts:
+      - name: client-certs
+        mountPath: /cockroach-certs
+      {{- end }}
       command:
         - /cockroach/cockroach
         - sql
+        {{- if .Values.tls.certs.provided }}
+        - --certs-dir
+        - /cockroach-certs
+        {{- else }}
         - --insecure
+        {{- end}}
         - --host
         - {{ template "cockroachdb.fullname" . }}-public.{{ .Release.Namespace }}
         - --port
         - {{ .Values.service.ports.grpc.external.port | quote }}
         - -e
         - SHOW DATABASES;
+
