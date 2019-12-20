@@ -16,6 +16,11 @@ metadata:
 {{ toYaml . | indent 4 }}
   {{- end }}
 spec:
+  strategy:
+    type: {{ .Values.updateStrategy.type }}
+    {{- if (eq "Recreate" .Values.updateStrategy.type) }}
+    rollingUpdate: null
+    {{- end }}
   selector:
     matchLabels:
       app: {{ template "mongodb.name" . }}
