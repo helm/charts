@@ -109,6 +109,6 @@ the merge. In that case, the confd entry will take precedence.
 ######################################################################
 
 This version of the chart does not support deploying Agent 5.x.
-If you cannot upgrade to Agent 6.x, you can use a previous version
+If you cannot upgrade to Agent 6.x or later, you can use a previous version
 of the chart by calling helm install with `--version 0.18.0`.
 {{- end }}
