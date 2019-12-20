@@ -27,6 +27,7 @@ server:
     externalPort: 80
     annotations: {}
     labels: {}
+    loadBalancerSourceRanges: []
   configMap:
   resources: {}
   #  limits:
