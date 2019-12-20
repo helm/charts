@@ -15,6 +15,10 @@ credentials:
   admin: cola
   standby: pinacolada
 
+# A existing secret for credentials
+# Secret must contain following keys: password-superuser, password-admin, password-standby
+credentialsSecret:
+
 # Distribution Configuration stores
 # Please note that only one of the following stores should be enabled.
 kubernetes:

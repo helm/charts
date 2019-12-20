@@ -41,3 +41,14 @@ Create the name of the service account to use.
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create the name of the secret for credentials.
+*/}}
+{{- define "patroni.credentialsSecretName" -}}
+{{- if empty .Values.credentialsSecret -}}
+    {{ include "patroni.fullname" . }}
+{{- else -}}
+    {{ .Values.credentialsSecret }}
+{{- end -}}
+{{- end -}}
