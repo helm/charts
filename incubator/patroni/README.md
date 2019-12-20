@@ -68,6 +68,7 @@ The following table lists the configurable parameters of the patroni chart and t
 | `credentials.superuser`           | Password of the superuser                   | `tea`                                               |
 | `credentials.admin`               | Password of the admin                       | `cola`                                              |
 | `credentials.standby`             | Password of the replication user            | `pinacolada`                                        |
+| `credentialsSecret`               | A existing secret to use                    | `nil`                                               |
 | `kubernetes.dcs.enable`           | Using Kubernetes as DCS                     | `true`                                              |
 | `kubernetes.configmaps.enable`    | Using Kubernetes configmaps instead of endpoints | `false`                                        |
 | `etcd.enable`                     | Using etcd as DCS                           | `false`                                             |
