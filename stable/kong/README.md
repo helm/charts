@@ -90,6 +90,7 @@ and their default values.
 | proxy.tls.hostPort                 | Host port to use for TLS                                                              |                     |
 | proxy.tls.overrideServiceTargetPort| Override service port to use for TLS without touching Kong containerPort              |                     |
 | proxy.type                         | k8s service type. Options: NodePort, ClusterIP, LoadBalancer                          | `NodePort`          |
+| proxy.clusterIP                    | k8s service clusterIP                                                                 |                     |
 | proxy.loadBalancerSourceRanges     | Limit proxy access to CIDRs if set and service type is `LoadBalancer`                 | `[]`                |
 | proxy.loadBalancerIP               | To reuse an existing ingress static IP for the admin service                          |                     |
 | proxy.externalIPs                  | IPs for which nodes in the cluster will also accept traffic for the proxy             | `[]`                |
@@ -407,6 +408,12 @@ You can can learn about kong ingress custom resource definitions [here](https://
 
 
 ## Changelog
+=======
+### 0.30.1
+
+#### New Features
+
+- Add support for specifying Proxy service cluster ip.
 
 ### 0.30.0
 

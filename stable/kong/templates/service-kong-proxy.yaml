@@ -50,6 +50,9 @@ spec:
   {{- if .Values.proxy.externalTrafficPolicy }}
   externalTrafficPolicy: {{ .Values.proxy.externalTrafficPolicy }}
   {{- end }}
+  {{- if .Values.proxy.clusterIP }}
+  clusterIP: {{ .Values.proxy.clusterIP }}
+  {{- end }}
 
   selector:
     app: {{ template "kong.name" . }}
