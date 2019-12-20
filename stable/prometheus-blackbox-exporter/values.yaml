@@ -12,7 +12,7 @@ strategy:
 
 image:
   repository: prom/blackbox-exporter
-  tag: v0.15.1
+  tag: v0.16.0
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -41,6 +41,23 @@ config:
         valid_http_versions: ["HTTP/1.1", "HTTP/2"]
         no_follow_redirects: false
         preferred_ip_protocol: "ip4"
+
+extraConfigmapMounts: []
+  # - name: certs-configmap
+  #   mountPath: /etc/secrets/ssl/
+  #   subPath: certificates.crt # (optional)
+  #   configMap: certs-configmap
+  #   readOnly: true
+  #   defaultMode: 420
+
+## Additional secret mounts
+# Defines additional mounts with secrets. Secrets must be manually created in the namespace.
+extraSecretMounts: []
+  # - name: secret-files
+  #   mountPath: /etc/secrets
+  #   secretName: blackbox-secret-files
+  #   readOnly: true
+  #   defaultMode: 420
 
 resources: {}
   # limits:

@@ -152,6 +152,11 @@ fi
 
 init_mongod_standalone
 
+if [[ "${SKIP_INIT}" == "true" ]]; then
+    log "Skipping initialization"
+    exit 0
+fi
+
 log "Peers: ${peers[*]}"
 log "Starting a MongoDB replica"
 mongod --config /data/configdb/mongod.conf --dbpath=/data/db --replSet="$replica_set" --port="${port}" "${auth_args[@]}" "${ssl_server_args[@]}" --bind_ip=0.0.0.0 2>&1 | tee -a /work-dir/log.txt 1>&2 &

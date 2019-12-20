@@ -163,6 +163,8 @@ rawConfig: |-
 extraEntries:
   input: |-
 #     # >=1 additional Key/Value entrie(s) for existing Input section
+  audit: |-
+#     # >=1 additional Key/Value entrie(s) for existing Input section
   filter: |-
 #     # >=1 additional Key/Value entrie(s) for existing Filter section
   output: |-
@@ -235,6 +237,17 @@ input:
     readFromTail: true
     stripUnderscores: false
     tag: host.*
+
+audit:
+  enable: false
+  input:
+    memBufLimit: 35MB
+    parser: docker
+    path: /var/log/kube-apiserver-audit.log
+    bufferChunkSize: 2MB
+    bufferMaxSize: 10MB
+    skipLongLines: On
+    key: kubernetes-audit
 
 filter:
   kubeURL: https://kubernetes.default.svc:443
