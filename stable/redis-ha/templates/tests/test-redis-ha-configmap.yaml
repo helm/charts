@@ -15,12 +15,12 @@ spec:
     args:
     - --shell=sh
     - /readonly-config/init.sh
-    securityContext:
-      runAsUser: 1
     volumeMounts:
     - name: config
       mountPath: /readonly-config
       readOnly: true
+  securityContext:
+{{ toYaml .Values.securityContext | indent 4 }}
   volumes:
   - name: config
     configMap:
