@@ -6,7 +6,7 @@ replicaCount: 1
 podAnnotations: {}
 image:
   repository: metabase/metabase
-  tag: v0.32.9
+  tag: v0.34.0
   pullPolicy: IfNotPresent
 
 # Config Jetty web server
