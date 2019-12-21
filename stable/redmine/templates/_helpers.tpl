@@ -198,6 +198,13 @@ Usage:
 {{- end -}}
 
 {{/*
+Expand the name of the chart.
+*/}}
+{{- define "redmine.mailReceiver.name" -}}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
 Create a default fully qualified mail receiver app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
@@ -241,7 +248,7 @@ Also, we can't use a single if because lazy evaluation is not an option
 Mail Receiver CronJob labels
 */}}
 {{- define "redmine.mailReceiver.labels" -}}
-app.kubernetes.io/name: {{ template "redmine.mailReceiver.fullname" . }}
+app.kubernetes.io/name: {{ template "redmine.mailReceiver.name" . }}
 helm.sh/chart: {{ template "redmine.chart" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
