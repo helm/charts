@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 image:
   repository: prom/pushgateway
-  tag: v1.0.0
+  tag: v1.0.1
   pullPolicy: IfNotPresent
 
 service:
