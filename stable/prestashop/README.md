@@ -113,11 +113,13 @@ The following table lists the configurable parameters of the PrestaShop chart an
 | `persistence.accessMode`             | PVC Access Mode for PrestaShop volume                                                                   | `ReadWriteOnce`                                              |
 | `persistence.size`                   | PVC Storage Request for PrestaShop volume                                                               | `8Gi`                                                        |
 | `resources`                          | CPU/Memory resource requests/limits                                                                     | Memory: `512Mi`, CPU: `300m`                                 |
+| `livenessProbe.enabled`              | Would you like a livenessProbe to be enabled                                                                                                               | `true`                                                       |
 | `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated                                                                | 600                                                          |
 | `livenessProbe.periodSeconds`        | How often to perform the probe                                                                          | 3                                                            |
 | `livenessProbe.timeoutSeconds`       | When the probe times out                                                                                | 5                                                            |
 | `livenessProbe.failureThreshold`     | Minimum consecutive failures for the probe to be considered failed after having succeeded.              | 6                                                            |
 | `livenessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful after having failed.            | 1                                                            |
+| `readinessProbe.enabled`             | Would you like a readinessProbe to be enabled                                                                                                               | `true`                                                       |
 | `readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated                                                               | 30                                                           |
 | `readinessProbe.periodSeconds`       | How often to perform the probe                                                                          | 3                                                            |
 | `readinessProbe.timeoutSeconds`      | When the probe times out                                                                                | 5                                                            |
@@ -184,6 +186,14 @@ Persistent Volume Claims are used to keep the data across deployments. This is k
 See the [Parameters](#parameters) section to configure the PVC or to disable persistence.
 
 ## Upgrading
+
+### To 9.0.0
+
+Helm performs a lookup for the object based on its group (apps), version (v1), and kind (Deployment). Also known as its GroupVersionKind, or GVK. Changing the GVK is considered a compatibility breaker from Kubernetes' point of view, so you cannot "upgrade" those objects to the new GVK in-place. Earlier versions of Helm 3 did not perform the lookup correctly which has since been fixed to match the spec.
+
+In https://github.com/helm/charts/pull/17308 the `apiVersion` of the deployment resources was updated to `apps/v1` in tune with the api's deprecated, resulting in compatibility breakage.
+
+This major version signifies this change.
 
 ### To 3.0.0
 

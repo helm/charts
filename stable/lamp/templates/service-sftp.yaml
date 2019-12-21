@@ -9,7 +9,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
-  type: NodePort
+  type: {{ .Values.sftp.serviceType }}
   ports:
   - targetPort: 22
     port: {{ .Values.sftp.port }}

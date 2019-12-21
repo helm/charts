@@ -51,7 +51,7 @@ The following table lists the configurable parameters of the Cloudwatch Exporter
 | Parameter                         | Description                                                             | Default                     |
 | --------------------------------- | ----------------------------------------------------------------------- | --------------------------- |
 | `image.repository`                | Image                                                                   | `prom/cloudwatch-exporter`  |
-| `image.tag`                       | Image tag                                                               | `cloudwatch_exporter-0.5.0` |
+| `image.tag`                       | Image tag                                                               | `cloudwatch_exporter-0.6.0` |
 | `image.pullPolicy`                | Image pull policy                                                       | `IfNotPresent`              |
 | `command`                         | Container entrypoint command                                            | `[]`                        |
 | `service.type`                    | Service type                                                            | `ClusterIP`                 |

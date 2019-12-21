@@ -34,6 +34,25 @@ spec:
         volumeMounts:
         - name: config
           mountPath: /etc/telegraf
+        {{- range .Values.volumeMounts}}
+        - name: {{ .name }}
+          mountPath: {{ .mountPath }}
+        {{- end }}
+        {{- range $objectKey, $objectValue := .Values.config.outputs }}
+        {{- range $key, $value := . -}}
+        {{- $tp := typeOf $value -}}
+        {{- if eq $key "health" }}
+        livenessProbe:
+          httpGet:
+            path: /
+            port: {{ trimPrefix "http://:" $value.service_address | int64 }}
+        readinessProbe:
+          httpGet:
+            path: /
+            port: {{ trimPrefix "http://:" $value.service_address | int64 }}
+        {{- end }}
+        {{- end }}
+        {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.imagePullSecrets | indent 8 }}
@@ -42,3 +61,6 @@ spec:
       - name: config
         configMap:
           name: {{ include "telegraf.fullname" . }}
+      {{- if .Values.volumeMounts }}
+{{ toYaml .Values.volumeMounts | indent 6 }}
+      {{- end}}

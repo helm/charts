@@ -70,6 +70,7 @@ The following table lists the configurable parameters of the external-dns chart 
 | `aws.zoneTags`                      | When using the AWS provider, filter for zones with these tags                                            | `[]`                                                        |
 | `aws.preferCNAME`                   | When using the AWS provider, replaces Alias recors with CNAME (options: true, false)                     | `[]`                                                        |
 | `azure.secretName`                  | When using the Azure provider, set the secret containing the `azure.json` file                           | `""`                                                        |
+| `azure.cloud`                       | When using the Azure provider, set the Azure Clound                                                      | `""`                                                        |
 | `azure.resourceGroup`               | When using the Azure provider, set the Azure Resource Group                                              | `""`                                                        |
 | `azure.tenantId`                    | When using the Azure provider, set the Azure Tenant ID                                                   | `""`                                                        |
 | `azure.subscriptionId`              | When using the Azure provider, set the Azure Subscription ID                                             | `""`                                                        |
@@ -122,6 +123,7 @@ The following table lists the configurable parameters of the external-dns chart 
 | `crd.kind`                          | Sets the kind for the CRD to watch                                                                       | `""`                                                        |
 | `dryRun`                            | When enabled, prints DNS record changes rather than actually performing them (optional)                  | `false`                                                     |
 | `logLevel`                          | Verbosity of the logs (options: panic, debug, info, warn, error, fatal)                                  | `info`                                                      |
+| `logFormat`                         | Which format to output logs in (options: text, json)                                                     | `text`                                                      |
 | `interval`                          | Interval update period to use                                                                            | `1m`                                                        |
 | `istioIngressGateways`              | The fully-qualified name of the Istio ingress gateway services .                                         | `""`                                                        |
 | `policy`                            | Modify how DNS records are sychronized between sources and providers (options: sync, upsert-only )       | `upsert-only`                                               |
@@ -148,7 +150,7 @@ The following table lists the configurable parameters of the external-dns chart 
 | `service.loadBalancerIP`            | IP address to assign to load balancer (if supported)                                                     | `""`                                                        |
 | `service.loadBalancerSourceRanges`  | List of IP CIDRs allowed access to load balancer (if supported)                                          | `[]`                                                        |
 | `service.annotations`               | Annotations to add to service                                                                            | `{}`                                                        |
-| `rbac.create`                       | Weather to create & use RBAC resources or not                                                            | `false`                                                     |
+| `rbac.create`                       | Weather to create & use RBAC resources or not                                                            | `true`                                                      |
 | `rbac.serviceAccountName`           | ServiceAccount (ignored if rbac.create == true)                                                          | `default`                                                   |
 | `rbac.serviceAccountAnnotations`    | Additional Service Account annotations                                                                   | `{}`                                                        |
 | `rbac.apiVersion`                   | Version of the RBAC API                                                                                  | `v1beta1`                                                   |
@@ -157,7 +159,11 @@ The following table lists the configurable parameters of the external-dns chart 
 | `livenessProbe`                     | Deployment Liveness Probe                                                                                | See `values.yaml`                                           |
 | `readinessProbe`                    | Deployment Readiness Probe                                                                               | See `values.yaml`                                           |
 | `metrics.enabled`                   | Enable prometheus to access external-dns metrics endpoint                                                | `false`                                                     |
-| `metrics.podAnnotations`            | Annotations for enabling prometheus to access the metrics endpoint                                       | {`prometheus.io/scrape: "true",prometheus.io/port: "7979"`} |
+| `metrics.podAnnotations`            | Annotations for enabling prometheus to access the metrics endpoint                                       |                                                             |
+| `metrics.serviceMonitor.enabled`    | Create ServiceMonitor object                                                                             | `false`                                                     |
+| `metrics.serviceMonitor.selector`   | Additional labels for ServiceMonitor object                                                              | `{}`                                                        |
+| `metrics.serviceMonitor.interval`   | Interval at which metrics should be scraped                                                              | `30s`                                                       |
+| `metrics.serviceMonitor.scrapeTimeout`   | Timeout after which the scrape is ended                                                             | `30s`                                                       |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

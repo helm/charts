@@ -2,8 +2,8 @@
 # Do not change in-place! In order to change this file first read following link:
 # https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
 {{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
-{{- if and (semverCompare ">=1.14.0-0" $kubeTargetVersion) (semverCompare "<1.16.0-0" $kubeTargetVersion) .Values.defaultRules.create .Values.nodeExporter.enabled .Values.defaultRules.rules.node }}
-apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
+{{- if and (semverCompare ">=1.14.0-0" $kubeTargetVersion) (semverCompare "<9.9.9-9" $kubeTargetVersion) .Values.defaultRules.create .Values.nodeExporter.enabled .Values.defaultRules.rules.node }}
+apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: {{ printf "%s-%s" (include "prometheus-operator.fullname" .) "node.rules" | trunc 63 | trimSuffix "-" }}
@@ -32,6 +32,15 @@ spec:
           node_namespace_pod:kube_pod_info:
         ))
       record: node:node_num_cpu:sum
-    - expr: sum(node_memory_MemFree_bytes{job="node-exporter"} + node_memory_Cached_bytes{job="node-exporter"} + node_memory_Buffers_bytes{job="node-exporter"})
-      record: :node_memory_MemFreeCachedBuffers_bytes:sum
+    - expr: |-
+        sum(
+          node_memory_MemAvailable_bytes{job="node-exporter"} or
+          (
+            node_memory_Buffers_bytes{job="node-exporter"} +
+            node_memory_Cached_bytes{job="node-exporter"} +
+            node_memory_MemFree_bytes{job="node-exporter"} +
+            node_memory_Slab_bytes{job="node-exporter"}
+          )
+        )
+      record: :node_memory_MemAvailable_bytes:sum
 {{- end }}

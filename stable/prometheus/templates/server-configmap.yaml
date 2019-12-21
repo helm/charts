@@ -14,7 +14,20 @@ data:
     global:
 {{ $root.Values.server.global | toYaml | trimSuffix "\n" | indent 6 }}
 {{- end }}
+{{- if eq $key "alerts" }}
+{{- if and (not (empty $value)) (empty $value.groups) }}
+    groups:
+{{- range $ruleKey, $ruleValue := $value }}
+    - name: {{ $ruleKey -}}.rules
+      rules:
+{{ $ruleValue | toYaml | trimSuffix "\n" | indent 6 }}
+{{- end }}
+{{- else }}
+{{ toYaml $value | indent 4 }}
+{{- end }}
+{{- else }}
 {{ toYaml $value | default "{}" | indent 4 }}
+{{- end }}
 {{- if eq $key "prometheus.yml" -}}
 {{- if $root.Values.extraScrapeConfigs }}
 {{ tpl $root.Values.extraScrapeConfigs $root | indent 4 }}
@@ -25,6 +38,9 @@ data:
 {{ $root.Values.alertRelabelConfigs | toYaml  | trimSuffix "\n" | indent 6 }}
 {{- end }}
       alertmanagers:
+{{- if $root.Values.server.alertmanagers }}
+{{ toYaml $root.Values.server.alertmanagers | indent 8 }}
+{{- else }}
       - kubernetes_sd_configs:
           - role: pod
         tls_config:
@@ -43,9 +59,13 @@ data:
         - source_labels: [__meta_kubernetes_pod_label_component]
           regex: alertmanager
           action: keep
+        - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_probe]
+          regex: {{ index $root.Values.alertmanager.podAnnotations "prometheus.io/probe" | default ".*" }}
+          action: keep
         - source_labels: [__meta_kubernetes_pod_container_port_number]
           regex:
           action: drop
+{{- end -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}
