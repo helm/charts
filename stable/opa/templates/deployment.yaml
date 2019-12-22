@@ -133,6 +133,7 @@ spec:
 {{- end }}
             - --opa-url=http://127.0.0.1:8181/v1
             - --replicate-path={{ .Values.mgmt.replicate.path }}
+            - --enable-data={{ .Values.mgmt.data.enabled }}
             - --enable-policies={{ .Values.mgmt.configmapPolicies.enabled }}
 {{- if .Values.mgmt.configmapPolicies.enabled }}
             - --policies={{ .Values.mgmt.configmapPolicies.namespaces | join "," }}
@@ -143,6 +144,9 @@ spec:
 {{- end }}
 {{- range .Values.mgmt.replicate.cluster }}
             - --replicate-cluster={{ . }}
+{{- end }}
+{{- range .Values.mgmt.extraArgs }}
+            - {{ . }}
 {{- end }}
 {{- if or .Values.authz.enabled .Values.bootstrapPolicies }}
           volumeMounts:

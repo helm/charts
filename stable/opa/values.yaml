@@ -118,6 +118,8 @@ mgmt:
   imagePullPolicy: IfNotPresent
   extraArgs: []
   resources: {}
+  data:
+    enabled: false
   configmapPolicies:
 # NOTE IF you use these, remember to update the RBAC rules below to allow
 #      permissions to get, list, watch, patch and update configmaps
