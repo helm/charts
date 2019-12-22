@@ -4,7 +4,7 @@
 
 image:
   repository: homeassistant/home-assistant
-  tag: 0.101.2
+  tag: 0.103.3
   pullPolicy: IfNotPresent
   pullSecrets: []
 
@@ -14,14 +14,19 @@ strategyType: Recreate
 # Probes configuration
 probes:
   liveness:
+    enabled: true
     initialDelaySeconds: 60
     failureThreshold: 5
     timeoutSeconds: 10
   readiness:
+    enabled: true
     initialDelaySeconds: 60
     failureThreshold: 5
     timeoutSeconds: 10
-
+  startup:
+    enabled: false
+    failureThreshold: 30
+    periodSeconds: 10
 service:
   type: ClusterIP
   port: 8123
