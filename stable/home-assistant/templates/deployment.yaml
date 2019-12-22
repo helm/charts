@@ -73,7 +73,7 @@ spec:
             - name: api
               containerPort: {{ .Values.service.port }}
               protocol: TCP
-          {{- if .Values.liveness.enabled }}
+          {{- if .Values.probes.liveness.enabled }}
           livenessProbe:
             httpGet:
               path: /
@@ -82,7 +82,7 @@ spec:
             failureThreshold: {{ .Values.probes.liveness.failureThreshold }}
             timeoutSeconds: {{ .Values.probes.liveness.timeoutSeconds }}
           {{- end }}
-          {{- if .Values.readiness.enabled }}
+          {{- if .Values.probes.readiness.enabled }}
           readinessProbe:
             httpGet:
               path: /
@@ -91,7 +91,7 @@ spec:
             failureThreshold: {{ .Values.probes.readiness.failureThreshold }}
             timeoutSeconds: {{ .Values.probes.readiness.timeoutSeconds }}
           {{- end }}
-          {{- if .Values.startup.enabled }}
+          {{- if .Values.probes.startup.enabled }}
           startupProbe:
             httpGet:
               path: /
