@@ -58,12 +58,10 @@ ingress:
   # annotations:
   #   kubernetes.io/ingress.class: nginx
   #   kubernetes.io/tls-acme: 'true'
-
   ## Drone hostnames must be provided if Ingress is enabled
   ##
   # hosts:
   #   - drone.domain.io
-
   ## Drone Ingress TLS configuration secrets
   ## Must be manually created in the namespace
   ##
@@ -94,6 +92,9 @@ sourceControl:
     clientSecretValue:
     server:
   gitea:
+    clientID:
+    clientSecretKey: clientSecret
+    clientSecretValue:
     server:
   gogs:
     server:
@@ -138,7 +139,6 @@ server:
     ## you can run pipeline jobs in another namespace, if you choose to do this
     ## you'll need to create that namespace manually.
     # namespace:
-
     ## alternative service account to create to create drone pipelines. this account
     ## will be given cluster-admin rights.
     ## if not set the rights will be given to the default drone service account name.

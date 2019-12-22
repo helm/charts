@@ -16,6 +16,11 @@ metadata:
 {{ toYaml . | indent 4 }}
   {{- end }}
 spec:
+  strategy:
+    type: {{ .Values.updateStrategy.type }}
+    {{- if (eq "Recreate" .Values.updateStrategy.type) }}
+    rollingUpdate: null
+    {{- end }}
   selector:
     matchLabels:
       app: {{ template "mongodb.name" . }}
@@ -137,6 +142,9 @@ spec:
         {{- if .Values.mongodbExtraFlags }}
         - name: MONGODB_EXTRA_FLAGS
           value: {{ .Values.mongodbExtraFlags | join " " | quote }}
+        {{- end }}
+        {{- if .Values.extraEnvVars }}
+        {{- include "mongodb.tplValue" ( dict "value" .Values.extraEnvVars "context" $ ) | nindent 8 }}
         {{- end }}
         ports:
         - name: mongodb

@@ -67,7 +67,7 @@ The suggested approach is to delete the release and reinstall it.
 
 #### From 1.0.0 onwards
 
-Starting with version 1.0.0, this chart does not support deploying Agent 5.x anymore. If you cannot upgrade to Agent 6.x, you can use a previous version of the chart by calling helm install with `--version 0.18.0`.
+Starting with version 1.0.0, this chart does not support deploying Agent 5.x anymore. If you cannot upgrade to Agent 6.x or later, you can use a previous version of the chart by calling helm install with `--version 0.18.0`.
 
 See [0.18.1's README](https://github.com/helm/charts/blob/847f737479bb78d89f8fb650db25627558fbe1f0/stable/datadog/README.md) to see which options were supported at the time.
 
@@ -271,6 +271,7 @@ helm install --name <RELEASE_NAME> \
 | `datadog.nonLocalTraffic`                | Enable statsd reporting and APM from any external ip                                      | `False`                                     |
 | `datadog.useCriSocketVolume`             | Enable mounting the container runtime socket in Agent containers                          | `True`                                      |
 | `datadog.dogstatsdOriginDetection`       | Enable origin detection for container tagging                                             | `False`                                     |
+| `datadog.dogStatsDPort`                  | Used to override the default agent DogStatsD Port                                         | `8125`                                      |
 | `datadog.useDogStatsDSocketVolume`       | Enable dogstatsd over Unix Domain Socket                                                  | `False`                                     |
 | `datadog.dogStatsDSocketPath`            | Custom path to the socket, has to be located in the `/var/run/datadog` folder path        | `/var/run/datadog/dsd.socket`               |
 | `datadog.volumes`                        | Additional volumes for the daemonset or deployment                                        | `nil`                                       |
@@ -348,6 +349,7 @@ helm install --name <RELEASE_NAME> \
 | `clusterAgent.confd`                     | Additional check configurations (static and Autodiscovery)                                | `nil`                                       |
 | `clusterAgent.podAnnotations`            | Annotations to add to the Cluster Agent Pod(s)                                            | `nil`                                       |
 | `clusterAgent.priorityClassName`         | Name of the priorityClass to apply to the Cluster Agent                                   | `nil`                                       |
+| `clusterAgent.nodeSelector`              | Node selectors to apply to the Cluster Agent deployment                                   | `nil`                                       |
 | `clusterAgent.resources.requests.cpu`    | CPU resource requests                                                                     | `200m`                                      |
 | `clusterAgent.resources.limits.cpu`      | CPU resource limits                                                                       | `200m`                                      |
 | `clusterAgent.resources.requests.memory` | Memory resource requests                                                                  | `256Mi`                                     |
@@ -357,6 +359,8 @@ helm install --name <RELEASE_NAME> \
 | `clusterAgent.readinessProbe`            | Overrides the default readiness probe                                                     | http port 443 if external metrics enabled   |
 | `clusterAgent.strategy`                  | Which update strategy to deploy the cluster-agent                                         | RollingUpdate with 0 maxUnavailable, 1 maxSurge |
 | `clusterAgent.useHostNetwork`            | If true, use the host's network                                                           | `nil`                                       |
+| `clusterAgent.volumes`                   | Additional volumes for the cluster-agent deployment                                       | `nil`                                       |
+| `clusterAgent.volumeMounts`              | Additional volumeMounts for the cluster-agent deployment                                  | `nil`                                       |
 | `clusterchecksDeployment.enabled`        | Enable Datadog agent deployment dedicated for running Cluster Checks. It allows having different resources (Request/Limit) for Cluster Checks agent pods.  | `false` |
 | `clusterchecksDeployment.env`                            | Additional Datadog environment variables for Cluster Checks Deployment                        | `nil`                                       |
 | `clusterchecksDeployment.resources.requests.cpu`         | CPU resource requests                                                                         | `200m`                                      |
@@ -371,6 +375,7 @@ helm install --name <RELEASE_NAME> \
 | `clusterchecksDeployment.rbac.serviceAccount`            | existing ServiceAccount to use (ignored if rbac.create=true) for clusterchecks                | `default`                                   |
 | `clusterchecksDeployment.strategy`                       | Which update strategy to deploy the Cluster Checks Deployment                                 | RollingUpdate with 0 maxUnavailable, 1 maxSurge |
 | `systemProbe.enabled`                  | If both this flag and `daemonset.useDedicatedContainers` are true, enable system probe collection 	        | `false`                                           |
+| `systemProbe.seccomp`                  | Apply an ad-hoc seccomp profile to system-probe to restrict its privileges                                 | `localhost/system-probe`                          |
 | `systemProbe.seccompRoot`              | Seccomp root directory for system-probe                                                                    | `/var/lib/kubelet/seccomp`                        |
 | `systemProbe.debugPort`                | The port to expose pprof and expvar for system-probe agent, it is not enabled if the value is set to 0     | `0`                                               |
 | `systemProbe.enableConntrack`          | If true, system-probe connects to the netlink/conntrack subsystem to add NAT information to connection data. Ref: http://conntrack-tools.netfilter.org/| `true`|
