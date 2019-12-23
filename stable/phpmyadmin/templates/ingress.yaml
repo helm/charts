@@ -1,41 +1,43 @@
 {{- if .Values.ingress.enabled -}}
-{{- $fullName := include "phpmyadmin.fullname" . -}}
-{{- $servicePort := .Values.service.port -}}
-{{- $ingressPath := .Values.ingress.path -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ $fullName }}
+  name: {{ template "phpmyadmin.fullname" . }}
   labels:
     app: {{ template "phpmyadmin.name" . }}
     chart: {{ template "phpmyadmin.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-{{- with .Values.ingress.annotations }}
   annotations:
-{{ toYaml . | indent 4 }}
-{{- end }}
+    {{- if .Values.ingress.certManager }}
+    kubernetes.io/tls-acme: "true"
+    {{- end }}
+    {{- range $key, $value := .Values.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
 spec:
-{{- if .Values.ingress.tls }}
-  tls:
-  {{- range .Values.ingress.tls }}
-    - hosts:
-      {{- range .hosts }}
-        - {{ . }}
-      {{- end }}
-      secretName: {{ .secretName }}
-  {{- end }}
-{{- end }}
   rules:
-  {{ if .Values.ingress.host -}}
-    - host: {{ .Values.ingress.host }}
-    http:
-  {{- else -}}
-    - http:
-  {{- end }}
+  {{- range .Values.ingress.hosts }}
+    - host: {{ .name }}
+      http:
         paths:
-          - path: {{ $ingressPath }}
+          - path: {{ default "/" .path }}
             backend:
-              serviceName: {{ $fullName }}
+              serviceName: {{ template "phpmyadmin.fullname" $ }}
               servicePort: http
+    {{- end }}
+  tls:
+  {{- range .Values.ingress.hosts }}
+    {{- if .tls }}
+    - hosts:
+    {{- if .tlsHosts }}
+      {{- range $host := .tlsHosts }}
+        - {{ $host }}
+      {{- end }}
+    {{- else }}
+        - {{ .name }}
+    {{- end }}
+      secretName: {{ .tlsSecret }}
+    {{- end }}
+  {{- end }}
 {{- end }}

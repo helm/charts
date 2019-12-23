@@ -7,7 +7,7 @@ strategyType: Recreate
 
 image:
   repository: jacobalberty/unifi
-  tag: 5.10.19
+  tag: 5.11.50
   pullPolicy: IfNotPresent
 
 # If enabled, the controller, discovery, GUI, and STUN services will not be
@@ -125,6 +125,7 @@ discoveryService:
 ingress:
   enabled: false
   annotations: {}
+    # nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   path: /

@@ -95,7 +95,7 @@ To connect to your database from outside the cluster execute the following comma
 
 {{- else if contains "ClusterIP" .Values.master.service.type }}
 
-    kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "redis.fullname" . }} {{ .Values.redisPort }}:{{ .Values.redisPort }} &
+    kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "redis.fullname" . }}-master {{ .Values.redisPort }}:{{ .Values.redisPort }} &
     redis-cli -h 127.0.0.1 -p {{ .Values.redisPort }} {{- if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }}
 
 {{- end }}

@@ -2,7 +2,7 @@
 # Do not change in-place! In order to change this file first read following link:
 # https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
 {{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
-{{- if and (semverCompare ">=1.14.0-0" $kubeTargetVersion) (semverCompare "<1.16.0-0" $kubeTargetVersion) .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled .Values.nodeExporter.enabled }}
+{{- if and (semverCompare ">=1.14.0-0" $kubeTargetVersion) (semverCompare "<9.9.9-9" $kubeTargetVersion) .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled .Values.nodeExporter.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -342,10 +342,10 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "instance:node_memory_swap_io_pages:rate1m{job=\"node-exporter\", instance=\"$instance\"}",
+                                "expr": "instance:node_vmstat_pgmajfault:rate1m{job=\"node-exporter\", instance=\"$instance\"}",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "Swap IO",
+                                "legendFormat": "Major page faults",
                                 "legendLink": null,
                                 "step": 10
                             }
@@ -355,7 +355,7 @@ data:
                         ],
                         "timeFrom": null,
                         "timeShift": null,
-                        "title": "Memory Saturation (pages swapped per second)",
+                        "title": "Memory Saturation (Major Page Faults)",
                         "tooltip": {
                             "shared": false,
                             "sort": 0,
@@ -840,7 +840,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "1 -\n(\n  max without (mountpoint, fstype) (node_filesystem_avail_bytes{job=\"node-exporter\", , instance=\"$instance\"}}`}})\n/\n  max without (mountpoint, fstype) (node_filesystem_size_bytes{job=\"node-exporter\", , instance=\"$instance\"}}`}})\n)\n",
+                                "expr": "1 -\n(\n  max without (mountpoint, fstype) (node_filesystem_avail_bytes{job=\"node-exporter\", fstype!=\"\", instance=\"$instance\"})\n/\n  max without (mountpoint, fstype) (node_filesystem_size_bytes{job=\"node-exporter\", fstype!=\"\", instance=\"$instance\"})\n)\n",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{device}}`}}",

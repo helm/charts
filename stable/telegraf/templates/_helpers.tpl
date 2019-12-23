@@ -67,43 +67,96 @@ Create chart name and version as used by the chart label.
 
 {{- define "outputs" -}}
 {{- range $outputIdx, $configObject := . -}}
-{{- range $output, $config := . }}
-    [[outputs.{{ $output }}]]
-  {{- if $config }}
-  {{- $tp := typeOf $config -}}
-  {{- if eq $tp "map[string]interface {}" -}}
-    {{- range $key, $value := $config -}}
-      {{- $tp := typeOf $value }}
-      {{- if eq $tp "string"}}
+    {{- range $output, $config := . -}}
+
+    [[outputs.{{- $output }}]]
+    {{- if $config -}}
+    {{- $tp := typeOf $config -}}
+    {{- if eq $tp "map[string]interface {}" -}}
+        {{- range $key, $value := $config -}}
+          {{- $tp := typeOf $value -}}
+          {{- if eq $tp "string" }}
       {{ $key }} = {{ $value | quote }}
-      {{- end }}
-      {{- if eq $tp "float64"}}
+          {{- end }}
+          {{- if eq $tp "float64" }}
       {{ $key }} = {{ $value | int64 }}
-      {{- end }}
-      {{- if eq $tp "int"}}
+          {{- end }}
+          {{- if eq $tp "int" }}
       {{ $key }} = {{ $value | int64 }}
-      {{- end }}
-      {{- if eq $tp "bool"}}
+          {{- end }}
+          {{- if eq $tp "bool" }}
       {{ $key }} = {{ $value }}
-      {{- end }}
-      {{- if eq $tp "[]interface {}" }}
+          {{- end }}
+          {{- if eq $tp "[]interface {}" }}
       {{ $key }} = [
-          {{- $numOut := len $value }}
-          {{- $numOut := sub $numOut 1 }}
-          {{- range $b, $val := $value }}
-            {{- $i := int64 $b }}
-            {{- if eq $i $numOut }}
+              {{- $numOut := len $value }}
+              {{- $numOut := sub $numOut 1 }}
+              {{- range $b, $val := $value }}
+                {{- $i := int64 $b }}
+                {{- $tp := typeOf $val }}
+                {{- if eq $i $numOut }}
+                  {{- if eq $tp "string" }}
         {{ $val | quote }}
-            {{- else }}
+                  {{- end }}
+                  {{- if eq $tp "float64" }}
+        {{ $val | int64 }}
+                  {{- end }}
+                {{- else }}
+                  {{- if eq $tp "string" }}
         {{ $val | quote }},
+                  {{- end}}
+                  {{- if eq $tp "float64" }}
+        {{ $val | int64 }},
+                  {{- end }}
+                {{- end }}
+              {{- end }}
+      ]
+          {{- end }}
+        {{- end }}
+        {{- range $key, $value := $config -}}
+          {{- $tp := typeOf $value -}}
+          {{- if eq $tp "map[string]interface {}" }}
+      [[outputs.{{ $output }}.{{ $key }}]]
+            {{- range $k, $v := $value }}
+              {{- $tps := typeOf $v }}
+              {{- if eq $tps "string" }}
+        {{ $k }} = {{ $v | quote }}
+              {{- end }}
+              {{- if eq $tps "float64" }}
+        {{ $k }} = {{ $v | int64 }}.0
+              {{- end }}
+              {{- if eq $tps "int64" }}
+        {{ $k }} = {{ $v | int64 }}
+              {{- end }}
+              {{- if eq $tps "bool" }}
+        {{ $k }} = {{ $v }}
+              {{- end }}
+              {{- if eq $tps "[]interface {}"}}
+        {{ $k }} = [
+                {{- $numOut := len $value }}
+                {{- $numOut := sub $numOut 1 }}
+                {{- range $b, $val := $v }}
+                  {{- $i := int64 $b }}
+                  {{- if eq $i $numOut }}
+            {{ $val | quote }}
+                  {{- else }}
+            {{ $val | quote }},
+                  {{- end }}
+                {{- end }}
+        ]
+              {{- end }}
+              {{- if eq $tps "map[string]interface {}"}}
+        [[outputs.{{ $output }}.{{ $key }}.{{ $k }}]]
+                {{- range $foo, $bar := $v }}
+            {{ $foo }} = {{ $bar | quote }}
+                {{- end }}
+              {{- end }}
             {{- end }}
           {{- end }}
-      ]
-      {{- end }}
+          {{- end }}
     {{- end }}
-  {{- end }}
-  {{- end }}
-  {{- end }}
+    {{- end }}
+    {{ end }}
 {{- end }}
 {{- end -}}
 
@@ -179,6 +232,98 @@ Create chart name and version as used by the chart label.
         [[inputs.{{ $input }}.{{ $key }}.{{ $k }}]]
                 {{- range $foo, $bar := $v }}
             {{ $foo }} = {{ $bar | quote }}
+                {{- end }}
+              {{- end }}
+            {{- end }}
+          {{- end }}
+          {{- end }}
+    {{- end }}
+    {{- end }}
+    {{ end }}
+{{- end }}
+{{- end -}}
+
+{{- define "processors" -}}
+{{- range $processorIdx, $configObject := . -}}
+    {{- range $processor, $config := . -}}
+
+    [[processors.{{- $processor }}]]
+    {{- if $config -}}
+    {{- $tp := typeOf $config -}}
+    {{- if eq $tp "map[string]interface {}" -}}
+        {{- range $key, $value := $config -}}
+          {{- $tp := typeOf $value -}}
+          {{- if eq $tp "string" }}
+      {{ $key }} = {{ $value | quote }}
+          {{- end }}
+          {{- if eq $tp "float64" }}
+      {{ $key }} = {{ $value | int64 }}
+          {{- end }}
+          {{- if eq $tp "int" }}
+      {{ $key }} = {{ $value | int64 }}
+          {{- end }}
+          {{- if eq $tp "bool" }}
+      {{ $key }} = {{ $value }}
+          {{- end }}
+          {{- if eq $tp "[]interface {}" }}
+      {{ $key }} = [
+              {{- $numOut := len $value }}
+              {{- $numOut := sub $numOut 1 }}
+              {{- range $b, $val := $value }}
+                {{- $i := int64 $b }}
+                {{- $tp := typeOf $val }}
+                {{- if eq $i $numOut }}
+                  {{- if eq $tp "string" }}
+        {{ $val | quote }}
+                  {{- end }}
+                  {{- if eq $tp "float64" }}
+        {{ $val | int64 }}
+                  {{- end }}
+                {{- else }}
+                  {{- if eq $tp "string" }}
+        {{ $val | quote }},
+                  {{- end}}
+                  {{- if eq $tp "float64" }}
+        {{ $val | int64 }},
+                  {{- end }}
+                {{- end }}
+              {{- end }}
+      ]
+          {{- end }}
+          {{- if eq $tp "map[string]interface {}" }}
+      [[processors.{{ $processor }}.{{ $key }}]]
+            {{- range $k, $v := $value }}
+              {{- $tps := typeOf $v }}
+              {{- if eq $tps "string" }}
+        {{ $k }} = {{ $v | quote }}
+              {{- end }}
+              {{- if eq $tps "[]interface {}"}}
+        {{ $k }} = [
+                {{- $numOut := len $value }}
+                {{- $numOut := sub $numOut 1 }}
+                {{- range $b, $val := $v }}
+                  {{- $i := int64 $b }}
+                  {{- if eq $i $numOut }}
+            {{ $val | quote }}
+                  {{- else }}
+            {{ $val | quote }},
+                  {{- end }}
+                {{- end }}
+        ]
+              {{- end }}
+              {{- if eq $tps "map[string]interface {}"}}
+        [processors.{{ $processor }}.{{ $key }}.{{ $k }}]
+                {{- range $foo, $bar := $v }}
+                {{- $tp := typeOf $bar -}}
+                {{- if eq $tp "string" }}
+            {{ $foo }} = {{ $bar | quote }}
+                {{- end }}
+                {{- if eq $tp "int" }}
+            {{ $foo }} = {{ $bar }}
+                {{- end }}
+                {{- if eq $tp "float64" }}
+            {{ $foo }} = {{ int64 $bar }}
+                {{- end }}
                 {{- end }}
               {{- end }}
             {{- end }}

@@ -133,7 +133,7 @@ containers:
       - name: config
         mountPath: "/etc/grafana/grafana.ini"
         subPath: grafana.ini
-      {{- if not .Values.admin.existingSecret }}
+      {{- if .Values.ldap.enabled }}
       - name: ldap
         mountPath: "/etc/grafana/ldap.toml"
         subPath: ldap.toml
@@ -184,9 +184,11 @@ containers:
 {{- if .Values.sidecar.dashboards.enabled }}
       - name: sc-dashboard-volume
         mountPath: {{ .Values.sidecar.dashboards.folder | quote }}
+{{ if .Values.sidecar.dashboards.SCProvider }}
       - name: sc-dashboard-provider
         mountPath: "/etc/grafana/provisioning/dashboards/sc-dashboardproviders.yaml"
         subPath: provider.yaml
+{{- end}}
 {{- end}}
 {{- if .Values.sidecar.datasources.enabled }}
       - name: sc-datasources-volume
@@ -252,7 +254,17 @@ containers:
       - name: "{{ $key }}"
         value: "{{ $value }}"
 {{- end }}
+    {{- range $key, $value := .Values.envValueFrom }}
+      - name: {{ $key | quote }}
+        valueFrom:
+{{ toYaml $value | indent 10 }}
+    {{- end }}
     {{- if .Values.envFromSecret }}
+    envFrom:
+      - secretRef:
+          name: {{ .Values.envFromSecret }}
+    {{- end }}
+    {{- if .Values.envRenderSecret }}
     envFrom:
       - secretRef:
           name: {{ template "grafana.fullname" . }}-env
@@ -263,8 +275,8 @@ containers:
 {{ toYaml .Values.readinessProbe | indent 6 }}
     resources:
 {{ toYaml .Values.resources | indent 6 }}
-{{- if .Values.extraContainers }}
-{{ toYaml .Values.extraContainers | indent 2}}
+{{- with .Values.extraContainers }}
+{{ tpl . $ | indent 2 }}
 {{- end }}
 {{- with .Values.nodeSelector }}
 nodeSelector:
@@ -302,7 +314,7 @@ volumes:
       name: {{ tpl $name $root }}
     {{- end }}
   {{- end }}
-  {{- if not .Values.admin.existingSecret }}
+  {{- if .Values.ldap.enabled }}
   - name: ldap
     secret:
       {{- if .Values.ldap.existingSecret }}
@@ -327,7 +339,7 @@ volumes:
 {{- if .Values.sidecar.dashboards.enabled }}
   - name: sc-dashboard-volume
     emptyDir: {}
-{{- if .Values.sidecar.dashboards.enabled }}
+{{- if .Values.sidecar.dashboards.SCProvider }}
   - name: sc-dashboard-provider
     configMap:
       name: {{ template "grafana.fullname" . }}-config-dashboards

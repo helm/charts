@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "stolon.fullname" . }}-keeper
@@ -32,6 +32,10 @@ spec:
 {{- end }}
       serviceAccountName: {{ template "stolon.serviceAccountName" . }}
       terminationGracePeriodSeconds: 10
+{{- if .Values.keeper.fsGroup }}
+      securityContext:
+        fsGroup: {{ .Values.keeper.fsGroup }}
+{{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -95,9 +99,12 @@ spec:
               value: "/etc/secrets/stolon/pg_su_password"
 {{ end }}
             - name: STKEEPER_METRICS_LISTEN_ADDRESS
-              value: "0.0.0.0:8080"
+              value: "0.0.0.0:{{ .Values.ports.metrics.containerPort }}"
             - name: STKEEPER_DEBUG
               value: {{ .Values.debug | quote}}
+{{- if .Values.keeper.extraEnv }}
+{{ toYaml .Values.keeper.extraEnv | indent 12 }}
+{{- end }}
           ports:
 {{- range $key, $value := .Values.ports }}
             - name: {{ $key }}
@@ -108,6 +115,10 @@ spec:
           volumeMounts:
           - name: data
             mountPath: /stolon-data
+{{- if .Values.tls.enabled }}
+          - name: certs
+            mountPath: /certs
+{{- end }}
 {{ if or (empty .Values.superuserSecret.name) (empty .Values.replicationSecret.name) }}
           - name: stolon-secrets
             mountPath: /etc/secrets/stolon
@@ -158,6 +169,12 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
       volumes:
+{{- if .Values.tls.enabled }}
+        - name: certs
+          secret:
+            defaultMode: 0600
+            secretName: {{ if .Values.tls.existingSecret }}{{ .Values.tls.existingSecret }}{{ else }}{{ template "stolon.fullname" . }}-certs{{end}}
+{{ end }}
         - name: config
           configMap:
             name: {{ template "stolon.fullname" . }}

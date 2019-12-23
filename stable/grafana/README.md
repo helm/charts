@@ -26,6 +26,14 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
+## Upgrading an existing Release to a new major version
+
+A major chart version change (like v1.2.3 -> v2.0.0) indicates that there is an
+incompatible breaking change needing manual actions.
+
+### To 4.0.0 (And 3.12.1)
+
+This version requires Helm >= 2.12.0.
 
 ## Configuration
 
@@ -40,15 +48,20 @@ The command removes all the Kubernetes components associated with the chart and 
 | `securityContext`                         | Deployment securityContext                    | `{"runAsUser": 472, "fsGroup": 472}`                    |
 | `priorityClassName`                       | Name of Priority Class to assign pods         | `nil`                                                   |
 | `image.repository`                        | Image repository                              | `grafana/grafana`                                       |
-| `image.tag`                               | Image tag (`Must be >= 5.0.0`)                | `6.3.5`                                                 |
+| `image.tag`                               | Image tag (`Must be >= 5.0.0`)                | `6.5.2`                                                 |
 | `image.pullPolicy`                        | Image pull policy                             | `IfNotPresent`                                          |
 | `image.pullSecrets`                       | Image pull secrets                            | `{}`                                                    |
 | `service.type`                            | Kubernetes service type                       | `ClusterIP`                                             |
 | `service.port`                            | Kubernetes port where service is exposed      | `80`                                                    |
 | `service.portName`                        | Name of the port on the service               | `service`                                               |
 | `service.targetPort`                      | Internal service is port                      | `3000`                                                  |
+| `service.nodePort`                        | Kubernetes service nodePort                   | `nil`                                                   |
 | `service.annotations`                     | Service annotations                           | `{}`                                                    |
 | `service.labels`                          | Custom labels                                 | `{}`                                                    |
+| `service.clusterIP`                       | internal cluster service IP                   | `nil`                                                   |
+| `service.loadBalancerIP`                  | IP address to assign to load balancer (if supported) | `nil`                                            |
+| `service.loadBalancerSourceRanges`        | list of IP CIDRs allowed access to lb (if supported) | `[]`                                             |
+| `serivce.externalIPs`                     | service external IP addresses                 | `[]`                                                    |
 | `ingress.enabled`                         | Enables Ingress                               | `false`                                                 |
 | `ingress.annotations`                     | Ingress annotations                           | `{}`                                                    |
 | `ingress.labels`                          | Custom labels                                 | `{}`                                                    |
@@ -79,7 +92,9 @@ The command removes all the Kubernetes components associated with the chart and 
 | `initChownData.resources`                 | init-chown-data pod resource requests & limits | `{}`                                                   |
 | `schedulerName`                           | Alternate scheduler name                      | `nil`                                                   |
 | `env`                                     | Extra environment variables passed to pods    | `{}`                                                    |
-| `envFromSecret`                           | Sensible environment variables passed to pods and stored as secret | `{}`                               |
+| `envValueFrom`                            | Environment variables from alternate sources. See the API docs on [EnvVarSource](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#envvarsource-v1-core) for format details.  | `{}` |
+| `envFromSecret`                           | Name of a Kubernetes secret (must be manually created in the same namespace) containing values to be added to the environment | `""` |
+| `envRenderSecret`                         | Sensible environment variables passed to pods and stored as secret | `{}`                               |
 | `extraSecretMounts`                       | Additional grafana server secret mounts       | `[]`                                                    |
 | `extraVolumeMounts`                       | Additional grafana server volume mounts       | `[]`                                                    |
 | `extraConfigmapMounts`                    | Additional grafana server configMap volume mounts  | `[]`                                               |
@@ -91,6 +106,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `dashboards`                              | Dashboards to import                          | `{}`                                                    |
 | `dashboardsConfigMaps`                    | ConfigMaps reference that contains dashboards | `{}`                                                    |
 | `grafana.ini`                             | Grafana's primary configuration               | `{}`                                                    |
+| `ldap.enabled`                            | Enable LDAP authentication                    | `false`                                                 |
 | `ldap.existingSecret`                     | The name of an existing secret containing the `ldap.toml` file, this must have the key `ldap-toml`. | `""` |
 | `ldap.config  `                           | Grafana's LDAP configuration                  | `""`                                                    |
 | `annotations`                             | Deployment annotations                        | `{}`                                                    |
@@ -102,6 +118,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `sidecar.imagePullPolicy`                 | Sidecar image pull policy                     | `IfNotPresent`                                          |
 | `sidecar.resources`                       | Sidecar resources                             | `{}`                                                    |
 | `sidecar.dashboards.enabled`              | Enables the cluster wide search for dashboards and adds/updates/deletes them in grafana | `false`       |
+| `sidecar.dashboards.SCProvider`           | Enables creation of sidecar provider          | `true`
 | `sidecar.dashboards.provider.name`        | Unique name of the grafana provider           | `sidecarProvider`                                       |
 | `sidecar.dashboards.provider.orgid`       | Id of the organisation, to which the dashboards should be added | `1`                                   |
 | `sidecar.dashboards.provider.folder`      | Logical folder in which grafana groups dashboards | `""`                                                |
@@ -121,6 +138,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `admin.existingSecret`                    | The name of an existing secret containing the admin credentials. | `""`                                 |
 | `admin.userKey`                           | The key in the existing admin secret containing the username. | `"admin-user"`                          |
 | `admin.passwordKey`                       | The key in the existing admin secret containing the password. | `"admin-password"`                      |
+| `serviceAccount.annotations`              | ServiceAccount annotations                                                                              |
 | `serviceAccount.create`                   | Create service account | `true` |
 | `serviceAccount.name`                     | Service account name to use, when empty will be set to created account if `serviceAccount.create` is set else to `default` | `` |
 | `serviceAccount.nameTest`                 | Service account name to use for test, when empty will be set to created account if `serviceAccount.create` is set else to `default` | `` |

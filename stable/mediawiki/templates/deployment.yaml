@@ -1,5 +1,5 @@
 {{- if or .Values.mariadb.enabled .Values.externalDatabase.host -}}
-apiVersion: apps/v1
+apiVersion: {{ template "mediawiki.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "mediawiki.fullname" . }}
@@ -113,8 +113,10 @@ spec:
         ports:
         - name: http
           containerPort: 80
+        {{- if .Values.service.httpsPort }}
         - name: https
           containerPort: 443
+        {{ end }}
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           httpGet:

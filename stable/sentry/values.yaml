@@ -160,6 +160,10 @@ filestore:
   #  accessKey:
   #  secretKey:
   #  bucketName:
+  #  endpointUrl:
+  #  signature_version:
+  #  region_name:
+  #  default_acl:
 
 ## Configure ingress resource that allow you to access the
 ## Sentry installation. Set up the URL
@@ -187,18 +191,17 @@ ingress:
 
 postgresql:
   enabled: true
-  postgresDatabase: sentry
-  postgresUser: sentry
+  nameOverride: sentry-postgresql
+  postgresqlDatabase: sentry
+  postgresqlUsername: postgres
   # Only used when internal PG is disabled
-  # postgresHost: postgres
-  # postgresPassword: postgres
-  # postgresPort: 5432
-  imageTag: "9.6"
-  persistence:
-    enabled: true
+  # postgresqlHost: postgres
+  # postgresqlPassword: postgres
+  # postgresqlPort: 5432
 
 redis:
   enabled: true
+  nameOverride: sentry-redis
   # Only used when internal redis is disabled
   # host: redis
   # Just omit the password field if your redis cluster doesn't use password
@@ -284,3 +287,11 @@ hooks:
         memory: 3200Mi
       requests:
         memory: 3000Mi
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+  annotations: {}
