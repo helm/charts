@@ -90,6 +90,7 @@ and their default values.
 | proxy.tls.hostPort                 | Host port to use for TLS                                                              |                     |
 | proxy.tls.overrideServiceTargetPort| Override service port to use for TLS without touching Kong containerPort              |                     |
 | proxy.type                         | k8s service type. Options: NodePort, ClusterIP, LoadBalancer                          | `NodePort`          |
+| proxy.clusterIP                    | k8s service clusterIP                                                                 |                     |
 | proxy.loadBalancerSourceRanges     | Limit proxy access to CIDRs if set and service type is `LoadBalancer`                 | `[]`                |
 | proxy.loadBalancerIP               | To reuse an existing ingress static IP for the admin service                          |                     |
 | proxy.externalIPs                  | IPs for which nodes in the cluster will also accept traffic for the proxy             | `[]`                |
@@ -320,7 +321,7 @@ always be changed for both configurations.
 
 After creating your secret, set its name in values.yaml, in the
 `.enterprise.rbac.session_conf_secret` and
-`.enterprise.rbac.session_conf_secret` keys.
+`.enterprise.portal.session_conf_secret` keys.
 
 #### Email/SMTP
 
@@ -396,6 +397,7 @@ You can can learn about kong ingress custom resource definitions [here](https://
 | image.tag                          | Version of the ingress controller                                                     | 0.6.0                                                                        |
 | readinessProbe                     | Kong ingress controllers readiness probe                                              |                                                                              |
 | livenessProbe                      | Kong ingress controllers liveness probe                                               |                                                                              |
+| env                                | Specify Kong Ingress Controller configuration via environment variables               |                                                                              |
 | ingressClass                       | The ingress-class value for controller                                                | kong                                                                         |
 | podDisruptionBudget.enabled        | Enable PodDisruptionBudget for ingress controller                                     | `false`                                                                      |
 | podDisruptionBudget.maxUnavailable | Represents the minimum number of Pods that can be unavailable (integer or percentage) | `50%`                                                                        |
@@ -406,6 +408,25 @@ You can can learn about kong ingress custom resource definitions [here](https://
 
 
 ## Changelog
+=======
+### 0.30.1
+
+#### New Features
+
+- Add support for specifying Proxy service cluster ip.
+
+### 0.30.0
+
+#### Breaking changes
+
+- `admin_gui_auth_conf_secret` is now required for Kong Manager authentication methods other than `basic-auth`.
+  Users defining values for `admin_gui_auth_conf` should migrate them to an externally-defined secret with a key of `admin_gui_auth_conf` and reference the secret name in `admin_gui_auth_conf_secret`.
+
+### 0.29.0
+
+#### New Features
+
+- Add support for specifying Ingress Controller environment variables.
 
 ### 0.28.0
 

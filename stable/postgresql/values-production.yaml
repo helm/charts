@@ -300,10 +300,11 @@ updateStrategy:
 ## PostgreSQL Master parameters
 ##
 master:
-  ## Node, affinity and tolerations labels for pod assignment
+  ## Node, affinity, tolerations, and priorityclass settings for pod assignment
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+  ## ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption
   nodeSelector: {}
   affinity: {}
   tolerations: []
@@ -311,6 +312,7 @@ master:
   annotations: {}
   podLabels: {}
   podAnnotations: {}
+  priorityClassName: ""
   ## Additional PostgreSQL Master Volume mounts
   ##
   extraVolumeMounts: []
@@ -322,10 +324,11 @@ master:
 ## PostgreSQL Slave parameters
 ##
 slave:
-  ## Node, affinity and tolerations labels for pod assignment
+  ## Node, affinity, tolerations, and priorityclass settings for pod assignment
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+  ## ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption
   nodeSelector: {}
   affinity: {}
   tolerations: []
@@ -333,6 +336,7 @@ slave:
   annotations: {}
   podLabels: {}
   podAnnotations: {}
+  priorityClassName: ""
   ## Additional PostgreSQL Slave Volume mounts
   ##
   extraVolumeMounts: []

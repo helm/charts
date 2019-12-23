@@ -125,6 +125,7 @@ discoveryService:
 ingress:
   enabled: false
   annotations: {}
+    # nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   path: /
