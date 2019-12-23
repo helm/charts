@@ -11,6 +11,6 @@ dependencies:
     condition: nodeExporter.enabled
 
   - name: grafana
-    version: 4.0.*
+    version: 4.2.*
     repository: https://kubernetes-charts.storage.googleapis.com/
     condition: grafana.enabled
