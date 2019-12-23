@@ -1,3 +1,5 @@
+### 1.21.0
+* [e4ffdda](https://github.com/kubernetes/charts/commit/e4ffdda): Bump up GoCD Version to 19.12.0
 ### 1.20.1
 * [671812f5a](https://github.com/kubernetes/charts/commit/671812f5a): Update OWNERS list
 
