@@ -87,7 +87,7 @@
         echo "Attempting to find master"
         if [ "$(redis-cli -h "$MASTER"{{ if .Values.auth }} -a "$AUTH"{{ end }} ping)" != "PONG" ]; then
            echo "Can't ping master, attempting to force failover"
-           if redis-cli -h "$SERVICE" -p "$SENTINEL_PORT" sentinel failover "$MASTER_GROUP" | grep -q 'NOGOODSLAVE' ; then 
+           if redis-cli -h "$SERVICE" -p "$SENTINEL_PORT" sentinel failover "$MASTER_GROUP" | grep -q 'NOGOODSLAVE' ; then
                setup_defaults
                return 0
            fi
@@ -137,9 +137,10 @@
 {{- else }}
     defaults REDIS
       mode tcp
-      timeout connect  {{ .Values.haproxy.timeout.connect }}
-      timeout server  {{ .Values.haproxy.timeout.server }}
-      timeout client  {{ .Values.haproxy.timeout.client }}
+      timeout connect {{ .Values.haproxy.timeout.connect }}
+      timeout server {{ .Values.haproxy.timeout.server }}
+      timeout client {{ .Values.haproxy.timeout.client }}
+      timeout check {{ .Values.haproxy.timeout.check }}
 
     listen health_check_http_url
       bind :8888
