@@ -91,7 +91,7 @@ spec:
             path: aerospike.conf
       {{ if .Values.image.pullSecret }}
       imagePullSecrets:
-      - name: {{ .Values.imagePullSecret }}
+      - name: {{ .Values.image.pullSecret }}
       {{- end }}
   volumeClaimTemplates:
   {{- range $pv := .Values.persistentVolume }}
