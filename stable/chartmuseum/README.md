@@ -17,6 +17,7 @@ Please also see https://github.com/kubernetes-helm/chartmuseum
     - [permissions grant with access keys](#permissions-grant-with-access-keys)
     - [permissions grant with IAM instance profile](#permissions-grant-with-iam-instance-profile)
     - [permissions grant with IAM assumed role](#permissions-grant-with-iam-assumed-role)
+    - [permissions grant with IAM Roles for Service Accounts](#permissions-grant-with-iam-roles-for-service-accounts)
   - [Using with Google Cloud Storage](#using-with-google-cloud-storage)
   - [Using with Google Cloud Storage and a Google Service Account](#using-with-google-cloud-storage-and-a-google-service-account)
   - [Using with Microsoft Azure Blob Storage](#using-with-microsoft-azure-blob-storage)
@@ -31,8 +32,8 @@ Please also see https://github.com/kubernetes-helm/chartmuseum
     - [Bearer/Token auth](#bearertoken-auth)
   - [Ingress](#ingress)
     - [Hosts](#hosts)
-    - [Annotations](#annotations)
     - [Extra Paths](#extra-paths)
+    - [Annotations](#annotations)
     - [Example Ingress configuration](#example-ingress-configuration)
 - [Uninstall](#uninstall)
 
@@ -89,6 +90,7 @@ their default values. See values.yaml for all available options.
 | `resources.requests.memory`             | Container requested memory                                         | `64Mi`                               |
 | `serviceAccount.create`                 | If true, create the service account                                | `false`                              |
 | `serviceAccount.name`                   | Name of the serviceAccount to create or use                        | `{{ chartmuseum.fullname }}`         |
+| `serviceAccount.annotations`            | Additional Service Account annotations                             | `{}`                                 |
 | `securityContext`                       | Map of securityContext for the pod                                 | `{ fsGroup: 1000 }`                  |
 | `nodeSelector`                          | Map of node labels for pod assignment                              | `{}`                                 |
 | `tolerations`                           | List of node taints to tolerate                                    | `[]`                                 |
@@ -273,6 +275,31 @@ env:
 replica:
   annotations:
     iam.amazonaws.com/role: "{assumed role name}"
+```
+
+Run command to install
+
+```shell
+helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
+```
+
+#### permissions grant with IAM Roles for Service Accounts
+
+For Amazon EKS clusters, access can be provided with a service account using [IAM Roles for Service Accounts](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html).
+
+Specify `custom.yaml` with such values
+
+```yaml
+env:
+  open:
+    STORAGE: amazon
+    STORAGE_AMAZON_BUCKET: my-s3-bucket
+    STORAGE_AMAZON_PREFIX:
+    STORAGE_AMAZON_REGION: us-east-1
+serviceAccount:
+  create: true
+  annotations:
+    eks.amazonaws.com/role-arn: "arn:aws:iam::{aws account ID}:role/{assumed role name}"
 ```
 
 Run command to install

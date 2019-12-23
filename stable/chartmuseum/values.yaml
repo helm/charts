@@ -162,6 +162,8 @@ probes:
 serviceAccount:
   create: false
   # name:
+  ## Annotations for the Service Account
+  annotations: {}
 
 # UID/GID 1000 is the default user "chartmuseum" used in
 # the container image starting in v0.8.0 and above. This
