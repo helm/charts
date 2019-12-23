@@ -69,6 +69,10 @@ The following table lists the configurable parameters and their default values.
 | `serviceMonitor.targetLabels`  | Set of labels to transfer on the Kubernetes Service onto the target.  |             |
 | `script.configmap`     | Let you run a custom lua script from a configmap. The corresponding environment variable `REDIS_EXPORTER_SCRIPT` will be set automatically ||
 | `script.keyname`       | Name of the key inside configmap which contains your script ||
+| `auth.enabled`       | Specifies whether redis uses authentication | `false` |
+| `auth.secret.name`       | Name of existing redis secret (ignores redisPassword) ||
+| `auth.secret.key`       | Name of key containing password to be retrieved from the existing secret ||
+| `auth.redisPassword`       | Redis password (when not stored in a secret) ||
 
 For more information please refer to the [redis_exporter](https://github.com/oliver006/redis_exporter) documentation.
 
