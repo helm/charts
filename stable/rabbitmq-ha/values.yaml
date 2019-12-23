@@ -562,3 +562,5 @@ clusterDomain: cluster.local
 podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 1
+
+lifecycle: {}
