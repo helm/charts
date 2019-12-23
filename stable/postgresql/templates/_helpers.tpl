@@ -78,6 +78,19 @@ Also, we can't use a single if because lazy evaluation is not an option
 {{- end -}}
 
 {{/*
+Return PostgreSQL postgres user password
+*/}}
+{{- define "postgresql.postgres.password" -}}
+{{- if .Values.global.postgresql.postgresqlPostgresPassword }}
+    {{- .Values.global.postgresql.postgresqlPostgresPassword -}}
+{{- else if .Values.postgresqlPostgresPassword -}}
+    {{- .Values.postgresqlPostgresPassword -}}
+{{- else -}}
+    {{- randAlphaNum 10 -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Return PostgreSQL password
 */}}
 {{- define "postgresql.password" -}}
