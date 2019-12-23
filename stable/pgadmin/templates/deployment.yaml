@@ -47,6 +47,9 @@ spec:
                 secretKeyRef:
                   name: {{ $fullName }}
                   key: password
+          volumeMounts:
+            - name: pgadmin-data
+              mountPath: /var/lib/pgadmin
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:

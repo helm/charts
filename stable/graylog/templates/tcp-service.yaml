@@ -21,12 +21,12 @@ spec:
       port: {{ .port }}
       protocol: TCP
       targetPort: {{ .port }}
+    {{- if eq "NodePort" $.Values.graylog.input.tcp.service.type }}
+      {{- if .nodePort }}
+      nodePort:  {{ .nodePort }}
+      {{- end }}
+    {{- end }}
   {{- end }}
-{{- if contains "NodePort" .Values.graylog.input.tcp.service.type }}
-  {{- if .Values.graylog.input.tcp.service.nodePort }}
-      nodePort:  {{ .Values.graylog.input.tcp.service.nodePort }}
-  {{- end }}
-{{- end }}
 {{- if .Values.graylog.input.tcp.service.externalIPs }}
   externalIPs:
 {{ toYaml .Values.graylog.input.tcp.service.externalIPs | indent 4 }}
