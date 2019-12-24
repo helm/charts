@@ -27,7 +27,7 @@ Please note that there have been a number of changes simplifying the redis manag
 
 ### Upgrading the chart from 3.x to 4.x
 
-Starting from version `4.x` HAProxy sidecar prometheus-exporter removed and replaced by by the embedded [HAProxy metrics endpoint](https://github.com/haproxy/haproxy/tree/master/contrib/prometheus-exporter), as a result when upgrading from version 3.x to 4.x section `haproxy.exporter` should be removed and the `haproxy.metrics` need to be configured for fit your needs.
+Starting from version `4.x` HAProxy sidecar prometheus-exporter removed and replaced by the embedded [HAProxy metrics endpoint](https://github.com/haproxy/haproxy/tree/master/contrib/prometheus-exporter), as a result when upgrading from version 3.x to 4.x section `haproxy.exporter` should be removed and the `haproxy.metrics` need to be configured for fit your needs.
 
 ## Installing the Chart
 
