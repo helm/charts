@@ -69,6 +69,11 @@ spec:
                 configMapKeyRef:
                   name: {{ include "mercure.fullname" . }}
                   key: demo
+            - name: JWT_ALGORITHM
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "mercure.fullname" . }}
+                  key: jwtAlgorithm
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:
@@ -114,6 +119,16 @@ spec:
                 configMapKeyRef:
                   name: {{ include "mercure.fullname" . }}
                   key: useForwardedHeaders
+            - name: SUBSCRIBER_JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "mercure.fullname" . }}
+                  key: subscriberJwtKey
+            - name: LICENSE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "mercure.fullname" . }}
+                  key: license
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
