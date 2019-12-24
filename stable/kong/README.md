@@ -65,6 +65,7 @@ and their default values.
 | image.pullPolicy                   | Image pull policy                                                                     | `IfNotPresent`      |
 | image.pullSecrets                  | Image pull secrets                                                                    | `null`              |
 | replicaCount                       | Kong instance count                                                                   | `1`                 |
+| admin.enabled                      | Create Admin Service                                                                  | `false`             |
 | admin.useTLS                       | Secure Admin traffic                                                                  | `true`              |
 | admin.servicePort                  | TCP port on which the Kong admin service is exposed                                   | `8444`              |
 | admin.containerPort                | TCP port on which Kong app listens for admin traffic                                  | `8444`              |
@@ -89,7 +90,7 @@ and their default values.
 | proxy.tls.nodePort                 | Node port to use for TLS                                                              | 32443               |
 | proxy.tls.hostPort                 | Host port to use for TLS                                                              |                     |
 | proxy.tls.overrideServiceTargetPort| Override service port to use for TLS without touching Kong containerPort              |                     |
-| proxy.type                         | k8s service type. Options: NodePort, ClusterIP, LoadBalancer                          | `NodePort`          |
+| proxy.type                         | k8s service type. Options: NodePort, ClusterIP, LoadBalancer                          | `LoadBalancer`      |
 | proxy.clusterIP                    | k8s service clusterIP                                                                 |                     |
 | proxy.loadBalancerSourceRanges     | Limit proxy access to CIDRs if set and service type is `LoadBalancer`                 | `[]`                |
 | proxy.loadBalancerIP               | To reuse an existing ingress static IP for the admin service                          |                     |
@@ -408,7 +409,20 @@ You can can learn about kong ingress custom resource definitions [here](https://
 
 
 ## Changelog
-=======
+
+### 0.31.0
+
+#### Breaking changes
+
+- Admin Service is disabled by default (`admin.enabled`)
+- Default for `proxy.type` has been changed to `LoadBalancer`
+
+#### New features
+
+- Update default version of Kong to 1.4
+- Update default version of Ingress Controller to 0.6.2
+- Add support to disable kong-admin service via `admin.enabled` flag.
+
 ### 0.30.1
 
 #### New Features
