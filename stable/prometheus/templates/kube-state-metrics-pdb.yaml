@@ -1,0 +1,13 @@
+{{- if .Values.kubeStateMetrics.podDisruptionBudget.enabled }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "prometheus.kubeStateMetrics.fullname" . }}
+  labels:
+    {{- include "prometheus.kubeStateMetrics.labels" . | nindent 4 }}
+spec:
+  maxUnavailable: {{ .Values.kubeStateMetrics.podDisruptionBudget.maxUnavailable }}
+  selector:
+    matchLabels:
+      {{- include "prometheus.kubeStateMetrics.labels" . | nindent 6 }}
+{{- end }}

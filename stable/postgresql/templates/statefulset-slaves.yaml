@@ -101,6 +101,9 @@ spec:
 {{ tpl .Values.slave.extraInitContainers . | indent 8 }}
       {{- end }}
       {{- end }}
+      {{- if .Values.slave.priorityClassName }}
+      priorityClassName: {{ .Values.slave.priorityClassName }}
+      {{- end }}
       containers:
         - name: {{ template "postgresql.fullname" . }}
           image: {{ template "postgresql.image" . }}

@@ -9,16 +9,16 @@ image:
 
   ## @param repository - string - required
   ## Define the repository to use:
-  ## use "datadog/agent" for Datadog Agent 6
-  ## use "datadog/dogstatsd" for Standalone Datadog Agent DogStatsD6
+  ## use "datadog/agent" for Datadog Agent 7
+  ## use "datadog/dogstatsd" for Standalone Datadog Agent DogStatsD 7
   #
   repository: datadog/agent
 
   ## @param tag - string - required
   ## Define the Agent version to use.
-  ## Use 6-jmx to enable jmx fetch collection
+  ## Use 7-jmx to enable jmx fetch collection
   #
-  tag: "6"
+  tag: "7"
 
   ## @param pullPolicy - string - required
   ## The Kubernetes pull policy.
@@ -71,11 +71,11 @@ datadog:
 
   ## @param clusterName - string - optional
   ## Set a unique cluster name to allow scoping hosts and Cluster Checks easily
-  ## The name must be unique and can be up to 40 characters with the following restrictions:
+  ## The name must be unique and must be dot-separated tokens where a token can be up to 40 characters with the following restrictions:
   ## * Lowercase letters, numbers, and hyphens only.
   ## * Must start with a letter.
   ## * Must end with a number or a letter.
-  ## These are the same rules as the one enforced by GKE on the same cluster name parameter:
+  ## Compared to the rules of GKE, dots are allowed whereas they are not allowed on GKE:
   ## https://cloud.google.com/kubernetes-engine/docs/reference/rest/v1beta1/projects.locations.clusters#Cluster.FIELDS.name
   #
   # clusterName: <CLUSTER_NAME>
@@ -153,6 +153,12 @@ datadog:
   ## ref: https://docs.datadoghq.com/developers/dogstatsd/unix_socket/
   #
   # useDogStatsDSocketVolume: true
+
+  #  # dogStatsDPort - integer - optional - default: 8125
+  #  # Override the Agent DogStatsD port.
+  #  # Note: Make sure your client is sending to the same UDP port.
+  #
+  # dogStatsDPort:
 
   ## @param nonLocalTraffic - boolean - optional - default: false
   ## Enable this to make each node accept non-local statsd traffic.
@@ -460,6 +466,22 @@ clusterAgent:
   ## metrics and traces are accepted from any host able to connect to this host.
   #
   # useHostNetwork: true
+
+  ## @param volumes - list of objects - optional
+  ## Specify additional volumes to mount in the cluster-agent container
+  #
+  # volumes:
+  #   - hostPath:
+  #       path: <HOST_PATH>
+  #     name: <VOLUME_NAME>
+
+  ## @param volumeMounts - list of objects - optional
+  ## Specify additional volumes to mount in the cluster-agent container
+  #
+  # volumeMounts:
+  #   - name: <VOLUME_NAME>
+  #     mountPath: <CONTAINER_PATH>
+  #     readOnly: true
 
 rbac:
 
