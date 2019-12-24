@@ -101,8 +101,8 @@ spec:
             value: "kube_services"
           {{- end }}
           {{- if .Values.datadog.clusterName }}
-          {{- if not (regexMatch "^[a-z]([a-z0-9\\-]{0,38}[a-z0-9])?$" .Values.datadog.clusterName) }}
-          {{- fail "Your `clusterName` isn’t valid. It must start with a lowercase letter followed by up to 39 lowercase letters, numbers, or hyphens and cannot end with a hyphen."}}
+          {{- if not (regexMatch "^([a-z]([a-z0-9\\-]{0,38}[a-z0-9])?\\.)*([a-z]([a-z0-9\\-]{0,38}[a-z0-9])?)$" .Values.datadog.clusterName) }}
+          {{- fail "Your `clusterName` isn’t valid. It must be dot-separated tokens where a token start with a lowercase letter followed by up to 39 lowercase letters, numbers, or hyphens and cannot end with a hyphen."}}
           {{- end}}
           - name: DD_CLUSTER_NAME
             value: {{ .Values.datadog.clusterName | quote }}
@@ -164,15 +164,23 @@ spec:
             path: /healthz
             scheme: HTTPS
 {{- end }}
-{{- if .Values.clusterAgent.confd }}
         volumeMounts:
+{{- if .Values.clusterAgent.confd }}
           - name: confd
             mountPath: /conf.d
             readOnly: true
+{{- end }}
+{{- if .Values.clusterAgent.volumeMounts }}
+{{ toYaml .Values.clusterAgent.volumeMounts | indent 10 }}
+{{- end }}
       volumes:
+{{- if .Values.clusterAgent.confd }}
         - name: confd
           configMap:
             name: {{ template "datadog.fullname" . }}-cluster-agent-confd
+{{- end }}
+{{- if .Values.clusterAgent.volumes }}
+{{ toYaml .Values.clusterAgent.volumes | indent 10 }}
 {{- end }}
       {{- if .Values.clusterAgent.tolerations }}
       tolerations:
