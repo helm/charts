@@ -51,7 +51,7 @@ Parameter | Description | Default
 `image.repository` | controller container image repository | `kanisterio/controller`
 `image.tag` | controller container image tag | `v0.2.0`
 `image.pullPolicy` | controller container image pull policy | `IfNotPresent`
-`resources` | k8s pod resorces | `None`
+`resources` | k8s pod resources | `None`
 `profile.create` | flag to indicate creation of profile | `false`
 `profile.defaultProfile` | flag to create fallback profile for the namespace | `false`
 `profile.defaultProfileName` | profile name used when creating defaultProfile | `default-profile`
