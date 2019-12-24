@@ -81,9 +81,17 @@ spec:
           {{- end  }}
           volumeMounts:
             {{- if $penabled }}
+            {{- if (gt $drivesPerNode 1) }}
             {{- range $i := until $drivesPerNode }}
             - name: export-{{ $i }}
               mountPath: {{ $mountPath }}-{{ $i }}
+              {{- if and $penabled $subPath }}
+              subPath: {{ $subPath }}
+              {{- end }}
+            {{- end }}
+            {{- else }}
+            - name: export
+              mountPath: {{ $mountPath }}
               {{- if and $penabled $subPath }}
               subPath: {{ $subPath }}
               {{- end }}
@@ -161,6 +169,7 @@ spec:
         {{ end }}
 {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
+  {{- if gt $drivesPerNode 1 }}
     {{- range $diskId := until $drivesPerNode}}
     - metadata:
         name: export-{{ $diskId }}
@@ -172,6 +181,18 @@ spec:
         resources:
           requests:
             storage: {{ $psize }}
-     {{- end }}
-{{ end }}
+    {{- end }}
+  {{- else }}
+    - metadata:
+        name: export
+      spec:
+        accessModes: [ {{ $accessMode | quote }} ]
+        {{- if $storageClass }}
+        storageClassName: {{ $storageClass }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ $psize }}
+  {{- end }}
+{{- end }}
 {{- end }}
