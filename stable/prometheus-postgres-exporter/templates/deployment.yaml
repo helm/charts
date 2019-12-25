@@ -1,6 +1,3 @@
-{{- if and .Values.config.datasource.passwordSecret .Values.config.datasource.password -}}
-{{ fail (printf "ERROR: only one of .Values.config.datasource.passwordSecret and .Values.config.datasource.password must be defined") }}
-{{- end -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -26,6 +23,9 @@ spec:
 {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      {{- if or .Values.config.datasources .Values.config.datasource.password }}
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+      {{- end }}
 {{- if .Values.annotations }}
 {{ toYaml .Values.annotations | indent 8 }}
 {{- end }}
@@ -49,20 +49,35 @@ spec:
           {{- end }}
           {{- end }}
           env:
+        {{- if .Values.config.datasources }}
+          - name: DATA_SOURCE_NAME
+            valueFrom:
+              secretKeyRef:
+              {{- if .Values.config.datasource.passwordSecret }}
+                name: {{ .Values.config.datasource.passwordSecret.name }}
+                key: {{ .Values.config.datasource.passwordSecret.key | default "data_source_name" }}
+              {{- else  }}
+                name: {{ template "prometheus-postgres-exporter.fullname" . }}
+                key: data_source_name
+              {{- end }}
+        {{- else }}
           - name: DATA_SOURCE_URI
-            value: {{ template "prometheus-postgres-exporter.data_source_uri" . }}
+            value: {{ template "prometheus-postgres-exporter.data_source" . }}
           - name: DATA_SOURCE_USER
             value: {{ .Values.config.datasource.user }}
+        {{- if or .Values.config.datasource.password .Values.config.datasource.passwordSecret }}
           - name: DATA_SOURCE_PASS
             valueFrom:
               secretKeyRef:
           {{- if .Values.config.datasource.passwordSecret }}
                 name: {{ .Values.config.datasource.passwordSecret.name }}
-                key: {{ .Values.config.datasource.passwordSecret.key }}
+                key: {{ .Values.config.datasource.passwordSecret.key | default "data_source_password" }}
           {{- else }}
                 name: {{ template "prometheus-postgres-exporter.fullname" . }}
                 key: data_source_password
           {{- end }}
+        {{- end }}
+        {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:

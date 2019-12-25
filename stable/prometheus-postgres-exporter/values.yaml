@@ -60,11 +60,17 @@ securityContext: {}
   # runAsUser: 65534
 
 config:
+  disableDefaultMetrics: false
+  disableSettingsMetrics: false
+  autoDiscoverDatabases: false
+  excludeDatabases: []
+
+  ## Default datasource (serves as default when multiple datasources are used).
   datasource:
     host:
     user: postgres
     # Only one of password and passwordSecret can be specified
-    password: somepassword
+    password:
     # Specify passwordSecret if DB password is stored in secret.
     passwordSecret: {}
     # Secret name
@@ -74,10 +80,18 @@ config:
     port: "5432"
     database: ''
     sslmode: disable
-  disableDefaultMetrics: false
-  disableSettingsMetrics: false
-  autoDiscoverDatabases: false
-  excludeDatabases: []
+
+  ## Use multiple datasources.
+  ## Note that a single setting data.passwordSecret is used, which will be used to read DATA_SOURCE_NAME.
+  datasources: []
+  # datasources:
+  #   - host: host1
+  #     user: postgres
+  #     password: somepassword
+  #     port: "5432"
+  #     database: ''
+  #     sslmode: disable
+
   # this are the defaults queries that the exporter will run, extracted from: https://github.com/wrouesnel/postgres_exporter/blob/master/queries.yaml
   queries: |-
     pg_replication:

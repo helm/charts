@@ -45,8 +45,20 @@ Create the name of the service account to use
 
 
 {{/*
-Set DATA_SOURCE_URI environment variable
+Create datasource value either for DATA_SOURCE_URI or DATA_SOURCE_NAME environment variables
 */}}
-{{- define "prometheus-postgres-exporter.data_source_uri" -}}
+{{- define "prometheus-postgres-exporter.data_source" -}}
+{{- $default := .Values.config.datasource -}}
+{{- if .Values.config.datasources -}}
+  {{- $output := list -}}
+  {{- range $ds := .Values.config.datasources -}}
+    {{- $ds := merge $ds $default -}}
+    {{- $userpass := printf "%s:%s" $ds.user $ds.password | trimSuffix ":" | trimPrefix ":" }}
+    {{- if $userpass -}}{{- $userpass = printf "%s@" $userpass -}}{{- end -}}
+    {{- $output = append $output (printf "postgresql://%s%s:%s/%s?sslmode=%s" $userpass $ds.host $ds.port $ds.database $ds.sslmode) -}}
+  {{- end -}}
+{{ $output | join "," }}
+{{- else -}}
 {{ printf "%s:%s/%s?sslmode=%s" .Values.config.datasource.host .Values.config.datasource.port .Values.config.datasource.database .Values.config.datasource.sslmode | quote }}
+{{- end -}}
 {{- end }}
