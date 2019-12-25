@@ -59,11 +59,11 @@ spec:
       {{- if .Values.networkPolicy.ingressNSMatchLabels }}
       - namespaceSelector:
           matchLabels:
-            {{- .Values.networkPolicy.ingressNSMatchLabels | nindent 12 }}
+            {{- toYaml .Values.networkPolicy.ingressNSMatchLabels | nindent 12 }}
         {{- if .Values.networkPolicy.ingressNSPodMatchLabels }}
         podSelector:
           matchLabels:
-            {{- .Values.networkPolicy.ingressNSPodMatchLabels | nindent 12 }}
+            {{- toYaml .Values.networkPolicy.ingressNSPodMatchLabels | nindent 12 }}
         {{- end }}
       {{- end }}
       {{- end }}
