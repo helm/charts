@@ -147,9 +147,9 @@ networkPolicy:
   ## (with the correct destination port).
   ##
   # allowExternal: true
-  
+
   ## Allow connections from other namespacess. Just set label for namespace and set label for pods (optional).
-  
+
   ingressNSMatchLabels: {}
   ingressNSPodMatchLabels: {}
 
