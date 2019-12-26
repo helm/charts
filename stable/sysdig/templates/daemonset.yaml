@@ -74,6 +74,9 @@ spec:
               command: [ "test", "-e", "/opt/draios/logs/running" ]
             initialDelaySeconds: 10
           volumeMounts:
+            - mountPath: /etc/modprobe.d
+              name: modprobe-d
+              readOnly: true
             - mountPath: /host/dev
               name: dev-vol
               readOnly: false
@@ -112,6 +115,9 @@ spec:
               name: osrel
               readOnly: true
       volumes:
+        - name: modprobe-d
+          hostPath:
+            path: /etc/modprobe.d
         - name: osrel
           hostPath:
             path: /etc/os-release
