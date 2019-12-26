@@ -70,6 +70,20 @@ ebpf:
     # Set to false if not running on Google COS
     mountEtcVolume: true
 
+slim:
+  enabled: false
+  kmoduleImage:
+    registry: docker.io
+    repository: sysdig/agent-kmodule
+    pullPolicy: IfNotPresent
+
+  resources:
+    requests:
+      cpu: 1000m
+      memory: 348Mi
+    limits:
+      memory: 512Mi
+
 sysdig:
   # Required: You need your Sysdig Monitor access key before running agents.
   accessKey: ""
