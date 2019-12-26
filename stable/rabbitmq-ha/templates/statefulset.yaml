@@ -162,7 +162,7 @@ spec:
             {{- toYaml .Values.readinessProbe | trim | nindent 12 }}
           {{- if .Values.lifecycle }}
           lifecycle:
-            {{ toYaml .Values.lifecycle | indent 12 }}
+            {{- toYaml .Values.lifecycle | trim | nindent 12 }}
           {{- end }}
           env:
             - name: MY_POD_NAME
