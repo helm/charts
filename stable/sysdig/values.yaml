@@ -70,6 +70,24 @@ ebpf:
     # Set to false if not running on Google COS
     mountEtcVolume: true
 
+slim:
+  # Uses a slim version of the Sysdig Agent
+  enabled: false
+  # When using slim the kernel module is built in other container, which
+  # contains the toolchain required to build the kernel module.
+  kmoduleImage:
+    repository: sysdig/agent-kmodule
+
+  resources:
+    # Resources required by the kernel module builder image. These are some
+    # a sane defaults ones, but you can tweak or ask Sysdig Support for more
+    # info about this
+    requests:
+      cpu: 1000m
+      memory: 348Mi
+    limits:
+      memory: 512Mi
+
 sysdig:
   # Required: You need your Sysdig Monitor access key before running agents.
   accessKey: ""
