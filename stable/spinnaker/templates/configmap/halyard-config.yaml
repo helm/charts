@@ -100,7 +100,7 @@ data:
     {{ if $registry.username -}}
     CREDS+="--username {{ $registry.username }}"
     {{ if $registry.passwordCommand -}}
-    CREDS+=" --password-command {{ $registry.passwordCommand }}"
+    CREDS+=" --password-command {{ $registry.passwordCommand | quote }}"
     {{- else -}}
     CREDS+=" --password-file /opt/registry/passwords/{{ $registry.name }}"
     {{- end -}}
