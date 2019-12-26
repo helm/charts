@@ -11,6 +11,7 @@ numbering uses [semantic versioning](http://semver.org).
 
 ### Minor changes
 
+* Mount /etc/modprobe.d from host.
 * Drop permissions to read secrets and configmaps.
 
 ## v1.4.25
