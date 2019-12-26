@@ -1,18 +1,22 @@
 {{- if .Values.rbac.create }}
 apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: {{ .Values.rbac.roleBindingKind }}
+{{- if .Values.rbac.clusterWide }}
+kind: ClusterRoleBinding
+{{- else }}
+kind: RoleBinding
+{{- end }}
 metadata:
   name: {{ template "telegraf.fullname" . }}
 subjects:
   - kind: ServiceAccount
     name: {{ template "telegraf.fullname" . }}
-    {{- if .Values.rbac.roleNamespace }}
-    namespace: {{ .Values.rbac.roleNamespace }}
-    {{- else }}
     namespace: {{ .Release.Namespace }}
-    {{- end }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  kind: {{ .Values.rbac.roleKind }}
+  {{- if .Values.rbac.clusterWide }}
+  kind: ClusterRole
+  {{- else }}
+  kind: Role
+  {{- end }}
   name: {{ template "telegraf.fullname" . }}
 {{- end }}

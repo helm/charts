@@ -35,12 +35,9 @@ service:
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
-  # Role or ClusterRole
-  roleKind: Role
-  # RoleBinding or ClusterRoleBinding
-  roleBindingKind: RoleBinding
-  # Role Namespace; by empty default defaulting to release namespace
-  roleNamespace:
+  # Create only for the release namespace or cluster wide (Role vs ClusterRole)
+  clusterWide: false
+  # Rules for the created rule
   rules: []
 
 serviceAccount:

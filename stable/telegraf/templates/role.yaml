@@ -1,13 +1,13 @@
 {{- if .Values.rbac.create }}
 apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: {{ .Values.rbac.roleKind }}
+{{- if .Values.rbac.clusterWide }}
+kind: ClusterRole
+{{- else }}
+kind: Role
+{{- end }}
 metadata:
   name: {{ template "telegraf.fullname" . }}
-  {{- if .Values.rbac.roleNamespace }}
-  namespace: {{ .Values.rbac.roleNamespace }}
-  {{- else }}
   namespace: {{ .Release.Namespace }}
-  {{- end }}
 rules:
 {{ toYaml .Values.rbac.rules | indent 2 }}
 {{- end }}
