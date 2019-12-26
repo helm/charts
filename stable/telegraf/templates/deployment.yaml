@@ -23,6 +23,7 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
         {{- end }}
     spec:
+      serviceAccountName: {{ template "telegraf.serviceAccountName" . }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repo }}:{{ .Values.image.tag }}"
@@ -30,7 +31,7 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         env:
-{{ toYaml .Values.env | indent 8 }}       
+{{ toYaml .Values.env | indent 8 }}
         volumeMounts:
         - name: config
           mountPath: /etc/telegraf
