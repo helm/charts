@@ -29,8 +29,11 @@ spec:
       {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
       {{- end }}
-      {{- if .Values.podAnnotations }}
       annotations:
+        {{- if or (not .Values.rabbitmq.existingErlangSecret) (not .Values.rabbitmq.existingPasswordSecret) }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        {{- end }}
+      {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
     spec:
