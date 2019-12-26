@@ -72,7 +72,7 @@ Also, we can't use a single if because lazy evaluation is not an option
 Return the proper Sysdig Agent image name for module building
 */}}
 {{- define "sysdig.image.kmodule" -}}
-{{- $registryName := .Values.slim.kmoduleImage.registry -}}
+{{- $registryName := .Values.image.registry -}}
 {{- $repositoryName := .Values.slim.kmoduleImage.repository -}}
 {{- $tag := .Values.image.tag | toString -}}
 {{/*
