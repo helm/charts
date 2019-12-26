@@ -1,0 +1,18 @@
+apiVersion: v1
+name: bitcoind-sv
+version: 0.0.1
+appVersion: 0.0.1
+description: bitcoinsv node bootstrap on kubernetes
+keywords:
+  - bitcoind
+  - bitcoinsv
+home: https://bitcoinsv.io/
+icon: https://bitcoinassociation.net/wp-content/uploads/2019/01/BSV_640x320px.png
+sources:
+  - https://github.com/kubernetes/charts
+  - https://github.com/helm/charts/tree/master/stable/bitcoind
+  - https://github.com/mrz1836/docker-bitcoinsv
+maintainers:
+  - name: glenn wolfe
+    email: glenn@planaria.network
+engine: gotpl
