@@ -23,9 +23,7 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
         {{- end }}
     spec:
-      {{- if .Values.rbac.create }}
-      serviceAccountName: {{ template "telegraf.fullname" . }}
-      {{- end }}
+      serviceAccountName: {{ template "telegraf.serviceAccountName" . }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repo }}:{{ .Values.image.tag }}"
