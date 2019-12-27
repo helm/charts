@@ -40,7 +40,7 @@ efsProvisioner:
   path: /example-pv
   provisionerName: example.com/aws-efs
   storageClass:
-    name: efs
+    name: aws-efs
     isDefault: false
     gidAllocate:
       enabled: true
