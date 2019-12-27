@@ -54,20 +54,17 @@ helm install --name my-release stable/cockroachdb
 Note that for a production cluster, you are very likely to want to modify the `storage.persistentVolume.size` and `storage.persistentVolume.storageClass` parameters. This chart defaults to `100 GiB` of disk space per Pod, but you may want more or less depending on your use case, and the default PersistentVolume `storageClass` in your environment may not be what you want for a database (e.g. on GCE and Azure the default is not SSD).
 
 If you are running in secure mode (with configuration parameter `tls.enabled` set to `yes`/`true`) and `tls.certs.provided` is set to `no`/`false`, then you will have to manually approve the cluster's security certificates as the Pods are created. You can see the pending CSRs (certificate-signing requests) by running `kubectl get csr`, and approve them by running `kubectl certificate approve <csr-name>`. You'll have to approve one certificate for each Node (e.g. `default.node.eerie-horse-cockroachdb-0` and one client certificate for the Job that initializes the cluster (e.g. `default.node.root`).
-For "Bring your own certs" scenario, please set `tls.certs.provided` is set to `yes`/`true` and create secrets `tls.certs.clientRootSecret` and `tls.certs.nodeSecret` with the following content
-```
-ca.crt
-node.crt
-node.key
-```
-or 
-```
-ca.crt
-client.root.crt
-client.root.key
-```
-for `tls.certs.clientRootSecret` 
 
+When `tls.certs.provided` is set to `yes`/`true`, this chart will use certificates created outside of Kubernetes. You may want to use this if you want to use a different certificate authority from the one being used by Kubernetes or if your Kubernetes cluster doesn't fully support certificate-signing requests. To use this, first set up your certificates and load them into your Kubernetes cluster as Secrets using the commands below:
+```
+mkdir certs
+mkdir my-safe-directory
+cockroach cert create-ca --certs-dir=certs --ca-key=my-safe-directory/ca.key
+cockroach cert create-client root --certs-dir=certs --ca-key=my-safe-directory/ca.key
+kubectl create secret generic cockroachdb-root --from-file=certs
+cockroach cert create-node --certs-dir=certs --ca-key=my-safe-directory/ca.key localhost 127.0.0.1 eerie-horse-cockroachdb-public eerie-horse-cockroachdb-public.default eerie-horse-cockroachdb-public.default.svc.cluster.local *.eerie-horse-cockroachdb *.eerie-horse-cockroachdb.default *.eerie-horse-cockroachdb.default.svc.cluster.local
+kubectl create secret generic cockroachdb-node --from-file=certs
+```
 
 Confirm that all Pods are `Running` successfully and init has been completed:
 ```shell
