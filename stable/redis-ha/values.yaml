@@ -40,6 +40,9 @@ haproxy:
     pullPolicy: IfNotPresent
   annotations: {}
   resources: {}
+  ## Enable sticky sessions to Redis nodes via HAProxy
+  ## Very useful for long-living connections as in case of Sentry for example
+  stickyBalancing: false
   ## Kubernetes priorityClass name for the haproxy pod
   # priorityClassName: ""
   ## Service type for HAProxy
@@ -79,6 +82,7 @@ haproxy:
     connect: 4s
     server: 30s
     client: 30s
+    check: 2s
   securityContext:
     runAsUser: 1000
     fsGroup: 1000
@@ -116,6 +120,7 @@ sysctlImage:
   tag: 1.31.1
   pullPolicy: Always
   mountHostSys: false
+  resources: {}
 
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
@@ -125,7 +130,7 @@ sysctlImage:
 ## Redis specific configuration options
 redis:
   port: 6379
-  masterGroupName: mymaster
+  masterGroupName: "mymaster"       # must match ^[\\w-\\.]+$) and can be templated
   config:
     ## Additional redis conf options can be added below
     ## For all available options see http://download.redis.io/redis-stable/redis.conf

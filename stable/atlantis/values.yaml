@@ -114,7 +114,7 @@ image:
 allowForkPRs: false
 
 ## defaultTFVersion set the default terraform version to be used in atlantis server
-# defaultTFVersion: v0.12.0
+# defaultTFVersion: 0.12.0
 
 # disableApplyAll disables running `atlantis apply` without any flags
 disableApplyAll: false
@@ -224,3 +224,13 @@ extraVolumeMounts: []
 # extraVolumeMounts:
 #   - name: some-volume-name
 #     mountPath: /path/in/container
+
+extraManifests: []
+# extraManifests:
+#  - apiVersion: cloud.google.com/v1beta1
+#    kind: BackendConfig
+#    metadata:
+#      name: "{{ .Release.Name }}-test"
+#    spec:
+#      securityPolicy:
+#        name: "gcp-cloud-armor-policy-test"

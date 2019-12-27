@@ -65,6 +65,7 @@ and their default values.
 | image.pullPolicy                   | Image pull policy                                                                     | `IfNotPresent`      |
 | image.pullSecrets                  | Image pull secrets                                                                    | `null`              |
 | replicaCount                       | Kong instance count                                                                   | `1`                 |
+| admin.enabled                      | Create Admin Service                                                                  | `false`             |
 | admin.useTLS                       | Secure Admin traffic                                                                  | `true`              |
 | admin.servicePort                  | TCP port on which the Kong admin service is exposed                                   | `8444`              |
 | admin.containerPort                | TCP port on which Kong app listens for admin traffic                                  | `8444`              |
@@ -89,7 +90,8 @@ and their default values.
 | proxy.tls.nodePort                 | Node port to use for TLS                                                              | 32443               |
 | proxy.tls.hostPort                 | Host port to use for TLS                                                              |                     |
 | proxy.tls.overrideServiceTargetPort| Override service port to use for TLS without touching Kong containerPort              |                     |
-| proxy.type                         | k8s service type. Options: NodePort, ClusterIP, LoadBalancer                          | `NodePort`          |
+| proxy.type                         | k8s service type. Options: NodePort, ClusterIP, LoadBalancer                          | `LoadBalancer`      |
+| proxy.clusterIP                    | k8s service clusterIP                                                                 |                     |
 | proxy.loadBalancerSourceRanges     | Limit proxy access to CIDRs if set and service type is `LoadBalancer`                 | `[]`                |
 | proxy.loadBalancerIP               | To reuse an existing ingress static IP for the admin service                          |                     |
 | proxy.externalIPs                  | IPs for which nodes in the cluster will also accept traffic for the proxy             | `[]`                |
@@ -320,7 +322,7 @@ always be changed for both configurations.
 
 After creating your secret, set its name in values.yaml, in the
 `.enterprise.rbac.session_conf_secret` and
-`.enterprise.rbac.session_conf_secret` keys.
+`.enterprise.portal.session_conf_secret` keys.
 
 #### Email/SMTP
 
@@ -396,13 +398,67 @@ You can can learn about kong ingress custom resource definitions [here](https://
 | image.tag                          | Version of the ingress controller                                                     | 0.6.0                                                                        |
 | readinessProbe                     | Kong ingress controllers readiness probe                                              |                                                                              |
 | livenessProbe                      | Kong ingress controllers liveness probe                                               |                                                                              |
-| ingressClass                       | The ingress-class value for controller                                                | kong                                                                        |
+| env                                | Specify Kong Ingress Controller configuration via environment variables               |                                                                              |
+| ingressClass                       | The ingress-class value for controller                                                | kong                                                                         |
 | podDisruptionBudget.enabled        | Enable PodDisruptionBudget for ingress controller                                     | `false`                                                                      |
 | podDisruptionBudget.maxUnavailable | Represents the minimum number of Pods that can be unavailable (integer or percentage) | `50%`                                                                        |
 | podDisruptionBudget.minAvailable   | Represents the number of Pods that must be available (integer or percentage)          |                                                                              |
+| admissionWebhook.enabled           | Whether to enable the validating admission webhook                                    | false                                                                        |
+| admissionWebhook.failurePolicy     | How unrecognized errors from the admission endpoint are handled (Ignore or Fail)      | Fail                                                                         |
+| admissionWebhook.port              | The port the ingress controller will listen on for admission webhooks                 | 8080                                                                         |
 
 
 ## Changelog
+
+### 0.31.0
+
+#### Breaking changes
+
+- Admin Service is disabled by default (`admin.enabled`)
+- Default for `proxy.type` has been changed to `LoadBalancer`
+
+#### New features
+
+- Update default version of Kong to 1.4
+- Update default version of Ingress Controller to 0.6.2
+- Add support to disable kong-admin service via `admin.enabled` flag.
+
+### 0.30.1
+
+#### New Features
+
+- Add support for specifying Proxy service cluster ip.
+
+### 0.30.0
+
+#### Breaking changes
+
+- `admin_gui_auth_conf_secret` is now required for Kong Manager authentication methods other than `basic-auth`.
+  Users defining values for `admin_gui_auth_conf` should migrate them to an externally-defined secret with a key of `admin_gui_auth_conf` and reference the secret name in `admin_gui_auth_conf_secret`.
+
+### 0.29.0
+
+#### New Features
+
+- Add support for specifying Ingress Controller environment variables.
+
+### 0.28.0
+
+#### New Features
+
+- Added support for the Validating Admission Webhook with the Ingress Controller.
+
+### 0.27.2
+
+#### Fixes
+
+- Do not create a ServiceAccount if it is not necessary.
+- If a configuration change requires creating a ServiceAccount, create a temporary ServiceAccount to allow pre-upgrade tasks to complete before the regular ServiceAccount is created.
+
+### 0.27.1
+
+#### Documentation updates
+- Retroactive changelog update for 0.24 breaking changes.
 
 ### 0.27.0
 
@@ -410,3 +466,22 @@ You can can learn about kong ingress custom resource definitions [here](https://
 
 - DB-less mode is enabled by default.
 - Kong is installed as an Ingress Controller for the cluster by default.
+
+### 0.25.0
+
+#### New features
+
+- Add support for PodSecurityPolicy
+- Require creation of a ServiceAccount
+
+### 0.24.0
+
+#### Breaking changes
+
+- The configuration format for ingresses in values.yaml has changed. 
+Previously, all ingresses accepted an array of hostnames, and would create
+ingress rules for each. Ingress configuration for services other than the proxy
+now accepts a single hostname, which allows simpler TLS configuration and
+automatic population of `admin_api_uri` and similar settings. Configuration for
+the proxy ingress is unchanged, but its documentation now accurately reflects
+the TLS configuration needed.

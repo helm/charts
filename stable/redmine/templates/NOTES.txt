@@ -1,4 +1,4 @@
-{{- if and (not .Values.databaseType.mariadb) (not .Values.databaseType.postgresql) }}
+{{- if and (not (eq .Values.databaseType "mariadb")) (not (eq .Values.databaseType "postgresql")) }}
 ################################################################################
 ### ERROR: You did not indicate MariaDB nor PostgreSQL as the database       ###
 ###        server to use.                                                    ###
@@ -6,16 +6,23 @@
 
 You have 4 alternatives:
 
-  a) Use MariaDB as database creating a new MariaDB server: set `databaseType.mariadb=true` and `mariadb.enabled=true`
-  b) Use MariaDB as database using a external MariaDB server: set `databaseType.mariadb=true` and `mariadb.enabled=false`
-  c) Use PostgreSQL as database creating a new PostgreSQL server: set `databaseType.postgresql=true` and `postgresql.enabled=true`
-  d) Use PostgreSQL as database using a external PostgreSQL server: `databaseType.postgresql=true` and `postgresql.enabled=false`
+  a) Use MariaDB as database creating a new MariaDB server: set `databaseType=mariadb` and `mariadb.enabled=true`
+  b) Use MariaDB as database using a external MariaDB server: set `databaseType=mariadb` and `mariadb.enabled=false`
+  c) Use PostgreSQL as database creating a new PostgreSQL server: set `databaseType=postgresql` and `postgresql.enabled=true`
+  d) Use PostgreSQL as database using a external PostgreSQL server: `databaseType=postgresql` and `postgresql.enabled=false`
 
 {{- else }}
 
 1. Get the Redmine URL:
 
-{{- if contains "NodePort" .Values.service.type }}
+{{- if and .Values.ingress.enabled .Values.ingress.hostname }}
+
+  export CLUSTER_IP=$(minikube ip) # On Minikube. Use: `kubectl cluster-info` on others K8s clusters
+  echo "Redmine URL: http{{ if .Values.ingress.tls }}s{{ end }}://{{ .Values.ingress.hostname }}/"
+  echo "$CLUSTER_IP  {{ .Values.ingress.hostname }}" | sudo tee -a /etc/hosts
+
+
+{{- else if contains "NodePort" .Values.service.type }}
 
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "redmine.fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
@@ -31,12 +38,6 @@ You have 4 alternatives:
 
 {{- $port:=.Values.service.port | toString }}
   echo "Redmine URL: http://$SERVICE_IP{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}/"
-
-{{- else if .Values.ingress.enabled }}
-
-  {{- range .Values.ingress.hosts }}
-    echo "Redmine URL: http://{{ .name }}/"
-  {{- end }}
 
 {{- else if contains "ClusterIP" .Values.service.type }}
 
