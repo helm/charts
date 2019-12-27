@@ -1,0 +1,134 @@
+## postgres image repository
+image: "postgres"
+## postgres image version
+## ref: https://hub.docker.com/r/library/postgres/tags/
+##
+imageTag: "9.6.2"
+
+## Specify a imagePullPolicy
+## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
+## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+##
+# imagePullPolicy:
+
+## Specify imagePullSecrets
+## ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+##
+# imagePullSecrets: myregistrykey
+
+## Create a database user
+## Default: postgres
+# postgresUser:
+## Default: random 10 character string
+# postgresPassword:
+
+## Inject postgresPassword via a volume mount instead of environment variable
+usePasswordFile: false
+
+## Use Existing secret instead of creating one
+## It must have a postgres-password key containing the desired password
+# existingSecret: 'secret'
+
+## Create a database
+## Default: the postgres user
+# postgresDatabase:
+
+## Specify initdb arguments, e.g. --data-checksums
+## ref: https://github.com/docker-library/docs/blob/master/postgres/content.md#postgres_initdb_args
+## ref: https://www.postgresql.org/docs/current/static/app-initdb.html
+# postgresInitdbArgs:
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
+
+## Specify runtime config parameters as a dict, using camelCase, e.g.
+## {"sharedBuffers": "500MB"}
+## ref: https://www.postgresql.org/docs/current/static/runtime-config.html
+# postgresConfig:
+
+## Persist data to a persistent volume
+persistence:
+  enabled: true
+
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  # existingClaim:
+
+  ## database data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  accessMode: ReadWriteOnce
+  size: 8Gi
+  subPath: "postgresql-db"
+  mountPath: /var/lib/postgresql/data/pgdata
+
+  # annotations: {}
+
+metrics:
+  enabled: false
+  image: wrouesnel/postgres_exporter
+  imageTag: v0.1.1
+  imagePullPolicy: IfNotPresent
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+    ## Define additional custom metrics
+    ## ref: https://github.com/wrouesnel/postgres_exporter#adding-new-metrics-via-a-config-file
+    # customMetrics:
+    #   pg_database:
+    #     query: "SELECT d.datname AS name, CASE WHEN pg_catalog.has_database_privilege(d.datname, 'CONNECT') THEN pg_catalog.pg_database_size(d.datname) ELSE 0 END AS size FROM pg_catalog.pg_database d where datname not in ('template0', 'template1', 'postgres')"
+    #     metrics:
+    #       - name:
+    #           usage: "LABEL"
+    #           description: "Name of the database"
+    #       - size_bytes:
+    #           usage: "GAUGE"
+    #           description: "Size of the database in bytes"
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 100m
+
+service:
+  type: ClusterIP
+  port: 5432
+  externalIPs: []
+  ## Manually set NodePort value
+  ## Requires service.type: NodePort
+  # nodePort:
+
+networkPolicy:
+  ## Enable creation of NetworkPolicy resources.
+  ##
+  enabled: false
+
+  ## The Policy model to apply. When set to false, only pods with the correct
+  ## client label will have network access to the port PostgreSQL is listening
+  ## on. When true, PostgreSQL will accept connections from any source
+  ## (with the correct destination port).
+  ##
+  allowExternal: true
+
+## Node labels and tolerations for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+## Annotations for the deployment and nodes.
+deploymentAnnotations: {}
+podAnnotations: {}

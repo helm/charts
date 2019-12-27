@@ -1,0 +1,62 @@
+{{- if .Values.networkPolicy.enabled }}
+kind: NetworkPolicy
+apiVersion: {{ template "networkPolicy.apiVersion" . }}
+metadata:
+  name: "{{ template "redis.fullname" . }}"
+  labels:
+    app: {{ template "redis.name" . }}
+    chart: {{ template "redis.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ template "redis.name" . }}
+      release: "{{ .Release.Name }}"
+  ingress:
+    # Allow inbound connections
+    - ports:
+      - port: {{ .Values.redisPort }}
+      {{- if not .Values.networkPolicy.allowExternal }}
+        from:
+          - podSelector:
+              matchLabels:
+                {{ template "redis.fullname" . }}-client: "true"
+          {{- if .Values.metrics.enabled }}
+          - podSelector:
+              matchLabels:
+                release: "{{ .Release.Name }}"
+                role: metrics
+                app: {{ template "redis.name" . }}
+          {{- end }}
+        {{- end }}
+      - port: {{ .Values.sentinel.port }}
+      {{- if not .Values.networkPolicy.allowExternal }}
+        from:
+          - podSelector:
+              matchLabels:
+                {{ template "redis.fullname" . }}-client: "true"
+          {{- if .Values.metrics.enabled }}
+          - podSelector:
+              matchLabels:
+                release: "{{ .Release.Name }}"
+                role: metrics
+                app: {{ template "redis.name" . }}
+          {{- end }}
+        {{- end }}
+      {{- if .Values.metrics.enabled }}
+      # Allow prometheus scrapes for metrics
+      - port: 9121
+      {{- if not .Values.networkPolicy.allowExternal }}
+        from:
+          - podSelector:
+              matchLabels:
+                {{ template "redis.fullname" . }}-client: "true"
+          - podSelector:
+              matchLabels:
+                release: "{{ .Release.Name }}"
+                role: metrics
+                app: {{ template "redis.name" . }}
+      {{- end }}
+    {{- end }}
+{{- end }}
