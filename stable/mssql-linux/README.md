@@ -12,7 +12,7 @@
 
 * Creates a SQL Server 2017 deployment (default edition: Express)
 * Creates a Kubernetes Service on specified port (default: 1433)
-* Creates a Secert to hold SA_PASSWORD
+* Creates a Secret to hold SA_PASSWORD
 
 ## Installing the Chart
 
