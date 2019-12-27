@@ -4,7 +4,7 @@
 
 ## Introduction
 
-Dex acts as a portal to other identity providers through "connectors." This lets dex defer authentication to LDAP servers, SAML providers, or established identity providers like GitHub, Google, and Active Directory. Clients write their authentication logic once to talk to dex, then dex handles the protocols for a given backend.
+Dex acts as a portal to other identity providers through "connectors". This lets dex defer authentication to LDAP servers, SAML providers, or established identity providers like GitHub, Google, and Active Directory. Clients write their authentication logic once to talk to dex, then dex handles the protocols for a given backend.
 
 **Kubernetes authentication note**
 
@@ -27,7 +27,7 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release stable/dex
 ```
 
-It'll install chart with the default parameters. However most probably it won't work for you as-is, thus before installing the chart you need to consult to the [values.yaml](values.yaml) notes as well as [dex documentation][dex].
+It'll install the chart with the default parameters. However most probably it won't work for you as-is, thus before installing the chart you need to consult the [values.yaml](values.yaml) notes as well as [dex documentation][dex].
 
 ## Uninstalling the Chart
 
