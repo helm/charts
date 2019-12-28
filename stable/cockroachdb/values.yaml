@@ -308,6 +308,40 @@ init:
     #   cpu: "10m"
     #   memory: "128Mi"
 
+backup:
+  # If `enabled` is `true` then backup Cronjob will be created
+  enabled: no
+  # Database name to backup
+  database: "main"
+  # Cronjob schedule
+  schedule: "0 0 * * *"
+  # Additional annotations to apply to the Pod of this Job.
+  annotations: {}
+  # Additional labels to apply to this Job and its Pod.
+  labels:
+    app.kubernetes.io/component: backup
+  
+  ## Google Cloud Storage destination and credentials
+  gcs:
+    destination: "gs://cockroachdb-backup/"
+    serviceAccountSecret: cockroachdb-backup
+    serviceAccountSecretKey: key.json
+    image: "google/cloud-sdk:alpine"
+  ## AWS S3 destination and credentials
+  #aws:
+  #  destination: "s3://cockroachdb-backup/"
+  #  serviceAccountSecret: cockroachdb-backup
+  ## unfortunately, there is no official aws-cli docker image
+  #  image: "garland/aws-cli-docker" 
+
+  #Resource Quotas for backup pod
+  resources: {}
+    # requests:
+    #   cpu: "10m"
+    #   memory: "128Mi"
+    # limits:
+    #   cpu: "10m"
+    #   memory: "128Mi"
 
 # Whether to run securely using TLS certificates.
 tls:
@@ -321,9 +355,9 @@ tls:
   certs:
     # Bring your own certs scenario. If provided, tls.init section will be ignored.
     provided: no
-    #Secret name for the client root cert.
+    # Secret name for the client root cert.
     clientRootSecret: "cockroachdb-root"
-    #Secret name for node cert.
+    # Secret name for node cert.
     nodeSecret: "cockroachdb-node"    
   init:
     # Image to use for requesting TLS certificates.

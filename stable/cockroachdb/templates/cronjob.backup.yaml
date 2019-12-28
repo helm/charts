@@ -1,0 +1,140 @@
+{{- if .Values.backup.enabled }}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: "{{ template "cockroachdb.fullname" . }}-backup"
+  labels:
+    helm.sh/chart: {{ template "cockroachdb.chart" . }}
+    app.kubernetes.io/name: {{ template "cockroachdb.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+  {{- with .Values.backup.labels }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.labels }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  annotations:
+    {{- toYaml .Values.backup.annotations | nindent 4 }}
+spec:
+  schedule: {{.Values.backup.schedule | quote }}
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: {{ template "cockroachdb.name" . }}
+            app.kubernetes.io/instance: {{ .Release.Name | quote }}
+          {{- with .Values.backup.labels }}
+            {{- toYaml . | nindent 8 }}
+          {{- end }}
+        {{- with .Values.backup.annotations }}
+          annotations: {{- toYaml . | nindent 8 }}
+        {{- end }}
+        spec:
+          restartPolicy: OnFailure
+        {{- if or .Values.image.credentials }}
+          imagePullSecrets:
+            - name: {{ template "cockroachdb.fullname" . }}.db.registry
+        {{- end }}
+          volumes:
+          - name: backups
+            emptyDir: {}
+          {{- if and .Values.backup.gcs }}
+          - name: google-cloud-key
+            secret:
+              secretName: {{ .Values.backup.gcs.serviceAccountSecret | quote }}
+          {{- end }}
+          {{- if .Values.tls.enabled }}
+          - name: client-certs
+          {{- if .Values.tls.certs.provided }}
+            secret:
+              secretName: {{ .Values.tls.certs.clientRootSecret}}
+              defaultMode: 256
+          {{- else }}
+            emptyDir: {}
+          {{- end }}  
+          initContainers:
+          - name: cockroachdb-backup
+            image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+            imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+            volumeMounts:
+            - name: backups
+              mountPath: /backups
+            {{- if .Values.tls.enabled }}
+            - name: client-certs
+              mountPath: /cockroach-certs/
+            {{- end }}
+            command:
+              - /bin/bash
+              - -c
+              - >-
+                exec /cockroach/cockroach dump {{ .Values.backup.database }} --host={{ template "cockroachdb.fullname" . }}-public.{{ .Release.Namespace }} --port={{ $.Values.service.ports.grpc.external.port | int64 -}}
+              {{- if .Values.tls.enabled }}
+                --certs-dir=/cockroach-certs/
+              {{- else }}
+                --insecure
+              {{- end }}
+                --user root
+                | tee
+                /backups/backup_$(date +%Y%m%d_%H%M%S)
+          containers:
+          {{- if .Values.backup.gcs}}
+          - name: gsutil-cp
+            image: {{ .Values.backup.gcs.image}}
+            command:
+            - /bin/sh
+            args:
+            - '-c'
+            - |
+              gcloud auth activate-service-account --key-file $KEY_FILE
+              gsutil -m cp -r $SRC_URL $DST_URL
+            volumeMounts:
+            - name: backups
+              mountPath: /backups
+            - name: google-cloud-key
+              mountPath: /var/secrets/google/
+            env:
+              - name: SRC_URL
+                value: /backups
+              - name: DST_URL
+                value: {{ .Values.backup.gcs.destination}}
+              - name: KEY_FILE
+                value: /var/secrets/google/{{ .Values.backup.gcs.serviceAccountSecretKey }}
+          {{- end }}
+          {{- if .Values.backup.aws }}
+          - name: aws-cli
+            image: {{ .Values.backup.aws.image}}
+            command:
+            - /bin/sh
+            args:
+            - '-c'
+            - |
+              aws s3 cp --recursive --no-progress "$SRC_URL" "$DST_URL"
+            volumeMounts:
+            - name: backups
+              mountPath: /backups
+            env:
+              - name: SRC_URL
+                value: /backups
+              - name: DST_URL
+                value: {{ .Values.backup.aws.destination}}
+              - name:  AWS_ACCESS_KEY_ID
+                valueFrom:
+                  secretKeyRef:
+                    name: {{ .Values.backup.aws.serviceAccountSecret }}
+                    key: AWS_ACCESS_KEY_ID
+              - name:  AWS_SECRET_ACCESS_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: {{ .Values.backup.aws.serviceAccountSecret }}
+                    key: AWS_SECRET_ACCESS_KEY
+              - name:  AWS_DEFAULT_REGION
+                valueFrom:
+                  secretKeyRef:
+                    name: {{ .Values.backup.aws.serviceAccountSecret }}
+                    key: AWS_DEFAULT_REGION
+          {{- end }}
+    {{- end }}
+{{- end }}

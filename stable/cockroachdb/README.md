@@ -39,6 +39,7 @@ Below is a brief overview of operating the CockroachDB Helm Chart and some speci
 This chart will do the following:
 
 * Set up a dynamically scalable CockroachDB cluster using a Kubernetes StatefulSet.
+* Optionaly provide scheduled backups to Google Storage Bucket
 
 
 
@@ -89,6 +90,8 @@ pvc-64945b4f-f3f0-11e8-ab5b-42010a8e0035   100Gi      RWO            Delete     
 pvc-649d920d-f3f0-11e8-ab5b-42010a8e0035   100Gi      RWO            Delete           Bound     default/datadir-my-release-cockroachdb-2   standard                 51s
 ```
 
+## Backups
+Backup CronJob is provided using `cockroachdb dump` command, if `backup.enabled` set to `yes`/`true`. Google Cloud Storage or/and AWS S3 Service are supported. Please refer to [https://www.cockroachlabs.com/docs/stable/backup-and-restore.html] for more details
 
 
 
@@ -271,6 +274,19 @@ For details see the `values.yml` file.
 | `init.nodeSelector` | Node labels for init Job Pod assignment              | `{}` |
 | `init.tolerations`  | Node taints to tolerate by init Job Pod              | `[]` |
 | `init.resources`    | Resource requests and limits for the Pod of init Job | `{}` |
+| `backup.enabled`                      | Whether to deploy backup cronjob                       | `no`  |
+| `backup.database`                     | CockroachDB database to backup                         | `main`  |
+| `backup.schedule`                     | Backup schedule                                        | `0 0 * * *` |
+| `backup.annotations`                  | Additional labels of the Pod of backup Job             | `{}` |
+| `backup.labels`                       | Additional labels of backup Job and its Pod            | `{"app.kubernetes.io/component": "backup"}` |
+| `backup.gcs.destination`              | Google Cloud Storage bucket for backups                | `gs://cockroachdb-backup/` |
+| `backup.gcs.serviceAccountSecret`     | Secret with Service Account key                        | `cockroachdb-backup` |
+| `backup.gcs.serviceAccountSecretKey`  | GCP Account secret key                                 | `key.json` |
+| `backup.gcs.image`                    | gcoud sdk image                                        | `google/cloud-sdk:alpine` |
+| `backup.aws.destination`              | Google Cloud Storage bucket for backups                | `s3://cockroachdb-backup/` |
+| `backup.aws.serviceAccountSecret`     | Secret with Service Account key                        | `cockroachdb-backup` |
+| `backup.aws.image`                    | aws-cli image. Unfortunately, there is no official one | `garland/aws-cli-docker` |
+| `backup.resources`                    | Resource requests and limits for backup Pod            | `{}`   |
 | `tls.enabled`                | Whether to run securely using TLS certificates    | `no`  |
 | `tls.serviceAccount.create`  | Whether to create a new RBAC service account      | `yes` |
 | `tls.serviceAccount.name`    | Name of RBAC service account to use               | `""`  |
