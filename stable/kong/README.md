@@ -423,6 +423,12 @@ You can can learn about kong ingress custom resource definitions [here](https://
 - Update default version of Ingress Controller to 0.6.2
 - Add support to disable kong-admin service via `admin.enabled` flag.
 
+### 0.31.2
+
+#### Fixes
+
+- Do not remove whitespace between documents when rendering `migrations-pre-upgrade.yaml`
+
 ### 0.30.1
 
 #### New Features
