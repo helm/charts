@@ -207,6 +207,16 @@ falco:
     enabled: false
     keepAlive: false
     program: mail -s "Falco Notification" someone@example.com
+    # program: |
+    #   jq 'if .priority == "Emergency" or .priority == "Critical" or .priority == "Error" then
+    #     { attachments: [{ text: .output, color: "danger" }]}
+    #   elif .priority == "Warning" or .priority == "Notice" then
+    #     { attachments: [{ text: .output, color: "warning" }]}
+    #   elif .priority == "Informational" then
+    #     { attachments: [{ text: .output, color: "good" }]}
+    #   else
+    #     { attachments: [{ text: .output }]}
+    #   end' | curl -d @- -X POST https://hooks.slack.com/services/xxxxxxxxx/xxxxxxxxx/xxxxxxxxxxxxxxxxxxxxxxxx
 
   httpOutput:
     enabled: false
