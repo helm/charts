@@ -26,13 +26,16 @@ serviceAccountLabels: {}
 # Optional persistentVolume labels
 persistentVolumeLabels: {}
 
+# Optional additional environment variables
+extraVars: []
+
 ## Additional pushgateway container arguments
 ##
 ## example:
 ## extraArgs:
-##  persistence.file: /data/pushgateway.data
-##  persistence.interval: 5m
-extraArgs: {}
+##  - --persistence.file=/data/pushgateway.data
+##  - --persistence.interval=5m
+extraArgs: []
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

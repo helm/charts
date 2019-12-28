@@ -23,13 +23,13 @@ spec:
         - name: pushgateway
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          args:
-          {{- range $key, $value := .Values.extraArgs }}
-            - --{{ $key }}={{ $value }}
-          {{- end }}
         {{- if .Values.extraVars }}
           env:
 {{ toYaml .Values.extraVars | indent 12 }}
+        {{- end }}
+        {{- if .Values.extraArgs }}
+          args:
+{{ toYaml .Values.extraArgs | indent 12 }}
         {{- end }}
           ports:
             - name: metrics
@@ -49,12 +49,6 @@ spec:
             timeoutSeconds: 10
           resources:
 {{ toYaml .Values.resources | indent 12 }}
-          {{- if .Values.persistentVolume.enabled }}
-          volumeMounts:
-            - name: storage-volume
-              mountPath: "{{ .Values.persistentVolume.mountPath }}"
-              subPath: "{{ .Values.persistentVolume.subPath }}"
-          {{- end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
