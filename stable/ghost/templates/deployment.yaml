@@ -128,6 +128,9 @@ spec:
         - name: SMTP_SERVICE
           value: {{ .Values.smtpService | quote }}
         {{- end }}
+        {{- with .Values.extraEnvVars }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
         ports:
         - name: http
           containerPort: 2368
@@ -163,7 +166,7 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
         - name: ghost-data
-          mountPath: /bitnami/ghost
+          mountPath: {{ .Values.persistence.path }}
       volumes:
       - name: ghost-data
       {{- if .Values.persistence.enabled }}

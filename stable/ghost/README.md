@@ -118,6 +118,7 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `resources`                         | CPU/Memory resource requests/limits                           | Memory: `512Mi`, CPU: `300m`                             |
 | `nodeSelector`                      | Node selector for pod assignment                              | `{}`                                                     |
 | `affinity`                          | Map of node/pod affinities                                    | `{}`                                                     |
+| `extraEnvVars`                      | Additional environment variables                              | `{}`                                                     |
 
 The above parameters map to the env variables defined in [bitnami/ghost](http://github.com/bitnami/bitnami-docker-ghost). For more information please refer to the [bitnami/ghost](http://github.com/bitnami/bitnami-docker-ghost) image documentation.
 

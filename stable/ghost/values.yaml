@@ -274,3 +274,8 @@ nodeSelector: {}
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 ##
 affinity: {}
+
+## Additional environemnt vars
+## Ref: https://ghost.org/docs/concepts/config/#section-running-ghost-with-config-env-variables
+##
+extraEnvVars: {}
