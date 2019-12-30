@@ -48,7 +48,7 @@ This version requires Helm >= 2.12.0.
 | `securityContext`                         | Deployment securityContext                    | `{"runAsUser": 472, "fsGroup": 472}`                    |
 | `priorityClassName`                       | Name of Priority Class to assign pods         | `nil`                                                   |
 | `image.repository`                        | Image repository                              | `grafana/grafana`                                       |
-| `image.tag`                               | Image tag (`Must be >= 5.0.0`)                | `6.3.5`                                                 |
+| `image.tag`                               | Image tag (`Must be >= 5.0.0`)                | `6.5.2`                                                 |
 | `image.pullPolicy`                        | Image pull policy                             | `IfNotPresent`                                          |
 | `image.pullSecrets`                       | Image pull secrets                            | `{}`                                                    |
 | `service.type`                            | Kubernetes service type                       | `ClusterIP`                                             |
