@@ -16,6 +16,7 @@ rules:
       - nodes
       - nodes/stats
       - namespaces
+      - configmaps
     verbs:
       - get
       - list
