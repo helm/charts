@@ -123,6 +123,8 @@ spec:
           value: "{{ .Values.policies.monitoring.image }}:{{ .Values.policies.monitoring.imageTag }}"
         - name: OPENEBS_IO_CSTOR_POOL_EXPORTER_IMAGE
           value: "{{ .Values.policies.monitoring.image }}:{{ .Values.policies.monitoring.imageTag }}"
+        - name: OPENEBS_IO_HELPER_IMAGE
+          value: "{{ .Values.helper.image }}:{{ .Values.helper.imageTag }}"
         # OPENEBS_IO_ENABLE_ANALYTICS if set to true sends anonymous usage
         # events to Google Analytics
         - name: OPENEBS_IO_ENABLE_ANALYTICS

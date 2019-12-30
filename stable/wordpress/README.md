@@ -98,6 +98,7 @@ The following table lists the configurable parameters of the WordPress chart and
 | `service.port`                            | Service HTTP port                                                             | `80`                                                         |
 | `service.httpsPort`                       | Service HTTPS port                                                            | `443`                                                        |
 | `service.httpsTargetPort`                 | Service Target HTTPS port                                                     | `https`                                                      |
+| `service.loadBalancerSourceRanges`        | Restricts access for LoadBalancer (only with `service.type: LoadBalancer`)    | `[]`                                                         |
 | `service.metricsPort`                     | Service Metrics port                                                          | `9117`                                                       |
 | `service.externalTrafficPolicy`           | Enable client source IP preservation                                          | `Cluster`                                                    |
 | `service.nodePorts.http`                  | Kubernetes http node port                                                     | `""`                                                         |
@@ -355,6 +356,14 @@ Persistent Volume Claims are used to keep the data across deployments. This is k
 See the [Parameters](#parameters) section to configure the PVC or to disable persistence.
 
 ## Upgrading
+
+### To 8.0.0
+
+Helm performs a lookup for the object based on its group (apps), version (v1), and kind (Deployment). Also known as its GroupVersionKind, or GVK. Changing the GVK is considered a compatibility breaker from Kubernetes' point of view, so you cannot "upgrade" those objects to the new GVK in-place. Earlier versions of Helm 3 did not perform the lookup correctly which has since been fixed to match the spec.
+
+In https://github.com/helm/charts/pulls/12642 the `apiVersion` of the deployment resources was updated to `apps/v1` in tune with the api's deprecated, resulting in compatibility breakage.
+
+This major version signifies this change.
 
 ### To 3.0.0
 

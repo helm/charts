@@ -226,6 +226,12 @@ spec:
             cp /opt/bitnami/redis-sentinel/mounted-etc/sentinel.conf /opt/bitnami/redis-sentinel/etc/sentinel.conf
             {{- if .Values.usePassword }}
             printf "\nsentinel auth-pass {{ .Values.sentinel.masterSet }} $REDIS_PASSWORD" >> /opt/bitnami/redis-sentinel/etc/sentinel.conf
+            {{- if .Values.sentinel.usePassword }}
+            printf "\nrequirepass $REDIS_PASSWORD" >> /opt/bitnami/redis-sentinel/etc/sentinel.conf
+            {{- end }}
+            {{- end }}
+            {{- if .Values.sentinel.staticID }}
+            printf "\nsentinel myid $(echo $HOSTNAME | openssl sha1 | awk '{ print $2 }')" >> /opt/bitnami/redis-sentinel/etc/sentinel.conf
             {{- end }}
           fi
 

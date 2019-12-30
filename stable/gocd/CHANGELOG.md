@@ -1,3 +1,15 @@
+### 1.20.1
+* [671812f5a](https://github.com/kubernetes/charts/commit/671812f5a): Update OWNERS list
+
+### 1.20.0
+* [83552c9](https://github.com/kubernetes/charts/commit/83552c9): Bump up GoCD Version to 19.11.0
+
+### 1.19.3
+* [afd78ccd8](https://github.com/kubernetes/charts/commit/afd78ccd8): GoCD server sidecar containers
+
+### 1.19.2
+* [cacab5e62](https://github.com/kubernetes/charts/commit/cacab5e62): GoCD agents postStart lifecycle hooks
+
 ### 1.19.1
 * [00e10170c](https://github.com/kubernetes/charts/commit/00e10170c): Add support for specifying tolerations on both the GoCD server and agent pods
 
