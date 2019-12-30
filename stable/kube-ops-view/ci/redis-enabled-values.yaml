@@ -1,0 +1,2 @@
+redis:
+  enabled: true
