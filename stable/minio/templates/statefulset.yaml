@@ -70,6 +70,11 @@ spec:
       priorityClassName: "{{ .Values.priorityClassName }}"
       {{- end }}
       serviceAccountName: {{ include "minio.serviceAccountName" . | quote }}
+{{- if .Values.securityContext.enabled }}
+      securityContext:
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+{{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
