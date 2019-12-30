@@ -88,6 +88,8 @@ serviceAccount:
 serviceMonitor:
   enabled: false
   namespace: monitoring
+  # additionalLabels is the set of additional labels to add to the ServiceMonitor
+  additionalLabels: {}
   # fallback to the prometheus default unless specified
   # interval: 10s
   ## Defaults to what's used if you follow CoreOS [Prometheus Install Instructions](https://github.com/helm/charts/tree/master/stable/prometheus-operator#tldr)
