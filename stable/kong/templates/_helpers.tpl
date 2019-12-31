@@ -271,6 +271,23 @@ The name of the service used for the ingress controller's validation webhook
   {{- include "kong.volumeMounts" . | nindent 4 }}
 {{- end -}}
 
+{{- define "kong.wait-for-postgres" -}}
+- name: wait-for-postgres
+  image: "{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
+  imagePullPolicy: {{ .Values.waitImage.pullPolicy }}
+  env:
+  - name: KONG_PG_HOST
+    value: {{ template "kong.postgresql.fullname" . }}
+  - name: KONG_PG_PORT
+    value: "{{ .Values.postgresql.service.port }}"
+  - name: KONG_PG_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: {{ template "kong.postgresql.fullname" . }}
+        key: postgresql-password
+  command: [ "/bin/sh", "-c", "until nc -zv $KONG_PG_HOST $KONG_PG_PORT -w1; do echo 'waiting for db'; sleep 1; done" ]
+{{- end -}}
+
 {{- define "kong.controller-container" -}}
 - name: ingress-controller
   args:
