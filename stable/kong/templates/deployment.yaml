@@ -110,9 +110,9 @@ spec:
         - name: KONG_NGINX_DAEMON
           value: "off"
         {{- if .Values.enterprise.enabled }}
-        {{- if .Values.enterprise.vitals.enabled }}
+        {{- if not .Values.enterprise.vitals.enabled }}
         - name: KONG_VITALS
-          value: "on"
+          value: "off"
         {{- end }}
         {{- if .Values.enterprise.portal.enabled }}
         - name: KONG_PORTAL
@@ -292,6 +292,8 @@ spec:
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
     {{- end }}
+      securityContext:
+      {{- include "kong.podsecuritycontext" . | nindent 8 }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
