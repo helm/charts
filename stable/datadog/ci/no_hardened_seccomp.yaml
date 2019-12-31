@@ -1,5 +1,4 @@
-# Empty values file for testing default parameters.
-
-systemProbe:
-  enabled: true
-  seccomp: runtime/default
+datadog:
+  systemProbe:
+    enabled: true
+    seccomp: runtime/default

@@ -1,8 +1,8 @@
-# Empty values file for testing default parameters.
-clusterAgent:
-  enabled: true
+datadog:
+  clusterChecks:
+    enabled: true
 
-clusterChecks:
+clusterAgent:
   enabled: true
 
 clusterchecksDeployment:

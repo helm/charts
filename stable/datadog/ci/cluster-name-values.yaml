@@ -1,4 +1,2 @@
-# Empty values file for testing default parameters.
-
 datadog:
   clusterName: kubernetes-cluster.example.com
