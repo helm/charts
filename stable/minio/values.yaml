@@ -14,7 +14,7 @@ clusterDomain: cluster.local
 ##
 image:
   repository: minio/minio
-  tag: RELEASE.2019-12-24T23-04-45Z
+  tag: RELEASE.2019-12-30T05-45-39Z
   pullPolicy: IfNotPresent
 
 ## Set default image, imageTag, and imagePullPolicy for the `mc` (the minio
@@ -56,12 +56,15 @@ priorityClassName: ""
 existingSecret: ""
 accessKey: "AKIAIOSFODNN7EXAMPLE"
 secretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
-configPath: "/root/.minio/"
-configPathmc: "/root/.mc/"
+certsPath: "/etc/minio/certs/"
+configPathmc: "/etc/minio/mc/"
 mountPath: "/export"
+
 # Number of drives attached to a node
 drivesPerNode: 1
+# Number of MinIO containers running
 replicas: 4
+# Number of expanded MinIO clusters
 zones: 1
 
 ## TLS Settings for Minio
@@ -151,6 +154,14 @@ ingress:
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
+## Add stateful containers to have security context, if enabled MinIO will run as this
+## user and group NOTE: securityContext is only enabled if persistence.enabled=true
+securityContext:
+  enabled: false
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
 
 # Additational pod annotations
 podAnnotations: {}
