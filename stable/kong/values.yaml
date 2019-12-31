@@ -286,6 +286,7 @@ env:
   admin_error_log: /dev/stderr
   admin_gui_error_log: /dev/stderr
   portal_api_error_log: /dev/stderr
+  prefix: /kong_prefix/
 
 # If you want to specify resources, uncomment the following
 # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
@@ -348,6 +349,10 @@ podDisruptionBudget:
 
 podSecurityPolicy:
   enabled: false
+
+# securityContext for Kong pods.
+securityContext:
+  runAsUser: 1000
 
 # Kong has a choice of either Postgres or Cassandra as a backend datatstore.
 # This chart allows you to choose either of them with the `database.type`
