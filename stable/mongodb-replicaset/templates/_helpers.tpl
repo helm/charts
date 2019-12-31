@@ -62,7 +62,7 @@ Create the name for the key secret.
     {{- end -}}
 {{- end -}}
 
-{{- define "mongodb-replicaset.connection-string"  -}}
+{{- define "mongodb-replicaset.connection-string" -}}
   {{- $string := "" -}}
   {{- if .Values.auth.enabled }}
    {{- $string = printf "mongodb://$METRICS_USER:$METRICS_PASSWORD@localhost:%s" (.Values.port|toString) -}}
