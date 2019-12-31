@@ -23,6 +23,7 @@ spec:
   volumes:
     - 'configMap'
     - 'secret'
+    - 'emptyDir'
   allowPrivilegeEscalation: false
   hostNetwork: false
   hostIPC: false

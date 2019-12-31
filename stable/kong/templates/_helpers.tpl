@@ -166,6 +166,10 @@ The name of the service used for the ingress controller's validation webhook
 {{- end -}}
 
 {{- define "kong.volumes" -}}
+- name: {{ template "kong.fullname" . }}-prefix-dir
+  emptyDir: {}
+- name: {{ template "kong.fullname" . }}-tmp
+  emptyDir: {}
 {{- range .Values.plugins.configMaps }}
 - name: kong-plugin-{{ .pluginName }}
   configMap:
@@ -201,6 +205,10 @@ The name of the service used for the ingress controller's validation webhook
 {{- end -}}
 
 {{- define "kong.volumeMounts" -}}
+- name: {{ template "kong.fullname" . }}-prefix-dir
+  mountPath: /kong_prefix/
+- name: {{ template "kong.fullname" . }}-tmp
+  mountPath: /tmp
 - name: custom-nginx-template-volume
   mountPath: /kong
 {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
@@ -214,10 +222,12 @@ The name of the service used for the ingress controller's validation webhook
 {{- range .Values.plugins.configMaps }}
 - name:  kong-plugin-{{ .pluginName }}
   mountPath: /opt/kong/plugins/{{ .pluginName }}
+  readOnly: true
 {{- end }}
 {{- range .Values.plugins.secrets }}
 - name:  kong-plugin-{{ .pluginName }}
   mountPath: /opt/kong/plugins/{{ .pluginName }}
+  readOnly: true
 {{- end }}
 {{- end -}}
 
@@ -245,14 +255,16 @@ The name of the service used for the ingress controller's validation webhook
     value: {{ template "kong.postgresql.fullname" . }}
   - name: KONG_PG_PORT
     value: "{{ .Values.postgresql.service.port }}"
-  - name: KONG_LUA_PACKAGE_PATH
-    value: "/opt/?.lua;;"
   - name: KONG_PG_PASSWORD
     valueFrom:
       secretKeyRef:
         name: {{ template "kong.postgresql.fullname" . }}
         key: postgresql-password
   {{- end }}
+  - name: KONG_LUA_PACKAGE_PATH
+    value: "/opt/?.lua;;"
+  - name: KONG_PLUGINS
+    value: {{ template "kong.plugins" . }}
   {{- include "kong.env" .  | nindent 2 }}
   command: [ "/bin/sh", "-c", "until kong start; do echo 'waiting for db'; sleep 1; done; kong stop" ]
   volumeMounts:
@@ -315,4 +327,11 @@ Retrieve Kong Enterprise license from a secret and make it available in env vars
     secretKeyRef:
       name: {{ .Values.enterprise.license_secret }}
       key: license
+{{- end -}}
+
+{{/*
+Use the Pod security context defined in Values or set the UID by default
+*/}}
+{{- define "kong.podsecuritycontext" -}}
+{{ .Values.securityContext | toYaml }}
 {{- end -}}

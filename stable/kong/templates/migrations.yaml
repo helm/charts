@@ -73,6 +73,8 @@ spec:
         command: [ "/bin/sh", "-c", "kong migrations bootstrap" ]
         volumeMounts:
         {{- include "kong.volumeMounts" . | nindent 8 }}
+      securityContext:
+      {{- include "kong.podsecuritycontext" . | nindent 6 }}
       restartPolicy: OnFailure
       volumes:
       {{- include "kong.volumes" . | nindent 6 -}}
