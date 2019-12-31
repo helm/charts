@@ -423,6 +423,8 @@ ingressController:
     # If not set and create is true, a name is generated using the fullname template
     name:
 
+  installCRDs: true
+
   # general properties
   livenessProbe:
     failureThreshold: 3
@@ -445,9 +447,6 @@ ingressController:
     successThreshold: 1
     timeoutSeconds: 5
   resources: {}
-  podDisruptionBudget:
-    enabled: false
-    maxUnavailable: "50%"
 
 # We pass the dbless (declarative) config over here.
 dblessConfig:
