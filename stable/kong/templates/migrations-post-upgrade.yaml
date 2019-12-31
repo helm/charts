@@ -33,7 +33,7 @@ spec:
       {{- end }}
       {{- end }}
       initContainers:
-      {{- if .Values.postgresql.enabled }}
+      {{- if (eq .Values.env.database "postgres") }}
       {{- include "kong.wait-for-postgres" . | nindent 6 }}
       {{- end }}
       containers:

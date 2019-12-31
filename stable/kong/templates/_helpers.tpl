@@ -271,23 +271,6 @@ The name of the service used for the ingress controller's validation webhook
   {{- include "kong.volumeMounts" . | nindent 4 }}
 {{- end -}}
 
-{{- define "kong.wait-for-postgres" -}}
-- name: wait-for-postgres
-  image: "{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
-  imagePullPolicy: {{ .Values.waitImage.pullPolicy }}
-  env:
-  - name: KONG_PG_HOST
-    value: {{ template "kong.postgresql.fullname" . }}
-  - name: KONG_PG_PORT
-    value: "{{ .Values.postgresql.service.port }}"
-  - name: KONG_PG_PASSWORD
-    valueFrom:
-      secretKeyRef:
-        name: {{ template "kong.postgresql.fullname" . }}
-        key: postgresql-password
-  command: [ "/bin/sh", "-c", "until nc -zv $KONG_PG_HOST $KONG_PG_PORT -w1; do echo 'waiting for db'; sleep 1; done" ]
-{{- end -}}
-
 {{- define "kong.controller-container" -}}
 - name: ingress-controller
   args:
@@ -354,8 +337,8 @@ Use the Pod security context defined in Values or set the UID by default
 {{- end -}}
 
 {{/*
-The environment values passed to Kong; this should remain the last
-section because it uses other templates defined in the sections above.
+The environment values passed to Kong; this should come after all
+the template that it itself is using form the above sections.
 */}}
 {{- define "kong.final_env" -}}
 - name: KONG_LUA_PACKAGE_PATH
@@ -496,4 +479,13 @@ section because it uses other templates defined in the sections above.
 - name: KONG_PLUGINS
   value: {{ template "kong.plugins" . }}
 {{- include "kong.env" . }}
+{{- end -}}
+
+{{- define "kong.wait-for-postgres" -}}
+- name: wait-for-postgres
+  image: "{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
+  imagePullPolicy: {{ .Values.waitImage.pullPolicy }}
+  env:
+  {{- include "kong.final_env" . | nindent 2 }}
+  command: [ "/bin/sh", "-c", "until nc -zv $KONG_PG_HOST $KONG_PG_PORT -w1; do echo 'waiting for db'; sleep 1; done" ]
 {{- end -}}
