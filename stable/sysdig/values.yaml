@@ -111,6 +111,15 @@ secure:
   # true here enables Sysdig Secure: container run-time security & forensics
   enabled: false
 
+auditLog:
+  enabled: false
+  clusterIP:
+  auditServerUrl: 0.0.0.0
+  auditServerPort: 7765
+
+  dynamicBackend:
+    enabled: false
+
 customAppChecks: {}
   # Allow passing custom app checks for Sysdig Agent.
   # Example:
