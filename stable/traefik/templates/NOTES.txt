@@ -19,6 +19,10 @@
 
      http - {{ .Values.service.nodePorts.http }}
      https - {{ .Values.service.nodePorts.https }}
+     {{- if eq .Values.dashboard.serviceType "NodePort" }}
+     dashboard - {{ .Values.dashboard.nodePorts.http }}
+     {{- end }}
+
 {{- else }}
 1. Traefik has been started. You can find out the port numbers being used by traefik by running:
 
