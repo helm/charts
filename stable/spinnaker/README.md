@@ -184,6 +184,8 @@ hal --daemon-endpoint $DAEMON_ENDPOINT config security authn oauth2 enable
 $HAL_COMMAND config security authn oauth2 enable
 ```
 
+If you need to give halyard additional parameters when it deploys Spinnaker, you can specify them with `halyard.additionalInstallParameters`.
+
 If you would rather the chart make the config file for you, you can set `halyard.additionalScripts.create` to `true` and then populate `halyard.additionalScripts.data.SCRIPT_NAME.sh` with the bash script you'd like to run. If you need associated configmaps or secrets you can configure those to be created as well:
 
 ```yaml
