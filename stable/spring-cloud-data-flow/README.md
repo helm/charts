@@ -30,6 +30,13 @@ If you are using a cluster that does not have a load balancer (like Minikube) th
 $ helm install --name my-release --set server.service.type=NodePort stable/spring-cloud-data-flow
 ```
 
+To restrict the load balancer to an IP address range:
+
+```bash
+$ helm install --name my-release  --set server.service.loadBalancerSourceRanges='[10.0.0.0/8]' stable/spring-cloud-data-flow
+```
+
+
 ### Data Store
 
 By default, MySQL is deployed with this chart. However, if you wish to use an external database, please use the following `set` flags to the `helm` command to disable MySQL deployment, for example:
@@ -102,17 +109,18 @@ The following tables list the configurable parameters and their default values.
 
 ### Data Flow Server Configuration
 
-| Parameter                         | Description                                                        | Default          |
-| --------------------------------- | ------------------------------------------------------------------ | ---------------- |
-| server.version                    | The version/tag of the Data Flow server                            | 2.3.0.RELEASE
-| server.imagePullPolicy            | The imagePullPolicy of the Data Flow server                        | IfNotPresent
-| server.service.type               | The service type for the Data Flow server                          | LoadBalancer
-| server.service.annotations        | Extra annotations for service resource                             | {}
-| server.service.externalPort       | The external port for the Data Flow server                         | 80
-| server.service.labels             | Extra labels for the service resource                              | {}
-| server.platformName               | The name of the configured platform account                        | default
-| server.configMap                  | Custom ConfigMap name for Data Flow server configuration           |
-| server.trustCerts                 | Trust self signed certs                                            | false
+| Parameter                               | Description                                                        | Default          |
+| --------------------------------------- | ------------------------------------------------------------------ | ---------------- |
+| server.version                          | The version/tag of the Data Flow server                            | 2.3.0.RELEASE
+| server.imagePullPolicy                  | The imagePullPolicy of the Data Flow server                        | IfNotPresent
+| server.service.type                     | The service type for the Data Flow server                          | LoadBalancer
+| server.service.annotations              | Extra annotations for service resource                             | {}
+| server.service.externalPort             | The external port for the Data Flow server                         | 80
+| server.service.labels                   | Extra labels for the service resource                              | {}
+| server.service.loadBalancerSourceRanges | A list of IP address ranges to allow through the load balancer     | no restriction
+| server.platformName                     | The name of the configured platform account                        | default
+| server.configMap                        | Custom ConfigMap name for Data Flow server configuration           |
+| server.trustCerts                       | Trust self signed certs                                            | false
 
 ### Skipper Server Configuration
 
