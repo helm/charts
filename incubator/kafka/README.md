@@ -130,6 +130,21 @@ following configurable parameters:
 | `prometheus.operator.serviceMonitor.releaseNamespace` | Set namespace to release namespace. Default false                                                                           | `false`                                                       |
 | `prometheus.operator.serviceMonitor.selector`         | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install                                                               | `{ prometheus: kube-prometheus }`                                  |
 | `configJob.backoffLimit`                              | Number of retries before considering kafka-config job as failed                                                                                                          | `6`                                                                |
+| `sslSecrets.enable`                                   | If True, installs SSL Secrets
+| `sslSecrets.caBase64`                                 | CA certificate in PEM format encoded in Base64
+| `sslSecrets.broker.truststoreBase64`                  | Broker truststore in JKS format encoded in Base64
+| `sslSecrets.broker.truststorePassword`                | Broker truststore password
+| `sslSecrets.broker.keystoreBase64`                    | Broker keystore in JKS format encoded in Base64
+| `sslSecrets.broker.keystorePassword`                  | Broker keystore password
+| `sslSecrets.broker.keyPassword`                       | Broker key password
+| `sslSecrets.jksClient.truststoreBase64`               | Client truststore in JKS format encoded in Base64
+| `sslSecrets.jksClient.truststorePassword`             | Client truststore password
+| `sslSecrets.jksClient.keystoreBase64`                 | Client keystore in JKS format encoded in Base64
+| `sslSecrets.jksClient.keystorePassword`               | Client keystore password
+| `sslSecrets.jksClient.keyPassword`                    | Client key password
+| `sslSecrets.client.certBase64`                        | Client certificate in PEM format encoded in Base64
+| `sslSecrets.client.keyBase64`                         | Client key in PEM format encoded in Base64
+| `sslSecrets.client.keyPassword`                       | Client key password
 | `topics`                                              | List of topics to create & configure. Can specify name, partitions, replicationFactor, reassignPartitions, config. See values.yaml                                       | `[]` (Empty list)                                                  |
 | `zookeeper.enabled`                                   | If True, installs Zookeeper Chart                                                                                                                                        | `true`                                                             |
 | `zookeeper.resources`                                 | Zookeeper resource requests and limits                                                                                                                                   | `{}`                                                               |

@@ -52,6 +52,31 @@ podManagementPolicy: OrderedReady
 #     - pass
 #   mountPath: /opt/zookeeper/secret
 
+## Pass in SSL secret configurations
+sslSecrets:
+  enable: false
+
+  caBase64: ''
+
+  broker:
+    truststoreBase64: ''
+    truststorePassword: ''
+    keystoreBase64: ''
+    keystorePassword: ''
+    keyPassword: ''
+    
+  jksClient:
+    truststoreBase64: ''
+    truststorePassword: ''
+    keystoreBase64: ''
+    keystorePassword: ''
+    keyPassword: ''
+
+  client:
+    certBase64: ''
+    keyBase64: ''
+    keyPassword: ''
+
 
 ## The subpath within the Kafka container's PV where logs will be stored.
 ## This is combined with `persistence.mountPath`, to create, by default: /opt/kafka/data/logs
