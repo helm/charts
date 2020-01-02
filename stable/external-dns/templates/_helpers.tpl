@@ -119,7 +119,6 @@ aws_secret_access_key = {{ .Values.aws.credentials.secretKey }}
 {{- define "external-dns.aws-config" }}
 [profile default]
 region = {{ .Values.aws.region }}
-source_profile = default
 {{ end }}
 
 {{- define "external-dns.azure-credentials" -}}
