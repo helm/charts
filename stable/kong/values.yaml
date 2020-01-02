@@ -409,7 +409,6 @@ ingressController:
     failurePolicy: Fail
     port: 8080
 
-  installCRDs: true
   ingressClass: kong
 
   rbac:
