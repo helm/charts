@@ -65,6 +65,7 @@ and their default values.
 | image.pullPolicy                   | Image pull policy                                                                     | `IfNotPresent`      |
 | image.pullSecrets                  | Image pull secrets                                                                    | `null`              |
 | replicaCount                       | Kong instance count                                                                   | `1`                 |
+| admin.enabled                      | Create Admin Service                                                                  | `false`             |
 | admin.useTLS                       | Secure Admin traffic                                                                  | `true`              |
 | admin.servicePort                  | TCP port on which the Kong admin service is exposed                                   | `8444`              |
 | admin.containerPort                | TCP port on which Kong app listens for admin traffic                                  | `8444`              |
@@ -89,7 +90,8 @@ and their default values.
 | proxy.tls.nodePort                 | Node port to use for TLS                                                              | 32443               |
 | proxy.tls.hostPort                 | Host port to use for TLS                                                              |                     |
 | proxy.tls.overrideServiceTargetPort| Override service port to use for TLS without touching Kong containerPort              |                     |
-| proxy.type                         | k8s service type. Options: NodePort, ClusterIP, LoadBalancer                          | `NodePort`          |
+| proxy.type                         | k8s service type. Options: NodePort, ClusterIP, LoadBalancer                          | `LoadBalancer`      |
+| proxy.clusterIP                    | k8s service clusterIP                                                                 |                     |
 | proxy.loadBalancerSourceRanges     | Limit proxy access to CIDRs if set and service type is `LoadBalancer`                 | `[]`                |
 | proxy.loadBalancerIP               | To reuse an existing ingress static IP for the admin service                          |                     |
 | proxy.externalIPs                  | IPs for which nodes in the cluster will also accept traffic for the proxy             | `[]`                |
@@ -137,9 +139,11 @@ for the service definition to work properly.
 
 ### Kong-specific parameters
 
-Kong has a choice of either Postgres or Cassandra as a backend datatstore.
-This chart allows you to choose either of them with the `env.database`
-parameter. Postgres is chosen by default.
+Kong can run and store all it's configuration in-memory or it can be backed 
+using a database. Kong supports Postgres and Cassandra.
+This chart by default installs Kong without a database, storing all the
+configuration in-memory. If you'd like to use a database, you can deploy one
+and set the 'env.database` property accordingly.
 
 This chart allows you to bring your own database that you manage or spin up
 separately (recommended) or spin up a new Postgres instance using 
@@ -152,10 +156,11 @@ that via the `env.database` parameter.
 
 | Parameter                     | Description                                                             | Default               |
 | ------------------------------| ------------------------------------------------------------------------| ----------------------|
-| postgresql.enabled            | Spin up a new postgres instance for Kong                                | `true`                |
+| postgresql.enabled            | Spin up a new postgres instance for Kong                                | `false`               |
 | waitImage.repository          | Image used to wait for database to become ready                         | `busybox`             |
 | waitImage.tag                 | Tag for image used to wait for database to become ready                 | `latest`              |
-| env.database                  | Choose either `postgres`, `cassandra` or `"off"` (for dbless mode)      | `postgres`            |
+| waitImage.pullPolicy          | Wait image pull policy                                                  | `IfNotPresent`        |
+| env.database                  | Choose either `postgres`, `cassandra` or `"off"` (for dbless mode)      | `off`                 |
 | env.pg_user                   | Postgres username                                                       | `kong`                |
 | env.pg_database               | Postgres database name                                                  | `kong`                |
 | env.pg_password               | Postgres database password (required if you are using your own database)| `kong`                |
@@ -317,7 +322,7 @@ always be changed for both configurations.
 
 After creating your secret, set its name in values.yaml, in the
 `.enterprise.rbac.session_conf_secret` and
-`.enterprise.rbac.session_conf_secret` keys.
+`.enterprise.portal.session_conf_secret` keys.
 
 #### Email/SMTP
 
@@ -387,13 +392,117 @@ You can can learn about kong ingress custom resource definitions [here](https://
 
 | Parameter                          | Description                                                                           | Default                                                                      |
 | ---------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| enabled                            | Deploy the ingress controller, rbac and crd                                           | false                                                                        |
+| enabled                            | Deploy the ingress controller, rbac and crd                                           | true                                                                         |
 | replicaCount                       | Number of desired ingress controllers                                                 | 1                                                                            |
 | image.repository                   | Docker image with the ingress controller                                              | kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller |
 | image.tag                          | Version of the ingress controller                                                     | 0.6.0                                                                        |
 | readinessProbe                     | Kong ingress controllers readiness probe                                              |                                                                              |
 | livenessProbe                      | Kong ingress controllers liveness probe                                               |                                                                              |
-| ingressClass                       | The ingress-class value for controller                                                | kong                                                                        |
+| env                                | Specify Kong Ingress Controller configuration via environment variables               |                                                                              |
+| ingressClass                       | The ingress-class value for controller                                                | kong                                                                         |
 | podDisruptionBudget.enabled        | Enable PodDisruptionBudget for ingress controller                                     | `false`                                                                      |
 | podDisruptionBudget.maxUnavailable | Represents the minimum number of Pods that can be unavailable (integer or percentage) | `50%`                                                                        |
 | podDisruptionBudget.minAvailable   | Represents the number of Pods that must be available (integer or percentage)          |                                                                              |
+| admissionWebhook.enabled           | Whether to enable the validating admission webhook                                    | false                                                                        |
+| admissionWebhook.failurePolicy     | How unrecognized errors from the admission endpoint are handled (Ignore or Fail)      | Fail                                                                         |
+| admissionWebhook.port              | The port the ingress controller will listen on for admission webhooks                 | 8080                                                                         |
+
+
+## Changelog
+
+### 0.32.0
+
+#### Improvements
+
+- Create and mount emptyDir volumes for `/tmp` and `/kong_prefix` to allow for read-only root filesystem securityContexts and PodSecurityPolicys.
+- Use read-only mounts for custom plugin volumes.
+- Update stock PodSecurityPolicy to allow emptyDir access.
+- Override the standard `/usr/local/kong` prefix to the mounted emptyDir at `/kong_prefix` in `.Values.env`.
+- Add securityContext injection points to template. By default, it sets Kong pods to run with UID 1000.
+
+#### Fixes
+
+- Correct behavior for the Vitals toggle. Vitals defaults to on in all current Kong Enterprise releases, and the existing template only created the Vitals environment variable if `.Values.enterprise.enabled == true`. Inverted template to create it (and set it to "off") if that setting is instead disabled.
+- Correct an issue where custom plugin configurations would block Kong from starting.
+
+### 0.31.0
+
+#### Breaking changes
+
+- Admin Service is disabled by default (`admin.enabled`)
+- Default for `proxy.type` has been changed to `LoadBalancer`
+
+#### New features
+
+- Update default version of Kong to 1.4
+- Update default version of Ingress Controller to 0.6.2
+- Add support to disable kong-admin service via `admin.enabled` flag.
+
+### 0.31.2
+
+#### Fixes
+
+- Do not remove whitespace between documents when rendering `migrations-pre-upgrade.yaml`
+
+### 0.30.1
+
+#### New Features
+
+- Add support for specifying Proxy service cluster ip.
+
+### 0.30.0
+
+#### Breaking changes
+
+- `admin_gui_auth_conf_secret` is now required for Kong Manager authentication methods other than `basic-auth`.
+  Users defining values for `admin_gui_auth_conf` should migrate them to an externally-defined secret with a key of `admin_gui_auth_conf` and reference the secret name in `admin_gui_auth_conf_secret`.
+
+### 0.29.0
+
+#### New Features
+
+- Add support for specifying Ingress Controller environment variables.
+
+### 0.28.0
+
+#### New Features
+
+- Added support for the Validating Admission Webhook with the Ingress Controller.
+
+### 0.27.2
+
+#### Fixes
+
+- Do not create a ServiceAccount if it is not necessary.
+- If a configuration change requires creating a ServiceAccount, create a temporary ServiceAccount to allow pre-upgrade tasks to complete before the regular ServiceAccount is created.
+
+### 0.27.1
+
+#### Documentation updates
+- Retroactive changelog update for 0.24 breaking changes.
+
+### 0.27.0
+
+#### Breaking changes
+
+- DB-less mode is enabled by default.
+- Kong is installed as an Ingress Controller for the cluster by default.
+
+### 0.25.0
+
+#### New features
+
+- Add support for PodSecurityPolicy
+- Require creation of a ServiceAccount
+
+### 0.24.0
+
+#### Breaking changes
+
+- The configuration format for ingresses in values.yaml has changed. 
+Previously, all ingresses accepted an array of hostnames, and would create
+ingress rules for each. Ingress configuration for services other than the proxy
+now accepts a single hostname, which allows simpler TLS configuration and
+automatic population of `admin_api_uri` and similar settings. Configuration for
+the proxy ingress is unchanged, but its documentation now accurately reflects
+the TLS configuration needed.

@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `ingress.enabled`                                            | Enable use of ingress controllers                       | `false`                                                 |
 | `ingress.servicePort`                                        | Ingress' backend servicePort                            | `http`                                                  |
 | `ingress.annotations`                                        | An array of service annotations                         | `nil`                                                   |
-| `ingress.labels`                                        | An array of service labels                         | `nil`                                                   |
+| `ingress.labels`                                             | An array of service labels                              | `nil`                                                   |
 | `ingress.tls`                                                | Ingress TLS configuration                               | `[]`                                                    |
 | `nextcloud.host`                                             | nextcloud host to create application URLs               | `nextcloud.kube.home`                                   |
 | `nextcloud.username`                                         | User of the application                                 | `admin`                                                 |
@@ -80,6 +80,16 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `nextcloud.defaultConfigs.\.apps\.config\.php`               | Default configuration for apps                          | `true`                                                  |
 | `nextcloud.defaultConfigs.\.autoconfig\.php`                 | Default auto-configuration for databases                | `true`                                                  |
 | `nextcloud.defaultConfigs.\.smtp\.config\.php`               | Default configuration for smtp                          | `true`                                                  |
+| `nextcloud.extraEnv`                                         | specify additional environment variables                | `{}`                                                    |
+| `nginx.enabled`                                              | Enable nginx (requires you use php-fpm image)           | `false`                                                 |
+| `nginx.image.repository`                                     | nginx Image name                                        | `nginx`                                                 |
+| `nginx.image.tag`                                            | nginx Image tag                                         | `alpine`                                                |
+| `nginx.image.pullPolicy`                                     | nginx Image pull policy                                 | `IfNotPresent`                                          |
+| `nginx.config.default`                                       | Whether to use nextclouds recomended nginx config       | `true`                                                  |
+| `nginx.config.custom`                                        | Specify a custom config for nginx                       | `{}`                                                    |
+| `nginx.resources`                                            | nginx resources                                         | `{}`                                                    |
+| `lifecycle.postStartCommand`                                 | Specify deployment lifecycle hook postStartCommand      | `nil`                                                   |
+| `lifecycle.preStopCommand`                                   | Specify deployment lifecycle hook preStopCommand        | `nil`                                                   |
 | `internalDatabase.enabled`                                   | Whether to use internal sqlite database                 | `true`                                                  |
 | `internalDatabase.database`                                  | Name of the existing database                           | `nextcloud`                                             |
 | `externalDatabase.enabled`                                   | Whether to use external database                        | `false`                                                 |
@@ -125,6 +135,8 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `readinessProbe.timeoutSeconds`                              | When the probe times out                                | `5`                                                     |
 | `readinessProbe.failureThreshold`                            | Minimum consecutive failures for the probe              | `3`                                                     |
 | `readinessProbe.successThreshold`                            | Minimum consecutive successes for the probe             | `1`                                                     |
+| `deploymentAnnotations`                                      | Annotations to be added at 'deployment' level           | not set                                                 |
+| `podAnnotations`                                             | Annotations to be added at 'pod' level                  | not set                                                 |
 
 > **Note**:
 >

@@ -5,31 +5,31 @@
     "wordpressUsername": {
       "type": "string",
       "title": "Username",
-      "form": "username"
+      "form": true
     },
     "wordpressPassword": {
       "type": "string",
       "title": "Password",
-      "form": "password",
+      "form": true,
       "description": "Defaults to a random 10-character alphanumeric string if not set"
     },
     "wordpressEmail": {
       "type": "string",
       "title": "Admin email",
-      "form": "email"
+      "form": true
     },
     "wordpressBlogName": {
       "type": "string",
       "title": "Blog Name",
-      "form": "blogName"
+      "form": true
     },
     "persistence": {
       "type": "object",
       "properties": {
         "size": {
           "type": "string",
-          "title": "Disk Size",
-          "form": "diskSize",
+          "title": "Persistent Volume Size",
+          "form": true,
           "render": "slider",
           "sliderMin": 1,
           "sliderMax": 100,
@@ -39,64 +39,97 @@
     },
     "mariadb": {
       "type": "object",
+      "title": "MariaDB Details",
+      "form": true,
       "properties": {
         "enabled": {
           "type": "boolean",
           "title": "Use a new MariaDB database hosted in the cluster",
-          "form": "useSelfHostedDatabase",
-          "disables": "externalDatabase",
-          "description": "Whether to deploy a mariadb server to satisfy the applications database requirements. To use an external database switch this off and configure the external database parameters"
+          "form": true,
+          "description": "Whether to deploy a mariadb server to satisfy the applications database requirements. To use an external database switch this off and configure the external database details"
+        },
+        "master": {
+          "type": "object",
+          "properties": {
+            "persistence": {
+              "type": "object",
+              "properties": {
+                "size": {
+                  "type": "string",
+                  "title": "Volume Size",
+                  "form": true,
+                  "hidden": {
+                    "condition": false,
+                    "value": "mariadb.enabled"
+                  },
+                  "render": "slider",
+                  "sliderMin": 1,
+                  "sliderMax": 100,
+                  "sliderUnit": "Gi"
+                }
+              }
+            }
+          }
         }
       }
     },
     "externalDatabase": {
       "type": "object",
       "title": "External Database Details",
-      "form": "externalDatabase",
+      "description": "If MariaDB is disabled. Use this section to specify the external database details",
+      "form": true,
       "properties": {
         "host": {
           "type": "string",
-          "form": "externalDatabaseHost",
-          "title": "Database Host"
+          "form": true,
+          "title": "Database Host",
+          "hidden": "mariadb.enabled"
         },
         "user": {
           "type": "string",
-          "form": "externalDatabaseUser",
-          "title": "Database Username"
+          "form": true,
+          "title": "Database Username",
+          "hidden": "mariadb.enabled"
         },
         "password": {
           "type": "string",
-          "form": "externalDatabasePassword",
-          "title": "Database Password"
+          "form": true,
+          "title": "Database Password",
+          "hidden": "mariadb.enabled"
         },
         "database": {
           "type": "string",
-          "form": "externalDatabaseName",
-          "title": "Database Name"
+          "form": true,
+          "title": "Database Name",
+          "hidden": "mariadb.enabled"
         },
         "port": {
           "type": "integer",
-          "form": "externalDatabasePort",
-          "title": "Database Port"
+          "form": true,
+          "title": "Database Port",
+          "hidden": "mariadb.enabled"
         }
       }
     },
     "ingress": {
       "type": "object",
-      "form": "ingress",
+      "form": true,
       "title": "Ingress Details",
       "properties": {
         "enabled": {
           "type": "boolean",
-          "form": "enableIngress",
-          "enables": "ingress",
+          "form": true,
           "title": "Use a custom hostname",
           "description": "Enable the ingress resource that allows you to access the WordPress installation."
         },
         "hostname": {
           "type": "string",
-          "form": "hostname",
-          "title": "Hostname"
+          "form": true,
+          "title": "Hostname",
+          "hidden": {
+            "condition": false,
+            "value": "ingress.enabled"
+          }
         }
       }
     },
@@ -104,14 +137,14 @@
       "type": "object",
       "title": "Required Resources",
       "description": "Configure resource requests",
-      "form": "resources",
+      "form": true,
       "properties": {
         "requests": {
           "type": "object",
           "properties": {
             "memory": {
               "type": "string",
-              "form": "memoryRequest",
+              "form": true,
               "render": "slider",
               "title": "Memory Request",
               "sliderMin": 10,
@@ -120,7 +153,7 @@
             },
             "cpu": {
               "type": "string",
-              "form": "cpuRequest",
+              "form": true,
               "render": "slider",
               "title": "CPU Request",
               "sliderMin": 10,
@@ -138,7 +171,7 @@
           "type": "boolean",
           "title": "Enable Metrics",
           "description": "Prometheus Exporter / Metrics",
-          "form": "enableMetrics"
+          "form": true
         }
       }
     }

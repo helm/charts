@@ -109,6 +109,7 @@ The following table lists the configurable parameters of the drone charts and th
 | `agent.readinessProbe` | Not currently used  | `{}` |
 | `agent.volumes`             | Additional volumes to make available to agent (shared by dind if used)                        | `nil`                       |
 | `agent.volumeMounts`        | Mount points for volumes                                                                      | `nil`                       |
+| `agent.rpcServerOverride`   | Override rpc server url                                                                       | `nil`                       |
 | `dind.enabled`              | Enable or disable **DinD**                                                                    | `true`                      |
 | `dind.driver`               | **DinD** storage driver                                                                       | `overlay2`                  |
 | `dind.volumeMounts`         | Mount points for volumes (defined in agent.volumes)                                           | `nil`                       |

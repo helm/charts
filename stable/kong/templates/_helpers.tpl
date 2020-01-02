@@ -133,6 +133,13 @@ the extra slash.
 {{- end -}}
 {{- end -}}
 
+{{/*
+The name of the service used for the ingress controller's validation webhook
+*/}}
+
+{{- define "kong.service.validationWebhook" -}}
+{{ include "kong.fullname" . }}-validation-webhook
+{{- end -}}
 
 {{- define "kong.env" -}}
 {{- range $key, $val := .Values.env }}
@@ -146,7 +153,23 @@ the extra slash.
 {{- end -}}
 {{- end -}}
 
+{{- define "kong.ingressController.env" -}}
+{{- range $key, $val := .Values.ingressController.env }}
+- name: CONTROLLER_{{ $key | upper}}
+{{- $valueType := printf "%T" $val -}}
+{{ if eq $valueType "map[string]interface {}" }}
+{{ toYaml $val | indent 2 -}}
+{{- else }}
+  value: {{ $val | quote -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
 {{- define "kong.volumes" -}}
+- name: {{ template "kong.fullname" . }}-prefix-dir
+  emptyDir: {}
+- name: {{ template "kong.fullname" . }}-tmp
+  emptyDir: {}
 {{- range .Values.plugins.configMaps }}
 - name: kong-plugin-{{ .pluginName }}
   configMap:
@@ -169,6 +192,11 @@ the extra slash.
     name: {{ template "kong.dblessConfig.fullname" . }}
     {{- end }}
 {{- end }}
+{{- if .Values.ingressController.admissionWebhook.enabled }}
+- name: webhook-cert
+  secret:
+    secretName: {{ template "kong.fullname" . }}-validation-webhook-keypair
+{{- end }}
 {{- range $secretVolume := .Values.secretVolumes }}
 - name: {{ . }}
   secret:
@@ -177,6 +205,10 @@ the extra slash.
 {{- end -}}
 
 {{- define "kong.volumeMounts" -}}
+- name: {{ template "kong.fullname" . }}-prefix-dir
+  mountPath: /kong_prefix/
+- name: {{ template "kong.fullname" . }}-tmp
+  mountPath: /tmp
 - name: custom-nginx-template-volume
   mountPath: /kong
 {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
@@ -190,10 +222,12 @@ the extra slash.
 {{- range .Values.plugins.configMaps }}
 - name:  kong-plugin-{{ .pluginName }}
   mountPath: /opt/kong/plugins/{{ .pluginName }}
+  readOnly: true
 {{- end }}
 {{- range .Values.plugins.secrets }}
 - name:  kong-plugin-{{ .pluginName }}
   mountPath: /opt/kong/plugins/{{ .pluginName }}
+  readOnly: true
 {{- end }}
 {{- end -}}
 
@@ -221,14 +255,16 @@ the extra slash.
     value: {{ template "kong.postgresql.fullname" . }}
   - name: KONG_PG_PORT
     value: "{{ .Values.postgresql.service.port }}"
-  - name: KONG_LUA_PACKAGE_PATH
-    value: "/opt/?.lua;;"
   - name: KONG_PG_PASSWORD
     valueFrom:
       secretKeyRef:
         name: {{ template "kong.postgresql.fullname" . }}
         key: postgresql-password
   {{- end }}
+  - name: KONG_LUA_PACKAGE_PATH
+    value: "/opt/?.lua;;"
+  - name: KONG_PLUGINS
+    value: {{ template "kong.plugins" . }}
   {{- include "kong.env" .  | nindent 2 }}
   command: [ "/bin/sh", "-c", "until kong start; do echo 'waiting for db'; sleep 1; done; kong stop" ]
   volumeMounts:
@@ -251,6 +287,9 @@ the extra slash.
   {{- else }}
   - --kong-url=http://localhost:{{ .Values.admin.containerPort }}
   {{- end }}
+  {{- if .Values.ingressController.admissionWebhook.enabled }}
+  - --admission-webhook-listen=0.0.0.0:{{ .Values.ingressController.admissionWebhook.port }}
+  {{- end }}
   env:
   - name: POD_NAME
     valueFrom:
@@ -262,6 +301,7 @@ the extra slash.
       fieldRef:
         apiVersion: v1
         fieldPath: metadata.namespace
+{{- include "kong.ingressController.env" .  | indent 2 }}
   image: "{{ .Values.ingressController.image.repository }}:{{ .Values.ingressController.image.tag }}"
   imagePullPolicy: {{ .Values.image.pullPolicy }}
   readinessProbe:
@@ -270,6 +310,12 @@ the extra slash.
 {{ toYaml .Values.ingressController.livenessProbe | indent 4 }}
   resources:
 {{ toYaml .Values.ingressController.resources | indent 4 }}
+{{- if .Values.ingressController.admissionWebhook.enabled }}
+  volumeMounts:
+  - name: webhook-cert
+    mountPath: /admission-webhook
+    readOnly: true
+{{- end }}
 {{- end -}}
 
 {{/*
@@ -281,4 +327,11 @@ Retrieve Kong Enterprise license from a secret and make it available in env vars
     secretKeyRef:
       name: {{ .Values.enterprise.license_secret }}
       key: license
+{{- end -}}
+
+{{/*
+Use the Pod security context defined in Values or set the UID by default
+*/}}
+{{- define "kong.podsecuritycontext" -}}
+{{ .Values.securityContext | toYaml }}
 {{- end -}}

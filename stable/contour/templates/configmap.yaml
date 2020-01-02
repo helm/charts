@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "contour.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "contour.fullname" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "contour.chart" . }}
+data:
+  contour.yaml: |
+    # should contour expect to be running inside a k8s cluster
+    # incluster: true
+    #
+    # path to kubeconfig (if not running inside a k8s cluster)
+    # kubeconfig: /path/to/.kube/config
+    #
+    # disable ingressroute permitInsecure field
+    # disablePermitInsecure: false
+    tls:
+      # minimum TLS version that Contour will negotiate
+      # minimum-protocol-version: "1.1"
+    # The following config shows the defaults for the leader election.
+    # leaderelection:
+      # configmap-name: contour
+      # configmap-namespace: leader-elect
