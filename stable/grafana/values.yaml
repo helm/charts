@@ -475,3 +475,7 @@ sidecar:
     # Otherwise the namespace in which the sidecar is running will be used.
     # It's also possible to specify ALL to search in all namespaces
     searchNamespace: null
+
+## Override the deployment namespace
+##
+namespaceOverride: ""
