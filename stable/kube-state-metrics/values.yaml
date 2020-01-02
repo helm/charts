@@ -113,3 +113,7 @@ collectors:
 
 # Namespace to be enabled for collecting resources. By default all namespaces are collected.
 # namespace: ""
+
+## Override the deployment namespace
+##
+namespaceOverride: ""
