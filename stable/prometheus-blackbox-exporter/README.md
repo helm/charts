@@ -63,7 +63,6 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 | `tolerations`                          | node tolerations for pod assignment               | `[]`                          |
 | `affinity`                             | node affinity for pod assignment                  | `{}`                          |
 | `podAnnotations`                       | annotations to add to each pod                    | `{}`                          |
-  | `podDisruptionBudgetEnabled`                  | Enable pod disruption budget                             | `true`         |
 | `podDisruptionBudget`                  | pod disruption budget                             | `{maxUnavailable: 0}`         |
 | `priorityClassName`                    | priority class name                               | None                          |
 | `resources`                            | pod resource requests & limits                    | `{}`                          |
@@ -99,6 +98,21 @@ $ helm install --name my-release -f values.yaml stable/prometheus-blackbox-expor
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
 ## Upgrading an existing Release to a new major version
+
+### 2.0.0
+
+This version removes `podDisruptionBudget` from chart `values.yaml` file.
+
+If you would like to have `podDisruptionBudget` configured for your Release add additional values file with `-f` flag to your `helm` deployment command:
+```bash
+$ helm upgrade --install blackbox-exporter stable/prometheus-blackbox-exporter --version=2.0.0 -f my-values.yaml
+```
+where `my-values.yaml` contains:
+
+```
+podDisruptionBudget:
+  maxUnavailable: 0
+```
 
 ### 1.0.0
 
