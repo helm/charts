@@ -155,6 +155,7 @@ This version requires Helm >= 2.12.0.
 | `testFramework.tag`                       | `test-framework` image tag.                    | `0.4.0`                                                |
 | `testFramework.securityContext`           | `test-framework` securityContext                | `{}`                                                   |
 | `downloadDashboards.env`                  | Environment variables to be passed to the `download-dashboards` container | `{}`                                                   |
+| `namespaceOverride`                       | Override the deployment namespace     | `""` (`Release.Namespace`)             |
 
 
 ### Example of extraVolumeMounts
