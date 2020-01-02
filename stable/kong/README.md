@@ -65,6 +65,7 @@ and their default values.
 | image.pullPolicy                   | Image pull policy                                                                     | `IfNotPresent`      |
 | image.pullSecrets                  | Image pull secrets                                                                    | `null`              |
 | replicaCount                       | Kong instance count                                                                   | `1`                 |
+| admin.enabled                      | Create Admin Service                                                                  | `false`             |
 | admin.useTLS                       | Secure Admin traffic                                                                  | `true`              |
 | admin.servicePort                  | TCP port on which the Kong admin service is exposed                                   | `8444`              |
 | admin.containerPort                | TCP port on which Kong app listens for admin traffic                                  | `8444`              |
@@ -89,7 +90,8 @@ and their default values.
 | proxy.tls.nodePort                 | Node port to use for TLS                                                              | 32443               |
 | proxy.tls.hostPort                 | Host port to use for TLS                                                              |                     |
 | proxy.tls.overrideServiceTargetPort| Override service port to use for TLS without touching Kong containerPort              |                     |
-| proxy.type                         | k8s service type. Options: NodePort, ClusterIP, LoadBalancer                          | `NodePort`          |
+| proxy.type                         | k8s service type. Options: NodePort, ClusterIP, LoadBalancer                          | `LoadBalancer`      |
+| proxy.clusterIP                    | k8s service clusterIP                                                                 |                     |
 | proxy.loadBalancerSourceRanges     | Limit proxy access to CIDRs if set and service type is `LoadBalancer`                 | `[]`                |
 | proxy.loadBalancerIP               | To reuse an existing ingress static IP for the admin service                          |                     |
 | proxy.externalIPs                  | IPs for which nodes in the cluster will also accept traffic for the proxy             | `[]`                |
@@ -407,6 +409,46 @@ You can can learn about kong ingress custom resource definitions [here](https://
 
 
 ## Changelog
+
+### 0.32.0
+
+#### Improvements
+
+- Create and mount emptyDir volumes for `/tmp` and `/kong_prefix` to allow for read-only root filesystem securityContexts and PodSecurityPolicys.
+- Use read-only mounts for custom plugin volumes.
+- Update stock PodSecurityPolicy to allow emptyDir access.
+- Override the standard `/usr/local/kong` prefix to the mounted emptyDir at `/kong_prefix` in `.Values.env`.
+- Add securityContext injection points to template. By default, it sets Kong pods to run with UID 1000.
+
+#### Fixes
+
+- Correct behavior for the Vitals toggle. Vitals defaults to on in all current Kong Enterprise releases, and the existing template only created the Vitals environment variable if `.Values.enterprise.enabled == true`. Inverted template to create it (and set it to "off") if that setting is instead disabled.
+- Correct an issue where custom plugin configurations would block Kong from starting.
+
+### 0.31.0
+
+#### Breaking changes
+
+- Admin Service is disabled by default (`admin.enabled`)
+- Default for `proxy.type` has been changed to `LoadBalancer`
+
+#### New features
+
+- Update default version of Kong to 1.4
+- Update default version of Ingress Controller to 0.6.2
+- Add support to disable kong-admin service via `admin.enabled` flag.
+
+### 0.31.2
+
+#### Fixes
+
+- Do not remove whitespace between documents when rendering `migrations-pre-upgrade.yaml`
+
+### 0.30.1
+
+#### New Features
+
+- Add support for specifying Proxy service cluster ip.
 
 ### 0.30.0
 

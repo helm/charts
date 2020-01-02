@@ -316,6 +316,7 @@ Parameter | Description | Default
 `server.statefulSet.headless.labels` | labels for Prometheus server headless service | `{}`
 `server.statefulSet.headless.servicePort` | Prometheus server headless service port | `80`
 `server.resources` | Prometheus server resource requests and limits | `{}`
+`server.verticalAutoscaler.enabled` | If true a VPA object will be created for the controller (either StatefulSet or Deployemnt, based on above configs) | `false`
 `server.securityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for server containers | `{}`
 `server.service.annotations` | annotations for Prometheus server service | `{}`
 `server.service.clusterIP` | internal Prometheus server cluster service IP | `""`

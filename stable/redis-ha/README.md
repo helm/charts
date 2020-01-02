@@ -27,7 +27,7 @@ Please note that there have been a number of changes simplifying the redis manag
 
 ### Upgrading the chart from 3.x to 4.x
 
-Starting from version `4.x` HAProxy sidecar prometheus-exporter removed and replaced by by the embedded [HAProxy metrics endpoint](https://github.com/haproxy/haproxy/tree/master/contrib/prometheus-exporter), as a result when upgrading from version 3.x to 4.x section `haproxy.exporter` should be removed and the `haproxy.metrics` need to be configured for fit your needs.
+Starting from version `4.x` HAProxy sidecar prometheus-exporter removed and replaced by the embedded [HAProxy metrics endpoint](https://github.com/haproxy/haproxy/tree/master/contrib/prometheus-exporter), as a result when upgrading from version 3.x to 4.x section `haproxy.exporter` should be removed and the `haproxy.metrics` need to be configured for fit your needs.
 
 ## Installing the Chart
 
@@ -125,6 +125,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `haproxy.timeout.connect` | haproxy.cfg `timeout connect` setting                                                                                                                                                                    | `4s`                                                                                       |
 | `haproxy.timeout.server`  | haproxy.cfg `timeout server` setting                                                                                                                                                                     | `30s`                                                                                      |
 | `haproxy.timeout.client`  | haproxy.cfg `timeout client` setting                                                                                                                                                                     | `30s`                                                                                      |
+| `haproxy.timeout.check`   | haproxy.cfg `timeout check` setting                                                                                                                                                                      | `2s`                                                                                      |
 | `haproxy.priorityClassName` | priorityClassName for `haproxy` deployment                                                                                                                                                             | not set                                                                                    |
 | `haproxy.securityContext`    | Security context to be added to the HAProxy deployment.                                                                                                                                               | `{runAsUser: 1000, fsGroup: 1000, runAsNonRoot: true}`                                     |
 | `haproxy.hardAntiAffinity`        | Whether the haproxy pods should be forced to run on separate nodes.                                                                                                                                 | `true`                                                                                     |

@@ -123,6 +123,7 @@ This version requires Helm >= 2.12.0.
 | `sidecar.dashboards.provider.orgid`       | Id of the organisation, to which the dashboards should be added | `1`                                   |
 | `sidecar.dashboards.provider.folder`      | Logical folder in which grafana groups dashboards | `""`                                                |
 | `sidecar.dashboards.provider.disableDelete` | Activate to avoid the deletion of imported dashboards | `false`                                       |
+| `sidecar.dashboards.provider.allowUiUpdates` | Allow updating provisioned dashboards from the UI | `false`                                          |
 | `sidecar.dashboards.provider.type`        | Provider type                                 | `file`                                                  |
 | `sidecar.skipTlsVerify`                   | Set to true to skip tls verification for kube api calls | `nil`       |
 | `sidecar.dashboards.label`                | Label that config maps with dashboards should have to be added | `grafana_dashboard`                                |
