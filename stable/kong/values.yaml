@@ -4,7 +4,7 @@
 image:
   repository: kong
   # repository: kong-docker-kong-enterprise-edition-docker.bintray.io/kong-enterprise-edition
-  tag: 1.3
+  tag: 1.4
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -17,9 +17,11 @@ image:
 waitImage:
   repository: busybox
   tag: latest
+  pullPolicy: IfNotPresent
 
-# Specify Kong admin and proxy services configurations
+# Specify Kong admin service configuration
 admin:
+  enabled: false
   # If you want to specify annotations for the admin service, uncomment the following
   # line, add additional or adjust as needed, and remove the curly braces after 'annotations:'.
   annotations: {}
@@ -47,6 +49,7 @@ admin:
     # Ingress path.
     path: /
 
+# Specify Kong proxy service configuration
 proxy:
   # If you want to specify annotations for the proxy service, uncomment the following
   # line, add additional or adjust as needed, and remove the curly braces after 'annotations:'.
@@ -71,7 +74,7 @@ proxy:
     # Set a nodePort which is available if service type is NodePort
     # nodePort: 32443
 
-  type: NodePort
+  type: LoadBalancer
 
   # Kong proxy ingress settings.
   ingress:
@@ -236,8 +239,9 @@ enterprise:
     # If RBAC is enabled, this Secret must contain an admin_gui_session_conf key
     # The key value must be a secret configuration, following the example at https://docs.konghq.com/enterprise/0.35-x/kong-manager/authentication/sessions/
     session_conf_secret: you-must-create-an-rbac-session-conf-secret
-    # Set to the appropriate plugin config JSON if not using basic-auth
-    admin_gui_auth_conf: {}
+    # If admin_gui_auth is not set to basic-auth, provide a secret name which
+    # has an admin_gui_auth_conf key containing the plugin config JSON
+    admin_gui_auth_conf_secret: you-must-create-an-admin-gui-auth-conf-secret
   smtp:
     enabled: false
     portal_emails_from: none@example.com
@@ -272,7 +276,7 @@ updateStrategy: {}
 # e.g. setting pg_user here will override the value normally set when postgresql.enabled
 # is set below. In general, you should not set values here if they are set elsewhere.
 env:
-  database: postgres
+  database: "off"
   nginx_worker_processes: "1"
   proxy_access_log: /dev/stdout
   admin_access_log: /dev/stdout
@@ -282,6 +286,7 @@ env:
   admin_error_log: /dev/stderr
   admin_gui_error_log: /dev/stderr
   portal_api_error_log: /dev/stderr
+  prefix: /kong_prefix/
 
 # If you want to specify resources, uncomment the following
 # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
@@ -342,6 +347,13 @@ podDisruptionBudget:
   enabled: false
   maxUnavailable: "50%"
 
+podSecurityPolicy:
+  enabled: false
+
+# securityContext for Kong pods.
+securityContext:
+  runAsUser: 1000
+
 # Kong has a choice of either Postgres or Cassandra as a backend datatstore.
 # This chart allows you to choose either of them with the `database.type`
 # parameter.  Postgres is chosen by default.
@@ -352,17 +364,14 @@ podDisruptionBudget:
 # will be used by Kong based on the `env.database` parameter.
 # Postgres is enabled by default.
 
-# Cassandra chart configs
-cassandra:
-  enabled: false
 
 # PostgreSQL chart configs
 postgresql:
-  enabled: true
-  postgresqlUsername: kong
-  postgresqlDatabase: kong
-  service:
-    port: 5432
+  enabled: false
+  # postgresqlUsername: kong
+  # postgresqlDatabase: kong
+  # service:
+  #   port: 5432
 
 # Custom Kong plugins can be loaded into Kong by mounting the plugin code
 # into the file-system of Kong container.
@@ -382,10 +391,10 @@ plugins: {}
 # created in k8s.  It uses CRDs for more fine grained control over routing and
 # for Kong specific configuration.
 ingressController:
-  enabled: false
+  enabled: true
   image:
     repository: kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller
-    tag: 0.6.0
+    tag: 0.6.2
   replicaCount: 1
   livenessProbe:
     failureThreshold: 3
@@ -410,6 +419,14 @@ ingressController:
   resources: {}
 
   installCRDs: true
+
+  admissionWebhook:
+    enabled: false
+    failurePolicy: Fail
+    port: 8080
+
+  # Specify Kong Ingress Controller configuration via environment variables
+  env: {}
 
   rbac:
     # Specifies whether RBAC resources should be created
@@ -451,7 +468,6 @@ dblessConfig:
 # - kong-proxy-tls
 # - kong-admin-tls
 secretVolumes: []
-
 
 serviceMonitor:
   # Specifies whether ServiceMonitor for Prometheus operator should be created

@@ -49,7 +49,10 @@ spec:
     {{- if $.Values.extraVolumeMounts }}
 {{ toYaml $.Values.extraVolumeMounts | indent 12 }}
     {{- end }}
-          command: [ "curator" ]
+{{ if $.Values.command }}
+          command:
+{{ toYaml $.Values.command | indent 12 }}
+{{- end }}
           args: [ "--config", "/etc/es-curator/config.yml", "/etc/es-curator/action_file.yml" ]
           resources:
 {{ toYaml $.Values.resources | indent 12 }}

@@ -549,7 +549,7 @@ data:
                     "query": "label_values(kube_pod_info, cluster)",
                     "refresh": 2,
                     "regex": "",
-                    "sort": 0,
+                    "sort": 1,
                     "tagValuesQuery": "",
                     "tags": [
 
@@ -575,7 +575,7 @@ data:
                     "query": "label_values(kube_pod_info{cluster=\"$cluster\"}, namespace)",
                     "refresh": 2,
                     "regex": "",
-                    "sort": 0,
+                    "sort": 1,
                     "tagValuesQuery": "",
                     "tags": [
 
@@ -601,7 +601,7 @@ data:
                     "query": "label_values(kube_pod_info{cluster=\"$cluster\", namespace=~\"$namespace\"}, pod)",
                     "refresh": 2,
                     "regex": "",
-                    "sort": 0,
+                    "sort": 1,
                     "tagValuesQuery": "",
                     "tags": [
 
@@ -627,7 +627,7 @@ data:
                     "query": "label_values(kube_pod_container_info{cluster=\"$cluster\", namespace=\"$namespace\", pod=\"$pod\"}, container)",
                     "refresh": 2,
                     "regex": "",
-                    "sort": 0,
+                    "sort": 1,
                     "tagValuesQuery": "",
                     "tags": [
 

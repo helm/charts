@@ -62,12 +62,12 @@ The following table lists the configurable parameters of the ownCloud chart and 
 | `nameOverride`                      | String to partially override owncloud.fullname template with a string (will prepend the release name) | `nil` |
 | `fullnameOverride`                  | String to fully override owncloud.fullname template with a string                                     | `nil` |
 | `ingress.enabled`                   | Enable ingress controller resource         | `false`                                                 |
+| `ingress.hosts.certManager`         | Add annotations for cert-manager           | `false`                                                 |
+| `ingress.annotations`               | Annotations for this host's ingress record | `[]`                                                    |
 | `ingress.hosts[0].name`             | Hostname to your ownCloud installation     | `owncloud.local`                                        |
 | `ingress.hosts[0].path`             | Path within the url structure              | `/`                                                     |
 | `ingress.hosts[0].tls`              | Utilize TLS backend in ingress             | `false`                                                 |
-| `ingress.hosts[0].certManager`      | Add annotations for cert-manager           | `false`                                                 |
 | `ingress.hosts[0].tlsSecret`        | TLS Secret (certificates)                  | `owncloud.local-tls-secret`                             |
-| `ingress.hosts[0].annotations`      | Annotations for this host's ingress record | `[]`                                                    |
 | `ingress.secrets[0].name`           | TLS Secret Name                            | `nil`                                                   |
 | `ingress.secrets[0].certificate`    | TLS Secret Certificate                     | `nil`                                                   |
 | `ingress.secrets[0].key`            | TLS Secret Key                             | `nil`                                                   |
@@ -158,6 +158,14 @@ Persistent Volume Claims are used to keep the data across deployments. There is 
 See the [Parameters](#parameters) section to configure the PVC or to disable persistence.
 
 ## Upgrading
+
+### 7.0.0
+
+Helm performs a lookup for the object based on its group (apps), version (v1), and kind (Deployment). Also known as its GroupVersionKind, or GVK. Changing the GVK is considered a compatibility breaker from Kubernetes' point of view, so you cannot "upgrade" those objects to the new GVK in-place. Earlier versions of Helm 3 did not perform the lookup correctly which has since been fixed to match the spec.
+
+In https://github.com/helm/charts/pull/17304 the `apiVersion` of the deployment resources was updated to `apps/v1` in tune with the api's deprecated, resulting in compatibility breakage.
+
+This major version signifies this change.
 
 ### To 3.0.0
 

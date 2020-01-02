@@ -36,7 +36,7 @@ spec:
         release: {{ .Release.Name }}
         component: app
     spec:
-      {{- if .Values.ingressController.enabled }}
+      {{- if or .Values.ingressController.enabled .Values.podSecurityPolicy.enabled }}
       serviceAccountName: {{ template "kong.serviceAccountName" . }}
       {{ end }}
       {{- if .Values.image.pullSecrets }}
@@ -110,9 +110,9 @@ spec:
         - name: KONG_NGINX_DAEMON
           value: "off"
         {{- if .Values.enterprise.enabled }}
-        {{- if .Values.enterprise.vitals.enabled }}
+        {{- if not .Values.enterprise.vitals.enabled }}
         - name: KONG_VITALS
-          value: "on"
+          value: "off"
         {{- end }}
         {{- if .Values.enterprise.portal.enabled }}
         - name: KONG_PORTAL
@@ -132,8 +132,13 @@ spec:
           value: "on"
         - name: KONG_ADMIN_GUI_AUTH
           value: {{ .Values.enterprise.rbac.admin_gui_auth | default "basic-auth" }}
+        {{- if not (eq .Values.enterprise.rbac.admin_gui_auth "basic-auth") }}
         - name: KONG_ADMIN_GUI_AUTH_CONF
-          value: '{{ toJson .Values.enterprise.rbac.admin_gui_auth_conf }}'
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.enterprise.rbac.admin_gui_auth_conf_secret }}
+              key: admin_gui_auth_conf
+        {{- end }}
         - name: KONG_ADMIN_GUI_SESSION_CONF
           valueFrom:
             secretKeyRef:
@@ -183,10 +188,6 @@ spec:
               name: {{ template "kong.postgresql.fullname" . }}
               key: postgresql-password
         {{- end }}
-        {{- if .Values.cassandra.enabled }}
-        - name: KONG_CASSANDRA_CONTACT_POINTS
-          value: {{ template "kong.cassandra.fullname" . }}
-        {{- end }}
         {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
         - name: KONG_DECLARATIVE_CONFIG
           value: "/kong_dbless/kong.yml"
@@ -224,6 +225,11 @@ spec:
         - name: metrics
           containerPort: 9542
           protocol: TCP
+        {{- if .Values.ingressController.admissionWebhook.enabled }}
+        - name: webhook
+          containerPort: {{ .Values.ingressController.admissionWebhook.port }}
+          protocol: TCP
+        {{- end }}
         {{- if .Values.enterprise.enabled }}
         {{- if .Values.manager.http.enabled }}
         - name: manager
@@ -286,6 +292,8 @@ spec:
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
     {{- end }}
+      securityContext:
+      {{- include "kong.podsecuritycontext" . | nindent 8 }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}

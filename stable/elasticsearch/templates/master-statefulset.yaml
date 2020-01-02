@@ -12,7 +12,9 @@ spec:
   selector:
     matchLabels:
       app: {{ template "elasticsearch.name" . }}
+      component: "{{ .Values.master.name }}"
       release: {{ .Release.Name }}
+      role: master
   serviceName: {{ template "elasticsearch.master.fullname" . }}
   replicas: {{ .Values.master.replicas }}
   template:

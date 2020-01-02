@@ -19,7 +19,7 @@ metadata:
     app.kubernetes.io/name: "{{ template "datadog.fullname" . }}"
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
-    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 spec:
   selector:
     matchLabels:
@@ -55,7 +55,7 @@ spec:
         resources:
 {{ toYaml .Values.datadog.resources | indent 10 }}
         ports:
-        - containerPort: 8125
+        - containerPort: {{ default 8125 .Values.datadog.dogStatsDPort }}
           name: dogstatsdport
           protocol: UDP
         {{- if .Values.datadog.apmEnabled }}

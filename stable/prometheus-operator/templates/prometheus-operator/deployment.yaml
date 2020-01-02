@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-operator
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ $.Release.Namespace }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-operator
 {{ include "prometheus-operator.labels" . | indent 4 }}
@@ -12,7 +12,7 @@ spec:
   selector:
     matchLabels:
       app: {{ template "prometheus-operator.name" . }}-operator
-      release: {{ .Release.Name | quote }}
+      release: {{ $.Release.Name | quote }}
   template:
     metadata:
       labels:
@@ -46,8 +46,14 @@ spec:
           {{- if .Values.prometheusOperator.denyNamespaces }}
             - --deny-namespaces={{ .Values.prometheusOperator.denyNamespaces | join "," }}
           {{- end }}
+          {{- with $.Values.prometheusOperator.namespaces }}
+          {{ $ns := .additional }}
+          {{- if .releaseNamespace }}
+          {{- $ns = append $ns $.Release.Namespace }}
+          {{- end }}
+            - --namespaces={{ $ns | join "," }}
+          {{- end }}
             - --logtostderr=true
-            - --crd-apigroup={{ .Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com" }}
             - --localhost=127.0.0.1
             - --prometheus-config-reloader={{ .Values.prometheusOperator.prometheusConfigReloaderImage.repository }}:{{ .Values.prometheusOperator.prometheusConfigReloaderImage.tag }}
             - --config-reloader-image={{ .Values.prometheusOperator.configmapReloadImage.repository }}:{{ .Values.prometheusOperator.configmapReloadImage.tag }}

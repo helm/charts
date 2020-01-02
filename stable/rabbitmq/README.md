@@ -86,6 +86,11 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `rabbitmq.tls.serverCertificate`             | Server certificate                               | Server certificate content                              |
 | `rabbitmq.tls.serverKey`                     | Server Key                                       | Server private key content                              |
 | `rabbitmq.tls.existingSecret`                | Existing secret with certificate content to rabbitmq credentials  | `nil`                                  |
+| `ldap.enabled`                               | Enable LDAP support                              | `false`                                                 |
+| `ldap.server`                                | LDAP server                                      | `""`                                                    |
+| `ldap.port`                                  | LDAP port                                        | `389`                                                   |
+| `ldap.user_dn_pattern`                       | DN used to bind to LDAP                          | `cn=${username},dc=example,dc=org`                      |
+| `ldap.tls.enabled`                           | Enable TLS for LDAP connections                  | `false` (if set to true, check advancedConfiguration parameter in values.yml)   |
 | `service.type`                               | Kubernetes Service type                          | `ClusterIP`                                             |
 | `service.port`                               | Amqp port                                        | `5672`                                                  |
 | `service.tlsPort`                            | Amqp TLS port                                    | `5671`                                                  |
@@ -96,7 +101,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `service.extraPorts`                         | Extra ports to expose in the service             | `nil`                                                   |
 | `service.extraContainerPorts`                | Extra ports to be included in container spec, primarily informational   | `nil`                            |
 | `persistence.enabled`                        | Use a PVC to persist data                        | `true`                                                  |
-| `service.annotations`                        | service annotations as an array                  | []                                                      |
+| `service.annotations`                        | service annotations                              | {}                                                      |
 | `schedulerName`                              | Name of the k8s service (other than default)     | `nil`                                                   |
 | `persistence.storageClass`                   | Storage class of backing PVC                     | `nil` (uses alpha storage class annotation)             |
 | `persistence.existingClaim`                  | RabbitMQ data Persistent Volume existing claim name, evaluated as a template |  ""                         |
@@ -109,6 +114,9 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `resources`                                  | resource needs and limits to apply to the pod    | {}                                                      |
 | `replicas`                                   | Replica count                                    | `1`                                                     |
 | `priorityClassName`                          | Pod priority class name                          | ``                                                      |
+| `networkPolicy.enabled`                      | Enable NetworkPolicy                             | `false`                                                 |
+| `networkPolicy.allowExternal`                | Don't require client label for connections       | `true`                                                  |
+| `networkPolicy.additionalRules`              | Additional NetworkPolicy rules                   | `nil`                                                   |
 | `nodeSelector`                               | Node labels for pod assignment                   | {}                                                      |
 | `affinity`                                   | Affinity settings for pod assignment             | {}                                                      |
 | `tolerations`                                | Toleration labels for pod assignment             | []                                                      |
@@ -125,6 +133,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `livenessProbe.periodSeconds`                | number of seconds                                | 30                                                      |
 | `livenessProbe.failureThreshold`             | number of failures                               | 6                                                       |
 | `livenessProbe.successThreshold`             | number of successes                              | 1                                                       |
+| `podDisruptionBudget`                        | Pod Disruption Budget settings                   | {}                                                      |
 | `readinessProbe.enabled`                     | would you like a readinessProbe to be enabled    | `true`                                                  |
 | `readinessProbe.initialDelaySeconds`         | number of seconds                                | 10                                                      |
 | `readinessProbe.timeoutSeconds`              | number of seconds                                | 20                                                      |
@@ -331,6 +340,31 @@ This will be generate a secret with the certs, but is possible specify an existi
 Disabling [failIfNoPeerCert](https://www.rabbitmq.com/ssl.html#peer-verification-configuration) allows a TLS connection if client fails to provide a certificate
 
 [sslOptionsVerify](https://www.rabbitmq.com/ssl.html#peer-verification-configuration): When the sslOptionsVerify option is set to verify_peer, the client does send us a certificate, the node must perform peer verification. When set to verify_none, peer verification will be disabled and certificate exchange won't be performed.
+
+### LDAP
+
+LDAP support can be enabled in the chart by specifying the `ldap.` parameters while creating a release. The following parameters should be configured to properly enable the LDAP support in the chart.
+
+- `ldap.enabled`: Enable LDAP support. Defaults to `false`.
+- `ldap.server`: LDAP server host. No defaults.
+- `ldap.port`: LDAP server port. `389`.
+- `ldap.user_dn_pattern`: DN used to bind to LDAP. `cn=${username},dc=example,dc=org`.
+- `ldap.tls.enabled`: Enable TLS for LDAP connections. Defaults to `false`.
+
+For example:
+
+```console
+ldap.enabled="true"
+ldap.server="my-ldap-server"
+ldap.port="389"
+ldap.user_dn_pattern="cn=${username},dc=example,dc=org"
+```
+
+If `ldap.tls.enabled` is set to true, consider using `ldap.port=636` and checking the settings in the advancedConfiguration.
+
+### Common issues
+
+- Changing the password through RabbitMQ's UI can make the pod fail due to the default liveness probes. If you do so, remember to make the chart aware of the new password. Updating the default secret with the password you set through RabbitMQ's UI will automatically recreate the pods. If you are using your own secret, you may have to manually recreate the pods.
 
 ## Persistence
 

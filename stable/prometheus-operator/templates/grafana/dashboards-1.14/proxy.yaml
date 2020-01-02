@@ -1158,7 +1158,7 @@ data:
                     "query": "label_values(kubeproxy_network_programming_duration_seconds_bucket{job=\"kube-proxy\"}, instance)",
                     "refresh": 2,
                     "regex": "",
-                    "sort": 0,
+                    "sort": 1,
                     "tagValuesQuery": "",
                     "tags": [
 

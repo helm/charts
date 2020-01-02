@@ -26,9 +26,9 @@ spec:
   clusterIP: {{ .Values.service.clusterIP }}
   {{- end }}
   ports:
-    - name: postgresql
+    - name: tcp-postgresql
       port: {{ template "postgresql.port" . }}
-      targetPort: postgresql
+      targetPort: tcp-postgresql
       {{- if .Values.service.nodePort }}
       nodePort: {{ .Values.service.nodePort }}
       {{- end }}
