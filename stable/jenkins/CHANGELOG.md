@@ -5,6 +5,10 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.9.12
+
+Scriptapprovals are overwritten when overwriteConfig is enabled
+
 ## 1.9.10
 
 Added documentation for `persistence.storageClass`.

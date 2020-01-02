@@ -256,7 +256,11 @@ data:
     yes n | cp -i /usr/share/jenkins/ref/plugins/* /var/jenkins_plugins/;
 {{- end }}
 {{- if .Values.master.scriptApproval }}
+  {{- if .Values.Master.OverwriteConfig }}
+    cp /var/jenkins_config/scriptapproval.xml /var/jenkins_home/scriptApproval.xml;
+  {{- else }}
     yes n | cp -i /var/jenkins_config/scriptapproval.xml /var/jenkins_home/scriptApproval.xml;
+  {{- end }}
 {{- end }}
 {{- if .Values.master.initScripts }}
     mkdir -p /var/jenkins_home/init.groovy.d/;
