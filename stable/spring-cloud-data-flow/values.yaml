@@ -16,18 +16,39 @@ initContainers:
     tag: "1.30.1"
     imagePullPolicy: IfNotPresent
 
+nameOverride: ""
+fullnameOverride: ""
+
 server:
   image: springcloud/spring-cloud-dataflow-server
   version: 2.3.0.RELEASE
   imagePullPolicy: IfNotPresent
   platformName: default
   trustCerts: false
+  ingress:
+    enabled: false
+    annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+    labels: {}
+    path: /
+    hosts:
+      - chart-example.local
+    ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
+    extraPaths: []
+    # - path: /*
+    #   backend:
+    #     serviceName: ssl-redirect
+    #     servicePort: use-annotation
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
   service:
-    type: LoadBalancer
-    externalPort: 80
+    type: ClusterIP
+    externalPort: 8080
     annotations: {}
     labels: {}
-    loadBalancerSourceRanges: []
   configMap:
   resources: {}
   #  limits:
@@ -109,7 +130,7 @@ features:
 
 grafana:
   service:
-    type: LoadBalancer
+    type: ClusterIP
   admin:
     existingSecret: scdf-grafana-secret
     userKey: admin-user
@@ -193,3 +214,7 @@ prometheus:
         - source_labels: [__meta_kubernetes_pod_name]
           action: replace
           target_label: kubernetes_pod_name
+
+prometheusProxy:
+  service:
+    type: ClusterIP
