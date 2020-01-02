@@ -196,7 +196,12 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
   # Annotations for the Service Account
-  serviceAccountAnnotations: {}
+  # Example:
+  #
+  # annotations:
+  #   annotation1: value
+  #   annotation2: value
+  annotations: {}
 
 # tlsSecretName: tls
 
