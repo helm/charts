@@ -78,7 +78,7 @@ Please note that duplicate file names may have conflicted during
 the merge. In that case, the confd entry will take precedence.
 {{- end }}
 
-{{- if eq .Values.image.repository "datadog/docker-dd-agent" }}
+{{- if eq .Values.agents.image.repository "datadog/docker-dd-agent" }}
 
 ######################################################################
 ####               ERROR: Unsupported agent version               ####

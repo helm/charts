@@ -12,36 +12,6 @@
 #
 # fullnameOverride: ""
 
-## @param image - object - required
-## Define the Datadog image to work with.
-#
-image:
-
-  ## @param repository - string - required
-  ## Define the repository to use:
-  ## use "datadog/agent" for Datadog Agent 7
-  ## use "datadog/dogstatsd" for Standalone Datadog Agent DogStatsD 7
-  #
-  repository: datadog/agent
-
-  ## @param tag - string - required
-  ## Define the Agent version to use.
-  ## Use 7-jmx to enable jmx fetch collection
-  #
-  tag: "7"
-
-  ## @param pullPolicy - string - required
-  ## The Kubernetes pull policy.
-  #
-  pullPolicy: IfNotPresent
-
-  ## @param pullSecrets - list of key:value strings - optional
-  ## It is possible to specify docker registry credentials
-  ## See https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
-  #
-  # pullSecrets:
-  #   - name: "<REG_SECRET>"
-
 datadog:
 
   ## @param apiKey - string - required
@@ -105,6 +75,20 @@ datadog:
   ## trace, debug, info, warn, error, critical, and off
   #
   logLevel: INFO
+
+  ## @param kubeStateMetricsEnabled - boolean - required
+  ## If true, deploys the kube-state-metrics deployment.
+  ## ref: https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics
+  #
+  kubeStateMetricsEnabled: true
+
+  ## @param clusterChecks - object - required
+  ## Enable the Cluster Checks feature on both the cluster-agents and the daemonset
+  ## ref: https://docs.datadoghq.com/agent/autodiscovery/clusterchecks/
+  ## Autodiscovery via Kube Service annotations is automatically enabled
+  #
+  clusterChecks:
+    enabled: false
 
   ## @param nodeLabelsAsTags - list of key:value strings - optional
   ## Provide a mapping of Kubernetes Node Labels to Datadog Tags.
@@ -309,10 +293,32 @@ clusterAgent:
   #
   enabled: false
 
+  ## @param image - object - required
+  ## Define the Datadog Cluster-Agent image to work with.
+  #
   image:
+
+    ## @param repository - string - required
+    ## Define the repository to use:
+    #
     repository: datadog/cluster-agent
+
+    ## @param tag - string - required
+    ## Define the Cluster-Agent version to use.
+    #
     tag: 1.4.0
+
+    ## @param pullPolicy - string - required
+    ## The Kubernetes pull policy.
+    #
     pullPolicy: IfNotPresent
+
+    ## @param pullSecrets - list of key:value strings - optional
+    ## It is possible to specify docker registry credentials
+    ## See https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+    #
+    # pullSecrets:
+    #   - name: "<REG_SECRET>"
 
   ## @param token - string - required
   ## This needs to be at least 32 characters a-zA-z
@@ -357,14 +363,6 @@ clusterAgent:
       ## @param port - int - optional
       ##
       port: 443
-
-  ## @param clusterChecks - object - required
-  ## Enable the Cluster Checks feature on both the cluster-agents and the daemonset
-  ## ref: https://docs.datadoghq.com/agent/autodiscovery/clusterchecks/
-  ## Autodiscovery via Kube Service annotations is automatically enabled
-  #
-  clusterChecks:
-    enabled: false
 
   ## @param confd - list of objects - optional
   ## Provide additional cluster check configurations
@@ -481,36 +479,7 @@ kubeStateMetrics:
   #
   enabled: true
 
-kube-state-metrics:
-  rbac:
-    ## @param created - boolean - required
-    ## If true, create & use RBAC resources
-    #
-    create: true
-
-  serviceAccount:
-    ## @param created - boolean - required
-    ## If true, create ServiceAccount, require rbac kube-state-metrics.rbac.create true
-    #
-    create: true
-    ## @param name - string - required
-    ## The name of the ServiceAccount to use.
-    ## If not set and create is true, a name is generated using the fullname template
-    #
-    name:
-
-  ## @param resources - object - optional
-  ## Resource requests and limits for the kube-state-metrics container.
-  #
-  # resources:
-  #   requests:
-  #     cpu: 200m
-  #     memory: 256Mi
-  #   limits:
-  #     cpu: 200m
-  #     memory: 256Mi
-
-daemonset:
+agents:
   ## @param enabled - boolean - required
   ## You should keep Datadog DaemonSet enabled!
   ## The exceptional case could be a situation when you need to run
@@ -520,6 +489,36 @@ daemonset:
   ## get guaranteed delivery of the metrics in Datadog-per-namespace setup!
   #
   enabled: true
+
+  ## @param image - object - required
+  ## Define the Datadog image to work with.
+  #
+  image:
+
+    ## @param repository - string - required
+    ## Define the repository to use:
+    ## use "datadog/agent" for Datadog Agent 7
+    ## use "datadog/dogstatsd" for Standalone Datadog Agent DogStatsD 7
+    #
+    repository: datadog/agent
+
+    ## @param tag - string - required
+    ## Define the Agent version to use.
+    ## Use 7-jmx to enable jmx fetch collection
+    #
+    tag: "7"
+
+    ## @param pullPolicy - string - required
+    ## The Kubernetes pull policy.
+    #
+    pullPolicy: IfNotPresent
+
+    ## @param pullSecrets - list of key:value strings - optional
+    ## It is possible to specify docker registry credentials
+    ## See https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+    #
+    # pullSecrets:
+    #   - name: "<REG_SECRET>"
 
   ## @param rbac - object - required
   ## Provide Daemonset RBAC configuration
@@ -779,13 +778,43 @@ daemonset:
   #   # agent version >= 6.15
   #   # jmx_use_container_support: true
 
-clusterchecksDeployment:
+clusterChecksRunner:
 
   ## @param enabled - boolean - required
   ## If true, deploys agent dedicated for running the Cluster Checks instead of running in the Daemonset's agents.
   ## ref: https://docs.datadoghq.com/agent/autodiscovery/clusterchecks/
   #
   enabled: false
+
+  ## @param image - object - required
+  ## Define the Datadog image to work with.
+  #
+  image:
+
+    ## @param repository - string - required
+    ## Define the repository to use:
+    ## use "datadog/agent" for Datadog Agent 7
+    ## use "datadog/dogstatsd" for Standalone Datadog Agent DogStatsD 7
+    #
+    repository: datadog/agent
+
+    ## @param tag - string - required
+    ## Define the Agent version to use.
+    ## Use 7-jmx to enable jmx fetch collection
+    #
+    tag: "7"
+
+    ## @param pullPolicy - string - required
+    ## The Kubernetes pull policy.
+    #
+    pullPolicy: IfNotPresent
+
+    ## @param pullSecrets - list of key:value strings - optional
+    ## It is possible to specify docker registry credentials
+    ## See https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+    #
+    # pullSecrets:
+    #   - name: "<REG_SECRET>"
 
   ## @param rbac - object - required
   ## Provide Cluster Checks Deployment pods RBAC configuration
@@ -802,13 +831,13 @@ clusterchecksDeployment:
     dedicated: false
 
     ## @param serviceAccountName - string - required
-    ## Ignored if clusterchecksDeployment.rbac.create is true
+    ## Ignored if clusterChecksRunner.rbac.create is true
     #
     serviceAccountName: default
 
   ## @param replicas - integer - required
-  ## If you want to deploy the cluckerchecks agent in HA, keep at least clusterchecksDeployment.replicas set to 2.
-  ## And increase the clusterchecksDeployment.replicas according to the number of Cluster Checks.
+  ## If you want to deploy the cluckerchecks agent in HA, keep at least clusterChecksRunner.replicas set to 2.
+  ## And increase the clusterChecksRunner.replicas according to the number of Cluster Checks.
   #
   replicas: 2
 
@@ -868,3 +897,33 @@ clusterchecksDeployment:
   # env:
   #   - name: <ENV_VAR_NAME>
   #     value: <ENV_VAR_VALUE>
+
+
+kube-state-metrics:
+  rbac:
+    ## @param created - boolean - required
+    ## If true, create & use RBAC resources
+    #
+    create: true
+
+  serviceAccount:
+    ## @param created - boolean - required
+    ## If true, create ServiceAccount, require rbac kube-state-metrics.rbac.create true
+    #
+    create: true
+    ## @param name - string - required
+    ## The name of the ServiceAccount to use.
+    ## If not set and create is true, a name is generated using the fullname template
+    #
+    name:
+
+  ## @param resources - object - optional
+  ## Resource requests and limits for the kube-state-metrics container.
+  #
+  # resources:
+  #   requests:
+  #     cpu: 200m
+  #     memory: 256Mi
+  #   limits:
+  #     cpu: 200m
+  #     memory: 256Mi

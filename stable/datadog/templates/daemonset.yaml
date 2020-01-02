@@ -1,4 +1,4 @@
-{{- if .Values.daemonset.enabled }}
+{{- if .Values.agents.enabled }}
 {{- if (or (.Values.datadog.apiKeyExistingSecret) (.Values.datadog.apiKey)) }}
 apiVersion: apps/v1
 kind: DaemonSet
@@ -14,49 +14,49 @@ spec:
   selector:
     matchLabels:
       app: {{ template "datadog.fullname" . }}
-        {{- if .Values.daemonset.podLabels }}
-{{ toYaml .Values.daemonset.podLabels | indent 6 }}
+        {{- if .Values.agents.podLabels }}
+{{ toYaml .Values.agents.podLabels | indent 6 }}
         {{- end }}
   template:
     metadata:
       labels:
         app: {{ template "datadog.fullname" . }}
-        {{- if .Values.daemonset.podLabels }}
-{{ toYaml .Values.daemonset.podLabels | indent 8 }}
+        {{- if .Values.agents.podLabels }}
+{{ toYaml .Values.agents.podLabels | indent 8 }}
         {{- end }}
       name: {{ template "datadog.fullname" . }}
       annotations:
         checksum/autoconf-config: {{ tpl (toYaml .Values.datadog.autoconf) . | sha256sum }}
         checksum/confd-config: {{ tpl (toYaml .Values.datadog.confd) . | sha256sum }}
         checksum/checksd-config: {{ tpl (toYaml .Values.datadog.checksd) . | sha256sum }}
-        {{- if .Values.daemonset.customAgentConfig }}
-        checksum/agent-config: {{ tpl (toYaml .Values.daemonset.customAgentConfig) . | sha256sum }}
+        {{- if .Values.agents.customAgentConfig }}
+        checksum/agent-config: {{ tpl (toYaml .Values.agents.customAgentConfig) . | sha256sum }}
         {{- end }}
         {{- if and .Values.datadog.systemProbe.enabled }}
         container.apparmor.security.beta.kubernetes.io/system-probe: {{ .Values.datadog.systemProbe.apparmor }}
         container.seccomp.security.alpha.kubernetes.io/system-probe: {{ .Values.datadog.systemProbe.seccomp }}
         {{- end }}
-      {{- if .Values.daemonset.podAnnotations }}
-{{ toYaml .Values.daemonset.podAnnotations | indent 8 }}
+      {{- if .Values.agents.podAnnotations }}
+{{ toYaml .Values.agents.podAnnotations | indent 8 }}
       {{- end }}
     spec:
       {{- if .Values.datadog.securityContext }}
       securityContext:
 {{ toYaml .Values.datadog.securityContext | indent 8 }}
       {{- end }}
-      {{- if .Values.daemonset.useHostNetwork }}
-      hostNetwork: {{ .Values.daemonset.useHostNetwork }}
+      {{- if .Values.agents.useHostNetwork }}
+      hostNetwork: {{ .Values.agents.useHostNetwork }}
       dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
-      {{- if .Values.daemonset.useHostPID }}
-      hostPID: {{ .Values.daemonset.useHostPID }}
+      {{- if .Values.agents.useHostPID }}
+      hostPID: {{ .Values.agents.useHostPID }}
       {{- end }}
-      {{- if .Values.image.pullSecrets }}
+      {{- if .Values.agents.image.pullSecrets }}
       imagePullSecrets:
-{{ toYaml .Values.image.pullSecrets | indent 8 }}
+{{ toYaml .Values.agents.image.pullSecrets | indent 8 }}
       {{- end }}
-      {{- if .Values.daemonset.priorityClassName }}
-      priorityClassName: {{ .Values.daemonset.priorityClassName }}
+      {{- if .Values.agents.priorityClassName }}
+      priorityClassName: {{ .Values.agents.priorityClassName }}
       {{- end }}
       containers:
         {{- include "container-agent" . | nindent 8 }}
@@ -141,28 +141,28 @@ spec:
         - name: sysprobe-socket-dir
           emptyDir: {}
         {{- end }}
-        {{- if .Values.daemonset.useConfigMap }}
+        {{- if .Values.agents.useConfigMap }}
         - name: {{ template "datadog.fullname" . }}-datadog-yaml
           configMap:
             name: {{ template "datadog.fullname" . }}-datadog-yaml
         {{- end }}
-{{- if .Values.daemonset.volumes }}
-{{ toYaml .Values.daemonset.volumes | indent 8 }}
+{{- if .Values.agents.volumes }}
+{{ toYaml .Values.agents.volumes | indent 8 }}
 {{- end }}
-      {{- if .Values.daemonset.tolerations }}
+      {{- if .Values.agents.tolerations }}
       tolerations:
-{{ toYaml .Values.daemonset.tolerations | indent 8 }}
+{{ toYaml .Values.agents.tolerations | indent 8 }}
       {{- end }}
-      {{- if .Values.daemonset.affinity }}
+      {{- if .Values.agents.affinity }}
       affinity:
-{{ toYaml .Values.daemonset.affinity | indent 8 }}
+{{ toYaml .Values.agents.affinity | indent 8 }}
       {{- end }}
-      serviceAccountName: {{ if .Values.daemonset.rbac.create }}{{ template "datadog.fullname" . }}{{ else }}"{{ .Values.daemonset.rbac.serviceAccountName }}"{{ end }}
-      {{- if .Values.daemonset.nodeSelector }}
+      serviceAccountName: {{ if .Values.agents.rbac.create }}{{ template "datadog.fullname" . }}{{ else }}"{{ .Values.agents.rbac.serviceAccountName }}"{{ end }}
+      {{- if .Values.agents.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.daemonset.nodeSelector | indent 8 }}
+{{ toYaml .Values.agents.nodeSelector | indent 8 }}
       {{- end }}
   updateStrategy:
-{{ toYaml .Values.daemonset.updateStrategy | indent 4 }}
+{{ toYaml .Values.agents.updateStrategy | indent 4 }}
 {{ end }}
 {{ end }}

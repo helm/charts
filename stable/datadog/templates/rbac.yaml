@@ -1,4 +1,4 @@
-{{- if .Values.daemonset.rbac.create -}}
+{{- if .Values.agents.rbac.create -}}
 apiVersion: {{ template "rbac.apiVersion" . }}
 kind: ClusterRole
 metadata:
@@ -84,7 +84,7 @@ rules:
   verbs:
   - get
 ---
-{{- if not .Values.clusterchecksDeployment.rbac.dedicated }}
+{{- if not .Values.clusterChecksRunner.rbac.dedicated }}
 apiVersion: {{ template "rbac.apiVersion" . }}
 kind: ClusterRoleBinding
 metadata:

@@ -1,4 +1,4 @@
-{{- if and .Values.clusterchecksDeployment.rbac.create .Values.clusterAgent.enabled .Values.clusterAgent.clusterChecks.enabled .Values.clusterchecksDeployment.enabled -}}
+{{- if and .Values.clusterChecksRunner.rbac.create .Values.clusterAgent.enabled .Values.datadog.clusterChecks.enabled .Values.clusterChecksRunner.enabled -}}
 apiVersion: {{ template "rbac.apiVersion" . }}
 kind: ClusterRoleBinding
 metadata:

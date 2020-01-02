@@ -1,13 +1,13 @@
 {{- define "container-agent" -}}
 - name: agent
-  image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-  imagePullPolicy: {{ .Values.image.pullPolicy }}
+  image: "{{ .Values.agents.image.repository }}:{{ .Values.agents.image.tag }}"
+  imagePullPolicy: {{ .Values.agents.image.pullPolicy }}
   command: ["agent", "start"]
   resources:
-{{ toYaml .Values.daemonset.containers.agent.resources | indent 4 }}
+{{ toYaml .Values.agents.containers.agent.resources | indent 4 }}
   ports:
   - containerPort: {{ default 8125 .Values.datadog.dogStatsDPort }}
-    {{- if .Values.daemonset.useHostPort }}
+    {{- if .Values.agents.useHostPort }}
     hostPort: {{ default 8125 .Values.datadog.dogStatsDPort }}
     {{- end }}
     name: dogstatsdport
@@ -23,7 +23,7 @@
     {{- end }}
     {{- if .Values.datadog.logLevel }}
     - name: DD_LOG_LEVEL
-      value: {{ .Values.daemonset.containers.agent.logLevel | default .Values.datadog.logLevel | quote }}
+      value: {{ .Values.agents.containers.agent.logLevel | default .Values.datadog.logLevel | quote }}
     {{- end }}
     {{- if .Values.datadog.dogStatsDPort }}
     - name: DD_DOGSTATD_PORT
@@ -103,12 +103,12 @@
     - name: DD_DOGSTATSD_SOCKET
       value: {{ default "/var/run/datadog/dsd.socket" .Values.datadog.dogStatsDSocketPath | quote }}
     {{- end }}
-    {{- if and .Values.clusterAgent.clusterChecks.enabled  (not .Values.clusterchecksDeployment.enabled) }}
+    {{- if and .Values.datadog.clusterChecks.enabled  (not .Values.clusterChecksRunner.enabled) }}
     - name: DD_EXTRA_CONFIG_PROVIDERS
       value: "clusterchecks"
     {{- end }}
-{{- if .Values.daemonset.containers.agent.env }}
-{{ toYaml .Values.daemonset.containers.agent.env | indent 4 }}
+{{- if .Values.agents.containers.agent.env }}
+{{ toYaml .Values.agents.containers.agent.env | indent 4 }}
 {{- end }}
   volumeMounts:
     - name: config
@@ -145,9 +145,9 @@
       readOnly: true
     {{- end }}
     {{- end }}
-{{- if .Values.daemonset.volumeMounts }}
-{{ toYaml .Values.daemonset.volumeMounts | indent 4 }}
+{{- if .Values.agents.volumeMounts }}
+{{ toYaml .Values.agents.volumeMounts | indent 4 }}
 {{- end }}
   livenessProbe:
-{{ toYaml .Values.daemonset.containers.agent.livenessProbe | indent 4 }}
+{{ toYaml .Values.agents.containers.agent.livenessProbe | indent 4 }}
 {{- end -}}

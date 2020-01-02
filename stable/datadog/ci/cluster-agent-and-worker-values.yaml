@@ -5,5 +5,5 @@ datadog:
 clusterAgent:
   enabled: true
 
-clusterchecksDeployment:
+clusterChecksRunner:
   enabled: true
