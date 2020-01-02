@@ -465,6 +465,8 @@ sidecar:
       type: file
       # disableDelete to activate a import-only behaviour
       disableDelete: false
+      # allow updating provisioned dashboards from the UI
+      allowUiUpdates: false
   datasources:
     enabled: false
     # label that the configmaps with datasources are marked with

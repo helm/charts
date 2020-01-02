@@ -22,6 +22,7 @@ data:
       folder: '{{ .Values.sidecar.dashboards.provider.folder }}'
       type: {{ .Values.sidecar.dashboards.provider.type }}
       disableDeletion: {{ .Values.sidecar.dashboards.provider.disableDelete }}
+      allowUiUpdates: {{ .Values.sidecar.dashboards.provider.allowUiUpdates }}
       options:
         path: {{ .Values.sidecar.dashboards.folder }}{{- with .Values.sidecar.dashboards.defaultFolderName }}/{{ . }}{{- end }}
 {{- end}}
