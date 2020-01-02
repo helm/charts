@@ -84,6 +84,7 @@ The following tables list the configurable parameters of the GoCD chart and thei
 | `server.restartPolicy`                     | GoCD server restart policy                                                                                    | `Always`            |
 | `server.nodeSelector`                      | GoCD server nodeSelector for pod labels                                                                       | `{}`                |
 | `server.affinity`                          | GoCD server affinity                                                                                          | `{}`                |
+| `server.tolerations`                       | GoCD server tolerations                                                                                       | `{}`                |
 | `server.env.goServerJvmOpts`               | GoCD Server JVM arguments                                                                                     | `nil`               |
 | `server.env.extraEnvVars`                  | GoCD Server extra Environment variables                                                                       | `nil`               |
 | `server.service.type`                      | Type of GoCD server Kubernetes service                                                                        | `NodePort`          |
@@ -105,6 +106,7 @@ The following tables list the configurable parameters of the GoCD chart and thei
 | `server.securityContext.runAsUser`         | The container user for all the GoCD server pods.                                                              | `1000`              |
 | `server.securityContext.runAsGroup`        | The container group for all the GoCD server pods.                                                             | `0`                 |
 | `server.securityContext.fsGroup`           | The container supplementary group for all the GoCD server pods.                                               | `0`                 |
+| `server.sidecarContainers`                 | Sidecar containers to run alongside GoCD server.                                                              | `[]`                |
 
 #### Preconfiguring the GoCD Server
 
@@ -171,6 +173,7 @@ $ kubectl create secret generic gocd-server-ssh \
 | `agent.annotations.pod       `            | GoCD Agent Pod annotations.                                                                                                                                                      | `{}`                         |
 | `agent.replicaCount`                      | GoCD Agent replicas Count. By default, no agents are provided.                                                                                                                   | `0`                          |
 | `agent.preStop        `                   | Perform cleanup and backup before stopping the gocd server. Supported value is a list.                                                                                           | `nil`                        |
+| `agent.postStart`                         | Commands to run after agent startup.                                                                                                                                             | `nil`                        |
 | `agent.terminationGracePeriodSeconds`     | Optional duration in seconds the gocd agent pods need to terminate gracefully.                                                                                                   | `nil`                        |
 | `agent.deployStrategy`                    | GoCD Agent [deployment strategy](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy).                                                                | `{}`                         |
 | `agent.image.repository`                  | GoCD agent image                                                                                                                                                                 | `gocd/gocd-agent-alpine-3.6` |
@@ -181,6 +184,7 @@ $ kubectl create secret generic gocd-server-ssh \
 | `agent.restartPolicy`                     | GoCD agent restart policy                                                                                                                                                        | `Always`               |
 | `agent.nodeSelector`                      | GoCD agent nodeSelector for pod labels                                                                                                                                           | `{}`                |
 | `agent.affinity`                         | GoCD agent affinity                                                                                                                                                               | `{}`                |
+| `agent.tolerations`                       | GoCD agent tolerations                                                                                                                                                           | `{}`                |
 | `agent.env.goServerUrl`                   | GoCD Server Url. If nil, discovers the GoCD server service if its available on the Kubernetes cluster                                                                            | `nil`                        |
 | `agent.env.agentAutoRegisterKey`          | GoCD Agent autoregister key                                                                                                                                                      | `nil`                        |
 | `agent.env.agentAutoRegisterResources`    | Comma separated list of GoCD Agent resources                                                                                                                                     | `nil`                        |

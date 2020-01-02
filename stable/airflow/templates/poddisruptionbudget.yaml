@@ -1,3 +1,4 @@
+{{- if .Values.airflow.podDisruptionBudgetEnabled }}
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
@@ -15,3 +16,4 @@ spec:
       component: scheduler
       release: {{ .Release.Name }}
 {{ toYaml .Values.airflow.podDisruptionBudget | indent 2 }}
+{{- end }}

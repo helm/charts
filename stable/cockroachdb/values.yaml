@@ -1,105 +1,353 @@
-# Default values for cockroachdb.
-# This is a YAML-formatted file.
-# Declare name/value pairs to be passed into your templates.
-# name: value
+image:
+  repository: cockroachdb/cockroach
+  tag: v19.2.1
+  pullPolicy: IfNotPresent
+  credentials: {}
+    # registry: docker.io
+    # username: john_doe
+    # password: changeme
 
-Name: "cockroachdb"
-Image: "cockroachdb/cockroach"
-ImageTag: "v19.1.5"
-ImagePullPolicy: "Always"
-Replicas: 3
-MaxUnavailable: 1
-Component: "cockroachdb"
 
-# You can set a different external and internal GRPC port and service name. If using istio set InternalGrpcName to "cockroach"
-InternalGrpcPort: 26257
-ExternalGrpcPort: 26257
+# Additional labels to apply to all Kubernetes resources created by this chart.
+labels: {}
+  # app.kubernetes.io/part-of: my-app
 
-# If the port numbers are different then then port names must be different as well.
-InternalGrpcName: grpc
-ExternalGrpcName: grpc
 
-InternalHttpPort: 8080
-ExternalHttpPort: 8080
-HttpName: http
+# Cluster's default DNS domain.
+# You should overwrite it if you're using a different one,
+# otherwise CockroachDB nodes discovery won't work.
+clusterDomain: cluster.local
 
-# Uncomment the following resources definitions or pass them from command line
-# to control the cpu and memory resources allocated by the Kubernetes cluster
-Resources: {}
-  # requests:
-  #   cpu: "100m"
-  #   memory: "512Mi"
-# The init pod runs at cluster creation to initialize CockroachDB. It finishes
-# quickly and doesn't continue to consume resources in the Kubernetes
-# cluster. Normally, you should leave this section commented out, but if your
-# Kubernetes cluster uses Resource Quotas and requires all pods to specify
-# resource requests or limits, you can set those here.
-InitPodResources: {}
-  # requests:
-  #   cpu: "10m"
-  #   memory: "128Mi"
-  # limits:
-  #   cpu: "10m"
-  #   memory: "128Mi"
-Storage: "100Gi"
-## Persistent Volume Storage Class for database data
-## If defined, storageClassName: <StorageClass>
-## If set to "-", storageClassName: "", which disables dynamic provisioning
-## If undefined or set to null, no storageClassName spec is
-##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-##   GKE, AWS & OpenStack)
-##
-StorageClass: null
-CacheSize: "25%"
-MaxSQLMemory: "25%"
-ClusterDomain: "cluster.local"
-NetworkPolicy:
-  Enabled: false
-  AllowExternal: true
-Service:
-  type: ClusterIP
+
+conf:
+  # An ordered list of CockroachDB node attributes.
+  # Attributes are arbitrary strings specifying machine capabilities.
+  # Machine capabilities might include specialized hardware or number of cores
+  # (e.g. "gpu", "x16c").
+  attrs: []
+    # - x16c
+    # - gpu
+
+  # Total size in bytes for caches, shared evenly if there are multiple
+  # storage devices. Size suffixes are supported (e.g. `1GB` and `1GiB`).
+  # A percentage of physical memory can also be specified (e.g. `.25`).
+  cache: 25%
+
+  # Sets a name to verify the identity of a cluster.
+  # The value must match between all nodes specified via `conf.join`.
+  # This can be used as an additional verification when either the node or
+  # cluster, or both, have not yet been initialized and do not yet know their
+  # cluster ID.
+  # To introduce a cluster name into an already-initialized cluster, pair this
+  # option with `conf.disable-cluster-name-verification: yes`.
+  cluster-name: ""
+
+  # Tell the server to ignore `conf.cluster-name` mismatches.
+  # This is meant for use when opting an existing cluster into starting to use
+  # cluster name verification, or when changing the cluster name.
+  # The cluster should be restarted once with `conf.cluster-name` and
+  # `conf.disable-cluster-name-verification: yes` combined, and once all nodes
+  # have been updated to know the new cluster name, the cluster can be restarted
+  # again with `conf.disable-cluster-name-verification: no`.
+  # This option has no effect if `conf.cluster-name` is not specified.
+  disable-cluster-name-verification: no
+
+  # The addresses for connecting a CockroachDB nodes to an existing cluster.
+  # If you are deploying a second CockroachDB instance that should join a first
+  # one, use the below list to join to the existing instance.
+  # Each item in the array should be a FQDN (and port if needed) resolvable by
+  # new Pods.
+  join: []
+
+  # Logs at or above this threshold to STDERR.
+  logtostderr: INFO
+
+  # Maximum storage capacity available to store temporary disk-based data for
+  # SQL queries that exceed the memory budget (e.g. join, sorts, etc are
+  # sometimes able to spill intermediate results to disk).
+  # Accepts numbers interpreted as bytes, size suffixes (e.g. `32GB` and
+  # `32GiB`) or a percentage of disk size (e.g. `10%`).
+  # The location of the temporary files is within the first store dir.
+  # If expressed as a percentage, `max-disk-temp-storage` is interpreted
+  # relative to the size of the storage device on which the first store is
+  # placed. The temp space usage is never counted towards any store usage
+  # (although it does share the device with the first store) so, when
+  # configuring this, make sure that the size of this temp storage plus the size
+  # of the first store don't exceed the capacity of the storage device.
+  # If the first store is an in-memory one (i.e. `type=mem`), then this
+  # temporary "disk" data is also kept in-memory.
+  # A percentage value is interpreted as a percentage of the available internal
+  # memory.
+  max-disk-temp-storage: 0
+
+  # Maximum allowed clock offset for the cluster. If observed clock offsets
+  # exceed this limit, servers will crash to minimize the likelihood of
+  # reading inconsistent data. Increasing this value will increase the time
+  # to recovery of failures as well as the frequency of uncertainty-based
+  # read restarts.
+  # Note, that this value must be the same on all nodes in the cluster.
+  # In order to change it, all nodes in the cluster must be stopped
+  # simultaneously and restarted with the new value.
+  max-offset: 500ms
+
+  # Maximum memory capacity available to store temporary data for SQL clients,
+  # including prepared queries and intermediate data rows during query
+  # execution. Accepts numbers interpreted as bytes, size suffixes
+  # (e.g. `1GB` and `1GiB`) or a percentage of physical memory (e.g. `.25`).
+  max-sql-memory: 25%
+
+  # An ordered, comma-separated list of key-value pairs that describe the
+  # topography of the machine. Topography might include country, datacenter
+  # or rack designations. Data is automatically replicated to maximize
+  # diversities of each tier. The order of tiers is used to determine
+  # the priority of the diversity, so the more inclusive localities like
+  # country should come before less inclusive localities like datacenter.
+  # The tiers and order must be the same on all nodes. Including more tiers
+  # is better than including fewer. For example:
+  #   locality: country=us,region=us-west,datacenter=us-west-1b,rack=12
+  #   locality: country=ca,region=ca-east,datacenter=ca-east-2,rack=4
+  #   locality: planet=earth,province=manitoba,colo=secondary,power=3
+  locality: ""
+
+  # Run CockroachDB instances in standalone mode with replication disabled
+  # (replication factor = 1).
+  # Enabling this option makes the following values to be ignored:
+  # - `conf.cluster-name`
+  # - `conf.disable-cluster-name-verification`
+  # - `conf.join`
+  #
+  # WARNING: Enabling this option makes each deployed Pod as a STANDALONE
+  #          CockroachDB instance, so the StatefulSet does NOT FORM A CLUSTER.
+  #          Don't use this option for production deployments unless you clearly
+  #          understand what you're doing.
+  #          Usually, this option is intended to be used in conjunction with
+  #          `statefulset.replicas: 1` for temporary one-time deployments (like
+  #          running E2E tests, for example).
+  single-node: no
+
+  # If non-empty, create a SQL audit log in the specified directory.
+  sql-audit-dir: ""
+
+  # CockroachDB's port to listen to inter-communications and client connections.
+  port: 26257
+
+  # CockroachDB's port to listen to HTTP requests.
+  http-port: 8080
+
+
+statefulset:
+  replicas: 3
+  updateStrategy:
+    type: RollingUpdate
+  podManagementPolicy: Parallel
+  budget:
+    maxUnavailable: 1
+
+  # List of additional command-line arguments you want to pass to the
+  # `cockroach start` command.
+  args: []
+    # - --disable-cluster-name-verification
+
+  # List of extra environment variables to pass into container
+  env: []
+    # - name: COCKROACH_ENGINE_MAX_SYNC_DURATION
+    #   value: "24h"
+
+  # List of Secrets names in the same Namespace as the CockroachDB cluster,
+  # which shall be mounted into `/etc/cockroach/secrets/` for every cluster
+  # member.
+  secretMounts: []
+
+  # Additional labels to apply to this StatefulSet and all its Pods.
+  labels:
+    app.kubernetes.io/component: cockroachdb
+
+  # Additional annotations to apply to the Pods of this StatefulSet.
   annotations: {}
-  labels: {}
-ServiceDiscovery:
-  labels: {}
-PodManagementPolicy: Parallel
-UpdateStrategy:
-  type: RollingUpdate
-NodeSelector: {}
-Tolerations: {}
-Secure:
-  Enabled: false
-  RequestCertsImage: "cockroachdb/cockroach-k8s-request-cert"
-  RequestCertsImageTag: "0.4"
-  ServiceAccount:
-    # Specifies whether a service account should be created.
-    Create: true
-    # The name of the service account to use.
-    # If not set and create is true, a name is generated.
-    Name:
 
-# If you are deploying a second cockroach instance that should join a first, use the below list to join to the existing instance.
-# Each item in the array should be a FQDN (and port if needed) resolvable by the new pods.
-JoinExisting: []
-# Set a locality (e.g. "region=us-central1,datacenter=us-centra1-a") if you're doing multi-cluster so data is distributed properly
-Locality: ""
-# Additional command-line arguments you want to pass to the `cockroach start` commands
-ExtraArgs: []
-# ExtraSecretMounts is a list of names from secrets in the same namespace as the cockroachdb cluster, which shall be mounted into /etc/cockroach/secrets/ for every cluster member.
-ExtraSecretMounts: []
-# ExtraEnvArgs is a list of name,value tuples providing extra ENV variables.
-# e.g.:
-# ExtraEnvArgs:
-# - name: COCKROACH_ENGINE_MAX_SYNC_DURATION
-#   value: "24h"
-ExtraEnvArgs: []
-# ExtraAnnotations is an object to provide additional annotations to the Statefulset
-# e.g.:
-# ExtraAnnotations:
-#   key: values
-ExtraAnnotations: {}
-# ExtraInitAnnotations is an object to provide additional annotations to the ClusterInit Pod
-# e.g.:
-# ExtraInitAnnotations:
-#   key: values
-ExtraInitAnnotations: {}
+  # Affinity rules for scheduling Pods of this StatefulSet on Nodes.
+  # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#node-affinity
+  nodeAffinity: {}
+  # Inter-Pod Affinity rules for scheduling Pods of this StatefulSet.
+  # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#inter-pod-affinity-and-anti-affinity
+  podAffinity: {}
+  # Anti-affinity rules for scheduling Pods of this StatefulSet.
+  # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#inter-pod-affinity-and-anti-affinity
+  # You may either toggle options below for default anti-affinity rules,
+  # or specify the whole set of anti-affinity rules instead of them.
+  podAntiAffinity:
+    # Type of anti-affinity rules: either `soft`, `hard` or empty value (which
+    # disables anti-affinity rules).
+    type: soft
+    # Weight for `soft` anti-affinity rules.
+    # Does not apply for other anti-affinity types.
+    weight: 100
+
+  # Node selection constraints for scheduling Pods of this StatefulSet.
+  # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  nodeSelector: {}
+
+  # Taints to be tolerated by Pods of this StatefulSet.
+  # https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: []
+
+  # Uncomment the following resources definitions or pass them from
+  # command line to control the CPU and memory resources allocated
+  # by Pods of this StatefulSet.
+  resources: {}
+    # limits:
+    #   cpu: 100m
+    #   memory: 512Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 512Mi
+
+
+service:
+  ports:
+    # You can set a different external and internal gRPC ports and their name.
+    grpc:
+      external:
+        port: 26257
+        name: grpc
+      # If the port number is different than `external.port`, then it will be
+      # named as `internal.name` in Service.
+      internal:
+        port: 26257
+        # If using Istio set it to `cockroach`.
+        name: grpc-internal
+    http:
+      port: 8080
+      name: http
+
+  # This Service is meant to be used by clients of the database.
+  # It exposes a ClusterIP that will automatically load balance connections
+  # to the different database Pods.
+  public:
+    type: ClusterIP
+    # Additional labels to apply to this Service.
+    labels:
+      app.kubernetes.io/component: cockroachdb
+    # Additional annotations to apply to this Service.
+    annotations: {}
+
+  # This service only exists to create DNS entries for each pod in
+  # the StatefulSet such that they can resolve each other's IP addresses.
+  # It does not create a load-balanced ClusterIP and should not be used directly
+  # by clients in most circumstances.
+  discovery:
+    # Additional labels to apply to this Service.
+    labels:
+      app.kubernetes.io/component: cockroachdb
+    # Additional annotations to apply to this Service.
+    annotations: {}
+
+
+# CockroachDB's data persistence.
+# If neither `persistentVolume` nor `hostPath` is used, then data will be
+# persisted in ad-hoc `emptyDir`.
+storage:
+  # Absolute path on host to store CockroachDB's data.
+  # If not specified, then `emptyDir` will be used instead.
+  # If specified, but `persistentVolume.enabled` is `true`, then has no effect.
+  hostPath: ""
+
+  # If `enabled` is `true` then a PersistentVolumeClaim will be created and
+  # used to store CockroachDB's data, otherwise `hostPath` is used.
+  persistentVolume:
+    enabled: yes
+
+    size: 100Gi
+
+    # If defined, then `storageClassName: <storageClass>`.
+    # If set to "-", then `storageClassName: ""`, which disables dynamic
+    # provisioning.
+    # If undefined or empty (default), then no `storageClassName` spec is set,
+    # so the default provisioner will be chosen (gp2 on AWS, standard on
+    # GKE, AWS & OpenStack).
+    storageClass: ""
+
+    # Additional labels to apply to the created PersistentVolumeClaims.
+    labels: {}
+    # Additional annotations to apply to the created PersistentVolumeClaims.
+    annotations: {}
+
+
+# Kubernetes Job which initializes multi-node CockroachDB cluster.
+# It's not created if `statefulset.replicas` is `1`.
+init:
+  # Additional labels to apply to this Job and its Pod.
+  labels:
+    app.kubernetes.io/component: init
+
+  # Additional annotations to apply to the Pod of this Job.
+  annotations: {}
+
+  # Affinity rules for scheduling the Pod of this Job.
+  # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#node-affinity
+  affinity: {}
+
+  # Node selection constraints for scheduling the Pod of this Job.
+  # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  nodeSelector: {}
+
+  # Taints to be tolerated by the Pod of this Job.
+  # https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: []
+
+  # The init Pod runs at cluster creation to initialize CockroachDB. It finishes
+  # quickly and doesn't continue to consume resources in the Kubernetes
+  # cluster. Normally, you should leave this section commented out, but if your
+  # Kubernetes cluster uses Resource Quotas and requires all pods to specify
+  # resource requests or limits, you can set those here.
+  resources: {}
+    # requests:
+    #   cpu: "10m"
+    #   memory: "128Mi"
+    # limits:
+    #   cpu: "10m"
+    #   memory: "128Mi"
+
+
+# Whether to run securely using TLS certificates.
+tls:
+  enabled: no
+  serviceAccount:
+    # Specifies whether this ServiceAccount should be created.
+    create: yes
+    # The name of this ServiceAccount to use.
+    # If not set and `create` is `true`, then a name is auto-generated.
+    name: ""
+  init:
+    # Image to use for requesting TLS certificates.
+    image:
+      repository: cockroachdb/cockroach-k8s-request-cert
+      tag: "0.4"
+      pullPolicy: IfNotPresent
+      credentials: {}
+        # registry: docker.io
+        # username: john_doe
+        # password: changeme
+
+
+networkPolicy:
+  enabled: no
+
+  ingress:
+    # List of sources which should be able to access the CockroachDB Pods via
+    # gRPC port. Items in this list are combined using a logical OR operation.
+    # Rules for allowing inter-communication are applied automatically.
+    # If empty, then connections from any Pod is allowed.
+    grpc: []
+      # - podSelector:
+      #     matchLabels:
+      #       app.kubernetes.io/name: my-app-django
+      #       app.kubernetes.io/instance: my-app
+
+    # List of sources which should be able to access the CockroachDB Pods via
+    # HTTP port. Items in this list are combined using a logical OR operation.
+    # If empty, then connections from any Pod is allowed.
+    http: []
+      # - namespaceSelector:
+      #     matchLabels:
+      #       project: my-project

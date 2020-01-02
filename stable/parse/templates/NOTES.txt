@@ -96,4 +96,5 @@ service:
 {{- end }}
 {{- end }}
 
+{{ include "parse.validateValues" . }}
 {{ include "parse.checkRollingTags" . }}
