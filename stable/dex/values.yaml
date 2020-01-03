@@ -13,6 +13,8 @@ nodeSelector: {}
 
 podAnnotations: {}
 
+initContainers: []
+
 tolerations: []
   # - key: CriticalAddonsOnly
   #   operator: Exists

@@ -1,4 +1,14 @@
-# jaeger-operator
+# DEPRECATED - jaeger-operator
+
+**This chart has been deprecated and moved to its new home:**
+
+- **GitHub repo:** https://github.com/jaegertracing/helm-charts
+- **Charts repo:** https://jaegertracing.github.io/helm-charts
+
+To add the repo:
+```
+$ helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
+```
 
 [jaeger-operator](https://github.com/jaegertracing/jaeger-operator) is a Kubernetes operator.
 

@@ -3,6 +3,29 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.5.0
+
+### Major changes
+
+* Add slim configuration for deploying the agent.
+
+### Minor changes
+
+* Mount /etc/modprobe.d from host.
+* Drop permissions to read secrets and configmaps.
+
+## v1.4.25
+
+### Minor changes
+
+* Use the latest image from Agent (0.94.0) by default.
+
+## v1.4.24
+
+### Minor changes
+
+* Use the latest image from Agent (0.93.1) by default.
+
 ## v1.4.23
 
 ### Minor changes
