@@ -242,23 +242,16 @@ section of `values.yaml` file:
 | Parameter                          | Description                                                                           | Default                                                                      |
 | ---------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
 | enabled                            | Deploy the ingress controller, rbac and crd                                           | true                                                                         |
+| replicaCount                       | Number of desired ingress controllers                                                 | 1                                                                            |
 | image.repository                   | Docker image with the ingress controller                                              | kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller |
-| image.tag                          | Version of the ingress controller                                                     | 0.6.2                                                                        |
+| image.tag                          | Version of the ingress controller                                                     | 0.6.0                                                                        |
+| readinessProbe                     | Kong ingress controllers readiness probe                                              |                                                                              |
+| livenessProbe                      | Kong ingress controllers liveness probe                                               |                                                                              |
 | env                                | Specify Kong Ingress Controller configuration via environment variables               |                                                                              |
+| ingressClass                       | The ingress-class value for controller                                                | kong                                                                         |
 | admissionWebhook.enabled           | Whether to enable the validating admission webhook                                    | false                                                                        |
 | admissionWebhook.failurePolicy     | How unrecognized errors from the admission endpoint are handled (Ignore or Fail)      | Fail                                                                         |
 | admissionWebhook.port              | The port the ingress controller will listen on for admission webhooks                 | 8080                                                                         |
-| admissionWebhook.port              | The port the ingress controller will listen on for admission webhooks                 | 8080                                                                         |
-| ingressClass                       | The ingress-class value for controller                                                | kong                                                                         |
-| installCRDs                        | Install the Custom Resource definitions along-with Kong                               | `true`                                                                       |
-| rbac.create                        | Install and setup RBAC resources for the Controller authorization policies            | `true`                                                                       |
-| serviceAccount.create              | Install and setup ServiceAccount resources for the Controller authentication          | `true`                                                                       |
-| serviceAccount.name                | Name of ServiceAccount to use if serviceAccount.create is set to `false`              | `true`                                                                       |
-| livenessProbe                      | Kong ingress controllers liveness probe                                               |                                                                              |
-| readinessProbe                     | Kong ingress controllers readiness probe                                              |                                                                              |
-| podDisruptionBudget.enabled        | Enable PodDisruptionBudget for ingress controller                                     | `false`                                                                      |
-| podDisruptionBudget.maxUnavailable | Represents the minimum number of Pods that can be unavailable (integer or percentage) | `50%`                                                                        |
-| podDisruptionBudget.minAvailable   | Represents the number of Pods that must be available (integer or percentage)          |                                                                              |
 
 For a complete list of all configuration values you can set in the 
 `env` section, please read the Kong Ingress Controller's
@@ -456,6 +449,37 @@ If your SMTP server requires authentication, you should the `username` and
 value is your SMTP password.
 
 ## Changelog
+
+
+### 0.33.0
+
+> PR [#19840](https://github.com/helm/charts/pull/19840)
+
+#### Dependencies
+
+- Postgre sub-chart has been bumped up to 8.1.2
+
+#### Fixed
+
+- Removed podDisruption budge for Ingress Controller. Ingress Controller and
+  Kong run in the same pod so this was no longer applicable
+- Migration job now receives the same environment variable and configuration
+  as that of the Kong pod.
+- If Kong is configured to run with Postgres, the Kong pods now always wait
+  for Postgres to start. Previously this was done only when the sub-chart
+  postgres was deployed.
+- A hard-coded container name is used for kong: `proxy`. Previously this
+  was auto-generated by Helm. This deterministic naming allows for simpler
+  scripts and documentation.
+
+#### Under the hood
+
+Following changes have no end user visible effects:
+
+- All Custom Resource Definitions have been consolidated into a single
+  template file
+- All RBAC resources have been consolidated into a single template file
+- `wait-for-postgres` container has been refactored and de-duplicated
 
 ### 0.32.1
 
