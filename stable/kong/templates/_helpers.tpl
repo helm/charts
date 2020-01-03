@@ -457,7 +457,7 @@ the template that it itself is using form the above sections.
 - name: KONG_SMTP_MOCK
   value: "on"
 {{- end }}
-{{- include "kong.license" . }}
+{{ include "kong.license" . }}
 {{- end }}
 - name: KONG_NGINX_HTTP_INCLUDE
   value: /kong/servers.conf

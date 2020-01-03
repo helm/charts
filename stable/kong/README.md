@@ -450,6 +450,11 @@ value is your SMTP password.
 
 ## Changelog
 
+### 0.33.1
+
+#### Fixed
+
+- Correct an issue with whitespace handling within `final_env` helper.
 
 ### 0.33.0
 
