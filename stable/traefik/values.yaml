@@ -431,7 +431,7 @@ metrics:
       type: ClusterIP
       # loadBalancerIP: ""
       # loadBalancerSourceRanges: []
-      # externalIP: []
+      # externalIP: ""
       # externalTrafficPolicy: Cluster
       # nodePort: 9100
    # serviceMonitor:
