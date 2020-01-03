@@ -81,6 +81,8 @@ To handle this setup on startup, a job can be enabled in `values.yaml` by settin
 
 Make sure to uncomment or configure the job settings after enabling it. If a password is not set, a random password will be generated.
 
+Alternatively, if `.Values.setDefaultUser.user.existingSecret` is set the user and password are obtained from an existing Secret, the expected keys are `influxdb-user` and `influxdb-password`. Use this variable  if you need to check in the `values.yaml` in a repository to avoid exposing your secrets. 
+
 ## Upgrading
 
 ### From < 1.0.0 To >= 1.0.0
