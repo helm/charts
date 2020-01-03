@@ -326,14 +326,20 @@ to be set in order for the service definition to work properly.
 ### Overview
 
 Kong Enterprise requires some additional configuration not needed when using
-Kong Open-Source. Some of the more important configuration is grouped in sections
+Kong Open-Source. To use Kong Enterprise, at the minimum,
+you need to do the following:
+
+- set `enterprise.enabled` to `true` in `values.yaml` file
+- Satisfy the two  prerequsisites below for Enterprise License and
+  Enterprise Docker Registry
+
+Once you have these set, it is possible to install Kong Enterprise,
+but please make sure to review the below sections for other settings that
+you should consider configuring before installing Kong.
+
+Some of the more important configuration is grouped in sections
 under the `.enterprise` key in values.yaml, though most enterprise-specific
 configuration can be placed under the `.env` key.
-
-To use Kong Enterprise, change your image to a Kong Enterprise image and set
-`.enterprise.enabled: true` in values.yaml to render Enterprise sections of the
-templates. Review the sections below for other settings you should consider
-configuring before installing the chart.
 
 ### Prerequisites
 
@@ -401,7 +407,7 @@ controller Pod when the ingress controller is enabled. This admin API container
 is not exposed outside the Pod, so only the controller can interact with it. We
 intend to add RBAC to this container in the future after updating the controller
 to add support for storing its RBAC token in a Secret, as currently it would
-need to be stored in plain-text. RBAC is still enforced on the admin API of the
+need to be stored in plaintext. RBAC is still enforced on the admin API of the
 main deployment when using the ingress controller, as that admin API *is*
 accessible outside the Pod.
 
@@ -453,7 +459,7 @@ value is your SMTP password.
 
 This release contains no user-visible changes
 
-### Under th hood
+### Under the hood
 
 Various tests have been consolidated to speed up CI.
 
@@ -475,7 +481,7 @@ Various tests have been consolidated to speed up CI.
 
 #### Fixed
 
-- Correct an issue with whitespace handling within `final_env` helper.
+- Correct an issue with white space handling within `final_env` helper.
 
 ### 0.33.0
 
@@ -560,7 +566,7 @@ Following changes have no end user visible effects:
 
 #### Fixes
 
-- Do not remove white-space between documents when rendering
+- Do not remove white space between documents when rendering
   `migrations-pre-upgrade.yaml`
 
 ### 0.30.1
