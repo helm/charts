@@ -447,6 +447,16 @@ value is your SMTP password.
 
 ## Changelog
 
+### 0.34.2
+
+> PR [#19854](https://github.com/helm/charts/pull/19854)
+
+This release contains no user-visible changes
+
+### Under th hood
+
+Various tests have been consolidated to speed up CI.
+
 ### 0.34.1
 
 #### Fixed
@@ -460,6 +470,8 @@ value is your SMTP password.
 - Update default version of Ingress Controller to 0.7.0
 
 ### 0.33.1
+
+> PR [#19852](https://github.com/helm/charts/pull/19852)
 
 #### Fixed
 
