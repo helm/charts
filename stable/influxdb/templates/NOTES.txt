@@ -18,10 +18,25 @@ To tail the logs for the InfluxDB pod run the following:
 
 To retrieve the default user name:
 
+{{- if .Values.setDefaultUser.user.existingSecret }}
+
+- echo $(kubectl get secret {{ .Values.setDefaultUser.user.existingSecret }} -o "jsonpath={.data['influxdb-user']}" --namespace {{ .Release.Namespace }} | base64 --decode)
+
+{{- else }}
+
 - echo $(kubectl get secret {{ template "influxdb.fullname" . }}-auth -o "jsonpath={.data['influxdb-user']}" --namespace {{ .Release.Namespace }} | base64 --decode)
+
+{{- end }}
 
 To retrieve the default user password:
 
+{{- if .Values.setDefaultUser.user.existingSecret }}
+
+- echo $(kubectl get secret {{ .Values.setDefaultUser.user.existingSecret }} -o "jsonpath={.data['influxdb-password']}" --namespace {{ .Release.Namespace }} | base64 --decode)
+
+{{- else }}
+
 - echo $(kubectl get secret {{ template "influxdb.fullname" . }}-auth -o "jsonpath={.data['influxdb-password']}" --namespace {{ .Release.Namespace }} | base64 --decode)
 
+{{- end }}
 {{- end }}
