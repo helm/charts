@@ -1,0 +1,29 @@
+# This tests the following unrealted aspects of Ingress Controller
+
+
+# - ingressController deploys with a database
+ingressController:
+  enabled: true
+postgresql:
+  enabled: true
+
+env:
+  database: "postgres"
+
+# - ingress resources are created without hosts
+admin:
+  ingress:
+    enabled: true
+    hosts: []
+    annotations: {}
+    path: /
+proxy:
+  ingress:
+    enabled: true
+    hosts: []
+    annotations: {}
+    path: /
+
+# - PDB is enabled
+podDisruptionBudget:
+  enabled: true
