@@ -166,12 +166,13 @@ sentinel:
   config:
     ## Additional sentinel conf options can be added below. Only options that
     ## are expressed in the format simialar to 'sentinel xxx mymaster xxx' will
-    ## be properly templated.
+    ## be properly templated expect maxclients option.
     ## For available options see http://download.redis.io/redis-stable/sentinel.conf
     down-after-milliseconds: 10000
     ## Failover timeout value in milliseconds
     failover-timeout: 180000
     parallel-syncs: 5
+    maxclients: 10000
 
   ## Custom sentinel.conf files used to override default settings. If this file is
   ## specified then the sentinel.config above will be ignored.
