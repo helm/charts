@@ -39,8 +39,8 @@ spec:
           command:
             - "sh"
             - "-c"
-            - 'mkdir -p $(printf "/opt/sonarqube/${1-%s\n}" temp logs data extensions/downloads extensions/plugins/tmp extensions/plugins) &&
-               chown 999:999 -R $(printf "/opt/sonarqube/${1-%s\n}" temp logs data extensions/downloads extensions/plugins/tmp extensions/plugins)'
+            - 'mkdir -p $(printf "/opt/sonarqube/${1-%s\n}" temp logs data extensions/downloads extensions/plugins/tmp extensions/plugins extensions/jdbc-driver extensions/jdbc-driver/tmp) &&
+               chown 999:999 -R $(printf "/opt/sonarqube/${1-%s\n}" temp logs data extensions/downloads extensions/plugins/tmp extensions/plugins extensions/jdbc-driver extensions/jdbc-driver/tmp)'
           image: busybox:1.31
           imagePullPolicy: IfNotPresent
           securityContext:
@@ -64,6 +64,12 @@ spec:
           - mountPath: /opt/sonarqube/extensions/plugins
             name: sonarqube
             subPath: plugins
+          - mountPath: {{ .Values.sonarqubeFolder }}/extensions/jdbc-driver/tmp
+            name: sonarqube
+            subPath: tmp-jdbc-driver
+          - mountPath: {{ .Values.sonarqubeFolder }}/extensions/jdbc-driver
+            name: sonarqube
+            subPath: jdbc-driver
       {{- if .Values.elasticsearch.configureNode }}
         - name: init-sysctl
           image: {{ default "busybox:1.31" .Values.plugins.initSysctlContainerImage }}
@@ -89,7 +95,8 @@ spec:
             rm -f {{ .Values.sonarqubeFolder }}/extensions/plugins/tmp/* &&
             cp /tmp/scripts/install_plugins.sh {{ .Values.sonarqubeFolder }}/extensions/plugins/tmp/install_plugins.sh &&
             chmod 0775 {{ .Values.sonarqubeFolder }}/extensions/plugins/tmp/install_plugins.sh &&
-            {{ .Values.sonarqubeFolder }}/extensions/plugins/tmp/install_plugins.sh && pwd && ls -lah
+            {{ .Values.sonarqubeFolder }}/extensions/plugins/tmp/install_plugins.sh &&
+            ls -lah {{ .Values.sonarqubeFolder }}/extensions/plugins/tmp
             "
            ]
           volumeMounts:
@@ -116,6 +123,33 @@ spec:
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
     {{- end }}
+      {{- end }}
+      {{- if .Values.oracle.oracleInstallDriver }}
+        - name: install-oracle-driver
+          image: {{ default "alpine:3.10.3" .Values.plugins.initContainerImage }}
+          env:
+            {{- range $key, $value := .Values.extraEnv }}
+            - name: {{ $key }}
+              value: {{ $value }}
+            {{- end }}
+          command: ["sh",
+            "-c",
+            "mkdir -p {{ .Values.sonarqubeFolder }}/extensions/jdbc-driver/tmp &&
+            rm -f {{ .Values.sonarqubeFolder }}/extensions/jdbc-driver/tmp/* &&
+            cp /tmp/scripts/install_oracle_driver.sh {{ .Values.sonarqubeFolder }}/extensions/jdbc-driver/tmp/install_oracle_driver.sh &&
+            chmod 0775 {{ .Values.sonarqubeFolder }}/extensions/jdbc-driver/tmp/install_oracle_driver.sh &&
+            {{ .Values.sonarqubeFolder }}/extensions/jdbc-driver/tmp/install_oracle_driver.sh &&
+            ls -lah {{ .Values.sonarqubeFolder }}/extensions/jdbc-driver/tmp
+            "
+           ]
+          volumeMounts:
+            - mountPath: {{ .Values.sonarqubeFolder }}/extensions/jdbc-driver/tmp
+              name: sonarqube
+              subPath: tmp-jdbc-driver
+            - name: install-oracle-driver
+              mountPath: /tmp/scripts/
+          resources:
+{{ toYaml .Values.plugins.resources | indent 12 }}
       {{- end }}
       {{- if and .Values.sonarProperties .Values.sonarSecretProperties }}
         - name: concat-properties
@@ -152,7 +186,7 @@ spec:
             - name: http
               containerPort: {{ .Values.service.internalPort }}
               protocol: TCP
-          {{- if .Values.plugins.install }}
+          {{- if or .Values.plugins.install .Values.oracle.oracleInstallDriver }}
           command:
             - /tmp/scripts/copy_plugins.sh
           {{- end }}
@@ -166,6 +200,8 @@ spec:
               value: {{ .Values.postgresql.postgresUser | quote }}
               {{- else if eq .Values.database.type "mysql" }}
               value: {{ .Values.mysql.mysqlUser | quote }}
+              {{- else if eq .Values.database.type "oracle" }}
+              value: {{ .Values.oracle.oracleUser | quote }}
               {{- end }}
             - name: SONARQUBE_JDBC_PASSWORD
               valueFrom:
@@ -176,12 +212,17 @@ spec:
                   {{- else if eq .Values.database.type "mysql" }}
                   name: {{- if .Values.mysql.enabled }} {{ template "mysql.fullname" .}} {{- else if .Values.mysql.mysqlPasswordSecret }} {{ .Values.mysql.mysqlPasswordSecret }} {{- else }} {{ template "sonarqube.fullname" . }} {{- end }}
                   key: mysql-password
+                  {{- else if eq .Values.database.type "oracle" }}
+                  name: {{- if .Values.oracle.enabled }} {{ template "oracle.fullname" .}} {{- else if .Values.oracle.oraclePasswordSecret }} {{ .Values.oracle.oraclePasswordSecret }} {{- else }} {{ template "sonarqube.fullname" . }} {{- end }}
+                  key: oracle-password
                   {{- end }}
             - name: SONARQUBE_JDBC_URL
               {{- if eq .Values.database.type "postgresql" }}
               value: "jdbc:postgresql://{{ template "postgresql.hostname" . }}:{{- .Values.postgresql.service.port -}}/{{- .Values.postgresql.postgresDatabase -}}"
               {{- else if eq .Values.database.type "mysql" }}
               value: "jdbc:mysql://{{ template "mysql.hostname" . }}:{{ .Values.mysql.service.port }}/{{ .Values.mysql.mysqlDatabase }}?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true{{- range $key, $value := .Values.mysql.mysqlParams }}&{{ $key }}={{ $value }}{{- end }}"
+              {{- else if eq .Values.database.type "oracle" }}
+              value: "jdbc:oracle:thin:@{{ .Values.oracle.oracleHostname }}:{{- .Values.oracle.oracleHostport -}}/{{- .Values.oracle.oracleDatabase -}}"
               {{- end }}
           livenessProbe:
             httpGet:
@@ -219,12 +260,18 @@ spec:
             - mountPath: {{ .Values.sonarqubeFolder }}/extensions/plugins/tmp
               name: sonarqube
               subPath: tmp
+            - mountPath: {{ .Values.sonarqubeFolder }}/extensions/jdbc-driver/tmp
+              name: sonarqube
+              subPath: tmp-jdbc-driver
             - mountPath: {{ .Values.sonarqubeFolder }}/extensions/downloads
               name: sonarqube
               subPath: downloads
             - mountPath: {{ .Values.sonarqubeFolder }}/extensions/plugins
               name: sonarqube
               subPath: plugins
+            - mountPath: {{ .Values.sonarqubeFolder }}/extensions/jdbc-driver
+              name: sonarqube
+              subPath: jdbc-driver
             - mountPath: {{ .Values.sonarqubeFolder }}/temp
               name: sonarqube
               subPath: temp
@@ -288,6 +335,14 @@ spec:
           items:
             - key: install_plugins.sh
               path: install_plugins.sh
+      {{- if and .Values.oracle.oracleInstallDriver .Values.oracle.oracleDriverPath }}
+      - name: install-oracle-driver
+        configMap:
+          name: {{ template "sonarqube.fullname" . }}-install-oracle-driver
+          items:
+            - key: install_oracle_driver.sh
+              path: install_oracle_driver.sh
+      {{- end }}
       - name: copy-plugins
         configMap:
           name: {{ template "sonarqube.fullname" . }}-copy-plugins

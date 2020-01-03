@@ -10,6 +10,7 @@ metadata:
 data:
   copy_plugins.sh: |-
       #!/bin/bash
+      {{- if .Values.plugins.install }}
       {{- if .Values.plugins.deleteDefaultPlugins }}
       rm -f {{ .Values.sonarqubeFolder }}/extensions/plugins/*.jar
       {{- end }}
@@ -25,4 +26,9 @@ data:
         done
       done
       cp {{ .Values.sonarqubeFolder }}/extensions/plugins/tmp/*.jar {{ .Values.sonarqubeFolder }}/extensions/plugins/
+      {{- end }}
+      {{- if .Values.oracle.oracleInstallDriver }}
+        mkdir -p {{ .Values.sonarqubeFolder }}/extensions/jdbc-driver/oracle
+        cp {{ .Values.sonarqubeFolder }}/extensions/jdbc-driver/tmp/*.jar {{ .Values.sonarqubeFolder }}/extensions/jdbc-driver/oracle/
+      {{- end }}
       {{ .Values.sonarqubeFolder }}/bin/run.sh

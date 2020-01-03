@@ -1,0 +1,15 @@
+{{- if and .Values.oracle.oracleInstallDriver .Values.oracle.oracleDriverPath }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "sonarqube.fullname" . }}-install-oracle-driver
+  labels:
+    app: {{ template "sonarqube.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  install_oracle_driver.sh: |-
+    cd {{ .Values.sonarqubeFolder }}/extensions/jdbc-driver/tmp
+    wget {{ .Values.oracle.oracleDriverPath }} --no-check-certificate
+{{- end }}

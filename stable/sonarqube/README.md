@@ -75,7 +75,7 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `customCerts.secretName`                    | Name of the secret which conatins your `cacerts` | false                                      |
 | `sonarSecretKey`                            | Name of existing secret used for settings encryption | None                            |
 | `sonarProperties`                           | Custom `sonar.properties` file            | `{}`                                       |
-| `database.type`                             | Set to "mysql" to use mysql database       | `postgresql`|
+| `database.type`                             | Set to "mysql" to use mysql database or "oracle" to use oracle database  | `postgresql`|
 | `postgresql.enabled`                        | Set to `false` to use external server / mysql database     | `true`                                     |
 | `postgresql.postgresServer`                 | Hostname of the external Postgresql server| `null`                                     |
 | `postgresql.postgresPasswordSecret`         | Secret containing the password of the external Postgresql server | `null`              |
@@ -91,6 +91,14 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `mysql.mysqlDatabase`                       | Mysql database name                       | `sonarDB`                                  |
 | `mysql.mysqlParams`                         | Mysql parameters for JDBC connection string     | `{}`                                 |
 | `mysql.service.port`                        | Mysql port                                | `3306`                                     |
+| `oracle.oracleHostname`                     | Hostname of the external Oracle server    | `null`                                     |
+| `oracle.oracleHostport`                     | Oracle port                               | `1521`                                     |
+| `oracle.oraclePasswordSecret`               | Secret containing the password of the external Oracle server | `null`              |
+| `oracle.oracleUser`                         | Oracle database user                      | `sonarUser`                                |
+| `oracle.oraclePassword`                     | Oracle database password                  | `sonarPass`                                |
+| `oracle.oracleDatabase`                     | Oracle database name (if not using oraclePasswordSecret) | `sonarDB`                                  |
+| `oracle.oracleInstallDriver`                | Set to `true` to install the Oracle JDBC driver (must provide URL to file in `oracle.oracleDriverPath`)  | `false`                                |
+| `oracle.oracleDriverPath`                   | URL where the Oracle JDBC driver can be found  | `null`                                |
 | `annotations`                               | Sonarqube Pod annotations                 | `{}`                                       |
 | `resources`                                 | Sonarqube Pod resource requests & limits  | `{}`                                       |
 | `affinity`                                  | Node / Pod affinities                     | `{}`                                       |
