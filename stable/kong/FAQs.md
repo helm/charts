@@ -2,7 +2,7 @@
 
 #### Kong fails to start after `helm upgrade` when Postgres is used. What do I do?
 
-You are running into this issue: https://github.com/helm/charts/issues/12575.
+You may be running into this issue: https://github.com/helm/charts/issues/12575.
 This issue is caused due to: https://github.com/helm/helm/issues/3053.
 
 The problem that happens is that Postgres database has the old password but
