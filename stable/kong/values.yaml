@@ -231,17 +231,22 @@ enterprise:
     portal_auth: basic-auth
     # If the Portal is enabled and any workspace's Portal uses authentication,
     # this Secret must contain an portal_session_conf key
-    # The key value must be a secret configuration, following the example at https://docs.konghq.com/enterprise/0.35-x/kong-manager/authentication/sessions/
+    # The key value must be a secret configuration, following the example at
+    # https://docs.konghq.com/enterprise/latest/developer-portal/configuration/authentication/sessions
     session_conf_secret: you-must-create-a-portal-session-conf-secret
   rbac:
     enabled: false
     admin_gui_auth: basic-auth
     # If RBAC is enabled, this Secret must contain an admin_gui_session_conf key
-    # The key value must be a secret configuration, following the example at https://docs.konghq.com/enterprise/0.35-x/kong-manager/authentication/sessions/
+    # The key value must be a secret configuration, following the example at
+    # https://docs.konghq.com/enterprise/latest/kong-manager/authentication/sessions
     session_conf_secret: you-must-create-an-rbac-session-conf-secret
     # If admin_gui_auth is not set to basic-auth, provide a secret name which
     # has an admin_gui_auth_conf key containing the plugin config JSON
     admin_gui_auth_conf_secret: you-must-create-an-admin-gui-auth-conf-secret
+  # For configuring emails and SMTP, please read through:
+  # https://docs.konghq.com/enterprise/latest/developer-portal/configuration/smtp
+  # https://docs.konghq.com/enterprise/latest/kong-manager/networking/email
   smtp:
     enabled: false
     portal_emails_from: none@example.com
@@ -395,7 +400,30 @@ ingressController:
   image:
     repository: kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller
     tag: 0.6.2
-  replicaCount: 1
+
+  # Specify Kong Ingress Controller configuration via environment variables
+  env: {}
+
+  admissionWebhook:
+    enabled: false
+    failurePolicy: Fail
+    port: 8080
+
+  installCRDs: true
+  ingressClass: kong
+
+  rbac:
+    # Specifies whether RBAC resources should be created
+    create: true
+
+  serviceAccount:
+    # Specifies whether a ServiceAccount should be created
+    create: true
+    # The name of the ServiceAccount to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name:
+
+  # general properties
   livenessProbe:
     failureThreshold: 3
     httpGet:
@@ -417,30 +445,6 @@ ingressController:
     successThreshold: 1
     timeoutSeconds: 5
   resources: {}
-
-  installCRDs: true
-
-  admissionWebhook:
-    enabled: false
-    failurePolicy: Fail
-    port: 8080
-
-  # Specify Kong Ingress Controller configuration via environment variables
-  env: {}
-
-  rbac:
-    # Specifies whether RBAC resources should be created
-    create: true
-
-  serviceAccount:
-    # Specifies whether a ServiceAccount should be created
-    create: true
-    # The name of the ServiceAccount to use.
-    # If not set and create is true, a name is generated using the fullname template
-    name:
-
-  ingressClass: kong
-
   podDisruptionBudget:
     enabled: false
     maxUnavailable: "50%"
