@@ -19,7 +19,7 @@
 
      http - {{ .Values.service.nodePorts.http }}
      https - {{ .Values.service.nodePorts.https }}
-     {{- if eq .Values.dashboard.serviceType "NodePort" }}
+     {{- if (and (eq .Values.dashboard.serviceType "NodePort") (not (empty .Values.dashboard.nodePorts.http)))}}
      dashboard - {{ .Values.dashboard.nodePorts.http }}
      {{- end }}
 
