@@ -44,6 +44,17 @@ host. To configure Mediawiki with the URL of your service:
 
 {{- else }}
 
+{{- if .Values.ingress.enabled }}
+
+1. Get the Mediawiki URL indicated on the Ingress Rule and associate it to your cluster external IP:
+
+  export CLUSTER_IP=$(minikube ip) # On Minikube. Use: `kubectl cluster-info` on others K8s clusters
+  export HOSTNAME=$(kubectl get ingress --namespace {{ .Release.Namespace }} {{ template "mediawiki.fullname" . }} -o jsonpath='{.spec.rules[0].host}')
+  echo "Mediawiki URL: http://$HOSTNAME/"
+  echo "$CLUSTER_IP  $HOSTNAME" | sudo tee -a /etc/hosts
+
+{{- else }}
+
 1. Get the MediaWiki URL by running:
 
 {{- if contains "NodePort" .Values.service.type }}
@@ -67,6 +78,7 @@ host. To configure Mediawiki with the URL of your service:
   echo "Mediawiki URL: http://127.0.0.1:8080/"
   kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "mediawiki.fullname" . }} 8080:{{ .Values.service.port }}
 
+{{- end }}
 {{- end }}
 {{- end }}
 
