@@ -11,7 +11,7 @@ postgresql:
   postgresDatabase: kong
   service:
     port: 5432
-# CI test for LoadBalancer admin/proxy types 
+# CI test for LoadBalancer admin/proxy types
 admin:
   enabled: true
   useTLS: true
