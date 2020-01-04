@@ -32,7 +32,7 @@ $ helm install stable/kong
   - [General Parameters](#general-parameters)
   - [The `env` section](#the-env-section)
 - [Kong Enterprise Parameters](#kong-enterprise-parameters)
-  - [Prerquisites](#prerequisites)
+  - [Prerequisites](#prerequisites-1)
     - [Kong Enterprise License](#kong-enterprise-license)
     - [Kong Enterprise Docker registry access](#kong-enterprise-docker-registry-access)
   - [Service location hints](#service-location-hints)
@@ -79,12 +79,19 @@ document.
 ## Kong Enterprise
 
 If using Kong Enterprise, several additional steps are necessary before
-installing the chart.
+installing the chart:
+
+- set `enterprise.enabled` to `true` in `values.yaml` file
+- Update values.yaml to use a Kong Enterprise image
+- Satisfy the two  prerequsisites below for
+  [Enterprise License](#kong-enterprise-license) and
+  [Enterprise Docker Registry](#kong-enterprise-docker-registry-access)
+
+Once you have these set, it is possible to install Kong Enterprise
 
 Please read through
 [Kong Enterprise considerations](#kong-enterprise-parameters)
-to understand the prerequisites and various other settings that are enterprise
-specific.
+to understand all settings that are enterprise specific.
 
 ## Deployment Options
 
@@ -330,6 +337,7 @@ Kong Open-Source. To use Kong Enterprise, at the minimum,
 you need to do the following:
 
 - set `enterprise.enabled` to `true` in `values.yaml` file
+- Update values.yaml to use a Kong Enterprise image
 - Satisfy the two  prerequsisites below for Enterprise License and
   Enterprise Docker Registry
 
