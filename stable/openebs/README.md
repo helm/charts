@@ -38,6 +38,7 @@ The following table lists the configurable parameters of the OpenEBS chart and t
 | Parameter                               | Description                                   | Default                                   |
 | ----------------------------------------| --------------------------------------------- | ----------------------------------------- |
 | `rbac.create`                           | Enable RBAC Resources                         | `true`                                    |
+| `rbac.pspEnabled`                       | Create pod security policy resources          | `false`                                   |
 | `image.pullPolicy`                      | Container pull policy                         | `IfNotPresent`                            |
 | `apiserver.enabled`                     | Enable API Server                             | `true`                                    |
 | `apiserver.image`                       | Image for API Server                          | `quay.io/openebs/m-apiserver`             |
