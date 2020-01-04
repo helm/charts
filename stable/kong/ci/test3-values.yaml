@@ -24,4 +24,3 @@ dblessConfig:
           config:
             status_code: 200
             message: "dbless-config"
-

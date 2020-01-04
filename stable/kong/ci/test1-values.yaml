@@ -24,4 +24,3 @@ proxy:
     hosts: ["test.com", "test2.com"]
     annotations: {}
     path: /
-
