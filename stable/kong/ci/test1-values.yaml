@@ -8,11 +8,9 @@ ingressController:
 # - environment variables can be injected into ingress controller container
   env:
     kong_admin_header: "foo:bar"
-
 # - podSecurityPolicies are enabled
 podSecurityPolicy:
   enabled: true
-
 # - ingress resources are created with hosts
 admin:
   ingress:
@@ -26,3 +24,4 @@ proxy:
     hosts: ["test.com", "test2.com"]
     annotations: {}
     path: /
+
