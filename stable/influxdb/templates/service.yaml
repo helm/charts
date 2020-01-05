@@ -65,3 +65,4 @@ spec:
   {{- end }}
   selector:
     app: {{ template "influxdb.fullname" . }}
+    release: "{{ .Release.Name }}"
