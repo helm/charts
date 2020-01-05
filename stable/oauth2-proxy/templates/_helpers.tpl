@@ -41,3 +41,14 @@ Get the secret name.
 {{- printf "%s" (include "oauth2-proxy.fullname" .) -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Get the secret name.
+*/}}
+{{- define "oauth2-proxy.googleSecretName" -}}
+{{- if .Values.config.google.existingSecret -}}
+{{- printf "%s" .Values.config.google.existingSecret -}}
+{{- else -}}
+{{- printf "%s-google" (include "oauth2-proxy.fullname" .) -}}
+{{- end -}}
+{{- end -}}
