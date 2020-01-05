@@ -7,6 +7,9 @@ spec:
   updateStrategy:
     type: RollingUpdate
   {{- end }}
+  selector:
+    matchLabels:
+      daemonset: {{ template "name" . }}
   template:
     metadata:
       labels:
