@@ -1,5 +1,5 @@
 {{- if ne (printf "%s" .Values.minecraftServer.eula) "FALSE" }}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "minecraft.fullname" . }}
@@ -9,10 +9,19 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "minecraft.fullname" . }}
   template:
     metadata:
       labels:
         app: {{ template "minecraft.fullname" . }}
+      {{- if .Values.podAnnotations }}
+      annotations:
+        {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      {{- end }}
     spec:
       securityContext:
         runAsUser: {{ .Values.securityContext.runAsUser }}

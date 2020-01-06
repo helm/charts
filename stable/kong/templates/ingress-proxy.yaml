@@ -27,7 +27,7 @@ spec:
               servicePort: {{ $servicePort }}
     {{ else -}}
     {{- range $host := .Values.proxy.ingress.hosts }}
-    - host: {{ $host }}
+    - host: {{ $host | quote }}
       http:
         paths:
           - path: {{ $path }}

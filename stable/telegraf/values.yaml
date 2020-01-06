@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repo: "telegraf"
-  tag: "1.10-alpine"
+  tag: "1.12-alpine"
   pullPolicy: IfNotPresent
 
 podAnnotations: {}
@@ -30,6 +30,54 @@ resources: {}
 service:
   enabled: true
   type: ClusterIP
+  annotations: {}
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+  # Create only for the release namespace or cluster wide (Role vs ClusterRole)
+  clusterWide: false
+  # Rules for the created rule
+  rules: []
+# When using the prometheus input to scrape all pods you need extra rules set to the ClusterRole to be
+# able to scan the pods for scraping labels. The following rules have been taken from:
+# https://github.com/helm/charts/blob/master/stable/prometheus/templates/server-clusterrole.yaml#L8-L46
+#    - apiGroups:
+#        - ""
+#      resources:
+#        - nodes
+#        - nodes/proxy
+#        - nodes/metrics
+#        - services
+#        - endpoints
+#        - pods
+#        - ingresses
+#        - configmaps
+#      verbs:
+#        - get
+#        - list
+#        - watch
+#    - apiGroups:
+#        - "extensions"
+#      resources:
+#        - ingresses/status
+#        - ingresses
+#      verbs:
+#        - get
+#        - list
+#        - watch
+#    - nonResourceURLs:
+#        - "/metrics"
+#      verbs:
+#        - get
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
 ## Exposed telegraf configuration
 ## For full list of possible values see `/docs/all-config-values.yaml` and `/docs/all-config-values.toml`
 ## ref: https://docs.influxdata.com/telegraf/v1.1/administration/configuration/
@@ -48,7 +96,23 @@ config:
     logfile: ""
     hostname: "$HOSTNAME"
     omit_hostname: false
+  processors:
+    - enum:
+        mapping:
+          field: "status"
+          dest: "status_code"
+          value_mappings:
+            healthy: 1
+            problem: 2
+            critical: 3
   outputs:
+    - health:
+        service_address: "http://:8888"
+        compares:
+          field: buffer_size
+          lt: 5000.0
+        contains:
+          field: buffer_size
     - influxdb:
         urls:
           - "http://influxdb.monitoring.svc:8086"
