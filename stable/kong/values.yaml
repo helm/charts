@@ -115,11 +115,11 @@ proxy:
     # TLS section. Unlike other ingresses, this follows the format at
     # https://kubernetes.io/docs/concepts/services-networking/ingress/#tls
     # tls:
-    #   hosts:
-    #     - example.com
-    #     secretName: example-com-tls-secret
-    #     - example.net
-    #     secretName: example-net-tls-secret
+    # - hosts:
+    #   - example.com
+    #   secretName: example-com-tls-secret
+    #   - example.net
+    #   secretName: example-net-tls-secret
     # Map of ingress annotations.
     annotations: {}
     # Ingress path.
