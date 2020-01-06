@@ -84,7 +84,7 @@ spec:
         - /bin/bash
         - -c
         - |
-          {{- if (eq .Values.securityContext.runAsUser 0.0) }}
+          {{- if (eq (.Values.securityContext.runAsUser | int) 0) }}
           useradd redis
           chown -R redis {{ .Values.slave.persistence.path }}
           {{- end }}
