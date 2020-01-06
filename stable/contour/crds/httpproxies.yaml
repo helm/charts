@@ -1,14 +1,12 @@
-{{- if .Values.customResourceDefinitions.create -}}
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
   name: httpproxies.projectcontour.io
   labels:
-    component: httpproxy
     app.kubernetes.io/name: contour
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    helm.sh/chart: {{ include "contour.chart" . }}
+  annotations:
+    "helm.sh/hook": crd-install
+    "helm.sh/hook-delete-policy": "before-hook-creation"
 spec:
   group: projectcontour.io
   version: v1alpha1
@@ -217,4 +215,3 @@ spec:
                               type: integer
                             healthyThresholdCount:
                               type: integer
-{{- end }}

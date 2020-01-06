@@ -249,6 +249,10 @@ interval: "1m"
 ## - panic, debug, info, warn, error, fatal
 ##
 logLevel: info
+## Formats of the ExternalDNS logs. Available values are:
+## - text, json
+##
+logFormat: text
 ## Modify how DNS records are sychronized between sources and providers (options: sync, upsert-only)
 ##
 policy: upsert-only

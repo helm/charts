@@ -76,13 +76,27 @@ data:
     {{ end }}
     {{- if eq .Values.filestore.backend "s3" }}
     filestore.options:
+      {{- if .Values.filestore.s3.accessKey }}
       access_key: '{{ .Values.filestore.s3.accessKey }}'
+      {{- end }}
+      {{- if .Values.filestore.s3.secretKey }}
       secret_key: '{{ .Values.filestore.s3.secretKey }}'
+      {{- end }}
+      {{- if .Values.filestore.s3.bucketName }}
       bucket_name: '{{ .Values.filestore.s3.bucketName }}'
+      {{- end }}
+      {{- if .Values.filestore.s3.endpointUrl }}
       endpoint_url: '{{ .Values.filestore.s3.endpointUrl }}'
+      {{- end }}
+      {{- if .Values.filestore.s3.signature_version }}
       signature_version: '{{ .Values.filestore.s3.signature_version }}'
+      {{- end }}
+      {{- if .Values.filestore.s3.region_name }}
       region_name: '{{ .Values.filestore.s3.region_name }}'
+      {{- end }}
+      {{- if .Values.filestore.s3.default_acl }}
       default_acl: '{{ .Values.filestore.s3.default_acl }}'
+      {{- end }}
     {{ end }}
 
 {{ .Values.config.configYml | indent 4 }}
@@ -401,7 +415,7 @@ data:
         'SENTRY_VSTS_CLIENT_ID': 'vsts.client-id',
         'SENTRY_VSTS_CLIENT_SECRET': 'vsts.client-secret',
         'GOOGLE_CLIENT_ID': 'auth-google.client-id',
-        'GOOGLE_CLIENT_SECRET': 'auth-google.client-secret',    
+        'GOOGLE_CLIENT_SECRET': 'auth-google.client-secret',
     }
 
 
@@ -465,6 +479,6 @@ data:
         'host': '{{ template "sentry.fullname" . }}-metrics',
         'port': 9125,
     }
-{{- end }} 
+{{- end }}
 
 {{ .Values.config.sentryConfPy | indent 4 }}
