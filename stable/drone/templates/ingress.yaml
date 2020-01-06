@@ -1,7 +1,11 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "drone.fullname" . }}
 {{- $httpPort := .Values.service.httpPort }}
-apiVersion: {{ default "networking.k8s.io/v1beta1" .Values.ingress.apiVersion }}
+{{ if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
+apiVersion: networking.k8s.io/v1beta1
+{{ else }}
+apiVersion: extensions/v1beta1
+{{ end -}}
 kind: Ingress
 metadata:
   annotations:
