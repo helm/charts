@@ -41,7 +41,7 @@ spec:
         volumeMounts:
         {{- include "kong.volumeMounts" . | nindent 8 }}
       securityContext:
-      {{- include "kong.podsecuritycontext" . | nindent 6 }}
+      {{- include "kong.podsecuritycontext" . | nindent 8 }}
       restartPolicy: OnFailure
       volumes:
       {{- include "kong.volumes" . | nindent 6 -}}

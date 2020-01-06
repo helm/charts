@@ -450,6 +450,18 @@ value is your SMTP password.
 
 ## Changelog
 
+### 0.34.1
+
+#### Fixed
+
+- Correct indentation for Job securityContexts.
+
+### 0.34.0
+
+#### New features
+
+- Update default version of Ingress Controller to 0.7.0
+
 ### 0.33.1
 
 #### Fixed
