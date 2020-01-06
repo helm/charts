@@ -13,8 +13,8 @@ image:
   pullSecrets: []
 
 initFile: |-
-  /usr/local/bin/superset-init --username admin --firstname admin --lastname user --email admin@fab.org --password admin
-  flask run
+  /usr/local/bin/superset-init --username admin --firstname admin --lastname user --email admin2@fab.org --password admin
+  superset run
 
 configFile: |-
   #---------------------------------------------------------
