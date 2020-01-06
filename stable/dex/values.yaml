@@ -13,6 +13,8 @@ nodeSelector: {}
 
 podAnnotations: {}
 
+initContainers: []
+
 tolerations: []
   # - key: CriticalAddonsOnly
   #   operator: Exists
@@ -115,6 +117,11 @@ rbac:
   # Specifies whether RBAC resources should be created
   create: true
 
+crd:
+  # Specifies whether dex's CRDs are already present (if not cluster role and cluster role binding will be created
+  # to enable dex to create them). Depends on rbac.create
+  present: false
+
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
   create: true
@@ -156,7 +163,7 @@ config:
     tlsCert: /etc/dex/tls/grpc/server/tls.crt
     tlsKey: /etc/dex/tls/grpc/server/tls.key
     tlsClientCA: /etc/dex/tls/grpc/ca/tls.crt
-  connectors: {}
+  connectors: []
 #  - type: github
 #    id: github
 #    name: GitHub
@@ -168,6 +175,10 @@ config:
   oauth2:
     alwaysShowLoginScreen: false
     skipApprovalScreen: true
+
+#  expiry:
+#    signingKeys: "6h"
+#    idTokens: "24h"
 
 #  staticClients:
 #  - id: example-app

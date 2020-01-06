@@ -1,0 +1,63 @@
+{{ if and .Values.pro.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ambassador.fullname" . }}-pro-redis
+  labels:
+    app.kubernetes.io/name: {{ include "ambassador.fullname" . }}-pro-redis
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+    helm.sh/chart: {{ include "ambassador.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- if .Values.extraLabels }}
+      {{- toYaml .Values.extraLabels | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- toYaml .Values.pro.rateLimit.redis.annotations.service | nindent 4}}
+spec:
+  type: ClusterIP
+  ports:
+  - port: 6379
+    targetPort: 6379
+  selector:
+    app.kubernetes.io/name: {{ include "ambassador.fullname" . }}-pro-redis
+    app.kubernetes.io/instance: {{ .Release.Name }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ambassador.fullname" . }}-pro-redis
+  labels:
+    app.kubernetes.io/name: {{ include "ambassador.fullname" . }}-pro-redis
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+    helm.sh/chart: {{ include "ambassador.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  {{- if .Values.extraLabels }}
+    {{- toYaml .Values.extraLabels | nindent 4 }}
+  {{- end }}
+  annotations:
+    {{- toYaml .Values.pro.rateLimit.redis.annotations.deployment | nindent 4}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "ambassador.fullname" . }}-pro-redis
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "ambassador.fullname" . }}-pro-redis
+        app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- if .Values.extraLabels }}
+        {{- toYaml .Values.extraLabels | nindent 8 }}
+      {{- end }}
+    spec:
+      containers:
+      - name: redis
+        image: redis:5.0.1
+        resources:
+        {{- toYaml .Values.pro.rateLimit.redis.resources | nindent 10 }}
+      restartPolicy: Always
+{{ end }}

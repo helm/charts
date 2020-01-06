@@ -7,7 +7,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ $fullName }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ template "grafana.namespace" . }}
   labels:
     app: {{ template "grafana.name" . }}
     chart: {{ template "grafana.chart" . }}

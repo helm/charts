@@ -1,6 +1,6 @@
 {{- if .Values.server.enabled -}}
 {{- if not .Values.server.statefulSet.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "prometheus.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
 {{- if .Values.server.deploymentAnnotations }}
@@ -38,6 +38,10 @@ spec:
       schedulerName: "{{ .Values.server.schedulerName }}"
 {{- end }}
       serviceAccountName: {{ template "prometheus.serviceAccountName.server" . }}
+      {{- if .Values.server.extraInitContainers }}
+      initContainers:
+{{ toYaml .Values.server.extraInitContainers | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.server.name }}-{{ .Values.configmapReload.name }}
           image: "{{ .Values.configmapReload.image.repository }}:{{ .Values.configmapReload.image.tag }}"
@@ -79,18 +83,15 @@ spec:
             - --storage.tsdb.path={{ .Values.server.persistentVolume.mountPath }}
             - --web.console.libraries=/etc/prometheus/console_libraries
             - --web.console.templates=/etc/prometheus/consoles
-            - --web.enable-lifecycle
-          {{- range $key, $value := .Values.server.extraArgs }}
-            - --{{ $key }}={{ $value }}
+          {{- range .Values.server.extraFlags }}
+            - --{{ . }}
           {{- end }}
           {{- if .Values.server.baseURL }}
             - --web.external-url={{ .Values.server.baseURL }}
           {{- end }}
-          {{- if .Values.server.enableAdminApi }}
-            - --web.enable-admin-api
-          {{- end }}
-          {{- if .Values.server.skipTSDBLock }}
-            - --storage.tsdb.no-lockfile
+
+          {{- range $key, $value := .Values.server.extraArgs }}
+            - --{{ $key }}={{ $value }}
           {{- end }}
           ports:
             - containerPort: 9090
@@ -98,14 +99,18 @@ spec:
             httpGet:
               path: {{ .Values.server.prefixURL }}/-/ready
               port: 9090
-            initialDelaySeconds: 30
-            timeoutSeconds: 30
+            initialDelaySeconds: {{ .Values.server.readinessProbeInitialDelay }}
+            timeoutSeconds: {{ .Values.server.readinessProbeTimeout }}
+            failureThreshold: {{ .Values.server.readinessProbeFailureThreshold }}
+            successThreshold: {{ .Values.server.readinessProbeSuccessThreshold }}
           livenessProbe:
             httpGet:
               path: {{ .Values.server.prefixURL }}/-/healthy
               port: 9090
-            initialDelaySeconds: 30
-            timeoutSeconds: 30
+            initialDelaySeconds: {{ .Values.server.livenessProbeInitialDelay }}
+            timeoutSeconds: {{ .Values.server.livenessProbeTimeout }}
+            failureThreshold: {{ .Values.server.livenessProbeFailureThreshold }}
+            successThreshold: {{ .Values.server.livenessProbeSuccessThreshold }}
           resources:
 {{ toYaml .Values.server.resources | indent 12 }}
           volumeMounts:

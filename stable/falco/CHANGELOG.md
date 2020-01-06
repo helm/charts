@@ -3,6 +3,30 @@
 This file documents all notable changes to Sysdig Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.0.12
+
+### Minor Changes
+
+* Support multiple lines for `falco.programOutput.program`
+
+## v1.0.11
+
+### Minor Changes
+
+* Add affinity
+
+## v1.0.10
+
+### Minor Changes
+
+* Migrate API versions from deprecated, removed versions to support Kubernetes v1.16
+
+## v1.0.9
+
+### Minor Changes
+
+* Restrict the access to `/dev` on underlying host to read only
+
 ## v1.0.8
 
 ### Minor Changes

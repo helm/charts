@@ -15,6 +15,17 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this
 {{ end }}
 
 {{/*
+Allow overwrite of rpc server.
+*/}}
+{{ define "drone.rpcServer" }}
+{{- if .Values.agent.rpcServerOverride -}}
+  {{ .Values.agent.rpcServerOverride }}
+{{- else -}}
+  {{ printf "http://%s" (include "drone.fullname" .) }}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Create the name of the service account to use
 */}}
 {{- define "drone.serviceAccountName" -}}

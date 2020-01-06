@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "stolon.fullname" . }}-sentinel
@@ -57,9 +57,12 @@ spec:
               value: {{ .Values.store.endpoints | quote}}
             {{- end }}
             - name: STSENTINEL_METRICS_LISTEN_ADDRESS
-              value: "0.0.0.0:8080"
+              value: "0.0.0.0:{{ .Values.ports.metrics.containerPort }}"
             - name: STSENTINEL_DEBUG
               value: {{ .Values.debug | quote}}
+{{- if .Values.sentinel.extraEnv }}
+{{ toYaml .Values.sentinel.extraEnv | indent 12 }}
+{{- end }}
           ports:
 {{- range $key, $value := .Values.ports }}
             - name: {{ $key }}

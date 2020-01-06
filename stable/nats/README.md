@@ -2,7 +2,7 @@
 
 [NATS](https://nats.io/) is an open-source, cloud-native messaging system. It provides a lightweight server that is written in the Go programming language.
 
-## TL;DR
+## TL;DR;
 
 ```bash
 $ helm install stable/nats
@@ -16,8 +16,8 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
-- PV provisioner support in the underlying infrastructure
+- Kubernetes 1.12+
+- Helm 2.11+ or Helm 3.0-beta3+
 
 ## Installing the Chart
 
@@ -27,7 +27,7 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release stable/nats
 ```
 
-The command deploys NATS on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys NATS on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
@@ -41,7 +41,7 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
-## Configuration
+## Parameters
 
 The following table lists the configurable parameters of the NATS chart and their default values.
 
@@ -57,7 +57,7 @@ The following table lists the configurable parameters of the NATS chart and thei
 | `nameOverride`                       | String to partially override nats.fullname template with a string (will prepend the release name) | `nil`                                                    |
 | `fullnameOverride`                   | String to fully override nats.fullname template with a string                                | `nil`                                                         |
 | `auth.enabled`                       | Switch to enable/disable client authentication                                               | `true`                                                        |
-| `auth.user`                          | Client authentication user                                                                   | `nats_cluster`                                                |
+| `auth.user`                          | Client authentication user                                                                   | `nats_client`                                                |
 | `auth.password`                      | Client authentication password                                                               | `random alhpanumeric string (10)`                             |
 | `auth.token`                         | Client authentication token                                                                  | `nil`                                                         |
 | `clusterAuth.enabled`                | Switch to enable/disable cluster authentication                                              | `true`                                                        |
@@ -153,13 +153,17 @@ $ helm install --name my-release -f values.yaml stable/nats
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
-### Production configuration
+## Configuration and installation details
 
-This chart includes a `values-production.yaml` file where you can find some parameters oriented to production configuration in comparison to the regular `values.yaml`.
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
 
-```console
-$ helm install --name my-release -f ./values-production.yaml stable/nats
-```
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
+
+### Production configuration and horizontal scaling
+
+This chart includes a `values-production.yaml` file where you can find some parameters oriented to production configuration in comparison to the regular `values.yaml`. You can use this file instead of the default one.
 
 - Number of NATS nodes
 ```diff
@@ -203,19 +207,9 @@ $ helm install --name my-release -f ./values-production.yaml stable/nats
 + metrics.enabled: true
 ```
 
-To horizontally scale this chart, run the following command to scale the number of nodes in your NATS replica set.
+To horizontally scale this chart, you can use the `--replicas` flag to modify the number of nodes in your NATS replica set.
 
-```console
-$ kubectl scale statefulset my-release-nats --replicas=3
-```
-
-### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
-
-It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
-
-Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
-
-## Sidecars
+### Sidecars
 
 If you have a need for additional containers to run within the same pod as NATS (e.g. an additional metrics or logging exporter), you can do so via the `sidecars` config parameter. Simply define your container according to the Kubernetes container spec.
 
@@ -228,6 +222,9 @@ sidecars:
   - name: portname
    containerPort: 1234
 ```
+
+## Upgrading
+
 ## Deploy chart with NATS version 1.x.x
 
 NATS version 2.0.0 has renamed the server binary filename from `gnatsd` to `nats-server`. Therefore, the default values has been changed in the chart,
@@ -236,8 +233,6 @@ however, it is still possible to use the chart to deploy NATS version 1.x.x usin
 ```bash
 helm install --name nats-v1 --set natsFilename=gnatsd --set image.tag=1.4.1 stable/nats
 ```
-
-## Upgrading
 
 ### To 1.0.0
 
