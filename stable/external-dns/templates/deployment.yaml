@@ -222,11 +222,13 @@ spec:
         {{- end }}
         # DigitalOcean environment variables
         {{- if eq .Values.provider "digitalocean" }}
+        {{- if .Values.digitalocean.apiToken }}
         - name: DO_TOKEN
           valueFrom:
             secretKeyRef:
               name: {{ template "external-dns.fullname" . }}
               key: digitalocean_api_token
+        {{- end }}
         {{- end }}
         # Google environment variables
         {{- if eq .Values.provider "google" }}
