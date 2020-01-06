@@ -4,6 +4,10 @@ ingressController:
   enabled: true
 postgresql:
   enabled: true
+  postgresqlUsername: kong
+  postgresqlDatabase: kong
+  service:
+    port: 5432
 env:
   database: "postgres"
 # - ingress resources are created without hosts
