@@ -44,7 +44,7 @@ The following table lists the configurable parameters of the pushgateway chart a
 | `extraArgs`                       | Optional flags for pushgateway                                                                                                | `[]`                              |
 | `extraVars`                       | Optional environment variables for pushgateway                                                                                | `[]`                              |
 | `image.repository`                | Image repository                                                                                                              | `prom/pushgateway`                |
-| `image.tag`                       | Image tag                                                                                                                     | `v1.0.0`                          |
+| `image.tag`                       | Image tag                                                                                                                     | `v1.0.1`                          |
 | `image.pullPolicy`                | Image pull policy                                                                                                             | `IfNotPresent`                    |
 | `ingress.enabled`                 | Enables Ingress for pushgateway                                                                                               | `false`                           |
 | `ingress.annotations`             | Ingress annotations                                                                                                           | `{}`                              |
@@ -63,7 +63,7 @@ The following table lists the configurable parameters of the pushgateway chart a
 | `podAnnotations`                  | Annotations for pod                                                                                                           | `{}`                              |
 | `podLabels`                       | Labels for pod                                                                                                                | `{}`                              |
 | `serviceAccountLabels`            | Labels for service account                                                                                                    | `{}`                              |
-| `serviceMonitor.enabled`          | if `true`, creates a Prometheus Operator ServiceMonitor (also requires `metrics.enabled` to be `true`)                        | `false`                           |
+| `serviceMonitor.enabled`          | if `true`, creates a Prometheus Operator ServiceMonitor                                                                       | `false`                           |
 | `serviceMonitor.namespace`        | Namespace which Prometheus is running in                                                                                      | `monitoring`                      |
 | `serviceMonitor.interval`         | How frequently to scrape metrics (use by default, falling back to Prometheus' default)                                        | `nil`                             |
 | `serviceMonitor.scrapeTimeout`    | How long to scrape metrics before timing out. (use by default, falling back to Prometheus' default)                           | `nil`                             |

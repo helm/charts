@@ -1,5 +1,19 @@
 # Magic Namespace
 
+## DEPRECATION NOTICE
+
+__Note that this chart manages _namespaces_ and also Helm 2 Tiller instances
+within those namespaces. Helm 3 releases are scoped to namespaces and therefore
+cannot create namespaces. Helm 3 also does not utilize the Tiller component.
+Helm 3, therefore, is both incapable of installing this chart _and_ has no
+practical need for this chart to begin with. With this being the case,
+maintainers have no intention of remediating this chart's incompatibilities with
+Helm 3, as that would undermine the chart's ongoing usefulness to Helm 2 users
+without deriving any benefit to Helm 3 users.__
+
+__In conclusion, consider this chart to be deprecated, with updates and support
+ending on the same schedule as Helm 2 itself.__
+
 **Magic Namespace** provides an easy, comprehensive option for cluster operators
 to manage namespaces and observe good security practices in _multi-tenant,
 RBAC-enabled_ Kubernetes clusters.

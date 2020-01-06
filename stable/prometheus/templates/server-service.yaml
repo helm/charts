@@ -38,6 +38,13 @@ spec:
       nodePort: {{ .Values.server.service.nodePort }}
     {{- end }}
   selector:
+  {{- if and .Values.server.statefulSet.enabled .Values.server.service.statefulsetReplica.enabled }}
+    statefulset.kubernetes.io/pod-name: {{ .Release.Name }}-{{ .Values.server.name }}-{{ .Values.server.service.statefulsetReplica.replica }}
+  {{- else -}}
     {{- include "prometheus.server.matchLabels" . | nindent 4 }}
+{{- if .Values.server.service.sessionAffinity }}
+  sessionAffinity: {{ .Values.server.service.sessionAffinity }}
+{{- end }}
+  {{- end }}
   type: "{{ .Values.server.service.type }}"
 {{- end -}}
