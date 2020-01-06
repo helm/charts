@@ -15,15 +15,29 @@ admin:
   ingress:
     enabled: true
     hosts: []
-    annotations: {}
     path: /
+  type: LoadBalancer
+  loadBalancerSourceRanges:
+    - 192.168.1.1/32
+    - 10.10.10.10/32
 proxy:
   ingress:
     enabled: true
     hosts: []
     annotations: {}
     path: /
+  useTLS: true
+  type: LoadBalancer
+  loadBalancerSourceRanges:
+    - 192.168.1.1/32
+    - 10.10.10.10/32
 
 # - PDB is enabled
 podDisruptionBudget:
   enabled: true
+# update strategy
+updateStrategy:
+  type: "RollingUpdate"
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0
