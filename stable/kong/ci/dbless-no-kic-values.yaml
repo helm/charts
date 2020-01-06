@@ -1,5 +1,0 @@
-# CI test for testing dbless deployment
-env:
-  database: "off"
-postgresql:
-  enabled: false

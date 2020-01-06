@@ -1,0 +1,43 @@
+# This tests the following unrealted aspects of Ingress Controller
+# - ingressController deploys with a database
+ingressController:
+  enabled: true
+postgresql:
+  enabled: true
+  postgresqlUsername: kong
+  postgresqlDatabase: kong
+  service:
+    port: 5432
+env:
+  database: "postgres"
+# - ingress resources are created without hosts
+admin:
+  ingress:
+    enabled: true
+    hosts: []
+    path: /
+  type: LoadBalancer
+  loadBalancerSourceRanges:
+    - 192.168.1.1/32
+    - 10.10.10.10/32
+proxy:
+  ingress:
+    enabled: true
+    hosts: []
+    annotations: {}
+    path: /
+  useTLS: true
+  type: LoadBalancer
+  loadBalancerSourceRanges:
+    - 192.168.1.1/32
+    - 10.10.10.10/32
+
+# - PDB is enabled
+podDisruptionBudget:
+  enabled: true
+# update strategy
+updateStrategy:
+  type: "RollingUpdate"
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0

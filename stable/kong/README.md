@@ -32,7 +32,7 @@ $ helm install stable/kong
   - [General Parameters](#general-parameters)
   - [The `env` section](#the-env-section)
 - [Kong Enterprise Parameters](#kong-enterprise-parameters)
-  - [Prerquisites](#prerequisites)
+  - [Prerequisites](#prerequisites-1)
     - [Kong Enterprise License](#kong-enterprise-license)
     - [Kong Enterprise Docker registry access](#kong-enterprise-docker-registry-access)
   - [Service location hints](#service-location-hints)
@@ -79,15 +79,19 @@ document.
 ## Kong Enterprise
 
 If using Kong Enterprise, several additional steps are necessary before
-installing the chart. At minimum, you must:
-* Create a [license secret](#license).
-* Set `enterprise.enabled: true` in values.yaml.
-* Update values.yaml to use a Kong Enterprise image. If needed, follow the
-instructions in values.yaml to add a registry pull secret.
+installing the chart:
 
-Reading through
-[the full list of Enterprise considerations](#kong-enterprise-parameters)
-is recommended.
+- set `enterprise.enabled` to `true` in `values.yaml` file
+- Update values.yaml to use a Kong Enterprise image
+- Satisfy the two  prerequsisites below for
+  [Enterprise License](#kong-enterprise-license) and
+  [Enterprise Docker Registry](#kong-enterprise-docker-registry-access)
+
+Once you have these set, it is possible to install Kong Enterprise
+
+Please read through
+[Kong Enterprise considerations](#kong-enterprise-parameters)
+to understand all settings that are enterprise specific.
 
 ## Deployment Options
 
@@ -284,7 +288,7 @@ For a complete list of all configuration values you can set in the
 The `env` section can be used to configured all properties of Kong.
 Any key value put under this section translates to environment variables
 used to control Kong's configuration. Every key is prefixed with `KONG_`
-and uppercased before setting the environment variable.
+and upper-cased before setting the environment variable.
 
 Furthermore, all `kong.env` parameters can also accept a mapping instead of a
 value to ensure the parameters can be set through configmaps and secrets.
@@ -320,7 +324,7 @@ potentially cause `admin.containerPort`, `proxy.http.containerPort` and
 `proxy.tls.containerPort` to become out of sync,
 and therefore must be updated accordingly.
 
-For example, updatating to `env.proxy_listen: 0.0.0.0:4444, 0.0.0.0:4443 ssl`
+For example, updating to `env.proxy_listen: 0.0.0.0:4444, 0.0.0.0:4443 ssl`
 will need `proxy.http.containerPort: 4444` and `proxy.tls.containerPort: 4443`
 to be set in order for the service definition to work properly.
 
@@ -329,16 +333,23 @@ to be set in order for the service definition to work properly.
 ### Overview
 
 Kong Enterprise requires some additional configuration not needed when using
-Kong OSS. Some of the more important configuration is grouped in sections
+Kong Open-Source. To use Kong Enterprise, at the minimum,
+you need to do the following:
+
+- set `enterprise.enabled` to `true` in `values.yaml` file
+- Update values.yaml to use a Kong Enterprise image
+- Satisfy the two  prerequsisites below for Enterprise License and
+  Enterprise Docker Registry
+
+Once you have these set, it is possible to install Kong Enterprise,
+but please make sure to review the below sections for other settings that
+you should consider configuring before installing Kong.
+
+Some of the more important configuration is grouped in sections
 under the `.enterprise` key in values.yaml, though most enterprise-specific
 configuration can be placed under the `.env` key.
 
-To use Kong Enterprise, change your image to a Kong Enterprise image and set
-`.enterprise.enabled: true` in values.yaml to render Enterprise sections of the
-templates. Review the sections below for other settings you should consider
-configuring before installing the chart.
-
-### Prerquisites
+### Prerequisites
 
 #### Kong Enterprise License
 
@@ -450,7 +461,19 @@ value is your SMTP password.
 
 ## Changelog
 
+### 0.34.2
+
+> PR [#19854](https://github.com/helm/charts/pull/19854)
+
+This release contains no user-visible changes
+
+### Under the hood
+
+ - Various tests have been consolidated to speed up CI.
+
 ### 0.34.1
+
+> PR [#19887](https://github.com/helm/charts/pull/19887)
 
 #### Fixed
 
@@ -458,15 +481,19 @@ value is your SMTP password.
 
 ### 0.34.0
 
+> PR [#19885](https://github.com/helm/charts/pull/19885)
+
 #### New features
 
 - Update default version of Ingress Controller to 0.7.0
 
 ### 0.33.1
 
+> PR [#19852](https://github.com/helm/charts/pull/19852)
+
 #### Fixed
 
-- Correct an issue with whitespace handling within `final_env` helper.
+- Correct an issue with white space handling within `final_env` helper.
 
 ### 0.33.0
 
@@ -474,7 +501,7 @@ value is your SMTP password.
 
 #### Dependencies
 
-- Postgre sub-chart has been bumped up to 8.1.2
+- Postgres sub-chart has been bumped up to 8.1.2
 
 #### Fixed
 
@@ -484,7 +511,7 @@ value is your SMTP password.
   as that of the Kong pod.
 - If Kong is configured to run with Postgres, the Kong pods now always wait
   for Postgres to start. Previously this was done only when the sub-chart
-  postgres was deployed.
+  Postgres was deployed.
 - A hard-coded container name is used for kong: `proxy`. Previously this
   was auto-generated by Helm. This deterministic naming allows for simpler
   scripts and documentation.
@@ -551,14 +578,14 @@ Following changes have no end user visible effects:
 
 #### Fixes
 
-- Do not remove whitespace between documents when rendering
+- Do not remove white space between documents when rendering
   `migrations-pre-upgrade.yaml`
 
 ### 0.30.1
 
 #### New Features
 
-- Add support for specifying Proxy service cluster ip.
+- Add support for specifying Proxy service ClusterIP
 
 ### 0.30.0
 
