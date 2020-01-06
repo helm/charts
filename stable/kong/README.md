@@ -469,15 +469,19 @@ This release contains no user-visible changes
 
 ### Under the hood
 
-Various tests have been consolidated to speed up CI.
+ - Various tests have been consolidated to speed up CI.
 
 ### 0.34.1
+
+> PR [#19887](https://github.com/helm/charts/pull/19887)
 
 #### Fixed
 
 - Correct indentation for Job securityContexts.
 
 ### 0.34.0
+
+> PR [#19885](https://github.com/helm/charts/pull/19885)
 
 #### New features
 
