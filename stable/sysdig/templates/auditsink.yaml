@@ -1,0 +1,23 @@
+{{- if and .Values.auditLog.enabled .Values.auditLog.dynamicBackend.enabled }}
+apiVersion: auditregistration.k8s.io/v1alpha1
+kind: AuditSink
+metadata:
+  name: {{ template "sysdig.fullname" . }}
+  labels:
+    app: {{ template "sysdig.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  policy:
+    level: RequestResponse
+    stages:
+      - ResponseComplete
+      - ResponseStarted
+  webhook:
+    throttle:
+      qps: 10
+      burst: 15
+    clientConfig:
+      url: http://{{ required "A valid .Values.auditLog.clusterIP entry required" .Values.auditLog.clusterIP }}:{{ .Values.auditLog.auditServerPort }}/k8s_audit
+{{- end }}
