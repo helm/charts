@@ -1,0 +1,22 @@
+{{- if and .Values.kubeScheduler.enabled .Values.global.networkPolicy.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ template "prometheus-operator.fullname" . }}-kube-scheduler
+  labels:
+    app: {{ template "prometheus-operator.name" . }}-kube-scheduler
+{{ include "prometheus-operator.labels" . | indent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ template "prometheus-operator.name" . }}-kube-scheduler
+{{ include "prometheus-operator.labels" . | indent 6 }}
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: {{ template "prometheus-operator.name" . }}-prometheus
+{{ include "prometheus-operator.labels" . | indent 14 }}
+    - ports:
+        - port: {{ .Values.kubeScheduler.service.port}}
+  {{- end -}}
