@@ -3,6 +3,12 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.6.0
+
+### Major changes
+
+* Add audit log configuration when deploying the agent.
+
 ## v1.5.0
 
 ### Major changes
