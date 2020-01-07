@@ -111,6 +111,18 @@ secure:
   # true here enables Sysdig Secure: container run-time security & forensics
   enabled: false
 
+auditLog:
+  # true here activates the K8s Audit Log feature for Sysdig Secure
+  enabled: false
+  # Required: You need to specify a clusterIP for the service which listens to K8s audit events
+  clusterIP:
+  auditServerUrl: 0.0.0.0
+  auditServerPort: 7765
+
+  dynamicBackend:
+    # true here configures an AuditSink who will receive the K8s audit logs
+    enabled: false
+
 customAppChecks: {}
   # Allow passing custom app checks for Sysdig Agent.
   # Example:
