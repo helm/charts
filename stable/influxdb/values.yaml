@@ -57,13 +57,16 @@ persistence:
   size: 8Gi
 
 ## Deploy InfluxDB Enterprise - License required
-##
+## ref: https://www.influxdata.com/products/influxdb-enterprise/
 enterprise:
-  enabled: false
+    enabled: false
   licensekey: {}
   clusterSize: 4
   meta:
     image:
+      ## This image contains the enterprise meta node package for clustering.
+      ## It is meant to be used in conjunction with the influxdb:data package of the same version.
+      ## ref: https://hub.docker.com/_/influxdb
       tag: meta
     clusterSize: 3
     ## seed is hashed and used as `internal-shared-secret` for Meta service.
