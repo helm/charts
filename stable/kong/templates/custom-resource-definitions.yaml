@@ -30,6 +30,10 @@ spec:
           type: string
         custom_id:
           type: string
+        credentials:
+          type: array
+          items:
+            type: string
 ---
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
@@ -172,6 +176,8 @@ spec:
                 enum:
                 - http
                 - https
+                - grpc
+                - grpcs
             https_redirect_status_code:
               type: integer
         proxy:
@@ -182,6 +188,8 @@ spec:
               enum:
               - http
               - https
+              - grpc
+              - grpcs
             path:
               type: string
               pattern: ^/.*$
@@ -206,6 +214,8 @@ spec:
               - "round-robin"
               - "consistent-hashing"
               - "least-connections"
+            host_header:
+              type: string
             hash_on:
               type: string
             hash_on_cookie:
