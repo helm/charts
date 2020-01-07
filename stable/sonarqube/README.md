@@ -95,8 +95,8 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `oracle.oracleHostport`                     | Oracle port                               | `1521`                                     |
 | `oracle.oraclePasswordSecret`               | Secret containing the password of the external Oracle server | `null`              |
 | `oracle.oracleUser`                         | Oracle database user                      | `sonarUser`                                |
-| `oracle.oraclePassword`                     | Oracle database password                  | `sonarPass`                                |
-| `oracle.oracleDatabase`                     | Oracle database name (if not using oraclePasswordSecret) | `sonarDB`                                  |
+| `oracle.oraclePassword`                     | Oracle database password (if not using oraclePasswordSecret)        | `sonarPass`                                |
+| `oracle.oracleDatabase`                     | Oracle database name                      | `sonarDB`                                  |
 | `oracle.oracleInstallDriver`                | Set to `true` to install the Oracle JDBC driver (must provide URL to file in `oracle.oracleDriverPath`)  | `false`                                |
 | `oracle.oracleDriverPath`                   | URL where the Oracle JDBC driver can be found  | `null`                                |
 | `annotations`                               | Sonarqube Pod annotations                 | `{}`                                       |
