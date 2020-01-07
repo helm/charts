@@ -157,7 +157,7 @@ spec:
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
-        - redis-server 
+        - redis-server
         args:
         - /data/conf/redis.conf
         env:

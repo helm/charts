@@ -66,6 +66,10 @@ proxy:
   authorizeServiceUrl: ""
   authorizeInternalUrl: ""
 
+forwardAuth:
+  nameOverride: ""
+  enabled: false
+
 service:
   # Service type can be set to ClusterIP, NodePort or LoadBalancer.
   authorize:
@@ -134,7 +138,7 @@ imagePullSecrets: ""
 
 image:
   repository: "pomerium/pomerium"
-  tag: "v0.5.1"
+  tag: "v0.5.2"
   pullPolicy: "IfNotPresent"
 
 metrics:
