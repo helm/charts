@@ -301,6 +301,8 @@ persistentVolume:
     - ReadWriteOnce
   size: 10Gi
   annotations: {}
+  # Set reclaimPolicy to Delete to delete obsoleted volumes
+  # reclaimPolicy: Retain
 init:
   resources: {}
 
