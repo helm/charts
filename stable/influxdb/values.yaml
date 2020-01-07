@@ -59,7 +59,7 @@ persistence:
 ## Deploy InfluxDB Enterprise - License required
 ## ref: https://www.influxdata.com/products/influxdb-enterprise/
 enterprise:
-    enabled: false
+  enabled: false
   licensekey: {}
   clusterSize: 4
   meta:
