@@ -41,7 +41,7 @@ spec:
       annotations:
         message: CoreDNS has disappeared from Prometheus target discovery.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-corednsdown
-      expr: absent(up{job="kube-dns"} == 1)
+      expr: absent(up{job="coredns"} == 1)
       for: 15m
       labels:
         severity: critical
