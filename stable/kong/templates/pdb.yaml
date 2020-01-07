@@ -2,9 +2,9 @@
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
-  name: "{{ template "kong.fullname" . }}"
+  name: {{ template "kong.fullname" . }}
   labels:
-    app: "{{ template "kong.name" . }}"
+    {{- include "kong.metaLabels" . | nindent 4 }}
 spec:
   {{- if .Values.podDisruptionBudget.minAvailable }}
   minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
@@ -14,7 +14,5 @@ spec:
   {{- end  }}
   selector:
     matchLabels:
-      app: {{ template "kong.name" . }}
-      release: {{ .Release.Name }}
-      component: app
+      {{- include "kong.metaLabels" . | nindent 6 }}
 {{- end }}

@@ -5,10 +5,7 @@ metadata:
   name:  {{ template "kong.fullname" . }}
   namespace: {{ .Release.namespace }}
   labels:
-    app: {{ template "kong.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "kong.metaLabels" . | nindent 4 }}
 rules:
   - apiGroups:
       - ""
@@ -51,10 +48,7 @@ metadata:
   name:  {{ template "kong.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "kong.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "kong.metaLabels" . | nindent 4 }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -68,10 +62,7 @@ apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
   labels:
-    app: {{ template "kong.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "kong.metaLabels" . | nindent 4 }}
   name:  {{ template "kong.fullname" . }}
 rules:
   - apiGroups:
@@ -137,10 +128,7 @@ kind: ClusterRoleBinding
 metadata:
   name:  {{ template "kong.fullname" . }}
   labels:
-    app: {{ template "kong.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "kong.metaLabels" . | nindent 4 }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole

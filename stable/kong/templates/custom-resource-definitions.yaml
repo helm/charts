@@ -4,10 +4,7 @@ kind: CustomResourceDefinition
 metadata:
   name: kongconsumers.configuration.konghq.com
   labels:
-    app: {{ template "kong.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "kong.metaLabels" . | nindent 4 }}
 spec:
   group: configuration.konghq.com
   version: v1
@@ -39,10 +36,7 @@ kind: CustomResourceDefinition
 metadata:
   name: kongcredentials.configuration.konghq.com
   labels:
-    app: {{ template "kong.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "kong.metaLabels" . | nindent 4 }}
 spec:
   group: configuration.konghq.com
   version: v1
@@ -79,10 +73,7 @@ kind: CustomResourceDefinition
 metadata:
   name: kongplugins.configuration.konghq.com
   labels:
-    app: {{ template "kong.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "kong.metaLabels" . | nindent 4 }}
 spec:
   group: configuration.konghq.com
   version: v1
@@ -143,10 +134,7 @@ kind: CustomResourceDefinition
 metadata:
   name: kongingresses.configuration.konghq.com
   labels:
-    app: {{ template "kong.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "kong.metaLabels" . | nindent 4 }}
 spec:
   group: configuration.konghq.com
   version: v1

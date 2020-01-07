@@ -6,11 +6,8 @@ kind: Job
 metadata:
   name: {{ template "kong.fullname" . }}-pre-upgrade-migrations
   labels:
-    app: {{ template "kong.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
-    component: pre-upgrade-migrations
+    {{- include "kong.metaLabels" . | nindent 4 }}
+    app.kubernetes.io/component: pre-upgrade-migrations
   annotations:
     helm.sh/hook: "pre-upgrade"
     helm.sh/hook-delete-policy: "before-hook-creation"
@@ -19,9 +16,8 @@ spec:
     metadata:
       name: {{ template "kong.name" . }}-pre-upgrade-migrations
       labels:
-        app: {{ template "kong.name" . }}
-        release: "{{ .Release.Name }}"
-        component: pre-upgrade-migrations
+        {{- include "kong.metaLabels" . | nindent 8 }}
+        app.kubernetes.io/component: pre-upgrade-migrations
     spec:
       {{- if .Values.podSecurityPolicy.enabled }}
       serviceAccountName: {{ template "kong.serviceAccountName" . }}
@@ -63,8 +59,5 @@ metadata:
     "helm.sh/hook": pre-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
   labels:
-    app: {{ template "kong.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "kong.metaLabels" . | nindent 4 }}
 {{- end -}}
