@@ -5,15 +5,15 @@
 # https://www.openpolicyagent.org/docs/configuration.html for more details.
 # Default value is no default config. For custom config, the opa key
 # needs to include the opa config yaml, eg:
-# opa:
-#   services:
-#     controller:
-#       url: https://some.bundle.host
-#   bundle:
-#     service: controller
-#     name: some-bundle-name.tgz
-#   default_decision: "/some_bundle_name/main"
-opa: false
+opa:
+  services:
+    controller:
+      url: 'https://www.openpolicyagent.org'
+  bundles:
+    quickstart:
+      service: controller
+      resource: /bundles/helm-kubernetes-quickstart
+  default_decision: /helm_kubernetes_quickstart/main
 
 # Setup the webhook using cert-manager
 certManager:
@@ -103,7 +103,7 @@ authz:
 
 # Docker image and tag to deploy.
 image: openpolicyagent/opa
-imageTag: 0.14.1
+imageTag: 0.15.1
 imagePullPolicy: IfNotPresent
 
 # Port to which the opa pod will bind itself
@@ -114,10 +114,12 @@ port: 443
 mgmt:
   enabled: true
   image: openpolicyagent/kube-mgmt
-  imageTag: 0.9
+  imageTag: "0.10"
   imagePullPolicy: IfNotPresent
   extraArgs: []
   resources: {}
+  data:
+    enabled: false
   configmapPolicies:
 # NOTE IF you use these, remember to update the RBAC rules below to allow
 #      permissions to get, list, watch, patch and update configmaps

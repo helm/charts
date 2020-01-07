@@ -5,6 +5,21 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.9.12
+
+Scriptapprovals are overwritten when overwriteConfig is enabled
+
+## 1.9.10
+
+Added documentation for `persistence.storageClass`.
+
+## 1.9.9
+Make `master.deploymentAnnotation` configurable.
+
+## 1.9.8
+
+Make `agent.slaveConnectTimeout` configurable: by increasing this value Jenkins will not cancel&ask k8s for a pod again, while it's on `ContainerCreating`. Useful when you have big images or autoscaling takes some time.
+
 ## 1.9.7 Update plugin versions
 
 plugin                | old version | new version
