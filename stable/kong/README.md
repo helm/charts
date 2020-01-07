@@ -461,6 +461,19 @@ value is your SMTP password.
 
 ## Changelog
 
+### 0.36.0
+
+#### Upgrade Instructions
+
+- When upgrading from <0.35.0, in-place chart upgrades will fail.
+  It is necessary to delete the helm release with `helm del --purge $RELEASE` and redeploy from scratch.
+  Note that this will cause downtime for the kong proxy. 
+
+#### Improvements 
+
+- Fixed Deployment's label selector that prevented in-place chart upgrades.
+ 
+
 ### 0.35.1
 
 > PR https://github.com/helm/charts/pull/19914
