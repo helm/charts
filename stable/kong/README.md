@@ -463,7 +463,7 @@ value is your SMTP password.
 
 ### 0.35.1
 
-> PR TODO
+> PR https://github.com/helm/charts/pull/19914
 
 #### Improvements
 
