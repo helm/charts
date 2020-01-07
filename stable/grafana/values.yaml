@@ -19,6 +19,13 @@ serviceAccount:
 
 replicas: 1
 
+## Use proxy inside grafana
+proxy:
+  enabled: false
+  http: ""
+  https: ""
+  noProxy: "monitoring-prometheus-oper-prometheus,"
+
 ## See `kubectl explain poddisruptionbudget.spec` for more
 ## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
 podDisruptionBudget: {}
