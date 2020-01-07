@@ -9,8 +9,7 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "kong.metaLabels" . | nindent 6 }}
-      app.kubernetes.io/component: app
+      {{- include "kong.selectorLabels" . | nindent 6 }}
   {{- if .Values.updateStrategy }}
   strategy:
 {{ toYaml .Values.updateStrategy | indent 4 }}
