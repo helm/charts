@@ -50,6 +50,11 @@ server:
     annotations: {}
     labels: {}
   configMap:
+  maven:
+    local-repository:
+    remote-repositories:
+      repo1:
+        url: "https://repo.spring.io/libs-snapshot:"
   resources: {}
   #  limits:
   #    cpu: 1.0
@@ -127,6 +132,8 @@ features:
     enabled: true
   monitoring:
     enabled: false
+  grafana:
+    url:
 
 grafana:
   service:
