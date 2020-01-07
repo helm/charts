@@ -24,6 +24,11 @@
   volumeMounts:
     - name: config
       mountPath: /etc/datadog-agent
+    {{- if .Values.daemonset.useConfigMap }}
+    - name: {{ template "datadog.fullname" . }}-datadog-yaml
+      mountPath: /etc/datadog-agent/datadog.yaml
+      subPath: datadog.yaml
+    {{- end }}
   livenessProbe:
     tcpSocket:
       port: 8126
