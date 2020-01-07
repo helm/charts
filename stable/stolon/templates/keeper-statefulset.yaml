@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "stolon.fullname" . }}-keeper
@@ -32,8 +32,10 @@ spec:
 {{- end }}
       serviceAccountName: {{ template "stolon.serviceAccountName" . }}
       terminationGracePeriodSeconds: 10
+{{- if .Values.keeper.fsGroup }}
       securityContext:
-        fsGroup: 1000
+        fsGroup: {{ .Values.keeper.fsGroup }}
+{{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

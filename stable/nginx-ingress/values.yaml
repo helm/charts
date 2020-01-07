@@ -5,7 +5,7 @@ controller:
   name: controller
   image:
     repository: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
-    tag: "0.26.1"
+    tag: "0.26.2"
     pullPolicy: IfNotPresent
     # www-data -> uid 33
     runAsUser: 33
@@ -117,6 +117,10 @@ controller:
   ## DaemonSet or Deployment
   ##
   kind: Deployment
+
+  ## Annotations to be added to the controller deployment
+  ##
+  deploymentAnnotations: {}
 
   # The update strategy to apply to the Deployment or DaemonSet
   ##

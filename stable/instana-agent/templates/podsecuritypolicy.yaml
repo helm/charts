@@ -30,6 +30,8 @@ spec:
       readOnly: false
     - pathPrefix: "/etc/machine-id"
       readOnly: false
+    - pathPrefix: "/var/lib/containers/storage"
+      readOnly: false
     {{- if .Values.agent.host.repository }}
     - pathPrefix: {{ .Values.agent.host.repository }}
       readOnly: false

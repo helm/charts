@@ -40,6 +40,17 @@ nodeSelector: {}
 #            values:
 #            - master
 affinity: {}
+
+volumeMounts: []
+#   - name: runlogjournal
+#     mountPath: /run/log/journal
+#     readOnly: true
+
+volumes: []
+#   - name: runlogjournal
+#     hostPath:
+#       path: /run/log/journal
+
 ## Add tolerations if specified
 tolerations: []
 #   - key: node-role.kubernetes.io/master
