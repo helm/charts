@@ -57,8 +57,26 @@ spec:
         {{- if .Values.dryRun }}
         - --dry-run
         {{- end }}
+        {{- if .Values.namespace }}
+        - --namespace={{ .Values.namespace }}
+        {{- end }}
+        {{- if .Values.fqdnTemplates }}
+        - --fqdn-template={{ join "," .Values.fqdnTemplates }}{{/* Explicitly wants comma separated list */}}
+        {{- end }}
+        {{- if .Values.combineFQDNAnnotation }}
+        - --combine-fqdn-annotation
+        {{- end }}
+        {{- if and .Values.ignoreHostnameAnnotation .Values.fqdnTemplates }}
+        - --ignore-hostname-annotation
+        {{- end }}
         {{- if .Values.publishInternalServices }}
         - --publish-internal-services
+        {{- end }}
+        {{- if .Values.publishHostIP }}
+        - --publish-host-ip
+        {{- end }}
+        {{- range .Values.serviceTypeFilter }}
+        - --service-type-filter={{ . }}
         {{- end }}
         {{- range .Values.domainFilters }}
         - --domain-filter={{ . }}
