@@ -66,6 +66,10 @@ proxy:
   authorizeServiceUrl: ""
   authorizeInternalUrl: ""
 
+forwardAuth:
+  nameOverride: ""
+  enabled: false
+
 service:
   # Service type can be set to ClusterIP, NodePort or LoadBalancer.
   authorize:
