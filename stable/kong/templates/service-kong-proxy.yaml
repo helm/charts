@@ -7,10 +7,7 @@ metadata:
       {{ $key }}: {{ $value | quote }}
     {{- end }}
   labels:
-    app: {{ template "kong.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "kong.metaLabels" . | nindent 4 }}
 spec:
   type: {{ .Values.proxy.type }}
   {{- if eq .Values.proxy.type "LoadBalancer" }}
@@ -53,8 +50,6 @@ spec:
   {{- if .Values.proxy.clusterIP }}
   clusterIP: {{ .Values.proxy.clusterIP }}
   {{- end }}
-
   selector:
-    app: {{ template "kong.name" . }}
-    release: {{ .Release.Name }}
-    component: app
+    {{- include "kong.metaLabels" . | nindent 4 }}
+    app.kubernetes.io/component: app

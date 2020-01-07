@@ -461,6 +461,16 @@ value is your SMTP password.
 
 ## Changelog
 
+### 0.35.0
+
+> PR [#19856](https://github.com/helm/charts/pull/19856)
+
+#### Improvements
+
+- Labels on all resources have been updated to adhere to the Helm Chart
+  guideline here:
+  https://v2.helm.sh/docs/developing_charts/#syncing-your-chart-repository
+
 ### 0.34.2
 
 > PR [#19854](https://github.com/helm/charts/pull/19854)
