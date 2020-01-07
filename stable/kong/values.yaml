@@ -115,11 +115,12 @@ proxy:
     # TLS section. Unlike other ingresses, this follows the format at
     # https://kubernetes.io/docs/concepts/services-networking/ingress/#tls
     # tls:
-    #   hosts:
-    #     - example.com
-    #     secretName: example-com-tls-secret
-    #     - example.net
-    #     secretName: example-net-tls-secret
+    # - hosts:
+    #   - 1.example.com
+    #   secretName: example1-com-tls-secret
+    # - hosts:
+    #   - 2.example.net
+    #   secretName: example2-net-tls-secret
     # Map of ingress annotations.
     annotations: {}
     # Ingress path.
@@ -208,25 +209,25 @@ ingressController:
 
   # general properties
   livenessProbe:
-    failureThreshold: 3
     httpGet:
       path: "/healthz"
       port: 10254
       scheme: HTTP
-    initialDelaySeconds: 10
+    initialDelaySeconds: 5
+    timeoutSeconds: 1
     periodSeconds: 10
     successThreshold: 1
-    timeoutSeconds: 5
+    failureThreshold: 3
   readinessProbe:
-    failureThreshold: 3
     httpGet:
       path: "/healthz"
       port: 10254
       scheme: HTTP
-    initialDelaySeconds: 10
+    initialDelaySeconds: 5
+    timeoutSeconds: 1
     periodSeconds: 10
     successThreshold: 1
-    timeoutSeconds: 5
+    failureThreshold: 3
   resources: {}
 
 # -----------------------------------------------------------------------------
@@ -286,11 +287,11 @@ readinessProbe:
     path: "/status"
     port: metrics
     scheme: HTTP
-  initialDelaySeconds: 10
+  initialDelaySeconds: 5
   timeoutSeconds: 1
   periodSeconds: 10
   successThreshold: 1
-  failureThreshold: 5
+  failureThreshold: 3
 
 # livenessProbe for Kong pods
 livenessProbe:
@@ -298,11 +299,11 @@ livenessProbe:
     path: "/status"
     port: metrics
     scheme: HTTP
-  initialDelaySeconds: 10
-  timeoutSeconds: 5
-  periodSeconds: 30
+  initialDelaySeconds: 5
+  timeoutSeconds: 1
+  periodSeconds: 10
   successThreshold: 1
-  failureThreshold: 5
+  failureThreshold: 3
 
 # Affinity for pod assignment
 # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
