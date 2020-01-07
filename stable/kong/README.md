@@ -461,6 +461,16 @@ value is your SMTP password.
 
 ## Changelog
 
+### 0.35.1
+
+> PR https://github.com/helm/charts/pull/19914
+
+#### Improvements
+
+- Update CRDs to Ingress Controller 0.7
+- Optimize readiness and liveness probes for more responsive health checks
+- Fixed incorrect space in NOTES.txt
+
 ### 0.35.0
 
 > PR [#19856](https://github.com/helm/charts/pull/19856)
@@ -477,7 +487,7 @@ value is your SMTP password.
 
 This release contains no user-visible changes
 
-### Under the hood
+#### Under the hood
 
  - Various tests have been consolidated to speed up CI.
 
