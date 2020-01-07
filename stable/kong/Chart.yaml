@@ -10,5 +10,5 @@ maintainers:
   email: harry@konghq.com
 name: kong
 sources:
-version: 0.35.1
+version: 0.36.0
 appVersion: 1.4
