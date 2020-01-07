@@ -6,11 +6,8 @@ kind: Job
 metadata:
   name: {{ template "kong.fullname" . }}-post-upgrade-migrations
   labels:
-    app: {{ template "kong.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
-    component: post-upgrade-migrations
+    {{- include "kong.metaLabels" . | nindent 4 }}
+    app.kubernetes.io/component: post-upgrade-migrations
   annotations:
     helm.sh/hook: "post-upgrade"
     helm.sh/hook-delete-policy: "before-hook-creation"
@@ -19,9 +16,8 @@ spec:
     metadata:
       name: {{ template "kong.name" . }}-post-upgrade-migrations
       labels:
-        app: {{ template "kong.name" . }}
-        release: "{{ .Release.Name }}"
-        component: post-upgrade-migrations
+        {{- include "kong.metaLabels" . | nindent 8 }}
+        app.kubernetes.io/component: post-upgrade-migrations
     spec:
       {{- if .Values.podSecurityPolicy.enabled }}
       serviceAccountName: {{ template "kong.serviceAccountName" . }}
