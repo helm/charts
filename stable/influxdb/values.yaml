@@ -44,10 +44,6 @@ service:
 ##
 persistence:
   enabled: true
-  ## If true will use an existing PVC instead of creating one
-  # useExisting: false
-  ## Name of existing PVC to be used in the influx deployment
-  # name:
   ## influxdb data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -56,6 +52,7 @@ persistence:
   ##   GKE, AWS & OpenStack)
   ##
   # storageClass: "-"
+  annotations:
   accessMode: ReadWriteOnce
   size: 8Gi
 
@@ -89,6 +86,11 @@ setDefaultUser:
     ## single quotes must be escaped (\')
     ## Default: (Randomly generated 10 characters of AlphaNum)
     # password:
+
+    ## The user name and password are obtained from an existing secret. The expected
+    ## keys are `influxdb-user` and `influxdb-password`.
+    ## If set, the username and password values above are ignored.
+    # existingSecret: influxdb-auth
 
     ## User privileges
     ## Default: "WITH ALL PRIVILEGES"
@@ -149,7 +151,7 @@ env: {}
 
 ## Change InfluxDB configuration parameters below:
 ## Defaults are indicated
-## ref: https://docs.influxdata.com/influxdb/v1.1/administration/config/
+## ref: https://docs.influxdata.com/influxdb/v1.7/administration/config
 config:
   reporting_disabled: false
   storage_directory: /var/lib/influxdb
@@ -167,6 +169,7 @@ config:
     compact_full_write_cold_duration: 4h0m0s
     max_series_per_database: 1000000
     max_values_per_tag: 100000
+    index_version: inmem
     trace_logging_enabled: false
   coordinator:
     write_timeout: 10s

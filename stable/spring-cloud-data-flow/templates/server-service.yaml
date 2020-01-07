@@ -18,6 +18,10 @@ metadata:
 spec:
   # If you are running k8s on a local dev box, you can use type NodePort instead
   type: {{ .Values.server.service.type }}
+{{- if .Values.server.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{ toYaml .Values.server.service.loadBalancerSourceRanges | indent 4 }}
+{{- end }}
   ports:
     - port: {{ .Values.server.service.externalPort }}
       targetPort: http

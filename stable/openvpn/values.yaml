@@ -112,3 +112,4 @@ openvpn:
 
 nodeSelector: {}
 debug: false
+tolerations: []

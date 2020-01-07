@@ -4,7 +4,7 @@
 
 ## Introduction
 
-Dex acts as a portal to other identity providers through "connectors." This lets dex defer authentication to LDAP servers, SAML providers, or established identity providers like GitHub, Google, and Active Directory. Clients write their authentication logic once to talk to dex, then dex handles the protocols for a given backend.
+Dex acts as a portal to other identity providers through "connectors". This lets dex defer authentication to LDAP servers, SAML providers, or established identity providers like GitHub, Google, and Active Directory. Clients write their authentication logic once to talk to dex, then dex handles the protocols for a given backend.
 
 **Kubernetes authentication note**
 
@@ -27,7 +27,7 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release stable/dex
 ```
 
-It'll install chart with the default parameters. However most probably it won't work for you as-is, thus before installing the chart you need to consult to the [values.yaml](values.yaml) notes as well as [dex documentation][dex].
+It'll install the chart with the default parameters. However most probably it won't work for you as-is, thus before installing the chart you need to consult the [values.yaml](values.yaml) notes as well as [dex documentation][dex].
 
 ## Uninstalling the Chart
 
@@ -82,6 +82,9 @@ Parameters introduced starting from v2
 | `config.web.address` | dex http/https listen address | `0.0.0.0` |
 | `config.web.tlsCert` | Maps to the dex config `web.tlsCert` param | `/etc/dex/tls/https/server/tls.crt` |
 | `config.web.tlsKey` | Maps to the dex config `web.tlsKey` param | `/etc/dex/tls/https/server/tls.key` |
+| `config.expiry.signingKeys` | Maps to the dex config `expiry.signingKeys` param | `6h` |
+| `config.expiry.idTokens` | Maps to the dex config `expiry.idTokens` param | `24h` |
+| `crd.present` | Whether dex's CRDs are already present (if not cluster role and cluster role binding will be created to enable dex to create them). Depends on `rbac.create` | `false` |
 | `grpc` | Enable dex grpc endpoint | `true` |
 | `https` | Enable TLS termination for the dex http endpoint | `false` |
 | `ports.grpc.containerPort` | grpc port listened by the dex | `5000` |
@@ -90,6 +93,7 @@ Parameters introduced starting from v2
 | `ports.web.containerPort` | http/https port listened by the dex | `5556` |
 | `ports.web.nodePort` | K8S Service node port for the dex http/https listener | `32000` |
 | `ports.web.servicePort` | K8S Service port for the dex http/https listener | `32000` |
+| `rbac.create` | If `true`, create & use RBAC resources | `true` |
 | `service.loadBalancerIP` | IP override for K8S LoadBalancer Service | `""` |
 
 
