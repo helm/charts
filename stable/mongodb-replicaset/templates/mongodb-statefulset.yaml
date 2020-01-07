@@ -241,7 +241,7 @@ spec:
             - -c
             - >-
               /bin/mongodb_exporter
-              --mongodb.uri {{ template "mongodb-replicaset.connection-string" . }}
+              --mongodb.uri "{{ template "mongodb-replicaset.connection-string" . }}"
               --mongodb.socket-timeout={{ .Values.metrics.socketTimeout }}
               --mongodb.sync-timeout={{ .Values.metrics.syncTimeout }}
               --web.telemetry-path={{ .Values.metrics.path }}
@@ -284,7 +284,7 @@ spec:
                 - -c
                 - >-
                   /bin/mongodb_exporter
-                  --mongodb.uri {{ template "mongodb-replicaset.connection-string" . }}
+                  --mongodb.uri "{{ template "mongodb-replicaset.connection-string" . }}"
                   --test
             initialDelaySeconds: 30
             periodSeconds: 10
