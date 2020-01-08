@@ -461,6 +461,12 @@ value is your SMTP password.
 
 ## Changelog
 
+### 0.36.2
+
+#### Fixed
+
+- Set `sideEffects` and `admissionReviewVersions` for Admission Webhook
+
 ### 0.36.1
 
 #### Fixed
