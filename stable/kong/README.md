@@ -461,6 +461,12 @@ value is your SMTP password.
 
 ## Changelog
 
+### 0.36.2
+
+#### Improvements
+
+- Added namespace scope flag `--watch-namespace` to args
+
 ### 0.36.1
 
 #### Fixed

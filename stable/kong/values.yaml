@@ -207,6 +207,11 @@ ingressController:
 
   installCRDs: true
 
+  # Watch only ingress in a single namespace
+  scoped:
+    enabled: false
+    namespace: ""
+
   # general properties
   livenessProbe:
     httpGet:

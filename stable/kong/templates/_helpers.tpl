@@ -308,6 +308,9 @@ The name of the service used for the ingress controller's validation webhook
   {{- if .Values.ingressController.admissionWebhook.enabled }}
   - --admission-webhook-listen=0.0.0.0:{{ .Values.ingressController.admissionWebhook.port }}
   {{- end }}
+  {{- if .Values.ingressController.scoped.enabled }}
+  - --watch-namespace={{ .Values.ingressController.scoped.namespace }}
+  {{- end }}
   env:
   - name: POD_NAME
     valueFrom:
