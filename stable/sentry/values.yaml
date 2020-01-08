@@ -92,6 +92,9 @@ email:
   user:
   password:
   enable_replies: false
+  # When defined the `password` field is ignored
+  # existingSecret: secret-name
+  # existingSecretKey: smtp-password
 
 # Name of the service and what port to expose on the pod
 # Don't change these unless you know what you're doing

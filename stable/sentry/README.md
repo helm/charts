@@ -109,7 +109,8 @@ Parameter                                            | Description              
 `email.password`                                     | SMTP password                                                                                              | `nil`
 `email.use_tls`                                      | SMTP TLS for security                                                                                      | `false`
 `email.enable_replies`                               | Allow email replies                                                                                        | `false`
-`email.existingSecret`                               | SMTP password from an existing secret (key must be `smtp-password`)                                        | `nil`
+`email.existingSecret`                               | SMTP password from an existing secret                                                                      | `nil`
+`email.existingSecretKey`                            | Key to get from the `email.existingSecret` secret                                                          | `smtp-password`
 `service.type`                                       | Kubernetes service type                                                                                    | `LoadBalancer`
 `service.name`                                       | Kubernetes service name                                                                                    | `sentry`
 `service.externalPort`                               | Kubernetes external service port                                                                           | `9000`
@@ -126,7 +127,7 @@ Parameter                                            | Description              
 `postgresql.postgresqlDatabase`                      | Postgres database name                                                                                     | `sentry`
 `postgresql.postgresqlUsername`                      | Postgres username                                                                                          | `postgres`
 `postgresql.postgresqlHost`                          | External postgres host                                                                                     | `nil`
-`postgresql.postgresqlPassword`                      | External/Internal postgres password                                                                                 | `nil`
+`postgresql.postgresqlPassword`                      | External/Internal postgres password                                                                        | `nil`
 `postgresql.postgresqlPort`                          | External postgres port                                                                                     | `5432`
 `redis.enabled`                                      | Deploy redis server (see below)                                                                            | `true`
 `redis.host`                                         | External redis host                                                                                        | `nil`
