@@ -121,6 +121,11 @@
   volumeMounts:
     - name: config
       mountPath: /etc/datadog-agent
+    {{- if .Values.daemonset.useConfigMap }}
+    - name: {{ template "datadog.fullname" . }}-datadog-yaml
+      mountPath: /etc/datadog-agent/datadog.yaml
+      subPath: datadog.yaml
+    {{- end }}
     {{- if .Values.datadog.useCriSocketVolume }}
     - name: runtimesocket
       mountPath: {{ default "/var/run/docker.sock" .Values.datadog.criSocketPath | quote }}
