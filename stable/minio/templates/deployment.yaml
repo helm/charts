@@ -1,4 +1,5 @@
 {{- if eq .Values.mode "standalone" }}
+{{ $bucketRoot := or ($.Values.bucketRoot) ($.Values.mountPath) }}
 apiVersion: {{ template "minio.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
@@ -91,7 +92,7 @@ spec:
           {{- if .Values.nasgateway.enabled }}
           command: [ "/bin/sh",
           "-ce",
-          "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} gateway nas {{ .Values.mountPath }}" ]
+          "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} gateway nas {{ $bucketRoot }}" ]
           {{- else }}
           {{- if .Values.b2gateway.enabled }}
           command: [ "/bin/sh",
@@ -100,7 +101,7 @@ spec:
           {{- else }}
           command: [ "/bin/sh",
           "-ce",
-          "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} server {{ .Values.mountPath }}" ]
+          "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} server {{ $bucketRoot }}" ]
           {{- end }}
           {{- end }}
           {{- end }}
