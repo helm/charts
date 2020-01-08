@@ -41,7 +41,7 @@ spec:
             - "-c"
             - 'mkdir -p $(printf "/opt/sonarqube/${1-%s\n}" temp logs data extensions/downloads extensions/plugins/tmp extensions/plugins) &&
                chown 999:999 -R $(printf "/opt/sonarqube/${1-%s\n}" temp logs data extensions/downloads extensions/plugins/tmp extensions/plugins)'
-          image: busybox:1.31
+          image: {{ default "busybox:1.31" .Values.plugins.initSysctlContainerImage }}
           imagePullPolicy: IfNotPresent
           securityContext:
             privileged: true
