@@ -125,6 +125,9 @@ spec:
           httpGet:
             path: /index.php
             port: http
+            httpHeaders:
+            - name: Host
+              value: {{ include "mediawiki.host" . | quote }}
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -136,6 +139,9 @@ spec:
           httpGet:
             path: /index.php
             port: http
+            httpHeaders:
+            - name: Host
+              value: {{ include "mediawiki.host" . | quote }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
