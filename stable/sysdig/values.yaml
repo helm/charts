@@ -109,7 +109,7 @@ sysdig:
 
 secure:
   # true here enables Sysdig Secure: container run-time security & forensics
-  enabled: false
+  enabled: true
 
 auditLog:
   # true here activates the K8s Audit Log feature for Sysdig Secure

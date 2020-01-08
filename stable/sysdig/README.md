@@ -62,7 +62,7 @@ The following table lists the configurable parameters of the Sysdig chart and th
 | `ebpf.settings.mountEtcVolume`    | Needed to detect which kernel version are running in Google COS        | `true`                                      |
 | `sysdig.accessKey`                | Your Sysdig Monitor Access Key                                         | `Nil` You must provide your own key         |
 | `sysdig.settings`                 | Settings for agent's configuration file                                | ` `                                         |
-| `secure.enabled`                  | Enable Sysdig Secure                                                   | `false`                                     |
+| `secure.enabled`                  | Enable Sysdig Secure                                                   | `true`                                      |
 | `auditLog.enabled`                | Enable K8s audit log support for Sysdig Secure                         | `false`                                     |
 | `auditLog.clusterIP`              | ClusterIP address where Sysdig will listen to K8s audit log events     | ` `                                         |
 | `auditLog.auditServerUrl`         | The URL where Sysdig Agent listens for K8s audit log events            | `0.0.0.0`                                   |
@@ -207,7 +207,6 @@ If you deployed the chart setting the values as CLI parameters, like for example
 $ helm install \
     --name sysdig \
     --set sysdig.accessKey=xxxx \
-    --set secure.enabled=true \
     --set ebpf.enabled=true \
     --namespace sysdig-agent \
     stable/sysdig
