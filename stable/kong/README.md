@@ -461,6 +461,12 @@ value is your SMTP password.
 
 ## Changelog
 
+### 0.36.1
+
+#### Fixed
+
+- Added missing watch permission to custom resources
+
 ### 0.36.0
 
 #### Upgrade Instructions
