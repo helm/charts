@@ -12,25 +12,19 @@ env:
   database: "postgres"
 # - ingress resources are created without hosts
 admin:
+  type: NodePort
   ingress:
     enabled: true
     hosts: []
     path: /
-  type: LoadBalancer
-  loadBalancerSourceRanges:
-    - 192.168.1.1/32
-    - 10.10.10.10/32
 proxy:
+  type: NodePort
   ingress:
     enabled: true
     hosts: []
     annotations: {}
     path: /
   useTLS: true
-  type: LoadBalancer
-  loadBalancerSourceRanges:
-    - 192.168.1.1/32
-    - 10.10.10.10/32
 
 # - PDB is enabled
 podDisruptionBudget:
