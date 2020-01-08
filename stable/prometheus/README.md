@@ -102,7 +102,7 @@ Parameter | Description | Default
 `alertmanager.image.tag` | alertmanager container image tag | `v0.20.0`
 `alertmanager.image.pullPolicy` | alertmanager container image pull policy | `IfNotPresent`
 `alertmanager.prefixURL` | The prefix slug at which the server can be accessed | ``
-`alertmanager.baseURL` | The external url at which the server can be accessed | `/`
+`alertmanager.baseURL` | The external url at which the server can be accessed | `"http://localhost:9093"`
 `alertmanager.extraArgs` | Additional alertmanager container arguments | `{}`
 `alertmanager.extraSecretMounts` | Additional alertmanager Secret mounts | `[]`
 `alertmanager.configMapOverrideName` | Prometheus alertmanager ConfigMap override where full-name is `{{.Release.Name}}-{{.Values.alertmanager.configMapOverrideName}}` and setting this value will prevent the default alertmanager ConfigMap from being generated | `""`

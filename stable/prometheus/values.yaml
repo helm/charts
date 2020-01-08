@@ -56,8 +56,7 @@ alertmanager:
   prefixURL: ""
 
   ## External URL which can access alertmanager
-  ## Maybe same with Ingress host name
-  baseURL: "/"
+  baseURL: "http://localhost:9093"
 
   ## Additional alertmanager container environment variable
   ## For instance to add a http_proxy
