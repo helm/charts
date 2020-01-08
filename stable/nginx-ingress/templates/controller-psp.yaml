@@ -21,6 +21,34 @@ spec:
     - 'secret'
     #- 'downwardAPI'
   hostNetwork: {{ .Values.controller.hostNetwork }}
+{{- if .Values.controller.hostNetwork }}
+  hostPorts:
+{{- range $key, $value := .Values.controller.containerPort }}
+  # {{ $key }}
+  - min: {{ $value }}
+    max: {{ $value }}
+{{- end }}
+{{- if .Values.controller.metrics.enabled }}
+  # metrics
+  - min: {{ .Values.controller.metrics.port }}
+    max: {{ .Values.controller.metrics.port }}
+{{- end }}
+{{- if .Values.controller.admissionWebhooks.enabled }}
+  # admission webhooks
+  - min: {{ .Values.controller.admissionWebhooks.port }}
+    max: {{ .Values.controller.admissionWebhooks.port }}
+{{- end }}
+{{- range $key, $value := .Values.tcp }}
+  # {{ $key }}-tcp
+  - min: {{ $key }}
+    max: {{ $key }}
+{{- end }}
+{{- range $key, $value := .Values.udp }}
+  # {{ $key }}-udp
+  - min: {{ $key }}
+    max: {{ $key }}
+{{- end }}
+{{- end }}
   hostIPC: false
   hostPID: false
   runAsUser:
