@@ -129,6 +129,8 @@ Parameter                                            | Description              
 `postgresql.postgresqlHost`                          | External postgres host                                                                                     | `nil`
 `postgresql.postgresqlPassword`                      | External/Internal postgres password                                                                        | `nil`
 `postgresql.postgresqlPort`                          | External postgres port                                                                                     | `5432`
+`postgresql.existingSecret`                          | Name of existing secret to use for the PostgreSQL password                                                 | `nil`
+`postgresql.existingSecretKey`                       | Key to get from the `postgresql.existingSecret` secret                                                     | `postgresql-password`
 `redis.enabled`                                      | Deploy redis server (see below)                                                                            | `true`
 `redis.host`                                         | External redis host                                                                                        | `nil`
 `redis.password`                                     | External redis password                                                                                    | `nil`

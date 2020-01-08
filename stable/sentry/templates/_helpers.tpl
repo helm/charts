@@ -79,6 +79,17 @@ Set postgres secret
 {{- end -}}
 
 {{/*
+Set postgres secretKey
+*/}}
+{{- define "sentry.postgresql.secretKey" -}}
+{{- if .Values.postgresql.enabled -}}
+"postgresql-password"
+{{- else -}}
+{{- default "postgresql-password" .Values.postgresql.existingSecretKey | quote -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Set postgres port
 */}}
 {{- define "sentry.postgresql.port" -}}

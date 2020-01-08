@@ -197,10 +197,13 @@ postgresql:
   nameOverride: sentry-postgresql
   postgresqlDatabase: sentry
   postgresqlUsername: postgres
-  # Only used when internal PG is disabled
+  # The following variables are only used when internal PG is disabled
   # postgresqlHost: postgres
   # postgresqlPassword: postgres
   # postgresqlPort: 5432
+  # When defined the `postgresqlPassword` field is ignored
+  # existingSecret: secret-name
+  # existingSecretKey: postgresql-password
 
 redis:
   enabled: true
