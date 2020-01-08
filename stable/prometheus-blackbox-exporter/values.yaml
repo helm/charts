@@ -1,8 +1,7 @@
 restartPolicy: Always
 
-podDisruptionBudget:
-  enabled: true
-  maxUnavailable: 0
+podDisruptionBudget: {}
+  # maxUnavailable: 0
 
 strategy:
   rollingUpdate:
