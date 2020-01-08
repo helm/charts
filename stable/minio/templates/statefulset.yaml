@@ -7,7 +7,7 @@
 {{ $scheme := "https" }}
 {{ end }}
 {{ $mountPath := .Values.mountPath }}
-{{ $bucketRoot := or ($.Values.bucketRoot) ($.Values.mountPath)  }}
+{{ $bucketRoot := or ($.Values.bucketRoot) ($.Values.mountPath) }}
 {{ $subPath := .Values.persistence.subPath }}
 {{ $penabled := .Values.persistence.enabled }}
 {{ $accessMode := .Values.persistence.accessMode }}

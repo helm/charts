@@ -1,5 +1,5 @@
 {{- if eq .Values.mode "standalone" }}
-{{ $bucketRoot := or ($.Values.bucketRoot) ($.Values.mountPath)  }}
+{{ $bucketRoot := or ($.Values.bucketRoot) ($.Values.mountPath) }}
 apiVersion: {{ template "minio.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
