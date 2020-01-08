@@ -123,7 +123,7 @@ spec:
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
-            path: /index.php
+            path: /api.php
             port: http
             httpHeaders:
             - name: Host
@@ -137,7 +137,7 @@ spec:
         {{- if .Values.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
-            path: /index.php
+            path: /api.php
             port: http
             httpHeaders:
             - name: Host
