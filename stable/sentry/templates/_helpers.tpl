@@ -123,6 +123,17 @@ Set redis secret
 {{- end -}}
 
 {{/*
+Set redis secretKey
+*/}}
+{{- define "sentry.redis.secretKey" -}}
+{{- if .Values.redis.enabled -}}
+"redis-password"
+{{- else -}}
+{{- default "redis-password" .Values.redis.existingSecretKey | quote -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Set redis port
 */}}
 {{- define "sentry.redis.port" -}}

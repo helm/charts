@@ -90,7 +90,7 @@ spec:
             {{- else }}
               name: {{ template "sentry.redis.secret" . }}
             {{- end }}
-              key: redis-password
+              key: {{ template "sentry.redis.secretKey" . }}
         {{- end }}
         - name: SENTRY_REDIS_HOST
           value: {{ template "sentry.redis.host" . }}

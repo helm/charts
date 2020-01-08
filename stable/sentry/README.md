@@ -135,6 +135,8 @@ Parameter                                            | Description              
 `redis.host`                                         | External redis host                                                                                        | `nil`
 `redis.password`                                     | External redis password                                                                                    | `nil`
 `redis.port`                                         | External redis port                                                                                        | `6379`
+`redis.existingSecret`                               | Name of existing secret to use for the Redis password                                                      | `nil`
+`redis.existingSecretKey`                            | Key to get from the `redis.existingSecret` secret                                                          | `redis-password`
 `filestore.backend`                                  | Backend for Sentry Filestore                                                                               | `filesystem`
 `filestore.filesystem.path`                          | Location to store files for Sentry                                                                         | `/var/lib/sentry/files`
 `filestore.filesystem.persistence.enabled`           | Enable Sentry files persistence using PVC                                                                  | `true`
