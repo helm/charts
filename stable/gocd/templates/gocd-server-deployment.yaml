@@ -36,7 +36,9 @@ spec:
       securityContext:
         runAsUser: {{ .Values.server.securityContext.runAsUser }}
         runAsGroup: {{ .Values.server.securityContext.runAsGroup }}
+        {{- if .Values.server.securityContext.fsGroup }}
         fsGroup: {{ .Values.server.securityContext.fsGroup }}
+        {{- end }}
       serviceAccountName: {{ template "gocd.serviceAccountName" . }}
       {{- if or .Values.server.shouldPreconfigure (or .Values.server.persistence.enabled (or .Values.server.security.ssh.enabled .Values.server.persistence.extraVolumes)) }}
       volumes:

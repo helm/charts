@@ -98,14 +98,14 @@ The following tables list the configurable parameters of the GoCD chart and thei
 | `server.ingress.annotations`               | GoCD ingress annotations.                                                                                     | `{}`                |
 | `server.ingress.tls`                       | GoCD ingress TLS configuration.                                                                               | `[]`                |
 | `server.healthCheck.initialDelaySeconds`   | Initial delays in seconds to start the health checks. **Note**:GoCD server start up time.                     | `90`                |
-| `server.healthCheck.periodSeconds`         | GoCD server health check interval period.                                                                      | `15`                |
+| `server.healthCheck.periodSeconds`         | GoCD server health check interval period.                                                                     | `15`                |
 | `server.healthCheck.failureThreshold`      | Number of unsuccessful attempts made to the GoCD server health check endpoint before restarting.              | `10`                |
 | `server.hostAliases`                       | Aliases for IPs in /etc/hosts                                                                                 | `[]`                |
 | `server.security.ssh.enabled`              | Enable the use of SSH keys for GoCD server                                                                    | `false`             |
 | `server.security.ssh.secretName`           | The name of the secret holding the SSH keys                                                                   | `gocd-server-ssh`   |
 | `server.securityContext.runAsUser`         | The container user for all the GoCD server pods.                                                              | `1000`              |
 | `server.securityContext.runAsGroup`        | The container group for all the GoCD server pods.                                                             | `0`                 |
-| `server.securityContext.fsGroup`           | The container supplementary group for all the GoCD server pods.                                               | `0`                 |
+| `server.securityContext.fsGroup`           | The container supplementary group for all the GoCD server pods.                                               | `nil`               |
 | `server.sidecarContainers`                 | Sidecar containers to run alongside GoCD server.                                                              | `[]`                |
 
 #### Preconfiguring the GoCD Server
