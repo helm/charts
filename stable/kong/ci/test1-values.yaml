@@ -13,12 +13,14 @@ podSecurityPolicy:
   enabled: true
 # - ingress resources are created with hosts
 admin:
+  type: NodePort
   ingress:
     enabled: true
     hosts: ["test.com", "test2.com"]
     annotations: {}
     path: /
 proxy:
+  type: NodePort
   ingress:
     enabled: true
     hosts: ["test.com", "test2.com"]
