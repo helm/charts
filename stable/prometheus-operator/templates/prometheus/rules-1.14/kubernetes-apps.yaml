@@ -141,7 +141,7 @@ spec:
         severity: warning
     - alert: KubeCronJobRunning
       annotations:
-        message: CronJob {{`{{ $labels.namespace }}`}}/{{`{{ $labels.cronjob }}`}} is taking more than 1h to complete.
+        message: CronJob {{`{{ $labels.namespace }}`}}/{{`{{ $labels.cronjob }}`}} is taking more than one hour to complete.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubecronjobrunning
       expr: time() - kube_cronjob_next_schedule_time{job="kube-state-metrics"} > 3600
       for: 1h
