@@ -81,8 +81,10 @@ spec:
             - |
               mkdir -p {{ .Values.persistence.mountPath }}/data
               chmod 700 {{ .Values.persistence.mountPath }}/data
-              find {{ .Values.persistence.mountPath }} -mindepth 0 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" | \
-                xargs chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }}
+              find {{ .Values.persistence.mountPath }} -mindepth 0 -maxdepth 1 \
+                -not -name ".snapshot" \
+                -not -name "lost+found" \
+                -exec chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }} {} \;
               {{- if .Values.shmVolume.enabled }}
               chmod -R 777 /dev/shm
               {{- end }}
