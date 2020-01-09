@@ -1041,7 +1041,7 @@ prometheusOperator:
     loadBalancerSourceRanges: []
 
   ## Service type
-  ## NodepPort, ClusterIP, loadbalancer
+  ## NodePort, ClusterIP, loadbalancer
   ##
     type: ClusterIP
 
