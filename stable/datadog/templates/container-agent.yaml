@@ -21,14 +21,6 @@
     - name: DD_CLUSTER_NAME
       value: {{ .Values.datadog.clusterName | quote }}
     {{- end }}
-    {{- if .Values.datadog.site }}
-    - name: DD_SITE
-      value: {{ .Values.datadog.site | quote }}
-    {{- end }}
-    {{- if .Values.datadog.dd_url }}
-    - name: DD_DD_URL
-      value: {{ .Values.datadog.dd_url | quote }}
-    {{- end }}
     {{- if .Values.datadog.logLevel }}
     - name: DD_LOG_LEVEL
       value: {{ .Values.daemonset.containers.agent.logLevel | default .Values.datadog.logLevel | quote }}
