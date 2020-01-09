@@ -90,6 +90,34 @@ Assuming you have an existing release of the prometheus chart, named `prometheus
 
    Old data will be available when you query the new prometheus instance.
 
+## Scraping Pod Metrics via Annotations
+
+This chart uses a default configuration that causes prometheus
+to scrape a variety of kubernetes resource types, provided they have the correct annotations.
+In this section we describe how to configure pods to be scraped;
+for information on how other resource types can be scraped you can
+do a `helm template` to get the kubernetes resource definitions,
+and then reference the prometheus configuration in the ConfigMap against the prometheus documentation
+for [relabel_config](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config)
+and [kubernetes_sd_config](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config).
+
+In order to get prometheus to scrape pods, you must add annotations to the the pods as below:
+
+```
+metadata:
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: /metrics
+    prometheus.io/port: "8080"
+spec:
+...
+```
+
+You should adjust `prometheus.io/path` based on the URL that your pod serves metrics from.
+`prometheus.io/port` should be set to the port that your pod serves metrics from.
+Note that the values for `prometheus.io/scrape` and `prometheus.io/port` must be 
+enclosed in double quotes.
+
 ## Configuration
 
 The following table lists the configurable parameters of the Prometheus chart and their default values.
