@@ -301,8 +301,8 @@ persistentVolume:
     - ReadWriteOnce
   size: 10Gi
   annotations: {}
-  # Set reclaimPolicy to Delete to delete obsoleted volumes
-  # reclaimPolicy: Retain
+  # reclaimPolicy per https://kubernetes.io/docs/concepts/storage/persistent-volumes/#reclaiming
+  reclaimPolicy: ""
 init:
   resources: {}
 
