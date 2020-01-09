@@ -52,7 +52,7 @@ spec:
             - /usr/bin/falco
             {{- if (and .Values.cri.enabled .Values.cri.socket) }}
             - --cri
-            - /host/var/run/cri.sock
+            - /host/run/containerd/containerd.sock
             {{- end }}
             - -K
             - /var/run/secrets/kubernetes.io/serviceaccount/token
@@ -93,8 +93,8 @@ spec:
               name: docker-socket
             {{- end}}
             {{- if (and .Values.cri.enabled .Values.cri.socket) }}
-            - mountPath: /host/var/run/cri.sock
-              name: cri-socket
+            - mountPath: /host/run/containerd/containerd.sock
+              name: containerd-socket
             {{- end}}
             - mountPath: /host/dev
               name: dev-fs
