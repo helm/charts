@@ -256,7 +256,7 @@ data:
     yes n | cp -i /usr/share/jenkins/ref/plugins/* /var/jenkins_plugins/;
 {{- end }}
 {{- if .Values.master.scriptApproval }}
-  {{- if .Values.master.OverwriteConfig }}
+  {{- if .Values.master.overwriteConfig }}
     cp /var/jenkins_config/scriptapproval.xml /var/jenkins_home/scriptApproval.xml;
   {{- else }}
     yes n | cp -i /var/jenkins_config/scriptapproval.xml /var/jenkins_home/scriptApproval.xml;
