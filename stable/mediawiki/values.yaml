@@ -56,6 +56,11 @@ mediawikiEmail: user@example.com
 ##
 mediawikiName: My Wiki
 
+## Mediawiki host to create application URLs
+## ref: https://github.com/bitnami/bitnami-docker-mediawiki#configuration
+##
+# mediawikiHost:
+
 ## Set to `yes` to allow the container to be started with blank passwords
 ## ref: https://github.com/bitnami/bitnami-docker-mediawiki#environment-variables
 allowEmptyPassword: "yes"
