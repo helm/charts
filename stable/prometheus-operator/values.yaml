@@ -6,6 +6,10 @@
 ##
 nameOverride: ""
 
+## Override the deployment namespace
+##
+namespaceOverride: ""
+
 ## Provide a name to substitute for the full names of resources
 ##
 fullnameOverride: ""

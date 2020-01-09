@@ -164,6 +164,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `global.rbac.pspEnabled` | Create pod security policy resources | `true` |
 | `kubeTargetVersionOverride` | Provide a target gitVersion of K8S, in case .Capabilites.KubeVersion is not available (e.g. `helm template`) |`""`|
 | `nameOverride` | Provide a name in place of `prometheus-operator` |`""`|
+| `namespaceOverride` | Override the deployment namespace | `""` (`Release.Namespace`) |
 
 ### Prometheus Operator
 | Parameter | Description | Default |

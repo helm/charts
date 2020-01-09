@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-operator
-  namespace: {{ $.Release.Namespace }}
+  namespace: {{ template "prometheus-operator.namespace" . }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-operator
 {{ include "prometheus-operator.labels" . | indent 4 }}
@@ -49,7 +49,7 @@ spec:
           {{- with $.Values.prometheusOperator.namespaces }}
           {{ $ns := .additional }}
           {{- if .releaseNamespace }}
-          {{- $ns = append $ns $.Release.Namespace }}
+          {{- $ns = printf "%s" (include "prometheus-operator.namespace" .) | append $ns }}
           {{- end }}
             - --namespaces={{ $ns | join "," }}
           {{- end }}

@@ -8,7 +8,7 @@ items:
     kind: PrometheusRule
     metadata:
       name: {{ template "prometheus-operator.name" $ }}-{{ $prometheusRuleName }}
-      namespace: {{ $.Release.Namespace }}
+      namespace: {{ template "prometheus-operator.namespace" . }}
       labels:
         app: {{ template "prometheus-operator.name" $ }}
 {{ include "prometheus-operator.labels" $ | indent 8 }}
@@ -25,7 +25,7 @@ items:
     kind: PrometheusRule
     metadata:
       name: {{ template "prometheus-operator.name" $ }}-{{ .name }}
-      namespace: {{ $.Release.Namespace }}
+      namespace: {{ template "prometheus-operator.namespace" . }}
       labels:
         app: {{ template "prometheus-operator.name" $ }}
 {{ include "prometheus-operator.labels" $ | indent 8 }}
