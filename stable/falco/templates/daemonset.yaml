@@ -50,7 +50,7 @@ spec:
             privileged: true
           args:
             - /usr/bin/falco
-            {{- if (and .Values.cri.enabled .Values.cri.socket) }}
+            {{- if .Values.containerd.enabled }}
             - --cri
             - /host/run/containerd/containerd.sock
             {{- end }}
@@ -88,11 +88,11 @@ spec:
               value: "{{ $value }}"
           {{- end }}
           volumeMounts:
-            {{- if (and .Values.docker.enabled .Values.docker.socket) }}
+            {{- if .Values.docker.enabled }}
             - mountPath: /host/var/run/docker.sock
               name: docker-socket
             {{- end}}
-            {{- if (and .Values.cri.enabled .Values.cri.socket) }}
+            {{- if .Values.containerd.enabled }}
             - mountPath: /host/run/containerd/containerd.sock
               name: containerd-socket
             {{- end}}
@@ -197,15 +197,15 @@ spec:
         - name: dshm
           emptyDir:
             medium: Memory
-        {{- if (and .Values.docker.enabled .Values.docker.socket) }}
+        {{- if .Values.docker.enabled }}
         - name: docker-socket
           hostPath:
             path: {{ .Values.docker.socket }}
         {{- end}}
-        {{- if (and .Values.cri.enabled .Values.cri.socket) }}
-        - name: cri-socket
+        {{- if .Values.containerd.enabled }}
+        - name: containerd-socket
           hostPath:
-            path: {{ .Values.cri.socket }}
+            path: {{ .Values.containerd.socket }}
         {{- end}}
         - name: dev-fs
           hostPath:

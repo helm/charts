@@ -10,7 +10,7 @@ docker:
   enabled: true
   socket: /var/run/docker.sock
 
-cri:
+containerd:
   enabled: true
   socket: /run/containerd/containerd.sock
 
