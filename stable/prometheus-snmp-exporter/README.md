@@ -70,10 +70,13 @@ The following table lists the configurable parameters of the SNMP-Exporter chart
 | `service.type`                         | type of service to create                       | `ClusterIP`                   |
 | `service.port`                         | port for the snmp http service                  | `9116`                        |
 | `service.externalIPs`                  | list of external ips                            | []                            |
-| `rbac.create` 		                     | Use Role-based Access Control		               | `true`	                       |
-| `serviceAccount.create`	               | Should we create a ServiceAccount	             | `true`                 	     |
-| `serviceAccount.name`		               | Name of the ServiceAccount to use               | `null`		                     |
+| `rbac.create`                          | Use Role-based Access Control                   | `true`                        |
+| `serviceAccount.create`                | Should we create a ServiceAccount               | `true`                        |
+| `serviceAccount.name`                  | Name of the ServiceAccount to use               | `null`                        |
 | `serviceMonitor.enabled`               | Enables ServiceMonitor                          | `false`                       |
+| `serviceMonitor.params.enabled`        | Enables params for serviceMonitor               | `false`                       |
+| `serviceMonitor.params.conf.module`    | Module to use for scrapes                       | `[]`                          |
+| `serviceMonitor.params.conf.target`    | List of target(s) to scrape                     | `[]`                          |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
