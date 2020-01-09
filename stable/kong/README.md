@@ -461,6 +461,14 @@ value is your SMTP password.
 
 ## Changelog
 
+### 0.36.3
+
+> PR https://github.com/helm/charts/pull/19992
+
+#### Fixed
+
+- Fix spacing in ServiceMonitor when label is specified in config
+
 ### 0.36.2
 
 > PR https://github.com/helm/charts/pull/19955
