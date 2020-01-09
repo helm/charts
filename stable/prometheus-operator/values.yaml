@@ -1332,6 +1332,13 @@ prometheus:
     interval: ""
     selfMonitor: true
 
+    ## scheme: HTTP scheme to use for scraping. Can be used with `tlsConfig` for example if using istio mTLS.
+    scheme: ""
+
+    ## tlsConfig: TLS configuration to use when scraping the endpoint. For example if using istio mTLS.
+    ## Of type: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#tlsconfig
+    tlsConfig: {}
+
     bearerTokenFile:
 
     ## 	metric relabel configs to apply to samples before ingestion.
