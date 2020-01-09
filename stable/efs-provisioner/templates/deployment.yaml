@@ -55,6 +55,8 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
+        - name: FILE_SYSTEM_ID
+          value: {{ .Values.efsProvisioner.efsFileSystemId }}
         - name: AWS_REGION
           value: {{ .Values.efsProvisioner.awsRegion }}
         - name: PROVISIONER_NAME
@@ -62,9 +64,6 @@ spec:
         {{- if .Values.efsProvisioner.dnsName }}
         - name: DNS_NAME
           value: {{ .Values.efsProvisioner.dnsName }}
-        {{- else }}
-        - name: FILE_SYSTEM_ID
-          value: {{ .Values.efsProvisioner.efsFileSystemId }}
         {{- end }}
         resources:
           {{- toYaml .Values.resources | nindent 12 }}
