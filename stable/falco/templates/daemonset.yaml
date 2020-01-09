@@ -239,7 +239,7 @@ spec:
                 path: falco_rules.local.yaml
               - key: application_rules.yaml
                 path: rules.available/application_rules.yaml
-              {{- if .Values.falco.webserver.enabled }}
+              {{- if .Values.auditLog.enabled }}
               - key: k8s_audit_rules.yaml
                 path: k8s_audit_rules.yaml
               {{- end }}

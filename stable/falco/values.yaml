@@ -82,6 +82,16 @@ ebpf:
     # Set to false if not running on Google COS
     mountEtcVolume: true
 
+auditLog:
+  # true here activates the K8s Audit Log feature for Sysdig Secure
+  enabled: false
+  # Required: You need to specify a clusterIP for the service which listens to K8s audit events
+  clusterIP:
+
+  dynamicBackend:
+    # true here configures an AuditSink who will receive the K8s audit logs
+    enabled: false
+
 falco:
   # The location of the rules file(s). This can contain one or more paths to
   # separate rules files.
@@ -183,10 +193,9 @@ falco:
   # Audit Events. These config options control the behavior of that
   # webserver. (By default, the webserver is disabled).
   webserver:
-    enabled: false
+    enabled: true
     listenPort: 8765
     k8sAuditEndpoint: /k8s-audit
-    clusterIP:
 
   # Possible additional things you might want to do with program output:
   #   - send to a slack webhook:
