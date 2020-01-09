@@ -1,6 +1,6 @@
 {{- if and .Values.alertmanager.enabled .Values.global.rbac.create .Values.global.rbac.pspEnabled }}
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
+kind: RoleBinding
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-alertmanager
   labels:
@@ -8,7 +8,7 @@ metadata:
 {{ include "prometheus-operator.labels" . | indent 4 }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
+  kind: Role
   name: {{ template "prometheus-operator.fullname" . }}-alertmanager
 subjects:
   - kind: ServiceAccount
