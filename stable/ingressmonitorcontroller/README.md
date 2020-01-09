@@ -40,7 +40,7 @@ The following quickstart let's you set up Ingress Monitor Controller to register
 | serviceAccount.labels          | Labels for serviceAccount                                                      | `{}`                        | `{}`
 | serviceAccount.name          | Name of serviceAccount                                                      | `ingressmonitorcontroller`                        | `ingressmonitorcontroller`
 | image.name          | Image of ingressMonitorController                                                      | `stakater/ingressmonitorcontroller`                        | `stakater/ingressmonitorcontroller`
-| image.tag          | Version of ingressMonitorController Image                                                      | `1.0.47`                        | `1.0.47`
+| image.tag          | Version of ingressMonitorController Image                                                      | `1.0.92`                        | `1.0.92`
 | image.pullPolicy          | Pull policy for image                                                      | `IfNotPresent`                        | `IfNotPresent`
 | providers.name          | Name of the provider                                                      | `UptimeRobot`                        | `UptimeRobot`                        |
 | providers.apiKey        | ApiKey of the provider                                                    | `u956-afus321g565fghr519`            | `your-api-key`                       |
