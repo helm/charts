@@ -54,7 +54,7 @@ isClusterService: true
 # Optional priority class to be used for the coredns pods
 priorityClassName: ""
 
-# Default zone is what Kubernetes recomments:
+# Default zone is what Kubernetes recommends:
 # https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/#coredns-configmap-options
 servers:
 - zones:
