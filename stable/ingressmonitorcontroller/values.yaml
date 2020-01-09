@@ -22,7 +22,7 @@ ingressMonitorController:
     name: ingressmonitorcontroller
   image:
     name: stakater/ingressmonitorcontroller
-    tag: "1.0.47"
+    tag: "1.0.92"
     pullPolicy: IfNotPresent
   providers:
   - name: UptimeRobot
@@ -32,3 +32,5 @@ ingressMonitorController:
   enableMonitorDeletion: true
   configFilePath: /etc/IngressMonitorController/config.yaml
   monitorNameTemplate: "{{.Namespace}}-{{.IngressName}}"
+  resyncPeriod: 0
+  creationDelay: 0

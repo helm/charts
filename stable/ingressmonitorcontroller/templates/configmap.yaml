@@ -34,3 +34,6 @@ data:
     {{- end }}
     enableMonitorDeletion: {{ .Values.ingressMonitorController.enableMonitorDeletion }}
     monitorNameTemplate: "{{ .Values.ingressMonitorController.monitorNameTemplate }}"
+    resyncPeriod: {{ .Values.ingressMonitorController.resyncPeriod }}
+    creationDelay: {{ .Values.ingressMonitorController.creationDelay }}
+

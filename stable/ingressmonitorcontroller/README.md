@@ -48,7 +48,8 @@ The following quickstart let's you set up Ingress Monitor Controller to register
 | providers.alertContacts | A `-` separated list of contact id's that you want to add to the monitors | `12345_0_0-23564_0_0`               | `some-alert-contacts`                |
 | watchNamespace | Name of the namespace if you want to monitor ingresses/route only in that namespace. | `dev`               | `""`                |
 | enableMonitorDeletion | A safeguard flag that is used to enable or disable monitor deletion on ingress deletion (Useful for prod environments where you don't want to remove monitor on ingress deletion) | `false`               | `false`                |
-
+| resyncPeriod | how often (in seconds) monitors should be synced to their Kubernetes resources (0 = disabled) | `0`               | `0`                |
+| creationDelay | duration string to add a delay before creating new monitor (e.g., to allow DNS to catch up first) deletion) | `0`               | `0`                |
 
 
   *Note:* Follow [this](https://github.com/stakater/IngressMonitorController/blob/master/docs/uptimerobot-configuration.md) guide to see how to fetch `alertContacts` from UptimeRobot.
