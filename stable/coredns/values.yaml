@@ -54,28 +54,37 @@ isClusterService: true
 # Optional priority class to be used for the coredns pods
 priorityClassName: ""
 
+# Default zone is what Kubernetes recomments:
+# https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/#coredns-configmap-options
 servers:
 - zones:
   - zone: .
   port: 53
   plugins:
-  - name: cache
-    parameters: 30
   - name: errors
   # Serves a /health endpoint on :8080, required for livenessProbe
   - name: health
+    configBlock: |-
+      lameduck 5s
   # Serves a /ready endpoint on :8181, required for readinessProbe
   - name: ready
   # Required to query kubernetes API for data
   - name: kubernetes
-    parameters: cluster.local
-  - name: loadbalance
-    parameters: round_robin
+    parameters: cluster.local in-addr.arpa ip6.arpa
+    configBlock: |-
+      pods insecure
+      fallthrough in-addr.arpa ip6.arpa
+      ttl 30
   # Serves a /metrics endpoint on :9153, required for serviceMonitor
   - name: prometheus
     parameters: 0.0.0.0:9153
   - name: forward
     parameters: . /etc/resolv.conf
+  - name: cache
+    parameters: 30
+  - name: loop
+  - name: reload
+  - name: loadbalance
 
 # Complete example with all the options:
 # - zones:                 # the `zones` block can be left out entirely, defaults to "."
