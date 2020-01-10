@@ -49,6 +49,29 @@ spec:
 {{- end }}
       serviceAccountName: {{ template "drone.serviceAccountName" . }}
       containers:
+      {{- if .Values.cloudsql.create }}
+      - name: cloudsql-proxy
+        image: "{{ .Values.cloudsql.image.repository }}:{{ .Values.cloudsql.image.tag }}"
+        command: ["/cloud_sql_proxy",
+                  "-instances={{ .Values.cloudsql.instance.project_id }}:{{ .Values.cloudsql.instance.region }}:{{ .Values.cloudsql.instance.name }}=tcp:5432,{{ .Values.cloudsql.instance.project_id }}:{{ .Values.cloudsql.instance.region }}:{{ .Values.cloudsql.instance.db_name }}=tcp:5433",
+                  "-credential_file=/secrets/cloudsql/credentials.json"]
+        # [START cloudsql_security_context]
+        securityContext:
+         runAsUser: 2  # non-root user
+         allowPrivilegeEscalation: false
+        # [END cloudsql_security_context]
+        volumeMounts:
+         - name: cloudsql-instance-credentials
+           mountPath: /secrets/cloudsql
+           readOnly: true
+        resources:
+          limits:
+            cpu: 200m
+            memory: 128Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+      {{- end }}
       - name: server
         image: "{{ .Values.images.server.repository }}:{{ .Values.images.server.tag }}"
         imagePullPolicy: {{ .Values.images.server.pullPolicy }}

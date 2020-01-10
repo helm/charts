@@ -159,6 +159,11 @@ server:
     DRONE_DATABASE_DRIVER: "sqlite3"
     DRONE_DATABASE_DATASOURCE: "/var/lib/drone/drone.sqlite"
 
+  ## If using a Google cloudsql postgres db via a cloudsql-proxy 
+  ## the driver and datasource need to be set like this:
+  #  DRONE_DATABASE_DRIVER: "postgres"
+  #  DRONE_DATABASE_DATASOURCE: "postgres://username:password@127.0.0.1:5432/db_name?sslmode=disable"
+
   ## Secret environment variables are configured in `server.envSecrets`.
   ## Each item in `server.envSecrets` references a Kubernetes Secret.
   ## These Secrets should be created before they are referenced.
@@ -385,3 +390,25 @@ serviceAccount:
   ## The name of the ServiceAccount to use.
   ## If not set and create is true, a name is generated using the fullname template
   name:
+
+cloudsql:
+  ## Set to true to deploy a (Google Cloud) cloudsql-proxy 
+  ## to be able to connect to a cloudsql db in your GCP
+  create: false
+
+  ## If create is true below variables need to be defined.
+
+  # db_credentials:
+  #   username: username-in-base64
+  #   password: password-in-base64
+  # instance_credentials:
+  #   credentialsjson: your-sevice-account-credentials-json-in-base64
+  # image:
+  #   repository: gcr.io/cloudsql-docker/gce-proxy
+  #   tag: 1.11
+  #   pullPolicy: IfNotPresent
+  # instance:
+  #   name: your-cloudsql-instance-name
+  #   project_id: your-GCP-project-name
+  #   region: your-cloudsql-location-region
+  #   db_name: your-db-name
