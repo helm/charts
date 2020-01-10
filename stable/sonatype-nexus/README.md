@@ -150,7 +150,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `service.loadBalancerSourceRanges`          | Service LoadBalancer source IP whitelist | `nil`                              |
 | `service.targetPort`                        | Service port                     | `nil`                                      |
 | `service.port`                              | Port for exposing service        | `nil`                                      |
-| `serviceAccount.create`                     | Automatically create a service account | `false`                              |
+| `serviceAccount.create`                     | Automatically create a service account | `true`                               |
 | `serviceAccount.name`                       | Service account to use 				   | `nil`								  |
 | `serviceAccount.annotations`                | Service account annotations			   | `nil`	   							  |
 | `route.enabled`         | Set to true to create route for additional service | `false` |
