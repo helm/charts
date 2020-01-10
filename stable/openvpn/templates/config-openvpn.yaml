@@ -64,17 +64,15 @@ data:
 {{- else }}
       remote ${MY_IP_ADDR} {{ .Values.service.externalPort }} {{ .Values.openvpn.OVPN_PROTO }}
 {{- end }}
-      {{- if .Values.openvpn.cipher }}
+      {{ if .Values.openvpn.cipher }}
       cipher {{ .Values.openvpn.cipher }}
       {{- end }}
-      {{- if .Values.openvpn.redirectGateway }}
+      {{ if .Values.openvpn.redirectGateway }}
       redirect-gateway def1
       {{- end }}
-
-      {{- if .Values.openvpn.clientConf }}
+      {{ if .Values.openvpn.clientConf }}
 {{ indent 6 .Values.openvpn.clientConf }}
-      {{- end -}}
-
+      {{- end }}
       <key>
       `cat ${EASY_RSA_LOC}/pki/private/$1.key`
       </key>
