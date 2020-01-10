@@ -64,7 +64,6 @@ The following table lists the configurable parameters of the Sysdig chart and th
 | `sysdig.settings`                 | Settings for agent's configuration file                                | ` `                                         |
 | `secure.enabled`                  | Enable Sysdig Secure                                                   | `true`                                      |
 | `auditLog.enabled`                | Enable K8s audit log support for Sysdig Secure                         | `false`                                     |
-| `auditLog.clusterIP`              | ClusterIP address where Sysdig will listen to K8s audit log events     | ` `                                         |
 | `auditLog.auditServerUrl`         | The URL where Sysdig Agent listens for K8s audit log events            | `0.0.0.0`                                   |
 | `auditLog.auditServerPort`        | Port where Sysdig Agent listens for K8s audit log events               | `7765`                                      |
 | `auditLog.dynamicBackend.enabled` | Deploy the Audit Sink where Sysdig listens for K8s audit log events    | `false`                                     |
