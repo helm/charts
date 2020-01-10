@@ -64,6 +64,7 @@ The following table lists the configurable parameters of the pushgateway chart a
 | `podAnnotations`                  | Annotations for pod                                                                                                           | `{}`                              |
 | `podLabels`                       | Labels for pod                                                                                                                | `{}`                              |
 | `serviceAccountLabels`            | Labels for service account                                                                                                    | `{}`                              |
+| `persistentVolumeLabels`          | Labels for persistent volume                                                                                                  | `{}`                              |
 | `serviceMonitor.enabled`          | if `true`, creates a Prometheus Operator ServiceMonitor                                                                       | `false`                           |
 | `serviceMonitor.namespace`        | Namespace which Prometheus is running in                                                                                      | `monitoring`                      |
 | `serviceMonitor.interval`         | How frequently to scrape metrics (use by default, falling back to Prometheus' default)                                        | `nil`                             |
