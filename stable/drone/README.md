@@ -82,6 +82,7 @@ The following table lists the configurable parameters of the drone charts and th
 | `sourceControl.bitbucketServer`               | values to configure bitbucket server (stash)    | see values.yaml       |
 | `server.host`               | Drone **server** hostname (should match callback url in oauth config)              | `(internal hostname)`       |
 | `server.protocol`               | Drone **server** scheme/protocol [http,https]                                                         | `http`       |
+| `server.httpPort`           | Drone **server** http port                                                                    | `80`                        |
 | `server.env`                | Drone **server** environment variables                                                        | `(default values)`          |
 | `server.envSecrets`         | Drone **server** secret environment variables                                                 | `(default values)`          |
 | `server.adminUser`         | Initial user to create and set as admin                                                 | ``          |
@@ -95,6 +96,7 @@ The following table lists the configurable parameters of the drone charts and th
 | `server.affinity`           | Drone **server** scheduling preferences                                                       | `{}`                        |
 | `server.nodeSelector`       | Drone **server** node labels for pod assignment                                               | `{}`                        |
 | `server.tolerations`        | Drone **server** node taints to tolerate                                                      | `[]`                        |
+| `server.securityContext`    | Drone **server** securityContext                                                              | `{}`                        |
 | `server.extraContainers`    | Additional sidecar containers                                                                 | `""`                        |
 | `server.extraVolumes`       | Additional volumes for use in extraContainers                                                 | `""`                        |
 | `agent.env`                 | Drone **agent** environment variables                                                         | `(default values)`          |
