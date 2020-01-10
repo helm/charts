@@ -40,6 +40,9 @@ spec:
           {{- end }}
           name: openvpn
         securityContext:
+          {{- if .Values.openvpn.forceIpv4Forward }}
+          privileged: true
+          {{- end }}
           capabilities:
             add:
               - NET_ADMIN

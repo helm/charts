@@ -163,6 +163,10 @@ data:
       sed 's|NETWORK|'"${NETWORK}"'|' -i /etc/openvpn/openvpn.conf
       sed 's|NETMASK|'"${NETMASK}"'|' -i /etc/openvpn/openvpn.conf
 
+{{ if .Values.openvpn.forceIpv4Forward }}
+      sysctl -w net.ipv4.ip_forward=1
+{{ end }}
+
       # exec openvpn process so it receives lifecycle signals
       exec openvpn --config /etc/openvpn/openvpn.conf
   openvpn.conf: |-

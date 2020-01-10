@@ -112,6 +112,7 @@ Parameter | Description | Default
 `openvpn.istio.enabled`              | Enables istio support for openvpn clients                            | `false`
 `openvpn.istio.proxy.port`           | Istio proxy port                                                     | `15001`
 `openvpn.iptablesExtra`              | Custom iptables rules for clients                                    | `[]`
+`openvpn.forceIpv4Forward`           | Force the init script to set sysctl `net.ipv4.ip_forward` to 1       | `false`
 `nodeSelector`                       | Node labels for pod assignment                                       | `{}`
 `tolerations`                        | Tolerations for node taints                                          | `[]`
 
@@ -152,3 +153,8 @@ And optionally (see openvpn.taKey setting):
  `/etc/openvpn/certs/pki/ta.key`
 
 Note: using mounted secret makes creation of new client certificates impossible inside openvpn pod, since easyrsa needs to write in certs directory, which is read-only.
+
+### IPv4 Forward
+
+Certain clusters (i.e. newer versions of Kubernetes on GKE) will not route traffic from the connected clients into the cluster unless sysctl `net.ipv4.ip_forward` is set to 1 (defaults to 0) inside the container.
+Setting `openvpn.forceIpv4Forward` to true will make sure the init script changes this setting. Doing so requires the container to run in privileged mode, so setting this will also set the securityContext to privileged!

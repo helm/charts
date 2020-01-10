@@ -107,6 +107,8 @@ openvpn:
   # - -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
   # - -A FORWARD -m conntrack --ctstate NEW -d 10.240.0.0/255.255.0.0 -j ACCEPT
   # - -A FORWARD -j REJECT
+  # Force the init script to set sysctl net.ipv4.ip_forward to 1. Note; requires the container to run in privileged mode!
+  forceIpv4Forward: false
 
 
 nodeSelector: {}
