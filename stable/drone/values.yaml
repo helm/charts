@@ -412,4 +412,3 @@ cloudsql:
   #   project_id: your-GCP-project-name
   #   region: your-cloudsql-location-region
   #   db_name: your-db-name
-  
