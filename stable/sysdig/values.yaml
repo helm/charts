@@ -114,8 +114,6 @@ secure:
 auditLog:
   # true here activates the K8s Audit Log feature for Sysdig Secure
   enabled: false
-  # Required: You need to specify a clusterIP for the service which listens to K8s audit events
-  clusterIP:
   auditServerUrl: 0.0.0.0
   auditServerPort: 7765
 

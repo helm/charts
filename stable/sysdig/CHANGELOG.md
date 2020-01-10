@@ -3,6 +3,13 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.7.1
+
+### Major changes
+
+* Remove the auditLog.clusterIP dependency. Using dynamic backend allows to
+  rely on DNS queries.
+
 ## v1.7.0
 
 ### Major changes
