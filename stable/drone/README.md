@@ -130,3 +130,6 @@ The following table lists the configurable parameters of the drone charts and th
 | `rbac.apiVersion`           | RBAC API version                                                                              | `v1`                        |
 | `serviceAccount.create`     | Specifies whether a ServiceAccount should be created.                                         | `true`                      |
 | `serviceAccount.name`       | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template. | `(fullname template)` |
+| `cloudsql.create`       | Specifies whether a CloudSQL-proxy should be created. | `false` |
+
+
