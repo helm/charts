@@ -300,3 +300,19 @@ halyard:
     - name: JAVA_OPTS
       value: -Dhttp.proxyHost=proxy.example.com
 ```
+
+### Enable HA for Spinnaker services
+
+Spinnker supports Highly Available deployments for some of its services.
+Currently, this feature is available only for Clouddriver and Echo.
+See the [HA documentation](https://www.spinnaker.io/reference/halyard/high-availability/) for more details.
+
+
+```yaml
+halyard:
+  ha:
+    clouddriver:
+      enabled: true
+    echo:
+      enabled: true
+```

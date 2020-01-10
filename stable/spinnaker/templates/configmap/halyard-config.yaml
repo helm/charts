@@ -143,3 +143,11 @@ data:
     {{- range $index, $feature := .Values.spinnakerFeatureFlags }}
     $HAL_COMMAND config features edit --{{ $feature }} true
     {{- end }}
+
+    {{ if .Values.ha.clouddriver.enabled }}
+    $HAL_COMMAND config deploy ha clouddriver enable
+    {{ end }}
+
+    {{ if .Values.ha.echo.enabled }}
+    $HAL_COMMAND config deploy ha echo enable
+    {{ end }}

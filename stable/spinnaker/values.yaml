@@ -292,6 +292,14 @@ s3:
   extraArgs: []
   #  - "--path-style-access true"
 
+# High Availability for Spinnaker services
+# https://www.spinnaker.io/reference/halyard/high-availability/
+ha:
+  clouddriver:
+    enabled: false
+  echo:
+    enabled: false
+
 # Azure Storage Account
 azs:
   enabled: false
