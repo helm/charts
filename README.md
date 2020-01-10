@@ -37,7 +37,7 @@ For more information on using Helm, refer to the [Helm documentation](https://gi
 
 ## How Do I Enable the Stable Repository for Helm 3?
 
-To add the Stable charts for your local client, run `helm repo add`:
+To add the Helm Stable Charts for your local client, run `helm repo add`:
 
 ```
 $ helm repo add stable https://kubernetes-charts.storage.googleapis.com
