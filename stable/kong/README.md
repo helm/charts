@@ -461,6 +461,15 @@ value is your SMTP password.
 
 ## Changelog
 
+### 0.36.4
+
+> PR https://github.com/helm/charts/pull/20051
+
+#### Fixed
+
+- Issue: [`Ingress Controller errors when chart is redeployed with Admission
+  Webhook enabled`](https://github.com/helm/charts/issues/20050)
+
 ### 0.36.3
 
 > PR https://github.com/helm/charts/pull/19992
