@@ -54,6 +54,7 @@ The following table lists the configurable parameters of the pushgateway chart a
 | `replicaCount`                    | Number of replicas                                                                                                            | `1`                               |
 | `service.type`                    | Service type                                                                                                                  | `ClusterIP`                       |
 | `service.port`                    | The service port                                                                                                              | `9091`                            |
+| `service.nodePort`                | The optional service node port when `service.type` is `NodePort`                                                              | ``                                |
 | `service.targetPort`              | The target port of the container                                                                                              | `9091`                            |
 | `serviceLabels`                   | Labels for service                                                                                                            | `{}`                              |
 | `serviceAccount.create`           | Specifies whether a service account should be created.                                                                        | `true`                            |

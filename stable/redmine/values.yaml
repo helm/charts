@@ -371,3 +371,102 @@ ingress:
   ## - name: redmine.local-tls
   ##   key:
   ##   certificate:
+
+## Configure CronJob scheduler for receiveing emails and converting them to tasks
+## ref: http://www.redmine.org/projects/redmine/wiki/RedmineReceivingEmails
+##
+mailReceiver:
+  ## Whether to enable scheduled task
+  enabled: false
+
+  ## CronJob schedule
+  schedule: "*/5 * * * *"
+
+  ## CronJob suspend flag
+  suspend: true
+
+  image:
+    registry: docker.io
+    repository: bitnami/redmine
+    tag: 4.0.5-debian-9-r28
+    ## Specify a imagePullPolicy
+    ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+    ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+    ##
+    pullPolicy: IfNotPresent
+
+  ## Protocol to use to get emails from configured server.
+  ## Supported values are "IMAP" or "POP3"
+  mailProtocol: IMAP
+
+  ## Server hostname to connect to
+  host: ""
+
+  ## Server TCP port to connect to
+  port: 993
+
+  ## Username to authenticate on server
+  username: ""
+
+  ## Password to authenticate on server
+  password: ""
+
+  ## ssl flag for redmine mail client
+  ## If true then client will use SSL/TLS
+  ssl: true
+
+  ## starttls flag for redmine mail client
+  ## If true then client will use StartTLS
+  startTLS: false
+
+  ## IMAP only. Folder to read emails from
+  imapFolder: "INBOX"
+
+  ## Folder on mail server to move correctly parsed emails to
+  ## If empty - just leave emails as read
+  moveOnSuccess: ""
+
+  ## Folder on mail server to move emails with parsing errors to
+  ## If empty - just leave emails as read
+  moveOnFailure: ""
+
+  ## Action to perform for unknown email sender
+  ## ref: http://www.redmine.org/projects/redmine/wiki/RedmineReceivingEmails
+  unknownUserAction: ingore
+
+  ## If set to 1 then redmine does not check task creator (source email) permissions for creating a new task
+  ## If set to 0 then task creator must have permission to create a new task
+  noPermissionCheck: 0
+
+  ## Whether send a just created user (the creator of the task) email about his new account
+  ## 0 - send, 1 - not send
+  noAccountNotice: 1
+
+  ## Defines a group list to add created user to
+  ## Groups must be enumerated as names separated by comma without spaces
+  defaultGroup: ""
+
+  ## Defines a project to create a new task in
+  project: ""
+
+  ## Defines an email to use as a base for getting project name for a new task
+  projectFromSubaddress: ""
+
+  ## Defines a new task status
+  status: ""
+
+  ## Defines a new task tracker
+  tracker: ""
+
+  ## Defines a new task category
+  category: ""
+
+  ## Defines a new task priority
+  priority: ""
+
+  ## Defines a new task assignee
+  assignedTo: ""
+
+  ## Defines a list of attributes which can be overrided by received email body
+  ## "all" means that all attributes can be overrided
+  allowOverride: ""
