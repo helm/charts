@@ -33,7 +33,7 @@ extraVars: []
 ##
 ## example:
 ## extraArgs:
-##  - --persistence.file=/pushgateway/pushgateway.data
+##  - --persistence.file=/data/pushgateway.data
 ##  - --persistence.interval=5m
 extraArgs: []
 
@@ -154,7 +154,7 @@ persistentVolume:
 
   ## pushgateway data Persistent Volume mount root path
   ##
-  mountPath: /pushgateway
+  mountPath: /data
 
   ## pushgateway data Persistent Volume size
   ##
