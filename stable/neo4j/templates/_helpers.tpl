@@ -35,9 +35,14 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 
 {{/*
 Create a default fully qualified app name for secrets.
+If an existing secret is specified, use that.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 {{- define "neo4j.secrets.fullname" -}}
+{{- if .Values.existingSecret -}}
+{{ .Values.existingSecret }}
+{{- else -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- printf "%s-%s-secrets" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
 {{- end -}}

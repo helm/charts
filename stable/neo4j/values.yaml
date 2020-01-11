@@ -5,10 +5,14 @@
 
 name: "neo4j"
 
+nameOverride: ""
+fullnameOverride: ""
+
 # Specs for the Neo4j docker image
 image: "neo4j"
 imageTag: "3.4.5-enterprise"
 imagePullPolicy: "IfNotPresent"
+imagePullSecret: ""
 # imagePullSecret: registry-secret
 acceptLicenseAgreement: "no"
 podDisruptionBudget: {}
@@ -30,9 +34,12 @@ affinity: {}
 # Use password authentication
 authEnabled: true
 
+# Use this secret for the neo4j password and do not create a secret.
+existingSecret: ""
+
 ## Specify password for neo4j user
-## Defaults to a random 10-character alphanumeric string if not set and authEnabled is true
-# neo4jPassword:
+## Defaults to a random 10-character alphanumeric string if not set, authEnabled is true, and no existing secret is supplied
+neo4jPassword: ""
 
 # Specify cluster domain (used eg. as suffix in definition of NEO4J_causal__clustering_initial__discovery__members environment variable)
 clusterDomain: "cluster.local"
@@ -64,14 +71,18 @@ core:
     ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
     ##   GKE, AWS & OpenStack)
     ## storageClass: "-"
+    storageClass: ""
 
     ## Subdirectory of core server data Persistent Volume to mount
     ## Useful if the volume's root directory is not empty
     ##
-    ## subPath: ""
+    subPath: ""
+
+    annotations: []
 
   ## Pass extra environment variables to the Neo4j container.
   ##
+  extraVars: []
   # extraVars:
   # - name: EXTRA_VAR_1
   #   value: extra-var-value-1
@@ -117,6 +128,7 @@ readReplica:
   numberOfServers: 0
   ## Pass extra environment variables to the Neo4j container.
   ##
+  extraVars: []
   # extraVars:
   # - name: EXTRA_VAR_1
   #   value: extra-var-value-1
