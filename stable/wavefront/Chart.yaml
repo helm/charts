@@ -15,5 +15,4 @@ home: https://www.wavefront.com
 sources:
 - https://github.com/wavefrontHQ/wavefront-collector-for-kubernetes
 - https://github.com/wavefrontHQ/java/tree/master/proxy
-maintainers:
-
+maintainers: []
