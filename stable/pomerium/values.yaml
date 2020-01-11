@@ -1,13 +1,17 @@
 # For detailed explanation of each of the configuration settings see
 # https://www.pomerium.io/reference/
 
+nameOverride: ""
+fullnameOverride: ""
+
 # settings that are shared by all services
 config:
   # routes under this wildcard domain are handled by pomerium
   rootDomain: corp.beyondperimeter.com
-  # existingSecret:
-  # existingConfig:
+  existingSecret: ""
+  existingConfig: ""
   existingLegacyTLSSecret: false
+  existingCASecret: ""
   sharedSecret: ""
   cookieSecret: ""
   generateTLS: true
@@ -17,8 +21,8 @@ config:
   policy: {}
 
 authenticate:
-  # fullnameOverride: authenticate
-  # nameOverride: authenticate
+  fullnameOverride: ""
+  nameOverride: ""
   existingTLSSecret: ""
   redirectUrl: ""
   # see https://www.pomerium.io/docs/identity-providers.html
@@ -33,34 +37,50 @@ authenticate:
     key: ""
     defaultSANList: []
     defaultIPList: []
-  # replicaCount: 1
+  replicaCount: 1
+  service:
+    annotations: {}
+  deployment:
+    annotations: {}
 
 
 authorize:
-  # fullnameOverride: authorize
-  # nameOverride: authorize
+  fullnameOverride: ""
+  nameOverride: ""
   existingTLSSecret: ""
   tls:
     cert: ""
     key: ""
     defaultSANList: []
     defaultIPList: []
-  # replicaCount: 1
+  replicaCount: 1
+  service:
+    annotations: {}
+  deployment:
+    annotations: {}
 
 
 proxy:
-  # fullnameOverride: proxy
-  # nameOverride: proxy
+  fullnameOverride: ""
+  nameOverride: ""
   existingTLSSecret: ""
   tls:
     cert: ""
     key: ""
     defaultSANList: []
     defaultIPList: []
-  # replicaCount: 1
+  replicaCount: 1
   authenticateServiceUrl: ""
   authorizeServiceUrl: ""
   authorizeInternalUrl: ""
+  service:
+    annotations: {}
+  deployment:
+    annotations: {}
+
+forwardAuth:
+  nameOverride: ""
+  enabled: false
 
 service:
   # Service type can be set to ClusterIP, NodePort or LoadBalancer.
@@ -105,15 +125,15 @@ priorityClassName: ""
 
 # Affinity for pod assignment
 # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-# affinity: {}
+affinity: {}
 
 # Tolerations for pod assignment
 # Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
-# tolerations: []
+tolerations: []
 
 # Node labels for pod assignment
 # Ref: https://kubernetes.io/docs/user-guide/node-selection/
-# nodeSelector: {}
+nodeSelector: {}
 
 podAnnotations: {}
 podLabels: {}
@@ -125,9 +145,12 @@ extraEnv: {}
 extraArgs: {}
 extraVolumes: {}
 
+annotations: {}
+imagePullSecrets: ""
+
 image:
   repository: "pomerium/pomerium"
-  tag: "v0.5.1"
+  tag: "v0.5.2"
   pullPolicy: "IfNotPresent"
 
 metrics:

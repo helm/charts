@@ -1,7 +1,7 @@
 apiVersion: v1
 name: phpbb
-version: 7.0.1
-appVersion: 3.2.8
+version: 7.0.2
+appVersion: 3.3.0
 description: Community forum that supports the notion of users and groups, file attachments, full-text search, notifications and more.
 keywords:
 - phpbb

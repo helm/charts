@@ -1,6 +1,9 @@
 replicas: 3
 port: 27017
 
+## Setting this will skip the replicaset and user creation process during bootstrapping
+skipInitialization: false
+
 replicaSetName: rs0
 
 podDisruptionBudget: {}
@@ -53,7 +56,7 @@ metrics:
   enabled: false
   image:
     repository: bitnami/mongodb-exporter
-    tag: 0.9.0-debian-9-r2
+    tag: 0.10.0-debian-9-r71
     pullPolicy: IfNotPresent
   port: 9216
   path: "/metrics"
@@ -64,7 +67,6 @@ metrics:
   securityContext:
     enabled: true
     runAsUser: 1001
-    fsGroup: 1001
 
 # Annotations to be added to MongoDB pods
 podAnnotations: {}
@@ -122,6 +124,8 @@ terminationGracePeriodSeconds: 30
 tls:
   # Enable or disable MongoDB TLS support
   enabled: false
+  # Set the SSL operation mode (disabled|allowSSL|preferSSL|requireSSL)
+  mode: requireSSL
   # Please generate your own TLS CA by generating it via:
   # $ openssl genrsa -out ca.key 2048
   # $ openssl req -x509 -new -nodes -key ca.key -days 10000 -out ca.crt -subj "/CN=mydomain.com"

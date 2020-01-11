@@ -215,3 +215,7 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 {{- end -}}
 
 
+{{/*Expand the FQDN of the forward-auth endpoint.*/}}
+{{- define "pomerium.forwardAuth.name" -}}
+{{- default (printf "forwardauth.%s" .Values.config.rootDomain ) .Values.forwardAuth.nameOverride -}}
+{{- end -}}

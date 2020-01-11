@@ -139,7 +139,13 @@ spec:
           containerPort: 80
         - name: https
           containerPort: 443
+        {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           httpGet:
             path: /wp-login.php
             port: {{ ternary "https" "http" .Values.healthcheckHttps }}
@@ -150,8 +156,14 @@ spec:
             httpHeaders:
 {{ toYaml .Values.livenessProbeHeaders | indent 14 }}
           {{- end }}
-{{ toYaml .Values.livenessProbe | indent 10 }}
+        {{- end }}
+        {{- if .Values.readinessProbe.enabled }}
         readinessProbe:
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           httpGet:
             path: /wp-login.php
             port: {{ ternary "https" "http" .Values.healthcheckHttps }}
@@ -162,7 +174,7 @@ spec:
             httpHeaders:
 {{ toYaml .Values.readinessProbeHeaders | indent 14 }}
           {{- end }}
-{{ toYaml .Values.readinessProbe | indent 10 }}
+        {{- end }}
         volumeMounts:
         - mountPath: /bitnami/wordpress
           name: wordpress-data
