@@ -11,6 +11,8 @@ inMiniKube: false
 
 nodeSelector: {}
 
+podLabels: {}
+
 podAnnotations: {}
 
 initContainers: []
