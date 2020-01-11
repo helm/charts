@@ -6,6 +6,10 @@ metadata:
   name: "{{ template "kafka.fullname" . }}-config-{{ $scriptHash }}"
   labels:
   {{- include "kafka.config.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade,post-rollback
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
 spec:
   backoffLimit: {{ .Values.configJob.backoffLimit }}
   template:

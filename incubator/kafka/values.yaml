@@ -2,6 +2,9 @@
 # Kafka:
 # ------------------------------------------------------------------------------
 
+nameOverride: ""
+fullnameOverride: ""
+
 ## The StatefulSet installs 3 pods by default
 replicas: 3
 
@@ -40,6 +43,7 @@ podManagementPolicy: OrderedReady
 
 ## Useful if using any custom authorizer
 ## Pass in some secrets to use (if required)
+secrets: []
 # secrets:
 # - name: myKafkaSecret
 #   keys:
@@ -60,13 +64,14 @@ logSubPath: "logs"
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
 ##
-# schedulerName:
+schedulerName: ""
 
 ## Use an alternate serviceAccount
 ## Useful when using images in custom repositories
-# serviceAccountName:
+serviceAccountName: ""
 
 ## Set a pod priorityClassName
+priorityClassName: ""
 # priorityClassName: high-priority
 
 ## Pod scheduling preferences (by default keep pods within a release on separate nodes).
@@ -102,10 +107,16 @@ affinity: {}
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 nodeSelector: {}
 
-## Readiness probe config.
+## Readiness/Liveness probe config.
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
 ##
 readinessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+livenessProbe:
   initialDelaySeconds: 30
   periodSeconds: 10
   timeoutSeconds: 5
@@ -130,8 +141,8 @@ tolerations: []
 ## Headless service.
 ##
 headless:
-  # annotations:
-  # targetPort:
+  annotations: {}
+  targetPort: ""
   port: 9092
 
 ## External access.
@@ -227,11 +238,11 @@ persistence:
   ## Kafka data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
-  ## If undefined (the default) or set to null, no storageClassName spec is
+  ## If undefined or set to null (the default), no storageClassName spec is
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   ##
-  # storageClass:
+  storageClass: ""
 
 jmx:
   ## Rules to apply to the Prometheus JMX Exporter.  Note while lots of stats have been cleaned and exposed,
