@@ -91,6 +91,9 @@ data:
 {{- if .Values.filter.enableExclude }}
         K8S-Logging.Exclude On
 {{- end }}
+{{- if .Values.filter.useJournal }}
+        Use_Journal         On
+{{- end }}
 {{ .Values.extraEntries.filter | indent 8 }}
 
   fluent-bit-output.conf: |
