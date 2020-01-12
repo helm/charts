@@ -22,6 +22,9 @@ spec:
     {{- end }}
       labels:
         {{- include "prometheus.alertmanager.labels" . | nindent 8 }}
+        {{- if .Values.alertmanager.podLabels}}
+        {{ toYaml .Values.alertmanager.podLabels | nindent 8 }}
+        {{- end}}
     spec:
 {{- if .Values.alertmanager.schedulerName }}
       schedulerName: "{{ .Values.alertmanager.schedulerName }}"

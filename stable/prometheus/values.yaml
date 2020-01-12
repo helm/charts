@@ -220,6 +220,10 @@ alertmanager:
     ##
     ## prometheus.io/probe: alertmanager-teamA
 
+  ## Labels to be added to Prometheus AlertManager pods
+  ##
+  podLabels: {}
+
   ## Specify if a Pod Security Policy for node-exporter must be created
   ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
   ##
