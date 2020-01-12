@@ -67,7 +67,7 @@ The suggested approach is to delete the release and reinstall it.
 
 #### From 1.0.0 onwards
 
-Starting with version 1.0.0, this chart does not support deploying Agent 5.x anymore. If you cannot upgrade to Agent 6.x, you can use a previous version of the chart by calling helm install with `--version 0.18.0`.
+Starting with version 1.0.0, this chart does not support deploying Agent 5.x anymore. If you cannot upgrade to Agent 6.x or later, you can use a previous version of the chart by calling helm install with `--version 0.18.0`.
 
 See [0.18.1's README](https://github.com/helm/charts/blob/847f737479bb78d89f8fb650db25627558fbe1f0/stable/datadog/README.md) to see which options were supported at the time.
 
@@ -359,6 +359,8 @@ helm install --name <RELEASE_NAME> \
 | `clusterAgent.readinessProbe`            | Overrides the default readiness probe                                                     | http port 443 if external metrics enabled   |
 | `clusterAgent.strategy`                  | Which update strategy to deploy the cluster-agent                                         | RollingUpdate with 0 maxUnavailable, 1 maxSurge |
 | `clusterAgent.useHostNetwork`            | If true, use the host's network                                                           | `nil`                                       |
+| `clusterAgent.volumes`                   | Additional volumes for the cluster-agent deployment                                       | `nil`                                       |
+| `clusterAgent.volumeMounts`              | Additional volumeMounts for the cluster-agent deployment                                  | `nil`                                       |
 | `clusterchecksDeployment.enabled`        | Enable Datadog agent deployment dedicated for running Cluster Checks. It allows having different resources (Request/Limit) for Cluster Checks agent pods.  | `false` |
 | `clusterchecksDeployment.env`                            | Additional Datadog environment variables for Cluster Checks Deployment                        | `nil`                                       |
 | `clusterchecksDeployment.resources.requests.cpu`         | CPU resource requests                                                                         | `200m`                                      |

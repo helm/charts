@@ -90,6 +90,34 @@ Assuming you have an existing release of the prometheus chart, named `prometheus
 
    Old data will be available when you query the new prometheus instance.
 
+## Scraping Pod Metrics via Annotations
+
+This chart uses a default configuration that causes prometheus
+to scrape a variety of kubernetes resource types, provided they have the correct annotations.
+In this section we describe how to configure pods to be scraped;
+for information on how other resource types can be scraped you can
+do a `helm template` to get the kubernetes resource definitions,
+and then reference the prometheus configuration in the ConfigMap against the prometheus documentation
+for [relabel_config](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config)
+and [kubernetes_sd_config](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config).
+
+In order to get prometheus to scrape pods, you must add annotations to the the pods as below:
+
+```
+metadata:
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: /metrics
+    prometheus.io/port: "8080"
+spec:
+...
+```
+
+You should adjust `prometheus.io/path` based on the URL that your pod serves metrics from.
+`prometheus.io/port` should be set to the port that your pod serves metrics from.
+Note that the values for `prometheus.io/scrape` and `prometheus.io/port` must be 
+enclosed in double quotes.
+
 ## Configuration
 
 The following table lists the configurable parameters of the Prometheus chart and their default values.
@@ -99,10 +127,10 @@ Parameter | Description | Default
 `alertmanager.enabled` | If true, create alertmanager | `true`
 `alertmanager.name` | alertmanager container name | `alertmanager`
 `alertmanager.image.repository` | alertmanager container image repository | `prom/alertmanager`
-`alertmanager.image.tag` | alertmanager container image tag | `v0.18.0`
+`alertmanager.image.tag` | alertmanager container image tag | `v0.20.0`
 `alertmanager.image.pullPolicy` | alertmanager container image pull policy | `IfNotPresent`
 `alertmanager.prefixURL` | The prefix slug at which the server can be accessed | ``
-`alertmanager.baseURL` | The external url at which the server can be accessed | `/`
+`alertmanager.baseURL` | The external url at which the server can be accessed | `"http://localhost:9093"`
 `alertmanager.extraArgs` | Additional alertmanager container arguments | `{}`
 `alertmanager.extraSecretMounts` | Additional alertmanager Secret mounts | `[]`
 `alertmanager.configMapOverrideName` | Prometheus alertmanager ConfigMap override where full-name is `{{.Release.Name}}-{{.Values.alertmanager.configMapOverrideName}}` and setting this value will prevent the default alertmanager ConfigMap from being generated | `""`
@@ -152,7 +180,7 @@ Parameter | Description | Default
 `alertmanagerFiles.alertmanager.yml` | Prometheus alertmanager configuration | example configuration
 `configmapReload.name` | configmap-reload container name | `configmap-reload`
 `configmapReload.image.repository` | configmap-reload container image repository | `jimmidyson/configmap-reload`
-`configmapReload.image.tag` | configmap-reload container image tag | `v0.2.2`
+`configmapReload.image.tag` | configmap-reload container image tag | `v0.3.0`
 `configmapReload.image.pullPolicy` | configmap-reload container image pull policy | `IfNotPresent`
 `configmapReload.extraArgs` | Additional configmap-reload container arguments | `{}`
 `configmapReload.extraVolumeDirs` | Additional configmap-reload volume directories | `{}`
@@ -167,7 +195,7 @@ Parameter | Description | Default
 `kubeStateMetrics.enabled` | If true, create kube-state-metrics | `true`
 `kubeStateMetrics.name` | kube-state-metrics container name | `kube-state-metrics`
 `kubeStateMetrics.image.repository` | kube-state-metrics container image repository| `quay.io/coreos/kube-state-metrics`
-`kubeStateMetrics.image.tag` | kube-state-metrics container image tag | `v1.5.0`
+`kubeStateMetrics.image.tag` | kube-state-metrics container image tag | `v1.9.0`
 `kubeStateMetrics.image.pullPolicy` | kube-state-metrics container image pull policy | `IfNotPresent`
 `kubeStateMetrics.args` | kube-state-metrics container arguments | `{}`
 `kubeStateMetrics.nodeSelector` | node labels for kube-state-metrics pod assignment | `{}`
@@ -191,7 +219,7 @@ Parameter | Description | Default
 `nodeExporter.enabled` | If true, create node-exporter | `true`
 `nodeExporter.name` | node-exporter container name | `node-exporter`
 `nodeExporter.image.repository` | node-exporter container image repository| `prom/node-exporter`
-`nodeExporter.image.tag` | node-exporter container image tag | `v0.18.0`
+`nodeExporter.image.tag` | node-exporter container image tag | `v0.18.1`
 `nodeExporter.image.pullPolicy` | node-exporter container image pull policy | `IfNotPresent`
 `nodeExporter.extraArgs` | Additional node-exporter container arguments | `{}`
 `nodeExporter.extraHostPathMounts` | Additional node-exporter hostPath mounts | `[]`
@@ -221,7 +249,7 @@ Parameter | Description | Default
 `pushgateway.enabled` | If true, create pushgateway | `true`
 `pushgateway.name` | pushgateway container name | `pushgateway`
 `pushgateway.image.repository` | pushgateway container image repository | `prom/pushgateway`
-`pushgateway.image.tag` | pushgateway container image tag | `v0.8.0`
+`pushgateway.image.tag` | pushgateway container image tag | `v1.0.1`
 `pushgateway.image.pullPolicy` | pushgateway container image pull policy | `IfNotPresent`
 `pushgateway.extraArgs` | Additional pushgateway container arguments | `{}`
 `pushgateway.ingress.enabled` | If true, pushgateway Ingress will be created | `false`
@@ -260,15 +288,14 @@ Parameter | Description | Default
 `server.enabled` | If false, Prometheus server will not be created | `true`
 `server.name` | Prometheus server container name | `server`
 `server.image.repository` | Prometheus server container image repository | `prom/prometheus`
-`server.image.tag` | Prometheus server container image tag | `v2.13.1`
+`server.image.tag` | Prometheus server container image tag | `v2.15.2`
 `server.image.pullPolicy` | Prometheus server container image pull policy | `IfNotPresent`
-`server.enableAdminApi` |  If true, Prometheus administrative HTTP API will be enabled. Please note, that you should take care of administrative API access protection (ingress or some frontend Nginx with auth) before enabling it. | `false`
-`server.skipTSDBLock` |  If true, Prometheus skip TSDB locking. | `false`
 `server.configPath` |  Path to a prometheus server config file on the container FS  | `/etc/config/prometheus.yml`
 `server.global.scrape_interval` | How frequently to scrape targets by default | `1m`
 `server.global.scrape_timeout` | How long until a scrape request times out | `10s`
 `server.global.evaluation_interval` | How frequently to evaluate rules | `1m`
 `server.extraArgs` | Additional Prometheus server container arguments | `{}`
+`server.extraFlags` | Additional Prometheus server container flags | `["web.enable-lifecycle"]`
 `server.extraInitContainers` | Init containers to launch alongside the server | `[]`
 `server.prefixURL` | The prefix slug at which the server can be accessed | ``
 `server.baseURL` | The external url at which the server can be accessed | ``
@@ -316,6 +343,7 @@ Parameter | Description | Default
 `server.statefulSet.headless.labels` | labels for Prometheus server headless service | `{}`
 `server.statefulSet.headless.servicePort` | Prometheus server headless service port | `80`
 `server.resources` | Prometheus server resource requests and limits | `{}`
+`server.verticalAutoscaler.enabled` | If true a VPA object will be created for the controller (either StatefulSet or Deployemnt, based on above configs) | `false`
 `server.securityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for server containers | `{}`
 `server.service.annotations` | annotations for Prometheus server service | `{}`
 `server.service.clusterIP` | internal Prometheus server cluster service IP | `""`
