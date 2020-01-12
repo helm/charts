@@ -25,3 +25,6 @@ spec:
     "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
     "app.kubernetes.io/instance": "{{ .Release.Name }}"
   type: {{ .Values.master.slaveListenerServiceType }}
+  {{if eq .Values.master.slaveListenerServiceType "LoadBalancer"}}
+  loadBalancerIP: {{.Values.master.slaveListenerLoadBalancerIP}}
+  {{end}}
