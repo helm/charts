@@ -1,3 +1,7 @@
+# Override the name of the chart, which in turn changes the name of the containers, services etc.
+nameOverride: ""
+fullnameOverride: ""
+
 replicas: 3
 port: 27017
 
@@ -12,14 +16,14 @@ podDisruptionBudget: {}
 
 auth:
   enabled: false
+  existingKeySecret: ""
+  existingAdminSecret: ""
+  existingMetricsSecret: ""
   # adminUser: username
   # adminPassword: password
   # metricsUser: metrics
   # metricsPassword: password
   # key: keycontent
-  # existingKeySecret:
-  # existingAdminSecret:
-  # existingMetricsSecret:
 
 ## Optionally specify an array of imagePullSecrets.
 ## Secrets must be manually created in the namespace.
@@ -99,7 +103,7 @@ tolerations: []
 
 extraLabels: {}
 
-# priorityClassName: ""
+priorityClassName: ""
 
 persistentVolume:
   enabled: true
@@ -110,7 +114,7 @@ persistentVolume:
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   ##
-  # storageClass: "-"
+  storageClass: ""
   accessModes:
     - ReadWriteOnce
   size: 10Gi
@@ -144,6 +148,7 @@ configmap: {}
 # initMongodStandalone: |+
 #   db = db.getSiblingDB("mydb")
 #   db.my_users.createIndex({email: 1})
+initMongodStandalone: ""
 
 # Readiness probe
 readinessProbe:
