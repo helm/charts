@@ -461,7 +461,43 @@ value is your SMTP password.
 
 ## Changelog
 
+### 0.36.4
+
+> PR https://github.com/helm/charts/pull/20051
+
+#### Fixed
+
+- Issue: [`Ingress Controller errors when chart is redeployed with Admission
+  Webhook enabled`](https://github.com/helm/charts/issues/20050)
+
+### 0.36.3
+
+> PR https://github.com/helm/charts/pull/19992
+
+#### Fixed
+
+- Fix spacing in ServiceMonitor when label is specified in config
+
+### 0.36.2
+
+> PR https://github.com/helm/charts/pull/19955
+
+#### Fixed
+
+- Set `sideEffects` and `admissionReviewVersions` for Admission Webhook
+- timeouts for liveness and readiness probes has been changed from `1s` to `5s`
+
+### 0.36.1
+
+> PR https://github.com/helm/charts/pull/19946
+
+#### Fixed
+
+- Added missing watch permission to custom resources
+
 ### 0.36.0
+
+> PR https://github.com/helm/charts/pull/19916
 
 #### Upgrade Instructions
 
@@ -472,7 +508,6 @@ value is your SMTP password.
 #### Improvements 
 
 - Fixed Deployment's label selector that prevented in-place chart upgrades.
- 
 
 ### 0.35.1
 
