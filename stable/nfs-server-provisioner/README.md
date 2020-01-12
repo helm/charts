@@ -108,8 +108,9 @@ a storageclass to use rather than accept the clusters default, or pre-create
 a volume for each replica.
 
 If this chart is deployed with more than 1 replica, `storageClass.defaultClass=true`
-and `persistence.storageClass`, then the 2nd+ replica will end up using the 1st
-replica to provision storage - which is likely never a desired outcome.
+and `persistence.storageClass=null`, then the 2nd+ replica will end up using the 1st
+replica to provision storage. The provisioner creates the default class, and other
+replicas are configured to use the default class. This is likely never a desired outcome.
 
 ## Recommended Persistence Configuration Examples
 
