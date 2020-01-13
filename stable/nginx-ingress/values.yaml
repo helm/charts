@@ -5,10 +5,10 @@ controller:
   name: controller
   image:
     repository: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
-    tag: "0.26.2"
+    tag: "0.27.0"
     pullPolicy: IfNotPresent
-    # www-data -> uid 33
-    runAsUser: 33
+    # www-data -> uid 101
+    runAsUser: 101
     allowPrivilegeEscalation: true
 
   # Configures the ports the nginx-controller listens on
@@ -426,6 +426,10 @@ defaultBackend:
     pullPolicy: IfNotPresent
     # nobody user -> uid 65534
     runAsUser: 65534
+
+  # Maxmind license key to download GeoLite2 Databases
+  # https://blog.maxmind.com/2019/12/18/significant-changes-to-accessing-and-using-geolite2-databases
+  maxmindLicenseKey: ""
 
   extraArgs: {}
 
