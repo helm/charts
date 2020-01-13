@@ -143,3 +143,18 @@ ZooKeeper can not be safely scaled in versions prior to 3.5.x
 
 ## Limitations
 * Only supports storage options that have backends for persistent volume claims.
+
+## Zoo.cfg
+Add any extra values you wish to append to the zoo.cfg for each server via the:
+`extraconfig` map, e.g.:
+```
+extraconfig:
+  quorum.auth.enableSasl: true
+  quorum.auth.learnerRequireSasl: true
+  quorum.auth.serverRequireSasl: true
+  quorum.auth.learner.loginContext: QuorumLearner
+  quorum.auth.server.loginContext: QuorumServer
+  quorum.cnxn.threads.size: 20
+  authProvider.1: org.apache.zookeeper.server.auth.SASLAuthenticationProvider
+  requireClientAuthScheme: sasl
+```
