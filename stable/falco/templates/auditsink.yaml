@@ -14,5 +14,9 @@ spec:
       qps: 10
       burst: 15
     clientConfig:
-      url: http://{{ required "A valid .Values.auditLog.clusterIP entry required" .Values.auditLog.clusterIP }}:{{ .Values.falco.webserver.listenPort }}{{ .Values.falco.webserver.k8sAuditEndpoint }}
+      service:
+        namespace: {{ .Release.Namespace }}
+        name: {{ template "falco.fullname" . }}
+        port: {{ .Values.falco.webserver.listenPort }}
+        path: {{ .Values.falco.webserver.k8sAuditEndpoint }}
 {{- end }}
