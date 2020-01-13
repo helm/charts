@@ -87,6 +87,11 @@ setDefaultUser:
     ## Default: (Randomly generated 10 characters of AlphaNum)
     # password:
 
+    ## The user name and password are obtained from an existing secret. The expected
+    ## keys are `influxdb-user` and `influxdb-password`.
+    ## If set, the username and password values above are ignored.
+    # existingSecret: influxdb-auth
+
     ## User privileges
     ## Default: "WITH ALL PRIVILEGES"
     privileges: "WITH ALL PRIVILEGES"

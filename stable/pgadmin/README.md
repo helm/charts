@@ -1,22 +1,42 @@
 ###### based on [dpage/pgadmin4]
 
-# Helm Chart for pgAdmin
+# pgAdmin
 
-#### Table of Contents
+[pgAdmin](https://www.pgadmin.org/) is the leading Open Source management tool for Postgres, the world’s most advanced Open Source database. pgAdmin is designed to meet the needs of both novice and experienced Postgres users alike, providing a powerful graphical interface that simplifies the creation, maintenance and use of database objects.
 
-1. [Description][Description]
-2. [Setup][Setup]
-    * [Configuration][Configuration]
-    * [Install the Chart][Install the Chart]
-    * [Uninstall the Chart][Uninstall the Chart]
+## TL;DR;
 
-## Description
+```console
+$ helm install stable/pgadmin
+```
 
-pgAdmin is a web based administration tool for PostgreSQL database.
+## Introduction
 
-## Setup
+This chart bootstraps a [pgAdmin](https://www.pgadmin.org/) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-### Configuration
+## Install the Chart
+
+To install the chart with the release name `my-release`:
+
+```console
+$ helm install --name my-release stable/pgadmin
+```
+
+The command deploys pgAdmin on the Kubernetes cluster in the default configuration. The configuration section lists the parameters that can be configured durign installation.
+
+> **Tip**: List all releases using `helm list`
+
+## Uninstall the Chart
+
+To uninstall/delete the `my-release` deployment:
+
+```console
+helm delete --purge my-release
+```
+
+The command removes nearly all the Kubernetes components associated with the chart and deletes the release.
+
+## Configuration
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
@@ -41,31 +61,20 @@ pgAdmin is a web based administration tool for PostgreSQL database.
 | `tolerations` | Node tolerations for pod assignment | `[]` |
 | `affinity` | Node affinity for pod assignment | `{}` |
 
-### Install the Chart
+Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
-To install the chart with the release name `my-release`:
-
-```console
-helm install --name my-release .
+```bash
+$ helm install stable/pgadmin --name my-release \
+  --set env.password=SuperSecret
 ```
 
-### Uninstall the Chart
+Alternatively, a YAML file that specifies the values for the parameters can be
+provided while installing the chart. For example,
 
-To uninstall/delete the `my-release` deployment:
-
-```console
-helm delete --purge my-release
+```bash
+$ helm install stable/pgadmin --name my-release -f values.yaml
 ```
 
-The command removes nearly all the Kubernetes components associated with the chart and deletes the release.
-
-[Overview]: #overview
-[Description]: #description
-[Setup]: #setup
-[Configuration]: #configuration
-[Install the Chart]: #install-the-chart
-[Uninstall the Chart]: #uninstall-the-chart
+> **Tip**: You can use the default [values.yaml](values.yaml)
 
 [dpage/pgadmin4]: https://hub.docker.com/r/dpage/pgadmin4
-[cert-manager]: https://github.com/helm/charts/tree/master/stable/cert-manager
-[letsencrypt]: https://letsencrypt.org/

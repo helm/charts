@@ -73,6 +73,8 @@ Returns configuration as code default config
 {{- define "jenkins.casc.defaults" -}}
 jenkins:
   disableRememberMe: false
+  remotingSecurity:
+    enabled: true
   mode: NORMAL
   numExecutors: {{ .Values.master.numExecutors }}
   projectNamingStrategy: "standard"
@@ -136,7 +138,7 @@ jenkins:
         podRetention: {{ .Values.agent.podRetention }}
         showRawYaml: true
         serviceAccount: "{{ include "jenkins.serviceAccountAgentName" . }}"
-        slaveConnectTimeoutStr: "100"
+        slaveConnectTimeoutStr: "{{ .Values.agent.slaveConnectTimeout }}"
         yaml: |-
           {{ tpl .Values.agent.yamlTemplate . | nindent 10 | trim }}
         yamlMergeStrategy: "override"

@@ -60,7 +60,7 @@ replicaCount: 1
 revisionHistoryLimit: 10
 image:
   repository: quay.io/external_storage/efs-provisioner
-  tag: v2.2.0-k8s1.12
+  tag: v2.4.0
   pullPolicy: IfNotPresent
   # If specified, use these secrets to access the images
   # pullSecrets:

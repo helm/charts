@@ -48,7 +48,7 @@ This version requires Helm >= 2.12.0.
 | `securityContext`                         | Deployment securityContext                    | `{"runAsUser": 472, "fsGroup": 472}`                    |
 | `priorityClassName`                       | Name of Priority Class to assign pods         | `nil`                                                   |
 | `image.repository`                        | Image repository                              | `grafana/grafana`                                       |
-| `image.tag`                               | Image tag (`Must be >= 5.0.0`)                | `6.3.5`                                                 |
+| `image.tag`                               | Image tag (`Must be >= 5.0.0`)                | `6.5.2`                                                 |
 | `image.pullPolicy`                        | Image pull policy                             | `IfNotPresent`                                          |
 | `image.pullSecrets`                       | Image pull secrets                            | `{}`                                                    |
 | `service.type`                            | Kubernetes service type                       | `ClusterIP`                                             |
@@ -58,6 +58,10 @@ This version requires Helm >= 2.12.0.
 | `service.nodePort`                        | Kubernetes service nodePort                   | `nil`                                                   |
 | `service.annotations`                     | Service annotations                           | `{}`                                                    |
 | `service.labels`                          | Custom labels                                 | `{}`                                                    |
+| `service.clusterIP`                       | internal cluster service IP                   | `nil`                                                   |
+| `service.loadBalancerIP`                  | IP address to assign to load balancer (if supported) | `nil`                                            |
+| `service.loadBalancerSourceRanges`        | list of IP CIDRs allowed access to lb (if supported) | `[]`                                             |
+| `serivce.externalIPs`                     | service external IP addresses                 | `[]`                                                    |
 | `ingress.enabled`                         | Enables Ingress                               | `false`                                                 |
 | `ingress.annotations`                     | Ingress annotations                           | `{}`                                                    |
 | `ingress.labels`                          | Custom labels                                 | `{}`                                                    |
@@ -88,6 +92,7 @@ This version requires Helm >= 2.12.0.
 | `initChownData.resources`                 | init-chown-data pod resource requests & limits | `{}`                                                   |
 | `schedulerName`                           | Alternate scheduler name                      | `nil`                                                   |
 | `env`                                     | Extra environment variables passed to pods    | `{}`                                                    |
+| `envValueFrom`                            | Environment variables from alternate sources. See the API docs on [EnvVarSource](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#envvarsource-v1-core) for format details.  | `{}` |
 | `envFromSecret`                           | Name of a Kubernetes secret (must be manually created in the same namespace) containing values to be added to the environment | `""` |
 | `envRenderSecret`                         | Sensible environment variables passed to pods and stored as secret | `{}`                               |
 | `extraSecretMounts`                       | Additional grafana server secret mounts       | `[]`                                                    |
@@ -101,7 +106,7 @@ This version requires Helm >= 2.12.0.
 | `dashboards`                              | Dashboards to import                          | `{}`                                                    |
 | `dashboardsConfigMaps`                    | ConfigMaps reference that contains dashboards | `{}`                                                    |
 | `grafana.ini`                             | Grafana's primary configuration               | `{}`                                                    |
-| `ldap_enabled`                            | Enable LDAP authentication                    | `false`                                                 |
+| `ldap.enabled`                            | Enable LDAP authentication                    | `false`                                                 |
 | `ldap.existingSecret`                     | The name of an existing secret containing the `ldap.toml` file, this must have the key `ldap-toml`. | `""` |
 | `ldap.config  `                           | Grafana's LDAP configuration                  | `""`                                                    |
 | `annotations`                             | Deployment annotations                        | `{}`                                                    |
@@ -113,10 +118,12 @@ This version requires Helm >= 2.12.0.
 | `sidecar.imagePullPolicy`                 | Sidecar image pull policy                     | `IfNotPresent`                                          |
 | `sidecar.resources`                       | Sidecar resources                             | `{}`                                                    |
 | `sidecar.dashboards.enabled`              | Enables the cluster wide search for dashboards and adds/updates/deletes them in grafana | `false`       |
+| `sidecar.dashboards.SCProvider`           | Enables creation of sidecar provider          | `true`
 | `sidecar.dashboards.provider.name`        | Unique name of the grafana provider           | `sidecarProvider`                                       |
 | `sidecar.dashboards.provider.orgid`       | Id of the organisation, to which the dashboards should be added | `1`                                   |
 | `sidecar.dashboards.provider.folder`      | Logical folder in which grafana groups dashboards | `""`                                                |
 | `sidecar.dashboards.provider.disableDelete` | Activate to avoid the deletion of imported dashboards | `false`                                       |
+| `sidecar.dashboards.provider.allowUiUpdates` | Allow updating provisioned dashboards from the UI | `false`                                          |
 | `sidecar.dashboards.provider.type`        | Provider type                                 | `file`                                                  |
 | `sidecar.skipTlsVerify`                   | Set to true to skip tls verification for kube api calls | `nil`       |
 | `sidecar.dashboards.label`                | Label that config maps with dashboards should have to be added | `grafana_dashboard`                                |
@@ -148,6 +155,7 @@ This version requires Helm >= 2.12.0.
 | `testFramework.tag`                       | `test-framework` image tag.                    | `0.4.0`                                                |
 | `testFramework.securityContext`           | `test-framework` securityContext                | `{}`                                                   |
 | `downloadDashboards.env`                  | Environment variables to be passed to the `download-dashboards` container | `{}`                                                   |
+| `namespaceOverride`                       | Override the deployment namespace     | `""` (`Release.Namespace`)             |
 
 
 ### Example of extraVolumeMounts

@@ -54,7 +54,7 @@ cloudsql:
 
 # Create an ingress resource for all external anchore engine services (API & Enterprise UI).
 # By default this chart is setup to use the NGINX ingress controller which needs to be installed & configured on your cluster.
-# To utilize a GCE/ALB ingress controller comment out the nginx annotations below, change ingress.class, edit path configurions as per the comments, & set API/UI services to use NodePort.
+# To utilize a GCE/ALB ingress controller comment out the nginx annotations below, change ingress.class, edit path configurations as per the comments, & set API/UI services to use NodePort.
 ingress:
   enabled: false
   labels: {}
@@ -83,10 +83,10 @@ ingress:
 # Global configuration shared by all anchore-engine services.
 anchoreGlobal:
   # Image used for all anchore engine deployments (excluding enterprise components).
-  image: docker.io/anchore/anchore-engine:v0.5.2
+  image: docker.io/anchore/anchore-engine:v0.6.0
   imagePullPolicy: IfNotPresent
 
-  # Set this value to True to setup the chart for OpenShift deployment compatability.
+  # Set this value to True to setup the chart for OpenShift deployment compatibility.
   openShiftDeployment: False
 
   # Add additionnal labels to all kubernetes resources
@@ -130,6 +130,9 @@ anchoreGlobal:
 
   # Enable prometheus metrics
   enableMetrics: false
+
+  # Disable auth on prometheus metrics
+  metricsAuthDisabled: false
 
   # Sets the password & email address for the default anchore-engine admin user.
   defaultAdminPassword: foobar
@@ -176,7 +179,7 @@ anchoreGlobal:
   webhooks:
     # User and password to be set (using HTTP basic auth) on all webhook calls if necessary
     webhook_user: Null
-    webhook_password: Null
+    webhook_pass: Null
     ssl_verify: true
 
     # Endpoint for general notification delivery. These events are image/tag updates etc. This is globally configured
@@ -471,7 +474,7 @@ anchoreEnterpriseGlobal:
   # Create this secret with the following command - kubectl create secret generic anchore-license --from-file=license.yaml=<PATH TO LICENSE.YAML>
   licenseSecretName: anchore-enterprise-license
 
-  image: docker.io/anchore/enterprise:v0.5.2
+  image: docker.io/anchore/enterprise:v0.6.0
   imagePullPolicy: IfNotPresent
   # Name of the kubernetes secret containing your dockerhub creds with access to the anchore enterprise images.
   # Create this secret with the following command - kubectl create secret docker-registry anchore-dockerhub-creds --docker-server=docker.io --docker-username=<USERNAME> --docker-password=<PASSWORD> --docker-email=<EMAIL_ADDRESS>
@@ -634,11 +637,42 @@ anchoreEnterpriseReports:
   tolerations: []
   affinity: {}
 
+# Configure the Anchore Enterprise notifications component.
+anchoreEnterpriseNotifications:
+  enabled: true
+
+  # Set extra environment variables. These will be set on all rbac containers.
+  extraEnv: []
+    # - name: foo
+    #   value: bar
+
+  cycleTimers:
+    notifications: 30
+
+  # Kubernetes service config - annotations & serviceType configs must be set in anchoreApi
+  # Due to Reports sharing a service with the general API.
+  service:
+    port: 8668
+
+  # resources:
+  #  limits:
+  #    cpu: 100m
+  #    memory: 8Gi
+  #  requests:
+  #    cpu: 100m
+  #    memory: 3Gi
+
+  labels: {}
+  annotations: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
 # Configure the Anchore Enterprise UI.
 anchoreEnterpriseUi:
   # If enabled is set to false, set anchore-ui-redis.enabled to false to ensure that helm doesn't stand up a unneccessary redis instance.
   enabled: true
-  image: docker.io/anchore/enterprise-ui:v0.5.0
+  image: docker.io/anchore/enterprise-ui:v0.6.0
   imagePullPolicy: IfNotPresent
 
   # Set extra environment variables. These will be set on all UI containers.

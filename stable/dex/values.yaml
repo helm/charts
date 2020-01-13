@@ -13,6 +13,8 @@ nodeSelector: {}
 
 podAnnotations: {}
 
+initContainers: []
+
 tolerations: []
   # - key: CriticalAddonsOnly
   #   operator: Exists
@@ -114,6 +116,11 @@ env: []
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
+
+crd:
+  # Specifies whether dex's CRDs are already present (if not cluster role and cluster role binding will be created
+  # to enable dex to create them). Depends on rbac.create
+  present: false
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created

@@ -105,6 +105,9 @@ spec:
 {{ tpl .Values.master.extraInitContainers . | indent 8 }}
       {{- end }}
       {{- end }}
+      {{- if .Values.master.priorityClassName }}
+      priorityClassName: {{ .Values.master.priorityClassName }}
+      {{- end }}
       containers:
         - name: {{ template "postgresql.fullname" . }}
           image: {{ template "postgresql.image" . }}
@@ -234,7 +237,7 @@ spec:
               value: {{ .Values.ldap.url }}
             {{- end}}
           ports:
-            - name: postgresql
+            - name: tcp-postgresql
               containerPort: {{ template "postgresql.port" . }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
@@ -328,7 +331,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /
-              port: metrics
+              port: http-metrics
             initialDelaySeconds: {{ .Values.metrics.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.metrics.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.metrics.livenessProbe.timeoutSeconds }}
@@ -339,7 +342,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /
-              port: metrics
+              port: http-metrics
             initialDelaySeconds: {{ .Values.metrics.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.metrics.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.metrics.readinessProbe.timeoutSeconds }}
@@ -358,7 +361,7 @@ spec:
           args: ["--extend.query-path", "/conf/custom-metrics.yaml"]
             {{- end }}
           ports:
-            - name: metrics
+            - name: http-metrics
               containerPort: 9187
           {{- if .Values.metrics.resources }}
           resources: {{- toYaml .Values.metrics.resources | nindent 12 }}

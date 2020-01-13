@@ -78,6 +78,8 @@ The following table lists the configurable parameters of the Redis chart and the
 | `clusterDomain`                               | Kubernetes DNS Domain name to use                                                                                                                   | `cluster.local`                                         |
 | `networkPolicy.enabled`                       | Enable NetworkPolicy                                                                                                                                | `false`                                                 |
 | `networkPolicy.allowExternal`                 | Don't require client label for connections                                                                                                          | `true`                                                  |
+| `networkPolicy.ingressNSMatchLabels`          | Allow connections from other namespaces                                                                                                            | `{}`                                                    | 
+| `networkPolicy.ingressNSPodMatchLabels`       | For other namespaces match by pod labels and namespace labels                                                                                      | `{}`                                                    | 
 | `securityContext.enabled`                     | Enable security context (both redis master and slave pods)                                                                                          | `true`                                                  |
 | `securityContext.fsGroup`                     | Group ID for the container (both redis master and slave pods)                                                                                       | `1001`                                                  |
 | `securityContext.runAsUser`                   | User ID for the container (both redis master and slave pods)                                                                                        | `1001`                                                  |
@@ -199,6 +201,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `sentinel.parallelSyncs`                      | Number of parallel syncs in the cluster                                                                                                             | `1`                                                     |
 | `sentinel.port`                               | Redis Sentinel port                                                                                                                                 | `26379`                                                 |
 | `sentinel.configmap`                          | Additional Redis configuration for the sentinel nodes (this value is evaluated as a template)                                                       | `nil`                                                   |
+| `sentinel.staticID`                           | Enable static IDs for sentinel replicas (If disabled IDs will be randomly generated on startup)                                                 | `false`                                                 |
 | `sentinel.service.type`                       | Kubernetes Service type (redis sentinel)                                                                                                            | `ClusterIP`                                             |
 | `sentinel.service.nodePort`                   | Kubernetes Service nodePort (redis sentinel)                                                                                                        | `nil`                                                   |
 | `sentinel.service.annotations`                | annotations for redis sentinel service                                                                                                              | {}                                                      |
@@ -386,6 +389,17 @@ the DefaultDeny namespace annotation. Note: this will enforce policy for _all_ p
 With NetworkPolicy enabled, only pods with the generated client label will be
 able to connect to Redis. This label will be displayed in the output
 after a successful install.
+
+With `networkPolicy.ingressNSMatchLabels` pods from other namespaces can connect to redis. Set `networkPolicy.ingressNSPodMatchLabels` to match pod labels in matched namespace. For example, for a namespace labeled `redis=external` and pods in that namespace labeled `redis-client=true` the fields should be set: 
+
+```
+networkPolicy:
+  enabled: true
+  ingressNSMatchLabels:
+    redis: external
+  ingressNSPodMatchLabels:
+    redis-client: true
+```
 
 ## Upgrading an existing Release to a new major version
 

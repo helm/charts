@@ -32,6 +32,7 @@ spec:
 {{ toYaml .Values.worker.podLabels | indent 8 }}
         {{- end }}
     spec:
+      serviceAccountName: {{ template "sentry.serviceAccountName" . }}
       {{- if .Values.worker.affinity }}
       affinity:
 {{ toYaml .Values.worker.affinity | indent 8 }}
@@ -85,7 +86,7 @@ spec:
             {{- else }}
               name: {{ template "sentry.postgresql.secret" . }}
             {{- end }}
-              key: postgresql-password
+              key: {{ template "sentry.postgresql.secretKey" . }}
         - name: SENTRY_POSTGRES_HOST
           value: {{ template "sentry.postgresql.host" . }}
         - name: SENTRY_POSTGRES_PORT
@@ -99,7 +100,7 @@ spec:
             {{- else }}
               name: {{ template "sentry.redis.secret" . }}
             {{- end }}
-              key: redis-password
+              key: {{ template "sentry.redis.secretKey" . }}
         {{- end }}
         - name: SENTRY_REDIS_HOST
           value: {{ template "sentry.redis.host" . }}
