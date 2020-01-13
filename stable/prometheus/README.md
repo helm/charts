@@ -295,6 +295,8 @@ Parameter | Description | Default
 `server.global.scrape_interval` | How frequently to scrape targets by default | `1m`
 `server.global.scrape_timeout` | How long until a scrape request times out | `10s`
 `server.global.evaluation_interval` | How frequently to evaluate rules | `1m`
+`server.remoteWrite` | The remote write feature of Prometheus allow transparently sending samples. | `{}`
+`server.remoteRead` | The remote read feature of Prometheus allow transparently receiving samples. | `{}`
 `server.extraArgs` | Additional Prometheus server container arguments | `{}`
 `server.extraFlags` | Additional Prometheus server container flags | `["web.enable-lifecycle"]`
 `server.extraInitContainers` | Init containers to launch alongside the server | `[]`
