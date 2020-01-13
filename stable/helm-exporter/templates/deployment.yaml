@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "helm-exporter.fullname" . }}
-  namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/name: {{ include "helm-exporter.name" . }}
     helm.sh/chart: {{ include "helm-exporter.chart" . }}
