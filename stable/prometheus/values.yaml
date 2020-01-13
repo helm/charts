@@ -442,6 +442,8 @@ kubeStateMetrics:
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
     servicePort: 80
+    # Port for Kubestatemetric self telemetry
+    serviceTelemetryPort: 81
     type: ClusterIP
 
 nodeExporter:
