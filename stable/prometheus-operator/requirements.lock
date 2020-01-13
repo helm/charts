@@ -7,6 +7,6 @@ dependencies:
   version: 1.8.1
 - name: grafana
   repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 4.2.2
-digest: sha256:f27ad230dc7c915ec1a1202607c7c8a27b1f22a4f2ccf9737da8475f50d9ee72
-generated: 2019-12-23T01:28:55.497157+01:00
+  version: 4.3.0
+digest: sha256:b35dd8137f2cd60f1ecce0970159258e0ce420bbaf473a99d8a9d9e4e0ef6fbe
+generated: "2020-01-13T17:13:26.0316206+01:00"
