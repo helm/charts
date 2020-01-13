@@ -353,7 +353,7 @@ kubeStateMetrics:
   ##
   image:
     repository: quay.io/coreos/kube-state-metrics
-    tag: v1.9.0
+    tag: v1.9.1
     pullPolicy: IfNotPresent
 
   ## kube-state-metrics priorityClassName
@@ -442,6 +442,8 @@ kubeStateMetrics:
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
     servicePort: 80
+    # Port for Kubestatemetric self telemetry
+    serviceTelemetryPort: 81
     type: ClusterIP
 
 nodeExporter:
