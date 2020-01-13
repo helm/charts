@@ -105,6 +105,9 @@ replacement_map = {
     'alertmanager-$1': {
         'replacement': '$1',
         'init': ''},
+    'https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#': {
+        'replacement': '{{ .Values.defaultRules.runbookUrl }}',
+        'init': ''},
 }
 
 # standard header
