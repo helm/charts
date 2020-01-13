@@ -137,6 +137,9 @@ service:
 
 ingress:
   enabled: false
+  labels: {}
+    # node-role.kubernetes.io/ingress: platform
+
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
