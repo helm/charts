@@ -88,7 +88,15 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `parsers.json`                     | List of json parsers | `NULL` |
 | `parsers.logfmt`                   | List of logfmt parsers | `NULL` |
 | **General**                   |
-| `annotations`                      | Optional deamonset set annotations        | `NULL`                |
+| `annotations`                      | Optional deamonset set annotations                      | `NULL`                              |
+| `audit.enable`                     | Enable collection of audit logs                         | `false`                             |
+| `audit.input.memBufLimit`          | Specify Mem_Buf_Limit in tail input                     | `35mb`                              |
+| `audit.input.parser`               | Specify Parser in tail input                            | `docker`                            |
+| `audit.input.path`                 | Specify log file(s) through the use of common wildcards | `/var/log/kube-apiserver-audit.log` |
+| `audit.input.bufferChunkSize`      | Specify Buffer_Chunk_Size in tail                       | `2MB`                               |
+| `audit.input.bufferMaxSize`        | Specify Buffer_Max_Size in tail                         | `10MB`                              |
+| `audit.input.skipLongLines`        | Specify Skip_Long_Lines in tail                         | `On`                                |
+| `audit.input.key`                  | Specify Key in tail                                     | `kubernetes-audit`                             |
 | `podAnnotations`                   | Optional pod annotations                  | `NULL`                |
 | `podLabels`                        | Optional pod labels                       | `NULL`                |
 | `fullConfigMap`                    | User has provided entire config (parsers + system)  | `false`      |
@@ -110,8 +118,9 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `filter.kubeTagPrefix`             | Optional tag prefix used by Tail   | `kube.var.log.containers.`                                |
 | `filter.mergeJSONLog`              | If the log field content is a JSON string map, append the map fields as part of the log structure         | `true`                                 |
 | `filter.mergeLogKey`               | If set, append the processed log keys under a new root key specified by this variable. | `nil` |
+| `filter.useJournal`                | If true, the filter reads logs coming in Journald format.  | `false` |
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
-| `image.fluent_bit.tag`             | Image tag                                  | `1.3.2`                                           |
+| `image.fluent_bit.tag`             | Image tag                                  | `1.3.5`                                           |
 | `image.pullPolicy`                 | Image pull policy                          | `Always`                                          |
 | `nameOverride`                     | Override name of app                   | `nil`                                        |
 | `fullnameOverride`                 | Override full name of app              | `nil`                                        |

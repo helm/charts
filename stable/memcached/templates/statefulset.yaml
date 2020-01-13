@@ -4,15 +4,12 @@ metadata:
   name: {{ template "memcached.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "memcached.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+{{ include "memcached.labels" . | indent 4 }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "memcached.fullname" . }}
-      release: "{{ .Release.Name }}"
+      app.kubernetes.io/name: {{ include "memcached.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   {{- if eq .Values.kind "StatefulSet" }}
   serviceName: {{ template "memcached.fullname" . }}
   {{- end }}
@@ -20,10 +17,8 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "memcached.fullname" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
-        heritage: "{{ .Release.Service }}"
+        app.kubernetes.io/name: {{ include "memcached.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
 {{- with .Values.podLabels }}
 {{ toYaml . | indent 8 }}
 {{- end}}
@@ -43,8 +38,8 @@ spec:
           - topologyKey: "kubernetes.io/hostname"
             labelSelector:
               matchLabels:
-                app:  {{ template "memcached.fullname" . }}
-                release: {{ .Release.Name | quote }}
+                app.kubernetes.io/name: {{ include "memcached.name" . }}
+                app.kubernetes.io/instance: {{ .Release.Name }}
         {{- else if eq .Values.AntiAffinity "soft" }}
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 5
@@ -52,8 +47,8 @@ spec:
               topologyKey: "kubernetes.io/hostname"
               labelSelector:
                 matchLabels:
-                  app:  {{ template "memcached.fullname" . }}
-                  release: {{ .Release.Name | quote }}
+                  app.kubernetes.io/name: {{ include "memcached.name" . }}
+                  app.kubernetes.io/instance: {{ .Release.Name }}
         {{- end }}
       {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"

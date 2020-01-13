@@ -3,7 +3,7 @@ apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: {{ template "grafana.fullname" . }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ template "grafana.namespace" . }}
   labels:
     app: {{ template "grafana.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
