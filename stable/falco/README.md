@@ -240,15 +240,10 @@ $ cd examples/k8s_audit_config
 $ APISERVER_HOST=api.my-kops-cluster.com bash ./enable-k8s-audit.sh kops dynamic
 ```
 
-You also will need to [provide an internal clusterIP](https://kubernetes.io/docs/concepts/services-networking/service/#choosing-your-own-ip-address)
-where the service is going to be deployed. You need to choose an IPv4 or IPv6
-address from within the `service-cluster-ip-range` CIDR range that is configured
-for the apiserver.
-
 Then you can install Falco chart enabling the enabling the `falco.webserver`
 flag:
 
-`helm install --name falco --set falco.auditLog.enabled=true  --set falco.auditLog.clusterIP=10.96.0.40 --set falco.auditLog.dynamicBackend.enabled=true stable/falco`
+`helm install --name falco --set falco.auditLog.enabled=true --set falco.auditLog.dynamicBackend.enabled=true stable/falco`
 
 And that's it, you will start to see the K8s audit log related alerts.
 
@@ -257,7 +252,7 @@ And that's it, you will start to see the K8s audit log related alerts.
 Perhaps you may find the case where you receive an error like the following one:
 
 ```
-$ helm install --name falco --set falco.auditLog.enabled=true  --set falco.auditLog.clusterIP=10.96.0.40 .
+$ helm install --name falco --set falco.auditLog.enabled=true stable/falco
 Error: validation failed: unable to recognize "": no matches for kind "AuditSink" in version "auditregistration.k8s.io/v1alpha1"
 ```
 
