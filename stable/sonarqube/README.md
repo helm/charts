@@ -69,6 +69,8 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `persistence.storageClass`                  | Storage class to be used                  | ""                                         |
 | `persistence.accessMode`                    | Volumes access mode to be set             | `ReadWriteOnce`                            |
 | `persistence.size`                          | Size of the volume                        | 10Gi                                       |
+| `persistence.volumes`                       | Specify extra volumes. Refer to ".spec.volumes" specification | []                                         |
+| `persistence.mounts`                        | Specify extra mounts. Refer to ".spec.containers.volumeMounts" specification | []                                         |
 | `sonarProperties`                           | Custom `sonar.properties` file            | None                                       |
 | `sonarSecretProperties`                     | Additional `sonar.properties` file to load from a secret | None                                       |
 | `customCerts.enabled`                       | Use `customCerts.secretName`              | false                                      |

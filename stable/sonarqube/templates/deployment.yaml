@@ -197,6 +197,9 @@ spec:
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           volumeMounts:
+{{- if .Values.persistence.mounts }}
+{{ toYaml .Values.persistence.mounts | indent 12 }}
+{{- end }}
             {{- if and .Values.sonarProperties .Values.sonarSecretProperties }}
             - mountPath: {{ .Values.sonarqubeFolder }}/conf/
               name: concat-dir
@@ -250,6 +253,9 @@ spec:
 {{ toYaml .Values.affinity | indent 8 }}
     {{- end }}
       volumes:
+{{- if .Values.persistence.volumes }}
+{{ tpl (toYaml .Values.persistence.volumes | indent 6) . }}
+{{- end }}
       {{- if or .Values.sonarProperties (not .Values.elasticsearch.bootstrapChecks) }}
       - name: config
         configMap:
