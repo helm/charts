@@ -105,6 +105,9 @@ replacement_map = {
     'alertmanager-$1': {
         'replacement': '$1',
         'init': ''},
+    'https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#': {
+        'replacement': '{{ .Values.defaultRules.runbookUrl }}',
+        'init': ''},
 }
 
 # standard header
@@ -117,6 +120,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: {{ printf "%%s-%%s" (include "prometheus-operator.fullname" .) "%(name)s" | trunc 63 | trimSuffix "-" }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "prometheus-operator.name" . }}
 {{ include "prometheus-operator.labels" . | indent 4 }}

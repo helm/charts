@@ -109,7 +109,8 @@ Parameter                                            | Description              
 `email.password`                                     | SMTP password                                                                                              | `nil`
 `email.use_tls`                                      | SMTP TLS for security                                                                                      | `false`
 `email.enable_replies`                               | Allow email replies                                                                                        | `false`
-`email.existingSecret`                               | SMTP password from an existing secret (key must be `smtp-password`)                                        | `nil`
+`email.existingSecret`                               | SMTP password from an existing secret                                                                      | `nil`
+`email.existingSecretKey`                            | Key to get from the `email.existingSecret` secret                                                          | `smtp-password`
 `service.type`                                       | Kubernetes service type                                                                                    | `LoadBalancer`
 `service.name`                                       | Kubernetes service name                                                                                    | `sentry`
 `service.externalPort`                               | Kubernetes external service port                                                                           | `9000`
@@ -126,12 +127,16 @@ Parameter                                            | Description              
 `postgresql.postgresqlDatabase`                      | Postgres database name                                                                                     | `sentry`
 `postgresql.postgresqlUsername`                      | Postgres username                                                                                          | `postgres`
 `postgresql.postgresqlHost`                          | External postgres host                                                                                     | `nil`
-`postgresql.postgresqlPassword`                      | External/Internal postgres password                                                                                 | `nil`
+`postgresql.postgresqlPassword`                      | External/Internal postgres password                                                                        | `nil`
 `postgresql.postgresqlPort`                          | External postgres port                                                                                     | `5432`
+`postgresql.existingSecret`                          | Name of existing secret to use for the PostgreSQL password                                                 | `nil`
+`postgresql.existingSecretKey`                       | Key to get from the `postgresql.existingSecret` secret                                                     | `postgresql-password`
 `redis.enabled`                                      | Deploy redis server (see below)                                                                            | `true`
 `redis.host`                                         | External redis host                                                                                        | `nil`
 `redis.password`                                     | External redis password                                                                                    | `nil`
 `redis.port`                                         | External redis port                                                                                        | `6379`
+`redis.existingSecret`                               | Name of existing secret to use for the Redis password                                                      | `nil`
+`redis.existingSecretKey`                            | Key to get from the `redis.existingSecret` secret                                                          | `redis-password`
 `filestore.backend`                                  | Backend for Sentry Filestore                                                                               | `filesystem`
 `filestore.filesystem.path`                          | Location to store files for Sentry                                                                         | `/var/lib/sentry/files`
 `filestore.filesystem.persistence.enabled`           | Enable Sentry files persistence using PVC                                                                  | `true`
