@@ -7,6 +7,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ printf "%s-%s" (include "prometheus-operator.fullname" $) "namespace-by-workload" | trunc 63 | trimSuffix "-" }}
+  namespace: {{ $.Release.Namespace }}
   labels:
     {{- if $.Values.grafana.sidecar.dashboards.label }}
     {{ $.Values.grafana.sidecar.dashboards.label }}: "1"
@@ -76,6 +77,7 @@ data:
                     "threshold": 0
                 },
                 "datasource": "$datasource",
+                "description": "",
                 "fontSize": "80%",
                 "format": "Bps",
                 "gridPos": {
@@ -121,6 +123,7 @@ data:
                     "threshold": 0
                 },
                 "datasource": "$datasource",
+                "description": "",
                 "fontSize": "80%",
                 "format": "Bps",
                 "gridPos": {
@@ -233,7 +236,7 @@ data:
                         "link": false,
                         "linkTooltip": "Drill down",
                         "linkUrl": "",
-                        "pattern": "Time",
+                        "pattern": "",
                         "thresholds": [
 
                         ],
@@ -251,7 +254,7 @@ data:
                         "link": false,
                         "linkTooltip": "Drill down",
                         "linkUrl": "",
-                        "pattern": "Value #A",
+                        "pattern": "",
                         "thresholds": [
 
                         ],
@@ -269,7 +272,7 @@ data:
                         "link": false,
                         "linkTooltip": "Drill down",
                         "linkUrl": "",
-                        "pattern": "Value #B",
+                        "pattern": "",
                         "thresholds": [
 
                         ],
@@ -287,7 +290,7 @@ data:
                         "link": false,
                         "linkTooltip": "Drill down",
                         "linkUrl": "",
-                        "pattern": "Value #C",
+                        "pattern": "",
                         "thresholds": [
 
                         ],
@@ -305,7 +308,7 @@ data:
                         "link": false,
                         "linkTooltip": "Drill down",
                         "linkUrl": "",
-                        "pattern": "Value #D",
+                        "pattern": "",
                         "thresholds": [
 
                         ],
@@ -323,7 +326,7 @@ data:
                         "link": false,
                         "linkTooltip": "Drill down",
                         "linkUrl": "",
-                        "pattern": "Value #E",
+                        "pattern": "",
                         "thresholds": [
 
                         ],
@@ -341,7 +344,7 @@ data:
                         "link": false,
                         "linkTooltip": "Drill down",
                         "linkUrl": "",
-                        "pattern": "Value #F",
+                        "pattern": "",
                         "thresholds": [
 
                         ],
@@ -359,7 +362,7 @@ data:
                         "link": false,
                         "linkTooltip": "Drill down",
                         "linkUrl": "",
-                        "pattern": "Value #G",
+                        "pattern": "",
                         "thresholds": [
 
                         ],
@@ -377,7 +380,7 @@ data:
                         "link": false,
                         "linkTooltip": "Drill down",
                         "linkUrl": "",
-                        "pattern": "Value #H",
+                        "pattern": "",
                         "thresholds": [
 
                         ],
@@ -395,7 +398,7 @@ data:
                         "link": true,
                         "linkTooltip": "Drill down",
                         "linkUrl": "d/728bf77cc1166d2f3133bf25846876cc/kubernetes-networking-workload?orgId=1&refresh=30s&var-namespace=$namespace&var-type=$type&var-workload=$__cell",
-                        "pattern": "workload",
+                        "pattern": "",
                         "thresholds": [
 
                         ],
@@ -477,8 +480,9 @@ data:
                         "step": 10
                     }
                 ],
+                "timeFrom": null,
+                "timeShift": null,
                 "title": "Current Status",
-                "transform": "table",
                 "type": "table"
             },
             {
@@ -503,6 +507,7 @@ data:
                             "threshold": 0
                         },
                         "datasource": "$datasource",
+                        "description": "",
                         "fontSize": "80%",
                         "format": "Bps",
                         "gridPos": {
@@ -548,6 +553,7 @@ data:
                             "threshold": 0
                         },
                         "datasource": "$datasource",
+                        "description": "",
                         "fontSize": "80%",
                         "format": "Bps",
                         "gridPos": {
@@ -1266,7 +1272,9 @@ data:
                     "hide": 0,
                     "label": null,
                     "name": "datasource",
-                    "options": [],
+                    "options": [
+
+                    ],
                     "query": "prometheus",
                     "refresh": 1,
                     "regex": "",

@@ -7,6 +7,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ printf "%s-%s" (include "prometheus-operator.fullname" $) "workload-total" | trunc 63 | trimSuffix "-" }}
+  namespace: {{ $.Release.Namespace }}
   labels:
     {{- if $.Values.grafana.sidecar.dashboards.label }}
     {{ $.Values.grafana.sidecar.dashboards.label }}: "1"
@@ -76,6 +77,7 @@ data:
                     "threshold": 0
                 },
                 "datasource": "$datasource",
+                "description": "",
                 "fontSize": "80%",
                 "format": "Bps",
                 "gridPos": {
@@ -121,6 +123,7 @@ data:
                     "threshold": 0
                 },
                 "datasource": "$datasource",
+                "description": "",
                 "fontSize": "80%",
                 "format": "Bps",
                 "gridPos": {
@@ -177,6 +180,7 @@ data:
                             "threshold": 0
                         },
                         "datasource": "$datasource",
+                        "description": "",
                         "fontSize": "80%",
                         "format": "Bps",
                         "gridPos": {
@@ -222,6 +226,7 @@ data:
                             "threshold": 0
                         },
                         "datasource": "$datasource",
+                        "description": "",
                         "fontSize": "80%",
                         "format": "Bps",
                         "gridPos": {
@@ -940,7 +945,9 @@ data:
                     "hide": 0,
                     "label": null,
                     "name": "datasource",
-                    "options": [],
+                    "options": [
+
+                    ],
                     "query": "prometheus",
                     "refresh": 1,
                     "regex": "",

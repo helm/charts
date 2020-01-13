@@ -77,7 +77,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ printf "%%s-%%s" (include "prometheus-operator.fullname" $) "%(name)s" | trunc 63 | trimSuffix "-" }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ $.Release.Namespace }}
   labels:
     {{- if $.Values.grafana.sidecar.dashboards.label }}
     {{ $.Values.grafana.sidecar.dashboards.label }}: "1"
