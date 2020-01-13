@@ -13,21 +13,8 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
-  type: {{ .Values.service.type }}
-  {{- if .Values.service.clusterIP }}
-  clusterIP: {{ .Values.service.clusterIP }}
-  {{- end }}
-  {{- if .Values.service.externalIPs }}
-  externalIPs:
-  {{ toYaml .Values.service.externalIPs | indent 4 }}
-  {{- end }}
-  {{- if .Values.service.loadBalancerIP }}
-  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
-  {{- end }}
-  {{- with .Values.service.loadBalancerSourceRanges }}
-  loadBalancerSourceRanges:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+  type: ClusterIP
+  clusterIP: None
   # publishNotReadyAddresses is used for service discovery of meta and data nodes by querying the service's SRV record.
   publishNotReadyAddresses: true
   ports:
