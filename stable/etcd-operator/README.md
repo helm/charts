@@ -108,9 +108,7 @@ The following table lists the configurable parameters of the etcd-operator chart
 | `etcdCluster.name`                                | etcd cluster name                                                    | `etcd-cluster`                                 |
 | `etcdCluster.size`                                | etcd cluster size                                                    | `3`                                            |
 | `etcdCluster.version`                             | etcd cluster version                                                 | `3.2.25`                                       |
-| `etcdCluster.image.repository`                    | etcd container image                                                 | `quay.io/coreos/etcd-operator`                 |
-| `etcdCluster.image.tag`                           | etcd container image tag                                             | `v3.2.25`                                      |
-| `etcdCluster.image.pullPolicy`                    | etcd container image pull policy                                     | `Always`                                       |
+| `etcdCluster.repository`                    	    | etcd container image                                                 | `quay.io/coreos/etcd`                          |
 | `etcdCluster.enableTLS`                           | Enable use of TLS                                                    | `false`                                        |
 | `etcdCluster.tls.static.member.peerSecret`        | Kubernetes secret containing TLS peer certs                          | `etcd-peer-tls`                                |
 | `etcdCluster.tls.static.member.serverSecret`      | Kubernetes secret containing TLS server certs                        | `etcd-server-tls`                              |
