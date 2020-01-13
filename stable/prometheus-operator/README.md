@@ -140,6 +140,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `defaultRules.annotations` | Annotations for default rules for monitoring the cluster | `{}` |
 | `defaultRules.create` | Create default rules for monitoring the cluster | `true` |
 | `defaultRules.labels` | Labels for default rules for monitoring the cluster | `{}` |
+| `defaultRules.runbookUrl` | URL prefix for default rule runbook_url annotations | `https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#` |
 | `defaultRules.rules.PrometheusOperator` | Create Prometheus Operator  default rules| `true` |
 | `defaultRules.rules.alertmanager` | Create default rules for Alert Manager | `true` |
 | `defaultRules.rules.etcd` | Create default rules for ETCD | `true` |

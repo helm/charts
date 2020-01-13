@@ -40,6 +40,9 @@ defaultRules:
     prometheusOperator: true
     time: true
 
+  ## Runbook url prefix for default rules
+  runbookUrl: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#
+
   ## Labels for default rules
   labels: {}
   ## Annotations for default rules
