@@ -93,6 +93,9 @@ spec:
             - --validating-webhook-certificate=/usr/local/certificates/cert
             - --validating-webhook-key=/usr/local/certificates/key
           {{- end }}
+          {{- if .Values.controller.maxmindLicenseKey }}
+            - --maxmind-license-key={{ .Values.controller.maxmindLicenseKey }}
+          {{- end }}
           {{- range $key, $value := .Values.controller.extraArgs }}
             {{- if $value }}
             - --{{ $key }}={{ $value }}
