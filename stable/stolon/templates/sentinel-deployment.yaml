@@ -31,6 +31,10 @@ spec:
       priorityClassName: "{{ .Values.sentinel.priorityClassName }}"
 {{- end }}
       serviceAccountName: {{ template "stolon.serviceAccountName" . }}
+{{- if .Values.image.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
+{{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
