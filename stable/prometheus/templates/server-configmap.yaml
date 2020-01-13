@@ -59,6 +59,9 @@ data:
         - source_labels: [__meta_kubernetes_pod_label_component]
           regex: alertmanager
           action: keep
+        - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_probe]
+          regex: {{ index $root.Values.alertmanager.podAnnotations "prometheus.io/probe" | default ".*" }}
+          action: keep
         - source_labels: [__meta_kubernetes_pod_container_port_number]
           regex:
           action: drop

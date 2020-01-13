@@ -117,6 +117,8 @@ Parameter | Description | Default
 `alertmanager.nodeSelector` | node labels for alertmanager pod assignment | `{}`
 `alertmanager.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `alertmanager.affinity` | pod affinity | `{}`
+`alertmanager.podDisruptionBudget.enabled` | If true, create a PodDisruptionBudget | `false`
+`alertmanager.podDisruptionBudget.maxUnavailable` | Maximum unavailable instances in PDB | `1`
 `alertmanager.schedulerName` | alertmanager alternate scheduler name | `nil`
 `alertmanager.persistentVolume.enabled` | If true, alertmanager will create a Persistent Volume Claim | `true`
 `alertmanager.persistentVolume.accessModes` | alertmanager data Persistent Volume access modes | `[ReadWriteOnce]`
@@ -125,6 +127,7 @@ Parameter | Description | Default
 `alertmanager.persistentVolume.mountPath` | alertmanager data Persistent Volume mount root path | `/data`
 `alertmanager.persistentVolume.size` | alertmanager data Persistent Volume size | `2Gi`
 `alertmanager.persistentVolume.storageClass` | alertmanager data Persistent Volume Storage Class | `unset`
+`alertmanager.persistentVolume.volumeBindingMode` | alertmanager data Persistent Volume Binding Mode | `unset`
 `alertmanager.persistentVolume.subPath` | Subdirectory of alertmanager data Persistent Volume to mount | `""`
 `alertmanager.podAnnotations` | annotations to be added to alertmanager pods | `{}`
 `alertmanager.podSecurityPolicy.annotations` | Specify pod annotations in the pod security policy | `{}` |
@@ -173,6 +176,8 @@ Parameter | Description | Default
 `kubeStateMetrics.podSecurityPolicy.annotations` | Specify pod annotations in the pod security policy | `{}` |
 `kubeStateMetrics.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `kubeStateMetrics.replicaCount` | desired number of kube-state-metrics pods | `1`
+`kubeStateMetrics.podDisruptionBudget.enabled` | If true, create a PodDisruptionBudget | `false`
+`kubeStateMetrics.podDisruptionBudget.maxUnavailable` | Maximum unavailable instances in PDB | `1`
 `kubeStateMetrics.priorityClassName` | kube-state-metrics priorityClassName | `nil`
 `kubeStateMetrics.resources` | kube-state-metrics resource requests and limits (YAML) | `{}`
 `kubeStateMetrics.securityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for kube-state-metrics containers | `{}`
@@ -196,6 +201,8 @@ Parameter | Description | Default
 `nodeExporter.nodeSelector` | node labels for node-exporter pod assignment | `{}`
 `nodeExporter.podAnnotations` | annotations to be added to node-exporter pods | `{}`
 `nodeExporter.pod.labels` | labels to be added to node-exporter pods | `{}`
+`nodeExporter.podDisruptionBudget.enabled` | If true, create a PodDisruptionBudget | `false`
+`nodeExporter.podDisruptionBudget.maxUnavailable` | Maximum unavailable instances in PDB | `1`
 `nodeExporter.podSecurityPolicy.annotations` | Specify pod annotations in the pod security policy | `{}` |
 `nodeExporter.podSecurityPolicy.enabled` | Specify if a Pod Security Policy for node-exporter must be created | `false`
 `nodeExporter.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
@@ -227,6 +234,8 @@ Parameter | Description | Default
 `pushgateway.podSecurityPolicy.annotations` | Specify pod annotations in the pod security policy | `{}` |
 `pushgateway.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `pushgateway.replicaCount` | desired number of pushgateway pods | `1`
+`pushgateway.podDisruptionBudget.enabled` | If true, create a PodDisruptionBudget | `false`
+`pushgateway.podDisruptionBudget.maxUnavailable` | Maximum unavailable instances in PDB | `1`
 `pushgateway.schedulerName` | pushgateway alternate scheduler name | `nil`
 `pushgateway.persistentVolume.enabled` | If true, Prometheus pushgateway will create a Persistent Volume Claim | `false`
 `pushgateway.persistentVolume.accessModes` | Prometheus pushgateway data Persistent Volume access modes | `[ReadWriteOnce]`
@@ -234,7 +243,8 @@ Parameter | Description | Default
 `pushgateway.persistentVolume.existingClaim` | Prometheus pushgateway data Persistent Volume existing claim name | `""`
 `pushgateway.persistentVolume.mountPath` | Prometheus pushgateway data Persistent Volume mount root path | `/data`
 `pushgateway.persistentVolume.size` | Prometheus pushgateway data Persistent Volume size | `2Gi`
-`pushgateway.persistentVolume.storageClass` | Prometheus server data Persistent Volume Storage Class |  `unset`
+`pushgateway.persistentVolume.storageClass` | Prometheus pushgateway data Persistent Volume Storage Class |  `unset`
+`pushgateway.persistentVolume.volumeBindingMode` | Prometheus pushgateway data Persistent Volume Binding Mode |  `unset`
 `pushgateway.persistentVolume.subPath` | Subdirectory of Prometheus server data Persistent Volume to mount | `""`
 `pushgateway.priorityClassName` | pushgateway priorityClassName | `nil`
 `pushgateway.resources` | pushgateway pod resource requests & limits | `{}`
@@ -252,13 +262,12 @@ Parameter | Description | Default
 `server.image.repository` | Prometheus server container image repository | `prom/prometheus`
 `server.image.tag` | Prometheus server container image tag | `v2.13.1`
 `server.image.pullPolicy` | Prometheus server container image pull policy | `IfNotPresent`
-`server.enableAdminApi` |  If true, Prometheus administrative HTTP API will be enabled. Please note, that you should take care of administrative API access protection (ingress or some frontend Nginx with auth) before enabling it. | `false`
-`server.skipTSDBLock` |  If true, Prometheus skip TSDB locking. | `false`
 `server.configPath` |  Path to a prometheus server config file on the container FS  | `/etc/config/prometheus.yml`
 `server.global.scrape_interval` | How frequently to scrape targets by default | `1m`
 `server.global.scrape_timeout` | How long until a scrape request times out | `10s`
 `server.global.evaluation_interval` | How frequently to evaluate rules | `1m`
 `server.extraArgs` | Additional Prometheus server container arguments | `{}`
+`server.extraFlags` | Additional Prometheus server container flags | `["web.enable-lifecycle"]`
 `server.extraInitContainers` | Init containers to launch alongside the server | `[]`
 `server.prefixURL` | The prefix slug at which the server can be accessed | ``
 `server.baseURL` | The external url at which the server can be accessed | ``
@@ -278,6 +287,8 @@ Parameter | Description | Default
 `server.nodeSelector` | node labels for Prometheus server pod assignment | `{}`
 `server.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `server.affinity` | pod affinity | `{}`
+`server.podDisruptionBudget.enabled` | If true, create a PodDisruptionBudget | `false`
+`server.podDisruptionBudget.maxUnavailable` | Maximum unavailable instances in PDB | `1`
 `server.priorityClassName` | Prometheus server priorityClassName | `nil`
 `server.schedulerName` | Prometheus server alternate scheduler name | `nil`
 `server.persistentVolume.enabled` | If true, Prometheus server will create a Persistent Volume Claim | `true`
@@ -287,6 +298,7 @@ Parameter | Description | Default
 `server.persistentVolume.mountPath` | Prometheus server data Persistent Volume mount root path | `/data`
 `server.persistentVolume.size` | Prometheus server data Persistent Volume size | `8Gi`
 `server.persistentVolume.storageClass` | Prometheus server data Persistent Volume Storage Class |  `unset`
+`server.persistentVolume.volumeBindingMode` | Prometheus server data Persistent Volume Binding Mode | `unset`
 `server.persistentVolume.subPath` | Subdirectory of Prometheus server data Persistent Volume to mount | `""`
 `server.emptyDir.sizeLimit` | emptyDir sizeLimit if a Persistent Volume is not used | `""`
 `server.podAnnotations` | annotations to be added to Prometheus server pods | `{}`
@@ -303,6 +315,7 @@ Parameter | Description | Default
 `server.statefulSet.headless.labels` | labels for Prometheus server headless service | `{}`
 `server.statefulSet.headless.servicePort` | Prometheus server headless service port | `80`
 `server.resources` | Prometheus server resource requests and limits | `{}`
+`server.verticalAutoscaler.enabled` | If true a VPA object will be created for the controller (either StatefulSet or Deployemnt, based on above configs) | `false`
 `server.securityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for server containers | `{}`
 `server.service.annotations` | annotations for Prometheus server service | `{}`
 `server.service.clusterIP` | internal Prometheus server cluster service IP | `""`
@@ -313,6 +326,8 @@ Parameter | Description | Default
 `server.service.servicePort` | Prometheus server service port | `80`
 `server.service.sessionAffinity` | Session Affinity for server service, can be `None` or `ClientIP` | `None`
 `server.service.type` | type of Prometheus server service to create | `ClusterIP`
+`server.service.statefulsetReplica.enabled` | If true, send the traffic from the service to only one replica of the replicaset | `false`
+`server.service.statefulsetReplica.replica` | Which replica to send the traffice to | `0`
 `server.sidecarContainers` | array of snippets with your sidecar containers for prometheus server | `""`
 `serviceAccounts.alertmanager.create` | If true, create the alertmanager service account | `true`
 `serviceAccounts.alertmanager.name` | name of the alertmanager service account to use or create | `{{ prometheus.alertmanager.fullname }}`

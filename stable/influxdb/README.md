@@ -114,6 +114,8 @@ To handle this setup on startup, a job can be enabled in `values.yaml` by settin
 
 Make sure to uncomment or configure the job settings after enabling it. If a password is not set, a random password will be generated.
 
+Alternatively, if `.Values.setDefaultUser.user.existingSecret` is set the user and password are obtained from an existing Secret, the expected keys are `influxdb-user` and `influxdb-password`. Use this variable  if you need to check in the `values.yaml` in a repository to avoid exposing your secrets. 
+
 ## Upgrading
 
 ### From < 1.0.0 To >= 1.0.0
@@ -122,7 +124,7 @@ Values `.Values.config.bind_address` and `.Values.exposeRpc` no longer exist. Th
 
 ### From < 1.5.0 to >= 2.0.0
 
-The Kubernetes API change to support 1.160 may not be backwards compatible and may require the chare to be uninstalled in order to upgrade.  See [this issue](https://github.com/helm/helm/issues/6583) for some background.
+The Kubernetes API change to support 1.160 may not be backwards compatible and may require the chart to be uninstalled in order to upgrade.  See [this issue](https://github.com/helm/helm/issues/6583) for some background.
 
 ### From < 3.0.0 to >= 3.0.0
 
