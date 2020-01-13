@@ -23,7 +23,7 @@ hoverflyFlags:
 openshift:
   route:
     admin:
-      enabled: false 
+      enabled: false
       hostname: ""
     proxy:
       enabled: false
