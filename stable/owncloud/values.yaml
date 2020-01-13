@@ -218,6 +218,9 @@ persistence:
     accessMode: ReadWriteOnce
     size: 8Gi
 
+# Update strategy type (e.g. Recreate or RollingUpdate)
+updateStrategy: RollingUpdate
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##

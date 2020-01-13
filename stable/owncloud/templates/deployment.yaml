@@ -14,6 +14,8 @@ spec:
       app: {{ template "owncloud.fullname" . }}
       release: "{{ .Release.Name }}"
   replicas: 1
+  strategy:
+    type: {{ .Values.updateStrategy }}
   template:
     metadata:
       labels:
