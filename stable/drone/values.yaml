@@ -342,7 +342,7 @@ dind:
   #    cpu: 1
 
 autoscaler:
-  enabled: true
+  enabled: false
 
   ## Drone server configuration.
   ## Values in here get injected as environment variables.
