@@ -60,6 +60,9 @@ spec:
         {{- else }}
           emptyDir: {}
         {{- end }}
+      securityContext:
+        runAsUser: 5050
+        fsGroup: 5050
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
