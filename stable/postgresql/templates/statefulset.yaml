@@ -74,8 +74,7 @@ spec:
       initContainers:
       {{- if or (and .Values.volumePermissions.enabled .Values.persistence.enabled) .Values.shmVolume.enabled }}
         - name: init-chmod-data
-          image: {{ template "postgresql.volumePermissions.image" . }}
-          imagePullPolicy: "{{ .Values.volumePermissions.image.pullPolicy }}"
+{{ include "postgresql.registryImage" (dict "image" .Values.images.volumePermissions "global" .Values.global) | indent 10 }}
           {{- if .Values.resources }}
           resources: {{- toYaml .Values.resources | nindent 12 }}
           {{- end }}
@@ -119,8 +118,7 @@ spec:
       {{- end }}
       containers:
         - name: {{ template "postgresql.fullname" . }}
-          image: {{ template "postgresql.image" . }}
-          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+{{ include "postgresql.registryImage" (dict "image" .Values.images.postgresql "global" .Values.global) | indent 10 }}
           {{- if .Values.resources }}
           resources: {{- toYaml .Values.resources | nindent 12 }}
           {{- end }}
@@ -130,7 +128,7 @@ spec:
           {{- end }}
           env:
             - name: BITNAMI_DEBUG
-              value: {{ ternary "true" "false" .Values.image.debug | quote }}
+              value: {{ ternary "true" "false" .Values.images.postgresql.debug | quote }}
             - name: POSTGRESQL_PORT_NUMBER
               value: "{{ template "postgresql.port" . }}"
             - name: POSTGRESQL_VOLUME_DIR
@@ -319,9 +317,8 @@ spec:
             {{- end }}
 {{- if .Values.metrics.enabled }}
         - name: metrics
-          image: {{ template "postgresql.metrics.image" . }}
-          imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
-         {{- if .Values.metrics.securityContext.enabled }}
+{{ include "postgresql.registryImage" (dict "image" .Values.images.metrics "global" .Values.global) | indent 10 }}
+          {{- if .Values.metrics.securityContext.enabled }}
           securityContext:
             runAsUser: {{ .Values.metrics.securityContext.runAsUser }}
         {{- end }}

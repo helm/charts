@@ -19,8 +19,8 @@ To get the password for "{{ template "postgresql.username" . }}" run:
     export POSTGRES_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "postgresql.secretName" . }} -o jsonpath="{.data.postgresql-password}" | base64 --decode)
 
 To connect to your database run the following command:
-
-    kubectl run {{ template "postgresql.fullname" . }}-client --rm --tty -i --restart='Never' --namespace {{ .Release.Namespace }} --image {{ template "postgresql.image" . }} --env="PGPASSWORD=$POSTGRES_PASSWORD" {{- if and (.Values.networkPolicy.enabled) (not .Values.networkPolicy.allowExternal) }}
+{{- $postgresqlImage := dict "image" .Values.images.postgresql "global" .Values.global }}
+    kubectl run {{ template "postgresql.fullname" . }}-client --rm --tty -i --restart='Never' --namespace {{ .Release.Namespace }} --image {{ template "postgresql.imageReference" $postgresqlImage }} --env="PGPASSWORD=$POSTGRES_PASSWORD" {{- if and (.Values.networkPolicy.enabled) (not .Values.networkPolicy.allowExternal) }}
    --labels="{{ template "postgresql.fullname" . }}-client=true" {{- end }} --command -- psql --host {{ template "postgresql.fullname" . }} -U {{ .Values.postgresqlUsername }} -d {{- if .Values.postgresqlDatabase }} {{ .Values.postgresqlDatabase }}{{- else }} postgres{{- end }} -p {{ template "postgresql.port" . }}
 
 {{ if and (.Values.networkPolicy.enabled) (not .Values.networkPolicy.allowExternal) }}
@@ -52,9 +52,9 @@ To connect to your database from outside the cluster execute the following comma
 
 {{- include "postgresql.validateValues" . -}}
 
-{{- if and (contains "bitnami/" .Values.image.repository) (not (.Values.image.tag | toString | regexFind "-r\\d+$|sha256:")) }}
+{{- if and (contains "bitnami/" (include "postgresql.imageReference" $postgresqlImage)) (not (include "postgresql.imageReference" $postgresqlImage | toString | regexFind "-r\\d+$|sha256:")) }}
 
-WARNING: Rolling tag detected ({{ .Values.image.repository }}:{{ .Values.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
+WARNING: Rolling tag detected ({{ template "postgresql.imageReference" $postgresqlImage }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
 +info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
 
 {{- end }}
