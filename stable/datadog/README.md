@@ -252,8 +252,8 @@ helm install --name <RELEASE_NAME> \
 | `image.pullSecrets`                      | Image pull secrets                                                                        | `nil`                                       |
 | `nameOverride`                           | Override name of app                                                                      | `""`                                        |
 | `fullnameOverride`                       | Override full name of app                                                                 | `""`                                        |
-| `daemonset.rbac.create`                  | If true, create & use RBAC resources                                                      | `true`                                      |
-| `daemonset.rbac.serviceAccountName`      | existing ServiceAccount to use (ignored if rbac.create=true)                              | `default`                                   |
+| `agents.rbac.create`                  | If true, create & use RBAC resources                                                      | `true`                                      |
+| `agents.rbac.serviceAccountName`      | existing ServiceAccount to use (ignored if rbac.create=true)                              | `default`                                   |
 | `datadog.site`                           | Site ('datadoghq.com' or 'datadoghq.eu')                                                  | `nil`                                       |
 | `datadog.dd_url`                         | Datadog intake server                                                                     | `nil`                                       |
 | `datadog.env`                            | Additional Datadog environment variables                                                  | `nil`                                       |
@@ -288,44 +288,44 @@ helm install --name <RELEASE_NAME> \
 | `datadog.systemProbe.enableConntrack`          | If true, system-probe connects to the netlink/conntrack subsystem to add NAT information to connection data. Ref: http://conntrack-tools.netfilter.org/| `true`|
 | `datadog.systemProbe.bpfDebug`                 | If true, system-probe writes debug logs to /sys/kernel/debug/tracing/trace_pipe                            | `false`                                           |
 | `datadog.systemProbe.apparmor`                 | Apparmor profile for system-probe                                                   | `unconfined`                                           |
-| `daemonset.podAnnotations`               | Annotations to add to the DaemonSet's Pods                                                | `nil`                                       |
-| `daemonset.podLabels`                    | labels to add to each pod                                                                 | `nil`                                       |
-| `daemonset.tolerations`                  | List of node taints to tolerate (requires Kubernetes >= 1.6)                              | `nil`                                       |
-| `daemonset.nodeSelector`                 | Node selectors                                                                            | `nil`                                       |
-| `daemonset.affinity`                     | Node affinities                                                                           | `nil`                                       |
-| `daemonset.useHostNetwork`               | If true, use the host's network                                                           | `nil`                                       |
-| `daemonset.useHostPID`.                  | If true, use the host's PID namespace                                                     | `nil`                                       |
-| `daemonset.useHostPort`                  | If true, use the same ports for both host and container                                   | `nil`                                       |
-| `daemonset.containers.agent.env`                          | Additional list of environment variables to use in the agent container                 | `nil`                                         |
-| `daemonset.containers.agent.logLevel`                     | Agent log verbosity                                                                    | `INFO`                                        |
-| `daemonset.containers.agent.resources.limits.cpu`         | CPU resource limits for the agent container                                            | `200m`                                        |
-| `daemonset.containers.agent.resources.requests.cpu`       | CPU resource requests for the agent container                                          | `200m`                                        |
-| `daemonset.containers.agent.resources.limits.memory`      | Memory resource limits for the agent container                                         | `256Mi`                                       |
-| `daemonset.containers.agent.resources.requests.memory`    | Memory resource requests for the agent container                                       | `256Mi`                                       |
-| `daemonset.containers.processAgent.env`                          | Additional list of environment variables to use in the process-agent container         | `nil`                                         |
-| `daemonset.containers.processAgent.logLevel`                     | Process agent log verbosity                                                            | `INFO`                                        |
-| `daemonset.containers.processAgent.resources.limits.cpu`         | CPU resource limits for the process-agent container                                    | `100m`                                        |
-| `daemonset.containers.processAgent.resources.requests.cpu`       | CPU resource requests for the process-agent container                                  | `100m`                                        |
-| `daemonset.containers.processAgent.resources.limits.memory`      | Memory resource limits for the process-agent container                                 | `200Mi`                                       |
-| `daemonset.containers.processAgent.resources.requests.memory`    | Memory resource requests for the process-agent container                               | `200Mi`                                       |
-| `daemonset.containers.traceAgent.env`                            | Additional list of environment variables to use in the trace-agent container           | `nil`                                         |
-| `daemonset.containers.traceAgent.logLevel`                       | Trace agent log verbosity                                                              | `INFO`                                        |
-| `daemonset.containers.traceAgent.resources.limits.cpu`           | CPU resource limits for the trace-agent container                                      | `100m`                                        |
-| `daemonset.containers.traceAgent.resources.requests.cpu`         | CPU resource requests for the trace-agent container                                    | `100m`                                        |
-| `daemonset.containers.traceAgent.resources.limits.memory`        | Memory resource limits for the trace-agent container                                   | `200Mi`                                       |
-| `daemonset.containers.traceAgent.resources.requests.memory`      | Memory resource requests for the trace-agent container                                 | `200Mi`                                       |
-| `daemonset.containers.systemProbe.env`                            | Additional list of environment variables to use in the system-probe container           | `nil`                                         |
-| `daemonset.containers.systemProbe.logLevel`                       | System probe log verbosity                                                              | `INFO`                                        |
-| `daemonset.containers.systemProbe.resources.limits.cpu`           | CPU resource limits for the system-probe container                                      | `100m`                                        |
-| `daemonset.containers.systemProbe.resources.requests.cpu`         | CPU resource requests for the system-probe container                                    | `100m`                                        |
-| `daemonset.containers.systemProbe.resources.limits.memory`        | Memory resource limits for the system-probe container                                   | `200Mi`                                       |
-| `daemonset.containers.systemProbe.resources.requests.memory`      | Memory resource requests for the system-probe container                                 | `200Mi`                                       |
-| `daemonset.priorityClassName`            | Which Priority Class to associate with the daemonset                                      | `nil`                                       |
-| `daemonset.useConfigMap`                 | Configures a configmap to provide the agent configuration                                 | `false`                                     |
-| `daemonset.customAgentConfig`            | Specify custom contents for the datadog agent config (datadog.yaml).                      | `{}`                                        |
-| `daemonset.updateStrategy`               | Which update strategy to deploy the daemonset                                             | RollingUpdate with 10% maxUnavailable       |
-| `daemonset.volumes`                        | Additional volumes for the daemonset or deployment                                        | `nil`                                       |
-| `daemonset.volumeMounts`                   | Additional volumeMounts for the daemonset or deployment                                   | `nil`                                       |
+| `agents.podAnnotations`               | Annotations to add to the DaemonSet's Pods                                                | `nil`                                       |
+| `agents.podLabels`                    | labels to add to each pod                                                                 | `nil`                                       |
+| `agents.tolerations`                  | List of node taints to tolerate (requires Kubernetes >= 1.6)                              | `nil`                                       |
+| `agents.nodeSelector`                 | Node selectors                                                                            | `nil`                                       |
+| `agents.affinity`                     | Node affinities                                                                           | `nil`                                       |
+| `agents.useHostNetwork`               | If true, use the host's network                                                           | `nil`                                       |
+| `agents.useHostPID`.                  | If true, use the host's PID namespace                                                     | `nil`                                       |
+| `agents.useHostPort`                  | If true, use the same ports for both host and container                                   | `nil`                                       |
+| `agents.containers.agent.env`                          | Additional list of environment variables to use in the agent container                 | `nil`                                         |
+| `agents.containers.agent.logLevel`                     | Agent log verbosity                                                                    | `INFO`                                        |
+| `agents.containers.agent.resources.limits.cpu`         | CPU resource limits for the agent container                                            | `200m`                                        |
+| `agents.containers.agent.resources.requests.cpu`       | CPU resource requests for the agent container                                          | `200m`                                        |
+| `agents.containers.agent.resources.limits.memory`      | Memory resource limits for the agent container                                         | `256Mi`                                       |
+| `agents.containers.agent.resources.requests.memory`    | Memory resource requests for the agent container                                       | `256Mi`                                       |
+| `agents.containers.processAgent.env`                          | Additional list of environment variables to use in the process-agent container         | `nil`                                         |
+| `agents.containers.processAgent.logLevel`                     | Process agent log verbosity                                                            | `INFO`                                        |
+| `agents.containers.processAgent.resources.limits.cpu`         | CPU resource limits for the process-agent container                                    | `100m`                                        |
+| `agents.containers.processAgent.resources.requests.cpu`       | CPU resource requests for the process-agent container                                  | `100m`                                        |
+| `agents.containers.processAgent.resources.limits.memory`      | Memory resource limits for the process-agent container                                 | `200Mi`                                       |
+| `agents.containers.processAgent.resources.requests.memory`    | Memory resource requests for the process-agent container                               | `200Mi`                                       |
+| `agents.containers.traceAgent.env`                            | Additional list of environment variables to use in the trace-agent container           | `nil`                                         |
+| `agents.containers.traceAgent.logLevel`                       | Trace agent log verbosity                                                              | `INFO`                                        |
+| `agents.containers.traceAgent.resources.limits.cpu`           | CPU resource limits for the trace-agent container                                      | `100m`                                        |
+| `agents.containers.traceAgent.resources.requests.cpu`         | CPU resource requests for the trace-agent container                                    | `100m`                                        |
+| `agents.containers.traceAgent.resources.limits.memory`        | Memory resource limits for the trace-agent container                                   | `200Mi`                                       |
+| `agents.containers.traceAgent.resources.requests.memory`      | Memory resource requests for the trace-agent container                                 | `200Mi`                                       |
+| `agents.containers.systemProbe.env`                            | Additional list of environment variables to use in the system-probe container           | `nil`                                         |
+| `agents.containers.systemProbe.logLevel`                       | System probe log verbosity                                                              | `INFO`                                        |
+| `agents.containers.systemProbe.resources.limits.cpu`           | CPU resource limits for the system-probe container                                      | `100m`                                        |
+| `agents.containers.systemProbe.resources.requests.cpu`         | CPU resource requests for the system-probe container                                    | `100m`                                        |
+| `agents.containers.systemProbe.resources.limits.memory`        | Memory resource limits for the system-probe container                                   | `200Mi`                                       |
+| `agents.containers.systemProbe.resources.requests.memory`      | Memory resource requests for the system-probe container                                 | `200Mi`                                       |
+| `agents.priorityClassName`            | Which Priority Class to associate with the daemonset                                      | `nil`                                       |
+| `agents.useConfigMap`                 | Configures a configmap to provide the agent configuration                                 | `false`                                     |
+| `agents.customAgentConfig`            | Specify custom contents for the datadog agent config (datadog.yaml).                      | `{}`                                        |
+| `agents.updateStrategy`               | Which update strategy to deploy the daemonset                                             | RollingUpdate with 10% maxUnavailable       |
+| `agents.volumes`                        | Additional volumes for the daemonset or deployment                                        | `nil`                                       |
+| `agents.volumeMounts`                   | Additional volumeMounts for the daemonset or deployment                                   | `nil`                                       |
 | `datadog.leaderElection`                 | Enable the leader Election feature                                                        | `false`                                     |
 | `datadog.leaderLeaseDuration`            | The duration for which a leader stays elected.                                            | 60 sec, 15 if Cluster Checks enabled        |
 | `datadog.collectEvents`                  | Enable Kubernetes event collection. Requires leader election.                             | `false`                                     |
