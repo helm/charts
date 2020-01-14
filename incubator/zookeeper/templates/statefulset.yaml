@@ -16,6 +16,7 @@ spec:
       app: {{ template "zookeeper.name" . }}
       release: {{ .Release.Name }}
       component: server
+  podManagementPolicy: {{ .Values.podManagementPolicy }}
   updateStrategy:
 {{ toYaml .Values.updateStrategy | indent 4 }}
   template:
@@ -67,7 +68,7 @@ spec:
               command:
                 - sh
                 - /config-scripts/ok
-            initialDelaySeconds: 20
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: 30
             timeoutSeconds: 5
             failureThreshold: 2
@@ -77,7 +78,7 @@ spec:
               command:
                 - sh
                 - /config-scripts/ready
-            initialDelaySeconds: 20
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: 30
             timeoutSeconds: 5
             failureThreshold: 2

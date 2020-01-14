@@ -8,6 +8,12 @@ podDisruptionBudget:
   maxUnavailable: 1  # Limits how many Zokeeper pods may be unavailable due to voluntary disruptions.
 
 terminationGracePeriodSeconds: 1800  # Duration in seconds a Zokeeper pod needs to terminate gracefully.
+## Controls the initial delay of the liveness probe. Sometimes it takes a while for the cluster to
+## settle down when it is first created.
+livenessProbe:
+  initialDelaySeconds: 30
+readinessProbe:
+  initialDelaySeconds: 30
 
 updateStrategy:
   type: RollingUpdate
@@ -295,3 +301,7 @@ jobs:
     parallelism: 1
     resources: {}
     restartPolicy: Never
+
+## Start and stop pods in Parallel or OrderedReady (one-by-one.)  Note - Can not change after first release.
+## ref: https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#pod-management-policy
+podManagementPolicy: OrderedReady
