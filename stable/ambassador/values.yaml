@@ -80,6 +80,7 @@ service:
       # nodePort: 30222
 
   annotations:
+    {}
   #############################################################################
   ## Ambassador should be configured using CRD definition. If you want
   ## to use annotations, the following is an example of annotating the
