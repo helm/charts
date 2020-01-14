@@ -65,6 +65,7 @@ The following table lists the configurable parameters of the MediaWiki chart and
 | `mediawikiPassword`                  | Application password                                        | _random 10 character long alphanumeric string_          |
 | `mediawikiEmail`                     | Admin email                                                 | `user@example.com`                                      |
 | `mediawikiName`                      | Name for the wiki                                           | `My Wiki`                                               |
+| `mediawikiHost`                      | Mediawiki host to create application URLs                   | `nil`                                                   |
 | `allowEmptyPassword`                 | Allow DB blank passwords                                    | `yes`                                                   |
 | `smtpHost`                           | SMTP host                                                   | `nil`                                                   |
 | `smtpPort`                           | SMTP port                                                   | `nil`                                                   |
@@ -127,6 +128,10 @@ The following table lists the configurable parameters of the MediaWiki chart and
 | `metrics.resources`                  | Exporter resource requests/limit                            | {}                                                      |
 
 The above parameters map to the env variables defined in [bitnami/mediawiki](http://github.com/bitnami/bitnami-docker-mediawiki). For more information please refer to the [bitnami/mediawiki](http://github.com/bitnami/bitnami-docker-mediawiki) image documentation.
+
+> **Note**:
+>
+> For Mediawiki to function correctly, you should specify the `mediawikiHost` parameter to specify the FQDN (recommended) or the public IP address of the Mediawiki service.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
