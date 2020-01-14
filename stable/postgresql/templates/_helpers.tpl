@@ -28,7 +28,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 */}}
 {{- define "postgresql.master.fullname" -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- $fullname := default (printf "%s-%s" .Release.Name $name) .Values.fullnameOverride -}}
+{{- $fullname := default (printf "%s" (include "postgresql.fullname" .)) .Values.fullnameOverride -}}
 {{- if .Values.replication.enabled -}}
 {{- printf "%s-%s" $fullname "master" | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
