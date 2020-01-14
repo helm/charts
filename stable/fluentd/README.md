@@ -34,7 +34,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Autoscaling
 
-By enabling autoscaling the chart will use statefulset with hpa instead of ceployment with PVC.
+By enabling autoscaling the chart will use statefulset with hpa instead of deployment with PVC.
 Please be noted to [statefulset limitation](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#limitations)
 The autoscaling is disabled by default for backward compatibility
 
