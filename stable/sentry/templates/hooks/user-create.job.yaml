@@ -39,7 +39,10 @@ spec:
       containers:
       - name: user-create-job
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        command: ["sentry","createuser","--no-input","--email", "{{ .Values.user.email }}", "--superuser","--password","$(SENTRY_USER_PASSWORD)"]
+        command: ["/bin/bash"]
+        args:
+          - "-c"
+          - "export output=$(sentry createuser --no-input --email {{ .Values.user.email }} --superuser --password $SENTRY_USER_PASSWORD) || if echo $output | grep -q 'already exists'; then exit 0; else exit 1; fi"
         env:
         - name: SENTRY_SECRET_KEY
           valueFrom:
