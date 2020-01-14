@@ -46,7 +46,7 @@ data:
       LOG4J_PROPERTIES="$ZK_CONF_DIR/log4j.properties"
       HOST=$(hostname)
       DOMAIN=`hostname -d`
-      JVMFLAGS="-Xmx$ZK_HEAP_SIZE -Xms$ZK_HEAP_SIZE"
+      JVMFLAGS="-Xmx$ZK_HEAP_SIZE -Xms$ZK_HEAP_SIZE ${SERVER_JVMFLAGS}"
 
       APPJAR=$(echo $ROOT/*jar)
       CLASSPATH="${ROOT}/lib/*:${APPJAR}:${ZK_CONF_DIR}:"
