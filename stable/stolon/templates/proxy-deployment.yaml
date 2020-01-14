@@ -30,6 +30,10 @@ spec:
       priorityClassName: "{{ .Values.proxy.priorityClassName }}"
 {{- end }}
       serviceAccountName: {{ template "stolon.serviceAccountName" . }}
+{{- if .Values.image.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .values.image.pullSecrets | indent 8 }}
+{{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

@@ -461,6 +461,14 @@ value is your SMTP password.
 
 ## Changelog
 
+### 0.36.5
+
+> PR https://github.com/helm/charts/pull/20099
+
+#### Improvements
+
+- Allow `grpc` protocol for KongPlugins
+
 ### 0.36.4
 
 > PR https://github.com/helm/charts/pull/20051
