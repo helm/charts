@@ -3,6 +3,7 @@
 {{- $servicePort := .Values.prometheus.service.port -}}
 {{- $routePrefix := list .Values.prometheus.prometheusSpec.routePrefix }}
 {{- $paths := .Values.prometheus.ingress.paths | default $routePrefix -}}
+{{- $extraPaths := .Values.prometheus.ingress.extraPaths -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -31,6 +32,9 @@ spec:
               serviceName: {{ $serviceName }}
               servicePort: {{ $servicePort }}
   {{- end -}}
+  {{ if $extraPaths }}
+  {{ toYaml $extraPaths | indent 10 }}
+  {{- end }}
   {{- end -}}
   {{- else }}
     - http:
@@ -40,6 +44,9 @@ spec:
             backend:
               serviceName: {{ $serviceName }}
               servicePort: {{ $servicePort }}
+  {{ if $extraPaths }}
+  {{ toYaml $extraPaths | indent 10 }}
+  {{- end }}
   {{- end -}}
   {{- end -}}
   {{- if .Values.prometheus.ingress.tls }}

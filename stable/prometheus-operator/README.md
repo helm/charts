@@ -245,6 +245,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.ingress.labels` | Prometheus Ingress additional labels | `{}` |
 | `prometheus.ingress.paths` | Prometheus Ingress paths | `[]` |
 | `prometheus.ingress.tls` | Prometheus Ingress TLS configuration (YAML) | `[]` |
+| `prometheus.ingress.extraPaths` | Ingress extra paths to prepend to every host configuration (YAML) | `[]` |
 | `prometheus.ingressPerReplica.annotations` | Prometheus pre replica Ingress annotations | `{}` |
 | `prometheus.ingressPerReplica.enabled` | If true, create an Ingress for each Prometheus server replica in the StatefulSet | `false` |
 | `prometheus.ingressPerReplica.hostPrefix` |  | `""` |
