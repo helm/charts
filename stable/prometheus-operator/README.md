@@ -138,6 +138,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `additionalPrometheusRules` | *DEPRECATED* Will be removed in a future release.  Please use **additionalPrometheusRulesMap** instead.  List of `prometheusRule` objects to create. See https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusrulespec. | `[]` |
 | `commonLabels` | Labels to apply to all resources | `[]` |
 | `defaultRules.annotations` | Annotations for default rules for monitoring the cluster | `{}` |
+| `defaultRules.appNamespacesTarget` | Specify target Namespaces for app alerts | `".*"` |
 | `defaultRules.create` | Create default rules for monitoring the cluster | `true` |
 | `defaultRules.labels` | Labels for default rules for monitoring the cluster | `{}` |
 | `defaultRules.runbookUrl` | URL prefix for default rule runbook_url annotations | `https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#` |

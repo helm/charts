@@ -42,6 +42,8 @@ defaultRules:
 
   ## Runbook url prefix for default rules
   runbookUrl: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#
+  ## Reduce app namespace alert scope
+  appNamespacesTarget: ".*"
 
   ## Labels for default rules
   labels: {}

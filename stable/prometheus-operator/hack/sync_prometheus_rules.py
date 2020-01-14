@@ -108,6 +108,14 @@ replacement_map = {
     'https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#': {
         'replacement': '{{ .Values.defaultRules.runbookUrl }}',
         'init': ''},
+    'job="kube-state-metrics"': {
+        'replacement': 'job="kube-state-metrics", namespace=~"{{ $targetNamespace }}"',
+        'limitGroup': ['kubernetes-apps'],
+        'init': '{{- $targetNamespace := .Values.defaultRules.appNamespacesTarget }}'},
+    'job="kubelet"': {
+        'replacement': 'job="kubelet", namespace=~"{{ $targetNamespace }}"',
+        'limitGroup': ['kubernetes-storage'],
+        'init': '{{- $targetNamespace := .Values.defaultRules.appNamespacesTarget }}'},
 }
 
 # standard header
@@ -203,13 +211,14 @@ def add_rules_conditions(rules, indent=4):
 
 def write_group_to_file(group, url, destination, min_kubernetes, max_kubernetes):
     fix_expr(group['rules'])
+    group_name = group['name']
 
     # prepare rules string representation
     rules = yaml_str_repr(group)
     # add replacements of custom variables and include their initialisation in case it's needed
     init_line = ''
     for line in replacement_map:
-        if line in rules:
+        if group_name in replacement_map[line].get('limitGroup', [group_name]) and line in rules:
             rules = rules.replace(line, replacement_map[line]['replacement'])
             if replacement_map[line]['init']:
                 init_line += '\n' + replacement_map[line]['init']
