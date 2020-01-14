@@ -140,6 +140,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `defaultRules.annotations` | Annotations for default rules for monitoring the cluster | `{}` |
 | `defaultRules.create` | Create default rules for monitoring the cluster | `true` |
 | `defaultRules.labels` | Labels for default rules for monitoring the cluster | `{}` |
+| `defaultRules.runbookUrl` | URL prefix for default rule runbook_url annotations | `https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#` |
 | `defaultRules.rules.PrometheusOperator` | Create Prometheus Operator  default rules| `true` |
 | `defaultRules.rules.alertmanager` | Create default rules for Alert Manager | `true` |
 | `defaultRules.rules.etcd` | Create default rules for ETCD | `true` |
@@ -323,7 +324,9 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.serviceAccount.create` | Create a default serviceaccount for prometheus to use | `true` |
 | `prometheus.serviceAccount.name` | Name for prometheus serviceaccount | `""` |
 | `prometheus.serviceAccount.annotations` | Annotations to add to the serviceaccount | `""` |
-| `prometheus.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
+| `prometheus.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `""` |
+| `prometheus.serviceMonitor.scheme` | HTTP scheme to use for scraping. Can be used with `tlsConfig` for example if using istio mTLS. | `""` |
+| `prometheus.serviceMonitor.tlsConfig` | TLS configuration to use when scraping the endpoint. For example if using istio mTLS. Of type: [*TLSConfig](https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#tlsconfig). | `{}` |
 | `prometheus.serviceMonitor.bearerTokenFile` | Bearer token used to scrape the Prometheus server | `nil` |
 | `prometheus.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping the prometheus instance. | `` |
 | `prometheus.serviceMonitor.relabelings` | The `relabel_configs` for scraping the prometheus instance. | `` |

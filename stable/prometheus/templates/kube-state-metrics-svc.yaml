@@ -34,6 +34,10 @@ spec:
       port: {{ .Values.kubeStateMetrics.service.servicePort }}
       protocol: TCP
       targetPort: 8080
+    - name: telemetry
+      port: {{ .Values.kubeStateMetrics.service.serviceTelemetryPort }}
+      protocol: TCP
+      targetPort: 8081
   selector:
     {{- include "prometheus.kubeStateMetrics.matchLabels" . | nindent 4 }}
   type: "{{ .Values.kubeStateMetrics.service.type }}"

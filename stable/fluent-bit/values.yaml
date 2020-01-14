@@ -273,6 +273,9 @@ filter:
 # fluentbit.io/exclude: true. If present, discard logs from that pod.
   enableExclude: true
 
+# If true, the filter reads logs coming in Journald format.
+  useJournal: false
+
 rbac:
   # Specifies whether RBAC resources should be created
   create: true

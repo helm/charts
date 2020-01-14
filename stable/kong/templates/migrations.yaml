@@ -4,19 +4,15 @@ kind: Job
 metadata:
   name: {{ template "kong.fullname" . }}-init-migrations
   labels:
-    app: {{ template "kong.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
-    component: init-migrations
+    {{- include "kong.metaLabels" . | nindent 4 }}
+    app.kubernetes.io/component: init-migrations
 spec:
   template:
     metadata:
       name: {{ template "kong.name" . }}-init-migrations
       labels:
-        app: {{ template "kong.name" . }}
-        release: "{{ .Release.Name }}"
-        component: init-migrations
+        {{- include "kong.metaLabels" . | nindent 8 }}
+        app.kubernetes.io/component: init-migrations
     spec:
       {{- if .Values.podSecurityPolicy.enabled }}
       serviceAccountName: {{ template "kong.serviceAccountName" . }}
@@ -41,7 +37,7 @@ spec:
         volumeMounts:
         {{- include "kong.volumeMounts" . | nindent 8 }}
       securityContext:
-      {{- include "kong.podsecuritycontext" . | nindent 6 }}
+      {{- include "kong.podsecuritycontext" . | nindent 8 }}
       restartPolicy: OnFailure
       volumes:
       {{- include "kong.volumes" . | nindent 6 -}}

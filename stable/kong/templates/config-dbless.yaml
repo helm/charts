@@ -5,10 +5,7 @@ kind: ConfigMap
 metadata:
   name: {{ template "kong.dblessConfig.fullname" . }}
   labels:
-    app: {{ template "kong.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "kong.metaLabels" . | nindent 4 }}
 data:
   kong.yml: |
 {{ .Values.dblessConfig.config | toYaml | indent 4 }}

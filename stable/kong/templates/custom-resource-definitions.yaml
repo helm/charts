@@ -4,10 +4,7 @@ kind: CustomResourceDefinition
 metadata:
   name: kongconsumers.configuration.konghq.com
   labels:
-    app: {{ template "kong.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "kong.metaLabels" . | nindent 4 }}
 spec:
   group: configuration.konghq.com
   version: v1
@@ -33,16 +30,17 @@ spec:
           type: string
         custom_id:
           type: string
+        credentials:
+          type: array
+          items:
+            type: string
 ---
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
   name: kongcredentials.configuration.konghq.com
   labels:
-    app: {{ template "kong.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "kong.metaLabels" . | nindent 4 }}
 spec:
   group: configuration.konghq.com
   version: v1
@@ -79,10 +77,7 @@ kind: CustomResourceDefinition
 metadata:
   name: kongplugins.configuration.konghq.com
   labels:
-    app: {{ template "kong.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "kong.metaLabels" . | nindent 4 }}
 spec:
   group: configuration.konghq.com
   version: v1
@@ -137,16 +132,15 @@ spec:
             - https
             - tcp
             - tls
+            - grpc
+            - grpcs
 ---
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
   name: kongingresses.configuration.konghq.com
   labels:
-    app: {{ template "kong.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "kong.metaLabels" . | nindent 4 }}
 spec:
   group: configuration.konghq.com
   version: v1
@@ -184,6 +178,8 @@ spec:
                 enum:
                 - http
                 - https
+                - grpc
+                - grpcs
             https_redirect_status_code:
               type: integer
         proxy:
@@ -194,6 +190,8 @@ spec:
               enum:
               - http
               - https
+              - grpc
+              - grpcs
             path:
               type: string
               pattern: ^/.*$
@@ -218,6 +216,8 @@ spec:
               - "round-robin"
               - "consistent-hashing"
               - "least-connections"
+            host_header:
+              type: string
             hash_on:
               type: string
             hash_on_cookie:

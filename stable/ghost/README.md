@@ -53,7 +53,7 @@ The following table lists the configurable parameters of the Ghost chart and the
 |-------------------------------------|---------------------------------------------------------------|----------------------------------------------------------|
 | `global.imageRegistry`              | Global Docker image registry                                  | `nil`                                                    |
 | `global.imagePullSecrets`           | Global Docker registry secret names as an array               | `[]` (does not add image pull secrets to deployed pods)  |
-| `global.storageClass`                     | Global storage class for dynamic provisioning                                               | `nil`                                                        |
+| `global.storageClass`               | Global storage class for dynamic provisioning                 | `nil`                                                    |
 | `image.registry`                    | Ghost image registry                                          | `docker.io`                                              |
 | `image.repository`                  | Ghost Image name                                              | `bitnami/ghost`                                          |
 | `image.tag`                         | Ghost Image tag                                               | `{TAG_NAME}`                                             |
@@ -63,7 +63,7 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `fullnameOverride`                  | String to fully override ghost.fullname template with a string                                     | `nil`               |
 | `volumePermissions.image.registry`  | Init container volume-permissions image registry              | `docker.io`                                              |
 | `volumePermissions.image.repository`| Init container volume-permissions image name                  | `bitnami/minideb`                                        |
-| `volumePermissions.image.tag`       | Init container volume-permissions image tag                   | `stretch`                                                 |
+| `volumePermissions.image.tag`       | Init container volume-permissions image tag                   | `stretch`                                                |
 | `volumePermissions.image.pullPolicy`| Init container volume-permissions image pull policy           | `Always`                                                 |
 | `ghostHost`                         | Ghost host to create application URLs                         | `nil`                                                    |
 | `ghostPort`                         | Ghost port to use in application URLs (defaults to `service.port` if `nil`) | `nil`                                      |
@@ -80,6 +80,18 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `smtpFromAddress`                   | SMTP from address                                             | `nil`                                                    |
 | `smtpService`                       | SMTP service                                                  | `nil`                                                    |
 | `allowEmptyPassword`                | Allow DB blank passwords                                      | `yes`                                                    |
+| `livenessProbe.enabled`             | Would you like a livenessProbe to be enabled                  | `true`                                                   |
+| `livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated                      | 120                                                      |
+| `livenessProbe.periodSeconds`       | How often to perform the probe                                | 3                                                        |
+| `livenessProbe.timeoutSeconds`      | When the probe times out                                      | 5                                                        |
+| `livenessProbe.failureThreshold`    | Minimum consecutive failures to be considered failed          | 6                                                        |
+| `livenessProbe.successThreshold`    | Minimum consecutive successes to be considered successful     | 1                                                        |
+| `readinessProbe.enabled`            | Would you like a readinessProbe to be enabled                 | `true`                                                   |
+| `readinessProbe.initialDelaySeconds`| Delay before readiness probe is initiated                     | 30                                                       |
+| `readinessProbe.periodSeconds`      | How often to perform the probe                                | 3                                                        |
+| `readinessProbe.timeoutSeconds`     | When the probe times out                                      | 5                                                        |
+| `readinessProbe.failureThreshold`   |  Minimum consecutive failures to be considered failed         | 6                                                        |
+| `readinessProbe.successThreshold`   | Minimum consecutive successes to be considered successful     | 1                                                        |
 | `securityContext.enabled`           | Enable security context                                       | `true`                                                   |
 | `securityContext.fsGroup`           | Group ID for the container                                    | `1001`                                                   |
 | `securityContext.runAsUser`         | User ID for the container                                     | `1001`                                                   |
