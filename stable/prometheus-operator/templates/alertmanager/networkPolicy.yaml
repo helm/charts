@@ -18,5 +18,5 @@ spec:
               app: {{ template "prometheus-operator.name" . }}-prometheus
 {{ include "prometheus-operator.labels" . | indent 14 }}
     - ports:
-        - port: 9093
+        - port: {{ .Values.alertmanager.service.port }}
   {{- end -}}
