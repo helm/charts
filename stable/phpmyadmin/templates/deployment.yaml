@@ -76,11 +76,11 @@ spec:
               value: {{ ternary "yes" "no" .Values.db.enableSsl | quote }}
             {{- if .Values.db.enableSsl }}
             - name: DATABASE_SSL_KEY
-              value: "/certs/server_key.pem"
+              value: "/db_certs/server_key.pem"
             - name: DATABASE_SSL_CERT
-              value: "/certs/server_certificate.pem"
+              value: "/db_certs/server_certificate.pem"
             - name: DATABASE_SSL_CA
-              value: "/certs/ca_certificate.pem"
+              value: "/db_certs/ca_certificate.pem"
             {{- if .Values.db.ssl.ciphers }}
             - name: DATABASE_SSL_CIPHERS
               values: {{ .Values.db.ssl.ciphers | quote }}
@@ -111,7 +111,7 @@ spec:
           {{- if .Values.db.enableSsl }}
           volumeMounts:
           - name: ssl-certs
-            mountPath: /certs
+            mountPath: /db_certs
           {{- end }}
 {{- if .Values.metrics.enabled }}
         - name: metrics
