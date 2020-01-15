@@ -36,9 +36,9 @@ spec:
       securityContext:
         fsGroup: {{ .Values.keeper.fsGroup }}
 {{- end }}
-{{- if .Values.image.imagePullSecrets }}
+{{- if .Values.image.pullSecrets }}
       imagePullSecrets:
-{{ toYaml .values.image.pullSecrets | indent 8 }}
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
 {{- end }}
       containers:
         - name: {{ .Chart.Name }}
