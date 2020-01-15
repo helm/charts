@@ -48,6 +48,9 @@ spec:
           - {{ .Values.config.excludeDatabases | join "," }}
           {{- end }}
           {{- end }}
+          {{- if .Values.config.constantLabels }}
+          - "--constantLabels={{ .Values.config.constantLabels | join "," }}"
+          {{- end }}
           env:
           - name: DATA_SOURCE_URI
             value: {{ template "prometheus-postgres-exporter.data_source_uri" . }}
