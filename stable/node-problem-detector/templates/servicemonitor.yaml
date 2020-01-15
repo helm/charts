@@ -11,7 +11,9 @@ metadata:
     {{- if .Values.metrics.serviceMonitor.additionalLabels }}
 {{ toYaml .Values.metrics.serviceMonitor.additionalLabels | indent 4 }}
     {{- end }}
-  namespace: {{ .Release.Namespace }}
+  {{- with .Values.metrics.serviceMonitor.namespace }}
+  namespace: {{ . }}
+  {{- end }}
 spec:
   selector:
     matchLabels:
@@ -22,7 +24,12 @@ spec:
   endpoints:
   - port: exporter
     path: /metrics
-    interval: 60s
+    {{- with .Values.metrics.serviceMonitor.interval }}
+    interval: {{ . }}
+    {{- end }}
+    {{- with .Values.metrics.serviceMonitor.scrapeTimeout }}
+    scrapeTimeout: {{ . }}
+    {{- end }}    
     relabelings:
     - action: replace
       targetLabel: node
