@@ -43,8 +43,7 @@ persistence:
   ##   GKE, AWS & OpenStack)
   ##
   # storageClass: ""
-  accessMode:
-    - ReadWriteOnce
+  accessMode: ReadWriteOnce
   size: 10Gi
   # existingClaim: ""
 
