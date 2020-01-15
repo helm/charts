@@ -236,6 +236,45 @@ tolerations: []
 updateStrategy:
   type: RollingUpdate
 
+## Add sidecars to the pod
+##
+## For example:
+## sidecars:
+##   - name: your-image-name
+##     image: your-image
+##     imagePullPolicy: Always
+##     ports:
+##       - name: portname
+##         containerPort: 1234
+sidecars: []
+## Array to add extra volumes
+##
+extraVolumes: []
+## Array to add extra mounts (normally used with extraVolumes)
+##
+extraVolumeMounts: []
+
+## Add sidecars to the arbiter pod
+# used only when replica set is enabled
+##
+## For example:
+## sidecars:
+##   - name: your-image-name
+##     image: your-image
+##     imagePullPolicy: Always
+##     ports:
+##       - name: portname
+##         containerPort: 1234
+sidecarsArbiter: []
+## Array to add extra volumes to the arbiter
+# used only when replica set is enabled
+##
+extraVolumesArbiter: []
+## Array to add extra mounts (normally used with extraVolumes) to the arbiter
+# used only when replica set is enabled
+##
+extraVolumeMountsArbiter: []
+
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
