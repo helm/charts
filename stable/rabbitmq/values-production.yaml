@@ -419,7 +419,7 @@ metrics:
   resources: {}
   annotations:
     prometheus.io/scrape: "true"
-    prometheus.io/port: "9090"
+    prometheus.io/port: "9419"
 
   livenessProbe:
     enabled: true
