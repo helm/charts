@@ -95,6 +95,7 @@ The following table lists the configurable parameters of the ownCloud chart and 
 | `persistence.owncloud.existingClaim`| An Existing PVC name for ownCloud volume   | `nil` (uses alpha storage class annotation)             |
 | `persistence.owncloud.accessMode`   | PVC Access Mode for ownCloud volume        | `ReadWriteOnce`                                         |
 | `persistence.owncloud.size`         | PVC Storage Request for ownCloud volume    | `8Gi`                                                   |
+| `updateStrategy.type`               | Owncloud deployment strategy               | `RollingUpdate`                                         |
 | `resources`                         | CPU/Memory resource requests/limits        | Memory: `512Mi`, CPU: `300m`                            |
 | `podAnnotations`                    | Pod annotations                            | `{}`                                                    |
 | `affinity`                          | Map of node/pod affinities                 | `{}`                                                    |
