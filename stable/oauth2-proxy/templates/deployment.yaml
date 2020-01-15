@@ -65,7 +65,7 @@ spec:
         {{- if .Values.htpasswdFile.enabled }}
           - --htpasswd-file=/etc/oauth2_proxy/htpasswd/users.txt
         {{- end }}
-        {{- if not .Values.useEnvironmentNotSecrets }}
+        {{- if .Values.proxyVarsAsSecrets }}
         env:
         - name: OAUTH2_PROXY_CLIENT_ID
           valueFrom:

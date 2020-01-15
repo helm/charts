@@ -116,8 +116,8 @@ tolerations: []
 # Ref: https://kubernetes.io/docs/user-guide/node-selection/
 nodeSelector: {}
 
-# Whether to use environment values instead of secrets for setting up OAUTH2_PROXY variables
-useEnvironmentNotSecrets: false
+# Whether to use secrets instead of environment values for setting up OAUTH2_PROXY variables
+proxyVarsAsSecrets: true
 
 # Configure Kubernetes liveness and readiness probes.
 # Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
