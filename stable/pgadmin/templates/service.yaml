@@ -1,9 +1,10 @@
+{{- $fullName := include "pgadmin.fullname" . -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "pgadmin.fullname" . }}
+  name: {{ $fullName }}
   labels:
-{{ include "pgadmin.labels" . | indent 4 }}
+    {{- include "pgadmin.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -12,5 +13,5 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app.kubernetes.io/name: {{ include "pgadmin.name" . }}
+    app.kubernetes.io/name: {{ $fullName }}
     app.kubernetes.io/instance: {{ .Release.Name }}

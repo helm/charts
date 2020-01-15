@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: {{ $fullName }}
   labels:
-{{ include "pgadmin.labels" . | indent 4 }}
+    {{- include "pgadmin.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -17,10 +17,6 @@ spec:
         app.kubernetes.io/name: {{ include "pgadmin.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
-    {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-    {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -29,14 +25,14 @@ spec:
             - name: http
               containerPort: 80
               protocol: TCP
+        {{- if .Values.livenessProbe }}
           livenessProbe:
-            httpGet:
-              path: /
-              port: http
+            {{- .Values.livenessProbe | toYaml | nindent 12 }}
+        {{- end }}
+        {{- if .Values.readinessProbe }}
           readinessProbe:
-            httpGet:
-              path: /
-              port: http
+            {{- .Values.readinessProbe | toYaml | nindent 12 }}
+        {{- end }}
           env:
             - name: PGADMIN_PORT
               value: "80"
@@ -51,24 +47,32 @@ spec:
             - name: pgadmin-data
               mountPath: /var/lib/pgadmin
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- .Values.resources | toYaml | nindent 12 }}
       volumes:
         - name: pgadmin-data
-        {{- if .Values.persistence.enabled }}
+        {{- if .Values.persistentVolume.enabled }}
           persistentVolumeClaim:
-            claimName: {{ $fullName }}
+            claimName: {{ if .Values.persistentVolume.existingClaim }}{{ .Values.persistentVolume.existingClaim }}{{- else }}{{ $fullName }}{{- end }}
         {{- else }}
           emptyDir: {}
         {{- end }}
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- with .Values.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- .Values.imagePullSecrets | toYaml | nindent 8 }}
     {{- end }}
-    {{- with .Values.tolerations }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+        {{- .Values.nodeSelector | toYaml | nindent 8 }}
+    {{- end }}
+    {{- if .Values.securityContext }}
+      securityContext:
+        {{- .Values.securityContext | toYaml | nindent 8 }}
+    {{- end }}
+    {{- if .Values.affinity }}
+      affinity:
+        {{- .Values.affinity | toYaml | nindent 8 }}
+    {{- end }}
+    {{- if .Values.tolerations }}
       tolerations:
-        {{- toYaml . | nindent 8 }}
+        {{- .Values.tolerations | toYaml | nindent 8 }}}
     {{- end }}
