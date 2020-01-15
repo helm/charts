@@ -41,7 +41,7 @@ The following table lists the configurable parameters for this chart and their d
 | `fullnameOverride`                    | Override the fullname of the chart                        | `nil`                                                        |
 | `image.pullPolicy`                    | Image pull policy                                         | `IfNotPresent`                                               |
 | `image.repository`                    | Image                                                     | `k8s.gcr.io/node-problem-detector`                           |
-| `image.tag`                           | Image tag                                                 | `v0.6.3`                                                     |
+| `image.tag`                           | Image tag                                                 | `v0.7.0`                                                     |
 | `nameOverride`                        | Override the name of the chart                            | `nil`                                                        |
 | `rbac.create`                         | RBAC                                                      | `true`                                                       |
 | `rbac.pspEnabled`                     | PodSecuritypolicy                                         | `false`                                                      |
