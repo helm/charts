@@ -1,10 +1,41 @@
-# Default values for kong.
+# Default values for Kong's Helm Chart.
 # Declare variables to be passed into your templates.
+#
+# Sections:
+# - Kong parameters
+# - Ingress Controller parameters
+# - Postgres sub-chart parameters
+# - Miscellaneous parameters
+# - Kong Enterprise parameters
 
+# -----------------------------------------------------------------------------
+# Kong parameters
+# -----------------------------------------------------------------------------
+
+# Specify Kong configurations
+# Kong configurations guide https://docs.konghq.com/latest/configuration
+# Values here take precedence over values from other sections of values.yaml,
+# e.g. setting pg_user here will override the value normally set when postgresql.enabled
+# is set below. In general, you should not set values here if they are set elsewhere.
+env:
+  database: "off"
+  nginx_worker_processes: "1"
+  proxy_access_log: /dev/stdout
+  admin_access_log: /dev/stdout
+  admin_gui_access_log: /dev/stdout
+  portal_api_access_log: /dev/stdout
+  proxy_error_log: /dev/stderr
+  admin_error_log: /dev/stderr
+  admin_gui_error_log: /dev/stderr
+  portal_api_error_log: /dev/stderr
+  prefix: /kong_prefix/
+
+# Specify Kong's Docker image and repository details here
 image:
   repository: kong
+  # repository: kong-docker-kong-enterprise-k8s.bintray.io/kong-enterprise-k8s
   # repository: kong-docker-kong-enterprise-edition-docker.bintray.io/kong-enterprise-edition
-  tag: 1.3
+  tag: 1.4
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -14,13 +45,11 @@ image:
   # pullSecrets:
   #   - myRegistrKeySecretName
 
-waitImage:
-  repository: busybox
-  tag: latest
-  pullPolicy: IfNotPresent
-
-# Specify Kong admin and proxy services configurations
+# Specify Kong admin service configuration
+# Note: It is recommended to not use the Admin API to configure Kong
+# when using Kong as an Ingress Controller.
 admin:
+  enabled: false
   # If you want to specify annotations for the admin service, uncomment the following
   # line, add additional or adjust as needed, and remove the curly braces after 'annotations:'.
   annotations: {}
@@ -35,7 +64,8 @@ admin:
   type: NodePort
   # Set a nodePort which is available
   # nodePort: 32444
-  # Kong admin ingress settings.
+  # Kong admin ingress settings. Useful if you want to expose the Admin
+  # API of Kong outside the k8s cluster.
   ingress:
     # Enable/disable exposure using ingress.
     enabled: false
@@ -48,6 +78,7 @@ admin:
     # Ingress path.
     path: /
 
+# Specify Kong proxy service configuration
 proxy:
   # If you want to specify annotations for the proxy service, uncomment the following
   # line, add additional or adjust as needed, and remove the curly braces after 'annotations:'.
@@ -72,9 +103,11 @@ proxy:
     # Set a nodePort which is available if service type is NodePort
     # nodePort: 32443
 
-  type: NodePort
+  type: LoadBalancer
 
   # Kong proxy ingress settings.
+  # Note: You need this only if you are using another Ingress Controller
+  # to expose Kong outside the k8s cluster.
   ingress:
     # Enable/disable exposure using ingress.
     enabled: false
@@ -82,17 +115,293 @@ proxy:
     # TLS section. Unlike other ingresses, this follows the format at
     # https://kubernetes.io/docs/concepts/services-networking/ingress/#tls
     # tls:
-    #   hosts:
-    #     - example.com
-    #     secretName: example-com-tls-secret
-    #     - example.net
-    #     secretName: example-net-tls-secret
+    # - hosts:
+    #   - 1.example.com
+    #   secretName: example1-com-tls-secret
+    # - hosts:
+    #   - 2.example.net
+    #   secretName: example2-net-tls-secret
     # Map of ingress annotations.
     annotations: {}
     # Ingress path.
     path: /
 
   externalIPs: []
+
+# Custom Kong plugins can be loaded into Kong by mounting the plugin code
+# into the file-system of Kong container.
+# The plugin code should be present in ConfigMap or Secret inside the same
+# namespace as Kong is being installed.
+# The `name` property refers to the name of the ConfigMap or Secret
+# itself, while the pluginName refers to the name of the plugin as it appears
+# in Kong.
+plugins: {}
+  # configMaps:
+  # - pluginName: rewriter
+  #   name: kong-plugin-rewriter
+  # secrets:
+  # - pluginName: rewriter
+  #   name: kong-plugin-rewriter
+# Inject specified secrets as a volume in Kong Container at path /etc/secrets/{secret-name}/
+# This can be used to override default SSL certificates
+# Example configuration
+# secretVolumes:
+# - kong-proxy-tls
+# - kong-admin-tls
+secretVolumes: []
+
+# Set runMigrations to run Kong migrations
+runMigrations: true
+
+# Kong's configuration for DB-less mode
+# Note: Use this section only if you are deploying Kong in DB-less mode
+# and not as an Ingress Controller.
+dblessConfig:
+  # Either Kong's configuration is managed from an existing ConfigMap (with Key: kong.yml)
+  configMap: ""
+  # Or the configuration is passed in full-text below
+  config:
+    _format_version: "1.1"
+    services:
+      # Example configuration
+      # - name: example.com
+      #   url: http://example.com
+      #   routes:
+      #   - name: example
+      #     paths:
+      #     - "/example"
+
+# -----------------------------------------------------------------------------
+# Ingress Controller parameters
+# -----------------------------------------------------------------------------
+
+# Kong Ingress Controller's primary purpose is to satisfy Ingress resources
+# created in k8s.  It uses CRDs for more fine grained control over routing and
+# for Kong specific configuration.
+ingressController:
+  enabled: true
+  image:
+    repository: kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller
+    tag: 0.7.0
+
+  # Specify Kong Ingress Controller configuration via environment variables
+  env: {}
+
+  admissionWebhook:
+    enabled: false
+    failurePolicy: Fail
+    port: 8080
+
+  ingressClass: kong
+
+  rbac:
+    # Specifies whether RBAC resources should be created
+    create: true
+
+  serviceAccount:
+    # Specifies whether a ServiceAccount should be created
+    create: true
+    # The name of the ServiceAccount to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name:
+
+  installCRDs: true
+
+  # general properties
+  livenessProbe:
+    httpGet:
+      path: "/healthz"
+      port: 10254
+      scheme: HTTP
+    initialDelaySeconds: 5
+    timeoutSeconds: 5
+    periodSeconds: 10
+    successThreshold: 1
+    failureThreshold: 3
+  readinessProbe:
+    httpGet:
+      path: "/healthz"
+      port: 10254
+      scheme: HTTP
+    initialDelaySeconds: 5
+    timeoutSeconds: 5
+    periodSeconds: 10
+    successThreshold: 1
+    failureThreshold: 3
+  resources: {}
+
+# -----------------------------------------------------------------------------
+# Postgres sub-chart parameters
+# -----------------------------------------------------------------------------
+
+# Kong can run without a database or use either Postgres or Cassandra
+# as a backend datatstore for it's configuration.
+# By default, this chart installs Kong without a database.
+
+# If you would like to use a database, there are two options:
+# - (recommended) Deploy and maintain a database and pass the connection
+#   details to Kong via the `env` section.
+# - You can use the below `postgresql` sub-chart to deploy a database
+#   along-with Kong as part of a single Helm release.
+
+# PostgreSQL chart documentation:
+# https://github.com/helm/charts/blob/master/stable/postgresql/README.md
+
+postgresql:
+  enabled: false
+  # postgresqlUsername: kong
+  # postgresqlDatabase: kong
+  # service:
+  #   port: 5432
+
+# -----------------------------------------------------------------------------
+# Miscellaneous parameters
+# -----------------------------------------------------------------------------
+
+waitImage:
+  repository: busybox
+  tag: latest
+  pullPolicy: IfNotPresent
+
+# update strategy
+updateStrategy: {}
+  # type: RollingUpdate
+  # rollingUpdate:
+  #   maxSurge: "100%"
+  #   maxUnavailable: "0%"
+
+# If you want to specify resources, uncomment the following
+# lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+resources: {}
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+# readinessProbe for Kong pods
+# If using Kong Enterprise with RBAC, you must add a Kong-Admin-Token header
+readinessProbe:
+  httpGet:
+    path: "/status"
+    port: metrics
+    scheme: HTTP
+  initialDelaySeconds: 5
+  timeoutSeconds: 5
+  periodSeconds: 10
+  successThreshold: 1
+  failureThreshold: 3
+
+# livenessProbe for Kong pods
+livenessProbe:
+  httpGet:
+    path: "/status"
+    port: metrics
+    scheme: HTTP
+  initialDelaySeconds: 5
+  timeoutSeconds: 5
+  periodSeconds: 10
+  successThreshold: 1
+  failureThreshold: 3
+
+# Affinity for pod assignment
+# Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+# affinity: {}
+
+# Tolerations for pod assignment
+# Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
+
+# Node labels for pod assignment
+# Ref: https://kubernetes.io/docs/user-guide/node-selection/
+nodeSelector: {}
+
+# Annotation to be added to Kong pods
+podAnnotations: {}
+
+# Kong pod count
+replicaCount: 1
+
+# Kong Pod Disruption Budget
+podDisruptionBudget:
+  enabled: false
+  maxUnavailable: "50%"
+
+podSecurityPolicy:
+  enabled: false
+
+# securityContext for Kong pods.
+securityContext:
+  runAsUser: 1000
+
+serviceMonitor:
+  # Specifies whether ServiceMonitor for Prometheus operator should be created
+  enabled: false
+  # interval: 10s
+  # Specifies namespace, where ServiceMonitor should be installed
+  # namespace: monitoring
+  # labels:
+  #   foo: bar
+
+# -----------------------------------------------------------------------------
+# Kong Enterprise parameters
+# -----------------------------------------------------------------------------
+
+# Toggle Kong Enterprise features on or off
+# RBAC and SMTP configuration have additional options that must all be set together
+# Other settings should be added to the "env" settings below
+enterprise:
+  enabled: false
+  # Kong Enterprise license secret name
+  # This secret must contain a single 'license' key, containing your base64-encoded license data
+  # The license secret is required for all Kong Enterprise deployments
+  license_secret: you-must-create-a-kong-license-secret
+  # Session configuration secret
+  # The session conf secret is required if using RBAC or the Portal
+  vitals:
+    enabled: true
+  portal:
+    enabled: false
+    # portal_auth here sets the default authentication mechanism for the Portal
+    # FIXME This can be changed per-workspace, but must currently default to
+    # basic-auth to work around limitations with session configuration
+    portal_auth: basic-auth
+    # If the Portal is enabled and any workspace's Portal uses authentication,
+    # this Secret must contain an portal_session_conf key
+    # The key value must be a secret configuration, following the example at
+    # https://docs.konghq.com/enterprise/latest/developer-portal/configuration/authentication/sessions
+    session_conf_secret: you-must-create-a-portal-session-conf-secret
+  rbac:
+    enabled: false
+    admin_gui_auth: basic-auth
+    # If RBAC is enabled, this Secret must contain an admin_gui_session_conf key
+    # The key value must be a secret configuration, following the example at
+    # https://docs.konghq.com/enterprise/latest/kong-manager/authentication/sessions
+    session_conf_secret: you-must-create-an-rbac-session-conf-secret
+    # If admin_gui_auth is not set to basic-auth, provide a secret name which
+    # has an admin_gui_auth_conf key containing the plugin config JSON
+    admin_gui_auth_conf_secret: you-must-create-an-admin-gui-auth-conf-secret
+  # For configuring emails and SMTP, please read through:
+  # https://docs.konghq.com/enterprise/latest/developer-portal/configuration/smtp
+  # https://docs.konghq.com/enterprise/latest/kong-manager/networking/email
+  smtp:
+    enabled: false
+    portal_emails_from: none@example.com
+    portal_emails_reply_to: none@example.com
+    admin_emails_from: none@example.com
+    admin_emails_reply_to: none@example.com
+    smtp_admin_emails: none@example.com
+    smtp_host: smtp.example.com
+    smtp_port: 587
+    smtp_starttls: true
+    auth:
+      # If your SMTP server does not require authentication, this section can
+      # be left as-is. If smtp_username is set to anything other than an empty
+      # string, you must create a Secret with an smtp_password key containing
+      # your SMTP password and specify its name here.
+      smtp_username: ''  # e.g. postmaster@example.com
+      smtp_password_secret: you-must-create-an-smtp-password
 
 manager:
   # If you want to specify annotations for the Manager service, uncomment the following
@@ -207,262 +516,3 @@ portalapi:
     path: /
 
   externalIPs: []
-
-# Toggle Kong Enterprise features on or off
-# RBAC and SMTP configuration have additional options that must all be set together
-# Other settings should be added to the "env" settings below
-enterprise:
-  enabled: false
-  # Kong Enterprise license secret name
-  # This secret must contain a single 'license' key, containing your base64-encoded license data
-  # The license secret is required for all Kong Enterprise deployments
-  license_secret: you-must-create-a-kong-license-secret
-  # Session configuration secret
-  # The session conf secret is required if using RBAC or the Portal
-  vitals:
-    enabled: true
-  portal:
-    enabled: false
-    # portal_auth here sets the default authentication mechanism for the Portal
-    # FIXME This can be changed per-workspace, but must currently default to
-    # basic-auth to work around limitations with session configuration
-    portal_auth: basic-auth
-    # If the Portal is enabled and any workspace's Portal uses authentication,
-    # this Secret must contain an portal_session_conf key
-    # The key value must be a secret configuration, following the example at https://docs.konghq.com/enterprise/0.35-x/kong-manager/authentication/sessions/
-    session_conf_secret: you-must-create-a-portal-session-conf-secret
-  rbac:
-    enabled: false
-    admin_gui_auth: basic-auth
-    # If RBAC is enabled, this Secret must contain an admin_gui_session_conf key
-    # The key value must be a secret configuration, following the example at https://docs.konghq.com/enterprise/0.35-x/kong-manager/authentication/sessions/
-    session_conf_secret: you-must-create-an-rbac-session-conf-secret
-    # Set to the appropriate plugin config JSON if not using basic-auth
-    admin_gui_auth_conf: {}
-  smtp:
-    enabled: false
-    portal_emails_from: none@example.com
-    portal_emails_reply_to: none@example.com
-    admin_emails_from: none@example.com
-    admin_emails_reply_to: none@example.com
-    smtp_admin_emails: none@example.com
-    smtp_host: smtp.example.com
-    smtp_port: 587
-    smtp_starttls: true
-    auth:
-      # If your SMTP server does not require authentication, this section can
-      # be left as-is. If smtp_username is set to anything other than an empty
-      # string, you must create a Secret with an smtp_password key containing
-      # your SMTP password and specify its name here.
-      smtp_username: ''  # e.g. postmaster@example.com
-      smtp_password_secret: you-must-create-an-smtp-password
-
-# Set runMigrations to run Kong migrations
-runMigrations: true
-
-# update strategy
-updateStrategy: {}
-  # type: RollingUpdate
-  # rollingUpdate:
-  #   maxSurge: "100%"
-  #   maxUnavailable: "0%"
-
-# Specify Kong configurations
-# Kong configurations guide https://getkong.org/docs/latest/configuration/
-# Values here take precedence over values from other sections of values.yaml,
-# e.g. setting pg_user here will override the value normally set when postgresql.enabled
-# is set below. In general, you should not set values here if they are set elsewhere.
-env:
-  database: "off"
-  nginx_worker_processes: "1"
-  proxy_access_log: /dev/stdout
-  admin_access_log: /dev/stdout
-  admin_gui_access_log: /dev/stdout
-  portal_api_access_log: /dev/stdout
-  proxy_error_log: /dev/stderr
-  admin_error_log: /dev/stderr
-  admin_gui_error_log: /dev/stderr
-  portal_api_error_log: /dev/stderr
-
-# If you want to specify resources, uncomment the following
-# lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-resources: {}
-  # limits:
-  #  cpu: 100m
-  #  memory: 128Mi
-  # requests:
-  #  cpu: 100m
-  #  memory: 128Mi
-
-# readinessProbe for Kong pods
-# If using Kong Enterprise with RBAC, you must add a Kong-Admin-Token header
-readinessProbe:
-  httpGet:
-    path: "/status"
-    port: metrics
-    scheme: HTTP
-  initialDelaySeconds: 10
-  timeoutSeconds: 1
-  periodSeconds: 10
-  successThreshold: 1
-  failureThreshold: 5
-
-# livenessProbe for Kong pods
-# If using Kong Enterprise with RBAC, you must add a Kong-Admin-Token header
-livenessProbe:
-  httpGet:
-    path: "/status"
-    port: metrics
-    scheme: HTTP
-  initialDelaySeconds: 10
-  timeoutSeconds: 5
-  periodSeconds: 30
-  successThreshold: 1
-  failureThreshold: 5
-
-# Affinity for pod assignment
-# Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-# affinity: {}
-
-# Tolerations for pod assignment
-# Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
-tolerations: []
-
-# Node labels for pod assignment
-# Ref: https://kubernetes.io/docs/user-guide/node-selection/
-nodeSelector: {}
-
-# Annotation to be added to Kong pods
-podAnnotations: {}
-
-# Kong pod count
-replicaCount: 1
-
-# Kong Pod Disruption Budget
-podDisruptionBudget:
-  enabled: false
-  maxUnavailable: "50%"
-
-podSecurityPolicy:
-  enabled: false
-
-# Kong has a choice of either Postgres or Cassandra as a backend datatstore.
-# This chart allows you to choose either of them with the `database.type`
-# parameter.  Postgres is chosen by default.
-
-# Additionally, this chart allows you to use your own database or spin up a new
-# instance by using the `postgres.enabled` or `cassandra.enabled` parameters.
-# Enabling both will create both databases in your cluster, but only one
-# will be used by Kong based on the `env.database` parameter.
-# Postgres is enabled by default.
-
-
-# PostgreSQL chart configs
-postgresql:
-  enabled: false
-  # postgresqlUsername: kong
-  # postgresqlDatabase: kong
-  # service:
-  #   port: 5432
-
-# Custom Kong plugins can be loaded into Kong by mounting the plugin code
-# into the file-system of Kong container.
-# The plugin code should be present in ConfigMap or Secret inside the same
-# namespace as Kong is being installed.
-# The `name` property refers to the name of the ConfigMap or Secret
-# itself, while the pluginName refers to the name of the plugin as it appears
-# in Kong.
-plugins: {}
-  # configMaps:
-  # - pluginName: rewriter
-  #   name: kong-plugin-rewriter
-  # secrets:
-  # - pluginName: rewriter
-  #   name: kong-plugin-rewriter
-# Kong Ingress Controller's primary purpose is to satisfy Ingress resources
-# created in k8s.  It uses CRDs for more fine grained control over routing and
-# for Kong specific configuration.
-ingressController:
-  enabled: true
-  image:
-    repository: kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller
-    tag: 0.6.0
-  replicaCount: 1
-  livenessProbe:
-    failureThreshold: 3
-    httpGet:
-      path: "/healthz"
-      port: 10254
-      scheme: HTTP
-    initialDelaySeconds: 10
-    periodSeconds: 10
-    successThreshold: 1
-    timeoutSeconds: 5
-  readinessProbe:
-    failureThreshold: 3
-    httpGet:
-      path: "/healthz"
-      port: 10254
-      scheme: HTTP
-    initialDelaySeconds: 10
-    periodSeconds: 10
-    successThreshold: 1
-    timeoutSeconds: 5
-  resources: {}
-
-  installCRDs: true
-
-  admissionWebhook:
-    enabled: false
-    failurePolicy: Fail
-    port: 8080
-
-  rbac:
-    # Specifies whether RBAC resources should be created
-    create: true
-
-  serviceAccount:
-    # Specifies whether a ServiceAccount should be created
-    create: true
-    # The name of the ServiceAccount to use.
-    # If not set and create is true, a name is generated using the fullname template
-    name:
-
-  ingressClass: kong
-
-  podDisruptionBudget:
-    enabled: false
-    maxUnavailable: "50%"
-
-# We pass the dbless (declarative) config over here.
-dblessConfig:
-  # Either Kong's configuration is managed from an existing ConfigMap (with Key: kong.yml)
-  configMap: ""
-  # Or the configuration is passed in full-text below
-  config:
-    _format_version: "1.1"
-    services:
-      # Example configuration
-      # - name: example.com
-      #   url: http://example.com
-      #   routes:
-      #   - name: example
-      #     paths:
-      #     - "/example"
-
-# Inject specified secrets as a volume in Kong Container at path /etc/secrets/{secret-name}/
-# This can be used to override default SSL certificates
-# Example configuration
-# secretVolumes:
-# - kong-proxy-tls
-# - kong-admin-tls
-secretVolumes: []
-
-serviceMonitor:
-  # Specifies whether ServiceMonitor for Prometheus operator should be created
-  enabled: false
-  # interval: 10s
-  # Specifies namespace, where ServiceMonitor should be installed
-  # namespace: monitoring
-  # labels:
-  #   foo: bar

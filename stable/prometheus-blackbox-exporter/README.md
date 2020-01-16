@@ -46,6 +46,8 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 | `config`                               | Prometheus blackbox configuration                 | {}                            |
 | `secretConfig`                         | Whether to treat blackbox configuration as secret | `false`                       |
 | `extraArgs`                            | Optional flags for blackbox                       | `[]`                          |
+| `extraConfigmapMounts`                 | Additional configmap mounts                       | `[]`                          |
+| `extraSecretMounts`                    | Additional secret mounts                          | `[]`                          |
 | `image.repository`                     | container image repository                        | `prom/blackbox-exporter`      |
 | `image.tag`                            | container image tag                               | `v0.15.1`                     |
 | `image.pullPolicy`                     | container image pull policy                       | `IfNotPresent`                |
@@ -61,7 +63,7 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 | `tolerations`                          | node tolerations for pod assignment               | `[]`                          |
 | `affinity`                             | node affinity for pod assignment                  | `{}`                          |
 | `podAnnotations`                       | annotations to add to each pod                    | `{}`                          |
-| `podDisruptionBudget`                  | pod disruption budget                             | `{maxUnavailable: 0}`         |
+| `podDisruptionBudget`                  | pod disruption budget                             | `{}`         |
 | `priorityClassName`                    | priority class name                               | None                          |
 | `resources`                            | pod resource requests & limits                    | `{}`                          |
 | `restartPolicy`                        | container restart policy                          | `Always`                      |
@@ -96,6 +98,16 @@ $ helm install --name my-release -f values.yaml stable/prometheus-blackbox-expor
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
 ## Upgrading an existing Release to a new major version
+
+### 2.0.0
+
+This version removes the `podDisruptionBudget.enabled` parameter and changes the default value of `podDisruptionBudget` to `{}`, in order to fix Helm 3 compatibility.
+
+In order to upgrade, please remove `podDisruptionBudget.enabled` from your custom values.yaml file and set the content of `podDisruptionBudget`, for example:
+```yaml
+podDisruptionBudget:
+  maxUnavailable: 0
+```
 
 ### 1.0.0
 

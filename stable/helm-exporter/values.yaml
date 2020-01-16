@@ -19,6 +19,9 @@ tolerations: []
 
 affinity: {}
 
+imagePullSecrets:
+# - name: "image-pull-secret"
+
 rbac:
   # Specifies whether RBAC resources should be created
   create: true

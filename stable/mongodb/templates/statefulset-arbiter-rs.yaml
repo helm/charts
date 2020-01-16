@@ -168,10 +168,20 @@ spec:
           {{- end }}
           resources:
 {{ toYaml .Values.resourcesArbiter | indent 12 }}
+{{- if .Values.extraVolumeMountsArbiter }}
+          volumeMounts:
+{{ toYaml .Values.extraVolumeMountsArbiter | indent 12}}
+{{- end }}
+{{- if .Values.sidecarsArbiter }}
+{{ toYaml .Values.sidecarsArbiter | indent 8 }}
+{{- end }}
       volumes:
       {{- if .Values.configmap }}
         - name: config
           configMap:
             name: {{ template "mongodb.fullname" . }}
+      {{- end }}
+      {{- if .Values.extraVolumesArbiter }}
+{{ toYaml .Values.extraVolumesArbiter | indent 8 }}
       {{- end }}
 {{- end }}

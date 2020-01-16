@@ -30,6 +30,7 @@ service:
   headless: false
   type: ClusterIP
   port: 1433
+  nodePort:
   annotations: {}
   labels: {}
   loadBalancerIP:
