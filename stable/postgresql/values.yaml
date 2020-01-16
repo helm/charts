@@ -7,6 +7,11 @@ global:
   ## Override the docker hub registry host
   # imageRegistry: docker.io
 
+  ## Set the namespace for the image in the registry
+  ##  e.g. docker.io/<namespace>/image-name
+  ## ref: https://docs.docker.com/engine/reference/commandline/tag/#extended-description
+  ##
+  imageNamespace: ~
   ## Optionally specify a default imagePullPolicy
   ## If unset, defaults to 'Always' if image tag is 'latest', and to 'IfNotPresent' otherwise
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -24,9 +29,22 @@ global:
 ## Bitnami PostgreSQL image version
 ## ref: https://hub.docker.com/r/bitnami/postgresql/tags/
 ##
+
+## Override the global.imageRegistry
+imageRegistry: ~
+
+## Override the global.imageNamespace
+imageNamespace: bitnami
+
+## Override the global.imagePullPolicy
+imagePullPolicy: "IfNotPresent"
+
+## Append secrets to the global.imagePullSecrets
+imagePullSecrets: ~
+
 images:
   postgresql:
-    name: bitnami/postgresql
+    name: postgresql
     tag: 11.7.0-debian-10-r0
     digest: sha256:a50b4211f5ffd924ba826a88f48169c211fa7df59a053f5260996c2ea8539ca0
     ## Set to true if you would like to see extra information on logs
@@ -43,11 +61,11 @@ images:
     # pullSecrets:
     # - aDifferentRegistryKeySecretName
   metrics:
-    name: bitnami/postgres-exporter
+    name: postgres-exporter
     tag: 0.8.0-debian-9-r40
     digest: sha256:9ecbfae818913774c21f19740439e5e50471260a721df72690c5574c7c54b4ad
   volumePermissions:
-    name: bitnami/minideb
+    name: minideb
     tag: stretch
     pullPolicy: Always
 

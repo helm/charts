@@ -70,7 +70,7 @@ spec:
       initContainers:
       {{- if or (and .Values.volumePermissions.enabled .Values.persistence.enabled) .Values.shmVolume.enabled }}
         - name: init-chmod-data
-{{ include "postgresql.registryImage" (dict "image" .Values.images.volumePermissions "global" .Values.global) | indent 10 }}
+{{ include "postgresql.registryImage" (dict "image" .Values.images.volumePermissions "values" .Values) | indent 10 }}
           {{- if .Values.resources }}
           resources: {{- toYaml .Values.resources | nindent 12 }}
           {{- end }}
@@ -114,7 +114,7 @@ spec:
       {{- end }}
       containers:
         - name: {{ template "postgresql.fullname" . }}
-{{ include "postgresql.registryImage" (dict "image" .Values.images.postgresql "global" .Values.global) | indent 10 }}
+{{ include "postgresql.registryImage" (dict "image" .Values.images.postgresql "values" .Values) | indent 10 }}
           {{- if .Values.resources }}
           resources: {{- toYaml .Values.resources | nindent 12 }}
           {{- end }}

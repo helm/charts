@@ -19,7 +19,7 @@ To get the password for "{{ template "postgresql.username" . }}" run:
     export POSTGRES_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "postgresql.secretName" . }} -o jsonpath="{.data.postgresql-password}" | base64 --decode)
 
 To connect to your database run the following command:
-{{- $postgresqlImage := dict "image" .Values.images.postgresql "global" .Values.global }}
+{{- $postgresqlImage := dict "image" .Values.images.postgresql "values" .Values }}
     kubectl run {{ template "postgresql.fullname" . }}-client --rm --tty -i --restart='Never' --namespace {{ .Release.Namespace }} --image {{ template "postgresql.imageReference" $postgresqlImage }} --env="PGPASSWORD=$POSTGRES_PASSWORD" {{- if and (.Values.networkPolicy.enabled) (not .Values.networkPolicy.allowExternal) }}
    --labels="{{ template "postgresql.fullname" . }}-client=true" {{- end }} --command -- psql --host {{ template "postgresql.fullname" . }} -U {{ .Values.postgresqlUsername }} -d {{- if .Values.postgresqlDatabase }} {{ .Values.postgresqlDatabase }}{{- else }} postgres{{- end }} -p {{ template "postgresql.port" . }}
 
