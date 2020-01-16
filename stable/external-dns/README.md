@@ -59,7 +59,13 @@ The following table lists the configurable parameters of the external-dns chart 
 | `fullnameOverride`                  | String to fully override external-dns.fullname template with a string                                    | `nil`                                                       |
 | `sources`                           | K8s resources type to be observed for new DNS entries by ExternalDNS                                     | `[service, ingress]`                                        |
 | `provider`                          | DNS provider where the DNS records will be created (mandatory) (options: aws, azure, google, ...)        | `aws`                                                       |
+| `namespace`                         | Limit sources of endpoints to a specific namespace (default: all namespaces)                             | `""`                                                        |
+| `fqdnTemplates`                     | Templated strings that are used to generate DNS names from sources that don't define a hostname themselves   | `[]`                                                    |
+| `combineFQDNAnnotation`             | Combine FQDN template and annotations instead of overwriting                                             | `false`                                                     |
+| `ignoreHostnameAnnotation`          | Ignore hostname annotation when generating DNS names, valid only when fqdn-template is set               | `false`                                                     |
 | `publishInternalServices`           | Whether to publish DNS records for ClusterIP services or not                                             | `false`                                                     |
+| `publishHostIP`                     | Allow external-dns to publish host-ip for headless services                                              | `false`                                                     |
+| `serviceTypeFilter`                 | The service types to take care about (default: all, options: ClusterIP, NodePort, LoadBalancer, ExternalName)   | `[]`                                                 |
 | `aws.credentials.accessKey`         | When using the AWS provider, set `aws_access_key_id` in the AWS credentials (optional)                   | `""`                                                        |
 | `aws.credentials.secretKey`         | When using the AWS provider, set `aws_secret_access_key` in the AWS credentials (optional)               | `""`                                                        |
 | `aws.credentials.mountPath`         | When using the AWS provider, determine `mountPath` for `credentials` secret                              | `"/.aws"`                                                   |
@@ -123,6 +129,7 @@ The following table lists the configurable parameters of the external-dns chart 
 | `crd.kind`                          | Sets the kind for the CRD to watch                                                                       | `""`                                                        |
 | `dryRun`                            | When enabled, prints DNS record changes rather than actually performing them (optional)                  | `false`                                                     |
 | `logLevel`                          | Verbosity of the logs (options: panic, debug, info, warn, error, fatal)                                  | `info`                                                      |
+| `logFormat`                         | Which format to output logs in (options: text, json)                                                     | `text`                                                      |
 | `interval`                          | Interval update period to use                                                                            | `1m`                                                        |
 | `istioIngressGateways`              | The fully-qualified name of the Istio ingress gateway services .                                         | `""`                                                        |
 | `policy`                            | Modify how DNS records are sychronized between sources and providers (options: sync, upsert-only )       | `upsert-only`                                               |
@@ -158,11 +165,11 @@ The following table lists the configurable parameters of the external-dns chart 
 | `livenessProbe`                     | Deployment Liveness Probe                                                                                | See `values.yaml`                                           |
 | `readinessProbe`                    | Deployment Readiness Probe                                                                               | See `values.yaml`                                           |
 | `metrics.enabled`                   | Enable prometheus to access external-dns metrics endpoint                                                | `false`                                                     |
-| `metrics.podAnnotations`            | Annotations for enabling prometheus to access the metrics endpoint                                       |                                          |
+| `metrics.podAnnotations`            | Annotations for enabling prometheus to access the metrics endpoint                                       |                                                             |
 | `metrics.serviceMonitor.enabled`    | Create ServiceMonitor object                                                                             | `false`                                                     |
-| `metrics.serviceMonitor.selector`   | Additional labels for ServiceMonitor object                                                              | `{}`                                                     |
-| `metrics.serviceMonitor.interval`   | Interval at which metrics should be scraped                                                              | `30s`                                                     |
-| `metrics.serviceMonitor.scrapeTimeout`   | Timeout after which the scrape is ended                                                             | `30s`                                                     |
+| `metrics.serviceMonitor.selector`   | Additional labels for ServiceMonitor object                                                              | `{}`                                                        |
+| `metrics.serviceMonitor.interval`   | Interval at which metrics should be scraped                                                              | `30s`                                                       |
+| `metrics.serviceMonitor.scrapeTimeout`   | Timeout after which the scrape is ended                                                             | `30s`                                                       |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

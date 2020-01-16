@@ -36,6 +36,33 @@ spec:
       imagePullSecrets:
 {{ toYaml .Values.image.pullSecrets | indent 8 }}
       {{- end }}
+      {{- if .Values.slim.enabled }}
+      initContainers:
+        - name: sysdig-agent-kmodule
+          image: {{ template "sysdig.image.kmodule" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.image.pullSecrets }}
+          imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 12 }}
+          {{- end }}
+          securityContext:
+            privileged: true
+          resources:
+{{ toYaml .Values.slim.resources | indent 12 }}
+          volumeMounts:
+            - mountPath: /etc/modprobe.d
+              name: modprobe-d
+              readOnly: true
+            - mountPath: /host/boot
+              name: boot-vol
+              readOnly: true
+            - mountPath: /host/lib/modules
+              name: modules-vol
+              readOnly: true
+            - mountPath: /host/usr
+              name: usr-vol
+              readOnly: true
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: {{ template "sysdig.image" . }}
@@ -74,12 +101,18 @@ spec:
               command: [ "test", "-e", "/opt/draios/logs/running" ]
             initialDelaySeconds: 10
           volumeMounts:
+            {{- if not .Values.slim.enabled }}
+            - mountPath: /etc/modprobe.d
+              name: modprobe-d
+              readOnly: true
+            {{- end }}
             - mountPath: /host/dev
               name: dev-vol
               readOnly: false
             - mountPath: /host/proc
               name: proc-vol
               readOnly: true
+            {{- if not .Values.slim.enabled }}
             - mountPath: /host/boot
               name: boot-vol
               readOnly: true
@@ -89,6 +122,7 @@ spec:
             - mountPath: /host/usr
               name: usr-vol
               readOnly: true
+            {{- end }}
             - mountPath: /host/run
               name: run-vol
             - mountPath: /host/var/run
@@ -112,6 +146,9 @@ spec:
               name: osrel
               readOnly: true
       volumes:
+        - name: modprobe-d
+          hostPath:
+            path: /etc/modprobe.d
         - name: osrel
           hostPath:
             path: /etc/os-release

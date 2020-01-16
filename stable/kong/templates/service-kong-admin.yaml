@@ -1,3 +1,4 @@
+{{- if .Values.admin.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -7,10 +8,7 @@ metadata:
       {{ $key }}: {{ $value | quote }}
     {{- end }}
   labels:
-    app: {{ template "kong.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "kong.metaLabels" . | nindent 4 }}
 spec:
   type: {{ .Values.admin.type }}
   {{- if eq .Values.admin.type "LoadBalancer" }}
@@ -33,6 +31,5 @@ spec:
   {{- end }}
     protocol: TCP
   selector:
-    app: {{ template "kong.name" . }}
-    release: {{ .Release.Name }}
-    component: app
+    {{- include "kong.selectorLabels" . | nindent 4 }}
+{{- end -}}

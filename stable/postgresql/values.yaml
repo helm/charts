@@ -15,7 +15,7 @@ global:
 image:
   registry: docker.io
   repository: bitnami/postgresql
-  tag: 11.6.0-debian-9-r0
+  tag: 11.6.0-debian-9-r48
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -128,6 +128,15 @@ postgresqlUsername: postgres
 ## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md
 ##
 postgresqlDataDir: /bitnami/postgresql/data
+
+## An array to add extra environment variables
+## For example:
+## extraEnv:
+##   - name: FOO
+##     value: "bar"
+##
+# extraEnv:
+extraEnv: []
 
 ## Specify extra initdb args
 ## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md
@@ -291,10 +300,11 @@ updateStrategy:
 ## PostgreSQL Master parameters
 ##
 master:
-  ## Node, affinity and tolerations labels for pod assignment
+  ## Node, affinity, tolerations, and priorityclass settings for pod assignment
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+  ## ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption
   nodeSelector: {}
   affinity: {}
   tolerations: []
@@ -302,6 +312,7 @@ master:
   annotations: {}
   podLabels: {}
   podAnnotations: {}
+  priorityClassName: ""
   extraInitContainers: |
   # - name: do-something
   #   image: busybox
@@ -317,10 +328,11 @@ master:
 ## PostgreSQL Slave parameters
 ##
 slave:
-  ## Node, affinity and tolerations labels for pod assignment
+  ## Node, affinity, tolerations, and priorityclass settings for pod assignment
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+  ## ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption
   nodeSelector: {}
   affinity: {}
   tolerations: []
@@ -328,6 +340,7 @@ slave:
   annotations: {}
   podLabels: {}
   podAnnotations: {}
+  priorityClassName: ""
   extraInitContainers: |
   # - name: do-something
   #   image: busybox
@@ -426,7 +439,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/postgres-exporter
-    tag: 0.7.0-debian-9-r12
+    tag: 0.8.0-debian-9-r40
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -469,6 +482,3 @@ metrics:
     timeoutSeconds: 5
     failureThreshold: 6
     successThreshold: 1
-
-# Define custom environment variables to pass to the image here
-extraEnv: []

@@ -92,6 +92,8 @@ spec:
       - name: init-sysctl
         image: {{ template "redis.sysctl.image" . }}
         imagePullPolicy: {{ .Values.sysctlImage.pullPolicy }}
+        resources:
+{{ toYaml .Values.sysctlImage.resources | indent 10 }}
         {{- if .Values.sysctlImage.mountHostSys }}
         volumeMounts:
         - name: host-sys
@@ -155,7 +157,7 @@ spec:
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
-        - redis-server 
+        - redis-server
         args:
         - /data/conf/redis.conf
         env:
@@ -282,6 +284,9 @@ spec:
     {{- else }}
       storageClassName: "{{ .Values.persistentVolume.storageClass }}"
     {{- end }}
+    {{- end }}
+    {{- if .Values.persistentVolume.reclaimPolicy }}
+    persistentVolumeReclaimPolicy: "{{ .Values.persistentVolume.reclaimPolicy }}"
     {{- end }}
 {{- else if .Values.hostPath.path }}
       - name: data

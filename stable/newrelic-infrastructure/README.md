@@ -20,7 +20,7 @@ This chart will deploy the New Relic Infrastructure agent as a Daemonset.
 | `privileged`                    | Enable privileged mode.                                      | `true`                     |
 | `image.repository`              | The container to pull.                                       | `newrelic/infrastructure`  |
 | `image.pullPolicy`              | The pull policy.                                             | `IfNotPresent`             |
-| `image.tag`                     | The version of the container to pull.                        | `1.10.2`                   |
+| `image.tag`                     | The version of the container to pull.                        | `1.12.0`                   |
 | `resources`                     | Any resources you wish to assign to the pod.                 | See Resources below        |
 | `verboseLog`                    | Should the agent log verbosely. (Boolean)                    | `false`                    |
 | `priorityClassName`             | Scheduling priority of the pod                               | `nil`                      |
@@ -29,6 +29,8 @@ This chart will deploy the New Relic Infrastructure agent as a Daemonset.
 | `updateStrategy`                | Strategy for DaemonSet updates (requires Kubernetes >= 1.6)  | `RollingUpdate`            |
 | `serviveAccount.create`         | If true, a service account would be created and assigned to the deployment | true |
 | `serviveAccount.name`           | The service account to assign to the deployment. If `serviveAccount.create` is true then this name will be used when creating the service account | |
+| `etcdTlsSecretName`             | Name of the secret containing the cacert, cert and key used for setting the mTLS config for retrieving metrics from ETCD. | |
+| `etcdTlsSecretNamespace`        | Namespace where the secret specified in `etcdTlsSecretName` was created. | `default`  |
 
 ## Example
 

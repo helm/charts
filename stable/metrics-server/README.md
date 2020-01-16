@@ -35,3 +35,4 @@ Parameter | Description | Default
 `podDisruptionBudget.enabled` | Create a PodDisruptionBudget | `false`
 `podDisruptionBudget.minAvailable` | Minimum available instances; ignored if there is no PodDisruptionBudget |
 `podDisruptionBudget.maxUnavailable` | Maximum unavailable instances; ignored if there is no PodDisruptionBudget |
+`extraContainers`   | Add additional containers  | `[]`

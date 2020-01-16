@@ -13,7 +13,7 @@
 image:
   registry: docker.io
   repository: bitnami/external-dns
-  tag: 0.5.17-debian-9-r50
+  tag: 0.5.18-debian-9-r4
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -44,9 +44,30 @@ sources:
 ##
 provider: aws
 
-## Whether to publish DNS records for ClusterIP services or not (optional)
+## Flags related to processing sources
+## ref: https://github.com/kubernetes-incubator/external-dns/blob/master/pkg/apis/externaldns/types.go#L272
+##
+## Limit sources of endpoints to a specific namespace (default: all namespaces)
+##
+namespace: ""
+## Templated strings that are used to generate DNS names from sources that don't define a hostname themselves
+##
+fqdnTemplates: []
+## Combine FQDN template and annotations instead of overwriting
+##
+combineFQDNAnnotation: false
+## Ignore hostname annotation when generating DNS names, valid only when fqdn-template is set
+##
+ignoreHostnameAnnotation: false
+## Allow external-dns to publish DNS records for ClusterIP services
 ##
 publishInternalServices: false
+## Allow external-dns to publish host-ip for headless services
+##
+publishHostIP: false
+## The service types to take care about (default: all, options: ClusterIP, NodePort, LoadBalancer, ExternalName)
+##
+serviceTypeFilter: []
 
 ## AWS configuration to be set via arguments/env. variables
 ##
@@ -249,6 +270,10 @@ interval: "1m"
 ## - panic, debug, info, warn, error, fatal
 ##
 logLevel: info
+## Formats of the ExternalDNS logs. Available values are:
+## - text, json
+##
+logFormat: text
 ## Modify how DNS records are sychronized between sources and providers (options: sync, upsert-only)
 ##
 policy: upsert-only
