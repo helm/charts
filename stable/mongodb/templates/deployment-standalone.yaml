@@ -188,6 +188,9 @@ spec:
           mountPath: /opt/bitnami/mongodb/conf/mongodb.conf
           subPath: mongodb.conf
         {{- end }}
+        {{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 8}}
+        {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
 {{- if .Values.metrics.enabled }}
@@ -238,6 +241,9 @@ spec:
         resources:
 {{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
+{{- if .Values.sidecars }}
+{{ toYaml .Values.sidecars | indent 6 }}
+{{- end }}
       volumes:
       {{- if (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|js|json]") }}
       - name: custom-init-scripts
@@ -262,4 +268,7 @@ spec:
         configMap:
           name: {{ template "mongodb.fullname" . }}
       {{- end }}
- {{- end -}}
+      {{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6}}
+      {{- end }}
+{{- end -}}
