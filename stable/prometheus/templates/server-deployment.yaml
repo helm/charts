@@ -83,18 +83,15 @@ spec:
             - --storage.tsdb.path={{ .Values.server.persistentVolume.mountPath }}
             - --web.console.libraries=/etc/prometheus/console_libraries
             - --web.console.templates=/etc/prometheus/consoles
-            - --web.enable-lifecycle
-          {{- range $key, $value := .Values.server.extraArgs }}
-            - --{{ $key }}={{ $value }}
+          {{- range .Values.server.extraFlags }}
+            - --{{ . }}
           {{- end }}
           {{- if .Values.server.baseURL }}
             - --web.external-url={{ .Values.server.baseURL }}
           {{- end }}
-          {{- if .Values.server.enableAdminApi }}
-            - --web.enable-admin-api
-          {{- end }}
-          {{- if .Values.server.skipTSDBLock }}
-            - --storage.tsdb.no-lockfile
+
+          {{- range $key, $value := .Values.server.extraArgs }}
+            - --{{ $key }}={{ $value }}
           {{- end }}
           ports:
             - containerPort: 9090
@@ -104,12 +101,16 @@ spec:
               port: 9090
             initialDelaySeconds: {{ .Values.server.readinessProbeInitialDelay }}
             timeoutSeconds: {{ .Values.server.readinessProbeTimeout }}
+            failureThreshold: {{ .Values.server.readinessProbeFailureThreshold }}
+            successThreshold: {{ .Values.server.readinessProbeSuccessThreshold }}
           livenessProbe:
             httpGet:
               path: {{ .Values.server.prefixURL }}/-/healthy
               port: 9090
             initialDelaySeconds: {{ .Values.server.livenessProbeInitialDelay }}
             timeoutSeconds: {{ .Values.server.livenessProbeTimeout }}
+            failureThreshold: {{ .Values.server.livenessProbeFailureThreshold }}
+            successThreshold: {{ .Values.server.livenessProbeSuccessThreshold }}
           resources:
 {{ toYaml .Values.server.resources | indent 12 }}
           volumeMounts:

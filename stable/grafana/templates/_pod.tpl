@@ -184,9 +184,11 @@ containers:
 {{- if .Values.sidecar.dashboards.enabled }}
       - name: sc-dashboard-volume
         mountPath: {{ .Values.sidecar.dashboards.folder | quote }}
+{{ if .Values.sidecar.dashboards.SCProvider }}
       - name: sc-dashboard-provider
         mountPath: "/etc/grafana/provisioning/dashboards/sc-dashboardproviders.yaml"
         subPath: provider.yaml
+{{- end}}
 {{- end}}
 {{- if .Values.sidecar.datasources.enabled }}
       - name: sc-datasources-volume
@@ -248,6 +250,11 @@ containers:
             name: {{ .Values.smtp.existingSecret }}
             key: {{ .Values.smtp.passwordKey | default "password" }}
       {{- end }}
+    {{- range $key, $value := .Values.envValueFrom }}
+      - name: {{ $key | quote }}
+        valueFrom:
+{{ toYaml $value | indent 10 }}
+    {{- end }}
 {{- range $key, $value := .Values.env }}
       - name: "{{ $key }}"
         value: "{{ $value }}"
@@ -268,8 +275,8 @@ containers:
 {{ toYaml .Values.readinessProbe | indent 6 }}
     resources:
 {{ toYaml .Values.resources | indent 6 }}
-{{- if .Values.extraContainers }}
-{{ toYaml .Values.extraContainers | indent 2}}
+{{- with .Values.extraContainers }}
+{{ tpl . $ | indent 2 }}
 {{- end }}
 {{- with .Values.nodeSelector }}
 nodeSelector:
@@ -332,7 +339,7 @@ volumes:
 {{- if .Values.sidecar.dashboards.enabled }}
   - name: sc-dashboard-volume
     emptyDir: {}
-{{- if .Values.sidecar.dashboards.enabled }}
+{{- if .Values.sidecar.dashboards.SCProvider }}
   - name: sc-dashboard-provider
     configMap:
       name: {{ template "grafana.fullname" . }}-config-dashboards

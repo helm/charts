@@ -119,11 +119,13 @@ aws_secret_access_key = {{ .Values.aws.credentials.secretKey }}
 {{- define "external-dns.aws-config" }}
 [profile default]
 region = {{ .Values.aws.region }}
-source_profile = default
 {{ end }}
 
 {{- define "external-dns.azure-credentials" -}}
 {
+  {{- if .Values.azure.cloud }}
+  "cloud": "{{ .Values.azure.cloud }}",
+  {{- end}}
   "tenantId": "{{ .Values.azure.tenantId }}",
   "subscriptionId": "{{ .Values.azure.subscriptionId }}",
   "resourceGroup": "{{ .Values.azure.resourceGroup }}",

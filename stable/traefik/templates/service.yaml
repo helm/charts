@@ -40,12 +40,6 @@ spec:
     app: {{ template "traefik.name" . }}
     release: {{ .Release.Name }}
   ports:
-  - port: 80
-    name: http
-    {{- if (and (eq .Values.serviceType "NodePort") (not (empty .Values.service.nodePorts.http)))}}
-    nodePort: {{ .Values.service.nodePorts.http }}
-    {{- end }}
-    targetPort: http
   - port: 443
     name: https
     {{- if (and (eq .Values.serviceType "NodePort") (not (empty .Values.service.nodePorts.https)))}}
@@ -56,3 +50,9 @@ spec:
     {{- else }}
     targetPort: https
     {{- end }}
+  - port: 80
+    name: http
+    {{- if (and (eq .Values.serviceType "NodePort") (not (empty .Values.service.nodePorts.http)))}}
+    nodePort: {{ .Values.service.nodePorts.http }}
+    {{- end }}
+    targetPort: http

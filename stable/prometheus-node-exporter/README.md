@@ -43,6 +43,7 @@ The following table lists the configurable parameters of the Node Exporter chart
 | `image.pullPolicy`                | Image pull policy                                                                                                             | `IfNotPresent`                          |     |
 | `extraArgs`                       | Additional container arguments                                                                                                | `[]`                                    |     |
 | `extraHostVolumeMounts`           | Additional host volume mounts                                                                                                 | `[]`                                    |     |
+| `podAnnotations`                  | Annotations to be added to node exporter pods                                                                                 | `{}`                                    |     |
 | `podLabels`                       | Additional labels to be added to pods                                                                                         | `{}`                                    |     |
 | `rbac.create`                     | If true, create & use RBAC resources                                                                                          | `true`                                  |     |
 | `rbac.pspEnabled`                 | Specifies whether a PodSecurityPolicy should be created.                                                                      | `true`                                  |     |
@@ -67,6 +68,7 @@ The following table lists the configurable parameters of the Node Exporter chart
 | `prometheus.monitor.namespace` | namespace where servicemonitor resource should be created | `the same namespace as prometheus node exporter` | |
 | `prometheus.monitor.scrapeTimeout` | Timeout after which the scrape is ended | `10s` | |
 | `configmaps`                      | Allow mounting additional configmaps.                                                                                         | `[]`                                    |     |
+| `namespaceOverride`               | Override the deployment namespace     | `""` (`Release.Namespace`)             |  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

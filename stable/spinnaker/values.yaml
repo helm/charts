@@ -7,6 +7,8 @@ halyard:
   # Set to false to disable persistence data volume for halyard
   persistence:
     enabled: true
+  # Provide additional parameters to halyard deploy apply command
+  additionalInstallParameters: []
   # Provide a config map with Hal commands that will be run the core config (storage)
   # The config map should contain a script in the config.sh key
   additionalScripts:
@@ -222,7 +224,6 @@ ingressGate:
 #   - pipeline-templates
 spinnakerFeatureFlags:
   - artifacts
-  - jobs
 
 # Node labels for pod assignment
 # Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -283,6 +284,9 @@ s3:
   # accessKey: ""
   # secretKey: ""
   # assumeRole: "<role to assume>"
+  ## Here you can pass extra arguments to configure s3 storage options
+  extraArgs: []
+  #  - "--path-style-access true"
 
 # Azure Storage Account
 azs:

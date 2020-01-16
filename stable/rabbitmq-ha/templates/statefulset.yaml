@@ -11,6 +11,12 @@ metadata:
 {{- if .Values.extraLabels }}
 {{ toYaml .Values.extraLabels | indent 4 }}
 {{- end }}
+{{- if .Values.statefulSetAnnotations }}
+  annotations:
+{{- range $key, $value := .Values.statefulSetAnnotations }}
+    {{ $key }}: {{ $value | quote }}
+{{- end }}
+{{- end }}
 spec:
   podManagementPolicy: {{ .Values.podManagementPolicy }}
   serviceName: {{ template "rabbitmq-ha.fullname" . }}-discovery
@@ -39,6 +45,11 @@ spec:
         {{- if and .Values.prometheus.exporter.enabled (not .Values.prometheus.operator.enabled) }}
         prometheus.io/scrape: "true"
         prometheus.io/port: {{ .Values.prometheus.exporter.port | quote }}
+        {{- end }}
+        {{- if and .Values.rabbitmqPrometheusPlugin.enabled (not .Values.prometheus.operator.enabled) }}
+        prometheus.io/scrape: "true"
+        prometheus.io/port: {{ .Values.rabbitmqPrometheusPlugin.port | quote }}
+        prometheus.io/path: {{ .Values.rabbitmqPrometheusPlugin.path | quote }}
         {{- end }}
 {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
@@ -149,6 +160,10 @@ spec:
             {{- toYaml .Values.livenessProbe | trim | nindent 12 }}
           readinessProbe:
             {{- toYaml .Values.readinessProbe | trim | nindent 12 }}
+          {{- if .Values.lifecycle }}
+          lifecycle:
+            {{- toYaml .Values.lifecycle | trim | nindent 12 }}
+          {{- end }}
           env:
             - name: MY_POD_NAME
               valueFrom:

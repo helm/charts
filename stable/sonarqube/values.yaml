@@ -8,7 +8,7 @@ deploymentStrategy: {}
 
 image:
   repository: sonarqube
-  tag: 7.9.1-community
+  tag: 7.9.2-community
   # If using a private repository, the name of the imagePullSecret to use
   # pullSecret: my-repo-secret
 
@@ -130,6 +130,11 @@ persistence:
   accessMode: ReadWriteOnce
   size: 10Gi
 
+  ## Specify extra volumes. Refer to ".spec.volumes" specification : https://kubernetes.io/fr/docs/concepts/storage/volumes/
+  volumes: []
+  ## Specify extra mounts. Refer to ".spec.containers.volumeMounts" specification : https://kubernetes.io/fr/docs/concepts/storage/volumes/
+  mounts: []
+
 # List of plugins to install.
 # For example:
 # plugins:
@@ -215,3 +220,5 @@ mysql:
 # podLabels:
 #   key: value
 podLabels: {}
+# For compatibility with 8.0 replace by "/opt/sq"
+sonarqubeFolder: /opt/sonarqube

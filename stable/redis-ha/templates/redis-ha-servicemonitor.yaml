@@ -7,6 +7,7 @@ metadata:
 {{ toYaml .Values.exporter.serviceMonitor.labels | indent 4}}
 {{- end }}
   name: {{ template "redis-ha.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 {{- if .Values.exporter.serviceMonitor.namespace }}
   namespace: {{ .Values.exporter.serviceMonitor.namespace }}
 {{- end }}
@@ -30,4 +31,5 @@ spec:
     matchLabels:
       app: {{ template "redis-ha.name" . }}
       release: {{ .Release.Name }}
+      servicemonitor: enabled
 {{- end }}

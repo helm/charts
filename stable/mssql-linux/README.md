@@ -12,7 +12,7 @@
 
 * Creates a SQL Server 2017 deployment (default edition: Express)
 * Creates a Kubernetes Service on specified port (default: 1433)
-* Creates a Secert to hold SA_PASSWORD
+* Creates a Secret to hold SA_PASSWORD
 
 ## Installing the Chart
 
@@ -103,6 +103,7 @@ The configuration parameters in this section control the resources requested and
 | service.type     | Service Type                                                                                   | `ClusterIP`                      |
 | service.loadBalancerIP     | Loadbalancer IP                                                                                   | `nil`                      |
 | service.port     | Service Port                                                                                   | `1433`                           |
+| service.nodePort | Optional NodePort to use when `service.type` is `NodePort`                                     | None                             |
 | service.annotations | Kubernetes service annotations                                                              | `{}`                             |
 | service.labels   | Kubernetes service labels                                                                      | `{}`                             |
 | deployment.annotations | Kubernetes deployment annotations                                                        | `{}`                             |
@@ -114,7 +115,7 @@ The configuration parameters in this section control the resources requested and
 | hadr             | Enable Availability Group                                                                      | `0`                              |
 | agent.enabled    | Enable Agent                                                                                   | `false`                          |
 | schedulerName    | Name of the k8s scheduler (other than default)                                                 | `nil`                            |
-| persistence.enabled | Persist the Data and Log files for SQL Server                                               | `false`                          |
+| persistence.enabled | Persist the Data and Log files for SQL Server                                               | `true`                          |
 | persistence.existingDataClaim | Identify an existing Claim to be used for the Data Directory                      | `Commented Out`                  |
 | persistence.existingTransactionLogClaim  | Identify an existing Claim to be used for the Log Directory            | `Commented Out`                  |
 | persistence.existingBackupClaim | Identify an existing Claim to be used for the SQL Database Backups              | `Commented Out`                  |

@@ -7,6 +7,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: {{ printf "%s-%s" (include "prometheus-operator.fullname" .) "kubernetes-system-scheduler" | trunc 63 | trimSuffix "-" }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "prometheus-operator.name" . }}
 {{ include "prometheus-operator.labels" . | indent 4 }}
@@ -25,7 +26,7 @@ spec:
     - alert: KubeSchedulerDown
       annotations:
         message: KubeScheduler has disappeared from Prometheus target discovery.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeschedulerdown
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeschedulerdown
       expr: absent(up{job="kube-scheduler"} == 1)
       for: 15m
       labels:
