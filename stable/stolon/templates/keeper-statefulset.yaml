@@ -41,6 +41,50 @@ spec:
 {{ toYaml .Values.image.pullSecrets | indent 8 }}
 {{- end }}
       containers:
+{{- if .Values.monitoringPG.enabled }}
+        - name: pg-exporter
+          image: "{{ .Values.exporterImage.repository }}:{{ .Values.exporterImage.tag }}"
+          imagePullPolicy: {{ .Values.exporterImage.pullPolicy }}
+          args:
+            - --web.listen-address=:{{ .Values.monitoringPG.port }}
+          env:
+            - name: STKEEPER_PG_SU_USERNAME
+{{ if not (empty .Values.superuserSecret.name) }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.superuserSecret.name }}
+                  key: {{ .Values.superuserSecret.usernameKey }}
+{{ else }}
+              value: {{ .Values.superuserUsername | quote }}
+{{ end }}
+            - name: STKEEPER_PG_SU_PASSWORD
+{{ if not (empty .Values.superuserSecret.name) }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.superuserSecret.name }}
+                  key: {{ .Values.superuserSecret.passwordKey }}
+{{ else }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "stolon.fullname" . }}
+                  key: "pg_su_password"
+{{ end }}
+            - name: DATA_SOURCE_NAME
+{{- if .Values.tls.enabled }}
+              value: "postgresql://$(STKEEPER_PG_SU_USERNAME):$(STKEEPER_PG_SU_PASSWORD)@localhost:5432/postgres?sslmode=enable"
+{{- else }}
+              value: "postgresql://$(STKEEPER_PG_SU_USERNAME):$(STKEEPER_PG_SU_PASSWORD)@localhost:5432/postgres?sslmode=disable"
+{{- end }}
+          ports:
+            - name: pg-exporter
+              containerPort: {{ .Values.monitoringPG.port }}
+{{- if .Values.tls.enabled }}
+          volumeMounts:
+          - name: certs
+            mountPath: /etc/ssl/certs/ca-certificates.crt
+            subPath: rootCa.crt
+{{- end }}
+{{- end }}
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
