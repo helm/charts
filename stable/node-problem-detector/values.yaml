@@ -78,6 +78,18 @@ metrics:
   serviceMonitor:
     enabled: false
     additionalLabels: {}
+    ## Namespace in which Prometheus is running
+    ##
+    # namespace: monitoring
+    ## Interval at which metrics should be scraped.
+    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#endpoint
+    ##
+    # interval: 10s
+
+    ## Timeout after which the scrape is ended
+    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#endpoint
+    ##
+    # scrapeTimeout: 10s
 
 env:
 #  - name: FOO

@@ -34,30 +34,34 @@ Custom System log monitor config files can be created, see [here](https://github
 
 The following table lists the configurable parameters for this chart and their default values.
 
-| Parameter                             | Description                                | Default                                                      |
-|---------------------------------------|--------------------------------------------|--------------------------------------------------------------|
-| `affinity`                            | Map of node/pod affinities                 | `{}`                                                         |
-| `annotations`                         | Optional daemonset annotations             | `{}`                                                         |
-| `fullnameOverride`                    | Override the fullname of the chart         | `nil`                                                        |
-| `image.pullPolicy`                    | Image pull policy                          | `IfNotPresent`                                               |
-| `image.repository`                    | Image                                      | `k8s.gcr.io/node-problem-detector`                           |
-| `image.tag`                           | Image tag                                  | `v0.6.3`                                                     |
-| `nameOverride`                        | Override the name of the chart             | `nil`                                                        |
-| `rbac.create`                         | RBAC                                       | `true`                                                       |
-| `rbac.pspEnabled`                     | PodSecuritypolicy                          | `false`                                                      |
-| `hostNetwork`                         | Run pod on host network                    | `false`                                                      |
-| `priorityClassName`                   | Priority class name                        | `""`                                                         |
-| `resources`                           | Pod resource requests and limits           | `{}`                                                         |
-| `settings.custom_monitor_definitions` | User-specified custom monitor definitions  | `{}`                                                         |
-| `settings.log_monitors`               | System log monitor config files            | `/config/kernel-monitor.json`, `/config/docker-monitor.json` |
-| `settings.custom_plugin_monitors`     | Custom plugin monitor config files         | `[]`                                                         |
-| `settings.prometheus_address`         | Prometheus exporter address                | `0.0.0.0`                                                    |
-| `settings.prometheus_port`            | Prometheus exporter port                   | `20257`                                                      |
-| `serviceAccount.create`               | Whether a ServiceAccount should be created | `true`                                                       |
-| `serviceAccount.name`                 | Name of the ServiceAccount to create       | Generated value from template                                |
-| `tolerations`                         | Optional daemonset tolerations             | `[]`                                                         |
-| `nodeSelector`                        | Optional daemonset nodeSelector            | `{}`                                                         |
-| `env`                                 | Optional daemonset environment variables   | `[]`                                                         |
+| Parameter                             | Description                                               | Default                                                      |
+|---------------------------------------|-----------------------------------------------------------|--------------------------------------------------------------|
+| `affinity`                            | Map of node/pod affinities                                | `{}`                                                         |
+| `annotations`                         | Optional daemonset annotations                            | `{}`                                                         |
+| `fullnameOverride`                    | Override the fullname of the chart                        | `nil`                                                        |
+| `image.pullPolicy`                    | Image pull policy                                         | `IfNotPresent`                                               |
+| `image.repository`                    | Image                                                     | `k8s.gcr.io/node-problem-detector`                           |
+| `image.tag`                           | Image tag                                                 | `v0.7.0`                                                     |
+| `nameOverride`                        | Override the name of the chart                            | `nil`                                                        |
+| `rbac.create`                         | RBAC                                                      | `true`                                                       |
+| `rbac.pspEnabled`                     | PodSecuritypolicy                                         | `false`                                                      |
+| `hostNetwork`                         | Run pod on host network                                   | `false`                                                      |
+| `metrics.servicemonitor.enabled`      | Create ServiceMonitor object	                            | `false`                                                      |
+| `metrics.serviceMonitor.interval`     | Interval at which metrics should be scraped               | `30s`                                                        |
+| `metrics.serviceMonitor.namespace`    | namespace where servicemonitor resource should be created | `the same namespace as node problem detector`                |
+| `metrics.serviceMonitor.scrapeTimeout`| Timeout after which the scrape is ended	                | `30s`                                                        |
+| `priorityClassName`                   | Priority class name                                       | `""`                                                         |
+| `resources`                           | Pod resource requests and limits                          | `{}`                                                         |
+| `settings.custom_monitor_definitions` | User-specified custom monitor definitions                 | `{}`                                                         |
+| `settings.log_monitors`               | System log monitor config files                           | `/config/kernel-monitor.json`, `/config/docker-monitor.json` |
+| `settings.custom_plugin_monitors`     | Custom plugin monitor config files                        | `[]`                                                         |
+| `settings.prometheus_address`         | Prometheus exporter address                               | `0.0.0.0`                                                    |
+| `settings.prometheus_port`            | Prometheus exporter port                                  | `20257`                                                      |
+| `serviceAccount.create`               | Whether a ServiceAccount should be created                | `true`                                                       |
+| `serviceAccount.name`                 | Name of the ServiceAccount to create                      | Generated value from template                                |
+| `tolerations`                         | Optional daemonset tolerations                            | `[]`                                                         |
+| `nodeSelector`                        | Optional daemonset nodeSelector                           | `{}`                                                         |
+| `env`                                 | Optional daemonset environment variables                  | `[]`                                                         |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install` or provide a YAML file containing the values for the above parameters:
 
