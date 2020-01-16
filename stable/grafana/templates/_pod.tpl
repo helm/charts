@@ -250,15 +250,15 @@ containers:
             name: {{ .Values.smtp.existingSecret }}
             key: {{ .Values.smtp.passwordKey | default "password" }}
       {{- end }}
-{{- range $key, $value := .Values.env }}
-      - name: "{{ $key }}"
-        value: "{{ $value }}"
-{{- end }}
     {{- range $key, $value := .Values.envValueFrom }}
       - name: {{ $key | quote }}
         valueFrom:
 {{ toYaml $value | indent 10 }}
     {{- end }}
+{{- range $key, $value := .Values.env }}
+      - name: "{{ $key }}"
+        value: "{{ $value }}"
+{{- end }}
     {{- if .Values.envFromSecret }}
     envFrom:
       - secretRef:
