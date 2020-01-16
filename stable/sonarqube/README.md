@@ -100,6 +100,7 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `hostAliases`                               | Aliases for IPs in /etc/hosts             | `[]`                                       |
 | `tolerations`                               | List of node taints to tolerate           | `[]`                                       |
 | `plugins.install`                           | List of plugins to install                | `[]`                                       |
+| `plugins.lib`                               | List of plugins to install to `lib/common`| `[]`                                       |
 | `plugins.resources`                         | Plugin Pod resource requests & limits     | `{}`                                       |
 | `plugins.initContainerImage`                | Change init container image               | `alpine:3.10.3`                            |
 | `plugins.initSysctlContainerImage`          | Change init sysctl container image        | `busybox:1.31`                             |
