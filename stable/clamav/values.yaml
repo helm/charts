@@ -65,4 +65,7 @@ tolerations: []
 
 affinity: {}
 
-kubeMeta: {}
+# Metadata surrounding the kubernetes distribution being deployed to.
+kubeMeta:
+  # The api that Deployments are under.
+  deploymentApiVersion: apps/v1beta2

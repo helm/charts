@@ -32,6 +32,34 @@ The command deploys ClamAV on the Kubernetes cluster in the default configuratio
 
 > **Tip**: List all releases using `helm list`
 
+In order to deploy this chart under Kubernetes 1.9+, the `kubeMeta.deploymentApiVersion` MUST be set to "apps/v1":
+
+```bash
+$ helm install --set "kubeMeta.deploymentApiVersion=apps/v1" --name my-release stable/clamav
+```
+
+In order to deploy this chart behind a firewall that requires an HTTP Proxy, create a template file as below and install passing the `-f` flag:
+
+```bash
+$ cat << EOF > ./template.yaml
+freshclamConfig: |
+  HTTPProxyServer web-proxy.corp.hpecorp.net
+  HTTPProxyPort 8080
+  DatabaseDirectory /data
+  LogSyslog yes
+  LogTime yes
+  PidFile /run/clamav/freshclam.pid
+  DatabaseOwner root
+  DatabaseMirror database.clamav.net
+  ScriptedUpdates yes
+  NotifyClamd /etc/clamav/clamd.conf
+  SafeBrowsing yes
+  Bytecode yes
+EOF
+
+$ helm install -f ./template.yaml -name my-release stable/clamav
+```
+
 ## Uninstalling the Chart
 
 To uninstall/delete the `my-release` deployment:
