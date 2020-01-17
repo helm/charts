@@ -139,6 +139,10 @@ spec:
   volumeClaimTemplates:
     - metadata:
         name: {{ template "influxdb.fullname" . }}-data
+        labels:
+           app: {{ template "influxdb.fullname" .}}
+           release: "{{ .Release.Name }}"
+           heritage: "{{ .Release.Service }}"
         annotations:
         {{- range $key, $value := .Values.persistence.annotations }}
           {{ $key }}: "{{ $value }}"
