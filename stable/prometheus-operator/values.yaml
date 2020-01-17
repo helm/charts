@@ -564,8 +564,11 @@ kubelet:
     #   action: drop
 
     # 	relabel configs to apply to samples before ingestion.
+    #   metrics_path is required to match upstream rules and charts
     ##
-    cAdvisorRelabelings: []
+    cAdvisorRelabelings:
+      - sourceLabels: [__metrics_path__]
+        targetLabel: metrics_path
     # - sourceLabels: [__meta_kubernetes_pod_node_name]
     #   separator: ;
     #   regex: ^(.*)$
@@ -586,8 +589,11 @@ kubelet:
     #   action: drop
 
     # 	relabel configs to apply to samples before ingestion.
+    #   metrics_path is required to match upstream rules and charts
     ##
-    relabelings: []
+    relabelings:
+      - sourceLabels: [__metrics_path__]
+        targetLabel: metrics_path
     # - sourceLabels: [__meta_kubernetes_pod_node_name]
     #   separator: ;
     #   regex: ^(.*)$
