@@ -1008,6 +1008,16 @@ prometheusOperator:
       #    operator: "Equal"
       #    value: "value"
       #    effect: "NoSchedule"
+      affinity: {}
+      # nodeAffinity:
+      #   requiredDuringSchedulingIgnoredDuringExecution:
+      #     nodeSelectorTerms:
+      #     - matchExpressions:
+      #       - key: kubernetes.io/e2e-az-name
+      #         operator: In
+      #         values:
+      #         - e2e-az1
+      #         - e2e-az2
 
   ## Namespaces to scope the interaction of the Prometheus Operator and the apiserver (allow list).
   ## This is mutually exclusive with denyNamespaces. Setting this to an empty object will disable the configuration

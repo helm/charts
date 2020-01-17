@@ -51,6 +51,10 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
       {{- end }}
+{{- with .Values.prometheusOperator.admissionWebhooks.patch.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
       securityContext:
         runAsNonRoot: true
         runAsUser: 2000
