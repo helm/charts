@@ -39,6 +39,10 @@ spec:
 {{ toYaml .Values.controller.podLabels | indent 8 }}
         {{- end }}
     spec:
+{{- if .Values.controller.dnsConfig }}
+      dnsConfig:
+{{ toYaml .Values.controller.dnsConfig | indent 8 }}
+{{- end }}
       dnsPolicy: {{ .Values.controller.dnsPolicy }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:

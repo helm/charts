@@ -62,7 +62,7 @@ spec:
             - containerPort: 9093
           readinessProbe:
             httpGet:
-              path: {{ .Values.alertmanager.prefixURL }}/#/status
+              path: {{ .Values.alertmanager.prefixURL }}/-/ready
               port: 9093
             initialDelaySeconds: 30
             timeoutSeconds: 30
