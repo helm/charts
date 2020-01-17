@@ -65,6 +65,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.http.http_user`        | Optional username credential for Basic Authentication. | `` |
 | `backend.http.http_passwd:`     | Password for user defined in HTTP_User. | `` |
 | `backend.http.format`         | Specify the data format to be used in the HTTP request body, by default it uses msgpack, optionally it can be set to json.  | `msgpack` |
+| `backend.http.json_date_format`         | Specify the format of the date. Supported formats are double and iso8601 | `double` |
 | `backend.http.headers`          | HTTP Headers | `[]` |
 | `backend.http.tls`              | Enable or disable TLS support | `off` |
 | `backend.http.tls_verify`       | Force certificate validation  | `on` |
@@ -118,6 +119,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `filter.kubeTagPrefix`             | Optional tag prefix used by Tail   | `kube.var.log.containers.`                                |
 | `filter.mergeJSONLog`              | If the log field content is a JSON string map, append the map fields as part of the log structure         | `true`                                 |
 | `filter.mergeLogKey`               | If set, append the processed log keys under a new root key specified by this variable. | `nil` |
+| `filter.useJournal`                | If true, the filter reads logs coming in Journald format.  | `false` |
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
 | `image.fluent_bit.tag`             | Image tag                                  | `1.3.5`                                           |
 | `image.pullPolicy`                 | Image pull policy                          | `Always`                                          |

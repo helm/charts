@@ -21,6 +21,11 @@
 {{ toYaml .Values.daemonset.containers.processAgent.env | indent 4 }}
 {{- end }}
   volumeMounts:
+    {{- if .Values.daemonset.useConfigMap }}
+    - name: {{ template "datadog.fullname" . }}-datadog-yaml
+      mountPath: /etc/datadog-agent/datadog.yaml
+      subPath: datadog.yaml
+    {{- end }}
     - name: cgroups
       mountPath: /host/sys/fs/cgroup
       readOnly: true

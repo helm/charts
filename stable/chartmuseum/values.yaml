@@ -131,6 +131,9 @@ service:
   servicename:
   type: ClusterIP
   externalTrafficPolicy: Local
+  ## Limits which cidr blocks can connect to service's load balancer
+  ## Only valid if service.type: LoadBalancer
+  loadBalancerSourceRanges: []
   # clusterIP: None
   externalPort: 8080
   nodePort:
