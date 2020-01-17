@@ -153,6 +153,7 @@ rawConfig: |-
   @INCLUDE fluent-bit-service.conf
   @INCLUDE fluent-bit-input.conf
   @INCLUDE fluent-bit-filter.conf
+  # @INCLUDE fluent-bit-lua.conf
   @INCLUDE fluent-bit-output.conf
 
 
@@ -186,6 +187,31 @@ extraVolumes: []
 ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-volume-storage/
 ##
 extraVolumeMounts: []
+##   - name: config
+##     mountPath: /fluent-bit/etc/scripts.lua
+##     subPath: scripts.lua
+
+## Extra configMaps:
+#  You'll need an `extraVolumeMounts`, the `[FILTER]` config snippet below and
+#  the line `@INCLUDE fluent-bit-lua.conf` in `rawConfig`.
+extraConfigMapEntries: {}
+  # scripts.lua: |
+  #   -- https://docs.fluentbit.io/manual/filter/lua
+  #   -- Compose a new JSON map and report it
+  #   function cb_replace(tag, timestamp, record)
+  #      -- Record modified, so 'code' return value (first parameter) is 1
+  #      new_record = {}
+  #      new_record["new"] = 12345
+  #      new_record["old"] = record
+  #      return 1, timestamp, new_record
+  #   end
+  # fluent-bit-lua.conf: |
+  #   [FILTER]
+  #      Name   lua
+  #      Match  *
+  #      script scripts.lua
+  #      call   cb_replace
+
 
 resources: {}
   # limits:

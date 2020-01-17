@@ -264,5 +264,7 @@ data:
 {{- end }}
 {{ end }}
 {{- end }}
-
+{{- if .Values.extraConfigMapEntries }}
+{{ .Values.extraConfigMapEntries | indent 2 }}
+{{- end }}
 {{- end -}}
