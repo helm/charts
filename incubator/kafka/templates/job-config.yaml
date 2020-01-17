@@ -19,11 +19,40 @@ spec:
           configMap:
             name: {{ template "kafka.fullname" . }}-config
             defaultMode: 0744
+        {{- range .Values.secrets }}
+        {{- if .mountPath }}
+        - name: {{ include "kafka.fullname" $ }}-{{ .name }}
+          secret:
+            secretName: {{ .name }}
+        {{- end }}
+        {{- end }}
+
       containers:
         - name: {{ template "kafka.fullname" . }}-config
           image: "{{ .Values.image }}:{{ .Values.imageTag }}"
           command: ["/usr/local/script/runtimeConfig.sh"]
+          env:
+          {{- range $key, $value := .Values.envOverrides }}
+          - name: {{ printf "%s" $key | replace "." "_" | upper | quote }}
+            value: {{ $value | quote }}
+          {{- end }}          
           volumeMounts:
             - name: config-volume
               mountPath: "/usr/local/script"
+            {{- range $secret := .Values.secrets }}
+              {{- if $secret.mountPath }}
+                {{- if $secret.keys }}
+                  {{- range $key := $secret.keys }}
+            - name: {{ include "kafka.fullname" $ }}-{{ $secret.name }}
+              mountPath: {{ $secret.mountPath }}/{{ $key }}
+              subPath: {{ $key }}
+              readOnly: true
+                  {{- end }}
+                {{- else }}
+            - name: {{ include "kafka.fullname" $ }}-{{ $secret.name }}
+              mountPath: {{ $secret.mountPath }}
+              readOnly: true
+                {{- end }}
+              {{- end }}
+            {{- end }}
 {{- end -}}

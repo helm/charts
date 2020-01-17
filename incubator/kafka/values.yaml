@@ -207,7 +207,7 @@ envOverrides: {}
 
 ## A collection of additional ports to expose on brokers (formatted as normal containerPort yaml)
 # Useful when the image exposes metrics (like prometheus, etc.) through a javaagent instead of a sidecar
-additionalPorts: {}
+additionalPorts: []
 
 ## Persistence configuration. Specify if and how to persist data to a persistent volume.
 ##
