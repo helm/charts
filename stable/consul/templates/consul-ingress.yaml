@@ -28,7 +28,7 @@ spec:
               serviceName: {{ $serviceName }}
               servicePort: {{ $servicePort }}
           {{- if .Values.uiIngress.path }}
-            path: {{ .Values.uiIngresspath }}
+            path: {{ .Values.uiIngress.path }}
           {{- end }}
   {{- end -}}
   {{- if .Values.uiIngress.tls }}
