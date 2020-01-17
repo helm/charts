@@ -222,7 +222,11 @@ spec:
               {{- else if eq .Values.database.type "mysql" }}
               value: "jdbc:mysql://{{ template "mysql.hostname" . }}:{{ .Values.mysql.service.port }}/{{ .Values.mysql.mysqlDatabase }}?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true{{- range $key, $value := .Values.mysql.mysqlParams }}&{{ $key }}={{ $value }}{{- end }}"
               {{- else if eq .Values.database.type "oracle" }}
+              {{- if eq .Values.oracle.oracleidentifierType "SID" }}
+              value: "jdbc:oracle:thin:@{{ .Values.oracle.oracleHostname }}:{{- .Values.oracle.oracleHostport -}}:{{- .Values.oracle.oracleDatabase -}}"
+              {{- else }}
               value: "jdbc:oracle:thin:@{{ .Values.oracle.oracleHostname }}:{{- .Values.oracle.oracleHostport -}}/{{- .Values.oracle.oracleDatabase -}}"
+              {{- end }}
               {{- end }}
           livenessProbe:
             httpGet:

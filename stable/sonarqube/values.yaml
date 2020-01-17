@@ -228,6 +228,7 @@ oracle:
   oracleUser: "sonarUser"
   oraclePassword: "sonarPass"
   oracleDatabase: "sonarDB"
+  oracleidentifierType: "ServiceName"
   # To use Oracle, you will need to install the Oracle JDBC driver.
   # Set oracleInstallDriver to true and provide a URL where the driver
   # can be downloaded in oracleDriverPath.

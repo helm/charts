@@ -97,6 +97,7 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `oracle.oracleUser`                         | Oracle database user                      | `sonarUser`                                |
 | `oracle.oraclePassword`                     | Oracle database password (if not using oraclePasswordSecret)        | `sonarPass`                                |
 | `oracle.oracleDatabase`                     | Oracle database name                      | `sonarDB`                                  |
+| `oracle.oracleidentifierType`               | Whether the specified database identifier is a SID or a ServiceName  | `ServiceName`                |
 | `oracle.oracleInstallDriver`                | Set to `true` to install the Oracle JDBC driver (must provide URL to file in `oracle.oracleDriverPath`)  | `false`                                |
 | `oracle.oracleDriverPath`                   | URL where the Oracle JDBC driver can be found  | `null`                                |
 | `annotations`                               | Sonarqube Pod annotations                 | `{}`                                       |
