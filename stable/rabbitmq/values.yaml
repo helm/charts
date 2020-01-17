@@ -438,7 +438,7 @@ metrics:
     ## Specify honorLabels parameter to add the scrape endpoint
     honorLabels: false
     ## Specify the release for ServiceMonitor. Sometimes it should be custom for prometheus operator to work
-    #release: ""
+    # release: ""
     ## Used to pass Labels that are used by the Prometheus installed in your cluster to select Service Monitors to work with
     ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
     additionalLabels: {}
