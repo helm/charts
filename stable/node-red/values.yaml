@@ -13,6 +13,9 @@ image:
 nameOverride: ""
 fullnameOverride: ""
 
+livenessProbePath: /
+readinessProbePath: /
+
 flows: "flows.json"
 safeMode: "false"
 enableProjects: "false"

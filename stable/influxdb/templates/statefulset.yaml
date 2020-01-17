@@ -12,17 +12,34 @@ spec:
   selector:
     matchLabels:
       app: {{ template "influxdb.fullname" . }}
+      release: "{{ .Release.Name }}"
   serviceName: "{{ template "influxdb.fullname" . }}"
   template:
     metadata:
       labels:
         app: {{ template "influxdb.fullname" . }}
         release: "{{ .Release.Name }}"
+        chart: "{{ template "influxdb.chart" . }}"
       {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+      {{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end -}}
+      {{- if .Values.affinity }}
+      affinity:
+      {{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+      {{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range .Values.image.pullSecrets }}
@@ -103,21 +120,6 @@ spec:
       {{- if (not .Values.persistence.enabled ) }}
       - name: {{ template "influxdb.fullname" . }}-data
         emptyDir: {}
-      {{- end }}
-    {{- if .Values.schedulerName }}
-      schedulerName: "{{ .Values.schedulerName }}"
-    {{- end }}
-    {{- if .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
-      {{- end -}}
-      {{- if .Values.affinity }}
-      affinity:
-{{ toYaml .Values.affinity | indent 8 }}
-      {{- end }}
-      {{- if .Values.tolerations }}
-      tolerations:
-{{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
 {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
