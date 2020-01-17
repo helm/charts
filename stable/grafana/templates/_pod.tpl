@@ -250,6 +250,11 @@ containers:
             name: {{ .Values.smtp.existingSecret }}
             key: {{ .Values.smtp.passwordKey | default "password" }}
       {{- end }}
+    {{- range $key, $value := .Values.envValueFrom }}
+      - name: {{ $key | quote }}
+        valueFrom:
+{{ toYaml $value | indent 10 }}
+    {{- end }}
 {{- range $key, $value := .Values.env }}
       - name: "{{ $key }}"
         value: "{{ $value }}"
@@ -270,8 +275,8 @@ containers:
 {{ toYaml .Values.readinessProbe | indent 6 }}
     resources:
 {{ toYaml .Values.resources | indent 6 }}
-{{- if .Values.extraContainers }}
-{{ toYaml .Values.extraContainers | indent 2}}
+{{- with .Values.extraContainers }}
+{{ tpl . $ | indent 2 }}
 {{- end }}
 {{- with .Values.nodeSelector }}
 nodeSelector:

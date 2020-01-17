@@ -60,10 +60,13 @@ readinessProbe:
   initialDelaySeconds: 60
   periodSeconds: 30
   failureThreshold: 6
+  timeoutSeconds: 5
 livenessProbe:
   path: "/sample"
   initialDelaySeconds: 60
   periodSeconds: 30
+  failureThreshold: 6
+  timeoutSeconds: 5
 
 resources: {}
 #  limits:
