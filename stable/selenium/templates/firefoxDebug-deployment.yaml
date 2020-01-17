@@ -1,5 +1,5 @@
 {{- if eq true .Values.firefoxDebug.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "selenium.firefoxDebug.fullname" . }}
@@ -7,6 +7,10 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
   replicas: {{ .Values.firefoxDebug.replicas }}
+  selector:
+    matchLabels:
+       app: {{ template "selenium.firefoxDebug.fullname" . }}
+       release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
@@ -86,7 +90,7 @@ spec:
           resources:
 {{ toYaml .Values.firefoxDebug.resources | indent 12 }}
 {{- if or .Values.global.imagePullSecrets .Values.firefoxDebug.imagePullSecrets }}
-      imagePullSecrets: 
+      imagePullSecrets:
       - name: {{ .Values.firefoxDebug.imagePullSecrets | default .Values.global.imagePullSecrets | quote }}
 {{- end }}
       hostAliases:

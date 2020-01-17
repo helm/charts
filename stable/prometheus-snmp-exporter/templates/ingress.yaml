@@ -5,6 +5,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ template "prometheus-snmp-exporter.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/name: {{ include "prometheus-snmp-exporter.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}

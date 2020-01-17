@@ -11,8 +11,13 @@ agent:
 
   image:
     repository: quay.io/uswitch/kiam
-    tag: v3.2
+    tag: v3.3
     pullPolicy: IfNotPresent
+
+  ## agent whitelist of proxy routes matching this reg-ex
+  ##
+  # whiteListRouteRegexp:
+
 
   ## Logging settings
   ##
@@ -132,7 +137,7 @@ server:
 
   image:
     repository: quay.io/uswitch/kiam
-    tag: v3.2
+    tag: v3.3
     pullPolicy: IfNotPresent
 
   ## Logging settings
@@ -261,6 +266,10 @@ server:
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
+
+psp:
+  # Specifies whether PodSecurityPolicies should be created
+  create: false
 
 serviceAccounts:
   agent:

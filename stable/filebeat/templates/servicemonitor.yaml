@@ -25,6 +25,6 @@ spec:
     - {{ .Release.Namespace }}
   selector:
     matchLabels:
-      app: {{ template "filebeat.name" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ template "filebeat.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}

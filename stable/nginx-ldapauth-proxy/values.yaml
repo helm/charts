@@ -14,6 +14,7 @@ service:
   externalPort: 443
   internalPort: 80
 proxy:
+  protocol: "ldap"
   port: 443
   host: "kubernetes.default.svc.cluster.local"
   authName: "Auth Required"

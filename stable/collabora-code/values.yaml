@@ -61,6 +61,7 @@ livenessProbe:
   periodSeconds: 10
   successThreshold: 1
   failureThreshold: 3
+  scheme: HTTP
 
 readinessProbe:
   enabled: true
@@ -69,3 +70,4 @@ readinessProbe:
   periodSeconds: 10
   successThreshold: 1
   failureThreshold: 3
+  scheme: HTTP

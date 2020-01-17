@@ -3,13 +3,32 @@ rbac:
   pspEnabled: true
   pspUseAppArmor: true
   namespaced: false
+  extraRoleRules: []
+  # - apiGroups: []
+  #   resources: []
+  #   verbs: []
+  extraClusterRoleRules: []
+  # - apiGroups: []
+  #   resources: []
+  #   verbs: []
 serviceAccount:
   create: true
   name:
+  nameTest:
+#  annotations:
 
 replicas: 1
 
-deploymentStrategy: RollingUpdate
+## See `kubectl explain poddisruptionbudget.spec` for more
+## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+podDisruptionBudget: {}
+#  minAvailable: 1
+#  maxUnavailable: 1
+
+## See `kubectl explain deployment.spec.strategy` for more
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+deploymentStrategy:
+  type: RollingUpdate
 
 readinessProbe:
   httpGet:
@@ -24,9 +43,14 @@ livenessProbe:
   timeoutSeconds: 30
   failureThreshold: 10
 
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName: "default-scheduler"
+
 image:
   repository: grafana/grafana
-  tag: 6.2.0
+  tag: 6.5.2
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -37,8 +61,10 @@ image:
   #   - myRegistrKeySecretName
 
 testFramework:
+  enabled: true
   image: "dduportal/bats"
   tag: "0.4.0"
+  securityContext: {}
 
 securityContext:
   runAsUser: 472
@@ -48,6 +74,7 @@ securityContext:
 extraConfigmapMounts: []
   # - name: certs-configmap
   #   mountPath: /etc/grafana/ssl/
+  #   subPath: certificates.crt # (optional)
   #   configMap: certs-configmap
   #   readOnly: true
 
@@ -65,8 +92,16 @@ downloadDashboardsImage:
   tag: latest
   pullPolicy: IfNotPresent
 
+downloadDashboards:
+  env: {}
+
 ## Pod Annotations
 # podAnnotations: {}
+
+## Pod Labels
+# podLabels: {}
+
+podPortName: grafana
 
 ## Deployment annotations
 # annotations: {}
@@ -82,6 +117,7 @@ service:
     # targetPort: 4181 To be used with a proxy extraContainer
   annotations: {}
   labels: {}
+  portName: service
 
 ingress:
   enabled: false
@@ -92,6 +128,12 @@ ingress:
   path: /
   hosts:
     - chart-example.local
+  ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
+  extraPaths: []
+  # - path: /*
+  #   backend:
+  #     serviceName: ssl-redirect
+  #     servicePort: use-annotation
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -143,12 +185,15 @@ extraContainers: |
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistence:
+  type: pvc
   enabled: false
   # storageClassName: default
   accessModes:
     - ReadWriteOnce
   size: 10Gi
   # annotations: {}
+  finalizers:
+    - kubernetes.io/pvc-protection
   # subPath: ""
   # existingClaim:
 
@@ -202,9 +247,23 @@ admin:
 ## Extra environment variables that will be pass onto deployment pods
 env: {}
 
+## "valueFrom" environment variable references that will be added to deployment pods
+## ref: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#envvarsource-v1-core
+## Renders in container spec as:
+##   env:
+##     ...
+##     - name: <key>
+##       valueFrom:
+##         <value rendered as YAML>
+envValueFrom: {}
+
 ## The name of a secret in the same kubernetes namespace which contain values to be added to the environment
 ## This can be useful for auth tokens, etc
 envFromSecret: ""
+
+## Sensible environment variables that will be rendered as new secret object
+## This can be useful for auth tokens, etc
+envRenderSecret: {}
 
 ## Additional grafana server secret mounts
 # Defines additional mounts with secrets. Secrets must be manually created in the namespace.
@@ -340,6 +399,7 @@ grafana.ini:
 ## ref: http://docs.grafana.org/installation/configuration/#auth-ldap
 ## ref: http://docs.grafana.org/installation/ldap/#configuration
 ldap:
+  enabled: false
   # `existingSecret` is a reference to an existing secret containing the ldap configuration
   # for Grafana in a key `ldap-toml`.
   existingSecret: ""
@@ -369,7 +429,7 @@ smtp:
 ## Sidecars that collect the configmaps with specified label and stores the included files them into the respective folders
 ## Requires at least Grafana 5 to work and can't be used together with parameters dashboardProviders, datasources and dashboards
 sidecar:
-  image: kiwigrid/k8s-sidecar:0.0.16
+  image: kiwigrid/k8s-sidecar:0.1.20
   imagePullPolicy: IfNotPresent
   resources: {}
 #   limits:
@@ -382,6 +442,7 @@ sidecar:
   # skipTlsVerify: true
   dashboards:
     enabled: false
+    SCProvider: true
     # label that the configmaps with dashboards are marked with
     label: grafana_dashboard
     # folder in the pod that should hold the collected dashboards (unless `defaultFolderName` is set)
@@ -392,6 +453,20 @@ sidecar:
     # Otherwise the namespace in which the sidecar is running will be used.
     # It's also possible to specify ALL to search in all namespaces
     searchNamespace: null
+    # provider configuration that lets grafana manage the dashboards
+    provider:
+      # name of the provider, should be unique
+      name: sidecarProvider
+      # orgid as configured in grafana
+      orgid: 1
+      # folder in which the dashboards should be imported in grafana
+      folder: ''
+      # type of the provider
+      type: file
+      # disableDelete to activate a import-only behaviour
+      disableDelete: false
+      # allow updating provisioned dashboards from the UI
+      allowUiUpdates: false
   datasources:
     enabled: false
     # label that the configmaps with datasources are marked with
@@ -400,3 +475,7 @@ sidecar:
     # Otherwise the namespace in which the sidecar is running will be used.
     # It's also possible to specify ALL to search in all namespaces
     searchNamespace: null
+
+## Override the deployment namespace
+##
+namespaceOverride: ""

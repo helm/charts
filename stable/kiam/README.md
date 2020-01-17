@@ -2,6 +2,13 @@
 
 Installs [kiam](https://github.com/uswitch/kiam) to integrate AWS IAM with Kubernetes.
 
+## Deprecation Notice
+
+As mentioned in #16664, this chart has been deprecated in favour of the [uSwitch-hosted Helm chart](https://github.com/uswitch/kiam/tree/master/helm/kiam).
+Please open new [issues](https://github.com/uswitch/kiam/issues/new) and pull requests in the [uSwitch repository](https://github.com/uswitch/kiam).
+
+The chart is also available in [Helm Hub](https://hub.helm.sh/charts/uswitch/kiam).
+
 ## TL;DR;
 
 ```console
@@ -95,9 +102,10 @@ Parameter | Description | Default
 `agent.enabled` | If true, create agent | `true`
 `agent.name` | Agent container name | `agent`
 `agent.image.repository` | Agent image | `quay.io/uswitch/kiam`
-`agent.image.tag` | Agent image tag | `v3.2`
+`agent.image.tag` | Agent image tag | `v3.3`
 `agent.image.pullPolicy` | Agent image pull policy | `IfNotPresent`
 `agent.dnsPolicy` | Agent pod DNS policy | `ClusterFirstWithHostNet`
+`agent.whiteListRouteRegexp` | Agent pod whitelist metadata API path argument regex  | `{}`
 `agent.extraArgs` | Additional agent container arguments | `{}`
 `agent.extraEnv` | Additional agent container environment variables | `{}`
 `agent.extraHostPathMounts` | Additional agent container hostPath mounts | `[]`
@@ -129,7 +137,7 @@ Parameter | Description | Default
 `server.name` | Server container name | `server`
 `server.gatewayTimeoutCreation` | Server's timeout when creating the kiam gateway | `50ms`
 `server.image.repository` | Server image | `quay.io/uswitch/kiam`
-`server.image.tag` | Server image tag | `v3.2`
+`server.image.tag` | Server image tag | `v3.3`
 `server.image.pullPolicy` | Server image pull policy | `Always`
 `server.assumeRoleArn` | IAM role for the server to assume before processing requests | `null`
 `server.cache.syncInterval` | Pod cache synchronization interval | `1m`
@@ -162,6 +170,7 @@ Parameter | Description | Default
 `server.updateStrategy` | Strategy for server DaemonSet updates (requires Kubernetes 1.6+) | `OnDelete`
 `server.useHostNetwork` | If true, use hostNetwork on server to bypass agent iptable rules | `false`
 `rbac.create` | If `true`, create & use RBAC resources | `true`
+`psp.create` | If `true`, create Pod Security Policies for the agent and server when enabled | `false`
 `serviceAccounts.agent.create` | If true, create the agent service account | `true`
 `serviceAccounts.agent.name` | Name of the agent service account to use or create | `{{ kiam.agent.fullname }}`
 `serviceAccounts.server.create` | If true, create the server service account | `true`

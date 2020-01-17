@@ -67,7 +67,7 @@ createBucket() {
   # At this point, the bucket should exist, skip checking for existence
   # Set policy on the bucket
   echo "Setting policy of bucket '$BUCKET' to '$POLICY'."
-  /usr/bin/mc policy $POLICY myminio/$BUCKET
+  /usr/bin/mc policy set $POLICY myminio/$BUCKET
 }
 
 # Try connecting to Minio instance

@@ -1,4 +1,5 @@
 {{- if .Values.graylog.ingress.enabled -}}
+{{- $extraPaths := .Values.graylog.ingress.extraPaths -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -20,6 +21,9 @@ spec:
     - host: {{ . }}
       http:
         paths:
+          {{ if $extraPaths }}
+{{ toYaml $extraPaths | indent 10 }}
+          {{- end }}
           - backend:
               serviceName: {{ template "graylog.fullname" $ }}-web
               servicePort: graylog

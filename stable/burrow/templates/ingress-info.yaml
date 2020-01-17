@@ -3,7 +3,7 @@
 {{- $servicePort := $.Values.config.info.ListenPort -}}
 {{- $pathLeader := .Values.info.ingress.pathLeader -}}
 {{- $partialIngress := .Values.info.ingress.partial -}}
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   labels:

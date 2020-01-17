@@ -3,6 +3,7 @@ apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-prometheus
+  namespace: {{ $.Release.Namespace }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-prometheus
 {{ include "prometheus-operator.labels" . | indent 4 }}
@@ -44,4 +45,8 @@ spec:
       - min: 0
         max: 65535
   readOnlyRootFilesystem: false
+{{- if .Values.prometheus.podSecurityPolicy.allowedCapabilities }}
+  allowedCapabilities:
+{{ toYaml .Values.prometheus.podSecurityPolicy.allowedCapabilities | indent 4 }}
+{{- end }}
 {{- end }}

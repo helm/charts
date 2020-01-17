@@ -14,14 +14,16 @@ rules:
   verbs:
   - '*'
 - apiGroups:
-  - {{ .Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com" }}
+  - monitoring.coreos.com
   resources:
   - alertmanagers
   - prometheuses
   - prometheuses/finalizers
   - alertmanagers/finalizers
   - servicemonitors
+  - podmonitors
   - prometheusrules
+  - podmonitors
   verbs:
   - '*'
 - apiGroups:

@@ -5,8 +5,17 @@ dependencies:
 - name: rabbitmq
   repository: https://kubernetes-charts.storage.googleapis.com/
   version: 0.6.16
+- name: rabbitmq-ha
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 1.27.1
 - name: kafka
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
   version: 0.13.11
-digest: sha256:647626620388f5f7fb3f652d53bc215f777e9ddb63fc5ebaeeb12344172f7c46
-generated: 2019-05-16T14:16:46.84520572+02:00
+- name: prometheus
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 9.3.1
+- name: grafana
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 4.0.2
+digest: sha256:67025c3ac98c98e9b1530c00d199217fb74b50202226b36756c213ac0617795d
+generated: "2019-12-06T09:19:02.158505764-05:00"

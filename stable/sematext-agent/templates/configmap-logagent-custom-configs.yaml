@@ -1,0 +1,13 @@
+{{- if .Values.logagent.customConfigs }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "sematext-agent.fullname" . }}-logagent-custom-configs
+  labels:
+    app: {{ template "sematext-agent.name" . }}-logagent
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+{{ toYaml .Values.logagent.customConfigs | indent 2 }}
+{{- end }}

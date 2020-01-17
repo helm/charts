@@ -22,6 +22,14 @@ spec:
 {{- if .Values.serviceMonitor.timeout }}
     scrapeTimeout: {{ .Values.serviceMonitor.timeout }}
 {{- end }}
+{{- if .Values.serviceMonitor.relabelings }}
+    relabelings: 
+{{ toYaml .Values.serviceMonitor.relabelings | indent 6 }}
+{{- end }}
+{{- if .Values.serviceMonitor.metricRelabelings }}
+    metricRelabelings: 
+{{ toYaml .Values.serviceMonitor.metricRelabelings | indent 6 }}
+{{- end }}
   jobLabel: {{ template "prometheus-cloudwatch-exporter.fullname" . }}
   namespaceSelector:
     matchNames:

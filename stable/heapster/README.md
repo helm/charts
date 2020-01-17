@@ -1,3 +1,9 @@
+# Retired
+
+Heapster work has been stopped. All efforts have been moved to metrics-server.
+Metrics server helm chart is located at: https://github.com/helm/charts/tree/master/stable/metrics-server
+More info on: https://github.com/kubernetes-retired/heapster
+
 # Heapster
 
 [Heapster](https://github.com/kubernetes/heapster) enables Container Cluster Monitoring and Performance Analysis. It collects and interprets various signals like compute resource usage, lifecycle events, etc, and exports cluster metrics via REST endpoints.
@@ -33,8 +39,8 @@ The default configuration values for this chart are listed in `values.yaml`.
 
 | Parameter                             | Description                                                  | Default                                           |
 |---------------------------------------|-------------------------------------                         |---------------------------------------------------|
-| `image.repository`                    | Repository for container image                               | k8s.gcr.io/heapster                               |
-| `image.tag`                           | Container image tag                                          | v1.5.2                                            |
+| `image.repository`                    | Repository for container image                               | k8s.gcr.io/heapster-amd64                               |
+| `image.tag`                           | Container image tag                                          | v1.5.4                                            |
 | `image.pullPolicy`                    | Image pull policy                                            | IfNotPresent                                      |
 | `service.name`                        | Service port name                                            | api                                               |
 | `service.type`                        | Type for the service                                         | ClusterIP                                         |

@@ -31,6 +31,11 @@ imageTag: "5.7.17"
 ##
 imagePullPolicy: IfNotPresent
 
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName: "default-scheduler"
+
 ## Persist data to a persistent volume
 persistence:
   enabled: false
@@ -68,3 +73,20 @@ tolerations: []
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 ##
 affinity: {}
+
+## Configure resources for the init container
+##
+initResources: {}
+  # limits:
+  #   cpu: 25m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 25m
+  #   memory 128Mi
+
+## Override image used by init container
+##
+initImage:
+  repository: "busybox"
+  tag: "1.25.0"
+  pullPolicy: "IfNotPresent"

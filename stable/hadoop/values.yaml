@@ -36,6 +36,9 @@ hdfs:
         memory: "2048Mi"
         cpu: "1000m"
 
+  webhdfs:
+    enabled: false
+
 yarn:
   resourceManager:
     pdbMinAvailable: 1

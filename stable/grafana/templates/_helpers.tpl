@@ -41,3 +41,22 @@ Create the name of the service account
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{- define "grafana.serviceAccountNameTest" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (print (include "grafana.fullname" .) "-test") .Values.serviceAccount.nameTest }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.nameTest }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Allow the release namespace to be overridden for multi-namespace deployments in combined charts
+*/}}
+{{- define "grafana.namespace" -}}
+  {{- if .Values.namespaceOverride -}}
+    {{- .Values.namespaceOverride -}}
+  {{- else -}}
+    {{- .Release.Namespace -}}
+  {{- end -}}
+{{- end -}}

@@ -1,11 +1,11 @@
 {{- if .Values.ingress.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "influxdb.fullname" . }}
+  name: "{{ template "influxdb.fullname" . }}"
   labels:
-    app: {{ template "influxdb.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "influxdb.fullname" . }}"
+    chart: "{{ template "influxdb.chart" . }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
   annotations:

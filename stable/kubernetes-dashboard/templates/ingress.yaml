@@ -11,6 +11,9 @@ metadata:
     chart: {{ template "kubernetes-dashboard.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+  {{- range $key, $value := .Values.ingress.labels }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
 {{- if .Values.ingress.annotations }}
   annotations:
 {{ toYaml .Values.ingress.annotations | indent 4 }}

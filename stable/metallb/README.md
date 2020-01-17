@@ -87,6 +87,22 @@ By default, this chart does not install a configuration for MetalLB, and simply
 warns you that you must follow [the configuration instructions on MetalLB's
 website][metallb-config] to create an appropriate ConfigMap.
 
+**Please note:** By default, this chart expects a ConfigMap named
+'metallb-config' within the same namespace as the chart is
+deployed. _This is different than the MetalLB documentation_, which
+asks you to create a ConfigMap in the `metallb-system` namespace, with
+the name of 'config'.
+
+For simple setups that only use MetalLB's [ARP mode][metallb-arpndp-concepts],
+you can specify a single IP range using the `arpAddresses` parameter to have the
+chart install a working configuration for you:
+
+```console
+$ helm install --name metallb \
+  --set arpAddresses=192.168.16.240/30 \
+  stable/metallb
+```
+
 If you have a more complex configuration and want Helm to manage it for you, you
 can provide it in the `config` parameter. The configuration format is
 [documented on MetalLB's website][metallb-config].

@@ -32,3 +32,6 @@ sink: glog
 podAnnotations: {}
 
 containerPorts: []
+
+securityContext: {}
+  # runAsUser: 1000

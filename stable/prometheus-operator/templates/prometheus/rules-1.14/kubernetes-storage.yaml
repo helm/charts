@@ -1,0 +1,61 @@
+# Generated from 'kubernetes-storage' group from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml
+# Do not change in-place! In order to change this file first read following link:
+# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
+{{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
+{{- if and (semverCompare ">=1.14.0-0" $kubeTargetVersion) (semverCompare "<9.9.9-9" $kubeTargetVersion) .Values.defaultRules.create .Values.defaultRules.rules.kubernetesStorage }}
+{{- $targetNamespace := .Values.defaultRules.appNamespacesTarget }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ printf "%s-%s" (include "prometheus-operator.fullname" .) "kubernetes-storage" | trunc 63 | trimSuffix "-" }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "prometheus-operator.name" . }}
+{{ include "prometheus-operator.labels" . | indent 4 }}
+{{- if .Values.defaultRules.labels }}
+{{ toYaml .Values.defaultRules.labels | indent 4 }}
+{{- end }}
+{{- if .Values.defaultRules.annotations }}
+  annotations:
+{{ toYaml .Values.defaultRules.annotations | indent 4 }}
+{{- end }}
+spec:
+  groups:
+  - name: kubernetes-storage
+    rules:
+    - alert: KubePersistentVolumeUsageCritical
+      annotations:
+        message: The PersistentVolume claimed by {{`{{ $labels.persistentvolumeclaim }}`}} in Namespace {{`{{ $labels.namespace }}`}} is only {{`{{ $value | humanizePercentage }}`}} free.
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubepersistentvolumeusagecritical
+      expr: |-
+        kubelet_volume_stats_available_bytes{job="kubelet", namespace=~"{{ $targetNamespace }}", metrics_path="/metrics"}
+          /
+        kubelet_volume_stats_capacity_bytes{job="kubelet", namespace=~"{{ $targetNamespace }}", metrics_path="/metrics"}
+          < 0.03
+      for: 1m
+      labels:
+        severity: critical
+    - alert: KubePersistentVolumeFullInFourDays
+      annotations:
+        message: Based on recent sampling, the PersistentVolume claimed by {{`{{ $labels.persistentvolumeclaim }}`}} in Namespace {{`{{ $labels.namespace }}`}} is expected to fill up within four days. Currently {{`{{ $value | humanizePercentage }}`}} is available.
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubepersistentvolumefullinfourdays
+      expr: |-
+        (
+          kubelet_volume_stats_available_bytes{job="kubelet", namespace=~"{{ $targetNamespace }}", metrics_path="/metrics"}
+            /
+          kubelet_volume_stats_capacity_bytes{job="kubelet", namespace=~"{{ $targetNamespace }}", metrics_path="/metrics"}
+        ) < 0.15
+        and
+        predict_linear(kubelet_volume_stats_available_bytes{job="kubelet", namespace=~"{{ $targetNamespace }}", metrics_path="/metrics"}[6h], 4 * 24 * 3600) < 0
+      for: 1h
+      labels:
+        severity: critical
+    - alert: KubePersistentVolumeErrors
+      annotations:
+        message: The persistent volume {{`{{ $labels.persistentvolume }}`}} has status {{`{{ $labels.phase }}`}}.
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubepersistentvolumeerrors
+      expr: kube_persistentvolume_status_phase{phase=~"Failed|Pending",job="kube-state-metrics"} > 0
+      for: 5m
+      labels:
+        severity: critical
+{{- end }}

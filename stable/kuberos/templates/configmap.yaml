@@ -10,7 +10,7 @@ data:
     current-context: {{ (index .Values.kuberos.clusters 0).name  }}
     clusters:
     {{ range .Values.kuberos.clusters }}
-    - name: {{ .name }}
+    - name: {{ .name | quote }}
       cluster:
         certificate-authority-data: {{ .caCrt | b64enc | quote }}
         server: {{ .apiServer }}

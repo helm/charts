@@ -11,8 +11,37 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 {{- define "mediawiki.fullname" -}}
+{{- if .Values.fullnameOverride -}}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Get the user defined LoadBalancerIP for this release.
+Note, returns 127.0.0.1 if using ClusterIP.
+*/}}
+{{- define "mediawiki.serviceIP" -}}
+{{- if eq .Values.service.type "ClusterIP" -}}
+127.0.0.1
+{{- else -}}
+{{- .Values.service.loadBalancerIP | default "" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Gets the host to be used for this application.
+If not using ClusterIP, or if a host or LoadBalancerIP is not defined, the value will be empty.
+*/}}
+{{- define "mediawiki.host" -}}
+{{- $host := index .Values (printf "%sHost" .Chart.Name) | default "" -}}
+{{- default (include "mediawiki.serviceIP" .) $host -}}
 {{- end -}}
 
 {{/*
@@ -108,5 +137,51 @@ imagePullSecrets:
 {{- range .Values.metrics.image.pullSecrets }}
   - name: {{ . }}
 {{- end }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return  the proper Storage Class
+*/}}
+{{- define "mediawiki.storageClass" -}}
+{{/*
+Helm 2.11 supports the assignment of a value to a variable defined in a different scope,
+but Helm 2.9 and 2.10 does not support it, so we need to implement this if-else logic.
+*/}}
+{{- if .Values.global -}}
+    {{- if .Values.global.storageClass -}}
+        {{- if (eq "-" .Values.global.storageClass) -}}
+            {{- printf "storageClassName: \"\"" -}}
+        {{- else }}
+            {{- printf "storageClassName: %s" .Values.global.storageClass -}}
+        {{- end -}}
+    {{- else -}}
+        {{- if .Values.persistence.storageClass -}}
+              {{- if (eq "-" .Values.persistence.storageClass) -}}
+                  {{- printf "storageClassName: \"\"" -}}
+              {{- else }}
+                  {{- printf "storageClassName: %s" .Values.persistence.storageClass -}}
+              {{- end -}}
+        {{- end -}}
+    {{- end -}}
+{{- else -}}
+    {{- if .Values.persistence.storageClass -}}
+        {{- if (eq "-" .Values.persistence.storageClass) -}}
+            {{- printf "storageClassName: \"\"" -}}
+        {{- else }}
+            {{- printf "storageClassName: %s" .Values.persistence.storageClass -}}
+        {{- end -}}
+    {{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the appropriate apiVersion for deployment.
+*/}}
+{{- define "mediawiki.deployment.apiVersion" -}}
+{{- if semverCompare "<1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "extensions/v1beta1" -}}
+{{- else -}}
+{{- print "apps/v1" -}}
 {{- end -}}
 {{- end -}}

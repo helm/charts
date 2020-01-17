@@ -7,7 +7,7 @@ strategyType: Recreate
 
 image:
   repository: jacobalberty/unifi
-  tag: 5.10.19
+  tag: 5.11.50
   pullPolicy: IfNotPresent
 
 # If enabled, the controller, discovery, GUI, and STUN services will not be
@@ -125,6 +125,7 @@ discoveryService:
 ingress:
   enabled: false
   annotations: {}
+    # nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   path: /
@@ -164,6 +165,43 @@ persistence:
   # existingClaim: your-claim
   accessMode: ReadWriteOnce
   size: 5Gi
+
+extraJvmOpts: []
+  ## Extra java options
+  ## Here are some examples of valid JVM options:
+  ##
+  # - "-XX:MaxMetaspaceSize=256m"
+  # - "-Dlog4j.configurationFile=file:/configmap/log4j2.xml"
+  # - "-Dsystem_ip=1.2.3.4"
+
+extraConfigFiles: {}
+  ## Specify additional config files which are mounted to /configmap
+  ## Here is an example for a custom log4j config:
+  ##
+  # log4j2.xml: |-
+  #   <?xml version="1.0" encoding="UTF-8"?>
+  #   <Configuration>
+  #     <Appenders>
+  #       <InMemoryAppender name="InMemoryAppender" activatedLogging="false">
+  #         <PatternLayout pattern="[%d{ISO8601}] &lt;%t&gt; %-5p %-6c{1} - %m%n" />
+  #       </InMemoryAppender>
+  #       <RollingFile name="server_log" fileName="logs/server.log" filePattern="logs/server.log.%i">
+  #         <PatternLayout pattern="[%d{ISO8601}] &lt;%t&gt; %-5p %-6c{1} - %m%n" />
+  #         <SizeBasedTriggeringPolicy size="10 MB"/>
+  #         <DefaultRolloverStrategy max="3" fileIndex="min" />
+  #       </RollingFile>
+  #       <Console name="STDOUT" target="SYSTEM_OUT">
+  #         <PatternLayout pattern="&lt;%t&gt; %-5p %-6c{1} - %m%n"/>
+  #       </Console>
+  #     </Appenders>
+  #     <Loggers>
+  #       <Root level="INFO">
+  #         <AppenderRef ref="InMemoryAppender" />
+  #         <AppenderRef ref="server_log" />
+  #         <AppenderRef ref="STDOUT" />
+  #       </Root>
+  #     </Loggers>
+  #   </Configuration>
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

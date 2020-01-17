@@ -44,7 +44,8 @@ their default values.
 | `replicaCount`              | k8s replicas                                                                               | `1`             |
 | `updateStrategy`            | update strategy for deployment                                                             | `{}`            |
 | `podAnnotations`            | Annotations for pod                                                                        | `{}`            |
-| `podLabels`                 | Labels for pod       | `{}`            |
+| `podLabels`                 | Labels for pod                                                                             | `{}`            |
+| `podDisruptionBudget`       | Pod disruption budget                                                                      | `{}`            |
 | `resources.limits.cpu`      | Container requested CPU                                                                    | `nil`           |
 | `resources.limits.memory`   | Container requested memory                                                                 | `nil`           |
 | `priorityClassName      `   | priorityClassName                                                                          | `""`            |
@@ -72,6 +73,8 @@ their default values.
 | `ingress.path`              | Ingress service path                                                                       | `/`             |
 | `ingress.hosts`             | Ingress hostnames                                                                          | `[]`            |
 | `ingress.tls`               | Ingress TLS configuration (YAML)                                                           | `[]`            |
+| `extraVolumeMounts`         | Additional volumeMounts to the registry container                                          | `[]`            |
+| `extraVolumes`              | Additional volumes to the pod                                                              | `[]`            |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.
