@@ -51,6 +51,7 @@ rules:
       - daemonsets
       - deployments
       - statefulsets
+      - replicasets
     verbs:
       - get
       - list
@@ -78,9 +79,32 @@ rules:
       - list
       - watch
   - apiGroups:
+    - storage.k8s.io
+    resources:
+      - storageclasses
+      - volumeattachments
+    verbs:
+      - list
+      - watch
+  - apiGroups:
       - certificates.k8s.io
     resources:
       - certificatesigningrequests
+    verbs:
+      - list
+      - watch
+  - apiGroups:
+      - networking.k8s.io
+    resources:
+      - networkpolicies
+    verbs:
+      - list
+      - watch
+  - apiGroups:
+      - admissionregistration.k8s.io
+    resources:
+      - validatingwebhookconfigurations
+      - mutatingwebhookconfigurations
     verbs:
       - list
       - watch

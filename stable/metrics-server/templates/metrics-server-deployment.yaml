@@ -39,6 +39,9 @@ spec:
       hostNetwork: true
 {{- end }}
       containers:
+        {{- if .Values.extraContainers }}
+        {{- ( tpl (toYaml .Values.extraContainers) . ) | nindent 8 }}
+        {{- end }}
         - name: metrics-server
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}

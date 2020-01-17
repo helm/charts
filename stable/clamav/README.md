@@ -32,6 +32,8 @@ The command deploys ClamAV on the Kubernetes cluster in the default configuratio
 
 > **Tip**: List all releases using `helm list`
 
+In order to deploy this chart under Kubernetes 1.9+, the `kubeMeta.deploymentApiVersion` MUST be set to "apps/v1".
+
 ## Uninstalling the Chart
 
 To uninstall/delete the `my-release` deployment:

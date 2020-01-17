@@ -1,0 +1,17 @@
+{{- if .Values.auditLog.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "sysdig.fullname" . }}
+  labels:
+    app: {{ template "sysdig.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  selector:
+    app: {{ template "sysdig.fullname" .}}
+  ports:
+  - protocol: TCP
+    port: {{ .Values.auditLog.auditServerPort }}
+{{- end }}
