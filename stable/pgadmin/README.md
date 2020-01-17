@@ -51,7 +51,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `ingress.hosts` | Ingress accepted hostnames | `nil` |
 | `ingress.tls` | Ingress TLS configuration | `[]` |
 | `ingress.path` | Ingress path mapping | `` |
-| `env.username` | pgAdmin default email | `chart@example.local` |
+| `env.email` | pgAdmin default email | `chart@example.local` |
 | `env.password` | pgAdmin default password | `SuperSecret` |
 | `persistence` | Persistent enabled/disabled | `true` |
 | `persistence.accessMode` | Persistent Access Mode | `ReadWriteOnce` |
