@@ -48,6 +48,16 @@ ingress:
 #     hosts:
 #       - npm.blah.com
 
+# Extra Environment Values - allows yaml definitions
+extraEnvVars:
+#  - name: VALUE_FROM_SECRET
+#    valueFrom:
+#      secretKeyRef:
+#        name: secret_name
+#        key: secret_key
+#  - name: REGULAR_VAR
+#    value: ABC
+
 configMap: |
   # This is the config file used for the docker images.
   # It allows all users to do anything, so don't use it on production systems.
