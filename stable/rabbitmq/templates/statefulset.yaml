@@ -167,14 +167,14 @@ spec:
           failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           successThreshold: {{ .Values.readinessProbe.successThreshold }}
         {{- end }}
-        {{- if and (gt .Values.replicas 1) (.Values.rabbitmq.clustering.rebalance }}
+        {{- if and (gt .Values.replicas 1.0) ( eq .Values.rabbitmq.clustering.rebalance true) }}
         lifecycle:
           postStart:
             exec:
               command:
               - /bin/sh
               - -c
-              - until rabbitmqctl cluster_status > /dev/null; do echo waiting for
+              - until rabbitmqctl cluster_status >/dev/null; do echo Waiting for
                 cluster readiness...; sleep 5 ; done; rabbitmq-queues rebalance "all"
         {{- end }}
         env:
