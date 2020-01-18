@@ -3,6 +3,7 @@
 # https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
 {{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
 {{- if and (semverCompare ">=1.14.0-0" $kubeTargetVersion) (semverCompare "<9.9.9-9" $kubeTargetVersion) .Values.defaultRules.create .Values.defaultRules.rules.kubernetesStorage }}
+{{- $targetNamespace := .Values.defaultRules.appNamespacesTarget }}
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -27,9 +28,9 @@ spec:
         message: The PersistentVolume claimed by {{`{{ $labels.persistentvolumeclaim }}`}} in Namespace {{`{{ $labels.namespace }}`}} is only {{`{{ $value | humanizePercentage }}`}} free.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubepersistentvolumeusagecritical
       expr: |-
-        kubelet_volume_stats_available_bytes{job="kubelet", metrics_path="/metrics"}
+        kubelet_volume_stats_available_bytes{job="kubelet", namespace=~"{{ $targetNamespace }}", metrics_path="/metrics"}
           /
-        kubelet_volume_stats_capacity_bytes{job="kubelet", metrics_path="/metrics"}
+        kubelet_volume_stats_capacity_bytes{job="kubelet", namespace=~"{{ $targetNamespace }}", metrics_path="/metrics"}
           < 0.03
       for: 1m
       labels:
@@ -40,12 +41,12 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubepersistentvolumefullinfourdays
       expr: |-
         (
-          kubelet_volume_stats_available_bytes{job="kubelet", metrics_path="/metrics"}
+          kubelet_volume_stats_available_bytes{job="kubelet", namespace=~"{{ $targetNamespace }}", metrics_path="/metrics"}
             /
-          kubelet_volume_stats_capacity_bytes{job="kubelet", metrics_path="/metrics"}
+          kubelet_volume_stats_capacity_bytes{job="kubelet", namespace=~"{{ $targetNamespace }}", metrics_path="/metrics"}
         ) < 0.15
         and
-        predict_linear(kubelet_volume_stats_available_bytes{job="kubelet", metrics_path="/metrics"}[6h], 4 * 24 * 3600) < 0
+        predict_linear(kubelet_volume_stats_available_bytes{job="kubelet", namespace=~"{{ $targetNamespace }}", metrics_path="/metrics"}[6h], 4 * 24 * 3600) < 0
       for: 1h
       labels:
         severity: critical
