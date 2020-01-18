@@ -1,0 +1,26 @@
+{{ if .Values.enterprise.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+{{- if .Values.service.annotations }}
+  annotations:
+{{ toYaml .Values.service.annotations | indent 4 }}
+{{- end }}
+  name: "{{ template "influxdb.fullname" . }}-meta"
+  labels:
+    app: "{{ template "influxdb.fullname" . }}-meta"
+    chart: "{{ template "influxdb.chart" . }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  type: ClusterIP
+  clusterIP: None
+  # publishNotReadyAddresses is used for service discovery of meta and data nodes by querying the service's SRV record.
+  publishNotReadyAddresses: true
+  ports:
+    - name: meta
+      port: {{ .Values.config.meta.bind_address }}
+      targetPort: {{ .Values.config.meta.bind_address }}
+  selector:
+    app: "{{ template "influxdb.fullname" . }}-meta"
+{{- end }}

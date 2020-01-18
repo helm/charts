@@ -157,7 +157,7 @@ spec:
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
-        - redis-server 
+        - redis-server
         args:
         - /data/conf/redis.conf
         env:
@@ -284,6 +284,9 @@ spec:
     {{- else }}
       storageClassName: "{{ .Values.persistentVolume.storageClass }}"
     {{- end }}
+    {{- end }}
+    {{- if .Values.persistentVolume.reclaimPolicy }}
+    persistentVolumeReclaimPolicy: "{{ .Values.persistentVolume.reclaimPolicy }}"
     {{- end }}
 {{- else if .Values.hostPath.path }}
       - name: data

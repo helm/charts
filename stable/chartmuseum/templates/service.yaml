@@ -17,8 +17,14 @@ metadata:
 {{- end }}
 spec:
   type: {{ .Values.service.type }}
-  {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
+  {{- if (or (eq .Values.service.type "LoadBalancer") (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort)))) }}
   externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy }}
+  {{- end }}
+  {{- if (and (eq .Values.service.type "LoadBalancer") .Values.service.loadBalancerSourceRanges) }}
+  loadBalancerSourceRanges:
+  {{- with .Values.service.loadBalancerSourceRanges }}
+  {{ toYaml . | indent 2 }}
+  {{- end }}
   {{- end }}
   {{- if eq .Values.service.type "ClusterIP" }}
   {{- if .Values.service.clusterIP }}

@@ -38,6 +38,10 @@ authenticate:
     defaultSANList: []
     defaultIPList: []
   replicaCount: 1
+  service:
+    annotations: {}
+  deployment:
+    annotations: {}
 
 
 authorize:
@@ -50,6 +54,10 @@ authorize:
     defaultSANList: []
     defaultIPList: []
   replicaCount: 1
+  service:
+    annotations: {}
+  deployment:
+    annotations: {}
 
 
 proxy:
@@ -65,6 +73,14 @@ proxy:
   authenticateServiceUrl: ""
   authorizeServiceUrl: ""
   authorizeInternalUrl: ""
+  service:
+    annotations: {}
+  deployment:
+    annotations: {}
+
+forwardAuth:
+  nameOverride: ""
+  enabled: false
 
 service:
   # Service type can be set to ClusterIP, NodePort or LoadBalancer.
@@ -134,7 +150,7 @@ imagePullSecrets: ""
 
 image:
   repository: "pomerium/pomerium"
-  tag: "v0.5.1"
+  tag: "v0.5.2"
   pullPolicy: "IfNotPresent"
 
 metrics:
