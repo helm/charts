@@ -4,9 +4,9 @@ kind: Secret
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-prometheus-scrape-confg
   namespace: {{ .Release.Namespace }}
-{{- if .Values.prometheus.prometheusSpec.additionalScrapeConfigsAnnotations }}
+{{- if .Values.prometheus.prometheusSpec.additionalPrometheusSecretsAnnotations }}
   annotations:
-{{ toYaml .Values.prometheus.prometheusSpec.additionalScrapeConfigsAnnotations | indent 4 }}
+{{ toYaml .Values.prometheus.prometheusSpec.additionalPrometheusSecretsAnnotations | indent 4 }}
 {{- end }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-prometheus-scrape-confg

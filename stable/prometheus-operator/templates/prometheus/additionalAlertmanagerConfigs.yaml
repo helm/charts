@@ -4,6 +4,10 @@ kind: Secret
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-prometheus-am-confg
   namespace: {{ $.Release.Namespace }}
+{{- if .Values.prometheus.prometheusSpec.additionalPrometheusSecretsAnnotations }}
+  annotations:
+{{ toYaml .Values.prometheus.prometheusSpec.additionalPrometheusSecretsAnnotations | indent 4 }}
+{{- end }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-prometheus-am-confg
 {{ include "prometheus-operator.labels" . | indent 4 }}
