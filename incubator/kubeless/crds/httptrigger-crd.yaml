@@ -3,7 +3,10 @@ kind: CustomResourceDefinition
 metadata:
   name: httptriggers.kubeless.io
   labels:
-{{ include "labels.standard" . | indent 4 }}
+    app: kubeless
+  annotations:
+    helm.sh/hook: crd-install
+    helm.sh/hook-delete-policy: before-hook-creation
 spec:
   group: kubeless.io
   names:
