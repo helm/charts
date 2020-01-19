@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "percona.fullname" . }}
@@ -8,6 +8,9 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "percona.fullname" . }}
   template:
     metadata:
       labels:
@@ -26,6 +29,19 @@ spec:
         - "rm"
         - "-fr"
         - "/var/lib/mysql/lost+found"
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/mysql
+      - name: "fix-permissions"
+        image: "{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}"
+        imagePullPolicy: {{ .Values.initImage.pullPolicy | quote }}
+        resources:
+{{ toYaml .Values.initResources | indent 10 }}
+        command:
+        - "chown"
+        - "-R"
+        - "999:999"
+        - "/var/lib/mysql"
         volumeMounts:
         - name: data
           mountPath: /var/lib/mysql
