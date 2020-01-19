@@ -11,15 +11,17 @@ metadata:
 {{- if .Values.service.labels }}
 {{ toYaml .Values.service.labels | indent 4 }}
 {{- end }}
-annotations:
-{{- if .Values.authorize.service.annotations }}
- {{- range $key, $value := .Values.authorize.service.annotations }}
-   {{ $key }}: {{ $value | quote }}
- {{- end }}
-{{- else if .Values.service.annotations }}
- {{- range $key, $value := .Values.service.annotations }}
-   {{ $key }}: {{ $value | quote }}
- {{- end }}
+{{- if or .Values.authorize.service.annotations .Values.service.annotations }}
+  annotations:
+  {{- if .Values.authorize.service.annotations }}
+    {{- range $key, $value := .Values.authorize.service.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- else if .Values.service.annotations }}
+    {{- range $key, $value := .Values.service.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
 {{- end }}
 spec:
 {{- if .Values.service.authorize.headless }}
