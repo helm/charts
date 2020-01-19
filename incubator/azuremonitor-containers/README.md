@@ -64,6 +64,12 @@ To uninstall/delete the `myrelease-1` release:
 $ helm del --purge myrelease-1
 
 ```
+## Upgrading an existing Release to a new major version
+
+A major chart version change (like v2.5.0 to v3.0.0)  indicates that there is an incompatible breaking change needing manual actions.
+In chart version v3.0.0, applicable resources are migrated to API version apps/v1 from deprecated API version extensions/v1beta1.
+Because of this change, chart cant upgraded from <=v2.5.0 to >=v3.0.0 and existing chart version has to be uninstall before installing latest version of the chart.
+
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 

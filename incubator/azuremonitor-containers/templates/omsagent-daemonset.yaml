@@ -21,8 +21,7 @@ spec:
   metadata:
    labels:
     component: oms-agent
-    tier: node
-    dsName: "omsagent-ds"
+    tier: node    
    annotations:
     agentVersion: {{ .Values.omsagent.image.tag }}
     dockerProviderVersion: {{ .Values.omsagent.image.dockerProviderVersion }}
