@@ -49,6 +49,12 @@ spec:
             timeoutSeconds: 10
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+          {{- if .Values.persistentVolume.enabled }}
+          volumeMounts:
+            - name: storage-volume
+              mountPath: "{{ .Values.persistentVolume.mountPath }}"
+              subPath: "{{ .Values.persistentVolume.subPath }}"
+          {{- end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}

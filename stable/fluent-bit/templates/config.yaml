@@ -91,6 +91,9 @@ data:
 {{- if .Values.filter.enableExclude }}
         K8S-Logging.Exclude On
 {{- end }}
+{{- if .Values.filter.useJournal }}
+        Use_Journal         On
+{{- end }}
 {{ .Values.extraEntries.filter | indent 8 }}
 
   fluent-bit-output.conf: |
@@ -195,6 +198,9 @@ data:
         Proxy {{ .Values.backend.http.proxy }}
 {{- end }}
         Format {{ .Values.backend.http.format }}
+{{- end }}
+{{- if .Values.backend.http.json_date_format }}
+        json_date_format {{ .Values.backend.http.json_date_format }}
 {{- end }}
 {{- range  .Values.backend.http.headers }}
         Header  {{ . }}

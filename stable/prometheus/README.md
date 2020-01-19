@@ -115,7 +115,7 @@ spec:
 
 You should adjust `prometheus.io/path` based on the URL that your pod serves metrics from.
 `prometheus.io/port` should be set to the port that your pod serves metrics from.
-Note that the values for `prometheus.io/scrape` and `prometheus.io/port` must be 
+Note that the values for `prometheus.io/scrape` and `prometheus.io/port` must be
 enclosed in double quotes.
 
 ## Configuration
@@ -158,6 +158,7 @@ Parameter | Description | Default
 `alertmanager.persistentVolume.volumeBindingMode` | alertmanager data Persistent Volume Binding Mode | `unset`
 `alertmanager.persistentVolume.subPath` | Subdirectory of alertmanager data Persistent Volume to mount | `""`
 `alertmanager.podAnnotations` | annotations to be added to alertmanager pods | `{}`
+`alertmanager.podLabels` | labels to be added to Prometheus AlertManager pods | `{}`
 `alertmanager.podSecurityPolicy.annotations` | Specify pod annotations in the pod security policy | `{}` |
 `alertmanager.replicaCount` | desired number of alertmanager pods | `1`
 `alertmanager.statefulSet.enabled` | If true, use a statefulset instead of a deployment for pod management | `false`
@@ -215,6 +216,7 @@ Parameter | Description | Default
 `kubeStateMetrics.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `kubeStateMetrics.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `kubeStateMetrics.service.servicePort` | kube-state-metrics service port | `80`
+`kubeStateMetrics.service.serviceTelemetryPort` | kube-state-metrics service port for self Telemetry | `81`
 `kubeStateMetrics.service.type` | type of kube-state-metrics service to create | `ClusterIP`
 `nodeExporter.enabled` | If true, create node-exporter | `true`
 `nodeExporter.name` | node-exporter container name | `node-exporter`
@@ -294,6 +296,8 @@ Parameter | Description | Default
 `server.global.scrape_interval` | How frequently to scrape targets by default | `1m`
 `server.global.scrape_timeout` | How long until a scrape request times out | `10s`
 `server.global.evaluation_interval` | How frequently to evaluate rules | `1m`
+`server.remoteWrite` | The remote write feature of Prometheus allow transparently sending samples. | `{}`
+`server.remoteRead` | The remote read feature of Prometheus allow transparently receiving samples. | `{}`
 `server.extraArgs` | Additional Prometheus server container arguments | `{}`
 `server.extraFlags` | Additional Prometheus server container flags | `["web.enable-lifecycle"]`
 `server.extraInitContainers` | Init containers to launch alongside the server | `[]`
