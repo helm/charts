@@ -60,6 +60,11 @@ Read about kubeseal usage on [sealed-secrets docs](https://github.com/bitnami-la
 |**networkPolicy** | Whether to create a network policy that allows access to the service | `false`|
 |**securityContext.runAsUser** | Defines under which user the operator Pod and its containers/processes run | `1001`|
 |**commandArgs** | Set optional command line arguments passed to the controller process | |
+| **ingress.enabled** | Enables Ingress | `false` |
+| **ingress.annotations** | Ingress annotations | `{}` |
+| **ingress.path** | Ingress path | `/v1/cert.pem` |
+| **ingress.hosts** | Ingress accepted hostnames | `["chart-example.local"]` |
+| **ingress.tls** | Ingress TLS configuration | `[]` |
 
 - In the case that **serviceAccount.create** is `false` and **rbac.create** is `true` it is expected for a service account with the name **serviceAccount.name** to exist _in the same namespace as this chart_ before installation.
 - If **serviceAccount.create** is `true` there cannot be an existing service account with the name **serviceAccount.name**.
