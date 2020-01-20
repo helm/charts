@@ -220,7 +220,7 @@ Get the readiness probe command
 {{- else }}
   exec pg_isready -U {{ include "postgresql.username" . | quote }} -h 127.0.0.1 -p {{ template "postgresql.port" . }}
 {{- end }}
-{{- if contains "bitnami/" .Values.images.postgresql.name }}
+{{- if contains "bitnami/" (include "postgresql.registryImage" (dict "image" .Values.images.postgresql "values" .Values)) }}
   [ -f /opt/bitnami/postgresql/tmp/.initialized ] || [ -f /bitnami/postgresql/.initialized ]
 {{- end -}}
 {{- end -}}
@@ -325,11 +325,15 @@ registry address, repository, tag and digest when available.
 */}}
 {{- define "postgresql.imageReference" -}}
 {{- $registry := coalesce .image.registry .values.global.imageRegistry "docker.io" -}}
-{{- $namespace := coalesce .image.namespace .values.imageNamespace .values.global.imageNamespace "library" -}}
+{{- $namespace := include "postgresql.imageNamespace" . -}}
 {{- printf "%s/%s/%s:%s" $registry $namespace .image.name .image.tag -}}
 {{- if .image.digest -}}
 {{- printf "@%s" .image.digest -}}
 {{- end -}}
+{{- end -}}
+
+{{- define "postgresql.imageNamespace" -}}
+{{- printf (coalesce .image.namespace .values.imageNamespace .values.global.imageNamespace "bitnami") -}}
 {{- end -}}
 
 {{/*

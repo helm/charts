@@ -11,7 +11,8 @@ global:
   ##  e.g. docker.io/<namespace>/image-name
   ## ref: https://docs.docker.com/engine/reference/commandline/tag/#extended-description
   ##
-  imageNamespace: ~
+  ## imageNamespace: bitnami
+
   ## Optionally specify a default imagePullPolicy
   ## If unset, defaults to 'Always' if image tag is 'latest', and to 'IfNotPresent' otherwise
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -31,16 +32,16 @@ global:
 ##
 
 ## Override the global.imageRegistry
-imageRegistry: ~
+# imageRegistry: ~
 
 ## Override the global.imageNamespace
-imageNamespace: bitnami
+# imageNamespace: ~
 
 ## Override the global.imagePullPolicy
-imagePullPolicy: "IfNotPresent"
+# imagePullPolicy: "IfNotPresent"
 
 ## Append secrets to the global.imagePullSecrets
-imagePullSecrets: ~
+imagePullSecrets: []
 
 images:
   postgresql:
