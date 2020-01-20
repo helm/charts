@@ -14,13 +14,13 @@ controller:
         pullPolicy: IfNotPresent
     httpTriggerController:
       image:
-        repository: bitnami/http-trigger-controller
-        tag: v1.0.0
+        repository: kubeless/http-trigger-controller
+        tag: v1.0.1
         pullPolicy: IfNotPresent
     cronJobTriggerController:
       image:
-        repository: bitnami/cronjob-trigger-controller
-        tag: v1.0.0
+        repository: kubeless/cronjob-trigger-controller
+        tag: v1.0.1
         pullPolicy: IfNotPresent
   ## Kubeless Controller resource requests and limits
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
