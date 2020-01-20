@@ -3,14 +3,14 @@
 image:
   registry: docker.io
   repository: falcosecurity/falco
-  tag: 0.17.1
+  tag: 0.18.0
   pullPolicy: IfNotPresent
 
 docker:
   enabled: true
   socket: /var/run/docker.sock
 
-cri:
+containerd:
   enabled: true
   socket: /run/containerd/containerd.sock
 
@@ -81,6 +81,14 @@ ebpf:
     # Needed to correctly detect the kernel version for the eBPF program
     # Set to false if not running on Google COS
     mountEtcVolume: true
+
+auditLog:
+  # true here activates the K8s Audit Log feature for Sysdig Secure
+  enabled: false
+
+  dynamicBackend:
+    # true here configures an AuditSink who will receive the K8s audit logs
+    enabled: false
 
 falco:
   # The location of the rules file(s). This can contain one or more paths to
@@ -183,10 +191,9 @@ falco:
   # Audit Events. These config options control the behavior of that
   # webserver. (By default, the webserver is disabled).
   webserver:
-    enabled: false
+    enabled: true
     listenPort: 8765
     k8sAuditEndpoint: /k8s-audit
-    clusterIP:
 
   # Possible additional things you might want to do with program output:
   #   - send to a slack webhook:

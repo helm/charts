@@ -3,6 +3,14 @@
 This file documents all notable changes to Sysdig Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.1.0
+
+### Minor Changes
+
+* Revamp auditLog feature
+* Upgrade to latest version (0.18.0)
+* Replace CRI references with containerD
+
 ## v1.0.12
 
 ### Minor Changes

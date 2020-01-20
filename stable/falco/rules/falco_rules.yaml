@@ -1,7 +1,6 @@
 #
-# Copyright (C) 2016-2018 Draios Inc dba Sysdig.
+# Copyright (C) 2019 The Falco Authors.
 #
-# This file is part of falco.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -71,6 +70,9 @@
 
 - macro: create_symlink
   condition: evt.type in (symlink, symlinkat) and evt.dir=<
+
+- macro: chmod
+  condition: (evt.type in (chmod, fchmod, fchmodat) and evt.dir=<)
 
 # File categories
 - macro: bin_dir
@@ -896,6 +898,9 @@
 - macro: calico_writing_state
   condition: (proc.name=kube-controller and fd.name startswith /status.json and k8s.pod.name startswith calico)
 
+- macro: calico_writing_envvars
+  condition: (proc.name=start_runit and fd.name startswith "/etc/envvars" and container.image.repository endswith "calico/node")
+
 - list: repository_files
   items: [sources.list]
 
@@ -905,12 +910,15 @@
 - macro: access_repositories
   condition: (fd.filename in (repository_files) or fd.directory in (repository_directories))
 
+- macro: modify_repositories
+  condition: (evt.arg.newpath pmatch (repository_directories))
+
 - rule: Update Package Repository
   desc: Detect package repositories get updated
   condition: >
-    open_write and access_repositories and not package_mgmt_procs
+    ((open_write and access_repositories) or (modify and modify_repositories)) and not package_mgmt_procs
   output: >
-    Repository files get updated (user=%user.name command=%proc.cmdline file=%fd.name container_id=%container.id image=%container.image.repository)
+    Repository files get updated (user=%user.name command=%proc.cmdline file=%fd.name newpath=%evt.arg.newpath container_id=%container.id image=%container.image.repository)
   priority:
     NOTICE
   tags: [filesystem, mitre_persistence]
@@ -1246,6 +1254,7 @@
     and not istio_writing_conf
     and not ufw_writing_conf
     and not calico_writing_conf
+    and not calico_writing_envvars
     and not prometheus_conf_writing_conf
     and not openshift_writing_conf
     and not keepalived_writing_conf
@@ -1412,6 +1421,12 @@
   priority: WARNING
   tags: [filesystem, mitre_credential_access, mitre_discovery]
 
+- macro: amazon_linux_running_python_yum
+  condition: >
+    (proc.name = python and
+     proc.pcmdline = "python -m amazon_linux_extras system_motd" and
+     proc.cmdline startswith "python -c import yum;")
+
 # Only let rpm-related programs write to the rpm database
 - rule: Write below rpm database
   desc: an attempt to write to the rpm database by any non-rpm related program
@@ -1421,6 +1436,7 @@
     and not ansible_running_python
     and not python_running_chef
     and not exe_running_docker_save
+    and not amazon_linux_running_python_yum
   output: "Rpm database opened for writing by a non-rpm program (command=%proc.cmdline file=%fd.name parent=%proc.pname pcmdline=%proc.pcmdline container_id=%container.id image=%container.image.repository)"
   priority: ERROR
   tags: [filesystem, software_mgmt, mitre_persistence]
@@ -1738,7 +1754,7 @@
 - list: falco_privileged_images
   items: [
     docker.io/sysdig/agent, docker.io/sysdig/falco, docker.io/sysdig/sysdig,
-    gcr.io/google_containers/kube-proxy, docker.io/calico/node,
+    gcr.io/google_containers/kube-proxy, docker.io/calico/node, quay.io/calico/node,
     docker.io/rook/toolbox, docker.io/cloudnativelabs/kube-router, docker.io/mesosphere/mesos-slave,
     docker.io/docker/ucp-agent, sematext_images, k8s.gcr.io/kube-proxy
     ]
@@ -1775,7 +1791,8 @@
     gcr.io/google_containers/kube-proxy, docker.io/calico/node,
     docker.io/rook/toolbox, docker.io/cloudnativelabs/kube-router, docker.io/consul,
     docker.io/datadog/docker-dd-agent, docker.io/datadog/agent, docker.io/docker/ucp-agent, docker.io/gliderlabs/logspout,
-    docker.io/netdata/netdata, docker.io/google/cadvisor, docker.io/prom/node-exporter
+    docker.io/netdata/netdata, docker.io/google/cadvisor, docker.io/prom/node-exporter,
+    amazon/amazon-ecs-agent
     ]
 
 - macro: falco_sensitive_mount_containers
@@ -2343,7 +2360,8 @@
   condition: (never_true)
 
 - macro: trusted_logging_images
-  condition: (container.image.repository endswith "splunk/fluentd-hec")
+  condition: (container.image.repository endswith "splunk/fluentd-hec" or
+              container.image.repository endswith "fluent/fluentd-kubernetes-daemonset")
 
 - rule: Clear Log Activities
   desc: Detect clearing of critical log files
@@ -2374,29 +2392,61 @@
     WARNING
   tags: [process, mitre_persistence]
 
+- rule: Delete or rename shell history
+  desc: Detect shell history deletion
+  condition: >
+    (modify and (
+      evt.arg.name contains "bash_history" or
+      evt.arg.name contains "zsh_history" or
+      evt.arg.name contains "fish_read_history" or
+      evt.arg.name endswith "fish_history" or
+      evt.arg.oldpath contains "bash_history" or
+      evt.arg.oldpath contains "zsh_history" or
+      evt.arg.oldpath contains "fish_read_history" or
+      evt.arg.oldpath endswith "fish_history" or
+      evt.arg.path contains "bash_history" or
+      evt.arg.path contains "zsh_history" or
+      evt.arg.path contains "fish_read_history" or
+      evt.arg.path endswith "fish_history")) or
+    (open_write and (
+      fd.name contains "bash_history" or
+      fd.name contains "zsh_history" or
+      fd.name contains "fish_read_history" or
+      fd.name endswith "fish_history") and evt.arg.flags contains "O_TRUNC")
+  output: >
+    Shell history had been deleted or renamed (user=%user.name type=%evt.type command=%proc.cmdline fd.name=%fd.name name=%evt.arg.name path=%evt.arg.path oldpath=%evt.arg.oldpath %container.info)
+  priority:
+    WARNING
+  tag: [process, mitre_defense_evation]
+
+# This rule is deprecated and will/should never be triggered. Keep it here for backport compatibility.
+# Rule Delete or rename shell history is the preferred rule to use now.
 - rule: Delete Bash History
   desc: Detect bash history deletion
   condition: >
-    ((spawned_process and proc.name in (shred, rm, mv) and proc.args contains "bash_history") or
+    ((spawned_process and proc.name in (shred, rm, mv) and proc.args contains "bash_history") or 
      (open_write and fd.name contains "bash_history" and evt.arg.flags contains "O_TRUNC"))
   output: >
-    Bash history has been deleted (user=%user.name command=%proc.cmdline file=%fd.name %container.info)
+    Shell history had been deleted or renamed (user=%user.name type=%evt.type command=%proc.cmdline fd.name=%fd.name name=%evt.arg.name path=%evt.arg.path oldpath=%evt.arg.oldpath %container.info)
   priority:
     WARNING
   tag: [process, mitre_defense_evation]
 
 - macro: consider_all_chmods
-  condition: (never_true)
+  condition: (always_true)
+
+- list: user_known_chmod_applications
+  items: []
 
 - rule: Set Setuid or Setgid bit
   desc: >
     When the setuid or setgid bits are set for an application,
     this means that the application will run with the privileges of the owning user or group respectively.
     Detect setuid or setgid bits set via chmod
-  condition: consider_all_chmods and spawned_process and proc.name = "chmod" and (proc.args contains "+s" or proc.args contains "4777")
+  condition: consider_all_chmods and chmod and (evt.arg.mode contains "S_ISUID" or evt.arg.mode contains "S_ISGID") and not proc.cmdline in (user_known_chmod_applications)
   output: >
-    Setuid or setgid bit is set via chmod (user=%user.name command=%proc.cmdline
-    container_id=%container.id container_name=%container.name image=%container.image.repository:%container.image.tag)
+    Setuid or setgid bit is set via chmod (fd=%evt.arg.fd filename=%evt.arg.filename mode=%evt.arg.mode user=%user.name
+    command=%proc.cmdline container_id=%container.id container_name=%container.name image=%container.image.repository:%container.image.tag)
   priority:
     NOTICE
   tag: [process, mitre_persistence]
@@ -2411,12 +2461,14 @@
 - rule: Create Hidden Files or Directories
   desc: Detect hidden files or directories created
   condition: >
-    ((mkdir and consider_hidden_file_creation and evt.arg.path contains "/.") or
-     (open_write and consider_hidden_file_creation and evt.arg.flags contains "O_CREAT" and
-      fd.name contains "/." and not fd.name pmatch (exclude_hidden_directories)))
+    (consider_hidden_file_creation and (
+      (modify and evt.arg.newpath contains "/.") or
+      (mkdir and evt.arg.path contains "/.") or
+      (open_write and evt.arg.flags contains "O_CREAT" and fd.name contains "/." and not fd.name pmatch (exclude_hidden_directories)))
+    )
   output: >
     Hidden file or directory created (user=%user.name command=%proc.cmdline
-    file=%fd.name container_id=%container.id container_name=%container.name image=%container.image.repository:%container.image.tag)
+    file=%fd.name newpath=%evt.arg.newpath container_id=%container.id container_name=%container.name image=%container.image.repository:%container.image.tag)
   priority:
     NOTICE
   tag: [file, mitre_persistence]
@@ -2446,6 +2498,103 @@
     Symlinks created over senstivie files (user=%user.name command=%proc.cmdline target=%evt.arg.target linkpath=%evt.arg.linkpath parent_process=%proc.pname)
   priority: NOTICE
   tags: [file, mitre_exfiltration]
+
+- list: miner_ports
+  items: [
+        25, 3333, 3334, 3335, 3336, 3357, 4444,
+        5555, 5556, 5588, 5730, 6099, 6666, 7777,
+        7778, 8000, 8001, 8008, 8080, 8118, 8333,
+        8888, 8899, 9332, 9999, 14433, 14444,
+        45560, 45700
+    ]
+
+- list: miner_domains
+  items: [
+      "asia1.ethpool.org","ca.minexmr.com",
+      "cn.stratum.slushpool.com","de.minexmr.com",
+      "eth-ar.dwarfpool.com","eth-asia.dwarfpool.com",
+      "eth-asia1.nanopool.org","eth-au.dwarfpool.com",
+      "eth-au1.nanopool.org","eth-br.dwarfpool.com",
+      "eth-cn.dwarfpool.com","eth-cn2.dwarfpool.com",
+      "eth-eu.dwarfpool.com","eth-eu1.nanopool.org",
+      "eth-eu2.nanopool.org","eth-hk.dwarfpool.com",
+      "eth-jp1.nanopool.org","eth-ru.dwarfpool.com",
+      "eth-ru2.dwarfpool.com","eth-sg.dwarfpool.com",
+      "eth-us-east1.nanopool.org","eth-us-west1.nanopool.org",
+      "eth-us.dwarfpool.com","eth-us2.dwarfpool.com",
+      "eu.stratum.slushpool.com","eu1.ethermine.org",
+      "eu1.ethpool.org","fr.minexmr.com",
+      "mine.moneropool.com","mine.xmrpool.net",
+      "pool.minexmr.com","pool.monero.hashvault.pro",
+      "pool.supportxmr.com","sg.minexmr.com",
+      "sg.stratum.slushpool.com","stratum-eth.antpool.com",
+      "stratum-ltc.antpool.com","stratum-zec.antpool.com",
+      "stratum.antpool.com","us-east.stratum.slushpool.com",
+      "us1.ethermine.org","us1.ethpool.org",
+      "us2.ethermine.org","us2.ethpool.org",
+      "xmr-asia1.nanopool.org","xmr-au1.nanopool.org",
+      "xmr-eu1.nanopool.org","xmr-eu2.nanopool.org",
+      "xmr-jp1.nanopool.org","xmr-us-east1.nanopool.org",
+      "xmr-us-west1.nanopool.org","xmr.crypto-pool.fr",
+      "xmr.pool.minergate.com"
+      ]
+
+- list: https_miner_domains
+  items: [
+    "ca.minexmr.com",
+    "cn.stratum.slushpool.com",
+    "de.minexmr.com",
+    "fr.minexmr.com",
+    "mine.moneropool.com",
+    "mine.xmrpool.net",
+    "pool.minexmr.com",
+    "sg.minexmr.com",
+    "stratum-eth.antpool.com",
+    "stratum-ltc.antpool.com",
+    "stratum-zec.antpool.com",
+    "stratum.antpool.com",
+    "xmr.crypto-pool.fr"
+  ]
+
+- list: http_miner_domains
+  items: [
+    "ca.minexmr.com",
+    "de.minexmr.com",
+    "fr.minexmr.com",
+    "mine.moneropool.com",
+    "mine.xmrpool.net",
+    "pool.minexmr.com",
+    "sg.minexmr.com",
+    "xmr.crypto-pool.fr"
+  ]
+
+# Add rule based on crypto mining IOCs
+- macro: minerpool_https
+  condition: (fd.sport="443" and fd.sip.name in (https_miner_domains))
+
+- macro: minerpool_http
+  condition: (fd.sport="80" and fd.sip.name in (http_miner_domains))
+
+- macro: minerpool_other
+  condition: (fd.sport in (miner_ports) and fd.sip.name in (miner_domains))
+
+- macro: net_miner_pool
+  condition: (evt.type in (sendto, sendmsg) and evt.dir=< and ((minerpool_http) or (minerpool_https) or (minerpool_other)))
+
+- rule: Detect outbound connections to common miner pool ports
+  desc: Miners typically connect to miner pools on common ports.
+  condition: net_miner_pool
+  output: Outbound connection to IP/Port flagged by cryptoioc.ch (command=%proc.cmdline port=%fd.rport ip=%fd.rip container=%container.info image=%container.image.repository)
+  priority: CRITICAL
+  tags: [network, mitre_execution]
+
+- rule: Detect crypto miners using the Stratum protocol
+  desc: Miners typically specify the mining pool to connect to with a URI that begins with 'stratum+tcp'
+  condition: spawned_process and proc.cmdline contains "stratum+tcp"
+  output: Possible miner running (command=%proc.cmdline container=%container.info image=%container.image.repository)
+  priority: CRITICAL
+  tags: [process, mitre_execution]
+
 # Application rules have moved to application_rules.yaml. Please look
 # there if you want to enable them by adding to
 # falco_rules.local.yaml.
