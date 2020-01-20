@@ -50,6 +50,7 @@ Parameter | Description | Default
 `podAnnotations` | annotations to be added to pods | `{}`
 `resources` | pod resource requests & limits | `{}`
 `service.annotations` | annotations for the service | `{}`
+`service.externalTrafficPolicy` | externalTrafficPolicy to 'Local' while using AWS LB | `{}`
 `service.clusterIP` | internal cluster service IP | `""`
 `service.externalIPs` | service external IP addresses | `[]`
 `service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
