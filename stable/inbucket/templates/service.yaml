@@ -13,6 +13,7 @@ metadata:
   name: {{ include "inbucket.fullname" . }}
 spec:
   type: "{{ .Values.service.type }}"
+  externalTrafficPolicy: "{{ .Values.service.externalTrafficPolicy }}"
   clusterIP: "{{ .Values.service.clusterIP }}"
 {{- if .Values.service.externalIPs }}
   externalIPs:
