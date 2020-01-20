@@ -6,7 +6,6 @@ metadata:
   name: {{ template "prometheus.nodeExporter.fullname" . }}
   labels:
     {{- include "prometheus.nodeExporter.labels" . | nindent 4 }}
-  namespace: {{ .Release.Namespace }}
 roleRef:
   kind: Role
   name: {{ template "prometheus.nodeExporter.fullname" . }}
@@ -14,6 +13,5 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: {{ template "prometheus.serviceAccountName.nodeExporter" . }}
-  namespace: {{ .Release.Namespace }}
 {{- end }}
 {{- end }}
