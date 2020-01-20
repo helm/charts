@@ -230,6 +230,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheusOperator.tlsProxy.image.pullPolicy` | Image pull policy for the TLS proxy container | `IfNotPresent` |
 | `prometheusOperator.tlsProxy.resources` | Resource requests and limits for the TLS proxy container | `{}` |
 | `prometheusOperator.tolerations` | Tolerations for use with node taints https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/ | `[]` |
+| `prometheusOperator.rbac.limitWriteAccessToNamespaces` | Limit risky operations (write, secrets access and similar) to selected namespaces. This is not compatible with `denyNamespaces` | `false` |
 
 
 ### Prometheus

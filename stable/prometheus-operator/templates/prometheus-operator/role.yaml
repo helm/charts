@@ -1,11 +1,17 @@
-{{- if and .Values.prometheusOperator.enabled .Values.global.rbac.create }}
+{{- if and .Values.prometheusOperator.enabled .Values.global.rbac.create .Values.prometheusOperator.rbac.limitWriteAccessToNamespaces }}
+{{- $ns:= list .Release.Namespace }}
+{{- if .Values.prometheusOperator.namespaces.additonal }}
+{{- $ns = concat $ns .Values.prometheusOperator.namespaces.additonal }}
+{{- end }}
+{{- range $ns }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: {{ template "prometheus-operator.fullname" . }}-operator
+  name: {{ template "prometheus-operator.fullname" $ }}-operator
+  namespace: {{ . }}
   labels:
-    app: {{ template "prometheus-operator.name" . }}-operator
-{{ include "prometheus-operator.labels" . | indent 4 }}
+    app: {{ template "prometheus-operator.name" $ }}-operator
+{{ include "prometheus-operator.labels" $ | indent 4 }}
 rules:
 - apiGroups:
   - apps
@@ -38,4 +44,5 @@ rules:
   - create
   - update
   - delete
+{{- end }}
 {{- end }}

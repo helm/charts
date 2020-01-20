@@ -1011,6 +1011,12 @@ prometheusOperator:
   ##
   denyNamespaces: []
 
+  rbac:
+    ## Limits write access and secrets/configmap access to selected namespaces only.
+    ## This cannot be used with denyNamespaces option
+    ##
+    limitWriteAccessToNamespaces: false
+
   ## Service account for Alertmanager to use.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
   ##

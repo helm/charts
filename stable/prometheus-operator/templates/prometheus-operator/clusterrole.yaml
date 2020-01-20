@@ -26,12 +26,30 @@ rules:
   - podmonitors
   verbs:
   - '*'
+{{- if not .Values.prometheusOperator.rbac.limitWriteAccessToNamespaces }}
+- apiGroups:
+  - apps
+  resources:
+  - statefulsets
+  verbs:
+  - '*'
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - secrets
+  verbs:
+  - '*'
+{{- end }}
 - apiGroups:
   - ""
   resources:
   - pods
   verbs:
   - list
+{{- if not .Values.prometheusOperator.rbac.limitWriteAccessToNamespaces }}
+  - delete
+{{- end }}
 - apiGroups:
   - ""
   resources:
@@ -40,6 +58,11 @@ rules:
   - endpoints
   verbs:
   - get
+{{- if not .Values.prometheusOperator.rbac.limitWriteAccessToNamespaces }}
+  - create
+  - update
+  - delete
+{{- end }}
 - apiGroups:
   - ""
   resources:

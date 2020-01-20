@@ -1,17 +1,24 @@
-{{- if and .Values.prometheusOperator.enabled .Values.global.rbac.create }}
+{{- if and .Values.prometheusOperator.enabled .Values.global.rbac.create .Values.prometheusOperator.rbac.limitWriteAccessToNamespaces }}
+{{- $ns:= list .Release.Namespace }}
+{{- if .Values.prometheusOperator.namespaces.additonal }}
+{{- $ns = concat $ns .Values.prometheusOperator.namespaces.additonal }}
+{{- end }}
+{{- range $ns }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: {{ template "prometheus-operator.fullname" . }}-operator
+  namespace: {{ . }}
+  name: {{ template "prometheus-operator.fullname" $ }}-operator
   labels:
-    app: {{ template "prometheus-operator.name" . }}-operator
-{{ include "prometheus-operator.labels" . | indent 4 }}
+    app: {{ template "prometheus-operator.name" $ }}-operator
+{{ include "prometheus-operator.labels" $ | indent 4 }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: {{ template "prometheus-operator.fullname" . }}-operator
+  name: {{ template "prometheus-operator.fullname" $ }}-operator
 subjects:
 - kind: ServiceAccount
-  name: {{ template "prometheus-operator.operator.serviceAccountName" . }}
+  name: {{ template "prometheus-operator.operator.serviceAccountName" $ }}
   namespace: {{ $.Release.Namespace }}
+{{- end }}
 {{- end }}
