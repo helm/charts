@@ -100,11 +100,18 @@ serviceMonitor:
   ## https://github.com/coreos/prometheus-operator
   ##
   enabled: false
-  labels: {}
-  interval: 30s
-  scrapeTimeout: 30s
-  module: http_2xx
-  # The URL that blackbox will scrape
-  url: http://example.com/healthz
-  # Optional human readable URL that will appear in Prometheus / AlertManager
-  urlHumanReadable:  # www.changemeoriwillfail.com
+
+  # Default values that will be used for all ServiceMonitors created by `targets`
+  defaults:
+    labels: {}
+    interval: 30s
+    scrapeTimeout: 30s
+    module: http_2xx
+
+  targets:
+#    - name: example                    # Human readable URL that will appear in Prometheus / AlertManager
+#      url: http://example.com/healthz  # The URL that blackbox will scrape
+#      labels: {}                       # List of labels for ServiceMonitor. Overrides value set in `defaults`
+#      interval: 60s                    # Scraping interval. Overrides value set in `defaults`
+#      scrapeTimeout: 60s               # Scrape timeout. Overrides value set in `defaults`
+#      module: http_2xx                 # Module used for scraping. Overrides value set in `defaults`
