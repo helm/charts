@@ -201,6 +201,7 @@ scheduler:
   tolerations: []
 
 flower:
+  enabled: true
   ##
   ## Set AIRFLOW__CELERY__FLOWER_URL_PREFIX
   ## Prefix should match Ingress configuration ingress.flower.path
