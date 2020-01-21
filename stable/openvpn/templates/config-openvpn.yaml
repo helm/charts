@@ -202,7 +202,9 @@ data:
       user nobody
       group nogroup
 
+{{ if .Values.openvpn.DEFAULT_ROUTE_ENABLED }}
       push "route NETWORK NETMASK"
+{{ end }}
 {{ if (.Values.openvpn.OVPN_K8S_POD_NETWORK) (.Values.openvpn.OVPN_K8S_POD_SUBNET) }}
       push "route {{ .Values.openvpn.OVPN_K8S_POD_NETWORK }} {{ .Values.openvpn.OVPN_K8S_POD_SUBNET }}"
 {{ end }}
