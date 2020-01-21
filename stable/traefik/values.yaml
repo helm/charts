@@ -399,6 +399,12 @@ gzip:
 traefikLogFormat: json
 accessLogs:
   enabled: false
+  filters: {}
+    # statusCodes:
+    #   - "200"
+    #   - "300-302"
+    # retryAttempts: true
+    # minDuration: "10ms"
   ## Path to the access logs file. If not provided, Traefik defaults it to stdout.
   # filePath: ""
   format: common  # choices are: common, json
