@@ -167,6 +167,16 @@ spec:
           failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           successThreshold: {{ .Values.readinessProbe.successThreshold }}
         {{- end }}
+        {{- if and (gt .Values.replicas 1.0) ( eq .Values.rabbitmq.clustering.rebalance true) }}
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - until rabbitmqctl cluster_status >/dev/null; do echo Waiting for
+                cluster readiness...; sleep 5 ; done; rabbitmq-queues rebalance "all"
+        {{- end }}
         env:
           - name: BITNAMI_DEBUG
             value: {{ ternary "true" "false" .Values.image.debug | quote }}
