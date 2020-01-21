@@ -114,6 +114,9 @@ rabbitmq:
   clustering:
     address_type: hostname
     k8s_domain: cluster.local
+    ## Rebalance master for queues in cluster when new replica is created
+    ## ref: https://www.rabbitmq.com/rabbitmq-queues.8.html#rebalance
+    rebalance: false
 
   loadDefinition:
     enabled: false
@@ -434,6 +437,8 @@ metrics:
     # relabellings:
     ## Specify honorLabels parameter to add the scrape endpoint
     honorLabels: false
+    ## Specify the release for ServiceMonitor. Sometimes it should be custom for prometheus operator to work
+    # release: ""
     ## Used to pass Labels that are used by the Prometheus installed in your cluster to select Service Monitors to work with
     ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
     additionalLabels: {}
