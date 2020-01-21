@@ -89,6 +89,9 @@ alertmanager:
   ##
   configFileName: alertmanager.yml
 
+  # Optionally customize the pod dnsConfig.
+  dnsConfig: {}
+
   ingress:
     ## If true, alertmanager Ingress will be created
     ##

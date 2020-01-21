@@ -26,6 +26,10 @@ spec:
         {{ toYaml .Values.alertmanager.podLabels | nindent 8 }}
         {{- end}}
     spec:
+{{- if .Values.alertmanager.dnsConfig }}
+      dnsConfig:
+{{ toYaml .Values.alertmanager.dnsConfig | indent 8 }}
+{{- end }}
 {{- if .Values.alertmanager.schedulerName }}
       schedulerName: "{{ .Values.alertmanager.schedulerName }}"
 {{- end }}
