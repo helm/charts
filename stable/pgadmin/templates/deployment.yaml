@@ -38,14 +38,14 @@ spec:
         {{- if .Values.livenessProbe }}
           livenessProbe:
             httpGet:
-              path: /login?next=%2F
+              path: /misc/ping
               port: 80
             {{- .Values.livenessProbe | toYaml | nindent 12 }}
         {{- end }}
         {{- if .Values.readinessProbe }}
           readinessProbe:
             httpGet:
-              path: /login?next=%2F
+              path: /misc/ping
               port: 80
             {{- .Values.readinessProbe | toYaml | nindent 12 }}
         {{- end }}
