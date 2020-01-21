@@ -13,11 +13,11 @@ metadata:
 spec:
   accessModes:
     {{- .Values.persistentVolume.accessModes | toYaml | nindent 4 }}
-{{- if .Values.persistentVolume.storageClassName }}
-{{- if (eq "-" .Values.persistentVolume.storageClassName) }}
+{{- if .Values.persistentVolume.storageClass }}
+{{- if (eq "-" .Values.persistentVolume.storageClass) }}
   storageClassName: ""
 {{- else }}
-  storageClassName: "{{ .Values.persistentVolume.storageClassName }}"
+  storageClassName: "{{ .Values.persistentVolume.storageClass }}"
 {{- end }}
 {{- end }}
   resources:
