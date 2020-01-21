@@ -1,6 +1,7 @@
 ## Default values for Traefik
 image: traefik
 imageTag: 1.7.20
+imagePullPolicy: IfNotPresent
 
 ## Optionally specify an array of imagePullSecrets.
 ## Secrets must be manually created in the namespace.
