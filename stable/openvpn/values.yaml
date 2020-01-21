@@ -83,6 +83,8 @@ openvpn:
   # OVPN_K8S_SVC_NETWORK:
   # Kubernetes service network subnet (optional).
   # OVPN_K8S_SVC_SUBNET:
+  # Set default route which openvpn figures basing on network routes inside openvpn pod
+  DEFAULT_ROUTE_ENABLED: true
   # Server certificate data
   # keystoreSecret:
   # secret with openvpn certificates. If specified, certificates are taken from the secret
