@@ -436,6 +436,20 @@ configJob:
   hookWeight: "0"
   hookDeletePolicy: "before-hook-creation,hook-succeeded"
 
+  # Tolerations for nodes that have taints on them.
+  # Useful if you want to dedicate nodes to just run kafka
+  # https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: []
+
+  ## Pod scheduling preferences (by default keep pods within a release on separate nodes).
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ## By default we don't set affinity:
+  affinity: {}
+
+  ## Node labels for pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  nodeSelector: {}
+
 ## Topic creation and configuration.
 ## The job will be run on a deployment only when the config has been changed.
 ## - If 'partitions' and 'replicationFactor' are specified we create the topic (with --if-not-exists.)
