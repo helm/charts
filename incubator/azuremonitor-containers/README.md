@@ -56,8 +56,8 @@ $ helm install --name myrelease-1 \
 
 ## Upgrading an existing Release to a new version
 
-If the previous version of the chart installed with Helm2, it can be upgraded successfully to current version using Helm2. 
-But, if the previous version of chart installed  with the helm3 or release migrated to Helm3, then chart can’t be upgraded to latest version due to issues in Helm3 with regards to upgrading the existing release to new version, as described in [github helm issue #6850](https://github.com/helm/helm/issues/6850)
+If the previous version of the chart installed with Helm2, it can be upgraded successfully to current version using Helm2.
+But, if the previous version of chart installed  with the Helm3 or release migrated to Helm3,then chart can’t be upgraded to latest version due to issues in Helm3 with regards to upgrading the existing release to new version, as described in [Helm issue #6850](https://github.com/helm/helm/issues/6850)
 
 ## Uninstalling the Chart
 
@@ -90,8 +90,6 @@ The following table lists the configurable parameters of the MSOMS chart and the
 
 - Parameter `omsagent.env.doNotCollectKubeSystemLogs` has been removed starting chart version 1.0.0. Refer to 'Agent data collection settings' section below to configure it using configmap.
 - onboarding of multiple clusters with the same cluster name to same log analytics workspace not supported. If need this configuration, use the cluster FQDN name rather than cluster dns prefix to avoid collision with clusterName
-
-
 
 ## Agent data collection settings
 
