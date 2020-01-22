@@ -6,4 +6,3 @@ clusterAgent:
 
     service:
       port: 4443
-
