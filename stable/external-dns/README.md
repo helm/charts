@@ -75,6 +75,7 @@ The following table lists the configurable parameters of the external-dns chart 
 | `aws.batchChangeSize`               | When using the AWS provider, set the maximum number of changes that will be applied in each batch        | `1000`                                                      |
 | `aws.zoneTags`                      | When using the AWS provider, filter for zones with these tags                                            | `[]`                                                        |
 | `aws.preferCNAME`                   | When using the AWS provider, replaces Alias recors with CNAME (options: true, false)                     | `[]`                                                        |
+| `aws.evaluateTargetHealth           | When using the AWS provider, sets the evaluate target health flag (options: true, false)                 | `[true, false]`                                             |
 | `azure.secretName`                  | When using the Azure provider, set the secret containing the `azure.json` file                           | `""`                                                        |
 | `azure.cloud`                       | When using the Azure provider, set the Azure Clound                                                      | `""`                                                        |
 | `azure.resourceGroup`               | When using the Azure provider, set the Azure Resource Group                                              | `""`                                                        |
