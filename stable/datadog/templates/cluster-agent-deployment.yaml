@@ -152,7 +152,7 @@ spec:
 {{- else if .Values.clusterAgent.metricsProvider.enabled }}
         livenessProbe:
           httpGet:
-            port: 443
+            port: {{ .Values.clusterAgent.metricsProvider.service.port }}
             path: /healthz
             scheme: HTTPS
 {{- end }}
@@ -162,7 +162,7 @@ spec:
 {{- else if .Values.clusterAgent.metricsProvider.enabled}}
         readinessProbe:
           httpGet:
-            port: 443
+            port: {{ .Values.clusterAgent.metricsProvider.service.port }}
             path: /healthz
             scheme: HTTPS
 {{- end }}
