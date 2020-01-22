@@ -8,7 +8,7 @@ metadata:
   {{- include "kafka.config.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": {{ .Values.configJob.hook }}
-    "helm.sh/hook-weight": {{ .Values.configJob.hookWeight }}
+    "helm.sh/hook-weight": {{ .Values.configJob.hookWeight | quote }}
     "helm.sh/hook-delete-policy":  {{ .Values.configJob.hookDeletePolicy }}
 spec:
   backoffLimit: {{ .Values.configJob.backoffLimit }}
