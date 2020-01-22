@@ -1,6 +1,6 @@
 {{- if not .Values.replicaSet.enabled }}
 apiVersion: apps/v1
-kind: Deployment
+kind: {{ if .Values.useStatefulSet }}{{ "StatefulSet" }}{{- else }}{{ "Deployment" }}{{- end }}
 metadata:
   name: {{ template "mongodb.fullname" . }}
   labels:
@@ -256,12 +256,14 @@ spec:
           name: {{ .Values.initConfigMap.name }}
       {{- end }}
       - name: data
+      {{- if not .Values.useStatefulSet }}
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
           claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "mongodb.fullname" . }}{{- end }}
 
       {{- else }}
         emptyDir: {}
+      {{- end -}}
       {{- end -}}
       {{- if .Values.configmap }}
       - name: config
@@ -271,4 +273,27 @@ spec:
       {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 6}}
       {{- end }}
+{{- if .Values.useStatefulSet }}
+{{- if .Values.persistence.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        annotations:
+        {{- range $key, $value := .Values.persistence.annotations }}
+          {{ $key }}: "{{ $value }}"
+        {{- end }}
+      spec:
+        accessModes:
+        {{- range .Values.persistence.accessModes }}
+          - {{ . | quote }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size | quote }}
+        {{ include "mongodb.storageClass" . }}
+{{- else }}
+        - name: data
+          emptyDir: {}
+{{- end }}
+{{- end }}
 {{- end -}}

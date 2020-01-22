@@ -4,7 +4,9 @@ Congratulations. You have just deployed Apache Airflow
 URL to Airflow and Flower:
 
     - Web UI: http://{{ .Values.ingress.web.host }}{{ .Values.ingress.web.path }}/
+{{- if .Values.flower.enabled }}
     - Flower: http://{{ .Values.ingress.flower.host }}{{ .Values.ingress.flower.path }}/
+{{- end }}
 
 {{- else if contains "NodePort" .Values.airflow.service.type }}
 
