@@ -71,6 +71,26 @@ spec:
           containerPort: {{ .Values.ports.grpc.containerPort }}
           protocol: TCP
         {{- end }}
+{{- if and (not .Values.https) .Values.livenessProbe.enabled }}
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.livenessProbe.httpPath }}
+            port: {{ if .Values.https }}https{{ else }}http{{ end }}
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+{{- end }}
+{{- if and (not .Values.https) .Values.readinessProbe.enabled }}
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.readinessProbe.httpPath }}
+            port: {{ if .Values.https }}https{{ else }}http{{ end }}
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+{{- end }}
         env:
 {{ toYaml .Values.env | indent 10 }}
         volumeMounts:

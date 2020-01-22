@@ -52,6 +52,22 @@ ports:
     nodePort: 35000
     servicePort: 35000
 
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 1
+  failureThreshold: 1
+  httpPath: "/healthz"
+  periodSeconds: 10
+  timeoutSeconds: 1
+
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 1
+  failureThreshold: 1
+  httpPath: "/healthz"
+  periodSeconds: 10
+  timeoutSeconds: 1
+
 service:
   type: ClusterIP
   # Override IP for the Service Type: LoadBalancer.
