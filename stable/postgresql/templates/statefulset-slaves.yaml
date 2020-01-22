@@ -43,7 +43,7 @@ spec:
       {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
       {{- end }}
-{{- include "postgresql.imagePullSecrets" . | indent 6 }}
+      {{- include "postgresql.imagePullSecrets" . | indent 6 -}}
       {{- if .Values.slave.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.slave.nodeSelector | indent 8 }}
@@ -70,7 +70,7 @@ spec:
       initContainers:
       {{- if or (and .Values.volumePermissions.enabled .Values.persistence.enabled) .Values.shmVolume.enabled }}
         - name: init-chmod-data
-{{ include "postgresql.registryImage" (dict "image" .Values.images.volumePermissions "values" .Values) | indent 10 }}
+          {{- include "postgresql.registryImage" (dict "image" .Values.images.volumePermissions "values" .Values) | nindent 10 }}
           {{- if .Values.resources }}
           resources: {{- toYaml .Values.resources | nindent 12 }}
           {{- end }}
@@ -114,7 +114,7 @@ spec:
       {{- end }}
       containers:
         - name: {{ template "postgresql.fullname" . }}
-{{ include "postgresql.registryImage" (dict "image" .Values.images.postgresql "values" .Values) | indent 10 }}
+          {{- include "postgresql.registryImage" (dict "image" .Values.images.postgresql "values" .Values) | nindent 10 }}
           {{- if .Values.resources }}
           resources: {{- toYaml .Values.resources | nindent 12 }}
           {{- end }}
