@@ -15,13 +15,11 @@ spec:
   type: RollingUpdate
  selector:
    matchLabels:
-     component: oms-agent
-     tier: node 
+     dsName: "omsagent-ds"
  template:
   metadata:
    labels:
-    component: oms-agent
-    tier: node    
+    dsName: "omsagent-ds"
    annotations:
     agentVersion: {{ .Values.omsagent.image.tag }}
     dockerProviderVersion: {{ .Values.omsagent.image.dockerProviderVersion }}
