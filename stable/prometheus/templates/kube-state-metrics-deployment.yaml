@@ -43,6 +43,8 @@ spec:
           ports:
             - name: metrics
               containerPort: 8080
+            - name: telemetry
+              containerPort: 8081
           resources:
 {{ toYaml .Values.kubeStateMetrics.resources | indent 12 }}
     {{- if .Values.imagePullSecrets }}

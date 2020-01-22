@@ -57,8 +57,26 @@ spec:
         {{- if .Values.dryRun }}
         - --dry-run
         {{- end }}
+        {{- if .Values.namespace }}
+        - --namespace={{ .Values.namespace }}
+        {{- end }}
+        {{- if .Values.fqdnTemplates }}
+        - --fqdn-template={{ join "," .Values.fqdnTemplates }}{{/* Explicitly wants comma separated list */}}
+        {{- end }}
+        {{- if .Values.combineFQDNAnnotation }}
+        - --combine-fqdn-annotation
+        {{- end }}
+        {{- if and .Values.ignoreHostnameAnnotation .Values.fqdnTemplates }}
+        - --ignore-hostname-annotation
+        {{- end }}
         {{- if .Values.publishInternalServices }}
         - --publish-internal-services
+        {{- end }}
+        {{- if .Values.publishHostIP }}
+        - --publish-host-ip
+        {{- end }}
+        {{- range .Values.serviceTypeFilter }}
+        - --service-type-filter={{ . }}
         {{- end }}
         {{- range .Values.domainFilters }}
         - --domain-filter={{ . }}
@@ -111,6 +129,9 @@ spec:
         {{- if .Values.aws.preferCNAME }}
         - --aws-prefer-cname
         {{- end }}
+        {{- if .Values.aws.evaluateTargetHealth }}
+        - --aws-evaluate-target-health={{ . }}
+        {{- end }}        
         # Azure Arguments
         {{- if eq .Values.provider "azure" }}
         {{- if .Values.azure.resourceGroup }}
@@ -222,11 +243,13 @@ spec:
         {{- end }}
         # DigitalOcean environment variables
         {{- if eq .Values.provider "digitalocean" }}
+        {{- if .Values.digitalocean.apiToken }}
         - name: DO_TOKEN
           valueFrom:
             secretKeyRef:
               name: {{ template "external-dns.fullname" . }}
               key: digitalocean_api_token
+        {{- end }}
         {{- end }}
         # Google environment variables
         {{- if eq .Values.provider "google" }}

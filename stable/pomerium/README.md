@@ -69,18 +69,20 @@ The command removes nearly all the Kubernetes components associated with the cha
 
 In default configuration, this chart will automatically generate TLS certificates in a helm `pre-install` hook for the Pomerium services to communicate with.
 
-Upon delete, you will need to manually delete the generated secrets.  Example:
+Upon delete, you will need to manually delete the generated secrets. Example:
 
 ```console
 kubectl delete secret -l app.kubernetes.io/name=pomerium
 ```
 
-You may force recreation of your TLS certificates by setting `config.forceGenerateTLS` to `true`.  Delete any existing TLS secrets first to prevent errors, and  make sure you set back to `false` for your next helm upgrade command or your deployment will fail due to existing Secrets.
+You may force recreation of your TLS certificates by setting `config.forceGenerateTLS` to `true`. Delete any existing TLS secrets first to prevent errors, and make sure you set back to `false` for your next helm upgrade command or your deployment will fail due to existing Secrets.
 
 ### Self Provisioned
+
 If you wish to provide your own TLS certificates in secrets, you should:
-1) turn `generateTLS` to `false`
-2) specify `authenticate.existingTLSSecret`, `authorize.existingTLSSecret`, and `proxy.existingTLSSecret`, pointing at the appropriate TLS certificate for each service.
+
+1. turn `generateTLS` to `false`
+2. specify `authenticate.existingTLSSecret`, `authorize.existingTLSSecret`, and `proxy.existingTLSSecret`, pointing at the appropriate TLS certificate for each service.
 
 All services can share the secret if appropriate.
 
@@ -89,7 +91,7 @@ All services can share the secret if appropriate.
 A full listing of Pomerium's configuration variables can be found on the [config reference page](https://www.pomerium.io/docs/reference/reference.html).
 
 | Parameter                           | Description                                                                                                                                                                                                   | Default                                                                               |
-|-------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
 | `nameOverride`                      | Name of the chart.                                                                                                                                                                                            | `pomerium`                                                                            |
 | `fullnameOverride`                  | Full name of the chart.                                                                                                                                                                                       | `pomerium`                                                                            |
 | `config.rootDomain`                 | Root Domain specifies the sub-domain handled by pomerium. [See more](https://www.pomerium.io/docs/reference/reference.html#proxy-root-domains).                                                               | `corp.pomerium.io`                                                                    |
@@ -113,18 +115,26 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `authenticate.idp.serviceAccount`   | Identity Provider [service account](https://www.pomerium.io/docs/reference/reference.html#identity-provider-service-account).                                                                                 | Optional                                                                              |
 | `authenticate.replicaCount`         | Number of Authenticate pods to run                                                                                                                                                                            | `1`                                                                                   |
 | `authenticate.existingTLSSecret`    | Name of existing TLS Secret for authenticate service                                                                                                                                                          |                                                                                       |
+| `authenticate.deployment.annotations` | Annotations for the authenticate deployment. If none given, then use value of `annotations`                                                                                                                 | `{}`                                                                                  |
+| `authenticate.service.annotations` | Annotations for the authenticate service. If none given, then use value of `service.annotations`                                                                                                               | `{}`                                                                                  |
 | `proxy.nameOverride`                | Name of the proxy service.                                                                                                                                                                                    | `proxy`                                                                               |
 | `proxy.fullnameOverride`            | Full name of the proxy service.                                                                                                                                                                               | `proxy`                                                                               |
 | `proxy.authenticateServiceUrl`      | The externally accessible url for the authenticate service.                                                                                                                                                   | `https://{{authenticate.name}}.{{config.rootDomain}}`                                 |
 | `proxy.authorizeServiceUrl`         | The externally accessible url for the authorize service.                                                                                                                                                      | `https://{{authorize.name}}.{{config.rootDomain}}`                                    |
 | `proxy.replicaCount`                | Number of Proxy pods to run                                                                                                                                                                                   | `1`                                                                                   |
 | `proxy.existingTLSSecret`           | Name of existing TLS Secret for proxy service                                                                                                                                                                 |                                                                                       |
+| `proxy.deployment.annotations`      | Annotations for the proxy deployment. If none given, then use value of `annotations`                                                                                                                          | `{}`                                                                                  |
+| `proxy.service.annotations`         | Annotations for the proxy service. If none given, then use value of `service.annotations`                                                                                                                     | `{}`                                                                                  |
 | `authorize.nameOverride`            | Name of the authorize service.                                                                                                                                                                                | `authorize`                                                                           |
 | `authorize.fullnameOverride`        | Full name of the authorize service.                                                                                                                                                                           | `authorize`                                                                           |
 | `authorize.replicaCount`            | Number of Authorize pods to run                                                                                                                                                                               | `1`                                                                                   |
 | `authorize.existingTLSSecret`       | Name of existing TLS Secret for authorize service                                                                                                                                                             |                                                                                       |
+| `forwardAuth.nameOverride`          | External name of the forward-auth endpoint                                                                                                                                                                                                                                                           | `forwardauth.${rootDomain}`                                                           |
+| `forwardAuth.enabled`               | Enable forward-auth endpoint for third party ingress controllers to use for auth checks.  Setting this disables automatic enumeration of `from` hostnames in the Pomerium Ingress object to prevent conflicts.  Use `ingress.hosts` to mix forward-auth and proxy mode on a single Pomerium instance | `false`                                                                               |
+| `authorize.deployment.annotations`  | Annotations for the authorize deployment. If none given, then use value of `annotations`                                                                                                                      | `{}`                                                                                  |
+| `authorize.service.annotations`     | Annotations for the authorize service. If none given, then use value of `service.annotations`                                                                                                                 | `{}`                                                                                  |
 | `images.server.repository`          | Pomerium image                                                                                                                                                                                                | `pomerium/pomerium`                                                                   |
-| `images.server.tag`                 | Pomerium image tag                                                                                                                                                                                            | `v0.4.2`                                                                              |
+| `images.server.tag`                 | Pomerium image tag                                                                                                                                                                                            | `v0.5.2`                                                                              |
 | `images.server.pullPolicy`          | Pomerium image pull policy                                                                                                                                                                                    | `IfNotPresent`                                                                        |
 | `service.annotations`               | Service annotations                                                                                                                                                                                           | `{}`                                                                                  |
 | `service.externalPort`              | Pomerium's port                                                                                                                                                                                               | `443`                                                                                 |
@@ -138,7 +148,7 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `tracing.provider`                  | Specifies the tracing provider to configure (Valid options: Jaeger)                                                                                                                                           | Required                                                                              |
 | `tracing.jaeger.collector_endpoint` | The jaeger collector endpoint                                                                                                                                                                                 | Required                                                                              |
 | `tracing.jaeger.agent_endpoint`     | The jaeger agent endpoint                                                                                                                                                                                     | Required                                                                              |
-| `ingress.enabled`                   | Enables Ingress for pomerium                                                                                                                                                                                  | `false`                                                                               |
+| `ingress.enabled`                   | Enables Ingress for pomerium                                                                                                                                                                                  | `true`                                                                               |
 | `ingress.annotations`               | Ingress annotations                                                                                                                                                                                           | `{}`                                                                                  |
 | `ingress.hosts`                     | Ingress accepted hostnames                                                                                                                                                                                    | `[]`                                                                                  |
 | `ingress.tls`                       | Ingress TLS configuration                                                                                                                                                                                     | `[]`                                                                                  |
@@ -149,22 +159,25 @@ A full listing of Pomerium's configuration variables can be found on the [config
 ## Changelog
 
 ### 4.0.0
+
 - Upgrade to Pomerium v0.4.0
 - Handle breaking changes from Pomerium
 
 ### 3.0.0
+
 - Refactor TLS certificates to use Kubernetes TLS secrets
 - Generate TLS certificates in a hook to prevent certificate churn
 
 ### 2.0.0
 
 - Expose replica count for individual services
-- Switch Authorize service to CluserIP for client side load balancing
+- Switch Authorize service to ClusterIP for client side load balancing
   - You must run pomerium v0.3.0+ to support this feature correctly
 
 ## Upgrading
 
 ### 4.0.0
+
 - There are no user facing changes in this chart release
 - See [Pomerium Changelog](https://www.pomerium.io/docs/upgrading.html#since-0-3-0) for internal details
 
@@ -186,14 +199,15 @@ A full listing of Pomerium's configuration variables can be found on the [config
     - [Move and convert your certificates](scripts/upgrade-v3.0.0.sh) to type TLS Secrets and configure `[service].existingTLSSecret` to point to your secrets
     - **OR:** To continue using your certificates from the existing config, set `config.existingLegacyTLSSecret` to `true`
 
-****
+---
+
 ### 2.0.0
 
 - You will need to run `helm upgrade --force` to recreate the authorize service correctly
 
 ## Metrics Discovery Configuration
 
-This chart provices two ways to surface metrics for discovery.  Under normal circumstances, you will only set up one method.
+This chart provides two ways to surface metrics for discovery. Under normal circumstances, you will only set up one method.
 
 ### Prometheus Operator
 
@@ -209,15 +223,14 @@ serviceMonitor:
   enabled: true
   labels:
     release: prometheus # default
-
 ```
 
 Example ServiceMonitor configuration:
 
 ```yaml
-    serviceMonitorSelector:
-      matchLabels:
-        release: prometheus # operator chart default
+serviceMonitorSelector:
+  matchLabels:
+    release: prometheus # operator chart default
 ```
 
 ### Prometheus kubernetes_sd_configs
@@ -235,6 +248,7 @@ service:
 ```
 
 Example prometheus discovery config:
+
 ```yaml
 - job_name: 'pomerium'
 metrics_path: /metrics

@@ -85,6 +85,10 @@ spec:
                   name: {{ printf "%s-%s" .Release.Name "app" }}
                   key: app-key
           {{- end }}
+          {{- range $key, $value := .Values.env }}
+            - name: {{ $key | upper | replace "." "_" }}
+              value: {{ $value | quote }}
+          {{- end }}
           volumeMounts:
           - name: uploads
             mountPath: /var/www/bookstack/public/uploads

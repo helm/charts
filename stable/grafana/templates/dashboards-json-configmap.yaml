@@ -5,7 +5,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "grafana.fullname" $ }}-dashboards-{{ $provider }}
-  namespace: {{ $.Release.Namespace }}
+  namespace: {{ template "grafana.namespace" $ }}
   labels:
     app: {{ template "grafana.name" $ }}
     chart: {{ template "grafana.chart" $ }}

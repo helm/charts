@@ -1,0 +1,28 @@
+# CI test for testing dbless deployment without ingress controllers
+# - disable ingress controller
+ingressController:
+  enabled: false
+# - disable DB for kong
+env:
+  database: "off"
+postgresql:
+  enabled: false
+# - supply DBless config for kong
+dblessConfig:
+  # Or the configuration is passed in full-text below
+  config:
+    _format_version: "1.1"
+    services:
+      - name: test-svc
+        url: http://example.com
+        routes:
+        - name: test
+          paths:
+          - /test
+        plugins:
+        - name: request-termination
+          config:
+            status_code: 200
+            message: "dbless-config"
+proxy:
+  type: NodePort
