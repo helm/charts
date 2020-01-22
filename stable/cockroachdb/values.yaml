@@ -322,7 +322,7 @@ tls:
     # Bring your own certs scenario. If provided tls.init section will be ignored
     provided: no
     clientRootSecret: "cockroachdb-root"
-    # Secret name for the client root cert 
+    # Secret name for the client root cert
     nodeSecret: "cockroachdb-node"
     # Secret name for node cert
   init:
