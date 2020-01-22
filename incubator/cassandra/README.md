@@ -99,7 +99,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 | Parameter                  | Description                                     | Default                                                    |
 | -----------------------    | ---------------------------------------------   | ---------------------------------------------------------- |
 | `image.repo`                         | `cassandra` image repository                    | `cassandra`                                                |
-| `image.tag`                          | `cassandra` image tag                           | `3.11.3`                                                   |
+| `image.tag`                          | `cassandra` image tag                           | `3.11.5`                                                   |
 | `image.pullPolicy`                   | Image pull policy                               | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
 | `image.pullSecrets`                  | Image pull secrets                              | `nil`                                                      |
 | `config.cluster_domain`              | The name of the cluster domain.                 | `cluster.local`                                            |
