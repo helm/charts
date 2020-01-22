@@ -147,6 +147,9 @@ service:
   ##
   # loadBalancerSourceRanges: []
 
+## Use StatefulSet instead of Deployment when deploying standalone
+useStatefulSet: false
+
 ## Setting up replication
 ## ref: https://github.com/bitnami/bitnami-docker-mongodb#setting-up-a-replication
 #
