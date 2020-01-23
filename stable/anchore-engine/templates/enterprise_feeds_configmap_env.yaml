@@ -1,5 +1,5 @@
-{{- if and .Values.anchoreEnterpriseGlobal.enabled (or .Values.anchoreEnterpriseRbac.enabled .Values.anchoreEnterpriseReports.enabled) -}}
-{{- $component := "enterprise" -}}
+{{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseFeeds.enabled -}}
+{{- $component := "enterprise-feeds" -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
