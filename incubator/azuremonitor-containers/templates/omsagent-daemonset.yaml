@@ -103,24 +103,12 @@ spec:
         periodSeconds: 60
    nodeSelector:
     beta.kubernetes.io/os: linux
-   affinity:
-     nodeAffinity:
-       requiredDuringSchedulingIgnoredDuringExecution:
-         nodeSelectorTerms:
-         - labelSelector:
-           matchExpressions:
-             - key: type
-               operator: NotIn
-               values:
-                - virtual-kubelet 
-   # Tolerate below taints on nodes of k8s clusters to schedule ds pod.
-   tolerations:
-     - operator: "Exists"
-       effect: "NoSchedule"
-     - operator: "Exists"
-       effect: "NoExecute"
-     - operator: "Exists"
-       effect: "PreferNoSchedule"
+   {{- with .Values.omsagent.affinity }}
+   affinity: {{- toYaml . | nindent 8 }}
+   {{- end }}
+   {{- with .Values.omsagent.tolerations }}
+   tolerations: {{- toYaml . | nindent 8 }}
+   {{- end }}
    volumes:
     - name: host-root
       hostPath:
