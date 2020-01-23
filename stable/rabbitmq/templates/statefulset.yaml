@@ -167,7 +167,7 @@ spec:
           failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           successThreshold: {{ .Values.readinessProbe.successThreshold }}
         {{- end }}
-        {{- if and (gt .Values.replicas 1.0) ( eq .Values.rabbitmq.clustering.rebalance true) }}
+        {{- if and (gt (.Values.replicas | int) 1) ( eq .Values.rabbitmq.clustering.rebalance true) }}
         lifecycle:
           postStart:
             exec:
