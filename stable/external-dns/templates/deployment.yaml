@@ -133,9 +133,12 @@ spec:
         - --aws-evaluate-target-health={{ . }}
         {{- end }}        
         # Azure Arguments
-        {{- if eq .Values.provider "azure" }}
+        {{- if or (eq .Values.provider "azure") (eq .Values.provider "azure-private-dns") }}
         {{- if .Values.azure.resourceGroup }}
         - --azure-resource-group={{ .Values.azure.resourceGroup }}
+        {{- end }}
+        {{- if .Values.azure.subscriptionId }}
+        - --azure-subscription-id={{ .Values.azure.subscriptionId }}
         {{- end }}
         {{- end }}
         # Cloudflare arguments
@@ -208,6 +211,21 @@ spec:
         {{- if and .Values.aws.credentials.secretKey .Values.aws.credentials.accessKey }}
         - name: AWS_SHARED_CREDENTIALS_FILE
           value: {{ .Values.aws.credentials.mountPath }}/credentials
+        {{- end }}
+        {{- end }}
+        # Azure Private DNS variables 
+        {{- if eq .Values.provider "azure-private-dns" }}
+        {{- if .Values.azure.tenantId }}
+        - name: AZURE_TENANT_ID
+          value: {{ .Values.azure.tenantId }}
+        {{- end }}
+        {{- if .Values.azure.aadClientId }}
+        - name: AZURE_CLIENT_ID
+          value: {{ .Values.azure.aadClientId }}
+        {{- end }}
+        {{- if .Values.azure.aadClientSecret }}
+        - name: AZURE_CLIENT_SECRET
+          value: {{ .Values.azure.aadClientSecret }}
         {{- end }}
         {{- end }}
         # Cloudflare environment variables
