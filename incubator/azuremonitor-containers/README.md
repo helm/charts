@@ -57,7 +57,8 @@ $ helm install --name myrelease-1 \
 ## Upgrading an existing Release to a new version
 
 If the previous version of the chart installed with Helm2, it can be upgraded successfully to current version using Helm2.
-But, if the previous version of chart installed  with the Helm3 or release migrated to Helm3,then chart can’t be upgraded to latest version due to issues in Helm3 with regards to upgrading the existing release to new version, as described in [Helm issue #6850](https://github.com/helm/helm/issues/6850)
+But, if the previous version of chart installed  with the Helm3 or release migrated to Helm3,then chart can’t be upgraded to latest version due to issues in Helm3.
+Please refer to [Helm issue #6850](https://github.com/helm/helm/issues/6850) for more details.
 
 ## Uninstalling the Chart
 
