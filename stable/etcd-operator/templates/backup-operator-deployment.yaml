@@ -26,6 +26,7 @@ spec:
       priorityClassName: {{ .Values.backupOperator.priorityClassName }}
       {{- end }}
       serviceAccountName: {{ template "etcd-operator.serviceAccountName" . }}
+      hostNetwork: {{ .Values.backupOperator.hostNetwork }}
       containers:
       - name: {{ .Values.backupOperator.name }}
         image: "{{ .Values.backupOperator.image.repository }}:{{ .Values.backupOperator.image.tag }}"

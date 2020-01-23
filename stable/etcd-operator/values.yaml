@@ -41,6 +41,7 @@ etcdOperator:
   priorityClassName: ""
   name: etcd-operator
   replicaCount: 1
+  hostNetwork: false
   image:
     repository: quay.io/coreos/etcd-operator
     tag: v0.9.4
@@ -76,6 +77,7 @@ backupOperator:
   priorityClassName: ""
   name: etcd-backup-operator
   replicaCount: 1
+  hostNetwork: false
   image:
     repository: quay.io/coreos/etcd-operator
     tag: v0.9.4
@@ -102,6 +104,7 @@ restoreOperator:
   priorityClassName: ""
   name: etcd-restore-operator
   replicaCount: 1
+  hostNetwork: false
   image:
     repository: quay.io/coreos/etcd-operator
     tag: v0.9.4

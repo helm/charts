@@ -71,6 +71,7 @@ The following table lists the configurable parameters of the etcd-operator chart
 | `customResources.createRestoreCRD`                | Create an a custom resource: EtcdRestore                             | `false`                                        |
 | `etcdOperator.name`                               | Etcd Operator name                                                   | `etcd-operator`                                |
 | `etcdOperator.replicaCount`                       | Number of operator replicas to create (only 1 is supported)          | `1`                                            |
+| `etcdOperator.hostNetwork`                        | Operator pod host network flag                                       | `false`                                        |
 | `etcdOperator.image.repository`                   | etcd-operator container image                                        | `quay.io/coreos/etcd-operator`                 |
 | `etcdOperator.image.tag`                          | etcd-operator container image tag                                    | `v0.9.3`                                       |
 | `etcdOperator.image.pullpolicy`                   | etcd-operator container image pull policy                            | `Always`                                       |
@@ -83,6 +84,7 @@ The following table lists the configurable parameters of the etcd-operator chart
 | `etcdOperator.priorityClassName`                  | Priority class for the etcd-operator pod(s)                          | `""`                                           |
 | `backupOperator.name`                             | Backup operator name                                                 | `etcd-backup-operator`                         |
 | `backupOperator.replicaCount`                     | Number of operator replicas to create (only 1 is supported)          | `1`                                            |
+| `backupOperator.hostNetwork`                      | Backup operator pod host network flag                                | `false`                                        |
 | `backupOperator.image.repository`                 | Operator container image                                             | `quay.io/coreos/etcd-operator`                 |
 | `backupOperator.image.tag`                        | Operator container image tag                                         | `v0.9.3`                                       |
 | `backupOperator.image.pullpolicy`                 | Operator container image pull policy                                 | `Always`                                       |
@@ -97,6 +99,7 @@ The following table lists the configurable parameters of the etcd-operator chart
 | `backupOperator.priorityClassName`                | Priority class for the etcd-backuop-operator pod(s)                  | `""`                                           |
 | `restoreOperator.name`                            | Restore operator name                                                | `etcd-backup-operator`                         |
 | `restoreOperator.replicaCount`                    | Number of operator replicas to create (only 1 is supported)          | `1`                                            |
+| `restoreOperator.hostNetwork`                     | Restore operator pod host network flag                               | `false`                                        |
 | `restoreOperator.image.repository`                | Operator container image                                             | `quay.io/coreos/etcd-operator`                 |
 | `restoreOperator.image.tag`                       | Operator container image tag                                         | `v0.9.3`                                       |
 | `restoreOperator.image.pullpolicy`                | Operator container image pull policy                                 | `Always`                                       |
