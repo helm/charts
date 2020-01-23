@@ -51,7 +51,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 #### Upgrading
 
-##### To 0.6.0
+##### To 0.6.2
 
 ###### Breaking changes
 
@@ -59,7 +59,6 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ###### Non-breaking changes
 
-- CRDs have been moved to `/crds` directory, with template globbing, for both Helm 2 and 3 compatibility
 - `app.kubernetes.io/name=sparkoperator` label is added to CRDs if installed at this version, for easier manual cleanup after chart deletion (`kubectl delete CustomResourceDefinition -l app.kubernetes.io/name=sparkoperator`)
 
 #### Contributing
