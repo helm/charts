@@ -98,6 +98,9 @@ aws:
   ## Enable AWS Prefer CNAME. Available values are: true, false
   ##
   preferCNAME: ""
+  ## Enable AWS evaluation of target health. Available values are: true, false
+  ##
+  evaluateTargetHealth: ""
 ## Azure configuration to be set via arguments/env. variables
 ##
 azure:

@@ -103,6 +103,7 @@ Parameter | Description | Default
 `openvpn.OVPN_K8S_POD_SUBNET`        | Kubernetes pod network subnet (optional)                             | `255.0.0.0`
 `openvpn.OVPN_K8S_SVC_NETWORK`       | Kubernetes service network (optional)                                | `nil`
 `openvpn.OVPN_K8S_SVC_SUBNET`        | Kubernetes service network subnet (optional)                         | `nil`
+`openvpn.DEFAULT_ROUTE_ENABLED`      | Push a route which openvpn sets by default                           | `true`
 `openvpn.dhcpOptionDomain`           | Push a `dhcp-option DOMAIN` config                                   | `true`
 `openvpn.serverConf`                 | Lines appended to the end of the server configuration file (optional)| `nil`
 `openvpn.clientConf`                 | Lines appended into the client configuration file (optional)         | `nil`

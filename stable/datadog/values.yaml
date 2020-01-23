@@ -381,6 +381,9 @@ clusterAgent:
       ##
       #
       type: ClusterIP
+      ## @param port - int - optional
+      ##
+      port: 443
 
   ## @param clusterChecks - object - required
   ## Enable the Cluster Checks feature on both the cluster-agents and the daemonset
