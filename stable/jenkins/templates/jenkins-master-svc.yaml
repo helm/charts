@@ -24,7 +24,12 @@ spec:
       {{if (and (eq .Values.master.serviceType "NodePort") (not (empty .Values.master.nodePort)))}}
       nodePort: {{.Values.master.nodePort}}
       {{end}}
-
+    - port: {{ .Values.master.slaveListenerPort }}
+      name: slavelistener
+      targetPort: {{ .Values.master.slaveListenerPort }}
+      {{ if (and (eq .Values.master.slaveListenerServiceType "NodePort") (not (empty .Values.master.slaveListenerPort))) }}
+      nodePort: {{.Values.master.slaveListenerPort}}
+      {{end}}
 {{- range $index, $port := .Values.master.extraPorts }}
     - port: {{ $port.port }}
       name: {{ $port.name }}
