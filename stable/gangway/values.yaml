@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: gcr.io/heptio-images/gangway
-  tag: v3.0.0
+  tag: v3.2.0
   pullPolicy: IfNotPresent
   ## Optional array of imagePullSecrets containing private registry credentials
   ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -11,6 +11,13 @@ image:
 
 nameOverride: ""
 fullnameOverride: ""
+
+# Specify a CA cert to trust for self signed certificates at the Oauth2 URLs.  Be careful to indent one level beyond the
+# trustedCACert key:
+# trustedCACert: |-
+#  -----BEGIN CERTIFICATE-----
+#  ...
+#  -----END CERTIFICATE-----
 
 gangway:
   # The address to listen on. Defaults to 0.0.0.0 to listen on all interfaces.
@@ -89,9 +96,6 @@ gangway:
   # Env var: GANGWAY_CLUSTER_CA_PATH
   # cluster_ca_path: "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
 
-  # The path to a root CA to trust for self signed certificates at the Oauth2 URLs
-  # Env var: GANGWAY_TRUSTED_CA_PATH
-  # trustedCAPath: /cacerts/rootca.crt
 
   # The path gangway uses to create urls (defaults to "")
   # Env var: GANGWAY_HTTP_PATH
@@ -107,6 +111,32 @@ gangway:
   # own in procution.
   # sessionKey:
 
+tls: {}
+  # certData: |
+  #   -----BEGIN CERTIFICATE-----
+  #   ...
+  #   -----END CERTIFICATE-----
+  # keyData: |
+  #   -----BEGIN ENCRYPTED PRIVATE KEY-----
+  #   ...
+  #   -----END ENCRYPTED PRIVATE KEY-----
+
+  # Name of an existing secret containing `tls.cert` and `tls.key`.
+  # Mounted on the default tls path `/etc/gangway/tls`
+  # existingSecret: ""
+
+extraVolumes: []
+
+extraVolumeMounts: []
+
+livenessProbe:
+  # HTTP or HTTPS
+  scheme: HTTP
+
+readinessProbe:
+  # HTTP or HTTPS
+  scheme: HTTP
+
 service:
   type: ClusterIP
   port: 80
@@ -120,11 +150,11 @@ ingress:
     # kubernetes.io/tls-acme: "true"
   path: /
   hosts:
-    - chart-example.local
+  - chart-example.local
   tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+  # - secretName: chart-example-tls
+  #   hosts:
+  #     - chart-example.local
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

@@ -30,15 +30,24 @@ persistentVolume: {}
 
 service:
   type: ClusterIP
+  # Provide any additional annotations which may be required.
+  # The value is evaluated as a template, so, for example, the value can depend on .Release or .Chart
   annotations: {}
   loadBalancerIP:
   clusterIP: None
   # This field takes a list of IP CIDR ranges, which Kubernetes will use to configure firewall exceptions
   # loadBalancerSourceRanges:
   # - 10.0.0.0/8
+  nodePort: {}
 
-meshService:
-  annotations: {}
+# turns on a sidecar that scrapes 'localhost:3000' and exposes to port 9134
+# a docker image built from this repo works well: https://github.com/alicebob/asprom
+# but you will need to build/host it yourself
+metrics:
+  serviceMonitor: {}
+
+labels: {}
+annotations: {}
 
 tolerations: []
 

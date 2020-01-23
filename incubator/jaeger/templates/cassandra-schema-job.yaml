@@ -15,7 +15,7 @@ metadata:
 {{ toYaml .Values.schema.annotations | indent 4 }}
 {{- end }}
 spec:
-  activeDeadlineSeconds: 120
+  activeDeadlineSeconds: {{ .Values.schema.activeDeadlineSeconds }}
   template:
     metadata:
       name: {{ include "jaeger.fullname" . }}-cassandra-schema
@@ -32,14 +32,68 @@ spec:
         env:
         - name: CQLSH_HOST
           value: {{ template "cassandra.host" . }}
+        {{ if .Values.storage.cassandra.tls.enabled }}
+        - name: CQLSH_SSL
+          value: "--ssl"
+        {{- end }}
         - name: MODE
           value: {{ .Values.schema.mode | quote }}
         - name: DATACENTER
           value: {{ .Values.cassandra.config.dc_name | quote }}
         - name: CASSANDRA_PORT
           value: {{ .Values.storage.cassandra.port | quote }}
+        - name: CASSANDRA_USERNAME
+          value: {{ .Values.storage.cassandra.user }}
+        - name: CASSANDRA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ if .Values.storage.cassandra.existingSecret }}{{ .Values.storage.cassandra.existingSecret }}{{- else }}{{ include "jaeger.fullname" . }}-cassandra{{- end }}
+              key: password
+      {{- if .Values.schema.keyspace }}
+        - name: KEYSPACE
+          value: {{ .Values.schema.keyspace | quote }}
+      {{- end }}
+      {{- if .Values.schema.traceTtl }}
+        - name: TRACE_TTL
+          value: {{ .Values.schema.traceTtl | quote }}
+      {{- end }}
+      {{- if .Values.schema.dependenciesTtl }}
+        - name: DEPENDENCIES_TTL
+          value: {{ .Values.schema.dependenciesTtl | quote }}
+      {{- end }}
         resources:
 {{ toYaml .Values.schema.resources | indent 10 }}
+        volumeMounts:
+        {{- range .Values.schema.extraConfigmapMounts }}
+          - name: {{ .name }}
+            mountPath: {{ .mountPath }}
+            subPath: {{ .subPath }}
+            readOnly: {{ .readOnly }}
+        {{- end }}
+        {{- if .Values.storage.cassandra.tls.enabled }}
+          - name: {{ .Values.storage.cassandra.tls.secretName }}
+            mountPath: "/root/.cassandra/ca-cert.pem"
+            subPath: "ca-cert.pem"
+            readOnly: true
+          - name: {{ .Values.storage.cassandra.tls.secretName }}
+            mountPath: "/root/.cassandra/client-cert.pem"
+            subPath: "client-cert.pem"
+            readOnly: true
+          - name: {{ .Values.storage.cassandra.tls.secretName }}
+            mountPath: "/root/.cassandra/client-key.pem"
+            subPath: "client-key.pem"
+            readOnly: true
+          - name: {{ .Values.storage.cassandra.tls.secretName }}
+            mountPath: "/root/.cassandra/cqlshrc"
+            subPath: "cqlshrc"
+            readOnly: true
+        {{- end }}
       restartPolicy: OnFailure
+      volumes:
+      {{- range .Values.schema.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
+      {{- end }}
 {{- end -}}
 {{- end -}}

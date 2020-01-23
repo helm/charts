@@ -1,5 +1,12 @@
+# Override the name of the chart, which in turn changes the name of the containers, services etc.
+nameOverride: ""
+fullnameOverride: ""
+
 replicas: 3
 port: 27017
+
+## Setting this will skip the replicaset and user creation process during bootstrapping
+skipInitialization: false
 
 replicaSetName: rs0
 
@@ -9,14 +16,14 @@ podDisruptionBudget: {}
 
 auth:
   enabled: false
+  existingKeySecret: ""
+  existingAdminSecret: ""
+  existingMetricsSecret: ""
   # adminUser: username
   # adminPassword: password
   # metricsUser: metrics
   # metricsPassword: password
   # key: keycontent
-  # existingKeySecret:
-  # existingAdminSecret:
-  # existingMetricsSecret:
 
 ## Optionally specify an array of imagePullSecrets.
 ## Secrets must be manually created in the namespace.
@@ -52,8 +59,8 @@ extraVars: {}
 metrics:
   enabled: false
   image:
-    repository: ssalaues/mongodb-exporter
-    tag: 0.6.1
+    repository: bitnami/mongodb-exporter
+    tag: 0.10.0-debian-9-r71
     pullPolicy: IfNotPresent
   port: 9216
   path: "/metrics"
@@ -61,6 +68,9 @@ metrics:
   syncTimeout: 1m
   prometheusServiceDiscovery: true
   resources: {}
+  securityContext:
+    enabled: true
+    runAsUser: 1001
 
 # Annotations to be added to MongoDB pods
 podAnnotations: {}
@@ -93,7 +103,7 @@ tolerations: []
 
 extraLabels: {}
 
-# priorityClassName: ""
+priorityClassName: ""
 
 persistentVolume:
   enabled: true
@@ -104,7 +114,7 @@ persistentVolume:
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   ##
-  # storageClass: "-"
+  storageClass: ""
   accessModes:
     - ReadWriteOnce
   size: 10Gi
@@ -118,6 +128,8 @@ terminationGracePeriodSeconds: 30
 tls:
   # Enable or disable MongoDB TLS support
   enabled: false
+  # Set the SSL operation mode (disabled|allowSSL|preferSSL|requireSSL)
+  mode: requireSSL
   # Please generate your own TLS CA by generating it via:
   # $ openssl genrsa -out ca.key 2048
   # $ openssl req -x509 -new -nodes -key ca.key -days 10000 -out ca.crt -subj "/CN=mydomain.com"
@@ -136,6 +148,7 @@ configmap: {}
 # initMongodStandalone: |+
 #   db = db.getSiblingDB("mydb")
 #   db.my_users.createIndex({email: 1})
+initMongodStandalone: ""
 
 # Readiness probe
 readinessProbe:

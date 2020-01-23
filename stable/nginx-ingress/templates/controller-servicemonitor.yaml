@@ -8,7 +8,7 @@ metadata:
   {{- end }}
   labels:
     app: {{ template "nginx-ingress.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "nginx-ingress.chart" . }}
     component: "{{ .Values.controller.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
@@ -18,13 +18,18 @@ metadata:
 spec:
   endpoints:
     - port: metrics
-      interval: 30s
+      interval: {{ .Values.controller.metrics.serviceMonitor.scrapeInterval }}
       {{- if .Values.controller.metrics.serviceMonitor.honorLabels }}
       honorLabels: true
       {{- end }}
+  {{- if .Values.controller.metrics.serviceMonitor.namespaceSelector }}
+  namespaceSelector:
+{{ toYaml .Values.controller.metrics.serviceMonitor.namespaceSelector | indent 4 -}}
+  {{ else }}
   namespaceSelector:
     matchNames:
       - {{ .Release.Namespace }}
+  {{- end }}
   selector:
     matchLabels:
       app: {{ template "nginx-ingress.name" . }}

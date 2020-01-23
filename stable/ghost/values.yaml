@@ -14,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/ghost
-  tag: 2.29.1-debian-9-r0
+  tag: 3.3.0-debian-9-r0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -42,7 +42,7 @@ volumePermissions:
   image:
     registry: docker.io
     repository: bitnami/minideb
-    tag: latest
+    tag: stretch
     pullPolicy: Always
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -58,7 +58,6 @@ ghostProtocol: http
 # ghostHost:
 # ghostPort:
 ghostPath: /
-
 
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
@@ -95,24 +94,43 @@ allowEmptyPassword: "yes"
 # smtpFromAddress
 # smtpService:
 
+## Configure extra options for liveness and readiness probes
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
+##
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 120
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+  successThreshold: 1
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 6
+  successThreshold: 1
+
 ##
 ## External database configuration
 ##
 externalDatabase:
+  ## All of these values are only used when mariadb.enabled is set to false
   ## Database host
-  # host:
+  host: localhost
 
-  ## Database port
-  # port:
-
-  ## Database user
-  # user: bn_ghost
+  ## non-root Username for Wordpress Database
+  user: bn_ghost
 
   ## Database password
-  # password:
+  password: ""
 
   ## Database name
-  # database: bitnami_ghost
+  database: bitnami_ghost
+
+  ## Database port number
+  port: 3306
 
 ##
 ## MariaDB chart configuration
@@ -225,7 +243,7 @@ ingress:
 
   ## Ingress annotations done as key:value pairs
   ## For a full list of possible ingress annotations, please see
-  ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/annotations.md
+  ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/annotations.md
   ##
   ## If tls is set to true, annotation ingress.kubernetes.io/secure-backends: "true" will automatically be set
   ## If certManager is set to true, annotation kubernetes.io/tls-acme: "true" will automatically be set
@@ -264,3 +282,13 @@ ingress:
   # - name: ghost.local-tls
   #   key:
   #   certificate:
+
+## Node selector for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+##
+nodeSelector: {}
+
+## Affinity for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+##
+affinity: {}

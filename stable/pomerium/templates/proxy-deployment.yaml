@@ -10,12 +10,20 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/component: proxy
   name: {{ template "pomerium.proxy.fullname" . }}
-{{- if .Values.annotations }}
+{{- if or .Values.proxy.deployment.annotations .Values.annotations }}
   annotations:
-{{ toYaml .Values.annotations | indent 4 }}
+  {{- if .Values.proxy.deployment.annotations }}
+    {{- range $key, $value := .Values.proxy.deployment.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- else if .Values.annotations }}
+    {{- range $key, $value := .Values.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
 {{- end }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ default .Values.replicaCount .Values.proxy.replicaCount }}
   selector:
     matchLabels:  
       app.kubernetes.io/name: {{ template "pomerium.proxy.name" . }}
@@ -73,23 +81,31 @@ spec:
           value: {{ default (printf "https://authenticate.%s" .Values.config.rootDomain ) .Values.proxy.authenticateServiceUrl }}
         - name: AUTHORIZE_SERVICE_URL
           value: {{ default (printf "https://%s.%s.svc.cluster.local" (include "pomerium.authorize.fullname" .) .Release.Namespace ) .Values.proxy.authorizeInternalUrl}}
-        - name: AUTHENTICATE_INTERNAL_URL
-          value: {{ default (printf "https://%s.%s.svc.cluster.local" (include "pomerium.authenticate.fullname" .) .Release.Namespace ) .Values.proxy.authenticateInternalUrl}}
+{{- /* TODO in future: Remove legacy logic */ -}}
+{{- if .Values.config.existingLegacyTLSSecret }}
         - name: CERTIFICATE
           valueFrom:
             secretKeyRef:
-              name: {{ $secretName }}
-              key: proxy-cert
+              name:  {{ template "pomerium.proxy.tlsSecret.name" . }}
+              key:  {{ template "pomerium.proxy.tlsSecret.certName" . }}
         - name: CERTIFICATE_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ $secretName }}
-              key: proxy-key
+              name:  {{ template "pomerium.proxy.tlsSecret.name" . }}
+              key:  {{ template "pomerium.proxy.tlsSecret.keyName" . }}
         - name: CERTIFICATE_AUTHORITY
           valueFrom:
             secretKeyRef:
-              name: {{ $secretName }}
-              key:  ca-cert
+              name:  {{ template "pomerium.caSecret.name" . }}
+              key:  {{ template "pomerium.caSecret.certName" . }}
+{{- else }}
+        - name: CERTIFICATE_FILE
+          value: "/pomerium/cert.pem"
+        - name: CERTIFICATE_KEY_FILE
+          value: "/pomerium/privkey.pem"
+        - name: CERTIFICATE_AUTHORITY_FILE
+          value: "/pomerium/ca.pem"
+{{- end }}
 {{- range $name, $value := .Values.extraEnv }}
         - name: {{ $name }}
           value: {{ quote $value }}
@@ -113,14 +129,37 @@ spec:
             scheme: HTTPS
         resources:
 {{ toYaml .Values.resources | indent 10 }}
-{{- if or .Values.config.existingConfig .Values.config.policy }}
         volumeMounts:
+{{- if or .Values.config.existingConfig .Values.config.policy }}
         - mountPath: /etc/pomerium/
           name: config
+{{- end }}
+{{- /* TODO in future: Remove legacy logic */ -}}
+{{- if not .Values.config.existingLegacyTLSSecret }}
+        - mountPath: /pomerium/cert.pem
+          name: service-tls
+          subPath: {{ template "pomerium.proxy.tlsSecret.certName" . }}
+        - mountPath: /pomerium/privkey.pem
+          name: service-tls
+          subPath: {{ template "pomerium.proxy.tlsSecret.keyName" . }}
+        - mountPath: /pomerium/ca.pem
+          name: ca-tls
+          subPath: {{ template "pomerium.caSecret.certName" . }}
+{{- end }}
       volumes:
+{{- if or .Values.config.existingConfig .Values.config.policy }}
       - name: config
         configMap:
           name: {{ $configName }}
+{{- end }}
+{{- /* TODO in future: Remove legacy logic */ -}}
+{{- if not .Values.config.existingLegacyTLSSecret }}
+      - name: service-tls
+        secret:
+          secretName: {{ template "pomerium.proxy.tlsSecret.name" . }}
+      - name: ca-tls
+        secret:
+          secretName: {{ template "pomerium.caSecret.name" . }}
 {{- end }}
 {{- if .Values.extraVolumes }}
       volumes:

@@ -1,11 +1,14 @@
 # Generated from 'kubernetes-storage' group from https://raw.githubusercontent.com/coreos/kube-prometheus/release-0.1/manifests/prometheus-rules.yaml
 # Do not change in-place! In order to change this file first read following link:
 # https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
-{{- if and (semverCompare ">=1.11.0-0" .Capabilities.KubeVersion.GitVersion) (semverCompare "<1.14.0-0" .Capabilities.KubeVersion.GitVersion) .Values.defaultRules.create .Values.defaultRules.rules.kubernetesStorage }}
-apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
+{{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
+{{- if and (semverCompare ">=1.10.0-0" $kubeTargetVersion) (semverCompare "<1.14.0-0" $kubeTargetVersion) .Values.defaultRules.create .Values.defaultRules.rules.kubernetesStorage }}
+{{- $targetNamespace := .Values.defaultRules.appNamespacesTarget }}
+apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: {{ printf "%s-%s" (include "prometheus-operator.fullname" .) "kubernetes-storage" | trunc 63 | trimSuffix "-" }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "prometheus-operator.name" . }}
 {{ include "prometheus-operator.labels" . | indent 4 }}
@@ -23,11 +26,11 @@ spec:
     - alert: KubePersistentVolumeUsageCritical
       annotations:
         message: The PersistentVolume claimed by {{`{{ $labels.persistentvolumeclaim }}`}} in Namespace {{`{{ $labels.namespace }}`}} is only {{`{{ printf "%0.2f" $value }}`}}% free.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubepersistentvolumeusagecritical
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubepersistentvolumeusagecritical
       expr: |-
-        100 * kubelet_volume_stats_available_bytes{job="kubelet"}
+        100 * kubelet_volume_stats_available_bytes{job="kubelet", namespace=~"{{ $targetNamespace }}"}
           /
-        kubelet_volume_stats_capacity_bytes{job="kubelet"}
+        kubelet_volume_stats_capacity_bytes{job="kubelet", namespace=~"{{ $targetNamespace }}"}
           < 3
       for: 1m
       labels:
@@ -35,22 +38,22 @@ spec:
     - alert: KubePersistentVolumeFullInFourDays
       annotations:
         message: Based on recent sampling, the PersistentVolume claimed by {{`{{ $labels.persistentvolumeclaim }}`}} in Namespace {{`{{ $labels.namespace }}`}} is expected to fill up within four days. Currently {{`{{ printf "%0.2f" $value }}`}}% is available.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubepersistentvolumefullinfourdays
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubepersistentvolumefullinfourdays
       expr: |-
         100 * (
-          kubelet_volume_stats_available_bytes{job="kubelet"}
+          kubelet_volume_stats_available_bytes{job="kubelet", namespace=~"{{ $targetNamespace }}"}
             /
-          kubelet_volume_stats_capacity_bytes{job="kubelet"}
+          kubelet_volume_stats_capacity_bytes{job="kubelet", namespace=~"{{ $targetNamespace }}"}
         ) < 15
         and
-        predict_linear(kubelet_volume_stats_available_bytes{job="kubelet"}[6h], 4 * 24 * 3600) < 0
+        predict_linear(kubelet_volume_stats_available_bytes{job="kubelet", namespace=~"{{ $targetNamespace }}"}[6h], 4 * 24 * 3600) < 0
       for: 5m
       labels:
         severity: critical
     - alert: KubePersistentVolumeErrors
       annotations:
         message: The persistent volume {{`{{ $labels.persistentvolume }}`}} has status {{`{{ $labels.phase }}`}}.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubepersistentvolumeerrors
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubepersistentvolumeerrors
       expr: kube_persistentvolume_status_phase{phase=~"Failed|Pending",job="kube-state-metrics"} > 0
       for: 5m
       labels:

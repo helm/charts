@@ -2,7 +2,7 @@
 prometheusScrape: true
 image:
   repository: quay.io/coreos/kube-state-metrics
-  tag: v1.7.2
+  tag: v1.9.3
   pullPolicy: IfNotPresent
 
 replicas: 1
@@ -92,7 +92,9 @@ collectors:
   ingresses: true
   jobs: true
   limitranges: true
+  mutatingwebhookconfigurations: false
   namespaces: true
+  networkpolicies: false
   nodes: true
   persistentvolumeclaims: true
   persistentvolumes: true
@@ -105,7 +107,13 @@ collectors:
   services: true
   statefulsets: true
   storageclasses: true
+  validatingwebhookconfigurations: false
   verticalpodautoscalers: false
+  volumeattachements: false
 
 # Namespace to be enabled for collecting resources. By default all namespaces are collected.
 # namespace: ""
+
+## Override the deployment namespace
+##
+namespaceOverride: ""

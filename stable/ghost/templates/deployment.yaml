@@ -1,5 +1,5 @@
 {{- if include "ghost.host" . -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "ghost.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "ghost.fullname" . }}
@@ -131,6 +131,7 @@ spec:
         ports:
         - name: http
           containerPort: 2368
+        {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
             path: {{ .Values.ghostPath }}
@@ -142,9 +143,13 @@ spec:
             - name: X-Forwarded-Proto
               value: https
             {{- end }}
-          initialDelaySeconds: 120
-          timeoutSeconds: 5
-          failureThreshold: 6
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+        {{- end }}
+        {{- if .Values.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
             path: {{ .Values.ghostPath }}
@@ -156,11 +161,15 @@ spec:
             - name: X-Forwarded-Proto
               value: https
             {{- end }}
-          initialDelaySeconds: 30
-          timeoutSeconds: 3
-          periodSeconds: 5
-        resources:
-{{ toYaml .Values.resources | indent 10 }}
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+        {{- end }}
+        {{- if .Values.resources }}
+        resources: {{- toYaml .Values.resources | nindent 10 }}
+        {{- end }}
         volumeMounts:
         - name: ghost-data
           mountPath: /bitnami/ghost
@@ -171,5 +180,13 @@ spec:
           claimName: {{ template "ghost.fullname" . }}
       {{- else }}
         emptyDir: {}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
       {{- end }}
 {{- end -}}

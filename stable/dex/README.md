@@ -4,7 +4,7 @@
 
 ## Introduction
 
-Dex acts as a portal to other identity providers through "connectors." This lets dex defer authentication to LDAP servers, SAML providers, or established identity providers like GitHub, Google, and Active Directory. Clients write their authentication logic once to talk to dex, then dex handles the protocols for a given backend.
+Dex acts as a portal to other identity providers through "connectors". This lets dex defer authentication to LDAP servers, SAML providers, or established identity providers like GitHub, Google, and Active Directory. Clients write their authentication logic once to talk to dex, then dex handles the protocols for a given backend.
 
 **Kubernetes authentication note**
 
@@ -27,7 +27,7 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release stable/dex
 ```
 
-It'll install chart with the default parameters. However most probably it won't work for you as-is, thus before installing the chart you need to consult to the [values.yaml](values.yaml) notes as well as [dex documentation][dex].
+It'll install the chart with the default parameters. However most probably it won't work for you as-is, thus before installing the chart you need to consult the [values.yaml](values.yaml) notes as well as [dex documentation][dex].
 
 ## Uninstalling the Chart
 
@@ -67,12 +67,14 @@ Parameters introduced starting from v2
 | `certs.web.pod.annotations` | Annotations for the pod created by the `web-certs` job | `{}` |
 | `config.connectors` | Maps to the dex config `connectors` dict param | `{}` |
 | `config.enablePasswordDB` | Maps to the dex config `enablePasswordDB` param | `true` |
+| `config.frontend` | Maps to the dex config `frontend` dict param | `""` |
 | `config.grpc.address` | dex grpc listen address | `127.0.0.1` |
 | `config.grpc.tlsCert` | Maps to the dex config `grpc.tlsCert` param | `/etc/dex/tls/grpc/server/tls.crt` |
 | `config.grpc.tlsClientCA` | Maps to the dex config `grpc.tlsClientCA` param | `/etc/dex/tls/grpc/ca/tls.crt` |
 | `config.grpc.tlsKey` | Maps to the dex config `grpc.tlsKey` param | `/etc/dex/tls/grpc/server/tls.key` |
 | `config.issuer` | Maps to the dex config `issuer` param | `http://dex.io:8080` |
 | `config.logger` | Maps to the dex config `logger` dict param | `{"level": "debug"}` |
+| `config.oauth2.alwaysShowLoginScreen` | Maps to the dex config `oauth2.alwaysShowLoginScreen` param | `false` |
 | `config.oauth2.skipApprovalScreen` | Maps to the dex config `oauth2.skipApprovalScreen` param | `true` |
 | `config.staticClients` | Maps to the dex config `staticClients` list param | `""` |
 | `config.staticPasswords` | Maps to the dex config `staticPasswords` list param | `""` |
@@ -80,6 +82,9 @@ Parameters introduced starting from v2
 | `config.web.address` | dex http/https listen address | `0.0.0.0` |
 | `config.web.tlsCert` | Maps to the dex config `web.tlsCert` param | `/etc/dex/tls/https/server/tls.crt` |
 | `config.web.tlsKey` | Maps to the dex config `web.tlsKey` param | `/etc/dex/tls/https/server/tls.key` |
+| `config.expiry.signingKeys` | Maps to the dex config `expiry.signingKeys` param | `6h` |
+| `config.expiry.idTokens` | Maps to the dex config `expiry.idTokens` param | `24h` |
+| `crd.present` | Whether dex's CRDs are already present (if not cluster role and cluster role binding will be created to enable dex to create them). Depends on `rbac.create` | `false` |
 | `grpc` | Enable dex grpc endpoint | `true` |
 | `https` | Enable TLS termination for the dex http endpoint | `false` |
 | `ports.grpc.containerPort` | grpc port listened by the dex | `5000` |
@@ -88,8 +93,20 @@ Parameters introduced starting from v2
 | `ports.web.containerPort` | http/https port listened by the dex | `5556` |
 | `ports.web.nodePort` | K8S Service node port for the dex http/https listener | `32000` |
 | `ports.web.servicePort` | K8S Service port for the dex http/https listener | `32000` |
+| `rbac.create` | If `true`, create & use RBAC resources | `true` |
 | `service.loadBalancerIP` | IP override for K8S LoadBalancer Service | `""` |
-
+| `livenessProbe.enabled` | k8s liveness probe enabled (cannot be enabled when `https = true`) | `false` |
+| `livenessProbe.path` |  k8s liveness probe http path | `"/healthz"`  |
+| `livenessProbe.initialDelaySeconds` | Number of seconds after the container has started before liveness probe is initiated.  |  `1` |
+| `livenessProbe.periodSeconds` | How often (in seconds) to perform the probe | `10`  |
+| `livenessProbe.timeoutSeconds` | Number of seconds after which the probe times out | `1`  |
+| `livenessProbe.failureThreshold` | Times to perform probe before restarting the container | `3`  |
+| `readinessProbe.enabled` | k8s readiness probe enabled (cannot be enabled when `https = true`) | `false`  |
+| `readinessProbe.path` |  k8s readiness probe http path | `"/healthz"`  |
+| `readinessProbe.initialDelaySeconds` | Number of seconds after the container has started before readiness probe is initiated.  |  `1` |
+| `readinessProbe.periodSeconds` | How often (in seconds) to perform the probe  |  `10` |
+| `readinessProbe.timeoutSeconds` | Number of seconds after which the probe times out | `1`  |
+| `readinessProbe.failureThreshold` | Times to perform probe before marking the container `Unready` |  `3` |
 
 
 Check [values.yaml](values.yaml) notes together with [dex documentation][dex] and [config examples](https://github.com/dexidp/dex/tree/master/examples) for all the possible configuration options.

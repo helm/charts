@@ -11,10 +11,10 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     {{- with .Values.anchoreEnterpriseFeeds.labels }}
-    {{ toYaml . | nindent 4 | trim }}
+    {{ toYaml . | nindent 4 }}
     {{- end }}
     {{- with .Values.anchoreGlobal.labels }}
-    {{ toYaml . | nindent 4 | trim }}
+    {{ toYaml . | nindent 4 }}
     {{- end }}
 spec:
   selector:
@@ -28,16 +28,19 @@ spec:
         app: {{ template "anchore-engine.fullname" . }}
         component: {{ $component }}
         {{- with .Values.anchoreEnterpriseFeeds.labels }}
-        {{ toYaml . | nindent 8 | trim }}
+        {{ toYaml . | nindent 8 }}
         {{- end }}
         {{- with .Values.anchoreGlobal.labels }}
-        {{ toYaml . | nindent 8 | trim }}
+        {{ toYaml . | nindent 8 }}
         {{- end }}
       {{- with .Values.anchoreEnterpriseFeeds.annotations }}
       annotations:
-        {{ toYaml . | nindent 8 | trim }}
+        {{ toYaml . | nindent 8 }}
       {{- end }}
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
       imagePullSecrets:
       - name: {{ .Values.anchoreEnterpriseGlobal.imagePullSecretName }}
       containers:
@@ -71,10 +74,10 @@ spec:
             name: {{ template "anchore-engine.enterprise-feeds.fullname" . }}
         env:
         {{- with .Values.anchoreGlobal.extraEnv }}
-        {{- toYaml . | nindent 8 | trim }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         {{- with .Values.anchoreEnterpriseFeeds.extraEnv }}
-        {{- toYaml . | nindent 8 | trim }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         - name: ANCHORE_DB_PASSWORD
           valueFrom:
@@ -89,15 +92,31 @@ spec:
         - name: config-volume
           mountPath: /config/config.yaml
           subPath: config.yaml
+        {{- if .Values.anchoreGlobal.openShiftDeployment }}
+        - name: service-config-volume
+          mountPath: /anchore_service_config
+        - name: logs
+          mountPath: /var/log/anchore
+        - name: run
+          mountPath: /var/run/anchore
+        {{- end }}
         - name: {{ $component }}-scratch
           mountPath: {{ .Values.anchoreGlobal.scratchVolume.mountPath }}
         - name: anchore-license
           mountPath: /home/anchore/license.yaml
           subPath: license.yaml
+        {{- if (.Values.anchoreGlobal.certStoreSecretName) }}
+        - name: certs
+          mountPath: /home/anchore/certs/
+          readOnly: true
+        {{- end }}
         livenessProbe:
           httpGet:
             path: /health
             port: feeds-api
+            {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
+            scheme: HTTPS
+            {{- end }}
           initialDelaySeconds: 120
           timeoutSeconds: 10
           periodSeconds: 10
@@ -107,18 +126,29 @@ spec:
           httpGet:
             path: /health
             port: feeds-api
+            {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
+            scheme: HTTPS
+            {{- end }}
           timeoutSeconds: 10
           periodSeconds: 10
           failureThreshold: 3
           successThreshold: 1
         resources:
-          {{ toYaml .Values.anchoreEnterpriseFeeds.resources | nindent 10 | trim }}
+          {{ toYaml .Values.anchoreEnterpriseFeeds.resources | nindent 10 }}
       volumes:
         - name: config-volume
           configMap:
             name: {{ template "anchore-engine.enterprise-feeds.fullname" . }}
         - name: {{ $component}}-scratch
-          {{ toYaml .Values.anchoreGlobal.scratchVolume.details | nindent 10 | trim }}
+          {{ toYaml .Values.anchoreGlobal.scratchVolume.details | nindent 10 }}
+        {{- if .Values.anchoreGlobal.openShiftDeployment }}
+        - name: service-config-volume
+          emptyDir: {}
+        - name: logs
+          emptyDir: {}
+        - name: run
+          emptyDir: {}
+        {{- end }}
         - name: anchore-license
           secret:
             secretName: {{ .Values.anchoreEnterpriseGlobal.licenseSecretName }}
@@ -127,17 +157,22 @@ spec:
           secret:
             secretName: {{ .Values.cloudsql.serviceAccSecretName }}
         {{- end }}
+        {{- with .Values.anchoreGlobal.certStoreSecretName }}
+        - name: certs
+          secret:
+            secretName: {{ . }}
+        {{- end }}
       {{- with .Values.anchoreEnterpriseFeeds.nodeSelector }}
       nodeSelector:
-        {{ toYaml .Values.anchoreEnterpriseFeeds.nodeSelector | nindent 8 | trim }}
+        {{ toYaml .Values.anchoreEnterpriseFeeds.nodeSelector | nindent 8 }}
       {{- end }}
       {{- with .Values.anchoreEnterpriseFeeds.affinity }}
       affinity:
-        {{ toYaml . | nindent 8 | trim }}
+        {{ toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.anchoreEnterpriseFeeds.tolerations }}
       tolerations:
-        {{ toYaml . | nindent 8 | trim }}
+        {{ toYaml . | nindent 8 }}
       {{- end }}
 
 ---
@@ -152,14 +187,14 @@ metadata:
     heritage: {{ .Release.Service }}
     component: {{ $component }}
     {{- with .Values.anchoreEnterpriseFeeds.service.labels }}
-    {{ toYaml . | nindent 4 | trim }}
+    {{ toYaml . | nindent 4 }}
     {{- end }}
     {{- with .Values.anchoreGlobal.labels }}
-    {{ toYaml . | nindent 4 | trim }}
+    {{ toYaml . | nindent 4 }}
     {{- end }}
   {{- with .Values.anchoreEnterpriseFeeds.service.annotations }}
   annotations:
-    {{ toYaml . | nindent 4 | trim }}
+    {{ toYaml . | nindent 4 }}
   {{- end }}
 spec:
   type: {{ .Values.anchoreEnterpriseFeeds.service.type }}

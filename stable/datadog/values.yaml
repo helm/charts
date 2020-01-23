@@ -9,16 +9,16 @@ image:
 
   ## @param repository - string - required
   ## Define the repository to use:
-  ## use "datadog/agent" for Datadog Agent 6
-  ## use "datadog/dogstatsd" for Standalone Datadog Agent DogStatsD6
+  ## use "datadog/agent" for Datadog Agent 7
+  ## use "datadog/dogstatsd" for Standalone Datadog Agent DogStatsD 7
   #
   repository: datadog/agent
 
   ## @param tag - string - required
   ## Define the Agent version to use.
-  ## Use 6.13.0-jmx to enable jmx fetch collection
+  ## Use 7-jmx to enable jmx fetch collection
   #
-  tag: 6.13.0
+  tag: "7"
 
   ## @param pullPolicy - string - required
   ## The Kubernetes pull policy.
@@ -71,6 +71,12 @@ datadog:
 
   ## @param clusterName - string - optional
   ## Set a unique cluster name to allow scoping hosts and Cluster Checks easily
+  ## The name must be unique and must be dot-separated tokens where a token can be up to 40 characters with the following restrictions:
+  ## * Lowercase letters, numbers, and hyphens only.
+  ## * Must start with a letter.
+  ## * Must end with a number or a letter.
+  ## Compared to the rules of GKE, dots are allowed whereas they are not allowed on GKE:
+  ## https://cloud.google.com/kubernetes-engine/docs/reference/rest/v1beta1/projects.locations.clusters#Cluster.FIELDS.name
   #
   # clusterName: <CLUSTER_NAME>
 
@@ -98,6 +104,14 @@ datadog:
   ## trace, debug, info, warn, error, critical, and off
   #
   logLevel: INFO
+
+  ## @param nodeLabelsAsTags - list of key:value strings - optional
+  ## Provide a mapping of Kubernetes Node Labels to Datadog Tags.
+  #
+  # nodeLabelsAsTags:
+  #   beta.kubernetes.io/instance-type: aws-instance-type
+  #   kubernetes.io/role: kube_role
+  #   <KUBERNETES_NODE_LABEL>: <DATADOG_TAG_KEY>
 
   ## @param podLabelsAsTags - list of key:value strings - optional
   ## Provide a mapping of Kubernetes Labels to Datadog Tags.
@@ -139,6 +153,12 @@ datadog:
   ## ref: https://docs.datadoghq.com/developers/dogstatsd/unix_socket/
   #
   # useDogStatsDSocketVolume: true
+
+  #  # dogStatsDPort - integer - optional - default: 8125
+  #  # Override the Agent DogStatsD port.
+  #  # Note: Make sure your client is sending to the same UDP port.
+  #
+  # dogStatsDPort:
 
   ## @param nonLocalTraffic - boolean - optional - default: false
   ## Enable this to make each node accept non-local statsd traffic.
@@ -208,7 +228,7 @@ datadog:
   #
   # volumes:
   #   - hostPath:
-  #     path: <HOST_PATH>
+  #       path: <HOST_PATH>
   #     name: <VOLUME_NAME>
 
   ## @param volumeMounts - list of objects - optional
@@ -279,6 +299,47 @@ datadog:
   #   cpu: 200m
   #   memory: 256Mi
 
+## @param systemProbe - object - required
+## Enable systemProbe agent and provide custom configs
+#
+systemProbe:
+  ## @param enabled - boolean - required
+  ## Set this to true to enable system-probe agent
+  #
+  enabled: false
+
+  ## @param debugPort - integer - required
+  ## Specify the port to expose pprof and expvar for system-probe agent
+  #
+  debugPort: 0
+
+  ## @param enableConntrack - boolean - required
+  ## Enable the system-probe agent to connect to the netlink/conntrack subsystem to add NAT information to connection data
+  ## Ref: http://conntrack-tools.netfilter.org/
+  #
+  enableConntrack: true
+
+  ## @param seccomp - string - required
+  ## Apply an ad-hoc seccomp profile to the system-probe agent to restrict its privileges
+  ## Note that this will break `kubectl exec … -c system-probe -- /bin/bash`
+  #
+  seccomp: localhost/system-probe
+
+  ## @param seccompRoot - string - required
+  ## Specify the seccomp profile root directory
+  #
+  seccompRoot: /var/lib/kubelet/seccomp
+
+  ## @param bpfDebug - boolean - required
+  ## Enable logging for kernel debug
+  #
+  bpfDebug: false
+
+  ## @param apparmor profile - string - required
+  ## specify a apparmor profile for system-probe
+  #
+  apparmor: unconfined
+
 ## @param clusterAgent - object - required
 ## This is the Datadog Cluster Agent implementation that handles cluster-wide
 ## metrics more cleanly, separates concerns for better rbac, and implements
@@ -295,7 +356,7 @@ clusterAgent:
   containerName: cluster-agent
   image:
     repository: datadog/cluster-agent
-    tag: 1.3.2
+    tag: 1.4.0
     pullPolicy: IfNotPresent
 
   ## @param token - string - required
@@ -312,6 +373,17 @@ clusterAgent:
   #
   metricsProvider:
     enabled: false
+
+    ## Configuration for the service for the cluster-agent metrics server
+    #
+    service:
+      ## @param type - string - optional
+      ##
+      #
+      type: ClusterIP
+      ## @param port - int - optional
+      ##
+      port: 443
 
   ## @param clusterChecks - object - required
   ## Enable the Cluster Checks feature on both the cluster-agents and the daemonset
@@ -351,6 +423,13 @@ clusterAgent:
 
   # priorityClassName: system-cluster-critical
 
+  ## @param nodeSelector - object - optional
+  ## Allow the Cluster Agent Deployment to schedule on selected nodes
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  #
+  # nodeSelector: {}
+
   ## @param livenessProbe - object - optional
   ## Override the agent's liveness probe logic from the default:
   ## In case of issues with the probe, you can disable it with the
@@ -359,6 +438,16 @@ clusterAgent:
   # livenessProbe:
   #   exec:
   #     command: ["/bin/true"]
+
+  ## @param strategy - string - optional
+  ## Allow the Cluster Agent deployment to perform a rolling update on helm update
+  ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+  #
+  # strategy:
+  #   type: RollingUpdate
+  #   rollingUpdate:
+  #     maxSurge: 1
+  #     maxUnavailable: 0
 
   ## @param podAnnotations - list of key:value strings - optional
   ## Annotations to add to the cluster-agents's pod(s)
@@ -370,6 +459,32 @@ clusterAgent:
   ## Override the cluster-agent's readiness probe logic from the default:
   #
   # readinessProbe:
+
+  ## @param useHostNetwork - boolean - optional
+  ## Bind ports on the hostNetwork. Useful for CNI networking where hostPort might
+  ## not be supported. The ports need to be available on all hosts. It can be
+  ## used for custom metrics instead of a service endpoint.
+  ##
+  ## WARNING: Make sure that hosts using this are properly firewalled otherwise
+  ## metrics and traces are accepted from any host able to connect to this host.
+  #
+  # useHostNetwork: true
+
+  ## @param volumes - list of objects - optional
+  ## Specify additional volumes to mount in the cluster-agent container
+  #
+  # volumes:
+  #   - hostPath:
+  #       path: <HOST_PATH>
+  #     name: <VOLUME_NAME>
+
+  ## @param volumeMounts - list of objects - optional
+  ## Specify additional volumes to mount in the cluster-agent container
+  #
+  # volumeMounts:
+  #   - name: <VOLUME_NAME>
+  #     mountPath: <CONTAINER_PATH>
+  #     readOnly: true
 
 rbac:
 
@@ -514,6 +629,30 @@ daemonset:
       #    cpu: 100m
       #    memory: 200Mi
 
+    systemProbe:
+      ## @param env - list - required
+      ## Additionnal environment variables for the system-probe container.
+      #
+      # env:
+
+      ## @param logLevel - string - optional
+      ## Set logging verbosity, valid log levels are:
+      ## trace, debug, info, warn, error, critical, and off.
+      ## If not set, fall back to the value of datadog.logLevel.
+      #
+      # logLevel: INFO
+
+      ## @param resources - object - required
+      ## Resource requests and limits for the system-probe container.
+      #
+      resources: {}
+      #  requests:
+      #    cpu: 100m
+      #    memory: 200Mi
+      #  limits:
+      #    cpu: 100m
+      #    memory: 200Mi
+
   ## @param useHostNetwork - boolean - optional
   ## Bind ports on the hostNetwork. Useful for CNI networking where hostPort might
   ## not be supported. The ports need to be available on all hosts. It Can be
@@ -567,7 +706,10 @@ daemonset:
   ## Allow the DaemonSet to perform a rolling update on helm update
   ## ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
   #
-  # updateStrategy: RollingUpdate
+  # updateStrategy:
+  #   type: RollingUpdate
+  #   rollingUpdate:
+  #     maxUnavailable: "10%"
 
   ## @param priorityClassName - string - optional
   ## Sets PriorityClassName if defined.
@@ -583,6 +725,36 @@ daemonset:
   #  Configures a configmap to provide the agent configuration
   #
   # useConfigMap: false
+
+  ## @param customAgentConfig - object - optional
+  ## Specify custom contents for the datadog agent config (datadog.yaml).
+  ## ref: https://docs.datadoghq.com/agent/guide/agent-configuration-files/?tab=agentv6
+  ## ref: https://github.com/DataDog/datadog-agent/blob/master/pkg/config/config_template.yaml
+  #
+  # customAgentConfig:
+  #   # Autodiscovery for Kubernetes
+  #   listeners:
+  #     - name: kubelet
+  #   config_providers:
+  #     - name: kubelet
+  #       polling: true
+  #     # needed to support legacy docker label config templates
+  #     - name: docker
+  #       polling: true
+  #
+  #   # Enable APM by setting the DD_APM_ENABLED envvar to true, or override this configuration
+  #   apm_config:
+  #     enabled: false
+  #     apm_non_local_traffic: true
+  #
+  #   # Enable java cgroup handling. Only one of those options should be enabled,
+  #   # depending on the agent version you are using along that chart.
+  #
+  #   # agent version < 6.15
+  #   # jmx_use_cgroup_memory_limit: true
+  #
+  #   # agent version >= 6.15
+  #   # jmx_use_container_support: true
 
 deployment:
   ## @param enabled - boolean - required
@@ -672,8 +844,18 @@ clusterchecksDeployment:
   #
   # affinity:
 
+  ## @param strategy - string - optional
+  ## Allow the ClusterChecks deployment to perform a rolling update on helm update
+  ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+  #
+  # strategy:
+  #   type: RollingUpdate
+  #   rollingUpdate:
+  #     maxSurge: 1
+  #     maxUnavailable: 0
+
   ## @param nodeSelector - object - optional
-  ## Allow the ClusterChecks Deploument to schedule on selected nodes
+  ## Allow the ClusterChecks Deployment to schedule on selected nodes
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   #
   # nodeSelector: {}

@@ -55,10 +55,10 @@ The following table lists the configurable parameters of the drone charts and th
 | Parameter                   | Description                                                                                   | Default                     |
 |-----------------------------|-----------------------------------------------------------------------------------------------|-----------------------------|
 | `images.server.repository`  | Drone **server** image                                                                        | `docker.io/drone/drone`     |
-| `images.server.tag`         | Drone **server** image tag                                                                    | `1.2`                       |
+| `images.server.tag`         | Drone **server** image tag                                                                    | `1.6.1`                       |
 | `images.server.pullPolicy`  | Drone **server** image pull policy                                                            | `IfNotPresent`              |
 | `images.agent.repository`   | Drone **agent** image                                                                         | `docker.io/drone/agent`     |
-| `images.agent.tag`          | Drone **agent** image tag                                                                     | `1.2`                       |
+| `images.agent.tag`          | Drone **agent** image tag                                                                     | `1.6.1`                       |
 | `images.agent.pullPolicy`   | Drone **agent** image pull policy                                                             | `IfNotPresent`              |
 | `images.dind.repository`    | Docker **dind** image                                                                         | `docker.io/library/docker`  |
 | `images.dind.tag`           | Docker **dind** image tag                                                                     | `18.06.1-ce-dind`           |
@@ -72,6 +72,8 @@ The following table lists the configurable parameters of the drone charts and th
 | `ingress.hosts`             | Ingress accepted hostnames                                                                    | `nil`                       |
 | `ingress.tls`               | Ingress TLS configuration                                                                     | `[]`                        |
 | `ingress.path`              | Ingress path mapping                                                                          | ``                       |
+| `licenseKey`                | Enterprise License Key                                                                        | ``                       |
+| `licenseKeySecret`          | Enterprise License Key Secret Name                                                            | ``                       |
 | `sourceControl.provider`               | name of source control provider [github,gitlab,gitea,gogs,bitbucketCloud,bitbucketServer]              | ``       |
 | `sourceControl.secret`               | name of secret containing source control keys and passwords              | ``       |
 | `sourceControl.github`               | values to configure github    | see values.yaml       |
@@ -82,6 +84,7 @@ The following table lists the configurable parameters of the drone charts and th
 | `sourceControl.bitbucketServer`               | values to configure bitbucket server (stash)    | see values.yaml       |
 | `server.host`               | Drone **server** hostname (should match callback url in oauth config)              | `(internal hostname)`       |
 | `server.protocol`               | Drone **server** scheme/protocol [http,https]                                                         | `http`       |
+| `server.httpPort`           | Drone **server** http port                                                                    | `80`                        |
 | `server.env`                | Drone **server** environment variables                                                        | `(default values)`          |
 | `server.envSecrets`         | Drone **server** secret environment variables                                                 | `(default values)`          |
 | `server.adminUser`         | Initial user to create and set as admin                                                 | ``          |
@@ -95,6 +98,7 @@ The following table lists the configurable parameters of the drone charts and th
 | `server.affinity`           | Drone **server** scheduling preferences                                                       | `{}`                        |
 | `server.nodeSelector`       | Drone **server** node labels for pod assignment                                               | `{}`                        |
 | `server.tolerations`        | Drone **server** node taints to tolerate                                                      | `[]`                        |
+| `server.securityContext`    | Drone **server** securityContext                                                              | `{}`                        |
 | `server.extraContainers`    | Additional sidecar containers                                                                 | `""`                        |
 | `server.extraVolumes`       | Additional volumes for use in extraContainers                                                 | `""`                        |
 | `agent.env`                 | Drone **agent** environment variables                                                         | `(default values)`          |
@@ -109,6 +113,7 @@ The following table lists the configurable parameters of the drone charts and th
 | `agent.readinessProbe` | Not currently used  | `{}` |
 | `agent.volumes`             | Additional volumes to make available to agent (shared by dind if used)                        | `nil`                       |
 | `agent.volumeMounts`        | Mount points for volumes                                                                      | `nil`                       |
+| `agent.rpcServerOverride`   | Override rpc server url                                                                       | `nil`                       |
 | `dind.enabled`              | Enable or disable **DinD**                                                                    | `true`                      |
 | `dind.driver`               | **DinD** storage driver                                                                       | `overlay2`                  |
 | `dind.volumeMounts`         | Mount points for volumes (defined in agent.volumes)                                           | `nil`                       |

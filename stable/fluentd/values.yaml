@@ -27,9 +27,24 @@ extraEnvVars:
 #        name: secret_name
 #        key: secret_key
 
+# extraVolumes:
+#   - name: es-certs
+#     secret:
+#       defaultMode: 420
+#       secretName: es-certs
+# extraVolumeMounts:
+#   - name: es-certs
+#     mountPath: /certs
+#     readOnly: true
+
+plugins:
+  enabled: false
+  pluginsList: []
+
 service:
   annotations: {}
   type: ClusterIP
+  # loadBalancerIP:
   # type: NodePort
   # nodePort:
   # Used to create Service records
@@ -146,6 +161,17 @@ resources: {}
   # requests:
   #  cpu: 500m
   #  memory: 200Mi
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
 
 ## Persist data to a persistent volume
 persistence:

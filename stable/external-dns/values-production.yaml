@@ -13,7 +13,7 @@
 image:
   registry: docker.io
   repository: bitnami/external-dns
-  tag: 0.5.16-debian-9-r0
+  tag: 0.5.18-debian-9-r4
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -44,9 +44,30 @@ sources:
 ##
 provider: aws
 
-## Whether to publish DNS records for ClusterIP services or not (optional)
+## Flags related to processing sources
+## ref: https://github.com/kubernetes-incubator/external-dns/blob/master/pkg/apis/externaldns/types.go#L272
+##
+## Limit sources of endpoints to a specific namespace (default: all namespaces)
+##
+namespace: ""
+## Templated strings that are used to generate DNS names from sources that don't define a hostname themselves
+##
+fqdnTemplates: []
+## Combine FQDN template and annotations instead of overwriting
+##
+combineFQDNAnnotation: false
+## Ignore hostname annotation when generating DNS names, valid only when fqdn-template is set
+##
+ignoreHostnameAnnotation: false
+## Allow external-dns to publish DNS records for ClusterIP services
 ##
 publishInternalServices: false
+## Allow external-dns to publish host-ip for headless services
+##
+publishHostIP: false
+## The service types to take care about (default: all, options: ClusterIP, NodePort, LoadBalancer, ExternalName)
+##
+serviceTypeFilter: []
 
 ## AWS configuration to be set via arguments/env. variables
 ##
@@ -74,6 +95,12 @@ aws:
   ## Zone Tag Filter
   ##
   zoneTags: []
+  ## Enable AWS Prefer CNAME. Available values are: true, false
+  ##
+  preferCNAME: ""
+  ## Enable AWS evaluation of target health. Available values are: true, false
+  ##
+  evaluateTargetHealth: ""  
 
 ## Azure configuration to be set via arguments/env. variables
 ##
@@ -81,14 +108,37 @@ azure:
   ## When a secret to load azure.json is not specified,
   ## the host's /etc/kubernetes/azure.json will be used
   ##
+  ## Deprecated: please use tenantId, subscriptionId, aadClientId and aadClientSecret values instead.
+  ##
   secretName: ""
   ## Azure resource group to use
   ##
+  cloud: ""
+  ## Azure Cloud to use
+  ##
   resourceGroup: ""
+  ## Azure tenant ID to use
+  ##
+  tenantId: ""
+  ## Azure subscription ID to use
+  ##
+  subscriptionId: ""
+  ## Azure Application Client ID to use
+  ##
+  aadClientId: ""
+  ## Azure Application Client Secret to use
+  ##
+  aadClientSecret: ""
+  ## If you use Azure MSI, this should be set to true
+  ##
+  useManagedIdentityExtension: false
 
 ## Cloudflare configuration to be set via arguments/env. variables
 ##
 cloudflare:
+  ## `CF_API_TOKEN` to set in the environment
+  ##
+  apiToken: ""
   ## `CF_API_KEY` to set in the environment
   ##
   apiKey: ""
@@ -111,7 +161,7 @@ coredns:
   ## If enabled all the values under this key must hold a valid data
   ##
   etcdTLS:
-    ## Enable or disable secure communication and client authentication to the etcd cluster 
+    ## Enable or disable secure communication and client authentication to the etcd cluster
     ##
     enabled: true
     ## Name of the existing secret containing cert files for client communication
@@ -224,6 +274,10 @@ interval: "1m"
 ## - panic, debug, info, warn, error, fatal
 ##
 logLevel: info
+## Formats of the ExternalDNS logs. Available values are:
+## - text, json
+##
+logFormat: text
 ## Modify how DNS records are sychronized between sources and providers (options: sync, upsert-only)
 ##
 policy: upsert-only
@@ -283,10 +337,12 @@ podLabels: {}
 ##
 priorityClassName: ""
 
-## Installs the DNSEndpoint CRD
+## Options for the source type "crd"
 ##
 crd:
+  ## Install and use the integrated DNSEndpoint CRD
   create: false
+  ## Change these to use an external DNSEndpoint CRD (E.g. from kubefed)
   apiversion: ""
   kind: ""
 
@@ -324,11 +380,14 @@ service:
 ## https://kubernetes.io/docs/reference/access-authn-authz/rbac/
 ##
 rbac:
-  create: false
+  create: true
   ## Service Account for pods
   ## https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
   ##
   serviceAccountName: default
+  ## Annotations for the Service Account
+  ##
+  serviceAccountAnnotations: {}
   ## RBAC API version
   ##
   apiVersion: v1beta1
@@ -391,3 +450,30 @@ metrics:
   enabled: true
   ## Metrics exporter pod Annotation and Labels
   ##
+  # podAnnotations:
+  #   prometheus.io/scrape: "true"
+  #   prometheus.io/port: "7979"
+
+  ## Prometheus Operator ServiceMonitor configuration
+  ##
+  serviceMonitor:
+    enabled: false
+    ## Namespace in which Prometheus is running
+    ##
+    # namespace: monitoring
+
+    ## Interval at which metrics should be scraped.
+    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#endpoint
+    ##
+    # interval: 10s
+
+    ## Timeout after which the scrape is ended
+    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#endpoint
+    ##
+    # scrapeTimeout: 10s
+
+    ## ServiceMonitor selector labels
+    ## ref: https://github.com/bitnami/charts/tree/master/bitnami/prometheus-operator#prometheus-configuration
+    ##
+    # selector:
+    #   prometheus: my-prometheus

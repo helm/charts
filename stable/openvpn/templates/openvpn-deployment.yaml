@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "openvpn.fullname" . }}
@@ -28,6 +28,23 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
         {{- end }}
     spec:
+{{- if .Values.ipForwardInitContainer }}
+      initContainers:
+        - args:
+            - -c
+            - sysctl -w net.ipv4.ip_forward=1
+          command:
+            - /bin/sh
+          image: busybox:1.29
+          imagePullPolicy: IfNotPresent
+          name: sysctl
+          resources:
+            requests:
+              cpu: 1m
+              memory: 1Mi
+          securityContext:
+            privileged: true
+{{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -44,9 +61,9 @@ spec:
             add:
               - NET_ADMIN
         readinessProbe:
-          initialDelaySeconds: 5
-          periodSeconds: 5
-          successThreshold: 2
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
           exec:
             command:
             - nc
@@ -85,7 +102,7 @@ spec:
         {{- else if .Values.openvpn.keystoreSecret }}
         secret:
           secretName: "{{ .Values.openvpn.keystoreSecret }}"
-          defaultMode: 448
+          defaultMode: 0600
           items:
           - key: "server.key"
             path: "pki/private/server.key"
@@ -98,6 +115,7 @@ spec:
           {{- if .Values.openvpn.useCrl }}
           - key: "crl.pem"
             path: "crl.pem"
+            mode: 0644
           {{- end }}
           {{- if .Values.openvpn.taKey }}
           - key: "ta.key"
@@ -109,4 +127,8 @@ spec:
       {{- if .Values.nodeSelector }}
       nodeSelector:
         {{ toYaml .Values.nodeSelector }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
       {{- end }}

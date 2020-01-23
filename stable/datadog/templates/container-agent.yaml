@@ -6,32 +6,33 @@
   resources:
 {{ toYaml .Values.daemonset.containers.agent.resources | indent 4 }}
   ports:
-  - containerPort: 8125
+  - containerPort: {{ default 8125 .Values.datadog.dogStatsDPort }}
     {{- if .Values.daemonset.useHostPort }}
-    hostPort: 8125
+    hostPort: {{ default 8125 .Values.datadog.dogStatsDPort }}
     {{- end }}
     name: dogstatsdport
     protocol: UDP
   env:
     {{- include "containers-common-env" . | nindent 4 }}
     {{- if .Values.datadog.clusterName }}
+    {{- if not (regexMatch "^([a-z]([a-z0-9\\-]{0,38}[a-z0-9])?\\.)*([a-z]([a-z0-9\\-]{0,38}[a-z0-9])?)$" .Values.datadog.clusterName) }}
+    {{- fail "Your `clusterName` isn’t valid. It must be dot-separated tokens where a token start with a lowercase letter followed by up to 39 lowercase letters, numbers, or hyphens and cannot end with a hyphen."}}
+    {{- end}}
     - name: DD_CLUSTER_NAME
       value: {{ .Values.datadog.clusterName | quote }}
-    {{- end }}
-    {{- if .Values.datadog.site }}
-    - name: DD_SITE
-      value: {{ .Values.datadog.site | quote }}
-    {{- end }}
-    {{- if .Values.datadog.dd_url }}
-    - name: DD_DD_URL
-      value: {{ .Values.datadog.dd_url | quote }}
     {{- end }}
     {{- if .Values.datadog.logLevel }}
     - name: DD_LOG_LEVEL
       value: {{ .Values.daemonset.containers.agent.logLevel | default .Values.datadog.logLevel | quote }}
     {{- end }}
+    {{- if .Values.datadog.dogStatsDPort }}
+    - name: DD_DOGSTATD_PORT
+      value: {{ .Values.datadog.dogStatsDPort | quote }}
+    {{- end }}
     {{- if .Values.datadog.nonLocalTraffic }}
     - name: DD_DOGSTATSD_NON_LOCAL_TRAFFIC
+      value: {{ .Values.datadog.nonLocalTraffic | quote }}
+    - name: DD_APM_NON_LOCAL_TRAFFIC
       value: {{ .Values.datadog.nonLocalTraffic | quote }}
     {{- end }}
     {{- if .Values.datadog.dogstatsdOriginDetection }}
@@ -69,6 +70,10 @@
         secretKeyRef:
           name: {{ template "clusterAgent.tokenSecretName" . }}
           key: token
+    {{- end }}
+    {{- if .Values.datadog.nodeLabelsAsTags }}
+    - name: DD_KUBERNETES_NODE_LABELS_AS_TAGS
+      value: '{{ toJson .Values.datadog.nodeLabelsAsTags }}'
     {{- end }}
     {{- if .Values.datadog.podLabelsAsTags }}
     - name: DD_KUBERNETES_POD_LABELS_AS_TAGS
@@ -108,6 +113,11 @@
   volumeMounts:
     - name: config
       mountPath: /etc/datadog-agent
+    {{- if .Values.daemonset.useConfigMap }}
+    - name: {{ template "datadog.fullname" . }}-datadog-yaml
+      mountPath: /etc/datadog-agent/datadog.yaml
+      subPath: datadog.yaml
+    {{- end }}
     {{- if .Values.datadog.useCriSocketVolume }}
     - name: runtimesocket
       mountPath: {{ default "/var/run/docker.sock" .Values.datadog.criSocketPath | quote }}

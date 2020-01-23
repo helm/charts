@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "odoo.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "odoo.fullname" . }}
@@ -103,4 +103,8 @@ spec:
           claimName: {{ .Values.persistence.existingClaim | default (include "odoo.fullname" .) }}
       {{- else }}
         emptyDir: {}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
       {{- end }}

@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "rabbitmq.fullname" . }}
@@ -29,8 +29,11 @@ spec:
       {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
       {{- end }}
-      {{- if .Values.podAnnotations }}
       annotations:
+        {{- if or (not .Values.rabbitmq.existingErlangSecret) (not .Values.rabbitmq.existingPasswordSecret) }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        {{- end }}
+      {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
     spec:
@@ -42,8 +45,7 @@ spec:
       serviceAccountName: {{ template "rabbitmq.fullname" . }}
       {{- end }}
       {{- if .Values.affinity }}
-      affinity:
-{{ toYaml .Values.affinity | indent 8 }}
+      affinity: {{- include "rabbitmq.tplValue" (dict "value" .Values.affinity "context" .) | nindent 8 }}
       {{- end }}
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
@@ -95,34 +97,6 @@ spec:
             {{- end }}
             #replace the default password that is generated
             sed -i "/CHANGEME/cdefault_pass=${RABBITMQ_PASSWORD//\\/\\\\}" /opt/bitnami/rabbitmq/etc/rabbitmq/rabbitmq.conf
-            #api check for probes
-            cat > /opt/bitnami/rabbitmq/sbin/rabbitmq-api-check <<EOF
-            #!/bin/sh
-            set -e
-            URL=\$1
-            EXPECTED=\$2
-            ACTUAL=\$(curl --silent --show-error --fail "\${URL}")
-            echo "\${ACTUAL}"
-            test "\${EXPECTED}" = "\${ACTUAL}"
-            EOF
-            chmod a+x /opt/bitnami/rabbitmq/sbin/rabbitmq-api-check
-            #health check for probes, handle period during rabbtmq sync
-            cat > /opt/bitnami/rabbitmq/sbin/rabbitmq-health-check <<EOF
-            #!/bin/sh
-            START_FLAG=/opt/bitnami/rabbitmq/var/lib/rabbitmq/.start
-            if [ -f \${START_FLAG} ]; then
-               rabbitmqctl node_health_check
-               RESULT=\$?
-               if [ \$RESULT -ne 0 ]; then
-                  rabbitmqctl status
-                  exit $?
-               fi
-               rm -f \${START_FLAG}
-               exit \${RESULT}
-            fi
-            rabbitmq-api-check \$1 \$2
-            EOF
-            chmod a+x /opt/bitnami/rabbitmq/sbin/rabbitmq-health-check
             {{- if and .Values.persistence.enabled .Values.forceBoot.enabled }}
             if [ -d "{{ .Values.persistence.path }}/mnesia/${RABBITMQ_NODENAME}" ]; then rabbitmqctl force_boot; fi
             {{- end }}
@@ -134,6 +108,16 @@ spec:
         volumeMounts:
           - name: config-volume
             mountPath: /opt/bitnami/rabbitmq/conf
+          - name: healthchecks
+            mountPath: /usr/local/sbin/rabbitmq-api-check
+            subPath: rabbitmq-api-check
+          - name: healthchecks
+            mountPath: /usr/local/sbin/rabbitmq-health-check
+            subPath: rabbitmq-health-check
+          {{- if .Values.rabbitmq.tls.enabled }}
+          - name: {{ template "rabbitmq.fullname" . }}-certs
+            mountPath: /opt/bitnami/rabbitmq/certs
+          {{- end }}
           - name: data
             mountPath: "{{ .Values.persistence.path }}"
           {{- if .Values.rabbitmq.loadDefinition.enabled }}
@@ -146,17 +130,24 @@ spec:
           containerPort: 4369
         - name: amqp
           containerPort: {{ .Values.service.port }}
+        {{- if .Values.rabbitmq.tls.enabled }}
+        - name: amqp-ssl
+          containerPort: {{ .Values.service.tlsPort }}
+        {{- end }}
         - name: dist
           containerPort: {{ .Values.service.distPort }}
         - name: stats
           containerPort: {{ .Values.service.managerPort }}
+{{- if .Values.service.extraContainerPorts }}
+{{ toYaml .Values.service.extraContainerPorts | indent 8 }}
+{{- end }}
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           exec:
             command:
               - sh
               - -c
-              - rabbitmq-api-check "http://{{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD@127.0.0.1:{{ .Values.service.managerPort }}/api/healthchecks/node" '{"status":"ok"}' 
+              - rabbitmq-api-check "http://{{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD@127.0.0.1:{{ .Values.service.managerPort }}/api/healthchecks/node" '{"status":"ok"}'
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
@@ -175,6 +166,16 @@ spec:
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           successThreshold: {{ .Values.readinessProbe.successThreshold }}
+        {{- end }}
+        {{- if and (gt .Values.replicas 1.0) ( eq .Values.rabbitmq.clustering.rebalance true) }}
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - until rabbitmqctl cluster_status >/dev/null; do echo Waiting for
+                cluster readiness...; sleep 5 ; done; rabbitmq-queues rebalance "all"
         {{- end }}
         env:
           - name: BITNAMI_DEBUG
@@ -207,6 +208,18 @@ spec:
             {{- else }}
             value: "rabbit@$(MY_POD_NAME)"
             {{- end }}
+          {{- end }}
+          {{- if .Values.ldap.enabled }}
+          - name: RABBITMQ_LDAP_ENABLE
+            value: "yes"
+          - name: RABBITMQ_LDAP_TLS
+            value: {{ ternary "yes" "no" .Values.ldap.tls.enabled | quote }}
+          - name: RABBITMQ_LDAP_SERVER
+            value: {{ .Values.ldap.server }}
+          - name: RABBITMQ_LDAP_SERVER_PORT
+            value: {{ .Values.ldap.port | quote }}
+          - name: RABBITMQ_LDAP_USER_DN_PATTERN
+            value: {{ .Values.ldap.user_dn_pattern }}
           {{- end }}
           - name: RABBITMQ_LOGS
             value: {{ .Values.rabbitmq.logs | quote }}
@@ -243,9 +256,11 @@ spec:
               name: {{ template "rabbitmq.secretPasswordName" . }}
               key: rabbitmq-password
         - name: RABBIT_URL
-          value: "http://localhost:{{ .Values.service.managerPort }}"
+          value: "http://{{ .Values.metrics.rabbitmqAddress }}:{{ .Values.service.managerPort }}"
         - name: RABBIT_USER
           value: {{ .Values.rabbitmq.username }}
+        - name: PUBLISH_PORT
+          value: "{{ .Values.metrics.port }}"
         {{ if .Values.metrics.capabilities }}
         - name: RABBIT_CAPABILITIES
           value: "{{ .Values.metrics.capabilities }}"
@@ -256,29 +271,53 @@ spec:
         {{- end }}
         ports:
         - name: metrics
-          containerPort: 9090
+          containerPort: {{ .Values.metrics.port }}
+        {{- if .Values.metrics.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
             path: /metrics
             port: metrics
-          initialDelaySeconds: 15
-          timeoutSeconds: 5
+          initialDelaySeconds: {{ .Values.metrics.livenessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.metrics.livenessProbe.timeoutSeconds }}
+          periodSeconds: {{ .Values.metrics.livenessProbe.periodSeconds }}
+          failureThreshold: {{ .Values.metrics.livenessProbe.failureThreshold }}
+          successThreshold: {{ .Values.metrics.livenessProbe.successThreshold }}
+        {{- end }}
+        {{- if .Values.metrics.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
             path: /metrics
             port: metrics
-          initialDelaySeconds: 5
-          timeoutSeconds: 5
+          initialDelaySeconds: {{ .Values.metrics.readinessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.metrics.readinessProbe.timeoutSeconds }}
+          periodSeconds: {{ .Values.metrics.readinessProbe.periodSeconds }}
+          failureThreshold: {{ .Values.metrics.readinessProbe.failureThreshold }}
+          successThreshold: {{ .Values.metrics.readinessProbe.successThreshold }}
+        {{- end }}
         resources:
 {{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
-
       {{- if .Values.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
         runAsUser: {{ .Values.securityContext.runAsUser }}
+        {{- if .Values.securityContext.extra }}
+        {{- toYaml .Values.securityContext.extra | nindent 8 }}
+        {{- end }}
       {{- end }}
       volumes:
+        {{- if .Values.rabbitmq.tls.enabled }}
+        - name: {{ template "rabbitmq.fullname" . }}-certs
+          secret:
+            secretName: {{ if .Values.rabbitmq.tls.existingSecret }}{{ .Values.rabbitmq.tls.existingSecret }}{{- else }}{{ template "rabbitmq.fullname" . }}-certs{{- end }}
+            items:
+            - key: ca_certificate.pem
+              path: ca_certificate.pem
+            - key: server_certificate.pem
+              path: server_certificate.pem
+            - key: server_key.pem
+              path: server_key.pem
+        {{- end }}
         - name: config-volume
           configMap:
             name: {{ template "rabbitmq.fullname" . }}-config
@@ -288,9 +327,19 @@ spec:
         {{- if .Values.rabbitmq.advancedConfiguration}}
             - key: advanced.config
               path: advanced.config
-        {{- end }}      
+        {{- end }}
             - key: enabled_plugins
               path: enabled_plugins
+        - name: healthchecks
+          configMap:
+            name: {{ template "rabbitmq.fullname" . }}-healthchecks
+            items:
+            - key: rabbitmq-health-check
+              path: rabbitmq-health-check
+              mode: 111
+            - key: rabbitmq-api-check
+              path: rabbitmq-api-check
+              mode: 111
         {{- if .Values.rabbitmq.loadDefinition.enabled }}
         - name: load-definition-volume
           secret:

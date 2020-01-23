@@ -1,0 +1,63 @@
+{{- if .Values.ingressController.admissionWebhook.enabled }}
+{{- $cn := printf "%s.%s.svc" ( include "kong.service.validationWebhook" . ) .Release.Namespace }}
+{{- $ca := genCA "kong-admission-ca" 3650 -}}
+{{- $cert := genSignedCert $cn nil nil 3650 $ca -}}
+kind: ValidatingWebhookConfiguration
+{{- if .Capabilities.APIVersions.Has "admissionregistration.k8s.io/v1" }}
+apiVersion: admissionregistration.k8s.io/v1
+{{- else }}
+apiVersion: admissionregistration.k8s.io/v1beta1
+{{- end }}
+metadata:
+  name: {{ template "kong.fullname" . }}-validations
+  labels:
+    {{- include "kong.metaLabels" . | nindent 4 }}
+webhooks:
+- name: validations.kong.konghq.com
+  failurePolicy: {{ .Values.ingressController.admissionWebhook.failurePolicy }}
+  sideEffects: None
+  admissionReviewVersions: ["v1beta1"]
+  rules:
+  - apiGroups:
+    - configuration.konghq.com
+    apiVersions:
+    - '*'
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - kongconsumers
+    - kongplugins
+  clientConfig:
+    caBundle: {{ b64enc $ca.Cert }}
+    service:
+      name: {{ template "kong.service.validationWebhook" . }}
+      namespace: {{ .Release.Namespace }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "kong.service.validationWebhook" . }}
+  labels:
+    {{- include "kong.metaLabels" . | nindent 4 }}
+spec:
+  ports:
+  - name: webhook
+    port: 443
+    protocol: TCP
+    targetPort: webhook
+  selector:
+    {{- include "kong.metaLabels" . | nindent 4 }}
+    app.kubernetes.io/component: app
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ template "kong.fullname" . }}-validation-webhook-keypair
+  labels:
+    {{- include "kong.metaLabels" . | nindent 4 }}
+type: kubernetes.io/tls
+data:
+  tls.crt: {{ b64enc $cert.Cert }}
+  tls.key: {{ b64enc $cert.Key }}
+{{ end }}

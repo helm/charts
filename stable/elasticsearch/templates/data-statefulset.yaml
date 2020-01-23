@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   labels:
@@ -9,6 +9,12 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "elasticsearch.data.fullname" . }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "elasticsearch.name" . }}
+      component: "{{ .Values.data.name }}"
+      release: {{ .Release.Name }}
+      role: data
   serviceName: {{ template "elasticsearch.data.fullname" . }}
   replicas: {{ .Values.data.replicas }}
   template:

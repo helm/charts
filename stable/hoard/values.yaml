@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: quay.io/monax/hoard
-  tag: 3.0.1
+  tag: 6.0.0
   pullPolicy: IfNotPresent
 
 config:
@@ -11,6 +11,7 @@ config:
     # aws | azure | filesystem | gcp | ipfs
     storagetype: filesystem
     addressencoding: base64
+    chunksize: 65536
     filesystemconfig:
       rootdirectory: "/data"
     cloudconfig:
@@ -31,8 +32,8 @@ config:
       file: "keyring"
 
 controller:
-  enabled: true
-  keep: true
+  enabled: false
+  keep: false
 
 secrets:
   creds: "cloud-credentials"

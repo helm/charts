@@ -3,17 +3,18 @@ kind: ConfigMap
 metadata:
   name: {{ template "kong.fullname" . }}-default-custom-server-blocks
   labels:
-    app: {{ template "kong.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "kong.metaLabels" . | nindent 4 }}
 data:
   servers.conf: |
-    # Prometheus metrics server
+    # Prometheus metrics and health-checking server
     server {
         server_name kong_prometheus_exporter;
         listen 0.0.0.0:9542; # can be any other port as well
         access_log off;
+        location /status {
+            default_type text/plain;
+            return 200;
+        }
         location /metrics {
             default_type text/plain;
             content_by_lua_block {

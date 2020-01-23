@@ -43,6 +43,28 @@ Return the appropriate apiVersion for networkpolicy.
 {{- end -}}
 
 {{/*
+Return the appropriate apiGroup for PodSecurityPolicy.
+*/}}
+{{- define "podSecurityPolicy.apiGroup" -}}
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "policy" -}}
+{{- else -}}
+{{- print "extensions" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the appropriate apiVersion for PodSecurityPolicy.
+*/}}
+{{- define "podSecurityPolicy.apiVersion" -}}
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "policy/v1beta1" -}}
+{{- else -}}
+{{- print "extensions/v1beta1" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Return the proper Redis image name
 */}}
 {{- define "redis.image" -}}
@@ -150,9 +172,33 @@ Get the password secret.
 */}}
 {{- define "redis.secretName" -}}
 {{- if .Values.existingSecret -}}
-{{- printf "%s" (tpl .Values.existingSecret .) -}}
+{{- printf "%s" .Values.existingSecret -}}
 {{- else -}}
 {{- printf "%s" (include "redis.fullname" .) -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Get the password key to be retrieved from Redis secret.
+*/}}
+{{- define "redis.secretPasswordKey" -}}
+{{- if and .Values.existingSecret .Values.existingSecretPasswordKey -}}
+{{- printf "%s" .Values.existingSecretPasswordKey -}}
+{{- else -}}
+{{- printf "redis-password" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return Redis password
+*/}}
+{{- define "redis.password" -}}
+{{- if not (empty .Values.global.redis.password) }}
+    {{- .Values.global.redis.password -}}
+{{- else if not (empty .Values.password) -}}
+    {{- .Values.password -}}
+{{- else -}}
+    {{- randAlphaNum 10 -}}
 {{- end -}}
 {{- end -}}
 
@@ -162,7 +208,7 @@ Return sysctl image
 {{- define "redis.sysctl.image" -}}
 {{- $registryName :=  default "docker.io" .Values.sysctlImage.registry -}}
 {{- $repositoryName := .Values.sysctlImage.repository -}}
-{{- $tag := default "latest" .Values.sysctlImage.tag | toString -}}
+{{- $tag := default "stretch" .Values.sysctlImage.tag | toString -}}
 {{/*
 Helm 2.11 supports the assignment of a value to a variable defined in a different scope,
 but Helm 2.9 and 2.10 doesn't support it, so we need to implement this if-else logic.

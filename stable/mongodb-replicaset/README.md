@@ -36,6 +36,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 | ----------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------- |
 | `replicas`                          | Number of replicas in the replica set                                     | `3`                                                 |
 | `replicaSetName`                    | The name of the replica set                                               | `rs0`                                               |
+| `skipInitialization`                    | If `true` skip replica set initialization during bootstrapping                                              | `false`      
 | `podDisruptionBudget`               | Pod disruption budget                                                     | `{}`                                                |
 | `port`                              | MongoDB port                                                              | `27017`                                             |
 | `imagePullSecrets`                  | Image pull secrets                                                        | `[]`                                                |
@@ -61,17 +62,21 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `persistentVolume.annotations`      | Persistent volume annotations                                             | `{}`                                                |
 | `terminationGracePeriodSeconds`     | Duration in seconds the pod needs to terminate gracefully                 | `30`                                                |
 | `tls.enabled`                       | Enable MongoDB TLS support including authentication                       | `false`                                             |
+| `tls.mode`                          | Set the SSL operation mode (disabled, allowSSL, preferSSL, requireSSL)    | `requireSSL`                                        |
 | `tls.cacert`                        | The CA certificate used for the members                                   | Our self signed CA certificate                      |
 | `tls.cakey`                         | The CA key used for the members                                           | Our key for the self signed CA certificate          |
 | `init.resources`                    | Pod resource requests and limits (for init containers)                    | `{}`                                                |
 | `init.timeout`                      | The amount of time in seconds to wait for bootstrap to finish             | `900`                                               |
 | `metrics.enabled`                   | Enable Prometheus compatible metrics for pods and replicasets             | `false`                                             |
-| `metrics.image.repository`          | Image name for metrics exporter                                           | `ssalaues/mongodb-exporter`                         |
-| `metrics.image.tag`                 | Image tag for metrics exporter                                            | `0.6.1`                                             |
+| `metrics.image.repository`          | Image name for metrics exporter                                           | `bitnami/mongodb-exporter`                          |
+| `metrics.image.tag`                 | Image tag for metrics exporter                                            | `0.9.0-debian-9-r2`                                 |
 | `metrics.image.pullPolicy`          | Image pull policy for metrics exporter                                    | `IfNotPresent`                                      |
 | `metrics.port`                      | Port for metrics exporter                                                 | `9216`                                              |
 | `metrics.path`                      | URL Path to expose metics                                                 | `/metrics`                                          |
 | `metrics.resources`                 | Metrics pod resource requests and limits                                  | `{}`                                                |
+| `metrics.securityContext.enabled`   | Enable security context                                                   | `true`                                              |
+| `metrics.securityContext.fsGroup`   | Group ID for the metrics container                                        | `1001`                                              |
+| `metrics.securityContext.runAsUser` | User ID for the metrics container                                         | `1001`                                              |
 | `metrics.socketTimeout`             | Time to wait for a non-responding socket                                  | `3s`                                                |
 | `metrics.syncTimeout`               | Time an operation with this session will wait before returning an error   | `1m`                                                |
 | `metrics.prometheusServiceDiscovery`| Adds annotations for Prometheus ServiceDiscovery                          | `true`                                              |
@@ -380,3 +385,50 @@ Tail the logs to debug running indexes or to follow their progress
 ```sh
 kubectl exec -it $RELEASE-mongodb-replicaset-0 -c bootstrap -- tail -f /work-dir/log.txt
 ```
+
+### Migrate existing ReplicaSets into Kubernetes
+If you have an existing ReplicaSet that currently is deployed outside of Kubernetes and want to move it into a cluster you can do so by using the `skipInitialization` flag.
+
+First set the `skipInitialization` variable to `true` in values.yaml and install the Helm chart. That way you end up with uninitialized MongoDB pods that can be added to the existing ReplicaSet.
+
+Now take care of realizing the DNS correct resolution of all ReplicaSet members. In Kubernetes you can for example use an `ExternalName`.
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb01
+  namespace: mongo
+spec:
+  type: ExternalName
+  externalName: mongodb01.mydomain.com
+``` 
+
+If you also put each StatefulSet member behind a loadbalancer the ReplicaSet members outside of the cluster will also be able to reach the pods inside the cluster.
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-0
+  namespace: mongo
+spec:
+  selector:
+    statefulset.kubernetes.io/pod-name: mongodb-0
+  ports:
+    - port: 27017
+      targetPort: 27017
+  type: LoadBalancer
+```
+
+Now all that is left to do is to put the LoadBalancer IP into the `/etc/hosts` file (or realize the DNS resolution through another way)
+```
+1.2.3.4       mongodb-0
+5.6.7.8       mongodb-1
+```
+
+With a setup like this each replicaset member can resolve the DNS entry of each other and you can just add the new pods to your existing MongoDB cluster as if they where just normal nodes.
+
+Of course you need to make sure to get your security settings right. Enforced TLS is a good idea in a setup like this. Also make sure that you activate auth and get the firewall settings right.
+
+Once you fully migrated remove the old nodes from the replicaset.

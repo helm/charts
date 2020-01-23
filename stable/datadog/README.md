@@ -10,7 +10,7 @@ See the [Datadog JMX integration](https://docs.datadoghq.com/integrations/java/)
 
 Kubernetes 1.4+ or OpenShift 3.4+, note that:
 
-* the Datadog Agent supports Kubernetes 1.3+
+* the Datadog Agent supports Kubernetes 1.4+
 * The Datadog chart's defaults are tailored to Kubernetes 1.7.6+, see [Datadog Agent legacy Kubernetes versions documentation](https://github.com/DataDog/datadog-agent/tree/master/Dockerfiles/agent#legacy-kubernetes-versions) for adjustments you might need to make for older versions
 
 ## Quick start
@@ -67,7 +67,7 @@ The suggested approach is to delete the release and reinstall it.
 
 #### From 1.0.0 onwards
 
-Starting with version 1.0.0, this chart does not support deploying Agent 5.x anymore. If you cannot upgrade to Agent 6.x, you can use a previous version of the chart by calling helm install with `--version 0.18.0`.
+Starting with version 1.0.0, this chart does not support deploying Agent 5.x anymore. If you cannot upgrade to Agent 6.x or later, you can use a previous version of the chart by calling helm install with `--version 0.18.0`.
 
 See [0.18.1's README](https://github.com/helm/charts/blob/847f737479bb78d89f8fb650db25627558fbe1f0/stable/datadog/README.md) to see which options were supported at the time.
 
@@ -128,6 +128,27 @@ then upgrade your Datadog Helm chart:
 helm upgrade -f datadog-values.yaml <RELEASE_NAME> stable/datadog --recreate-pods
 ```
 
+### Enabling System Probe Collection
+
+The system-probe agent only runs in dedicated container environment. Update your [datadog-values.yaml](values.yaml) file with the system-probe collection configuration:
+
+```
+systemProbe:
+  (...)
+  enabled: true
+
+(...)
+
+daemonset:
+  useDedicatedContainers: true
+```
+
+then upgrade your Datadog Helm chart:
+
+```bash
+helm upgrade -f datadog-values.yaml <RELEASE_NAME> stable/datadog --recreate-pods
+```
+
 ### Kubernetes event collection
 
 Use the [Datadog Cluster Agent](#enabling-the-datadog-cluster-agent) to collect Kubernetes events. Please read [the official documentation](https://docs.datadoghq.com/agent/kubernetes/event_collection/) for more context.
@@ -175,7 +196,13 @@ For more details, please refer to [the documentation](https://docs.datadoghq.com
 
 ### Kubernetes Labels and Annotations
 
-To map Kubernetes pod labels and annotations to Datadog tags, provide a dictionary with kubernetes labels/annotations as keys and Datadog tags key as values in your [datadog-values.yaml](values.yaml) file:
+To map Kubernetes node labels and pod labels and annotations to Datadog tags, provide a dictionary with kubernetes labels/annotations as keys and Datadog tags key as values in your [datadog-values.yaml](values.yaml) file:
+
+```yaml
+nodeLabelsAsTags:
+  beta.kubernetes.io/instance-type: aws_instance_type
+  kubernetes.io/role: kube_role
+```
 
 ```yaml
 podAnnotationsAsTags:
@@ -236,18 +263,20 @@ helm install --name <RELEASE_NAME> \
 | `datadog.logsConfigContainerCollectAll`  | Collect logs from all containers                                                          | `nil`                                       |
 | `datadog.logsPointerHostPath`            | Host path to store the log tailing state in                                               | `/var/lib/datadog-agent/logs`               |
 | `datadog.apmEnabled`                     | Enable tracing from the host                                                              | `nil`                                       |
-| `datadog.processAgentEnabled`            | Enable live process monitoring                                                            | `nil`                                       |
+| `datadog.processAgentEnabled`            | Control live process and container monitoring. Possible values: `nil` for container monitoring only, `true` for container and process monitoring, `false` turns off process-agent | `nil`|
 | `datadog.checksd`                        | Additional custom checks as python code                                                   | `nil`                                       |
 | `datadog.confd`                          | Additional check configurations (static and Autodiscovery)                                | `nil`                                       |
 | `datadog.criSocketPath`                  | Path to the container runtime socket (if different from Docker)                           | `nil`                                       |
 | `datadog.tags`                           | Set host tags                                                                             | `nil`                                       |
-| `datadog.nonLocalTraffic`                | Enable statsd reporting from any external ip                                              | `False`                                     |
+| `datadog.nonLocalTraffic`                | Enable statsd reporting and APM from any external ip                                      | `False`                                     |
 | `datadog.useCriSocketVolume`             | Enable mounting the container runtime socket in Agent containers                          | `True`                                      |
 | `datadog.dogstatsdOriginDetection`       | Enable origin detection for container tagging                                             | `False`                                     |
+| `datadog.dogStatsDPort`                  | Used to override the default agent DogStatsD Port                                         | `8125`                                      |
 | `datadog.useDogStatsDSocketVolume`       | Enable dogstatsd over Unix Domain Socket                                                  | `False`                                     |
 | `datadog.dogStatsDSocketPath`            | Custom path to the socket, has to be located in the `/var/run/datadog` folder path        | `/var/run/datadog/dsd.socket`               |
 | `datadog.volumes`                        | Additional volumes for the daemonset or deployment                                        | `nil`                                       |
 | `datadog.volumeMounts`                   | Additional volumeMounts for the daemonset or deployment                                   | `nil`                                       |
+| `datadog.nodeLabelsAsTags`               | Kubernetes Node Labels to Datadog Tags mapping                                            | `nil`                                       |
 | `datadog.podAnnotationsAsTags`           | Kubernetes Annotations to Datadog Tags mapping                                            | `nil`                                       |
 | `datadog.podLabelsAsTags`                | Kubernetes Labels to Datadog Tags mapping                                                 | `nil`                                       |
 | `datadog.resources.requests.cpu`         | CPU resource requests                                                                     | `200m`                                      |
@@ -285,7 +314,16 @@ helm install --name <RELEASE_NAME> \
 | `daemonset.containers.traceAgent.resources.requests.cpu`         | CPU resource requests for the trace-agent container                                    | `100m`                                        |
 | `daemonset.containers.traceAgent.resources.limits.memory`        | Memory resource limits for the trace-agent container                                   | `200Mi`                                       |
 | `daemonset.containers.traceAgent.resources.requests.memory`      | Memory resource requests for the trace-agent container                                 | `200Mi`                                       |
+| `daemonset.containers.systemProbe.env`                            | Additional list of environment variables to use in the system-probe container           | `nil`                                         |
+| `daemonset.containers.systemProbe.logLevel`                       | System probe log verbosity                                                              | `INFO`                                        |
+| `daemonset.containers.systemProbe.resources.limits.cpu`           | CPU resource limits for the system-probe container                                      | `100m`                                        |
+| `daemonset.containers.systemProbe.resources.requests.cpu`         | CPU resource requests for the system-probe container                                    | `100m`                                        |
+| `daemonset.containers.systemProbe.resources.limits.memory`        | Memory resource limits for the system-probe container                                   | `200Mi`                                       |
+| `daemonset.containers.systemProbe.resources.requests.memory`      | Memory resource requests for the system-probe container                                 | `200Mi`                                       |
 | `daemonset.priorityClassName`            | Which Priority Class to associate with the daemonset                                      | `nil`                                       |
+| `daemonset.useConfigMap`                 | Configures a configmap to provide the agent configuration                                 | `false`                                     |
+| `daemonset.customAgentConfig`            | Specify custom contents for the datadog agent config (datadog.yaml).                      | `{}`                                        |
+| `daemonset.updateStrategy`               | Which update strategy to deploy the daemonset                                             | RollingUpdate with 10% maxUnavailable       |
 | `datadog.leaderElection`                 | Enable the leader Election feature                                                        | `false`                                     |
 | `datadog.leaderLeaseDuration`            | The duration for which a leader stays elected.                                            | 60 sec, 15 if Cluster Checks enabled        |
 | `datadog.collectEvents`                  | Enable Kubernetes event collection. Requires leader election.                             | `false`                                     |
@@ -306,10 +344,13 @@ helm install --name <RELEASE_NAME> \
 | `clusterAgent.image.pullPolicy`          | Image pull policy                                                                         | `IfNotPresent`                              |
 | `clusterAgent.image.pullSecrets`         | Image pull secrets                                                                        | `nil`                                       |
 | `clusterAgent.metricsProvider.enabled`   | Enable Datadog metrics as a source for HPA scaling                                        | `false`                                     |
+| `clusterAgent.metricsProvider.service.type` | The type of service to use for the clusterAgent metrics server                         | `ClusterIP`                                 |
+| `clusterAgent.metricsProvider.service.port` | The port for service to use for the clusterAgent metrics server                         | `443` .                                     |
 | `clusterAgent.clusterChecks.enabled`     | Enable Cluster Checks on both the Cluster Agent and the Agent daemonset                   | `false`                                     |
 | `clusterAgent.confd`                     | Additional check configurations (static and Autodiscovery)                                | `nil`                                       |
 | `clusterAgent.podAnnotations`            | Annotations to add to the Cluster Agent Pod(s)                                            | `nil`                                       |
 | `clusterAgent.priorityClassName`         | Name of the priorityClass to apply to the Cluster Agent                                   | `nil`                                       |
+| `clusterAgent.nodeSelector`              | Node selectors to apply to the Cluster Agent deployment                                   | `nil`                                       |
 | `clusterAgent.resources.requests.cpu`    | CPU resource requests                                                                     | `200m`                                      |
 | `clusterAgent.resources.limits.cpu`      | CPU resource limits                                                                       | `200m`                                      |
 | `clusterAgent.resources.requests.memory` | Memory resource requests                                                                  | `256Mi`                                     |
@@ -317,6 +358,10 @@ helm install --name <RELEASE_NAME> \
 | `clusterAgent.tolerations`               | List of node taints to tolerate                                                           | `[]`                                        |
 | `clusterAgent.livenessProbe`             | Overrides the default liveness probe                                                      | http port 443 if external metrics enabled   |
 | `clusterAgent.readinessProbe`            | Overrides the default readiness probe                                                     | http port 443 if external metrics enabled   |
+| `clusterAgent.strategy`                  | Which update strategy to deploy the cluster-agent                                         | RollingUpdate with 0 maxUnavailable, 1 maxSurge |
+| `clusterAgent.useHostNetwork`            | If true, use the host's network                                                           | `nil`                                       |
+| `clusterAgent.volumes`                   | Additional volumes for the cluster-agent deployment                                       | `nil`                                       |
+| `clusterAgent.volumeMounts`              | Additional volumeMounts for the cluster-agent deployment                                  | `nil`                                       |
 | `clusterchecksDeployment.enabled`        | Enable Datadog agent deployment dedicated for running Cluster Checks. It allows having different resources (Request/Limit) for Cluster Checks agent pods.  | `false` |
 | `clusterchecksDeployment.env`                            | Additional Datadog environment variables for Cluster Checks Deployment                        | `nil`                                       |
 | `clusterchecksDeployment.resources.requests.cpu`         | CPU resource requests                                                                         | `200m`                                      |
@@ -327,5 +372,13 @@ helm install --name <RELEASE_NAME> \
 | `clusterchecksDeployment.tolerations`                    | List of node taints to tolerate                                                               | `nil`                                       |
 | `clusterchecksDeployment.affinity`                       | Node affinities                                                                               | avoid running pods on the same node         |
 | `clusterchecksDeployment.livenessProbe`                  | Overrides the default liveness probe                                                          | http port 5555                              |
-| `clusterchecksDeployment.rbac.dedicated`                  | If true, use dedicated RBAC resources for clusterchecks agent's pods                          | `false`                                     |
+| `clusterchecksDeployment.rbac.dedicated`                 | If true, use dedicated RBAC resources for clusterchecks agent's pods                          | `false`                                     |
 | `clusterchecksDeployment.rbac.serviceAccount`            | existing ServiceAccount to use (ignored if rbac.create=true) for clusterchecks                | `default`                                   |
+| `clusterchecksDeployment.strategy`                       | Which update strategy to deploy the Cluster Checks Deployment                                 | RollingUpdate with 0 maxUnavailable, 1 maxSurge |
+| `systemProbe.enabled`                  | If both this flag and `daemonset.useDedicatedContainers` are true, enable system probe collection 	        | `false`                                           |
+| `systemProbe.seccomp`                  | Apply an ad-hoc seccomp profile to system-probe to restrict its privileges                                 | `localhost/system-probe`                          |
+| `systemProbe.seccompRoot`              | Seccomp root directory for system-probe                                                                    | `/var/lib/kubelet/seccomp`                        |
+| `systemProbe.debugPort`                | The port to expose pprof and expvar for system-probe agent, it is not enabled if the value is set to 0     | `0`                                               |
+| `systemProbe.enableConntrack`          | If true, system-probe connects to the netlink/conntrack subsystem to add NAT information to connection data. Ref: http://conntrack-tools.netfilter.org/| `true`|
+| `systemProbe.bpfDebug`                 | If true, system-probe writes debug logs to /sys/kernel/debug/tracing/trace_pipe                            | `false`                                           |
+| `systemProbe.apparmor`                 | Apparmor profile for system-probe                            | `unconfined`                                           |

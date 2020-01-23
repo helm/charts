@@ -63,11 +63,12 @@ Dependent charts can also have values overwritten. Preface values with postgresq
 Parameter                                            | Description                                                                                                | Default
 :--------------------------------------------------- | :--------------------------------------------------------------------------------------------------------- | :---------------------------------------------------
 `image.repository`                                   | Sentry image                                                                                               | `library/sentry`
-`image.tag`                                          | Sentry image tag                                                                                           | `9.1.1`
-`imagePullPolicy`                                    | Image pull policy                                                                                          | `IfNotPresent`
-`imagePullSecrets`                                   | Specify image pull secrets                                                                                 | `[]`
+`image.tag`                                          | Sentry image tag                                                                                           | `9.1.2`
+`image.pullPolicy`                                   | Image pull policy                                                                                          | `IfNotPresent`
+`image.imagePullSecrets`                             | Specify image pull secrets                                                                                 | `[]`
+`sentrySecret`                                       | Specify SENTRY_SECRET_KEY. If isn't specified it will be generated automatically.                          | `nil`
 `web.podAnnotations`                                 | Web pod annotations                                                                                        | `{}`
-`web.podLabels`                                      | Worker pod extra labels                                                                                    | `{}`
+`web.podLabels`                                      | Web pod extra labels                                                                                       | `{}`
 `web.replicacount`                                   | Amount of web pods to run                                                                                  | `1`
 `web.resources.limits`                               | Web resource limits                                                                                        | `{cpu: 500m, memory: 500Mi}`
 `web.resources.requests`                             | Web resource requests                                                                                      | `{cpu: 300m, memory: 300Mi}`
@@ -76,6 +77,8 @@ Parameter                                            | Description              
 `web.affinity`                                       | Affinity settings for web pod assignment                                                                   | `{}`
 `web.schedulerName`                                  | Name of an alternate scheduler for web pod                                                                 | `nil`
 `web.tolerations`                                    | Toleration labels for web pod assignment                                                                   | `[]`
+`web.probeInitialDelaySeconds`                       | The number of seconds before the probe doing healthcheck                                                   | `50`
+`web.priorityClassName`                              | The priorityClassName on web deployment                                                                    | `nil`
 `cron.podAnnotations`                                | Cron pod annotations                                                                                       | `{}`
 `cron.podLabels`                                     | Worker pod extra labels                                                                                    | `{}`
 `cron.replicacount`                                  | Amount of cron pods to run                                                                                 | `1`
@@ -85,6 +88,7 @@ Parameter                                            | Description              
 `cron.affinity`                                      | Affinity settings for cron pod assignment                                                                  | `{}`
 `cron.schedulerName`                                 | Name of an alternate scheduler for cron pod                                                                | `nil`
 `cron.tolerations`                                   | Toleration labels for cron pod assignment                                                                  | `[]`
+`cron.priorityClassName`                             | The priorityClassName on cron deployment                                                                   | `nil`
 `worker.podAnnotations`                              | Worker pod annotations                                                                                     | `{}`
 `worker.podLabels`                                   | Worker pod extra labels                                                                                    | `{}`
 `worker.replicacount`                                | Amount of worker pods to run                                                                               | `2`
@@ -95,6 +99,7 @@ Parameter                                            | Description              
 `worker.affinity`                                    | Affinity settings for worker pod assignment                                                                | `{}`
 `worker.tolerations`                                 | Toleration labels for worker pod assignment                                                                | `[]`
 `worker.concurrency`                                 | Celery worker concurrency                                                                                  | `nil`
+`worker.priorityClassName`                           | The priorityClassName on workers deployment                                                                | `nil`
 `user.create`                                        | Create the default admin                                                                                   | `true`
 `user.email`                                         | Username for default admin                                                                                 | `admin@sentry.local`
 `email.from_address`                                 | Email notifications are from                                                                               | `smtp`
@@ -104,6 +109,8 @@ Parameter                                            | Description              
 `email.password`                                     | SMTP password                                                                                              | `nil`
 `email.use_tls`                                      | SMTP TLS for security                                                                                      | `false`
 `email.enable_replies`                               | Allow email replies                                                                                        | `false`
+`email.existingSecret`                               | SMTP password from an existing secret                                                                      | `nil`
+`email.existingSecretKey`                            | Key to get from the `email.existingSecret` secret                                                          | `smtp-password`
 `service.type`                                       | Kubernetes service type                                                                                    | `LoadBalancer`
 `service.name`                                       | Kubernetes service name                                                                                    | `sentry`
 `service.externalPort`                               | Kubernetes external service port                                                                           | `9000`
@@ -117,15 +124,19 @@ Parameter                                            | Description              
 `ingress.path`                                       | path to address your Sentry installation                                                                   | `/`
 `ingress.tls`                                        | Ingress TLS configuration                                                                                  | `[]`
 `postgresql.enabled`                                 | Deploy postgres server (see below)                                                                         | `true`
-`postgresql.postgresDatabase`                        | Postgres database name                                                                                     | `sentry`
-`postgresql.postgresUser`                            | Postgres username                                                                                          | `sentry`
-`postgresql.postgresHost`                            | External postgres host                                                                                     | `nil`
-`postgresql.postgresPassword`                        | External postgres password                                                                                 | `nil`
-`postgresql.postgresPort`                            | External postgres port                                                                                     | `5432`
+`postgresql.postgresqlDatabase`                      | Postgres database name                                                                                     | `sentry`
+`postgresql.postgresqlUsername`                      | Postgres username                                                                                          | `postgres`
+`postgresql.postgresqlHost`                          | External postgres host                                                                                     | `nil`
+`postgresql.postgresqlPassword`                      | External/Internal postgres password                                                                        | `nil`
+`postgresql.postgresqlPort`                          | External postgres port                                                                                     | `5432`
+`postgresql.existingSecret`                          | Name of existing secret to use for the PostgreSQL password                                                 | `nil`
+`postgresql.existingSecretKey`                       | Key to get from the `postgresql.existingSecret` secret                                                     | `postgresql-password`
 `redis.enabled`                                      | Deploy redis server (see below)                                                                            | `true`
 `redis.host`                                         | External redis host                                                                                        | `nil`
 `redis.password`                                     | External redis password                                                                                    | `nil`
 `redis.port`                                         | External redis port                                                                                        | `6379`
+`redis.existingSecret`                               | Name of existing secret to use for the Redis password                                                      | `nil`
+`redis.existingSecretKey`                            | Key to get from the `redis.existingSecret` secret                                                          | `redis-password`
 `filestore.backend`                                  | Backend for Sentry Filestore                                                                               | `filesystem`
 `filestore.filesystem.path`                          | Location to store files for Sentry                                                                         | `/var/lib/sentry/files`
 `filestore.filesystem.persistence.enabled`           | Enable Sentry files persistence using PVC                                                                  | `true`
@@ -140,6 +151,10 @@ Parameter                                            | Description              
 `filestore.s3.accessKey`                             | S3 access key                                                                                              | `nil`
 `filestore.s3.secretKey`                             | S3 secret key                                                                                              | `nil`
 `filestore.s3.bucketName`                            | The name of the S3 bucket                                                                                  | `nil`
+`filestore.s3.endpointUrl`                           | The endpoint url of the S3 (using for "MinIO S3 Backend")                                                  | `nil`
+`filestore.s3.signature_version`                     | S3 signature version (optional)                                                                            | `nil`
+`filestore.s3.region_name`                           | S3 region name (optional)                                                                                  | `nil`
+`filestore.s3.default_acl`                           | S3 default acl (optional)                                                                                  | `nil`
 `config.configYml`                                   | Sentry config.yml file                                                                                     | ``
 `config.sentryConfPy`                                | Sentry sentry.conf.py file                                                                                 | ``
 `metrics.enabled`                                    | Start an exporter for sentry metrics                                                                       | `false`
@@ -161,6 +176,9 @@ Parameter                                            | Description              
 `hooks.affinity`                                     | Affinity settings for hooks pods                                                                           | `{}`
 `hooks.dbInit.resources.limits`                      | Hook job resource limits                                                                                   | `{memory: 3200Mi}`
 `hooks.dbInit.resources.requests`                    | Hook job resource requests                                                                                 | `{memory: 3000Mi}`
+`serviceAccount.name`                                | name of the ServiceAccount to be used by access-controlled resources | autogenerated
+`serviceAccount.create`                              | Configures if a ServiceAccount with this name should be created | `true`
+`serviceAccount.annotations`                         | Configures annotation for the ServiceAccount | `{}`
 
 Dependent charts can also have values overwritten. Preface values with postgresql. _or redis._
 
@@ -182,7 +200,9 @@ $ helm install --name my-release -f values.yaml stable/sentry
 
 ## PostgresSQL
 
-By default, PostgreSQL is installed as part of the chart. To use an external PostgreSQL server set `postgresql.enabled` to `false` and then set `postgresql.postgresHost` and `postgresql.postgresPassword`. The other options (`postgresql.postgresDatabase`, `postgresql.postgresUser` and `postgresql.postgresPort`) may also want changing from their default values.
+By default, PostgreSQL is installed as part of the chart. To use an external PostgreSQL server set `postgresql.enabled` to `false` and then set `postgresql.postgresHost` and `postgresql.postgresqlPassword`. The other options (`postgresql.postgresqlDatabase`, `postgresql.postgresqlUsername` and `postgresql.postgresqlPort`) may also want changing from their default values.
+
+To avoid issues when upgrade this chart, provide `postgresql.postgresqlPassword` for subsequent upgrades. This is due to an issue in the PostgreSQL chart where password will be overwritten with randomly generated passwords otherwise. See https://github.com/helm/charts/tree/master/stable/postgresql#upgrade for more detail.
 
 ## Redis
 
@@ -208,7 +228,7 @@ You may enable mounting of the sentry-data PV across worker and cron pods by cha
 
 The `persistence` keys have changed in charts 2.0.0 and newer, the following shows the mapping of keys from pre-2.0.0 to their current form:
 
-Previous Key                    | New Key 
+Previous Key                    | New Key
 :-------------------------------|---------
 `persistence.enabled`           | `filestore.filesystem.persistence.enabled`
 `persistence.existingClaim`     | `filestore.filesystem.persistence.existingClaim`

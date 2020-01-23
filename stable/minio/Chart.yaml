@@ -1,8 +1,8 @@
 apiVersion: v1
-description: MinIO is a high performance distributed object storage server, designed for large-scale private cloud infrastructure.
+description: MinIO is a high performance data infrastructure for machine learning, analytics and application data workloads.
 name: minio
-version: 2.5.12
-appVersion: RELEASE.2019-08-07T01-59-21Z
+version: 5.0.6
+appVersion: master
 keywords:
 - storage
 - object-storage
@@ -12,11 +12,7 @@ icon: https://min.io/resources/img/logo/MINIO_wordmark.png
 sources:
 - https://github.com/minio/minio
 maintainers:
-- name: Acaleph
-  email: hello@acale.ph
 - name: Minio
   email: dev@minio.io
-- name: nitisht
-  email: nitish@min.io
-- name: wlan0
-  email: sid@min.io
+- name: Acaleph
+  email: hello@acale.ph

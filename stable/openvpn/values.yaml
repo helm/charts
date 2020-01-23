@@ -33,6 +33,9 @@ service:
 #   backup.ark.heptio.com/backup-volumes: certs
 podAnnotations: {}
 
+# Add privileged init container to enable IPv4 forwarding
+ipForwardInitContainer: false
+
 resources:
   limits:
     cpu: 300m
@@ -40,6 +43,12 @@ resources:
   requests:
     cpu: 300m
     memory: 128Mi
+
+readinessProbe:
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  successThreshold: 2
+
 persistence:
   enabled: true
   # subPath: openvpn
@@ -74,6 +83,8 @@ openvpn:
   # OVPN_K8S_SVC_NETWORK:
   # Kubernetes service network subnet (optional).
   # OVPN_K8S_SVC_SUBNET:
+  # Set default route which openvpn figures basing on network routes inside openvpn pod
+  DEFAULT_ROUTE_ENABLED: true
   # Server certificate data
   # keystoreSecret:
   # secret with openvpn certificates. If specified, certificates are taken from the secret
@@ -89,10 +100,22 @@ openvpn:
   taKey: false
   # Override default cipher
   # cipher: AES-256-CBC
-  # Arbitrary lines appended to the end of the server configuration file
-  # conf: |
+  # Lines appended to the end of the server configuration file
+  # serverConf: |
   #  max-clients 100
   #  client-to-client
+
+  # Lines appended to the end of the client configuration file
+  # Example: if all of your clients are Ubuntu (18.04+) you may need to install
+  # the update-systemd-resolved package (apt install update-systemd-resolved) then
+  # set the following to make sure systemd-resolved routes DNS requests correctly:
+  # clientConf: |
+  #  script-security 2
+  #  up /etc/openvpn/update-systemd-resolved
+  #  up-restart
+  #  down /etc/openvpn/update-systemd-resolved
+  #  down-pre
+
   # Enable istio support for openvpn connections
   istio:
     enabled: false
@@ -105,3 +128,4 @@ openvpn:
 
 
 nodeSelector: {}
+tolerations: []

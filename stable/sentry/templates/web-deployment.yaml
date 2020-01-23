@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "sentry.fullname" . }}-web
@@ -8,6 +8,11 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+        app: {{ template "sentry.fullname" . }}
+        release: "{{ .Release.Name }}"
+        role: web
   replicas: {{ .Values.web.replicacount }}
   template:
     metadata:
@@ -15,6 +20,7 @@ spec:
         metrics-enabled: {{ .Values.metrics.enabled | quote }}
         checksum/configYml: {{ .Values.config.configYml | sha256sum }}
         checksum/sentryConfPy: {{ .Values.config.sentryConfPy | sha256sum }}
+        checksum/secrets.yaml: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
       {{- if .Values.web.podAnnotations }}
 {{ toYaml .Values.web.podAnnotations | indent 8 }}
       {{- end }}
@@ -22,10 +28,11 @@ spec:
         app: {{ template "sentry.fullname" . }}
         release: "{{ .Release.Name }}"
         role: web
-        {{- if .Values.worker.podLabels }}
-{{ toYaml .Values.worker.podLabels | indent 8 }}
+        {{- if .Values.web.podLabels }}
+{{ toYaml .Values.web.podLabels | indent 8 }}
         {{- end }}
     spec:
+      serviceAccountName: {{ template "sentry.serviceAccountName" . }}
       {{- if .Values.web.affinity }}
       affinity:
 {{ toYaml .Values.web.affinity | indent 8 }}
@@ -58,9 +65,9 @@ spec:
               name: {{ template "sentry.fullname" . }}
               key: sentry-secret
         - name: SENTRY_DB_USER
-          value: {{ default "sentry" .Values.postgresql.postgresUser | quote }}
+          value: {{ default "sentry" .Values.postgresql.postgresqlUsername | quote }}
         - name: SENTRY_DB_NAME
-          value: {{ default "sentry" .Values.postgresql.postgresDatabase | quote }}
+          value: {{ default "sentry" .Values.postgresql.postgresqlDatabase | quote }}
         - name: SENTRY_DB_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -69,7 +76,7 @@ spec:
             {{- else }}
               name: {{ template "sentry.postgresql.secret" . }}
             {{- end }}
-              key: postgres-password
+              key: {{ template "sentry.postgresql.secretKey" . }}
         - name: SENTRY_POSTGRES_HOST
           value: {{ template "sentry.postgresql.host" . }}
         - name: SENTRY_POSTGRES_PORT
@@ -83,7 +90,7 @@ spec:
             {{- else }}
               name: {{ template "sentry.redis.secret" . }}
             {{- end }}
-              key: redis-password
+              key: {{ template "sentry.redis.secretKey" . }}
         {{- end }}
         - name: SENTRY_REDIS_HOST
           value: {{ template "sentry.redis.host" . }}
@@ -131,7 +138,7 @@ spec:
             path: /_health/
             port: {{ .Values.service.internalPort }}
             scheme: HTTP
-          initialDelaySeconds: 50
+          initialDelaySeconds: {{ .Values.web.probeInitialDelaySeconds }}
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 2
@@ -141,7 +148,7 @@ spec:
             path: /_health/
             port: {{ .Values.service.internalPort }}
             scheme: HTTP
-          initialDelaySeconds: 50
+          initialDelaySeconds: {{ .Values.web.probeInitialDelaySeconds }}
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 2
@@ -163,3 +170,6 @@ spec:
         secret:
           secretName: {{ .Values.filestore.gcs.secretName }}
       {{ end }}
+      {{- if .Values.web.priorityClassName }}
+      priorityClassName: "{{ .Values.web.priorityClassName }}"
+      {{- end }}

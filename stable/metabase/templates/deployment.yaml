@@ -1,13 +1,17 @@
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "metabase.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "metabase.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "metabase.name" . }}
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
@@ -19,6 +23,9 @@ spec:
       labels:
         app: {{ template "metabase.name" . }}
         release: {{ .Release.Name }}
+        {{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | trim | indent 8 }}
+        {{- end }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -55,12 +62,12 @@ spec:
                 key: encryptionKey
           {{- end }}
           {{- if ne (.Values.database.type | lower) "h2" }}
-            {{- if .Values.database.connectionURI }}
+            {{- if or .Values.database.existingSecretConnectionURIKey .Values.database.connectionURI }}
           - name: MB_DB_CONNECTION_URI
             valueFrom:
               secretKeyRef:
-                name: {{ template "metabase.fullname" . }}-database
-                key: connectionURI
+                name: {{ or .Values.database.existingSecret (printf "%s-database" (include "metabase.fullname" .)) }}
+                key: {{ or .Values.database.existingSecretConnectionURIKey "connectionURI" }}
             {{- else }}
           - name: MB_DB_HOST
             value: {{ .Values.database.host | quote }}
@@ -71,13 +78,13 @@ spec:
           - name: MB_DB_USER
             valueFrom:
               secretKeyRef:
-                name: {{ template "metabase.fullname" . }}-database
-                key: username
+                name: {{ or .Values.database.existingSecret (printf "%s-database" (include "metabase.fullname" .)) }}
+                key: {{ or .Values.database.existingSecretUsernameKey "username" }}
           - name: MB_DB_PASS
             valueFrom:
               secretKeyRef:
-                name: {{ template "metabase.fullname" . }}-database
-                key: password
+                name: {{ or .Values.database.existingSecret (printf "%s-database" (include "metabase.fullname" .)) }}
+                key: {{ or .Values.database.existingSecretPasswordKey "password" }}
             {{- end }}
           {{- end }}
           - name: MB_PASSWORD_COMPLEXITY
@@ -108,7 +115,7 @@ spec:
               path: /
               port: {{ .Values.service.internalPort }}
             initialDelaySeconds: 120
-            timeoutSeconds: 5
+            timeoutSeconds: 30
             failureThreshold: 6
           readinessProbe:
             httpGet:

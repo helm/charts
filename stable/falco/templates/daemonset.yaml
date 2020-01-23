@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ template "falco.fullname" . }}
@@ -8,12 +8,19 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "falco.fullname" .}}
+      role: security
   template:
     metadata:
       name: {{ template "falco.fullname" .}}
       labels:
         app: {{ template "falco.fullname" .}}
         role: security
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/rules: {{ include (print $.Template.BasePath "/configmap-rules.yaml") . | sha256sum }}
     spec:
       serviceAccountName: {{ template "falco.serviceAccountName" .}}
       {{- if (and .Values.ebpf.enabled .Values.ebpf.settings.hostNetwork) }}
@@ -22,6 +29,14 @@ spec:
       {{- end }}
 {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
+{{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
 {{- end }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
@@ -35,9 +50,9 @@ spec:
             privileged: true
           args:
             - /usr/bin/falco
-            {{- if (and .Values.cri.enabled .Values.cri.socket) }}
+            {{- if .Values.containerd.enabled }}
             - --cri
-            - /host/var/run/cri.sock
+            - /host/run/containerd/containerd.sock
             {{- end }}
             - -K
             - /var/run/secrets/kubernetes.io/serviceaccount/token
@@ -73,16 +88,17 @@ spec:
               value: "{{ $value }}"
           {{- end }}
           volumeMounts:
-            {{- if (and .Values.docker.enabled .Values.docker.socket) }}
+            {{- if .Values.docker.enabled }}
             - mountPath: /host/var/run/docker.sock
               name: docker-socket
             {{- end}}
-            {{- if (and .Values.cri.enabled .Values.cri.socket) }}
-            - mountPath: /host/var/run/cri.sock
-              name: cri-socket
+            {{- if .Values.containerd.enabled }}
+            - mountPath: /host/run/containerd/containerd.sock
+              name: containerd-socket
             {{- end}}
             - mountPath: /host/dev
               name: dev-fs
+              readOnly: true
             - mountPath: /host/proc
               name: proc-fs
               readOnly: true
@@ -181,15 +197,15 @@ spec:
         - name: dshm
           emptyDir:
             medium: Memory
-        {{- if (and .Values.docker.enabled .Values.docker.socket) }}
+        {{- if .Values.docker.enabled }}
         - name: docker-socket
           hostPath:
             path: {{ .Values.docker.socket }}
         {{- end}}
-        {{- if (and .Values.cri.enabled .Values.cri.socket) }}
-        - name: cri-socket
+        {{- if .Values.containerd.enabled }}
+        - name: containerd-socket
           hostPath:
-            path: {{ .Values.cri.socket }}
+            path: {{ .Values.containerd.socket }}
         {{- end}}
         - name: dev-fs
           hostPath:
@@ -223,7 +239,7 @@ spec:
                 path: falco_rules.local.yaml
               - key: application_rules.yaml
                 path: rules.available/application_rules.yaml
-              {{- if .Values.falco.webserver.enabled }}
+              {{- if .Values.auditLog.enabled }}
               - key: k8s_audit_rules.yaml
                 path: k8s_audit_rules.yaml
               {{- end }}

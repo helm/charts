@@ -1,5 +1,5 @@
 {{- if or (eq .Values.resourceType "statefulset") (not (contains .Values.resourceType "deployment")) }}
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "nats.fullname" . }}
@@ -143,8 +143,7 @@ spec:
       - name: metrics
         image: {{ template "nats.metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
-        args:
-{{ toYaml .Values.metrics.args | indent 10 -}}
+        args: {{- toYaml .Values.metrics.args | nindent 10 }}
           - "http://localhost:{{ .Values.monitoring.service.port }}"
         ports:
         - name: metrics

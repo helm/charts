@@ -1,3 +1,4 @@
+{{- if .Values.ndmOperator.enabled }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -10,11 +11,13 @@ metadata:
     heritage: {{ .Release.Service }}
     component: ndm-operator
     openebs.io/component-name: ndm-operator
+    openebs.io/version: {{ .Values.release.version }}
     name: ndm-operator
 spec:
   replicas: {{ .Values.ndmOperator.replicas }}
   strategy:
-    type: {{ .Values.ndmOperator.upgradeStrategy }}
+    type: "Recreate"
+    rollingUpdate: null
   selector:
     matchLabels:
       app: {{ template "openebs.name" . }}
@@ -54,7 +57,7 @@ spec:
         - name: OPERATOR_NAME
           value: "node-disk-operator"
         - name: CLEANUP_JOB_IMAGE
-          value: "{{ .Values.ndmOperator.cleanupImage }}:{{ .Values.ndmOperator.cleanupImageTag }}"
+          value: "{{ .Values.helper.image }}:{{ .Values.helper.imageTag }}"
 {{- if .Values.ndmOperator.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.ndmOperator.nodeSelector | indent 8 }}
@@ -62,4 +65,5 @@ spec:
 {{- if .Values.ndmOperator.tolerations }}
       tolerations:
 {{ toYaml .Values.ndmOperator.tolerations | indent 8 }}
+{{- end }}
 {{- end }}

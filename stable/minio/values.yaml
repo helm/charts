@@ -1,3 +1,11 @@
+## Provide a name in place of minio for `app:` labels
+##
+nameOverride: ""
+
+## Provide a name to substitute for the full names of resources
+##
+fullnameOverride: ""
+
 ## set kubernetes cluster domain where minio is running
 ##
 clusterDomain: cluster.local
@@ -6,7 +14,7 @@ clusterDomain: cluster.local
 ##
 image:
   repository: minio/minio
-  tag: RELEASE.2019-08-07T01-59-21Z
+  tag: RELEASE.2020-01-16T22-40-29Z
   pullPolicy: IfNotPresent
 
 ## Set default image, imageTag, and imagePullPolicy for the `mc` (the minio
@@ -14,13 +22,16 @@ image:
 ##
 mcImage:
   repository: minio/mc
-  tag: RELEASE.2019-08-07T23-14-43Z
+  tag: RELEASE.2020-01-13T22-49-03Z
   pullPolicy: IfNotPresent
 
 ## minio server mode, i.e. standalone or distributed.
 ## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
 ##
 mode: standalone
+
+## Additional arguments to pass to minio binary
+extraArgs: []
 
 ## Update strategy for Deployments
 DeploymentUpdate:
@@ -39,15 +50,27 @@ priorityClassName: ""
 
 ## Set default accesskey, secretkey, Minio config file path, volume mount path and
 ## number of nodes (only used for Minio distributed mode)
+## AccessKey and secretKey is generated when not set
 ## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
 ##
 existingSecret: ""
 accessKey: "AKIAIOSFODNN7EXAMPLE"
 secretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
-configPath: "/root/.minio/"
-configPathmc: "/root/.mc/"
+certsPath: "/etc/minio/certs/"
+configPathmc: "/etc/minio/mc/"
 mountPath: "/export"
+
+## Override the root directory which the minio server should serve from.
+## If left empty, it defaults to the value of {{ .Values.mountPath }}
+## If defined, it must be a sub-directory of the path specified in {{ .Values.mountPath }}
+bucketRoot: ""
+
+# Number of drives attached to a node
+drivesPerNode: 1
+# Number of MinIO containers running
 replicas: 4
+# Number of expanded MinIO clusters
+zones: 1
 
 ## TLS Settings for Minio
 tls:
@@ -66,7 +89,7 @@ persistence:
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
   ## If defined, PVC must be created manually before volume will be bound
-  # existingClaim:
+  existingClaim: ""
 
   ## minio data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
@@ -77,8 +100,8 @@ persistence:
   ##
   ## Storage class of PV to bind. By default it looks for standard storage class.
   ## If the PV uses a different storage class, specify that here.
-  # storageClass: standard
-  # VolumeName: ""
+  storageClass: ""
+  VolumeName: ""
   accessMode: ReadWriteOnce
   size: 10Gi
 
@@ -97,8 +120,13 @@ service:
   clusterIP: ~
   port: 9000
   nodePort: 31311
-  # externalIPs:
+
+  ## List of IP addresses at which the Prometheus server service is available
+  ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+  ##
+  externalIPs: []
   #   - externalIp1
+
   annotations: {}
     # prometheus.io/scrape: 'true'
     # prometheus.io/path:   '/minio/prometheus/metrics'
@@ -109,6 +137,9 @@ service:
 
 ingress:
   enabled: false
+  labels: {}
+    # node-role.kubernetes.io/ingress: platform
+
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
@@ -132,6 +163,14 @@ nodeSelector: {}
 tolerations: []
 affinity: {}
 
+## Add stateful containers to have security context, if enabled MinIO will run as this
+## user and group NOTE: securityContext is only enabled if persistence.enabled=true
+securityContext:
+  enabled: false
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+
 # Additational pod annotations
 podAnnotations: {}
 
@@ -147,7 +186,7 @@ livenessProbe:
   successThreshold: 1
   failureThreshold: 3
 readinessProbe:
-  initialDelaySeconds: 5
+  initialDelaySeconds: 60
   periodSeconds: 15
   timeoutSeconds: 1
   successThreshold: 1
@@ -224,6 +263,13 @@ nasgateway:
   # a label like "pv: <value>", use value here.
   pv: ~
 
+## Use minio as Backblaze B2 gateway
+## https://github.com/minio/minio/blob/master/docs/gateway/b2.md
+b2gateway:
+  enabled: false
+  # Number of parallel instances
+  replicas: 4
+
 ## Use this field to add environment variables relevant to Minio server. These fields will be passed on to Minio container(s)
 ## when Chart is deployed
 environment:
@@ -252,6 +298,13 @@ environment:
 networkPolicy:
   enabled: false
   allowExternal: true
+
+## PodDisruptionBudget settings
+## ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+##
+podDisruptionBudget:
+  enabled: false
+  maxUnavailable: 1
 
 ## Specify the service account to use for the Minio pods. If 'create' is set to 'false'
 ## and 'name' is left unspecified, the account 'default' will be used.

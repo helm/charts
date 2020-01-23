@@ -1,8 +1,17 @@
 restartPolicy: Always
 
+podDisruptionBudget: {}
+  # maxUnavailable: 0
+
+strategy:
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0
+  type: RollingUpdate
+
 image:
   repository: prom/blackbox-exporter
-  tag: v0.14.0
+  tag: v0.16.0
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -32,11 +41,30 @@ config:
         no_follow_redirects: false
         preferred_ip_protocol: "ip4"
 
+extraConfigmapMounts: []
+  # - name: certs-configmap
+  #   mountPath: /etc/secrets/ssl/
+  #   subPath: certificates.crt # (optional)
+  #   configMap: certs-configmap
+  #   readOnly: true
+  #   defaultMode: 420
+
+## Additional secret mounts
+# Defines additional mounts with secrets. Secrets must be manually created in the namespace.
+extraSecretMounts: []
+  # - name: secret-files
+  #   mountPath: /etc/secrets
+  #   secretName: blackbox-secret-files
+  #   readOnly: true
+  #   defaultMode: 420
+
 resources: {}
   # limits:
   #   memory: 300Mi
   # requests:
   #   memory: 50Mi
+
+priorityClassName: ""
 
 service:
   annotations: {}
@@ -66,41 +94,24 @@ extraArgs: []
 #  --history.limit=1000
 
 replicas: 1
-## Monitors ConfigMap changes and POSTs to a URL
-## Ref: https://github.com/jimmidyson/configmap-reload
-##
-configmapReload:
-  ## configmap-reload container name
-  ##
-  name: configmap-reload
-
-  ## User to run configmap-reload container as
-  ##
-  runAsUser: 65534
-  runAsNonRoot: true
-
-  ## configmap-reload container image
-  ##
-  image:
-    repository: jimmidyson/configmap-reload
-    tag: v0.2.2
-    pullPolicy: IfNotPresent
-
-  ## configmap-reload resource requests and limits
-  ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
-  ##
-  resources: {}
 
 serviceMonitor:
   ## If true, a ServiceMonitor CRD is created for a prometheus operator
   ## https://github.com/coreos/prometheus-operator
   ##
   enabled: false
-  labels: {}
-  interval: 30s
-  scrapeTimeout: 30s
-  module: http_2xx
-  # The URL that blackbox will scrape
-  url: http://example.com/healthz
-  # Optional human readable URL that will appear in Prometheus / AlertManager
-  urlHumanReadable:  # www.changemeoriwillfail.com
+
+  # Default values that will be used for all ServiceMonitors created by `targets`
+  defaults:
+    labels: {}
+    interval: 30s
+    scrapeTimeout: 30s
+    module: http_2xx
+
+  targets:
+#    - name: example                    # Human readable URL that will appear in Prometheus / AlertManager
+#      url: http://example.com/healthz  # The URL that blackbox will scrape
+#      labels: {}                       # List of labels for ServiceMonitor. Overrides value set in `defaults`
+#      interval: 60s                    # Scraping interval. Overrides value set in `defaults`
+#      scrapeTimeout: 60s               # Scrape timeout. Overrides value set in `defaults`
+#      module: http_2xx                 # Module used for scraping. Overrides value set in `defaults`

@@ -175,7 +175,8 @@ data:
     program_output:
       enabled: {{ .Values.falco.programOutput.enabled }}
       keep_alive: {{ .Values.falco.programOutput.keepAlive }}
-      program: {{ .Values.falco.programOutput.program }}
+      program: |
+{{ .Values.falco.programOutput.program | indent 8 }}
     {{- end }}
 
     http_output:

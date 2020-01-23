@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "logstash.fullname" . }}
@@ -52,7 +52,9 @@ spec:
 {{ toYaml .Values.extraInitContainers | indent 8 }}
 {{- end }}
       containers:
-
+{{- if .Values.extraContainers }}
+{{ toYaml .Values.extraContainers | indent 8 }}
+{{- end }}
         ## logstash
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -78,7 +80,7 @@ spec:
               value: {{ .Values.exporter.logstash.target.port | quote }}
             ## Elasticsearch output
             - name: ELASTICSEARCH_HOST
-              value: {{ .Values.elasticsearch.host | quote }}
+              value: {{ tpl (.Values.elasticsearch.host | toString) $ | quote }}
             - name: ELASTICSEARCH_PORT
               value: {{ .Values.elasticsearch.port | quote }}
             # Logstash Java Options

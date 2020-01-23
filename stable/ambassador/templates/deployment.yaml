@@ -12,12 +12,15 @@ metadata:
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- if .Values.extraLabels }}
+      {{- toYaml .Values.extraLabels | nindent 4 }}
+    {{- end }}
     {{- if .Values.deploymentAnnotations }}
   annotations:
       {{- toYaml .Values.deploymentAnnotations | nindent 4 }}
     {{- end }}
 spec:
-{{- if not .Values.daemonSet }}
+{{- if and (not .Values.autoscaling.enabled) (not .Values.daemonSet) }}
   replicas: {{ .Values.replicaCount }}
 {{- end }}
   selector:
@@ -32,6 +35,9 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
       {{- if .Values.podLabels }}
         {{- toYaml .Values.podLabels | nindent 8 }}
+      {{- end }}
+      {{- if .Values.extraLabels }}
+        {{- toYaml .Values.extraLabels | nindent 8 }}
       {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
@@ -48,6 +54,12 @@ spec:
       priorityClassName: {{ .Values.priorityClassName | quote }}
       {{- end }}
       volumes:
+        - name: ambassador-pod-info
+          downwardAPI:
+            items:
+              - fieldRef:
+                  fieldPath: metadata.labels
+                path: labels
         {{- if .Values.prometheusExporter.enabled }}
         - name: stats-exporter-mapping-config
           configMap:
@@ -93,7 +105,11 @@ spec:
             {{- toYaml .Values.prometheusExporter.resources | nindent 12 }}
         {{- end }}
         - name: {{ .Chart.Name }}
+          {{- if and .Values.pro.enabled (semverCompare ">0.6.0" .Values.pro.image.tag) }}
+          image: "{{ .Values.pro.image.repository }}:amb-core-{{ .Values.pro.image.tag }}"
+          {{ else }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             {{- range .Values.service.ports }}
@@ -110,6 +126,17 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.hostIP
+            {{- if and .Values.pro.enabled (semverCompare ">0.6.0" .Values.pro.image.tag) }}
+            - name: AMBASSADOR_LICENSE_KEY
+            {{- if .Values.pro.licenseKey.secret.enabled }}
+              valueFrom:
+                secretKeyRef:
+                  name: ambassador-pro-license-key
+                  key: key
+            {{ else }}
+              value: {{ .Values.pro.licenseKey.value }}
+            {{- end }}
+            {{- end }}
             {{- if .Values.prometheusExporter.enabled }}
             - name: STATSD_ENABLED
               value: "true"
@@ -138,15 +165,20 @@ spec:
             httpGet:
               path: /ambassador/v0/check_alive
               port: admin
-            initialDelaySeconds: 30
-            periodSeconds: 3
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           readinessProbe:
             httpGet:
               path: /ambassador/v0/check_ready
               port: admin
-            initialDelaySeconds: 30
-            periodSeconds: 3
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           volumeMounts:
+            - name: ambassador-pod-info
+              mountPath: /tmp/ambassador-pod-info
+              readOnly: true
           {{- if .Values.ambassadorConfig }}
             - name: ambassador-config
               mountPath: /ambassador/ambassador-config/ambassador-config.yaml
@@ -159,7 +191,11 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
         {{- if .Values.pro.enabled }}
         - name: ambassador-pro
-          image: "{{ .Values.pro.image.repository }}:{{ .Values.pro.image.tag }}"
+          {{ if .Values.pro.image.customBuildTag }}
+          image: "{{ .Values.pro.image.repository }}:{{ .Values.pro.image.customBuildTag }}"
+          {{ else }}
+          image: "{{ .Values.pro.image.repository }}:amb-sidecar-{{ .Values.pro.image.tag }}"
+          {{ end }}
           ports:
           - name: grpc-auth
             containerPort: {{ .Values.pro.ports.auth }}
@@ -187,7 +223,7 @@ spec:
             value: {{ .Values.env.AMBASSADOR_ID | quote }}
           {{- end }}
           - name: AMBASSADOR_LICENSE_KEY
-          {{- if .Values.pro.licenseKey.secret }}
+          {{- if .Values.pro.licenseKey.secret.enabled }}
             valueFrom:
               secretKeyRef:
                 name: ambassador-pro-license-key
@@ -204,7 +240,12 @@ spec:
           {{- end }}
           {{- end }}
           {{- end }}
+          resources:
+            {{- toYaml .Values.pro.resources | nindent 12 }}
         {{- end }}
+      {{- with .Values.sidecarContainers }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

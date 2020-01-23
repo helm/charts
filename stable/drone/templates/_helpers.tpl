@@ -15,6 +15,17 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this
 {{ end }}
 
 {{/*
+Allow overwrite of rpc server.
+*/}}
+{{ define "drone.rpcServer" }}
+{{- if .Values.agent.rpcServerOverride -}}
+  {{ .Values.agent.rpcServerOverride }}
+{{- else -}}
+  {{ printf "http://%s" (include "drone.fullname" .) }}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Create the name of the service account to use
 */}}
 {{- define "drone.serviceAccountName" -}}
@@ -45,5 +56,16 @@ Create the name of the service account to use for kubernetes pipelines
   {{ default $psa .Values.server.kubernetes.pipelineServiceAccount }}
 {{- else -}}
   {{ default "default" .Values.server.kubernetes.pipelineServiceAccount }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create the name of the secret for an enterprise license key
+*/}}
+{{- define "drone.licenseKeySecret" -}}
+{{- if .Values.licenseKeySecret -}}
+  {{ printf "%s" .Values.licenseKeySecret }}
+{{- else -}}
+  {{ printf "%s-%s" (include "drone.fullname" .) "license-key" | trunc 63 }}
 {{- end -}}
 {{- end -}}

@@ -1,12 +1,16 @@
 image:
   repository: quay.io/bitnami/sealed-secrets-controller
-  tag: v0.8.1
+  tag: v0.9.6
   pullPolicy: IfNotPresent
 
 resources: {}
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
+controller:
+  # controller.create: `true` if Sealed Secrets controller should be created
+  create: true
 
 serviceAccount:
   # serviceAccount.create: Whether to create a service account or not
@@ -21,6 +25,19 @@ rbac:
 
 # secretName: The name of the TLS secret containing the key used to encrypt secrets
 secretName: "sealed-secrets-key"
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /v1/cert.pem
+  hosts:
+    - chart-example.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
 
 crd:
   # crd.create: `true` if the crd resources should be created
