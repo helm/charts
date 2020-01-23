@@ -5,7 +5,7 @@ metadata:
   labels:
     app.kubernetes.io/name: {{ template "graylog.name" . }}
     helm.sh/chart: {{ template "graylog.chart" . }}
-    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+    app.kubernetes.io/managed-by: "Tiller"
     app.kubernetes.io/instance: "{{ .Release.Name }}"
     app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
 spec:
@@ -15,7 +15,7 @@ spec:
     matchLabels:
       app.kubernetes.io/name: {{ template "graylog.name" . }}
       app.kubernetes.io/instance: "{{ .Release.Name }}"
-      app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+      app.kubernetes.io/managed-by: "Tiller"
   updateStrategy:
     type: {{ .Values.graylog.updateStrategy }}
   template:
@@ -23,7 +23,7 @@ spec:
       labels:
         app.kubernetes.io/name: {{ template "graylog.name" . }}
         helm.sh/chart: {{ template "graylog.chart" . }}
-        app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+        app.kubernetes.io/managed-by: "Tiller"
         app.kubernetes.io/instance: "{{ .Release.Name }}"
         app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
       annotations:
