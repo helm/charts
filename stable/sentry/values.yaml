@@ -11,6 +11,11 @@ image:
 
 # How many web UI instances to run
 web:
+  hpa:
+    enabled: false
+    cputhreshold: 60
+    minpods: 1
+    maxpods: 10
   replicacount: 1
   resources: {}
     # limits:
@@ -57,6 +62,11 @@ cron:
 
 # How many worker instances to run
 worker:
+  hpa:
+    enabled: false
+    cputhreshold: 60
+    minpods: 1
+    maxpods: 10
   replicacount: 2
   resources: {}
     # limits:
