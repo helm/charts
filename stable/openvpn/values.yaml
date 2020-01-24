@@ -126,6 +126,12 @@ openvpn:
   # - -A FORWARD -m conntrack --ctstate NEW -d 10.240.0.0/255.255.0.0 -j ACCEPT
   # - -A FORWARD -j REJECT
 
+  # Enable CCD support
+  ccd:
+    enabled: false
+    config: {}
+    # johndoe: "ifconfig-push 10.240.100.10 10.240.100.11"
+    # janedoe: "ifconfig-push 10.240.100.20 10.240.100.21"
 
 nodeSelector: {}
 tolerations: []
