@@ -74,7 +74,21 @@ The command removes all the Kubernetes components associated with the chart and 
 | `tolerations`                           | Tolerations for pod assignment                                                        | []                                                          |
 | `zoneFiles`                             | Configure custom Zone files                                                           | []                                                          |
 | `extraSecrets`                          | Optional array of secrets to mount inside the CoreDNS container                       | []                                                          |
-| `customLabels`			  | Optional labels for Deployment, Pod, Service, ServiceMonitor objects		  | {}								|
+| `customLabels`                          | Optional labels for Deployment(s), Pod, Service, ServiceMonitor objects               | {}                                                          |
+| `autoscaler.enabled`                    | Optionally enabled a cluster-proportional-autoscaler for coredns                      | `false`                                                     |
+| `autoscaler.coresPerReplica`            | Number of cores in the cluster per coredns replica                                    | `256`                                                       |
+| `autoscaler.nodesPerReplica`            | Number of nodes in the cluster per coredns replica                                    | `16`                                                        |
+| `autoscaler.image.repository`           | The image repository to pull autoscaler from                                          | k8s.gcr.io/cluster-proportional-autoscaler-amd64            |
+| `autoscaler.image.tag`                  | The image tag to pull autoscaler from                                                 | `1.7.1`                                                    |
+| `autoscaler.image.pullPolicy`           | Image pull policy for the autoscaler                                                  | IfNotPresent                                                |
+| `autoscaler.affinity`                   | Affinity settings for pod assignment for autoscaler                                   | {}                                                          |
+| `autoscaler.nodeSelector`               | Node labels for pod assignment for autoscaler                                         | {}                                                          |
+| `autoscaler.tolerations`                | Tolerations for pod assignment for autoscaler                                         | []                                                          |
+| `autoscaler.resources.limits.cpu`       | Container maximum CPU for cluster-proportional-autoscaler                             | `20m`                                                       |
+| `autoscaler.resources.limits.memory`    | Container maximum memory for cluster-proportional-autoscaler                          | `10Mi`                                                      |
+| `autoscaler.resources.requests.cpu`     | Container requested CPU for cluster-proportional-autoscaler                           | `20m`                                                       |
+| `autoscaler.resources.requests.memory`  | Container requested memory for cluster-proportional-autoscaler                        | `10Mi`                                                      |
+
 See `values.yaml` for configuration notes. Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
@@ -104,3 +118,16 @@ create external loadbalancers with both "TCP" and "UDP" protocols. So
 When deploying CoreDNS with `serviceType="LoadBalancer"` on such cloud
 environments, make sure you do not attempt to use both protocols at the same
 time.
+
+## Autoscaling
+
+By setting `autoscaler.enabled = true` a
+[cluster-proportional-autoscaler](https://github.com/kubernetes-incubator/cluster-proportional-autoscaler)
+will be deployed. This will default to a coredns replica for every 256 cores, or
+16 nodes in the cluster. These can be changed with `autoscaler.coresPerReplica`
+and `autoscaler.nodesPerReplica`.
+
+This also creates a ServiceAccount, ClusterRole, and ClusterRoleBinding for
+the autoscaler deployment.
+
+`replicaCount` is ignored if this is enabled.

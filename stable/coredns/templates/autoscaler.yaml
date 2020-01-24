@@ -1,0 +1,159 @@
+{{- if .Values.autoscaler.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "coredns.fullname" . }}-autoscaler
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    {{- if .Values.isClusterService }}
+    k8s-app: {{ .Chart.Name }}-autoscaler
+    kubernetes.io/cluster-service: "true"
+    kubernetes.io/name: "CoreDNS"
+    {{- end }}
+    app.kubernetes.io/name: {{ template "coredns.name" . }}-autoscaler
+{{- if .Values.customLabels }}
+{{ toYaml .Values.customLabels | indent 4 }}
+{{- end }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      {{- if .Values.isClusterService }}
+      k8s-app: {{ .Chart.Name }}-autoscaler
+      {{- end }}
+      app.kubernetes.io/name: {{ template "coredns.name" . }}-autoscaler
+  template:
+    metadata:
+      labels:
+        {{- if .Values.isClusterService }}
+        k8s-app: {{ .Chart.Name }}-autoscaler
+        {{- end }}
+        app.kubernetes.io/name: {{ template "coredns.name" . }}-autoscaler
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        {{- if .Values.customLabels }}
+        {{ toYaml .Values.customLabels | nindent 8 }}
+        {{- end }}
+      annotations:
+        {{- if .Values.isClusterService }}
+        scheduler.alpha.kubernetes.io/critical-pod: ''
+        scheduler.alpha.kubernetes.io/tolerations: '[{"key":"CriticalAddonsOnly", "operator":"Exists"}]'
+        {{- end }}
+    spec:
+      serviceAccountName: {{ template "coredns.name" . }}-autoscaler
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName | quote }}
+      {{- end }}
+      {{- if .Values.autoscaler.affinity }}
+      affinity:
+{{ toYaml .Values.autoscaler.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.autoscaler.tolerations }}
+      tolerations:
+{{ toYaml .Values.autoscaler.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.autoscaler.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.autoscaler.nodeSelector | indent 8 }}
+      {{- end }}
+      containers:
+      - name: autoscaler
+        image: "{{ .Values.autoscaler.image.repository }}:{{ .Values.autoscaler.image.tag }}"
+        imagePullPolicy: {{ .Values.autoscaler.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.autoscaler.resources | indent 10 }}
+        command:
+          - /cluster-proportional-autoscaler
+          - --namespace={{ .Release.Namespace }}
+          - --configmap={{ template "coredns.name" . }}-autoscaler
+          - --target=Deployment/{{ template "coredns.fullname" . }}
+          # When cluster is using large nodes(with more cores), "coresPerReplica" should dominate.
+          # If using small nodes, "nodesPerReplica" should dominate.
+          - '--default-params={"linear":{"coresPerReplica":{{ .Values.autoscaler.coresPerReplica | quote }},"nodesPerReplica": {{ .Values.autoscaler.nodesPerReplica | quote }},"preventSinglePointFailure":true}}'
+          - --logtostderr=true
+          - --v=2
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ template "coredns.fullname" . }}-autoscaler
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    {{- if .Values.isClusterService }}
+    k8s-app: {{ .Chart.Name }}-autoscaler
+    kubernetes.io/cluster-service: "true"
+    kubernetes.io/name: "CoreDNS"
+    {{- end }}
+    app.kubernetes.io/name: {{ template "coredns.name" . }}-autoscaler
+{{- if .Values.customLabels }}
+{{ toYaml .Values.customLabels | indent 4 }}
+{{- end }}
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ template "coredns.fullname" . }}-autoscaler
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    {{- if .Values.isClusterService }}
+    k8s-app: {{ .Chart.Name }}-autoscaler
+    kubernetes.io/cluster-service: "true"
+    kubernetes.io/name: "CoreDNS"
+    {{- end }}
+    app.kubernetes.io/name: {{ template "coredns.name" . }}-autoscaler
+{{- if .Values.customLabels }}
+{{ toYaml .Values.customLabels | indent 4 }}
+{{- end }}
+rules:
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["list","watch"]
+  - apiGroups: [""]
+    resources: ["replicationcontrollers/scale"]
+    verbs: ["get", "update"]
+  - apiGroups: ["extensions", "apps"]
+    resources: ["deployments/scale", "replicasets/scale"]
+    verbs: ["get", "update"]
+# Remove the configmaps rule once below issue is fixed:
+# kubernetes-incubator/cluster-proportional-autoscaler#16
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "create"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ template "coredns.fullname" . }}-autoscaler
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    {{- if .Values.isClusterService }}
+    k8s-app: {{ .Chart.Name }}-autoscaler
+    kubernetes.io/cluster-service: "true"
+    kubernetes.io/name: "CoreDNS"
+    {{- end }}
+    app.kubernetes.io/name: {{ template "coredns.name" . }}-autoscaler
+{{- if .Values.customLabels }}
+{{ toYaml .Values.customLabels | indent 4 }}
+{{- end }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "coredns.name" . }}-autoscaler
+subjects:
+- kind: ServiceAccount
+  name: {{ template "coredns.name" . }}-autoscaler
+  namespace: {{ .Release.Namespace }}
+{{ end }}
