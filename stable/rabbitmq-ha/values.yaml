@@ -417,6 +417,9 @@ statefulSetAnnotations: {}
 podAntiAffinity: soft
 podAntiAffinityTopologyKey: "kubernetes.io/hostname"
 
+## Extra pod affinity settings
+podAffinity: {}
+
 ## Create default configMap
 ##
 existingConfigMap: false

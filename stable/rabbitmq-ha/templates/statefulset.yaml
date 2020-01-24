@@ -264,8 +264,10 @@ spec:
       {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
       {{- end }}
-      {{- if eq .Values.podAntiAffinity "hard" }}
+      {{- if or .Values.podAntiAffinity .Values.podAffinity }}
       affinity:
+      {{- end }}
+      {{- if eq .Values.podAntiAffinity "hard" }}
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - topologyKey: "{{ .Values.podAntiAffinityTopologyKey }}"
@@ -274,7 +276,6 @@ spec:
                   app: {{ template "rabbitmq-ha.name" . }}
                   release: {{ .Release.Name }}
       {{- else if eq .Values.podAntiAffinity "soft" }}
-      affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 1
@@ -285,6 +286,10 @@ spec:
                     app: {{ template "rabbitmq-ha.name" . }}
                     release: {{ .Release.Name }}
       {{- end }}
+    {{- with .Values.podAffinity }}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
       {{- end }}
