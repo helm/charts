@@ -79,6 +79,10 @@ Parameter                                            | Description              
 `web.tolerations`                                    | Toleration labels for web pod assignment                                                                   | `[]`
 `web.probeInitialDelaySeconds`                       | The number of seconds before the probe doing healthcheck                                                   | `50`
 `web.priorityClassName`                              | The priorityClassName on web deployment                                                                    | `nil`
+`web.hpa.enabled`                                    | Boolean to create a HorizontalPodAutoscaler for web deployment                                             | `false`
+`web.hpa.cputhreshold`                               | CPU threshold percent for the web HorizontalPodAutoscaler                                                  | `60`
+`web.hpa.minpods`                                    | Min pods for the web HorizontalPodAutoscaler                                                               | `1`
+`web.hpa.maxpods`                                    | Max pods for the web HorizontalPodAutoscaler                                                               | `10`
 `cron.podAnnotations`                                | Cron pod annotations                                                                                       | `{}`
 `cron.podLabels`                                     | Worker pod extra labels                                                                                    | `{}`
 `cron.replicacount`                                  | Amount of cron pods to run                                                                                 | `1`
@@ -100,6 +104,10 @@ Parameter                                            | Description              
 `worker.tolerations`                                 | Toleration labels for worker pod assignment                                                                | `[]`
 `worker.concurrency`                                 | Celery worker concurrency                                                                                  | `nil`
 `worker.priorityClassName`                           | The priorityClassName on workers deployment                                                                | `nil`
+`worker.hpa.enabled`                                 | Boolean to create a HorizontalPodAutoscaler for worker deployment                                          | `false`
+`worker.hpa.cputhreshold`                            | CPU threshold percent for the worker HorizontalPodAutoscaler                                               | `60`
+`worker.hpa.minpods`                                 | Min pods for the worker HorizontalPodAutoscaler                                                            | `1`
+`worker.hpa.maxpods`                                 | Max pods for the worker HorizontalPodAutoscaler                                                            | `10`
 `user.create`                                        | Create the default admin                                                                                   | `true`
 `user.email`                                         | Username for default admin                                                                                 | `admin@sentry.local`
 `email.from_address`                                 | Email notifications are from                                                                               | `smtp`
