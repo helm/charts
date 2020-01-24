@@ -23,11 +23,11 @@ To install the chart with the release name `my-release`:
 
 ```console
 $ # use ec2 instance role credential
-$ helm install --name my-release incubator/fluentd-cloudwatch
+$ helm install my-release incubator/fluentd-cloudwatch
 $ # or add aws_access_key_id and aws_access_key_id with the key/password of a AWS user with a policy to access  Cloudwatch
-$ helm install --name my-release incubator/fluentd-cloudwatch --set awsAccessKeyId=aws_access_key_id_here --set awsSecretAccessKey=aws_secret_access_key_here
+$ helm install my-release incubator/fluentd-cloudwatch --set awsAccessKeyId=aws_access_key_id_here --set awsSecretAccessKey=aws_secret_access_key_here
 $ # or add a role to aws with the correct policy to add to cloud watch
-$ helm install --name my-release incubator/fluentd-cloudwatch --set awsRole=roll_name_here
+$ helm install my-release incubator/fluentd-cloudwatch --set awsRole=roll_name_here
 ```
 
 The command deploys Fluentd Cloudwatch on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -89,7 +89,7 @@ If using fluentd-kubernetes-daemonset v0.12.43-cloudwatch, the container runs as
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install --name my-release \
+$ helm install my-release \
   --set awsRegion=us-east-1 \
     incubator/fluentd-cloudwatch
 ```
@@ -97,5 +97,5 @@ $ helm install --name my-release \
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml incubator/fluentd-cloudwatch
+$ helm install my-release -f values.yaml incubator/fluentd-cloudwatch
 ```

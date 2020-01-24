@@ -11,7 +11,7 @@ This chart is primarily intended to be used for YARN and MapReduce job execution
 To install the chart with the release name `hadoop` that utilizes 50% of the available node resources:
 
 ```
-$ helm install --name hadoop $(stable/hadoop/tools/calc_resources.sh 50) stable/hadoop
+$ helm install hadoop $(stable/hadoop/tools/calc_resources.sh 50) stable/hadoop
 ```
 
 > Note that you need at least 2GB of free memory per NodeManager pod, if your cluster isn't large enough, not all pods will be scheduled.
@@ -23,7 +23,7 @@ The optional [`calc_resources.sh`](./tools/calc_resources.sh) script is used as 
 To install the chart with persistent volumes:
 
 ```
-$ helm install --name hadoop $(stable/hadoop/tools/calc_resources.sh 50) \
+$ helm install hadoop $(stable/hadoop/tools/calc_resources.sh 50) \
   --set persistence.nameNode.enabled=true \
   --set persistence.nameNode.storageClass=standard \
   --set persistence.dataNode.enabled=true \

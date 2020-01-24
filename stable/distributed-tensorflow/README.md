@@ -20,7 +20,7 @@ This chart will create a TensorFlow cluster, and distribute a computation graph 
 * To install the chart with the release name `mnist`:
 
   ```bash
-  $ helm install --name mnist incubator/distributed-tensorflow
+  $ helm install mnist incubator/distributed-tensorflow
   ```
 
 * To install with custom values via file:

@@ -17,7 +17,7 @@ This approach is the [current recommended method to achieve overprovisioning](ht
 To install the chart with the release name `my-release` and default configuration:
 
 ```shell
-$ helm install --name my-release stable/cluster-overprovisioner
+$ helm install my-release stable/cluster-overprovisioner
 ```
 
 ## Uninstalling the Chart
@@ -60,5 +60,5 @@ The following table lists the configurable parameters for this chart and their d
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install` or provide a YAML file containing the values for the above parameters:
 
 ```shell
-$ helm install --name my-release stable/cluster-overprovisioner --values values.yaml
+$ helm install my-release stable/cluster-overprovisioner --values values.yaml
 ```

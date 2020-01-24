@@ -15,7 +15,7 @@ You will need a service token which you can get from [cloud.weave.works](https:/
 To install the chart:
 
 ```console
-$ helm install --name weave-cloud \
+$ helm install weave-cloud \
 --namespace weave \
 --set token=<YOUR_WEAVE_CLOUD_SERVICE_TOKEN> \
 stable/weave-cloud

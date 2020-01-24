@@ -28,7 +28,7 @@ deployment on a [Kubernetes](http://kubernetes.io) cluster using the
 To install the chart with the release name `neo4j-helm`:
 
 ```bash
-$ helm install --name neo4j-helm stable/neo4j --set acceptLicenseAgreement=yes --set neo4jPassword=mySecretPassword
+$ helm install neo4j-helm stable/neo4j --set acceptLicenseAgreement=yes --set neo4jPassword=mySecretPassword
 ```
 
 You must explicitly accept the neo4j license agreement for the installation to be successful.
@@ -88,7 +88,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 install`. For example,
 
 ```bash
-$ helm install --name neo4j-helm --set core.numberOfServers=5,readReplica.numberOfServers=3 stable/neo4j
+$ helm install neo4j-helm --set core.numberOfServers=5,readReplica.numberOfServers=3 stable/neo4j
 ```
 
 The above command creates a cluster containing 5 core servers and 3 read
@@ -98,7 +98,7 @@ Alternatively, a YAML file that specifies the values for the parameters can be
 provided while installing the chart. For example,
 
 ```bash
-$ helm install --name neo4j-helm -f values.yaml stable/neo4j
+$ helm install neo4j-helm -f values.yaml stable/neo4j
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

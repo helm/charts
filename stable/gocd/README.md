@@ -44,7 +44,7 @@ To install the chart with the release name `gocd-app`:
 
 ```bash
 $ helm repo add stable https://kubernetes-charts.storage.googleapis.com
-$ helm install --name gocd-app --namespace gocd stable/gocd
+$ helm install gocd-app --namespace gocd stable/gocd
 ```
 
 The command deploys GoCD on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -257,7 +257,7 @@ The value pvSelector must be specified so that the right persistence volume will
 3. Install the chart
 
 ```
-$ helm install --name gocd-app --set server.persistence.existingClaim=PVC_NAME stable/gocd
+$ helm install gocd-app --set server.persistence.existingClaim=PVC_NAME stable/gocd
 ```
 
 #### Additional Volumes

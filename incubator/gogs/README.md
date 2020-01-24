@@ -22,7 +22,7 @@ the [Helm][] package manager.
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release incubator/gogs
+$ helm install my-release incubator/gogs
 ```
 
 ## Uninstalling the Chart
@@ -67,7 +67,7 @@ Alternatively, a YAML file that specifies the values for the parameters can be
 provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml incubator/gogs
+$ helm install my-release -f values.yaml incubator/gogs
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

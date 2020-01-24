@@ -39,7 +39,7 @@ This chart deploys a **private** [Ethereum](https://www.ethereum.org/) network o
 2. Install the chart as follows:
 
     ```console
-    $ helm install --name my-release stable/ethereum
+    $ helm install my-release stable/ethereum
         --set geth.account.address=[PUBLIC_ADDRESS]
         --set geth.account.privateKey=[PRIVATE_KEY]
         --set geth.account.secret=[SECRET]

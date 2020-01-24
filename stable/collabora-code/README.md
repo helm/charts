@@ -17,7 +17,7 @@ For most easy integration it´s recommended to use cert-manager together with yo
 To install the chart with the release name `my-release`, run:
 
 ```bash
-$ helm install --name my-release stable/collabora
+$ helm install my-release stable/collabora
 ```
 
 This command deploys a Collabora Online Development Edition server.
@@ -41,14 +41,14 @@ Refer to [values.yaml](values.yaml) for the full run-down on defaults. These are
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
     --set varname=true stable/collabora
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/collabora
+$ helm install my-release -f values.yaml stable/collabora
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

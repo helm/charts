@@ -18,7 +18,7 @@ This chart, based off of the MySQL chart,  bootstraps a single node Percona Serv
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/percona
+$ helm install my-release stable/percona
 ```
 
 The command deploys Percona Server on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -70,7 +70,7 @@ Some of the parameters above map to the env variables defined in the [Percona Se
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
   --set mysqlLRootPassword=secretpassword,mysqlUser=my-user,mysqlPassword=my-password,mysqlDatabase=my-database \
     stable/percona
 ```
@@ -80,7 +80,7 @@ The above command sets the MySQL `root` account password to `secretpassword`. Ad
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/percona
+$ helm install my-release -f values.yaml stable/percona
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

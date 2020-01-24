@@ -21,7 +21,7 @@ This chart bootstraps a `telegraf` deployment on a [Kubernetes](http://kubernete
 To install the chart with the release name `telegraf`:
 
 ```console
-$ helm install --name telegraf --namespace monitoring stable/telegraf
+$ helm install telegraf --namespace monitoring stable/telegraf
 ```
 
 The command deploys Telegraf on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -43,7 +43,7 @@ The command removes all the Kubernetes components associated with the chart and 
 The default configuration parameters are listed in `values.yaml`.
 
 ```console
-$ helm install --name telegraf stable/telegraf
+$ helm install telegraf stable/telegraf
 ```
 
 Outputs and inputs are configured as arrays of key/value dictionaries. Additional examples and defaults can be found in [values.yaml](values.yaml)

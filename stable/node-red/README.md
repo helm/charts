@@ -19,7 +19,7 @@ This code is adopted from the [official node-red docker image](https://hub.docke
 To install the chart with the release name `my-release`:
 
 ```console
-helm install --name my-release stable/node-red
+helm install my-release stable/node-red
 ```
 ## Uninstalling the Chart
 
@@ -77,7 +77,7 @@ The following tables lists the configurable parameters of the Node-RED chart and
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-helm install --name my-release \
+helm install my-release \
   --set config.timezone="America/New_York" \
     stable/node-red
 ```
@@ -85,7 +85,7 @@ helm install --name my-release \
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-helm install --name my-release -f values.yaml stable/node-red
+helm install my-release -f values.yaml stable/node-red
 ```
 
 Read through the [values.yaml](values.yaml) file. It has several commented out suggested values.

@@ -19,7 +19,7 @@ This chart will do the following:
 To install the chart with the release name `my-release`:
 
 ```bash
-helm install --name my-release stable/gangway
+helm install my-release stable/gangway
 ```
 
 Due to the nature of OIDC configuration, deploying the chart without at least some of the values being set will not result in a functioning application. See the Configuration section below for more information.

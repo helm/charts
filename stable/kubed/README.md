@@ -58,14 +58,14 @@ The following table lists the configurable parameters of the Kubed chart and the
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
 ```console
-$ helm install --name my-release --set image.tag=v0.2.1 stable/kubed
+$ helm install my-release --set image.tag=v0.2.1 stable/kubed
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while
 installing the chart. For example:
 
 ```console
-$ helm install --name my-release --values values.yaml stable/kubed
+$ helm install my-release --values values.yaml stable/kubed
 ```
 
 ## RBAC
@@ -86,5 +86,5 @@ If the output contains "beta", you may install the chart with RBAC enabled (see 
 To enable the creation of RBAC resources (On clusters with RBAC). Do the following:
 
 ```console
-$ helm install --name my-release stable/kubed --set rbac.create=true
+$ helm install my-release stable/kubed --set rbac.create=true
 ```

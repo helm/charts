@@ -24,7 +24,7 @@ This chart bootstraps a Chronograf deployment and service on a Kubernetes cluste
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/chronograf
+$ helm install my-release stable/chronograf
 ```
 
 The command deploys Chronograf on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -86,7 +86,7 @@ The following table lists the configurable parameters of the chronograf chart an
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
   --set ingress.enabled=true,ingress.hostname=chronograf.foobar.com \
     stable/chronograf
 ```
@@ -96,7 +96,7 @@ The above command enables persistence and changes the size of the requested data
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/chronograf
+$ helm install my-release -f values.yaml stable/chronograf
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

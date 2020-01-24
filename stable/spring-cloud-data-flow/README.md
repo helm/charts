@@ -21,19 +21,19 @@ Assumes that serviceAccount credentials are available so the deployed Data Flow 
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/spring-cloud-data-flow
+$ helm install my-release stable/spring-cloud-data-flow
 ```
 
 If you are using a cluster that does not have a load balancer (like Minikube) then you can install using a NodePort:
 
 ```bash
-$ helm install --name my-release --set server.service.type=NodePort stable/spring-cloud-data-flow
+$ helm install my-release --set server.service.type=NodePort stable/spring-cloud-data-flow
 ```
 
 To restrict the load balancer to an IP address range:
 
 ```bash
-$ helm install --name my-release  --set server.service.loadBalancerSourceRanges='[10.0.0.0/8]' stable/spring-cloud-data-flow
+$ helm install my-release  --set server.service.loadBalancerSourceRanges='[10.0.0.0/8]' stable/spring-cloud-data-flow
 ```
 
 

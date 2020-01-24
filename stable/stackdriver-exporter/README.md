@@ -34,7 +34,7 @@ package manager.
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/stackdriver-exporter --set stackdriver.projectId=google-project-name
+$ helm install my-release stable/stackdriver-exporter --set stackdriver.projectId=google-project-name
 ```
 
 The command deploys Stackdriver-Exporter on the Kubernetes cluster using the
@@ -99,7 +99,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to
 
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
     --set key_1=value_1,key_2=value_2 \
     stable/stackdriver-exporter
 ```
@@ -109,7 +109,7 @@ provided while installing the chart. For example,
 
 ```bash
 # example for staging
-$ helm install --name my-release -f values.yaml stable/stackdriver-exporter
+$ helm install my-release -f values.yaml stable/stackdriver-exporter
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml), as long as you provide a value for stackdriver.projectId

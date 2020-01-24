@@ -14,7 +14,7 @@ This chart deploys an OMS daemonset on a [Kubernetes](http://kubernetes.io) clus
 ## Installing the Chart
 
 ```bash
-$ helm install --name omsagent stable/msoms
+$ helm install omsagent stable/msoms
 ```
 
 ## Uninstalling the Chart
@@ -49,7 +49,7 @@ For more information, please go [here.](https://docs.microsoft.com/en-us/azure/l
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name omsagent \
+$ helm install omsagent \
   --set omsagent.secret.wsid=<your_workspace_id>,omsagent.secret.key=<your_workspace_key> stable/msoms
 
 ```
@@ -57,5 +57,5 @@ $ helm install --name omsagent \
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name omsagent -f values.yaml stable/msoms
+$ helm install omsagent -f values.yaml stable/msoms
 ```

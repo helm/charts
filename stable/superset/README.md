@@ -20,7 +20,7 @@ $ helm install stable/superset
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/superset
+$ helm install my-release stable/superset
 ```
 
 The command deploys Superset on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.

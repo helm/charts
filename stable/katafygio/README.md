@@ -28,7 +28,7 @@ This can be useful as is, to keep a local changes history. To benefit from long 
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/katafygio
+$ helm install my-release stable/katafygio
 ```
 
 ## Uninstalling the Chart
@@ -75,6 +75,6 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/katafygio
+$ helm install my-release -f values.yaml stable/katafygio
 ```
 > **Tip**: You can use the default [values.yaml](values.yaml)

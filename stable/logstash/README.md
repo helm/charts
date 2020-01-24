@@ -13,7 +13,7 @@ $ helm install stable/logstash
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/logstash
+$ helm install my-release stable/logstash
 ```
 
 ## Uninstalling the Chart

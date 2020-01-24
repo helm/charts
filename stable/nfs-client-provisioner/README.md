@@ -24,7 +24,7 @@ This charts installs custom [storage class](https://kubernetes.io/docs/concepts/
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release --set nfs.server=x.x.x.x --set nfs.path=/exported/path stable/nfs-client-provisioner
+$ helm install my-release --set nfs.server=x.x.x.x --set nfs.path=/exported/path stable/nfs-client-provisioner
 ```
 
 The command deploys the given storage class in the default configuration. It can be used afterswards to provision persistent volumes. The [configuration](#configuration) section lists the parameters that can be configured during installation.

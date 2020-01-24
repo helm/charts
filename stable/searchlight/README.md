@@ -20,7 +20,7 @@ This chart bootstraps a [Searchlight controller](https://github.com/appscode/sea
 ## Installing the Chart
 To install the chart with the release name `my-release`:
 ```bash
-$ helm install --name my-release stable/searchlight
+$ helm install my-release stable/searchlight
 ```
 The command deploys Searchlight controller on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
@@ -60,14 +60,14 @@ The following table lists the configurable parameters of the Searchlight chart a
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
 ```console
-$ helm install --name my-release --set image.tag=v0.2.1 stable/searchlight
+$ helm install my-release --set image.tag=v0.2.1 stable/searchlight
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while
 installing the chart. For example:
 
 ```console
-$ helm install --name my-release --values values.yaml stable/searchlight
+$ helm install my-release --values values.yaml stable/searchlight
 ```
 
 ## RBAC
@@ -88,5 +88,5 @@ If the output contains "beta", you may install the chart with RBAC enabled (see 
 To enable the creation of RBAC resources (On clusters with RBAC). Do the following:
 
 ```console
-$ helm install --name my-release stable/searchlight --set rbac.create=true
+$ helm install my-release stable/searchlight --set rbac.create=true
 ```

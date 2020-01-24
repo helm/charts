@@ -21,7 +21,7 @@ Either subchart can be deployed on its own (set the "enabled" value to "false" f
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/weave-scope
+$ helm install my-release stable/weave-scope
 ```
 
 The command deploys Weave Scope on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.

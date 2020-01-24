@@ -5,7 +5,7 @@
 # TL;DR;
 
 ```console
-$ helm install --name coredns --namespace=kube-system stable/coredns
+$ helm install coredns --namespace=kube-system stable/coredns
 ```
 
 ## Introduction
@@ -25,7 +25,7 @@ This chart bootstraps a [CoreDNS](https://github.com/coredns/coredns) deployment
 The chart can be installed as follows:
 
 ```console
-$ helm install --name coredns --namespace=kube-system stable/coredns
+$ helm install coredns --namespace=kube-system stable/coredns
 ```
 
 The command deploys CoreDNS on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists various ways to override default configuration during deployment.
@@ -78,7 +78,7 @@ The command removes all the Kubernetes components associated with the chart and 
 See `values.yaml` for configuration notes. Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install --name coredns \
+$ helm install coredns \
   --set rbac.create=false \
     stable/coredns
 ```
@@ -88,7 +88,7 @@ The above command disables automatic creation of RBAC rules.
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name coredns -f values.yaml stable/coredns
+$ helm install coredns -f values.yaml stable/coredns
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

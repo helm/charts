@@ -14,7 +14,7 @@ $ helm install incubator/drone
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release incubator/drone
+$ helm install my-release incubator/drone
 ```
 
 ## Uninstalling the Chart

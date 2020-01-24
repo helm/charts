@@ -26,7 +26,7 @@ By default, the MongoDB chart requires PV support on underlying infrastructure (
 To install the chart with the release name `rocketchat`:
 
 ```console
-$ helm install --name rocketchat stable/rocketchat
+$ helm install rocketchat stable/rocketchat
 ```
 
 ## Uninstalling the Chart
@@ -88,7 +88,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name rocketchat -f values.yaml stable/rocketchat
+$ helm install rocketchat -f values.yaml stable/rocketchat
 ```
 
 ### Database Setup

@@ -48,7 +48,7 @@ This chart will do the following:
 To install the chart with the release name `my-release`:
 
 ```shell
-helm install --name my-release stable/cockroachdb
+helm install my-release stable/cockroachdb
 ```
 
 Note that for a production cluster, you are very likely to want to modify the `storage.persistentVolume.size` and `storage.persistentVolume.storageClass` parameters. This chart defaults to `100 GiB` of disk space per Pod, but you may want more or less depending on your use case, and the default PersistentVolume `storageClass` in your environment may not be what you want for a database (e.g. on GCE and Azure the default is not SSD).
@@ -275,7 +275,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example:
 ```shell
-helm install --name my-release -f values.yaml stable/cockroachdb
+helm install my-release -f values.yaml stable/cockroachdb
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

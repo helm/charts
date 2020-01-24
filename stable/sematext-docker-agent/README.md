@@ -17,7 +17,7 @@ This chart installs the Sematext Docker Agent to all nodes in your cluster via a
 To install the chart run the following command:
 
 ```bash
-$ helm install --name release_name \
+$ helm install release_name \
     --set sematext.spmToken=YOUR_SPM_TOKEN,sematext.logseneToken=YOUR_LOGS_TOKEN stable/sematext-docker-agent
 ```
 
@@ -59,7 +59,7 @@ The following table lists the configuration parameters of the sematext-docker-ag
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
 ```bash
-$ helm install --name release_name \
+$ helm install release_name \
     --set sematext.spmToken=YOUR_SPM_TOKEN,sematext.region=EU \
     stable/sematext-docker-agent
 ```
@@ -67,5 +67,5 @@ $ helm install --name release_name \
 Alternatively, you can use a YAML file that specifies the values and it can be provided while installing the chart. For example:
 
 ```bash
-$ helm install --name release_name -f custom_values.yaml stable/sematext-docker-agent
+$ helm install release_name -f custom_values.yaml stable/sematext-docker-agent
 ```

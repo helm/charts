@@ -34,7 +34,7 @@ $ kubectl apply \
 $ kubectl label namespace <deployment-namespace> certmanager.k8s.io/disable-validation="true"
 
 ## Install the cert-manager helm chart
-$ helm install --name my-release stable/cert-manager
+$ helm install my-release stable/cert-manager
 ```
 
 In order to begin issuing certificates, you will need to set up a ClusterIssuer
@@ -123,7 +123,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml .
+$ helm install my-release -f values.yaml .
 ```
 > **Tip**: You can use the default [values.yaml](values.yaml)
 

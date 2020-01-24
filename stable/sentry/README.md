@@ -27,7 +27,7 @@ It also optionally packages the [PostgreSQL](https://github.com/kubernetes/chart
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release --wait stable/sentry
+$ helm install my-release --wait stable/sentry
 ```
 
 > **Note**: We have to use the --wait flag for initial creation because the database creation takes longer than the default 300 seconds
@@ -185,7 +185,7 @@ Dependent charts can also have values overwritten. Preface values with postgresq
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install --name my-release \
+$ helm install my-release \
   --set persistence.enabled=false,email.host=email \
     stable/sentry
 ```
@@ -193,7 +193,7 @@ $ helm install --name my-release \
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml stable/sentry
+$ helm install my-release -f values.yaml stable/sentry
 ```
 
 > **Tip**: You can use the default <values.yaml>

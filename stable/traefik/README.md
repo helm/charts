@@ -263,7 +263,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
 ```bash
-$ helm install --name my-release --namespace kube-system \
+$ helm install my-release --namespace kube-system \
   --set dashboard.enabled=true,dashboard.domain=traefik.example.com stable/traefik
 ```
 
@@ -273,7 +273,7 @@ Alternatively, a YAML file that specifies the values for the parameters can be p
 installing the chart. For example:
 
 ```bash
-$ helm install --name my-release --namespace kube-system --values values.yaml stable/traefik
+$ helm install my-release --namespace kube-system --values values.yaml stable/traefik
 ```
 
 ### Clustering / High Availability
@@ -336,7 +336,7 @@ See the linked Traefik documentation for accepted passwords encodings.
 It is advised to single quote passwords to avoid issues with special characters:
 
 ```bash
-$ helm install --name my-release --namespace kube-system \
+$ helm install my-release --namespace kube-system \
   --set dashboard.enabled=true,dashboard.auth.basic.test='$apr1$H6uskkkW$IgXLP6ewTrSuBkTrqE8wj/' \
   stable/traefik
 ```

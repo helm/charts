@@ -13,7 +13,7 @@ $ helm install stable/chaoskube
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/chaoskube
+$ helm install my-release stable/chaoskube
 ```
 
 The command deploys chaoskube on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.

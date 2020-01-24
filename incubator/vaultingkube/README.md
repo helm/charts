@@ -15,7 +15,7 @@ $ helm install incubator/vaultingkube
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release incubator/vaultingkube
+$ helm install my-release incubator/vaultingkube
 ```
 
 ## Uninstalling the Chart

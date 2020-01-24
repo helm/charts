@@ -91,7 +91,7 @@ resources:
 #### STEP 2: Install your raw resources.
 
 ```
-helm install --name raw-priority-classes incubator/raw -f raw-priority-classes.yaml
+helm install raw-priority-classes incubator/raw -f raw-priority-classes.yaml
 ```
 
 ### Templated resources

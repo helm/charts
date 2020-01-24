@@ -22,7 +22,7 @@ This chart bootstraps a [Seq](https://hub.docker.com/r/datalust/seq/) deployment
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release seq
+$ helm install my-release seq
 ```
 
 The command deploys Seq on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -85,7 +85,7 @@ Some of the parameters above map to the env variables defined in the [Seq Docker
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
   --set persistence.size=8Gi \
     stable/seq
 ```
@@ -93,7 +93,7 @@ $ helm install --name my-release \
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/seq
+$ helm install my-release -f values.yaml stable/seq
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

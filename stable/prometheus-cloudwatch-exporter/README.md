@@ -23,14 +23,14 @@ To install the chart with the release name `my-release`:
 
 ```console
 $ # pass AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY as values
-$ helm install --name my-release stable/prometheus-cloudwatch-exporter --set aws.aws_access_key_id=$AWS_ACCESS_KEY_ID,aws.aws_secret_access_key=$AWS_SECRET_ACCESS_KEY
+$ helm install my-release stable/prometheus-cloudwatch-exporter --set aws.aws_access_key_id=$AWS_ACCESS_KEY_ID,aws.aws_secret_access_key=$AWS_SECRET_ACCESS_KEY
 
 $ # or store them in a secret and pass its name as a value
 $ kubectl create secret generic <SECRET_NAME> --from-literal=access_key=$AWS_ACCESS_KEY_ID --from-literal=secret_key=$AWS_SECRET_ACCESS_KEY
-$ helm install --name my-release stable/prometheus-cloudwatch-exporter --set aws.secret.name=<SECRET_NAME>
+$ helm install my-release stable/prometheus-cloudwatch-exporter --set aws.secret.name=<SECRET_NAME>
 
 $ # or add a role to aws with the [correct policy](https://github.com/prometheus/cloudwatch_exporter#credentials-and-permissions) to add to cloud watch and pass its name as a value
-$ helm install --name my-release stable/prometheus-cloudwatch-exporter --set awsRole=<ROLL_NAME>
+$ helm install my-release stable/prometheus-cloudwatch-exporter --set awsRole=<ROLL_NAME>
 ```
 
 The command deploys Cloudwatch exporter on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -94,7 +94,7 @@ The following table lists the configurable parameters of the Cloudwatch Exporter
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install --name my-release \
+$ helm install my-release \
     --set aws.role=my-aws-role \
     stable/prometheus-cloudwatch-exporter
 ```
@@ -102,5 +102,5 @@ $ helm install --name my-release \
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml stable/prometheus-cloudwatch-exporter
+$ helm install my-release -f values.yaml stable/prometheus-cloudwatch-exporter
 ```

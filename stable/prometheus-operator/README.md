@@ -40,7 +40,7 @@ This chart bootstraps a [prometheus-operator](https://github.com/coreos/promethe
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/prometheus-operator
+$ helm install my-release stable/prometheus-operator
 ```
 
 The command deploys prometheus-operator on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -93,7 +93,7 @@ kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/ma
 
 3. Install the chart, but disable the CRD provisioning by setting `prometheusOperator.createCustomResource=false`
 ```console
-$ helm install --name my-release stable/prometheus-operator --set prometheusOperator.createCustomResource=false
+$ helm install my-release stable/prometheus-operator --set prometheusOperator.createCustomResource=false
 ```
 
 ## Upgrading an existing Release to a new major version
@@ -531,13 +531,13 @@ For a full list of configurable values please refer to the [Grafana chart](https
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install --name my-release stable/prometheus-operator --set prometheusOperator.enabled=true
+$ helm install my-release stable/prometheus-operator --set prometheusOperator.enabled=true
 ```
 
 Alternatively, one or more YAML files that specify the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release stable/prometheus-operator -f values1.yaml,values2.yaml
+$ helm install my-release stable/prometheus-operator -f values1.yaml,values2.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

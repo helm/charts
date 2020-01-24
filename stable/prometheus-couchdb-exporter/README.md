@@ -21,7 +21,7 @@ This chart bootstraps a [couchdb-exporter](https://github.com/gesellix/couchdb-p
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/prometheus-couchdb-exporter
+$ helm install my-release stable/prometheus-couchdb-exporter
 ```
 
 The command deploys prometheus-couchdb-exporter on the Kubernetes cluster in the default configuration.
@@ -68,7 +68,7 @@ For more information please refer to the [couchdb-prometheus-exporter]https://gi
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
   --set "couchdb.uri=http://mycouchdb:5984" \
     stable/prometheus-couchdb-exporter
 ```
@@ -76,5 +76,5 @@ $ helm install --name my-release \
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/prometheus-couchdb-exporter
+$ helm install my-release -f values.yaml stable/prometheus-couchdb-exporter
 ```

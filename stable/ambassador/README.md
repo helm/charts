@@ -22,7 +22,7 @@ a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) p
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/ambassador
+$ helm install my-release stable/ambassador
 ```
 
 The command deploys Ambassador API gateway on the Kubernetes cluster in the default configuration.

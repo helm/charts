@@ -27,7 +27,7 @@ The recommended way to install the Anchore Engine Helm Chart is with a customize
 
 Create a new file named `anchore_values.yaml` and add all desired custom values (examples below); then run the following command:
 
-  `helm install --name <release_name> -f anchore_values.yaml stable/anchore-engine`
+  `helm install <release_name> -f anchore_values.yaml stable/anchore-engine`
 
 ##### Example anchore_values.yaml - using chart managed PostgreSQL service with custom passwords.
 *Note: Installs with chart managed PostgreSQL database. This is not a guaranteed production ready config.*
@@ -72,11 +72,11 @@ To use this Helm chart with the enterprise services enabled, perform these steps
 
 1. (demo) Install the Helm chart using default values
 
-    `helm fetch stable/anchore-engine --untar && helm install --name enterprise stable/anchore-engine -f anchore-engine/enterprise_values.yaml`
+    `helm fetch stable/anchore-engine --untar && helm install enterprise stable/anchore-engine -f anchore-engine/enterprise_values.yaml`
 
 1. (production) Install the Helm chart using a custom anchore_values.yaml file - *see examples below*
 
-    `helm install --name <release_name> -f /path/to/anchore_values.yaml stable/anchore-engine`
+    `helm install <release_name> -f /path/to/anchore_values.yaml stable/anchore-engine`
 
 #### Example anchore_values.yaml - installing Anchore Enterprise
 

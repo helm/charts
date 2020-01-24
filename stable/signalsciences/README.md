@@ -15,7 +15,7 @@ Kubernetes 1.4+.
 To install the chart with the release name `my-release`, retrieve your SignalSciences accessKeyId and secretAccessKey from your [Agent Installation Instructions](https://dashboard.signalsciences.net) and run:
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
     --set signalsciences.accessKeyId=YOUR-ACCESS-KEY-ID \
     --set signalsciences.secretAccessKey=YOUR-SECRET-ACCESS-KEY \
     stable/signalsciences
@@ -60,7 +60,7 @@ The following table lists the configurable parameters of the SignalSciences char
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
     --set signalsciences.accessKeyId=YOUR-ACCESS-KEY-ID,signalsciences.secretAccessKey=YOUR-SECRET-ACCESS-KEY \
     stable/signalsciences
 ```
@@ -68,7 +68,7 @@ $ helm install --name my-release \
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f my-values.yaml stable/signalsciences
+$ helm install my-release -f my-values.yaml stable/signalsciences
 ```
 
 **Tip**: You can copy and customize the default [values.yaml](values.yaml)

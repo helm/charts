@@ -20,7 +20,7 @@ This is a tool for operators of large Kubernetes cluster to help them foresee ho
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/risk-advisor
+$ helm install my-release stable/risk-advisor
 ```
 
 ## Uninstalling the Chart

@@ -16,7 +16,7 @@ To install the Solr helm chart run:
 
 ```txt
 helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-helm install --name solr incubator/solr
+helm install solr incubator/solr
 ```
 
 ## Configuration Options
@@ -80,7 +80,7 @@ The following table shows the configuration options for the Solr helm chart:
 ## Service Start with command sets
 
 ```sh
-helm install --name solr \
+helm install solr \
     --set image.tag=7.7.2,javaMem="-Xms1g -Xmx1g",logLevel=INFO,replicaCount=2,livenessProbe.initialDelaySeconds=420,exporter.readinessProbe.periodSeconds=30 incubator/solr
 ```
 

@@ -21,7 +21,7 @@ Also provides a Deployment for generating Falco alerts. This is useful for testi
 To install the chart with the release name `my-release` run:
 
 ```bash
-$ helm install --name my-release stable/falco
+$ helm install my-release stable/falco
 ```
 
 After a few seconds, Falco should be running.
@@ -124,13 +124,13 @@ The following table lists the configurable parameters of the Falco chart and the
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release --set falco.jsonOutput=true stable/falco
+$ helm install my-release --set falco.jsonOutput=true stable/falco
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/falco
+$ helm install my-release -f values.yaml stable/falco
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -186,7 +186,7 @@ customRules:
 So next step is to use the custom-rules.yaml file for installing the Falco Helm chart.
 
 ```bash
-$ helm install --name falco -f custom-rules.yaml stable/falco
+$ helm install falco -f custom-rules.yaml stable/falco
 ```
 
 And we will see in our logs something like:
@@ -209,7 +209,7 @@ Imagine that you would like to add rules for your Redis, MongoDB and Traefik con
 $ git clone https://github.com/draios/falco-extras.git
 $ cd falco-extras
 $ ./scripts/rules2helm rules/rules-mongo.yaml rules/rules-redis.yaml rules/rules-traefik.yaml > custom-rules.yaml
-$ helm install --name falco -f custom-rules.yaml stable/falco
+$ helm install falco -f custom-rules.yaml stable/falco
 ```
 
 And that's all, in a few seconds you will see your pods up and running with MongoDB, Redis and Traefik rules enabled.
@@ -243,7 +243,7 @@ $ APISERVER_HOST=api.my-kops-cluster.com bash ./enable-k8s-audit.sh kops dynamic
 Then you can install Falco chart enabling the enabling the `falco.webserver`
 flag:
 
-`helm install --name falco --set falco.auditLog.enabled=true --set falco.auditLog.dynamicBackend.enabled=true stable/falco`
+`helm install falco --set falco.auditLog.enabled=true --set falco.auditLog.dynamicBackend.enabled=true stable/falco`
 
 And that's it, you will start to see the K8s audit log related alerts.
 
@@ -252,7 +252,7 @@ And that's it, you will start to see the K8s audit log related alerts.
 Perhaps you may find the case where you receive an error like the following one:
 
 ```
-$ helm install --name falco --set falco.auditLog.enabled=true stable/falco
+$ helm install falco --set falco.auditLog.enabled=true stable/falco
 Error: validation failed: unable to recognize "": no matches for kind "AuditSink" in version "auditregistration.k8s.io/v1alpha1"
 ```
 

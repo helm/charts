@@ -8,7 +8,7 @@ TL;DR;
 ------
 
 ```console
-$ helm install --name metallb stable/metallb
+$ helm install metallb stable/metallb
 ```
 
 Introduction
@@ -33,7 +33,7 @@ Installing the Chart
 The chart can be installed as follows:
 
 ```console
-$ helm install --name metallb stable/metallb
+$ helm install metallb stable/metallb
 ```
 
 The command deploys MetalLB on the Kubernetes cluster. This chart does
@@ -69,7 +69,7 @@ using the `--set key=value[,key=value]` argument to `helm
 install`. For example,
 
 ```console
-$ helm install --name metallb \
+$ helm install metallb \
   --set rbac.create=false \
     stable/metallb
 ```
@@ -80,7 +80,7 @@ Alternatively, a YAML file that specifies the values for the above
 parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name metallb -f values.yaml stable/metallb
+$ helm install metallb -f values.yaml stable/metallb
 ```
 
 By default, this chart does not install a configuration for MetalLB, and simply
@@ -98,7 +98,7 @@ you can specify a single IP range using the `arpAddresses` parameter to have the
 chart install a working configuration for you:
 
 ```console
-$ helm install --name metallb \
+$ helm install metallb \
   --set arpAddresses=192.168.16.240/30 \
   stable/metallb
 ```
@@ -120,7 +120,7 @@ configInline:
     addresses:
     - 198.51.100.0/24
 
-$ helm install --name metallb -f values.yaml stable/metallb
+$ helm install metallb -f values.yaml stable/metallb
 ```
 
 [helm-home]: https://helm.sh

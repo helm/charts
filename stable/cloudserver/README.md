@@ -17,7 +17,7 @@ This chart bootstraps a [Cloudserver](https://github.com/scality/cloudserver) de
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/cloudserver
+$ helm install my-release stable/cloudserver
 ```
 
 The command above deploys Cloudserver on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.

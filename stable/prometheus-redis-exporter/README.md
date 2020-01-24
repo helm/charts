@@ -21,7 +21,7 @@ This chart bootstraps a [redis_exporter](https://github.com/oliver006/redis_expo
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/prometheus-redis-exporter
+$ helm install my-release stable/prometheus-redis-exporter
 ```
 
 The command deploys prometheus-redis-exporter on the Kubernetes cluster in the default configuration.
@@ -79,7 +79,7 @@ For more information please refer to the [redis_exporter](https://github.com/oli
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
   --set "redisAddress=redis://myredis:6379" \
     stable/prometheus-redis-exporter
 ```
@@ -87,7 +87,7 @@ $ helm install --name my-release \
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/prometheus-redis-exporter
+$ helm install my-release -f values.yaml stable/prometheus-redis-exporter
 ```
 ### Using a custom LUA-Script
 First, you need to deploy the script with a configmap. This is an example script from mentioned in the [redis_exporter-image repository](https://github.com/oliver006/redis_exporter/blob/master/contrib/sample_collect_script.lua)

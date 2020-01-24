@@ -21,7 +21,7 @@ helm install --namespace openebs stable/openebs
 
 ## Installing OpenEBS with the release name `my-release`:
 ```
-helm install --name `my-release` --namespace openebs stable/openebs
+helm install `my-release` --namespace openebs stable/openebs
 ```
 
 ## To uninstall/delete the `my-release` deployment:
@@ -105,7 +105,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```shell
-helm install --name openebs -f values.yaml stable/openebs
+helm install openebs -f values.yaml stable/openebs
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

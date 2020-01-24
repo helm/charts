@@ -17,7 +17,7 @@ This code is adopted from [this original repo][github].
 To install the chart with the release name `my-release`:
 
 ```console
-helm install --name my-release stable/unifi
+helm install my-release stable/unifi
 ```
 
 ## Uninstalling the Chart
@@ -105,7 +105,7 @@ The following tables lists the configurable parameters of the Unifi chart and th
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-helm install --name my-release \
+helm install my-release \
   --set timezone="America/New York" \
     stable/unifi
 ```
@@ -113,7 +113,7 @@ helm install --name my-release \
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-helm install --name my-release -f values.yaml stable/unifi
+helm install my-release -f values.yaml stable/unifi
 ```
 
 Read through the [values.yaml](values.yaml) file. It has several commented out suggested values.

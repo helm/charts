@@ -25,7 +25,7 @@ deployment on a [Kubernetes](http://kubernetes.io) cluster using the
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/rabbitmq-ha
+$ helm install my-release stable/rabbitmq-ha
 ```
 
 The command deploys RabbitMQ on the Kubernetes cluster in the default
@@ -186,7 +186,7 @@ and their default values.
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
   --set rabbitmqUsername=admin,rabbitmqPassword=secretpassword,managementPassword=anothersecretpassword,rabbitmqErlangCookie=secretcookie \
     stable/rabbitmq-ha
 ```
@@ -200,7 +200,7 @@ Alternatively, a YAML file that specifies the values for the parameters can be
 provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/rabbitmq-ha
+$ helm install my-release -f values.yaml stable/rabbitmq-ha
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -246,7 +246,7 @@ data:
 Then, install the chart with the above configuration:
 
 ```
-$ helm install --name my-release --set existingConfigMap=true stable/rabbitmq-ha
+$ helm install my-release --set existingConfigMap=true stable/rabbitmq-ha
 ```
 
 ### Custom Secret

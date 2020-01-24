@@ -24,7 +24,7 @@ Several helper apps are listed below:
 To install the chart with the release name `my-release`:
 
 ```sh
-$ helm install --name my-release stable/dex
+$ helm install my-release stable/dex
 ```
 
 It'll install the chart with the default parameters. However most probably it won't work for you as-is, thus before installing the chart you need to consult the [values.yaml](values.yaml) notes as well as [dex documentation][dex].

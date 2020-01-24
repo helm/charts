@@ -61,7 +61,7 @@ To install the chart with the release name `my-release`:
 
 ```bash
 $ helm repo update
-$ helm install --name my-release stable/kong
+$ helm install my-release stable/kong
 ```
 
 ## Uninstall

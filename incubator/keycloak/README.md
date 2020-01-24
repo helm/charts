@@ -29,7 +29,7 @@ By default, the PostgreSQL chart requires PV support on underlying infrastructur
 To install the chart with the release name `keycloak`:
 
 ```console
-$ helm install --name keycloak incubator/keycloak
+$ helm install keycloak incubator/keycloak
 ```
 
 ## Uninstalling the Chart
@@ -106,7 +106,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name keycloak -f values.yaml incubator/keycloak
+$ helm install keycloak -f values.yaml incubator/keycloak
 ```
 
 ### Database Setup

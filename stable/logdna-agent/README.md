@@ -21,7 +21,7 @@ This chart deploys LogDNA collector agents to all nodes in your cluster. Logs wi
 To install the chart with the release name `my-release`, please follow directions from https://app.logdna.com/pages/add-source to obtain your LogDNA Ingestion Key:
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
     --set logdna.key=LOGDNA_INGESTION_KEY,logdna.autoupdate=1 stable/logdna-agent
 ```
 
@@ -29,7 +29,7 @@ You should see logs in https://app.logdna.com in a few seconds.
 
 ### Tags support:
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
     --set logdna.key=LOGDNA_INGESTION_KEY,logdna.tags=production,logdna.autoupdate=1 stable/logdna-agent
 ```
 
@@ -66,14 +66,14 @@ Parameter | Description | Default
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
     --set logdna.key=LOGDNA_INGESTION_KEY,logdna.tags=production,logdna.autoupdate=1 stable/logdna-agent
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/logdna-agent
+$ helm install my-release -f values.yaml stable/logdna-agent
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

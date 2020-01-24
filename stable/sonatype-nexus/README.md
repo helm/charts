@@ -171,14 +171,14 @@ If `nexusProxy.env.cloudIamAuthEnabled` is set to `true` the following variables
 
 
 ```bash
-$ helm install --name my-release --set persistence.enabled=false stable/sonatype-nexus
+$ helm install my-release --set persistence.enabled=false stable/sonatype-nexus
 ```
 The above example turns off the persistence. Data will not be kept between restarts or deployments
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f my-values.yaml stable/sonatype-nexus
+$ helm install my-release -f my-values.yaml stable/sonatype-nexus
 ```
 
 ### Persistence

@@ -18,7 +18,7 @@ Docker image was taken from [Bitcoind for Docker](https://github.com/kylemanna/d
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/bitcoind
+$ helm install my-release stable/bitcoind
 ```
 
 The command deploys bitcoind on the Kubernetes cluster in the default configuration.
@@ -62,7 +62,7 @@ For more information about Bitcoin configuration please see [Bitcoin.conf_Config
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/bitcoind
+$ helm install my-release -f values.yaml stable/bitcoind
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

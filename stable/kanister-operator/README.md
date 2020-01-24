@@ -22,7 +22,7 @@ This chart bootstraps a kanister-operator deployment on a [Kubernetes](http://ku
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/kanister-operator
+$ helm install my-release stable/kanister-operator
 ```
 
 The command deploys kanister-operator on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.

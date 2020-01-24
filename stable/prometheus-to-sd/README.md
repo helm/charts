@@ -19,7 +19,7 @@ $ helm install stable/prometheus-to-sd
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/prometheus-to-sd
+$ helm install my-release stable/prometheus-to-sd
 ```
 
 The command deploys prometheus-to-sd on the Kubernetes cluster in the default configuration.
@@ -54,7 +54,7 @@ For more information please refer to the [prometheus-to-sd](https://github.com/G
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
   --set "metricsSources.kube-state-metrics=http://kube-state-metrics:8080" \
     stable/prometheus-to-sd
 ```
@@ -62,7 +62,7 @@ $ helm install --name my-release \
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/prometheus-to-sd
+$ helm install my-release -f values.yaml stable/prometheus-to-sd
 ```
 
 Multiple metrics sources can be defined.

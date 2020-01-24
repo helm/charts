@@ -14,13 +14,13 @@ This chart will do the following:
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/fluent-bit
+$ helm install my-release stable/fluent-bit
 ```
 
 When installing this chart on [Minikube](https://kubernetes.io/docs/getting-started-guides/minikube/), it's required to specify that so the DaemonSet will be able to mount the log files properly, make sure to append the _--set on\_minikube=true_ option at the end of the _helm_ command, e.g:
 
 ```bash
-$ helm install --name my-release stable/fluent-bit --set on_minikube=true
+$ helm install my-release stable/fluent-bit --set on_minikube=true
 ```
 
 ## Configuration
@@ -170,7 +170,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/fluent-bit
+$ helm install my-release -f values.yaml stable/fluent-bit
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

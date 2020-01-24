@@ -23,7 +23,7 @@ cluster using the [Helm](https://helm.sh) package manager.
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/express-gateway
+$ helm install my-release stable/express-gateway
 ```
 
 > **Tip**: List all releases using `helm list`

@@ -7,13 +7,13 @@
 Depending on which region you want to use, create a container and/or logs apps
 to get your tokens. Then, start the app with:
 
-helm install --name release_name \
+helm install release_name \
   --set sematext.containerToken=YOUR_CONTAINER_TOKEN \
   stable/sematext-agent
 
 Or if you created both apps use:
 
-helm install --name release_name \
+helm install release_name \
   --set containerToken=YOUR_CONTAINER_TOKEN,logsToken=YOUR_LOGS_TOKEN \
   stable/sematext-agent
 

@@ -24,7 +24,7 @@ By default, the Datadog Agent runs in a DaemonSet. It can alternatively run insi
 To install the chart with the release name `<RELEASE_NAME>`, retrieve your Datadog API key from your [Agent Installation Instructions](https://app.datadoghq.com/account/settings#agent/kubernetes) and run:
 
 ```bash
-helm install --name <RELEASE_NAME> \
+helm install <RELEASE_NAME> \
   --set datadog.apiKey=<DATADOG_API_KEY> stable/datadog
 ```
 
@@ -38,7 +38,7 @@ Read about the Datadog Cluster Agent in the [official documentation](https://doc
 Run the following if you want to deploy the chart with the Datadog Cluster Agent:
 
 ```bash
-helm install --name datadog-monitoring \
+helm install datadog-monitoring \
     --set datadog.apiKey=<DATADOG_API_KEY> \
     --set datadog.appKey=<DATADOG_APP_KEY \
     --set clusterAgent.enabled=true \
@@ -234,7 +234,7 @@ Standard paths are:
 The following table lists the configurable parameters of the Datadog chart and their default values. Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-helm install --name <RELEASE_NAME> \
+helm install <RELEASE_NAME> \
   --set datadog.apiKey=<DATADOG_API_KEY>,datadog.logLevel=DEBUG \
   stable/datadog
 ```

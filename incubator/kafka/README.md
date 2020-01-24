@@ -38,7 +38,7 @@ namespace:
 
 ```
 $ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install --name my-kafka incubator/kafka
+$ helm install my-kafka incubator/kafka
 ```
 
 If using a dedicated namespace(recommended) then make sure the namespace
@@ -47,7 +47,7 @@ exists with:
 ```
 $ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
 $ kubectl create ns kafka
-$ helm install --name my-kafka --namespace kafka incubator/kafka
+$ helm install my-kafka --namespace kafka incubator/kafka
 ```
 
 This chart includes a ZooKeeper chart as a dependency to the Kafka
@@ -151,7 +151,7 @@ Specify parameters using `--set key=value[,key=value]` argument to `helm install
 Alternatively a YAML file that specifies the values for the parameters can be provided like this:
 
 ```bash
-$ helm install --name my-kafka -f values.yaml incubator/kafka
+$ helm install my-kafka -f values.yaml incubator/kafka
 ```
 
 ### Connecting to Kafka from inside Kubernetes

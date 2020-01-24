@@ -27,7 +27,7 @@ This chart creates a Google Cloud Endpoints deployment and service on a Kubernet
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/gcloud-endpoints --set service=project-id.appspot.com,version=version-number,backend=backendapi.svc.cluster.local
+$ helm install my-release stable/gcloud-endpoints --set service=project-id.appspot.com,version=version-number,backend=backendapi.svc.cluster.local
 ```
 
 > **Tip**: List all releases using `helm list`
@@ -68,7 +68,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml stable/gcloud-endpoints
+$ helm install my-release -f values.yaml stable/gcloud-endpoints
 ```
 > **Tip**: You can use the default [values.yaml](values.yaml)
 

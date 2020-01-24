@@ -34,7 +34,7 @@ Monitoring your Kubernetes cluster and containers is critical, especially when r
 
 ```bash
 $ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
-$ helm install --name myrelease-1 \
+$ helm install myrelease-1 \
 --set omsagent.secret.wsid=<your_workspace_id>,omsagent.secret.key=<your_workspace_key>,omsagent.env.clusterName=<my_prod_cluster>  incubator/azuremonitor-containers
 ```
 
@@ -42,7 +42,7 @@ $ helm install --name myrelease-1 \
 
 ```bash
 $ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
-$ helm install --name myrelease-1 \
+$ helm install myrelease-1 \
 --set omsagent.domain=opinsights.azure.cn,omsagent.secret.wsid=<your_workspace_id>,omsagent.secret.key=<your_workspace_key>,omsagent.env.clusterName=<your_cluster_name>  incubator/azuremonitor-containers
 ```
 
@@ -50,7 +50,7 @@ $ helm install --name myrelease-1 \
 
 ```bash
 $ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
-$ helm install --name myrelease-1 \
+$ helm install myrelease-1 \
 --set omsagent.domain=opinsights.azure.us,omsagent.secret.wsid=<your_workspace_id>,omsagent.secret.key=<your_workspace_key>,omsagent.env.clusterName=<your_cluster_name>  incubator/azuremonitor-containers
 ```
 
@@ -102,7 +102,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 
-$ helm install --name myrelease-1 \
+$ helm install myrelease-1 \
 --set omsagent.secret.wsid=<your_workspace_id>,omsagent.secret.key=<your_workspace_key>,omsagent.env.clusterName=<your_cluster_name>
   incubator/azuremonitor-containers
 ```
@@ -110,7 +110,7 @@ Alternatively, a YAML file that specifies the values for the parameters can be p
 
 ```bash
 
-$ helm install --name myrelease-1 -f values.yaml incubator/azuremonitor-containers
+$ helm install myrelease-1 -f values.yaml incubator/azuremonitor-containers
 
 ```
 

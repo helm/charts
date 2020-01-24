@@ -19,7 +19,7 @@ This chart bootstraps a [pgAdmin](https://www.pgadmin.org/) deployment on a [Kub
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/pgadmin
+$ helm install my-release stable/pgadmin
 ```
 
 The command deploys pgAdmin on the Kubernetes cluster in the default configuration. The configuration section lists the parameters that can be configured durign installation.

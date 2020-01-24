@@ -33,7 +33,7 @@ The command deploys MinIO on the Kubernetes cluster in the default configuration
 An instance of a chart running in a Kubernetes cluster is called a release. Each release is identified by a unique name within the cluster. Helm automatically assigns a unique release name after installing the chart. You can also set your preferred name by:
 
 ```bash
-$ helm install --name my-release stable/minio
+$ helm install my-release stable/minio
 ```
 
 ### Access and Secret keys
@@ -185,7 +185,7 @@ Some of the parameters above map to the env variables defined in the [MinIO Dock
 You can specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
   --set persistence.size=100Gi \
     stable/minio
 ```
@@ -195,7 +195,7 @@ The above command deploys MinIO server with a 100Gi backing persistent volume.
 Alternately, you can provide a YAML file that specifies parameter values while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/minio
+$ helm install my-release -f values.yaml stable/minio
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

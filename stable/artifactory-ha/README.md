@@ -30,13 +30,13 @@ This leaves the primary node free to handle jobs and tasks and not be interrupte
 ## Installing the Chart
 To install the chart with the release name `artifactory-ha`:
 ```bash
-$ helm install --name artifactory-ha stable/artifactory-ha
+$ helm install artifactory-ha stable/artifactory-ha
 ```
 
 ### Deploying Artifactory with replicator enabled
 ```bash
 ## Artifactory replicator is disabled by default. To enable it use the following:
-$ helm install --name artifactory --set artifactory.replicator.enabled=true stable/artifactory-ha
+$ helm install artifactory --set artifactory.replicator.enabled=true stable/artifactory-ha
 ```
 
 ### Accessing Artifactory
@@ -59,7 +59,7 @@ See more information on [setting resources for your Artifactory based on planned
 
 ```bash
 # Example of setting resource requests and limits to all pods (including passing java memory settings to Artifactory)
-$ helm install --name artifactory-ha \
+$ helm install artifactory-ha \
                --set artifactory.primary.resources.requests.cpu="500m" \
                --set artifactory.primary.resources.limits.cpu="2" \
                --set artifactory.primary.resources.requests.memory="1Gi" \
@@ -99,7 +99,7 @@ $ kubectl create configmap distribution-certs --from-file=private.key=private.ke
 ```
 Pass it to `helm`
 ```bash
-$ helm install --name artifactory --set artifactory.distributionCerts=distribution-certs stable/artifactory-ha
+$ helm install artifactory --set artifactory.distributionCerts=distribution-certs stable/artifactory-ha
 ```
 
 ### Artifactory storage
@@ -160,7 +160,7 @@ $ export MASTER_KEY=$(openssl rand -hex 32)
 $ echo ${MASTER_KEY}
 
 # Pass the created master key to helm
-$ helm install --name artifactory-ha --set artifactory.masterKey=${MASTER_KEY} stable/artifactory-ha
+$ helm install artifactory-ha --set artifactory.masterKey=${MASTER_KEY} stable/artifactory-ha
 ```
 **NOTE:** Make sure to pass the same master key with `--set artifactory.masterKey=${MASTER_KEY}` on all future calls to `helm install` and `helm upgrade`!
 
@@ -180,7 +180,7 @@ Prepare a text file with the license(s) written in it. If writing multiple licen
 $ kubectl create secret generic artifactory-cluster-license --from-file=./art.lic
 
 # Pass the license to helm
-$ helm install --name artifactory-ha --set artifactory.license.secret=artifactory-cluster-license,artifactory.license.dataKey=art.lic stable/artifactory-ha
+$ helm install artifactory-ha --set artifactory.license.secret=artifactory-cluster-license,artifactory.license.dataKey=art.lic stable/artifactory-ha
 ```
 **NOTE:** You have to keep passing the license secret parameters as `--set artifactory.license.secret=artifactory-cluster-license,artifactory.license.dataKey=art.lic` on all future calls to `helm install` and `helm upgrade`!
 
@@ -210,7 +210,7 @@ $ kubectl apply -f bootstrap-config.yaml
 
 #### Pass the configMap to helm
 ```bash
-$ helm install --name artifactory-ha --set artifactory.license.secret=artifactory-cluster-license,artifactory.license.dataKey=art.lic,artifactory.configMapName=my-release-bootstrap-config stable/artifactory-ha
+$ helm install artifactory-ha --set artifactory.license.secret=artifactory-cluster-license,artifactory.license.dataKey=art.lic,artifactory.configMapName=my-release-bootstrap-config stable/artifactory-ha
 ```
 
 ### Use custom nginx.conf with Nginx
@@ -222,7 +222,7 @@ kubectl create configmap nginx-config --from-file=nginx.conf
 ```
 * Pass configMap to helm install
 ```bash
-helm install --name artifactory-ha --set nginx.customConfigMap=nginx-config stable/artifactory-ha
+helm install artifactory-ha --set nginx.customConfigMap=nginx-config stable/artifactory-ha
 ```
 
 ### Scaling your Artifactory cluster
@@ -303,7 +303,7 @@ $ kubectl create secret docker-registry regsecret --docker-server=${DOCKER_REGIS
 ```
 Once created, you pass it to `helm`
 ```bash
-$ helm install --name artifactory-ha --set imagePullSecrets=regsecret stable/artifactory-ha
+$ helm install artifactory-ha --set imagePullSecrets=regsecret stable/artifactory-ha
 ```
 
 ## Configuration
@@ -445,7 +445,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ### Ingress and TLS
 To get Helm to create an ingress object with a hostname, add these two lines to your Helm command:
 ```
-helm install --name artifactory-ha \
+helm install artifactory-ha \
   --set ingress.enabled=true \
   --set ingress.hosts[0]="artifactory.company.com" \
   --set artifactory.service.type=NodePort \

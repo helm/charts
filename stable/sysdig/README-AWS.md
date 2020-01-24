@@ -38,6 +38,6 @@ Finally, set the accessKey value and you are ready to deploy the Sysdig agent
 using the Helm chart:
 
 ```bash
-helm install --name sysdig-agent -f aws-marketplace-values.yaml stable/sysdig
+helm install sysdig-agent -f aws-marketplace-values.yaml stable/sysdig
 ```
 

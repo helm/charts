@@ -28,7 +28,7 @@ cluster using the [Helm](https://helm.sh) package manager.
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release incubator/buzzfeed-sso
+$ helm install my-release incubator/buzzfeed-sso
 ```
 
 The command deploys SSO on the Kubernetes cluster using the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -99,7 +99,7 @@ Parameter | Description | Default
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
     --set key_1=value_1,key_2=value_2 \
     stable/buzzfeed-sso
 ```
@@ -107,7 +107,7 @@ $ helm install --name my-release \
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/buzzfeed-sso
+$ helm install my-release -f values.yaml stable/buzzfeed-sso
 ```
 
 > **Tip**: This will merge parameters with [values.yaml](values.yaml), which does not specify all the required values
@@ -155,7 +155,7 @@ google:
 Therefore, you could push your own `values.yaml` to a repo and keep `secrets.yaml` locally safe, and then install/update the chart:
 
 ```bash
-$ helm install --name my-release -f values.yaml -f secrets.yaml stable/buzzfeed-sso
+$ helm install my-release -f values.yaml -f secrets.yaml stable/buzzfeed-sso
 ```
 
 Alternatively, you can specify your own secret key, if you have already created it in the cluster. The secret should follow the data format defined in `secret.yaml` (auth and proxy) and `google-secret.yaml` (google provider).

@@ -17,7 +17,7 @@ This chart bootstraps a [COSBench](https://github.com/intel-cloud/cosbench) depl
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/cosbench
+$ helm install my-release stable/cosbench
 ```
 
 The command above deploys COSBench on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.

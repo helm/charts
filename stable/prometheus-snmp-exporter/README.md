@@ -23,7 +23,7 @@ This chart creates a SNMP-Exporter deployment on a [Kubernetes](http://kubernete
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/prometheus-snmp-exporter
+$ helm install my-release stable/prometheus-snmp-exporter
 ```
 
 The command deploys SNMP Exporter on the Kubernetes cluster using the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -79,7 +79,7 @@ The following table lists the configurable parameters of the SNMP-Exporter chart
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
     --set key_1=value_1,key_2=value_2 \
     stable/prometheus-snmp-exporter
 ```
@@ -88,7 +88,7 @@ Alternatively, a YAML file that specifies the values for the parameters can be p
 
 ```bash
 # example for staging
-$ helm install --name my-release -f values.yaml stable/prometheus-snmp-exporter
+$ helm install my-release -f values.yaml stable/prometheus-snmp-exporter
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

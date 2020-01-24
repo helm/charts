@@ -20,7 +20,7 @@ The chart exploits the deterministic nature of StatefulSet and KubeDNS to ensure
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/percona-xtradb-cluster
+$ helm install my-release stable/percona-xtradb-cluster
 ```
 
 The command deploys a Percona XtraDB Cluster on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -100,7 +100,7 @@ Some of the parameters above map to the env variables defined in the [Percona Xt
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
   --set mysqlRootPassword=secretpassword,mysqlUser=my-user,mysqlPassword=my-password,mysqlDatabase=my-database \
     stable/percona-xtradb-cluster
 ```
@@ -110,7 +110,7 @@ The above command sets the MySQL `root` account password to `secretpassword`. Ad
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/percona-xtradb-cluster
+$ helm install my-release -f values.yaml stable/percona-xtradb-cluster
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

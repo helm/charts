@@ -17,7 +17,7 @@ $ helm install stable/node-problem-detector
 To install the chart with the release name `my-release` and default configuration:
 
 ```console
-$ helm install --name my-release stable/node-problem-detector
+$ helm install my-release stable/node-problem-detector
 ```
 
 ## Uninstalling the Chart
@@ -62,5 +62,5 @@ The following table lists the configurable parameters for this chart and their d
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install` or provide a YAML file containing the values for the above parameters:
 
 ```console
-$ helm install --name my-release stable/node-problem-detector --values values.yaml
+$ helm install my-release stable/node-problem-detector --values values.yaml
 ```

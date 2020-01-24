@@ -203,7 +203,7 @@ kubectl create secret generic mission-control-certs --from-file=./certs/insight-
 
 ### Installing the Chart with certificate secret
 ```bash
-helm install --name mission-control --set existingCertsSecret=mission-control-certs stable/mission-control
+helm install mission-control --set existingCertsSecret=mission-control-certs stable/mission-control
 ```
 
 ## Set Mission Control base URL

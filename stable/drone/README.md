@@ -15,7 +15,7 @@ helm install stable/drone
 To install the chart with the release name `my-release`:
 
 ```console
-helm install --name my-release stable/drone
+helm install my-release stable/drone
 ```
 
 > note: The chart will not install the drone server until you have configured a source control option. If this is the case it will print out notes on how to configure it in place using `helm upgrade`.
@@ -23,7 +23,7 @@ helm install --name my-release stable/drone
 An example (secrets redacted) working install of the chart using github as the source control provider:
 
 ```console
-helm install --name drone --namespace drone stable/drone
+helm install drone --namespace drone stable/drone
 
 kubectl create secret generic drone-server-secrets \
       --namespace=cicd-drone \

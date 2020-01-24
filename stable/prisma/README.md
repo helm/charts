@@ -19,7 +19,7 @@ This chart bootstraps a Prisma deployment on a [Kubernetes](http://kubernetes.io
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/prisma
+$ helm install my-release stable/prisma
 ```
 
 **Note**: Prisma requires a properly configured database in order to initialize. See the `values.yaml` file for the configuration values that need to be set. Also, if preferred you can set `postgresql.enabled` to `true` and Helm will deploy the PostgreSQL chart listed in the `requirements.yaml` file, and Prisma will be able to initialize properly using the default values.

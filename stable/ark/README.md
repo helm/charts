@@ -94,7 +94,7 @@ Parameter | Description | Default
 
 ## How to
 ```
-helm install --name ark --namespace heptio-ark ./ark
+helm install ark --namespace heptio-ark ./ark
 ```
 
 ## Remove heptio/ark

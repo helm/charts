@@ -35,7 +35,7 @@ SumoLogic.
 To install the chart with the release name `my-release`, create your Sumo Logic [HTTP Collector](http://help.sumologic.com/Send_Data/Sources/02Sources_for_Hosted_Collectors/HTTP_Source) and run:
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
     --set sumologic.collectorUrl=YOUR-URL-HERE stable/sumologic-fluentd
 ```
 
@@ -118,7 +118,7 @@ The following table lists the configurable parameters of the sumologic-fluentd c
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
     --set sumologic.collectorUrl=YOUR-URL-HERE \
     stable/sumologic-fluentd
 ```
@@ -126,7 +126,7 @@ $ helm install --name my-release \
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/sumologic-fluentd
+$ helm install my-release -f values.yaml stable/sumologic-fluentd
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -141,7 +141,7 @@ directory, on each of the nodes, and point `persistence.hostPath` at that
 directory.
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
     --set sumologic.collectorUrl=URL,persistence.hostPath=/var/run/fluentd \
     stable/sumologic-fluentd
 ```
@@ -172,7 +172,7 @@ If the output contains "beta" or both "alpha" and "beta" you can enable rbac.
 To enable the creation of RBAC resources, do the following
 
 ```console
-$ helm install --name my-release stable/sumologic-fluentd --set rbac.create=true
+$ helm install my-release stable/sumologic-fluentd --set rbac.create=true
 ```
 
 ### Excluding and Including data

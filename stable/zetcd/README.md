@@ -66,12 +66,12 @@ The following table lists the configurable parameters of the zetcd chart and the
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
 ```bash
-$ helm install --name my-release --set image.tag=v0.0.3 stable/zetcd
+$ helm install my-release --set image.tag=v0.0.3 stable/zetcd
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while
 installing the chart. For example:
 
 ```bash
-$ helm install --name my-release --values values.yaml stable/zetcd
+$ helm install my-release --values values.yaml stable/zetcd
 ```

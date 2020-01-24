@@ -21,7 +21,7 @@ This chart bootstraps a [Goldpinger](https://github.com/bloomberg/goldpinger) de
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/goldpinger
+$ helm install my-release stable/goldpinger
 ```
 
 The command deploys Goldpinger on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -77,7 +77,7 @@ The following table lists the configurable parameters of the Goldpinger chart an
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install --name my-release \
+$ helm install my-release \
   --set goldpinger.port=8080,serviceAccount.name=goldpinger \
     stable/goldpinger
 ```
@@ -85,7 +85,7 @@ $ helm install --name my-release \
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml stable/goldpinger
+$ helm install my-release -f values.yaml stable/goldpinger
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

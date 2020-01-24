@@ -17,7 +17,7 @@ This code is adopted for [the official home assistant docker image](https://hub.
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/home-assistant
+$ helm install my-release stable/home-assistant
 ```
 ## Uninstalling the Chart
 
@@ -150,7 +150,7 @@ The following tables lists the configurable parameters of the Home Assistant cha
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-helm install --name my-release \
+helm install my-release \
   --set configurator.hassApiPassword="$HASS_API_PASSWORD" \
     stable/home-assistant
 ```
@@ -158,7 +158,7 @@ helm install --name my-release \
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-helm install --name my-release -f values.yaml stable/home-assistant
+helm install my-release -f values.yaml stable/home-assistant
 ```
 
 Read through the [values.yaml](values.yaml) file. It has several commented out suggested values.

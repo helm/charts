@@ -16,7 +16,7 @@ This chart bootstraps a single master and multiple slave MySQL deployment on a [
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release incubator/mysqlha
+$ helm install my-release incubator/mysqlha
 ```
 
 The command deploys MySQL cluster on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.

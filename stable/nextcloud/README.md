@@ -24,7 +24,7 @@ It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/chart
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/nextcloud
+$ helm install my-release stable/nextcloud
 ```
 
 The command deploys nextcloud on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -155,7 +155,7 @@ The following table lists the configurable parameters of the nextcloud chart and
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install --name my-release \
+$ helm install my-release \
   --set nextcloud.username=admin,nextcloud.password=password,mariadb.rootUser.password=secretpassword \
     stable/nextcloud
 ```
@@ -165,7 +165,7 @@ The above command sets the nextcloud administrator account username and password
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml stable/nextcloud
+$ helm install my-release -f values.yaml stable/nextcloud
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

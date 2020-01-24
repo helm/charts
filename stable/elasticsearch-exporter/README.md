@@ -24,7 +24,7 @@ cluster using the [Helm](https://helm.sh) package manager.
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/elasticsearch-exporter
+$ helm install my-release stable/elasticsearch-exporter
 ```
 
 The command deploys Elasticsearch-Exporter on the Kubernetes cluster using the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -106,7 +106,7 @@ Parameter | Description | Default
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
     --set key_1=value_1,key_2=value_2 \
     stable/elasticsearch-exporter
 ```
@@ -115,7 +115,7 @@ Alternatively, a YAML file that specifies the values for the parameters can be p
 
 ```bash
 # example for staging
-$ helm install --name my-release -f values.yaml stable/elasticsearch-exporter
+$ helm install my-release -f values.yaml stable/elasticsearch-exporter
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

@@ -52,7 +52,7 @@ Specify parameters using `--set key=value[,key=value]` argument to `helm install
 Alternatively a YAML file that specifies the values for the parameters can be provided like this:
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/locust
+$ helm install my-release -f values.yaml stable/locust
 ```
 
 #### Creating configmap with your Locust task files
