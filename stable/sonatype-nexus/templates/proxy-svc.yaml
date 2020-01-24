@@ -1,4 +1,4 @@
-{{- if .Values.nexusProxy.enabled }}
+{{- if or .Values.nexusProxy.enabled .Values.ingress.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -21,14 +21,22 @@ metadata:
 {{- end }}
 spec:
   ports:
+{{- if .Values.nexusProxy.enabled }}
     - port: {{ .Values.nexusProxy.port }}
+{{- else }}
+    - port: {{ .Values.nexus.nexusPort }}
+{{- end }}
 {{- if .Values.nexusProxy.svcName }}
       name: {{ .Values.nexusProxy.svcName }}
 {{- else }}
       name: {{ template "nexus.fullname" . }}
 {{- end }}
       protocol: TCP
+{{- if .Values.nexusProxy.enabled }}
       targetPort: {{ .Values.nexusProxy.targetPort }}
+{{- else }}
+      targetPort: {{ .Values.nexus.nexusPort }}
+{{- end }}
   selector:
     app: {{ template "nexus.name" . }}
     release: {{ .Release.Name }}
