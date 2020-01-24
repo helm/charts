@@ -14,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/rabbitmq
-  tag: 3.8.2-debian-9-r35
+  tag: 3.8.2-debian-10-r0
 
   ## set to true if you would like to see extra information on logs
   ## it turns BASH and NAMI debugging in minideb
@@ -403,7 +403,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/rabbitmq-exporter
-    tag: 0.29.0-debian-9-r139
+    tag: 0.29.0-debian-10-r0
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
