@@ -125,7 +125,9 @@ By setting `autoscaler.enabled = true` a
 [cluster-proportional-autoscaler](https://github.com/kubernetes-incubator/cluster-proportional-autoscaler)
 will be deployed. This will default to a coredns replica for every 256 cores, or
 16 nodes in the cluster. These can be changed with `autoscaler.coresPerReplica`
-and `autoscaler.nodesPerReplica`.
+and `autoscaler.nodesPerReplica`. When cluster is using large nodes (with more
+cores), `coresPerReplica` should dominate. If using small nodes,
+`nodesPerReplica` should dominate.
 
 This also creates a ServiceAccount, ClusterRole, and ClusterRoleBinding for
 the autoscaler deployment.

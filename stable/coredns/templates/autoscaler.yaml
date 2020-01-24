@@ -43,7 +43,7 @@ spec:
         scheduler.alpha.kubernetes.io/tolerations: '[{"key":"CriticalAddonsOnly", "operator":"Exists"}]'
         {{- end }}
     spec:
-      serviceAccountName: {{ template "coredns.name" . }}-autoscaler
+      serviceAccountName: {{ template "coredns.fullname" . }}-autoscaler
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName | quote }}
       {{- end }}
@@ -68,13 +68,39 @@ spec:
         command:
           - /cluster-proportional-autoscaler
           - --namespace={{ .Release.Namespace }}
-          - --configmap={{ template "coredns.name" . }}-autoscaler
+          - --configmap={{ template "coredns.fullname" . }}-autoscaler
           - --target=Deployment/{{ template "coredns.fullname" . }}
-          # When cluster is using large nodes(with more cores), "coresPerReplica" should dominate.
-          # If using small nodes, "nodesPerReplica" should dominate.
-          - '--default-params={"linear":{"coresPerReplica":{{ .Values.autoscaler.coresPerReplica | quote }},"nodesPerReplica": {{ .Values.autoscaler.nodesPerReplica | quote }},"preventSinglePointFailure":true}}'
           - --logtostderr=true
           - --v=2
+
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ template "coredns.fullname" . }}-autoscaler
+  namespace:  {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    {{- if .Values.isClusterService }}
+    k8s-app: {{ .Chart.Name }}-autoscaler
+    kubernetes.io/cluster-service: "true"
+    kubernetes.io/name: "CoreDNS"
+    {{- end }}
+    app.kubernetes.io/name: {{ template "coredns.name" . }}-autoscaler
+{{- if .Values.customLabels }}
+{{ toYaml .Values.customLabels | indent 4 }}
+{{- end }}
+data:
+  # When cluster is using large nodes(with more cores), "coresPerReplica" should dominate.
+  # If using small nodes, "nodesPerReplica" should dominate.
+  linear: |-
+    {
+      "coresPerReplica": {{ .Values.autoscaler.coresPerReplica | float64 }},
+      "nodesPerReplica": {{ .Values.autoscaler.nodesPerReplica | float64 }},
+      "preventSinglePointFailure": true
+    }
 
 ---
 apiVersion: v1
@@ -151,9 +177,9 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ template "coredns.name" . }}-autoscaler
+  name: {{ template "coredns.fullname" . }}-autoscaler
 subjects:
 - kind: ServiceAccount
-  name: {{ template "coredns.name" . }}-autoscaler
+  name: {{ template "coredns.fullname" . }}-autoscaler
   namespace: {{ .Release.Namespace }}
 {{ end }}

@@ -19,6 +19,11 @@ spec:
   {{- if not .Values.autoscaler.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 10%
   selector:
     matchLabels:
       app.kubernetes.io/instance: {{ .Release.Name | quote }}
