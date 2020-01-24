@@ -220,7 +220,7 @@ Get the readiness probe command
 {{- else }}
   exec pg_isready -U {{ include "postgresql.username" . | quote }} -h 127.0.0.1 -p {{ template "postgresql.port" . }}
 {{- end }}
-{{- if contains "bitnami/" (include "postgresql.registryImage" (dict "image" .Values.images.postgresql "values" .Values)) }}
+{{- if contains "bitnami/" (include "postgresql.registryImage" (dict "image" .Values.images.postgresql "values" .Values "name" "postgresql")) }}
   [ -f /opt/bitnami/postgresql/tmp/.initialized ] || [ -f /bitnami/postgresql/.initialized ]
 {{- end -}}
 {{- end -}}
@@ -324,11 +324,36 @@ The most complete image reference, including the
 registry address, repository, tag and digest when available.
 */}}
 {{- define "postgresql.imageReference" -}}
+{{- if .values.image -}}
+{{ include "postgresql.deprecatedImageReference" . }}
+{{- else -}}
 {{- $registry := coalesce .image.registry .values.global.imageRegistry "docker.io" -}}
 {{- $namespace := include "postgresql.imageNamespace" . -}}
 {{- printf "%s/%s/%s:%s" $registry $namespace .image.name .image.tag -}}
 {{- if .image.digest -}}
 {{- printf "@%s" .image.digest -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "postgresql.deprecatedImageReference" -}}
+{{- $image := dict -}}
+{{- if eq .name "postgresql" -}}
+{{- $image = .values.image -}}
+{{- else if eq .name "volumePermissions" -}}
+{{- $image = .values.volumePermissions.image -}}
+{{- else if eq .name "metrics" -}}
+{{- $image = .values.metrics.image -}}
+{{- end -}}
+{{- if $image.registry -}}
+{{- printf "%s/" $image.registry -}}
+{{- end -}}
+{{- printf "%s" $image.repository -}}
+{{- if $image.tag -}}
+{{- printf ":%s" $image.tag }}
+{{- end -}}
+{{- if $image.digest -}}
+{{- printf "@%s" $image.digest -}}
 {{- end -}}
 {{- end -}}
 
