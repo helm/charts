@@ -11,6 +11,8 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "nginx-ingress.controller.fullname" . }}
+  annotations:    
+{{ toYaml .Values.controller.deploymentAnnotations | indent 4}}
 spec:
   selector:
     matchLabels:
@@ -36,6 +38,10 @@ spec:
 {{ toYaml .Values.controller.podLabels | indent 8}}
         {{- end }}
     spec:
+{{- if .Values.controller.dnsConfig }}
+      dnsConfig:
+{{ toYaml .Values.controller.dnsConfig | indent 8 }}
+{{- end }}
       dnsPolicy: {{ .Values.controller.dnsPolicy }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -95,6 +101,9 @@ spec:
             - --validating-webhook=:{{ .Values.controller.admissionWebhooks.port }}
             - --validating-webhook-certificate=/usr/local/certificates/cert
             - --validating-webhook-key=/usr/local/certificates/key
+          {{- end }}
+          {{- if .Values.controller.maxmindLicenseKey }}
+            - --maxmind-license-key={{ .Values.controller.maxmindLicenseKey }}
           {{- end }}
           {{- range $key, $value := .Values.controller.extraArgs }}
             {{- if $value }}
