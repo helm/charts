@@ -46,7 +46,7 @@ spec:
             {{- if .Values.config.metrics.subz }}
             - "-subz"
             {{- end }}
-            - "http://{{ .Values.config.nats.service }}.{{ .Values.config.nats.namespace }}.svc.cluster.local:{{ .Values.config.nats.port }}"
+            - "http://{{ .Values.config.nats.service }}.{{ .Values.config.nats.namespace }}.svc:{{ .Values.config.nats.port }}"
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:

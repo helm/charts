@@ -1,0 +1,1324 @@
+# Added manually, can be changed in-place.
+{{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
+{{- if and (semverCompare ">=1.14.0" $kubeTargetVersion) (semverCompare "<9.9.9-9" $kubeTargetVersion) .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled .Values.coreDns.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ printf "%s-%s" (include "prometheus-operator.fullname" $) "k8s-coredns" | trunc 63 | trimSuffix "-" }}
+  labels:
+    {{- if $.Values.grafana.sidecar.dashboards.label }}
+    {{ $.Values.grafana.sidecar.dashboards.label }}: "1"
+    {{- end }}
+    app: {{ template "prometheus-operator.name" $ }}-grafana
+{{ include "prometheus-operator.labels" $ | indent 4 }}
+data:
+  k8s-coredns.json: |-
+    {
+        "annotations": {
+            "list": [
+                {
+                    "builtIn": 1,
+                    "datasource": "-- Grafana --",
+                    "enable": true,
+                    "hide": true,
+                    "iconColor": "rgba(0, 211, 255, 1)",
+                    "name": "Annotations & Alerts",
+                    "type": "dashboard"
+                }
+            ]
+        },
+        "description": "A dashboard for the CoreDNS DNS server.",
+        "editable": true,
+        "gnetId": 5926,
+        "graphTooltip": 0,
+        "id": 9,
+        "iteration": 1539947521873,
+        "links": [],
+        "panels": [
+            {
+                "aliasColors": {},
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": "Prometheus",
+                "editable": true,
+                "error": false,
+                "fill": 1,
+                "grid": {},
+                "gridPos": {
+                    "h": 7,
+                    "w": 8,
+                    "x": 0,
+                    "y": 0
+                },
+                "id": 1,
+                "legend": {
+                    "avg": false,
+                    "current": false,
+                    "max": false,
+                    "min": false,
+                    "show": true,
+                    "total": false,
+                    "values": false
+                },
+                "lines": true,
+                "linewidth": 2,
+                "links": [],
+                "nullPointMode": "connected",
+                "percentage": false,
+                "pointradius": 5,
+                "points": false,
+                "renderer": "flot",
+                "seriesOverrides": [
+                    {
+                        "alias": "total",
+                        "yaxis": 2
+                    }
+                ],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
+                "targets": [
+                    {
+                        "expr": "sum(rate(coredns_dns_request_count_total{instance=~\"$instance\"}[5m])) by (proto)",
+                        "format": "time_series",
+                        "intervalFactor": 2,
+                        "legendFormat": "{{`{{proto}}`}}",
+                        "refId": "A",
+                        "step": 60
+                    },
+                    {
+                        "expr": "sum(rate(coredns_dns_request_count_total{instance=~\"$instance\"}[5m]))",
+                        "format": "time_series",
+                        "intervalFactor": 2,
+                        "legendFormat": "total",
+                        "refId": "B",
+                        "step": 60
+                    }
+                ],
+                "thresholds": [],
+                "timeFrom": null,
+                "timeShift": null,
+                "title": "Requests (total)",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 0,
+                    "value_type": "cumulative"
+                },
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": []
+                },
+                "yaxes": [
+                    {
+                        "format": "pps",
+                        "logBase": 1,
+                        "max": null,
+                        "min": 0,
+                        "show": true
+                    },
+                    {
+                        "format": "pps",
+                        "logBase": 1,
+                        "max": null,
+                        "min": 0,
+                        "show": true
+                    }
+                ],
+                "yaxis": {
+                    "align": false,
+                    "alignLevel": null
+                }
+            },
+            {
+                "aliasColors": {},
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": "Prometheus",
+                "editable": true,
+                "error": false,
+                "fill": 1,
+                "grid": {},
+                "gridPos": {
+                    "h": 7,
+                    "w": 8,
+                    "x": 8,
+                    "y": 0
+                },
+                "id": 12,
+                "legend": {
+                    "avg": false,
+                    "current": false,
+                    "max": false,
+                    "min": false,
+                    "show": true,
+                    "total": false,
+                    "values": false
+                },
+                "lines": true,
+                "linewidth": 2,
+                "links": [],
+                "nullPointMode": "connected",
+                "percentage": false,
+                "pointradius": 5,
+                "points": false,
+                "renderer": "flot",
+                "seriesOverrides": [
+                    {
+                        "alias": "total",
+                        "yaxis": 2
+                    },
+                    {
+                        "alias": "other",
+                        "yaxis": 2
+                    }
+                ],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
+                "targets": [
+                    {
+                        "expr": "sum(rate(coredns_dns_request_type_count_total{instance=~\"$instance\"}[5m])) by (type)",
+                        "intervalFactor": 2,
+                        "legendFormat": "{{`{{type}}`}}",
+                        "refId": "A",
+                        "step": 60
+                    }
+                ],
+                "thresholds": [],
+                "timeFrom": null,
+                "timeShift": null,
+                "title": "Requests (by qtype)",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 0,
+                    "value_type": "cumulative"
+                },
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": []
+                },
+                "yaxes": [
+                    {
+                        "format": "pps",
+                        "logBase": 1,
+                        "max": null,
+                        "min": 0,
+                        "show": true
+                    },
+                    {
+                        "format": "pps",
+                        "logBase": 1,
+                        "max": null,
+                        "min": 0,
+                        "show": true
+                    }
+                ],
+                "yaxis": {
+                    "align": false,
+                    "alignLevel": null
+                }
+            },
+            {
+                "aliasColors": {},
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": "Prometheus",
+                "editable": true,
+                "error": false,
+                "fill": 1,
+                "grid": {},
+                "gridPos": {
+                    "h": 7,
+                    "w": 8,
+                    "x": 16,
+                    "y": 0
+                },
+                "id": 2,
+                "legend": {
+                    "avg": false,
+                    "current": false,
+                    "max": false,
+                    "min": false,
+                    "show": true,
+                    "total": false,
+                    "values": false
+                },
+                "lines": true,
+                "linewidth": 2,
+                "links": [],
+                "nullPointMode": "connected",
+                "percentage": false,
+                "pointradius": 5,
+                "points": false,
+                "renderer": "flot",
+                "seriesOverrides": [
+                    {
+                        "alias": "total",
+                        "yaxis": 2
+                    }
+                ],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
+                "targets": [
+                    {
+                        "expr": "sum(rate(coredns_dns_request_count_total{instance=~\"$instance\"}[5m])) by (zone)",
+                        "intervalFactor": 2,
+                        "legendFormat": "{{`{{zone}}`}}",
+                        "refId": "A",
+                        "step": 60
+                    },
+                    {
+                        "expr": "sum(rate(coredns_dns_request_count_total{instance=~\"$instance\"}[5m]))",
+                        "intervalFactor": 2,
+                        "legendFormat": "total",
+                        "refId": "B",
+                        "step": 60
+                    }
+                ],
+                "thresholds": [],
+                "timeFrom": null,
+                "timeShift": null,
+                "title": "Requests (by zone)",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 0,
+                    "value_type": "cumulative"
+                },
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": []
+                },
+                "yaxes": [
+                    {
+                        "format": "pps",
+                        "logBase": 1,
+                        "max": null,
+                        "min": 0,
+                        "show": true
+                    },
+                    {
+                        "format": "pps",
+                        "logBase": 1,
+                        "max": null,
+                        "min": 0,
+                        "show": true
+                    }
+                ],
+                "yaxis": {
+                    "align": false,
+                    "alignLevel": null
+                }
+            },
+            {
+                "aliasColors": {},
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": "Prometheus",
+                "editable": true,
+                "error": false,
+                "fill": 1,
+                "grid": {},
+                "gridPos": {
+                    "h": 7,
+                    "w": 12,
+                    "x": 0,
+                    "y": 7
+                },
+                "id": 10,
+                "legend": {
+                    "avg": false,
+                    "current": false,
+                    "max": false,
+                    "min": false,
+                    "show": true,
+                    "total": false,
+                    "values": false
+                },
+                "lines": true,
+                "linewidth": 2,
+                "links": [],
+                "nullPointMode": "connected",
+                "percentage": false,
+                "pointradius": 5,
+                "points": false,
+                "renderer": "flot",
+                "seriesOverrides": [
+                    {
+                        "alias": "total",
+                        "yaxis": 2
+                    }
+                ],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
+                "targets": [
+                    {
+                        "expr": "sum(rate(coredns_dns_request_do_count_total{instance=~\"$instance\"}[5m]))",
+                        "intervalFactor": 2,
+                        "legendFormat": "DO",
+                        "refId": "A",
+                        "step": 40
+                    },
+                    {
+                        "expr": "sum(rate(coredns_dns_request_count_total{instance=~\"$instance\"}[5m]))",
+                        "intervalFactor": 2,
+                        "legendFormat": "total",
+                        "refId": "B",
+                        "step": 40
+                    }
+                ],
+                "thresholds": [],
+                "timeFrom": null,
+                "timeShift": null,
+                "title": "Requests (DO bit)",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 0,
+                    "value_type": "cumulative"
+                },
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": []
+                },
+                "yaxes": [
+                    {
+                        "format": "pps",
+                        "logBase": 1,
+                        "max": null,
+                        "min": 0,
+                        "show": true
+                    },
+                    {
+                        "format": "pps",
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    }
+                ],
+                "yaxis": {
+                    "align": false,
+                    "alignLevel": null
+                }
+            },
+            {
+                "aliasColors": {},
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": "Prometheus",
+                "editable": true,
+                "error": false,
+                "fill": 1,
+                "grid": {},
+                "gridPos": {
+                    "h": 7,
+                    "w": 6,
+                    "x": 12,
+                    "y": 7
+                },
+                "id": 9,
+                "legend": {
+                    "avg": false,
+                    "current": false,
+                    "max": false,
+                    "min": false,
+                    "show": true,
+                    "total": false,
+                    "values": false
+                },
+                "lines": true,
+                "linewidth": 2,
+                "links": [],
+                "nullPointMode": "connected",
+                "percentage": false,
+                "pointradius": 5,
+                "points": false,
+                "renderer": "flot",
+                "seriesOverrides": [
+                    {
+                        "alias": "tcp:90%",
+                        "yaxis": 2
+                    },
+                    {
+                        "alias": "tcp:99%",
+                        "yaxis": 2
+                    },
+                    {
+                        "alias": "tcp:50%",
+                        "yaxis": 2
+                    }
+                ],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
+                "targets": [
+                    {
+                        "expr": "histogram_quantile(0.99, sum(rate(coredns_dns_request_size_bytes_bucket{instance=~\"$instance\",proto=\"udp\"}[5m])) by (le,proto))",
+                        "intervalFactor": 2,
+                        "legendFormat": "{{`{{proto}}`}}:99%",
+                        "refId": "A",
+                        "step": 60
+                    },
+                    {
+                        "expr": "histogram_quantile(0.90, sum(rate(coredns_dns_request_size_bytes_bucket{instance=~\"$instance\",proto=\"udp\"}[5m])) by (le,proto))",
+                        "intervalFactor": 2,
+                        "legendFormat": "{{`{{proto}}`}}:90%",
+                        "refId": "B",
+                        "step": 60
+                    },
+                    {
+                        "expr": "histogram_quantile(0.50, sum(rate(coredns_dns_request_size_bytes_bucket{instance=~\"$instance\",proto=\"udp\"}[5m])) by (le,proto))",
+                        "intervalFactor": 2,
+                        "legendFormat": "{{`{{proto}}`}}:50%",
+                        "refId": "C",
+                        "step": 60
+                    }
+                ],
+                "thresholds": [],
+                "timeFrom": null,
+                "timeShift": null,
+                "title": "Requests (size, udp)",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 0,
+                    "value_type": "cumulative"
+                },
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": []
+                },
+                "yaxes": [
+                    {
+                        "format": "bytes",
+                        "logBase": 1,
+                        "max": null,
+                        "min": 0,
+                        "show": true
+                    },
+                    {
+                        "format": "short",
+                        "logBase": 1,
+                        "max": null,
+                        "min": 0,
+                        "show": true
+                    }
+                ],
+                "yaxis": {
+                    "align": false,
+                    "alignLevel": null
+                }
+            },
+            {
+                "aliasColors": {},
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": "Prometheus",
+                "editable": true,
+                "error": false,
+                "fill": 1,
+                "grid": {},
+                "gridPos": {
+                    "h": 7,
+                    "w": 6,
+                    "x": 18,
+                    "y": 7
+                },
+                "id": 14,
+                "legend": {
+                    "avg": false,
+                    "current": false,
+                    "max": false,
+                    "min": false,
+                    "show": true,
+                    "total": false,
+                    "values": false
+                },
+                "lines": true,
+                "linewidth": 2,
+                "links": [],
+                "nullPointMode": "connected",
+                "percentage": false,
+                "pointradius": 5,
+                "points": false,
+                "renderer": "flot",
+                "seriesOverrides": [
+                    {
+                        "alias": "tcp:90%",
+                        "yaxis": 1
+                    },
+                    {
+                        "alias": "tcp:99%",
+                        "yaxis": 1
+                    },
+                    {
+                        "alias": "tcp:50%",
+                        "yaxis": 1
+                    }
+                ],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
+                "targets": [
+                    {
+                        "expr": "histogram_quantile(0.99, sum(rate(coredns_dns_request_size_bytes_bucket{instance=~\"$instance\",proto=\"tcp\"}[5m])) by (le,proto))",
+                        "intervalFactor": 2,
+                        "legendFormat": "{{`{{proto}}`}}:99%",
+                        "refId": "A",
+                        "step": 60
+                    },
+                    {
+                        "expr": "histogram_quantile(0.90, sum(rate(coredns_dns_request_size_bytes_bucket{instance=~\"$instance\",proto=\"tcp\"}[5m])) by (le,proto))",
+                        "intervalFactor": 2,
+                        "legendFormat": "{{`{{proto}}`}}:90%",
+                        "refId": "B",
+                        "step": 60
+                    },
+                    {
+                        "expr": "histogram_quantile(0.50, sum(rate(coredns_dns_request_size_bytes_bucket{instance=~\"$instance\",proto=\"tcp\"}[5m])) by (le,proto))",
+                        "intervalFactor": 2,
+                        "legendFormat": "{{`{{proto}}`}}:50%",
+                        "refId": "C",
+                        "step": 60
+                    }
+                ],
+                "thresholds": [],
+                "timeFrom": null,
+                "timeShift": null,
+                "title": "Requests (size, tcp)",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 0,
+                    "value_type": "cumulative"
+                },
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": []
+                },
+                "yaxes": [
+                    {
+                        "format": "bytes",
+                        "logBase": 1,
+                        "max": null,
+                        "min": 0,
+                        "show": true
+                    },
+                    {
+                        "format": "short",
+                        "logBase": 1,
+                        "max": null,
+                        "min": 0,
+                        "show": true
+                    }
+                ],
+                "yaxis": {
+                    "align": false,
+                    "alignLevel": null
+                }
+            },
+            {
+                "aliasColors": {},
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": "Prometheus",
+                "editable": true,
+                "error": false,
+                "fill": 1,
+                "grid": {},
+                "gridPos": {
+                    "h": 7,
+                    "w": 12,
+                    "x": 0,
+                    "y": 14
+                },
+                "id": 5,
+                "legend": {
+                    "avg": false,
+                    "current": false,
+                    "max": false,
+                    "min": false,
+                    "show": true,
+                    "total": false,
+                    "values": false
+                },
+                "lines": true,
+                "linewidth": 2,
+                "links": [],
+                "nullPointMode": "connected",
+                "percentage": false,
+                "pointradius": 5,
+                "points": false,
+                "renderer": "flot",
+                "seriesOverrides": [],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
+                "targets": [
+                    {
+                        "expr": "sum(rate(coredns_dns_response_rcode_count_total{instance=~\"$instance\"}[5m])) by (rcode)",
+                        "intervalFactor": 2,
+                        "legendFormat": "{{`{{rcode}}`}}",
+                        "refId": "A",
+                        "step": 40
+                    }
+                ],
+                "thresholds": [],
+                "timeFrom": null,
+                "timeShift": null,
+                "title": "Responses (by rcode)",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 0,
+                    "value_type": "cumulative"
+                },
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": []
+                },
+                "yaxes": [
+                    {
+                        "format": "pps",
+                        "logBase": 1,
+                        "max": null,
+                        "min": 0,
+                        "show": true
+                    },
+                    {
+                        "format": "short",
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    }
+                ],
+                "yaxis": {
+                    "align": false,
+                    "alignLevel": null
+                }
+            },
+            {
+                "aliasColors": {},
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": "Prometheus",
+                "editable": true,
+                "error": false,
+                "fill": 1,
+                "grid": {},
+                "gridPos": {
+                    "h": 7,
+                    "w": 12,
+                    "x": 12,
+                    "y": 14
+                },
+                "id": 3,
+                "legend": {
+                    "avg": false,
+                    "current": false,
+                    "max": false,
+                    "min": false,
+                    "show": true,
+                    "total": false,
+                    "values": false
+                },
+                "lines": true,
+                "linewidth": 2,
+                "links": [],
+                "nullPointMode": "connected",
+                "percentage": false,
+                "pointradius": 5,
+                "points": false,
+                "renderer": "flot",
+                "seriesOverrides": [],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
+                "targets": [
+                    {
+                        "expr": "histogram_quantile(0.99, sum(rate(coredns_dns_request_duration_seconds_bucket{instance=~\"$instance\"}[5m])) by (le, job))",
+                        "format": "time_series",
+                        "intervalFactor": 2,
+                        "legendFormat": "99%",
+                        "refId": "A",
+                        "step": 40
+                    },
+                    {
+                        "expr": "histogram_quantile(0.90, sum(rate(coredns_dns_request_duration_seconds_bucket{instance=~\"$instance\"}[5m])) by (le))",
+                        "format": "time_series",
+                        "intervalFactor": 2,
+                        "legendFormat": "90%",
+                        "refId": "B",
+                        "step": 40
+                    },
+                    {
+                        "expr": "histogram_quantile(0.50, sum(rate(coredns_dns_request_duration_seconds_bucket{instance=~\"$instance\"}[5m])) by (le))",
+                        "format": "time_series",
+                        "intervalFactor": 2,
+                        "legendFormat": "50%",
+                        "refId": "C",
+                        "step": 40
+                    }
+                ],
+                "thresholds": [],
+                "timeFrom": null,
+                "timeShift": null,
+                "title": "Responses (duration)",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 0,
+                    "value_type": "cumulative"
+                },
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": []
+                },
+                "yaxes": [
+                    {
+                        "format": "ms",
+                        "logBase": 1,
+                        "max": null,
+                        "min": 0,
+                        "show": true
+                    },
+                    {
+                        "format": "short",
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    }
+                ],
+                "yaxis": {
+                    "align": false,
+                    "alignLevel": null
+                }
+            },
+            {
+                "aliasColors": {},
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": "Prometheus",
+                "editable": true,
+                "error": false,
+                "fill": 1,
+                "grid": {},
+                "gridPos": {
+                    "h": 7,
+                    "w": 12,
+                    "x": 0,
+                    "y": 21
+                },
+                "id": 8,
+                "legend": {
+                    "avg": false,
+                    "current": false,
+                    "max": false,
+                    "min": false,
+                    "show": true,
+                    "total": false,
+                    "values": false
+                },
+                "lines": true,
+                "linewidth": 2,
+                "links": [],
+                "nullPointMode": "connected",
+                "percentage": false,
+                "pointradius": 5,
+                "points": false,
+                "renderer": "flot",
+                "seriesOverrides": [
+                    {
+                        "alias": "udp:50%",
+                        "yaxis": 1
+                    },
+                    {
+                        "alias": "tcp:50%",
+                        "yaxis": 2
+                    },
+                    {
+                        "alias": "tcp:90%",
+                        "yaxis": 2
+                    },
+                    {
+                        "alias": "tcp:99%",
+                        "yaxis": 2
+                    }
+                ],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
+                "targets": [
+                    {
+                        "expr": "histogram_quantile(0.99, sum(rate(coredns_dns_response_size_bytes_bucket{instance=~\"$instance\",proto=\"udp\"}[5m])) by (le,proto)) ",
+                        "intervalFactor": 2,
+                        "legendFormat": "{{`{{proto}}`}}:99%",
+                        "refId": "A",
+                        "step": 40
+                    },
+                    {
+                        "expr": "histogram_quantile(0.90, sum(rate(coredns_dns_response_size_bytes_bucket{instance=~\"$instance\",proto=\"udp\"}[5m])) by (le,proto)) ",
+                        "intervalFactor": 2,
+                        "legendFormat": "{{`{{proto}}`}}:90%",
+                        "refId": "B",
+                        "step": 40
+                    },
+                    {
+                        "expr": "histogram_quantile(0.50, sum(rate(coredns_dns_response_size_bytes_bucket{instance=~\"$instance\",proto=\"udp\"}[5m])) by (le,proto)) ",
+                        "intervalFactor": 2,
+                        "legendFormat": "{{`{{proto}}`}}:50%",
+                        "metric": "",
+                        "refId": "C",
+                        "step": 40
+                    }
+                ],
+                "thresholds": [],
+                "timeFrom": null,
+                "timeShift": null,
+                "title": "Responses (size, udp)",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 0,
+                    "value_type": "cumulative"
+                },
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": []
+                },
+                "yaxes": [
+                    {
+                        "format": "bytes",
+                        "logBase": 1,
+                        "max": null,
+                        "min": 0,
+                        "show": true
+                    },
+                    {
+                        "format": "short",
+                        "logBase": 1,
+                        "max": null,
+                        "min": 0,
+                        "show": true
+                    }
+                ],
+                "yaxis": {
+                    "align": false,
+                    "alignLevel": null
+                }
+            },
+            {
+                "aliasColors": {},
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": "Prometheus",
+                "editable": true,
+                "error": false,
+                "fill": 1,
+                "grid": {},
+                "gridPos": {
+                    "h": 7,
+                    "w": 12,
+                    "x": 12,
+                    "y": 21
+                },
+                "id": 13,
+                "legend": {
+                    "avg": false,
+                    "current": false,
+                    "max": false,
+                    "min": false,
+                    "show": true,
+                    "total": false,
+                    "values": false
+                },
+                "lines": true,
+                "linewidth": 2,
+                "links": [],
+                "nullPointMode": "connected",
+                "percentage": false,
+                "pointradius": 5,
+                "points": false,
+                "renderer": "flot",
+                "seriesOverrides": [
+                    {
+                        "alias": "udp:50%",
+                        "yaxis": 1
+                    },
+                    {
+                        "alias": "tcp:50%",
+                        "yaxis": 1
+                    },
+                    {
+                        "alias": "tcp:90%",
+                        "yaxis": 1
+                    },
+                    {
+                        "alias": "tcp:99%",
+                        "yaxis": 1
+                    }
+                ],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
+                "targets": [
+                    {
+                        "expr": "histogram_quantile(0.99, sum(rate(coredns_dns_response_size_bytes_bucket{instance=~\"$instance\",proto=\"tcp\"}[5m])) by (le,proto)) ",
+                        "format": "time_series",
+                        "intervalFactor": 2,
+                        "legendFormat": "{{`{{proto}}`}}:99%",
+                        "refId": "A",
+                        "step": 40
+                    },
+                    {
+                        "expr": "histogram_quantile(0.90, sum(rate(coredns_dns_response_size_bytes_bucket{instance=~\"$instance\",proto=\"tcp\"}[5m])) by (le,proto)) ",
+                        "format": "time_series",
+                        "intervalFactor": 2,
+                        "legendFormat": "{{`{{proto}}`}}:90%",
+                        "refId": "B",
+                        "step": 40
+                    },
+                    {
+                        "expr": "histogram_quantile(0.50, sum(rate(coredns_dns_response_size_bytes_bucket{instance=~\"$instance\",proto=\"tcp\"}[5m])) by (le, proto)) ",
+                        "format": "time_series",
+                        "intervalFactor": 2,
+                        "legendFormat": "{{`{{proto}}`}}:50%",
+                        "metric": "",
+                        "refId": "C",
+                        "step": 40
+                    }
+                ],
+                "thresholds": [],
+                "timeFrom": null,
+                "timeShift": null,
+                "title": "Responses (size, tcp)",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 0,
+                    "value_type": "cumulative"
+                },
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": []
+                },
+                "yaxes": [
+                    {
+                        "format": "bytes",
+                        "logBase": 1,
+                        "max": null,
+                        "min": 0,
+                        "show": true
+                    },
+                    {
+                        "format": "short",
+                        "logBase": 1,
+                        "max": null,
+                        "min": 0,
+                        "show": true
+                    }
+                ],
+                "yaxis": {
+                    "align": false,
+                    "alignLevel": null
+                }
+            },
+            {
+                "aliasColors": {},
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": "Prometheus",
+                "editable": true,
+                "error": false,
+                "fill": 1,
+                "grid": {},
+                "gridPos": {
+                    "h": 7,
+                    "w": 12,
+                    "x": 0,
+                    "y": 28
+                },
+                "id": 15,
+                "legend": {
+                    "avg": false,
+                    "current": false,
+                    "max": false,
+                    "min": false,
+                    "show": true,
+                    "total": false,
+                    "values": false
+                },
+                "lines": true,
+                "linewidth": 2,
+                "links": [],
+                "nullPointMode": "connected",
+                "percentage": false,
+                "pointradius": 5,
+                "points": false,
+                "renderer": "flot",
+                "seriesOverrides": [],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
+                "targets": [
+                    {
+                        "expr": "sum(coredns_cache_size{instance=~\"$instance\"}) by (type)",
+                        "intervalFactor": 2,
+                        "legendFormat": "{{`{{type}}`}}",
+                        "refId": "A",
+                        "step": 40
+                    }
+                ],
+                "thresholds": [],
+                "timeFrom": null,
+                "timeShift": null,
+                "title": "Cache (size)",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 0,
+                    "value_type": "cumulative"
+                },
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": []
+                },
+                "yaxes": [
+                    {
+                        "format": "short",
+                        "logBase": 1,
+                        "max": null,
+                        "min": 0,
+                        "show": true
+                    },
+                    {
+                        "format": "short",
+                        "logBase": 1,
+                        "max": null,
+                        "min": 0,
+                        "show": true
+                    }
+                ],
+                "yaxis": {
+                    "align": false,
+                    "alignLevel": null
+                }
+            },
+            {
+                "aliasColors": {},
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": "Prometheus",
+                "editable": true,
+                "error": false,
+                "fill": 1,
+                "grid": {},
+                "gridPos": {
+                    "h": 7,
+                    "w": 12,
+                    "x": 12,
+                    "y": 28
+                },
+                "id": 16,
+                "legend": {
+                    "avg": false,
+                    "current": false,
+                    "max": false,
+                    "min": false,
+                    "show": true,
+                    "total": false,
+                    "values": false
+                },
+                "lines": true,
+                "linewidth": 2,
+                "links": [],
+                "nullPointMode": "connected",
+                "percentage": false,
+                "pointradius": 5,
+                "points": false,
+                "renderer": "flot",
+                "seriesOverrides": [
+                    {
+                        "alias": "misses",
+                        "yaxis": 2
+                    }
+                ],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
+                "targets": [
+                    {
+                        "expr": "sum(rate(coredns_cache_hits_total{instance=~\"$instance\"}[5m])) by (type)",
+                        "intervalFactor": 2,
+                        "legendFormat": "hits:{{`{{type}}`}}",
+                        "refId": "A",
+                        "step": 40
+                    },
+                    {
+                        "expr": "sum(rate(coredns_cache_misses_total{instance=~\"$instance\"}[5m])) by (type)",
+                        "intervalFactor": 2,
+                        "legendFormat": "misses",
+                        "refId": "B",
+                        "step": 40
+                    }
+                ],
+                "thresholds": [],
+                "timeFrom": null,
+                "timeShift": null,
+                "title": "Cache (hitrate)",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 0,
+                    "value_type": "cumulative"
+                },
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": []
+                },
+                "yaxes": [
+                    {
+                        "format": "pps",
+                        "logBase": 1,
+                        "max": null,
+                        "min": 0,
+                        "show": true
+                    },
+                    {
+                        "format": "pps",
+                        "logBase": 1,
+                        "max": null,
+                        "min": 0,
+                        "show": true
+                    }
+                ],
+                "yaxis": {
+                    "align": false,
+                    "alignLevel": null
+                }
+            }
+        ],
+        "schemaVersion": 16,
+        "style": "dark",
+        "tags": [],
+        "templating": {
+            "list": [
+                {
+                    "allValue": ".*",
+                    "current": {
+                        "selected": true,
+                        "tags": [],
+                        "text": "172.16.1.8:9153",
+                        "value": "172.16.1.8:9153"
+                    },
+                    "datasource": "Prometheus",
+                    "hide": 0,
+                    "includeAll": true,
+                    "label": "Instance",
+                    "multi": false,
+                    "name": "instance",
+                    "options": [],
+                    "query": "up{job=\"coredns\"}",
+                    "refresh": 1,
+                    "regex": ".*instance=\"(.*?)\".*",
+                    "skipUrlSync": false,
+                    "sort": 0,
+                    "tagValuesQuery": "",
+                    "tags": [],
+                    "tagsQuery": "",
+                    "type": "query",
+                    "useTags": false
+                }
+            ]
+        },
+        "time": {
+            "from": "now-3h",
+            "to": "now"
+        },
+        "timepicker": {
+            "now": true,
+            "refresh_intervals": [
+                "5s",
+                "10s",
+                "30s",
+                "1m",
+                "5m",
+                "15m",
+                "30m",
+                "1h",
+                "2h",
+                "1d"
+            ],
+            "time_options": [
+                "5m",
+                "15m",
+                "1h",
+                "6h",
+                "12h",
+                "24h",
+                "2d",
+                "7d",
+                "30d"
+            ]
+        },
+        "timezone": "utc",
+        "title": "CoreDNS",
+        "uid": "vkQ0UHxik",
+        "version": 1
+    }
+{{- end }}

@@ -37,7 +37,7 @@ The following tables lists the configurable parameters of the Unifi chart and th
 | Parameter                                    | Description                                                                                                            | Default                      |
 | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
 | `image.repository`                           | Image repository                                                                                                       | `jacobalberty/unifi`         |
-| `image.tag`                                  | Image tag. Possible values listed [here][docker].                                                                      | `5.9.29`                     |
+| `image.tag`                                  | Image tag. Possible values listed [here][docker].                                                                      | `5.11.50`                     |
 | `image.pullPolicy`                           | Image pull policy                                                                                                      | `IfNotPresent`               |
 | `strategyType`                               | Specifies the strategy used to replace old Pods by new ones                                                            | `Recreate`                   |
 | `guiService.type`                            | Kubernetes service type for the Unifi GUI                                                                              | `ClusterIP`                  |
@@ -94,6 +94,8 @@ The following tables lists the configurable parameters of the Unifi chart and th
 | `persistence.existingClaim`                  | Use an existing PVC to persist data                                                                                    | `nil`                        |
 | `persistence.storageClass`                   | Type of persistent volume claim                                                                                        | `-`                          |
 | `persistence.accessModes`                    | Persistence access modes                                                                                               | `[]`                         |
+| `extraConfigFiles`                           | Dictionary containing files mounted to `/configmap` inside the pod (See [values.yaml](values.yaml) for examples)       | `{}`                         |
+| `extraJvmOpts`                               | List of additional JVM options, e.g. `["-Dlog4j.configurationFile=file:/configmap/log4j2.xml"]`                        | `[]`                         |
 | `resources`                                  | CPU/Memory resource requests/limits                                                                                    | `{}`                         |
 | `nodeSelector`                               | Node labels for pod assignment                                                                                         | `{}`                         |
 | `tolerations`                                | Toleration labels for pod assignment                                                                                   | `[]`                         |
@@ -132,9 +134,22 @@ Read through the [values.yaml](values.yaml) file. It has several commented out s
   with the controller using UDP. See [this article][ubnt 3] and [this other
   article][ubnt 4] for more information.
 
+## Ingress and HTTPS
+Unifi does [not support HTTP][unifi] so if you wish to use the guiService, you
+need to ensure that you use a backend transport of HTTPS.
+
+An example entry in `values.yaml` to achieve this is as follows:
+```
+ingress:
+  enabled: true
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+```
+
 [docker]: https://hub.docker.com/r/jacobalberty/unifi/tags/
 [github]: https://github.com/jacobalberty/unifi-docker
 [ubnt]: https://www.ubnt.com/
 [ubnt 2]: https://unifi-sdn.ubnt.com/
 [ubnt 3]: https://help.ubnt.com/hc/en-us/articles/204976094-UniFi-What-protocol-does-the-controller-use-to-communicate-with-the-UAP-
 [ubnt 4]: https://help.ubnt.com/hc/en-us/articles/115015457668-UniFi-Troubleshooting-STUN-Communication-Errors
+[unifi]: https://community.ui.com/questions/Controller-how-to-deactivate-http-to-https/c5e247d8-b5b9-4c84-a3bb-28a90fd65668

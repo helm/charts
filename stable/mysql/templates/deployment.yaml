@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "mysql.fullname" . }}
@@ -14,10 +14,17 @@ metadata:
 {{- end }}
 
 spec:
+  strategy:
+{{ toYaml .Values.strategy | indent 4 }}
+  selector:
+    matchLabels:
+      app: {{ template "mysql.fullname" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
         app: {{ template "mysql.fullname" . }}
+        release: {{ .Release.Name }}
 {{- with .Values.podLabels }}
 {{ toYaml . | indent 8 }}
 {{- end }}
@@ -41,6 +48,7 @@ spec:
         fsGroup: {{ .Values.securityContext.fsGroup }}
         runAsUser: {{ .Values.securityContext.runAsUser }}
       {{- end }}
+      serviceAccountName: {{ template "mysql.serviceAccountName" . }}
       initContainers:
       - name: "remove-lost-found"
         image: "{{ .Values.busybox.image}}:{{ .Values.busybox.tag }}"
@@ -83,6 +91,7 @@ spec:
         - name: MYSQL_ALLOW_EMPTY_PASSWORD
           value: "true"
         {{- end }}
+        {{- if not (and .Values.allowEmptyRootPassword (not .Values.mysqlRootPassword)) }}
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -91,6 +100,8 @@ spec:
               {{- if .Values.mysqlAllowEmptyPassword }}
               optional: true
               {{- end }}
+        {{- end }}
+        {{- if not (and .Values.allowEmptyRootPassword (not .Values.mysqPassword)) }}
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -99,6 +110,7 @@ spec:
               {{- if or .Values.mysqlAllowEmptyPassword (empty .Values.mysqlUser) }}
               optional: true
               {{- end }}
+        {{- end }}
         - name: MYSQL_USER
           value: {{ default "" .Values.mysqlUser | quote }}
         - name: MYSQL_DATABASE

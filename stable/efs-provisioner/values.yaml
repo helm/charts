@@ -14,7 +14,7 @@ replicaCount: 1
 revisionHistoryLimit: 10
 image:
   repository: quay.io/external_storage/efs-provisioner
-  tag: v2.2.0-k8s1.12
+  tag: v2.4.0
   pullPolicy: IfNotPresent
   # If specified, use these secrets to access the images
   # pullSecrets:
@@ -40,7 +40,7 @@ efsProvisioner:
   path: /example-pv
   provisionerName: example.com/aws-efs
   storageClass:
-    name: efs
+    name: aws-efs
     isDefault: false
     gidAllocate:
       enabled: true
@@ -94,3 +94,9 @@ resources: {}
   #  memory: 128Mi
 
 priorityClassName: ""
+
+# Configure podsecuritypolicy
+# Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+podSecurityPolicy:
+  enabled: true
+  annotations: {}

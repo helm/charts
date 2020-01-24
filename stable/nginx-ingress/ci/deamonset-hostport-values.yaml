@@ -1,4 +1,0 @@
-controller:
-  kind: DaemonSet
-  daemonset:
-    useHostPort: true

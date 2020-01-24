@@ -99,7 +99,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 | Parameter                  | Description                                     | Default                                                    |
 | -----------------------    | ---------------------------------------------   | ---------------------------------------------------------- |
 | `image.repo`                         | `cassandra` image repository                    | `cassandra`                                                |
-| `image.tag`                          | `cassandra` image tag                           | `3.11.3`                                                   |
+| `image.tag`                          | `cassandra` image tag                           | `3.11.5`                                                   |
 | `image.pullPolicy`                   | Image pull policy                               | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
 | `image.pullSecrets`                  | Image pull secrets                              | `nil`                                                      |
 | `config.cluster_domain`              | The name of the cluster domain.                 | `cluster.local`                                            |
@@ -157,6 +157,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `backup.destination`                 | Destination to store backup artifacts           | `s3://bucket/cassandra`                                    |
 | `backup.google.serviceAccountSecret` | Secret containing credentials if GCS is used as destination |                                                |
 | `exporter.enabled`                   | Enable Cassandra exporter                       | `false`                                                    |
+| `exporter.servicemonitor`            | Enable ServiceMonitor for exporter              | `true`                                                    |
 | `exporter.image.repo`                | Exporter image repository                       | `criteord/cassandra_exporter`                              |
 | `exporter.image.tag`                 | Exporter image tag                              | `2.0.2`                                                    |
 | `exporter.port`                      | Exporter port                                   | `5556`                                                     |

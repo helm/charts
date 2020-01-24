@@ -99,12 +99,12 @@ Parameter | Description | Default
 `controller.service.annotations` | annotations for controller service | `{}`
 `controller.service.labels` | labels for controller service | `{}`
 `controller.service.clusterIP` | internal controller cluster service IP | `""`
-`controller.service.externalTrafficPolicy` | external traffic policy | `Cluster`
+`controller.service.externalTrafficPolicy` | If `controller.service.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable [source IP preservation](https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typenodeport) | `Local`
 `controller.service.externalIPs` | list of IP addresses at which the controller services are available | `[]`
 `controller.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `controller.service.loadBalancerSourceRanges` |  | `[]`
-`controller.service.httpPorts` | The http ports to open, that map to the Ingress' port 80. Each entry specifies a `port` and an optional `nodePort`. | `[ port: 80 ]`
-`controller.service.httpsPorts` | The https ports to open, that map to the Ingress' port 443. Each entry specifies a `port` and an optional `nodePort`. | `[ port: 443 ]`
+`controller.service.httpPorts` | The http ports to open, that map to the Ingress' port 80. Each entry specifies a `port`, `targetPort` and an optional `nodePort`. | `[ port: 80, targetPort: http ]`
+`controller.service.httpsPorts` | The https ports to open, that map to the Ingress' port 443. Each entry specifies a `port`, `targetPort` and an optional `nodePort`. | `[ port: 443 , targetPort: https]`
 `controller.service.type` | type of controller service to create | `LoadBalancer`
 `controller.stats.enabled` | whether to enable exporting stats |  `false`
 `controller.stats.port` | The port number used haproxy-ingress-controller for haproxy statistics | `1936`

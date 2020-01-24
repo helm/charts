@@ -23,6 +23,17 @@ To install the chart, use the following:
 $ helm install stable/elasticsearch-curator
 ```
 
+## Upgrading an existing Release to a new major version
+
+A major chart version change (like v1.2.3 -> v2.0.0) indicates that there is an
+incompatible breaking change needing manual actions.
+
+### To 2.0.0
+
+v2.0.0 uses docker image from `elasticsearch-curator` author, which differs in its way to install curator.
+
+If you have a hardcoded `command` value, please update it to follow the new `curator` executable path: `/curator/curator` (which is not in PATH).
+
 ## Configuration
 
 The following table lists the configurable parameters of the docker-registry chart and
@@ -31,21 +42,24 @@ their default values.
 |          Parameter                   |                         Description                         |                   Default                    |
 | :----------------------------------- | :---------------------------------------------------------- | :------------------------------------------- |
 | `image.pullPolicy`                   | Container pull policy                                       | `IfNotPresent`                               |
-| `image.repository`                   | Container image to use                                      | `quay.io/pires/docker-elasticsearch-curator` |
-| `image.tag`                          | Container image tag to deploy                               | `5.5.4`                                      |
+| `image.repository`                   | Container image to use                                      | `untergeek/curator`                          |
+| `image.tag`                          | Container image tag to deploy                               | `5.7.6`                                      |
 | `hooks`                              | Whether to run job on selected hooks                        | `{ "install": false, "upgrade": false }`     |
 | `cronjob.schedule`                   | Schedule for the CronJob                                    | `0 1 * * *`                                  |
 | `cronjob.annotations`                | Annotations to add to the cronjob                           | {}                                           |
+| `cronjob.labels`                     | Labels to add to the cronjob                                | {}                                           |
 | `cronjob.concurrencyPolicy`          | `Allow|Forbid|Replace` concurrent jobs                      | `nil`                                        |
 | `cronjob.failedJobsHistoryLimit`     | Specify the number of failed Jobs to keep                   | `nil`                                        |
 | `cronjob.successfulJobsHistoryLimit` | Specify the number of completed Jobs to keep                | `nil`                                        |
+| `cronjob.jobRestartPolicy`           | Control the Job restartPolicy                               | `Never`                                      |
 | `pod.annotations`                    | Annotations to add to the pod                               | {}                                           |
+| `pod.labels`                         | Labels to add to the pod                                    | {}                                           |
 | `dryrun`                             | Run Curator in dry-run mode                                 | `false`                                      |
 | `env`                                | Environment variables to add to the cronjob container       | {}                                           |
 | `envFromSecrets`                     | Environment variables from secrets to the cronjob container | {}                                           |
 | `envFromSecrets.*.from.secret`       | - `secretKeyRef.name` used for environment variable         |                                              |
 | `envFromSecrets.*.from.key`          | - `secretKeyRef.key` used for environment variable          |                                              |
-| `command`                            | Command to execute                                          | ["curator"]                                  |
+| `command`                            | Command to execute                                          | ["/curator/curator"]                         |
 | `configMaps.action_file_yml`         | Contents of the Curator action_file.yml                     | See values.yaml                              |
 | `configMaps.config_yml`              | Contents of the Curator config.yml (overrides config)       | See values.yaml                              |
 | `resources`                          | Resource requests and limits                                | {}                                           |

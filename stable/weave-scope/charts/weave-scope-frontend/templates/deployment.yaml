@@ -1,5 +1,5 @@
 {{- if .Values.enabled -}}
-apiVersion: apps/v1beta1
+apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   labels:
@@ -27,6 +27,9 @@ spec:
           imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
           args:
             - "--no-probe"
+            {{- range $arg := .Values.flags }}
+            - {{ $arg | quote }}
+            {{- end }}
           ports:
             - name: http
               containerPort: 4040

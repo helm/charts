@@ -98,8 +98,13 @@ spec:
         - name: couchdb-statefulset-assembler
           image: "{{ .Values.helperImage.repository }}:{{ .Values.helperImage.tag }}"
           imagePullPolicy: {{ .Values.helperImage.pullPolicy }}
-{{- if not .Values.allowAdminParty }}
           env:
+            - name: COUCHDB_CLUSTER_SIZE
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "couchdb.fullname" . }}
+                  key: clusterSize
+{{- if not .Values.allowAdminParty }}
             - name: COUCHDB_USER
               valueFrom:
                 secretKeyRef:

@@ -49,8 +49,9 @@ Parameter | Description | Default
 `host.interface` | Host interface for proxying AWS metadata | `docker0`
 `host.port` | Port to listen on | `8181`
 `image.repository` | Image | `jtblin/kube2iam`
-`image.tag` | Image tag | `0.10.4`
+`image.tag` | Image tag | `0.10.7`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
+`image.pullSecrets` | Image pull secrets | `[]`
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to be added to pods | `{}`
 `priorityClassName` | priorityClassName to be added to pods | `{}`

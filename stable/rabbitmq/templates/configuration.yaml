@@ -16,7 +16,26 @@ data:
     default_pass=CHANGEME
 {{ .Values.rabbitmq.configuration | indent 4 }}
 {{ .Values.rabbitmq.extraConfiguration | indent 4 }}
+{{- if .Values.rabbitmq.tls.enabled }}
+    ssl_options.verify={{ .Values.rabbitmq.tls.sslOptionsVerify }}
+    listeners.ssl.default={{ .Values.service.tlsPort }}
+    ssl_options.fail_if_no_peer_cert={{ .Values.rabbitmq.tls.failIfNoPeerCert }}
+    ssl_options.cacertfile = /opt/bitnami/rabbitmq/certs/ca_certificate.pem
+    ssl_options.certfile = /opt/bitnami/rabbitmq/certs/server_certificate.pem
+    ssl_options.keyfile = /opt/bitnami/rabbitmq/certs/server_key.pem
+{{- end }}
+{{- if .Values.ldap.enabled }}
+    auth_backends.1 = rabbit_auth_backend_ldap
+    auth_backends.2 = internal
+    auth_ldap.servers.1  = {{ .Values.ldap.server }}
+    auth_ldap.port = {{ .Values.ldap.port }}
+    auth_ldap.user_dn_pattern = {{ .Values.ldap.user_dn_pattern  }}
+{{- if .Values.ldap.tls.enabled }}
+    auth_ldap.use_ssl = true
+{{- end }}
+{{- end }}
+
 {{ if .Values.rabbitmq.advancedConfiguration}}
   advanced.config: |-
 {{ .Values.rabbitmq.advancedConfiguration | indent 4 }}
-{{ end }}   
+{{- end }}

@@ -1,4 +1,7 @@
-apiVersion: apps/v1beta1
+{{- $etcdPeerProtocol := include "etcd.peerProtocol" . }}
+{{- $etcdClientProtocol := include "etcd.clientProtocol" . }}
+{{- $etcdAuthOptions := include "etcd.authOptions" . }}
+apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
   name: {{ template "etcd.fullname" . }}
@@ -7,7 +10,13 @@ metadata:
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     app: {{ template "etcd.name" . }}
+    app.kubernetes.io/name: {{ template "etcd.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "etcd.name" . }}
+      #app.kubernetes.io/instance: {{ .Release.Name }}
   serviceName: {{ template "etcd.fullname" . }}
   replicas: {{ .Values.replicas }}
   template:
@@ -43,16 +52,39 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}          
         env:
+        - name: ETCDCTL_API
+          value: "3"
         - name: INITIAL_CLUSTER_SIZE
           value: {{ .Values.replicas | quote }}
         - name: SET_NAME
           value: {{ template "etcd.fullname" . }}
+        {{- if and .Values.auth.peer.secureTransport .Values.auth.peer.useAutoTLS }}
+        - name: ETCD_PEER_AUTO_TLS
+          value: "true"
+        {{- end }}
+        {{- if .Values.auth.client.secureTransport }}
+        - name: ETCD_CERT_FILE
+          value: "/opt/etcd/certs/client/cert.pem"
+        - name: ETCD_KEY_FILE
+          value: "/opt/etcd/certs/client/key.pem"
+        {{- if .Values.auth.client.enableAuthentication }}
+        - name: ETCD_CLIENT_CERT_AUTH
+          value: "true"
+        - name: ETCD_TRUSTED_CA_FILE
+          value: "/opt/etcd/certs/client/ca.crt"
+        {{- end }}
+        {{- end }}
 {{- if .Values.extraEnv }}
 {{ toYaml .Values.extraEnv | indent 8 }}
 {{- end }}
         volumeMounts:
         - name: datadir
           mountPath: /var/run/etcd
+        {{- if or .Values.auth.client.enableAuthentication (and .Values.auth.client.secureTransport ) }}
+        - name: etcd-client-certs
+          mountPath: /opt/etcd/certs/client/
+          readOnly: true
+        {{- end }}             
         lifecycle:
           preStop:
             exec:
@@ -62,20 +94,21 @@ spec:
                 - |
                   EPS=""
                   for i in $(seq 0 $((${INITIAL_CLUSTER_SIZE} - 1))); do
-                      EPS="${EPS}${EPS:+,}http://${SET_NAME}-${i}.${SET_NAME}:2379"
+                      EPS="${EPS}${EPS:+,}{{ $etcdPeerProtocol }}://${SET_NAME}-${i}.${SET_NAME}:2379"
                   done
 
                   HOSTNAME=$(hostname)
+                  AUTH_OPTIONS="{{ $etcdAuthOptions }}"                  
 
                   member_hash() {
-                      etcdctl member list | grep http://${HOSTNAME}.${SET_NAME}:2380 | cut -d':' -f1 | cut -d'[' -f1
+                      etcdctl $AUTH_OPTIONS member list | grep {{ $etcdPeerProtocol }}://${HOSTNAME}.${SET_NAME}:2380 | cut -d':' -f1 | cut -d'[' -f1
                   }
 
                   SET_ID=${HOSTNAME##*[^0-9]}
 
                   if [ "${SET_ID}" -ge ${INITIAL_CLUSTER_SIZE} ]; then
                       echo "Removing ${HOSTNAME} from etcd cluster"
-                      ETCDCTL_ENDPOINT=${EPS} etcdctl member remove $(member_hash)
+                      ETCDCTL_ENDPOINT=${EPS} etcdctl $AUTH_OPTIONS member remove $(member_hash)
                       if [ $? -eq 0 ]; then
                           # Remove everything otherwise the cluster will no longer scale-up
                           rm -rf /var/run/etcd/*
@@ -86,24 +119,24 @@ spec:
           - "-ec"
           - |
             HOSTNAME=$(hostname)
-
+            AUTH_OPTIONS="{{ $etcdAuthOptions }}"
             # store member id into PVC for later member replacement
-            collect_member() {
-                while ! etcdctl member list &>/dev/null; do sleep 1; done
-                etcdctl member list | grep http://${HOSTNAME}.${SET_NAME}:2380 | cut -d':' -f1 | cut -d'[' -f1 > /var/run/etcd/member_id
+            collect_member() {                
+                while ! etcdctl $AUTH_OPTIONS member list &>/dev/null; do sleep 1; done
+                etcdctl $AUTH_OPTIONS member list | grep {{ $etcdPeerProtocol }}://${HOSTNAME}.${SET_NAME}:2380 | cut -d':' -f1 | cut -d'[' -f1 > /var/run/etcd/member_id                
                 exit 0
             }
 
             eps() {
                 EPS=""
                 for i in $(seq 0 $((${INITIAL_CLUSTER_SIZE} - 1))); do
-                    EPS="${EPS}${EPS:+,}http://${SET_NAME}-${i}.${SET_NAME}:2379"
+                    EPS="${EPS}${EPS:+,}{{ $etcdPeerProtocol }}://${SET_NAME}-${i}.${SET_NAME}:2379"
                 done
                 echo ${EPS}
             }
 
             member_hash() {
-                etcdctl member list | grep http://${HOSTNAME}.${SET_NAME}:2380 | cut -d':' -f1 | cut -d'[' -f1
+                etcdctl $AUTH_OPTIONS member list | grep {{ $etcdPeerProtocol }}://${HOSTNAME}.${SET_NAME}:2380 | cut -d':' -f1 | cut -d'[' -f1
             }
 
             # we should wait for other pods to be up before trying to join
@@ -113,21 +146,22 @@ spec:
                     echo "Waiting for ${SET_NAME}-${i}.${SET_NAME} to come up"
                     ping -W 1 -c 1 ${SET_NAME}-${i}.${SET_NAME} > /dev/null && break
                     sleep 1s
-                done
+                done                
             done
-
+            
             # re-joining after failure?
             if [ -e /var/run/etcd/default.etcd ]; then
                 echo "Re-joining etcd member"
                 member_id=$(cat /var/run/etcd/member_id)
 
                 # re-join member
-                ETCDCTL_ENDPOINT=$(eps) etcdctl member update ${member_id} http://${HOSTNAME}.${SET_NAME}:2380 | true
+                ETCDCTL_ENDPOINT=$(eps) etcdctl $AUTH_OPTIONS member update ${member_id} {{ $etcdPeerProtocol }}://${HOSTNAME}.${SET_NAME}:2380 | true
                 exec etcd --name ${HOSTNAME} \
-                    --listen-peer-urls http://0.0.0.0:2380 \
-                    --listen-client-urls http://0.0.0.0:2379\
-                    --advertise-client-urls http://${HOSTNAME}.${SET_NAME}:2379 \
+                    --listen-peer-urls {{ $etcdPeerProtocol }}://0.0.0.0:2380 \
+                    --listen-client-urls {{ $etcdClientProtocol }}://0.0.0.0:2379\
+                    --advertise-client-urls {{ $etcdClientProtocol }}://${HOSTNAME}.${SET_NAME}:2379 \
                     --data-dir /var/run/etcd/default.etcd
+                    
             fi
 
             # etcd-SET_ID
@@ -143,11 +177,11 @@ spec:
                     # the member hash exists but for some reason etcd failed
                     # as the datadir has not be created, we can remove the member
                     # and retrieve new hash
-                    etcdctl member remove ${MEMBER_HASH}
+                    etcdctl $AUTH_OPTIONS member remove ${MEMBER_HASH}
                 fi
 
                 echo "Adding new member"
-                etcdctl member add ${HOSTNAME} http://${HOSTNAME}.${SET_NAME}:2380 | grep "^ETCD_" > /var/run/etcd/new_member_envs
+                etcdctl $AUTH_OPTIONS member add ${HOSTNAME} {{ $etcdPeerProtocol }}://${HOSTNAME}.${SET_NAME}:2380 | grep "^ETCD_" > /var/run/etcd/new_member_envs
 
                 if [ $? -ne 0 ]; then
                     echo "Exiting"
@@ -161,32 +195,40 @@ spec:
                 collect_member &
 
                 exec etcd --name ${HOSTNAME} \
-                    --listen-peer-urls http://0.0.0.0:2380 \
-                    --listen-client-urls http://0.0.0.0:2379 \
-                    --advertise-client-urls http://${HOSTNAME}.${SET_NAME}:2379 \
+                    --listen-peer-urls {{ $etcdPeerProtocol }}://0.0.0.0:2380 \
+                    --listen-client-urls {{ $etcdClientProtocol }}://0.0.0.0:2379 \
+                    --advertise-client-urls {{ $etcdClientProtocol }}://${HOSTNAME}.${SET_NAME}:2379 \
                     --data-dir /var/run/etcd/default.etcd \
-                    --initial-advertise-peer-urls http://${HOSTNAME}.${SET_NAME}:2380 \
+                    --initial-advertise-peer-urls {{ $etcdPeerProtocol }}://${HOSTNAME}.${SET_NAME}:2380 \
                     --initial-cluster ${ETCD_INITIAL_CLUSTER} \
                     --initial-cluster-state ${ETCD_INITIAL_CLUSTER_STATE}
+                    
             fi
 
             PEERS=""
             for i in $(seq 0 $((${INITIAL_CLUSTER_SIZE} - 1))); do
-                PEERS="${PEERS}${PEERS:+,}${SET_NAME}-${i}=http://${SET_NAME}-${i}.${SET_NAME}:2380"
+                PEERS="${PEERS}${PEERS:+,}${SET_NAME}-${i}={{ $etcdPeerProtocol }}://${SET_NAME}-${i}.${SET_NAME}:2380"
             done
 
             collect_member &
 
             # join member
             exec etcd --name ${HOSTNAME} \
-                --initial-advertise-peer-urls http://${HOSTNAME}.${SET_NAME}:2380 \
-                --listen-peer-urls http://0.0.0.0:2380 \
-                --listen-client-urls http://0.0.0.0:2379 \
-                --advertise-client-urls http://${HOSTNAME}.${SET_NAME}:2379 \
+                --initial-advertise-peer-urls {{ $etcdPeerProtocol }}://${HOSTNAME}.${SET_NAME}:2380 \
+                --listen-peer-urls {{ $etcdPeerProtocol }}://0.0.0.0:2380 \
+                --listen-client-urls {{ $etcdClientProtocol }}://0.0.0.0:2379 \
+                --advertise-client-urls {{ $etcdClientProtocol }}://${HOSTNAME}.${SET_NAME}:2379 \
                 --initial-cluster-token etcd-cluster-1 \
                 --initial-cluster ${PEERS} \
                 --initial-cluster-state new \
                 --data-dir /var/run/etcd/default.etcd
+      volumes:
+      {{- if or .Values.auth.client.enableAuthentication (and .Values.auth.client.secureTransport ) }}
+      - name: etcd-client-certs
+        secret:
+          secretName: {{ required "A secret containinig the client certificates is required" .Values.auth.client.existingSecret }}
+          defaultMode: 256
+      {{- end }}      
   {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
   - metadata:
@@ -206,7 +248,6 @@ spec:
     {{- end }}
     {{- end }}
   {{- else }}
-      volumes:
       - name: datadir
       {{- if .Values.memoryMode }}
         emptyDir:

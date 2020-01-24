@@ -25,10 +25,11 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 
 | Parameter                               | Description                                    | Default                                                      |
 | --------------------------------------- | ---------------------------------------------- | ------------------------------------------------------------ |
-| `clusterName`                           | `stolon` cluster name                          | `nil`                                                |
+| `clusterName`                           | `stolon` cluster name                          | `nil`                                                        |
 | `image.repository`                      | `stolon` image repository                      | `sorintlab/stolon`                                           |
 | `image.tag`                             | `stolon` image tag                             | `v0.13.0-pg10`                                               |
 | `image.pullPolicy`                      | `stolon` image pull policy                     | `IfNotPresent`                                               |
+| `image.pullSecrets`                     | `stolon` image pull secrets as an array        | `[]` (does not add image pull secrets to deployed pods)      |
 | `etcdImage.repository`                  | `etcd` image repository                        | `k8s.gcr.io/etcd-amd64`                                      |
 | `etcdImage.tag`                         | `etcd` image tag                               | `2.3.7`                                                      |
 | `etcdImage.pullPolicy`                  | `etcd` image pull policy                       | `IfNotPresent`                                               |
@@ -55,13 +56,24 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `store.kubeResourceKind`                | Kubernetes resource kind (only for kubernetes) | `configmap`                                                  |
 | `pgParameters`                          | [`postgresql.conf`][pgconf] options used during cluster creation | `{}`                                       |
 | `ports`                                 | Ports to expose on pods                        | `{"stolon":{"containerPort": 5432},"metrics":{"containerPort": 8080}}`|
+| `serviceMonitor.enabled`                | Creates a Prometheus serviceMonitor and service object | `false`                                              |
+| `serviceMonitor.labels`                 | Overrides the default labels added by chart to the ServiceMonitor with labels specified. | `{}`               |
+| `serviceMonitor.namespace`              | Set to use a different value than the release namespace for deploying the ServiceMonitor object | `nil`       |
+| `serviceMonitor.interval`               | Set to use a different value than the default Prometheus scrape interval | `nil`                              |
+| `serviceMonitor.scrapeTimeout`          | Set to use a different value than the default Prometheus scrape timeout | `nil`                               |
 | `job.autoCreateCluster`                 | Set to `false` to force-disable auto-cluster-creation which may clear pre-existing postgres db data | `true`  |
 | `job.autoUpdateClusterSpec`             | Set to `false` to force-disable auto-cluster-spec-update | `true`                                             |
 | `clusterSpec`                           | Stolon cluster spec [reference](https://github.com/sorintlab/stolon/blob/master/doc/cluster_spec.md) | `{}`   |
+| `tls.enabled`                           | Enable tls support to postgresql               | `false`                                                      |
+| `tls.rootCa`                            | Ca certificate                                 | `""`                                                         |
+| `tls.serverCrt`                         | Server cerfificate                             | `""`                                                         |
+| `tls.serverKey`                         | Server key                                     | `""`                                                         |
+| `tls.existingSecret`                    | Existing secret with certificate content to stolon credentials | `""`                                         |
 | `keeper.uid_prefix`                     | Keeper prefix name                             | `keeper`                                                     |
 | `keeper.replicaCount`                   | Number of keeper nodes                         | `2`                                                          |
 | `keeper.resources`                      | Keeper resource requests/limit                 | `{}`                                                         |
 | `keeper.priorityClassName`              | Keeper priorityClassName                       | `nil`                                                        |
+| `keeper.fsGroup`                        | Keeper securityContext fsGroup, do not set if pg9 or 10 | ``                                                  |
 | `keeper.nodeSelector`                   | Node labels for keeper pod assignment          | `{}`                                                         |
 | `keeper.affinity`                       | Affinity settings for keeper pod assignment    | `{}`                                                         |
 | `keeper.tolerations`                    | Toleration labels for keeper pod assignment    | `[]`                                                         |
@@ -71,6 +83,7 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `keeper.podDisruptionBudget.enabled`    | If true, create a pod disruption budget for keeper pods. | `false`                                            |
 | `keeper.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `""`                                     |
 | `keeper.podDisruptionBudget.maxUnavailable` | Maximum number / percentage of pods that may be made unavailable | `""`                                   |
+| `keeper.extraEnv`                       | Extra [environment variables](https://github.com/sorintlab/stolon/blob/master/doc/commands_invocation.md#commands-invocation) for keeper | `[]` |
 | `proxy.replicaCount`                    | Number of proxy nodes                          | `2`                                                          |
 | `proxy.resources`                       | Proxy resource requests/limit                  | `{}`                                                         |
 | `proxy.priorityClassName`               | Proxy priorityClassName                        | `nil`                                                        |
@@ -80,6 +93,7 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `proxy.podDisruptionBudget.enabled`     | If true, create a pod disruption budget for proxy pods. | `false`                                             |
 | `proxy.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `""`                                      |
 | `proxy.podDisruptionBudget.maxUnavailable` | Maximum number / percentage of pods that may be made unavailable | `""`                                    |
+| `proxy.extraEnv`                        | Extra [environment variables](https://github.com/sorintlab/stolon/blob/master/doc/commands_invocation.md#commands-invocation) for proxy | `[]` |
 | `sentinel.replicaCount`                 | Number of sentinel nodes                       | `2`                                                          |
 | `sentinel.resources`                    | Sentinel resource requests/limit               | `{}`                                                         |
 | `sentinel.priorityClassName`            | Sentinel priorityClassName                     | `nil`                                                        |
@@ -89,6 +103,9 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `sentinel.podDisruptionBudget.enabled`  | If true, create a pod disruption budget for sentinel pods. | `false`                                          |
 | `sentinel.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `""`                                   |
 | `sentinel.podDisruptionBudget.maxUnavailable` | Maximum number / percentage of pods that may be made unavailable | `""`                                 |
+| `sentinel.extraEnv`                     | Extra [environment variables](https://github.com/sorintlab/stolon/blob/master/doc/commands_invocation.md#commands-invocation) for sentinel | `[]` |
+| `initdbScripts` | Dictionary of scripts. Executed after cluster startup | `nil`                                 |
+| `nodePostStartScript` | Dictionary of scripts. Executed after the node startup | `nil`                                 |
 
 
 [pgconf]: https://github.com/postgres/postgres/blob/master/src/backend/utils/misc/postgresql.conf.sample

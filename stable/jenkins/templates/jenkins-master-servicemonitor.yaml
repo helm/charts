@@ -4,7 +4,11 @@ kind: ServiceMonitor
 
 metadata:
   name: {{ template "jenkins.fullname" . }}
+{{- if .Values.master.prometheus.serviceMonitorNamespace }}
+  namespace: {{ .Values.master.prometheus.serviceMonitorNamespace }}
+{{- else }}
   namespace: {{ template "jenkins.namespace" . }}
+{{- end }}
   labels:
     "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
     "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"

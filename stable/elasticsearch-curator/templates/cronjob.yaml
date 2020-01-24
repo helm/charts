@@ -7,6 +7,9 @@ metadata:
     chart: {{ template "elasticsearch-curator.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- if .Values.cronjob.labels }}
+{{ toYaml .Values.cronjob.labels | indent 4 }}
+{{- end }}
 {{- if .Values.cronjob.annotations }}
   annotations:
 {{ toYaml .Values.cronjob.annotations | indent 4 }}
@@ -33,6 +36,9 @@ spec:
           labels:
             app: {{ template "elasticsearch-curator.name" . }}
             release: {{ .Release.Name }}
+{{- if .Values.pod.labels }}
+{{ toYaml .Values.pod.labels | indent 12 }}
+{{- end }}
 {{- if .Values.pod.annotations }}
           annotations:
 {{ toYaml .Values.pod.annotations | indent 12 }}
@@ -45,7 +51,7 @@ spec:
 {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 12 }}
 {{- end }}
-          restartPolicy: Never
+          restartPolicy: {{ .Values.cronjob.jobRestartPolicy }}
 {{- if .Values.priorityClassName }}
           priorityClassName: "{{ .Values.priorityClassName }}"
 {{- end }}

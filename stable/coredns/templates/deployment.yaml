@@ -12,6 +12,9 @@ metadata:
     kubernetes.io/name: "CoreDNS"
     {{- end }}
     app.kubernetes.io/name: {{ template "coredns.name" . }}
+{{- if .Values.customLabels }}
+{{ toYaml .Values.customLabels | indent 4 }}
+{{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -29,6 +32,9 @@ spec:
         {{- end }}
         app.kubernetes.io/name: {{ template "coredns.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name | quote }}
+{{- if .Values.customLabels }}
+{{ toYaml .Values.customLabels | indent 8 }}
+{{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- if .Values.isClusterService }}
@@ -63,6 +69,11 @@ spec:
         volumeMounts:
         - name: config-volume
           mountPath: /etc/coredns
+{{- range .Values.extraSecrets }}
+        - name: {{ .name }}
+          mountPath: {{ .mountPath }}
+          readOnly: true
+{{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         ports:
@@ -96,3 +107,9 @@ spec:
             - key: {{ .filename }}
               path: {{ .filename }}
             {{ end }}
+{{- range .Values.extraSecrets }}
+        - name: {{ .name }}
+          secret:
+            secretName: {{ .name }}
+            defaultMode: 400
+{{- end }}

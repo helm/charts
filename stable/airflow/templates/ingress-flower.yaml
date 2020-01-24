@@ -1,4 +1,4 @@
-{{- if and (.Values.workers.enabled)  (.Values.ingress.enabled) -}}
+{{- if and (.Values.flower.enabled)  (.Values.ingress.enabled) -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:

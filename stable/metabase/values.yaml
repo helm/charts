@@ -4,9 +4,10 @@
 # NOTE: Should remain 1
 replicaCount: 1
 podAnnotations: {}
+podLabels: {}
 image:
   repository: metabase/metabase
-  tag: v0.32.9
+  tag: v0.34.0
   pullPolicy: IfNotPresent
 
 # Config Jetty web server
@@ -34,6 +35,11 @@ database:
   # password:
   ## Alternatively, use a connection URI for full configurability. Example for SSL enabled Postgres.
   # connectionURI: postgres://user:password@host:port/database?ssl=true&sslmode=require&sslfactory=org.postgresql.ssl.NonValidatingFactory"
+  ## If a secret with the database credentials already exists, use the following values:
+  # existingSecret:
+  # existingSecretUsernameKey:
+  # existingSecretPasswordKey:
+  # existingSecretConnectionURIKey:
 
 password:
   # Changing Metabase password complexity:
@@ -92,3 +98,18 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+
+## Node labels for pod assignment
+## ref: https://kubernetes.io/docs/user-guide/node-selection/
+#
+nodeSelector: {}
+
+## Tolerations for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+##
+tolerations: []
+
+## Affinity for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+##
+affinity: {}

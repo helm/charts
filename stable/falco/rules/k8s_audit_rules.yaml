@@ -1,7 +1,6 @@
 #
-# Copyright (C) 2016-2018 Draios Inc dba Sysdig.
+# Copyright (C) 2019 The Falco Authors.
 #
-# This file is part of falco.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -40,8 +39,9 @@
   condition: (jevt.value[/stage]=ResponseStarted)
 
 # If you wish to restrict activity to a specific set of users, override/append to this list.
+# users created by kops are included
 - list: allowed_k8s_users
-  items: ["minikube", "minikube-user", "kubelet", "kops"]
+  items: ["minikube", "minikube-user", "kubelet", "kops", "admin", "kube", "kube-proxy"]
 
 - rule: Disallowed K8s User
   desc: Detect any k8s operation by users outside of an allowed set of users.
@@ -56,7 +56,7 @@
 # your environment. In this main falco rules file, there isn't any way
 # to know all the containers that can run, so any container is
 # allowed, by using the always_true macro. In the overridden macro, the condition
-# would look something like (ka.req.container.image.repository=my-repo/my-image)
+# would look something like (ka.req.pod.containers.image.repository in (my-repo/my-image))
 - macro: allowed_k8s_containers
   condition: (k8s_audit_always_true)
 
@@ -109,7 +109,7 @@
   desc: >
     Detect an attempt to start a pod with a container image outside of a list of allowed images.
   condition: kevt and pod and kcreate and not allowed_k8s_containers
-  output: Pod started with container not in allowed list (user=%ka.user.name pod=%ka.resp.name ns=%ka.target.namespace image=%ka.req.container.image)
+  output: Pod started with container not in allowed list (user=%ka.user.name pod=%ka.resp.name ns=%ka.target.namespace images=%ka.req.pod.containers.image)
   priority: WARNING
   source: k8s_audit
   tags: [k8s]
@@ -117,26 +117,22 @@
 - rule: Create Privileged Pod
   desc: >
     Detect an attempt to start a pod with a privileged container
-  condition: kevt and pod and kcreate and ka.req.container.privileged=true and not ka.req.container.image.repository in (falco_privileged_images)
-  output: Pod started with privileged container (user=%ka.user.name pod=%ka.resp.name ns=%ka.target.namespace image=%ka.req.container.image)
+  condition: kevt and pod and kcreate and ka.req.pod.containers.privileged intersects (true) and not ka.req.pod.containers.image.repository in (falco_privileged_images)
+  output: Pod started with privileged container (user=%ka.user.name pod=%ka.resp.name ns=%ka.target.namespace images=%ka.req.pod.containers.image)
   priority: WARNING
   source: k8s_audit
   tags: [k8s]
 
 - macro: sensitive_vol_mount
   condition: >
-    (ka.req.volume.hostpath[/proc*]=true or
-     ka.req.volume.hostpath[/var/run/docker.sock]=true or
-     ka.req.volume.hostpath[/]=true or
-     ka.req.volume.hostpath[/etc]=true or
-     ka.req.volume.hostpath[/root*]=true)
+    (ka.req.pod.volumes.hostpath intersects (/proc, /var/run/docker.sock, /, /etc, /root))
 
 - rule: Create Sensitive Mount Pod
   desc: >
     Detect an attempt to start a pod with a volume from a sensitive host directory (i.e. /proc).
     Exceptions are made for known trusted images.
-  condition: kevt and pod and kcreate and sensitive_vol_mount and not ka.req.container.image.repository in (falco_sensitive_mount_images)
-  output: Pod started with sensitive mount (user=%ka.user.name pod=%ka.resp.name ns=%ka.target.namespace image=%ka.req.container.image mounts=%jevt.value[/requestObject/spec/volumes])
+  condition: kevt and pod and kcreate and sensitive_vol_mount and not ka.req.pod.containers.image.repository in (falco_sensitive_mount_images)
+  output: Pod started with sensitive mount (user=%ka.user.name pod=%ka.resp.name ns=%ka.target.namespace images=%ka.req.pod.containers.image volumes=%jevt.value[/requestObject/spec/volumes])
   priority: WARNING
   source: k8s_audit
   tags: [k8s]
@@ -144,8 +140,8 @@
 # Corresponds to K8s CIS Benchmark 1.7.4
 - rule: Create HostNetwork Pod
   desc: Detect an attempt to start a pod using the host network.
-  condition: kevt and pod and kcreate and ka.req.container.host_network=true and not ka.req.container.image.repository in (falco_hostnetwork_images)
-  output: Pod started using host network (user=%ka.user.name pod=%ka.resp.name ns=%ka.target.namespace image=%ka.req.container.image)
+  condition: kevt and pod and kcreate and ka.req.pod.host_network intersects (true) and not ka.req.pod.containers.image.repository in (falco_hostnetwork_images)
+  output: Pod started using host network (user=%ka.user.name pod=%ka.resp.name ns=%ka.target.namespace images=%ka.req.pod.containers.image)
   priority: WARNING
   source: k8s_audit
   tags: [k8s]
@@ -221,7 +217,7 @@
 - rule: Pod Created in Kube Namespace
   desc: Detect any attempt to create a pod in the kube-system or kube-public namespaces
   condition: kevt and pod and kcreate and ka.target.namespace in (kube-system, kube-public)
-  output: Pod created in kube namespace (user=%ka.user.name pod=%ka.resp.name ns=%ka.target.namespace image=%ka.req.container.image)
+  output: Pod created in kube namespace (user=%ka.user.name pod=%ka.resp.name ns=%ka.target.namespace images=%ka.req.pod.containers.image)
   priority: WARNING
   source: k8s_audit
   tags: [k8s]
@@ -258,7 +254,7 @@
 
 - rule: ClusterRole With Wildcard Created
   desc: Detect any attempt to create a Role/ClusterRole with wildcard resources or verbs
-  condition: kevt and (role or clusterrole) and kcreate and (ka.req.role.rules.resources contains '"*"' or ka.req.role.rules.verbs contains '"*"')
+  condition: kevt and (role or clusterrole) and kcreate and (ka.req.role.rules.resources intersects ("*") or ka.req.role.rules.verbs intersects ("*"))
   output: Created Role/ClusterRole with wildcard (user=%ka.user.name role=%ka.target.name rules=%ka.req.role.rules)
   priority: WARNING
   source: k8s_audit
@@ -266,11 +262,7 @@
 
 - macro: writable_verbs
   condition: >
-    (ka.req.role.rules.verbs contains create or
-     ka.req.role.rules.verbs contains update or
-     ka.req.role.rules.verbs contains patch or
-     ka.req.role.rules.verbs contains delete or
-     ka.req.role.rules.verbs contains deletecollection)
+    (ka.req.role.rules.verbs intersects (create, update, patch, delete, deletecollection))
 
 - rule: ClusterRole With Write Privileges Created
   desc: Detect any attempt to create a Role/ClusterRole that can perform write-related actions
@@ -282,7 +274,7 @@
 
 - rule: ClusterRole With Pod Exec Created
   desc: Detect any attempt to create a Role/ClusterRole that can exec to pods
-  condition: kevt and (role or clusterrole) and kcreate and ka.req.role.rules.resources contains "pods/exec"
+  condition: kevt and (role or clusterrole) and kcreate and ka.req.role.rules.resources intersects ("pods/exec")
   output: Created Role/ClusterRole with pod exec privileges (user=%ka.user.name role=%ka.target.name rules=%ka.req.role.rules)
   priority: WARNING
   source: k8s_audit
@@ -396,7 +388,7 @@
 - rule: K8s Role/Clusterrolebinding Created
   desc: Detect any attempt to create a clusterrolebinding
   condition: (kactivity and kcreate and clusterrolebinding and response_successful)
-  output: K8s Cluster Role Binding Created (user=%ka.user.name binding=%ka.target.name subjects=%ka.req.binding.subjects role=%ka.req.binding.role resp=%ka.response.code decision=%ka.auth.decision reason=%ka.auth.reason foo=%ka.req.binding.subject.has_name[cluster-admin])
+  output: K8s Cluster Role Binding Created (user=%ka.user.name binding=%ka.target.name subjects=%ka.req.binding.subjects role=%ka.req.binding.role resp=%ka.response.code decision=%ka.auth.decision reason=%ka.auth.reason)
   priority: INFO
   source: k8s_audit
   tags: [k8s]

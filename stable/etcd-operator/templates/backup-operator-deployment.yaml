@@ -1,6 +1,6 @@
 {{- if .Values.deployments.backupOperator }}
 ---
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "etcd-backup-operator.fullname" . }}
@@ -22,7 +22,7 @@ spec:
         app: {{ template "etcd-backup-operator.fullname" . }}
         release: {{ .Release.Name }}
     spec:
-      serviceAccountName: {{ template "etcd-backup-operator.serviceAccountName" . }}
+      serviceAccountName: {{ template "etcd-operator.serviceAccountName" . }}
       containers:
       - name: {{ .Values.backupOperator.name }}
         image: "{{ .Values.backupOperator.image.repository }}:{{ .Values.backupOperator.image.tag }}"
@@ -49,11 +49,12 @@ spec:
             cpu: {{ .Values.backupOperator.resources.cpu }}
             memory: {{ .Values.backupOperator.resources.memory }}
     {{- if .Values.backupOperator.nodeSelector }}
-      nodeSelector:
-{{ toYaml .Values.backupOperator.nodeSelector | indent 8 }}
+      nodeSelector: {{ toYaml .Values.backupOperator.nodeSelector | nindent 8 }}
+    {{- end }}
+    {{- if .Values.backupOperator.securityContext }}
+      securityContext: {{ toYaml .Values.backupOperator.securityContext | nindent 8 }}
     {{- end }}
     {{- if .Values.backupOperator.tolerations }}
-      tolerations:
-{{ toYaml .Values.backupOperator.tolerations | indent 8 }}
+      tolerations: {{ toYaml .Values.backupOperator.tolerations | nindent 8 }}
     {{- end }}
 {{- end }}

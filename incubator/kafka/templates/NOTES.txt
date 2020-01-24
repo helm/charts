@@ -36,6 +36,9 @@ To start an interactive message producer session:
 
 To create a message in the above session, simply type the message and press "enter"
 To end the producer session try: Ctrl+C
+
+If you specify "zookeeper.connect" in configurationOverrides, please replace "{{ .Release.Name }}-zookeeper:2181" with the value of "zookeeper.connect", or you will get error.
+
 {{ if .Values.external.enabled }}
 ### Connecting to Kafka from outside Kubernetes
 
