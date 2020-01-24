@@ -115,7 +115,7 @@ persistence:
     ##   GKE, AWS & OpenStack)
     ##
     # storageClass: "-"
-    accessMode: ReadWriteOnce
+    accessMode: ReadWriteMany
     size: 8Gi
 
   # Persistence for the public/storage folder
@@ -129,7 +129,7 @@ persistence:
     ##   GKE, AWS & OpenStack)
     ##
     # storageClass: "-"
-    accessMode: ReadWriteOnce
+    accessMode: ReadWriteMany
     size: 8Gi
 
 ingress:
