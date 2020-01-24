@@ -143,6 +143,8 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `tolerations`              | Toleration labels for pod assignment or the home-assistant GUI | `[]` |
 | `affinity`                 | Affinity settings for pod assignment or the home-assistant GUI | `{}` |
 | `podAnnotations`            | Key-value pairs to add as pod annotations  | `{}` |
+| `extraVolumes`            | Any extra volumes to define for the pod  | `{}` |
+| `extraVolumeMounts`       | Any extra volumes mounts to define for each container of the pod  | `{}` |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

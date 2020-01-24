@@ -55,6 +55,7 @@ spec:
           name: config
         - mountPath: {{ .Values.git.keyPath }}
           name: git-secret
+        {{- if .Values.extraVolumeMounts }}{{ toYaml .Values.extraVolumeMounts | trim | nindent 8 }}{{ end }}
         {{- if .Values.usePodSecurityContext }}
         securityContext:
           runAsUser: {{ default 0 .Values.runAsUser }}
@@ -130,6 +131,7 @@ spec:
           - mountPath: {{ .Values.git.keyPath }}
             name: git-secret
           {{- end }}
+          {{- if .Values.extraVolumeMounts }}{{ toYaml .Values.extraVolumeMounts | trim | nindent 10 }}{{ end }}
           {{- if .Values.usePodSecurityContext }}
           securityContext:
             runAsUser: {{ default 0 .Values.runAsUser }}
@@ -199,6 +201,7 @@ spec:
           - mountPath: {{ .Values.git.keyPath }}
             name: git-secret
           {{- end }}
+          {{- if .Values.extraVolumeMounts }}{{ toYaml .Values.extraVolumeMounts | trim | nindent 10 }}{{ end }}
           {{- if .Values.usePodSecurityContext }}
           securityContext:
             runAsUser: {{ default 0 .Values.runAsUser }}
@@ -246,6 +249,7 @@ spec:
           volumeMounts:
           - mountPath: /config
             name: config
+          {{- if .Values.extraVolumeMounts }}{{ toYaml .Values.extraVolumeMounts | trim | nindent 10 }}{{ end }}
           {{- if .Values.usePodSecurityContext }}
           securityContext:
             runAsUser: {{ default 0 .Values.runAsUser }}
@@ -291,6 +295,7 @@ spec:
           defaultMode: 256
           secretName: {{ .Values.git.secret }}
       {{ end }}
+      {{- if .Values.extraVolumes  }}{{ toYaml .Values.extraVolumes | trim | nindent 6 }}{{ end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

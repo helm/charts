@@ -11,8 +11,6 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "nginx-ingress.controller.fullname" . }}
-  annotations:    
-{{ toYaml .Values.controller.deploymentAnnotations | indent 4}}
 spec:
   selector:
     matchLabels:
@@ -38,10 +36,6 @@ spec:
 {{ toYaml .Values.controller.podLabels | indent 8}}
         {{- end }}
     spec:
-{{- if .Values.controller.dnsConfig }}
-      dnsConfig:
-{{ toYaml .Values.controller.dnsConfig | indent 8 }}
-{{- end }}
       dnsPolicy: {{ .Values.controller.dnsPolicy }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -64,7 +58,13 @@ spec:
           {{- end }}
           args:
             - /nginx-ingress-controller
-            - --default-backend-service={{ if .Values.defaultBackend.enabled }}{{ .Release.Namespace }}/{{ template "nginx-ingress.defaultBackend.fullname" . }}{{ else }}{{ .Values.controller.defaultBackendService }}{{ end }}
+          {{- if .Values.defaultBackend.enabled }}
+            - --default-backend-service={{ .Release.Namespace }}/{{ template "nginx-ingress.defaultBackend.fullname" . }}
+          {{- else }}
+            {{- if and (semverCompare "<0.21.0" .Values.controller.image.tag) }}
+            - --default-backend-service={{ .Values.controller.defaultBackendService }}
+            {{- end }}
+          {{- end }}
           {{- if and (semverCompare ">=0.9.0-beta.1" .Values.controller.image.tag) .Values.controller.publishService.enabled }}
             - --publish-service={{ template "nginx-ingress.controller.publishServicePath" . }}
           {{- end }}
@@ -95,9 +95,6 @@ spec:
             - --validating-webhook=:{{ .Values.controller.admissionWebhooks.port }}
             - --validating-webhook-certificate=/usr/local/certificates/cert
             - --validating-webhook-key=/usr/local/certificates/key
-          {{- end }}
-          {{- if .Values.controller.maxmindLicenseKey }}
-            - --maxmind-license-key={{ .Values.controller.maxmindLicenseKey }}
           {{- end }}
           {{- range $key, $value := .Values.controller.extraArgs }}
             {{- if $value }}
