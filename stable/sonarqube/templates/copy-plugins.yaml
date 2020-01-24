@@ -27,7 +27,7 @@ data:
       cp {{ .Values.sonarqubeFolder }}/extensions/plugins/tmp/*.jar {{ .Values.sonarqubeFolder }}/extensions/plugins/
       {{- if .Values.plugins.lib }}
       {{- range $index, $val := .Values.plugins.lib }}
-        cp -f {{ .Values.sonarqubeFolder }}/extensions/plugins/{{ $val }} {{ .Values.sonarqubeFolder }}/lib/common/
+      cp -f {{ $.Values.sonarqubeFolder }}/extensions/plugins/{{ $val }} {{ $.Values.sonarqubeFolder }}/lib/common/
       {{- end }}
       {{- end }}
       {{ .Values.sonarqubeFolder }}/bin/run.sh
