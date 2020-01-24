@@ -2,7 +2,7 @@
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: RoleBinding
 metadata:
-  name: {{ template "stolon.fullname" . }}
+  name: {{ template "stolon.clusterName" . }}
   labels:
     app: {{ template "stolon.name" . }}
     chart: {{ template "stolon.chart" . }}
@@ -11,7 +11,7 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: {{ template "stolon.fullname" . }}
+  name: {{ template "stolon.clusterName" . }}
 subjects:
 - kind: ServiceAccount
   name: {{ template "stolon.serviceAccountName" . }}

@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "stolon.fullname" . }}-sentinel
+  name: {{ template "stolon.clusterName" . }}-sentinel
   labels:
     app: {{ template "stolon.name" . }}
     chart: {{ template "stolon.chart" . }}
@@ -20,7 +20,7 @@ spec:
         app: {{ template "stolon.name" . }}
         release: {{ .Release.Name }}
         component: stolon-sentinel
-        stolon-cluster: {{ template "stolon.fullname" . }}
+        stolon-cluster: {{ template "stolon.clusterName" . }}
       annotations:
         checksum/config: {{ include (print .Template.BasePath "/hooks/update-cluster-spec-job.yaml") . | sha256sum }}
 {{- with .Values.keeper.annotations }}
@@ -50,7 +50,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: STSENTINEL_CLUSTER_NAME
-              value: {{ template "stolon.fullname" . }}
+              value: {{ template "stolon.clusterName" . }}
             - name: STSENTINEL_STORE_BACKEND
               value: {{ .Values.store.backend | quote}}
             {{- if eq .Values.store.backend "kubernetes" }}

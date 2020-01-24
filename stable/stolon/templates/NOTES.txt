@@ -4,5 +4,5 @@ To get superuser password run
 {{ if not (empty .Values.superuserSecret.name) }}
     PGPASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ .Values.superuserSecret.name }} -o jsonpath="{.data.{{.Values.superuserSecret.passwordKey}}}" | base64 --decode; echo)
 {{ else }}
-    PGPASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "stolon.fullname" . }} -o jsonpath="{.data.pg_su_password}" | base64 --decode; echo)
+    PGPASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "stolon.clusterName" . }} -o jsonpath="{.data.pg_su_password}" | base64 --decode; echo)
 {{ end }}

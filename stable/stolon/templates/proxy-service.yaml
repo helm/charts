@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "stolon.fullname" . }}-proxy
+  name: {{ template "stolon.clusterName" . }}-proxy
   labels:
     app: {{ template "stolon.name" . }}
     chart: {{ template "stolon.chart" . }}

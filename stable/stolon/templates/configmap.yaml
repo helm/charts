@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "stolon.fullname" . }}
+  name: {{ template "stolon.clusterName" . }}
   labels:
     app: {{ template "stolon.name" . }}
     chart: {{ template "stolon.chart" . }}

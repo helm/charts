@@ -40,7 +40,7 @@ spec:
           - name: PGPASSWORD
             value: {{ .Values.superuserPassword }}
           - name: HOST
-            value: {{ template "stolon.fullname" . }}-proxy
+            value: {{ template "stolon.clusterName" . }}-proxy
         command: ["/bin/bash", "-e", "/tmp/sql-script/create_script.sh"]
         volumeMounts:
           - mountPath: "/tmp/sql-script"
@@ -54,5 +54,5 @@ spec:
       initContainers:
         - name: wait-for-database
           image: jwilder/dockerize
-          command: ['dockerize', '-timeout', '30s', '-wait', 'tcp://{{ template "stolon.fullname" . }}-proxy:5432']
+          command: ['dockerize', '-timeout', '30s', '-wait', 'tcp://{{ template "stolon.clusterName" . }}-proxy:5432']
 {{- end }}

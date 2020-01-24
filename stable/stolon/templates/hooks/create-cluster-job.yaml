@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ template "stolon.fullname" . }}-create-cluster
+  name: {{ template "stolon.clusterName" . }}-create-cluster
   labels:
     app: {{ template "stolon.name" . }}
     chart: {{ template "stolon.chart" . }}
@@ -15,7 +15,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "stolon.fullname" . }}
+        app: {{ template "stolon.clusterName" . }}
         release: {{ .Release.Name }}
     spec:
       restartPolicy: OnFailure
@@ -28,7 +28,7 @@ spec:
           command: ["sh", "-c", "while ! etcdctl --endpoints {{ .Values.store.endpoints }} cluster-health; do sleep 1 && echo -n .; done"]
   {{- end }}
       containers:
-        - name: {{ template "stolon.fullname" . }}-create-cluster
+        - name: {{ template "stolon.clusterName" . }}-create-cluster
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/usr/local/bin/stolonctl"]

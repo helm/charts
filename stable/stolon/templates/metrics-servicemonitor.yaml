@@ -2,7 +2,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ template "stolon.fullname" . }}
+  name: {{ template "stolon.clusterName" . }}
   labels:
   {{- if .Values.serviceMonitor.labels }}
     {{ toYaml .Values.serviceMonitor.labels | nindent 4 }}

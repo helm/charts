@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ template "stolon.fullname" . }}-certs
+  name: {{ template "stolon.clusterName" . }}-certs
   labels:
     app: {{ template "stolon.name" . }}
     chart: {{ template "stolon.chart" . }}

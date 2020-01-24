@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ template "stolon.fullname" . }}-keeper
+  name: {{ template "stolon.clusterName" . }}-keeper
   labels:
     app: {{ template "stolon.name" . }}
     chart: {{ template "stolon.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  serviceName: {{ template "stolon.fullname" . }}-keeper-headless
+  serviceName: {{ template "stolon.clusterName" . }}-keeper-headless
   replicas: {{ .Values.keeper.replicaCount }}
   selector:
     matchLabels:
@@ -21,7 +21,7 @@ spec:
         app: {{ template "stolon.name" . }}
         release: {{ .Release.Name }}
         component: stolon-keeper
-        stolon-cluster: {{ template "stolon.fullname" . }}
+        stolon-cluster: {{ template "stolon.clusterName" . }}
       annotations:
 {{- with .Values.keeper.annotations }}
 {{ toYaml . | indent 8 }}
@@ -62,7 +62,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: STKEEPER_CLUSTER_NAME
-              value: {{ template "stolon.fullname" . }}
+              value: {{ template "stolon.clusterName" . }}
             - name: STKEEPER_STORE_BACKEND
               value: {{ .Values.store.backend | quote }}
             {{- if eq .Values.store.backend "kubernetes" }}
@@ -177,15 +177,15 @@ spec:
         - name: certs
           secret:
             defaultMode: 0600
-            secretName: {{ if .Values.tls.existingSecret }}{{ .Values.tls.existingSecret }}{{ else }}{{ template "stolon.fullname" . }}-certs{{end}}
+            secretName: {{ if .Values.tls.existingSecret }}{{ .Values.tls.existingSecret }}{{ else }}{{ template "stolon.clusterName" . }}-certs{{end}}
 {{ end }}
         - name: config
           configMap:
-            name: {{ template "stolon.fullname" . }}
+            name: {{ template "stolon.clusterName" . }}
 {{ if or (empty .Values.superuserSecret.name) (empty .Values.replicationSecret.name) }}
         - name: stolon-secrets
           secret:
-            secretName: {{ template "stolon.fullname" . }}
+            secretName: {{ template "stolon.clusterName" . }}
 {{ end }}
 {{ if not (empty .Values.superuserSecret.name) }}
         - name: stolon-secret-{{ .Values.superuserSecret.name }}

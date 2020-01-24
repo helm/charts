@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "stolon.fullname" . }}-keeper-headless
+  name: {{ template "stolon.clusterName" . }}-keeper-headless
   labels:
     app: {{ template "stolon.name" . }}
     chart: {{ template "stolon.chart" . }}

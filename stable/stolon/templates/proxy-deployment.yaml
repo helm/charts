@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "stolon.fullname" . }}-proxy
+  name: {{ template "stolon.clusterName" . }}-proxy
   labels:
     app: {{ template "stolon.name" . }}
     chart: {{ template "stolon.chart" . }}
@@ -20,7 +20,7 @@ spec:
         app: {{ template "stolon.name" . }}
         release: {{ .Release.Name }}
         component: stolon-proxy
-        stolon-cluster: {{ template "stolon.fullname" . }}
+        stolon-cluster: {{ template "stolon.clusterName" . }}
       annotations:
 {{- with .Values.proxy.annotations }}
 {{ toYaml . | indent 8 }}
@@ -49,7 +49,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: STPROXY_CLUSTER_NAME
-              value: {{ template "stolon.fullname" . }}
+              value: {{ template "stolon.clusterName" . }}
             - name: STPROXY_STORE_BACKEND
               value: {{ .Values.store.backend | quote}}
             {{- if eq .Values.store.backend "kubernetes" }}

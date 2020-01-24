@@ -2,7 +2,7 @@
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ template "stolon.fullname" . }}-keeper
+  name: {{ template "stolon.clusterName" . }}-keeper
   labels:
     app: {{ template "stolon.name" . }}
     chart: {{ template "stolon.chart" . }}

@@ -2,7 +2,7 @@
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ template "stolon.fullname" . }}-proxy
+  name: {{ template "stolon.clusterName" . }}-proxy
   labels:
     app: {{ template "stolon.name" . }}
     chart: {{ template "stolon.chart" . }}
