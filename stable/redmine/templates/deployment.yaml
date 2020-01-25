@@ -37,7 +37,7 @@ spec:
           {{- end }}
           env:
             {{- if .Values.extraVars }}
-            {{- toYaml .Values.extraVars | indent 12 }}
+            {{- toYaml .Values.extraVars | nindent 12 }}
             {{- end }}
             {{- if eq .Values.databaseType "mariadb" }}
             - name: REDMINE_DB_MYSQL
