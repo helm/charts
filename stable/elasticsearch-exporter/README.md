@@ -91,6 +91,7 @@ Parameter | Description | Default
 `es.ssl.client.pemPath` | Path of client pem file which should match a secretMount path |
 `es.ssl.client.key` | Private key for client auth when connecting to Elasticsearch |
 `es.ssl.client.keyPath` | Path of client key file which should match a secretMount path |
+`es.sslSkipVerify` | Enables skipping TLS verification when connecting to Elasticsearch | `false`
 `web.path` | path under which to expose metrics | `/metrics`
 `serviceMonitor.enabled` | If true, a ServiceMonitor CRD is created for a prometheus operator | `false`
 `serviceMonitor.namespace` | If set, the ServiceMonitor will be installed in a different namespace  | `""`
