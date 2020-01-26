@@ -4,6 +4,14 @@
 
 replicaCount: 1
 
+# If file system handles created by NFS Ganesha should be based on
+# major/minor device IDs of the backing storage volume ('/export').
+# When running a cloud based kubernetes service (like Googles GKE service) set
+# this to false as it might affect client connections on restarts of the nfs
+# provisioner pod. Default true.
+
+deviceBasedFsids: true
+
 # imagePullSecrets:
 
 image:

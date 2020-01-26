@@ -50,6 +50,7 @@ spec:
                 - SYS_RESOURCE
           args:
             - "-provisioner={{ template "nfs-provisioner.provisionerName" . }}"
+            - "-device-based-fsids={{ template ".Values.deviceBasedFsids" . }}"
           env:
             - name: POD_IP
               valueFrom:
