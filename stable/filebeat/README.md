@@ -5,8 +5,11 @@
 ## Prerequisites
 
 - Kubernetes 1.10+
+- Filebeat 7.4.0+
+  * If wanting to use a older version of filebeat you will need  to modify the configuration to add back in the `in_cluster` configuration see [this](https://github.com/helm/charts/pull/17876/files) pull request.
 
 ## Note
+
 
 By default this chart only ships a single output to a file on the local system.  Users should set config.output.file.enabled=false and configure their own outputs as [documented](https://www.elastic.co/guide/en/beats/filebeat/current/configuring-output.html)
 
@@ -25,7 +28,7 @@ The following table lists the configurable parameters of the filebeat chart and 
 | Parameter                                                | Description                                                                                              | Default                                            |
 | -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
 | `image.repository`                                       | Docker image repo                                                                                        | `docker.elastic.co/beats/filebeat-oss`             |
-| `image.tag`                                              | Docker image tag                                                                                         | `7.0.1`                                            |
+| `image.tag`                                              | Docker image tag                                                                                         | `7.4.0`                                            |
 | `image.pullPolicy`                                       | Docker image pull policy                                                                                 | `IfNotPresent`                                     |
 | `image.pullSecrets`                                      | Specify image pull secrets                                                                               | `nil`                                              |
 | `config.filebeat.config.modules.path`                    |                                                                                                          | `${path.config}/modules.d/*.yml`                   |

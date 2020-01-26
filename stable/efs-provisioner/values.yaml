@@ -94,3 +94,9 @@ resources: {}
   #  memory: 128Mi
 
 priorityClassName: ""
+
+# Configure podsecuritypolicy
+# Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+podSecurityPolicy:
+  enabled: true
+  annotations: {}

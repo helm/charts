@@ -103,6 +103,7 @@ Parameter | Description | Default
 `openvpn.OVPN_K8S_POD_SUBNET`        | Kubernetes pod network subnet (optional)                             | `255.0.0.0`
 `openvpn.OVPN_K8S_SVC_NETWORK`       | Kubernetes service network (optional)                                | `nil`
 `openvpn.OVPN_K8S_SVC_SUBNET`        | Kubernetes service network subnet (optional)                         | `nil`
+`openvpn.DEFAULT_ROUTE_ENABLED`      | Push a route which openvpn sets by default                           | `true`
 `openvpn.dhcpOptionDomain`           | Push a `dhcp-option DOMAIN` config                                   | `true`
 `openvpn.serverConf`                 | Lines appended to the end of the server configuration file (optional)| `nil`
 `openvpn.clientConf`                 | Lines appended into the client configuration file (optional)         | `nil`
@@ -113,6 +114,8 @@ Parameter | Description | Default
 `openvpn.istio.enabled`              | Enables istio support for openvpn clients                            | `false`
 `openvpn.istio.proxy.port`           | Istio proxy port                                                     | `15001`
 `openvpn.iptablesExtra`              | Custom iptables rules for clients                                    | `[]`
+`openvpn.ccd.enabled`                | Enable creation and mounting of CCD config                           | `false`
+`openvpn.ccd.config`                 | CCD configuration (see below)                                        | `{}`
 `nodeSelector`                       | Node labels for pod assignment                                       | `{}`
 `tolerations`                        | Tolerations for node taints                                          | `[]`
 `ipForwardInitContainer`             | Add privileged init container to enable IPv4 forwarding              | `false`
@@ -154,6 +157,24 @@ And optionally (see openvpn.taKey setting):
  `/etc/openvpn/certs/pki/ta.key`
 
 Note: using mounted secret makes creation of new client certificates impossible inside openvpn pod, since easyrsa needs to write in certs directory, which is read-only.
+
+### Client specific rules and access policies
+
+You can enable CCD using `openvpn.ccd.enabled` and set the config in `openvpn.ccd.config` to use [OpenVPN client specific rules and access policies](https://openvpn.net/community-resources/configuring-client-specific-rules-and-access-policies/)
+
+For example, if you want to give fixed IP addresses to clients 'johndoe' and 'janedoe':
+
+```
+openvpn:
+  ccd:
+    enabled: true
+    config:
+      johndoe: "ifconfig-push 10.240.100.10 10.240.100.11"
+      janedoe: "ifconfig-push 10.240.100.20 10.240.100.21"
+```
+
+For more options see the OpenVPN documentation. Note that the IPs provided here depend on the type of topology you use.
+
 
 ## Issues
 
