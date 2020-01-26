@@ -41,14 +41,17 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `image.pullSecrets`        | Secrets to use when pulling the image | `[]` |
 | `strategyType`             | Specifies the strategy used to replace old Pods by new ones | `Recreate` |
 | `probes.liveness.enabled`  | Use the livenessProbe?  | `true` |
+| `probes.liveness.scheme `  | Specify liveness `scheme` parameter for the deployment  | `HTTP` |
 | `probes.liveness.initialDelaySeconds`  | Specify liveness `initialDelaySeconds` parameter for the deployment  | `60` |
 | `probes.liveness.failureThreshold`     | Specify liveness `failureThreshold` parameter for the deployment     | `5`  |
 | `probes.liveness.timeoutSeconds`       | Specify liveness `timeoutSeconds` parameter for the deployment       | `10` |
 | `probes.readiness.enabled`  | Use the readinessProbe?  | `true` |
+| `probes.readiness.scheme `  | Specify readiness `scheme` parameter for the deployment  | `HTTP` |
 | `probes.readiness.initialDelaySeconds` | Specify readiness `initialDelaySeconds` parameter for the deployment | `60` |
 | `probes.readiness.failureThreshold`    | Specify readiness `failureThreshold` parameter for the deployment    | `5`  |
 | `probes.readiness.timeoutSeconds`      | Specify readiness `timeoutSeconds` parameter for the deployment      | `10` |
 | `probes.startup.enabled`  | Use the startupProbe? (new in kubernetes 1.16)  | `false` |
+| `probes.startup.scheme `  | Specify startup `scheme` parameter for the deployment  | `HTTP` |
 | `probes.startup.failureThreshold`    | Specify startup `failureThreshold` parameter for the deployment    | `5`  |
 | `probes.startup.periodSeconds`      | Specify startup `periodSeconds` parameter for the deployment      | `10` |
 | `service.type`             | Kubernetes service type for the home-assistant GUI | `ClusterIP` |
