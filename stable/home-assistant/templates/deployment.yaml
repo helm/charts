@@ -79,6 +79,7 @@ spec:
             httpGet:
               path: /
               port: api
+              scheme: {{ .Values.probes.liveness.scheme }}
             initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
             failureThreshold: {{ .Values.probes.liveness.failureThreshold }}
             timeoutSeconds: {{ .Values.probes.liveness.timeoutSeconds }}
@@ -88,6 +89,7 @@ spec:
             httpGet:
               path: /
               port: api
+              scheme: {{ .Values.probes.readiness.scheme }}
             initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
             failureThreshold: {{ .Values.probes.readiness.failureThreshold }}
             timeoutSeconds: {{ .Values.probes.readiness.timeoutSeconds }}
@@ -97,6 +99,7 @@ spec:
             httpGet:
               path: /
               port: api
+              scheme: {{ .Values.probes.startup.scheme }}
             failureThreshold: {{ .Values.probes.startup.failureThreshold }}
             periodSeconds: {{ .Values.probes.startup.periodSeconds }}
           {{- end }}
