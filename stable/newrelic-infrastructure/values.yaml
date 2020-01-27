@@ -29,15 +29,15 @@ verboseLog: false
 
 image:
   repository: newrelic/infrastructure-k8s
-  tag: 1.12.0
+  tag: 1.13.1
   pullPolicy: IfNotPresent
 
 resources:
   limits:
-    memory: 150M
+    memory: 300M
   requests:
     cpu: 100m
-    memory: 30M
+    memory: 150M
 
 privileged: true
 
