@@ -34,6 +34,6 @@ spec:
     protocol: TCP
     targetPort: 5558
   selector:
-    app: {{ template "locust.fullname" . }}
+    app.kubernetes.io/name: {{ include "locust.fullname" . }}
     component: "master"
   sessionAffinity: None
