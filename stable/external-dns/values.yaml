@@ -217,6 +217,7 @@ google:
   ## Google Application Credentials
   ##
   serviceAccountSecret: ""
+  serviceAccountSecretKey: "credentials.json"
   serviceAccountKey: ""
 
 ## Infoblox configuration to be set via arguments/env. variables
