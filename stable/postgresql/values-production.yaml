@@ -138,6 +138,10 @@ postgresqlDataDir: /bitnami/postgresql/data
 # extraEnv:
 extraEnv: []
 
+## Name of a ConfigMap containing extra env vars
+##
+# extraEnvVarsCM:
+
 ## Specify extra initdb args
 ## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md
 ##

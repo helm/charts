@@ -236,6 +236,11 @@ spec:
             - name: POSTGRESQL_LDAP_URL
               value: {{ .Values.ldap.url }}
             {{- end}}
+          {{- if .Values.extraEnvVarsCM }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.extraEnvVarsCM }}
+          {{- end }}
           ports:
             - name: tcp-postgresql
               containerPort: {{ template "postgresql.port" . }}
