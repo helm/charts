@@ -405,6 +405,11 @@ spec:
       - name: google-service-account
         secret:
           secretName: {{ .Values.google.serviceAccountSecret | quote }}
+          {{- if .Values.google.serviceAccountSecretKey }}
+          items:
+          - key: {{ .Values.google.serviceAccountSecretKey | quote }}
+            path: credentials.json
+          {{- end }}
       {{- else if .Values.google.serviceAccountKey }}
       - name: google-service-account
         secret:
