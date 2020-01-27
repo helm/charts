@@ -327,7 +327,7 @@ registry address, repository, tag and digest when available.
 {{- if .values.image -}}
 {{ include "postgresql.deprecatedImageReference" . }}
 {{- else -}}
-{{- $registry := coalesce .image.registry .values.global.imageRegistry "docker.io" -}}
+{{- $registry := include "postgresql.imageRegistry" . -}}
 {{- $namespace := include "postgresql.imageNamespace" . -}}
 {{- printf "%s/%s/%s:%s" $registry $namespace .image.name .image.tag -}}
 {{- if .image.digest -}}
@@ -357,8 +357,36 @@ registry address, repository, tag and digest when available.
 {{- end -}}
 {{- end -}}
 
+{{- define "postgresql.imageRegistry" -}}
+{{- if or (and .image.useOriginalRegistry (empty .image.registry)) (and .values.useOriginalRegistry (empty .values.imageRegistry)) -}}
+{{- include "postgresql.originalImageRegistry" . -}}
+{{- else -}}
+{{- include "postgresql.customImageRegistry" . -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "postgresql.originalImageRegistry" -}}
+{{- printf (coalesce .image.originalRegistry .values.originalImageRegistry "docker.io") -}}
+{{- end -}}
+
+{{- define "postgresql.customImageRegistry" -}}
+{{- printf (coalesce .image.registry .values.imageRegistry .values.global.imageRegistry (include "postgresql.originalImageRegistry" .)) -}}
+{{- end -}}
+
 {{- define "postgresql.imageNamespace" -}}
-{{- printf (coalesce .image.namespace .values.imageNamespace .values.global.imageNamespace "bitnami") -}}
+{{- if or (and .image.useOriginalNamespace (empty .image.namespace)) (and .values.useOriginalNamespace (empty .values.imageNamespace)) -}}
+{{- include "postgresql.originalImageNamespace" . -}}
+{{- else -}}
+{{- include "postgresql.customImageNamespace" . -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "postgresql.originalImageNamespace" -}}
+{{- printf (coalesce .image.originalNamespace .values.originalImageNamespace "library") -}}
+{{- end -}}
+
+{{- define "postgresql.customImageNamespace" -}}
+{{- printf (coalesce .image.namespace .values.imageNamespace .values.global.imageNamespace (include "postgresql.originalImageNamespace" .)) -}}
 {{- end -}}
 
 {{/*

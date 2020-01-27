@@ -34,8 +34,9 @@ global:
 ## Override the global.imageRegistry
 # imageRegistry: ~
 
-## Override the global.imageNamespace
-# imageNamespace: ~
+## This value can be restored by using the `postgresql.useOriginalNamespace` flag
+## if it is overridden by the including chart.
+originalImageNamespace: bitnami
 
 ## Override the global.imagePullPolicy
 # imagePullPolicy: "IfNotPresent"
