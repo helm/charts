@@ -1,8 +1,8 @@
-# Sysdig Falco
+# Falco
 
-[Sysdig Falco](https://falco.org) is a behavioral activity monitor designed to detect anomalous activity in your applications. You can use Falco to monitor run-time security of your Kubernetes applications and internal components.
+[Falco](https://falco.org) is a behavioral activity monitor designed to detect anomalous activity in your applications. You can use Falco to monitor run-time security of your Kubernetes applications and internal components.
 
-To know more about Sysdig Falco have a look at:
+To know more about Falco have a look at:
 
 - [Kubernetes security logging with Falco & Fluentd
 ](https://sysdig.com/blog/kubernetes-security-logging-fluentd-falco/)
@@ -47,7 +47,7 @@ The following table lists the configurable parameters of the Falco chart and the
 | ---                                             | ---                                                                                                                | ---                                                                                                                                       |
 | `image.registry`                                | The image registry to pull from                                                                                    | `docker.io`                                                                                                                               |
 | `image.repository`                              | The image repository to pull from                                                                                  | `falcosecurity/falco`                                                                                                                     |
-| `image.tag`                                     | The image tag to pull                                                                                              | `0.18.0`                                                                                                                                  |
+| `image.tag`                                     | The image tag to pull                                                                                              | `0.19.0`                                                                                                                                  |
 | `image.pullPolicy`                              | The image pull policy                                                                                              | `IfNotPresent`                                                                                                                            |
 | `containerd.enabled`                            | Enable ContainerD support                                                                                          | `true`                                                                                                                                    |
 | `containerd.socket`                             | The path of the ContainerD socket                                                                                  | `/run/containerd/containerd.sock`                                                                                                         |

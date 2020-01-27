@@ -443,10 +443,11 @@
     open_write and
     (fd.filename in (shell_config_filenames) or
      fd.name in (shell_config_files) or
-     fd.directory in (shell_config_directories)) and
-    not proc.name in (shell_binaries)
+     fd.directory in (shell_config_directories))
+    and not proc.name in (shell_binaries)
+    and not exe_running_docker_save
   output: >
-    a shell configuration file has been modified (user=%user.name command=%proc.cmdline file=%fd.name container_id=%container.id image=%container.image.repository)
+    a shell configuration file has been modified (user=%user.name command=%proc.cmdline pcmdline=%proc.pcmdline file=%fd.name container_id=%container.id image=%container.image.repository)
   priority:
     WARNING
   tag: [file, mitre_persistence]
@@ -845,7 +846,10 @@
   condition: (proc.name=start-ipsec.sh and fd.directory=/etc/ipsec)
 
 - macro: exe_running_docker_save
-  condition: (proc.cmdline startswith "exe /var/lib/docker" and proc.pname in (dockerd, docker))
+  condition: >
+    proc.name = "exe"
+    and proc.cmdline contains "/var/lib/docker"
+    and proc.pname in (dockerd, docker)
 
 # Ideally we'd have a length check here as well but sysdig
 # filterchecks don't have operators like len()
@@ -916,9 +920,11 @@
 - rule: Update Package Repository
   desc: Detect package repositories get updated
   condition: >
-    ((open_write and access_repositories) or (modify and modify_repositories)) and not package_mgmt_procs
+    ((open_write and access_repositories) or (modify and modify_repositories))
+    and not package_mgmt_procs
+    and not exe_running_docker_save
   output: >
-    Repository files get updated (user=%user.name command=%proc.cmdline file=%fd.name newpath=%evt.arg.newpath container_id=%container.id image=%container.image.repository)
+    Repository files get updated (user=%user.name command=%proc.cmdline pcmdline=%proc.pcmdline file=%fd.name newpath=%evt.arg.newpath container_id=%container.id image=%container.image.repository)
   priority:
     NOTICE
   tags: [filesystem, mitre_persistence]
@@ -1147,6 +1153,9 @@
 - macro: etcd_manager_updating_dns
   condition: (container and proc.name=etcd-manager and fd.name=/etc/hosts)
 
+- macro: automount_using_mtab
+  condition: (proc.pname = automount and fd.name startswith /etc/mtab)
+
 # Add conditions to this macro (probably in a separate file,
 # overwriting this macro) to allow for specific combinations of
 # programs writing below specific directories below
@@ -1263,6 +1272,7 @@
     and not jboss_in_container_writing_passwd
     and not etcd_manager_updating_dns
     and not user_known_write_below_etc_activities
+    and not automount_using_mtab
 
 - rule: Write below etc
   desc: an attempt to write to any file below /etc
@@ -1832,10 +1842,14 @@
 - macro: sensitive_mount
   condition: (container.mount.dest[/proc*] != "N/A" or
               container.mount.dest[/var/run/docker.sock] != "N/A" or
+              container.mount.dest[/var/run/crio/crio.sock] != "N/A" or
               container.mount.dest[/var/lib/kubelet] != "N/A" or
               container.mount.dest[/var/lib/kubelet/pki] != "N/A" or
               container.mount.dest[/] != "N/A" or
+              container.mount.dest[/home/admin] != "N/A" or
               container.mount.dest[/etc] != "N/A" or
+              container.mount.dest[/etc/kubernetes] != "N/A" or
+              container.mount.dest[/etc/kubernetes/manifests] != "N/A" or
               container.mount.dest[/root*] != "N/A")
 
 # The steps libcontainer performs to set up the root program for a container are:
@@ -1850,7 +1864,7 @@
 # when we lose events and lose track of state.
 
 - macro: container_entrypoint
-  condition: (not proc.pname exists or proc.pname in (runc:[0:PARENT], runc:[1:CHILD], runc, docker-runc, exe))
+  condition: (not proc.pname exists or proc.pname in (runc:[0:PARENT], runc:[1:CHILD], runc, docker-runc, exe, docker-runc-cur))
 
 - rule: Launch Sensitive Mount Container
   desc: >
@@ -2210,13 +2224,27 @@
   priority: NOTICE
   tags: [network, aws, container, mitre_discovery]
 
-# In a local/user rules file, you should override this macro with the
-# IP address of your k8s api server. The IP 1.2.3.4 is a placeholder
-# IP that is not likely to be seen in practice.
-- macro: k8s_api_server
-  condition: (fd.sip="1.2.3.4" and fd.sport=8080)
 
-# In a local/user rules file, list the container images that are
+# This rule is not enabled by default, since this rule is for cloud environment(GCP, AWS and Azure) only.
+# If you want to enable this rule, overwrite the first macro,
+# And you can filter the container that you want to allow access to metadata by overwriting the second macro.
+- macro: consider_metadata_access
+  condition: (never_true)
+
+- macro: user_known_metadata_access
+  condition: (k8s.ns.name = "kube-system")
+
+# On GCP, AWS and Azure, 169.254.169.254 is a special IP used to fetch
+# metadata about the instance. The metadata could be used to get credentials by attackers.
+- rule: Contact cloud metadata service from container
+  desc: Detect attempts to contact the Cloud Instance Metadata Service from a container
+  condition: outbound and fd.sip="169.254.169.254" and container and consider_metadata_access and not user_known_metadata_access
+  output: Outbound connection to cloud instance metadata service (command=%proc.cmdline connection=%fd.name %container.info image=%container.image.repository:%container.image.tag)
+  priority: NOTICE
+  tags: [network, container, mitre_discovery]
+
+
+# In a local/user rules file, list the namespace or container images that are
 # allowed to contact the K8s API Server from within a container. This
 # might cover cases where the K8s infrastructure itself is running
 # within a container.
@@ -2224,11 +2252,14 @@
   condition: >
     (container.image.repository in (gcr.io/google_containers/hyperkube-amd64,
      gcr.io/google_containers/kube2sky, sysdig/agent, sysdig/falco,
-     sysdig/sysdig))
+     sysdig/sysdig, falcosecurity/falco) or (k8s.ns.name = "kube-system"))
+
+- macro: k8s_api_server
+  condition: (fd.sip.name="kubernetes.default.svc.cluster.local")
 
 - rule: Contact K8S API Server From Container
   desc: Detect attempts to contact the K8S API Server from a container
-  condition: outbound and k8s_api_server and container and not k8s_containers
+  condition: evt.type=connect and evt.dir=< and (fd.typechar=4 or fd.typechar=6) and container and not k8s_containers and k8s_api_server
   output: Unexpected connection to K8s API Server from container (command=%proc.cmdline %container.info image=%container.image.repository:%container.image.tag connection=%fd.name)
   priority: NOTICE
   tags: [network, k8s, container, mitre_discovery]
@@ -2250,16 +2281,30 @@
   tags: [network, k8s, container, mitre_port_knocking]
 
 - list: network_tool_binaries
-  items: [nc, ncat, nmap, dig, tcpdump, tshark, ngrep]
+  items: [nc, ncat, nmap, dig, tcpdump, tshark, ngrep, telnet, mitmproxy, socat]
 
 - macro: network_tool_procs
   condition: (proc.name in (network_tool_binaries))
+
+# In a local/user rules file, create a condition that matches legitimate uses
+# of a package management process inside a container.
+#
+# For example:
+# - macro: user_known_package_manager_in_container
+#   condition: proc.cmdline="dpkg -l"
+- macro: user_known_package_manager_in_container
+  condition: (never_true)
 
 # Container is supposed to be immutable. Package management should be done in building the image.
 - rule: Launch Package Management Process in Container
   desc: Package management process ran inside container
   condition: >
-    spawned_process and container and user.name != "_apt" and package_mgmt_procs and not package_mgmt_ancestor_procs
+    spawned_process
+    and container
+    and user.name != "_apt"
+    and package_mgmt_procs
+    and not package_mgmt_ancestor_procs
+    and not user_known_package_manager_in_container
   output: >
     Package management process launched in container (user=%user.name
     command=%proc.cmdline container_id=%container.id container_name=%container.name image=%container.image.repository:%container.image.tag)
@@ -2436,16 +2481,19 @@
   condition: (always_true)
 
 - list: user_known_chmod_applications
-  items: []
+  items: [hyperkube, kubelet]
 
 - rule: Set Setuid or Setgid bit
   desc: >
     When the setuid or setgid bits are set for an application,
     this means that the application will run with the privileges of the owning user or group respectively.
     Detect setuid or setgid bits set via chmod
-  condition: consider_all_chmods and chmod and (evt.arg.mode contains "S_ISUID" or evt.arg.mode contains "S_ISGID") and not proc.cmdline in (user_known_chmod_applications)
+  condition: >
+    consider_all_chmods and chmod and (evt.arg.mode contains "S_ISUID" or evt.arg.mode contains "S_ISGID")
+    and not proc.name in (user_known_chmod_applications)
+    and not exe_running_docker_save
   output: >
-    Setuid or setgid bit is set via chmod (fd=%evt.arg.fd filename=%evt.arg.filename mode=%evt.arg.mode user=%user.name
+    Setuid or setgid bit is set via chmod (fd=%evt.arg.fd filename=%evt.arg.filename mode=%evt.arg.mode user=%user.name process=%proc.name
     command=%proc.cmdline container_id=%container.id container_name=%container.name image=%container.image.repository:%container.image.tag)
   priority:
     NOTICE
@@ -2595,7 +2643,39 @@
   priority: CRITICAL
   tags: [process, mitre_execution]
 
+- list: k8s_client_binaries
+  items: [docker, kubectl, crictl]
+
+# Whitelist for known docker client binaries run inside container
+# - k8s.gcr.io/fluentd-gcp-scaler in GCP/GKE 
+- macro: user_known_k8s_client_container
+  condition: (k8s.ns.name="kube-system" and container.image.repository=k8s.gcr.io/fluentd-gcp-scaler)
+  
+- rule: The docker client is executed in a container
+  desc: Detect a k8s client tool executed inside a container
+  condition: spawned_process and container and not user_known_k8s_client_container and proc.name in (k8s_client_binaries)
+  output: "Docker or kubernetes client executed in container (user=%user.name %container.info parent=%proc.pname cmdline=%proc.cmdline image=%container.image.repository:%container.image.tag)"
+  priority: WARNING
+  tags: [container, mitre_execution]
+
+
+# This rule is not enabled by default, as there are legitimate use
+# cases for raw packet. If you want to enable it, modify the
+# following macro.
+- macro: consider_packet_socket_communication
+  condition: (never_true)
+
+- list: user_known_packet_socket_binaries
+  items: []
+
+- rule: Packet socket created in container
+  desc: Detect new packet socket at the device driver (OSI Layer 2) level in a container. Packet socket could be used to do ARP Spoofing by attacker.
+  condition: evt.type=socket and evt.arg[0]=AF_PACKET and consider_packet_socket_communication and container and not proc.name in (user_known_packet_socket_binaries)
+  output: Packet socket was created in a container (user=%user.name command=%proc.cmdline socket_info=%evt.args container_id=%container.id container_name=%container.name image=%container.image.repository:%container.image.tag)
+  priority: NOTICE
+  tags: [network, mitre_discovery]
+  
+
 # Application rules have moved to application_rules.yaml. Please look
 # there if you want to enable them by adding to
 # falco_rules.local.yaml.
-
