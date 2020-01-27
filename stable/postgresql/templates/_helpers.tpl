@@ -329,7 +329,10 @@ registry address, repository, tag and digest when available.
 {{- else -}}
 {{- $registry := include "postgresql.imageRegistry" . -}}
 {{- $namespace := include "postgresql.imageNamespace" . -}}
-{{- printf "%s/%s/%s:%s" $registry $namespace .image.name .image.tag -}}
+{{- printf "%s/%s/%s" $registry $namespace .image.name -}}
+{{- if .image.tag -}}
+{{- printf ":%s" .image.tag -}}
+{{- end -}}
 {{- if .image.digest -}}
 {{- printf "@%s" .image.digest -}}
 {{- end -}}
