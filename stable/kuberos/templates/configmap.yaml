@@ -7,7 +7,7 @@ data:
   template: |-
     apiVersion: v1
     kind: Config
-    current-context: {{ (index .Values.kuberos.clusters 0).name  }}
+    current-context: {{ (index .Values.kuberos.clusters 0).name | quote }}
     clusters:
     {{ range .Values.kuberos.clusters }}
     - name: {{ .name | quote }}
