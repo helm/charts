@@ -54,6 +54,7 @@ their default values.
 
 | Parameter                      | Description                                                                                                     | Default                                                  |
 |:-------------------------------|:----------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------|
+| `extraArgs` | [Additional command line arguments](https://github.com/kubernetes-incubator/external-storage/blob/master/nfs/docs/deployment.md#arguments) | `{}`
 | `imagePullSecrets`             | Specify image pull secrets                                                                                      | `nil` (does not add image pull secrets to deployed pods) |
 | `image.repository`             | The image repository to pull from                                                                               | `quay.io/kubernetes_incubator/nfs-provisioner`           |
 | `image.tag`                    | The image tag to pull from                                                                                      | `v2.2.2`                                                 |

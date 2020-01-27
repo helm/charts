@@ -11,6 +11,11 @@ image:
   tag: v2.2.2
   pullPolicy: IfNotPresent
 
+# For a list of available arguments
+# Please see https://github.com/kubernetes-incubator/external-storage/blob/master/nfs/docs/deployment.md#arguments
+extraArgs: {}
+  # device-based-fsids: false
+
 service:
   type: ClusterIP
 
