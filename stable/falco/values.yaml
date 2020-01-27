@@ -3,7 +3,7 @@
 image:
   registry: docker.io
   repository: falcosecurity/falco
-  tag: 0.18.0
+  tag: 0.19.0
   pullPolicy: IfNotPresent
 
 docker:
@@ -17,7 +17,7 @@ containerd:
 resources:
   # Although resources needed are subjective on the actual workload we provide
   # a sane defaults ones. If you have more questions or concerns, please refer
-  # to Sysdig Support for more info about it
+  # to #falco slack channel for more info about it
   requests:
     cpu: 100m
     memory: 512Mi
@@ -83,7 +83,7 @@ ebpf:
     mountEtcVolume: true
 
 auditLog:
-  # true here activates the K8s Audit Log feature for Sysdig Secure
+  # true here activates the K8s Audit Log feature for Falco
   enabled: false
 
   dynamicBackend:
@@ -189,7 +189,7 @@ falco:
 
   # Falco contains an embedded webserver that can be used to accept K8s
   # Audit Events. These config options control the behavior of that
-  # webserver. (By default, the webserver is disabled).
+  # webserver. (By default, the webserver is enabled).
   webserver:
     enabled: true
     listenPort: 8765
