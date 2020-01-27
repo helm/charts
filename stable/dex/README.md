@@ -95,7 +95,18 @@ Parameters introduced starting from v2
 | `ports.web.servicePort` | K8S Service port for the dex http/https listener | `32000` |
 | `rbac.create` | If `true`, create & use RBAC resources | `true` |
 | `service.loadBalancerIP` | IP override for K8S LoadBalancer Service | `""` |
-
+| `livenessProbe.enabled` | k8s liveness probe enabled (cannot be enabled when `https = true`) | `false` |
+| `livenessProbe.path` |  k8s liveness probe http path | `"/healthz"`  |
+| `livenessProbe.initialDelaySeconds` | Number of seconds after the container has started before liveness probe is initiated.  |  `1` |
+| `livenessProbe.periodSeconds` | How often (in seconds) to perform the probe | `10`  |
+| `livenessProbe.timeoutSeconds` | Number of seconds after which the probe times out | `1`  |
+| `livenessProbe.failureThreshold` | Times to perform probe before restarting the container | `3`  |
+| `readinessProbe.enabled` | k8s readiness probe enabled (cannot be enabled when `https = true`) | `false`  |
+| `readinessProbe.path` |  k8s readiness probe http path | `"/healthz"`  |
+| `readinessProbe.initialDelaySeconds` | Number of seconds after the container has started before readiness probe is initiated.  |  `1` |
+| `readinessProbe.periodSeconds` | How often (in seconds) to perform the probe  |  `10` |
+| `readinessProbe.timeoutSeconds` | Number of seconds after which the probe times out | `1`  |
+| `readinessProbe.failureThreshold` | Times to perform probe before marking the container `Unready` |  `3` |
 
 
 Check [values.yaml](values.yaml) notes together with [dex documentation][dex] and [config examples](https://github.com/dexidp/dex/tree/master/examples) for all the possible configuration options.

@@ -1,0 +1,26 @@
+{{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseFeeds.enabled -}}
+{{- $component := "enterprise-feeds" -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "anchore-engine.enterprise-feeds.fullname" . }}-env
+  labels:
+    app: {{ template "anchore-engine.fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ $component }}
+    {{- with .Values.anchoreGlobal.labels }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
+data:
+  ANCHORE_DB_NAME: {{ index .Values "anchore-feeds-db" "postgresDatabase" | quote }}
+  ANCHORE_DB_USER: {{ index .Values "anchore-feeds-db" "postgresUser"  | quote }}
+  {{- if and (index .Values "anchore-feeds-db" "externalEndpoint") (not (index .Values "anchore-feeds-db" "enabled")) }}
+  ANCHORE_DB_HOST: {{ index .Values "anchore-feeds-db" "externalEndpoint" | quote }}
+  {{- else if and (index .Values "cloudsql" "enabled") (not (index .Values "anchore-feeds-db" "enabled")) }}
+  ANCHORE_DB_HOST: "localhost:5432"
+  {{- else }}
+  ANCHORE_DB_HOST: "{{ template "postgres.anchore-feeds-db.fullname" . }}:5432"
+  {{- end }}
+{{- end }}

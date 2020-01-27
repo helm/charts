@@ -58,3 +58,14 @@ Create the name of the service account to use for kubernetes pipelines
   {{ default "default" .Values.server.kubernetes.pipelineServiceAccount }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create the name of the secret for an enterprise license key
+*/}}
+{{- define "drone.licenseKeySecret" -}}
+{{- if .Values.licenseKeySecret -}}
+  {{ printf "%s" .Values.licenseKeySecret }}
+{{- else -}}
+  {{ printf "%s-%s" (include "drone.fullname" .) "license-key" | trunc 63 }}
+{{- end -}}
+{{- end -}}

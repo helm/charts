@@ -99,6 +99,7 @@ backend:
     ## Specify the data format to be used in the HTTP request body
     ## Can be either 'msgpack' or 'json'
     format: msgpack
+    # json_date_format: double or iso8601
     headers: []
 
 parsers:
@@ -272,6 +273,9 @@ filter:
 # If true, enable the use of monitoring for a pod annotation of
 # fluentbit.io/exclude: true. If present, discard logs from that pod.
   enableExclude: true
+
+# If true, the filter reads logs coming in Journald format.
+  useJournal: false
 
 rbac:
   # Specifies whether RBAC resources should be created

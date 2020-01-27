@@ -75,6 +75,7 @@ The following table lists the configurable parameters of the external-dns chart 
 | `aws.batchChangeSize`               | When using the AWS provider, set the maximum number of changes that will be applied in each batch        | `1000`                                                      |
 | `aws.zoneTags`                      | When using the AWS provider, filter for zones with these tags                                            | `[]`                                                        |
 | `aws.preferCNAME`                   | When using the AWS provider, replaces Alias recors with CNAME (options: true, false)                     | `[]`                                                        |
+| `aws.evaluateTargetHealth           | When using the AWS provider, sets the evaluate target health flag (options: true, false)                 | `[true, false]`                                             |
 | `azure.secretName`                  | When using the Azure provider, set the secret containing the `azure.json` file                           | `""`                                                        |
 | `azure.cloud`                       | When using the Azure provider, set the Azure Clound                                                      | `""`                                                        |
 | `azure.resourceGroup`               | When using the Azure provider, set the Azure Resource Group                                              | `""`                                                        |
@@ -101,6 +102,7 @@ The following table lists the configurable parameters of the external-dns chart 
 | `digitalocean.apiToken`             | When using the DigitalOcean provider, `DO_TOKEN` to set (optional)                                       | `""`                                                        |
 | `google.project`                    | When using the Google provider, specify the Google project (required when provider=google)               | `""`                                                        |
 | `google.serviceAccountSecret`       | When using the Google provider, specify the existing secret which contains credentials.json (optional)   | `""`                                                        |
+| `google.serviceAccountSecretKey`    | When using the Google provider with an existing secret, specify the key name (optional)                  | `"credentials.json"`                                        |
 | `google.serviceAccountKey`          | When using the Google provider, specify the service account key JSON file. (required when `google.serviceAccountSecret` is not provided. In this case a new secret will be created holding this service account | `""`    |
 | `infoblox.gridHost`                 | When using the Infoblox provider, specify the Infoblox Grid host (required when provider=infoblox)       | `""`                                                        |
 | `infoblox.wapiUsername`             | When using the Infoblox provider, specify the Infoblox WAPI username                                     | `"admin"`                                                   |

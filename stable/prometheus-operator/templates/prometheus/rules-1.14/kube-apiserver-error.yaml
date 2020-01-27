@@ -24,7 +24,7 @@ spec:
     rules:
     - alert: ErrorBudgetBurn
       annotations:
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-errorbudgetburn
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-errorbudgetburn
       expr: |-
         (
           status_class_5xx:apiserver_request_total:ratio_rate1h{job="apiserver"} > (14.4*0.010000)
@@ -42,7 +42,7 @@ spec:
         severity: critical
     - alert: ErrorBudgetBurn
       annotations:
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-errorbudgetburn
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-errorbudgetburn
       expr: |-
         (
           status_class_5xx:apiserver_request_total:ratio_rate1d{job="apiserver"} > (3*0.010000)
