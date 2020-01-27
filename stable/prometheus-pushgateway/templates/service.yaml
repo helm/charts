@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ template "prometheus-pushgateway.fullname" . }}
   annotations:
-{{ .Values.service.annotations | toYaml | indent 4 }}
+{{ .Values.serviceAnnotations | toYaml | indent 4 }}
   labels:
 {{ template "prometheus-pushgateway.defaultLabels" merge (dict "extraLabels" .Values.serviceLabels) .  }}
 spec:
