@@ -199,6 +199,11 @@ anchore-ui-redis:
   password: <PASSWORD>
 ```
 
+## Chart version 1.4.0
+The following features were added with this chart version:
+  * Enterprise notifications service
+  * Numerous QOL improvements to the Enterprise UI service
+
 ## Upgrading to Chart version 1.3.0
 The following features were added with this chart version:
   * Allow custom CA certificates for TLS on all system dependencies (postgresql, ldap, registries)

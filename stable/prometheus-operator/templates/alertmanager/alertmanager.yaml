@@ -34,6 +34,9 @@ spec:
   secrets:
 {{ toYaml .Values.alertmanager.alertmanagerSpec.secrets | indent 4 }}
 {{- end }}
+{{- if .Values.alertmanager.alertmanagerSpec.configSecret }}
+  configSecret: {{ .Values.alertmanager.alertmanagerSpec.configSecret }}
+{{- end }}
 {{- if .Values.alertmanager.alertmanagerSpec.configMaps }}
   configMaps:
 {{ toYaml .Values.alertmanager.alertmanagerSpec.configMaps | indent 4 }}
@@ -100,4 +103,5 @@ spec:
 {{- if .Values.alertmanager.alertmanagerSpec.additionalPeers }}
   additionalPeers: {{.Values.alertmanager.alertmanagerSpec.additionalPeers }}
 {{- end }}
+  portName: {{ .Values.alertmanager.alertmanagerSpec.portName }}
 {{- end }}

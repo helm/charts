@@ -89,6 +89,7 @@ Parameter | Description | Default
 `image.repository` | container image repository | `buzzfeed/sso`
 `image.tag` | container image tag | `v1.2.0`
 `image.pullPolicy` | container image pull policy | `IfNotPresent`
+`ingress.enabled` | set to true to enable the ingress | `true`
 `ingress.annotations` | ingress load balancer annotations | `{}`
 `ingress.extraLabels` | extra ingress labels | `{}`
 `ingress.hosts` | proxied hosts | `[]`

@@ -1,8 +1,12 @@
 apiVersion: v1
 name: concourse
-version: 8.2.7
+# The concourse chart is deprecated and no longer maintained in the helm/charts repo.
+# The Concourse chart is now being maintained at github.com/concourse/concourse-chart
+# To un-deprecate a chart see the PROCESSES.md file.
+deprecated: true
+version: 8.3.7
 appVersion: 5.6.0
-description: Concourse is a simple and scalable CI system.
+description: DEPRECATED Concourse is a simple and scalable CI system.
 icon: https://avatars1.githubusercontent.com/u/7809479
 keywords:
 - ci
@@ -12,11 +16,4 @@ home: https://concourse-ci.org/
 sources:
 - https://github.com/concourse/concourse
 - https://github.com/helm/charts
-maintainers:
-- name: cirocosta
-  email: cscosta@pivotal.io
-- name: william-tran
-  email: will@autonomic.ai
-- name: YoussB
-  email: byoussef@pivotal.io
 engine: gotpl

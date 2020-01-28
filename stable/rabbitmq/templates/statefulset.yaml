@@ -29,8 +29,11 @@ spec:
       {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
       {{- end }}
-      {{- if .Values.podAnnotations }}
       annotations:
+        {{- if or (not .Values.rabbitmq.existingErlangSecret) (not .Values.rabbitmq.existingPasswordSecret) }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        {{- end }}
+      {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
     spec:
@@ -41,12 +44,9 @@ spec:
       {{- if .Values.rbacEnabled}}
       serviceAccountName: {{ template "rabbitmq.fullname" . }}
       {{- end }}
-      affinity:
-{{- if .Values.affinity }}
-    {{- with .Values.affinity }}
-{{ tpl . $ | indent 8 }}
-    {{- end }}
-{{- end }}
+      {{- if .Values.affinity }}
+      affinity: {{- include "rabbitmq.tplValue" (dict "value" .Values.affinity "context" .) | nindent 8 }}
+      {{- end }}
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
       {{- end }}
@@ -118,10 +118,6 @@ spec:
           - name: {{ template "rabbitmq.fullname" . }}-certs
             mountPath: /opt/bitnami/rabbitmq/certs
           {{- end }}
-          {{- if .Values.ldap.tls.enabled }}
-          - name: {{ template "rabbitmq.fullname" . }}-ldap-certs
-            mountPath: /opt/bitnami/rabbitmq/certs-ldap
-          {{- end }}
           - name: data
             mountPath: "{{ .Values.persistence.path }}"
           {{- if .Values.rabbitmq.loadDefinition.enabled }}
@@ -170,6 +166,16 @@ spec:
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           successThreshold: {{ .Values.readinessProbe.successThreshold }}
+        {{- end }}
+        {{- if and (gt (.Values.replicas | int) 1) ( eq .Values.rabbitmq.clustering.rebalance true) }}
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - until rabbitmqctl cluster_status >/dev/null; do echo Waiting for
+                cluster readiness...; sleep 5 ; done; rabbitmq-queues rebalance "all"
         {{- end }}
         env:
           - name: BITNAMI_DEBUG
@@ -253,6 +259,8 @@ spec:
           value: "http://{{ .Values.metrics.rabbitmqAddress }}:{{ .Values.service.managerPort }}"
         - name: RABBIT_USER
           value: {{ .Values.rabbitmq.username }}
+        - name: PUBLISH_PORT
+          value: "{{ .Values.metrics.port }}"
         {{ if .Values.metrics.capabilities }}
         - name: RABBIT_CAPABILITIES
           value: "{{ .Values.metrics.capabilities }}"
@@ -302,18 +310,6 @@ spec:
         - name: {{ template "rabbitmq.fullname" . }}-certs
           secret:
             secretName: {{ if .Values.rabbitmq.tls.existingSecret }}{{ .Values.rabbitmq.tls.existingSecret }}{{- else }}{{ template "rabbitmq.fullname" . }}-certs{{- end }}
-            items:
-            - key: ca_certificate.pem
-              path: ca_certificate.pem
-            - key: server_certificate.pem
-              path: server_certificate.pem
-            - key: server_key.pem
-              path: server_key.pem
-        {{- end }}
-        {{- if and .Values.ldap.enabled .Values.ldap.tls.enabled }}
-        - name: {{ template "rabbitmq.fullname" . }}-ldap-certs
-          secret:
-            secretName: {{ if .Values.ldap.tls.existingSecret }}{{ .Values.ldap.tls.existingSecret }}{{- else }}{{ template "rabbitmq.fullname" . }}-ldap-certs{{- end }}
             items:
             - key: ca_certificate.pem
               path: ca_certificate.pem

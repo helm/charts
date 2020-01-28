@@ -8,6 +8,9 @@ metadata:
     release: {{ .Release.Name  }}
     heritage: {{ .Release.Service }}
 spec:
+  {{- if .Values.clusterIP }}
+  clusterIP: {{ .Values.clusterIP }}
+  {{- end }}
   {{- if .Values.externalIP }}
   externalIPs:
     - {{ .Values.externalIP }}

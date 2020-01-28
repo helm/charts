@@ -10,6 +10,9 @@ metadata:
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+  {{- if .Values.extraLabels }}
+    {{- toYaml .Values.extraLabels | nindent 4 }}
+  {{- end }}
 rules:
   - apiGroups: [ "apiextensions.k8s.io" ]
     resources:
@@ -25,6 +28,7 @@ rules:
     - kubernetesendpointresolvers.getambassador.io
     - kubernetesserviceresolvers.getambassador.io
     - consulresolvers.getambassador.io
+    - logservices.getambassador.io
     {{- if .Values.pro.enabled }}
     - filters.getambassador.io
     - filterpolicies.getambassador.io
@@ -41,6 +45,9 @@ metadata:
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+  {{- if .Values.extraLabels }}
+    {{- toYaml .Values.extraLabels | nindent 4 }}
+  {{- end }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole

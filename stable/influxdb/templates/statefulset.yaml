@@ -8,21 +8,42 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  {{- if .Values.enterprise.enabled }}
+  replicas: {{ .Values.enterprise.clusterSize }}
+  {{ else }}
   replicas: 1
+  {{- end}}
   selector:
     matchLabels:
       app: {{ template "influxdb.fullname" . }}
+      release: "{{ .Release.Name }}"
   serviceName: "{{ template "influxdb.fullname" . }}"
   template:
     metadata:
       labels:
         app: {{ template "influxdb.fullname" . }}
         release: "{{ .Release.Name }}"
+        chart: "{{ template "influxdb.chart" . }}"
       {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+      {{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end -}}
+      {{- if .Values.affinity }}
+      affinity:
+      {{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+      {{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range .Values.image.pullSecrets }}
@@ -58,9 +79,19 @@ spec:
         - name: opentsdb
           containerPort: {{ .Values.config.opentsdb.bind_address }}
         {{- end }}
+        {{- if .Values.enterprise.enabled }}
+        - name: rpc
+          containerPort: {{ .Values.config.rpc.bind_address }}
+        - name: meta
+          containerPort: {{ .Values.config.meta.bind_address }}
+        {{- end }}
         {{- if .Values.env }}
         env:
 {{ toYaml .Values.env | indent 10 }}
+        {{- if .Values.enterprise.enabled }}
+          - name: INFLUXDB_HOSTNAME # Values.env's HOSTNAME isn't fundamentally different from $HOSTNAME, but this way weg get a distinguished name at runtime.
+            value: "$(_HOSTNAME).{{ template "influxdb.fullname" . }}"
+        {{- end }}
         {{- end }}
         livenessProbe:
           httpGet:
@@ -103,21 +134,6 @@ spec:
       {{- if (not .Values.persistence.enabled ) }}
       - name: {{ template "influxdb.fullname" . }}-data
         emptyDir: {}
-      {{- end }}
-    {{- if .Values.schedulerName }}
-      schedulerName: "{{ .Values.schedulerName }}"
-    {{- end }}
-    {{- if .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
-      {{- end -}}
-      {{- if .Values.affinity }}
-      affinity:
-{{ toYaml .Values.affinity | indent 8 }}
-      {{- end }}
-      {{- if .Values.tolerations }}
-      tolerations:
-{{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
 {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:

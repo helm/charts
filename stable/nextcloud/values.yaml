@@ -58,6 +58,13 @@ ingress:
   #        - nextcloud.kube.home
   labels: {}
 
+
+# Allow configuration of lifecycle hooks
+# ref: https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/
+lifecycle: {}
+  # postStartCommand: []
+  # preStopCommand: []
+
 nextcloud:
   host: nextcloud.kube.home
   username: admin
@@ -120,6 +127,31 @@ nextcloud:
   #          )
   #        )
   #      );
+
+  ##
+  ## Extra environment variables
+  extraEnv:
+  #  - name: SOME_SECRET_ENV
+  #    valueFrom:
+  #      secretKeyRef:
+  #        name: nextcloud
+  #        key: secret_key
+
+nginx:
+  ## You need to set an fpm version of the image for nextcloud if you want to use nginx!
+  enabled: false
+  image:
+    repository: nginx
+    tag: alpine
+    pullPolicy: IfNotPresent
+
+  config:
+    # This generates the default nginx config as per the nextcloud documentation
+    default: true
+    # custom: |-
+    #     worker_processes  1;..
+
+  resources: {}
 
 internalDatabase:
   enabled: true

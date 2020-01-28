@@ -43,6 +43,17 @@ Return the appropriate apiVersion for networkpolicy.
 {{- end -}}
 
 {{/*
+Return the appropriate apiGroup for PodSecurityPolicy.
+*/}}
+{{- define "podSecurityPolicy.apiGroup" -}}
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "policy" -}}
+{{- else -}}
+{{- print "extensions" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Return the appropriate apiVersion for PodSecurityPolicy.
 */}}
 {{- define "podSecurityPolicy.apiVersion" -}}
@@ -182,9 +193,9 @@ Get the password key to be retrieved from Redis secret.
 Return Redis password
 */}}
 {{- define "redis.password" -}}
-{{- if .Values.global.redis.password }}
+{{- if not (empty .Values.global.redis.password) }}
     {{- .Values.global.redis.password -}}
-{{- else if .Values.password -}}
+{{- else if not (empty .Values.password) -}}
     {{- .Values.password -}}
 {{- else -}}
     {{- randAlphaNum 10 -}}

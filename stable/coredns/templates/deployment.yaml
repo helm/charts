@@ -12,6 +12,9 @@ metadata:
     kubernetes.io/name: "CoreDNS"
     {{- end }}
     app.kubernetes.io/name: {{ template "coredns.name" . }}
+{{- if .Values.customLabels }}
+{{ toYaml .Values.customLabels | indent 4 }}
+{{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -29,6 +32,9 @@ spec:
         {{- end }}
         app.kubernetes.io/name: {{ template "coredns.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name | quote }}
+{{- if .Values.customLabels }}
+{{ toYaml .Values.customLabels | indent 8 }}
+{{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- if .Values.isClusterService }}

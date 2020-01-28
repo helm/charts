@@ -1,5 +1,5 @@
 {{- if include "phabricator.host" . -}}
-apiVersion: {{ template "wordpress.deployment.apiVersion" . }}
+apiVersion: {{ template "phabricator.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "phabricator.fullname" . }}

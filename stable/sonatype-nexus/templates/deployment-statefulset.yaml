@@ -55,6 +55,10 @@ spec:
       hostAliases:
 {{ toYaml .Values.nexus.hostAliases | indent 8 }}
       {{- end }}
+      {{- if .Values.nexus.imagePullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.nexus.imagePullSecret }}
+      {{- end }}
       containers:
         - name: nexus
           image: {{ .Values.nexus.imageName }}:{{ .Values.nexus.imageTag }}

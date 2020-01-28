@@ -33,6 +33,12 @@ spec:
 {{ toYaml .Values.service.loadBalancerSourceRanges | indent 4 }}
 {{- end }}
   ports:
+    {{- if .Values.rabbitmqAmqpsSupport.enabled }}
+    - name: amqps
+      protocol: TCP
+      port: {{ .Values.rabbitmqAmqpsSupport.amqpsNodePort }}
+      targetPort: amqps
+    {{- end }}
     - name: http
       protocol: TCP
       port: {{ .Values.rabbitmqManagerPort }}
@@ -85,12 +91,6 @@ spec:
       protocol: TCP
       port: 15675
       targetPort: mqtt-ws
-    {{- end }}
-    {{- if .Values.rabbitmqAmqpsSupport.enabled }}
-    - name: amqps
-      protocol: TCP
-      port: {{ .Values.rabbitmqAmqpsSupport.amqpsNodePort }}
-      targetPort: amqps
     {{- end }}
     {{ if .Values.prometheus.exporter.enabled }}
     - name: exporter

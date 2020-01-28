@@ -38,6 +38,9 @@ spec:
           {{- if .Values.config.disableDefaultMetrics }}
           - "--disable-default-metrics"
           {{- end }}
+          {{- if .Values.config.disableSettingsMetrics }}
+          - "--disable-settings-metrics"
+          {{- end }}
           {{- if .Values.config.autoDiscoverDatabases }}
           - "--auto-discover-databases"
           {{- if .Values.config.excludeDatabases }}

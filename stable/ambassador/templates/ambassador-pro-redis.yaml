@@ -10,6 +10,9 @@ metadata:
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- if .Values.extraLabels }}
+      {{- toYaml .Values.extraLabels | nindent 4 }}
+    {{- end }}
   annotations:
     {{- toYaml .Values.pro.rateLimit.redis.annotations.service | nindent 4}}
 spec:
@@ -31,6 +34,9 @@ metadata:
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+  {{- if .Values.extraLabels }}
+    {{- toYaml .Values.extraLabels | nindent 4 }}
+  {{- end }}
   annotations:
     {{- toYaml .Values.pro.rateLimit.redis.annotations.deployment | nindent 4}}
 spec:
@@ -44,6 +50,9 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "ambassador.fullname" . }}-pro-redis
         app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- if .Values.extraLabels }}
+        {{- toYaml .Values.extraLabels | nindent 8 }}
+      {{- end }}
     spec:
       containers:
       - name: redis

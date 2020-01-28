@@ -7,7 +7,12 @@ metadata:
 {{ toYaml .Values.service.annotations | indent 4 }}
 {{- end }}
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app.kubernetes.io/name: {{ include "kube-ops-view.name" . }}
+    helm.sh/chart: {{ include "kube-ops-view.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/part-of: {{ .Release.Name }}
 {{- if .Values.service.labels }}
 {{ toYaml .Values.service.labels | indent 4 }}
 {{- end }}
@@ -18,4 +23,4 @@ spec:
     targetPort: {{ .Values.service.internalPort }}
     protocol: TCP
   selector:
-    app: {{ template "kube-ops-view.fullname" . }}
+    app.kubernetes.io/name: {{ include "kube-ops-view.name" . }}
