@@ -42,6 +42,12 @@ spec:
             {{- end }}
             - name: PUBLISH_PORT
               value: "{{ .Values.service.internalPort }}"
+            - name: CAFILE
+              value: "{{ .Values.rabbitmq.caFile }}"
+            - name: CERTFILE
+              value: "{{ .Values.rabbitmq.certFile }}"
+            - name: KEYFILE
+              value: "{{ .Values.rabbitmq.keyFile }}"
             - name: LOG_LEVEL
               value: "{{ .Values.loglevel }}"
             - name: RABBIT_CAPABILITIES

@@ -35,6 +35,9 @@ rabbitmq:
   password: guest
   # If existingPasswordSecret is set then password is ignored
   existingPasswordSecret: ~
+  caFile: "ca.pem"
+  certFile: "client-cert.pem"
+  keyFile: "client-key.pem"
   capabilities: bert,no_sort
   include_queues: ".*"
   include_vhost: ".*"
