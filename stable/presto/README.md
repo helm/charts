@@ -1,6 +1,6 @@
 # Presto Chart
 
-[Presto](http://prestodb.io/) is an open source distributed SQL query engine for running interactive analytic queries against data sources of all sizes ranging from gigabytes to petabytes.
+[Prestosql](https://prestosql.io/) is an open source distributed SQL query engine for running interactive analytic queries against data sources of all sizes ranging from gigabytes to petabytes.
 
 ## Chart Details
 
@@ -27,7 +27,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/presto
+$ helm install my-release stable/presto -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
