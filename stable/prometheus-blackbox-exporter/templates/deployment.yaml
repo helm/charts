@@ -60,6 +60,10 @@ spec:
             readOnlyRootFilesystem: {{ .Values.readOnlyRootFilesystem }}
             runAsNonRoot: {{ .Values.runAsNonRoot  }}
             runAsUser: {{ .Values.runAsUser }}
+            {{- with .Values.allowIcmp }}
+            capabilities:
+              add: ["CAP_NET_RAW"]
+            {{- end }}
           args:
 {{- if .Values.config }}
             - "--config.file=/config/blackbox.yaml"
