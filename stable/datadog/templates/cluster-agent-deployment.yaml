@@ -73,7 +73,7 @@ spec:
           name: agentport
           protocol: TCP
         {{- if .Values.clusterAgent.metricsProvider.enabled }}
-        - containerPort: 443
+        - containerPort: {{ .Values.clusterAgent.metricsProvider.service.port }}
           name: metricsapi
           protocol: TCP
         {{- end }}
@@ -91,6 +91,8 @@ spec:
               secretKeyRef:
                 name: {{ template "datadog.appKeySecretName" . }}
                 key: app-key
+          - name: DD_EXTERNAL_METRICS_PROVIDER_PORT
+            value: {{ .Values.clusterAgent.metricsProvider.service.port | quote }}
           {{- end }}
           {{- if .Values.clusterAgent.clusterChecks.enabled }}
           - name: DD_CLUSTER_CHECKS_ENABLED
@@ -150,7 +152,7 @@ spec:
 {{- else if .Values.clusterAgent.metricsProvider.enabled }}
         livenessProbe:
           httpGet:
-            port: 443
+            port: {{ .Values.clusterAgent.metricsProvider.service.port }}
             path: /healthz
             scheme: HTTPS
 {{- end }}
@@ -160,19 +162,27 @@ spec:
 {{- else if .Values.clusterAgent.metricsProvider.enabled}}
         readinessProbe:
           httpGet:
-            port: 443
+            port: {{ .Values.clusterAgent.metricsProvider.service.port }}
             path: /healthz
             scheme: HTTPS
 {{- end }}
-{{- if .Values.clusterAgent.confd }}
         volumeMounts:
+{{- if .Values.clusterAgent.confd }}
           - name: confd
             mountPath: /conf.d
             readOnly: true
+{{- end }}
+{{- if .Values.clusterAgent.volumeMounts }}
+{{ toYaml .Values.clusterAgent.volumeMounts | indent 10 }}
+{{- end }}
       volumes:
+{{- if .Values.clusterAgent.confd }}
         - name: confd
           configMap:
             name: {{ template "datadog.fullname" . }}-cluster-agent-confd
+{{- end }}
+{{- if .Values.clusterAgent.volumes }}
+{{ toYaml .Values.clusterAgent.volumes | indent 10 }}
 {{- end }}
       {{- if .Values.clusterAgent.tolerations }}
       tolerations:

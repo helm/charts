@@ -14,7 +14,7 @@ clusterDomain: cluster.local
 ##
 image:
   repository: minio/minio
-  tag: RELEASE.2019-12-17T23-16-33Z
+  tag: RELEASE.2020-01-16T22-40-29Z
   pullPolicy: IfNotPresent
 
 ## Set default image, imageTag, and imagePullPolicy for the `mc` (the minio
@@ -22,7 +22,7 @@ image:
 ##
 mcImage:
   repository: minio/mc
-  tag: edge
+  tag: RELEASE.2020-01-13T22-49-03Z
   pullPolicy: IfNotPresent
 
 ## minio server mode, i.e. standalone or distributed.
@@ -56,12 +56,20 @@ priorityClassName: ""
 existingSecret: ""
 accessKey: "AKIAIOSFODNN7EXAMPLE"
 secretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
-configPath: "/root/.minio/"
-configPathmc: "/root/.mc/"
+certsPath: "/etc/minio/certs/"
+configPathmc: "/etc/minio/mc/"
 mountPath: "/export"
+
+## Override the root directory which the minio server should serve from.
+## If left empty, it defaults to the value of {{ .Values.mountPath }}
+## If defined, it must be a sub-directory of the path specified in {{ .Values.mountPath }}
+bucketRoot: ""
+
 # Number of drives attached to a node
 drivesPerNode: 1
+# Number of MinIO containers running
 replicas: 4
+# Number of expanded MinIO clusters
 zones: 1
 
 ## TLS Settings for Minio
@@ -129,6 +137,9 @@ service:
 
 ingress:
   enabled: false
+  labels: {}
+    # node-role.kubernetes.io/ingress: platform
+
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
@@ -152,6 +163,14 @@ nodeSelector: {}
 tolerations: []
 affinity: {}
 
+## Add stateful containers to have security context, if enabled MinIO will run as this
+## user and group NOTE: securityContext is only enabled if persistence.enabled=true
+securityContext:
+  enabled: false
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+
 # Additational pod annotations
 podAnnotations: {}
 
@@ -167,7 +186,7 @@ livenessProbe:
   successThreshold: 1
   failureThreshold: 3
 readinessProbe:
-  initialDelaySeconds: 5
+  initialDelaySeconds: 60
   periodSeconds: 15
   timeoutSeconds: 1
   successThreshold: 1

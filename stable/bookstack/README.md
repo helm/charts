@@ -47,9 +47,10 @@ The following table lists the configurable parameters of the Redmine chart and t
 
 |            Parameter              |              Description                 |                          Default                        | 
 | --------------------------------- | ---------------------------------------- | ------------------------------------------------------- |
+| `env`                             | additional env variables                 | `{}`                                                     |
 | `replicaCount`                    | Number of replicas to start              | `1`                                                     |
 | `image.repository`                | Bookstack image name                     | `solidnerd/bookstack`                                   |
-| `image.tag`                       | Bookstack image tag                      | `0.27.4-1`                                                |
+| `image.tag`                       | Bookstack image tag                      | `0.27.5`                                                |
 | `image.pullPolicy`                | Bookstack image pull policy              | `IfNotPresent`                                          |
 | `externalDatabase.host`           | Host of the external database            | `nil`                                                   |
 | `externalDatabase.port`           | Port of the external database            | `3306`                                                  |

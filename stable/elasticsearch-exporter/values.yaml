@@ -51,7 +51,11 @@ service:
 ## env:
 ##   KEY_1: value1
 ##   KEY_2: value2
-# env:
+env: {}
+
+## The name of a secret in the same kubernetes namespace which contain values to be added to the environment
+## This can be useful for auth tokens, etc
+envFromSecret: ""
 
 # A list of secrets and their paths to mount inside the pod
 # This is useful for mounting certificates for security

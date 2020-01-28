@@ -46,8 +46,9 @@ The following table lists the configurable parameters of the Metabase chart and 
 | -------------------------------  | ----------------------------------------------------------- | ----------------- |
 | replicaCount                     | desired number of controller pods                           | 1                 |
 | podAnnotations                   | controller pods annotations                                 | {}                |
+| podLabels                        | extra pods labels                                           | {}                |
 | image.repository                 | controller container image repository                       | metabase/metabase |
-| image.tag                        | controller container image tag                              | v0.32.9           |
+| image.tag                        | controller container image tag                              | v0.34.0           |
 | image.pullPolicy                 | controller container image pull policy                      | IfNotPresent      |
 | listen.host                      | Listening on a specific network host                        | 0.0.0.0           |
 | listen.port                      | Listening on a specific network port                        | 3000              |
@@ -63,6 +64,10 @@ The following table lists the configurable parameters of the Metabase chart and 
 | database.dbname                  | Database name                                               | null              |
 | database.username                | Database username                                           | null              |
 | database.password                | Database password                                           | null              |
+| database.existingSecret          | Exising secret for database credentials                     | null              |
+| database.existingSecretUsernameKey | Username key for exising secret                           | null              |
+| database.existingSecretPasswordKey | Password key for exising secret                           | null              |
+| database.existingSecretConnectionURIKey | ConnectionURI key for exising secret                 | null              |
 | password.complexity              | Complexity requirement for Metabase account's password      | normal            |
 | password.length                  | Minimum length required for Metabase account's password     | 6                 |
 | timeZone                         | Service time zone                                           | UTC               |
@@ -86,7 +91,7 @@ The following table lists the configurable parameters of the Metabase chart and 
 | tolerations                      | Toleration labels for pod assignment                        | []                |
 | affinity                         | Affinity settings for pod assignment                        | {}                |
 
-The above parameters map to the env variables defined in [metabase](http://github.com/metabase/metabase). For more information please refer to the [metabase documentations](http://www.metabase.com/docs/v0.24.2/).
+The above parameters map to the env variables defined in [metabase](http://github.com/metabase/metabase). For more information please refer to the [metabase documentations](http://www.metabase.com/docs/v0.34.0/).
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

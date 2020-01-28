@@ -1,0 +1,8 @@
+clusterAgent:
+  enabled: true
+
+  metricsProvider:
+    enabled: true
+
+    service:
+      port: 4443
