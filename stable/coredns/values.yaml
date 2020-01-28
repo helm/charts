@@ -51,7 +51,7 @@ rbac:
 # isClusterService specifies whether chart should be deployed as cluster-service or normal k8s app.
 isClusterService: true
 
-# Optional priority class to be used for the coredns pods
+# Optional priority class to be used for the coredns pods. Used for autoscaler if autoscaler.priorityClassName not set.
 priorityClassName: ""
 
 # Default zone is what Kubernetes recommends:
@@ -165,6 +165,9 @@ autoscaler:
     repository: k8s.gcr.io/cluster-proportional-autoscaler-amd64
     tag: "1.7.1"
     pullPolicy: IfNotPresent
+
+  # Optional priority class to be used for the autoscaler pods. priorityClassName used if not set.
+  priorityClassName: ""
 
   # expects input structure as per specification https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#affinity-v1-core
   affinity: {}

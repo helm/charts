@@ -67,7 +67,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `rbac.create`                           | If true, create & use RBAC resources                                                  | true                                                        |
 | `rbac.pspEnable`                        | Specifies whether a PodSecurityPolicy should be created.                              | `false`                                                     |
 | `isClusterService`                      | Specifies whether chart should be deployed as cluster-service or normal k8s app.      | true                                                        |
-| `priorityClassName`                     | Name of Priority Class to assign pods                                                 | `nil`                                                       |
+| `priorityClassName`                     | Name of Priority Class to assign pods                                                 | `""`                                                        |
 | `servers`                               | Configuration for CoreDNS and plugins                                                 | See values.yml                                              |
 | `affinity`                              | Affinity settings for pod assignment                                                  | {}                                                          |
 | `nodeSelector`                          | Node labels for pod assignment                                                        | {}                                                          |
@@ -75,12 +75,13 @@ The command removes all the Kubernetes components associated with the chart and 
 | `zoneFiles`                             | Configure custom Zone files                                                           | []                                                          |
 | `extraSecrets`                          | Optional array of secrets to mount inside the CoreDNS container                       | []                                                          |
 | `customLabels`                          | Optional labels for Deployment(s), Pod, Service, ServiceMonitor objects               | {}                                                          |
-| `autoscaler.enabled`                    | Optionally enabled a cluster-proportional-autoscaler for coredns                      | `false`                                                     |
-| `autoscaler.coresPerReplica`            | Number of cores in the cluster per coredns replica                                    | `256`                                                       |
-| `autoscaler.nodesPerReplica`            | Number of nodes in the cluster per coredns replica                                    | `16`                                                        |
+| `autoscaler.enabled`                    | Optionally enabled a cluster-proportional-autoscaler for CoreDNS                      | `false`                                                     |
+| `autoscaler.coresPerReplica`            | Number of cores in the cluster per CoreDNS replica                                    | `256`                                                       |
+| `autoscaler.nodesPerReplica`            | Number of nodes in the cluster per CoreDNS replica                                    | `16`                                                        |
 | `autoscaler.image.repository`           | The image repository to pull autoscaler from                                          | k8s.gcr.io/cluster-proportional-autoscaler-amd64            |
-| `autoscaler.image.tag`                  | The image tag to pull autoscaler from                                                 | `1.7.1`                                                    |
+| `autoscaler.image.tag`                  | The image tag to pull autoscaler from                                                 | `1.7.1`                                                     |
 | `autoscaler.image.pullPolicy`           | Image pull policy for the autoscaler                                                  | IfNotPresent                                                |
+| `autoscaler.priorityClassName`          | Optional priority class for the autoscaler pod. `priorityClassName` used if not set.  | `""`                                                        |
 | `autoscaler.affinity`                   | Affinity settings for pod assignment for autoscaler                                   | {}                                                          |
 | `autoscaler.nodeSelector`               | Node labels for pod assignment for autoscaler                                         | {}                                                          |
 | `autoscaler.tolerations`                | Tolerations for pod assignment for autoscaler                                         | []                                                          |
