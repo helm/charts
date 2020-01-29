@@ -334,7 +334,7 @@ spec:
         {{- end }}
         volumeMounts:
         # AWS mountPath(s)
-        {{- if and (eq .Values.provider "aws") (or .Values.aws.credentials.secretKey .Values.aws.credentials.accessKey .Values.aws.credentials.secretName) }}
+        {{- if and (eq .Values.provider "aws") (or (and .Values.aws.credentials.secretKey .Values.aws.credentials.accessKey) .Values.aws.credentials.secretName) }}
         - name: aws-credentials
           mountPath: {{ .Values.aws.credentials.mountPath }}
           readOnly: true
@@ -356,7 +356,7 @@ spec:
           readOnly: true
         {{- end }}
         # Google mountPath(s)
-        {{- if eq .Values.provider "google" (or .Values.google.serviceAccountKey .Values.google.serviceAccountSecret) }}
+        {{- if and (eq .Values.provider "google") (or .Values.google.serviceAccountKey .Values.google.serviceAccountSecret) }}
         - name: google-service-account
           mountPath: /etc/secrets/service-account/
         {{- end }}
@@ -393,7 +393,7 @@ spec:
           defaultMode: 400
       {{- end }}
       # Google volume(s)
-      {{- if eq .Values.provider "google" (or .Values.google.serviceAccountKey .Values.google.serviceAccountSecret) }}
+      {{- if and (eq .Values.provider "google") (or .Values.google.serviceAccountKey .Values.google.serviceAccountSecret) }}
       - name: google-service-account
         secret:
           secretName: {{ template "external-dns.secretName" . }}
