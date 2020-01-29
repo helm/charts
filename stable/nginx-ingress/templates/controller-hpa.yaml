@@ -18,6 +18,9 @@ spec:
   minReplicas: {{ .Values.controller.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.controller.autoscaling.maxReplicas }}
   metrics:
+{{- if .Values.controller.autoscaling.additionalMetrics }}
+{{ toYaml .Values.controller.autoscaling.additionalMetrics | indent 2 }}
+{{- end }}
 {{- with .Values.controller.autoscaling.targetCPUUtilizationPercentage }}
     - type: Resource
       resource:

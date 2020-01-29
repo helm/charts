@@ -223,6 +223,7 @@ controller:
     maxReplicas: 11
     targetCPUUtilizationPercentage: 50
     targetMemoryUtilizationPercentage: 50
+    # customMetrics: []
 
   ## Override NGINX template
   customTemplate:
