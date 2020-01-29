@@ -30,6 +30,12 @@ spec:
       targetPort: metrics
       protocol: TCP
   {{- end }}
+  sessionAffinity: {{ .Values.service.sessionAffinity }}
+  {{- if eq .Values.service.sessionAffinity "ClientIP" }}
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: {{ .Values.service.sessionAffinityConfig.timeoutSeconds }}
+  {{- end }}
   selector:
     app: {{ template "fluentd.name" . }}
     release: {{ .Release.Name }}
