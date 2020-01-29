@@ -497,6 +497,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `redis.redisHost`                        | Redis Hostname                                          | (undefined)               |
 | `redis.password`                         | Redis password                                          | `airflow`                 |
 | `redis.master.persistence.enabled`       | Enable Redis PVC                                        | `false`                   |
+| `redis.master.persistence.accessModes`   | Access modes                                            | `[ ReadWriteOnce ]`       |
 | `redis.cluster.enabled`                  | enable master-slave cluster                             | `false`                   |
 | `serviceMonitor.enabled`                 | enable service monitor                                  | `false`                   |
 | `serviceMonitor.interval`                | Interval at which metrics should be scraped             | `30s`                     |
