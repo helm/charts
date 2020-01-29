@@ -631,7 +631,7 @@ postgresql:
     # storageClass: classname
     ##
     ## Access modes:
-    accessModes: 
+    accessModes:
       - ReadWriteOnce
 
 
@@ -677,7 +677,7 @@ redis:
       # storageClass: classname
       ##
       ## Access mode:
-      accessModes: 
+      accessModes:
       - ReadWriteOnce
   ##
   ## Disable cluster management by default.
