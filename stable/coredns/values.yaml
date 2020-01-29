@@ -187,3 +187,9 @@ autoscaler:
     limits:
       cpu: "20m"
       memory: "10Mi"
+
+  # Options for autoscaler configmap
+  configmap:
+    ## Annotations for the coredns-autoscaler configmap
+    # i.e. strategy.spinnaker.io/versioned: "false" to ensure configmap isn't renamed
+    annotations: {}
