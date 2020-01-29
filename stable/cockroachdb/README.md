@@ -66,6 +66,22 @@ cockroach cert create-node --certs-dir=certs --ca-key=my-safe-directory/ca.key l
 kubectl create secret generic cockroachdb-node --from-file=certs
 ```
 
+Set `tls.certs.tlsSecret` to `yes/true` if you make use of [cert-manager][3] in your cluster.
+
+[cert-manager][3] stores generated certificates in dedicated TLS secrets. Thus, they are always named
+* `ca.crt`
+* `tls.crt`
+* `tls.key`
+
+On the other hand cockroachdb also demands dedicated certificate filenames:
+* `ca.crt`
+* `node.crt`
+* `node.key`
+* `client.root.crt`
+* `client.root.key`
+
+By activating `tls.certs.tlsSecret` we benefit from projected secrets and convert the TLS secret filenames to their according cockroachdb filenames.
+
 Confirm that all Pods are `Running` successfully and init has been completed:
 ```shell
 kubectl get pods
@@ -277,6 +293,7 @@ For details see the `values.yml` file.
 | `tls.certs.provided`                     | Bring your own certs scenario, i.e certificates are provided    | `no`                                             |
 | `tls.certs.clientRootSecret`             | If certs are provided, secret name for client root cert         | `cockroachdb-root`                               |
 | `tls.certs.nodeSecret`                   | If certs are provided, secret name for node cert                | `cockroachdb-node`                               |
+| `tls.certs.tlsSecret`                    | Own certs are stored in TLS secret                              | `no`                                             |
 | `tls.init.image.repository`              | Image to use for requesting TLS certificates                    | `cockroachdb/cockroach-k8s-request-cert`         |
 | `tls.init.image.tag`                     | Image tag to use for requesting TLS certificates                | `0.4`                                            |
 | `tls.init.image.pullPolicy`              | Requesting TLS certificates container pull policy               | `IfNotPresent`                                   |
@@ -439,3 +456,4 @@ Note, that if you are running in secure mode (`tls.enabled` is `yes`/`true`) and
 
 [1]: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#inter-pod-affinity-and-anti-affinity
 [2]: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#node-affinity
+[3]: https://cert-manager.io/
