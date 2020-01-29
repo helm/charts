@@ -43,6 +43,9 @@ plugins:
 
 service:
   annotations: {}
+  sessionAffinity: None
+  sessionAffinityConfig: {}
+    # timeoutSeconds: 7200
   type: ClusterIP
   # loadBalancerIP:
   # type: NodePort
