@@ -485,12 +485,12 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `postgresql.existingSecretKey`           | The name of the key containing the password in the secret named `postgresql.existingSecret`  | `postgres-password` |
 | `postgresql.uri`                         | full URL to custom postgres setup                       | (undefined)               |
 | `postgresql.postgresHost`                | PostgreSQL Hostname                                     | (undefined)               |
-| `postgresql.postgresUser`                | PostgreSQL User                                         | `postgres`                |
-| `postgresql.postgresPassword`            | PostgreSQL Password                                     | `airflow`                 |
-| `postgresql.postgresDatabase`            | PostgreSQL Database name                                | `airflow`                 |
+| `postgresql.postgresqlUsername`                | PostgreSQL User                                         | `postgres`                |
+| `postgresql.postgresqlPassword`            | PostgreSQL Password                                     | `airflow`                 |
+| `postgresql.postgresqlDatabase`            | PostgreSQL Database name                                | `airflow`                 |
 | `postgresql.persistence.enabled`         | Enable Postgres PVC                                     | `true`                    |
 | `postgresql.persistence.storageClass`    | Persistent class                                        | (undefined)               |
-| `postgresql.persistence.accessMode`      | Access mode                                             | `ReadWriteOnce`           |
+| `postgresql.persistence.accessModes`      | Access modes                                             | `[ ReadWriteOnce ]`           |
 | `redis.enabled`                          | Create a Redis cluster                                  | `true`                    |
 | `redis.existingSecret`                   | The name of an existing secret with a key named `redis.existingSecretKey` to use as the password  | `nil` |
 | `redis.existingSecretKey`                | The name of the key containing the password in the secret named `redis.existingSecret`  | `redis-password` |
