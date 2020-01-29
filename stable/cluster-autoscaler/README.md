@@ -173,6 +173,8 @@ Parameter | Description | Default
 `replicaCount` | desired number of pods | `1`
 `priorityClassName` | priorityClassName | `nil`
 `dnsPolicy` | dnsPolicy | `nil`
+`securityContext` | [Security context for pod](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) | `nil`
+`containerSecurityContext` | [Security context for container](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) | `nil`
 `resources` | pod resource requests & limits | `{}`
 `service.annotations` | annotations to add to service | none
 `service.externalIPs` | service external IP addresses | `[]`

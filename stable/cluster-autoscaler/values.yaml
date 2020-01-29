@@ -133,6 +133,20 @@ priorityClassName: ""
 # autoscaler does not depend on cluster DNS, recommended to set this to "Default"
 # dnsPolicy: "Default"
 
+## Security context for pod
+## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+# securityContext:
+#   runAsNonRoot: true
+#   runAsUser: 1001
+#   runAsGroup: 1001
+
+## Security context for container
+## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+# containerSecurityContext:
+#   capabilities:
+#     drop:
+#       - all
+
 service:
   annotations: {}
 
