@@ -514,6 +514,18 @@ Full and up-to-date documentation can be found in the comments of the `values.ya
 
 ## Upgrading
 
+### To 6.0.0
+This version updates `postgresql` and `redis` dependencies.
+There are a few config key changes, in order to upgrade from a 5.x chart, modify your `values.yaml` by mapping the keys as follows:
+
+| 5.x.x                                | 6.x.x                                 | Notes                                                     |
+|--------------------------------------|---------------------------------------|-----------------------------------------------------------|
+|`postgresql.postgresUser`             |`postgresql.postgresqlUsername`        |                                                           |
+|`postgresql.postgresPassword`         |`postgresql.postgresqlPassword`        |                                                           |
+|`postgresql.postgresDatabase`         |`postgresql.postgresqlDatabase`        |                                                           |
+|`postgresql.persistence.accessMode`   |`postgresql.persistence.accessModes`   | Instead of a single value, now the config accepts an array|
+|`redis.master.persistence.accessMode` |`redis.master.persistence.accessModes` | Instead of a single value, now the config accepts an array|
+
 ### To 5.0.0
 This version splits the configuration for webserver and flower web UI from ingress configurations for separation of concerns.
 
