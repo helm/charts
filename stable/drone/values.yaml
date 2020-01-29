@@ -121,7 +121,6 @@ server:
     driver: "sqlite3"
     dataSource: "/var/lib/drone/drone.sqlite"
   logs:
-    debug: false
     color: false
     debug: false
     pretty: false
