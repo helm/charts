@@ -51,7 +51,7 @@ rbac:
 # isClusterService specifies whether chart should be deployed as cluster-service or normal k8s app.
 isClusterService: true
 
-# Optional priority class to be used for the coredns pods
+# Optional priority class to be used for the coredns pods. Used for autoscaler if autoscaler.priorityClassName not set.
 priorityClassName: ""
 
 # Default zone is what Kubernetes recommends:
@@ -147,5 +147,43 @@ extraSecrets: []
 # - name: some-fancy-secret
 #   mountPath: /etc/wherever
 
-# Custom labels to apply to Deployment, Pod, Service, ServiceMonitor
+# Custom labels to apply to Deployment, Pod, Service, ServiceMonitor. Including autoscaler if enabled.
 customLabels: {}
+
+## Configue a cluster-proportional-autoscaler for coredns
+# See https://github.com/kubernetes-incubator/cluster-proportional-autoscaler
+autoscaler:
+  # Enabled the cluster-proportional-autoscaler
+  enabled: false
+
+  # Number of cores in the cluster per coredns replica
+  coresPerReplica: 256
+  # Number of nodes in the cluster per coredns replica
+  nodesPerReplica: 16
+
+  image:
+    repository: k8s.gcr.io/cluster-proportional-autoscaler-amd64
+    tag: "1.7.1"
+    pullPolicy: IfNotPresent
+
+  # Optional priority class to be used for the autoscaler pods. priorityClassName used if not set.
+  priorityClassName: ""
+
+  # expects input structure as per specification https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#affinity-v1-core
+  affinity: {}
+
+  # Node labels for pod assignment
+  # Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  nodeSelector: {}
+
+  # expects input structure as per specification https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#toleration-v1-core
+  tolerations: []
+
+  # resources for autoscaler pod
+  resources:
+    requests:
+      cpu: "20m"
+      memory: "10Mi"
+    limits:
+      cpu: "20m"
+      memory: "10Mi"
