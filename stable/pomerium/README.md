@@ -69,18 +69,20 @@ The command removes nearly all the Kubernetes components associated with the cha
 
 In default configuration, this chart will automatically generate TLS certificates in a helm `pre-install` hook for the Pomerium services to communicate with.
 
-Upon delete, you will need to manually delete the generated secrets.  Example:
+Upon delete, you will need to manually delete the generated secrets. Example:
 
 ```console
 kubectl delete secret -l app.kubernetes.io/name=pomerium
 ```
 
-You may force recreation of your TLS certificates by setting `config.forceGenerateTLS` to `true`.  Delete any existing TLS secrets first to prevent errors, and  make sure you set back to `false` for your next helm upgrade command or your deployment will fail due to existing Secrets.
+You may force recreation of your TLS certificates by setting `config.forceGenerateTLS` to `true`. Delete any existing TLS secrets first to prevent errors, and make sure you set back to `false` for your next helm upgrade command or your deployment will fail due to existing Secrets.
 
 ### Self Provisioned
+
 If you wish to provide your own TLS certificates in secrets, you should:
-1) turn `generateTLS` to `false`
-2) specify `authenticate.existingTLSSecret`, `authorize.existingTLSSecret`, and `proxy.existingTLSSecret`, pointing at the appropriate TLS certificate for each service.
+
+1. turn `generateTLS` to `false`
+2. specify `authenticate.existingTLSSecret`, `authorize.existingTLSSecret`, and `proxy.existingTLSSecret`, pointing at the appropriate TLS certificate for each service.
 
 All services can share the secret if appropriate.
 
@@ -146,7 +148,7 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `tracing.provider`                  | Specifies the tracing provider to configure (Valid options: Jaeger)                                                                                                                                           | Required                                                                              |
 | `tracing.jaeger.collector_endpoint` | The jaeger collector endpoint                                                                                                                                                                                 | Required                                                                              |
 | `tracing.jaeger.agent_endpoint`     | The jaeger agent endpoint                                                                                                                                                                                     | Required                                                                              |
-| `ingress.enabled`                   | Enables Ingress for pomerium                                                                                                                                                                                  | `false`                                                                               |
+| `ingress.enabled`                   | Enables Ingress for pomerium                                                                                                                                                                                  | `true`                                                                               |
 | `ingress.annotations`               | Ingress annotations                                                                                                                                                                                           | `{}`                                                                                  |
 | `ingress.hosts`                     | Ingress accepted hostnames                                                                                                                                                                                    | `[]`                                                                                  |
 | `ingress.tls`                       | Ingress TLS configuration                                                                                                                                                                                     | `[]`                                                                                  |
@@ -157,22 +159,25 @@ A full listing of Pomerium's configuration variables can be found on the [config
 ## Changelog
 
 ### 4.0.0
+
 - Upgrade to Pomerium v0.4.0
 - Handle breaking changes from Pomerium
 
 ### 3.0.0
+
 - Refactor TLS certificates to use Kubernetes TLS secrets
 - Generate TLS certificates in a hook to prevent certificate churn
 
 ### 2.0.0
 
 - Expose replica count for individual services
-- Switch Authorize service to CluserIP for client side load balancing
+- Switch Authorize service to ClusterIP for client side load balancing
   - You must run pomerium v0.3.0+ to support this feature correctly
 
 ## Upgrading
 
 ### 4.0.0
+
 - There are no user facing changes in this chart release
 - See [Pomerium Changelog](https://www.pomerium.io/docs/upgrading.html#since-0-3-0) for internal details
 
@@ -194,14 +199,15 @@ A full listing of Pomerium's configuration variables can be found on the [config
     - [Move and convert your certificates](scripts/upgrade-v3.0.0.sh) to type TLS Secrets and configure `[service].existingTLSSecret` to point to your secrets
     - **OR:** To continue using your certificates from the existing config, set `config.existingLegacyTLSSecret` to `true`
 
-****
+---
+
 ### 2.0.0
 
 - You will need to run `helm upgrade --force` to recreate the authorize service correctly
 
 ## Metrics Discovery Configuration
 
-This chart provices two ways to surface metrics for discovery.  Under normal circumstances, you will only set up one method.
+This chart provides two ways to surface metrics for discovery. Under normal circumstances, you will only set up one method.
 
 ### Prometheus Operator
 
@@ -217,15 +223,14 @@ serviceMonitor:
   enabled: true
   labels:
     release: prometheus # default
-
 ```
 
 Example ServiceMonitor configuration:
 
 ```yaml
-    serviceMonitorSelector:
-      matchLabels:
-        release: prometheus # operator chart default
+serviceMonitorSelector:
+  matchLabels:
+    release: prometheus # operator chart default
 ```
 
 ### Prometheus kubernetes_sd_configs
@@ -243,6 +248,7 @@ service:
 ```
 
 Example prometheus discovery config:
+
 ```yaml
 - job_name: 'pomerium'
 metrics_path: /metrics
