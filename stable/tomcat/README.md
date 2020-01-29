@@ -10,7 +10,7 @@ The chart offers an optimization for application updates running in a servlet co
 
 ## Prerequisites
 
-- Kubernetes 1.8+ 
+- Kubernetes 1.10+ 
 
 ## Provider-specific Prerequisites
 

@@ -56,6 +56,20 @@ spec:
             release: {{ .Release.Name }}
             role: slave
       {{- end }}
+      {{- if .Values.networkPolicy.ingressNSMatchLabels }}
+      - namespaceSelector:
+          matchLabels:
+            {{- range $key, $value := .Values.networkPolicy.ingressNSMatchLabels }}
+            {{ $key | quote }}: {{ $value | quote }}
+            {{- end }}
+        {{- if .Values.networkPolicy.ingressNSPodMatchLabels }}
+        podSelector:
+          matchLabels:
+            {{- range $key, $value := .Values.networkPolicy.ingressNSPodMatchLabels }}
+            {{ $key | quote }}: {{ $value | quote }}
+            {{- end }}
+        {{- end }}
+      {{- end }}
       {{- end }}
     {{- if .Values.metrics.enabled }}
     # Allow prometheus scrapes for metrics

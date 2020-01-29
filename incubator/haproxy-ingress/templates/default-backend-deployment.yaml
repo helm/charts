@@ -1,5 +1,5 @@
 {{- if .Values.defaultBackend.enabled }}
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
@@ -9,10 +9,13 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "haproxy-ingress.defaultBackend.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
+  replicas: {{ .Values.defaultBackend.replicaCount }}
   selector:
     matchLabels:
       app: {{ template "haproxy-ingress.name" . }}
+      component: "{{ .Values.defaultBackend.name }}"
       release: {{ .Release.Name }}
   template:
     metadata:

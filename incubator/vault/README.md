@@ -52,6 +52,7 @@ The following table lists the configurable parameters of the Vault chart and the
 | `image.pullPolicy`                | Container pull policy                    | `IfNotPresent`                      |
 | `image.repository`                | Container image to use                   | `vault`                             |
 | `image.tag`                       | Container image tag to deploy            | `.Chart.appVersion`                            |
+| `vault.backendPolicy              | If custom backend needed                 | `{}`                                |
 | `vault.dev`                       | Use Vault in dev mode                    | true (set to false in production)   |
 | `vault.extraArgs`                 | Additional arguments for vault server command | `[]`                           |
 | `vault.extraEnv`                  | Extra env vars for Vault pods            | `{}`                                |
@@ -60,11 +61,14 @@ The following table lists the configurable parameters of the Vault chart and the
 | `vault.extraVolumes`              | Additional volumes to the controller pod | `{}`                                |
 | `vault.extraVolumeMounts`         | Extra volumes to mount to the controller pod | `{}`                                |
 | `vault.existingConfigName`        | Location of existing Vault configuration | nil                                 |
+| `vault.podApiAddress`             | Set the `VAULT_API_ADDR` environment variable to the Pod IP Address. This is the address (full URL) to advertise to other Vault servers in the cluster for client redirection.| `true`           |
 | `vault.config`                    | Vault configuration                      | No default backend                  |
 | `replicaCount`                    | k8s replicas                             | `3`                                 |
 | `resources.limits.cpu`            | Container requested CPU                  | `nil`                               |
 | `resources.limits.memory`         | Container requested memory               | `nil`                               |
 | `affinity`                        | Affinity settings                        | See values.yaml                     |
+| `nodeSelector`                    | Node labels for pod assignment           | `{}`                                |
+| `tolerations`                     | Tolerations for node taints              | `[]`                                |
 | `service.loadBalancerIP`          | Assign a static IP to the loadbalancer   | `nil`                               |
 | `service.loadBalancerSourceRanges`| IP whitelist for service type loadbalancer   | `[]`                            |
 | `service.annotations`             | Annotations for service                  | `{}`                                |

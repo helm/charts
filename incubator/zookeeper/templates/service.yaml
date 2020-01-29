@@ -7,9 +7,11 @@ metadata:
     chart: {{ template "zookeeper.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- if .Values.service.annotations }}
   annotations:
 {{- with .Values.service.annotations }}
 {{ toYaml . | indent 4 }}
+{{- end }}
 {{- end }}
 spec:
   type: {{ .Values.service.type }}

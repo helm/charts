@@ -1,5 +1,5 @@
 {{- if .Values.psp.create }}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "podsecuritypolicy.apiVersion" . }}
 kind: PodSecurityPolicy
 metadata:
   labels:

@@ -71,3 +71,13 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{- define "redis-ha.masterGroupName" -}}
+{{- $masterGroupName := tpl ( .Values.redis.masterGroupName | default "") . -}}
+{{- $validMasterGroupName := regexMatch "^[\\w-\\.]+$" $masterGroupName -}}
+{{- if $validMasterGroupName -}}
+{{ $masterGroupName }}
+{{- else -}}
+{{ required "A valid .Values.redis.masterGroupName entry is required (matching ^[\\w-\\.]+$)" ""}}
+{{- end -}}
+{{- end -}}

@@ -1,8 +1,12 @@
+# This version of the kiam Helm chart is deprecated.
+# All future updates should be instead made to the uSwitch-hosted Helm chart,
+# located at https://github.com/uswitch/kiam/tree/master/helm/kiam.
+deprecated: true
 apiVersion: v1
 name: kiam
-version: 2.5.1
+version: 2.5.3
 appVersion: 3.3
-description: Integrate AWS IAM with Kubernetes
+description: DEPRECATED Integrate AWS IAM with Kubernetes
 keywords:
   - kiam
   - aws
@@ -11,7 +15,4 @@ keywords:
 home: https://github.com/uswitch/kiam
 sources:
   - https://github.com/uswitch/kiam
-maintainers:
-  - name: ewbankkit
-    email: Kit_Ewbank@hotmail.com
 engine: gotpl

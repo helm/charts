@@ -23,7 +23,7 @@ spec:
       paths:
       - path: {{ default "/" .path }}
         backend:
-          serviceName: "{{ template "mongodb.fullname" $ }}"
+          serviceName: {{ template "mongodb.serviceName" $ }}
           servicePort: mongodb
   {{- end }}
   {{- if .Values.ingress.tls }}

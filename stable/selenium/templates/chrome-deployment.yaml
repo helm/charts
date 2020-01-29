@@ -1,5 +1,5 @@
 {{- if eq true .Values.chrome.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "selenium.chrome.fullname" . }}
@@ -7,6 +7,10 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
   replicas: {{ .Values.chrome.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "selenium.chrome.fullname" . }}
+      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
@@ -88,7 +92,7 @@ spec:
           resources:
 {{ toYaml .Values.chrome.resources | trim | indent 12 }}
 {{- if or .Values.global.imagePullSecrets .Values.chrome.imagePullSecrets }}
-      imagePullSecrets: 
+      imagePullSecrets:
       - name: {{ .Values.chrome.imagePullSecrets | default .Values.global.imagePullSecrets | quote }}
 {{- end }}
       volumes:

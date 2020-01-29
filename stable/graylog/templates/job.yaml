@@ -11,28 +11,30 @@ metadata:
     app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
 spec:
   template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ template "graylog.name" . }}
+        helm.sh/chart: {{ template "graylog.chart" . }}
+        app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+        app.kubernetes.io/instance: "{{ .Release.Name }}"
+        app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
     spec:
-      metadata:
-        labels:
-          app.kubernetes.io/name: {{ template "graylog.name" . }}
-          helm.sh/chart: {{ template "graylog.chart" . }}
-          app.kubernetes.io/managed-by: "{{ .Release.Service }}"
-          app.kubernetes.io/instance: "{{ .Release.Name }}"
-          app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
       containers:
       - name: {{ template "graylog.fullname" . }}-provisioner-job
-        image: alpine:latest
-        command: ["/bin/sh"]
+        image: "alpine"
+        imagePullPolicy: "IfNotPresent"
+        command:
+          - /bin/sh
+          - -c
+          - |
+            apk update && apk add --no-cache curl bash && bash /configmap/script.sh
         env:
           - name: GRAYLOG_PASSWORD_SECRET
             valueFrom:
               secretKeyRef:
-                name: {{ template "graylog.fullname" . }}
+                name: {{ .Values.existingRootSecret | default (include "graylog.fullname" .) }}
+
                 key: graylog-password-secret
-        args:
-          - -c
-          - |
-            apk update && apk add --no-cache curl bash && bash /configmap/script.sh
         volumeMounts:
           - name: configmap
             mountPath: /configmap

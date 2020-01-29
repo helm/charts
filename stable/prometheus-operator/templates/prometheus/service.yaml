@@ -3,9 +3,14 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-prometheus
+  namespace: {{ $.Release.Namespace }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-prometheus
+    self-monitor: {{ .Values.prometheus.serviceMonitor.selfMonitor | quote }}
 {{ include "prometheus-operator.labels" . | indent 4 }}
+{{- if .Values.prometheus.service.labels }}
+{{ toYaml .Values.prometheus.service.labels | indent 4 }}
+{{- end }}
 {{- if .Values.prometheus.service.annotations }}
   annotations:
 {{ toYaml .Values.prometheus.service.annotations | indent 4 }}
@@ -28,11 +33,11 @@ spec:
   {{- end }}
 {{- end }}
   ports:
-  - name: web
+  - name: {{ .Values.prometheus.prometheusSpec.portName }}
     {{- if eq .Values.prometheus.service.type "NodePort" }}
     nodePort: {{ .Values.prometheus.service.nodePort }}
     {{- end }}
-    port: 9090
+    port: {{ .Values.prometheus.service.port }}
     targetPort: {{ .Values.prometheus.service.targetPort }}
 {{- if .Values.prometheus.service.additionalPorts }}
 {{ toYaml .Values.prometheus.service.additionalPorts | indent 2 }}

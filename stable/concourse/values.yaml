@@ -19,7 +19,7 @@ image: concourse/concourse
 ##      of `concourse/concourse`.
 ## Ref: https://hub.docker.com/r/concourse/concourse/tags/
 ##
-imageTag: "5.5.0"
+imageTag: "5.6.0"
 
 ## Specific image digest to use in place of a tag.
 ## Ref: https://kubernetes.io/docs/concepts/configuration/overview/#container-images
@@ -65,6 +65,19 @@ concourse:
     ##
     enableGlobalResources: true
 
+    ## The Future™ of resource checking.
+    ##
+    enableLidar:
+
+    ## Interval on which the resource scanner will run to see if new checks need
+    ## to be scheduled.
+    ##
+    lidarScannerInterval:
+
+    ## Interval on which the resource checker runs any scheduled checks.
+    ##
+    lidarCheckerInterval:
+
     ## Enable auditing for all api requests connected to builds.
     ##
     enableBuildAuditing: false
@@ -101,6 +114,10 @@ concourse:
     ##
     enableVolumeAuditing: false
 
+    ## Enable redacting secrets in build logs.
+    ##
+    enableRedactSecrets:
+
     ## The number of attempts secret will be retried to be fetched,
     ## in case a retryable error happens.
     ##
@@ -119,6 +136,11 @@ concourse:
     ## is smaller).
     ##
     secretCacheDuration:
+
+    ## If the cache is enabled, secret not found responses will be cached for
+    ## this duration.
+    ##
+    secretCacheDurationNotFound:
 
     ## If the cache is enabled, expired items will be removed on this internal.
     ##
@@ -230,6 +252,11 @@ concourse:
     ## Log database queries.
     ##
     logDbQueries: false
+
+    ## Log cluster name.
+    ##
+    logClusterName:
+
 
     ## Interval on which to run build tracking.
     ##
@@ -619,6 +646,10 @@ concourse:
       ## went missing from the worker.
       ##
       missingGracePeriod: 5m
+
+      ## Period after which to reap checks that are completed.
+      ##
+      checkRecyclePeriod:
 
     syslog:
       ## Enables the emission of build logs to external log ingesters through

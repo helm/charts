@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "daemonSet.apiVersion" . }}
 kind: DaemonSet
 metadata:
   name: {{ template "fluent-bit.fullname" . }}
@@ -8,6 +8,13 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "fluent-bit.name" . }}
+      release: {{ .Release.Name }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 6 }}
+{{- end }}
   updateStrategy:
     type: RollingUpdate
   template:
@@ -107,6 +114,11 @@ spec:
           mountPath: /fluent-bit/etc/parsers_custom.conf
           subPath: parsers.conf
 {{- end }}
+{{- if and .Values.backend.type "stackdriver" .Values.backend.stackdriver.google_service_credentials }}
+        - name: gcp-stackdriver-secret
+          mountPath: /secure/google_service_credentials.json
+          subPath: google_service_credentials.json
+{{- end }}
 {{- end }}
 {{- if or .Values.backend.es.tls_ca .Values.backend.es.tls_secret }}
         - name: es-tls-secret
@@ -155,6 +167,11 @@ spec:
       - name: es-tls-secret
         secret:
           secretName: {{ .Values.backend.es.tls_secret | default ( print ( include "fluent-bit.fullname" . ) "-es-tls-secret" ) | quote }}
+{{- end }}
+{{- if and .Values.backend.type "stackdriver" .Values.backend.stackdriver.google_service_credentials }}
+      - name: gcp-stackdriver-secret
+        secret:
+          secretName: "{{ template "fluent-bit.fullname" . }}-gcp-stackdriver-secret"
 {{- end }}
 {{- if .Values.trackOffsets }}
       - name: tail-db

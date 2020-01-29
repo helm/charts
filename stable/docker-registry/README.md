@@ -26,7 +26,7 @@ The following table lists the configurable parameters of the docker-registry cha
 their default values.
 
 | Parameter                         | Description                                                                                         | Default                                                  |
-|:----------------------------------|:----------------------------------------------------------------------------------------------------|:---------------------------------------------------------|
+| :-------------------------------- | :-------------------------------------------------------------------------------------------------- | :------------------------------------------------------- |
 | `image.pullPolicy`                | Container pull policy                                                                               | `IfNotPresent`                                           |
 | `image.repository`                | Container image to use                                                                              | `registry`                                               |
 | `image.tag`                       | Container image tag to deploy                                                                       | `2.7.1`                                                  |
@@ -74,6 +74,8 @@ their default values.
 | `ingress.path`                    | Ingress service path                                                                                | `/`                                                      |
 | `ingress.hosts`                   | Ingress hostnames                                                                                   | `[]`                                                     |
 | `ingress.tls`                     | Ingress TLS configuration (YAML)                                                                    | `[]`                                                     |
+| `extraVolumeMounts`               | Additional volumeMounts to the registry container                                                   | `[]`                                                     |
+| `extraVolumes`                    | Additional volumes to the pod                                                                       | `[]`                                                     |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.

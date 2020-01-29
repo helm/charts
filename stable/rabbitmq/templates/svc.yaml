@@ -62,10 +62,13 @@ spec:
 {{- if .Values.metrics.enabled }}
   - name: metrics
     port: {{ .Values.metrics.port }}
-    targetPort: 9090
+    targetPort: metrics
     {{- if (eq .Values.service.type "ClusterIP") }}
     nodePort: null
     {{- end }}
+{{- end }}
+{{- if .Values.service.extraPorts }}
+{{ toYaml .Values.service.extraPorts | indent 2 }}
 {{- end }}
   selector:
     app: {{ template "rabbitmq.name" . }}

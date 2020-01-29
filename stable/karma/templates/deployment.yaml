@@ -7,6 +7,10 @@ metadata:
     helm.sh/chart: {{ include "karma.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- with .Values.deployment.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -58,10 +62,15 @@ spec:
             periodSeconds: {{ .Values.livenessProbe.period }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
-          {{- if .Values.configMap.enabled }}
           volumeMounts:
+          {{- if .Values.configMap.enabled }}
             - name: karma-config
               mountPath: /etc/karma
+          {{- end }}
+          {{- range .Values.certSecretNames }}
+            - name: {{ . }}
+              mountPath: /etc/certs/{{ . }}
+              readOnly: true
           {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
@@ -75,9 +84,15 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-      {{- if .Values.configMap.enabled }}
       volumes:
+      {{- if .Values.configMap.enabled }}
       - name: karma-config
         configMap:
           name: {{ .Release.Name }}-config
+      {{- end }}
+      {{- range .Values.certSecretNames }}
+      - name: {{ . }}
+        secret:
+          defaultMode: 420
+          secretName: {{ . }}
       {{- end }}

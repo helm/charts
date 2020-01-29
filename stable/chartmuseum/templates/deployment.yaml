@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "chartmuseum.fullname" . }}
@@ -10,6 +10,13 @@ metadata:
 {{ toYaml .Values.deployment.labels | indent 4 }}
 {{- end }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "chartmuseum.name" . }}
+      release: {{ .Release.Name | quote }}
+{{- if .Values.deployment.labels }}
+{{ toYaml .Values.deployment.labels | indent 6 }}
+{{- end }}
   replicas: {{ .Values.replicaCount }}
   strategy:
 {{ toYaml .Values.strategy | indent 4 }}

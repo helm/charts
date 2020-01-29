@@ -53,7 +53,7 @@ You can query OPA to see the policies it has loaded (you will need to turn off a
 
 export OPA_POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "opa.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
 
-kubectl port-forward $OPA_POD_NAME 8080:443
+kubectl port-forward $OPA_POD_NAME 8080:443 --namespace {{ .Release.Namespace }}
 
 curl -k -s https://localhost:8080/v1/policies | jq -r '.result[].raw'
 

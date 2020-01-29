@@ -1,19 +1,23 @@
-{{- if .Values.Secure.Enabled }}
-apiVersion: rbac.authorization.k8s.io/v1beta1
+{{- if .Values.tls.enabled }}
 kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
+  name: {{ template "cockroachdb.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+    helm.sh/chart: {{ template "cockroachdb.chart" . }}
+    app.kubernetes.io/name: {{ template "cockroachdb.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+  {{- with .Values.labels }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
+  name: {{ template "cockroachdb.fullname" . }}
 subjects:
-- kind: ServiceAccount
-  name: {{ template "cockroachdb.serviceAccountName" . }}
-  namespace: {{ .Release.Namespace | quote }}
+  - kind: ServiceAccount
+    name: {{ template "cockroachdb.tls.serviceAccount.name" . }}
+    namespace: {{ .Release.Namespace | quote }}
 {{- end }}

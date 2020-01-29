@@ -50,6 +50,10 @@ spec:
               mountPath: /var/db/cerebro
             - name: config
               mountPath: /etc/cerebro
+            - name: logs
+              mountPath: /opt/cerebro/logs/
+            - name: tmp
+              mountPath: /tmp
           {{- if .Values.env }}
           env:
           {{- range $index, $element := .Values.env }}
@@ -80,6 +84,10 @@ spec:
         - name: config
           configMap:
             name: {{ template "cerebro.fullname" . }}
+        - name: logs
+          emptyDir: {}
+        - name: tmp
+          emptyDir: {}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

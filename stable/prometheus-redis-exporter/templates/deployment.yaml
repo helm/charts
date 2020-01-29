@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "prometheus-redis-exporter.fullname" . }}
@@ -42,6 +42,17 @@ spec:
           env:
             - name: REDIS_ADDR
               value: {{ .Values.redisAddress }}
+          {{- if .Values.auth.enabled }}
+            - name: REDIS_PASSWORD
+            {{- if .Values.auth.secret.name }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.auth.secret.name }}
+                  key: {{ .Values.secret.key }}
+            {{- else }}
+              value: {{ .Values.auth.redisPassword }}
+            {{- end }}
+          {{- end }}
 {{- if .Values.script }}
             - name: REDIS_EXPORTER_SCRIPT
               value: /script/script.lua

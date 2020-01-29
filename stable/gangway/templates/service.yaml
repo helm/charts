@@ -14,10 +14,10 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.gangway.port }}
-      protocol: TCP
-      name: http
+  - port: {{ .Values.service.port }}
+    targetPort: {{ .Values.gangway.port }}
+    protocol: TCP
+    name: http
 {{- if and (eq "LoadBalancer" $.Values.service.type) (.Values.service.loadBalancerIP) }}
   loadBalancerIP: {{ .Values.service.loadBalancerIP }}
 {{- end}}

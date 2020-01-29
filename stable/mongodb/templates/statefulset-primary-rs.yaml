@@ -2,12 +2,19 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
+  name: {{ template "mongodb.fullname" . }}-primary
   labels:
     app: {{ template "mongodb.name" . }}
     chart: {{ template "mongodb.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "mongodb.fullname" . }}-primary
+    {{- with .Values.labels }}
+{{ toYaml . | indent 4 }}
+    {{- end }}
+  {{- with .Values.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
 spec:
   serviceName: {{ template "mongodb.fullname" . }}-headless
   replicas: 1
@@ -158,15 +165,17 @@ spec:
           {{- end }}
           {{- if .Values.mongodbExtraFlags }}
           - name: MONGODB_EXTRA_FLAGS
-            value: {{ .Values.mongodbExtraFlags | join " " }}
+            value: {{ .Values.mongodbExtraFlags | join " " | quote }}
+          {{- end }}
+          {{- if .Values.extraEnvVars }}
+          {{- include "mongodb.tplValue" ( dict "value" .Values.extraEnvVars "context" $ ) | nindent 10 }}
           {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             exec:
               command:
-                - mongo
-                - --eval
-                - "db.adminCommand('ping')"
+                - pgrep
+                - mongod
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -199,6 +208,9 @@ spec:
               mountPath: /opt/bitnami/mongodb/conf/mongodb.conf
               subPath: mongodb.conf
             {{- end }}
+          {{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 12}}
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
 {{- if .Values.metrics.enabled }}
@@ -249,6 +261,9 @@ spec:
           resources:
 {{ toYaml .Values.metrics.resources | indent 12 }}
 {{- end }}
+{{- if .Values.sidecars }}
+{{ toYaml .Values.sidecars | indent 8 }}
+{{- end }}
       volumes:
         {{- if (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|js|json]") }}
         - name: custom-init-scripts
@@ -264,6 +279,9 @@ spec:
         - name: config
           configMap:
             name: {{ template "mongodb.fullname" . }}
+        {{- end }}
+        {{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 8}}
         {{- end }}
 {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:

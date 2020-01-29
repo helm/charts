@@ -57,3 +57,6 @@ prometheus:
     additionalLabels: {}
     interval: 15s
     namespace: []
+  rules:
+    enabled: false
+    additionalLabels: {}

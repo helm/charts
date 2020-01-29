@@ -5,7 +5,7 @@
 replicaCount: 1
 name: kube-downscaler
 debug:
-  enable: 'False'
+  enable: false
 
 # Namespace where kube-downscaler is going to be deployed.
 namespace:
@@ -23,7 +23,7 @@ rbac:
 
 image:
   repository: hjacobs/kube-downscaler
-  tag: 0.6
+  tag: 19.10.1
   pullPolicy: IfNotPresent
 
 resources:
@@ -35,6 +35,12 @@ resources:
   # requests:
   #   cpu: 50m
   #   memory: 200Mi
+
+securityContext: {}
+# runAsUser: 1000
+
+extraArgs: []
+# - --include-resources deployments
 
 nodeSelector: {}
 

@@ -43,7 +43,7 @@ Create the name of the service account to use
 {{- end -}}
 
 {{/*
-Return the apiVerion of deployment.
+Return the apiVersion of deployment.
 */}}
 {{- define "deployment.apiVersion" -}}
 {{- if semverCompare "<1.14-0" .Capabilities.KubeVersion.GitVersion -}}

@@ -59,6 +59,21 @@ spec:
             value: {{ template "cassandra.host" . }}
           - name: CASSANDRA_PORT
             value: {{ .Values.storage.cassandra.port | quote }}
+          {{ if .Values.storage.cassandra.tls.enabled }}
+          - name: CASSANDRA_TLS
+            value: "true"
+          - name: CASSANDRA_TLS_SERVER_NAME
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.storage.cassandra.tls.secretName }}
+                key: commonName
+          - name: CASSANDRA_TLS_KEY
+            value: "/cassandra-tls/client-key.pem"
+          - name: CASSANDRA_TLS_CERT
+            value: "/cassandra-tls/client-cert.pem"
+          - name: CASSANDRA_TLS_CA
+            value: "/cassandra-tls/ca-cert.pem"
+          {{- end }}    
           - name: CASSANDRA_KEYSPACE
             value: {{ printf "%s_%s" "jaeger_v1" .Values.cassandra.config.dc_name | quote }}
           - name: CASSANDRA_USERNAME
@@ -99,6 +114,20 @@ spec:
             mountPath: {{ .mountPath }}
             subPath: {{ .subPath }}
             readOnly: {{ .readOnly }}
+        {{- end }}
+        {{- if .Values.storage.cassandra.tls.enabled }}
+          - name: {{ .Values.storage.cassandra.tls.secretName }}
+            mountPath: "/cassandra-tls/ca-cert.pem"
+            subPath: "ca-cert.pem"
+            readOnly: true
+          - name: {{ .Values.storage.cassandra.tls.secretName }}
+            mountPath: "/cassandra-tls/client-cert.pem"
+            subPath: "client-cert.pem"
+            readOnly: true
+          - name: {{ .Values.storage.cassandra.tls.secretName }}
+            mountPath: "/cassandra-tls/client-key.pem"
+            subPath: "client-key.pem"
+            readOnly: true
         {{- end }}
         livenessProbe:
           httpGet:

@@ -17,6 +17,7 @@ Please also see https://github.com/kubernetes-helm/chartmuseum
     - [permissions grant with access keys](#permissions-grant-with-access-keys)
     - [permissions grant with IAM instance profile](#permissions-grant-with-iam-instance-profile)
     - [permissions grant with IAM assumed role](#permissions-grant-with-iam-assumed-role)
+    - [permissions grant with IAM Roles for Service Accounts](#permissions-grant-with-iam-roles-for-service-accounts)
   - [Using with Google Cloud Storage](#using-with-google-cloud-storage)
   - [Using with Google Cloud Storage and a Google Service Account](#using-with-google-cloud-storage-and-a-google-service-account)
   - [Using with Microsoft Azure Blob Storage](#using-with-microsoft-azure-blob-storage)
@@ -31,8 +32,8 @@ Please also see https://github.com/kubernetes-helm/chartmuseum
     - [Bearer/Token auth](#bearertoken-auth)
   - [Ingress](#ingress)
     - [Hosts](#hosts)
-    - [Annotations](#annotations)
     - [Extra Paths](#extra-paths)
+    - [Annotations](#annotations)
     - [Example Ingress configuration](#example-ingress-configuration)
 - [Uninstall](#uninstall)
 
@@ -41,7 +42,6 @@ Please also see https://github.com/kubernetes-helm/chartmuseum
 
 ## Prerequisites
 
-* Kubernetes with extensions/v1beta1 available
 * [If enabled] A persistent storage resource and RW access to it
 * [If enabled] Kubernetes StorageClass for dynamic provisioning
 
@@ -66,109 +66,111 @@ kubectl create -f /path/to/storage_class.yaml
 The following table lists common configurable parameters of the chart and
 their default values. See values.yaml for all available options.
 
-| Parameter                               | Description                                                        | Default                              |
-|-----------------------------------------|--------------------------------------------------------------------|--------------------------------------|
-| `image.pullPolicy`                      | Container pull policy                                              | `IfNotPresent`                       |
-| `image.repository`                      | Container image to use                                             | `chartmuseum/chartmuseum`            |
-| `image.tag`                             | Container image tag to deploy                                      | `v0.8.0`                             |
-| `persistence.accessMode`                | Access mode to use for PVC                                         | `ReadWriteOnce`                      |
-| `persistence.enabled`                   | Whether to use a PVC for persistent storage                        | `false`                              |
-| `persistence.size`                      | Amount of space to claim for PVC                                   | `8Gi`                                |
-| `persistence.labels`                    | Additional labels for PVC                                          | `{}`                                 |
-| `persistence.storageClass`              | Storage Class to use for PVC                                       | `-`                                  |
-| `persistence.volumeName`                | Volume to use for PVC                                              | ``                                   |
-| `persistence.pv.enabled`                | Whether to use a PV for persistent storage                         | `false`                              |
-| `persistence.pv.capacity.storage`       | Storage size to use for PV                                         | `8Gi`                                |
-| `persistence.pv.accessMode`             | Access mode to use for PV                                          | `ReadWriteOnce`                      |
-| `persistence.pv.nfs.server`             | NFS server for PV                                                  | ``                                   |
-| `persistence.pv.nfs.path`               | Storage Path                                                       | ``                                   |
-| `persistence.pv.pvname`                 | Custom name for private volume                                     | ``                                   |
-| `replicaCount`                          | k8s replicas                                                       | `1`                                  |
-| `resources.limits.cpu`                  | Container maximum CPU                                              | `100m`                               |
-| `resources.limits.memory`               | Container maximum memory                                           | `128Mi`                              |
-| `resources.requests.cpu`                | Container requested CPU                                            | `80m`                                |
-| `resources.requests.memory`             | Container requested memory                                         | `64Mi`                               |
-| `serviceAccount.create`                 | If true, create the service account                                | `false`                              |
-| `serviceAccount.name`                   | Name of the serviceAccount to create or use                        | `{{ chartmuseum.fullname }}`         |
-| `securityContext`                       | Map of securityContext for the pod                                 | `{ fsGroup: 1000 }`                  |
-| `nodeSelector`                          | Map of node labels for pod assignment                              | `{}`                                 |
-| `tolerations`                           | List of node taints to tolerate                                    | `[]`                                 |
-| `affinity`                              | Map of node/pod affinities                                         | `{}`                                 |
-| `env.open.STORAGE`                      | Storage Backend to use                                             | `local`                              |
-| `env.open.STORAGE_ALIBABA_BUCKET`       | Bucket to store charts in for Alibaba                              | ``                                   |
-| `env.open.STORAGE_ALIBABA_PREFIX`       | Prefix to store charts under for Alibaba                           | ``                                   |
-| `env.open.STORAGE_ALIBABA_ENDPOINT`     | Alternative Alibaba endpoint                                       | ``                                   |
-| `env.open.STORAGE_ALIBABA_SSE`          | Server side encryption algorithm to use                            | ``                                   |
-| `env.open.STORAGE_AMAZON_BUCKET`        | Bucket to store charts in for AWS                                  | ``                                   |
-| `env.open.STORAGE_AMAZON_ENDPOINT`      | Alternative AWS endpoint                                           | ``                                   |
-| `env.open.STORAGE_AMAZON_PREFIX`        | Prefix to store charts under for AWS                               | ``                                   |
-| `env.open.STORAGE_AMAZON_REGION`        | Region to use for bucket access for AWS                            | ``                                   |
-| `env.open.STORAGE_AMAZON_SSE`           | Server side encryption algorithm to use                            | ``                                   |
-| `env.open.STORAGE_GOOGLE_BUCKET`        | Bucket to store charts in for GCP                                  | ``                                   |
-| `env.open.STORAGE_GOOGLE_PREFIX`        | Prefix to store charts under for GCP                               | ``                                   |
-| `env.open.STORAGE_MICROSOFT_CONTAINER`  | Container to store charts under for MS                             | ``                                   |
-| `env.open.STORAGE_MICROSOFT_PREFIX`     | Prefix to store charts under for MS                                | ``                                   |
-| `env.open.STORAGE_OPENSTACK_CONTAINER`  | Container to store charts for openstack                            | ``                                   |
-| `env.open.STORAGE_OPENSTACK_PREFIX`     | Prefix to store charts for openstack                               | ``                                   |
-| `env.open.STORAGE_OPENSTACK_REGION`     | Region of openstack container                                      | ``                                   |
-| `env.open.STORAGE_OPENSTACK_CACERT`     | Path to a CA cert bundle for openstack                             | ``                                   |
-| `env.open.STORAGE_ORACLE_COMPARTMENTID` | Compartment ID for Oracle Object Store                             | ``                                   |
-| `env.open.STORAGE_ORACLE_BUCKET`        | Bucket to store charts in Oracle Object Store                      | ``                                   |
-| `env.open.STORAGE_ORACLE_PREFIX`        | Prefix to store charts for Oracle object Store                     | ``                                   |
-| `env.open.CHART_POST_FORM_FIELD_NAME`   | Form field to query for chart file content                         | ``                                   |
-| `env.open.PROV_POST_FORM_FIELD_NAME`    | Form field to query for chart provenance                           | ``                                   |
-| `env.open.DEPTH`                        | levels of nested repos for multitenancy.                           | `0`                                  |
-| `env.open.DEBUG`                        | Show debug messages                                                | `false`                              |
-| `env.open.LOG_JSON`                     | Output structured logs in JSON                                     | `true`                               |
-| `env.open.DISABLE_STATEFILES`           | Disable use of index-cache.yaml                                    | `false`                              |
-| `env.open.DISABLE_METRICS`              | Disable Prometheus metrics                                         | `true`                               |
-| `env.open.DISABLE_API`                  | Disable all routes prefixed with /api                              | `true`                               |
-| `env.open.ALLOW_OVERWRITE`              | Allow chart versions to be re-uploaded                             | `false`                              |
-| `env.open.CHART_URL`                    | Absolute url for .tgzs in index.yaml                               | ``                                   |
-| `env.open.AUTH_ANONYMOUS_GET`           | Allow anon GET operations when auth is used                        | `false`                              |
-| `env.open.CONTEXT_PATH`                 | Set the base context path                                          | ``                                   |
-| `env.open.INDEX_LIMIT`                  | Parallel scan limit for the repo indexer                           | ``                                   |
-| `env.open.CACHE`                        | Cache store, can be one of: redis                                  | ``                                   |
-| `env.open.CACHE_REDIS_ADDR`             | Address of Redis service (host:port)                               | ``                                   |
-| `env.open.CACHE_REDIS_DB`               | Redis database to be selected after connect                        | `0`                                  |
-| `env.open.BEARER_AUTH`                  | Enable bearer auth                                                 | `false`                              |
-| `env.open.AUTH_REALM`                   | Realm used for bearer authentication                               | ``                                   |
-| `env.open.AUTH_SERVICE`                 | Service used for bearer authentication                             | ``                                   |
-| `env.field`                             | Expose pod information to containers through environment variables | ``                                   |
-| `env.existingSecret`                    | Name of the existing secret use values                             | ``                                   |
-| `env.existingSecret.BASIC_AUTH_USER`    | Key name in the secret for the Username                            | ``                                   |
-| `env.existingSecret.BASIC_AUTH_PASS`    | Key name in the secret for the Password                            | ``                                   |
-| `env.secret.BASIC_AUTH_USER`            | Username for basic HTTP authentication                             | ``                                   |
-| `env.secret.BASIC_AUTH_PASS`            | Password for basic HTTP authentication                             | ``                                   |
-| `env.secret.CACHE_REDIS_PASSWORD`       | Redis requirepass server configuration                             | ``                                   |
-| `gcp.secret.enabled`                    | Flag for the GCP service account                                   | `false`                              |
-| `gcp.secret.name`                       | Secret name for the GCP json file                                  | ``                                   |
-| `gcp.secret.key`                        | Secret key for te GCP json file                                    | `credentials.json`                   |
-| `oracle.secret.enabled`                 | Flag for Oracle OCI account                                        | `false`                              |
-| `oracle.secret.name`                    | Secret name for OCI config and key                                 | ``                                   |
-| `oracle.secret.config`                  | Secret key that holds the OCI config                               | `config`                             |
-| `oracle.secret.key_file`                | Secret key that holds the OCI private key                          | `key_file`                           |
-| `bearerAuth.secret.enabled`             | Flag for bearer auth public key secret                             | ``                                   |
-| `bearerAuth.secret.publicKey`           | The name of the secret with the public key                         | ``                                   |
-| `service.type`                          | Kubernetes Service type                                            | `ClusterIP`                          |
-| `service.clusterIP`                     | Static clusterIP or None for headless services                     | `nil`                                |
-| `service.externalTrafficPolicy`         | Source IP preservation (only for Service type NodePort)            | `Local`                              |
-| `service.servicename`                   | Custom name for service                                            | ``                                   |
-| `service.labels`                        | Additional labels for service                                      | `{}`                                 |
-| `deployment.labels`                     | Additional labels for deployment                                   | `{}`                                 |
-| `deployment.matchlabes`                 | Match labels for deployment selector                               | `{}`                                 |
-| `ingress.enabled`                       | Enable ingress controller resource                                 | `false`                              |
-| `ingress.annotations`                   | Ingress annotations                                                | `[]`                                 |
-| `ingress.labels`                        | Ingress labels                                                     | `[]`                                 |
-| `ingress.hosts[0].name`                 | Hostname for the ingress                                           | ``                                   |
-| `ingress.hosts[0].path`                 | Path within the url structure                                      | ``                                   |
-| `ingress.hosts[0].tls `                 | Enable TLS on the ingress host                                     | `false`                              |
-| `ingress.hosts[0].tlsSecret`            | TLS secret to use (must be manually created)                       | ``                                   |
-| `ingress.hosts[0].serviceName`          | The name of the service to route traffic to.                       | `{{ .Values.service.externalPort }}` |
-| `ingress.hosts[0].servicePort`          | The port of the service to route traffic to.                       | `{{ .chartmuseum. }}`                |
-| `ingress.extraPaths[0].path`            | Path within the url structure.                                     | ``                                   |
-| `ingress.extraPaths[0].service`         | The name of the service to route traffic to.                       | ``                                   |
-| `ingress.extraPaths[0].port`            | The port of the service to route traffic to.                       | ``                                   |
+| Parameter                               | Description                                                                 | Default                              |
+|-----------------------------------------|-----------------------------------------------------------------------------|--------------------------------------|
+| `image.pullPolicy`                      | Container pull policy                                                       | `IfNotPresent`                       |
+| `image.repository`                      | Container image to use                                                      | `chartmuseum/chartmuseum`            |
+| `image.tag`                             | Container image tag to deploy                                               | `v0.8.0`                             |
+| `persistence.accessMode`                | Access mode to use for PVC                                                  | `ReadWriteOnce`                      |
+| `persistence.enabled`                   | Whether to use a PVC for persistent storage                                 | `false`                              |
+| `persistence.size`                      | Amount of space to claim for PVC                                            | `8Gi`                                |
+| `persistence.labels`                    | Additional labels for PVC                                                   | `{}`                                 |
+| `persistence.storageClass`              | Storage Class to use for PVC                                                | `-`                                  |
+| `persistence.volumeName`                | Volume to use for PVC                                                       | ``                                   |
+| `persistence.pv.enabled`                | Whether to use a PV for persistent storage                                  | `false`                              |
+| `persistence.pv.capacity.storage`       | Storage size to use for PV                                                  | `8Gi`                                |
+| `persistence.pv.accessMode`             | Access mode to use for PV                                                   | `ReadWriteOnce`                      |
+| `persistence.pv.nfs.server`             | NFS server for PV                                                           | ``                                   |
+| `persistence.pv.nfs.path`               | Storage Path                                                                | ``                                   |
+| `persistence.pv.pvname`                 | Custom name for private volume                                              | ``                                   |
+| `replicaCount`                          | k8s replicas                                                                | `1`                                  |
+| `resources.limits.cpu`                  | Container maximum CPU                                                       | `100m`                               |
+| `resources.limits.memory`               | Container maximum memory                                                    | `128Mi`                              |
+| `resources.requests.cpu`                | Container requested CPU                                                     | `80m`                                |
+| `resources.requests.memory`             | Container requested memory                                                  | `64Mi`                               |
+| `serviceAccount.create`                 | If true, create the service account                                         | `false`                              |
+| `serviceAccount.name`                   | Name of the serviceAccount to create or use                                 | `{{ chartmuseum.fullname }}`         |
+| `serviceAccount.annotations`            | Additional Service Account annotations                                      | `{}`                                 |
+| `securityContext`                       | Map of securityContext for the pod                                          | `{ fsGroup: 1000 }`                  |
+| `nodeSelector`                          | Map of node labels for pod assignment                                       | `{}`                                 |
+| `tolerations`                           | List of node taints to tolerate                                             | `[]`                                 |
+| `affinity`                              | Map of node/pod affinities                                                  | `{}`                                 |
+| `env.open.STORAGE`                      | Storage Backend to use                                                      | `local`                              |
+| `env.open.STORAGE_ALIBABA_BUCKET`       | Bucket to store charts in for Alibaba                                       | ``                                   |
+| `env.open.STORAGE_ALIBABA_PREFIX`       | Prefix to store charts under for Alibaba                                    | ``                                   |
+| `env.open.STORAGE_ALIBABA_ENDPOINT`     | Alternative Alibaba endpoint                                                | ``                                   |
+| `env.open.STORAGE_ALIBABA_SSE`          | Server side encryption algorithm to use                                     | ``                                   |
+| `env.open.STORAGE_AMAZON_BUCKET`        | Bucket to store charts in for AWS                                           | ``                                   |
+| `env.open.STORAGE_AMAZON_ENDPOINT`      | Alternative AWS endpoint                                                    | ``                                   |
+| `env.open.STORAGE_AMAZON_PREFIX`        | Prefix to store charts under for AWS                                        | ``                                   |
+| `env.open.STORAGE_AMAZON_REGION`        | Region to use for bucket access for AWS                                     | ``                                   |
+| `env.open.STORAGE_AMAZON_SSE`           | Server side encryption algorithm to use                                     | ``                                   |
+| `env.open.STORAGE_GOOGLE_BUCKET`        | Bucket to store charts in for GCP                                           | ``                                   |
+| `env.open.STORAGE_GOOGLE_PREFIX`        | Prefix to store charts under for GCP                                        | ``                                   |
+| `env.open.STORAGE_MICROSOFT_CONTAINER`  | Container to store charts under for MS                                      | ``                                   |
+| `env.open.STORAGE_MICROSOFT_PREFIX`     | Prefix to store charts under for MS                                         | ``                                   |
+| `env.open.STORAGE_OPENSTACK_CONTAINER`  | Container to store charts for openstack                                     | ``                                   |
+| `env.open.STORAGE_OPENSTACK_PREFIX`     | Prefix to store charts for openstack                                        | ``                                   |
+| `env.open.STORAGE_OPENSTACK_REGION`     | Region of openstack container                                               | ``                                   |
+| `env.open.STORAGE_OPENSTACK_CACERT`     | Path to a CA cert bundle for openstack                                      | ``                                   |
+| `env.open.STORAGE_ORACLE_COMPARTMENTID` | Compartment ID for Oracle Object Store                                      | ``                                   |
+| `env.open.STORAGE_ORACLE_BUCKET`        | Bucket to store charts in Oracle Object Store                               | ``                                   |
+| `env.open.STORAGE_ORACLE_PREFIX`        | Prefix to store charts for Oracle object Store                              | ``                                   |
+| `env.open.CHART_POST_FORM_FIELD_NAME`   | Form field to query for chart file content                                  | ``                                   |
+| `env.open.PROV_POST_FORM_FIELD_NAME`    | Form field to query for chart provenance                                    | ``                                   |
+| `env.open.DEPTH`                        | levels of nested repos for multitenancy.                                    | `0`                                  |
+| `env.open.DEBUG`                        | Show debug messages                                                         | `false`                              |
+| `env.open.LOG_JSON`                     | Output structured logs in JSON                                              | `true`                               |
+| `env.open.DISABLE_STATEFILES`           | Disable use of index-cache.yaml                                             | `false`                              |
+| `env.open.DISABLE_METRICS`              | Disable Prometheus metrics                                                  | `true`                               |
+| `env.open.DISABLE_API`                  | Disable all routes prefixed with /api                                       | `true`                               |
+| `env.open.ALLOW_OVERWRITE`              | Allow chart versions to be re-uploaded                                      | `false`                              |
+| `env.open.CHART_URL`                    | Absolute url for .tgzs in index.yaml                                        | ``                                   |
+| `env.open.AUTH_ANONYMOUS_GET`           | Allow anon GET operations when auth is used                                 | `false`                              |
+| `env.open.CONTEXT_PATH`                 | Set the base context path                                                   | ``                                   |
+| `env.open.INDEX_LIMIT`                  | Parallel scan limit for the repo indexer                                    | ``                                   |
+| `env.open.CACHE`                        | Cache store, can be one of: redis                                           | ``                                   |
+| `env.open.CACHE_REDIS_ADDR`             | Address of Redis service (host:port)                                        | ``                                   |
+| `env.open.CACHE_REDIS_DB`               | Redis database to be selected after connect                                 | `0`                                  |
+| `env.open.BEARER_AUTH`                  | Enable bearer auth                                                          | `false`                              |
+| `env.open.AUTH_REALM`                   | Realm used for bearer authentication                                        | ``                                   |
+| `env.open.AUTH_SERVICE`                 | Service used for bearer authentication                                      | ``                                   |
+| `env.field`                             | Expose pod information to containers through environment variables          | ``                                   |
+| `env.existingSecret`                    | Name of the existing secret use values                                      | ``                                   |
+| `env.existingSecret.BASIC_AUTH_USER`    | Key name in the secret for the Username                                     | ``                                   |
+| `env.existingSecret.BASIC_AUTH_PASS`    | Key name in the secret for the Password                                     | ``                                   |
+| `env.secret.BASIC_AUTH_USER`            | Username for basic HTTP authentication                                      | ``                                   |
+| `env.secret.BASIC_AUTH_PASS`            | Password for basic HTTP authentication                                      | ``                                   |
+| `env.secret.CACHE_REDIS_PASSWORD`       | Redis requirepass server configuration                                      | ``                                   |
+| `gcp.secret.enabled`                    | Flag for the GCP service account                                            | `false`                              |
+| `gcp.secret.name`                       | Secret name for the GCP json file                                           | ``                                   |
+| `gcp.secret.key`                        | Secret key for te GCP json file                                             | `credentials.json`                   |
+| `oracle.secret.enabled`                 | Flag for Oracle OCI account                                                 | `false`                              |
+| `oracle.secret.name`                    | Secret name for OCI config and key                                          | ``                                   |
+| `oracle.secret.config`                  | Secret key that holds the OCI config                                        | `config`                             |
+| `oracle.secret.key_file`                | Secret key that holds the OCI private key                                   | `key_file`                           |
+| `bearerAuth.secret.enabled`             | Flag for bearer auth public key secret                                      | ``                                   |
+| `bearerAuth.secret.publicKey`           | The name of the secret with the public key                                  | ``                                   |
+| `service.type`                          | Kubernetes Service type                                                     | `ClusterIP`                          |
+| `service.clusterIP`                     | Static clusterIP or None for headless services                              | `nil`                                |
+| `service.externalTrafficPolicy`         | Source IP preservation (only for Service type NodePort and LoadBalancer)    | `Local`                              |
+| `service.loadBalancerSourceRanges`      | Restricts access for LoadBalancer (only for Service type LoadBalancer)      | `[]`                                 |
+| `service.servicename`                   | Custom name for service                                                     | ``                                   |
+| `service.labels`                        | Additional labels for service                                               | `{}`                                 |
+| `deployment.labels`                     | Additional labels for deployment                                            | `{}`                                 |
+| `deployment.matchlabes`                 | Match labels for deployment selector                                        | `{}`                                 |
+| `ingress.enabled`                       | Enable ingress controller resource                                          | `false`                              |
+| `ingress.annotations`                   | Ingress annotations                                                         | `[]`                                 |
+| `ingress.labels`                        | Ingress labels                                                              | `[]`                                 |
+| `ingress.hosts[0].name`                 | Hostname for the ingress                                                    | ``                                   |
+| `ingress.hosts[0].path`                 | Path within the url structure                                               | ``                                   |
+| `ingress.hosts[0].tls `                 | Enable TLS on the ingress host                                              | `false`                              |
+| `ingress.hosts[0].tlsSecret`            | TLS secret to use (must be manually created)                                | ``                                   |
+| `ingress.hosts[0].serviceName`          | The name of the service to route traffic to.                                | `{{ .Values.service.externalPort }}` |
+| `ingress.hosts[0].servicePort`          | The port of the service to route traffic to.                                | `{{ .chartmuseum. }}`                |
+| `ingress.extraPaths[0].path`            | Path within the url structure.                                              | ``                                   |
+| `ingress.extraPaths[0].service`         | The name of the service to route traffic to.                                | ``                                   |
+| `ingress.extraPaths[0].port`            | The port of the service to route traffic to.                                | ``                                   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.
@@ -274,6 +276,31 @@ env:
 replica:
   annotations:
     iam.amazonaws.com/role: "{assumed role name}"
+```
+
+Run command to install
+
+```shell
+helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
+```
+
+#### permissions grant with IAM Roles for Service Accounts
+
+For Amazon EKS clusters, access can be provided with a service account using [IAM Roles for Service Accounts](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html).
+
+Specify `custom.yaml` with such values
+
+```yaml
+env:
+  open:
+    STORAGE: amazon
+    STORAGE_AMAZON_BUCKET: my-s3-bucket
+    STORAGE_AMAZON_PREFIX:
+    STORAGE_AMAZON_REGION: us-east-1
+serviceAccount:
+  create: true
+  annotations:
+    eks.amazonaws.com/role-arn: "arn:aws:iam::{aws account ID}:role/{assumed role name}"
 ```
 
 Run command to install
@@ -592,9 +619,9 @@ env:
 
 Or by using values from an existing secret in the cluster that can be created using:
 
-'''shell
+```shell
 kubectl create secret generic chartmuseum-secret --from-literal="basic-auth-user=curator" --from-literal="basic-auth-pass=mypassword"
-'''
+```
 
 This secret can be used in the values file as follows:
 

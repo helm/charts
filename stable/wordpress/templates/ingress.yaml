@@ -1,5 +1,5 @@
 {{- if .Values.ingress.enabled }}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "wordpress.ingress.apiVersion" . }}
 kind: Ingress
 metadata:
   name: {{ template "wordpress.fullname" . }}
@@ -17,6 +17,15 @@ metadata:
     {{- end }}
 spec:
   rules:
+  {{- if .Values.ingress.hostname }}
+  - host: {{ .Values.ingress.hostname }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: "{{ template "wordpress.fullname" $ }}"
+          servicePort: http
+  {{- end }}
   {{- range .Values.ingress.hosts }}
   - host: {{ .name }}
     http:

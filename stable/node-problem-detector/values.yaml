@@ -61,7 +61,9 @@ resources: {}
 
 annotations: {}
 
-tolerations: []
+tolerations:
+  - effect: NoSchedule
+    operator: Exists
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created

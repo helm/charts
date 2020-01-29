@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 image:
   repository: prom/pushgateway
-  tag: v0.9.1
+  tag: v1.0.1
   pullPolicy: IfNotPresent
 
 service:
@@ -23,11 +23,19 @@ serviceLabels: {}
 # Optional serviceAccount labels
 serviceAccountLabels: {}
 
-# Optional additional arguments
-extraArgs: []
+# Optional persistentVolume labels
+persistentVolumeLabels: {}
 
 # Optional additional environment variables
 extraVars: []
+
+## Additional pushgateway container arguments
+##
+## example:
+## extraArgs:
+##  - --persistence.file=/data/pushgateway.data
+##  - --persistence.interval=5m
+extraArgs: []
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -88,6 +96,13 @@ nodeSelector: {}
 
 replicaCount: 1
 
+## Security context to be added to push-gateway pods
+##
+securityContext:
+  fsGroup: 65534
+  runAsUser: 65534
+  runAsNonRoot: true
+
 ## Affinity for pod assignment
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}
@@ -96,17 +111,79 @@ affinity: {}
 serviceMonitor:
   enabled: false
   namespace: monitoring
-  # fallback to the prometheus default unless specified
+
+  # Fallback to the prometheus default unless specified
   # interval: 10s
-  ## Defaults to what's used if you follow CoreOS [Prometheus Install Instructions](https://github.com/helm/charts/tree/master/stable/prometheus-operator#tldr)
-  ## [Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#prometheus-operator-1)
-  ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
-  selector:
-    prometheus: kube-prometheus
+
+  # Fallback to the prometheus default unless specified
+  # scrapeTimeout: 30s
+
+  ## Used to pass Labels that are used by the Prometheus installed in your cluster to select Service Monitors to work with
+  ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
+  additionalLabels: {}
+
   # Retain the job and instance labels of the metrics pushed to the Pushgateway
   # [Scraping Pushgateway](https://github.com/prometheus/pushgateway#configure-the-pushgateway-as-a-target-to-scrape)
   honorLabels: true
 
 # The values to set in the PodDisruptionBudget spec (minAvailable/maxUnavailable)
 # If not set then a PodDisruptionBudget will not be created
-podDisruptionBudget:
+podDisruptionBudget: {}
+
+persistentVolume:
+  ## If true, pushgateway will create/use a Persistent Volume Claim
+  ## If false, use emptyDir
+  ##
+  enabled: false
+
+  ## pushgateway data Persistent Volume access modes
+  ## Must match those of existing PV or dynamic provisioner
+  ## Ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+  ##
+  accessModes:
+    - ReadWriteOnce
+
+  ## pushgateway data Persistent Volume Claim annotations
+  ##
+  annotations: {}
+
+  ## pushgateway data Persistent Volume existing claim name
+  ## Requires pushgateway.persistentVolume.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  existingClaim: ""
+
+  ## pushgateway data Persistent Volume mount root path
+  ##
+  mountPath: /data
+
+  ## pushgateway data Persistent Volume size
+  ##
+  size: 2Gi
+
+  ## pushgateway data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+
+  ## Subdirectory of pushgateway data Persistent Volume to mount
+  ## Useful if the volume's root directory is not empty
+  ##
+  subPath: ""
+
+# Configuration for clusters with restrictive network policies in place:
+# - allowAll allows access to the PushGateway from any namespace
+# - customSelector is a list of pod/namespaceSelectors to allow access from
+# These options are mutually exclusive and the latter will take precedence.
+networkPolicy: {}
+  # allowAll: true
+  # customSelectors:
+  #   - namespaceSelector:
+  #       matchLabels:
+  #         type: admin
+  #   - podSelector:
+  #       matchLabels:
+  #         app: myapp

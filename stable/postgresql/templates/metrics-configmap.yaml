@@ -1,0 +1,13 @@
+{{- if and .Values.metrics.enabled .Values.metrics.customMetrics }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "postgresql.metricsCM" . }}
+  labels:
+    app: {{ template "postgresql.name" . }}
+    chart: {{ template "postgresql.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+data:
+  custom-metrics.yaml: {{ toYaml .Values.metrics.customMetrics | quote }}
+{{- end }}

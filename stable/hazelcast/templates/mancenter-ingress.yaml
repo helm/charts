@@ -32,13 +32,13 @@ spec:
         paths:
           - backend:
               serviceName: {{ $serviceName }}
-              servicePort: mancenterport
+              servicePort: http
   {{- end }}
   {{- else }}
   - http:
       paths:
       - backend:
           serviceName: {{ $serviceName }}
-          servicePort: mancenterport
+          servicePort: http
   {{- end }}
 {{- end }}

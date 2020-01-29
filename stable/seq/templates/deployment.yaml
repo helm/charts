@@ -1,4 +1,4 @@
-apiVersion: apps/v1
+apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "seq.fullname" . }}

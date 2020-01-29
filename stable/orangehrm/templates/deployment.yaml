@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "orangehrm.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "orangehrm.fullname" . }}

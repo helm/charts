@@ -1,6 +1,6 @@
 {{- if .Values.agent.key -}}
 {{- if or .Values.zone.name .Values.cluster.name -}}
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ template "instana-agent.fullname" . }}
@@ -19,7 +19,7 @@ spec:
         {{- toYaml .Values.agent.pod.annotations | nindent 8 }}
       {{- end }}
     spec:
-      serviceAccount: {{ template "instana-agent.serviceAccountName" . }}
+      serviceAccountName: {{ template "instana-agent.serviceAccountName" . }}
       hostIPC: true
       hostNetwork: true
       hostPID: true
@@ -92,6 +92,10 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
           securityContext:
             privileged: true
           volumeMounts:
@@ -105,11 +109,17 @@ spec:
               mountPath: /sys
             - name: var-log
               mountPath: /var/log
+            - name: var-lib
+              mountPath: /var/lib/containers/storage
             - name: machine-id
               mountPath: /etc/machine-id
             - name: configuration
               subPath: configuration.yaml
               mountPath: /root/configuration.yaml
+            {{- if .Values.agent.host.repository }}
+            - name: repo
+              mountPath: /opt/instana/agent/data/repo
+            {{- end }}
           livenessProbe:
             httpGet:
               path: /status
@@ -169,11 +179,19 @@ spec:
         - name: var-log
           hostPath:
             path: /var/log
+        - name: var-lib
+          hostPath:
+            path: /var/lib/containers/storage
         - name: machine-id
           hostPath:
             path: /etc/machine-id
         - name: configuration
           configMap:
             name: {{ template "instana-agent.fullname" . }}
+        {{- if .Values.agent.host.repository }}
+        - name: repo
+          hostPath:
+            path: {{ .Values.agent.host.repository }}
+        {{- end }}
 {{- end -}}
 {{- end -}}

@@ -24,16 +24,17 @@ The following table lists the configurable parameters of the Spark operator char
 | Parameter                 | Description                                                  | Default                                |
 | ------------------------- | ------------------------------------------------------------ | -------------------------------------- |
 | `operatorImageName`       | The name of the operator image                               | `gcr.io/spark-operator/spark-operator` |
-| `operatorVersion`         | The version of the operator to install                       | `v1beta2-1.0.0-2.4.4`                |
+| `operatorVersion`         | The version of the operator to install                       | `v1beta2-1.0.1-2.4.4`                  |
 | `imagePullPolicy`         | Docker image pull policy                                     | `IfNotPresent`                         |
-| `replicas`         | The number of replicas of the operator Deployment                                     | 1                         |
+| `imagePullSecrets`        | Docker image pull secrets                                    |                                        |
+| `replicas`                | The number of replicas of the operator Deployment            | 1                                      |
 | `sparkJobNamespace`       | K8s namespace where Spark jobs are to be deployed            | ``                                     |
 | `enableWebhook`           | Whether to enable mutating admission webhook                 | false                                  |
-| `enableMetrics`           | Whether to expose metrics to be scraped by Premetheus        | true                                   |
+| `enableMetrics`           | Whether to expose metrics to be scraped by Prometheus        | true                                   |
 | `controllerThreads`       | Number of worker threads used by the SparkApplication controller | 10                                 |
 | `ingressUrlFormat`        | Ingress URL format                                           | ""                                     |
 | `logLevel`                | Logging verbosity level                                      | 2                                      |
-| `installCrds`             | Whether to install CRDs                                      | true                                   |
+| `installCrds`             | Whether the release should install CRDs.                     | true                                   |
 | `metricsPort`             | Port for the metrics endpoint                                | 10254                                  |
 | `metricsEndpoint`         | Metrics endpoint                                             | "/metrics"                             |
 | `metricsPrefix`           | Prefix for the metrics                                       | ""                                     |
@@ -44,5 +45,22 @@ The following table lists the configurable parameters of the Spark operator char
 | `enableBatchScheduler`    | Whether to enable batch scheduler for pod scheduling         | false                                  |
 | `enableResourceQuotaEnforcement`    | Whether to enable the ResourceQuota enforcement for SparkApplication resources. Requires the webhook to be enabled by setting enableWebhook to true.         | false                                  |
 | `enableLeaderElection`    | Whether to enable leader election when the operator Deployment has more than one replica, i.e., when `replicas` is greater than 1.         | false                                  |
+| `securityContext`         | Defines security context for operator container               | `{}`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
+
+#### Upgrading
+
+##### To 0.6.2
+
+###### Breaking changes
+
+- `cleanupCrdsBeforeInstall` has been removed for Helm 3 compatibility. If you wish to replicate this behavior before upgrading, do so manually (`kubectl delete CustomResourceDefinition sparkapplications.sparkoperator.k8s.io scheduledsparkapplications.sparkoperator.k8s.io`)
+
+###### Non-breaking changes
+
+- `app.kubernetes.io/name=sparkoperator` label is added to CRDs if installed at this version, for easier manual cleanup after chart deletion (`kubectl delete CustomResourceDefinition -l app.kubernetes.io/name=sparkoperator`)
+
+#### Contributing
+
+When making changes to values.yaml, update the files in `ci/` by running `hack/update-ci.sh`.

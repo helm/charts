@@ -51,8 +51,20 @@ serviceMonitor:
   # labels:
   # Set timeout for scrape
   # timeout: 10s
+  # Set of labels to transfer on the Kubernetes Service onto the target.
+  # targetLabels: []
 
 # Used to mount a LUA-Script via config map and use it for metrics-collection
 # script:
 #   configmap: prometheus-redis-exporter-script
 #   keyname: script
+
+auth:
+  # Use password authentication
+  enabled: false
+  # Use existing secret (ignores redisPassword)
+  secret:
+    name: ""
+    key: ""
+  # Redis password (when not stored in a secret)
+  redisPassword: ""

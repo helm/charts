@@ -9,6 +9,10 @@ spec:
   selector:
     matchLabels:
       app: {{ template "opa.fullname" . }}
+  {{- with .Values.deploymentStrategy }}
+  strategy:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
   template:
     metadata:
 {{- if or .Values.generateAdmissionControllerCerts .Values.opa }}
@@ -92,9 +96,9 @@ spec:
             - "--ignore=.*"
 {{- end }}
 {{- if .Values.prometheus.enabled }}
-            - "--insecure-addr=0.0.0.0:8181"
+            - "--addr=http://0.0.0.0:8181"
 {{- else if .Values.mgmt.enabled }}
-            - "--insecure-addr=127.0.0.1:8181"
+            - "--addr=http://127.0.0.1:8181"
 {{- end }}
 {{- if or .Values.authz.enabled .Values.bootstrapPolicies }}
             - "/bootstrap"
@@ -129,6 +133,7 @@ spec:
 {{- end }}
             - --opa-url=http://127.0.0.1:8181/v1
             - --replicate-path={{ .Values.mgmt.replicate.path }}
+            - --enable-data={{ .Values.mgmt.data.enabled }}
             - --enable-policies={{ .Values.mgmt.configmapPolicies.enabled }}
 {{- if .Values.mgmt.configmapPolicies.enabled }}
             - --policies={{ .Values.mgmt.configmapPolicies.namespaces | join "," }}
@@ -139,6 +144,9 @@ spec:
 {{- end }}
 {{- range .Values.mgmt.replicate.cluster }}
             - --replicate-cluster={{ . }}
+{{- end }}
+{{- range .Values.mgmt.extraArgs }}
+            - {{ . }}
 {{- end }}
 {{- if or .Values.authz.enabled .Values.bootstrapPolicies }}
           volumeMounts:
@@ -158,6 +166,14 @@ spec:
             - proxy
             - --accept-paths=^/apis/authorization.k8s.io/v1/subjectaccessreviews$
 {{- end }}
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        {{- range $key, $val := .Values.securityContext }}
+        {{- if ne $key "enabled" }}
+        {{ $key }}: {{ toYaml $val | nindent 10 }}
+        {{- end }}
+        {{- end }}
+      {{- end }}
       serviceAccountName: {{ template "opa.serviceAccountName" .}}
       volumes:
         - name: certs
