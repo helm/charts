@@ -18,9 +18,26 @@ spec:
   {{- if .Values.tls.certs.provided }}
   volumes:
     - name: client-certs
+      {{- if .Values.tls.certs.tlsSecret }}
+      projected:
+        sources:
+        - secret:
+            name: {{ .Values.tls.certs.clientRootSecret }}
+            items:
+            - key: ca.crt
+              path: ca.crt
+              mode: 0400
+            - key: tls.crt
+              path: client.root.crt
+              mode: 0400
+            - key: tls.key
+              path: client.root.key
+              mode: 0400
+      {{- else }}
       secret:
         secretName: {{ .Values.tls.certs.clientRootSecret }}
-        defaultMode: 256
+        defaultMode: 0400
+      {{- end }}
   {{- end }}
   containers:
     - name: client-test
@@ -46,4 +63,3 @@ spec:
         - {{ .Values.service.ports.grpc.external.port | quote }}
         - -e
         - SHOW DATABASES;
-

@@ -41,7 +41,7 @@ spec:
       annotations: {{- toYaml . | nindent 8 }}
     {{- end }}
     spec:
-    {{- if or .Values.image.credentials (and .Values.tls.enabled .Values.tls.init.image.credentials) }}
+    {{- if or .Values.image.credentials (and .Values.tls.enabled .Values.tls.init.image.credentials (not .Values.tls.certs.provided)) }}
       imagePullSecrets:
       {{- if .Values.image.credentials }}
         - name: {{ template "cockroachdb.fullname" . }}.db.registry
@@ -270,13 +270,30 @@ spec:
         {{- end }}
       {{- if .Values.tls.enabled }}
         - name: certs
-        {{- if .Values.tls.certs.provided }}
+          {{- if .Values.tls.certs.provided }}
+          {{- if .Values.tls.certs.tlsSecret }}
+          projected:
+            sources:
+            - secret:
+                name: {{ .Values.tls.certs.nodeSecret }}
+                items:
+                - key: ca.crt
+                  path: ca.crt
+                  mode: 0400
+                - key: tls.crt
+                  path: node.crt
+                  mode: 0400
+                - key: tls.key
+                  path: node.key
+                  mode: 0400
+          {{- else }}
           secret:
             secretName: {{ .Values.tls.certs.nodeSecret }}
-            defaultMode: 256
-        {{- else }}
+            defaultMode: 0400
+          {{- end }}
+          {{- else }}
           emptyDir: {}
-        {{- end }}
+          {{- end }}
       {{- end }}
       {{- range .Values.statefulset.secretMounts }}
         - name: {{ printf "secret-%s" . | quote }}
