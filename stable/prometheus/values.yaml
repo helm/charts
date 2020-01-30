@@ -1496,7 +1496,7 @@ serverFiles:
             action: replace
             target_label: kubernetes_pod_name
 
-      # Example Scrape config for pods which should be scraped slower. An useful example 
+      # Example Scrape config for pods which should be scraped slower. An useful example
       # would be stackriver-exporter which querys an API on every scrape of the pod
       #
       # The relabeling allows the actual pod scrape endpoint to be configured via the
