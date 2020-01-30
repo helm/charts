@@ -7,6 +7,26 @@ Expand the name of the chart.
 {{- end -}}
 
 {{/*
+Conditionally return the namespace metadata declaration
+*/}}
+{{- define "mongodb.namespace" -}}
+{{- if .Values.namespaceOverride }}
+namespace: {{ .Values.namespaceOverride }}
+{{- end }}
+{{- end -}}
+
+{{/*
+Return the namespace into which the mongo resources were deployed
+*/}}
+{{- define "mongodb.namespaceValue" -}}
+    {{- if .Values.namespaceOverride -}}
+        {{ .Values.namespaceOverride }}
+    {{- else -}}
+        {{ .Release.Namespace }}
+    {{- end -}}
+{{- end -}}
+
+{{/*
 Renders a value that contains template.
 Usage:
 {{ include "mongodb.tplValue" ( dict "value" .Values.path.to.the.Value "context" $) }}

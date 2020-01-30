@@ -5,6 +5,8 @@ metadata:
   name: {{ template "mongodb.fullname" . }}
   {{- if .Values.metrics.serviceMonitor.namespace }}
   namespace: {{ .Values.metrics.serviceMonitor.namespace }}
+  {{- else -}}
+  {{ include "mongodb.namespace" . | indent 2 }}
   {{- end }}
   labels:
     app: {{ template "mongodb.name" . }}
@@ -25,11 +27,11 @@ spec:
   jobLabel: {{ template "mongodb.fullname" . }}
   namespaceSelector:
     matchNames:
-    - "{{ $.Release.Namespace }}"
+    - "{{ template "mongodb.namespaceValue" . }}"
   selector:
     matchLabels:
       app: {{ template "mongodb.name" . }}
       chart: {{ template "mongodb.chart" . }}
       release: "{{ .Release.Name }}"
       heritage: "{{ .Release.Service }}"
-{{- end }}      
+{{- end }}

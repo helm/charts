@@ -35,6 +35,10 @@ image:
   ## ref:  https://github.com/bitnami/minideb-extras-base
   debug: false
 
+## String to override the release namespace for all resources (unless those specifically overridden, e.g. The prometheus service monitor)
+##
+# namespaceOverride:
+
 ## String to partially override mongodb.fullname template (will maintain the release name)
 ##
 # nameOverride:

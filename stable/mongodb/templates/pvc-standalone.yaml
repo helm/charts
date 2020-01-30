@@ -8,6 +8,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "mongodb.fullname" . }}
+  {{ include "mongodb.namespace" . | indent 2 }}
 spec:
   accessModes:
   {{- range .Values.persistence.accessModes }}
