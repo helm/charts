@@ -559,7 +559,7 @@ daemonset:
 
     agent:
       ## @param env - list - required
-      ## Additionnal environment variables for the agent container.
+      ## Additional environment variables for the agent container.
       #
       # env:
 
@@ -583,7 +583,7 @@ daemonset:
 
     processAgent:
       ## @param env - list - required
-      ## Additionnal environment variables for the process-agent container.
+      ## Additional environment variables for the process-agent container.
       #
       # env:
 
@@ -607,7 +607,7 @@ daemonset:
 
     traceAgent:
       ## @param env - list - required
-      ## Additionnal environment variables for the trace-agent container.
+      ## Additional environment variables for the trace-agent container.
       #
       # env:
 
@@ -631,7 +631,7 @@ daemonset:
 
     systemProbe:
       ## @param env - list - required
-      ## Additionnal environment variables for the system-probe container.
+      ## Additional environment variables for the system-probe container.
       #
       # env:
 
