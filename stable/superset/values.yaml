@@ -8,14 +8,12 @@ replicaCount: 1
 ## Set default image, imageTag, and imagePullPolicy.
 image:
   repository: "amancevice/superset"
-  tag: "0.35.1"
+  tag: "0.35.2"
   pullPolicy: "IfNotPresent"
   pullSecrets: []
 
 initFile: |-
-  /usr/local/bin/superset-init --username admin --firstname admin --lastname user --email admin@fab.org --password admin
-  superset run
-
+  /usr/local/bin/superset-init --username admin --firstname admin --lastname user --email admin@fab.org --password admin	  /usr/local/bin/superset-init --username admin --firstname admin --lastname user --email admin@fab.org --password admin 
 configFile: |-
   #---------------------------------------------------------
   # Superset specific config
