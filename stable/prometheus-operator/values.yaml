@@ -981,7 +981,7 @@ prometheusOperator:
     enabled: true
     image:
       repository: squareup/ghostunnel
-      tag: v1.4.1
+      tag: v1.5.2
       pullPolicy: IfNotPresent
     resources: {}
 
