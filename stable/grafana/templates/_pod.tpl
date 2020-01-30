@@ -161,7 +161,7 @@ containers:
 {{- end }}
 {{- end -}}
 {{- if .Values.dashboardsConfigMaps }}
-{{- range keys .Values.dashboardsConfigMaps }}
+{{- range (keys .Values.dashboardsConfigMaps | sortAlpha) }}
       - name: dashboards-{{ . }}
         mountPath: "/var/lib/grafana/dashboards/{{ . }}"
 {{- end }}
@@ -300,7 +300,7 @@ volumes:
       name: {{ .configMap }}
 {{- end }}
   {{- if .Values.dashboards }}
-    {{- range keys .Values.dashboards }}
+    {{- range (keys .Values.dashboards | sortAlpha) }}
   - name: dashboards-{{ . }}
     configMap:
       name: {{ template "grafana.fullname" $ }}-dashboards-{{ . }}
