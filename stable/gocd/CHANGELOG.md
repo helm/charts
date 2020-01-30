@@ -1,3 +1,5 @@
+### 1.22.0
+* [bcd9825](https://github.com/kubernetes/charts/commit/bcd9825): Bump up GoCD Version to 20.1.0
 ### 1.21.0
 * [e4ffdda](https://github.com/kubernetes/charts/commit/e4ffdda): Bump up GoCD Version to 19.12.0
 ### 1.20.1
