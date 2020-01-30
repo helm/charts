@@ -59,13 +59,14 @@ ingress:
   enabled: false
   labels: {}
   # Use the following paths for GCE/ALB ingress controller
+  # feedsPath: /v1/feeds/*
   # apiPath: /v1/*
   # uiPath: /*
-  # feedsPath: /feeds/*
+  # Exposing the feeds API w/ ingress is for special cases only, uncomment feedsPath if external access to the feeds API is needed
+  # feedsPath: /v1/feeds/
   apiPath: /v1/
   uiPath: /
   # uncomment `feedsPath` to add an ingress endpoint for the feeds api
-  # feedsPath: /feeds/
 
   # Uncomment the following lines to bind on specific hostnames
   # apiHosts:
