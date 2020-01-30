@@ -23,6 +23,7 @@ spec:
         {{- if .Values.alertmanager.alertmanagerSpec.routePrefix }}
         pathPrefix: "{{ .Values.alertmanager.alertmanagerSpec.routePrefix }}"
         {{- end }}
+        apiVersion: {{ .Values.alertmanager.apiVersion }}
 {{- else }}
       []
 {{- end }}
