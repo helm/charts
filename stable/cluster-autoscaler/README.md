@@ -192,6 +192,7 @@ Parameter | Description | Default
 `serviceMonitor.enabled` | if `true`, creates a Prometheus Operator ServiceMonitor | `false`
 `serviceMonitor.interval` | Interval that Prometheus scrapes Cluster Autoscaler metrics | `10s`
 `serviceMonitor.namespace` | Namespace which Prometheus is running in | `monitoring`
+`serviceMonitor.path` | The path to scrape for metrics | `/metrics`
 `serviceMonitor.selector` | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install | `{ prometheus: kube-prometheus }`
 `azureClientID` | Service Principal ClientID with contributor permission to Cluster and Node ResourceGroup | none
 `azureClientSecret` | Service Principal ClientSecret with contributor permission to Cluster and Node ResourceGroup | none
