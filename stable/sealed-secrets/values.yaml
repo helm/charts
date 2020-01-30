@@ -3,6 +3,9 @@ image:
   tag: v0.9.6
   pullPolicy: IfNotPresent
 
+commandArgs: {}
+  # - --accept-deprecated-v1-data
+
 resources: {}
 nodeSelector: {}
 tolerations: []
