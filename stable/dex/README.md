@@ -87,6 +87,7 @@ Parameters introduced starting from v2
 | `crd.present` | Whether dex's CRDs are already present (if not cluster role and cluster role binding will be created to enable dex to create them). Depends on `rbac.create` | `false` |
 | `grpc` | Enable dex grpc endpoint | `true` |
 | `https` | Enable TLS termination for the dex http endpoint | `false` |
+| `podLabels` | Custom pod labels | `{}` |
 | `ports.grpc.containerPort` | grpc port listened by the dex | `5000` |
 | `ports.grpc.nodePort` | K8S Service node port for the dex grpc listener | `35000` |
 | `ports.grpc.servicePort` | K8S Service port for the dex grpc listener | `35000` |
