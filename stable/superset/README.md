@@ -42,7 +42,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | Parameter                  | Description                                     | Default                                                      |
 | -------------------------- | ----------------------------------------------- | ------------------------------------------------------------ |
 | `image.repository`         | `superset` image repository                     | `amancevice/superset`                                        |
-| `image.tag`                | `superset` image tag                            | `0.28.1`                                                     |
+| `image.tag`                | `superset` image tag                            | `0.35.2`                                                     |
 | `image.pullPolicy`         | Image pull policy                               | `IfNotPresent`                                               |
 | `image.pullSecrets`        | Secrets for private registry                    | `[]`                                                         |
 | `configFile`               | Content of [`superset_config.py`](https://superset.incubator.apache.org/installation.html) | See values.yaml](./values.yaml) |
