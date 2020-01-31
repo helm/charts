@@ -186,7 +186,7 @@ readinessProbe:
   httpGet:
     path: /health
     port: http
-  initialDelaySeconds: 60
+  initialDelaySeconds: 30
   timeoutSeconds: 5
   periodSeconds: 10
   failureThreshold: 2
