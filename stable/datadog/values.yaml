@@ -653,6 +653,20 @@ daemonset:
       #    cpu: 100m
       #    memory: 200Mi
 
+    initContainers:
+      ## @param resources - object - required
+      ## Resource requests and limits for the init containers.
+      #
+      resources: {}
+      #  requests:
+      #    cpu: 100m
+      #    memory: 200Mi
+      #  limits:
+      #    cpu: 100m
+      #    memory: 200Mi
+
+
+
   ## @param useHostNetwork - boolean - optional
   ## Bind ports on the hostNetwork. Useful for CNI networking where hostPort might
   ## not be supported. The ports need to be available on all hosts. It Can be
