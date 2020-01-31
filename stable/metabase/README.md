@@ -46,6 +46,7 @@ The following table lists the configurable parameters of the Metabase chart and 
 | -------------------------------  | ----------------------------------------------------------- | ----------------- |
 | replicaCount                     | desired number of controller pods                           | 1                 |
 | podAnnotations                   | controller pods annotations                                 | {}                |
+| podLabels                        | extra pods labels                                           | {}                |
 | image.repository                 | controller container image repository                       | metabase/metabase |
 | image.tag                        | controller container image tag                              | v0.34.0           |
 | image.pullPolicy                 | controller container image pull policy                      | IfNotPresent      |
@@ -63,6 +64,10 @@ The following table lists the configurable parameters of the Metabase chart and 
 | database.dbname                  | Database name                                               | null              |
 | database.username                | Database username                                           | null              |
 | database.password                | Database password                                           | null              |
+| database.existingSecret          | Exising secret for database credentials                     | null              |
+| database.existingSecretUsernameKey | Username key for exising secret                           | null              |
+| database.existingSecretPasswordKey | Password key for exising secret                           | null              |
+| database.existingSecretConnectionURIKey | ConnectionURI key for exising secret                 | null              |
 | password.complexity              | Complexity requirement for Metabase account's password      | normal            |
 | password.length                  | Minimum length required for Metabase account's password     | 6                 |
 | timeZone                         | Service time zone                                           | UTC               |

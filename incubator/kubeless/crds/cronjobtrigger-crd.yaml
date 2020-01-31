@@ -1,10 +1,12 @@
 apiVersion: apiextensions.k8s.io/v1beta1
-description: CRD object for Cron trigger type
 kind: CustomResourceDefinition
 metadata:
   name: cronjobtriggers.kubeless.io
   labels:
-{{ include "labels.standard" . | indent 4 }}
+    app: kubeless
+  annotations:
+    helm.sh/hook: crd-install
+    helm.sh/hook-delete-policy: before-hook-creation
 spec:
   group: kubeless.io
   names:

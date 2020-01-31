@@ -184,14 +184,14 @@ postgresql:
   enabled: true
   # To use an external PostgreSQL instance, set enabled to false and uncomment
   # the line below:
-  # postgresServer: ""
+  # postgresqlServer: ""
   # To use an external secret for the password for an external PostgreSQL
   # instance, set enabled to false and provide the name of the secret on the
   # line below:
-  # postgresPasswordSecret: ""
-  postgresUser: "sonarUser"
-  postgresPassword: "sonarPass"
-  postgresDatabase: "sonarDB"
+  # postgresqlPasswordSecret: ""
+  postgresqlUsername: "sonarUser"
+  postgresqlPassword: "sonarPass"
+  postgresqlDatabase: "sonarDB"
   # Specify the TCP port that PostgreSQL should use
   service:
     port: 5432

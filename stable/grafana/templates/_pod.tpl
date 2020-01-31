@@ -161,7 +161,7 @@ containers:
 {{- end }}
 {{- end -}}
 {{- if .Values.dashboardsConfigMaps }}
-{{- range keys .Values.dashboardsConfigMaps }}
+{{- range (keys .Values.dashboardsConfigMaps | sortAlpha) }}
       - name: dashboards-{{ . }}
         mountPath: "/var/lib/grafana/dashboards/{{ . }}"
 {{- end }}
@@ -224,7 +224,7 @@ containers:
             name: {{ .Values.admin.existingSecret | default (include "grafana.fullname" .) }}
             key: {{ .Values.admin.userKey | default "admin-user" }}
       {{- end }}
-      {{- if not .Values.env.GF_SECURITY_ADMIN_PASSWORD }}
+      {{- if and (not .Values.env.GF_SECURITY_ADMIN_PASSWORD) (not .Values.env.GF_SECURITY_ADMIN_PASSWORD__FILE) }}
       - name: GF_SECURITY_ADMIN_PASSWORD
         valueFrom:
           secretKeyRef:
@@ -300,7 +300,7 @@ volumes:
       name: {{ .configMap }}
 {{- end }}
   {{- if .Values.dashboards }}
-    {{- range keys .Values.dashboards }}
+    {{- range (keys .Values.dashboards | sortAlpha) }}
   - name: dashboards-{{ . }}
     configMap:
       name: {{ template "grafana.fullname" $ }}-dashboards-{{ . }}

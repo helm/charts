@@ -90,11 +90,21 @@ spec:
             {{- end }}
             name: certs
             readOnly: {{ if .Values.openvpn.keystoreSecret }}true{{ else }}false{{ end }}
+            {{- if .Values.openvpn.ccd.enabled }}
+          - mountPath: /etc/openvpn/ccd
+            name: openvpn-ccd
+            {{- end }}
       volumes:
       - name: openvpn
         configMap:
           name: {{ template "openvpn.fullname" . }}
           defaultMode: 0775
+      {{- if .Values.openvpn.ccd.enabled }}
+      - name: openvpn-ccd
+        configMap:
+          name: {{ template "openvpn.fullname" . }}-ccd
+          defaultMode: 0775
+      {{- end }}
       - name: certs
         {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
