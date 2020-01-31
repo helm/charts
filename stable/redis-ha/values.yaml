@@ -253,6 +253,11 @@ exporter:
   port: 9121
   scrapePath: /metrics
 
+  # Address/Host for Redis instance. Default: localhost
+  # Exists to circumvent issues with IPv6 dns resolution that occurs on certain environments
+  ##
+  address: localhost
+
   # cpu/memory resource limits/requests
   resources: {}
 

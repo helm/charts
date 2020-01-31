@@ -225,7 +225,7 @@ spec:
         {{- end }}
         env:
           - name: REDIS_ADDR
-            value: redis://localhost:{{ .Values.redis.port }}
+            value: redis://{{ default "localhost" .Values.exporter.address }}:{{ .Values.redis.port }}
         {{- if .Values.auth }}
           - name: REDIS_PASSWORD
             valueFrom:
