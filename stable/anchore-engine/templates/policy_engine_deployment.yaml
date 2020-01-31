@@ -84,6 +84,8 @@ spec:
         - name: config-volume
           mountPath: /config/config.yaml
           subPath: config.yaml
+        - name: {{ $component }}-scratch
+          mountPath: {{ .Values.anchoreGlobal.scratchVolume.mountPath }}
         {{- if .Values.anchoreGlobal.openShiftDeployment }}
         - name: service-config-volume
           mountPath: /anchore_service_config
@@ -126,6 +128,8 @@ spec:
         - name: config-volume
           configMap:
             name: {{ template "anchore-engine.fullname" . }}
+        - name: {{ $component }}-scratch
+          {{ toYaml .Values.anchoreGlobal.scratchVolume.details | nindent 10 }}
         {{- if .Values.anchoreGlobal.openShiftDeployment }}
         - name: service-config-volume
           emptyDir: {}
