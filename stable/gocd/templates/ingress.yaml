@@ -19,7 +19,7 @@ spec:
   {{ $dot := .}}
   rules:
     {{- range $host := .Values.server.ingress.hosts }}
-    - host: {{ $host }}
+    - host: {{ $host | quote }}
       http:
         paths:
         - backend:
