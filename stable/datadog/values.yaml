@@ -666,7 +666,6 @@ daemonset:
       #    memory: 200Mi
 
 
-
   ## @param useHostNetwork - boolean - optional
   ## Bind ports on the hostNetwork. Useful for CNI networking where hostPort might
   ## not be supported. The ports need to be available on all hosts. It Can be
