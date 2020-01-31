@@ -42,7 +42,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | --------- | ----------- | ------- |
 | `replicaCount` | Number of pgadmin replicas | `1` |
 | `image.repository` | Docker image | `dpage/pgadmin4` |
-| `image.tag` | Docker image tag | `4.15` |
+| `image.tag` | Docker image tag | `4.17` |
 | `image.pullPolicy` | Docker image pull policy | `IfNotPresent` |
 | `service.type` | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP` |
 | `service.port` | Service port | `80` |
@@ -53,10 +53,14 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `ingress.path` | Ingress path mapping | `` |
 | `env.username` | pgAdmin default email | `chart@example.local` |
 | `env.password` | pgAdmin default password | `SuperSecret` |
-| `persistence` | Persistent enabled/disabled | `true` |
-| `persistence.accessMode` | Persistent Access Mode | `ReadWriteOnce` |
-| `persistence.size` | Persistent volume size | `10Gi` |
+| `persistentVolume.enabled` | If true, pgAdmin will create a Persistent Volume Claim | `true` |
+| `persistentVolume.accessMode` | Persistent Volume access Mode | `ReadWriteOnce` |
+| `persistentVolume.size` | Persistent Volume size | `10Gi` |
+| `persistentVolume.storageClass` | Persistent Volume Storage Class | `unset` |
+| `securityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for pgAdmin containers | `` |
 | `resources` | CPU/memory resource requests/limits | `{}` |
+| `livenessProbe` | [liveness probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) initial delay and timeout | `` |
+| `readinessProbe` | [readiness probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) initial delay and timeout | `` |
 | `nodeSelector` | Node labels for pod assignment | `{}` |
 | `tolerations` | Node tolerations for pod assignment | `[]` |
 | `affinity` | Node affinity for pod assignment | `{}` |
