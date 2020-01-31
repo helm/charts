@@ -87,7 +87,7 @@ spec:
               mkdir -p {{ .Values.persistence.mountPath }}/data
               chmod 700 {{ .Values.persistence.mountPath }}/data
               find {{ .Values.persistence.mountPath }} -mindepth 1 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" | \
-              {{- if and .Values.volumePermissions.securityContext.enabled ( not (eq .Values.securityContext.runAsUser "auto")) }}
+              {{- if and .Values.volumePermissions.securityContext.enabled ( not (eq ( toString ( .Values.securityContext.runAsUser ) ) "auto")) }}
                 xargs chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }}
               {{- else }}
                 xargs chown -R `id -u`:`id -G | cut -d " " -f2`
@@ -95,7 +95,7 @@ spec:
               {{- if and .Values.shmVolume.enabled .Values.shmVolume.chmod.enabled }}
               chmod -R 777 /dev/shm
               {{- end }}
-          {{- if and .Values.volumePermissions.securityContext.enabled ( not (eq .Values.securityContext.runAsUser "auto")) }}
+          {{- if and .Values.volumePermissions.securityContext.enabled ( not (eq ( toString ( .Values.securityContext.runAsUser ) ) "auto")) }}
           securityContext:
             runAsUser: {{ .Values.volumePermissions.securityContext.runAsUser }}
           {{- end }}
