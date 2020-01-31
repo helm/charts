@@ -129,9 +129,9 @@ spec:
         {{- if .Values.aws.preferCNAME }}
         - --aws-prefer-cname
         {{- end }}
-        {{- if .Values.aws.evaluateTargetHealth }}
-        - --aws-evaluate-target-health={{ . }}
-        {{- end }}        
+        {{- if and (kindIs "bool" .Values.aws.evaluateTargetHealth) (not .Values.aws.evaluateTargetHealth) }}
+        - --no-aws-evaluate-target-health
+        {{- end }}
         # Azure Arguments
         {{- if or (eq .Values.provider "azure") (eq .Values.provider "azure-private-dns") }}
         {{- if .Values.azure.resourceGroup }}
