@@ -1382,10 +1382,13 @@ prometheus:
   ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
   ##
   prometheusSpec:
-
     ## If true, pass --storage.tsdb.max-block-duration=2h to prometheus. This is already done if using Thanos
     ##
     disableCompaction: false
+    ## APIServerConfig
+    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#apiserverconfig
+    ##
+    apiserverConfig: {}
 
     ## Interval between consecutive scrapes.
     ##
