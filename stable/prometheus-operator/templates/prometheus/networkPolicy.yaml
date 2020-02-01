@@ -13,5 +13,5 @@ spec:
 {{ include "prometheus-operator.labels" . | indent 6 }}
   ingress:
     - ports:
-      - port: 9090
+      - port: {{ .Values.prometheus.service.port }}
 {{- end }}
