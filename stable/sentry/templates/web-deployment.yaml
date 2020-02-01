@@ -133,25 +133,25 @@ spec:
           mountPath: /var/run/secrets/google
         {{ end }}
         livenessProbe:
-          failureThreshold: 5
+          failureThreshold: {{ .Values.web.livenessProbe.failureThreshold }}
           httpGet:
             path: /_health/
             port: {{ .Values.service.internalPort }}
             scheme: HTTP
-          initialDelaySeconds: {{ .Values.web.probeInitialDelaySeconds }}
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 2
+          initialDelaySeconds: {{ .Values.web.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.web.livenessProbe.periodSeconds }}
+          successThreshold: {{ .Values.web.livenessProbe.successThreshold }}
+          timeoutSeconds: {{ .Values.web.livenessProbe.timeoutSeconds }}
         readinessProbe:
-          failureThreshold: 10
+          failureThreshold: {{ .Values.web.readinessProbe.failureThreshold }}
           httpGet:
             path: /_health/
             port: {{ .Values.service.internalPort }}
             scheme: HTTP
-          initialDelaySeconds: {{ .Values.web.probeInitialDelaySeconds }}
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 2
+          initialDelaySeconds: {{ .Values.web.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.web.readinessProbe.periodSeconds }}
+          successThreshold: {{ .Values.web.readinessProbe.successThreshold }}
+          timeoutSeconds: {{ .Values.web.readinessProbe.timeoutSeconds }}
         resources:
 {{ toYaml .Values.web.resources | indent 12 }}
       volumes:

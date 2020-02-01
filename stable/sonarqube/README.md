@@ -79,11 +79,11 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `sonarProperties`                           | Custom `sonar.properties` file            | `{}`                                       |
 | `database.type`                             | Set to "mysql" to use mysql database       | `postgresql`|
 | `postgresql.enabled`                        | Set to `false` to use external server / mysql database     | `true`                                     |
-| `postgresql.postgresServer`                 | Hostname of the external Postgresql server| `null`                                     |
-| `postgresql.postgresPasswordSecret`         | Secret containing the password of the external Postgresql server | `null`              |
-| `postgresql.postgresUser`                   | Postgresql database user                  | `sonarUser`                                |
-| `postgresql.postgresPassword`               | Postgresql database password              | `sonarPass`                                |
-| `postgresql.postgresDatabase`               | Postgresql database name                  | `sonarDB`                                  |
+| `postgresql.postgresqlServer`               | Hostname of the external Postgresql server| `null`                                     |
+| `postgresql.postgresqlPasswordSecret`       | Secret containing the password of the external Postgresql server | `null`              |
+| `postgresql.postgresqlUsername`             | Postgresql database user                  | `sonarUser`                                |
+| `postgresql.postgresqlPassword`             | Postgresql database password              | `sonarPass`                                |
+| `postgresql.postgresqlDatabase`             | Postgresql database name                  | `sonarDB`                                  |
 | `postgresql.service.port`                   | Postgresql port                           | `5432`                                     |
 | `mysql.enabled`                             | Set to `false` to use external server / postgresql database        | `false`                                     |
 | `mysql.mysqlServer`                         | Hostname of the external Mysql server     | `null`                                     |
