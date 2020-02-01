@@ -272,6 +272,7 @@ helm install --name <RELEASE_NAME> \
 | `datadog.useCriSocketVolume`             | Enable mounting the container runtime socket in Agent containers                          | `True`                                      |
 | `datadog.dogstatsdOriginDetection`       | Enable origin detection for container tagging                                             | `False`                                     |
 | `datadog.dogStatsDPort`                  | Used to override the default agent DogStatsD Port                                         | `8125`                                      |
+| `datadog.tracePort`                      | Used to override the default agent Trace Port                                             | `8126`                                      |
 | `datadog.useDogStatsDSocketVolume`       | Enable dogstatsd over Unix Domain Socket                                                  | `False`                                     |
 | `datadog.dogStatsDSocketPath`            | Custom path to the socket, has to be located in the `/var/run/datadog` folder path        | `/var/run/datadog/dsd.socket`               |
 | `datadog.volumes`                        | Additional volumes for the daemonset or deployment                                        | `nil`                                       |
@@ -285,6 +286,7 @@ helm install --name <RELEASE_NAME> \
 | `datadog.resources.limits.memory`        | Memory resource limits                                                                    | `256Mi`                                     |
 | `datadog.securityContext`                | Allows you to overwrite the default securityContext applied to the container              | `nil`                                       |
 | `datadog.livenessProbe`                  | Overrides the default liveness probe                                                      | http port 5555                              |
+| `datadog.healthPort`                     | Used to override the default agent health Port                                            | `5555`                                      |
 | `datadog.hostname`                       | Set the hostname (write it in datadog.conf)                                               | `nil`                                       |
 | `datadog.acInclude`                      | Include containers based on image name                                                    | `nil`                                       |
 | `datadog.acExclude`                      | Exclude containers based on image name                                                    | `nil`                                       |

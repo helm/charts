@@ -97,7 +97,7 @@
     {{- end }}
     {{- if not .Values.datadog.livenessProbe }}
     - name: DD_HEALTH_PORT
-      value: "5555"
+      value: {{ default 5555 .Values.datadog.healthPort | quote }}
     {{- end }}
     {{- if .Values.datadog.useDogStatsDSocketVolume }}
     - name: DD_DOGSTATSD_SOCKET
@@ -155,7 +155,7 @@
   livenessProbe:
     httpGet:
       path: /health
-      port: 5555
+      port: {{ default 5555 .Values.datadog.healthPort }}
     initialDelaySeconds: 15
     periodSeconds: 15
     timeoutSeconds: 5

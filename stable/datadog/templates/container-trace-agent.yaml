@@ -6,9 +6,9 @@
   resources:
 {{ toYaml .Values.daemonset.containers.traceAgent.resources | indent 4 }}
   ports:
-  - containerPort: 8126
+  - containerPort: {{ default 8126 .Values.datadog.tracePort }}
     {{- if .Values.daemonset.useHostPort }}
-    hostPort: 8126
+    hostPort: {{ default 8126 .Values.datadog.tracePort }}
     {{- end }}
     name: traceport
     protocol: TCP
@@ -18,6 +18,10 @@
       value: {{ .Values.datadog.apmEnabled | quote }}
     - name: DD_LOG_LEVEL
       value: {{ .Values.daemonset.containers.traceAgent.logLevel | default .Values.datadog.logLevel | quote }}
+    {{- if .Values.datadog.tracePort }}
+    - name: DD_TRACE_AGENT_PORT
+      value: {{ .Values.datadog.tracePort | quote }}
+    {{- end }}
     {{- if .Values.datadog.nonLocalTraffic }}
     - name: DD_DOGSTATSD_NON_LOCAL_TRAFFIC
       value: {{ .Values.datadog.nonLocalTraffic | quote }}

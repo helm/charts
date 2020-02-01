@@ -12,9 +12,9 @@
     name: dogstatsdport
     protocol: UDP
   {{- if .Values.datadog.apmEnabled }}
-  - containerPort: 8126
+  - containerPort: {{ default 8126 .Values.datadog.tracePort }}
     {{- if .Values.daemonset.useHostPort }}
-    hostPort: 8126
+    hostPort: {{ default 8126 .Values.datadog.tracePort }}
     {{- end }}
     name: traceport
     protocol: TCP
@@ -47,6 +47,10 @@
     {{- if .Values.datadog.dogStatsDPort }}
     - name: DD_DOGSTATD_PORT
       value: {{ .Values.datadog.dogStatsDPort | quote }}
+    {{- end }}
+    {{- if and .Values.datadog.apmEnabled .Values.datadog.tracePort }}
+    - name: DD_TRACE_AGENT_PORT
+      value: {{ .Values.datadog.tracePort | quote }}
     {{- end }}
     {{- if .Values.datadog.nonLocalTraffic }}
     - name: DD_DOGSTATSD_NON_LOCAL_TRAFFIC
@@ -140,7 +144,7 @@
     {{- end }}
     {{- if not .Values.datadog.livenessProbe }}
     - name: DD_HEALTH_PORT
-      value: "5555"
+      value: {{ default 5555 .Values.datadog.healthPort | quote }}
     {{- end }}
     {{- if .Values.datadog.useDogStatsDSocketVolume }}
     - name: DD_DOGSTATSD_SOCKET
@@ -213,7 +217,7 @@
   livenessProbe:
     httpGet:
       path: /health
-      port: 5555
+      port: {{ default 5555 .Values.datadog.healthPort }}
     initialDelaySeconds: 15
     periodSeconds: 15
     timeoutSeconds: 5
