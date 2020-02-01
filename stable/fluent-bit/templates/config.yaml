@@ -199,6 +199,9 @@ data:
 {{- end }}
         Format {{ .Values.backend.http.format }}
 {{- end }}
+{{- if .Values.backend.http.json_date_format }}
+        json_date_format {{ .Values.backend.http.json_date_format }}
+{{- end }}
 {{- range  .Values.backend.http.headers }}
         Header  {{ . }}
 {{- end }}

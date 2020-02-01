@@ -53,6 +53,10 @@ spec:
         image: "{{ .Values.images.server.repository }}:{{ .Values.images.server.tag }}"
         imagePullPolicy: {{ .Values.images.server.pullPolicy }}
         env:
+        {{- if (or .Values.licenseKey .Values.licenseKeySecret) }}
+          - name: DRONE_LICENSE
+            value: "/etc/drone.key"
+        {{- end }}
         {{- if .Values.server.kubernetes.enabled }}
           - name: DRONE_KUBERNETES_ENABLED
             value: "true"
@@ -125,6 +129,12 @@ spec:
           mountPath: /etc/bitbucket
           readOnly: true
         {{ end }}
+        {{ if (or .Values.licenseKey .Values.licenseKeySecret) -}}
+        - name: license-key
+          mountPath: /etc/drone.key
+          subPath: drone.key
+          readOnly: true
+        {{ end }}
         - name: data
           mountPath: /var/lib/drone
 {{- with .Values.server.extraContainers }}
@@ -138,6 +148,14 @@ spec:
           items:
             - key: {{ .Values.sourceControl.bitbucketServer.privateKey }}
               path: key.pem
+      {{ end -}}
+      {{ if (or .Values.licenseKey .Values.licenseKeySecret) -}}
+      - name: license-key
+        secret:
+          secretName: {{ template "drone.licenseKeySecret" . }}
+          items:
+            - key: license-key
+              path: drone.key
       {{ end -}}
       - name: data
       {{- if .Values.persistence.enabled }}
