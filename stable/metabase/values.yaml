@@ -21,6 +21,11 @@ ssl:
   # keyStore: |-
   #   << JKS KEY STORE >>
   # keyStorePassword: storepass
+jetty:
+#  maxThreads: 254
+#  minThreads: 8
+#  maxQueued: -1
+#  maxIdleTime: 60000
 
 # Backend database
 database:
