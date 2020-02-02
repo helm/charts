@@ -52,6 +52,12 @@ spec:
                 name: {{ template "metabase.fullname" . }}-ssl
                 key: password
           {{- end }}
+          {{- if .Values.jetty }}
+            {{- range $key, $value := .Values.jetty }}
+          - name: MB_JETTY_{{ $key | upper }}
+            value: {{ $value | quote }}
+            {{- end }}
+          {{- end }}
           - name: MB_DB_TYPE
             value: {{ .Values.database.type | lower }}
           {{- if .Values.database.encryptionKey }}

@@ -56,6 +56,7 @@ The following table lists the configurable parameters of the pushgateway chart a
 | `service.port`                    | The service port                                                                                                              | `9091`                            |
 | `service.nodePort`                | The optional service node port when `service.type` is `NodePort`                                                              | ``                                |
 | `service.targetPort`              | The target port of the container                                                                                              | `9091`                            |
+| `serviceAnnotations`              | Annotations for the service                                                                                                   | `{}`                              |
 | `serviceLabels`                   | Labels for service                                                                                                            | `{}`                              |
 | `serviceAccount.create`           | Specifies whether a service account should be created.                                                                        | `true`                            |
 | `serviceAccount.name`             | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template |                                   |

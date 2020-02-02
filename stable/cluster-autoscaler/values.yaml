@@ -180,6 +180,8 @@ serviceMonitor:
    ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
   selector:
     prometheus: kube-prometheus
+  # The metrics path to scrape - autoscaler exposes /metrics (standard)
+  path: /metrics
 
 ## String to partially override cluster-autoscaler.fullname template (will maintain the release name)
 nameOverride: ""

@@ -15,7 +15,11 @@ spec:
     matchLabels:
       app.kubernetes.io/name: {{ template "graylog.name" . }}
       app.kubernetes.io/instance: "{{ .Release.Name }}"
+      {{- if .Values.helm2Compatibility }}
+      app.kubernetes.io/managed-by: "Tiller"
+      {{- else }}
       app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+      {{- end }}
   updateStrategy:
     type: {{ .Values.graylog.updateStrategy }}
   template:
@@ -23,7 +27,11 @@ spec:
       labels:
         app.kubernetes.io/name: {{ template "graylog.name" . }}
         helm.sh/chart: {{ template "graylog.chart" . }}
+        {{- if .Values.helm2Compatibility }}
+        app.kubernetes.io/managed-by: "Tiller"
+        {{- else }}
         app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+        {{- end }}
         app.kubernetes.io/instance: "{{ .Release.Name }}"
         app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
       annotations:
