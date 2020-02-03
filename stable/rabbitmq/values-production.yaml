@@ -462,6 +462,77 @@ metrics:
     ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
     additionalLabels: {}
 
+  ## Custom PrometheusRule to be defined
+  ## The value is evaluated as a template, so, for example, the value can depend on .Release or .Chart
+  ## ref: https://github.com/coreos/prometheus-operator#customresourcedefinitions
+  prometheusRule:
+    enabled: false
+    additionalLabels: {}
+    namespace: ""
+    rules: []
+      ## List of reules, used as template by Helm.
+      ## These are just examples rules inspired from https://awesome-prometheus-alerts.grep.to/rules.html
+      ## Please adapt them to your needs.
+      ## Make sure to constraint the rules to the current rabbitmq service.
+      ## Also make sure to escape what looks like helm template.
+      # - alert: RabbitmqDown
+      #   expr: rabbitmq_up{service="{{ template "rabbitmq.fullname" . }}"} == 0
+      #   for: 5m
+      #   labels:
+      #     severity: error
+      #   annotations:
+      #     summary: Rabbitmq down (instance {{ "{{ $labels.instance }}" }})
+      #     description: RabbitMQ node down
+
+      # - alert: ClusterDown
+      #   expr: |
+      #     sum(rabbitmq_running{service="{{ template "rabbitmq.fullname" . }}"})
+      #     < {{ .Values.replicas }}
+      #   for: 5m
+      #   labels:
+      #     severity: error
+      #   annotations:
+      #     summary: Cluster down (instance {{ "{{ $labels.instance }}" }})
+      #     description: |
+      #         Less than {{ .Values.replicas }} nodes running in RabbitMQ cluster
+      #         VALUE = {{ "{{ $value }}" }}
+
+      # - alert: ClusterPartition
+      #   expr: rabbitmq_partitions{service="{{ template "rabbitmq.fullname" . }}"} > 0
+      #   for: 5m
+      #   labels:
+      #     severity: error
+      #   annotations:
+      #     summary: Cluster partition (instance {{ "{{ $labels.instance }}" }})
+      #     description: |
+      #         Cluster partition
+      #         VALUE = {{ "{{ $value }}" }}
+
+      # - alert: OutOfMemory
+      #   expr: |
+      #     rabbitmq_node_mem_used{service="{{ template "rabbitmq.fullname" . }}"}
+      #     / rabbitmq_node_mem_limit{service="{{ template "rabbitmq.fullname" . }}"}
+      #     * 100 > 90
+      #   for: 5m
+      #   labels:
+      #     severity: warning
+      #   annotations:
+      #     summary: Out of memory (instance {{ "{{ $labels.instance }}" }})
+      #     description: |
+      #         Memory available for RabbmitMQ is low (< 10%)\n  VALUE = {{ "{{ $value }}" }}
+      #         LABELS: {{ "{{ $labels }}" }}
+
+      # - alert: TooManyConnections
+      #   expr: rabbitmq_connectionsTotal{service="{{ template "rabbitmq.fullname" . }}"} > 1000
+      #   for: 5m
+      #   labels:
+      #     severity: warning
+      #   annotations:
+      #     summary: Too many connections (instance {{ "{{ $labels.instance }}" }})
+      #     description: |
+      #         RabbitMQ instance has too many connections (> 1000)
+      #         VALUE = {{ "{{ $value }}" }}\n  LABELS: {{ "{{ $labels }}" }}
+
 ##
 ## Init containers parameters:
 ## volumePermissions: Change the owner of the persist volume mountpoint to RunAsUser:fsGroup
