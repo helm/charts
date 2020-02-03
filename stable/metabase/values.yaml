@@ -59,6 +59,16 @@ emojiLogging: true
 # javaOpts:
 # pluginsDirectory:
 
+livenessProbe:
+  initialDelaySeconds: 120
+  timeoutSeconds: 30
+  failureThreshold: 6
+
+readinessProbe:
+  initialDelaySeconds: 30
+  timeoutSeconds: 3
+  periodSeconds: 5
+
 service:
   name: metabase
   type: ClusterIP

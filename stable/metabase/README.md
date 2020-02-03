@@ -74,6 +74,12 @@ The following table lists the configurable parameters of the Metabase chart and 
 | emojiLogging                     | Get a funny emoji in service log                            | true              |
 | javaOpts                         | JVM options                                                 | null              |
 | pluginsDirectory                 | A directory with Metabase plugins                           | null              |
+| livenessProbe.initialDelaySeconds | Delay before liveness probe is initiated                   | 120               |
+| livenessProbe.timeoutSeconds     | When the probe times out                                    | 30                |
+| livenessProbe.failureThreshold   | Minimum consecutive failures for the probe                  | 6                 |
+| readinessProbe.initialDelaySeconds | Delay before readiness probe is initiated                 | 30                |
+| readinessProbe.timeoutSeconds    | When the probe times out                                    | 3                 |
+| readinessProbe.periodSeconds     | How often to perform the probe                              | 5                 |
 | service.type                     | ClusterIP, NodePort, or LoadBalancer                        | ClusterIP         |
 | service.loadBalancerSourceRanges | Array of Source Ranges                                      | null              |
 | service.externalPort             | Service external port                                       | 80                |
