@@ -164,7 +164,7 @@ datadog:
   #  # Override the Agent trace port.
   #  # Note: Make sure your client is sending to the same TCP port.
   #
-  # traceDPort:
+  # tracePort:
 
   ## @param nonLocalTraffic - boolean - optional - default: false
   ## Enable this to make each node accept non-local statsd traffic.
@@ -291,6 +291,11 @@ datadog:
   # livenessProbe:
   #   exec:
   #     command: ["/bin/true"]
+
+  #  # healthPort - integer - optional - default: 5555
+  #  # Override the Agent health port.
+  #
+  # healthPort:
 
   ## @param resources - object -required
   ## datadog-agent resource requests and limits
