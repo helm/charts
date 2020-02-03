@@ -39,7 +39,7 @@ database:
   # username:
   # password:
   ## Alternatively, use a connection URI for full configurability. Example for SSL enabled Postgres.
-  # connectionURI: postgres://user:password@host:port/database?ssl=true&sslmode=require&sslfactory=org.postgresql.ssl.NonValidatingFactory"
+  # connectionURI: "postgres://user:password@host:port/database?ssl=true&sslmode=require&sslfactory=org.postgresql.ssl.NonValidatingFactory"
   ## If a secret with the database credentials already exists, use the following values:
   # existingSecret:
   # existingSecretUsernameKey:
