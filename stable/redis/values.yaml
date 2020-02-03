@@ -534,8 +534,8 @@ metrics:
       #    labels:
       #      severity: error
       #    annotations:
-      #      summary: Redis instance {{ "{{ $instance }}" }} down
-      #      description: Redis instance {{ "{{ $instance }}" }} is down.
+      #      summary: Redis instance {{ "{{ $labels.instance }}" }} down
+      #      description: Redis instance {{ "{{ $labels.instance }}" }} is down.
       #  - alert: RedisMemoryHigh
       #    expr: >
       #       redis_memory_used_bytes{service="{{ template "redis.fullname" . }}-metrics"} * 100
@@ -546,17 +546,19 @@ metrics:
       #    labels:
       #      severity: error
       #    annotations:
-      #      summary: Redis instance {{ "{{ $instance }}" }} is using too much memory
-      #      description: Redis instance {{ "{{ $instance }}" }} is using {{ "{{ $value }}" }}% of its available memory.
+      #      summary: Redis instance {{ "{{ $labels.instance }}" }} is using too much memory
+      #      description: |
+      #        Redis instance {{ "{{ $labels.instance }}" }} is using {{ "{{ $value }}" }}% of its available memory.
       #  - alert: RedisKeyEviction
-      #    expr: increase(redis_evicted_keys_total{service="{{ template "redis.fullname" . }}-metrics"}[5m]) > 0
+      #    expr: |
+      #      increase(redis_evicted_keys_total{service="{{ template "redis.fullname" . }}-metrics"}[5m]) > 0
       #    for: 1s
       #    labels:
       #      severity: error
       #    annotations:
-      #      summary: Redis instance {{ "{{ $instance }}" }} has evicted keys
-      #      description: Redis instance {{ "{{ $instance }}" }} has evicted {{ "{{ $value }}" }} keys in the last 5 minutes.
-
+      #      summary: Redis instance {{ "{{ $labels.instance }}" }} has evicted keys
+      #      description: |
+      #        Redis instance {{ "{{ $labels.instance }}" }} has evicted {{ "{{ $value }}" }} keys in the last 5 minutes.
 
   ## Metrics exporter pod priorityClassName
   # priorityClassName: {}
