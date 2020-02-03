@@ -58,6 +58,8 @@ extraSecretMounts: []
   #   readOnly: true
   #   defaultMode: 420
 
+allowIcmp: false
+
 resources: {}
   # limits:
   #   memory: 300Mi
