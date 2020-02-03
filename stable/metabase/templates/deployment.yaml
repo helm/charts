@@ -120,16 +120,16 @@ spec:
             httpGet:
               path: /
               port: {{ .Values.service.internalPort }}
-            initialDelaySeconds: 120
-            timeoutSeconds: 30
-            failureThreshold: 6
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           readinessProbe:
             httpGet:
               path: /
               port: {{ .Values.service.internalPort }}
-            initialDelaySeconds: 30
-            timeoutSeconds: 3
-            periodSeconds: 5
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           {{- if .Values.log4jProperties }}
           volumeMounts:
             - name: config
