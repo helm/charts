@@ -125,6 +125,6 @@ Create the name of the service account to use
   {{- if index .Values "rabbitmq-ha" "enabled" -}}
     {{ index .Values "rabbitmq-ha" "rabbitmqUsername" }}
   {{- else if .Values.rabbitmq.enabled -}}
-    {{ .Values.rabbitmq.rabbitmqUsername }}
+    {{ .Values.rabbitmq.rabbitmq.username }}
   {{- end -}}
 {{- end -}}
