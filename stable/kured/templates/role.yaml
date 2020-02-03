@@ -18,7 +18,7 @@ rules:
   - apiGroups:     ["apps"]
     resources:     ["daemonsets"]
     resourceNames: ["{{ template "kured.fullname" . }}"]
-    verbs:         ["update"]
+    verbs:         ["update", "patch"]
 {{- if .Values.podSecurityPolicy.create }}
   - apiGroups:     ["extensions"]
     resources:     ["podsecuritypolicies"]
