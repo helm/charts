@@ -129,6 +129,9 @@ graylog:
     port: 9000
 
     master:
+      ## enable Graylog master service
+      ##
+      enabled: true
       ## Graylog master service Ingress annotations
       ##
       annotations: {}
