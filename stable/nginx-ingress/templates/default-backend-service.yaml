@@ -17,7 +17,9 @@ metadata:
   name: {{ template "nginx-ingress.defaultBackend.fullname" . }}
 spec:
 {{- if not .Values.defaultBackend.service.omitClusterIP }}
-  {{ with .Values.defaultBackend.service.clusterIP }}clusterIP: {{ . | quote }}{{ end }}
+  {{- with .Values.defaultBackend.service.clusterIP }}
+  clusterIP: {{ if eq "-" . }}""{{ else }}{{ . | quote }}{{ end }}
+  {{- end }}
 {{- end }}
 {{- if .Values.defaultBackend.service.externalIPs }}
   externalIPs:
