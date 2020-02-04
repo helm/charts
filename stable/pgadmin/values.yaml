@@ -22,7 +22,6 @@ strategy: {}
   #   maxSurge: 0
   #   maxUnavailable: 1
 
-
 ingress:
   ## If true, pgAdmin Ingress will be created
   ##
