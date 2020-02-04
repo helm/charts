@@ -10,7 +10,5 @@ icon: https://superset.incubator.apache.org/_images/s.png
 sources:
 - https://github.com/apache/incubator-superset
 maintainers:
-- name: alitari
-  email: alitari67@gmail.com
 - name: marcussorealheis
   email: marcuseagan@gmail.com
