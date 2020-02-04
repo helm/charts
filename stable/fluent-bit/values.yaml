@@ -172,6 +172,12 @@ extraEntries:
 #     # >=1 additional Key/Value entrie(s) for existing Ouput section
 # WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+# If you want to add extra config files to the configmap that will be mounted on /fluent-bit/etc
+# does not work with .existingConfigMap
+extraConfigFiles: {}
+#   customScript.lua: |
+#     your_script_here
+  
 
 ## Extra ports to add to the daemonset ports section
 extraPorts: []

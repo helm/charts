@@ -268,3 +268,8 @@ data:
 
 {{- end -}}
 {{- end }}
+
+{{- range $path, $config := .Values.extraConfigFiles }}
+  {{ $path }}: |
+{{ $config | indent 4 -}}
+{{- end -}}

@@ -105,6 +105,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `extraEntries.input`               |    Extra entries for existing [INPUT] section                     | ``                    |
 | `extraEntries.filter`              |    Extra entries for existing [FILTER] section                     | ``                    |
 | `extraEntries.output`              |   Extra entries for existing [OUPUT] section                     | ``                    |
+| `extraConfigFiles`                 | Extra config files for the configmap; does not work when used with an existing configmap | `{}` |
 | `extraPorts`                       | List of extra ports                        |                       |
 | `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
 | `extraVolume`                      | Extra volume                               |                                                |
