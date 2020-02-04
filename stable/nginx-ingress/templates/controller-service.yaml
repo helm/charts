@@ -38,6 +38,9 @@ spec:
 {{- if and (semverCompare ">=1.7-0" .Capabilities.KubeVersion.GitVersion) (.Values.controller.service.externalTrafficPolicy) }}
   externalTrafficPolicy: "{{ .Values.controller.service.externalTrafficPolicy }}"
 {{- end }}
+{{- if .Values.controller.service.sessionAffinity }}
+  sessionAffinity: "{{ .Values.controller.service.sessionAffinity }}"
+{{- end }}
 {{- if and (semverCompare ">=1.7-0" .Capabilities.KubeVersion.GitVersion) (.Values.controller.service.healthCheckNodePort) }}
   healthCheckNodePort: {{ .Values.controller.service.healthCheckNodePort }}
 {{- end }}
