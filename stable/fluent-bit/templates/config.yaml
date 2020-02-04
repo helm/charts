@@ -211,7 +211,8 @@ data:
   fluent-bit.conf: |
 {{ .Values.rawConfig | indent 4 }}
 
-  parsers.conf: |
+{{- if .Values.parsers.enabled }}
+  parsers_custom.conf: |
 {{- if .Values.parsers.regex }}
 {{- range .Values.parsers.regex }}
     [PARSER]
@@ -266,3 +267,4 @@ data:
 {{- end }}
 
 {{- end -}}
+{{- end }}

@@ -89,36 +89,12 @@ spec:
           mountPath: /etc/machine-id
           readOnly: true
       {{- end }}
-{{- if .Values.fullConfigMap }}
         - name: config
           mountPath: /fluent-bit/etc
-{{- else }}
-        - name: config
-          mountPath: /fluent-bit/etc/fluent-bit.conf
-          subPath: fluent-bit.conf
-        - name: config
-          mountPath: /fluent-bit/etc/fluent-bit-service.conf
-          subPath: fluent-bit-service.conf
-        - name: config
-          mountPath: /fluent-bit/etc/fluent-bit-input.conf
-          subPath: fluent-bit-input.conf
-        - name: config
-          mountPath: /fluent-bit/etc/fluent-bit-filter.conf
-          subPath: fluent-bit-filter.conf
-        - name: config
-          mountPath: /fluent-bit/etc/fluent-bit-output.conf
-          subPath: fluent-bit-output.conf
-
-{{- if .Values.parsers.enabled }}
-        - name: config
-          mountPath: /fluent-bit/etc/parsers_custom.conf
-          subPath: parsers.conf
-{{- end }}
-{{- if and .Values.backend.type "stackdriver" .Values.backend.stackdriver.google_service_credentials }}
+{{- if and (not .Values.fullConfigMap ) .Values.backend.type "stackdriver" .Values.backend.stackdriver.google_service_credentials }}
         - name: gcp-stackdriver-secret
           mountPath: /secure/google_service_credentials.json
           subPath: google_service_credentials.json
-{{- end }}
 {{- end }}
 {{- if or .Values.backend.es.tls_ca .Values.backend.es.tls_secret }}
         - name: es-tls-secret
