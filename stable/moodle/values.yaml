@@ -35,6 +35,11 @@ image:
 ##
 # fullnameOverride:
 
+## Skip Moodle installation wizard. Useful for migrations and restoring from SQL dump
+## ref: https://github.com/bitnami/bitnami-docker-moodle#configuration
+##
+moodleSkipInstall: "no"
+
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-moodle#configuration
 ##
