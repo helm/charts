@@ -13,6 +13,15 @@ service:
   type: ClusterIP
   port: 80
 
+## Strategy used to replace old Pods by new ones
+## Ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+##
+strategy: {}
+  # type: RollingUpdate
+  # rollingUpdate:
+  #   maxSurge: 0
+  #   maxUnavailable: 1
+
 ingress:
   ## If true, pgAdmin Ingress will be created
   ##
