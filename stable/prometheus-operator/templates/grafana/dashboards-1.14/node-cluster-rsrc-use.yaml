@@ -2,7 +2,7 @@
 # Do not change in-place! In order to change this file first read following link:
 # https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
 {{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
-{{- if and (semverCompare ">=1.14.0-0" $kubeTargetVersion) (semverCompare "<1.16.0-0" $kubeTargetVersion) .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled .Values.nodeExporter.enabled }}
+{{- if and (semverCompare ">=1.14.0-0" $kubeTargetVersion) (semverCompare "<9.9.9-9" $kubeTargetVersion) .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled .Values.nodeExporter.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -342,7 +342,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "instance:node_memory_swap_io_pages:rate1m{job=\"node-exporter\"}",
+                                "expr": "instance:node_vmstat_pgmajfault:rate1m{job=\"node-exporter\"}",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{instance}}`}}",
@@ -355,7 +355,7 @@ data:
                         ],
                         "timeFrom": null,
                         "timeShift": null,
-                        "title": "Memory Saturation (Swapped Pages)",
+                        "title": "Memory Saturation (Major Page Faults)",
                         "tooltip": {
                             "shared": false,
                             "sort": 0,

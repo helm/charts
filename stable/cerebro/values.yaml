@@ -8,7 +8,7 @@ image:
   repository: lmenezes/cerebro
   # Note: when updating the version, ensure `config` and the ConfigMap are kept
   # in sync with the default configuration of the upstream image
-  tag: 0.8.4
+  tag: 0.8.5
   pullPolicy: IfNotPresent
 
 deployment:

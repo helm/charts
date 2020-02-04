@@ -13,7 +13,7 @@ spec:
     - port: {{ .Values.service.externalPort }}
       targetPort: publish
       protocol: TCP
-      name: publish
+      name: rabbitmq-exporter
   selector:
     app: {{ template "prometheus-rabbitmq-exporter.name" . }}
     release: {{ .Release.Name }}

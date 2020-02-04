@@ -1,6 +1,7 @@
 operatorImageName: gcr.io/spark-operator/spark-operator
 operatorVersion: v1beta2-1.0.1-2.4.4
 imagePullPolicy: IfNotPresent
+imagePullSecrets: []
 replicas: 1
 
 rbac:

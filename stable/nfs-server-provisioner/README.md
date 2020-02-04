@@ -54,9 +54,10 @@ their default values.
 
 | Parameter                      | Description                                                                                                     | Default                                                  |
 |:-------------------------------|:----------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------|
+| `extraArgs` | [Additional command line arguments](https://github.com/kubernetes-incubator/external-storage/blob/master/nfs/docs/deployment.md#arguments) | `{}`
 | `imagePullSecrets`             | Specify image pull secrets                                                                                      | `nil` (does not add image pull secrets to deployed pods) |
 | `image.repository`             | The image repository to pull from                                                                               | `quay.io/kubernetes_incubator/nfs-provisioner`           |
-| `image.tag`                    | The image tag to pull from                                                                                      | `v1.0.8`                                                 |
+| `image.tag`                    | The image tag to pull from                                                                                      | `v2.2.2`                                                 |
 | `image.pullPolicy`             | Image pull policy                                                                                               | `IfNotPresent`                                           |
 | `service.type`                 | service type                                                                                                    | `ClusterIP`                                              |
 | `service.nfsPort`              | TCP port on which the nfs-server-provisioner NFS service is exposed                                                    | `2049`                                                   |
@@ -81,7 +82,6 @@ their default values.
 | `nodeSelector`                 | Map of node labels for pod assignment                                                                           | `{}`                                                     |
 | `tolerations`                  | List of node taints to tolerate                                                                                 | `[]`                                                     |
 | `affinity`                     | Map of node/pod affinities                                                                                      | `{}`                                                     |
-| `ganesha.gracePeriod`          | NFS Ganesha grace period to use in seconds, from 0-180.                                                         | `90`                                                     |
 
 ```console
 $ helm install stable/nfs-server-provisioner --name my-release \

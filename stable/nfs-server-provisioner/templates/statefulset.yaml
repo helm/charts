@@ -54,7 +54,9 @@ spec:
                 - SYS_RESOURCE
           args:
             - "-provisioner={{ template "nfs-provisioner.provisionerName" . }}"
-            - "-grace-period={{ .Values.ganesha.gracePeriod }}"
+            {{- range $key, $value := .Values.extraArgs }}
+            - "-{{ $key }}={{ $value }}"
+            {{- end }}
           env:
             - name: POD_IP
               valueFrom:

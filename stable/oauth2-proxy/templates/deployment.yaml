@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
@@ -65,6 +65,7 @@ spec:
         {{- if .Values.htpasswdFile.enabled }}
           - --htpasswd-file=/etc/oauth2_proxy/htpasswd/users.txt
         {{- end }}
+        {{- if .Values.proxyVarsAsSecrets }}
         env:
         - name: OAUTH2_PROXY_CLIENT_ID
           valueFrom:
@@ -81,6 +82,7 @@ spec:
             secretKeyRef:
               name:  {{ template "oauth2-proxy.secretName" . }}
               key: cookie-secret
+        {{- end }}
         {{- if .Values.extraEnv }}
 {{ toYaml .Values.extraEnv | indent 8 }}
         {{- end }}
@@ -135,6 +137,10 @@ spec:
 {{- if ne (len .Values.extraVolumeMounts) 0 }}
 {{ toYaml .Values.extraVolumeMounts | indent 8 }}
 {{- end }}
+{{- if .Values.securityContext.enabled }}
+        securityContext:
+          runAsNonRoot: {{ .Values.securityContext.runAsNonRoot }}
+{{- end}}
       volumes:
 {{- with .Values.config.google }}
 {{- if and .adminEmail (or .serviceAccountJson .existingSecret) }}

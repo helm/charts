@@ -3,10 +3,7 @@ kind: Service
 metadata:
   name: {{ include "mercure.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ include "mercure.name" . }}
-    helm.sh/chart: {{ include "mercure.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{ include "mercure.labels" . | indent 4 }}
   {{- if .Values.backendConfig.enabled }}
   annotations:
     beta.cloud.google.com/backend-config: '{"default": "{{ include "mercure.fullname" . }}"}'

@@ -4,14 +4,18 @@
 # name: value
 
 image: quay.io/dexidp/dex
-imageTag: "v2.19.0"
+imageTag: "v2.21.0"
 imagePullPolicy: "IfNotPresent"
 
 inMiniKube: false
 
 nodeSelector: {}
 
+podLabels: {}
+
 podAnnotations: {}
+
+initContainers: []
 
 tolerations: []
   # - key: CriticalAddonsOnly
@@ -49,6 +53,22 @@ ports:
     # for service.type: NodePort
     nodePort: 35000
     servicePort: 35000
+
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 1
+  failureThreshold: 1
+  httpPath: "/healthz"
+  periodSeconds: 10
+  timeoutSeconds: 1
+
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 1
+  failureThreshold: 1
+  httpPath: "/healthz"
+  periodSeconds: 10
+  timeoutSeconds: 1
 
 service:
   type: ClusterIP
@@ -115,6 +135,11 @@ rbac:
   # Specifies whether RBAC resources should be created
   create: true
 
+crd:
+  # Specifies whether dex's CRDs are already present (if not cluster role and cluster role binding will be created
+  # to enable dex to create them). Depends on rbac.create
+  present: false
+
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
   create: true
@@ -156,7 +181,7 @@ config:
     tlsCert: /etc/dex/tls/grpc/server/tls.crt
     tlsKey: /etc/dex/tls/grpc/server/tls.key
     tlsClientCA: /etc/dex/tls/grpc/ca/tls.crt
-  connectors: {}
+  connectors: []
 #  - type: github
 #    id: github
 #    name: GitHub
@@ -168,6 +193,10 @@ config:
   oauth2:
     alwaysShowLoginScreen: false
     skipApprovalScreen: true
+
+#  expiry:
+#    signingKeys: "6h"
+#    idTokens: "24h"
 
 #  staticClients:
 #  - id: example-app

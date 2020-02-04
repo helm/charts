@@ -3,12 +3,11 @@ apiVersion: v1
 kind: Endpoints
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-kube-controller-manager
-  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-kube-controller-manager
     k8s-app: kube-controller-manager
 {{ include "prometheus-operator.labels" . | indent 4 }}
-  namespace: kube-system
+  namespace: kube-system 
 subsets:
   - addresses:
       {{- range .Values.kubeControllerManager.endpoints }}

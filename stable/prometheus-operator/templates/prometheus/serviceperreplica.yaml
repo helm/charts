@@ -5,7 +5,7 @@ apiVersion: v1
 kind: ServiceList
 metadata:
   name: {{ include "prometheus-operator.fullname" $ }}-prometheus-serviceperreplica
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ $.Release.Namespace }}
 items:
 {{ range $i, $e := until $count }}
   - apiVersion: v1
@@ -31,11 +31,11 @@ items:
       {{- end }}
       {{- end }}
       ports:
-        - name: web
+        - name: {{ .Values.prometheus.prometheusSpec.portName }}
           {{- if eq $serviceValues.type "NodePort" }}
           nodePort: {{ $serviceValues.nodePort }}
           {{- end }}
-          port: 9090
+          port: {{ $serviceValues.port }}
           targetPort: {{ $serviceValues.targetPort }}
       selector:
         app: prometheus

@@ -29,3 +29,6 @@ daemonset:
 priorityClassName: ""
 
 # updateOnSecretChange: true
+extraEnv: {}
+extraVolumeMounts: []
+extraVolumes: []

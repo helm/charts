@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: gcr.io/heptio-images/gangway
-  tag: v3.0.0
+  tag: v3.2.0
   pullPolicy: IfNotPresent
   ## Optional array of imagePullSecrets containing private registry credentials
   ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/

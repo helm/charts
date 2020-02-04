@@ -11,9 +11,9 @@ spec:
   type: ClusterIP
   clusterIP: None
   ports:
-  - name: postgresql
-    port: {{ template "postgresql.port" . }}
-    targetPort: postgresql
+    - name: tcp-postgresql
+      port: {{ template "postgresql.port" . }}
+      targetPort: tcp-postgresql
   selector:
     app: {{ template "postgresql.name" . }}
     release: {{ .Release.Name | quote }}

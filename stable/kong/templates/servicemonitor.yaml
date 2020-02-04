@@ -7,13 +7,10 @@ metadata:
   namespace: {{ .Values.serviceMonitor.namespace }}
   {{- end }}
   labels:
-    app: {{ template "kong.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-    {{- if .Values.serviceMonitor.labels }}
-{{ toYaml .Values.serviceMonitor.labels | indent 4 }}
-    {{- end }}
+    {{- include "kong.metaLabels" . | nindent 4 }}
+  {{- if .Values.serviceMonitor.labels }}
+    {{ toYaml .Values.serviceMonitor.labels | nindent 4 }}
+  {{- end }}
 spec:
   endpoints:
   - targetPort: metrics
@@ -27,6 +24,5 @@ spec:
     - {{ .Release.Namespace }}
   selector:
     matchLabels:
-      app: {{ template "kong.name" . }}
-      release: {{ .Release.Name }}
+      {{- include "kong.metaLabels" . | nindent 6 }}
 {{- end }}

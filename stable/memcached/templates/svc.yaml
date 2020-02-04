@@ -2,11 +2,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "memcached.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "memcached.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+{{ include "memcached.labels" . | indent 4 }}
   annotations:
 {{ toYaml .Values.serviceAnnotations | indent 4 }}
 spec:
@@ -21,4 +19,5 @@ spec:
     targetPort: metrics
 {{- end }}
   selector:
-    app: {{ template "memcached.fullname" . }}
+    app.kubernetes.io/name: {{ include "memcached.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

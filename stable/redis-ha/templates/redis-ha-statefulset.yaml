@@ -2,7 +2,9 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "redis-ha.fullname" . }}-server
+  namespace: {{ .Release.Namespace }}
   labels:
+    {{ template "redis-ha.fullname" . }}: replica
 {{ include "labels.standard" . | indent 4 }}
 spec:
   selector:
@@ -29,6 +31,7 @@ spec:
       labels:
         release: {{ .Release.Name }}
         app: {{ template "redis-ha.name" . }}
+        {{ template "redis-ha.fullname" . }}: replica
         {{- range $key, $value := .Values.labels }}
         {{ $key }}: {{ $value }}
         {{- end }}
@@ -60,6 +63,7 @@ spec:
                 matchLabels:
                   app: {{ template "redis-ha.name" . }}
                   release: {{ .Release.Name }}
+                  {{ template "redis-ha.fullname" . }}: replica
               topologyKey: kubernetes.io/hostname
     {{- else }}
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -67,6 +71,7 @@ spec:
                 matchLabels:
                   app: {{ template "redis-ha.name" . }}
                   release: {{ .Release.Name }}
+                  {{ template "redis-ha.fullname" . }}: replica
               topologyKey: kubernetes.io/hostname
     {{- end }}
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -76,6 +81,7 @@ spec:
                   matchLabels:
                     app:  {{ template "redis-ha.name" . }}
                     release: {{ .Release.Name }}
+                    {{ template "redis-ha.fullname" . }}: replica
                 topologyKey: failure-domain.beta.kubernetes.io/zone
     {{- end }}
       securityContext:
@@ -85,6 +91,9 @@ spec:
       {{- if .Values.sysctlImage.enabled }}
       - name: init-sysctl
         image: {{ template "redis.sysctl.image" . }}
+        imagePullPolicy: {{ .Values.sysctlImage.pullPolicy }}
+        resources:
+{{ toYaml .Values.sysctlImage.resources | indent 10 }}
         {{- if .Values.sysctlImage.mountHostSys }}
         volumeMounts:
         - name: host-sys
@@ -121,7 +130,7 @@ spec:
         args:
         - /readonly-config/init.sh
         env:
-{{- $replicas := int .Values.replicas -}}
+{{- $replicas := int (toString .Values.replicas) -}}
 {{- range $i := until $replicas }}
         - name: SENTINEL_ID_{{ $i }}
           value: {{ printf "%s\n%s\nindex: %d" (include "redis-ha.name" $) ($.Release.Name) $i | sha1sum }}
@@ -148,7 +157,7 @@ spec:
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
-        - redis-server 
+        - redis-server
         args:
         - /data/conf/redis.conf
         env:
@@ -211,7 +220,7 @@ spec:
         image: "{{ .Values.exporter.image }}:{{ .Values.exporter.tag }}"
         imagePullPolicy: {{ .Values.exporter.pullPolicy }}
         args:
-        {{- range $key, $value := .Values.extraArgs }}
+        {{- range $key, $value := .Values.exporter.extraArgs }}
           - --{{ $key }}={{ $value }}
         {{- end }}
         env:
@@ -275,6 +284,9 @@ spec:
     {{- else }}
       storageClassName: "{{ .Values.persistentVolume.storageClass }}"
     {{- end }}
+    {{- end }}
+    {{- if .Values.persistentVolume.reclaimPolicy }}
+    persistentVolumeReclaimPolicy: "{{ .Values.persistentVolume.reclaimPolicy }}"
     {{- end }}
 {{- else if .Values.hostPath.path }}
       - name: data

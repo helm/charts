@@ -5,9 +5,9 @@
   resources:
 {{ toYaml .Values.datadog.resources | indent 4 }}
   ports:
-  - containerPort: 8125
+  - containerPort: {{ default 8125 .Values.datadog.dogStatsDPort }}
     {{- if .Values.daemonset.useHostPort }}
-    hostPort: 8125
+    hostPort: {{ default 8125 .Values.datadog.dogStatsDPort }}
     {{- end }}
     name: dogstatsdport
     protocol: UDP
@@ -26,6 +26,9 @@
           name: {{ template "datadog.apiSecretName" . }}
           key: api-key
     {{- if .Values.datadog.clusterName }}
+    {{- if not (regexMatch "^([a-z]([a-z0-9\\-]{0,38}[a-z0-9])?\\.)*([a-z]([a-z0-9\\-]{0,38}[a-z0-9])?)$" .Values.datadog.clusterName) }}
+    {{- fail "Your `clusterName` isn’t valid. It must be dot-separated tokens where a token start with a lowercase letter followed by up to 39 lowercase letters, numbers, or hyphens and cannot end with a hyphen."}}
+    {{- end}}
     - name: DD_CLUSTER_NAME
       value: {{ .Values.datadog.clusterName | quote }}
     {{- end }}
@@ -40,6 +43,10 @@
     {{- if .Values.datadog.logLevel }}
     - name: DD_LOG_LEVEL
       value: {{ .Values.datadog.logLevel | quote }}
+    {{- end }}
+    {{- if .Values.datadog.dogStatsDPort }}
+    - name: DD_DOGSTATD_PORT
+      value: {{ .Values.datadog.dogStatsDPort | quote }}
     {{- end }}
     {{- if .Values.datadog.nonLocalTraffic }}
     - name: DD_DOGSTATSD_NON_LOCAL_TRAFFIC

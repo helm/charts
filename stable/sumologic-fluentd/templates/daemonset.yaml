@@ -1,6 +1,6 @@
 {{- if (or (.Values.sumologic.collectorUrlExistingSecret) (.Values.sumologic.collectorUrl)) -}}
 # Sumologic collector URL is required
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ template "sumologic-fluentd.fullname" . }}
@@ -9,7 +9,15 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- if .Values.daemonsetAnnotations }}
+    annotations:
+{{ toYaml .Values.daemonsetAnnotations | indent 6 }}
+{{- end }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "sumologic-fluentd.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       name: {{ template "sumologic-fluentd.fullname" . }}
@@ -31,6 +39,9 @@ spec:
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
+            - name: {{ template "sumologic-fluentd.fullname" . }}
+              mountPath: /fluentd/etc
+              readOnly: true
             - name: host-logs
               mountPath: /mnt/log/
               readOnly: true
@@ -203,6 +214,9 @@ spec:
 {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "sumologic-fluentd.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       volumes:
+        - name: {{ template "sumologic-fluentd.fullname" . }}
+          configMap:
+            name: {{ template "sumologic-fluentd.fullname" . }}
         - name: pos-files
           {{- if .Values.persistence.enabled }}
           hostPath:
@@ -229,15 +243,15 @@ spec:
         {{- end }}
     {{- if .Values.tolerations }}
       tolerations:
-    {{ toYaml .Values.tolerations | indent 8 }}
+{{ toYaml .Values.tolerations | indent 8 }}
     {{- end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
-    {{ toYaml .Values.nodeSelector | indent 8 }}
+{{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
     {{ if .Values.affinity }}
       affinity:
-    {{ toYaml .Values.affinity | indent 8 }}
+{{ toYaml .Values.affinity | indent 8 }}
     {{- end }}
   updateStrategy:
     type: "{{ .Values.updateStrategy }}"
