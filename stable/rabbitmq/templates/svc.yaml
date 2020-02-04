@@ -25,13 +25,13 @@ spec:
 {{- end }}
 {{- end }}
   ports:
-  - name: epmd
+  - name: tcp-epmd
     port: 4369
     targetPort: epmd
     {{- if (eq .Values.service.type "ClusterIP") }}
     nodePort: null
     {{- end }}
-  - name: amqp
+  - name: tcp-amqp
     port: {{ .Values.service.port }}
     targetPort: amqp
     {{- if (eq .Values.service.type "ClusterIP") }}
@@ -40,27 +40,27 @@ spec:
     nodePort: {{ .Values.service.nodePort }}
     {{- end }}
   {{- if .Values.rabbitmq.tls.enabled }}
-  - name: amqp-ssl
+  - name: tcp-amqp-ssl
     port: {{ .Values.service.tlsPort }}
     targetPort: amqp-ssl
     {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodeTlsPort))) }}
     nodePort: {{ .Values.service.nodeTlsPort }}
     {{- end }}
   {{- end }}
-  - name: dist
+  - name: tcp-dist
     port: {{ .Values.service.distPort }}
     targetPort: dist
     {{- if (eq .Values.service.type "ClusterIP") }}
     nodePort: null
     {{- end }}
-  - name: stats
+  - name: http-stats
     port: {{ .Values.service.managerPort }}
     targetPort: stats
     {{- if (eq .Values.service.type "ClusterIP") }}
     nodePort: null
     {{- end }}
 {{- if .Values.metrics.enabled }}
-  - name: metrics
+  - name: http-metrics
     port: {{ .Values.metrics.port }}
     targetPort: metrics
     {{- if (eq .Values.service.type "ClusterIP") }}
