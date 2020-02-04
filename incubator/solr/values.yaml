@@ -22,7 +22,7 @@ terminationGracePeriodSeconds: 180
 # Solr image settings
 image:
   repository: solr
-  tag: 7.7.2
+  tag: 8.4.1
   pullPolicy: IfNotPresent
 
 # Solr pod liveness
