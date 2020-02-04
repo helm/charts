@@ -9,7 +9,9 @@ metadata:
     app: {{ template "neo4j.name" . }}
     component: replica
 spec:
+{{- if not .Values.readReplica.autoscaling.enabled }}
   replicas: {{ .Values.readReplica.numberOfServers }}
+{{- end }}
   template:
     metadata:
       labels:

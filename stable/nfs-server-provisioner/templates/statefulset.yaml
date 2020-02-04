@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "nfs-provisioner.fullname" . }}
@@ -74,6 +74,9 @@ spec:
                 - SYS_RESOURCE
           args:
             - "-provisioner={{ template "nfs-provisioner.provisionerName" . }}"
+          {{- range $key, $value := .Values.extraArgs }}
+            - "-{{ $key }}={{ $value }}"
+          {{- end }}
           env:
             - name: POD_IP
               valueFrom:

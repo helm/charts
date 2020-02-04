@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   labels:
@@ -8,6 +8,10 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
   name: {{ template "kube2iam.fullname" . }}
 spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "kube2iam.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
     {{- if .Values.podAnnotations }}
@@ -21,6 +25,7 @@ spec:
 {{ toYaml .Values.podLabels | indent 8 }}
       {{- end }}
     spec:
+{{- include "kube2iam.imagePullSecrets" . | indent 6 }}
       containers:
         - name: kube2iam
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

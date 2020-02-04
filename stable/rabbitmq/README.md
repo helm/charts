@@ -28,7 +28,7 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release stable/rabbitmq
 ```
 
-The command deploys RabbitMQ on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys RabbitMQ on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
@@ -42,7 +42,7 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
-## Configuration
+## Parameters
 
 The following table lists the configurable parameters of the RabbitMQ chart and their default values.
 
@@ -70,6 +70,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `rabbitmq.extraPlugins`                      | Extra plugings to enable                         | `nil`                                                   |
 | `rabbitmq.clustering.address_type`           | Switch clustering mode                           | `ip` or `hostname`                                      |
 | `rabbitmq.clustering.k8s_domain`             | Customize internal k8s cluster domain            | `cluster.local`                                         |
+| `rabbitmq.clustering.rebalance`              | Rebalance master for queues in cluster when new replica is created            | `false`                                         |
 | `rabbitmq.logs`                              | Value for the RABBITMQ_LOGS environment variable | `-`                                                     |
 | `rabbitmq.setUlimitNofiles`                  | Specify if max file descriptor limit should be set | `true`                                                |
 | `rabbitmq.ulimitNofiles`                     | Max File Descriptor limit                        | `65536`                                                 |
@@ -86,6 +87,11 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `rabbitmq.tls.serverCertificate`             | Server certificate                               | Server certificate content                              |
 | `rabbitmq.tls.serverKey`                     | Server Key                                       | Server private key content                              |
 | `rabbitmq.tls.existingSecret`                | Existing secret with certificate content to rabbitmq credentials  | `nil`                                  |
+| `ldap.enabled`                               | Enable LDAP support                              | `false`                                                 |
+| `ldap.server`                                | LDAP server                                      | `""`                                                    |
+| `ldap.port`                                  | LDAP port                                        | `389`                                                   |
+| `ldap.user_dn_pattern`                       | DN used to bind to LDAP                          | `cn=${username},dc=example,dc=org`                      |
+| `ldap.tls.enabled`                           | Enable TLS for LDAP connections                  | `false` (if set to true, check advancedConfiguration parameter in values.yml)   |
 | `service.type`                               | Kubernetes Service type                          | `ClusterIP`                                             |
 | `service.port`                               | Amqp port                                        | `5672`                                                  |
 | `service.tlsPort`                            | Amqp TLS port                                    | `5671`                                                  |
@@ -96,7 +102,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `service.extraPorts`                         | Extra ports to expose in the service             | `nil`                                                   |
 | `service.extraContainerPorts`                | Extra ports to be included in container spec, primarily informational   | `nil`                            |
 | `persistence.enabled`                        | Use a PVC to persist data                        | `true`                                                  |
-| `service.annotations`                        | service annotations as an array                  | []                                                      |
+| `service.annotations`                        | service annotations                              | {}                                                      |
 | `schedulerName`                              | Name of the k8s service (other than default)     | `nil`                                                   |
 | `persistence.storageClass`                   | Storage class of backing PVC                     | `nil` (uses alpha storage class annotation)             |
 | `persistence.existingClaim`                  | RabbitMQ data Persistent Volume existing claim name, evaluated as a template |  ""                         |
@@ -109,6 +115,9 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `resources`                                  | resource needs and limits to apply to the pod    | {}                                                      |
 | `replicas`                                   | Replica count                                    | `1`                                                     |
 | `priorityClassName`                          | Pod priority class name                          | ``                                                      |
+| `networkPolicy.enabled`                      | Enable NetworkPolicy                             | `false`                                                 |
+| `networkPolicy.allowExternal`                | Don't require client label for connections       | `true`                                                  |
+| `networkPolicy.additionalRules`              | Additional NetworkPolicy rules                   | `nil`                                                   |
 | `nodeSelector`                               | Node labels for pod assignment                   | {}                                                      |
 | `affinity`                                   | Affinity settings for pod assignment             | {}                                                      |
 | `tolerations`                                | Toleration labels for pod assignment             | []                                                      |
@@ -125,6 +134,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `livenessProbe.periodSeconds`                | number of seconds                                | 30                                                      |
 | `livenessProbe.failureThreshold`             | number of failures                               | 6                                                       |
 | `livenessProbe.successThreshold`             | number of successes                              | 1                                                       |
+| `podDisruptionBudget`                        | Pod Disruption Budget settings                   | {}                                                      |
 | `readinessProbe.enabled`                     | would you like a readinessProbe to be enabled    | `true`                                                  |
 | `readinessProbe.initialDelaySeconds`         | number of seconds                                | 10                                                      |
 | `readinessProbe.timeoutSeconds`              | number of seconds                                | 20                                                      |
@@ -155,7 +165,12 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `metrics.serviceMonitor.relabellings`        | Specify Metric Relabellings to add to the scrape endpoint                      | `nil`                     |
 | `metrics.serviceMonitor.honorLabels`         | honorLabels chooses the metric's labels on collisions with target labels.      | `false`                   |
 | `metrics.serviceMonitor.additionalLabels`    | Used to pass Labels that are required by the Installed Prometheus Operator     | `{}`                      |
-| `metrics.port        `                       | Prometheus metrics exporter port                 | `9419`                                                  |
+| `metrics.serviceMonitor.release`             | Used to pass Labels release that sometimes should be custom for Prometheus Operator     | `nil`                      |
+| `metrics.prometheusRule.enabled`             | Set this to true to create prometheusRules for Prometheus operator                                                              | `false`                    |
+| `metrics.prometheusRule.additionalLabels`    | Additional labels that can be used so prometheusRules will be discovered by Prometheus                                          | `{}`                       |
+| `metrics.prometheusRule.namespace`           | namespace where prometheusRules resource should be created                                                                      | Same namespace as rabbitmq |
+| `metrics.prometheusRule.rules`               | [rules](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) to be created, check values for an example.  | `[]`                       |
+| `metrics.port`                               | Prometheus metrics exporter port                 | `9419`                                                  |
 | `metrics.env`                                | Exporter [configuration environment variables](https://github.com/kbudde/rabbitmq_exporter#configuration) | `{}` |
 | `metrics.resources`                          | Exporter resource requests/limit                 | `nil`                                                   |
 | `metrics.capabilities`                       | Exporter: Comma-separated list of extended [scraping capabilities supported by the target RabbitMQ server](https://github.com/kbudde/rabbitmq_exporter#extended-rabbitmq-capabilities) | `bert,no_sort` |
@@ -189,13 +204,17 @@ $ helm install --name my-release -f values.yaml stable/rabbitmq
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+## Configuration and installation details
+
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
+
 ### Production configuration and horizontal scaling
 
-This chart includes a `values-production.yaml` file where you can find some parameters oriented to production configuration in comparison to the regular `values.yaml`.
-
-```console
-$ helm install --name my-release -f ./values-production.yaml stable/rabbitmq
-```
+This chart includes a `values-production.yaml` file where you can find some parameters oriented to production configuration in comparison to the regular `values.yaml`. You can use this file instead of the default one.
 
 - Resource needs and limits to apply to the pod:
 ```diff
@@ -239,30 +258,17 @@ $ helm install --name my-release -f ./values-production.yaml stable/rabbitmq
 
 To horizontally scale this chart once it has been deployed you have two options:
 
-- Use `kubectl scale` command:
+- Use `kubectl scale` command
+
+- Upgrading the chart with the following parameters:
 
 ```console
-$ kubectl scale statefulset my-release-rabbitmq --replicas=3
-```
-
-- Use `helm upgrade` command:
-
-```console
-RABBITMQ_PASSWORD="$(kubectl get secret my-release-rabbitmq -o jsonpath='{.data.rabbitmq-password}' | base64 --decode)"
-RABBITMQ_ERLANG_COOKIE="$(kubectl get secret my-release-rabbitmq -o jsonpath='{.data.rabbitmq-erlang-cookie}' | base64 --decode)"
-$ helm upgrade my-release stable/rabbitmq \
-  --set replicas=3 \
-  --set rabbitmq.password="$RABBITMQ_PASSWORD" \
-  --set rabbitmq.erlangCookie="$RABBITMQ_ERLANG_COOKIE"
+replicas=3
+rabbitmq.password="$RABBITMQ_PASSWORD"
+rabbitmq.erlangCookie="$RABBITMQ_ERLANG_COOKIE"
 ```
 
 > Note: please note it's mandatory to indicate the password and erlangCookie that was set the first time the chart was installed to upgrade the chart. Otherwise, new pods won't be able to join the cluster.
-
-### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
-
-It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
-
-Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
 
 ### Load Definitions
 It is possible to [load a RabbitMQ definitions file to configure RabbitMQ](http://www.rabbitmq.com/management.html#load-definitions). Because definitions may contain RabbitMQ credentials, [store the JSON as a Kubernetes secret](https://kubernetes.io/docs/concepts/configuration/secret/#using-secrets-as-files-from-a-pod). Within the secret's data, choose a key name that corresponds with the desired load definitions filename (i.e. `load_definition.json`) and use the JSON object as the value. For example:
@@ -288,7 +294,7 @@ Then, specify the `management.load_definitions` property as an `extraConfigurati
 
 Any load definitions specified will be available within in the container at `/app`.
 
-> Loading a definition will take precedence over any configuration done through [Helm values](#configuration).
+> Loading a definition will take precedence over any configuration done through [Helm values](#parameters).
 
 If needed, you can use `extraSecrets` to let the chart create the secret for you. This way, you don't need to manually create it before deploying a release. For example :
 
@@ -311,32 +317,7 @@ rabbitmq:
     management.load_definitions = /app/load_definition.json
 ```
 
-## Persistence
-
-The [Bitnami RabbitMQ](https://github.com/bitnami/bitnami-docker-rabbitmq) image stores the RabbitMQ data and configurations at the `/opt/bitnami/rabbitmq/var/lib/rabbitmq/` path of the container.
-
-The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) at this location. By default, the volume is created using dynamic volume provisioning. An existing PersistentVolumeClaim can also be defined.
-
-### Existing PersistentVolumeClaims
-
-1. Create the PersistentVolume
-1. Create the PersistentVolumeClaim
-1. Install the chart
-
-```bash
-$ helm install --set persistence.existingClaim=PVC_NAME rabbitmq
-```
-
-### Adjust permissions of the persistence volume mountpoint
-
-As the image runs as non-root by default, it is necessary to adjust the ownership of the persistent volume so that the container can write data into it.
-
-By default, the chart is configured to use Kubernetes Security Context to automatically change the ownership of the volume. However, this feature does not work in all Kubernetes distributions.
-As an alternative, this chart supports using an `initContainer` to change the ownership of the volume before mounting it in the final destination.
-
-You can enable this `initContainer` by setting `volumePermissions.enabled` to `true`.
-
-## Enabling TLS support
+### Enabling TLS support
 
 To enable TLS support you must generate the certificates using RabbitMQ [documentation](https://www.rabbitmq.com/ssl.html#automated-certificate-generation).
 
@@ -365,6 +346,56 @@ This will be generate a secret with the certs, but is possible specify an existi
 Disabling [failIfNoPeerCert](https://www.rabbitmq.com/ssl.html#peer-verification-configuration) allows a TLS connection if client fails to provide a certificate
 
 [sslOptionsVerify](https://www.rabbitmq.com/ssl.html#peer-verification-configuration): When the sslOptionsVerify option is set to verify_peer, the client does send us a certificate, the node must perform peer verification. When set to verify_none, peer verification will be disabled and certificate exchange won't be performed.
+
+### LDAP
+
+LDAP support can be enabled in the chart by specifying the `ldap.` parameters while creating a release. The following parameters should be configured to properly enable the LDAP support in the chart.
+
+- `ldap.enabled`: Enable LDAP support. Defaults to `false`.
+- `ldap.server`: LDAP server host. No defaults.
+- `ldap.port`: LDAP server port. `389`.
+- `ldap.user_dn_pattern`: DN used to bind to LDAP. `cn=${username},dc=example,dc=org`.
+- `ldap.tls.enabled`: Enable TLS for LDAP connections. Defaults to `false`.
+
+For example:
+
+```console
+ldap.enabled="true"
+ldap.server="my-ldap-server"
+ldap.port="389"
+ldap.user_dn_pattern="cn=${username},dc=example,dc=org"
+```
+
+If `ldap.tls.enabled` is set to true, consider using `ldap.port=636` and checking the settings in the advancedConfiguration.
+
+### Common issues
+
+- Changing the password through RabbitMQ's UI can make the pod fail due to the default liveness probes. If you do so, remember to make the chart aware of the new password. Updating the default secret with the password you set through RabbitMQ's UI will automatically recreate the pods. If you are using your own secret, you may have to manually recreate the pods.
+
+## Persistence
+
+The [Bitnami RabbitMQ](https://github.com/bitnami/bitnami-docker-rabbitmq) image stores the RabbitMQ data and configurations at the `/opt/bitnami/rabbitmq/var/lib/rabbitmq/` path of the container.
+
+The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) at this location. By default, the volume is created using dynamic volume provisioning. An existing PersistentVolumeClaim can also be defined.
+
+### Existing PersistentVolumeClaims
+
+1. Create the PersistentVolume
+1. Create the PersistentVolumeClaim
+1. Install the chart
+
+```bash
+$ helm install --set persistence.existingClaim=PVC_NAME rabbitmq
+```
+
+### Adjust permissions of the persistence volume mountpoint
+
+As the image runs as non-root by default, it is necessary to adjust the ownership of the persistent volume so that the container can write data into it.
+
+By default, the chart is configured to use Kubernetes Security Context to automatically change the ownership of the volume. However, this feature does not work in all Kubernetes distributions.
+As an alternative, this chart supports using an `initContainer` to change the ownership of the volume before mounting it in the final destination.
+
+You can enable this `initContainer` by setting `volumePermissions.enabled` to `true`.
 
 ## Upgrading
 

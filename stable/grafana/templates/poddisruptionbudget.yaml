@@ -2,7 +2,8 @@
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ template "grafana.name" . }} 
+  name: {{ template "grafana.name" . }}
+  namespace: {{ template "grafana.namespace" . }}
   labels:
     app: {{ template "grafana.name" . }}
     chart: {{ template "grafana.chart" . }}
@@ -12,8 +13,8 @@ metadata:
 {{ toYaml .Values.labels | indent 4 }}
 {{- end }}
 spec:
-{{- if .Values.podDisruptionBudget.minAvailble }}
-  minAvailable: {{ .Values.podDisruptionBudget.minAvailble }}
+{{- if .Values.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
 {{- end }}
 {{- if .Values.podDisruptionBudget.maxUnavailable }}
   maxUnavailable: {{ .Values.podDisruptionBudget.maxUnavailable }}

@@ -78,7 +78,7 @@ spec:
         - /bin/bash
         - -c
         - |
-          {{- if (eq .Values.securityContext.runAsUser 0.0) }}
+          {{- if (eq (.Values.securityContext.runAsUser | int) 0) }}
           useradd redis
           chown -R redis {{ .Values.master.persistence.path }}
           {{- end }}
@@ -196,6 +196,12 @@ spec:
             cp /opt/bitnami/redis-sentinel/mounted-etc/sentinel.conf /opt/bitnami/redis-sentinel/etc/sentinel.conf
             {{- if .Values.usePassword }}
             printf "\nsentinel auth-pass {{ .Values.sentinel.masterSet }} $REDIS_PASSWORD" >> /opt/bitnami/redis-sentinel/etc/sentinel.conf
+            {{- if .Values.sentinel.usePassword }}
+            printf "\nrequirepass $REDIS_PASSWORD" >> /opt/bitnami/redis-sentinel/etc/sentinel.conf
+            {{- end }}
+            {{- end }}
+            {{- if .Values.sentinel.staticID }}
+            printf "\nsentinel myid $(echo $HOSTNAME | openssl sha1 | awk '{ print $2 }')" >> /opt/bitnami/redis-sentinel/etc/sentinel.conf
             {{- end }}
           fi
           echo "Getting information about current running sentinels"
@@ -279,11 +285,7 @@ spec:
           if [[ -f '/secrets/redis-password' ]]; then
            export REDIS_PASSWORD=$(cat /secrets/redis-password)
           fi
-          redis_exporter
-        args:
-        {{- range $key, $value := .Values.metrics.extraArgs }}
-          - --{{ $key }}={{ $value }}
-        {{- end }}
+          redis_exporter{{- range $key, $value := .Values.metrics.extraArgs }} --{{ $key }}={{ $value }}{{- end }}
         env:
         - name: REDIS_ALIAS
           value: {{ template "redis.fullname" . }}

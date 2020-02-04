@@ -3,7 +3,11 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-grafana-datasource
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ $.Release.Namespace }}
+{{- if .Values.grafana.sidecar.datasources.annotations }}
+  annotations:
+{{ toYaml .Values.grafana.sidecar.datasources.annotations | indent 4 }}
+{{- end }}
   labels:
     {{ $.Values.grafana.sidecar.datasources.label }}: "1"
     app: {{ template "prometheus-operator.name" $ }}-grafana
@@ -15,7 +19,7 @@ data:
 {{- if .Values.grafana.sidecar.datasources.defaultDatasourceEnabled }}
     - name: Prometheus
       type: prometheus
-      url: http://{{ template "prometheus-operator.fullname" . }}-prometheus:9090/{{ trimPrefix "/" .Values.prometheus.prometheusSpec.routePrefix }}
+      url: http://{{ template "prometheus-operator.fullname" . }}-prometheus:{{ .Values.prometheus.service.port }}/{{ trimPrefix "/" .Values.prometheus.prometheusSpec.routePrefix }}
       access: proxy
       isDefault: true
 {{- if .Values.grafana.sidecar.datasources.createPrometheusReplicasDatasources }}

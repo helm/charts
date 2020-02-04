@@ -36,10 +36,24 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | Parameter                  | Description                         | Default                                                 |
 |----------------------------|-------------------------------------|---------------------------------------------------------|
 | `image.repository`         | Image repository | `homeassistant/home-assistant` |
-| `image.tag`                | Image tag. Possible values listed [here](https://hub.docker.com/r/homeassistant/home-assistant/tags/).| `0.99.3`|
+| `image.tag`                | Image tag. Possible values listed [here](https://hub.docker.com/r/homeassistant/home-assistant/tags/).| `0.103.3`|
 | `image.pullPolicy`         | Image pull policy | `IfNotPresent` |
 | `image.pullSecrets`        | Secrets to use when pulling the image | `[]` |
 | `strategyType`             | Specifies the strategy used to replace old Pods by new ones | `Recreate` |
+| `probes.liveness.enabled`  | Use the livenessProbe?  | `true` |
+| `probes.liveness.scheme `  | Specify liveness `scheme` parameter for the deployment  | `HTTP` |
+| `probes.liveness.initialDelaySeconds`  | Specify liveness `initialDelaySeconds` parameter for the deployment  | `60` |
+| `probes.liveness.failureThreshold`     | Specify liveness `failureThreshold` parameter for the deployment     | `5`  |
+| `probes.liveness.timeoutSeconds`       | Specify liveness `timeoutSeconds` parameter for the deployment       | `10` |
+| `probes.readiness.enabled`  | Use the readinessProbe?  | `true` |
+| `probes.readiness.scheme `  | Specify readiness `scheme` parameter for the deployment  | `HTTP` |
+| `probes.readiness.initialDelaySeconds` | Specify readiness `initialDelaySeconds` parameter for the deployment | `60` |
+| `probes.readiness.failureThreshold`    | Specify readiness `failureThreshold` parameter for the deployment    | `5`  |
+| `probes.readiness.timeoutSeconds`      | Specify readiness `timeoutSeconds` parameter for the deployment      | `10` |
+| `probes.startup.enabled`  | Use the startupProbe? (new in kubernetes 1.16)  | `false` |
+| `probes.startup.scheme `  | Specify startup `scheme` parameter for the deployment  | `HTTP` |
+| `probes.startup.failureThreshold`    | Specify startup `failureThreshold` parameter for the deployment    | `5`  |
+| `probes.startup.periodSeconds`      | Specify startup `periodSeconds` parameter for the deployment      | `10` |
 | `service.type`             | Kubernetes service type for the home-assistant GUI | `ClusterIP` |
 | `service.port`             | Kubernetes port where the home-assistant GUI is exposed| `8123` |
 | `service.annotations`      | Service annotations for the home-assistant GUI | `{}` |
@@ -106,7 +120,7 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `configurator.service.loadBalancerSourceRanges`   | Loadbalancer client IP restriction range for the configurator UI | `[]` |
 | `vscode.enabled`                  | Enable the optional [VS Code Server Sidecar](https://github.com/cdr/code-server) | `false` |
 | `vscode.image.repository`         | Image repository | `codercom/code-server` |
-| `vscode.image.tag`                | Image tag | `2.1571-vsc1.38.1`|
+| `vscode.image.tag`                | Image tag | `2.1665-vsc1.39.2`|
 | `vscode.image.pullPolicy`         | Image pull policy | `IfNotPresent` |
 | `vscode.hassConfig`               | Base path of the home assistant configuration files | `/config` |
 | `vscode.vscodePath`               | Base path of the VS Code configuration files | `/config/.vscode` |
@@ -132,6 +146,8 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `tolerations`              | Toleration labels for pod assignment or the home-assistant GUI | `[]` |
 | `affinity`                 | Affinity settings for pod assignment or the home-assistant GUI | `{}` |
 | `podAnnotations`            | Key-value pairs to add as pod annotations  | `{}` |
+| `extraVolumes`            | Any extra volumes to define for the pod  | `{}` |
+| `extraVolumeMounts`       | Any extra volumes mounts to define for each container of the pod  | `{}` |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

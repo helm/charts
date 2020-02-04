@@ -55,6 +55,11 @@ spec:
             value: "{{ $value }}"
           {{- end }}
           {{- end }}
+          {{- if .Values.envFromSecret }}
+          envFrom:
+          - secretRef:
+              name: {{ .Values.envFromSecret }}
+          {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["elasticsearch_exporter",
@@ -64,6 +69,9 @@ spec:
                     {{- end }}
                     {{- if .Values.es.indices }}
                     "--es.indices",
+                    {{- end }}
+                    {{- if .Values.es.indices_settings }}
+                    "--es.indices_settings",
                     {{- end }}
                     {{- if .Values.es.shards }}
                     "--es.shards",
@@ -110,16 +118,22 @@ spec:
               name: http
           livenessProbe:
             httpGet:
-              path: /health
+              path: /healthz
               port: http
-            initialDelaySeconds: 30
-            timeoutSeconds: 10
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
+            periodSeconds: 5
           readinessProbe:
             httpGet:
-              path: /health
+              path: /healthz
               port: http
-            initialDelaySeconds: 10
-            timeoutSeconds: 10
+            initialDelaySeconds: 1
+            timeoutSeconds: 5
+            periodSeconds: 5
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/bash", "-c", "sleep 20"]
           volumeMounts:
             {{- if and .Values.es.ssl.enabled (eq .Values.es.ssl.useExistingSecrets false) }}
             - mountPath: /ssl

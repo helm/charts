@@ -1,9 +1,11 @@
-{{ if .Values.installCrds }}
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
-  creationTimestamp: null
   name: sparkapplications.sparkoperator.k8s.io
+  labels:
+    "app.kubernetes.io/name": sparkoperator
+  annotations:
+    "helm.sh/hook-delete-policy": "before-hook-creation"
 spec:
   group: sparkoperator.k8s.io
   names:
@@ -2538,8 +2540,11 @@ status:
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
-  creationTimestamp: null
   name: scheduledsparkapplications.sparkoperator.k8s.io
+  labels:
+    "app.kubernetes.io/name": sparkoperator
+  annotations:
+    "helm.sh/hook-delete-policy": "before-hook-creation"
 spec:
   group: sparkoperator.k8s.io
   names:
@@ -5088,4 +5093,3 @@ status:
     plural: ""
   conditions: []
   storedVersions: []
-{{ end }}

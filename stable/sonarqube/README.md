@@ -42,7 +42,7 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `replicaCount`                              | Number of replicas deployed               | `1`                                        |
 | `deploymentStrategy`                        | Deployment strategy                       | `{}`                                       |
 | `image.repository`                          | image repository                          | `sonarqube`                                |
-| `image.tag`                                 | `sonarqube` image tag.                    | `7.9.1-community`                            |
+| `image.tag`                                 | `sonarqube` image tag.                    | `7.9.2-community`                            |
 | `image.pullPolicy`                          | Image pull policy                         | `IfNotPresent`                             |
 | `image.pullSecret`                          | imagePullSecret to use for private repository      |                                   |
 | `command`                                   | command to run in the container           | `nil` (need to be set prior to 6.7.6, and 7.4)      |
@@ -66,21 +66,24 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `persistence.enabled`                       | Flag for enabling persistent storage      | false                                      |
 | `persistence.annotations`                   | Kubernetes pvc annotations                | `{}`                                      |
 | `persistence.existingClaim`                 | Do not create a new PVC but use this one  | None                                       |
-| `persistence.storageClass`                  | Storage class to be used                  | "-"                                        |
+| `persistence.storageClass`                  | Storage class to be used                  | ""                                         |
 | `persistence.accessMode`                    | Volumes access mode to be set             | `ReadWriteOnce`                            |
-| `persistence.size`                          | Size of the volume                        | None                                     |
+| `persistence.size`                          | Size of the volume                        | 10Gi                                       |
+| `persistence.volumes`                       | Specify extra volumes. Refer to ".spec.volumes" specification | []                                         |
+| `persistence.mounts`                        | Specify extra mounts. Refer to ".spec.containers.volumeMounts" specification | []                                         |
 | `sonarProperties`                           | Custom `sonar.properties` file            | None                                       |
+| `sonarSecretProperties`                     | Additional `sonar.properties` file to load from a secret | None                                       |
 | `customCerts.enabled`                       | Use `customCerts.secretName`              | false                                      |
 | `customCerts.secretName`                    | Name of the secret which conatins your `cacerts` | false                                      |
 | `sonarSecretKey`                            | Name of existing secret used for settings encryption | None                            |
 | `sonarProperties`                           | Custom `sonar.properties` file            | `{}`                                       |
 | `database.type`                             | Set to "mysql" to use mysql database       | `postgresql`|
 | `postgresql.enabled`                        | Set to `false` to use external server / mysql database     | `true`                                     |
-| `postgresql.postgresServer`                 | Hostname of the external Postgresql server| `null`                                     |
-| `postgresql.postgresPasswordSecret`         | Secret containing the password of the external Postgresql server | `null`              |
-| `postgresql.postgresUser`                   | Postgresql database user                  | `sonarUser`                                |
-| `postgresql.postgresPassword`               | Postgresql database password              | `sonarPass`                                |
-| `postgresql.postgresDatabase`               | Postgresql database name                  | `sonarDB`                                  |
+| `postgresql.postgresqlServer`               | Hostname of the external Postgresql server| `null`                                     |
+| `postgresql.postgresqlPasswordSecret`       | Secret containing the password of the external Postgresql server | `null`              |
+| `postgresql.postgresqlUsername`             | Postgresql database user                  | `sonarUser`                                |
+| `postgresql.postgresqlPassword`             | Postgresql database password              | `sonarPass`                                |
+| `postgresql.postgresqlDatabase`             | Postgresql database name                  | `sonarDB`                                  |
 | `postgresql.service.port`                   | Postgresql port                           | `5432`                                     |
 | `mysql.enabled`                             | Set to `false` to use external server / postgresql database        | `false`                                     |
 | `mysql.mysqlServer`                         | Hostname of the external Mysql server     | `null`                                     |
@@ -97,11 +100,13 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `hostAliases`                               | Aliases for IPs in /etc/hosts             | `[]`                                       |
 | `tolerations`                               | List of node taints to tolerate           | `[]`                                       |
 | `plugins.install`                           | List of plugins to install                | `[]`                                       |
+| `plugins.lib`                               | List of plugins to install to `lib/common`| `[]`                                       |
 | `plugins.resources`                         | Plugin Pod resource requests & limits     | `{}`                                       |
-| `plugins.initContainerImage`                | Change init container image               | `joosthofman/wget:1.0`                     |
+| `plugins.initContainerImage`                | Change init container image               | `alpine:3.10.3`                            |
 | `plugins.initSysctlContainerImage`          | Change init sysctl container image        | `busybox:1.31`                             |
 | `plugins.deleteDefaultPlugins`              | Remove default plugins and use plugins.install list | `[]`                             |
 | `podLabels`                                 | Map of labels to add to the pods          | `{}`                                       |
+| `sonarqubeFolder`                           | Directory name of Sonarqube               | `/opt/sonarqube`                           |
 
 You can also configure values for the PostgreSQL / MySQL database via the Postgresql [README.md](https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md) / MySQL [README.md](https://github.com/kubernetes/charts/blob/master/stable/mysql/README.md)
 

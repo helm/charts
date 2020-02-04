@@ -175,6 +175,9 @@ spec:
               name: tls-cert
               readOnly: true
 {{- end }}
+{{- with .Values.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+{{- end }}
 {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -209,3 +212,7 @@ spec:
           secret:
             secretName: {{ .Values.tlsSecretName }}
 {{- end }}
+{{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+{{- end }}
+

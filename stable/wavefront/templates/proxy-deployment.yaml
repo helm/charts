@@ -67,19 +67,10 @@ spec:
         - name: preprocessor
           mountPath: /etc/wavefront/wavefront-proxy/preprocessor
         {{- end }}
-        {{- if .Values.openshift.enabled }}
-        - name: spool
-          mountPath: /var/spool/wavefront-proxy
-        {{- end }}
       volumes:
       {{- if .Values.proxy.preprocessor }}
       - name: preprocessor
         configMap:
           name: {{ template "wavefront.proxy.fullname" . }}-preprocessor
-      {{- end }}
-      {{- if .Values.openshift.enabled }}
-      - name: spool
-        persistentVolumeClaim:
-          claimName: {{ .Values.openshift.pvcName | quote }}
       {{- end }}
 {{- end }}

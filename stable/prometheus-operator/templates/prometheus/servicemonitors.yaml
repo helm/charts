@@ -3,7 +3,7 @@ apiVersion: v1
 kind: List
 items:
 {{- range .Values.prometheus.additionalServiceMonitors }}
-  - apiVersion: {{ printf "%s/v1" ($.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
+  - apiVersion: monitoring.coreos.com/v1
     kind: ServiceMonitor
     metadata:
       name: {{ .name }}

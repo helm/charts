@@ -16,7 +16,16 @@ serviceAccount:
   create: true
   name:
 
+autolock:
+  enabled: false
+  image:
+    repository: docker.io/bitnami/kubectl
+    tag: 1.15.4
+  scheduleUnlock: 0 4 * * *
+  schedulelock: 0 6 * * *
+
 updateStrategy: OnDelete
+
 
 tolerations:
   - key: node-role.kubernetes.io/master

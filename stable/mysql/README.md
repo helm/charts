@@ -105,6 +105,8 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `service.annotations`                        | Kubernetes annotations for mysql                                                             | {}                                                   |
 | `service.type`                               | Kubernetes service type                                                                      | ClusterIP                                            |
 | `service.loadBalancerIP`                     | LoadBalancer service IP                                                                      | `""`                                                 |
+| `serviceAccount.create`                      | Specifies whether a ServiceAccount should be created                                         | `false`                                              |
+| `serviceAccount.name`                        | The name of the ServiceAccount to create                                                     | Generated using the mysql.fullname template          |
 | `ssl.enabled`                                | Setup and use SSL for MySQL connections                                                      | `false`                                              |
 | `ssl.secret`                                 | Name of the secret containing the SSL certificates                                           | mysql-ssl-certs                                      |
 | `ssl.certificates[0].name`                   | Name of the secret containing the SSL certificates                                           | `nil`                                                |
@@ -118,6 +120,7 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `podLabels`                                  | Map of labels to add to the pods                                                             | `{}`                                                 |
 | `priorityClassName`                          | Set pod priorityClassName                                                                    | `{}`                                                 |
 | `deploymentAnnotations`		       | Map of annotations for deployment							      | `{}`						     |
+| `strategy`                                   | Update strategy policy                                                                       | `{type: "Recreate"}`                                 |
 
 Some of the parameters above map to the env variables defined in the [MySQL DockerHub image](https://hub.docker.com/_/mysql/).
 

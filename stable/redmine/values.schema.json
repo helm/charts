@@ -1,0 +1,171 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "type": "object",
+  "properties": {
+    "redmineUsername": {
+      "type": "string",
+      "title": "Username",
+      "form": true
+    },
+    "redminePassword": {
+      "type": "string",
+      "title": "Password",
+      "form": true,
+      "description": "Defaults to a random 10-character alphanumeric string if not set"
+    },
+    "redmineEmail": {
+      "type": "string",
+      "title": "Admin email",
+      "form": true
+    },
+    "persistence": {
+      "type": "object",
+      "title": "Persistence for Redmine replicas",
+      "form": true,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "form": true,
+          "title": "Enable persistence",
+          "description": "Enable persistence using Persistent Volume Claims"
+        },
+        "size": {
+          "type": "string",
+          "title": "Persistent Volume Size",
+          "form": true,
+          "render": "slider",
+          "sliderMin": 1,
+          "sliderMax": 100,
+          "sliderUnit": "Gi",
+          "hidden": {
+            "condition": false,
+            "value": "persistence.enabled"
+          }
+        }
+      }
+    },
+    "ingress": {
+      "type": "object",
+      "form": true,
+      "title": "Ingress Details",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "form": true,
+          "title": "Use a custom hostname",
+          "description": "Enable the ingress resource that allows you to access the Redmine installation."
+        },
+        "hostname": {
+          "type": "string",
+          "form": true,
+          "title": "Hostname",
+          "hidden": {
+            "condition": false,
+            "value": "ingress.enabled"
+          }
+        },
+        "tls": {
+          "type": "boolean",
+          "form": true,
+          "title": "Enable TLS configuration",
+          "hidden": {
+            "condition": false,
+            "value": "ingress.enabled"
+          }
+        },
+        "certManager": {
+          "type": "boolean",
+          "form": true,
+          "title": "Use cert-manager to auto-generate the TLS certificate",
+          "description": "Add the corresponding annotations for cert-manager to auto-generate the TLS certificate",
+          "hidden": {
+            "condition": false,
+            "value": "ingress.enabled"
+          }
+        }
+      }
+    },
+    "databaseType": {
+      "type": "string",
+      "form": true,
+      "enum": ["mariadb", "postgresql"],
+      "title": "Database Type",
+      "description": "Allowed values: \"mariadb\" and \"postgresql\""
+    },
+    "mariadb": {
+      "type": "object",
+      "title": "MariaDB Details",
+      "form": true,
+      "hidden": {
+        "condition": "postgresql",
+        "value": "databaseType"
+      },
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Use a new MariaDB database hosted in the cluster",
+          "form": true,
+          "description": "Whether to deploy a mariadb server to satisfy the applications database requirements. To use an external database switch this off and configure the external database details"
+        },
+        "master": {
+          "type": "object",
+          "properties": {
+            "persistence": {
+              "type": "object",
+              "properties": {
+                "size": {
+                  "type": "string",
+                  "title": "Volume Size",
+                  "form": true,
+                  "hidden": {
+                    "condition": false,
+                    "value": "mariadb.enabled"
+                  },
+                  "render": "slider",
+                  "sliderMin": 1,
+                  "sliderMax": 100,
+                  "sliderUnit": "Gi"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "postgresql": {
+      "type": "object",
+      "title": "PostgreSQL Details",
+      "form": true,
+      "hidden": {
+        "condition": "mariadb",
+        "value": "databaseType"
+      },
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Use a new PostgreSQL database hosted in the cluster",
+          "form": true,
+          "description": "Whether to deploy a postgresql server to satisfy the applications database requirements. To use an external database switch this off and configure the external database details"
+        },
+        "persistence": {
+          "type": "object",
+          "properties": {
+            "size": {
+              "type": "string",
+              "title": "Volume Size",
+              "form": true,
+              "hidden": {
+                "condition": false,
+                "value": "postgresql.enabled"
+              },
+              "render": "slider",
+              "sliderMin": 1,
+              "sliderMax": 100,
+              "sliderUnit": "Gi"
+            }
+          }
+        }
+      }
+    }
+  }
+}

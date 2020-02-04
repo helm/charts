@@ -4,7 +4,7 @@
   imagePullPolicy: {{ .Values.image.pullPolicy }}
   securityContext:
     capabilities:
-      add: ["SYS_ADMIN", "SYS_RESOURCE", "SYS_PTRACE", "NET_ADMIN"]
+      add: ["SYS_ADMIN", "SYS_RESOURCE", "SYS_PTRACE", "NET_ADMIN", "IPC_LOCK"]
   command: ["/opt/datadog-agent/embedded/bin/system-probe", "--config=/etc/datadog-agent/system-probe.yaml"]
   env:
     - name: DD_LOG_LEVEL

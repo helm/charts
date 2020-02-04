@@ -1,0 +1,131 @@
+{{- if not (index .Values.conf `single-node`) }}
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: {{ template "cockroachdb.fullname" . }}-init
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    helm.sh/chart: {{ template "cockroachdb.chart" . }}
+    app.kubernetes.io/name: {{ template "cockroachdb.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+  {{- with .Values.init.labels }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.labels }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ template "cockroachdb.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      {{- with .Values.init.labels }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.init.annotations }}
+      annotations: {{- toYaml . | nindent 8 }}
+    {{- end }}
+    spec:
+      restartPolicy: OnFailure
+      terminationGracePeriodSeconds: 0
+    {{- if or .Values.image.credentials (and .Values.tls.enabled .Values.tls.init.image.credentials) }}
+      imagePullSecrets:
+      {{- if .Values.image.credentials }}
+        - name: {{ template "cockroachdb.fullname" . }}.db.registry
+      {{- end }}
+      {{- if and .Values.tls.enabled .Values.tls.init.image.credentials }}
+        - name: {{ template "cockroachdb.fullname" . }}.init-certs.registry
+      {{- end }}
+    {{- end }}
+    {{- if .Values.tls.enabled }}
+      serviceAccountName: {{ template "cockroachdb.tls.serviceAccount.name" . }}
+      initContainers:
+        # The init-certs container sends a CSR (certificate signing request) to
+        # the Kubernetes cluster.
+        # You can see pending requests using:
+        #   kubectl get csr
+        # CSRs can be approved using:
+        #   kubectl certificate approve <csr-name>
+        #
+        # In addition to the Node certificate and key, the init-certs entrypoint
+        # will symlink the cluster CA to the certs directory.
+        - name: init-certs
+          image: "{{ .Values.tls.init.image.repository }}:{{ .Values.tls.init.image.tag }}"
+          imagePullPolicy: {{ .Values.tls.init.image.pullPolicy | quote }}
+          command:
+            - /bin/ash
+            - -ecx
+            - >-
+              /request-cert
+              -namespace=${POD_NAMESPACE}
+              -certs-dir=/cockroach-certs/
+              -symlink-ca-from=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+              -type=client
+              -user=root
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          volumeMounts:
+            - name: client-certs
+              mountPath: /cockroach-certs/
+    {{- end }}
+    {{- with .Values.init.affinity }}
+      affinity: {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.init.nodeSelector }}
+      nodeSelector: {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.init.tolerations }}
+      tolerations: {{- toYaml . | nindent 8 }}
+    {{- end }}
+      containers:
+        - name: cluster-init
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+          # Run the command in an `while true` loop because this Job is bound
+          # to come up before the CockroachDB Pods (due to the time needed to
+          # get PersistentVolumes attached to Nodes), and sleeping 5 seconds
+          # between attempts is much better than letting the Pod fail when
+          # the init command does and waiting out Kubernetes' non-configurable
+          # exponential back-off for Pod restarts.
+          # Command completes either when cluster initialization succeeds,
+          # or when cluster has been initialized already.
+          command:
+            - /bin/bash
+            - -c
+            - >-
+              while true; do
+              initOUT=$(set -x;
+              /cockroach/cockroach init
+              {{- if .Values.tls.enabled }}
+              --certs-dir=/cockroach-certs/
+              {{- else }}
+              --insecure
+              {{- end }}
+              --host={{ template "cockroachdb.fullname" . }}-0.{{ template "cockroachdb.fullname" . -}}
+                     :{{ .Values.service.ports.grpc.internal.port | int64 }}
+              2>&1);
+              initRC="$?";
+              echo $initOUT;
+              [[ "$initRC" == "0" ]] && exit 0;
+              [[ "$initOUT" == *"cluster has already been initialized"* ]] && exit 0;
+              sleep 5;
+              done
+        {{- if .Values.tls.enabled }}
+          volumeMounts:
+            - name: client-certs
+              mountPath: /cockroach-certs/
+        {{- end }}
+        {{- with .Values.init.resources }}
+          resources: {{- toYaml . | nindent 12 }}
+        {{- end }}
+    {{- if .Values.tls.enabled }}
+      volumes:
+        - name: client-certs
+          emptyDir: {}
+    {{- end }}
+{{- end }}

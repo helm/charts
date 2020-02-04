@@ -141,15 +141,23 @@ data:
     MASTER_NAME="{{ template "graylog.fullname" . }}-master.{{ .Release.Namespace }}.svc.cluster.local"
     # Looking for Master IP
     MASTER_IP=`/k8s/kubectl --namespace {{ .Release.Namespace }} get pod -o jsonpath='{range .items[*]}{.metadata.name} {.status.podIP}{"\n"}{end}' -l graylog-role=master --field-selector=status.phase=Running|awk '{print $2}'`
+    SELF_IP=`/k8s/kubectl --namespace {{ .Release.Namespace }} get pod $HOSTNAME -o jsonpath='{.status.podIP}'`
     echo "Current master is $MASTER_IP"
+    echo "Self IP is $SELF_IP"
     if [[ -z "$MASTER_IP" ]]; then
       echo "Launching $HOSTNAME as master"
       export GRAYLOG_IS_MASTER="true"
       /k8s/kubectl --namespace {{ .Release.Namespace }} label --overwrite pod $HOSTNAME graylog-role="master"
     else
-      echo "Launching $HOSTNAME as coordinating"
-      export GRAYLOG_IS_MASTER="false"
-      /k8s/kubectl --namespace {{ .Release.Namespace }} label --overwrite pod $HOSTNAME graylog-role="coordinating"
+      # When container was recreated or restart, MASTER_IP == SELF_IP, running as master and no need to change label graylog-role="master"
+      if [ "$SELF_IP" == "$MASTER_IP" ];then
+        export GRAYLOG_IS_MASTER="true"
+      else
+        # MASTER_IP != SELF_IP, running as coordinating
+        echo "Launching $HOSTNAME as coordinating"
+        export GRAYLOG_IS_MASTER="false"
+        /k8s/kubectl --namespace {{ .Release.Namespace }} label --overwrite pod $HOSTNAME graylog-role="coordinating"
+      fi
     fi
     # Download plugins
   {{- if .Values.graylog.plugins }}
@@ -160,8 +168,8 @@ data:
   {{- end }}
   {{- end }}
   {{- if .Values.graylog.metrics.enabled }}
-    echo "Downloading https://github.com/graylog-labs/graylog-plugin-metrics-reporter/releases/download/2.4.0-beta.3/metrics-reporter-prometheus-2.4.0-beta.3.jar ..."
-    curl -s --location --retry 3 -o ${GRAYLOG_HOME}/plugin/metrics-reporter-prometheus-2.4.0-beta.3.jar "https://github.com/graylog-labs/graylog-plugin-metrics-reporter/releases/download/2.4.0-beta.3/metrics-reporter-prometheus-2.4.0-beta.3.jar"
+    echo "Downloading https://github.com/graylog-labs/graylog-plugin-metrics-reporter/releases/download/3.0.0/metrics-reporter-prometheus-3.0.0.jar ..."
+    curl -s --location --retry 3 -o ${GRAYLOG_HOME}/plugin/metrics-reporter-prometheus-3.0.0.jar "https://github.com/graylog-labs/graylog-plugin-metrics-reporter/releases/download/3.0.0/metrics-reporter-prometheus-3.0.0.jar"
   {{- end }}
   {{- if .Values.graylog.geoip.enabled }}
     echo "Downloading Maxmind GeoLite2 ..."

@@ -1,5 +1,5 @@
 {{- if .Values.kubeStateMetrics.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "prometheus.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
 {{- if .Values.kubeStateMetrics.deploymentAnnotations }}
@@ -43,6 +43,8 @@ spec:
           ports:
             - name: metrics
               containerPort: 8080
+            - name: telemetry
+              containerPort: 8081
           resources:
 {{ toYaml .Values.kubeStateMetrics.resources | indent 12 }}
     {{- if .Values.imagePullSecrets }}
