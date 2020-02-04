@@ -7,9 +7,8 @@ metadata:
     chart: "{{ template "testlink.chart" . }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Name | quote }}
-  annotations:
 {{- if .Values.service.annotations }}
-{{ toYaml .Values.service.annotations | indent 4 }}
+  annotations: {{ include "testlink.tplValue" ( dict "value" .Values.service.annotations "context" $) | nindent 4 }}
 {{- end }}
 spec:
   type: {{ .Values.service.type }}

@@ -99,7 +99,7 @@ The following table lists the configurable parameters of the TestLink chart and 
 | `service.nodePorts.https`           | Kubernetes https node port                                                                            | `""`                                                         |
 | `service.externalTrafficPolicy`     | Enable client source IP preservation                                                                  | `Cluster`                                                    |
 | `service.loadBalancerIP`            | LoadBalancer service IP address                                                                       | `""`                                                         |
-| `service.annotations`               | Service annotations                                                                                   | `{}`                                                         |
+| `service.annotations`               | Kubernetes service annotations, evaluated as a template                                               | `{}`                                                         |
 | `persistence.enabled`               | Enable persistence using PVC                                                                          | `true`                                                       |
 | `persistence.testlink.storageClass` | PVC Storage Class for TestLink volume                                                                 | `nil` (uses alpha storage class annotation)                  |
 | `persistence.testlink.accessMode`   | PVC Access Mode for TestLink volume                                                                   | `ReadWriteOnce`                                              |
