@@ -202,6 +202,10 @@ data:
       user nobody
       group nogroup
 
+{{ if .Values.openvpn.ccd.enabled }}
+      client-config-dir /etc/openvpn/ccd
+{{ end }}
+
 {{ if .Values.openvpn.DEFAULT_ROUTE_ENABLED }}
       push "route NETWORK NETMASK"
 {{ end }}

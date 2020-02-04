@@ -15,16 +15,19 @@ strategyType: Recreate
 probes:
   liveness:
     enabled: true
+    scheme: HTTP
     initialDelaySeconds: 60
     failureThreshold: 5
     timeoutSeconds: 10
   readiness:
     enabled: true
+    scheme: HTTP
     initialDelaySeconds: 60
     failureThreshold: 5
     timeoutSeconds: 10
   startup:
     enabled: false
+    scheme: HTTP
     failureThreshold: 30
     periodSeconds: 10
 service:
