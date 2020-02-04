@@ -73,4 +73,3 @@ readinessProbe:
   failureThreshold: 3
   scheme: HTTP
   path: /
-
