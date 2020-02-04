@@ -38,6 +38,7 @@ spec:
         {{ toYaml .Values.customLabels | nindent 8 }}
         {{- end }}
       annotations:
+        checksum/configmap: {{ include (print $.Template.BasePath "/configmap-autoscaler.yaml") . | sha256sum }}
         {{- if .Values.isClusterService }}
         scheduler.alpha.kubernetes.io/critical-pod: ''
         scheduler.alpha.kubernetes.io/tolerations: '[{"key":"CriticalAddonsOnly", "operator":"Exists"}]'

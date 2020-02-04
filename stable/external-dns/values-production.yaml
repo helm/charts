@@ -80,6 +80,11 @@ aws:
     ## pre external-dns 0.5.9 home dir should be `/root/.aws`
     ##
     mountPath: "/.aws"
+    ## Use an existing secret with key "credentials" defined.
+    ## This ignores aws.credentials.secretKey, and aws.credentials.accessKey
+    ##
+    # secretName:
+
   ## AWS region
   ##
   region: "us-east-1"
@@ -142,6 +147,10 @@ cloudflare:
   ## `CF_API_KEY` to set in the environment
   ##
   apiKey: ""
+  ## Use an existing secret with keys "cloudflare_api_token" or "cloudflare_api_key" defined.
+  ## This ignores cloudflare.apiToken, and cloudflare.apiKey
+  ##
+  # secretName:
   ## `CF_API_EMAIL` to set in the environment
   ##
   email: ""
@@ -208,6 +217,10 @@ digitalocean:
   ## `DO_TOKEN` to set in the environment
   ##
   apiToken: ""
+  ## Use an existing secret with key "digitalocean_api_token" defined.
+  ## This ignores digitalocean.apiToken
+  ##
+  # secretName:
 
 ## Google configuration to be set via arguments/env. variables
 ##

@@ -166,6 +166,7 @@ data:
             "socketpair",
             "stat",
             "stat64",
+            "statfs",
             "umask",
             "uname",
             "unlink",
