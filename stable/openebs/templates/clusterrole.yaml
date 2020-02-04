@@ -43,7 +43,7 @@ rules:
   resources: [ "castemplates", "runtasks"]
   verbs: ["*" ]
 - apiGroups: ["*"]
-  resources: [ "cstorpools", "cstorpools/finalizers", "cstorvolumereplicas", "cstorvolumes", "cstorvolumeclaims"]
+  resources: [ "cstorpools", "cstorpools/finalizers", "cstorvolumereplicas", "cstorvolumes", "cstorvolumeclaims", "cstorvolumepolicies"]
   verbs: ["*" ]
 - apiGroups: ["*"]
   resources: [ "cstorpoolinstances", "cstorpoolinstances/finalizers"]

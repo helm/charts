@@ -69,10 +69,22 @@ rules:
   - limitranges
   verbs: ["list", "watch"]
 {{ end -}}
+{{ if .Values.collectors.mutatingwebhookconfigurations }}
+- apiGroups: ["admissionregistration.k8s.io"]
+  resources:
+    - mutatingwebhookconfigurations
+  verbs: ["list", "watch"]
+{{ end -}}
 {{ if .Values.collectors.namespaces }}
 - apiGroups: [""]
   resources:
   - namespaces
+  verbs: ["list", "watch"]
+{{ end -}}
+{{ if .Values.collectors.networkpolicies }}
+- apiGroups: ["networking.k8s.io"]
+  resources:
+  - networkpolicies
   verbs: ["list", "watch"]
 {{ end -}}
 {{ if .Values.collectors.nodes }}
@@ -143,6 +155,18 @@ rules:
 {{ end -}}
 {{ if .Values.collectors.storageclasses }}
 - apiGroups: ["storage.k8s.io"]
+  resources:
+    - storageclasses
+  verbs: ["list", "watch"]
+{{ end -}}
+{{ if .Values.collectors.validatingwebhookconfigurations }}
+- apiGroups: ["admissionregistration.k8s.io"]
+  resources:
+    - validatingwebhookconfigurations
+  verbs: ["list", "watch"]
+{{ end -}}
+{{ if .Values.collectors.volumeattachements }}
+- apiGroups: ["storageclasses.k8s.io"]
   resources:
     - storageclasses
   verbs: ["list", "watch"]

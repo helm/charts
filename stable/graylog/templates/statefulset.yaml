@@ -15,7 +15,11 @@ spec:
     matchLabels:
       app.kubernetes.io/name: {{ template "graylog.name" . }}
       app.kubernetes.io/instance: "{{ .Release.Name }}"
+      {{- if .Values.helm2Compatibility }}
+      app.kubernetes.io/managed-by: "Tiller"
+      {{- else }}
       app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+      {{- end }}
   updateStrategy:
     type: {{ .Values.graylog.updateStrategy }}
   template:
@@ -23,7 +27,11 @@ spec:
       labels:
         app.kubernetes.io/name: {{ template "graylog.name" . }}
         helm.sh/chart: {{ template "graylog.chart" . }}
+        {{- if .Values.helm2Compatibility }}
+        app.kubernetes.io/managed-by: "Tiller"
+        {{- else }}
         app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+        {{- end }}
         app.kubernetes.io/instance: "{{ .Release.Name }}"
         app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
       annotations:
@@ -84,6 +92,9 @@ spec:
 {{- if .Values.graylog.init.resources }}
           resources:
 {{ toYaml .Values.graylog.init.resources | indent 12 }}
+{{- end }}
+{{- if .Values.graylog.extraInitContainers }}
+{{ toYaml .Values.graylog.extraInitContainers | indent 8 }}
 {{- end }}
       containers:
         - name: graylog-server
@@ -166,6 +177,9 @@ spec:
           {{- end }}
             - name: kubectl
               mountPath: /k8s
+          {{- if .Values.graylog.extraVolumeMounts }}
+          {{ toYaml .Values.graylog.extraVolumeMounts | nindent 12 }}
+          {{- end }}
           lifecycle:
             preStop:
               exec:
@@ -200,6 +214,9 @@ spec:
         {{- end }}
         - name: kubectl
           emptyDir: {}
+{{- if .Values.graylog.extraVolumes }}
+{{ toYaml .Values.graylog.extraVolumes | indent 8}}
+{{- end }}
 {{- if not .Values.graylog.persistence.enabled }}
         - name: journal
           emptyDir: {}

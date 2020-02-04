@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "hadoop.fullname" . }}-yarn-nm
@@ -12,6 +12,11 @@ metadata:
 spec:
   serviceName: {{ include "hadoop.fullname" . }}-yarn-nm
   replicas: {{ .Values.yarn.nodeManager.replicas }}
+  selector:
+    matchLabels:
+      app: {{ include "hadoop.name" . }}
+      release: {{ .Release.Name }}
+      component: yarn-nm
 {{- if .Values.yarn.nodeManager.parallelCreate }}
   podManagementPolicy: Parallel
 {{- end }}

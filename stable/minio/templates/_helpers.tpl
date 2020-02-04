@@ -85,3 +85,12 @@ Determine service account name for deployment or statefulset.
 {{- default "default" .Values.serviceAccount.name -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Properly format optional additional arguments to Minio binary
+*/}}
+{{- define "minio.extraArgs" -}}
+{{- range .Values.extraArgs -}}
+,{{ . | quote }}
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,173 @@
+# Generated from 'kube-apiserver-error' group from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml
+# Do not change in-place! In order to change this file first read following link:
+# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
+{{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
+{{- if and (semverCompare ">=1.14.0-0" $kubeTargetVersion) (semverCompare "<9.9.9-9" $kubeTargetVersion) .Values.defaultRules.create }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ printf "%s-%s" (include "prometheus-operator.fullname" .) "kube-apiserver-error" | trunc 63 | trimSuffix "-" }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "prometheus-operator.name" . }}
+{{ include "prometheus-operator.labels" . | indent 4 }}
+{{- if .Values.defaultRules.labels }}
+{{ toYaml .Values.defaultRules.labels | indent 4 }}
+{{- end }}
+{{- if .Values.defaultRules.annotations }}
+  annotations:
+{{ toYaml .Values.defaultRules.annotations | indent 4 }}
+{{- end }}
+spec:
+  groups:
+  - name: kube-apiserver-error
+    rules:
+    - alert: ErrorBudgetBurn
+      annotations:
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-errorbudgetburn
+      expr: |-
+        (
+          status_class_5xx:apiserver_request_total:ratio_rate1h{job="apiserver"} > (14.4*0.010000)
+          and
+          status_class_5xx:apiserver_request_total:ratio_rate5m{job="apiserver"} > (14.4*0.010000)
+        )
+        or
+        (
+          status_class_5xx:apiserver_request_total:ratio_rate6h{job="apiserver"} > (6*0.010000)
+          and
+          status_class_5xx:apiserver_request_total:ratio_rate30m{job="apiserver"} > (6*0.010000)
+        )
+      labels:
+        job: apiserver
+        severity: critical
+    - alert: ErrorBudgetBurn
+      annotations:
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-errorbudgetburn
+      expr: |-
+        (
+          status_class_5xx:apiserver_request_total:ratio_rate1d{job="apiserver"} > (3*0.010000)
+          and
+          status_class_5xx:apiserver_request_total:ratio_rate2h{job="apiserver"} > (3*0.010000)
+        )
+        or
+        (
+          status_class_5xx:apiserver_request_total:ratio_rate3d{job="apiserver"} > (0.010000)
+          and
+          status_class_5xx:apiserver_request_total:ratio_rate6h{job="apiserver"} > (0.010000)
+        )
+      labels:
+        job: apiserver
+        severity: warning
+    - expr: |-
+        sum by (status_class) (
+          label_replace(
+            rate(apiserver_request_total{job="apiserver"}[5m]
+          ), "status_class", "${1}xx", "code", "([0-9])..")
+        )
+      labels:
+        job: apiserver
+      record: status_class:apiserver_request_total:rate5m
+    - expr: |-
+        sum by (status_class) (
+          label_replace(
+            rate(apiserver_request_total{job="apiserver"}[30m]
+          ), "status_class", "${1}xx", "code", "([0-9])..")
+        )
+      labels:
+        job: apiserver
+      record: status_class:apiserver_request_total:rate30m
+    - expr: |-
+        sum by (status_class) (
+          label_replace(
+            rate(apiserver_request_total{job="apiserver"}[1h]
+          ), "status_class", "${1}xx", "code", "([0-9])..")
+        )
+      labels:
+        job: apiserver
+      record: status_class:apiserver_request_total:rate1h
+    - expr: |-
+        sum by (status_class) (
+          label_replace(
+            rate(apiserver_request_total{job="apiserver"}[2h]
+          ), "status_class", "${1}xx", "code", "([0-9])..")
+        )
+      labels:
+        job: apiserver
+      record: status_class:apiserver_request_total:rate2h
+    - expr: |-
+        sum by (status_class) (
+          label_replace(
+            rate(apiserver_request_total{job="apiserver"}[6h]
+          ), "status_class", "${1}xx", "code", "([0-9])..")
+        )
+      labels:
+        job: apiserver
+      record: status_class:apiserver_request_total:rate6h
+    - expr: |-
+        sum by (status_class) (
+          label_replace(
+            rate(apiserver_request_total{job="apiserver"}[1d]
+          ), "status_class", "${1}xx", "code", "([0-9])..")
+        )
+      labels:
+        job: apiserver
+      record: status_class:apiserver_request_total:rate1d
+    - expr: |-
+        sum by (status_class) (
+          label_replace(
+            rate(apiserver_request_total{job="apiserver"}[3d]
+          ), "status_class", "${1}xx", "code", "([0-9])..")
+        )
+      labels:
+        job: apiserver
+      record: status_class:apiserver_request_total:rate3d
+    - expr: |-
+        sum(status_class:apiserver_request_total:rate5m{job="apiserver",status_class="5xx"})
+        /
+        sum(status_class:apiserver_request_total:rate5m{job="apiserver"})
+      labels:
+        job: apiserver
+      record: status_class_5xx:apiserver_request_total:ratio_rate5m
+    - expr: |-
+        sum(status_class:apiserver_request_total:rate30m{job="apiserver",status_class="5xx"})
+        /
+        sum(status_class:apiserver_request_total:rate30m{job="apiserver"})
+      labels:
+        job: apiserver
+      record: status_class_5xx:apiserver_request_total:ratio_rate30m
+    - expr: |-
+        sum(status_class:apiserver_request_total:rate1h{job="apiserver",status_class="5xx"})
+        /
+        sum(status_class:apiserver_request_total:rate1h{job="apiserver"})
+      labels:
+        job: apiserver
+      record: status_class_5xx:apiserver_request_total:ratio_rate1h
+    - expr: |-
+        sum(status_class:apiserver_request_total:rate2h{job="apiserver",status_class="5xx"})
+        /
+        sum(status_class:apiserver_request_total:rate2h{job="apiserver"})
+      labels:
+        job: apiserver
+      record: status_class_5xx:apiserver_request_total:ratio_rate2h
+    - expr: |-
+        sum(status_class:apiserver_request_total:rate6h{job="apiserver",status_class="5xx"})
+        /
+        sum(status_class:apiserver_request_total:rate6h{job="apiserver"})
+      labels:
+        job: apiserver
+      record: status_class_5xx:apiserver_request_total:ratio_rate6h
+    - expr: |-
+        sum(status_class:apiserver_request_total:rate1d{job="apiserver",status_class="5xx"})
+        /
+        sum(status_class:apiserver_request_total:rate1d{job="apiserver"})
+      labels:
+        job: apiserver
+      record: status_class_5xx:apiserver_request_total:ratio_rate1d
+    - expr: |-
+        sum(status_class:apiserver_request_total:rate3d{job="apiserver",status_class="5xx"})
+        /
+        sum(status_class:apiserver_request_total:rate3d{job="apiserver"})
+      labels:
+        job: apiserver
+      record: status_class_5xx:apiserver_request_total:ratio_rate3d
+{{- end }}

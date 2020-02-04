@@ -70,6 +70,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `rabbitmq.extraPlugins`                      | Extra plugings to enable                         | `nil`                                                   |
 | `rabbitmq.clustering.address_type`           | Switch clustering mode                           | `ip` or `hostname`                                      |
 | `rabbitmq.clustering.k8s_domain`             | Customize internal k8s cluster domain            | `cluster.local`                                         |
+| `rabbitmq.clustering.rebalance`              | Rebalance master for queues in cluster when new replica is created            | `false`                                         |
 | `rabbitmq.logs`                              | Value for the RABBITMQ_LOGS environment variable | `-`                                                     |
 | `rabbitmq.setUlimitNofiles`                  | Specify if max file descriptor limit should be set | `true`                                                |
 | `rabbitmq.ulimitNofiles`                     | Max File Descriptor limit                        | `65536`                                                 |
@@ -90,11 +91,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `ldap.server`                                | LDAP server                                      | `""`                                                    |
 | `ldap.port`                                  | LDAP port                                        | `389`                                                   |
 | `ldap.user_dn_pattern`                       | DN used to bind to LDAP                          | `cn=${username},dc=example,dc=org`                      |
-| `ldap.tls.enabled`                           | Enable TLS for LDAP connections                  | `false`                                                 |
-| `ldap.tls.caCertificate`                     | CA certificate for LDAP connections              | `nil`                                                   |
-| `ldap.tls.serverCertificate`                 | Server certificate for LDAP connections          | `nil`                                                   |
-| `ldap.tls.serverKey`                         | Server key for LDAP connections                  | `nil`                                                   |
-| `ldap.tls.existingSecret`                    | Existing secret with certificate content to LDAP credentials   | `nil`                                     |
+| `ldap.tls.enabled`                           | Enable TLS for LDAP connections                  | `false` (if set to true, check advancedConfiguration parameter in values.yml)   |
 | `service.type`                               | Kubernetes Service type                          | `ClusterIP`                                             |
 | `service.port`                               | Amqp port                                        | `5672`                                                  |
 | `service.tlsPort`                            | Amqp TLS port                                    | `5671`                                                  |
@@ -168,7 +165,12 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `metrics.serviceMonitor.relabellings`        | Specify Metric Relabellings to add to the scrape endpoint                      | `nil`                     |
 | `metrics.serviceMonitor.honorLabels`         | honorLabels chooses the metric's labels on collisions with target labels.      | `false`                   |
 | `metrics.serviceMonitor.additionalLabels`    | Used to pass Labels that are required by the Installed Prometheus Operator     | `{}`                      |
-| `metrics.port        `                       | Prometheus metrics exporter port                 | `9419`                                                  |
+| `metrics.serviceMonitor.release`             | Used to pass Labels release that sometimes should be custom for Prometheus Operator     | `nil`                      |
+| `metrics.prometheusRule.enabled`             | Set this to true to create prometheusRules for Prometheus operator                                                              | `false`                    |
+| `metrics.prometheusRule.additionalLabels`    | Additional labels that can be used so prometheusRules will be discovered by Prometheus                                          | `{}`                       |
+| `metrics.prometheusRule.namespace`           | namespace where prometheusRules resource should be created                                                                      | Same namespace as rabbitmq |
+| `metrics.prometheusRule.rules`               | [rules](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) to be created, check values for an example.  | `[]`                       |
+| `metrics.port`                               | Prometheus metrics exporter port                 | `9419`                                                  |
 | `metrics.env`                                | Exporter [configuration environment variables](https://github.com/kbudde/rabbitmq_exporter#configuration) | `{}` |
 | `metrics.resources`                          | Exporter resource requests/limit                 | `nil`                                                   |
 | `metrics.capabilities`                       | Exporter: Comma-separated list of extended [scraping capabilities supported by the target RabbitMQ server](https://github.com/kbudde/rabbitmq_exporter#extended-rabbitmq-capabilities) | `bert,no_sort` |
@@ -353,14 +355,7 @@ LDAP support can be enabled in the chart by specifying the `ldap.` parameters wh
 - `ldap.server`: LDAP server host. No defaults.
 - `ldap.port`: LDAP server port. `389`.
 - `ldap.user_dn_pattern`: DN used to bind to LDAP. `cn=${username},dc=example,dc=org`.
-
-It's also possible to connect to LDAP servers using TLS. The following parameters allow this configuration:
-
 - `ldap.tls.enabled`: Enable TLS for LDAP connections. Defaults to `false`.
-- `ldap.tls.caCertificate`: CA certificate for LDAP connections. No defaults.
-- `ldap.tls.serverCertificate`: Server certificate for LDAP connections. No defaults.
-- `ldap.tls.serverKey`: Server key for LDAP connections. No defaults.
-- `ldap.tls.existingSecret`: Existing secret with certificate content to LDAP credentials. No defaults.
 
 For example:
 
@@ -370,6 +365,12 @@ ldap.server="my-ldap-server"
 ldap.port="389"
 ldap.user_dn_pattern="cn=${username},dc=example,dc=org"
 ```
+
+If `ldap.tls.enabled` is set to true, consider using `ldap.port=636` and checking the settings in the advancedConfiguration.
+
+### Common issues
+
+- Changing the password through RabbitMQ's UI can make the pod fail due to the default liveness probes. If you do so, remember to make the chart aware of the new password. Updating the default secret with the password you set through RabbitMQ's UI will automatically recreate the pods. If you are using your own secret, you may have to manually recreate the pods.
 
 ## Persistence
 

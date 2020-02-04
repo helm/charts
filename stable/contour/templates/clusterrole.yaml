@@ -12,6 +12,7 @@ rules:
 - apiGroups:
   - ""
   resources:
+
   - configmaps
   - endpoints
   - nodes
@@ -60,4 +61,14 @@ rules:
   - put
   - post
   - patch
+- apiGroups: ["apiextensions.k8s.io"]
+  resources: ["customresourcedefinitions"]
+  verbs:
+  - get
+  - list
+  - watch
+  - put
+  - post
+  - patch
+  - delete
 {{- end -}}

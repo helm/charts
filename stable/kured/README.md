@@ -36,3 +36,14 @@ extraArgs:
   bar-baz: 2
 ```
 becomes `/usr/bin/kured ... --foo=1 --bar-baz=2`.
+
+## Prometheus Metrics
+
+Kured exposes a single prometheus metric indicating whether a reboot is required or not (see [kured docs](https://github.com/weaveworks/kured#prometheus-metrics)) for details. It can be scraped with the following set of annotations:
+
+```yaml
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/path: "/metrics"
+  prometheus.io/port: "8080"
+```

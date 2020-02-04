@@ -10,9 +10,17 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/component: authorize
   name: {{ template "pomerium.authorize.fullname" . }}
-{{- if .Values.annotations }}
+{{- if or .Values.authorize.deployment.annotations .Values.annotations }}
   annotations:
-{{ toYaml .Values.annotations | indent 4 }}
+  {{- if .Values.authorize.deployment.annotations }}
+    {{- range $key, $value := .Values.authorize.deployment.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- else if .Values.annotations }}
+    {{- range $key, $value := .Values.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
 {{- end }}
 spec:
   replicas: {{ default .Values.replicaCount .Values.authorize.replicaCount }}
