@@ -6,7 +6,7 @@
 ## Documentation
 
 Below is a brief overview of operating the CockroachDB Helm Chart and some specific implementation details. For additional information, please see:
-> https://www.cockroachlabs.com/docs/v19.2/orchestrate-cockroachdb-with-kubernetes-insecure.html
+> https://www.cockroachlabs.com/docs/stable/orchestrate-cockroachdb-with-kubernetes-insecure.html
 
 
 
@@ -101,7 +101,7 @@ Set the `cluster.preserve_downgrade_option` cluster setting, where `$current_ver
 
 Exit the shell and delete the temp Pod:
 ```sql
-> \q 
+> \q
 ```
 
 Kick off the upgrade process by changing to the new Docker image, where `$new_version` is the version being upgraded to:
@@ -131,10 +131,10 @@ kubectl get pods \
 -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.spec.containers[0].image}{"\n"}'
 ```
 ```
-my-release-cockroachdb-0    cockroachdb/cockroach:v19.2.1
-my-release-cockroachdb-1    cockroachdb/cockroach:v19.2.1
-my-release-cockroachdb-2    cockroachdb/cockroach:v19.2.1
-my-release-cockroachdb-3    cockroachdb/cockroach:v19.2.1
+my-release-cockroachdb-0    cockroachdb/cockroach:v19.2.2
+my-release-cockroachdb-1    cockroachdb/cockroach:v19.2.2
+my-release-cockroachdb-2    cockroachdb/cockroach:v19.2.2
+my-release-cockroachdb-3    cockroachdb/cockroach:v19.2.2
 ```
 
 Resume normal operations. Once you are comfortable that the stability and performance of the cluster is what you'd expect post upgrade, finalize it by running the following:
@@ -217,7 +217,7 @@ For details see the `values.yml` file.
 | `conf.port`                  | CockroachDB primary serving port in Pods         | `26257` |
 | `conf.http-port`             | CockroachDB HTTP port in Pods                    | `8080`  |
 | `image.repository`  | Container image name  | `cockroachdb/cockroach` |
-| `image.tag`         | Container image tag   | `v19.2.1`               |
+| `image.tag`         | Container image tag   | `v19.2.2`               |
 | `image.pullPolicy`  | Container pull policy | `IfNotPresent`          |
 | `image.credentials` | `registry`, `user` and `pass` credentials to pull private image | `{}` |
 | `statefulset.replicas`              | StatefulSet replicas number                            | `3`        |

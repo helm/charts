@@ -99,7 +99,7 @@ Parameter | Description | Default
 `controller.service.annotations` | annotations for controller service | `{}`
 `controller.service.labels` | labels for controller service | `{}`
 `controller.service.clusterIP` | internal controller cluster service IP | `""`
-`controller.service.externalTrafficPolicy` | external traffic policy | `Cluster`
+`controller.service.externalTrafficPolicy` | If `controller.service.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable [source IP preservation](https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typenodeport) | `Local`
 `controller.service.externalIPs` | list of IP addresses at which the controller services are available | `[]`
 `controller.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `controller.service.loadBalancerSourceRanges` |  | `[]`

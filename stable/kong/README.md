@@ -1,3 +1,10 @@
+# DEPRECATED
+
+This chart has been deprecated in favor of
+Kong's official chart [repository](https://github.com/kong/charts).
+
+All users are advised to immediately migrate over to the new repository.
+
 ## Kong for Kubernetes
 
 [Kong for Kubernetes](https://github.com/Kong/kubernetes-ingress-controller)
@@ -461,7 +468,57 @@ value is your SMTP password.
 
 ## Changelog
 
+### 0.36.6
+
+This version has no code changes and Kong's chart is now deprecated in this
+repository. Please use Kong's official
+[chart repository](https://github.com/kong/charts).
+
+### 0.36.5
+
+> PR https://github.com/helm/charts/pull/20099
+
+#### Improvements
+
+- Allow `grpc` protocol for KongPlugins
+
+### 0.36.4
+
+> PR https://github.com/helm/charts/pull/20051
+
+#### Fixed
+
+- Issue: [`Ingress Controller errors when chart is redeployed with Admission
+  Webhook enabled`](https://github.com/helm/charts/issues/20050)
+
+### 0.36.3
+
+> PR https://github.com/helm/charts/pull/19992
+
+#### Fixed
+
+- Fix spacing in ServiceMonitor when label is specified in config
+
+### 0.36.2
+
+> PR https://github.com/helm/charts/pull/19955
+
+#### Fixed
+
+- Set `sideEffects` and `admissionReviewVersions` for Admission Webhook
+- timeouts for liveness and readiness probes has been changed from `1s` to `5s`
+
+### 0.36.1
+
+> PR https://github.com/helm/charts/pull/19946
+
+#### Fixed
+
+- Added missing watch permission to custom resources
+
 ### 0.36.0
+
+> PR https://github.com/helm/charts/pull/19916
 
 #### Upgrade Instructions
 
@@ -472,7 +529,6 @@ value is your SMTP password.
 #### Improvements 
 
 - Fixed Deployment's label selector that prevented in-place chart upgrades.
- 
 
 ### 0.35.1
 

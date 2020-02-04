@@ -118,6 +118,10 @@ server:
   ## protocol should be http or https
   protocol: http
 
+  ## http port
+  ## Set to > 1024 if you want to run the pod as non-root user
+  httpPort: 80
+
   ## rpcProtocol for rpc connection to the server should be http or https
   rpcProtocol: http
 
@@ -199,6 +203,10 @@ server:
   ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   ##
   tolerations: []
+
+  ## securityContext for drone server
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+  securityContext: {}
 
   ## additional siecar containers, e. g. for a database proxy, such as Google's cloudsql-proxy.
   ## ex: https://github.com/kubernetes/charts/tree/master/stable/keycloak

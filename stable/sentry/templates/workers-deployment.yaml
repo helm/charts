@@ -86,7 +86,7 @@ spec:
             {{- else }}
               name: {{ template "sentry.postgresql.secret" . }}
             {{- end }}
-              key: postgresql-password
+              key: {{ template "sentry.postgresql.secretKey" . }}
         - name: SENTRY_POSTGRES_HOST
           value: {{ template "sentry.postgresql.host" . }}
         - name: SENTRY_POSTGRES_PORT
@@ -100,7 +100,7 @@ spec:
             {{- else }}
               name: {{ template "sentry.redis.secret" . }}
             {{- end }}
-              key: redis-password
+              key: {{ template "sentry.redis.secretKey" . }}
         {{- end }}
         - name: SENTRY_REDIS_HOST
           value: {{ template "sentry.redis.host" . }}

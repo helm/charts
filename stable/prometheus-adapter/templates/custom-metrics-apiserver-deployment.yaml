@@ -28,6 +28,9 @@ spec:
         {{- end }}
     spec:
       serviceAccountName: {{ template "k8s-prometheus-adapter.serviceAccountName" . }}
+      {{- if .Values.hostNetwork.enabled }}
+      hostNetwork: true
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
