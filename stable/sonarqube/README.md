@@ -149,8 +149,8 @@ Since SonarQube comes bundled with an Elasticsearch instance, some [bootstrap ch
 
 This chart offers the option to use an initContainer in privilaged mode to automatically set certain kernel settings on the kube worker.  While this can ensure proper functionality of Elasticsearch, modifying the underlying kernel settings on the Kubernetes node can impact other users.  It may be best to work with your cluster administrator to either provide specific nodes with the proper kernel settings, or ensure they are set cluster wide.
 
-To enable auto-configuration of the kube worker node, set `elasticsearch.configureNode` to `true`
+To enable auto-configuration of the kube worker node, set `elasticsearch.configureNode` to `true`.  This is the default behavior, so you do not need to explicitly set this.
 
 This will run `sysctl -w vm.max_map_count=262144` on the worker where the sonarqube pod(s) get scheduled.  This needs to be set to `262144` but normally defaults to `65530`.  Other kernel settings are recommended by the [docker image](https://hub.docker.com/_/sonarqube/#requirements), but the defaults work fine in most cases.
 
-Note that if node configuration is not enabled, then you will likely need to disable the Elasticsearch bootstrap checks.  These can be explicitly enabled by setting `elasticsearch.bootstrapChecks` to `false`.
+To disable worker node configuration, set `elasticsearch.configureNode` to `false`.  Note that if node configuration is not enabled, then you will likely need to also disable the Elasticsearch bootstrap checks.  These can be explicitly disabled by setting `elasticsearch.bootstrapChecks` to `false`.
