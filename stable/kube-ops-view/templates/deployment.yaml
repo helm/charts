@@ -1,15 +1,29 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "kube-ops-view.fullname" . }}
+  name: {{ include "kube-ops-view.name" .}}
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app.kubernetes.io/name: {{ include "kube-ops-view.name" . }}
+    helm.sh/chart: {{ include "kube-ops-view.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/part-of: {{ .Release.Name }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "kube-ops-view.name" . }}
+      app.kubernetes.io/part-of: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "kube-ops-view.fullname" . }}
+        app.kubernetes.io/name: {{ include "kube-ops-view.name" . }}
+        helm.sh/chart: {{ include "kube-ops-view.chart" . }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/version: {{ .Chart.AppVersion }}
+        app.kubernetes.io/part-of: {{ .Release.Name }}
         {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
         {{- end }}

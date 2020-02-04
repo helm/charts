@@ -10,7 +10,7 @@ metadata:
   name: {{ template "worker-fullname" . }}
 spec:
   scaleTargetRef:
-    apiVersion: apps/v1beta1
+    apiVersion: {{ template "deployment.apiVersion" . }}
     kind: Deployment
     name: {{ template "worker-fullname" . }}
   minReplicas: {{ .Values.Worker.Replicas }}

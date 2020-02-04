@@ -4,7 +4,7 @@ kind: Job
 metadata:
   name: {{ template "minio.fullname" . }}-make-bucket-job
   labels:
-    app: {{ template "minio.name" . }}
+    app: {{ template "minio.name" . }}-make-bucket-job
     chart: {{ template "minio.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}

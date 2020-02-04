@@ -1,0 +1,17 @@
+{{- if and .Values.alertmanager.enabled .Values.global.rbac.create .Values.global.rbac.pspEnabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ template "prometheus-operator.fullname" . }}-alertmanager
+  labels:
+    app: {{ template "prometheus-operator.name" . }}-alertmanager
+{{ include "prometheus-operator.labels" . | indent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ template "prometheus-operator.fullname" . }}-alertmanager
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "prometheus-operator.alertmanager.serviceAccountName" . }}
+    namespace: {{ $.Release.Namespace }}
+{{- end }}

@@ -55,6 +55,11 @@ spec:
             value: "{{ $value }}"
           {{- end }}
           {{- end }}
+          {{- if .Values.envFromSecret }}
+          envFrom:
+          - secretRef:
+              name: {{ .Values.envFromSecret }}
+          {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["elasticsearch_exporter",

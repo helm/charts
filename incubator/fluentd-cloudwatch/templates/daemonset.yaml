@@ -71,6 +71,11 @@ spec:
           readOnly: true
         - name: config
           mountPath: /fluentd/etc
+        - name: config-volume
+          mountPath: /config-volume
+{{- if .Values.volumeMounts }}
+{{ toYaml .Values.volumeMounts | indent 8 }}
+{{- end }}
 {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
 {{- end }}
@@ -87,6 +92,9 @@ spec:
       - name: config-volume
         configMap:
           name: {{ template "fluentd-cloudwatch.fullname" . }}
+{{- if .Values.volumes }}
+{{ toYaml .Values.volumes | indent 6 }}
+{{- end }}
 {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 6 }}

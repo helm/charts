@@ -14,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/moodle
-  tag: 3.8.0-debian-9-r0
+  tag: 3.8.1-debian-10-r0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -34,6 +34,11 @@ image:
 ## String to fully override moodle.fullname template
 ##
 # fullnameOverride:
+
+## Skip Moodle installation wizard. Useful for migrations and restoring from SQL dump
+## ref: https://github.com/bitnami/bitnami-docker-moodle#configuration
+##
+moodleSkipInstall: "no"
 
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-moodle#configuration
@@ -295,7 +300,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/apache-exporter
-    tag: 0.7.0-debian-9-r112
+    tag: 0.7.0-debian-10-r0
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.

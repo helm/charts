@@ -1,3 +1,0 @@
-# CI test for proxy controller default installation and PodSecurityPolicy
-podSecurityPolicy:
-  enabled: true

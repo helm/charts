@@ -8,13 +8,13 @@ replicaCount: 1
 ## Set default image, imageTag, and imagePullPolicy.
 image:
   repository: "amancevice/superset"
-  tag: "0.28.1"
+  tag: "0.35.2"
   pullPolicy: "IfNotPresent"
   pullSecrets: []
 
 initFile: |-
   /usr/local/bin/superset-init --username admin --firstname admin --lastname user --email admin@fab.org --password admin
-  superset runserver
+  superset run
 
 configFile: |-
   #---------------------------------------------------------
@@ -186,7 +186,7 @@ readinessProbe:
   httpGet:
     path: /health
     port: http
-  initialDelaySeconds: 60
+  initialDelaySeconds: 30
   timeoutSeconds: 5
   periodSeconds: 10
   failureThreshold: 2

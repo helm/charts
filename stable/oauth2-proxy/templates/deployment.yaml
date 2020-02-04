@@ -65,6 +65,7 @@ spec:
         {{- if .Values.htpasswdFile.enabled }}
           - --htpasswd-file=/etc/oauth2_proxy/htpasswd/users.txt
         {{- end }}
+        {{- if .Values.proxyVarsAsSecrets }}
         env:
         - name: OAUTH2_PROXY_CLIENT_ID
           valueFrom:
@@ -81,6 +82,7 @@ spec:
             secretKeyRef:
               name:  {{ template "oauth2-proxy.secretName" . }}
               key: cookie-secret
+        {{- end }}
         {{- if .Values.extraEnv }}
 {{ toYaml .Values.extraEnv | indent 8 }}
         {{- end }}

@@ -26,6 +26,7 @@ spec:
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
     spec:
+{{- include "solr.imagePullSecrets" . | indent 6 }}
       {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
       {{- end }}

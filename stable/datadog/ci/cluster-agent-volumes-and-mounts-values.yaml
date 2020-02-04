@@ -1,0 +1,12 @@
+clusterAgent:
+  enabled: true
+
+  volumes:
+    - name: tmp
+      hostPath:
+        path: /tmp
+
+  volumeMounts:
+    - name: tmp
+      mountPath: /etc/tmp
+      readOnly: true

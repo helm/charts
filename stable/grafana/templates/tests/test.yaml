@@ -10,7 +10,7 @@ metadata:
     release: "{{ .Release.Name }}"
   annotations:
     "helm.sh/hook": test-success
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ template "grafana.namespace" . }}
 spec:
   serviceAccountName: {{ template "grafana.serviceAccountNameTest" . }}
   {{- if .Values.testFramework.securityContext }}

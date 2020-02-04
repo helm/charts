@@ -106,12 +106,16 @@ spec:
         {{- end }}
         - name: JAVA_OPTS
           value: "-Dhazelcast.config=/data/hazelcast/hazelcast.yaml -DserviceName={{ template "hazelcast.serviceName" . }} -Dnamespace={{ .Release.Namespace }} -Dhazelcast.mancenter.enabled={{ .Values.mancenter.enabled }} -Dhazelcast.mancenter.url=http://{{ template "mancenter.fullname" . }}:{{ .Values.mancenter.service.port }}/hazelcast-mancenter {{ if .Values.gracefulShutdown.enabled }}-Dhazelcast.shutdownhook.policy=GRACEFUL -Dhazelcast.shutdownhook.enabled=true -Dhazelcast.graceful.shutdown.max.wait={{ .Values.gracefulShutdown.maxWaitSeconds }} {{ end }} {{ if .Values.metrics.enabled }}-Dhazelcast.jmx=true{{ end }} {{ .Values.hazelcast.javaOpts }}"
+        {{- if .Values.hazelcast.loggingLevel }}
+        - name: LOGGING_LEVEL
+          value: {{ .Values.hazelcast.loggingLevel }}
+        {{- end }}
         {{- if .Values.securityContext.enabled }}
         securityContext:
           runAsNonRoot: {{ if eq (int .Values.securityContext.runAsUser) 0 }}false{{ else }}true{{ end }}
           runAsUser: {{ .Values.securityContext.runAsUser }}
           privileged: false
-          readOnlyRootFilesystem: true
+          readOnlyRootFilesystem: {{ .Values.securityContext.readOnlyRootFilesystem }}
           allowPrivilegeEscalation: false
           capabilities:
             drop:
