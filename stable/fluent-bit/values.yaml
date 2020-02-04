@@ -177,7 +177,6 @@ extraEntries:
 extraConfigFiles: {}
 #   customScript.lua: |
 #     your_script_here
-  
 
 ## Extra ports to add to the daemonset ports section
 extraPorts: []
