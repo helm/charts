@@ -81,7 +81,7 @@ spec:
             - |
               mkdir -p {{ .Values.persistence.mountPath }}/data
               chmod 700 {{ .Values.persistence.mountPath }}/data
-              find {{ .Values.persistence.mountPath }} -mindepth 0 -maxdepth 1 \
+              find {{ .Values.persistence.mountPath }} -mindepth 1 -maxdepth 1 \
                 -not -name ".snapshot" \
                 -not -name "lost+found" \
                 -exec chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }} {} \;
