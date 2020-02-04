@@ -103,8 +103,10 @@ Parameter | Description | Default
 `openvpn.OVPN_K8S_POD_SUBNET`        | Kubernetes pod network subnet (optional)                             | `255.0.0.0`
 `openvpn.OVPN_K8S_SVC_NETWORK`       | Kubernetes service network (optional)                                | `nil`
 `openvpn.OVPN_K8S_SVC_SUBNET`        | Kubernetes service network subnet (optional)                         | `nil`
+`openvpn.DEFAULT_ROUTE_ENABLED`      | Push a route which openvpn sets by default                           | `true`
 `openvpn.dhcpOptionDomain`           | Push a `dhcp-option DOMAIN` config                                   | `true`
-`openvpn.conf`                       | Arbitrary lines appended to the end of the server configuration file | `nil`
+`openvpn.serverConf`                 | Lines appended to the end of the server configuration file (optional)| `nil`
+`openvpn.clientConf`                 | Lines appended into the client configuration file (optional)         | `nil`
 `openvpn.redirectGateway`            | Redirect all client traffic through VPN                              | `true`
 `openvpn.useCrl`                     | Use/generate a certificate revocation list (crl.pem)                 | `false`
 `openvpn.taKey`                      | Use/generate a ta.key file for hardening security                    | `false`
@@ -112,8 +114,11 @@ Parameter | Description | Default
 `openvpn.istio.enabled`              | Enables istio support for openvpn clients                            | `false`
 `openvpn.istio.proxy.port`           | Istio proxy port                                                     | `15001`
 `openvpn.iptablesExtra`              | Custom iptables rules for clients                                    | `[]`
+`openvpn.ccd.enabled`                | Enable creation and mounting of CCD config                           | `false`
+`openvpn.ccd.config`                 | CCD configuration (see below)                                        | `{}`
 `nodeSelector`                       | Node labels for pod assignment                                       | `{}`
 `tolerations`                        | Tolerations for node taints                                          | `[]`
+`ipForwardInitContainer`             | Add privileged init container to enable IPv4 forwarding              | `false`
 
 This chart has been engineered to use kube-dns and route all network traffic to kubernetes pods and services,
 to disable this behaviour set `openvpn.OVPN_K8S_POD_NETWORK` and `openvpn.OVPN_K8S_POD_SUBNET` to `null`.
@@ -152,3 +157,59 @@ And optionally (see openvpn.taKey setting):
  `/etc/openvpn/certs/pki/ta.key`
 
 Note: using mounted secret makes creation of new client certificates impossible inside openvpn pod, since easyrsa needs to write in certs directory, which is read-only.
+
+### Client specific rules and access policies
+
+You can enable CCD using `openvpn.ccd.enabled` and set the config in `openvpn.ccd.config` to use [OpenVPN client specific rules and access policies](https://openvpn.net/community-resources/configuring-client-specific-rules-and-access-policies/)
+
+For example, if you want to give fixed IP addresses to clients 'johndoe' and 'janedoe':
+
+```
+openvpn:
+  ccd:
+    enabled: true
+    config:
+      johndoe: "ifconfig-push 10.240.100.10 10.240.100.11"
+      janedoe: "ifconfig-push 10.240.100.20 10.240.100.21"
+```
+
+For more options see the OpenVPN documentation. Note that the IPs provided here depend on the type of topology you use.
+
+
+## Issues
+
+### 1. Routing / ip_forward
+
+Issue: https://github.com/helm/charts/issues/6398
+
+If routes look correct on the client but data is not returning from the vpn then the kubernetes node running openvpn may not have ip_forward enabled.  Set the `ipForwardInitContainer` value to `true` to run an init container that enables ip forwarding.
+
+### 2. Ubuntu/systemd-resolved DNS
+
+Recent Ubuntu releases use systemd-resolved for DNS which by default [won't honor/apply DNS settings from openvpn](https://askubuntu.com/questions/1032476/ubuntu-18-04-no-dns-resolution-when-connected-to-openvpn).
+
+Install the update-systemd-resolved package (`apt install update-systemd-resolved`) and add the following settings to the client ovpn file.
+
+```
+script-security 2
+up /etc/openvpn/update-systemd-resolved
+up-restart
+down /etc/openvpn/update-systemd-resolved
+down-pre
+```
+
+If all of your clients are Ubuntu you can set the `openvpn.clientConf` value when deploying this chart to have these lines added to all generated client ovpn files:
+
+```yaml
+openvpn:
+  clientConf: |
+    script-security 2
+    up /etc/openvpn/update-systemd-resolved
+    up-restart
+    down /etc/openvpn/update-systemd-resolved
+    down-pre
+```
+
+### 3. Ubuntu Networking GUIs
+
+Importing the client ovpn file from either of the Ubuntu network/connection management GUIs (Settings or Advanced Networking app) do not successfully import all settings.  They seem to remove important parts of the configuration (DNS and Domains).  The most reliable method of initiating the connection is to run `sudo openvpn --config <FILE>`.

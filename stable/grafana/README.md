@@ -77,7 +77,7 @@ This version requires Helm >= 2.12.0.
 | `extraContainers`                         | Sidecar containers to add to the grafana pod  | `{}` |
 | `schedulerName`                           | Name of the k8s scheduler (other than default) | `nil`                                                  |
 | `persistence.enabled`                     | Use persistent volume to store data           | `false`                                                 |
-| `persistence.type`                        | Type of persistence (`pvc` or `statefulset`)  | `false`                                                 |
+| `persistence.type`                        | Type of persistence (`pvc` or `statefulset`)  | `pvc`                                                 |
 | `persistence.size`                        | Size of persistent volume claim               | `10Gi`                                                  |
 | `persistence.existingClaim`               | Use an existing PVC to persist data           | `nil`                                                   |
 | `persistence.storageClassName`            | Type of persistent volume claim               | `nil`                                                   |

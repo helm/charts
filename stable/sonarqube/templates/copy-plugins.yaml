@@ -15,14 +15,19 @@ data:
       {{- end }}
       for f in {{ .Values.sonarqubeFolder }}/extensions/plugins/tmp/*.jar
       do
-        file=${f##*/} && file=${file%-[0-9]*} 
+        file=${f##*/} && file=${file%-[0-9]*}
         for original in {{ .Values.sonarqubeFolder }}/extensions/plugins/*.jar
         do
-          originalfile=${original##*/} && originalfile=${originalfile%-[0-9]*} 
+          originalfile=${original##*/} && originalfile=${originalfile%-[0-9]*}
           if [ "$originalfile" = "$file" ]; then
             rm -f "$original"
           fi
         done
       done
       cp {{ .Values.sonarqubeFolder }}/extensions/plugins/tmp/*.jar {{ .Values.sonarqubeFolder }}/extensions/plugins/
+      {{- if .Values.plugins.lib }}
+      {{- range $index, $val := .Values.plugins.lib }}
+      cp -f {{ $.Values.sonarqubeFolder }}/extensions/plugins/{{ $val }} {{ $.Values.sonarqubeFolder }}/lib/common/
+      {{- end }}
+      {{- end }}
       {{ .Values.sonarqubeFolder }}/bin/run.sh

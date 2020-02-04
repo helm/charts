@@ -345,6 +345,7 @@ helm install --name <RELEASE_NAME> \
 | `clusterAgent.image.pullSecrets`         | Image pull secrets                                                                        | `nil`                                       |
 | `clusterAgent.metricsProvider.enabled`   | Enable Datadog metrics as a source for HPA scaling                                        | `false`                                     |
 | `clusterAgent.metricsProvider.service.type` | The type of service to use for the clusterAgent metrics server                         | `ClusterIP`                                 |
+| `clusterAgent.metricsProvider.service.port` | The port for service to use for the clusterAgent metrics server                         | `443` .                                     |
 | `clusterAgent.clusterChecks.enabled`     | Enable Cluster Checks on both the Cluster Agent and the Agent daemonset                   | `false`                                     |
 | `clusterAgent.confd`                     | Additional check configurations (static and Autodiscovery)                                | `nil`                                       |
 | `clusterAgent.podAnnotations`            | Annotations to add to the Cluster Agent Pod(s)                                            | `nil`                                       |

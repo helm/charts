@@ -107,6 +107,8 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.csrf.defaultCrumbIssuer.enabled` | Enable the default CSRF Crumb issuer | `true`                             |
 | `master.csrf.defaultCrumbIssuer.proxyCompatability` | Enable proxy compatibility | `true`                            |
 | `master.cli`                      | Enable CLI over remoting             | `false`                                   |
+| `master.slaveListenerServiceType` | Defines how to expose the slaveListener service | `ClusterIP`                    |
+| `master.slaveListenerLoadBalancerIP`  | Static IP for the slaveListener LoadBalancer | Not set                       | 
 | `master.loadBalancerSourceRanges` | Allowed inbound IP addresses         | `0.0.0.0/0`                               |
 | `master.loadBalancerIP`           | Optional fixed external IP           | Not set                                   |
 | `master.jmxPort`                  | Open a port, for JMX stats           | Not set                                   |

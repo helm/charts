@@ -98,6 +98,9 @@ their default values.
 |`+hazelcast.javaOpts+` |Additional JAVA_OPTS properties for Hazelcast member
 |`+nil+`
 
+|`+hazelcast.loggingLevel+` |Level of Hazelcast logs (SEVERE, WARNING, INFO, CONFIG, FINE, FINER, and FINEST); note that changing this value requires setting `securityContext.runAsUser` to `0` and `securityContext.readOnlyRootFilesystem` to `false`
+|`+nil+`
+
 |`+hazelcast.existingConfigMap+` |ConfigMap which contains Hazelcast
 configuration file(s) that are used instead hazelcast.yaml embedded into
 values.yaml |`+nil+`
@@ -194,6 +197,9 @@ Center containers |`+65534+`
 
 |`+securityContext.fsGroup+` |Group ID associated with the Hazelcast and
 Management Center container |`+65534+`
+
+|`+securityContext.readOnlyRootFilesystem+` | Enables readOnlyRootFilesystem in
+the Hazelcast security context |`true`
 
 |`+metrics.enabled+` |Turn on and off JMX Prometheus metrics available at
 `+/metrics+` |`+false+`

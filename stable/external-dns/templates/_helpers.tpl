@@ -110,6 +110,49 @@ imagePullSecrets:
 {{- end -}}
 {{- end -}}
 
+{{/*
+Return true if a secret object should be created
+*/}}
+{{- define "external-dns.createSecret" -}}
+{{- if and (eq .Values.provider "aws") .Values.aws.credentials.secretKey .Values.aws.credentials.accessKey (not .Values.aws.credentials.secretName) }}
+    {{- true -}}
+{{- else if and (eq .Values.provider "azure") (or (and .Values.azure.resourceGroup .Values.azure.tenantId .Values.azure.subscriptionId .Values.azure.aadClientId .Values.azure.aadClientSecret (not .Values.azure.useManagedIdentityExtension)) (and .Values.azure.resourceGroup .Values.azure.tenantId .Values.azure.subscriptionId .Values.azure.useManagedIdentityExtension)) (not .Values.azure.secretName) -}}
+    {{- true -}}
+{{- else if and (eq .Values.provider "cloudflare") (or .Values.cloudflare.apiToken .Values.cloudflare.apiKey) (not .Values.cloudflare.secretName) -}}
+    {{- true -}}
+{{- else if and (eq .Values.provider "digitalocean") .Values.digitalocean.apiToken (not .Values.digitalocean.secretName) -}}
+    {{- true -}}
+{{- else if and (eq .Values.provider "google") .Values.google.serviceAccountKey (not .Values.google.serviceAccountSecret) -}}
+    {{- true -}}
+{{- else if and (eq .Values.provider "infoblox") (and .Values.infoblox.wapiUsername .Values.infoblox.wapiPassword) -}}
+    {{- true -}}
+{{- else if and (eq .Values.provider "rfc2136") .Values.rfc2136.tsigSecret -}}
+    {{- true -}}
+{{- else if and (eq .Values.provider "pdns") .Values.pdns.apiKey -}}
+    {{- true -}}
+{{- else -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the name of the Secret used to store the passwords
+*/}}
+{{- define "external-dns.secretName" -}}
+{{- if and (eq .Values.provider "aws") .Values.aws.credentials.secretName }}
+{{- .Values.aws.credentials.secretName }}
+{{- else if and (eq .Values.provider "azure") .Values.azure.secretName }}
+{{- .Values.azure.secretName }}
+{{- else if and (eq .Values.provider "cloudflare") .Values.cloudflare.secretName }}
+{{- .Values.cloudflare.secretName }}
+{{- else if and (eq .Values.provider "digitalocean") .Values.digitalocean.secretName }}
+{{- .Values.digitalocean.secretName }}
+{{- else if and (eq .Values.provider "google") .Values.google.serviceAccountSecret }}
+{{- .Values.google.serviceAccountSecret }}
+{{- else -}}
+{{- template "external-dns.fullname" . }}
+{{- end -}}
+{{- end -}}
+
 {{- define "external-dns.aws-credentials" }}
 [default]
 aws_access_key_id = {{ .Values.aws.credentials.accessKey }}

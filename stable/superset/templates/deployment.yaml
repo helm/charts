@@ -49,8 +49,8 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["/bin/bash"]
-          args: ["/home/superset/init_superset.sh" ]
+          command: ["/usr/bin/env"]
+          args: ["python", "/usr/local/bin/gunicorn", "-b", "0.0.0.0:8088", "--limit-request-line", "0", "--limit-request-field_size", "0", "superset:app"]
           volumeMounts:
             - name: superset-configs
               mountPath: /home/superset

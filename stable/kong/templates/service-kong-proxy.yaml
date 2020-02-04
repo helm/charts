@@ -51,5 +51,4 @@ spec:
   clusterIP: {{ .Values.proxy.clusterIP }}
   {{- end }}
   selector:
-    {{- include "kong.metaLabels" . | nindent 4 }}
-    app.kubernetes.io/component: app
+    {{- include "kong.selectorLabels" . | nindent 4 }}

@@ -79,6 +79,17 @@ Set postgres secret
 {{- end -}}
 
 {{/*
+Set postgres secretKey
+*/}}
+{{- define "sentry.postgresql.secretKey" -}}
+{{- if .Values.postgresql.enabled -}}
+"postgresql-password"
+{{- else -}}
+{{- default "postgresql-password" .Values.postgresql.existingSecretKey | quote -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Set postgres port
 */}}
 {{- define "sentry.postgresql.port" -}}
@@ -108,6 +119,17 @@ Set redis secret
 {{- template "sentry.redis.fullname" . -}}
 {{- else -}}
 {{- template "sentry.fullname" . -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Set redis secretKey
+*/}}
+{{- define "sentry.redis.secretKey" -}}
+{{- if .Values.redis.enabled -}}
+"redis-password"
+{{- else -}}
+{{- default "redis-password" .Values.redis.existingSecretKey | quote -}}
 {{- end -}}
 {{- end -}}
 

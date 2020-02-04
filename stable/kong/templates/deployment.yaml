@@ -9,8 +9,7 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "kong.metaLabels" . | nindent 6 }}
-      app.kubernetes.io/component: app
+      {{- include "kong.selectorLabels" . | nindent 6 }}
   {{- if .Values.updateStrategy }}
   strategy:
 {{ toYaml .Values.updateStrategy | indent 4 }}
@@ -19,6 +18,9 @@ spec:
   template:
     metadata:
       annotations:
+        {{- if .Values.ingressController.admissionWebhook.enabled }}
+        checksum/admission-webhook.yaml: {{ include (print $.Template.BasePath "/admission-webhook.yaml") . | sha256sum }}
+        {{- end }}
         {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off" )) }}
         {{- if .Values.dblessConfig.config }}
         checksum/dbless.config: {{ toYaml .Values.dblessConfig.config | sha256sum }}

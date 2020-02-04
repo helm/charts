@@ -41,7 +41,7 @@ The following table lists the configurable parameters of the Sysdig chart and th
 | ---                               | ---                                                                    | ---                                         |
 | `image.registry`                  | Sysdig Agent image registry                                            | `docker.io`                                 |
 | `image.repository`                | The image repository to pull from                                      | `sysdig/agent`                              |
-| `image.tag`                       | The image tag to pull                                                  | `0.94.0`                                    |
+| `image.tag`                       | The image tag to pull                                                  | `9.5.0`                                     |
 | `image.pullPolicy`                | The Image pull policy                                                  | `IfNotPresent`                              |
 | `image.pullSecrets`               | Image pull secrets                                                     | `nil`                                       |
 | `resources.requests.cpu`          | CPU requested for being run in a node                                  | `600m`                                      |
@@ -62,9 +62,8 @@ The following table lists the configurable parameters of the Sysdig chart and th
 | `ebpf.settings.mountEtcVolume`    | Needed to detect which kernel version are running in Google COS        | `true`                                      |
 | `sysdig.accessKey`                | Your Sysdig Monitor Access Key                                         | `Nil` You must provide your own key         |
 | `sysdig.settings`                 | Settings for agent's configuration file                                | ` `                                         |
-| `secure.enabled`                  | Enable Sysdig Secure                                                   | `false`                                     |
+| `secure.enabled`                  | Enable Sysdig Secure                                                   | `true`                                      |
 | `auditLog.enabled`                | Enable K8s audit log support for Sysdig Secure                         | `false`                                     |
-| `auditLog.clusterIP`              | ClusterIP address where Sysdig will listen to K8s audit log events     | ` `                                         |
 | `auditLog.auditServerUrl`         | The URL where Sysdig Agent listens for K8s audit log events            | `0.0.0.0`                                   |
 | `auditLog.auditServerPort`        | Port where Sysdig Agent listens for K8s audit log events               | `7765`                                      |
 | `auditLog.dynamicBackend.enabled` | Deploy the Audit Sink where Sysdig listens for K8s audit log events    | `false`                                     |
@@ -207,7 +206,6 @@ If you deployed the chart setting the values as CLI parameters, like for example
 $ helm install \
     --name sysdig \
     --set sysdig.accessKey=xxxx \
-    --set secure.enabled=true \
     --set ebpf.enabled=true \
     --namespace sysdig-agent \
     stable/sysdig
