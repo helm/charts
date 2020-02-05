@@ -100,6 +100,8 @@ containers:
     image: "{{ .Values.sidecar.image }}"
     imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
     env:
+      - name: METHOD
+        value: {{ .Values.sidecar.dashboards.watchMethod }}
       - name: LABEL
         value: "{{ .Values.sidecar.dashboards.label }}"
       - name: FOLDER
