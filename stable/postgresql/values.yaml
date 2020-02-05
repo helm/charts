@@ -63,6 +63,13 @@ volumePermissions:
     # pullSecrets:
     #   - myRegistryKeySecretName
   ## Init container Security Context
+  ## Note: the chown of the data folder is done to securityContext.runAsUser
+  ## and not the below volumePermissions.securityContext.runAsUser
+  ## When runAsUser is set to special value "auto", init container will try to chwon the
+  ## data folder to autodetermined user&group, using commands: `id -u`:`id -G | cut -d" " -f2`
+  ## "auto" is especially useful for OpenShift which has scc with dynamic userids (and 0 is not allowed).
+  ## You may want to use this volumePermissions.securityContext.runAsUser="auto" in combination with
+  ## pod securityContext.enabled=false and shmVolume.chmod.enabled=false .
   securityContext:
     runAsUser: 0
 
@@ -261,8 +268,11 @@ service:
 ## If this option is present and value is `true`,
 ## to the target database pod will be mounted a new tmpfs volume to remove
 ## this limitation.
+## If chmod.enabled is `true`, init container will chmod 777 `/dev/shm`.
 shmVolume:
   enabled: true
+  chmod:
+    enabled: true
 
 ## PostgreSQL data Persistent Volume Storage Class
 ## If defined, storageClassName: <storageClass>
