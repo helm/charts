@@ -1,6 +1,6 @@
 image:
   repository: cockroachdb/cockroach
-  tag: v19.2.2
+  tag: v19.2.3
   pullPolicy: IfNotPresent
   credentials: {}
     # registry: docker.io
