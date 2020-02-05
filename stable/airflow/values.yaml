@@ -600,7 +600,7 @@ postgresql:
   existingSecret:
 
   ## Name of the key containing the secret.
-  existingSecretKey: postgres-password
+  existingSecretKey: postgresql-password
 
   ##
   ## If you are bringing your own PostgreSQL, you should set postgresHost and
@@ -611,14 +611,14 @@ postgresql:
   service:
     port: 5432
   ## PostgreSQL User to create.
-  postgresUser: postgres
+  postgresqlUsername: postgres
   ##
   ## PostgreSQL Password for the new user.
   ## If not set, a random 10 characters password will be used.
-  postgresPassword: airflow
+  postgresqlPassword: airflow
   ##
   ## PostgreSQL Database to create.
-  postgresDatabase: airflow
+  postgresqlDatabase: airflow
   ##
   ## Persistent Volume Storage configuration.
   ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
@@ -630,8 +630,9 @@ postgresql:
     ## Persistant class
     # storageClass: classname
     ##
-    ## Access mode:
-    accessMode: ReadWriteOnce
+    ## Access modes:
+    accessModes:
+      - ReadWriteOnce
 
 
 ## Configuration values for the Redis dependency.
@@ -676,7 +677,8 @@ redis:
       # storageClass: classname
       ##
       ## Access mode:
-      accessMode: ReadWriteOnce
+      accessModes:
+      - ReadWriteOnce
   ##
   ## Disable cluster management by default.
   cluster:
