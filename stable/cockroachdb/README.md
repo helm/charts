@@ -53,10 +53,10 @@ helm install my-release stable/cockroachdb
 
 Note that for a production cluster, you will likely want to override the following parameters in [`values.yaml`](values.yaml) with your own values.
 
-- `statefulset.resources.requests.memory` and `statefulset.resources.limits.memory` allocate memory resources to CockroachDB on your pods.
-- `conf.cache` and `conf.max-sql-memory` are memory limits that we recommend setting to 1/4 of the above resource allocation. When running CockroachDB on Kubernetes, you must set these limits explicitly to avoid running out of memory.
+- `statefulset.resources.requests.memory` and `statefulset.resources.limits.memory` allocate memory resources to CockroachDB pods in your cluster.
+- `conf.cache` and `conf.max-sql-memory` are memory limits that we recommend setting to 1/4 of the above resource allocation. When running CockroachDB, you must set these limits explicitly to avoid running out of memory.
 - `storage.persistentVolume.size` defaults to `100Gi` of disk space per pod, which you may increase or decrease for your use case.
-- `storage.persistentVolume.storageClass` uses the default storage class for your environment. We strongly recommend that you specify an SSD, which is not the default on GCE and Azure.
+- `storage.persistentVolume.storageClass` uses the default storage class for your environment. We strongly recommend that you specify a storage class which uses an SSD.
 - `tls.enabled` must be set to `yes`/`true` to deploy in secure mode.
 
 For more information on overriding the `values.yaml` parameters, please see:
