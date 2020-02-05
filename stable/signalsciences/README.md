@@ -48,7 +48,7 @@ The following table lists the configurable parameters of the SignalSciences char
 | `image.repository`                             | The image repository to pull from                                         | `signalsciences/sigsci-agent`                             |
 | `image.tag`                                    | The image tag to pull                                                     | `4.4.1`                                        |
 | `image.pullPolicy`                             | Image pull policy                                                         | `IfNotPresent`                                  |
-| `signalsciences.agentTempVolume`       | Temporary volume to mount the socket and a writeable dir                                                    | `/sigsci/tmp`                                         |
+| `signalsciences.agentTempVolume`       | Temporary volume to mount the socket and a writeable dir                                                    | `/sigsci/tmp`                                        |
 | `signalsciences.resources.requests.cpu`        | CPU resource requests                                                     | `200m`                                          |
 | `signalsciences.resources.limits.cpu`          | CPU resource limits                                                       | `200m`                                          |
 | `signalsciences.resources.requests.memory`     | Memory resource requests                                                  | `256Mi`                                         |
