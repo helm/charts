@@ -20,7 +20,9 @@ metadata:
   name: {{ template "nginx-ingress.controller.fullname" . }}-metrics
 spec:
 {{- if not .Values.controller.metrics.service.omitClusterIP }}
-  {{ with .Values.controller.metrics.service.clusterIP }}clusterIP: {{ . | quote }}{{ end }}
+  {{- with .Values.controller.metrics.service.clusterIP }}
+  clusterIP: {{ if eq "-" . }}""{{ else }}{{ . | quote }}{{ end }}
+  {{- end }}
 {{- end }}
 {{- if .Values.controller.metrics.service.externalIPs }}
   externalIPs:

@@ -15,9 +15,13 @@ metadata:
     kubernetes.io/name: "CoreDNS"
     {{- end }}
     app.kubernetes.io/name: {{ template "coredns.name" . }}-autoscaler
-{{- if .Values.customLabels }}
-{{ toYaml .Values.customLabels | indent 4 }}
-{{- end }}
+    {{- if .Values.customLabels }}
+    {{- toYaml .Values.customLabels | nindent 4 }}
+    {{- end }}
+  {{- if .Values.autoscaler.configmap.annotations }}
+  annotations:
+    {{- toYaml .Values.autoscaler.configmap.annotations | nindent 4 }}
+  {{- end }}
 data:
   # When cluster is using large nodes(with more cores), "coresPerReplica" should dominate.
   # If using small nodes, "nodesPerReplica" should dominate.

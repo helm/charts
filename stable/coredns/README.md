@@ -89,6 +89,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `autoscaler.resources.limits.memory`    | Container maximum memory for cluster-proportional-autoscaler                          | `10Mi`                                                      |
 | `autoscaler.resources.requests.cpu`     | Container requested CPU for cluster-proportional-autoscaler                           | `20m`                                                       |
 | `autoscaler.resources.requests.memory`  | Container requested memory for cluster-proportional-autoscaler                        | `10Mi`                                                      |
+| `autoscaler.configmap.annotations`      | Annotations to add to autoscaler config map. For example to stop CI renaming them     | {}                                                          |
 
 See `values.yaml` for configuration notes. Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

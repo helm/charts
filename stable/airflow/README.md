@@ -486,18 +486,19 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `postgresql.existingSecretKey`           | The name of the key containing the password in the secret named `postgresql.existingSecret`  | `postgres-password` |
 | `postgresql.uri`                         | full URL to custom postgres setup                       | (undefined)               |
 | `postgresql.postgresHost`                | PostgreSQL Hostname                                     | (undefined)               |
-| `postgresql.postgresUser`                | PostgreSQL User                                         | `postgres`                |
-| `postgresql.postgresPassword`            | PostgreSQL Password                                     | `airflow`                 |
-| `postgresql.postgresDatabase`            | PostgreSQL Database name                                | `airflow`                 |
+| `postgresql.postgresqlUsername`                | PostgreSQL User                                         | `postgres`                |
+| `postgresql.postgresqlPassword`            | PostgreSQL Password                                     | `airflow`                 |
+| `postgresql.postgresqlDatabase`            | PostgreSQL Database name                                | `airflow`                 |
 | `postgresql.persistence.enabled`         | Enable Postgres PVC                                     | `true`                    |
 | `postgresql.persistence.storageClass`    | Persistent class                                        | (undefined)               |
-| `postgresql.persistence.accessMode`      | Access mode                                             | `ReadWriteOnce`           |
+| `postgresql.persistence.accessModes`      | Access modes                                             | `[ ReadWriteOnce ]`           |
 | `redis.enabled`                          | Create a Redis cluster                                  | `true`                    |
 | `redis.existingSecret`                   | The name of an existing secret with a key named `redis.existingSecretKey` to use as the password  | `nil` |
 | `redis.existingSecretKey`                | The name of the key containing the password in the secret named `redis.existingSecret`  | `redis-password` |
 | `redis.redisHost`                        | Redis Hostname                                          | (undefined)               |
 | `redis.password`                         | Redis password                                          | `airflow`                 |
 | `redis.master.persistence.enabled`       | Enable Redis PVC                                        | `false`                   |
+| `redis.master.persistence.accessModes`   | Access modes                                            | `[ ReadWriteOnce ]`       |
 | `redis.cluster.enabled`                  | enable master-slave cluster                             | `false`                   |
 | `serviceMonitor.enabled`                 | enable service monitor                                  | `false`                   |
 | `serviceMonitor.interval`                | Interval at which metrics should be scraped             | `30s`                     |
@@ -512,6 +513,18 @@ The following table lists the configurable parameters of the Airflow chart and t
 Full and up-to-date documentation can be found in the comments of the `values.yaml` file.
 
 ## Upgrading
+
+### To 6.0.0
+This version updates `postgresql` and `redis` dependencies.
+There are a few config key changes, in order to upgrade from a 5.x chart, modify your `values.yaml` by mapping the keys as follows:
+
+| 5.x.x                                | 6.x.x                                 | Notes                                                     |
+|--------------------------------------|---------------------------------------|-----------------------------------------------------------|
+|`postgresql.postgresUser`             |`postgresql.postgresqlUsername`        |                                                           |
+|`postgresql.postgresPassword`         |`postgresql.postgresqlPassword`        |                                                           |
+|`postgresql.postgresDatabase`         |`postgresql.postgresqlDatabase`        |                                                           |
+|`postgresql.persistence.accessMode`   |`postgresql.persistence.accessModes`   | Instead of a single value, now the config accepts an array|
+|`redis.master.persistence.accessMode` |`redis.master.persistence.accessModes` | Instead of a single value, now the config accepts an array|
 
 ### To 5.0.0
 This version splits the configuration for webserver and flower web UI from ingress configurations for separation of concerns.
