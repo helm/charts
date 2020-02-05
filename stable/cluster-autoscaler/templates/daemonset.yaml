@@ -1,21 +1,20 @@
-{{- if or (eq .Values.kind "Deployment") (eq .Values.kind "Both") }}
+{{- if or (eq .Values.kind "DaemonSet") (eq .Values.kind "Both") }}
 {{- if or .Values.autoDiscovery.clusterName .Values.autoscalingGroups }}
 {{/* one of the above is required */}}
 apiVersion: {{ template "deployment.apiVersion" . }}
-kind: Deployment
+kind: DaemonSet
 metadata:
   labels:
 {{ include "cluster-autoscaler.labels" . | indent 4 }}
   name: {{ template "cluster-autoscaler.fullname" . }}
 spec:
-  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
 {{ include "cluster-autoscaler.instance-name" . | indent 6 }}
     {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 6 }}
     {{- end }}
-  strategy:
+  updateStrategy:
 {{ toYaml .Values.updateStrategy | indent 4 }}
   template:
     metadata:

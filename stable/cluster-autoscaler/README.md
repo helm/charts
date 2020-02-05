@@ -170,6 +170,8 @@ Parameter | Description | Default
 `rbac.serviceAccountName` | existing ServiceAccount to use (ignored if rbac.create=true) | `default`
 `rbac.serviceAccountAnnotations` | Additional Service Account annotations	| `{}`
 `rbac.pspEnabled` | Must be used with `rbac.create` true. If true, creates & uses RBAC resources required in the cluster with [Pod Security Policies](https://kubernetes.io/docs/concepts/policy/pod-security-policy/) enabled. | `false`
+`kind` | install as Deployment, DaemonSet or Both | `Deployment`
+`updateStrategy` | allows setting of RollingUpdate strategy | `{}`
 `replicaCount` | desired number of pods | `1`
 `priorityClassName` | priorityClassName | `nil`
 `dnsPolicy` | dnsPolicy | `nil`

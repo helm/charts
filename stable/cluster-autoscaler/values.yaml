@@ -68,6 +68,15 @@ tolerations: []
 ## Extra ENV passed to the container
 extraEnv: {}
 
+## DaemonSet or Deployment
+##
+kind: Deployment
+
+updateStrategy: {}
+  #  rollingUpdate:
+  #    maxUnavailable: 1
+  #  type: RollingUpdate
+
 extraArgs:
   v: 4
   stderrthreshold: info
