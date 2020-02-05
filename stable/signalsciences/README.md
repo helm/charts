@@ -53,6 +53,7 @@ The following table lists the configurable parameters of the SignalSciences char
 | `signalsciences.resources.limits.cpu`          | CPU resource limits                                                       | `200m`                                          |
 | `signalsciences.resources.requests.memory`     | Memory resource requests                                                  | `256Mi`                                         |
 | `signalsciences.resources.limits.memory`       | Memory resource limits                                                    | `256Mi`                                         |
+| `signalsciences.socketAddress`       | If set, allows you to change the default socket location                                                    | `nil`                                         |
 | `daemonset.podAnnotations`                     | Annotations to add to the DaemonSet's Pods                                | `nil`                                           |
 | `daemonset.tolerations`                        | List of node taints to tolerate (requires Kubernetes >= 1.6)              | `nil`                                           |
 | `daemonset.nodeSelector`                       | Node selectors                                                            | `nil`                                           |
