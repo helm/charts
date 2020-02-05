@@ -30,16 +30,16 @@ spec:
     spec:
       restartPolicy: OnFailure
       terminationGracePeriodSeconds: 0
-    {{- if or .Values.image.credentials (and .Values.tls.enabled .Values.tls.init.image.credentials) }}
+    {{- if or .Values.image.credentials (and .Values.tls.enabled .Values.tls.init.image.credentials (not .Values.tls.certs.provided)) }}
       imagePullSecrets:
       {{- if .Values.image.credentials }}
         - name: {{ template "cockroachdb.fullname" . }}.db.registry
       {{- end }}
-      {{- if and .Values.tls.enabled .Values.tls.init.image.credentials }}
+      {{- if and .Values.tls.enabled .Values.tls.init.image.credentials (not .Values.tls.certs.provided) }}
         - name: {{ template "cockroachdb.fullname" . }}.init-certs.registry
       {{- end }}
     {{- end }}
-    {{- if .Values.tls.enabled }}
+    {{- if and .Values.tls.enabled (not .Values.tls.certs.provided)}}
       serviceAccountName: {{ template "cockroachdb.tls.serviceAccount.name" . }}
       initContainers:
         # The init-certs container sends a CSR (certificate signing request) to
@@ -126,6 +126,29 @@ spec:
     {{- if .Values.tls.enabled }}
       volumes:
         - name: client-certs
+          {{- if .Values.tls.certs.provided }}
+          {{- if .Values.tls.certs.tlsSecret }}
+          projected:
+            sources:
+            - secret:
+                name: {{ .Values.tls.certs.clientRootSecret }}
+                items:
+                - key: ca.crt
+                  path: ca.crt
+                  mode: 0400
+                - key: tls.crt
+                  path: client.root.crt
+                  mode: 0400
+                - key: tls.key
+                  path: client.root.key
+                  mode: 0400
+          {{- else }}
+          secret:
+            secretName: {{ .Values.tls.certs.clientRootSecret }}
+            defaultMode: 0400
+          {{- end }}
+          {{- else }}
           emptyDir: {}
+          {{- end }}
     {{- end }}
 {{- end }}

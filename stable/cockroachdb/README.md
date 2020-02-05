@@ -53,7 +53,34 @@ helm install --name my-release stable/cockroachdb
 
 Note that for a production cluster, you are very likely to want to modify the `storage.persistentVolume.size` and `storage.persistentVolume.storageClass` parameters. This chart defaults to `100 GiB` of disk space per Pod, but you may want more or less depending on your use case, and the default PersistentVolume `storageClass` in your environment may not be what you want for a database (e.g. on GCE and Azure the default is not SSD).
 
-If you are running in secure mode (with configuration parameter `tls.enabled` set to `yes`/`true`), then you will have to manually approve the cluster's security certificates as the Pods are created. You can see the pending CSRs (certificate-signing requests) by running `kubectl get csr`, and approve them by running `kubectl certificate approve <csr-name>`. You'll have to approve one certificate for each Node (e.g. `default.node.eerie-horse-cockroachdb-0` and one client certificate for the Job that initializes the cluster (e.g. `default.node.root`).
+If you are running in secure mode (with configuration parameter `tls.enabled` set to `yes`/`true`) and `tls.certs.provided` is set to `no`/`false`, then you will have to manually approve the cluster's security certificates as the Pods are created. You can see the pending CSRs (certificate-signing requests) by running `kubectl get csr`, and approve them by running `kubectl certificate approve <csr-name>`. You'll have to approve one certificate for each Node (e.g. `default.node.eerie-horse-cockroachdb-0` and one client certificate for the Job that initializes the cluster (e.g. `default.node.root`).
+
+When `tls.certs.provided` is set to `yes`/`true`, this chart will use certificates created outside of Kubernetes. You may want to use this if you want to use a different certificate authority from the one being used by Kubernetes or if your Kubernetes cluster doesn't fully support certificate-signing requests. To use this, first set up your certificates and load them into your Kubernetes cluster as Secrets using the commands below:
+```
+mkdir certs
+mkdir my-safe-directory
+cockroach cert create-ca --certs-dir=certs --ca-key=my-safe-directory/ca.key
+cockroach cert create-client root --certs-dir=certs --ca-key=my-safe-directory/ca.key
+kubectl create secret generic cockroachdb-root --from-file=certs
+cockroach cert create-node --certs-dir=certs --ca-key=my-safe-directory/ca.key localhost 127.0.0.1 eerie-horse-cockroachdb-public eerie-horse-cockroachdb-public.default eerie-horse-cockroachdb-public.default.svc.cluster.local *.eerie-horse-cockroachdb *.eerie-horse-cockroachdb.default *.eerie-horse-cockroachdb.default.svc.cluster.local
+kubectl create secret generic cockroachdb-node --from-file=certs
+```
+
+Set `tls.certs.tlsSecret` to `yes/true` if you make use of [cert-manager][3] in your cluster.
+
+[cert-manager][3] stores generated certificates in dedicated TLS secrets. Thus, they are always named
+* `ca.crt`
+* `tls.crt`
+* `tls.key`
+
+On the other hand cockroachdb also demands dedicated certificate filenames:
+* `ca.crt`
+* `node.crt`
+* `node.key`
+* `client.root.crt`
+* `client.root.key`
+
+By activating `tls.certs.tlsSecret` we benefit from projected secrets and convert the TLS secret filenames to their according cockroachdb filenames.
 
 Confirm that all Pods are `Running` successfully and init has been completed:
 ```shell
@@ -200,76 +227,80 @@ Verify that no Pod is deleted and then upgrade as normal. A new StatefulSet will
 The following table lists the configurable parameters of the CockroachDB chart and their default values.
 For details see the `values.yml` file.
 
-| Parameter | Description | Default |
-| --------- | ----------- | ------- |
-| `clusterDomain` | Cluster's default DNS domain | `cluster.local` |
-| `conf.attrs`                 | CockroachDB node attributes                      | `[]`    |
-| `conf.cache`                 | Size of CockroachDB's in-memory cache            | `25%`   |
-| `conf.cluster-name`          | Name of CockroachDB cluster                      | `""`    |
-| `conf.disable-cluster-name-verification` | Disable CockroachDB cluster name verification | `no` |
-| `conf.join`                  | List of already-existing CockroachDB instances   | `[]`    |
-| `conf.max-disk-temp-storage` | Max storage capacity for temp data               | `0`     |
-| `conf.max-offset`            | Max allowed clock offset for CockroachDB cluster | `500ms` |
-| `conf.max-sql-memory`        | Max memory to use processing SQL querie          | `25%`   |
-| `conf.locality`              | Locality attribute for this deployment           | `""`    |
-| `conf.single-node`           | Disable CockroachDB clustering (standalone mode) | `no`    |
-| `conf.sql-audit-dir`         | Directory for SQL audit log                      | `""`    |
-| `conf.port`                  | CockroachDB primary serving port in Pods         | `26257` |
-| `conf.http-port`             | CockroachDB HTTP port in Pods                    | `8080`  |
-| `image.repository`  | Container image name  | `cockroachdb/cockroach` |
-| `image.tag`         | Container image tag   | `v19.2.2`               |
-| `image.pullPolicy`  | Container pull policy | `IfNotPresent`          |
-| `image.credentials` | `registry`, `user` and `pass` credentials to pull private image | `{}` |
-| `statefulset.replicas`              | StatefulSet replicas number                            | `3`        |
-| `statefulset.updateStrategy`        | Update strategy for StatefulSet Pods                   | `{"type": "RollingUpdate"}` |
-| `statefulset.podManagementPolicy`   | `OrderedReady`/`Parallel` Pods creation/deletion order | `Parallel` |
-| `statefulset.budget.maxUnavailable` | k8s PodDisruptionBudget parameter                      | `1`        |
-| `statefulset.args`                | Extra command-line arguments                   | `[]` |
-| `statefulset.env`                 | Extra env vars                                 | `[]` |
-| `statefulset.secretMounts`        | Additional Secrets to mount at cluster members | `[]` |
-| `statefulset.labels`      | Additional labels of StatefulSet and its Pods | `{"app.kubernetes.io/component": "cockroachdb"}` |
-| `statefulset.annotations` | Additional annotations of StatefulSet Pods    | `{}` |
-| `statefulset.nodeAffinity`           | [Node affinity rules][2] of StatefulSet Pods      | `{}`   |
-| `statefulset.podAffinity`            | [Inter-Pod affinity rules][1] of StatefulSet Pods | `{}`   |
-| `statefulset.podAntiAffinity`        | [Anti-affinity rules][1] of StatefulSet Pods      | auto   |
-| `statefulset.podAntiAffinity.type`   | Type of auto [anti-affinity rules][1]             | `soft` |
-| `statefulset.podAntiAffinity.weight` | Weight for `soft` auto [anti-affinity rules][1]   | `100`  |
-| `statefulset.nodeSelector`           | Node labels for StatefulSet Pods assignment       | `{}`   |
-| `statefulset.tolerations`            | Node taints to tolerate by StatefulSet Pods       | `[]`   |
-| `statefulset.resources`              | Resource requests and limits for StatefulSet Pods | `{}`   |
-| `service.ports.grpc.external.port` | CockroachDB primary serving port in Services          | `26257`         |
-| `service.ports.grpc.external.name` | CockroachDB primary serving port name in Services     | `grpc`          |
-| `service.ports.grpc.internal.port` | CockroachDB inter-communication port in Services      | `26257`         |
-| `service.ports.grpc.internal.name` | CockroachDB inter-communication port name in Services | `grpc-internal` |
-| `service.ports.http.port`          | CockroachDB HTTP port in Services                     | `8080`          |
-| `service.ports.http.name`          | CockroachDB HTTP port name in Services                | `http`          |
-| `service.public.type`        | Public Service type                      | `ClusterIP` |
-| `service.public.labels`      | Additional labels of public Service      | `{"app.kubernetes.io/component": "cockroachdb"}` |
-| `service.public.annotations` | Additional annotations of public Service | `{}`        |
-| `service.discovery.labels`      | Additional labels of discovery Service      | `{"app.kubernetes.io/component": "cockroachdb"}` |
-| `service.discovery.annotations` | Additional annotations of discovery Service | `{}` |
-| `storage.hostPath`                      | Absolute path on host to store data             | `""`    |
-| `storage.persistentVolume.enabled`      | Whether to use PersistentVolume to store data   | `yes`   |
-| `storage.persistentVolume.size`         | PersistentVolume size                           | `100Gi` |
-| `storage.persistentVolume.storageClass` | PersistentVolume class                          | `""`    |
-| `storage.persistentVolume.labels`       | Additional labels of PersistentVolumeClaim      | `{}`    |
-| `storage.persistentVolume.annotations`  | Additional annotations of PersistentVolumeClaim | `{}`    |
-| `init.labels`       | Additional labels of init Job and its Pod            | `{"app.kubernetes.io/component": "init"}` |
-| `init.annotations`  | Additional labels of the Pod of init Job             | `{}` |
-| `init.affinity`     | [Affinity rules][2] of init Job Pod                  | `{}` |
-| `init.nodeSelector` | Node labels for init Job Pod assignment              | `{}` |
-| `init.tolerations`  | Node taints to tolerate by init Job Pod              | `[]` |
-| `init.resources`    | Resource requests and limits for the Pod of init Job | `{}` |
-| `tls.enabled`                | Whether to run securely using TLS certificates    | `no`  |
-| `tls.serviceAccount.create`  | Whether to create a new RBAC service account      | `yes` |
-| `tls.serviceAccount.name`    | Name of RBAC service account to use               | `""`  |
-| `tls.init.image.repository`  | Image to use for requesting TLS certificates      | `cockroachdb/cockroach-k8s-request-cert` |
-| `tls.init.image.tag`         | Image tag to use for requesting TLS certificates  | `0.4`          |
-| `tls.init.image.pullPolicy`  | Requesting TLS certificates container pull policy | `IfNotPresent` |
-| `tls.init.image.credentials` | `registry`, `user` and `pass` credentials to pull private image | `{}` |
-| `networkPolicy.enabled`      | Enable NetworkPolicy for CockroachDB's Pods                   | `no` |
-| `networkPolicy.ingress.grpc` | Whitelist resources to access gRPC port of CockroachDB's Pods | `[]` |
-| `networkPolicy.ingress.http` | Whitelist resources to access gRPC port of CockroachDB's Pods | `[]` |
+| Parameter                                | Description                                                     | Default                                          |
+| ---------                                | -----------                                                     | -------                                          |
+| `clusterDomain`                          | Cluster's default DNS domain                                    | `cluster.local`                                  |
+| `conf.attrs`                             | CockroachDB node attributes                                     | `[]`                                             |
+| `conf.cache`                             | Size of CockroachDB's in-memory cache                           | `25%`                                            |
+| `conf.cluster-name`                      | Name of CockroachDB cluster                                     | `""`                                             |
+| `conf.disable-cluster-name-verification` | Disable CockroachDB cluster name verification                   | `no`                                             |
+| `conf.join`                              | List of already-existing CockroachDB instances                  | `[]`                                             |
+| `conf.max-disk-temp-storage`             | Max storage capacity for temp data                              | `0`                                              |
+| `conf.max-offset`                        | Max allowed clock offset for CockroachDB cluster                | `500ms`                                          |
+| `conf.max-sql-memory`                    | Max memory to use processing SQL querie                         | `25%`                                            |
+| `conf.locality`                          | Locality attribute for this deployment                          | `""`                                             |
+| `conf.single-node`                       | Disable CockroachDB clustering (standalone mode)                | `no`                                             |
+| `conf.sql-audit-dir`                     | Directory for SQL audit log                                     | `""`                                             |
+| `conf.port`                              | CockroachDB primary serving port in Pods                        | `26257`                                          |
+| `conf.http-port`                         | CockroachDB HTTP port in Pods                                   | `8080`                                           |
+| `image.repository`                       | Container image name                                            | `cockroachdb/cockroach`                          |
+| `image.tag`                              | Container image tag                                             | `v19.2.2`                                        |
+| `image.pullPolicy`                       | Container pull policy                                           | `IfNotPresent`                                   |
+| `image.credentials`                      | `registry`, `user` and `pass` credentials to pull private image | `{}`                                             |
+| `statefulset.replicas`                   | StatefulSet replicas number                                     | `3`                                              |
+| `statefulset.updateStrategy`             | Update strategy for StatefulSet Pods                            | `{"type": "RollingUpdate"}`                      |
+| `statefulset.podManagementPolicy`        | `OrderedReady`/`Parallel` Pods creation/deletion order          | `Parallel`                                       |
+| `statefulset.budget.maxUnavailable`      | k8s PodDisruptionBudget parameter                               | `1`                                              |
+| `statefulset.args`                       | Extra command-line arguments                                    | `[]`                                             |
+| `statefulset.env`                        | Extra env vars                                                  | `[]`                                             |
+| `statefulset.secretMounts`               | Additional Secrets to mount at cluster members                  | `[]`                                             |
+| `statefulset.labels`                     | Additional labels of StatefulSet and its Pods                   | `{"app.kubernetes.io/component": "cockroachdb"}` |
+| `statefulset.annotations`                | Additional annotations of StatefulSet Pods                      | `{}`                                             |
+| `statefulset.nodeAffinity`               | [Node affinity rules][2] of StatefulSet Pods                    | `{}`                                             |
+| `statefulset.podAffinity`                | [Inter-Pod affinity rules][1] of StatefulSet Pods               | `{}`                                             |
+| `statefulset.podAntiAffinity`            | [Anti-affinity rules][1] of StatefulSet Pods                    | auto                                             |
+| `statefulset.podAntiAffinity.type`       | Type of auto [anti-affinity rules][1]                           | `soft`                                           |
+| `statefulset.podAntiAffinity.weight`     | Weight for `soft` auto [anti-affinity rules][1]                 | `100`                                            |
+| `statefulset.nodeSelector`               | Node labels for StatefulSet Pods assignment                     | `{}`                                             |
+| `statefulset.tolerations`                | Node taints to tolerate by StatefulSet Pods                     | `[]`                                             |
+| `statefulset.resources`                  | Resource requests and limits for StatefulSet Pods               | `{}`                                             |
+| `service.ports.grpc.external.port`       | CockroachDB primary serving port in Services                    | `26257`                                          |
+| `service.ports.grpc.external.name`       | CockroachDB primary serving port name in Services               | `grpc`                                           |
+| `service.ports.grpc.internal.port`       | CockroachDB inter-communication port in Services                | `26257`                                          |
+| `service.ports.grpc.internal.name`       | CockroachDB inter-communication port name in Services           | `grpc-internal`                                  |
+| `service.ports.http.port`                | CockroachDB HTTP port in Services                               | `8080`                                           |
+| `service.ports.http.name`                | CockroachDB HTTP port name in Services                          | `http`                                           |
+| `service.public.type`                    | Public Service type                                             | `ClusterIP`                                      |
+| `service.public.labels`                  | Additional labels of public Service                             | `{"app.kubernetes.io/component": "cockroachdb"}` |
+| `service.public.annotations`             | Additional annotations of public Service                        | `{}`                                             |
+| `service.discovery.labels`               | Additional labels of discovery Service                          | `{"app.kubernetes.io/component": "cockroachdb"}` |
+| `service.discovery.annotations`          | Additional annotations of discovery Service                     | `{}`                                             |
+| `storage.hostPath`                       | Absolute path on host to store data                             | `""`                                             |
+| `storage.persistentVolume.enabled`       | Whether to use PersistentVolume to store data                   | `yes`                                            |
+| `storage.persistentVolume.size`          | PersistentVolume size                                           | `100Gi`                                          |
+| `storage.persistentVolume.storageClass`  | PersistentVolume class                                          | `""`                                             |
+| `storage.persistentVolume.labels`        | Additional labels of PersistentVolumeClaim                      | `{}`                                             |
+| `storage.persistentVolume.annotations`   | Additional annotations of PersistentVolumeClaim                 | `{}`                                             |
+| `init.labels`                            | Additional labels of init Job and its Pod                       | `{"app.kubernetes.io/component": "init"}`        |
+| `init.annotations`                       | Additional labels of the Pod of init Job                        | `{}`                                             |
+| `init.affinity`                          | [Affinity rules][2] of init Job Pod                             | `{}`                                             |
+| `init.nodeSelector`                      | Node labels for init Job Pod assignment                         | `{}`                                             |
+| `init.tolerations`                       | Node taints to tolerate by init Job Pod                         | `[]`                                             |
+| `init.resources`                         | Resource requests and limits for the Pod of init Job            | `{}`                                             |
+| `tls.enabled`                            | Whether to run securely using TLS certificates                  | `no`                                             |
+| `tls.serviceAccount.create`              | Whether to create a new RBAC service account                    | `yes`                                            |
+| `tls.serviceAccount.name`                | Name of RBAC service account to use                             | `""`                                             |
+| `tls.certs.provided`                     | Bring your own certs scenario, i.e certificates are provided    | `no`                                             |
+| `tls.certs.clientRootSecret`             | If certs are provided, secret name for client root cert         | `cockroachdb-root`                               |
+| `tls.certs.nodeSecret`                   | If certs are provided, secret name for node cert                | `cockroachdb-node`                               |
+| `tls.certs.tlsSecret`                    | Own certs are stored in TLS secret                              | `no`                                             |
+| `tls.init.image.repository`              | Image to use for requesting TLS certificates                    | `cockroachdb/cockroach-k8s-request-cert`         |
+| `tls.init.image.tag`                     | Image tag to use for requesting TLS certificates                | `0.4`                                            |
+| `tls.init.image.pullPolicy`              | Requesting TLS certificates container pull policy               | `IfNotPresent`                                   |
+| `tls.init.image.credentials`             | `registry`, `user` and `pass` credentials to pull private image | `{}`                                             |
+| `networkPolicy.enabled`                  | Enable NetworkPolicy for CockroachDB's Pods                     | `no`                                             |
+| `networkPolicy.ingress.grpc`             | Whitelist resources to access gRPC port of CockroachDB's Pods   | `[]`                                             |
+| `networkPolicy.ingress.http`             | Whitelist resources to access gRPC port of CockroachDB's Pods   | `[]`                                             |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -425,3 +456,4 @@ Note, that if you are running in secure mode (`tls.enabled` is `yes`/`true`) and
 
 [1]: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#inter-pod-affinity-and-anti-affinity
 [2]: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#node-affinity
+[3]: https://cert-manager.io/

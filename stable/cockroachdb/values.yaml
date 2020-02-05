@@ -318,6 +318,17 @@ tls:
     # The name of this ServiceAccount to use.
     # If not set and `create` is `true`, then a name is auto-generated.
     name: ""
+  certs:
+    # Bring your own certs scenario. If provided, tls.init section will be ignored.
+    provided: no
+    # Secret name for the client root cert.
+    clientRootSecret: cockroachdb-root
+    # Secret name for node cert.
+    nodeSecret: cockroachdb-node
+    # Enable if the secret is a dedicated TLS.
+    # TLS secrets are created by cert-mananger, for example.
+    tlsSecret: no
+
   init:
     # Image to use for requesting TLS certificates.
     image:
