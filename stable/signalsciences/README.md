@@ -45,8 +45,8 @@ The following table lists the configurable parameters of the SignalSciences char
 | `signalsciences.accessKeyIdExistingSecret`     | If set, use the secret with a provided name instead of creating a new one | `nil`                                           |
 | `signalsciences.secretAccessKey`               | Your SignalSciences secretAccessKey                                       | `Nil` You must provide your own secretAccessKey |
 | `signalsciences.secretAccessKeyExistingSecret` | If set, use the secret with a provided name instead of creating a new one | `nil`                                           |
-| `image.repository`                             | The image repository to pull from                                         | `marc/sigsci-agent`                             |
-| `image.tag`                                    | The image tag to pull                                                     | `3.12.1`                                        |
+| `image.repository`                             | The image repository to pull from                                         | `signalsciences/sigsci-agent`                             |
+| `image.tag`                                    | The image tag to pull                                                     | `4.4.1`                                        |
 | `image.pullPolicy`                             | Image pull policy                                                         | `IfNotPresent`                                  |
 | `signalsciences.resources.requests.cpu`        | CPU resource requests                                                     | `200m`                                          |
 | `signalsciences.resources.limits.cpu`          | CPU resource limits                                                       | `200m`                                          |
