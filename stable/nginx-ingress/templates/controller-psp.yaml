@@ -69,7 +69,4 @@ spec:
   readOnlyRootFilesystem: false
   seLinux:
     rule: 'RunAsAny'
-  hostPorts:
-    - max: 65535
-      min: 1
 {{- end }}

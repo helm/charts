@@ -56,6 +56,32 @@ persistence:
   accessMode: ReadWriteOnce
   size: 8Gi
 
+## Deploy InfluxDB Enterprise - License required
+## ref: https://www.influxdata.com/products/influxdb-enterprise/
+enterprise:
+  enabled: false
+  licensekey: {}
+  clusterSize: 4
+  meta:
+    image:
+      ## This image contains the enterprise meta node package for clustering.
+      ## It is meant to be used in conjunction with the influxdb:data package of the same version.
+      ## ref: https://hub.docker.com/_/influxdb
+      tag: meta
+    clusterSize: 3
+    ## seed is hashed and used as `internal-shared-secret` for Meta service.
+    seed: dead-beef-cafe-bae
+    ## Configure resource requests and limits
+    ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+    resources: {}
+  #  resources:
+  #    requests:
+  #      memory: 512Mi
+  #      cpu: 2
+  #    limits:
+  #      memory: 1Gi
+  #      cpu: 4
+
 ## Create default user through Kubernetes job
 ## Defaults indicated below
 ##
@@ -106,7 +132,7 @@ resources: {}
 #    memory: 16Gi
 #    cpu: 8
 
-# Annotations to be added to InfuxDB pods
+# Annotations to be added to InfluxDB pods
 podAnnotations: {}
 
 ingress:
@@ -159,8 +185,10 @@ config:
     enabled: true
     bind_address: 8088
   meta:
+    bind_address: 8091
     retention_autocreate: true
     logging_enabled: true
+    authEnabled: false
   data:
     query_log_enabled: true
     cache_max_memory_size: 1073741824

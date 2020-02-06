@@ -181,6 +181,9 @@ master:
   # this will be an external load balancer and allowing inbound 0.0.0.0/0, a HUGE
   # security risk:  https://github.com/kubernetes/charts/issues/1341
   slaveListenerServiceType: "ClusterIP"
+  # Optionally assign an IP to the LoadBalancer slaveListenerService LoadBalancer
+  # GKE users: only regional static IPs will work for Service Load balancer.
+  # slaveListenerLoadBalancerIP: 1.2.3.4
   slaveListenerServiceAnnotations: {}
   slaveKubernetesNamespace:
 
