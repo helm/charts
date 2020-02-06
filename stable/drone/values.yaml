@@ -117,6 +117,15 @@ server:
 
   ## protocol should be http or https
   protocol: http
+  database:
+    driver: "sqlite3"
+    dataSource: "/var/lib/drone/drone.sqlite"
+  logs:
+    color: false
+    debug: false
+    pretty: false
+    trace: false
+    text: true
 
   ## http port
   ## Set to > 1024 if you want to run the pod as non-root user
@@ -155,10 +164,6 @@ server:
   ## ref: https://docs.drone.io/reference/server/
   ##
   env:
-    DRONE_LOGS_DEBUG: "false"
-    DRONE_DATABASE_DRIVER: "sqlite3"
-    DRONE_DATABASE_DATASOURCE: "/var/lib/drone/drone.sqlite"
-
   ## Secret environment variables are configured in `server.envSecrets`.
   ## Each item in `server.envSecrets` references a Kubernetes Secret.
   ## These Secrets should be created before they are referenced.
@@ -223,7 +228,7 @@ agent:
   ## ref: https://docs.drone.io/reference/agent/
   ##
   env:
-    DRONE_LOGS_DEBUG: "false"
+    # DRONE_LOGS_DEBUG: "false"
 
   ## Number of drone agent replicas
   replicas: 1
