@@ -21,8 +21,13 @@ spec:
     spec:
       containers:
       - name: {{ template "graylog.fullname" . }}-provisioner-job
-        image: alpine:latest
-        command: ["/bin/sh"]
+        image: "alpine"
+        imagePullPolicy: "IfNotPresent"
+        command:
+          - /bin/sh
+          - -c
+          - |
+            apk update && apk add --no-cache curl bash && bash /configmap/script.sh
         env:
           - name: GRAYLOG_PASSWORD_SECRET
             valueFrom:
@@ -30,10 +35,6 @@ spec:
                 name: {{ .Values.existingRootSecret | default (include "graylog.fullname" .) }}
 
                 key: graylog-password-secret
-        args:
-          - -c
-          - |
-            apk update && apk add --no-cache curl bash && bash /configmap/script.sh
         volumeMounts:
           - name: configmap
             mountPath: /configmap

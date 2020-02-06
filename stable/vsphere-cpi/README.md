@@ -74,7 +74,6 @@ The following table lists the configurable parameters of the vSphere CPI chart a
 | `rbac.create`                            | Create roles and role bindings      |  true                                  |
 | `serviceAccount.create`                  | Create the service account          |  true                                  |
 | `serviceAccount.name`                    | Name of the created service account |  cloud-controller-manager              |
-
 | `daemonset.annotations`                  | Annotations for CPI pod             |  nil                                   |
 | `daemonset.image`                        | Image for vSphere CPI               |  gcr.io/cloud-provider-vsphere/        |
 |                                          |                                     |       vsphere-cloud-controller-manager |

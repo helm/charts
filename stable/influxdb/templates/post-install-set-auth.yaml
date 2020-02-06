@@ -26,12 +26,20 @@ spec:
           - name: INFLUXDB_USER
             valueFrom:
               secretKeyRef:
+                {{- if .Values.setDefaultUser.user.existingSecret }}
+                name: {{ .Values.setDefaultUser.user.existingSecret -}}
+                {{ else }}
                 name: {{ template "influxdb.fullname" . }}-auth
+                {{- end }}
                 key: influxdb-user
           - name: INFLUXDB_PASSWORD
             valueFrom:
               secretKeyRef:
+                {{- if .Values.setDefaultUser.user.existingSecret }}
+                name: {{ .Values.setDefaultUser.user.existingSecret -}}
+                {{ else }}
                 name: {{ template "influxdb.fullname" . }}-auth
+                {{- end }}
                 key: influxdb-password
         args:
           - "/bin/sh"

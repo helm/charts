@@ -303,6 +303,15 @@ serviceMonitor:
   ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
   additionalLabels: {}
 
+### Lifecycle Events
+lifecycle: {}
+#  preStop:
+#    exec:
+#      command:
+#      - sh
+#      - -c
+#      - "sleep 60"
+
 ## PrometheusRule consumed by prometheus-operator
 prometheusRule:
   enabled: false

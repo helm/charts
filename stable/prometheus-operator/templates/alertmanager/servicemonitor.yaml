@@ -16,7 +16,7 @@ spec:
     matchNames:
       - {{ $.Release.Namespace | quote }}
   endpoints:
-  - port: web
+  - port: {{ .Values.alertmanager.alertmanagerSpec.portName }}
     {{- if .Values.alertmanager.serviceMonitor.interval }}
     interval: {{ .Values.alertmanager.serviceMonitor.interval }}
     {{- end }}

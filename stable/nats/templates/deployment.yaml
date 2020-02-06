@@ -137,8 +137,7 @@ spec:
       - name: metrics
         image: {{ template "nats.metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
-        args:
-{{ toYaml .Values.metrics.args | indent 10 -}}
+        args: {{- toYaml .Values.metrics.args | nindent 10 }}
           - "http://localhost:{{ .Values.monitoring.service.port }}"
         ports:
         - name: metrics

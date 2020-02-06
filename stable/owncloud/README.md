@@ -62,12 +62,12 @@ The following table lists the configurable parameters of the ownCloud chart and 
 | `nameOverride`                      | String to partially override owncloud.fullname template with a string (will prepend the release name) | `nil` |
 | `fullnameOverride`                  | String to fully override owncloud.fullname template with a string                                     | `nil` |
 | `ingress.enabled`                   | Enable ingress controller resource         | `false`                                                 |
+| `ingress.hosts.certManager`         | Add annotations for cert-manager           | `false`                                                 |
+| `ingress.annotations`               | Annotations for this host's ingress record | `[]`                                                    |
 | `ingress.hosts[0].name`             | Hostname to your ownCloud installation     | `owncloud.local`                                        |
 | `ingress.hosts[0].path`             | Path within the url structure              | `/`                                                     |
 | `ingress.hosts[0].tls`              | Utilize TLS backend in ingress             | `false`                                                 |
-| `ingress.hosts[0].certManager`      | Add annotations for cert-manager           | `false`                                                 |
 | `ingress.hosts[0].tlsSecret`        | TLS Secret (certificates)                  | `owncloud.local-tls-secret`                             |
-| `ingress.hosts[0].annotations`      | Annotations for this host's ingress record | `[]`                                                    |
 | `ingress.secrets[0].name`           | TLS Secret Name                            | `nil`                                                   |
 | `ingress.secrets[0].certificate`    | TLS Secret Certificate                     | `nil`                                                   |
 | `ingress.secrets[0].key`            | TLS Secret Key                             | `nil`                                                   |
@@ -95,6 +95,7 @@ The following table lists the configurable parameters of the ownCloud chart and 
 | `persistence.owncloud.existingClaim`| An Existing PVC name for ownCloud volume   | `nil` (uses alpha storage class annotation)             |
 | `persistence.owncloud.accessMode`   | PVC Access Mode for ownCloud volume        | `ReadWriteOnce`                                         |
 | `persistence.owncloud.size`         | PVC Storage Request for ownCloud volume    | `8Gi`                                                   |
+| `updateStrategy.type`               | Owncloud deployment strategy               | `RollingUpdate`                                         |
 | `resources`                         | CPU/Memory resource requests/limits        | Memory: `512Mi`, CPU: `300m`                            |
 | `podAnnotations`                    | Pod annotations                            | `{}`                                                    |
 | `affinity`                          | Map of node/pod affinities                 | `{}`                                                    |

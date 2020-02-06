@@ -33,6 +33,16 @@ ingress:
 # freshclamConfig: |
 #   HTTPProxyServer your-proxy.example.com
 #   HTTPProxyPort 8080
+#   DatabaseDirectory /data
+#   LogSyslog yes
+#   LogTime yes
+#   PidFile /run/clamav/freshclam.pid
+#   DatabaseOwner root
+#   DatabaseMirror database.clamav.net
+#   ScriptedUpdates yes
+#   NotifyClamd /etc/clamav/clamd.conf
+#   SafeBrowsing yes
+#   Bytecode yes
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -54,3 +64,8 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+# Metadata surrounding the kubernetes distribution being deployed to.
+kubeMeta:
+  # The api that Deployments are under.
+  deploymentApiVersion: apps/v1beta2
