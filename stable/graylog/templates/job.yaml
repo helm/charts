@@ -19,6 +19,9 @@ spec:
         app.kubernetes.io/instance: "{{ .Release.Name }}"
         app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
     spec:
+      {{ if .Values.graylog.provisioner.useGraylogServiceAccount }}
+      serviceAccountName: {{ template "graylog.serviceAccountName" . }}
+      {{ end }}
       containers:
       - name: {{ template "graylog.fullname" . }}-provisioner-job
         image: "alpine"

@@ -11,6 +11,11 @@ image:
 
 # How many web UI instances to run
 web:
+  hpa:
+    enabled: false
+    cputhreshold: 60
+    minpods: 1
+    maxpods: 10
   replicacount: 1
   resources: {}
     # limits:
@@ -27,7 +32,18 @@ web:
   nodeSelector: {}
   tolerations: []
   affinity: {}
-  probeInitialDelaySeconds: 50
+  livenessProbe:
+    failureThreshold: 5
+    initialDelaySeconds: 50
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 2
+  readinessProbe:
+    failureThreshold: 10
+    initialDelaySeconds: 50
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 2
   # priorityClassName: ""
   ## Use an alternate scheduler, e.g. "stork".
   ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
@@ -57,6 +73,11 @@ cron:
 
 # How many worker instances to run
 worker:
+  hpa:
+    enabled: false
+    cputhreshold: 60
+    minpods: 1
+    maxpods: 10
   replicacount: 2
   resources: {}
     # limits:

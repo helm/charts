@@ -169,6 +169,10 @@ spec:
             - containerPort: 8085
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+          {{- if .Values.containerSecurityContext }}
+          securityContext:
+            {{ toYaml .Values.containerSecurityContext | nindent 12 | trim }}
+          {{- end }}
           {{- if eq .Values.cloudProvider "gce" }}
           volumeMounts:
             - name: cloudconfig
@@ -186,13 +190,17 @@ spec:
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "cluster-autoscaler.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
+      {{- if .Values.securityContext }}
+      securityContext:
+        {{ toYaml .Values.securityContext | nindent 8 | trim }}
+      {{- end }}
       {{- if eq .Values.cloudProvider "gce" }}
       volumes:
         - name: cloudconfig
           hostPath:
             path: {{ .Values.cloudConfigPath }}
       {{- end }}
-    {{- if .Values.image.pullSecrets }}
+      {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range .Values.image.pullSecrets }}
         - name: {{ . }}

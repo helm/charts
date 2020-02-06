@@ -163,7 +163,7 @@ spec:
             {{- end }}
             - name: SONARQUBE_JDBC_USERNAME
               {{- if eq .Values.database.type "postgresql" }}
-              value: {{ .Values.postgresql.postgresUser | quote }}
+              value: {{ .Values.postgresql.postgresqlUsername | quote }}
               {{- else if eq .Values.database.type "mysql" }}
               value: {{ .Values.mysql.mysqlUser | quote }}
               {{- end }}
@@ -171,15 +171,15 @@ spec:
               valueFrom:
                 secretKeyRef:
                   {{- if eq .Values.database.type "postgresql" }}
-                  name: {{- if .Values.postgresql.enabled }} {{ template "postgresql.fullname" .}} {{- else if .Values.postgresql.postgresPasswordSecret }} {{ .Values.postgresql.postgresPasswordSecret }} {{- else }} {{ template "sonarqube.fullname" . }} {{- end }}
-                  key: postgres-password
+                  name: {{- if .Values.postgresql.enabled }} {{ template "postgresql.fullname" .}} {{- else if .Values.postgresql.postgresqlPasswordSecret }} {{ .Values.postgresql.postgresqlPasswordSecret }} {{- else }} {{ template "sonarqube.fullname" . }} {{- end }}
+                  key: postgresql-password
                   {{- else if eq .Values.database.type "mysql" }}
                   name: {{- if .Values.mysql.enabled }} {{ template "mysql.fullname" .}} {{- else if .Values.mysql.mysqlPasswordSecret }} {{ .Values.mysql.mysqlPasswordSecret }} {{- else }} {{ template "sonarqube.fullname" . }} {{- end }}
                   key: mysql-password
                   {{- end }}
             - name: SONARQUBE_JDBC_URL
               {{- if eq .Values.database.type "postgresql" }}
-              value: "jdbc:postgresql://{{ template "postgresql.hostname" . }}:{{- .Values.postgresql.service.port -}}/{{- .Values.postgresql.postgresDatabase -}}"
+              value: "jdbc:postgresql://{{ template "postgresql.hostname" . }}:{{- .Values.postgresql.service.port -}}/{{- .Values.postgresql.postgresqlDatabase -}}"
               {{- else if eq .Values.database.type "mysql" }}
               value: "jdbc:mysql://{{ template "mysql.hostname" . }}:{{ .Values.mysql.service.port }}/{{ .Values.mysql.mysqlDatabase }}?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true{{- range $key, $value := .Values.mysql.mysqlParams }}&{{ $key }}={{ $value }}{{- end }}"
               {{- end }}
@@ -197,6 +197,9 @@ spec:
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           volumeMounts:
+{{- if .Values.persistence.mounts }}
+{{ toYaml .Values.persistence.mounts | indent 12 }}
+{{- end }}
             {{- if and .Values.sonarProperties .Values.sonarSecretProperties }}
             - mountPath: {{ .Values.sonarqubeFolder }}/conf/
               name: concat-dir
@@ -250,6 +253,9 @@ spec:
 {{ toYaml .Values.affinity | indent 8 }}
     {{- end }}
       volumes:
+{{- if .Values.persistence.volumes }}
+{{ tpl (toYaml .Values.persistence.volumes | indent 6) . }}
+{{- end }}
       {{- if or .Values.sonarProperties (not .Values.elasticsearch.bootstrapChecks) }}
       - name: config
         configMap:
