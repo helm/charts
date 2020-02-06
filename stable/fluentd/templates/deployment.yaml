@@ -14,7 +14,8 @@ metadata:
 spec:
 {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
-{{- else}}
+{{- end }}
+{{- if .Values.autoscaling.enabled }}
   serviceName: {{ template "fluentd.name" . }}
 {{- end }}
   selector:
