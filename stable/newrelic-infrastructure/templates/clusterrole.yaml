@@ -13,6 +13,7 @@ rules:
       - "nodes/proxy"
       - "pods"
       - "services"
+      - "secrets"
     verbs: ["get", "list"]
 {{- if .Values.rbac.pspEnabled }}
   - apiGroups:
