@@ -180,7 +180,7 @@ airflow:
   #    echo 'adding connections'
   #    && airflow connections -d --conn_id databricks_default
   #    && airflow connections -a --conn_id databricks_default --conn_type databricks --conn_host company.cloud.databricks.com --conn_extra '{"host": "company.cloud.databricks.com", "token":"123"}' &&
-  startupScript:
+  startupScript: ""
 
 
 scheduler:
