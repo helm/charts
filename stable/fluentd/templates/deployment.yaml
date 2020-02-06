@@ -13,7 +13,7 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
 {{- if .Values.autoscaling.enabled}}
-  serviceName: {{ template "fluentd.fullname" . }}
+  serviceName: {{ template "fluentd.fullname" . }}-headless
 {{- end}}
 {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
