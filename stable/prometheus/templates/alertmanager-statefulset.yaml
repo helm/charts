@@ -97,6 +97,9 @@ spec:
             - name: config-volume
               mountPath: /etc/config
               readOnly: true
+    {{- if .Values.alertmanager.sidecarContainers }}
+    {{- toYaml .Values.alertmanager.sidecarContainers | nindent 8 }}
+    {{- end }}
     {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
       {{ toYaml .Values.imagePullSecrets | indent 2 }}
