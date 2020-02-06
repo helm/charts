@@ -12,6 +12,6 @@ data:
   {{- range $key, $val := .Values.logagent.config }}
   {{ $key }}: {{ $val | quote }}
   {{- end }}
-  {{- if .Values.customUrl }}
-  LOGS_RECEIVER_URL: {{ default "" .Values.customUrl.logsReceiverUrl | quote }}
+  {{- if .Values.logsReceiverUrl }}
+  LOGS_RECEIVER_URL: {{ default "" .Values.logsReceiverUrl | quote }}
   {{- end }}

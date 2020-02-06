@@ -42,7 +42,7 @@ rules:
     - "endpoints"
   verbs: ["create", "update", "patch"]
 {{- if .Values.podSecurityPolicy.enable}}
-- apiGroups: ["extensions"]
+- apiGroups: ["policy"]
   resources: ["podsecuritypolicies"]
   verbs:     ["use"]
   resourceNames:

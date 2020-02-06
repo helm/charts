@@ -28,54 +28,58 @@ jet:
   rest: true
   # javaOpts are additional JAVA_OPTS properties for Hazelcast Jet member
   javaOpts:
-  # configurationFiles are Hazelcast Jet configuration files
-  configurationFiles:
-    hazelcast.yaml: |-
-      hazelcast:
-        network:
-          join:
-            multicast:
-              enabled: false
-            kubernetes:
-              enabled: true
-              namespace: ${namespace}
-              service-name: ${serviceName}
-              resolve-not-ready-addresses: true
-    hazelcast-jet.yaml: |-
-      hazelcast-jet:
-        instance:
-          # period between flow control packets in milliseconds
-          flow-control-period: 100
-          # number of backup copies to configure for Hazelcast IMaps used internally in a Jet job
-          backup-count: 1
-          # the delay after which auto-scaled jobs will restart if a new member is added to the
-          # cluster. The default is 10 seconds. Has no effect on jobs with auto scaling disabled
-          scale-up-delay-millis: 10000
-          # Sets whether lossless job restart is enabled for the node. With
-          # lossless restart you can restart the whole cluster without losing the
-          # jobs and their state. The feature is implemented on top of the Hot
-          # Restart feature of Hazelcast IMDG which persists the data to disk.
-          lossless-restart-enabled: false
-        edge-defaults:
-          # capacity of the concurrent SPSC queue between each two processors
-          queue-size: 1024
-          # network packet size limit in bytes, only applies to distributed edges
-          packet-size-limit: 16384
-          # receive window size multiplier, only applies to distributed edges
-          receive-window-multiplier: 3
-        metrics:
-          # whether metrics collection is enabled
-          enabled: true
-          # whether jmx mbean metrics collection is enabled
-          jmx-enabled: true
-          # the number of seconds the metrics will be retained on the instance
-          retention-seconds: 120
-          # the metrics collection interval in seconds
-          collection-interval-seconds: 5
-          # whether metrics should be collected for data structures. Metrics
-          # collection can have some overhead if there is a large number of data
-          # structures
-          metrics-for-data-structures: false
+  # Jet and Hazelcast IMDG YAML configuration files
+  yaml:
+    hazelcast:
+      network:
+        join:
+          multicast:
+            enabled: false
+          kubernetes:
+            enabled: true
+            service-name: ${serviceName}
+            namespace: ${namespace}
+            resolve-not-ready-addresses: true
+      management-center:
+        enabled: ${hazelcast.mancenter.enabled}
+        url: ${hazelcast.mancenter.url}
+    hazelcast-jet:
+      instance:
+        # period between flow control packets in milliseconds
+        flow-control-period: 100
+        # number of backup copies to configure for Hazelcast IMaps used internally in a Jet job
+        backup-count: 1
+        # the delay after which auto-scaled jobs will restart if a new member is added to the
+        # cluster. The default is 10 seconds. Has no effect on jobs with auto scaling disabled
+        scale-up-delay-millis: 10000
+        # Sets whether lossless job restart is enabled for the node. With
+        # lossless restart you can restart the whole cluster without losing the
+        # jobs and their state. The feature is implemented on top of the Hot
+        # Restart feature of Hazelcast IMDG which persists the data to disk.
+        lossless-restart-enabled: false
+      edge-defaults:
+        # capacity of the concurrent SPSC queue between each two processors
+        queue-size: 1024
+        # network packet size limit in bytes, only applies to distributed edges
+        packet-size-limit: 16384
+        # receive window size multiplier, only applies to distributed edges
+        receive-window-multiplier: 3
+      metrics:
+        # whether metrics collection is enabled
+        enabled: true
+        # whether jmx mbean metrics collection is enabled
+        jmx-enabled: true
+        # the number of seconds the metrics will be retained on the instance
+        retention-seconds: 120
+        # the metrics collection interval in seconds
+        collection-interval-seconds: 5
+        # whether metrics should be collected for data structures. Metrics
+        # collection can have some overhead if there is a large number of data
+        # structures
+        metrics-for-data-structures: false
+
+  # configurationFiles are any additional Hazelcast Jet configuration files
+  # configurationFiles:
 
 # nodeSelector is an array of Hazelcast Node labels for POD assignments
 # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
@@ -133,6 +137,7 @@ service:
   # It is required if DNS Lookup is used (https://github.com/hazelcast/hazelcast-kubernetes#dns-lookup)
   # clusterIP: "None"
 
+
 # Role-based Access Control
 rbac:
   # Specifies whether RBAC resources should be created
@@ -164,3 +169,97 @@ metrics:
     annotations:
       prometheus.io/scrape: "true"
       prometheus.io/path: "/metrics"
+
+# Hazelcast Jet Management Center application properties
+managementcenter:
+  # enabled is a flag to enable Hazelcast Jet Management Center application
+  enabled: true
+  ## Hazelcast Jet Management Center image version
+  ## ref: https://hub.docker.com/r/hazelcast/hazelcast-jet-management-center/tags/
+  ##
+  image:
+    # repository is the Hazelcast Jet Management Center image name
+    repository: "hazelcast/hazelcast-jet-management-center"
+    # tag is the Hazelcast Jet Management Center image tag
+    tag: "3.1"
+    # pullPolicy is the Docker image pull policy
+    # It's recommended to change this to 'Always' if the image tag is 'latest'
+    # ref: http://kubernetes.io/docs/user-guide/images/#updating-images
+    #
+    pullPolicy: IfNotPresent
+    # pullSecrets is an array of docker-registry secret names
+    # Secrets must be manually created in the namespace.
+    # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    # pullSecrets:
+    # - myRegistryKeySecretName
+
+  # javaOpts are additional JAVA_OPTS properties for Hazelcast Jet Management Center
+  javaOpts:
+
+  # licenseKey is the license key for Hazelcast Jet Management Center
+  # if not provided, it can be filled in the Management Center web interface
+  licenseKey:
+  # licenseKeySecretName is the name of the secret where the Hazelcast Jet Management Center License Key is stored (can be used instead of licenseKey)
+  # licenseKeySecretName:
+
+  # nodeSelector is an array of Hazelcast Jet Management Center Node labels for POD assignments
+  # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  nodeSelector: {}
+
+  # Jet Client configuration YAML file which will be used by Hazelcast Jet Management Center
+  yaml:
+    hazelcast-client:
+      network:
+        kubernetes:
+          enabled: true
+          namespace: ${namespace}
+          service-name: ${serviceName}
+          resolve-not-ready-addresses: true
+
+  # configurationFiles are any additional Hazelcast Jet Client configuration files
+  # configurationFiles:
+
+  # Configure resource requests and limits
+  # ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  #
+  # resources:
+  #   requests:
+  #     memory: 256Mi
+  #     cpu: 100m
+
+  # Hazelcast Jet Management Center Service properties
+  service:
+    # type defines the Kubernetes service type ('ClusterIP', 'LoadBalancer', or 'NodePort')
+    type: LoadBalancer
+    # port is the Kubernetes service port
+    port: 8081
+
+  # Hazelcast Jet Management Center Liveness probe
+  livenessProbe:
+    # enabled is a flag to used to enable liveness probe
+    enabled: true
+    # initialDelaySeconds is a delay before liveness probe is initiated
+    initialDelaySeconds: 30
+    # periodSeconds decides how often to perform the probe
+    periodSeconds: 10
+    # timeoutSeconds decides when the probe times out
+    timeoutSeconds: 5
+    # successThreshold is the minimum consecutive successes for the probe to be considered successful after having failed
+    successThreshold: 1
+    # failureThreshold is the minimum consecutive failures for the probe to be considered failed after having succeeded
+    failureThreshold: 3
+
+  # Hazelcast Jet Management Center Readiness probe
+  readinessProbe:
+    # enabled is a flag to used to enable readiness probe
+    enabled: true
+    # initialDelaySeconds is a delay before readiness probe is initiated
+    initialDelaySeconds: 30
+    # periodSeconds decides how often to perform the probe
+    periodSeconds: 10
+    # timeoutSeconds decides when the probe times out
+    timeoutSeconds: 1
+    # successThreshold is the minimum consecutive successes for the probe to be considered successful after having failed
+    successThreshold: 1
+    # failureThreshold is the minimum consecutive failures for the probe to be considered failed after having succeeded
+    failureThreshold: 3

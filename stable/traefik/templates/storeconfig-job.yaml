@@ -25,6 +25,9 @@ spec:
           args:
           - storeconfig
           - --configfile=/config/traefik.toml
+          {{- range .Values.startupArguments }}
+          - {{ . }}
+          {{- end }}
           volumeMounts:
           - mountPath: /config
             name: config

@@ -18,8 +18,14 @@ spec:
     spec:
       template:
         metadata:
+          {{- if .Values.backup.labels }}
+          labels:
+{{ toYaml .Values.backup.labels | trim | indent 12 }}
+          {{- end }}
+          {{- if .Values.backup.annotations }}
           annotations:
-            {{ toYaml .Values.backup.annotations }}
+{{ toYaml .Values.backup.annotations | trim | indent 12 }}
+          {{- end }}
         spec:
           restartPolicy: OnFailure
           serviceAccountName: {{ template "jenkins.fullname" . }}-backup
@@ -42,27 +48,54 @@ spec:
             {{- with .Values.backup.extraArgs }}
 {{ toYaml . | indent 12 }}
             {{- end }}
-            {{- with .Values.backup.env }}
             env:
-{{ toYaml . | indent 12 }}
+            {{- with .Values.backup.env }}
+{{ toYaml . | trim | indent 12 }}
             {{- end }}
             {{- if .Values.backup.existingSecret }}
             {{- range $key,$value := .Values.backup.existingSecret }}
+            {{- if $value.awsaccesskey }}
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
                   name: {{ $key }}
                   key: {{ $value.awsaccesskey | quote }}
+            {{- end }}
+            {{- if $value.awssecretkey }}
             - name: AWS_SECRET_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
                   name: {{ $key }}
                   key: {{ $value.awssecretkey | quote}}
             {{- end }}
+            {{- if $value.gcpcredentials }}
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: "/var/run/secrets/{{ $key }}/{{ $value.gcpcredentials }}"
+            {{- end }}
+            {{- end }}
             {{- end }}
           {{- with .Values.backup.resources }}
             resources:
-{{ toYaml . | indent 14 }}
+{{ toYaml . | trim | indent 14 }}
+          {{- end }}
+            volumeMounts:
+          {{- if .Values.backup.existingSecret }}
+          {{- range $key,$value := .Values.backup.existingSecret }}
+          {{- if $value.gcpcredentials }}
+            - mountPath: /var/run/secrets/{{ $key }}
+              name: {{ $key }}
+          {{- end }}
+          {{- end }}
+          {{- end }}
+          volumes:
+          {{- if .Values.backup.existingSecret }}
+          {{- range $key,$value := .Values.backup.existingSecret }}
+          {{- if $value.gcpcredentials }}
+          - name:  {{ $key }}
+            secret:
+              secretName:  {{ $key }}
+          {{- end }}
+          {{- end }}
           {{- end }}
           affinity:
             podAffinity:

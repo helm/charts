@@ -7,6 +7,10 @@ rbac:
   ##
   create: true
 
+  resources:
+    - pods
+    - secrets
+
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
   ##
@@ -22,6 +26,16 @@ tags:
   # If true, this chart will install MongoDB replicaset from requirement dependencies
   install-mongodb: true
 
+## Enable only if your current release was migrated from helm2 (using 2to3 plugin).
+##
+## Because Kubernetes considers some StatefulSets fields/labels immutable,
+## this flag preserves the values rendered by helm2. This allows helm3
+## to upgrade the current release without a complete purge/reinstall.
+##
+## Further details: https://github.com/helm/charts/issues/20306
+##
+# helm2Compatibility: true
+
 graylog:
   ## Graylog image version
   ## Ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -30,8 +44,7 @@ graylog:
   ## Make sure you strict with the `x` version of Graylog where `x` is ${version}-${x}
   ##
   image:
-    # repository: "graylog/graylog:2.5.1-3"
-    repository: "graylog/graylog:3.0.2-2"
+    repository: "graylog/graylog:3.1"
     pullPolicy: "IfNotPresent"
 
   ## Number of Graylog instance
@@ -90,14 +103,24 @@ graylog:
   ## Additional plugins you need to install on Graylog.
   ##
   plugins: []
-    # - name: graylog-plugin-slack-2.7.1.jar
-    #   url: https://github.com/omise/graylog-plugin-slack/releases/download/2.7.1/graylog-plugin-slack-2.7.1.jar
+    # - name: graylog-plugin-slack-notification-3.1.0.jar
+    #   url: https://github.com/omise/graylog-plugin-slack-notification/releases/download/v3.1.0/graylog-plugin-slack-notification-3.1.0.jar
     # - name: graylog-plugin-function-check-diff-1.0.0.jar
     #   url: https://github.com/omise/graylog-plugin-function-check-diff/releases/download/1.0.0/graylog-plugin-function-check-diff-1.0.0.jar
-    # - name: graylog-plugin-custom-alert-condition-1.0.0.jar
-    #   url: https://github.com/omise/graylog-plugin-custom-alert-condition/releases/download/v1.0.0/graylog-plugin-custom-alert-condition-1.0.0.jar
     # - name: graylog-plugin-auth-sso-3.0.0.jar
     #   url: https://github.com/Graylog2/graylog-plugin-auth-sso/releases/download/3.0.0/graylog-plugin-auth-sso-3.0.0.jar
+
+  ## Additional init containers
+  ##
+  extraInitContainers: []
+
+  ## Additional volume mounts
+  ##
+  extraVolumeMounts: []
+
+  ## Additional volumes
+  ##
+  extraVolumes: []
 
   ## A service for Graylog web interface
   ##
@@ -146,6 +169,13 @@ graylog:
     hosts: []
     #   - graylog.yourdomain.com
 
+    ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
+    extraPaths: []
+    # - path: /*
+    #   backend:
+    #     serviceName: ssl-redirect
+    #     servicePort: use-annotation
+
     ## Graylog server Ingress TLS configuration
     ## Secrets must be manually created in the namespace
     ##
@@ -193,7 +223,7 @@ graylog:
   rootUsername: "admin"
 
   ## Graylog root password
-  ## Defaults to a random 10-character alphanumeric string if not set
+  ## Defaults to a random 16-character alphanumeric string if not set
   ##
   # rootPassword: ""
 
@@ -204,6 +234,10 @@ graylog:
   ## Graylog root timezone
   ##
   rootTimezone: "UTC"
+
+  ## Grayog existing root secret
+  ##
+  existingRootSecret: ""
 
   elasticsearch:
     ## List of Elasticsearch hosts Graylog should connect to.
@@ -258,6 +292,9 @@ graylog:
     deleteBeforeStart: false
 
   init:
+    # Additional environment variables to be added to Graylog initContainer
+    env: {}
+
     # Configure resource requests and limits for the Graylog StatefulSet initContainer
     resources: {}
 
@@ -273,6 +310,7 @@ graylog:
   ##
   provisioner:
     enabled: false
+    useGraylogServiceAccount: false
     # script: |
     #  json='{
     #    "username_header": "X-Auth-Request-User",

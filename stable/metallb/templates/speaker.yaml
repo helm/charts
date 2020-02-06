@@ -34,6 +34,10 @@ spec:
       serviceAccountName: {{ template "metallb.speakerServiceAccountName" . }}
       terminationGracePeriodSeconds: 0
       hostNetwork: true
+{{- if gt (len .Values.speaker.initContainers) 0 }}
+      initContainers:
+{{ toYaml .Values.speaker.initContainers | indent 8 }}
+{{- end }}
       containers:
       - name: speaker
         image: {{ .Values.speaker.image.repository }}:{{ .Values.speaker.image.tag }}

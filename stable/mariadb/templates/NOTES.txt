@@ -15,7 +15,7 @@ Services:
 Administrator credentials:
 
   Username: root
-  Password : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
+  Password : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mariadb.secretName" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
 
 To connect to your database:
 
@@ -38,7 +38,7 @@ To upgrade this helm chart:
 
   1. Obtain the password as described on the 'Administrator credentials' section and set the 'rootUser.password' parameter as shown below:
 
-      ROOT_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
+      ROOT_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mariadb.secretName" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
       helm upgrade {{ .Release.Name }} stable/mariadb --set rootUser.password=$ROOT_PASSWORD
 
 {{- if and (contains "bitnami/" .Values.image.repository) (not (.Values.image.tag | toString | regexFind "-r\\d+$|sha256:")) }}

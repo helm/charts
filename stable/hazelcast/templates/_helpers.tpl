@@ -43,6 +43,17 @@ Create the name of the service account to use
 {{- end -}}
 
 {{/*
+Create the name of the service to use
+*/}}
+{{- define "hazelcast.serviceName" -}}
+{{- if .Values.service.create -}}
+    {{ template "hazelcast.fullname" .}}
+{{- else -}}
+    {{ default "default" .Values.service.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Create a default fully qualified Management Center app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.

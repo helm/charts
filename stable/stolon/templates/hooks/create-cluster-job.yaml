@@ -42,5 +42,5 @@ spec:
             - --store-endpoints={{ .Values.store.endpoints }}
             {{- end }}
             - --yes
-            - '{ "initMode": "new", {{- range $key, $value := .Values.clusterSpec }} {{ $key | quote }}: {{ if typeIs "string" $value }} {{ $value | quote }} {{ else }} {{ $value }} {{ end }}, {{- end }} "pgParameters": {{ toJson .Values.pgParameters }} }'
+            - '{ "initMode": "new", {{- range $key, $value := .Values.clusterSpec }} {{ $key | quote }}: {{ if typeIs "string" $value }} {{ $value | quote }} {{ else }} {{ $value }} {{ end }}, {{- end }} {{ if .Values.tls.enabled }} "pgParameters": {{- $pgParameters := .Values.pgParameters -}}{{ $all_init := set $pgParameters "ssl" "on" }}{{ $all_init := set $all_init "ssl_cert_file" "/certs/serverCrt.crt" }} {{ $all_init := set $all_init "ssl_key_file" "/certs/serverKey.key" }}{{ $all_init := set $all_init "ssl_ca_file" "/certs/rootCa.crt" }}{{ toJson $all_init }}{{ else }}"pgParameters": {{ toJson .Values.pgParameters }} {{ end}} }'
 {{ end }}

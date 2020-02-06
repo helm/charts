@@ -16,19 +16,23 @@ spec:
   ingress:
     # Allow inbound connections
     - ports:
-      - port: {{ template "postgresql.port" . }}
-    {{- if not .Values.networkPolicy.allowExternal }}
+        - port: {{ template "postgresql.port" . }}
+      {{- if not .Values.networkPolicy.allowExternal }}
       from:
-      - podSelector:
-          matchLabels:
-            {{ template "postgresql.fullname" . }}-client: "true"
-      - podSelector:
-          matchLabels:
-            app: {{ template "postgresql.name" . }}
-            release: {{ .Release.Name | quote }}
-            role: slave
-    {{- end }}
+        - podSelector:
+            matchLabels:
+              {{ template "postgresql.fullname" . }}-client: "true"
+          {{- if .Values.networkPolicy.explicitNamespacesSelector }}
+          namespaceSelector:
+{{ toYaml .Values.networkPolicy.explicitNamespacesSelector | indent 12 }}
+          {{- end }}
+        - podSelector:
+            matchLabels:
+              app: {{ template "postgresql.name" . }}
+              release: {{ .Release.Name | quote }}
+              role: slave
+      {{- end }}
     # Allow prometheus scrapes
     - ports:
-      - port: 9187
+        - port: 9187
 {{- end }}

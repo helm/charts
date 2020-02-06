@@ -1,5 +1,5 @@
 {{- if and .Values.alertmanager.enabled (not .Values.alertmanager.statefulSet.enabled) -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "prometheus.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   labels:
@@ -22,6 +22,9 @@ spec:
     {{- end }}
       labels:
         {{- include "prometheus.alertmanager.labels" . | nindent 8 }}
+        {{- if .Values.alertmanager.podLabels}}
+        {{ toYaml .Values.alertmanager.podLabels | nindent 8 }}
+        {{- end}}
     spec:
 {{- if .Values.alertmanager.schedulerName }}
       schedulerName: "{{ .Values.alertmanager.schedulerName }}"
@@ -59,7 +62,7 @@ spec:
             - containerPort: 9093
           readinessProbe:
             httpGet:
-              path: {{ .Values.alertmanager.prefixURL }}/#/status
+              path: {{ .Values.alertmanager.prefixURL }}/-/ready
               port: 9093
             initialDelaySeconds: 30
             timeoutSeconds: 30

@@ -99,6 +99,7 @@ mysql:
   port: 3306
   protocol: ""
   user: "exporter"
+  existingSecret: false
 
 # cloudsqlproxy https://cloud.google.com/sql/docs/mysql/sql-proxy
 cloudsqlproxy:

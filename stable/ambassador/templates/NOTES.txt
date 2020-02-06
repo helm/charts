@@ -1,4 +1,4 @@
-Congratuations! You've successfully installed Ambassador.
+Congratulations! You've successfully installed Ambassador.
 
 For help, visit our Slack at https://d6e.co/slack or view the documentation online at https://www.getambassador.io.
 

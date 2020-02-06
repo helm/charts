@@ -21,6 +21,8 @@ metadata:
     app.kubernetes.io/instance: {{ $relName }}
     app.kubernetes.io/managed-by: {{ $relService }}
 spec:
+  strategy:
+    type: Recreate
   replicas: {{ .replicaCount }}
   selector:
     matchLabels:

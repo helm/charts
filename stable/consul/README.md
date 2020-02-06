@@ -1,7 +1,7 @@
 # Consul Helm Chart
 
 ## Prerequisites Details
-* Kubernetes 1.6+
+* Kubernetes 1.10+
 * PV support on underlying infrastructure
 
 ## StatefulSet Details
@@ -38,7 +38,7 @@ The following table lists the configurable parameters of the consul chart and th
 | `DisableHostNodeId`     | Disable Node Id creation (uses random)| `false`                                                    |
 | `joinPeers`             | Set list of hosts for -retry-join     | `[]`                                                       |
 | `joinWan`               | Set list of hosts for -retry-join-wan | `[]`                                                       |
-| `EncryptGossip`         | Whether or not gossip is encrypted    | `true`                                                     |
+| `Gossip.Encrypt`         | Whether or not gossip is encrypted    | `true`                                                     |
 | `GossipKey`             | Gossip-key to use by all members      | `nil`                                                      |
 | `Storage`               | Persistent volume size                | `1Gi`                                                      |
 | `StorageClass`          | Persistent volume storage class       | `nil`                                                      |
@@ -55,13 +55,15 @@ The following table lists the configurable parameters of the consul chart and th
 | `affinity`              | Consul affinity settings              | `see values.yaml`                                          |
 | `nodeSelector`          | Node labels for pod assignment        | `{}`                                                       |
 | `tolerations`           | Tolerations for pod assignment        | `[]`                                                       |
+| `podAnnotations`        | Annotations for pod                   | `{}`                                                       |
 | `maxUnavailable`        | Pod disruption Budget maxUnavailable  | `1`                                                        |
 | `ui.enabled`            | Enable Consul Web UI                  | `true`                                                     |
 | `uiIngress.enabled`     | Create Ingress for Consul Web UI      | `false`                                                    |
 | `uiIngress.annotations` | Associate annotations to the Ingress  | `{}`                                                       |
 | `uiIngress.labels`      | Associate labels to the Ingress       | `{}`                                                       |
 | `uiIngress.hosts`       | Associate hosts with the Ingress      | `[]`                                                       |
-| `uiIngress.tls`         | Associate TLS with the Ingress        | `[]`                                                       |
+| `uiIngress.path`        | Associate TLS with the Ingress        | `/`                                                        |
+| `uiIngress.tls`         | Associate path with the Ingress       | `[]`                                                       |
 | `uiService.enabled`     | Create dedicated Consul Web UI svc    | `true`                                                     |
 | `uiService.type`        | Dedicate Consul Web UI svc type       | `NodePort`                                                 |
 | `uiService.annotations` | Extra annotations for UI service      | `{}`                                                       |

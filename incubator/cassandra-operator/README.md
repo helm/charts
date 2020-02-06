@@ -26,6 +26,7 @@ The following tables lists the configurable parameters of the Cassandra Operator
 | `resources`                      | Pod resource requests & limits                   | `{}`                                      |
 | `metricService`                  | deploy service for metrics                       | `false`                                   |
 | `debug.enabled`                  | activate DEBUG log level                         | `false`                                   |
+| `createCustomResource`           | If false, do not create custom resource(do not require with Helm v3)   | `false`             |
 
 
 

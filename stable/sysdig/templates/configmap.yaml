@@ -18,6 +18,11 @@ data:
     memdump:
       enabled: true
 {{- end }}
+{{- if .Values.auditLog.enabled }}
+    security:
+      k8s_audit_server_url: {{ .Values.auditLog.auditServerUrl }}
+      k8s_audit_server_port: {{ .Values.auditLog.auditServerPort }}
+{{- end }}
 {{- if .Values.sysdig.settings }}
 {{ toYaml .Values.sysdig.settings | indent 4 }}
 {{- end }}

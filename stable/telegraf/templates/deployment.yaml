@@ -17,11 +17,13 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "telegraf.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
-      {{- if .Values.podAnnotations }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
-      {{- end }}
+        {{- end }}
     spec:
+      serviceAccountName: {{ template "telegraf.serviceAccountName" . }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repo }}:{{ .Values.image.tag }}"
@@ -29,10 +31,29 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         env:
-{{ toYaml .Values.env | indent 8 }}       
+{{ toYaml .Values.env | indent 8 }}
         volumeMounts:
         - name: config
           mountPath: /etc/telegraf
+        {{- range .Values.volumeMounts}}
+        - name: {{ .name }}
+          mountPath: {{ .mountPath }}
+        {{- end }}
+        {{- range $objectKey, $objectValue := .Values.config.outputs }}
+        {{- range $key, $value := . -}}
+        {{- $tp := typeOf $value -}}
+        {{- if eq $key "health" }}
+        livenessProbe:
+          httpGet:
+            path: /
+            port: {{ trimPrefix "http://:" $value.service_address | int64 }}
+        readinessProbe:
+          httpGet:
+            path: /
+            port: {{ trimPrefix "http://:" $value.service_address | int64 }}
+        {{- end }}
+        {{- end }}
+        {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.imagePullSecrets | indent 8 }}
@@ -41,3 +62,6 @@ spec:
       - name: config
         configMap:
           name: {{ include "telegraf.fullname" . }}
+      {{- if .Values.volumeMounts }}
+{{ toYaml .Values.volumeMounts | indent 6 }}
+      {{- end}}

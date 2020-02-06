@@ -15,7 +15,13 @@ spec:
       port: {{ .Values.kubeProxy.service.port }}
       protocol: TCP
       targetPort: {{ .Values.kubeProxy.service.targetPort }}
+{{- if .Values.kubeProxy.endpoints }}{{- else }}
   selector:
-  {{ include "prometheus-operator.rangeskipempty" .Values.kubeProxy.service.selector | indent 4 }}
+    {{- if .Values.kubeProxy.service.selector }}
+{{ toYaml .Values.kubeProxy.service.selector | indent 4 }}
+    {{- else}}
+    k8s-app: kube-proxy
+    {{- end}}
+{{- end }}
   type: ClusterIP
 {{- end -}}

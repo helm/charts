@@ -126,12 +126,22 @@ minecraftServer:
   # Options like -X that need to proceed general JVM options
   jvmXXOpts: ""
   serviceType: LoadBalancer
+  loadBalancerIP:
+  # loadBalancerSourceRanges: []
+  ## Set the externalTrafficPolicy in the Service to either Cluster or Local
+  # externalTrafficPolicy: Cluster
+
   rcon:
     # If you enable this, make SURE to change your password below.
     enabled: false
     port: 25575
     password: "CHANGEME!"
     serviceType: LoadBalancer
+    loadBalancerIP:
+    # loadBalancerSourceRanges: []
+    ## Set the externalTrafficPolicy in the Service to either Cluster or Local
+    # externalTrafficPolicy: Cluster
+
 
   query:
     # If you enable this, your server will be "published" to Gamespy
@@ -155,3 +165,5 @@ persistence:
     # Set this to false if you don't care to persist state between restarts.
     enabled: true
     Size: 1Gi
+
+podAnnotations: {}

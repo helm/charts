@@ -1,0 +1,26 @@
+{{- if and .Values.persistentVolume.enabled (not .Values.persistentVolume.existingClaim) }}
+{{- $fullName := include "pgadmin.fullname" . -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "pgadmin.labels" . | nindent 4 }}
+  {{- if .Values.persistentVolume.annotations }}
+  annotations:
+    {{- .Values.persistentVolume.annotaions | toYaml | nindent 4 }}
+  {{- end }}
+spec:
+  accessModes:
+    {{- .Values.persistentVolume.accessModes | toYaml | nindent 4 }}
+{{- if .Values.persistentVolume.storageClass }}
+{{- if (eq "-" .Values.persistentVolume.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistentVolume.storageClass }}"
+{{- end }}
+{{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.persistentVolume.size }}
+{{- end }}

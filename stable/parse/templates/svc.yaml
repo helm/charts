@@ -12,13 +12,13 @@ spec:
   externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy | quote }}
   {{- end }}
   ports:
-  - name: server-http
-    port: {{ .Values.server.port }}
-    targetPort: server-http
-  - name: dashboard-http
-    port: {{ .Values.service.port }}
-    targetPort: dashboard-http
-    {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePorts.http)))}}
-    nodePort: {{ .Values.service.nodePorts.http }}
-    {{- end }}
+    - name: server-http
+      port: {{ .Values.server.port }}
+      targetPort: server-http
+    - name: dashboard-http
+      port: {{ .Values.service.port }}
+      targetPort: dashboard-http
+      {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePorts.http)))}}
+      nodePort: {{ .Values.service.nodePorts.http }}
+      {{- end }}
   selector: {{ include "parse.matchLabels" . | nindent 4 }}

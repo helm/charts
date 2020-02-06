@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "grafana.fullname" . }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ template "grafana.namespace" . }}
   labels:
     app: {{ template "grafana.name" . }}
     chart: {{ template "grafana.chart" . }}
@@ -19,6 +19,7 @@ spec:
     matchLabels:
       app: {{ template "grafana.name" . }}
       release: {{ .Release.Name }}
+  serviceName: {{ template "grafana.fullname" . }}-headless
   template:
     metadata:
       labels:

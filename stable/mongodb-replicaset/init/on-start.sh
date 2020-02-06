@@ -21,6 +21,7 @@ replica_set="$REPLICA_SET"
 script_name=${0##*/}
 SECONDS=0
 timeout="${TIMEOUT:-900}"
+tls_mode="${TLS_MODE}"
 
 if [[ "$AUTH" == "true" ]]; then
     admin_user="$ADMIN_USER"
@@ -51,7 +52,7 @@ retry_until() {
         creds=()
     fi
 
-    until [[ $(mongo admin --host "${host}" "${creds[@]}" "${ssl_args[@]}" --quiet --eval "${command}") == "${expected}" ]]; do
+    until [[ $(mongo admin --host "${host}" "${creds[@]}" "${ssl_args[@]}" --quiet --eval "${command}" | tail -n1) == "${expected}" ]]; do
         sleep 1
 
         if (! ps "${pid}" &>/dev/null); then
@@ -88,7 +89,7 @@ init_mongod_standalone() {
 
     local port="27018"
     log "Starting a MongoDB instance as standalone..."
-    mongod --config /data/configdb/mongod.conf --dbpath=/data/db "${auth_args[@]}" --port "${port}" --bind_ip=0.0.0.0 2>&1 | tee -a /work-dir/log.txt 1>&2 &
+    mongod --config /data/configdb/mongod.conf --dbpath=/data/db "${auth_args[@]}" "${ssl_server_args[@]}" --port "${port}" --bind_ip=0.0.0.0 2>&1 | tee -a /work-dir/log.txt 1>&2 &
     export pid=$!
     trap shutdown_mongo EXIT
     log "Waiting for MongoDB to be ready..."
@@ -116,6 +117,7 @@ if [ -f "$ca_crt"  ]; then
     ca_key=/data/configdb/tls.key
     pem=/work-dir/mongo.pem
     ssl_args=(--ssl --sslCAFile "$ca_crt" --sslPEMKeyFile "$pem")
+    ssl_server_args=(--sslMode "$tls_mode" --sslCAFile "$ca_crt" --sslPEMKeyFile "$pem")
 
 # Move into /work-dir
 pushd /work-dir
@@ -151,9 +153,14 @@ fi
 
 init_mongod_standalone
 
+if [[ "${SKIP_INIT}" == "true" ]]; then
+    log "Skipping initialization"
+    exit 0
+fi
+
 log "Peers: ${peers[*]}"
 log "Starting a MongoDB replica"
-mongod --config /data/configdb/mongod.conf --dbpath=/data/db --replSet="$replica_set" --port="${port}" "${auth_args[@]}" --bind_ip=0.0.0.0 2>&1 | tee -a /work-dir/log.txt 1>&2 &
+mongod --config /data/configdb/mongod.conf --dbpath=/data/db --replSet="$replica_set" --port="${port}" "${auth_args[@]}" "${ssl_server_args[@]}" --bind_ip=0.0.0.0 2>&1 | tee -a /work-dir/log.txt 1>&2 &
 pid=$!
 trap shutdown_mongo EXIT
 

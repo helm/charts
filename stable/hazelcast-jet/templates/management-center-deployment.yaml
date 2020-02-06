@@ -1,0 +1,95 @@
+{{- if .Values.managementcenter.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "hazelcast-jet-management-center.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "hazelcast-jet.name" . }}
+    helm.sh/chart: {{ template "hazelcast-jet.chart" . }}
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "hazelcast-jet.name" . }}
+      helm.sh/chart: {{ template "hazelcast-jet.chart" . }}
+      app.kubernetes.io/instance: "{{ .Release.Name }}"
+      app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+      role: hazelcast-jet-management-center
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ template "hazelcast-jet.name" . }}
+        helm.sh/chart: {{ template "hazelcast-jet.chart" . }}
+        app.kubernetes.io/instance: "{{ .Release.Name }}"
+        app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+        role: hazelcast-jet-management-center
+    spec:
+      {{- if .Values.managementcenter.image.pullSecrets }}
+      imagePullSecrets:
+        {{- range .Values.managementcenter.image.pullSecrets }}
+        - name: {{ . }}
+        {{- end}}
+      {{- end}}
+      {{- if .Values.managementcenter.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.managementcenter.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+      {{- end }}
+      containers:
+      - name: {{ template "hazelcast-jet-management-center.fullname" . }}
+        image: "{{ .Values.managementcenter.image.repository }}:{{ .Values.managementcenter.image.tag }}"
+        imagePullPolicy: {{ .Values.managementcenter.image.pullPolicy | quote }}
+        resources:
+{{ toYaml .Values.managementcenter.resources | indent 10 }}
+        ports:
+        - name: mc-port
+          containerPort: 8081
+        {{- if .Values.managementcenter.livenessProbe.enabled }}
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8081
+          initialDelaySeconds: {{ .Values.managementcenter.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.managementcenter.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.managementcenter.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.managementcenter.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.managementcenter.livenessProbe.failureThreshold }}
+        {{- end }}
+        {{- if .Values.managementcenter.readinessProbe.enabled }}
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8081
+          initialDelaySeconds: {{ .Values.managementcenter.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.managementcenter.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.managementcenter.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.managementcenter.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.managementcenter.readinessProbe.failureThreshold }}
+        {{- end }}
+        volumeMounts:
+        - name: hazelcast-jet-management-center-storage
+          mountPath: /data/hazelcast-jet-management-center
+        env:
+        - name: MC_LICENSE_KEY
+        {{- if .Values.managementcenter.licenseKeySecretName }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.managementcenter.licenseKeySecretName }}
+              key: key
+        {{- else }}
+          value: {{ .Values.managementcenter.licenseKey }}
+        {{- end }}
+        - name: JAVA_OPTS
+          value: " -Djet.clientConfig=/data/hazelcast-jet-management-center/hazelcast-client.yaml -DserviceName={{ template "hazelcast-jet.fullname" . }} -Dnamespace={{ .Release.Namespace }} {{ .Values.managementcenter.javaOpts }}"
+      serviceAccountName: {{ template "hazelcast-jet.serviceAccountName" . }}
+      volumes:
+      - name: hazelcast-jet-management-center-storage
+        configMap:
+          name: {{ template "hazelcast-jet-management-center.fullname" . }}-configuration
+{{- end -}}

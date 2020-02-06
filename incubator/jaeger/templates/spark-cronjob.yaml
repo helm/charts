@@ -32,8 +32,8 @@ spec:
           nodeSelector:
 {{ toYaml .Values.spark.nodeSelector | indent 12 }}
 {{- if .Values.spark.tolerations }}
-      tolerations:
-{{ toYaml .Values.spark.tolerations | indent 8 }}
+          tolerations:
+{{ toYaml .Values.spark.tolerations | indent 12 }}
 {{- end }}
           serviceAccountName: {{ template "jaeger.spark.serviceAccountName" . }}
           containers:

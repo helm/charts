@@ -48,6 +48,8 @@ The following table lists the configurable parameters of the Memcached chart and
 | `memcached.maxItemMemory`  | Max memory for items (in MB)    | `64`                                                    |
 | `memcached.extraArgs`      | Additional memcached arguments  | `[]`                                                    |
 | `metrics.enabled`          | Expose metrics in prometheus format | false                                               |
+| `metrics.serviceMonitor.enabled`          | Expose serviceMonitor to be scraped in prometheus-operator target | false                                               |
+| `metrics.serviceMonitor.interval`          | Default frequency to scrap metrics | 15s                                               |
 | `metrics.image`            | The image to pull and run for the metrics exporter | A recent official memcached tag      |
 | `metrics.imagePullPolicy`  | Image pull policy               | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
 | `metrics.resources`        | CPU/Memory resource requests/limits for the metrics exporter | `{}`                       |
@@ -94,7 +96,11 @@ Error: UPGRADE FAILED: Deployment.apps "mc-test-memcached" is invalid: spec.temp
 
 To upgrade from a previous major version, you'll either need to perform a small manual fix or delete and reinstall the chart.
 
-The manual fix is to remove all selectors from the existing StatefulSet/Deployment except `app` and `release`.  Run `kubectl edit sts|deploy name-goes-here` (as needed), and you should see a part like this in your editor about 20 lines down:
+### Upgrading with `kind: StatefulSet`
+If you're using a StatefulSet, you'll have to manually delete it and allow Helm to re-create it. Run `kubectl delete --cascade=false sts name-goes-here` to delete the StatefulSet without deleting the pods. Once you've done this, upgrade the chart as normal, and the newly-created StatefulSet will adopt the old pods.
+
+### Upgrading with `kind: Deployment`
+If you're using a Deployment, the manual fix is to remove all selectors from the spec except `app` and `release`.  Run `kubectl edit deploy name-goes-here`, and you should see a part like this in your editor about 20 lines down:
 
 ```yaml
 spec:
@@ -123,3 +129,19 @@ spec:
 ```
 
 Once you've done this, you can upgrade to 3.x with Helm as normal.
+
+If you want prometheus-operator scrap all serviceMonitors in your cluster you need to set:
+```yaml
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+```
+If you want to be specific:
+```yaml
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelector:
+      matchLabels:
+        app: memcached
+```
+You can have more intel in prometheus-operator values and here [github](https://github.com/helm/charts/issues/11310#issuecomment-463486706)

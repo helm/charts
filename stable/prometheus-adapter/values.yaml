@@ -71,9 +71,9 @@ rules:
 #           resource: node
 #         namespace:
 #           resource: namespace
-#         pod_name:
+#         pod:
 #           resource: pod
-#     containerLabel: container_name
+#     containerLabel: container
 #   memory:
 #     containerQuery: sum(container_memory_working_set_bytes{<<.LabelMatchers>>}) by (<<.GroupBy>>)
 #     nodeQuery: sum(container_memory_working_set_bytes{<<.LabelMatchers>>,id='/'}) by (<<.GroupBy>>)
@@ -83,9 +83,9 @@ rules:
 #           resource: node
 #         namespace:
 #           resource: namespace
-#         pod_name:
+#         pod:
 #           resource: pod
-#     containerLabel: container_name
+#     containerLabel: container
 #   window: 3m
 
 service:
@@ -102,7 +102,34 @@ tls:
   certificate: |-
     # Public key of the APIService
 
+# Any extra volumes
+extraVolumes: []
+  # - name: example-name
+  #   hostPath:
+  #     path: /path/on/host
+  #     type: DirectoryOrCreate
+  # - name: ssl-certs
+  #   hostPath:
+  #     path: /etc/ssl/certs/ca-bundle.crt
+  #     type: File
+
+# Any extra volume mounts
+extraVolumeMounts: []
+  #   - name: example-name
+  #     mountPath: /path/in/container
+  #   - name: ssl-certs
+  #     mountPath: /etc/ssl/certs/ca-certificates.crt
+  #     readOnly: true
+
 tolerations: []
 
 # Annotations added to the pod
 podAnnotations: {}
+
+hostNetwork:
+  # Specifies if prometheus-adapter should be started in hostNetwork mode.
+  #
+  # You would require this enabled if you use alternate overlay networking for pods and
+  # API server unable to communicate with metrics-server. As an example, this is required
+  # if you use Weave network on EKS
+  enabled: false

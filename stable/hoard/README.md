@@ -32,11 +32,12 @@ The following table lists the configurable parameters of the Hoard chart and its
 | --------- | ----------- | ------- |
 | `replicaCount` | number of daemons | `1` |
 | `image.repository` | docker image | `"quay.io/monax/hoard"` |
-| `image.tag` | version | `"3.0.1"` |
+| `image.tag` | version | `"6.0.0"` |
 | `image.pullPolicy` | pull policy | `"IfNotPresent"` |
 | `config.listenaddress` | address to listen on | `tcp://:53431` |
 | `config.storage.storagetype` | backend object store (aws, azure, filesystem, gcp, ipfs) | `filesystem` |
 | `config.storage.addressencoding` | object address encoding | `base64` |
+| `config.storage.chunksize` | size to chunk at for streaming | `65536` |
 | `config.storage.filesystemconfig.rootdirectory` | object address encoding | `"/data"` |
 | `config.storage.cloudconfig.bucket` | object storage container (cloud only) | `""` |
 | `config.storage.cloudconfig.prefix` | bucket folder (cloud only) | `""` |

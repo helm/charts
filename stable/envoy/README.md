@@ -36,6 +36,8 @@ Parameter | Description | Default
 `serviceMonitor.interval` | Interval that Prometheus scrapes Envoy metrics | `15s`
 `serviceMonitor.namespace` | Namespace which the operated Prometheus is running in | ``
 `serviceMonitor.additionalLabels` | Labels used by Prometheus Operator to discover your Service Monitor. Set according to your Prometheus setup | `{}`
+`serviceMonitor.targetLabels` |  Labels to transfer from service onto the target | `[]`    
+`serviceMonitor.podTargetLabels`       | Labels to transfor from pod onto the target         | `[]`
 `prometheusRule.enabled` | If `true`, creates a Prometheus Operator PrometheusRule | `false`
 `prometheusRule.groups` | Prometheus alerting rules | `{}`
 `prometheusRule.additionalLabels` | Labels used by Prometheus Operator to discover your Prometheus Rule | `{}`| `volumes` | Additional volumes to be added to Envoy pods
@@ -44,3 +46,6 @@ Parameter | Description | Default
 `sidecarContainersTemplate` | Golang template of additional containers added after the primary container of Envoy pods | ``
 
 All other user-configurable settings, default values and some commentary about them can be found in [values.yaml](values.yaml).
+
+| `serviceMonitor.targetLabels`          | Labels to transfer from service onto the target     | `[]`                               |
+| `serviceMonitor.podTargetLabels`       | Labels to transfor from pod onto the target         | `[]`                               |

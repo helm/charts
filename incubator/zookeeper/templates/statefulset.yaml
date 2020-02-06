@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "zookeeper.fullname" . }}
@@ -30,13 +30,13 @@ spec:
         {{ $key }}: {{ $value | quote }}
         {{- end }}
       {{- end }}
+{{- if .Values.podAnnotations }}
       annotations:
-      {{- if .Values.podAnnotations }}
         ## Custom pod annotations
         {{- range $key, $value := .Values.podAnnotations }}
         {{ $key }}: {{ $value | quote }}
         {{- end }}
-      {{- end }}
+{{- end }}
     spec:
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
 {{- if .Values.schedulerName }}

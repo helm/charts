@@ -81,9 +81,15 @@ Reference](https://www.openpolicyagent.org/docs/configuration.html).
 | `readinessProbe` | HTTP readiness probe for OPA container. | See [values.yaml](values.yaml) |
 | `livenessProbe` | HTTP liveness probe for OPA container. | See [values.yaml](values.yaml) |
 | `opa` | OPA configuration. | See [values.yaml](values.yaml) |
-| `mgmt.resources` | CPU and memory limits for the kube-mgmt container. | `{}` |
+| `mgmt` | kube-mgmt configuration. | See [values.yaml](values.yaml) |
 | `sar.resources` | CPU and memory limits for the sar container. | `{}` |
 | `priorityClassName` | The name of the priorityClass for the pods. | Unset |
-| `prometheus.enabled` | Flag to expose the `/metrics` endpoint to be scraped. | `false` | 
+| `prometheus.enabled` | Flag to expose the `/metrics` endpoint to be scraped. | `false` |
+| `serviceMonitor.enabled` | if `true`, creates a Prometheus Operator ServiceMonitor | `false` |
+| `serviceMonitor.interval` | Interval that Prometheus scrapes Envoy metrics | `15s` |
+| `serviceMonitor.namespace` | Namespace which the operated Prometheus is running in | `` |
 | `annotations` | Annotations to be added to the deployment template. | `{}` |
 | `bootstrapPolicies` | Bootstrap policies to be loaded during OPA startup. | `{}` |
+| `timeoutSeconds` | Timeout for a webhook call in seconds. | `` |
+| `securityContext` | Security context for the containers | `{enabled: false, runAsNonRoot: true, runAsUser: 1}` |
+| `deploymentStrategy` | Specify deployment spec rollout strategy | `{}` |

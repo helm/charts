@@ -4,7 +4,7 @@ Installs the [Prometheus Adapter](https://github.com/DirectXMan12/k8s-prometheus
 
 ## Prerequisites
 
-Kubernetes 1.11+
+Kubernetes 1.14+
 
 ## Installing the Chart
 
@@ -18,7 +18,11 @@ This command deploys the prometheus adapter with the default configuration. The 
 
 ## Using the Chart
 
-To use the chart, ensure the `prometheus.url` and `prometheus.port` are configured with the correct Prometheus service endpoint. Additionally, the chart comes with a set of default rules out of the box but they may pull in too many metrics or not map them correctly for your needs. Therefore, it is recommended to populate `rules.custom` with a list of rules (see the [config document](https://github.com/DirectXMan12/k8s-prometheus-adapter/blob/master/docs/config.md) for the proper format). Finally, to configure your Horizontal Pod Autoscaler to use the custom metric, see the custom metrics section of the [HPA walkthrough](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/#autoscaling-on-multiple-metrics-and-custom-metrics).
+To use the chart, ensure the `prometheus.url` and `prometheus.port` are configured with the correct Prometheus service endpoint. If Prometheus is exposed under HTTPS the host's CA Bundle must be exposed to the container using `extraVolumes` and `extraVolumeMounts`.
+
+Additionally, the chart comes with a set of default rules out of the box but they may pull in too many metrics or not map them correctly for your needs. Therefore, it is recommended to populate `rules.custom` with a list of rules (see the [config document](https://github.com/DirectXMan12/k8s-prometheus-adapter/blob/master/docs/config.md) for the proper format).
+
+Finally, to configure your Horizontal Pod Autoscaler to use the custom metric, see the custom metrics section of the [HPA walkthrough](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/#autoscaling-on-multiple-metrics-and-custom-metrics).
 
 The Prometheus Adapter can serve three different [metrics APIs](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#support-for-metrics-apis):
 
@@ -70,9 +74,9 @@ rules:
             resource: node
           namespace:
             resource: namespace
-          pod_name:
+          pod:
             resource: pod
-      containerLabel: container_name
+      containerLabel: container
     memory:
       containerQuery: sum(container_memory_working_set_bytes{<<.LabelMatchers>>}) by (<<.GroupBy>>)
       nodeQuery: sum(container_memory_working_set_bytes{<<.LabelMatchers>>,id='/'}) by (<<.GroupBy>>)
@@ -82,9 +86,9 @@ rules:
             resource: node
           namespace:
             resource: namespace
-          pod_name:
+          pod:
             resource: pod
-      containerLabel: container_name
+      containerLabel: container
     window: 3m
 ```
 
@@ -134,6 +138,8 @@ The following table lists the configurable parameters of the Prometheus Adapter 
 | `tls.ca`                        | Public CA file that signed the APIService (ignored if tls.enable=false)         | ``                                          |
 | `tls.key`                       | Private key of the APIService (ignored if tls.enable=false)                     | ``                                          |
 | `tls.certificate`               | Public key of the APIService (ignored if tls.enable=false)                      | ``                                          |
+| `extraVolumeMounts`             | Any extra volumes mounts                                                        | `[]`                                        |
+| `extraVolumes`                  | Any extra volumes                                                               | `[]`                                        |
 | `tolerations`                   | List of node taints to tolerate                                                 | `[]`                                        |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

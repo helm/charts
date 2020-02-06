@@ -80,6 +80,8 @@ Parameter | Description | Default
 `service.type` | The service type to use | `ClusterIP`
 `service.port` | The service port | `80`
 `service.nodePort` | The node port used if the service is of type `NodePort` | `""`
+`podLabels` | Additional pod labels for the Rocket.Chat pods | `{}`
+`podAnnotations` | Additional pod annotations for the Rocket.Chat pods | `{}`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
