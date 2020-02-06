@@ -9,6 +9,10 @@ metadata:
 {{- if .Values.extraLabels }}
 {{ toYaml .Values.extraLabels | indent 4 }}
 {{- end }}
+{{- if .Values.statefulSetAnnotations }}
+  annotations:
+{{ toYaml .Values.statefulSetAnnotations | indent 4 }}
+{{- end }}
   name: {{ template "mongodb-replicaset.fullname" . }}
 spec:
   selector:
