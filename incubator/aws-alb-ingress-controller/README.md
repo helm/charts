@@ -66,6 +66,7 @@ The following tables lists the configurable parameters of the alb-ingress-contro
 | `tolerations`             | controller pod toleration for taints                                                                           | `{}`                                                                      |
 | `podAnnotations`          | annotations to be added to controller pod                                                                      | `{}`                                                                      |
 | `podLabels`               | labels to be added to controller pod                                                                           | `{}`                                                                      |
+| `podSecurityPolicy.create` | creates Pod Security Policy to attach to the controller pod                                                   | `false`                                                                   |
 | `priorityClassName`       | set to ensure your pods survive resource shortages                                                             | `""`                                                                      |
 | `resources`               | controller pod resource requests & limits                                                                      | `{}`                                                                      |
 | `rbac.create`             | If true, create & use RBAC resources                                                                           | `true`                                                                    |
@@ -74,6 +75,9 @@ The following tables lists the configurable parameters of the alb-ingress-contro
 | `scope.ingressClass`      | If provided, the ALB ingress controller will only act on Ingress resources annotated with this class           | `alb`                                                                     |
 | `scope.singleNamespace`   | If true, the ALB ingress controller will only act on Ingress resources in a single namespace                   | `false` (watch all namespaces)                                            |
 | `scope.watchNamespace`    | If scope.singleNamespace=true, the ALB ingress controller will only act on Ingress resources in this namespace | `""` (namespace of the ALB ingress controller)                            |
+| `securityContext.enabled` | enables the Security Context for the controller deployment and container                                       | `false`                                                                   |
+| `securityContext.fsGroup` | set fsGroup for the controller deployment                                                                      | `1001`                                                                    |
+| `securityContext.runAsUser` | set user ID for the controller container                                                                     | `1001`                                                                    |
 
 ```bash
 helm install incubator/aws-alb-ingress-controller --set clusterName=MyClusterName --set autoDiscoverAwsRegion=true --set autoDiscoverAwsVpcID=true --name my-release --namespace kube-system

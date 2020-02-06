@@ -9,6 +9,16 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 rules:
+{{- if .Values.podSecurityPolicy.create }}
+  - apiGroups:
+      - policy/v1beta1
+    resources: 
+      - podsecuritypolicies
+    verbs:
+      - use
+    resourceNames:
+      - {{ include "aws-alb-ingress-controller.fullname" . }}
+{{- end }}
   - apiGroups:
       - ""
       - extensions

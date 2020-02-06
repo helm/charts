@@ -74,6 +74,15 @@ rbac:
   ## Annotations for the Service Account
   serviceAccountAnnotations: {}
 
+podSecurityPolicy:
+  create: false
+
+## Security Context
+securityContext:
+  enabled: false
+  fsGroup: 1001
+  runAsUser: 1001
+
 image:
   repository: docker.io/amazon/aws-alb-ingress-controller
   tag: "v1.1.5"
