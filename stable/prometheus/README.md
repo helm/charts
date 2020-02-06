@@ -117,6 +117,7 @@ Parameter | Description | Default
 `alertmanager.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `alertmanager.affinity` | pod affinity | `{}`
 `alertmanager.schedulerName` | alertmanager alternate scheduler name | `nil`
+`alertmanager.sidecarContainers` | array of snippets with your sidecar containers for alertmanager | `""`
 `alertmanager.persistentVolume.enabled` | If true, alertmanager will create a Persistent Volume Claim | `true`
 `alertmanager.persistentVolume.accessModes` | alertmanager data Persistent Volume access modes | `[ReadWriteOnce]`
 `alertmanager.persistentVolume.annotations` | Annotations for alertmanager Persistent Volume Claim | `{}`
