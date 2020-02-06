@@ -8,14 +8,33 @@ The Operator requires Kubernetes version 1.8 and above because it relies on garb
 
 #### Installing the chart
 
-The chart can be installed by running:
+First add the incubator repo:
 
 ```bash
 $ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+```
+
+If using Helm 2, then the chart can be installed by running:
+
+```bash
 $ helm install incubator/sparkoperator --namespace spark-operator --set sparkJobNamespace=default
 ```
 
 Note that you need to use the `--namespace` flag during `helm install` to specify in which namespace you want to install the operator. The namespace can be existing or not. When it's not available, Helm would take care of creating the namespace. Note that this namespace has no relation to the namespace where you would like to deploy Spark jobs (i.e. the setting `sparkJobNamespace` shown in the table below). They can be the same namespace or different ones.
+
+If using Helm 3, then install the chart by running:
+
+```bash
+$ helm install incubator/sparkoperator --generate-name --namespace spark-operator --set sparkJobNamespace=default
+```
+
+or 
+
+```bash
+$ helm install [RELEASE-NAME] incubator/sparkoperator --namespace spark-operator --set sparkJobNamespace=default
+```
+
+if you don't want Helm to automatically generate a name for you.
 
 #### Configuration
 
@@ -45,8 +64,7 @@ The following table lists the configurable parameters of the Spark operator char
 | `enableBatchScheduler`    | Whether to enable batch scheduler for pod scheduling         | false                                  |
 | `enableResourceQuotaEnforcement`    | Whether to enable the ResourceQuota enforcement for SparkApplication resources. Requires the webhook to be enabled by setting enableWebhook to true.         | false                                  |
 | `enableLeaderElection`    | Whether to enable leader election when the operator Deployment has more than one replica, i.e., when `replicas` is greater than 1.         | false                                  |
-| `securityContext`         | Defines security context for operator container               | `{}`
-
+| `securityContext` | Defines security context for operator container. | `{}` |
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
 #### Upgrading
@@ -64,3 +82,4 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 #### Contributing
 
 When making changes to values.yaml, update the files in `ci/` by running `hack/update-ci.sh`.
+
