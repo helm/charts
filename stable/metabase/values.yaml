@@ -56,7 +56,7 @@ password:
 
 timeZone: UTC
 emojiLogging: true
-# javaOpts:
+javaOpts: "-XX:+UseCGroupMemoryLimitForHeap"
 # pluginsDirectory:
 
 livenessProbe:
