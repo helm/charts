@@ -25,13 +25,13 @@ Note that you need to use the `--namespace` flag during `helm install` to specif
 If using Helm 3, then install the chart by running:
 
 ```bash
-$ helm install incubator/sparkoperator --generate-name --namespace spark-operator
+$ helm install incubator/sparkoperator --generate-name --namespace spark-operator --set sparkJobNamespace=default
 ```
 
 or 
 
 ```bash
-$ helm install [RELEASE-NAME] incubator/sparkoperator --namespace spark-operator
+$ helm install [RELEASE-NAME] incubator/sparkoperator --namespace spark-operator --set sparkJobNamespace=default
 ```
 
 if you don't want Helm to automatically generate a name for you.
