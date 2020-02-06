@@ -162,6 +162,7 @@ datadog:
 
   ## @param nonLocalTraffic - boolean - optional - default: false
   ## Enable this to make each node accept non-local statsd traffic.
+  ## This option must be set to "true" in order to use APM.
   ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
   #
   # nonLocalTraffic: false
