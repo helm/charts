@@ -10,6 +10,9 @@ metadata:
 spec:
   serviceName: {{ template "fullname" . }}
   replicas: {{ .Values.mysqlha.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}
   template:
     metadata:
       labels:
