@@ -100,16 +100,16 @@ data:
     fi
 
     CREDS=""
-    {{ if $registry.username -}}
+    {{- if $registry.username }}
     CREDS+="--username {{ $registry.username }}"
-    {{ if $registry.passwordCommand -}}
+    {{- if $registry.passwordCommand }}
     CREDS+=" --password-command {{ $registry.passwordCommand | quote }}"
-    {{- else -}}
+    {{- else }}
     CREDS+=" --password-file /opt/registry/passwords/{{ $registry.name }}"
     {{- end -}}
-    {{ if $registry.email -}}
+    {{- if $registry.email }}
     CREDS+=" --email {{ $registry.email }}"
-    {{- end -}}
+    {{- end }}
     {{- end }}
 
     $HAL_COMMAND config provider docker-registry account $PROVIDER_COMMAND {{ $registry.name }} --address {{ $registry.address }} \
