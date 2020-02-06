@@ -19,6 +19,12 @@ output:
 
 env: {}
 
+## Update Strategy for the StatefulSet or Deployment
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#updating-a-deployment
+updateStrategy:
+  type: Recreate
+
 # Extra Environment Values - allows yaml definitions
 extraEnvVars:
 #  - name: VALUE_FROM_SECRET

@@ -1,0 +1,23 @@
+{{- if .Values.autoscaling.enabled}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fluentd.fullname" . }}-headless
+  labels:
+    app: {{ template "fluentd.name" . }}
+    chart: {{ template "fluentd.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  {{- range $port := .Values.service.ports }}
+    - name: {{ $port.name }}
+      port: {{ $port.containerPort }}
+  {{- end }}
+  selector:
+    app: {{ template "fluentd.name" . }}
+    release: {{ .Release.Name }}
+{{- end}}

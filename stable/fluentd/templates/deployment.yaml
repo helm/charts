@@ -22,10 +22,11 @@ spec:
     matchLabels:
       app: {{ template "fluentd.name" . }}
       release: {{ .Release.Name }}
-{{- if .Values.persistence.enabled }}
   updateStrategy:
-    type: RollingUpdate
-{{- end }}
+    type: {{ .Values.updateStrategy.type }}
+    {{- if (eq "Recreate" .Values.updateStrategy.type) }}
+    rollingUpdate: null
+    {{- end }}
   template:
     metadata:
       labels:

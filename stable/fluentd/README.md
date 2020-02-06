@@ -56,6 +56,7 @@ Parameter | Description | Default
 `image.repository` | Image repository | `gcr.io/google-containers/fluentd-elasticsearch`
 `image.tag` | Image tag | `v2.4.0`
 `imagePullSecrets` | Specify image pull secrets | `nil` (does not add image pull secrets to deployed pods)
+`updateStrategy.type`   | Specify updateeStrategy | `Recreate` See [values.yaml](values.yaml)
 `extraEnvVars` | Adds additional environment variables to the deployment (in yaml syntax) | `{}` See [values.yaml](values.yaml)
 `extraVolumeMounts` | Mount extra volumes (in yaml syntax) | `` See [values.yaml](values.yaml)
 `extraVolumes` | Extra volumes (in yaml syntax) | `` See [values.yaml](values.yaml)
