@@ -14,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/testlink
-  tag: 1.9.19-debian-9-r290
+  tag: 1.9.20-debian-9-r7
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -95,6 +95,13 @@ smtpEnable: false
 # smtpUser:
 # smtpPassword:
 # smtpConnectionMode:
+
+## APACHE server configuration
+## ref: https://github.com/bitnami/bitnami-docker-testlink#extend-this-image
+##
+apache:
+  httpPort: 80
+  httpsPort: 443
 
 ##
 ## MariaDB chart configuration

@@ -110,11 +110,15 @@ spec:
               name: {{ template "testlink.fullname" . }}
               key: smtp-password
         {{- end }}
+        - name: APACHE_HTTP_PORT
+          value: {{ .Values.apache.httpPort | quote }}
+        - name: APACHE_HTTPS_PORT
+          value: {{ .Values.apache.httpsPort | quote }}
         ports:
         - name: http
-          containerPort: 80
+          containerPort: {{ .Values.apache.httpPort }}
         - name: https
-          containerPort: 443
+          containerPort: {{ .Values.apache.httpsPort }}
         livenessProbe:
           httpGet:
             path: /login.php

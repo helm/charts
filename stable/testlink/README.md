@@ -87,6 +87,8 @@ The following table lists the configurable parameters of the TestLink chart and 
 | `externalDatabase.user`             | Existing username in the external db                                                                  | `bn_testlink`                                                |
 | `externalDatabase.password`         | Password for the above username                                                                       | `nil`                                                        |
 | `externalDatabase.database`         | Name of the existing database                                                                         | `bitnami_testlink`                                           |
+| `apache.httpPort`                   | HTTP port for a the Apache server                                                                     | `80`                                                         |
+| `apache.httpsPort`                   | HTTPS port for a the Apache server                                                                     | `443`                                                         |
 | `mariadb.enabled`                   | Whether to use the MariaDB chart                                                                      | `true`                                                       |
 | `mariadb.db.name`                   | Database name to create                                                                               | `bitnami_testlink`                                           |
 | `mariadb.db.user`                   | Database user to create                                                                               | `bn_testlink`                                                |
