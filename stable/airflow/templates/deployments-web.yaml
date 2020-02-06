@@ -180,7 +180,7 @@ spec:
               echo 'installing requirements...' &&
               mkdir -p /usr/local/airflow/.local/bin &&
               export PATH=/usr/local/airflow/.local/bin:$PATH &&
-              /usr/local/scripts/install-requirements.sh &&
+              /usr/local/scripts/install-requirements.sh && {{ .Values.airflow.startupScript | trim | indent 14 }}
               echo 'executing webserver...' &&
               airflow webserver
           {{- else }}
@@ -188,7 +188,7 @@ spec:
               echo 'waiting {{ .Values.web.initialStartupDelay }}s...' &&
               sleep {{ .Values.web.initialStartupDelay }} &&
               mkdir -p /usr/local/airflow/.local/bin &&
-              export PATH=/usr/local/airflow/.local/bin:$PATH &&
+              export PATH=/usr/local/airflow/.local/bin:$PATH && {{ .Values.airflow.startupScript | trim | indent 14 }}
               echo 'executing webserver...' &&
               airflow webserver
           {{- end }}

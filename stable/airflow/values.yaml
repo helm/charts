@@ -174,6 +174,14 @@ airflow:
   ## Run initdb when the scheduler starts.
   initdb: true
 
+  ## Additional scripts ran on the web container prior to startup
+  ## For example:
+  ## startupScript: |
+  #    echo 'adding connections'
+  #    && airflow connections -d --conn_id databricks_default
+  #    && airflow connections -a --conn_id databricks_default --conn_type databricks --conn_host company.cloud.databricks.com --conn_extra '{"host": "company.cloud.databricks.com", "token":"123"}' &&
+  startupScript:
+
 
 scheduler:
   resources: {}
