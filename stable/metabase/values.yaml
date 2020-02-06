@@ -10,6 +10,10 @@ image:
   tag: v0.34.0
   pullPolicy: IfNotPresent
 
+## String to fully override metabase.fullname template
+##
+# fullnameOverride:
+
 # Config Jetty web server
 listen:
   host: "0.0.0.0"
