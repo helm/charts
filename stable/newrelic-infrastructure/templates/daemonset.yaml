@@ -28,7 +28,7 @@ spec:
       serviceAccountName: {{ template "newrelic.serviceAccountName" . }}
       {{- if .Values.privileged }}
       hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
+      dnsPolicy: "ClusterFirstWithHostNet"
       {{ - end }}
       containers:
         - name: {{ template "newrelic.name" . }}
