@@ -9,7 +9,6 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  spec:
   type: ClusterIP
   clusterIP: None
   ports:
