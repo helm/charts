@@ -42,7 +42,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | --------- | ----------- | ------- |
 | `replicaCount` | Number of pgadmin replicas | `1` |
 | `image.repository` | Docker image | `dpage/pgadmin4` |
-| `image.tag` | Docker image tag | `4.17` |
+| `image.tag` | Docker image tag | `4.18` |
 | `image.pullPolicy` | Docker image pull policy | `IfNotPresent` |
 | `service.type` | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP` |
 | `service.port` | Service port | `80` |
