@@ -256,7 +256,8 @@ redis:
 # Minio is not exposed publically
 minio:
   enabled: true
-  imageTag: RELEASE.2019-02-13T19-48-27Z
+  image:
+    tag: RELEASE.2018-08-25T01-56-38Z
   serviceType: ClusterIP
   accessKey: spinnakeradmin
   secretKey: spinnakeradmin
