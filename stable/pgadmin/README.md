@@ -42,10 +42,11 @@ The command removes nearly all the Kubernetes components associated with the cha
 | --------- | ----------- | ------- |
 | `replicaCount` | Number of pgadmin replicas | `1` |
 | `image.repository` | Docker image | `dpage/pgadmin4` |
-| `image.tag` | Docker image tag | `4.17` |
+| `image.tag` | Docker image tag | `4.18` |
 | `image.pullPolicy` | Docker image pull policy | `IfNotPresent` |
 | `service.type` | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP` |
 | `service.port` | Service port | `80` |
+| `strategy` | Specifies the strategy used to replace old Pods by new ones | `{}` |
 | `ingress.enabled` | Enables Ingress | `false` |
 | `ingress.annotations` | Ingress annotations | `{}` |
 | `ingress.hosts` | Ingress accepted hostnames | `nil` |
@@ -65,7 +66,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `tolerations` | Node tolerations for pod assignment | `[]` |
 | `affinity` | Node affinity for pod assignment | `{}` |
 
-Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
+Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
 ```bash
 $ helm install stable/pgadmin --name my-release \
@@ -73,7 +74,7 @@ $ helm install stable/pgadmin --name my-release \
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be
-provided while installing the chart. For example,
+provided while installing the chart. For example:
 
 ```bash
 $ helm install stable/pgadmin --name my-release -f values.yaml

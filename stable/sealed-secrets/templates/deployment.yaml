@@ -16,6 +16,10 @@ spec:
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
+      annotations:
+      {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
         app.kubernetes.io/name: {{ template "sealed-secrets.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}

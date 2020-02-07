@@ -13,6 +13,7 @@ rules:
       - "nodes/proxy"
       - "pods"
       - "services"
+      - "secrets"
     verbs: ["get", "list"]
   - nonResourceURLs: ["/metrics"]
     verbs: ["get"]

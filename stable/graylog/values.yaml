@@ -7,6 +7,10 @@ rbac:
   ##
   create: true
 
+  resources:
+    - pods
+    - secrets
+
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
   ##
@@ -306,6 +310,7 @@ graylog:
   ##
   provisioner:
     enabled: false
+    useGraylogServiceAccount: false
     # script: |
     #  json='{
     #    "username_header": "X-Auth-Request-User",

@@ -12,6 +12,8 @@ spec:
     matchLabels:
       app: {{ template "seq.name" . }}
       release: {{ .Release.Name }}
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
