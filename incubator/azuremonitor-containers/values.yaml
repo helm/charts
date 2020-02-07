@@ -6,12 +6,12 @@
 ## ref: https://github.com/Microsoft/OMS-docker/tree/ci_feature_prod
 omsagent:
   image:
-    tag: "ciprod11012019"
+    tag: "ciprod01072020"
     pullPolicy: IfNotPresent
-    dockerProviderVersion: "7.0.0-6"
+    dockerProviderVersion: "8.0.0-2"
     agentVersion: "1.10.0.1"
-## To get your workspace id and key do the following
-## You can create a Azure Loganalytics workspace from portal.azure.com and get its ID & PRIMARY KEY from 'Advanced Settings' tab in the Ux.
+  ## To get your workspace id and key do the following
+  ## You can create a Azure Loganalytics workspace from portal.azure.com and get its ID & PRIMARY KEY from 'Advanced Settings' tab in the Ux.
 
   secret:
     wsid: <your_workspace_id>
@@ -19,7 +19,7 @@ omsagent:
   domain: opinsights.azure.com
   env:
     clusterName: <your_cluster_name>
-## Applicable for only managed clusters hosted in Azure
+    ## Applicable for only managed clusters hosted in Azure
     clusterId: <your_cluster_id>
     clusterRegion: <your_cluster_region>
   rbac: true
@@ -28,10 +28,34 @@ omsagent:
     tailbufchunksizemegabytes: ""
     tailbufmaxsizemegabytes: ""
 
+  ## Configure node tolerations for scheduling onto nodes with taints
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  ##
+  tolerations:
+    - operator: "Exists"
+      effect: "NoSchedule"
+    - operator: "Exists"
+      effect: "NoExecute"
+    - operator: "Exists"
+      effect: "PreferNoSchedule"
 
-## Configure resource requests and limits
-## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-##
+  ## Pod scheduling preferences.
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ##
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - labelSelector:
+            matchExpressions:
+              - key: type
+                operator: NotIn
+                values:
+                  - virtual-kubelet
+
+  ## Configure resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
   resources:
     daemonset:
       requests:
@@ -42,8 +66,8 @@ omsagent:
         memory: 600Mi
     deployment:
       requests:
-        cpu: 110m
+        cpu: 150m
         memory: 250Mi
       limits:
-        cpu: 150m
-        memory: 500Mi
+        cpu: 1
+        memory: 750Mi

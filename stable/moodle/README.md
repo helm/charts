@@ -61,6 +61,7 @@ The following table lists the configurable parameters of the Moodle chart and th
 | `image.pullSecrets`                        | Specify docker-registry secret names as an array                                                    | `[]` (does not add image pull secrets to deployed pods)      |
 | `nameOverride`                             | String to partially override moodle.fullname template with a string (will prepend the release name) | `nil`                                                        |
 | `fullnameOverride`                         | String to fully override moodle.fullname template with a string                                     | `nil`                                                        |
+| `moodleSkipInstall`                        | Skip moodle installation wizard (`no` / `yes`)                                                      | `no`                                                         |
 | `moodleUsername`                           | User of the application                                                                             | `user`                                                       |
 | `moodlePassword`                           | Application password                                                                                | _random 10 character alphanumeric string_                    |
 | `moodleEmail`                              | Admin email                                                                                         | `user@example.com`                                           |

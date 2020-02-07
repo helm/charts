@@ -49,71 +49,72 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the TestLink chart and their default values.
 
-|              Parameter              |               Description               |                         Default                         |
-|-------------------------------------|-----------------------------------------|---------------------------------------------------------|
-| `global.imageRegistry`              | Global Docker image registry            | `nil`                                                   |
-| `global.imagePullSecrets`           | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
-| `global.storageClass`                     | Global storage class for dynamic provisioning                                               | `nil`                                                        |
-| `image.registry`                    | TestLink image registry                 | `docker.io`                                             |
-| `image.repository`                  | TestLink image name                     | `bitnami/testlink`                                      |
-| `image.tag`                         | TestLink image tag                      | `{TAG_NAME}`                                            |
-| `image.pullPolicy`                  | Image pull policy                       | `IfNotPresent`                                          |
-| `image.pullSecrets`                 | Specify docker-registry secret names as an array  | `[]` (does not add image pull secrets to deployed pods) |
-| `nameOverride`                      | String to partially override testlink.fullname template with a string (will prepend the release name) | `nil` |
-| `fullnameOverride`                  | String to fully override testlink.fullname template with a string                                     | `nil` |
-| `testlinkUsername`                  | Admin username                          | `user`                                                  |
-| `testlinkPassword`                  | Admin user password                     | _random 10 character long alphanumeric string_          |
-| `testlinkEmail`                     | Admin user email                        | `user@example.com`                                      |
-| `smtpEnable`                        | Enable SMTP                             | `false`                                                 |
-| `smtpHost`                          | SMTP host                               | `nil`                                                   |
-| `smtpPort`                          | SMTP port                               | `nil`                                                   |
-| `smtpUser`                          | SMTP user                               | `nil`                                                   |
-| `smtpPassword`                      | SMTP password                           | `nil`                                                   |
-| `smtpConnectionMode`                | SMTP connection mode [`ssl`, `tls`]     | `nil`                                                   |
-| `allowEmptyPassword`                | Allow DB blank passwords                | `yes`                                                   |
-| `ingress.enabled`                   | Enable ingress controller resource                            | `false`                                                  |
-| `ingress.annotations`               | Ingress annotations                                           | `[]`                                                     |
-| `ingress.certManager`               | Add annotations for cert-manager                              | `false`                                                  |
-| `ingress.hosts[0].name`             | Hostname to your testlink installation                           | `testlink.local`                                            |
-| `ingress.hosts[0].path`             | Path within the url structure                                 | `/`                                                      |
-| `ingress.hosts[0].tls`              | Utilize TLS backend in ingress                                | `false`                                                  |
-| `ingress.hosts[0].tlsHosts`         | Array of TLS hosts for ingress record (defaults to `ingress.hosts[0].name` if `nil`)                               | `nil`                                                  |
-| `ingress.hosts[0].tlsSecret`        | TLS Secret (certificates)                                     | `testlink.local-tls-secret`                                 |
-| `ingress.secrets[0].name`           | TLS Secret Name                                               | `nil`                                                    |
-| `ingress.secrets[0].certificate`    | TLS Secret Certificate                                        | `nil`                                                    |
-| `ingress.secrets[0].key`            | TLS Secret Key                                                | `nil`                                                    |
-| `externalDatabase.host`             | Host of the external database           | `nil`                                                   |
-| `externalDatabase.port`             | Port of the external database           | `3306`                                                  |
-| `externalDatabase.user`             | Existing username in the external db    | `bn_testlink`                                           |
-| `externalDatabase.password`         | Password for the above username         | `nil`                                                   |
-| `externalDatabase.database`         | Name of the existing database           | `bitnami_testlink`                                      |
-| `mariadb.enabled`                   | Whether to use the MariaDB chart        | `true`                                                  |
-| `mariadb.db.name`                   | Database name to create                 | `bitnami_testlink`                                      |
-| `mariadb.db.user`                   | Database user to create                 | `bn_testlink`                                           |
-| `mariadb.db.password`               | Password for the database               | `nil`                                                   |
-| `mariadb.rootUser.password`         | MariaDB admin password                  | `nil`                                                   |
-| `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
-| `service.port`                    | Service HTTP port                  | `80`                                          |
-| `service.httpsPort`                    | Service HTTPS port                   | `443`                                          |
-| `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
-| `service.nodePorts.https`                | Kubernetes https node port                 | `""`                                                    |
-| `service.externalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
-| `service.loadBalancerIP`   | LoadBalancer service IP address       | `""`                                               |
-| `persistence.enabled`               | Enable persistence using PVC            | `true`                                                  |
-| `persistence.testlink.storageClass` | PVC Storage Class for TestLink volume   | `nil` (uses alpha storage class annotation)             |
-| `persistence.testlink.accessMode`   | PVC Access Mode for TestLink volume     | `ReadWriteOnce`                                         |
-| `persistence.testlink.size`         | PVC Storage Request for TestLink volume | `8Gi`                                                   |
-| `resources`                         | CPU/Memory resource requests/limits     | Memory: `512Mi`, CPU: `300m`                            |
-| `podAnnotations`                | Pod annotations                                   | `{}`                                                       |
-| `affinity`                          | Map of node/pod affinities                                    | `{}`                                                     |
-| `metrics.enabled`                          | Start a side-car prometheus exporter                        | `false`                                              |
-| `metrics.image.registry`                   | Apache exporter image registry                              | `docker.io`                                          |
-| `metrics.image.repository`                 | Apache exporter image name                                  | `bitnami/apache-exporter`                            |
-| `metrics.image.tag`                        | Apache exporter image tag                                   | `{TAG_NAME}`                                         |
-| `metrics.image.pullPolicy`                 | Image pull policy                                           | `IfNotPresent`                                       |
-| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array            | `[]` (does not add image pull secrets to deployed pods)  |
-| `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod             | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}`                                                   |
-| `metrics.resources`                        | Exporter resource requests/limit                            | {}                        |
+| Parameter                           | Description                                                                                           | Default                                                      |
+|-------------------------------------|-------------------------------------------------------------------------------------------------------|--------------------------------------------------------------|
+| `global.imageRegistry`              | Global Docker image registry                                                                          | `nil`                                                        |
+| `global.imagePullSecrets`           | Global Docker registry secret names as an array                                                       | `[]` (does not add image pull secrets to deployed pods)      |
+| `global.storageClass`               | Global storage class for dynamic provisioning                                                         | `nil`                                                        |
+| `image.registry`                    | TestLink image registry                                                                               | `docker.io`                                                  |
+| `image.repository`                  | TestLink image name                                                                                   | `bitnami/testlink`                                           |
+| `image.tag`                         | TestLink image tag                                                                                    | `{TAG_NAME}`                                                 |
+| `image.pullPolicy`                  | Image pull policy                                                                                     | `IfNotPresent`                                               |
+| `image.pullSecrets`                 | Specify docker-registry secret names as an array                                                      | `[]` (does not add image pull secrets to deployed pods)      |
+| `nameOverride`                      | String to partially override testlink.fullname template with a string (will prepend the release name) | `nil`                                                        |
+| `fullnameOverride`                  | String to fully override testlink.fullname template with a string                                     | `nil`                                                        |
+| `testlinkUsername`                  | Admin username                                                                                        | `user`                                                       |
+| `testlinkPassword`                  | Admin user password                                                                                   | _random 10 character long alphanumeric string_               |
+| `testlinkEmail`                     | Admin user email                                                                                      | `user@example.com`                                           |
+| `smtpEnable`                        | Enable SMTP                                                                                           | `false`                                                      |
+| `smtpHost`                          | SMTP host                                                                                             | `nil`                                                        |
+| `smtpPort`                          | SMTP port                                                                                             | `nil`                                                        |
+| `smtpUser`                          | SMTP user                                                                                             | `nil`                                                        |
+| `smtpPassword`                      | SMTP password                                                                                         | `nil`                                                        |
+| `smtpConnectionMode`                | SMTP connection mode [`ssl`, `tls`]                                                                   | `nil`                                                        |
+| `allowEmptyPassword`                | Allow DB blank passwords                                                                              | `yes`                                                        |
+| `ingress.enabled`                   | Enable ingress controller resource                                                                    | `false`                                                      |
+| `ingress.annotations`               | Ingress annotations                                                                                   | `[]`                                                         |
+| `ingress.certManager`               | Add annotations for cert-manager                                                                      | `false`                                                      |
+| `ingress.hosts[0].name`             | Hostname to your testlink installation                                                                | `testlink.local`                                             |
+| `ingress.hosts[0].path`             | Path within the url structure                                                                         | `/`                                                          |
+| `ingress.hosts[0].tls`              | Utilize TLS backend in ingress                                                                        | `false`                                                      |
+| `ingress.hosts[0].tlsHosts`         | Array of TLS hosts for ingress record (defaults to `ingress.hosts[0].name` if `nil`)                  | `nil`                                                        |
+| `ingress.hosts[0].tlsSecret`        | TLS Secret (certificates)                                                                             | `testlink.local-tls-secret`                                  |
+| `ingress.secrets[0].name`           | TLS Secret Name                                                                                       | `nil`                                                        |
+| `ingress.secrets[0].certificate`    | TLS Secret Certificate                                                                                | `nil`                                                        |
+| `ingress.secrets[0].key`            | TLS Secret Key                                                                                        | `nil`                                                        |
+| `externalDatabase.host`             | Host of the external database                                                                         | `nil`                                                        |
+| `externalDatabase.port`             | Port of the external database                                                                         | `3306`                                                       |
+| `externalDatabase.user`             | Existing username in the external db                                                                  | `bn_testlink`                                                |
+| `externalDatabase.password`         | Password for the above username                                                                       | `nil`                                                        |
+| `externalDatabase.database`         | Name of the existing database                                                                         | `bitnami_testlink`                                           |
+| `mariadb.enabled`                   | Whether to use the MariaDB chart                                                                      | `true`                                                       |
+| `mariadb.db.name`                   | Database name to create                                                                               | `bitnami_testlink`                                           |
+| `mariadb.db.user`                   | Database user to create                                                                               | `bn_testlink`                                                |
+| `mariadb.db.password`               | Password for the database                                                                             | `nil`                                                        |
+| `mariadb.rootUser.password`         | MariaDB admin password                                                                                | `nil`                                                        |
+| `service.type`                      | Kubernetes Service type                                                                               | `LoadBalancer`                                               |
+| `service.port`                      | Service HTTP port                                                                                     | `80`                                                         |
+| `service.httpsPort`                 | Service HTTPS port                                                                                    | `443`                                                        |
+| `service.nodePorts.http`            | Kubernetes http node port                                                                             | `""`                                                         |
+| `service.nodePorts.https`           | Kubernetes https node port                                                                            | `""`                                                         |
+| `service.externalTrafficPolicy`     | Enable client source IP preservation                                                                  | `Cluster`                                                    |
+| `service.loadBalancerIP`            | LoadBalancer service IP address                                                                       | `""`                                                         |
+| `service.annotations`               | Kubernetes service annotations, evaluated as a template                                               | `{}`                                                         |
+| `persistence.enabled`               | Enable persistence using PVC                                                                          | `true`                                                       |
+| `persistence.testlink.storageClass` | PVC Storage Class for TestLink volume                                                                 | `nil` (uses alpha storage class annotation)                  |
+| `persistence.testlink.accessMode`   | PVC Access Mode for TestLink volume                                                                   | `ReadWriteOnce`                                              |
+| `persistence.testlink.size`         | PVC Storage Request for TestLink volume                                                               | `8Gi`                                                        |
+| `resources`                         | CPU/Memory resource requests/limits                                                                   | Memory: `512Mi`, CPU: `300m`                                 |
+| `podAnnotations`                    | Pod annotations                                                                                       | `{}`                                                         |
+| `affinity`                          | Map of node/pod affinities                                                                            | `{}`                                                         |
+| `metrics.enabled`                   | Start a side-car prometheus exporter                                                                  | `false`                                                      |
+| `metrics.image.registry`            | Apache exporter image registry                                                                        | `docker.io`                                                  |
+| `metrics.image.repository`          | Apache exporter image name                                                                            | `bitnami/apache-exporter`                                    |
+| `metrics.image.tag`                 | Apache exporter image tag                                                                             | `{TAG_NAME}`                                                 |
+| `metrics.image.pullPolicy`          | Image pull policy                                                                                     | `IfNotPresent`                                               |
+| `metrics.image.pullSecrets`         | Specify docker-registry secret names as an array                                                      | `[]` (does not add image pull secrets to deployed pods)      |
+| `metrics.podAnnotations`            | Additional annotations for Metrics exporter pod                                                       | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}` |
+| `metrics.resources`                 | Exporter resource requests/limit                                                                      | {}                                                           |
 
 The above parameters map to the env variables defined in [bitnami/testlink](http://github.com/bitnami/bitnami-docker-testlink). For more information please refer to the [bitnami/testlink](http://github.com/bitnami/bitnami-docker-testlink) image documentation.
 

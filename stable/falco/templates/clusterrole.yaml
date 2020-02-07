@@ -17,12 +17,12 @@ rules:
       - namespaces
       - pods
       - replicationcontrollers
+      - replicasets
       - services
-      - events
-      - configmaps
       - daemonsets
       - deployments
-      - replicasets
+      - events
+      - configmaps
     verbs:
       - get
       - list
