@@ -1,9 +1,7 @@
+{{- $appKind := ternary "StatefulSet" "Deployment" .Values.autoscaling.enabled -}}
+
 apiVersion: apps/v1
-{{- if .Values.autoscaling.enabled}}
-kind: StatefulSet
-{{- else}}
-kind: Deployment
-{{- end}}
+kind: {{ $appKind }}
 metadata:
   name: {{ template "fluentd.fullname" . }}
   labels:
@@ -20,8 +18,14 @@ spec:
       app: {{ template "fluentd.name" . }}
       release: {{ .Release.Name }}
   {{- if .Values.persistence.enabled }}
+  {{- if eq $appKind "StatefulSet" }}
+  serviceName: {{ template "fluentd.fullname" . }}
+  updateStrategy:
+    type: RollingUpdate
+  {{- else }}
   strategy:
     type: Recreate
+  {{- end }}
   {{- end }}
   template:
     metadata:
