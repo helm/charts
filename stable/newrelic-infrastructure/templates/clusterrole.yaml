@@ -14,6 +14,8 @@ rules:
       - "pods"
       - "services"
     verbs: ["get", "list"]
+  - nonResourceURLs: ["/metrics"]
+    verbs: ["get"]
 {{- if .Values.rbac.pspEnabled }}
   - apiGroups:
       - extensions
