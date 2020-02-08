@@ -103,6 +103,7 @@ The configuration parameters in this section control the resources requested and
 | service.type     | Service Type                                                                                   | `ClusterIP`                      |
 | service.loadBalancerIP     | Loadbalancer IP                                                                                   | `nil`                      |
 | service.port     | Service Port                                                                                   | `1433`                           |
+| service.nodePort | Optional NodePort to use when `service.type` is `NodePort`                                     | None                             |
 | service.annotations | Kubernetes service annotations                                                              | `{}`                             |
 | service.labels   | Kubernetes service labels                                                                      | `{}`                             |
 | deployment.annotations | Kubernetes deployment annotations                                                        | `{}`                             |

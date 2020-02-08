@@ -7,6 +7,10 @@ rbac:
   ##
   create: true
 
+  resources:
+    - pods
+    - secrets
+
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
   ##
@@ -21,6 +25,16 @@ tags:
   install-elasticsearch: true
   # If true, this chart will install MongoDB replicaset from requirement dependencies
   install-mongodb: true
+
+## Enable only if your current release was migrated from helm2 (using 2to3 plugin).
+##
+## Because Kubernetes considers some StatefulSets fields/labels immutable,
+## this flag preserves the values rendered by helm2. This allows helm3
+## to upgrade the current release without a complete purge/reinstall.
+##
+## Further details: https://github.com/helm/charts/issues/20306
+##
+# helm2Compatibility: true
 
 graylog:
   ## Graylog image version
@@ -296,6 +310,7 @@ graylog:
   ##
   provisioner:
     enabled: false
+    useGraylogServiceAccount: false
     # script: |
     #  json='{
     #    "username_header": "X-Auth-Request-User",

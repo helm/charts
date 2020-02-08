@@ -70,6 +70,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `rabbitmq.extraPlugins`                      | Extra plugings to enable                         | `nil`                                                   |
 | `rabbitmq.clustering.address_type`           | Switch clustering mode                           | `ip` or `hostname`                                      |
 | `rabbitmq.clustering.k8s_domain`             | Customize internal k8s cluster domain            | `cluster.local`                                         |
+| `rabbitmq.clustering.rebalance`              | Rebalance master for queues in cluster when new replica is created            | `false`                                         |
 | `rabbitmq.logs`                              | Value for the RABBITMQ_LOGS environment variable | `-`                                                     |
 | `rabbitmq.setUlimitNofiles`                  | Specify if max file descriptor limit should be set | `true`                                                |
 | `rabbitmq.ulimitNofiles`                     | Max File Descriptor limit                        | `65536`                                                 |
@@ -164,7 +165,12 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `metrics.serviceMonitor.relabellings`        | Specify Metric Relabellings to add to the scrape endpoint                      | `nil`                     |
 | `metrics.serviceMonitor.honorLabels`         | honorLabels chooses the metric's labels on collisions with target labels.      | `false`                   |
 | `metrics.serviceMonitor.additionalLabels`    | Used to pass Labels that are required by the Installed Prometheus Operator     | `{}`                      |
-| `metrics.port        `                       | Prometheus metrics exporter port                 | `9419`                                                  |
+| `metrics.serviceMonitor.release`             | Used to pass Labels release that sometimes should be custom for Prometheus Operator     | `nil`                      |
+| `metrics.prometheusRule.enabled`             | Set this to true to create prometheusRules for Prometheus operator                                                              | `false`                    |
+| `metrics.prometheusRule.additionalLabels`    | Additional labels that can be used so prometheusRules will be discovered by Prometheus                                          | `{}`                       |
+| `metrics.prometheusRule.namespace`           | namespace where prometheusRules resource should be created                                                                      | Same namespace as rabbitmq |
+| `metrics.prometheusRule.rules`               | [rules](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) to be created, check values for an example.  | `[]`                       |
+| `metrics.port`                               | Prometheus metrics exporter port                 | `9419`                                                  |
 | `metrics.env`                                | Exporter [configuration environment variables](https://github.com/kbudde/rabbitmq_exporter#configuration) | `{}` |
 | `metrics.resources`                          | Exporter resource requests/limit                 | `nil`                                                   |
 | `metrics.capabilities`                       | Exporter: Comma-separated list of extended [scraping capabilities supported by the target RabbitMQ server](https://github.com/kbudde/rabbitmq_exporter#extended-rabbitmq-capabilities) | `bert,no_sort` |

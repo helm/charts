@@ -6,7 +6,7 @@ metadata:
   namespace: {{ include "serviceMonitor.namespace" . }}
   labels:
   {{- include "kafka.monitor.labels" . | nindent 4 }}
-{{ toYaml .Values.prometheus.operator.serviceMonitor.selector | indent 4 }}
+  {{- toYaml .Values.prometheus.operator.serviceMonitor.selector | nindent 4 }}
 spec:
   selector:
     matchLabels:
@@ -30,7 +30,7 @@ metadata:
   namespace: {{ include "serviceMonitor.namespace" . }}
   labels:
   {{- include "kafka.monitor.labels" . | nindent 4 }}
-{{ toYaml .Values.prometheus.operator.serviceMonitor.selector | indent 4 }}
+  {{ toYaml .Values.prometheus.operator.serviceMonitor.selector | nindent 4 }}
 spec:
   selector:
     matchLabels:

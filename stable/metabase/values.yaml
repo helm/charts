@@ -4,10 +4,15 @@
 # NOTE: Should remain 1
 replicaCount: 1
 podAnnotations: {}
+podLabels: {}
 image:
   repository: metabase/metabase
   tag: v0.34.0
   pullPolicy: IfNotPresent
+
+## String to fully override metabase.fullname template
+##
+# fullnameOverride:
 
 # Config Jetty web server
 listen:
@@ -20,6 +25,11 @@ ssl:
   # keyStore: |-
   #   << JKS KEY STORE >>
   # keyStorePassword: storepass
+jetty:
+#  maxThreads: 254
+#  minThreads: 8
+#  maxQueued: -1
+#  maxIdleTime: 60000
 
 # Backend database
 database:
@@ -34,6 +44,11 @@ database:
   # password:
   ## Alternatively, use a connection URI for full configurability. Example for SSL enabled Postgres.
   # connectionURI: postgres://user:password@host:port/database?ssl=true&sslmode=require&sslfactory=org.postgresql.ssl.NonValidatingFactory"
+  ## If a secret with the database credentials already exists, use the following values:
+  # existingSecret:
+  # existingSecretUsernameKey:
+  # existingSecretPasswordKey:
+  # existingSecretConnectionURIKey:
 
 password:
   # Changing Metabase password complexity:
@@ -47,6 +62,16 @@ timeZone: UTC
 emojiLogging: true
 # javaOpts:
 # pluginsDirectory:
+
+livenessProbe:
+  initialDelaySeconds: 120
+  timeoutSeconds: 30
+  failureThreshold: 6
+
+readinessProbe:
+  initialDelaySeconds: 30
+  timeoutSeconds: 3
+  periodSeconds: 5
 
 service:
   name: metabase
