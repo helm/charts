@@ -50,6 +50,7 @@ The following table lists the configurable parameters of the Metabase chart and 
 | image.repository                 | controller container image repository                       | metabase/metabase |
 | image.tag                        | controller container image tag                              | v0.34.0           |
 | image.pullPolicy                 | controller container image pull policy                      | IfNotPresent      |
+| fullnameOverride                 | String to fully override metabase.fullname template         | null              |
 | listen.host                      | Listening on a specific network host                        | 0.0.0.0           |
 | listen.port                      | Listening on a specific network port                        | 3000              |
 | ssl.enabled                      | Enable SSL to run over HTTPS                                | false             |
