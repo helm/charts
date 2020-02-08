@@ -81,3 +81,25 @@ Create chart name and version as used by the chart label.
 {{- define "graylog.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Standard metadata labels used by the chart.
+*/}}
+{{- define "graylog.metadataLabels" -}}
+helm.sh/chart: {{ template "graylog.chart" . }}
+{{ template "graylog.selectorLabels" . }}
+app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
+{{- end -}}
+
+{{/*
+Selector labels used by the chart.
+*/}}
+{{- define "graylog.selectorLabels" -}}
+app.kubernetes.io/name: {{ template "graylog.name" . }}
+app.kubernetes.io/instance: "{{ .Release.Name }}"
+{{- if .Values.helm2Compatibility }}
+app.kubernetes.io/managed-by: "Tiller"
+{{- else }}
+app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+{{- end -}}
+{{- end -}}

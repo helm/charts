@@ -3,37 +3,19 @@ kind: StatefulSet
 metadata:
   name: {{ template "graylog.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ template "graylog.name" . }}
-    helm.sh/chart: {{ template "graylog.chart" . }}
-    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
-    app.kubernetes.io/instance: "{{ .Release.Name }}"
-    app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
+{{ include "graylog.metadataLabels" . | indent 4 }}
 spec:
   serviceName: {{ template "graylog.fullname" . }}
   replicas: {{ .Values.graylog.replicas }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ template "graylog.name" . }}
-      app.kubernetes.io/instance: "{{ .Release.Name }}"
-      {{- if .Values.helm2Compatibility }}
-      app.kubernetes.io/managed-by: "Tiller"
-      {{- else }}
-      app.kubernetes.io/managed-by: "{{ .Release.Service }}"
-      {{- end }}
+{{ include "graylog.selectorLabels" . | indent 6 }}
   updateStrategy:
     type: {{ .Values.graylog.updateStrategy }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ template "graylog.name" . }}
-        helm.sh/chart: {{ template "graylog.chart" . }}
-        {{- if .Values.helm2Compatibility }}
-        app.kubernetes.io/managed-by: "Tiller"
-        {{- else }}
-        app.kubernetes.io/managed-by: "{{ .Release.Service }}"
-        {{- end }}
-        app.kubernetes.io/instance: "{{ .Release.Name }}"
-        app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
+{{ include "graylog.metadataLabels" . | indent 8 }}
       annotations:
       {{- if .Values.graylog.podAnnotations }}
       {{- range $key, $value := .Values.graylog.podAnnotations }}
@@ -106,9 +88,9 @@ spec:
             - name: GRAYLOG_SERVER_JAVA_OPTS
               {{- $javaOpts := "-Djava.net.preferIPv4Stack=true -XX:NewRatio=1 -server -XX:+ResizeTLAB -XX:+UseConcMarkSweepGC -XX:+CMSConcurrentMTEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseParNewGC -XX:-OmitStackTraceInFastThrow" }}
               {{- if .Values.graylog.heapSize }}
-              value: "{{ $javaOpts }} {{ printf "-Xms%s -Xmx%s" .Values.graylog.heapSize .Values.graylog.heapSize}}"
+              value: "{{ $javaOpts }} {{ printf "-Xms%s -Xmx%s" .Values.graylog.heapSize .Values.graylog.heapSize}} {{ .Values.graylog.additionalJavaOpts }}"
               {{- else }}
-              value: "{{ $javaOpts }} -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
+              value: "{{ $javaOpts }} -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap {{ .Values.graylog.additionalJavaOpts }}"
               {{- end }}
             - name: GRAYLOG_PASSWORD_SECRET
               valueFrom:
