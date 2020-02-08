@@ -23,6 +23,14 @@ spec:
 {{- if .Values.jobPodLabels }}
 {{ toYaml .Values.jobPodLabels | indent 8 }}
 {{- end }}
+{{- if or .Values.jobPodAnnotations .Values.podAnnotations }}
+      annotations:
+{{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
+{{- if .Values.jobPodAnnotations }}
+{{ toYaml .Values.jobPodAnnotations | indent 8 }}
+{{- end }}
     spec:
       restartPolicy: OnFailure
 {{- if .Values.nodeSelector }}
