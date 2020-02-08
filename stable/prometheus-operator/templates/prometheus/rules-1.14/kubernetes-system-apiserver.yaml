@@ -1,4 +1,4 @@
-{{- /*
+{{- /* 
 Generated from 'kubernetes-system-apiserver' group from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml
 Do not change in-place! In order to change this file first read following link:
 https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
@@ -103,14 +103,14 @@ spec:
       annotations:
         message: A client certificate used to authenticate to the apiserver is expiring in less than 7.0 days.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeclientcertificateexpiration
-      expr: apiserver_client_certificate_expiration_seconds_count{job="apiserver"} > 0 and histogram_quantile(0.01, sum by (job, le) (rate(apiserver_client_certificate_expiration_seconds_bucket{job="apiserver"}[5m]))) < 604800
+      expr: apiserver_client_certificate_expiration_seconds_count{job="apiserver"} > 0 and on(job) histogram_quantile(0.01, sum by (job, le) (rate(apiserver_client_certificate_expiration_seconds_bucket{job="apiserver"}[5m]))) < 604800
       labels:
         severity: warning
     - alert: KubeClientCertificateExpiration
       annotations:
         message: A client certificate used to authenticate to the apiserver is expiring in less than 24.0 hours.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeclientcertificateexpiration
-      expr: apiserver_client_certificate_expiration_seconds_count{job="apiserver"} > 0 and histogram_quantile(0.01, sum by (job, le) (rate(apiserver_client_certificate_expiration_seconds_bucket{job="apiserver"}[5m]))) < 86400
+      expr: apiserver_client_certificate_expiration_seconds_count{job="apiserver"} > 0 and on(job) histogram_quantile(0.01, sum by (job, le) (rate(apiserver_client_certificate_expiration_seconds_bucket{job="apiserver"}[5m]))) < 86400
       labels:
         severity: critical
 {{- if .Values.kubeApiServer.enabled }}

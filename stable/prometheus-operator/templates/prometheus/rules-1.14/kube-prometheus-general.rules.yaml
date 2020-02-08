@@ -1,14 +1,14 @@
 {{- /* 
-Generated from 'node-time' group from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml
+Generated from 'kube-prometheus-general.rules' group from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml
 Do not change in-place! In order to change this file first read following link:
 https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
 */ -}}
 {{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
-{{- if and (semverCompare ">=1.14.0-0" $kubeTargetVersion) (semverCompare "<9.9.9-9" $kubeTargetVersion) .Values.defaultRules.create .Values.defaultRules.rules.time }}
+{{- if and (semverCompare ">=1.14.0-0" $kubeTargetVersion) (semverCompare "<9.9.9-9" $kubeTargetVersion) .Values.defaultRules.create }}
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: {{ printf "%s-%s" (include "prometheus-operator.fullname" .) "node-time" | trunc 63 | trimSuffix "-" }}
+  name: {{ printf "%s-%s" (include "prometheus-operator.fullname" .) "kube-prometheus-general.rules" | trunc 63 | trimSuffix "-" }}
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "prometheus-operator.name" . }}
@@ -22,13 +22,10 @@ metadata:
 {{- end }}
 spec:
   groups:
-  - name: node-time
+  - name: kube-prometheus-general.rules
     rules:
-    - alert: ClockSkewDetected
-      annotations:
-        message: Clock skew detected on node-exporter {{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod }}`}}. Ensure NTP is configured correctly on this host.
-      expr: abs(node_timex_offset_seconds{job="node-exporter"}) > 0.05
-      for: 2m
-      labels:
-        severity: warning
+    - expr: count without(instance, pod, node) (up == 1)
+      record: count:up1
+    - expr: count without(instance, pod, node) (up == 0)
+      record: count:up0
 {{- end }}

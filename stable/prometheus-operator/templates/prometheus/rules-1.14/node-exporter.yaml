@@ -1,4 +1,4 @@
-{{- /*
+{{- /* 
 Generated from 'node-exporter' group from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml
 Do not change in-place! In order to change this file first read following link:
 https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
@@ -47,7 +47,7 @@ spec:
         summary: Filesystem is predicted to run out of space within the next 4 hours.
       expr: |-
         (
-          node_filesystem_avail_bytes{job="node-exporter",fstype!=""} / node_filesystem_size_bytes{job="node-exporter",fstype!=""} * 100 < 20
+          node_filesystem_avail_bytes{job="node-exporter",fstype!=""} / node_filesystem_size_bytes{job="node-exporter",fstype!=""} * 100 < 15
         and
           predict_linear(node_filesystem_avail_bytes{job="node-exporter",fstype!=""}[6h], 4*60*60) < 0
         and

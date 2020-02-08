@@ -232,15 +232,15 @@ data:
                         },
                         "id": 4,
                         "legend": {
-                            "alignAsTable": "true",
+                            "alignAsTable": true,
                             "avg": false,
-                            "current": "true",
+                            "current": true,
                             "max": false,
                             "min": false,
-                            "rightSide": "true",
-                            "show": "true",
+                            "rightSide": true,
+                            "show": true,
                             "total": false,
-                            "values": "true"
+                            "values": true
                         },
                         "lines": true,
                         "linewidth": 1,
@@ -427,15 +427,15 @@ data:
                         },
                         "id": 6,
                         "legend": {
-                            "alignAsTable": "true",
+                            "alignAsTable": true,
                             "avg": false,
-                            "current": "true",
+                            "current": true,
                             "max": false,
                             "min": false,
-                            "rightSide": "true",
-                            "show": "true",
+                            "rightSide": true,
+                            "show": true,
                             "total": false,
-                            "values": "true"
+                            "values": true
                         },
                         "lines": true,
                         "linewidth": 1,
@@ -747,15 +747,15 @@ data:
                         },
                         "id": 9,
                         "legend": {
-                            "alignAsTable": "true",
+                            "alignAsTable": true,
                             "avg": false,
-                            "current": "true",
+                            "current": true,
                             "max": false,
                             "min": false,
-                            "rightSide": "true",
-                            "show": "true",
+                            "rightSide": true,
+                            "show": true,
                             "total": false,
-                            "values": "true"
+                            "values": true
                         },
                         "lines": true,
                         "linewidth": 1,
@@ -1129,8 +1129,8 @@ data:
             "list": [
                 {
                     "current": {
-                        "text": "Prometheus",
-                        "value": "Prometheus"
+                        "text": "default",
+                        "value": "default"
                     },
                     "hide": 0,
                     "label": null,

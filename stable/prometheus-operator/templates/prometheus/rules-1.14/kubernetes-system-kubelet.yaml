@@ -1,4 +1,4 @@
-{{- /*
+{{- /* 
 Generated from 'kubernetes-system-kubelet' group from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml
 Do not change in-place! In order to change this file first read following link:
 https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
@@ -37,6 +37,7 @@ spec:
         message: '{{`{{ $labels.node }}`}} is unreachable and some workloads may be rescheduled.'
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubenodeunreachable
       expr: kube_node_spec_taint{job="kube-state-metrics",key="node.kubernetes.io/unreachable",effect="NoSchedule"} == 1
+      for: 2m
       labels:
         severity: warning
     - alert: KubeletTooManyPods

@@ -990,13 +990,15 @@ data:
             "list": [
                 {
                     "current": {
-                        "text": "Prometheus",
-                        "value": "Prometheus"
+                        "text": "default",
+                        "value": "default"
                     },
                     "hide": 0,
                     "label": null,
                     "name": "datasource",
-                    "options": [],
+                    "options": [
+
+                    ],
                     "query": "prometheus",
                     "refresh": 1,
                     "regex": "",

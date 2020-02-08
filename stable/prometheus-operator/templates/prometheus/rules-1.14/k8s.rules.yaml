@@ -1,4 +1,4 @@
-{{- /*
+{{- /* 
 Generated from 'k8s.rules' group from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml
 Do not change in-place! In order to change this file first read following link:
 https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
@@ -27,9 +27,9 @@ spec:
     - expr: sum(rate(container_cpu_usage_seconds_total{job="kubelet", metrics_path="/metrics/cadvisor", image!="", container!="POD"}[5m])) by (namespace)
       record: namespace:container_cpu_usage_seconds_total:sum_rate
     - expr: |-
-        sum by (namespace, pod, container) (
+        sum by (cluster, namespace, pod, container) (
           rate(container_cpu_usage_seconds_total{job="kubelet", metrics_path="/metrics/cadvisor", image!="", container!="POD"}[5m])
-        ) * on (namespace, pod) group_left(node) max by(namespace, pod, node) (kube_pod_info)
+        ) * on (cluster, namespace, pod) group_left(node) max by(cluster, namespace, pod, node) (kube_pod_info)
       record: node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate
     - expr: |-
         container_memory_working_set_bytes{job="kubelet", metrics_path="/metrics/cadvisor", image!=""}
@@ -80,7 +80,7 @@ spec:
             ) * on(replicaset, namespace) group_left(owner_name) kube_replicaset_owner{job="kube-state-metrics"},
             "workload", "$1", "owner_name", "(.*)"
           )
-        ) by (namespace, workload, pod)
+        ) by (cluster, namespace, workload, pod)
       labels:
         workload_type: deployment
       record: mixin_pod_workload
@@ -90,7 +90,7 @@ spec:
             kube_pod_owner{job="kube-state-metrics", owner_kind="DaemonSet"},
             "workload", "$1", "owner_name", "(.*)"
           )
-        ) by (namespace, workload, pod)
+        ) by (cluster, namespace, workload, pod)
       labels:
         workload_type: daemonset
       record: mixin_pod_workload
@@ -100,7 +100,7 @@ spec:
             kube_pod_owner{job="kube-state-metrics", owner_kind="StatefulSet"},
             "workload", "$1", "owner_name", "(.*)"
           )
-        ) by (namespace, workload, pod)
+        ) by (cluster, namespace, workload, pod)
       labels:
         workload_type: statefulset
       record: mixin_pod_workload
