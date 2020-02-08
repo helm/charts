@@ -65,14 +65,15 @@ unbound.serverPort: 53
 | replicaCount             | 1                           |
 | externalIP               | ""                          |
 | clusterIP                | ""                          |
-| unbound.image.repository | markbnj/unbound-docker      |
-| unbound.image.tag        | 0.1.0                       |
+| unbound.image.repository | klutchell/unbound           |
+| unbound.image.tag        | 1.9.6                       |
 | unbound.image.pullPolicy | IfNotPresent                |
 | unbound.verbosity        | 1                           |
 | unbound.numThreads       | 1                           |
 | unbound.statsInterval    | 0                           |
 | unbound.statsCumulative  | no                          |
-| unbound.serverPort       | 53                          |
+| unbound.serverPort       | 50                          |
+| unbound.configLocation   | /opt/unbound/etc/unbound    |
 | healthz.image.repository | googlecontainer/exechealthz |
 | healthz.image.tag        | 1.2                         |
 | healthz.image.pullPolicy | IfNotPresent                |
@@ -93,6 +94,10 @@ The unbound deployment template includes the sha256 hash of the configmap as an 
 ### Health checks
 
 Liveness and readiness probes are implemented by a side-car [healthz container](https://github.com/kubernetes/contrib/tree/master/exec-healthz). When a http GET is made to port 8080 healthz runs an nslookup against the unbound server on localhost querying for the name `health.check.unbound` which is stored as a local record in the configuration.
+
+### Running on different architectures
+
+The default unbound image will run on `amd64`, `arm64`, `ppc64le` and others, but the healthz image needs to be changed according to the archtechure, as it's not a multi-arch image. Just appending `-arm64` to the image, like `gcr.io/google-containers/exechealthz-arm64` will work.
 
 ## Configuring as an upstream resolver for kube-dns
 

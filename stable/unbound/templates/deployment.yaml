@@ -45,7 +45,7 @@ spec:
           protocol: "TCP"
         volumeMounts:
         - name: "unbound-conf"
-          mountPath: "/etc/unbound/"
+          mountPath: {{ .Values.unbound.configLocation | quote }}
           readOnly: true
         livenessProbe:
           httpGet:

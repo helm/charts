@@ -4,14 +4,15 @@ replicaCount: 1
 # on unbound configuration see http://unbound.net/documentation/unbound.conf.html
 unbound:
   image:
-    repository: markbnj/unbound-docker
-    tag: "0.1.0"
+    repository: klutchell/unbound
+    tag: "1.9.6"
     pullPolicy: IfNotPresent
   verbosity: 1
   numThreads: 1
   statsInterval: 0
   statsCumulative: "no"
-  serverPort: 53
+  serverPort: 5053
+  configLocation: "/opt/unbound/etc/unbound"
 
 # values that pertain to the exechealthz container, for more information see
 # https://github.com/kubernetes/contrib/tree/master/exec-healthz

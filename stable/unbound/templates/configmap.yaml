@@ -12,13 +12,15 @@ data:
     server:
         chroot: ""
         num-threads: {{ .Values.unbound.numThreads }}
-        directory: "/etc/unbound"
+        directory: "{{ .Values.unbound.configLocation }}"
         port: {{ .Values.unbound.serverPort }}
         so-reuseport: yes
         do-daemonize: no
         logfile: ""
         use-syslog: no
-        auto-trust-anchor-file: "/var/lib/unbound/root.key"
+        {{- if .Values.unbound.anchorFile }}
+        auto-trust-anchor-file: "{{ .Values.unbound.anchorFile }}"
+        {{- end }}
         verbosity: {{ .Values.unbound.verbosity }}
         statistics-interval: {{ .Values.unbound.statsInterval }}
         statistics-cumulative: {{ .Values.unbound.statsCumulative }}
