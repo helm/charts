@@ -20,6 +20,9 @@ spec:
 {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
 {{- end }}
+{{- if .Values.jobPodLabels }}
+{{ toYaml .Values.jobPodLabels | indent 8 }}
+{{- end }}
     spec:
       restartPolicy: OnFailure
 {{- if .Values.nodeSelector }}
