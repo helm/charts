@@ -177,6 +177,12 @@ podAnnotations: {}
 # Additional pod labels
 podLabels: {}
 
+# Additational pod annotations for bucket creation job
+jobPodAnnotations: {}
+
+# Additional pod labels for bucket creation job
+jobPodLabels: {}
+
 ## Liveness and Readiness probe values.
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
 livenessProbe:
