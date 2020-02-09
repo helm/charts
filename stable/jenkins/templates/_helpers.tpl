@@ -192,3 +192,12 @@ Create the name of the service account for Jenkins agents to use
     {{ default "default" .Values.serviceAccountAgent.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Workaround for OpenShift Route spec bug
+https://github.com/openshift/origin/issues/24060
+*/}}
+{{- define "chart.helmRouteFix" -}}
+status:
+  ingress: []
+{{- end -}}

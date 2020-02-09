@@ -365,6 +365,7 @@ master:
     enabled: false
     labels: {}
     annotations: {}
+    # host:
     # path: "/jenkins"
 
   additionalConfig: {}

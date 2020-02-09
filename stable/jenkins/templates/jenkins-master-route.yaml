@@ -18,7 +18,8 @@ metadata:
 {{- end }}
   name: {{ template "jenkins.fullname" . }}
 spec:
-  host: {{ .Values.master.route.path }}
+  host: "{{ .Values.master.route.host }}"
+  path: {{ .Values.master.route.path }}
   port:
     targetPort: http
   tls:
@@ -29,4 +30,5 @@ spec:
     name: {{ template "jenkins.fullname" . }}
     weight: 100
   wildcardPolicy: None
+{{ include "chart.helmRouteFix" $ }}
 {{- end }}
