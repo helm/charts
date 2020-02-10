@@ -254,7 +254,7 @@ controller:
     ## Ref: https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typeloadbalancer
     externalTrafficPolicy: ""
 
-    # Must be either "None" or "ClusterIP" if set. Kubernetes will default to "None".
+    # Must be either "None" or "ClientIP" if set. Kubernetes will default to "None".
     # Ref: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
     sessionAffinity: ""
 
