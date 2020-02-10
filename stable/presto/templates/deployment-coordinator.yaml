@@ -30,6 +30,15 @@ spec:
         - name: config-volume
           configMap:
             name: {{ template "presto.coordinator" . }}
+        {{- if (.Values.server.catalog.secretName | default "") }}
+        - name: presto-connectors-conf
+          secret:
+            secretName: {{ .Values.server.catalog.secretName }}
+        {{- else if .Values.server.catalog.data }}
+        - name: catalog-config-volume
+          configMap:
+            name: {{ template "presto.catalog" . }}
+        {{- end }}
       containers:
         - name: {{ .Chart.Name }}-coordinator
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
