@@ -81,4 +81,8 @@ data:
         nats://{{ template "nats.fullname" . }}-cluster:{{ .Values.cluster.service.port }}
         {{- end }}
       ]
+
+      {{- if .Values.clusterAuth.user }}
+      connect_retries: {{ .Values.cluster.connectRetries }}
+      {{- end }}
     }

@@ -217,6 +217,10 @@ cluster:
     ## otherwise leave blank
     ##
     # loadBalancerIP:
+    ## Use connectRetries to configure number of connect retries for implicit routes,
+    ## otherwise leave blank
+    ##
+    # connectRetries:
 
 ## NATS svc used for monitoring
 ## ref: https://github.com/nats-io/gnatsd#monitoring
