@@ -16,10 +16,17 @@ rules:
       - nodes
       - nodes/stats
       - namespaces
+      - configmaps
     verbs:
       - get
       - list
       - watch
+  - apiGroups:
+    - authorization.k8s.io
+    resources:
+    - subjectaccessreviews
+    verbs:
+    - create
   {{- if .Values.rbac.pspEnabled }}
   - apiGroups:
     - extensions
