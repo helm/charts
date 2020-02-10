@@ -395,6 +395,7 @@ persistentVolume:
     - ReadWriteOnce
   size: 8Gi
   annotations: {}
+  labels: {}
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector

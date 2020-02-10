@@ -322,9 +322,9 @@ spec:
     - metadata:
         name: {{ .Values.persistentVolume.name }}
         annotations:
-        {{- range $key, $value := .Values.persistentVolume.annotations }}
-          {{ $key }}: {{ $value }}
-        {{- end }}
+{{ tpl (toYaml .Values.persistentVolume.annotations) . | indent 10 }}
+        labels:
+{{ tpl (toYaml .Values.persistentVolume.labels) . | indent 10 }}
       spec:
         accessModes:
         {{- range .Values.persistentVolume.accessModes }}
