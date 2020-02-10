@@ -2,13 +2,12 @@ server:
   workers: 2
   node:
     environment: production
-    dataDir: /data/presto
-    pluginDir: /usr/lib/presto/plugin
+    dataDir: /presto/etc/data
   log:
     presto:
       level: INFO
   config:
-    path: /usr/lib/presto/etc
+    path: /etc/presto
     http:
       port: 8080
     query:
@@ -21,20 +20,13 @@ server:
       g1:
         heapRegionSize: "32M"
   catalog:
-##    secretName: ## provide secret name to populate catalog
-    data:
-      mysql.properties: |
-        foo=bar1
-      postgresql.properties: |
-        foo=bar2
+#    secretName: provide secret name to populate catalog
+#    data: provide connector configuration via properties files
 
 image:
-  repository: prestosql/presto
-  tag: 329
+  repository: bivas/presto
+  tag: 0.196
   pullPolicy: IfNotPresent
-  securityContext:
-    runAsUser: 1000
-    runAsGroup: 1000
 
 service:
   type: ClusterIP

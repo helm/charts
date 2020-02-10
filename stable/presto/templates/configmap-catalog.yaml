@@ -1,0 +1,14 @@
+{{ if .Values.server.catalog.data }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "presto.catalog" . }}
+  labels:
+    app: {{ template "presto.name" . }}
+    chart: {{ template "presto.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  {{ .Values.server.catalog.data }}
+---
+{{ end }}

@@ -32,6 +32,10 @@ If release name contains chart name it will be used as a full name.
 {{ template "presto.fullname" . }}-worker
 {{- end -}}
 
+{{- define "presto.catalog" -}}
+{{ template "presto.fullname" . }}-catalog
+{{- end -}}
+
 {{/*
 Create chart name and version as used by the chart label.
 */}}
