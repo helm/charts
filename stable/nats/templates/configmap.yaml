@@ -82,7 +82,8 @@ data:
         {{- end }}
       ]
 
-      {{- if .Values.clusterAuth.user }}
+      {{- if .Values.cluster.connectRetries }}
+      # Configure number of connect retries for implicit routes
       connect_retries: {{ .Values.cluster.connectRetries }}
       {{- end }}
     }
