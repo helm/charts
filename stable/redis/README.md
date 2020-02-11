@@ -436,7 +436,7 @@ This version causes a change in the Redis Master StatefulSet definition, so the 
 
    ```
    helm delete --purge <RELEASE>
-   helm install my-release stable/redis --name <RELEASE>
+   helm install <RELEASE> stable/redis
    ```
 
 Previous versions of the chart were not using persistence in the slaves, so this upgrade would add it to them. Another important change is that no values are inherited from master to slaves. For example, in 6.0.0 `slaves.readinessProbe.periodSeconds`, if empty, would be set to `master.readinessProbe.periodSeconds`. This approach lacked transparency and was difficult to maintain. From now on, all the slave parameters must be configured just as it is done with the masters.
