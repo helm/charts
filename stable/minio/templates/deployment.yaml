@@ -157,7 +157,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /minio/health/live
-              port: service
+              port: http
               {{- if .Values.tls.enabled }}
               scheme: HTTPS
               {{ else }}
@@ -174,7 +174,7 @@ spec:
               scheme: HTTPS
               {{- end }}
               path: /minio/health/ready
-              port: service
+              port: http
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
