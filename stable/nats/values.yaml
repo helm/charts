@@ -222,7 +222,6 @@ cluster:
     ##
     # loadBalancerIP:
 
-
 ## NATS svc used for monitoring
 ## ref: https://github.com/nats-io/gnatsd#monitoring
 ##
