@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```console
-$ helm install stable/testlink
+$ helm install my-release stable/testlink
 ```
 
 ## Introduction
@@ -28,7 +28,7 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/testlink
+$ helm install my-release stable/testlink
 ```
 
 The command deploys TestLink on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
@@ -121,7 +121,7 @@ The above parameters map to the env variables defined in [bitnami/testlink](http
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install --name my-release \
+$ helm install my-release \
   --set testlinkUsername=admin,testlinkPassword=password,mariadb.mariadbRootPassword=secretpassword \
     stable/testlink
 ```
@@ -131,7 +131,7 @@ The above command sets the TestLink administrator account username and password 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml stable/testlink
+$ helm install my-release -f values.yaml stable/testlink
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
