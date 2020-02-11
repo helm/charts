@@ -133,7 +133,7 @@ spec:
               mountPath: {{ .Values.certsPath }}
             {{ end }}
           ports:
-            - name: service
+            - name: http
               containerPort: 9000
           env:
             - name: MINIO_ACCESS_KEY

@@ -26,7 +26,7 @@ spec:
   publishNotReadyAddresses: true
   clusterIP: None
   ports:
-    - name: service
+    - name: http
       port: {{ .Values.service.port }}
       protocol: TCP
   selector:
