@@ -47,6 +47,8 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `service.type` | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP` |
 | `service.port` | Service port | `80` |
 | `strategy` | Specifies the strategy used to replace old Pods by new ones | `{}` |
+| `serverDefinitions.enabled` | Enables Server Definitions | `false` |
+| `serverDefinitions.servers` | Pre-configured server parameters | `` |
 | `ingress.enabled` | Enables Ingress | `false` |
 | `ingress.annotations` | Ingress annotations | `{}` |
 | `ingress.hosts` | Ingress accepted hostnames | `nil` |
