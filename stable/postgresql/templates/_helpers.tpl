@@ -316,7 +316,10 @@ Includes the `image` and `imagePullPolicy` keys.
 */}}
 {{- define "postgresql.registryImage" -}}
 image: {{ include "postgresql.imageReference" . }}
-{{ include "postgresql.imagePullPolicy" . }}
+{{- $pullPolicy := include "postgresql.imagePullPolicy" . -}}
+{{- if $pullPolicy }}
+{{ $pullPolicy }}
+{{- end -}}
 {{- end -}}
 
 {{/*
@@ -396,9 +399,9 @@ registry address, repository, tag and digest when available.
 Specify the image pull policy
 */}}
 {{- define "postgresql.imagePullPolicy" -}}
-{{ $policy := coalesce .image.pullPolicy .values.global.imagePullPolicy }}
+{{- $policy := coalesce .image.pullPolicy .values.imagePullPolicy .values.global.imagePullPolicy -}}
 {{- if $policy -}}
-imagePullPolicy: "{{ printf "%s" $policy -}}"
+imagePullPolicy: "{{- $policy -}}"
 {{- end -}}
 {{- end -}}
 
@@ -407,6 +410,13 @@ Use the image pull secrets. All of the specified secrets will be used
 */}}
 {{- define "postgresql.imagePullSecrets" -}}
 {{- $secrets := .Values.global.imagePullSecrets -}}
+{{- range $_, $chartSecret := .Values.imagePullSecrets -}}
+{{- if not $secrets -}}
+{{- $secrets = list $chartSecret -}}
+{{- else -}}
+{{- $secrets = append $secrets $chartSecret -}}
+{{- end -}}
+{{- end -}}
 {{- range $_, $image := .Values.images -}}
 {{- range $_, $s := $image.pullSecrets -}}
 {{- if not $secrets -}}
