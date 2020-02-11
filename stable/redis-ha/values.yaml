@@ -259,6 +259,11 @@ exporter:
   # Additional args for redis exporter
   extraArgs: {}
 
+  # Used to mount a LUA-Script via config map and use it for metrics-collection
+  # script:
+  #   configmap: prometheus-redis-exporter-script
+  #   keyname: script
+
   serviceMonitor:
     # When set true then use a ServiceMonitor to configure scraping
     enabled: false
