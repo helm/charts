@@ -43,6 +43,7 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 
 | Parameter                                 | Description                                                                      | Default                                                                      |
 | ----------------------------------------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `kind`                                    | You can choose between `Deployment` or `DaemonSet`                               | `Deployment`                                                                 |
 | `config`                                  | Prometheus blackbox configuration                                                | {}                                                                           |
 | `secretConfig`                            | Whether to treat blackbox configuration as secret                                | `false`                                                                      |
 | `extraArgs`                               | Optional flags for blackbox                                                      | `[]`                                                                         |
