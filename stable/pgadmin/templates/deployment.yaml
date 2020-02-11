@@ -64,6 +64,11 @@ spec:
           volumeMounts:
             - name: pgadmin-data
               mountPath: /var/lib/pgadmin
+          {{- if .Values.serverDefinitions.enabled }}
+            - name: definitions
+              mountPath: /pgadmin4/servers.json
+              subPath: servers.json
+          {{- end }}
           resources:
             {{- .Values.resources | toYaml | nindent 12 }}
       volumes:
@@ -74,6 +79,14 @@ spec:
         {{- else }}
           emptyDir: {}
         {{- end }}
+      {{- if .Values.serverDefinitions.enabled }}
+        - name: definitions
+          secret:
+            secretName: {{ template "pgadmin.secretName" . }}
+            items:
+            - key: servers.json
+              path: servers.json
+      {{- end }}
     {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- .Values.iamgePullSecrets | toYaml | nindent 8 }}
