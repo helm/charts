@@ -52,3 +52,5 @@ securityContext:
   runAsUser: 1001
 
 podAnnotations: {}
+
+priorityClassName: ""
