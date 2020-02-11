@@ -200,6 +200,10 @@ client:
 ## ref: https://github.com/nats-io/gnatsd#clustering
 ##
 cluster:
+  ## Use connectRetries to configure number of connect retries for implicit routes,
+  ## otherwise leave blank
+  ##
+  # connectRetries:
   service:
     ## Kubernetes service type
     type: ClusterIP
