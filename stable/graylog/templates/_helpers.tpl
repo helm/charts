@@ -37,6 +37,12 @@ Create the name of the service account to use
 {{- end -}}
 {{- end -}}
 
+{{/*
+Create the name of the headless service
+*/}}
+{{- define "graylog.service.headless.name" }}
+{{- printf "%s-%s" (include "graylog.fullname" .) .Values.graylog.service.headless.suffix | trimSuffix "-" -}}
+{{- end -}}
 
 {{/*
 Print Host URL

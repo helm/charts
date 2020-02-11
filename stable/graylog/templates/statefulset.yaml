@@ -5,7 +5,7 @@ metadata:
   labels:
 {{ include "graylog.metadataLabels" . | indent 4 }}
 spec:
-  serviceName: {{ template "graylog.fullname" . }}
+  serviceName: {{ template "graylog.service.headless.name" . }}
   replicas: {{ .Values.graylog.replicas }}
   selector:
     matchLabels:
