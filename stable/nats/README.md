@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```bash
-$ helm install stable/nats
+$ helm install my-release stable/nats
 ```
 
 ## Introduction
@@ -24,7 +24,7 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/nats
+$ helm install my-release stable/nats
 ```
 
 The command deploys NATS on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
@@ -139,7 +139,7 @@ The following table lists the configurable parameters of the NATS chart and thei
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
   --set auth.enabled=true,auth.user=my-user,auth.password=T0pS3cr3t \
     stable/nats
 ```
@@ -149,7 +149,7 @@ The above command enables NATS client authentication with `my-user` as user and 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/nats
+$ helm install my-release -f values.yaml stable/nats
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -232,7 +232,7 @@ NATS version 2.0.0 has renamed the server binary filename from `gnatsd` to `nats
 however, it is still possible to use the chart to deploy NATS version 1.x.x using the `natsFilename` property.
 
 ```bash
-helm install --name nats-v1 --set natsFilename=gnatsd --set image.tag=1.4.1 stable/nats
+helm install nats-v1 --set natsFilename=gnatsd --set image.tag=1.4.1 stable/nats
 ```
 
 ### To 1.0.0
