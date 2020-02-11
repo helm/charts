@@ -182,7 +182,11 @@ spec:
               scheme: HTTPS
               {{- end }}
               path: /minio/health/ready
+              {{- if .Values.tls.enabled }}
+              port: https
+              {{ else }}
               port: http
+              {{- end }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
