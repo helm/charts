@@ -1,0 +1,3 @@
+images:
+  postgresql:
+    pullPolicy: IfNotPresent
