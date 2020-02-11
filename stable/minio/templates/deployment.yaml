@@ -133,7 +133,11 @@ spec:
               mountPath: {{ .Values.certsPath }}
             {{ end }}
           ports:
+            {{- if .Values.tls.enabled }}
+            - name: https
+            {{ else }}
             - name: http
+            {{- end }}
               containerPort: 9000
           env:
             - name: MINIO_ACCESS_KEY
