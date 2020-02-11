@@ -327,9 +327,14 @@ The most complete image reference, including the
 registry address, repository, tag and digest when available.
 */}}
 {{- define "postgresql.imageReference" -}}
-{{- if .values.image -}}
+{{- if (or .values.image .values.volumePermissions.image .values.metrics.image) -}}
 {{ include "postgresql.deprecatedImageReference" . }}
 {{- else -}}
+{{ include "postgresql.conventionalImageReference" . }}
+{{- end -}}
+{{- end -}}
+
+{{- define "postgresql.conventionalImageReference" -}}
 {{- $registry := include "postgresql.imageRegistry" . -}}
 {{- $namespace := include "postgresql.imageNamespace" . -}}
 {{- printf "%s/%s/%s" $registry $namespace .image.name -}}
@@ -340,7 +345,7 @@ registry address, repository, tag and digest when available.
 {{- printf "@%s" .image.digest -}}
 {{- end -}}
 {{- end -}}
-{{- end -}}
+
 
 {{- define "postgresql.deprecatedImageReference" -}}
 {{- $image := dict -}}
@@ -351,17 +356,19 @@ registry address, repository, tag and digest when available.
 {{- else if eq .name "metrics" -}}
 {{- $image = .values.metrics.image -}}
 {{- end -}}
-{{- if $image.registry -}}
-{{- printf "%s/" $image.registry -}}
+{{- if $image -}}
+{{- $registry := coalesce $image.registry (include "postgresql.imageRegistry" .) -}}
+{{- $repository := coalesce $image.repository (printf "%s/%s" (include "postgresql.imageNamespace" .) .image.name) -}}
+{{- $tag := coalesce $image.tag .image.tag -}}
+{{- printf "%s/%s" $registry $repository -}}
+{{- if $tag -}}
+{{- printf ":%s" $tag -}}
 {{- end -}}
-{{- printf "%s" $image.repository -}}
-{{- if $image.tag -}}
-{{- printf ":%s" $image.tag }}
-{{- end -}}
-{{- if $image.digest -}}
-{{- printf "@%s" $image.digest -}}
+{{- else -}}
+{{- include "postgresql.conventionalImageReference" . -}}
 {{- end -}}
 {{- end -}}
+
 
 {{- define "postgresql.imageRegistry" -}}
 {{- if or (and .image.useOriginalRegistry (empty .image.registry)) (and .values.useOriginalRegistry (empty .values.imageRegistry)) -}}
@@ -399,7 +406,15 @@ registry address, repository, tag and digest when available.
 Specify the image pull policy
 */}}
 {{- define "postgresql.imagePullPolicy" -}}
-{{- $policy := coalesce .image.pullPolicy .values.imagePullPolicy .values.global.imagePullPolicy -}}
+{{- $image := dict -}}
+{{- if eq .name "postgresql" -}}
+{{- $image = .values.image -}}
+{{- else if eq .name "volumePermissions" -}}
+{{- $image = .values.volumePermissions.image -}}
+{{- else if eq .name "metrics" -}}
+{{- $image = .values.metrics.image -}}
+{{- end -}}
+{{- $policy := coalesce $image.pullPolicy .image.pullPolicy .values.imagePullPolicy .values.global.imagePullPolicy -}}
 {{- if $policy -}}
 imagePullPolicy: "{{- $policy -}}"
 {{- end -}}
@@ -411,18 +426,29 @@ Use the image pull secrets. All of the specified secrets will be used
 {{- define "postgresql.imagePullSecrets" -}}
 {{- $secrets := .Values.global.imagePullSecrets -}}
 {{- range $_, $chartSecret := .Values.imagePullSecrets -}}
-{{- if not $secrets -}}
-{{- $secrets = list $chartSecret -}}
-{{- else -}}
+{{- if $secrets -}}
 {{- $secrets = append $secrets $chartSecret -}}
+{{- else -}}
+{{- $secrets = list $chartSecret -}}
 {{- end -}}
 {{- end -}}
 {{- range $_, $image := .Values.images -}}
 {{- range $_, $s := $image.pullSecrets -}}
-{{- if not $secrets -}}
-{{- $secrets = list $s -}}
-{{- else -}}
+{{- if $secrets -}}
 {{- $secrets = append $secrets $s -}}
+{{- else -}}
+{{- $secrets = list $s -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- range $_, $image := list .Values.image .Values.volumePermissions.image .Values.metrics.image -}}
+{{- if $image -}}
+{{- range $_, $s := $image.pullSecrets -}}
+{{- if $secrets -}}
+{{- $secrets = append $secrets $s -}}
+{{- else -}}
+{{- $secrets = list $s -}}
+{{- end -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}

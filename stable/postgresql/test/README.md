@@ -17,3 +17,5 @@ The tests can be run from any folder with basht, e.g.:
 ```shell script
 […/stable/postgresql]$ basht test/*.bash  
 ```
+
+Please note that running the tests requires an active connection to a k8s cluster.

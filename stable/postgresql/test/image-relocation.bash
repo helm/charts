@@ -10,27 +10,27 @@ T_noImagePullSecretsByDefault() {
 
 T_globalImagePullSecrets() {
   result="$($helm_full_manifest \
-    -f "$chart_path/test/global.imagePullSecrets.yaml" |
+    -f "$chart_path/test/global/imagePullSecrets.yaml" |
      grep -A1 "imagePullSecrets:" | grep -c "name: nunquam-manifestum-fortis")"
   [[ $result -eq 2 ]]
 }
 
 T_chartImagePullSecrets() {
-  result="$($helm_full_manifest -f "$chart_path/test/chart.imagePullSecrets.yaml" |
+  result="$($helm_full_manifest -f "$chart_path/test/chart/imagePullSecrets.yaml" |
     grep -A1 "imagePullSecrets:" | grep -c "name: ionic-cannon-at-the-port")"
   [[ $result -eq 2 ]]
 }
 
 T_singleImagePullSecret() {
-  result="$($helm_full_manifest -f "$chart_path/test/single.imagePullSecret.yaml" |
+  result="$($helm_full_manifest -f "$chart_path/test/single/imagePullSecret.yaml" |
     grep -A1 "imagePullSecrets:" | grep -c "name: grilling-the-garlics")"
   [[ $result -eq 2 ]]
 }
 
 T_allSecretsAreCombined() {
-  result="$($helm_full_manifest -f "$chart_path/test/global.imagePullSecrets.yaml" \
-    -f "$chart_path/test/chart.imagePullSecrets.yaml" \
-    -f "$chart_path/test/single.imagePullSecret.yaml" |
+  result="$($helm_full_manifest -f "$chart_path/test/global/imagePullSecrets.yaml" \
+    -f "$chart_path/test/chart/imagePullSecrets.yaml" \
+    -f "$chart_path/test/single/imagePullSecret.yaml" |
     grep -A3 "imagePullSecrets:" | grep -c -E "name: (nunquam|ionic|grilling)")"
   [[ $result -eq 6 ]]
 }
@@ -42,34 +42,34 @@ T_originalImageRegistry() {
 }
 
 T_globalImageRegistry() {
-  result="$($helm_full_manifest -f "$chart_path/test/global.imageRegistry.yaml" | grep -c "image: shaking.the.strawberries")"
+  result="$($helm_full_manifest -f "$chart_path/test/global/imageRegistry.yaml" | grep -c "image: shaking.the.strawberries")"
   [[ $result -eq 5 ]]
 }
 
 T_chartImageRegistry() {
-  result="$($helm_full_manifest -f "$chart_path/test/chart.imageRegistry.yaml" | grep -c "image: joy.is.local")"
+  result="$($helm_full_manifest -f "$chart_path/test/chart/imageRegistry.yaml" | grep -c "image: joy.is.local")"
   [[ $result -eq 5 ]]
 }
 
 T_singleImageRegistry() {
-  result="$($helm_full_manifest -f "$chart_path/test/single.imageRegistry.yaml" | grep -c "image: lixa.hippotoxota.zelus/bitnami/postgresql")"
+  result="$($helm_full_manifest -f "$chart_path/test/single/imageRegistry.yaml" | grep -c "image: lixa.hippotoxota.zelus/bitnami/postgresql")"
   [[ $result -eq 2 ]]
 }
 
 T_singleImageRegistryKeepsRegistryForOtherImages() {
-  result="$($helm_full_manifest -f "$chart_path/test/single.imageRegistry.yaml" | grep -c "image: docker.io")"
+  result="$($helm_full_manifest -f "$chart_path/test/single/imageRegistry.yaml" | grep -c "image: docker.io")"
   [[ $result -eq 3 ]]
 }
 
 T_singleOriginalImageRegistry() {
-  result="$($helm_full_manifest -f "$chart_path/test/global.imageRegistry.yaml" \
-    -f "$chart_path/test/originalRegistry.yaml" | grep -c "image: docker.io/bitnami/postgres-exporter")"
+  result="$($helm_full_manifest -f "$chart_path/test/global/imageRegistry.yaml" \
+    -f "$chart_path/test/original/registry.yaml" | grep -c "image: docker.io/bitnami/postgres-exporter")"
   [[ $result -eq 1 ]]
 }
 
 T_singleOriginalImageRegistryKeepsRegistryForOtherImages() {
-  result="$($helm_full_manifest -f "$chart_path/test/global.imageRegistry.yaml" \
-    -f "$chart_path/test/originalRegistry.yaml" | grep -c "image: shaking.the.strawberries")"
+  result="$($helm_full_manifest -f "$chart_path/test/global/imageRegistry.yaml" \
+    -f "$chart_path/test/original/registry.yaml" | grep -c "image: shaking.the.strawberries")"
   [[ $result -eq 4 ]]
 }
 
@@ -80,34 +80,34 @@ T_originalImageNamespace() {
 }
 
 T_globalImageNamespace() {
-  result="$($helm_full_manifest -f "$chart_path/test/global.imageNamespace.yaml" | grep -c "image: docker.io/mario")"
+  result="$($helm_full_manifest -f "$chart_path/test/global/imageNamespace.yaml" | grep -c "image: docker.io/mario")"
   [[ $result -eq 5 ]]
 }
 
 T_chartImageNamespace() {
-  result="$($helm_full_manifest -f "$chart_path/test/chart.imageNamespace.yaml" | grep -c "image: docker.io/portdegas")"
+  result="$($helm_full_manifest -f "$chart_path/test/chart/imageNamespace.yaml" | grep -c "image: docker.io/portdegas")"
   [[ $result -eq 5 ]]
 }
 
 T_singleImageNamespace() {
-  result="$($helm_full_manifest -f "$chart_path/test/single.imageNamespace.yaml" | grep -c "image: docker.io/cabbage/postgres-exporter")"
+  result="$($helm_full_manifest -f "$chart_path/test/single/imageNamespace.yaml" | grep -c "image: docker.io/cabbage/postgres-exporter")"
   [[ $result -eq 1 ]]
 }
 
 T_singleImageNamespaceKeepsNamespaceForOtherImages() {
-  result="$($helm_full_manifest -f "$chart_path/test/single.imageNamespace.yaml" | grep -c "image: docker.io/bitnami")"
+  result="$($helm_full_manifest -f "$chart_path/test/single/imageNamespace.yaml" | grep -c "image: docker.io/bitnami")"
   [[ $result -eq 4 ]]
 }
 
 T_singleOriginalImageNamespace() {
-  result="$($helm_full_manifest -f "$chart_path/test/global.imageNamespace.yaml" \
-    -f "$chart_path/test/originalNamespace.yaml" | grep -c "image: docker.io/bitnami")"
+  result="$($helm_full_manifest -f "$chart_path/test/global/imageNamespace.yaml" \
+    -f "$chart_path/test/original/namespace.yaml" | grep -c "image: docker.io/bitnami")"
   [[ $result -eq 1 ]]
 }
 
 T_singleOriginalImageNamespaceKeepsNamespaceForOtherImages() {
-  result="$($helm_full_manifest -f "$chart_path/test/global.imageNamespace.yaml" \
-    -f "$chart_path/test/originalNamespace.yaml" | grep -c "image: docker.io/mario")"
+  result="$($helm_full_manifest -f "$chart_path/test/global/imageNamespace.yaml" \
+    -f "$chart_path/test/original/namespace.yaml" | grep -c "image: docker.io/mario")"
   [[ $result -eq 4 ]]
 }
 
@@ -121,19 +121,19 @@ T_imagePullPolicyIsNotSpecifiedByDefault() {
 }
 
 T_globalImagePullPolicy() {
-  result="$($helm_full_manifest -f "$chart_path/test/global.imagePullPolicy.yaml" | grep -A1 "image: docker.io" |
+  result="$($helm_full_manifest -f "$chart_path/test/global/imagePullPolicy.yaml" | grep -A1 "image: docker.io" |
     grep -c 'imagePullPolicy: "Always"')"
   [[ $result -eq 5 ]]
 }
 
 T_chartImagePullPolicy() {
-  result="$($helm_full_manifest -f "$chart_path/test/chart.imagePullPolicy.yaml" | grep -A1 "image: docker.io" |
+  result="$($helm_full_manifest -f "$chart_path/test/chart/imagePullPolicy.yaml" | grep -A1 "image: docker.io" |
     grep -c 'imagePullPolicy: "Never"')"
   [[ $result -eq 3 ]]
 }
 
 T_singleImagePullPolicy() {
-  result="$($helm_full_manifest -f "$chart_path/test/single.imagePullPolicy.yaml" | grep -A1 "image: docker.io/bitnami/postgresql" |
+  result="$($helm_full_manifest -f "$chart_path/test/single/imagePullPolicy.yaml" | grep -A1 "image: docker.io/bitnami/postgresql" |
     grep -c 'imagePullPolicy: "IfNotPresent"')"
   [[ $result -eq 2 ]]
 }
