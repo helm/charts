@@ -66,6 +66,7 @@ Read about kubeseal usage on [sealed-secrets docs](https://github.com/bitnami-la
 | **ingress.hosts**             | Ingress accepted hostnames                                                 | `["chart-example.local"]`                   |
 | **ingress.tls**               | Ingress TLS configuration                                                  | `[]`                                        |
 | **podAnnotations**            | Annotations to annotate pods with.                                         | `{}`                                        |
+| **priorityClassName**         | Optional class to specify priority for pods                                | `""`                                        |
 
 
 - In the case that **serviceAccount.create** is `false` and **rbac.create** is `true` it is expected for a service account with the name **serviceAccount.name** to exist _in the same namespace as this chart_ before installation.
