@@ -129,8 +129,9 @@ The above parameters map to the env variables defined in [bitnami/phabricator](h
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install my-release stable/phabricator --name my-release \
+$ helm install my-release \
   --set phabricatorUsername=admin,phabricatorPassword=password,mariadb.mariadbRootPassword=secretpassword \
+  stable/phabricator
 ```
 
 The above command sets the Phabricator administrator account username and password to `admin` and `password` respectively. Additionally, it sets the MariaDB `root` user password to `secretpassword`.
