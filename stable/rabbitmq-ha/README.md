@@ -78,6 +78,7 @@ and their default values.
 | `definitions.vhosts`                           | Additional vhosts | `""` |
 | `definitions.parameters`                       | Additional parameters | `""` |
 | `definitions.permissions`                      | Additional permissions | `""` |
+| `definitions.topicPermissions`                 | Additional permissions for topic management | `""` |
 | `definitions.queues`                           | Pre-created queues | `""` |
 | `definitions.exchanges`                        | Pre-created exchanges | `""` |
 | `definitions.bindings`                         | Pre-created bindings | `""` |
