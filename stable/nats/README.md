@@ -108,6 +108,7 @@ The following table lists the configurable parameters of the NATS chart and thei
 | `cluster.service.nodePort`           | Port to bind to for NodePort service type (NATS cluster)                                     | `nil`                                                         |
 | `cluster.service.annotations`        | Annotations for NATS cluster service                                                         | {}                                                            |
 | `cluster.service.loadBalancerIP`     | loadBalancerIP if NATS cluster service type is `LoadBalancer`                                | `nil`                                                         |
+| `cluster.connectRetries`             | Configure number of connect retries for implicit routes                                      | `nil`                                                         |
 | `monitoring.service.type`            | Kubernetes Service type (NATS monitoring)                                                    | `ClusterIP`                                                   |
 | `monitoring.service.port`            | NATS monitoring port                                                                         | `8222`                                                        |
 | `monitoring.service.nodePort`        | Port to bind to for NodePort service type (NATS monitoring)                                  | `nil`                                                         |
