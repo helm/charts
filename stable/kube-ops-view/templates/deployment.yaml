@@ -32,7 +32,11 @@ spec:
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
       {{- end }}
-      {{- if .Values.tolerations }}
+      {{- if .Values.nodeSelector }}
+      tolerations:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.nodeSelector }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
