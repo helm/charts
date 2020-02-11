@@ -11,7 +11,7 @@ metadata:
     component: cloud-controller
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  namespace: kube-system
+  namespace: {{ .Release.Namespace }}
   {{- if .Values.ingress.annotations }}
   annotations:
 {{ toYaml .Values.ingress.annotations | indent 4 }}

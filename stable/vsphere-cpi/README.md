@@ -23,15 +23,15 @@ $ helm repo update
 Then to install this chart and by providing vCenter information/credentials, run the following command:
 
 ```bash
-$ helm install vsphere-cpi stable/vsphere-cpi --set config.enabled=true --set config.vcenter=<vCenter IP> --set config.username=<vCenter Username> --set config.password=<vCenter Password> --set config.datacenter=<vCenter Datacenter>
+$ helm install vsphere-cpi stable/vsphere-cpi --namespace kube-system --set config.enabled=true --set config.vcenter=<vCenter IP> --set config.username=<vCenter Username> --set config.password=<vCenter Password> --set config.datacenter=<vCenter Datacenter>
 ```
 
 > **Tip**: List all releases using `helm list --all`
 
-If you want to provide your own `vsphere.conf` and Kubernetes secret `vsphere-cpi` in the `kube-system` namespace (for example, to handle multple datacenters/vCenters or for using zones), you can learn more about the `vsphere.conf` and `vsphere-cpi` secret by reading the following [documentation](https://github.com/kubernetes/cloud-provider-vsphere/blob/master/docs/book/tutorials/kubernetes-on-vsphere-with-kubeadm.md) and then running the following command:
+If you want to provide your own `vsphere.conf` and Kubernetes secret `vsphere-cpi` (for example, to handle multple datacenters/vCenters or for using zones), you can learn more about the `vsphere.conf` and `vsphere-cpi` secret by reading the following [documentation](https://cloud-provider-vsphere.sigs.k8s.io/tutorials/kubernetes-on-vsphere-with-kubeadm.html) and then running the following command:
 
 ```bash
-$ helm install vsphere-cpi stable/vsphere-cpi
+$ helm install vsphere-cpi stable/vsphere-cpi --namespace kube-system
 ```
 
 ## Installing the Chart using Helm 2.X
@@ -39,13 +39,13 @@ $ helm install vsphere-cpi stable/vsphere-cpi
 To install this chart with the release name `vsphere-cpi` and by providing a vCenter information/credentials, run the following command:
 
 ```bash
-$ helm install stable/vsphere-cpi --name vsphere-cpi --set config.enabled=true --set config.vcenter=<vCenter IP> --set config.username=<vCenter Username> --set config.password=<vCenter Password> --set config.datacenter=<vCenter Datacenter>
+$ helm install stable/vsphere-cpi --name vsphere-cpi --namespace kube-system --set config.enabled=true --set config.vcenter=<vCenter IP> --set config.username=<vCenter Username> --set config.password=<vCenter Password> --set config.datacenter=<vCenter Datacenter>
 ```
 
-If you provide your own `vsphere.conf` and Kubernetes secret `vsphere-cpi` in the `kube-system` namespace, then deploy the chart running the following command:
+If you provide your own `vsphere.conf` and Kubernetes secret `vsphere-cpi`, then deploy the chart running the following command:
 
 ```bash
-$ helm install stable/vsphere-cpi --name vsphere-cpi
+$ helm install stable/vsphere-cpi --name vsphere-cpi --namespace kube-system
 ```
 
 ## Uninstalling the Chart
@@ -53,12 +53,12 @@ $ helm install stable/vsphere-cpi --name vsphere-cpi
 To uninstall/delete the `vsphere-cpi` deployment:
 
 ```bash
-$ helm delete vsphere-cpi
+$ helm delete vsphere-cpi --namespace kube-system
 ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
-> **Tip**: To permanently remove the release using Helm v2.X, run `helm delete --purge vsphere-cpi`
+> **Tip**: To permanently remove the release using Helm v2.X, run `helm delete --purge vsphere-cpi --namespace kube-system`
 
 ## Configuration
 
@@ -66,6 +66,13 @@ The following table lists the configurable parameters of the vSphere CPI chart a
 
 |             Parameter                    |            Description              |                  Default               |
 |------------------------------------------|-------------------------------------|----------------------------------------|
+| `podSecurityPolicy.enabled`              | Enable pod sec policy (k8s > 1.17)  |  false                                 |
+| `podSecurityPolicy.annotations`          | Annotations for pd sec policy       |  nil                                   |
+| `securityContext.enabled`                | Enable sec context for container    |  false                                 |
+| `securityContext.runAsUser`              | RunAsUser. Default is `nobody` in   |  65534                                 |
+|                                          |    distroless image                 |                                        |
+| `securityContext.fsGroup`                | FsGroup. Default is `nobody` in     |  65534                                 |
+|                                          |    distroless image                 |                                        |
 | `config.enabled`                         | Create a simple single VC config    |  false                                 |
 | `config.vcenter`                         | FQDN or IP of vCenter               |  vcenter.local                         |
 | `config.username`                        | vCenter username                    |  user                                  |
@@ -87,6 +94,8 @@ The following table lists the configurable parameters of the vSphere CPI chart a
 | `daemonset.resources`                    | Node resources                      | `[]`                                   |
 | `daemonset.podAnnotations`               | Annotations for CPI pod             |  nil                                   |
 | `daemonset.podLabels`                    | Labels for CPI pod                  |  nil                                   |
+| `daemonset.nodeSelector`                 | User-defined node selectors         |  nil                                   |
+| `daemonset.tolerations`                  | User-defined tolerations            |  nil                                   |
 | `service.enabled`                        | Enabled the CPI API endpoint        |  false                                 |
 | `service.annotations`                    | Annotations for API service         |  nil                                   |
 | `service.type`                           | Service type                        |  ClusterIP                             |
