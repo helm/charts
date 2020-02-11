@@ -13,7 +13,7 @@ metadata:
     release: {{ .Release.Name }}
 spec:
   replicas: {{ .Values.replicaCount }}
-  {{- if semverCompare ">=1.16-0" .Capabilities.KubeVersion.GitVersion -}}
+  {{- if semverCompare ">=1.16-0" .Capabilities.KubeVersion.GitVersion}}
   selector:
     matchLabels:
       app: {{ template "lamp.name" . }}
