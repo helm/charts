@@ -57,6 +57,8 @@ spec:
             runAsUser: {{ .Values.securityContext.runAsUser }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+      securityContext:
+        fsGroup: 65534
       volumes:
       - name: tmp
         emptyDir: {}
