@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```console
-$ helm install stable/parse
+$ helm install my-release stable/parse
 ```
 
 ## Introduction
@@ -26,7 +26,7 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/parse
+$ helm install my-release stable/parse
 ```
 
 The command deploys Parse on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
@@ -158,7 +158,7 @@ The above parameters map to the env variables defined in [bitnami/parse](http://
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install --name my-release \
+$ helm install my-release \
   --set dashboard.username=admin,dashboard.password=password \
     stable/parse
 ```
@@ -168,7 +168,7 @@ The above command sets the Parse administrator account username and password to 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml stable/parse
+$ helm install my-release -f values.yaml stable/parse
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
