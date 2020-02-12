@@ -62,6 +62,12 @@ agent:
   # agent.proxyUseDNS sets the INSTANA_AGENT_PROXY_USE_DNS environment variable.
   # proxyUseDNS: null
 
+  # use this to set additional environment variables for the instana agent
+  # for example:
+  # env:
+  #   INSTANA_AGENT_TAGS: dev
+  env: {}
+
   configuration_yaml: |
     # Place agent configuration here
 

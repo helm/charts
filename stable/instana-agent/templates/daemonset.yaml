@@ -96,6 +96,10 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
+            {{- range $key, $value := .Values.agent.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
           securityContext:
             privileged: true
           volumeMounts:
@@ -124,8 +128,8 @@ spec:
             httpGet:
               path: /status
               port: 42699
-            initialDelaySeconds: 75
-            periodSeconds: 5
+            initialDelaySeconds: 300
+            timeoutSeconds: 3
           resources:
             requests:
               memory: "{{ default 512 .Values.agent.pod.requests.memory }}Mi"
@@ -155,8 +159,8 @@ spec:
             httpGet:
               path: /status
               port: 42699
-            initialDelaySeconds: 75
-            periodSeconds: 5
+            initialDelaySeconds: 300
+            timeoutSeconds: 3
           ports:
             - containerPort: {{ .Values.agent.leaderElectorPort }}
       {{- if .Values.agent.pod.tolerations }}
