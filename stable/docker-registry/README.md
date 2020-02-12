@@ -75,6 +75,7 @@ their default values.
 | `ingress.tls`               | Ingress TLS configuration (YAML)                                                           | `[]`            |
 | `extraVolumeMounts`         | Additional volumeMounts to the registry container                                          | `[]`            |
 | `extraVolumes`              | Additional volumes to the pod                                                              | `[]`            |
+| `extraEnv`                  | Additional environment variables to the registry container                                 | `[]`            |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.

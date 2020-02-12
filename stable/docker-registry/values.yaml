@@ -141,3 +141,11 @@ extraVolumes: []
 #        - key: cloudfront.pem
 #          path: cloudfront.pem
 #          mode: 511
+
+extraEnv: []
+## Additional environment variables to the registry container.
+#  - name: "REGISTRY_PROXY_PASSWORD"
+#    valueFrom:
+#      secretKeyRef:
+#        key: password
+#        name: docker-registry-proxy-credentials
