@@ -72,6 +72,7 @@ Parameter | Description | Default
 `service.annotations` | Annotations on the http service | `{}`
 `service.labels` | Additional labels for the service definition | `{}`
 `env` | Extra environment variables passed to pod | `{}`
+`envFromSecret` | The name of an existing secret in the same kubernetes namespace which contains values to be added to the environment | `nil`
 `secretMounts` |  list of secrets and their paths to mount inside the pod | `[]`
 `affinity` | Affinity rules | `{}`
 `es.uri` | address of the Elasticsearch node to connect to | `localhost:9200`
@@ -100,7 +101,7 @@ Parameter | Description | Default
 `prometheusRule.enabled` | If true, a PrometheusRule CRD is created for a prometheus operator | `false`
 `prometheusRule.namespace` | If set, the PrometheusRule will be installed in a different namespace  | `""`
 `prometheusRule.labels` | Labels for prometheus operator | `{}`
-`prometheusRule.rules` | List of Prometheus rules | `[]`
+`prometheusRule.rules` | List of [PrometheusRules](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) to be created, check values for an example. | `[]`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -118,3 +119,15 @@ $ helm install --name my-release -f values.yaml stable/elasticsearch-exporter
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Upgrading an existing Release to a new major version
+
+A major chart version change (like v1.2.3 -> v2.0.0) indicates that there is an
+incompatible breaking change needing manual actions.
+
+### To 3.0.0
+
+`prometheusRule.rules` are now processed as Helm template, allowing to set variables in them.
+This means that if a rule contains a {{ $value }}, Helm will try replacing it and probably fail.
+
+You now need to escape the rules (see `values.yaml`) for examples.

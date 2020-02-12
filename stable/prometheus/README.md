@@ -115,7 +115,7 @@ spec:
 
 You should adjust `prometheus.io/path` based on the URL that your pod serves metrics from.
 `prometheus.io/port` should be set to the port that your pod serves metrics from.
-Note that the values for `prometheus.io/scrape` and `prometheus.io/port` must be 
+Note that the values for `prometheus.io/scrape` and `prometheus.io/port` must be
 enclosed in double quotes.
 
 ## Configuration
@@ -216,6 +216,7 @@ Parameter | Description | Default
 `kubeStateMetrics.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `kubeStateMetrics.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `kubeStateMetrics.service.servicePort` | kube-state-metrics service port | `80`
+`kubeStateMetrics.service.serviceTelemetryPort` | kube-state-metrics service port for self Telemetry | `81`
 `kubeStateMetrics.service.type` | type of kube-state-metrics service to create | `ClusterIP`
 `nodeExporter.enabled` | If true, create node-exporter | `true`
 `nodeExporter.name` | node-exporter container name | `node-exporter`

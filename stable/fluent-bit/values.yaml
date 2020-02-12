@@ -99,6 +99,7 @@ backend:
     ## Specify the data format to be used in the HTTP request body
     ## Can be either 'msgpack' or 'json'
     format: msgpack
+    # json_date_format: double or iso8601
     headers: []
 
 parsers:
@@ -243,6 +244,7 @@ audit:
   input:
     memBufLimit: 35MB
     parser: docker
+    tag: audit.*
     path: /var/log/kube-apiserver-audit.log
     bufferChunkSize: 2MB
     bufferMaxSize: 10MB

@@ -65,3 +65,12 @@ the official documentation:
 
     https://www.pomerium.io/docs/identity-providers.html
 {{- end }}
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!                                            !!!
+!!!                  WARNING                   !!!
+!!!          This chart is deprecated.         !!!
+!!!     Please use the chart maintained at     !!!
+!!!          https://helm.pomerium.io          !!! 
+!!!                                            !!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

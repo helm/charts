@@ -62,6 +62,7 @@ livenessProbe:
   successThreshold: 1
   failureThreshold: 3
   scheme: HTTP
+  path: /
 
 readinessProbe:
   enabled: true
@@ -71,3 +72,4 @@ readinessProbe:
   successThreshold: 1
   failureThreshold: 3
   scheme: HTTP
+  path: /
