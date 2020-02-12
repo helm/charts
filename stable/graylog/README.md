@@ -103,6 +103,7 @@ The following table lists the configurable parameters of the Graylog chart and t
 | `graylog.replicas`                      | The number of Graylog instances in the cluster. The chart will automatic create assign master to one of replicas                                      | `2`                                   |
 | `graylog.resources`                     | CPU/Memory resource requests/limits                                                                                                                   | Memory: `1024Mi`, CPU: `500m`         |
 | `graylog.heapSize`                      | Override Java heap size. If this value empty, chart will allocate heapsize using `-XX:+UseCGroupMemoryLimitForHeap`                                   | ``                                    |
+| `graylog.externalUri`                   | External URI that Graylog is available at                                                                                                             | ``                                    |
 | `graylog.nodeSelector`                  | Graylog server pod assignment                                                                                                                         | `{}`                                  |
 | `graylog.affinity`                      | Graylog server affinity                                                                                                                               | `{}`                                  |
 | `graylog.tolerations`                   | Graylog server tolerations                                                                                                                            | `[]`                                  |
@@ -111,8 +112,10 @@ The following table lists the configurable parameters of the Graylog chart and t
 | `graylog.additionalJavaOpts`            | Graylog service additional `JAVA_OPTS`                                                                                                                | ``                                    |
 | `graylog.service.type`                  | Kubernetes Service type                                                                                                                               | `ClusterIP`                           |
 | `graylog.service.port`                  | Graylog Service port                                                                                                                                  | `9000`                                |
+| `graylog.service.master.enabled`        | If true, Graylog Master Service will be created                                                                                                       | `true`                                |
 | `graylog.service.master.port`           | Graylog Master Service port                                                                                                                           | `9000`                                |
 | `graylog.service.master.annotations`    | Graylog Master Service annotations                                                                                                                    | `{}`                                  |
+| `graylog.service.headless.suffix`       | If present, suffix appended to the name of the chart to form the headless service name, ie: `-headless` would result in `graylog-headless`            | ``                                    |
 | `graylog.podAnnotations`                | Kubernetes Pod annotations                                                                                                                            | `{}`                                  |
 | `graylog.terminationGracePeriodSeconds` | Pod termination grace period                                                                                                                          | `120`                                 |
 | `graylog.updateStrategy`                | Update Strategy of the StatefulSet                                                                                                                    | `RollingUpdate`                           |
@@ -120,6 +123,9 @@ The following table lists the configurable parameters of the Graylog chart and t
 | `graylog.persistence.storageClass`      | Storage class of backing PVC                                                                                                                          | `nil` (uses storage class annotation) |
 | `graylog.persistence.accessMode`        | Use volume as ReadOnly or ReadWrite                                                                                                                   | `ReadWriteOnce`                       |
 | `graylog.persistence.size`              | Size of data volume                                                                                                                                   | `10Gi`                                |
+| `graylog.tls.enabled`                   | If true, Graylog will listen on HTTPS                                                                                                                 | `false`                               |
+| `graylog.tls.keyFile`                   | Path to key file for HTTPS                                                                                                                            | `/etc/graylog/server/server.key`      |
+| `graylog.tls.certFile`                  | Path to crt file for HTTPS                                                                                                                            | `/etc/graylog/server/server.cert`     |
 | `graylog.ingress.enabled`               | If true, Graylog Ingress will be created                                                                                                              | `false`                               |
 | `graylog.ingress.port`                  | Graylog Ingress port                                                                                                                                  | `false`                               |
 | `graylog.ingress.annotations`           | Graylog Ingress annotations                                                                                                                           | `{}`                                  |
@@ -187,7 +193,8 @@ Note: Name must be in IANA_SVC_NAME (at most 15 characters, matching regex [a-z0
 Note: The port list should be sorted by port number.
 
 
-## Input TLS
+## TLS
+
 To enable TLS on input in Graylog, you need to specify the server private key and certificate. You can add them in `graylog.serverFiles` value. For example
 
 ```yaml
@@ -218,13 +225,26 @@ graylog:
       -----END PRIVATE KEY-----
 ```
 
-Then configure Graylog input to
+### Input TLS
+
+The certificates will be mounted into the `/etc/graylog/server`, so Inputs (e.g. TCP/UDP) can be configured to leverage
+those certificates with the following Input API configuration:
 
 | Parameter      | Value                           |
 |----------------|---------------------------------|
 | tls_cert_file: | /etc/graylog/server/server.cert |
 | tls_enable:    | true                            |
 | tls_key_file:  | /etc/graylog/server/server.key  |
+
+### Web HTTPS
+
+Graylog can be autoconfigured to run in HTTPS mode when provided certificates by setting the `graylog.tls.enabled` value to `true`.
+
+If the certificates are different than those provided above (different hostname for example), then the web-specific
+certificates can be added to `graylog.serverFiles` and you can configure the `graylog.tls.certPath` and `graylog.tls.keyPath` to match.
+
+Each Graylog node coordinates with each other through the DNS entry exposed via the headless service, so when generating
+the certificates, be sure to include a SAN entry for `*.graylog[-<suffix>].<namespace>.cluster.local` (or your configured FQDN).
 
 ## Get Graylog status
 You can get your Graylog status by running the command

@@ -5,7 +5,7 @@ metadata:
   labels:
 {{ include "graylog.metadataLabels" . | indent 4 }}
 spec:
-  serviceName: {{ template "graylog.fullname" . }}
+  serviceName: {{ template "graylog.service.headless.name" . }}
   replicas: {{ .Values.graylog.replicas }}
   selector:
     matchLabels:
@@ -131,6 +131,9 @@ spec:
             httpGet:
               path: /api/system/lbstatus
               port: 9000
+            {{- if .Values.graylog.tls.enabled }}
+              scheme: HTTPS
+            {{- end }}
             initialDelaySeconds: 120
             periodSeconds: 30
             failureThreshold: 3
@@ -140,6 +143,9 @@ spec:
             httpGet:
               path: /api/system/lbstatus
               port: 9000
+            {{- if .Values.graylog.tls.enabled }}
+              scheme: HTTPS
+            {{- end }}
             initialDelaySeconds: 60
             periodSeconds: 10
             failureThreshold: 3
@@ -169,7 +175,10 @@ spec:
                   - bash
                   - -ec
                   - |
-                    curl -XPOST -sS -u "{{ .Values.graylog.rootUsername }}:${GRAYLOG_PASSWORD_SECRET}" -H "X-Requested-By: {{ template "graylog.fullname" . }}" "localhost:9000/api/system/shutdown/shutdown"
+                    curl {{ if .Values.graylog.tls.enabled }}-k{{ end }} -XPOST -sS \
+                      -u "{{ .Values.graylog.rootUsername }}:${GRAYLOG_PASSWORD_SECRET}" \
+                      -H "X-Requested-By: {{ template "graylog.fullname" . }}" \
+                      {{ template "graylog.formatUrl" (list . "localhost:9000/api/system/shutdown/shutdown") }}
       terminationGracePeriodSeconds: {{ default 30 .Values.graylog.terminationGracePeriodSeconds }}
       volumes:
         - name: config

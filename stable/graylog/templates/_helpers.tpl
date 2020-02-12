@@ -37,12 +37,33 @@ Create the name of the service account to use
 {{- end -}}
 {{- end -}}
 
+{{/*
+Create the name of the headless service
+*/}}
+{{- define "graylog.service.headless.name" }}
+{{- printf "%s-%s" (include "graylog.fullname" .) .Values.graylog.service.headless.suffix | trimSuffix "-" -}}
+{{- end -}}
 
 {{/*
-Print Host URL
+Craft url taking into account the TLS settings of the server
+*/}}
+{{- define "graylog.formatUrl" -}}
+{{- $env := index . 0 }}
+{{- $url := index . 1 }}
+{{- if $env.Values.graylog.tls.enabled }}
+{{- printf "https://%s" $url }}
+{{- else }}
+{{- printf "http://%s" $url }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Print external URI
 */}}
 {{- define "graylog.url" -}}
-{{- if .Values.graylog.ingress.enabled }}
+{{- if .Values.graylog.externalUri }}
+{{- include "graylog.formatUrl" (list . .Values.graylog.externalUri) }}
+{{- else if .Values.graylog.ingress.enabled }}
 {{- if .Values.graylog.ingress.tls }}
 {{- range .Values.graylog.ingress.tls }}{{ range .hosts }}https://{{ . }}{{ end }}{{ end }}
 {{- else }}
