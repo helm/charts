@@ -67,6 +67,14 @@
                 "condition": false,
                 "value": "master.persistence.enabled"
               }
+            },
+            "matchLabels": {
+              "type": "object",
+              "title": "Persistent Match Labels Selector"
+            },
+            "matchExpressions": {
+              "type": "object",
+              "title": "Persistent Match Expressions Selector"
             }
           }
         }
@@ -104,6 +112,14 @@
                 "condition": false,
                 "value": "slave.persistence.enabled"
               }
+            },
+            "matchLabels": {
+              "type": "object",
+              "title": "Persistent Match Labels Selector"
+            },
+            "matchExpressions": {
+              "type": "object",
+              "title": "Persistent Match Expressions Selector"
             }
           }
         }
