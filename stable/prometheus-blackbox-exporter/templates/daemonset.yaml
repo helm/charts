@@ -1,6 +1,6 @@
-{{- if (eq .Values.kind "Deployment") }}
+{{- if (eq .Values.kind "DaemonSet") }}
 apiVersion: apps/v1
-kind: Deployment
+kind: DaemonSet
 metadata:
   name: {{ template "prometheus-blackbox-exporter.fullname" . }}
   labels:
@@ -59,13 +59,8 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
             readOnlyRootFilesystem: {{ .Values.readOnlyRootFilesystem }}
-            {{- if .Values.allowIcmp }}
-            capabilities:
-              add: ["NET_RAW"]
-            {{- else }}
             runAsNonRoot: {{ .Values.runAsNonRoot  }}
             runAsUser: {{ .Values.runAsUser }}
-            {{- end }}
           args:
 {{- if .Values.config }}
             - "--config.file=/config/blackbox.yaml"

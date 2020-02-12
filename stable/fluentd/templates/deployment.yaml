@@ -18,6 +18,9 @@ spec:
 {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
 {{- end }}
+{{- if .Values.autoscaling.enabled }}
+  serviceName: {{ template "fluentd.name" . }}
+{{- end }}
   selector:
     matchLabels:
       app: {{ template "fluentd.name" . }}

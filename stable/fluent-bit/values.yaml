@@ -244,6 +244,7 @@ audit:
   input:
     memBufLimit: 35MB
     parser: docker
+    tag: audit.*
     path: /var/log/kube-apiserver-audit.log
     bufferChunkSize: 2MB
     bufferMaxSize: 10MB

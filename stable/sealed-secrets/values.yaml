@@ -1,6 +1,6 @@
 image:
   repository: quay.io/bitnami/sealed-secrets-controller
-  tag: v0.9.6
+  tag: v0.9.7
   pullPolicy: IfNotPresent
 
 resources: {}
@@ -50,3 +50,7 @@ networkPolicy: false
 securityContext:
   # securityContext.runAsUser defines under which user the operator Pod and its containers/processes run.
   runAsUser: 1001
+
+podAnnotations: {}
+
+priorityClassName: ""
