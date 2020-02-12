@@ -256,12 +256,12 @@ spec:
           configMap:
             name: {{ template "airflow.fullname" . }}-git-clone
             defaultMode: 0755
+        {{- end }}
         {{- if .Values.dags.git.secret }}
         - name: git-clone-secret
           secret:
             secretName: {{ .Values.dags.git.secret }}
             defaultMode: 0700
-        {{- end }}
         {{- end }}
         {{- if .Values.airflow.connections }}
         - name: connections
