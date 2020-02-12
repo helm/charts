@@ -28,7 +28,7 @@ If using Helm 3, then install the chart by running:
 $ helm install incubator/sparkoperator --generate-name --namespace spark-operator --set sparkJobNamespace=default
 ```
 
-or 
+or
 
 ```bash
 $ helm install [RELEASE-NAME] incubator/sparkoperator --namespace spark-operator --set sparkJobNamespace=default
@@ -63,11 +63,17 @@ The following table lists the configurable parameters of the Spark operator char
 | `resources`               | Resources needed for the sparkoperator deployment            | {}                                     |
 | `enableBatchScheduler`    | Whether to enable batch scheduler for pod scheduling         | false                                  |
 | `enableResourceQuotaEnforcement`    | Whether to enable the ResourceQuota enforcement for SparkApplication resources. Requires the webhook to be enabled by setting enableWebhook to true.         | false                                  |
-| `enableLeaderElection`    | Whether to enable leader election when the operator Deployment has more than one replica, i.e., when `replicas` is greater than 1.         | false                                  |
+| `leaderElection.enable`   | Whether to enable leader election when the operator Deployment has more than one replica, i.e., when `replicas` is greater than 1.         | false                                  |
+| `leaderElection.lockName` | Lock name to use for leader election                         | `spark-operator-lock`                  |
+| `leaderElection.lockNamespace` | Namespace to use for leader election                    | (namespace of release)                 |
 | `securityContext` | Defines security context for operator container. | `{}` |
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
 #### Upgrading
+
+##### To 0.6.5
+
+- `enableLeaderElection` has been renamed `leaderElection.enable` to keep all of the leader election stuff together
 
 ##### To 0.6.2
 
@@ -82,4 +88,3 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 #### Contributing
 
 When making changes to values.yaml, update the files in `ci/` by running `hack/update-ci.sh`.
-
