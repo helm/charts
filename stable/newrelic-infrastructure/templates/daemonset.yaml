@@ -57,7 +57,11 @@ spec:
               value: {{ include "newrelic.cluster" . }}
             {{- if .Values.kubeStateMetricsUrl }}
             - name: "KUBE_STATE_METRICS_URL"
-              value: "{{ .Values.kubeStateMetricsUrl }}"
+              value: {{ .Values.kubeStateMetricsUrl | quote }}
+            {{- end }}
+            {{- if .Values.kubeStateMetricsPodLabel }}
+            - name: "KUBE_STATE_METRICS_POD_LABEL"
+              value: {{ .Values.kubeStateMetricsPodLabel | quote }}
             {{- end }}
             {{- if .Values.kubeStateMetricsTimeout }}
             - name: TIMEOUT
@@ -66,10 +70,14 @@ spec:
             {{- if .Values.etcdTlsSecretName }}
             - name: ETCD_TLS_SECRET_NAME
               value: {{ .Values.etcdTlsSecretName | quote }}
+            {{- end }}
             {{- if .Values.etcdTlsSecretNamespace }}
             - name: ETCD_TLS_SECRET_NAMESPACE
               value: {{ .Values.etcdTlsSecretNamespace | quote }}
             {{- end }}
+            {{- if .Values.apiServerSecurePort }}
+            - name: "API_SERVER_SECURE_PORT"
+              value: {{ .Values.apiServerSecurePort | quote }}
             {{- end }}
             - name: "NRIA_DISPLAY_NAME"
               valueFrom:
@@ -84,7 +92,7 @@ spec:
             - name: "NRIA_CUSTOM_ATTRIBUTES"
               value: {{ .Values.customAttribues }}
             - name: "NRIA_PASSTHROUGH_ENVIRONMENT"
-              value: "KUBERNETES_SERVICE_HOST,KUBERNETES_SERVICE_PORT,CLUSTER_NAME,CADVISOR_PORT,NRK8S_NODE_NAME,KUBE_STATE_METRICS_URL,TIMEOUT,ETCD_TLS_SECRET_NAME,ETCD_TLS_SECRET_NAMESPACE"
+              value: "KUBERNETES_SERVICE_HOST,KUBERNETES_SERVICE_PORT,CLUSTER_NAME,CADVISOR_PORT,NRK8S_NODE_NAME,KUBE_STATE_METRICS_URL,KUBE_STATE_METRICS_POD_LABEL,TIMEOUT,ETCD_TLS_SECRET_NAME,ETCD_TLS_SECRET_NAMESPACE,API_SERVER_SECURE_PORT"
             {{- if .Values.verboseLog }}
             - name: NRIA_VERBOSE
               value: "1"
