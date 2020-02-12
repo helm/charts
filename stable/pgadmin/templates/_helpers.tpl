@@ -43,3 +43,21 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
+
+{{/*
+Generate chart secret name
+*/}}
+{{- define "pgadmin.secretName" -}}
+{{ default (include "pgadmin.fullname" .) .Values.existingSecret }}
+{{- end -}}
+
+{{/*
+Defines a JSON file containing server definitions. This allows connection information to be pre-loaded into the instance of pgAdmin in the container. Note that server definitions are only loaded on first launch, i.e. when the configuration database is created, and not on subsequent launches using the same configuration database.
+*/}}
+{{- define "pgadmin.serverDefinitions" -}}
+{
+  "Servers": {
+{{ .Values.serverDefinitions.servers | indent 4 }}
+  }
+}
+{{- end -}}

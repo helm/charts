@@ -1,4 +1,4 @@
-{{- if .Values.workers.enabled -}}
+{{- if .Values.flower.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:

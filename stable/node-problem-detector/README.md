@@ -34,6 +34,7 @@ Custom System log monitor config files can be created, see [here](https://github
 
 The following table lists the configurable parameters for this chart and their default values.
 
+
 | Parameter                             | Description                                               | Default                                                      |
 |---------------------------------------|-----------------------------------------------------------|--------------------------------------------------------------|
 | `affinity`                            | Map of node/pod affinities                                | `{}`                                                         |
@@ -62,6 +63,7 @@ The following table lists the configurable parameters for this chart and their d
 | `tolerations`                         | Optional daemonset tolerations                            | `[]`                                                         |
 | `nodeSelector`                        | Optional daemonset nodeSelector                           | `{}`                                                         |
 | `env`                                 | Optional daemonset environment variables                  | `[]`                                                         |
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install` or provide a YAML file containing the values for the above parameters:
 

@@ -18,6 +18,10 @@ spec:
     - Ingress
     - Egress
   egress:
+    # Allow dns resolution
+    - ports:
+      - port: 53
+        protocol: UDP
     # Allow outbound connections to other cluster pods
     - ports:
       - port: {{ .Values.redisPort }}

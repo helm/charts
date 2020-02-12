@@ -11,8 +11,7 @@ metadata:
     {{- end }}
 spec:
   rules:
-{{- if .Values.nexusProxy.enabled -}}  
-  {{- if .Values.nexusProxy.env.nexusHttpHost }}
+{{- if .Values.nexusProxy.env.nexusHttpHost }}
     - host: {{ .Values.nexusProxy.env.nexusHttpHost }}
       http:
         paths:
@@ -22,9 +21,14 @@ spec:
             {{- else }}
               serviceName: {{ template "nexus.fullname" . }}
             {{- end }}
+{{- if .Values.nexusProxy.enabled }}
               servicePort: {{ .Values.nexusProxy.port }}
+{{- else }}
+              servicePort: {{ .Values.nexus.nexusPort }}
+{{- end }}
             path: {{ .Values.ingress.path }}
-  {{- end }}
+{{- end }}
+{{- if .Values.nexusProxy.enabled -}}
   {{- if .Values.nexusProxy.env.nexusDockerHost }}
     - host: {{ .Values.nexusProxy.env.nexusDockerHost }}
       http:
@@ -38,7 +42,7 @@ spec:
               servicePort: {{ .Values.nexusProxy.port }}
             path: {{ .Values.ingress.path }}
   {{- end }}
-{{- end -}}  
+{{- end -}}
 {{- with .Values.ingress.rules  }}
 {{ toYaml . | indent 2 }}
   {{- end -}}
