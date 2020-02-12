@@ -59,7 +59,7 @@ data:
         Path              {{ .Values.audit.input.path }}
         Parser            {{ .Values.audit.input.parser }}
         DB                /var/log/audit.db
-        Tag               audit.*
+        Tag               {{ .Values.audit.input.tag }}
         Refresh_Interval  5
         Mem_Buf_Limit     {{ .Values.audit.input.memBufLimit }}
         Buffer_Chunk_Size {{ .Values.audit.input.bufferChunkSize }}
