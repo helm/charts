@@ -5,7 +5,7 @@ metadata:
   name: {{ include "sparkoperator.fullname" . }}-webhook-cleanup
   namespace: {{ .Release.Namespace }}
   annotations:
-    "helm.sh/hook": pre-delete, pre-upgrade
+    "helm.sh/hook": pre-delete
     "helm.sh/hook-delete-policy": hook-succeeded
   labels:
     app.kubernetes.io/name: {{ include "sparkoperator.name" . }}
@@ -20,7 +20,7 @@ spec:
       imagePullSecrets:
 {{ toYaml .Values.imagePullSecrets | trim | indent 8 }}
       containers:
-      - name: main
+      - name: clean-secret
         image: {{ .Values.operatorImageName }}:{{ .Values.operatorVersion }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         command:
