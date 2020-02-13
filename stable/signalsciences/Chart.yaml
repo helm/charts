@@ -13,7 +13,7 @@ keywords:
 - firewall
 - waf
 sources:
-- https://github.com/helm/charts/tree/master/stable/signalsciences
+- https://github.com/signalsciences
 maintainers:
 - name: cpanato
   email: ctadeu@gmail.com
