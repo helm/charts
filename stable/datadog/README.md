@@ -59,6 +59,13 @@ You can specify the Datadog Cluster Agent token used to secure the communication
 
 ### Upgrading
 
+#### From 1.x to 2.x
+
+⚠️ Migrating from 1.x to 2.x requires a manual action.
+
+The `datadog` chart has been refactored to regroup the `values.yaml` parameters in a more logical way.
+Please follow the [migration guide](docs/Migration 1.x to 2.x.md) to update you `values.yaml` file.
+
 #### From 1.19.0 onwards
 
 Version `1.19.0` introduces the use of release name as full name if it contains the chart name(`datadog` in this case).
