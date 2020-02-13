@@ -3,6 +3,9 @@ image:
   repository: sorintlab/stolon
   tag: v0.13.0-pg10
   pullPolicy: IfNotPresent
+  ## Add secrets manually via kubectl on kubernetes cluster and reference here
+  # pullSecrets:
+  #   - name: "myKubernetesSecret"
 
 # used by create-cluster-job when store.backend is etcd
 etcdImage:

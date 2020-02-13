@@ -157,7 +157,7 @@ Alternatively set the `datadog.leaderElection`, `datadog.collectEvents` and `rba
 
 ### conf.d and checks.d
 
-The Datadog [entrypoint](https://github.com/DataDog/datadog-agent/blob/master/Dockerfiles/agent/entrypoint/89-copy-customfiles.sh) copies files with a `.yaml` extension found in `/conf.d` and files with `.py` extension in `/check.d` to `/etc/datadog-agent/conf.d` and `/etc/datadog-agent/checks.d` respectively.
+The Datadog [entrypoint](https://github.com/DataDog/datadog-agent/blob/master/Dockerfiles/agent/entrypoint/89-copy-customfiles.sh) copies files with a `.yaml` extension found in `/conf.d` and files with `.py` extension in `/checks.d` to `/etc/datadog-agent/conf.d` and `/etc/datadog-agent/checks.d` respectively.
 
 The keys for `datadog.confd` and `datadog.checksd` should mirror the content found in their respective ConfigMaps. Update your [datadog-values.yaml](values.yaml) file with the check configurations:
 
@@ -345,6 +345,7 @@ helm install --name <RELEASE_NAME> \
 | `clusterAgent.image.pullSecrets`         | Image pull secrets                                                                        | `nil`                                       |
 | `clusterAgent.metricsProvider.enabled`   | Enable Datadog metrics as a source for HPA scaling                                        | `false`                                     |
 | `clusterAgent.metricsProvider.service.type` | The type of service to use for the clusterAgent metrics server                         | `ClusterIP`                                 |
+| `clusterAgent.metricsProvider.service.port` | The port for service to use for the clusterAgent metrics server                         | `443` .                                     |
 | `clusterAgent.clusterChecks.enabled`     | Enable Cluster Checks on both the Cluster Agent and the Agent daemonset                   | `false`                                     |
 | `clusterAgent.confd`                     | Additional check configurations (static and Autodiscovery)                                | `nil`                                       |
 | `clusterAgent.podAnnotations`            | Annotations to add to the Cluster Agent Pod(s)                                            | `nil`                                       |

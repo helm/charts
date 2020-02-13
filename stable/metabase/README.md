@@ -46,9 +46,11 @@ The following table lists the configurable parameters of the Metabase chart and 
 | -------------------------------  | ----------------------------------------------------------- | ----------------- |
 | replicaCount                     | desired number of controller pods                           | 1                 |
 | podAnnotations                   | controller pods annotations                                 | {}                |
+| podLabels                        | extra pods labels                                           | {}                |
 | image.repository                 | controller container image repository                       | metabase/metabase |
 | image.tag                        | controller container image tag                              | v0.34.0           |
 | image.pullPolicy                 | controller container image pull policy                      | IfNotPresent      |
+| fullnameOverride                 | String to fully override metabase.fullname template         | null              |
 | listen.host                      | Listening on a specific network host                        | 0.0.0.0           |
 | listen.port                      | Listening on a specific network port                        | 3000              |
 | ssl.enabled                      | Enable SSL to run over HTTPS                                | false             |
@@ -63,12 +65,22 @@ The following table lists the configurable parameters of the Metabase chart and 
 | database.dbname                  | Database name                                               | null              |
 | database.username                | Database username                                           | null              |
 | database.password                | Database password                                           | null              |
+| database.existingSecret          | Exising secret for database credentials                     | null              |
+| database.existingSecretUsernameKey | Username key for exising secret                           | null              |
+| database.existingSecretPasswordKey | Password key for exising secret                           | null              |
+| database.existingSecretConnectionURIKey | ConnectionURI key for exising secret                 | null              |
 | password.complexity              | Complexity requirement for Metabase account's password      | normal            |
 | password.length                  | Minimum length required for Metabase account's password     | 6                 |
 | timeZone                         | Service time zone                                           | UTC               |
 | emojiLogging                     | Get a funny emoji in service log                            | true              |
 | javaOpts                         | JVM options                                                 | null              |
 | pluginsDirectory                 | A directory with Metabase plugins                           | null              |
+| livenessProbe.initialDelaySeconds | Delay before liveness probe is initiated                   | 120               |
+| livenessProbe.timeoutSeconds     | When the probe times out                                    | 30                |
+| livenessProbe.failureThreshold   | Minimum consecutive failures for the probe                  | 6                 |
+| readinessProbe.initialDelaySeconds | Delay before readiness probe is initiated                 | 30                |
+| readinessProbe.timeoutSeconds    | When the probe times out                                    | 3                 |
+| readinessProbe.periodSeconds     | How often to perform the probe                              | 5                 |
 | service.type                     | ClusterIP, NodePort, or LoadBalancer                        | ClusterIP         |
 | service.loadBalancerSourceRanges | Array of Source Ranges                                      | null              |
 | service.externalPort             | Service external port                                       | 80                |
@@ -85,6 +97,10 @@ The following table lists the configurable parameters of the Metabase chart and 
 | nodeSelector                     | Node labels for pod assignment                              | {}                |
 | tolerations                      | Toleration labels for pod assignment                        | []                |
 | affinity                         | Affinity settings for pod assignment                        | {}                |
+| jetty.maxThreads                 | Jetty max number of threads                                 | null              |
+| jetty.minThreads                 | Jetty min number of threads                                 | null              |
+| jetty.maxQueued                  | Jetty max queue size                                        | null              |
+| jetty.maxIdleTime                | Jetty max idle time                                         | null              |
 
 The above parameters map to the env variables defined in [metabase](http://github.com/metabase/metabase). For more information please refer to the [metabase documentations](http://www.metabase.com/docs/v0.34.0/).
 

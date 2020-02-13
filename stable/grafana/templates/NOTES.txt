@@ -20,7 +20,7 @@
    - "/run.sh"
    ```
    Details refer to https://grafana.com/docs/installation/configuration/#http-port.
-   Or grafanfa would always crash.
+   Or grafana would always crash.
 
    From outside the cluster, the server URL(s) are:
 {{- range .Values.ingress.hosts }}

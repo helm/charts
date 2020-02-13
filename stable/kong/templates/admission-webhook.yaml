@@ -11,13 +11,12 @@ apiVersion: admissionregistration.k8s.io/v1beta1
 metadata:
   name: {{ template "kong.fullname" . }}-validations
   labels:
-    app: {{ template "kong.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "kong.metaLabels" . | nindent 4 }}
 webhooks:
 - name: validations.kong.konghq.com
   failurePolicy: {{ .Values.ingressController.admissionWebhook.failurePolicy }}
+  sideEffects: None
+  admissionReviewVersions: ["v1beta1"]
   rules:
   - apiGroups:
     - configuration.konghq.com
@@ -40,10 +39,7 @@ kind: Service
 metadata:
   name: {{ template "kong.service.validationWebhook" . }}
   labels:
-    app: {{ template "kong.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "kong.metaLabels" . | nindent 4 }}
 spec:
   ports:
   - name: webhook
@@ -51,19 +47,15 @@ spec:
     protocol: TCP
     targetPort: webhook
   selector:
-    app: {{ template "kong.name" . }}
-    release: {{ .Release.Name }}
-    component: app
+    {{- include "kong.metaLabels" . | nindent 4 }}
+    app.kubernetes.io/component: app
 ---
 apiVersion: v1
 kind: Secret
 metadata:
   name: {{ template "kong.fullname" . }}-validation-webhook-keypair
   labels:
-    app: {{ template "kong.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "kong.metaLabels" . | nindent 4 }}
 type: kubernetes.io/tls
 data:
   tls.crt: {{ b64enc $cert.Cert }}

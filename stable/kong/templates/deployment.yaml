@@ -1,20 +1,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ template "kong.fullname" . }}"
+  name: {{ template "kong.fullname" . }}
   labels:
-    app: "{{ template "kong.name" . }}"
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
-    component: app
+    {{- include "kong.metaLabels" . | nindent 4 }}
+    app.kubernetes.io/component: app
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "kong.name" . }}
-      release: {{ .Release.Name }}
-      component: app
+      {{- include "kong.selectorLabels" . | nindent 6 }}
   {{- if .Values.updateStrategy }}
   strategy:
 {{ toYaml .Values.updateStrategy | indent 4 }}
@@ -23,6 +18,9 @@ spec:
   template:
     metadata:
       annotations:
+        {{- if .Values.ingressController.admissionWebhook.enabled }}
+        checksum/admission-webhook.yaml: {{ include (print $.Template.BasePath "/admission-webhook.yaml") . | sha256sum }}
+        {{- end }}
         {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off" )) }}
         {{- if .Values.dblessConfig.config }}
         checksum/dbless.config: {{ toYaml .Values.dblessConfig.config | sha256sum }}
@@ -32,9 +30,8 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
         {{- end }}
       labels:
-        app: {{ template "kong.name" . }}
-        release: {{ .Release.Name }}
-        component: app
+        {{- include "kong.metaLabels" . | nindent 8 }}
+        app.kubernetes.io/component: app
     spec:
       {{- if or .Values.ingressController.enabled .Values.podSecurityPolicy.enabled }}
       serviceAccountName: {{ template "kong.serviceAccountName" . }}

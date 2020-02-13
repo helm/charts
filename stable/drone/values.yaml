@@ -117,6 +117,19 @@ server:
 
   ## protocol should be http or https
   protocol: http
+  database:
+    driver: "sqlite3"
+    dataSource: "/var/lib/drone/drone.sqlite"
+  logs:
+    color: false
+    debug: false
+    pretty: false
+    trace: false
+    text: true
+
+  ## http port
+  ## Set to > 1024 if you want to run the pod as non-root user
+  httpPort: 80
 
   ## rpcProtocol for rpc connection to the server should be http or https
   rpcProtocol: http
@@ -151,10 +164,6 @@ server:
   ## ref: https://docs.drone.io/reference/server/
   ##
   env:
-    DRONE_LOGS_DEBUG: "false"
-    DRONE_DATABASE_DRIVER: "sqlite3"
-    DRONE_DATABASE_DATASOURCE: "/var/lib/drone/drone.sqlite"
-
   ## Secret environment variables are configured in `server.envSecrets`.
   ## Each item in `server.envSecrets` references a Kubernetes Secret.
   ## These Secrets should be created before they are referenced.
@@ -200,6 +209,10 @@ server:
   ##
   tolerations: []
 
+  ## securityContext for drone server
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+  securityContext: {}
+
   ## additional siecar containers, e. g. for a database proxy, such as Google's cloudsql-proxy.
   ## ex: https://github.com/kubernetes/charts/tree/master/stable/keycloak
   ##
@@ -215,7 +228,7 @@ agent:
   ## ref: https://docs.drone.io/reference/agent/
   ##
   env:
-    DRONE_LOGS_DEBUG: "false"
+    # DRONE_LOGS_DEBUG: "false"
 
   ## Number of drone agent replicas
   replicas: 1

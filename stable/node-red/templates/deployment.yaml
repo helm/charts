@@ -37,11 +37,11 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
+              path: {{ .Values.livenessProbePath }}
               port: http
           readinessProbe:
             httpGet:
-              path: /
+              path: {{ .Values.readinessProbePath }}
               port: http
           env:
             - name: FLOWS

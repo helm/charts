@@ -82,7 +82,7 @@ serviceAccountSecrets:
 
 image:
   repository: runatlantis/atlantis
-  tag: v0.8.2
+  tag: v0.11.1
   pullPolicy: IfNotPresent
 
 ## Optionally specify an array of imagePullSecrets.

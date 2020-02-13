@@ -22,30 +22,30 @@ spec:
   groups:
   - name: k8s.rules
     rules:
-    - expr: sum(rate(container_cpu_usage_seconds_total{job="kubelet", image!="", container!="POD"}[5m])) by (namespace)
+    - expr: sum(rate(container_cpu_usage_seconds_total{job="kubelet", metrics_path="/metrics/cadvisor", image!="", container!="POD"}[5m])) by (namespace)
       record: namespace:container_cpu_usage_seconds_total:sum_rate
     - expr: |-
         sum by (namespace, pod, container) (
-          rate(container_cpu_usage_seconds_total{job="kubelet", image!="", container!="POD"}[5m])
+          rate(container_cpu_usage_seconds_total{job="kubelet", metrics_path="/metrics/cadvisor", image!="", container!="POD"}[5m])
         ) * on (namespace, pod) group_left(node) max by(namespace, pod, node) (kube_pod_info)
       record: node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate
     - expr: |-
-        container_memory_working_set_bytes{job="kubelet", image!=""}
+        container_memory_working_set_bytes{job="kubelet", metrics_path="/metrics/cadvisor", image!=""}
         * on (namespace, pod) group_left(node) max by(namespace, pod, node) (kube_pod_info)
       record: node_namespace_pod_container:container_memory_working_set_bytes
     - expr: |-
-        container_memory_rss{job="kubelet", image!=""}
+        container_memory_rss{job="kubelet", metrics_path="/metrics/cadvisor", image!=""}
         * on (namespace, pod) group_left(node) max by(namespace, pod, node) (kube_pod_info)
       record: node_namespace_pod_container:container_memory_rss
     - expr: |-
-        container_memory_cache{job="kubelet", image!=""}
+        container_memory_cache{job="kubelet", metrics_path="/metrics/cadvisor", image!=""}
         * on (namespace, pod) group_left(node) max by(namespace, pod, node) (kube_pod_info)
       record: node_namespace_pod_container:container_memory_cache
     - expr: |-
-        container_memory_swap{job="kubelet", image!=""}
+        container_memory_swap{job="kubelet", metrics_path="/metrics/cadvisor", image!=""}
         * on (namespace, pod) group_left(node) max by(namespace, pod, node) (kube_pod_info)
       record: node_namespace_pod_container:container_memory_swap
-    - expr: sum(container_memory_usage_bytes{job="kubelet", image!="", container!="POD"}) by (namespace)
+    - expr: sum(container_memory_usage_bytes{job="kubelet", metrics_path="/metrics/cadvisor", image!="", container!="POD"}) by (namespace)
       record: namespace:container_memory_usage_bytes:sum
     - expr: |-
         sum by (namespace) (

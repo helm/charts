@@ -40,6 +40,11 @@ defaultRules:
     prometheusOperator: true
     time: true
 
+  ## Runbook url prefix for default rules
+  runbookUrl: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#
+  ## Reduce app namespace alert scope
+  appNamespacesTarget: ".*"
+
   ## Labels for default rules
   labels: {}
   ## Annotations for default rules
@@ -75,6 +80,10 @@ alertmanager:
   ## Deploy alertmanager
   ##
   enabled: true
+
+  ## Api that prometheus will use to communicate with alertmanager. Possible values are v1, v2
+  ##
+  apiVersion: v2
 
   ## Service account for Alertmanager to use.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
@@ -237,7 +246,7 @@ alertmanager:
     ##
     image:
       repository: quay.io/prometheus/alertmanager
-      tag: v0.19.0
+      tag: v0.20.0
 
     ## If true then the user will be responsible to provide a secret with alertmanager configuration
     ## So when true the config part will be ignored (including templateFiles) and the one in the secret will be used
@@ -559,8 +568,11 @@ kubelet:
     #   action: drop
 
     # 	relabel configs to apply to samples before ingestion.
+    #   metrics_path is required to match upstream rules and charts
     ##
-    cAdvisorRelabelings: []
+    cAdvisorRelabelings:
+      - sourceLabels: [__metrics_path__]
+        targetLabel: metrics_path
     # - sourceLabels: [__meta_kubernetes_pod_node_name]
     #   separator: ;
     #   regex: ^(.*)$
@@ -581,8 +593,11 @@ kubelet:
     #   action: drop
 
     # 	relabel configs to apply to samples before ingestion.
+    #   metrics_path is required to match upstream rules and charts
     ##
-    relabelings: []
+    relabelings:
+      - sourceLabels: [__metrics_path__]
+        targetLabel: metrics_path
     # - sourceLabels: [__meta_kubernetes_pod_node_name]
     #   separator: ;
     #   regex: ^(.*)$
@@ -807,7 +822,7 @@ kubeScheduler:
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
     ##
     interval: ""
-    ## Enable scraping kube-controller-manager over https.
+    ## Enable scraping kube-scheduler over https.
     ## Requires proper certs (not self-signed) and delegated authentication/authorization checks
     ##
     https: false
@@ -966,11 +981,14 @@ prometheus-node-exporter:
 prometheusOperator:
   enabled: true
 
+  # If true prometheus operator will create and update its CRDs on startup
+  manageCrds: true
+
   tlsProxy:
     enabled: true
     image:
       repository: squareup/ghostunnel
-      tag: v1.4.1
+      tag: v1.5.2
       pullPolicy: IfNotPresent
     resources: {}
 
@@ -995,6 +1013,8 @@ prometheusOperator:
       priorityClassName: ""
       podAnnotations: {}
       nodeSelector: {}
+      affinity: {}
+      tolerations: []
 
   ## Namespaces to scope the interaction of the Prometheus Operator and the apiserver (allow list).
   ## This is mutually exclusive with denyNamespaces. Setting this to an empty object will disable the configuration
@@ -1041,7 +1061,7 @@ prometheusOperator:
     loadBalancerSourceRanges: []
 
   ## Service type
-  ## NodepPort, ClusterIP, loadbalancer
+  ## NodePort, ClusterIP, loadbalancer
   ##
     type: ClusterIP
 
@@ -1154,7 +1174,7 @@ prometheusOperator:
   ##
   image:
     repository: quay.io/coreos/prometheus-operator
-    tag: v0.34.0
+    tag: v0.35.0
     pullPolicy: IfNotPresent
 
   ## Configmap-reload image to use for reloading configmaps
@@ -1167,7 +1187,7 @@ prometheusOperator:
   ##
   prometheusConfigReloaderImage:
     repository: quay.io/coreos/prometheus-config-reloader
-    tag: v0.34.0
+    tag: v0.35.0
 
   ## Set the prometheus config reloader side-car CPU limit
   ##
@@ -1332,6 +1352,13 @@ prometheus:
     interval: ""
     selfMonitor: true
 
+    ## scheme: HTTP scheme to use for scraping. Can be used with `tlsConfig` for example if using istio mTLS.
+    scheme: ""
+
+    ## tlsConfig: TLS configuration to use when scraping the endpoint. For example if using istio mTLS.
+    ## Of type: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#tlsconfig
+    tlsConfig: {}
+
     bearerTokenFile:
 
     ## 	metric relabel configs to apply to samples before ingestion.
@@ -1355,6 +1382,13 @@ prometheus:
   ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
   ##
   prometheusSpec:
+    ## If true, pass --storage.tsdb.max-block-duration=2h to prometheus. This is already done if using Thanos
+    ##
+    disableCompaction: false
+    ## APIServerConfig
+    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#apiserverconfig
+    ##
+    apiserverConfig: {}
 
     ## Interval between consecutive scrapes.
     ##
@@ -1378,7 +1412,7 @@ prometheus:
     ##
     image:
       repository: quay.io/prometheus/prometheus
-      tag: v2.13.1
+      tag: v2.15.2
 
     ## Tolerations for use with node taints
     ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
@@ -1399,6 +1433,10 @@ prometheus:
     #   namespace: ""
     #   port: http
     #   scheme: http
+    #   pathPrefix: ""
+    #   tlsConfig: {}
+    #   bearerTokenFile: ""
+    #   apiVersion: v2
 
     ## External labels to add to any time series or alerts when communicating with external systems
     ##
@@ -1655,6 +1693,9 @@ prometheus:
     #   - regex: (kubernetes_io_hostname|failure_domain_beta_kubernetes_io_region|beta_kubernetes_io_os|beta_kubernetes_io_arch|beta_kubernetes_io_instance_type|failure_domain_beta_kubernetes_io_zone)
     #     action: labeldrop
 
+    ## additionalPrometheusSecretsAnnotations allows to add annotations to the kubernetes secret. This can be useful
+    ## when deploying via spinnaker to disable versioning on the secret, strategy.spinnaker.io/versioned: 'false'
+    additionalPrometheusSecretsAnnotations: {}
 
     ## AdditionalAlertManagerConfigs allows for manual configuration of alertmanager jobs in the form as specified
     ## in the official Prometheus documentation https://prometheus.io/docs/prometheus/latest/configuration/configuration/#<alertmanager_config>.

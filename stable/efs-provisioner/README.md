@@ -131,4 +131,10 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+
+# Configure podsecuritypolicy
+# Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+podSecurityPolicy:
+  enabled: true
+  annotations: {}
 ```
