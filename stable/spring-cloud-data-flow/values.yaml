@@ -45,10 +45,11 @@ server:
     #    hosts:
     #      - chart-example.local
   service:
-    type: ClusterIP
-    externalPort: 8080
+    type: LoadBalancer
+    externalPort: 80
     annotations: {}
     labels: {}
+    loadBalancerSourceRanges: []
   configMap:
   maven:
     local-repository:
@@ -140,7 +141,7 @@ features:
 
 grafana:
   service:
-    type: ClusterIP
+    type: LoadBalancer
   admin:
     existingSecret: scdf-grafana-secret
     userKey: admin-user
