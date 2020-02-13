@@ -81,4 +81,9 @@ data:
         nats://{{ template "nats.fullname" . }}-cluster:{{ .Values.cluster.service.port }}
         {{- end }}
       ]
+
+      {{- if .Values.cluster.connectRetries }}
+      # Configure number of connect retries for implicit routes
+      connect_retries: {{ .Values.cluster.connectRetries }}
+      {{- end }}
     }

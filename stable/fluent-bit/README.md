@@ -93,6 +93,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `audit.enable`                     | Enable collection of audit logs                         | `false`                             |
 | `audit.input.memBufLimit`          | Specify Mem_Buf_Limit in tail input                     | `35mb`                              |
 | `audit.input.parser`               | Specify Parser in tail input                            | `docker`                            |
+| `audit.input.tag`                  | Specify Tag in tail input                               | `audit.*`                           |
 | `audit.input.path`                 | Specify log file(s) through the use of common wildcards | `/var/log/kube-apiserver-audit.log` |
 | `audit.input.bufferChunkSize`      | Specify Buffer_Chunk_Size in tail                       | `2MB`                               |
 | `audit.input.bufferMaxSize`        | Specify Buffer_Max_Size in tail                         | `10MB`                              |
