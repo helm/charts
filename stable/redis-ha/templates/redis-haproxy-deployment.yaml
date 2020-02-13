@@ -102,6 +102,11 @@ spec:
           readOnly: true
         - name: data
           mountPath: /data
+      {{- if or .Values.global.imagePullSecrets .Values.haproxy.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.global.imagePullSecrets | indent 8 }}
+{{ toYaml .Values.haproxy.imagePullSecrets | indent 8 }}
+      {{- end }}
       securityContext:
 {{ toYaml .Values.haproxy.securityContext | indent 8 }}
       containers:
