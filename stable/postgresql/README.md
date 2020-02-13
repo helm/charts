@@ -7,7 +7,7 @@ For HA, please see [this repo](https://github.com/bitnami/charts/tree/master/bit
 ## TL;DR;
 
 ```console
-$ helm install stable/postgresql
+$ helm install my-release stable/postgresql
 ```
 
 ## Introduction
@@ -26,7 +26,7 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/postgresql
+$ helm install my-release stable/postgresql
 ```
 
 The command deploys PostgreSQL on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
@@ -93,7 +93,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `replication.synchronousCommit`               | Set synchronous commit mode. Allowed values: `on`, `remote_apply`, `remote_write`, `local` and `off`                                                                      | `off`                                                         |
 | `replication.numSynchronousReplicas`          | Number of replicas that will have synchronous replication. Note: Cannot be greater than `replication.slaveReplicas`.                                                      | `0`                                                           |
 | `replication.applicationName`                 | Cluster application name. Useful for advanced replication settings                                                                                                        | `my_application`                                              |
-| `existingSecret`                              | Name of existing secret to use for PostgreSQL passwords                                                                                                                   | `nil`                                                         |
+| `existingSecret`                              | Name of existing secret to use for PostgreSQL passwords. The secret has to contain the keys `postgresql-postgres-password` which is the password for `postgresqlUsername` when it is different of `postgres`, `postgresql-password` which will override `postgresqlPassword`, `postgresql-replication-password` which will override `replication.password` and `postgresql-ldap-password` which will be sed to authenticate on LDAP.                                                                                                                   | `nil`                                                         |
 | `postgresqlPostgresPassword`                  | PostgreSQL admin password (used when `postgresqlUsername` is not `postgres`)                                                                                              | _random 10 character alphanumeric string_                     |
 | `postgresqlUsername`                          | PostgreSQL admin user                                                                                                                                                     | `postgres`                                                    |
 | `postgresqlPassword`                          | PostgreSQL admin password                                                                                                                                                 | _random 10 character alphanumeric string_                     |
@@ -212,7 +212,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install --name my-release \
+$ helm install my-release \
   --set postgresqlPassword=secretpassword,postgresqlDatabase=my-database \
     stable/postgresql
 ```
@@ -222,7 +222,7 @@ The above command sets the PostgreSQL `postgres` account password to `secretpass
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml stable/postgresql
+$ helm install my-release -f values.yaml stable/postgresql
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -387,7 +387,7 @@ From chart version 4.0.0, it is possible to use this chart with the Docker Offic
 Besides specifying the new Docker repository and tag, it is important to modify the PostgreSQL data directory and volume mount point. Basically, the PostgreSQL data dir cannot be the mount point directly, it has to be a subdirectory.
 
 ```
-helm install --name postgres \
+helm install postgres \
              --set image.repository=postgres \
              --set image.tag=10.6 \
              --set postgresqlDataDir=/data/pgdata \
@@ -500,7 +500,7 @@ $ kubectl get svc
 
 ```console
 $ helm repo update
-$ helm install --name my-release stable/postgresql
+$ helm install my-release stable/postgresql
 ```
 
 - Connect to the new pod (you can obtain the name by running `kubectl get pods`):

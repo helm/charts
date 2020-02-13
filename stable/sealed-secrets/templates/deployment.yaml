@@ -25,6 +25,9 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ template "sealed-secrets.serviceAccountName" . }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+      {{- end }}
       containers:
         - name: {{ template "sealed-secrets.fullname" . }}
           command:
@@ -57,6 +60,8 @@ spec:
             runAsUser: {{ .Values.securityContext.runAsUser }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+      securityContext:
+        fsGroup: 65534
       volumes:
       - name: tmp
         emptyDir: {}
