@@ -274,9 +274,9 @@ spec:
       {{- if .Values.exporter.script }}
       - name: script-mount
         configMap:
-          name: {{ .Values.exporter.script.configmap }}
+          name: {{ template "redis-ha.fullname" . }}-exporter-script-configmap
           items:
-            - key: {{ .Values.exporter.script.keyname }}
+            - key: script
               path: script.lua
       {{- end }}
 {{- if .Values.persistentVolume.enabled }}
