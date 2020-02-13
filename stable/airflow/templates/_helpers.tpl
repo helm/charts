@@ -98,7 +98,7 @@ The key names for postgres and redis are fixed, which is consistent with the sub
 */}}
 {{- define "airflow.mapenvsecrets" }}
   - name: POSTGRES_USER
-    value: {{ default "postgres" .Values.postgresql.postgresUser | quote }}
+    value: {{ default "postgres" .Values.postgresql.postgresqlUsername | quote }}
   {{- if or .Values.postgresql.existingSecret .Values.postgresql.enabled }}
   - name: POSTGRES_PASSWORD
     valueFrom:
