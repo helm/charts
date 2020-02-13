@@ -1,4 +1,4 @@
-{{- if .Values.kubeStateMetrics.enabled }}
+{{- if and .Values.kubeStateMetrics.enabled .Values.kubeStateMetrics.serviceMonitor.enabled}}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:

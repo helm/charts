@@ -512,6 +512,7 @@ For a full list of configurable values please refer to the [Grafana chart](https
 | `kubeScheduler.serviceMonitor.relabelings` | The `relabel_configs` for scraping the Kubernetes scheduler. | `` |
 | `kubeScheduler.serviceMonitor.serverName` | Name of the server to use when validating TLS certificate | `null` |
 | `kubeStateMetrics.enabled` | Deploy the `kube-state-metrics` chart and configure a servicemonitor to scrape | `true` |
+| `kubeStateMetrics.serviceMonitor.enabled` | Deploy ServiceMonitor for `kube-state-metrics`. Default set to true.
 | `kubeStateMetrics.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `kubeStateMetrics.serviceMonitor.metricRelabelings` | Metric relablings for the `kube-state-metrics` ServiceMonitor | `[]` |
 | `kubeStateMetrics.serviceMonitor.relabelings` | The `relabel_configs` for scraping `kube-state-metrics`. | `` |

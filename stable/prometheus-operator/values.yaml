@@ -899,6 +899,10 @@ kubeProxy:
 kubeStateMetrics:
   enabled: true
   serviceMonitor:
+    ## Deploy ServiceMonitor for `kube-state-metrics`.
+    ##
+    enabled: true
+
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
     ##
     interval: ""
