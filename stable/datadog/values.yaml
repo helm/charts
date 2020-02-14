@@ -175,6 +175,16 @@ datadog:
   #
   # logsConfigContainerCollectAll: false
 
+  ## @param apm - object - required
+  ## Enable apm agent and provide custom configs
+  #
+  apm:
+    ## @param enabled - boolean - optional - default: true
+    ## Enable this to enable APM and tracing, on port 8126
+    ## ref: https://github.com/DataDog/docker-dd-agent#tracing-from-the-host
+    #
+    enabled: true
+
   ## @param env - list of object - optional
   ## The dd-agent supports many environment variables
   ## ref: https://github.com/DataDog/datadog-agent/tree/master/Dockerfiles/agent#environment-variables
@@ -758,9 +768,8 @@ agents:
   #       polling: true
   #
   #   apm_config:
+  #     enabled: true
   #     apm_non_local_traffic: true
-  #     max_memory: 0
-  #     max_cpu_percent: 0
   #
   #   # Enable java cgroup handling. Only one of those options should be enabled,
   #   # depending on the agent version you are using along that chart.

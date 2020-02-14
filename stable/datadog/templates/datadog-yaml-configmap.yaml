@@ -29,6 +29,7 @@ data:
         polling: true
 
     apm_config:
+      enabled: true
       apm_non_local_traffic: true
       max_memory: 0
       max_cpu_percent: 0
