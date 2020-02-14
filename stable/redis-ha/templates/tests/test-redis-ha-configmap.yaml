@@ -17,8 +17,13 @@ spec:
     - name: config
       mountPath: /readonly-config
       readOnly: true
+  {{- if or .Values.global.imagePullSecrets .Values.imagePullSecrets }}
+  imagePullSecrets:
+{{ toYaml .Values.global.imagePullSecrets | indent 4 }}
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+  {{- end }}
+  restartPolicy: Never
   volumes:
   - name: config
     configMap:
       name: {{ template "redis-ha.fullname" . }}-configmap
-  restartPolicy: Never
