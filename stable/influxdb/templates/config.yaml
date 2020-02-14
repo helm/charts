@@ -1,12 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "{{ template "influxdb.fullname" . }}"
+  name: {{ include "influxdb.fullname" . }}
   labels:
-    app: "{{ template "influxdb.fullname" . }}"
-    chart: "{{ template "influxdb.chart" . }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "influxdb.labels" . | nindent 4 }}
 data:
   influxdb.conf: |+
     reporting-disabled = {{ .Values.config.reporting_disabled | default false }}
@@ -96,9 +93,9 @@ data:
       realm = "{{ .Values.config.http.realm }}"
       unix-socket-enabled = {{ .Values.config.http.unix_socket_enabled }}
       bind-socket = "{{ .Values.config.http.bind_socket }}"
-    
+
     # TODO: allow multiple graphite listeners
-    
+
     [[graphite]]
       enabled = {{ .Values.config.graphite.enabled }}
       bind-address = ":{{ .Values.config.graphite.bind_address }}"
@@ -118,7 +115,7 @@ data:
         {{- end }}
       ]
       {{- end }}
-    
+
     # TODO: allow multiple collectd listeners with templates
 
     [[collectd]]
@@ -133,7 +130,7 @@ data:
       typesdb = "{{ .Values.config.collectd.typesdb }}"
       security-level = "{{ .Values.config.collectd.security_level }}"
       auth-file = "{{ .Values.config.collectd.auth_file }}"
-    
+
     # TODO: allow multiple opentsdb listeners with templates
 
     [[opentsdb]]
@@ -148,7 +145,7 @@ data:
       batch-pending = {{ .Values.config.opentsdb.batch_pending | int64 }}
       batch-timeout = "{{ .Values.config.opentsdb.batch_timeout }}"
       log-point-errors = {{ .Values.config.opentsdb.log_point_errors }}
-    
+
     # TODO: allow multiple udp listeners with templates
 
     [[udp]]

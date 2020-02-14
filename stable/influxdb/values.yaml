@@ -8,6 +8,12 @@ image:
   # pullSecrets:
   #   - registry-secret
 
+
+serviceAccount:
+  create: true
+  name:
+  annotations: {}
+
 ## Customize livenessProbe and readinessProbe
 ## ref: https://docs.influxdata.com/influxdb/v1.7/tools/api/#ping-http-endpoint
 ##
