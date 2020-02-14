@@ -102,7 +102,8 @@ livenessProbe:
 
 ## Values to add to SONARQUBE_WEB_JVM_OPTS
 ##
-jvmOpts: "" # "-Djava.net.preferIPv4Stack=true"
+# jvmOpts: "-Djava.net.preferIPv4Stack=true"
+jvmOpts: ""
 
 ## Environment variables to attach to the pods
 ##
