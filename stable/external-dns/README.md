@@ -123,6 +123,8 @@ The following table lists the configurable parameters of the external-dns chart 
 | `pdns.apiUrl`                       | When using the PowerDNS provider, specify the API URL of the server.                                     | `""`                                                        |
 | `pdns.apiPort`                      | When using the PowerDNS provider, specify the API port of the server.                                    | `8081`                                                      |
 | `pdns.apiKey`                       | When using the PowerDNS provider, specify the API key of the server.                                     | `""`                                                        |
+| `transip.account`                   | When using the TransIP provider, specify the account name.                                               | `""`                                                        |
+| `transip.apiKey`                    | When using the TransIP provider, specify the API key to use.                                             | `""`                                                        |
 | `annotationFilter`                  | Filter sources managed by external-dns via annotation using label selector (optional)                    | `""`                                                        |
 | `domainFilters`                     | Limit possible target zones by domain suffixes (optional)                                                | `[]`                                                        |
 | `zoneIdFilters`                     | Limit possible target zones by zone id (optional)                                                        | `[]`                                                        |
