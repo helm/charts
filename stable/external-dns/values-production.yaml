@@ -40,7 +40,7 @@ sources:
 # - crd
 
 ## DNS provider where the DNS records will be created. Available providers are:
-## - aws, azure, cloudflare, coredns, designate, digitalocoean, google, infoblox, rfc2136
+## - aws, azure, cloudflare, coredns, designate, digitalocoean, google, infoblox, rfc2136, transip
 ##
 provider: aws
 
@@ -267,6 +267,16 @@ rfc2136:
 pdns:
   apiUrl: ""
   apiPort: "8081"
+  apiKey: ""
+
+## TransIP configuration to be set via arguments/env. variables
+##
+transip:
+  ## Account name to be used
+  ##
+  account: ""
+  ##
+  ## API key that is authorised for the account
   apiKey: ""
 
 ## Limit possible target zones by domain suffixes (optional)
