@@ -7,7 +7,7 @@
 {{ toYaml .Values.agents.containers.traceAgent.resources | indent 4 }}
   ports:
   - containerPort: 8126
-    {{- if .Values.agents.useHostPort }}
+    {{- if .Values.datadog.apm.enabled }}
     hostPort: 8126
     {{- end }}
     name: traceport
