@@ -76,16 +76,22 @@ data:
     root_email = {{ .Values.graylog.rootEmail }}
     root_timezone = {{ default "UTC" .Values.graylog.rootTimezone }}
     plugin_dir = /usr/share/graylog/plugin
+  {{- $externalUri := include "graylog.url" . }}
   {{- if contains ":2" .Values.graylog.image.repository }}
     rest_listen_uri = http://0.0.0.0:9000/api/
     web_listen_uri = http://0.0.0.0:9000/
-  {{- if .Values.graylog.ingress.enabled }}
-    web_endpoint_uri =  {{ template "graylog.url" .}}/api
+  {{- if $externalUri }}
+    web_endpoint_uri =  {{ $externalUri }}/api
   {{- end }}
   {{- else }}
     http_bind_address = 0.0.0.0:9000
-    {{- if .Values.graylog.ingress.enabled }}
-    http_external_uri = {{ template "graylog.url" .}}/
+    {{- if .Values.graylog.tls.enabled }}
+    http_enable_tls = true
+    http_tls_cert_file = {{ .Values.graylog.tls.certFile }}
+    http_tls_key_file = {{ .Values.graylog.tls.keyFile }}
+    {{- end }}
+    {{- if $externalUri }}
+    http_external_uri = {{ $externalUri }}/
     {{- end }}
   {{- end }}
     elasticsearch_hosts = {{ template "graylog.elasticsearch.hosts" . }}
@@ -121,8 +127,8 @@ data:
     transport_email_auth_password = {{ default .Values.graylog.transportEmail.authPassword }}
     transport_email_subject_prefix = {{ default .Values.graylog.transportEmail.subjectPrefix }}
     transport_email_from_email = {{ default .Values.graylog.transportEmail.fromEmail }}
-  {{- if .Values.graylog.ingress.enabled }}
-    transport_email_web_interface_url = {{ template "graylog.url" .}}
+  {{- if $externalUri }}
+    transport_email_web_interface_url = {{ $externalUri }}
   {{- end }}
     content_packs_dir = /usr/share/graylog/data/contentpacks
     content_packs_auto_load = grok-patterns.json
@@ -133,8 +139,9 @@ data:
   entrypoint.sh: |-
     #!/usr/bin/env bash
 
+    export GRAYLOG_HTTP_PUBLISH_URI="{{ template "graylog.formatUrl" (list . "$(hostname -f):9000/") }}"
+
     GRAYLOG_HOME=/usr/share/graylog
-    MASTER_NAME="{{ template "graylog.fullname" . }}-master.{{ .Release.Namespace }}.svc.cluster.local"
     # Looking for Master IP
     MASTER_IP=`/k8s/kubectl --namespace {{ .Release.Namespace }} get pod -o jsonpath='{range .items[*]}{.metadata.name} {.status.podIP}{"\n"}{end}' -l graylog-role=master --field-selector=status.phase=Running|awk '{print $2}'`
     SELF_IP=`/k8s/kubectl --namespace {{ .Release.Namespace }} get pod $HOSTNAME -o jsonpath='{.status.podIP}'`

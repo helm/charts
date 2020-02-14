@@ -189,6 +189,11 @@ spec:
         - --pdns-server={{ .Values.pdns.apiUrl }}:{{ .Values.pdns.apiPort }}
         - --pdns-api-key=$(PDNS_API_KEY)
         {{- end }}
+        # TransIP arguments
+        {{- if eq .Values.provider "transip" }}
+        - --transip-account={{ .Values.transip.account }}
+        - --transip-keyfile=/transip/transip-api-key
+        {{- end }}
         # Extra arguments
         {{- range $key, $value := .Values.extraArgs }}
           {{- if $value }}
@@ -366,6 +371,12 @@ spec:
           mountPath: {{ .Values.designate.customCA.mountPath }}
           readOnly: true
         {{- end }}
+        # TransIP mountPath(s)
+        {{- if (eq .Values.provider "transip") }}
+        - name: transip-api-key
+          mountPath: /transip
+          readOnly: true
+        {{- end }}
       volumes:
       # AWS volume(s)
       {{- if and (eq .Values.provider "aws") (or (and .Values.aws.credentials.secretKey .Values.aws.credentials.accessKey) .Values.aws.credentials.secretName) }}
@@ -411,4 +422,10 @@ spec:
           items:
           - key: {{ .Values.designate.customCA.filename }}
             path: {{ .Values.designate.customCA.filename }}
+      {{- end }}
+      # TransIP volume(s)
+      {{- if (eq .Values.provider "transip") }}
+      - name: transip-api-key
+        secret:
+          name: {{ template "external-dns.fullname" . }}
       {{- end }}
