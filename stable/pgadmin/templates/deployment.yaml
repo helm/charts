@@ -1,5 +1,5 @@
 {{- $fullName := include "pgadmin.fullname" . -}}
-apiVersion: apps/v1
+apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ $fullName }}
