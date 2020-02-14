@@ -222,3 +222,5 @@ tolerations: []
 affinity: {}
 
 podAnnotations: {}
+
+deploymentAnnotations: {}
