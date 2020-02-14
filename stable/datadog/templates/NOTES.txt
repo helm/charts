@@ -60,9 +60,7 @@ agents use the same shared token.
 
 {{- end }}
 
-{{- if .Values.datadog.apm.enabled }}
-The datadog agent is listening on port 8126.
-{{- end }}
+The Datadog Agent is listening on port 8126.
 
 {{- if .Values.datadog.autoconf }}
 

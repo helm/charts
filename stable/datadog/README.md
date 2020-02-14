@@ -268,13 +268,12 @@ helm install --name <RELEASE_NAME> \
 | `datadog.logsEnabled`                    | Enable log collection                                                                     | `nil`                                       |
 | `datadog.logsConfigContainerCollectAll`  | Collect logs from all containers                                                          | `nil`                                       |
 | `datadog.logsPointerHostPath`            | Host path to store the log tailing state in                                               | `/var/lib/datadog-agent/logs`               |
-| `datadog.apm.enabled`                    | Enable tracing from the host                                                              | `nil`                                       |
 | `datadog.processAgent.enabled`           | Control live process and container monitoring. Possible values: `nil` for container monitoring only, `true` for container and process monitoring, `false` turns off process-agent | `nil`|
 | `datadog.checksd`                        | Additional custom checks as python code                                                   | `nil`                                       |
 | `datadog.confd`                          | Additional check configurations (static and Autodiscovery)                                | `nil`                                       |
 | `datadog.criSocketPath`                  | Path to the container runtime socket (default is Docker runtime)                          | `/var/run/docker.sock`                      |
 | `datadog.tags`                           | Set host tags                                                                             | `nil`                                       |
-| `datadog.nonLocalTraffic`                | Enable statsd reporting and APM from any external ip                                      | `False`                                     |
+| `datadog.nonLocalTraffic`                | Enable statsd reporting from any external ip                                      | `False`                                     |
 | `datadog.useCriSocketVolume`             | Enable mounting the container runtime socket in Agent containers                          | `True`                                      |
 | `datadog.dogstatsdOriginDetection`       | Enable origin detection for container tagging                                             | `False`                                     |
 | `datadog.dogStatsDPort`                  | Used to override the default agent DogStatsD Port                                         | `8125`                                      |
