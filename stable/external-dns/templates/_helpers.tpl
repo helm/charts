@@ -130,6 +130,8 @@ Return true if a secret object should be created
     {{- true -}}
 {{- else if and (eq .Values.provider "pdns") .Values.pdns.apiKey -}}
     {{- true -}}
+{{- else if and (eq .Values.provider "transip") .Values.transip.apiKey -}}
+    {{- true -}}
 {{- else -}}
 {{- end -}}
 {{- end -}}
@@ -201,6 +203,8 @@ Compile all warnings into a single message, and call fail.
 {{- $messages := append $messages (include "external-dns.validateValues.azure.useManagedIdentityExtensionAadClientSecret" .) -}}
 {{- $messages := append $messages (include "external-dns.validateValues.azure.aadClientId" .) -}}
 {{- $messages := append $messages (include "external-dns.validateValues.azure.aadClientSecret" .) -}}
+{{- $messages := append $messages (include "external-dns.validateValues.transip.account" .) -}}
+{{- $messages := append $messages (include "external-dns.validateValues.transip.apiKey" .) -}}
 {{- $messages := without $messages "" -}}
 {{- $message := join "\n" $messages -}}
 
@@ -396,5 +400,29 @@ Validate values of Azure DNS:
 external-dns: azure.seManagedIdentityExtension
     You must provide the Azure AAD Client Secret when provider="azure" and useManagedIdentityExtension is not set.
     Please set set the aadClientSecret parameter (--set azure.aadClientSecret="xxxx")
+{{- end -}}
+{{- end -}}
+
+{{/*
+Validate values of TransIP DNS:
+- must provide the account name when provider is "transip"
+*/}}
+{{- define "external-dns.validateValues.transip.account" -}}
+{{- if and (eq .Values.provider "transip") (not .Values.transip.account) -}}
+external-dns: transip.account
+    You must provide the TransIP account name when provider="transip".
+    Please set the account parameter (--set transip.account="xxxx")
+{{- end -}}
+{{- end -}}
+
+{{/*
+Validate values of TransIP DNS:
+- must provide the API key when provider is "transip"
+*/}}
+{{- define "external-dns.validateValues.transip.apiKey" -}}
+{{- if and (eq .Values.provider "transip") (not .Values.transip.apiKey) -}}
+external-dns: transip.apiKey
+    You must provide the TransIP API key when provider="transip".
+    Please set the apiKey parameter (--set transip.apiKey="xxxx")
 {{- end -}}
 {{- end -}}
