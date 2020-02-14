@@ -5,7 +5,7 @@ MinIO
 
 MinIO supports [distributed mode](https://docs.minio.io/docs/distributed-minio-quickstart-guide). In distributed mode, you can pool multiple drives (even on different machines) into a single object storage server.
 
-Introduction
+iNtroduction
 ------------
 
 This chart bootstraps MinIO deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
@@ -115,6 +115,7 @@ The following table lists the configurable parameters of the MinIO chart and the
 | `secretKey`                               | Default secret key (8 to 40 characters)                                                                                                 | `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY` |
 | `certsPath`                               | Default certs path location                                                                                                             | `/etc/minio/certs`                         |
 | `configPathmc`                            | Default config file location for MinIO client - mc                                                                                      | `/etc/minio/mc`                            |
+| `mcConfigDir`                             | Customize the config-dir of the MinIO client - mc (default: "/root/.mc")                                                                | `""`                                       |
 | `mountPath`                               | Default mount location for persistent drive                                                                                             | `/export`                                  |
 | `bucketRoot`                              | Directory from where minio should serve buckets.                                                                                        | Value of `.mountPath`                      |
 | `clusterDomain`                           | domain name of kubernetes cluster where pod is running.                                                                                 | `cluster.local`                            |

@@ -58,6 +58,7 @@ accessKey: "AKIAIOSFODNN7EXAMPLE"
 secretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 certsPath: "/etc/minio/certs/"
 configPathmc: "/etc/minio/mc/"
+mcConfigDir: ""
 mountPath: "/export"
 
 ## Override the root directory which the minio server should serve from.
