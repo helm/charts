@@ -28,10 +28,13 @@ spec:
               servicePort: {{ .Values.rabbitmqManagerPort }}
 {{- if .Values.ingress.tls }}
   tls:
-    - secretName: {{  .Values.ingress.tlsSecret }}
       {{- if .Values.ingress.hostName }}
       hosts:
         - {{ .Values.ingress.hostName }}
+      {{- end }}
+      secretName: {{  .Values.ingress.tlsSecret }}
+      {{- else}}
+      - secretName: {{  .Values.ingress.tlsSecret }}
       {{- end }}
 {{- end }}
 {{- end }}
