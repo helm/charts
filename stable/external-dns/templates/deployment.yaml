@@ -406,7 +406,7 @@ spec:
         {{- end }}
         # Designate mountPath(s)
         {{- if eq .Values.provider "designate" }}
-        {{- if and ( .Values.designate.customCAHostPath) ( .Values.designate.customCA.enabled) }}
+        {{- if and (.Values.designate.customCAHostPath) (.Values.designate.customCA.enabled) }}
         {{- fail "designate.customCAHostPath cannot be specified with designate.customCA.enabled set to true"}}
         {{- else if .Values.designate.customCA.enabled }}
         - name: designate-custom-ca
