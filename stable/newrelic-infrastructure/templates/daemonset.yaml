@@ -107,6 +107,10 @@ spec:
               mountPath: /etc/newrelic-infra.yml
               subPath: newrelic-infra.yml
             {{- end }}
+            {{- if .Values.integrations_config }}
+            - name: nri-integrations-cfg-volume
+              mountPath: /etc/newrelic-infra/integrations.d/
+            {{- end }}
             {{- if .Values.privileged }}
             - name: dev
               mountPath: /dev
@@ -162,6 +166,11 @@ spec:
             items:
             - key: newrelic-infra.yml
               path: newrelic-infra.yml
+        {{- end }}
+        {{- if .Values.integrations_config }}
+        - name: nri-integrations-cfg-volume
+          configMap:
+            name: {{ template "newrelic.fullname" . }}-integrations-cfg 
         {{- end }}
       {{- if $.Values.priorityClassName }}
       priorityClassName: {{ $.Values.priorityClassName }}
