@@ -1,6 +1,6 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "pgadmin.fullname" . -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "ingress.apiVersion" . }}
 kind: Ingress
 metadata:
   name: {{ $fullName }}
