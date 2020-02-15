@@ -1,12 +1,9 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: "{{ template "influxdb.fullname" . }}"
+  name: {{ include "influxdb.fullname" . }}
   labels:
-    app: "{{ template "influxdb.fullname" . }}"
-    chart: "{{ template "influxdb.chart" . }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "influxdb.labels" . | nindent 4 }}
 spec:
   {{- if .Values.enterprise.enabled }}
   replicas: {{ .Values.enterprise.clusterSize }}
@@ -15,15 +12,12 @@ spec:
   {{- end}}
   selector:
     matchLabels:
-      app: {{ template "influxdb.fullname" . }}
-      release: "{{ .Release.Name }}"
-  serviceName: "{{ template "influxdb.fullname" . }}"
+      {{- include "influxdb.selectorLabels" . | nindent 6 }}
+  serviceName: "{{ include "influxdb.fullname" . }}"
   template:
     metadata:
       labels:
-        app: {{ template "influxdb.fullname" . }}
-        release: "{{ .Release.Name }}"
-        chart: "{{ template "influxdb.chart" . }}"
+        {{- include "influxdb.selectorLabels" . | nindent 8 }}
       {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
@@ -50,8 +44,9 @@ spec:
         - name: {{ . }}
       {{- end}}
       {{- end }}
+      serviceAccountName: {{ include "influxdb.serviceAccountName" . }}
       containers:
-      - name: {{ template "influxdb.fullname" . }}
+      - name: {{ include "influxdb.fullname" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         resources:
@@ -90,7 +85,7 @@ spec:
 {{ toYaml .Values.env | indent 10 }}
         {{- if .Values.enterprise.enabled }}
           - name: INFLUXDB_HOSTNAME # Values.env's HOSTNAME isn't fundamentally different from $HOSTNAME, but this way weg get a distinguished name at runtime.
-            value: "$(_HOSTNAME).{{ template "influxdb.fullname" . }}"
+            value: "$(_HOSTNAME).{{ include "influxdb.fullname" . }}"
         {{- end }}
         {{- end }}
         livenessProbe:
@@ -114,7 +109,7 @@ spec:
           periodSeconds: {{ .Values.startupProbe.periodSeconds | default 5 }}
         {{- end }}
         volumeMounts:
-        - name: {{ template "influxdb.fullname" . }}-data
+        - name: {{ include "influxdb.fullname" . }}-data
           mountPath: {{ .Values.config.storage_directory }}
         - name: config
           mountPath: /etc/influxdb
@@ -125,20 +120,20 @@ spec:
       volumes:
       - name: config
         configMap:
-          name: {{ template "influxdb.fullname" . }}
+          name: {{ include "influxdb.fullname" . }}
       {{- if .Values.initScripts.enabled }}
       - name: init
         configMap:
-          name: {{ template "influxdb.fullname" . }}-init
+          name: {{ include "influxdb.fullname" . }}-init
       {{- end }}
       {{- if (not .Values.persistence.enabled ) }}
-      - name: {{ template "influxdb.fullname" . }}-data
+      - name: {{ include "influxdb.fullname" . }}-data
         emptyDir: {}
       {{- end }}
 {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:
-        name: {{ template "influxdb.fullname" . }}-data
+        name: {{ include "influxdb.fullname" . }}-data
         annotations:
         {{- range $key, $value := .Values.persistence.annotations }}
           {{ $key }}: "{{ $value }}"

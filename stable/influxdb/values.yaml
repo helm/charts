@@ -8,6 +8,12 @@ image:
   # pullSecrets:
   #   - registry-secret
 
+
+serviceAccount:
+  create: true
+  name:
+  annotations: {}
+
 ## Customize livenessProbe and readinessProbe
 ## ref: https://docs.influxdata.com/influxdb/v1.7/tools/api/#ping-http-endpoint
 ##
@@ -31,14 +37,6 @@ service:
   ## Add annotations to service
   # annotations: {}
   type: ClusterIP
-  ## Add IP Cluster
-  # clusterIP: ""
-  ## Add external IPs that route to one or more cluster nodes
-  # externalIPs: []
-  ## Specify LoadBalancer IP (only allow on some cloud provider)
-  # loadBalancerIP: ""
-  ## Allow source IPs to access on service (if empty, any access allow)
-  # loadBalancerSourceRanges: []
 
 ## Persist data to a persistent volume
 ##

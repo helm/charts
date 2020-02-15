@@ -78,7 +78,7 @@ To enable InfluxDB Enterprise, set the following keys and values in a values fil
 | `service.ClusterIP` | Use a headless service for StatefulSets | `"None"` |
 | `env.name[_HOSTNAME]` | Used to provide a unique `name.service` for InfluxDB. See [values.yaml]() for an example | `valueFrom.fieldRef.fieldPath: metadata.name` |
 | `enterprise.enabled` | Create StatefulSets for use with `influx-data` and `influx-meta` images | `true` |
-| `enterprise.licensekey` | License for InfluxDB Enterprise |  | 
+| `enterprise.licensekey` | License for InfluxDB Enterprise |  |
 | `enterprise.clusterSize` | Replicas for `influx` StatefulSet | Dependent on license |
 | `enterprise.meta.image.tag` | Set to an `meta` image. See https://hub.docker.com/_/influxdb for details | `meta` |
 | `enterprise.meta.clusterSize` | Replicas for `influxdb-meta` StatefulSet. | `3` |
@@ -114,7 +114,7 @@ To handle this setup on startup, a job can be enabled in `values.yaml` by settin
 
 Make sure to uncomment or configure the job settings after enabling it. If a password is not set, a random password will be generated.
 
-Alternatively, if `.Values.setDefaultUser.user.existingSecret` is set the user and password are obtained from an existing Secret, the expected keys are `influxdb-user` and `influxdb-password`. Use this variable  if you need to check in the `values.yaml` in a repository to avoid exposing your secrets. 
+Alternatively, if `.Values.setDefaultUser.user.existingSecret` is set the user and password are obtained from an existing Secret, the expected keys are `influxdb-user` and `influxdb-password`. Use this variable  if you need to check in the `values.yaml` in a repository to avoid exposing your secrets.
 
 ## Upgrading
 
@@ -129,3 +129,9 @@ The Kubernetes API change to support 1.160 may not be backwards compatible and m
 ### From < 3.0.0 to >= 3.0.0
 
 Since version 3.0.0 this chart uses a StatefulSet instead of a Deployment. As part of this update the existing persistent volume (and all data) is deleted and a new one is created. Make sure to backup and restore the data manually.
+
+### From < 4.0.0 to >= 4.0.0
+
+Labels are changed to those in accordance with [kubernetes recommended labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/\#labels). This change also removes the ability to configure clusterIP value as to avoid `Error: UPGRADE FAILED: failed to replace object: Service "my-influxdb" is invalid: spec.clusterIP: Invalid value: "": field is immutable` type errors. For more info on this error and why it should be avoided at all costs, please see [this github issue](https://github.com/helm/helm/issues/6378#issuecomment-582764215).
+
+Due to the significance of the changes. The recommended approach is to uninstall and reinstall the chart (the PVC *should* not be deleted during this process, but it is highly recommended to backup your data before).

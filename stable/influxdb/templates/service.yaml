@@ -5,28 +5,11 @@ metadata:
   annotations:
 {{ toYaml .Values.service.annotations | indent 4 }}
 {{- end }}
-  name: "{{ template "influxdb.fullname" . }}"
+  name: {{ include "influxdb.fullname" . }}
   labels:
-    app: "{{ template "influxdb.fullname" . }}"
-    chart: "{{ template "influxdb.chart" . }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "influxdb.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
-  {{- if .Values.service.clusterIP }}
-  clusterIP: {{ .Values.service.clusterIP }}
-  {{- end }}
-  {{- if .Values.service.externalIPs }}
-  externalIPs:
-  {{ toYaml .Values.service.externalIPs | indent 4 }}
-  {{- end }}
-  {{- if .Values.service.loadBalancerIP }}
-  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
-  {{- end }}
-  {{- with .Values.service.loadBalancerSourceRanges }}
-  loadBalancerSourceRanges:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
   ports:
   {{- if .Values.config.http.enabled }}
   - name: api

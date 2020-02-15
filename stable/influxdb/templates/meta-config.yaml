@@ -2,12 +2,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "{{ template "influxdb.fullname" . }}-meta"
+  name: {{ include "influxdb.fullname" . }}-meta
   labels:
-    app: "{{ template "influxdb.fullname" . }}-meta"
-    chart: "{{ template "influxdb.chart" . }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "influxdb.labels" . | nindent 4 }}
+    app.kubernetes.io/component: meta
 data:
   influxdb-meta.conf: |+
     reporting-disabled = {{ .Values.config.reporting_disabled | default false }}
