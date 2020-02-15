@@ -105,6 +105,10 @@ spec:
         # is set to true
         - name: OPENEBS_IO_LOCALPV_HOSTPATH_DIR
           value: "{{ .Values.localprovisioner.basePath }}"
+        # OPENEBS_IO_BASE_DIR used by the OpenEBS to store debug information and
+        # so forth that are generated in the course of running OpenEBS containers.
+        - name: OPENEBS_IO_BASE_DIR
+          value: "{{ .Values.varDirectoryPath.baseDir }}"
         - name: OPENEBS_IO_JIVA_CONTROLLER_IMAGE
           value: "{{ .Values.jiva.image }}:{{ .Values.jiva.imageTag }}"
         - name: OPENEBS_IO_JIVA_REPLICA_IMAGE

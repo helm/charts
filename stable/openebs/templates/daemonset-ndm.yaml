@@ -84,6 +84,8 @@ spec:
         - name: procmount
           mountPath: /host/proc
           readOnly: true
+        - name: basepath
+          mountPath: /var/openebs/ndm
 {{- if .Values.ndm.sparse }}
 {{- if .Values.ndm.sparse.path }}
         - name: sparsepath
@@ -104,6 +106,10 @@ spec:
         hostPath:
           path: /proc
           type: Directory
+      - name: basepath
+        hostPath:
+          path: "{{ .Values.varDirectoryPath.baseDir }}/ndm"
+          type: DirectoryOrCreate
 {{- if .Values.ndm.sparse }}
 {{- if .Values.ndm.sparse.path }}
       - name: sparsepath
