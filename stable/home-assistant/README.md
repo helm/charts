@@ -76,6 +76,7 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `persistence.accessMode`  | Persistence access modes | `ReadWriteMany` |
 | `git.enabled`                  | Use git-sync in init container | `false` |
 | `git.secret`                   | Git secret to use for git-sync | `git-creds` |
+| `git.repo`                     | Git repo to pull config from |
 | `git.syncPath`                 | Git sync path | `/config` |
 | `git.keyPath`                  | Git ssh key path | `/root/.ssh` |
 | `zwave.enabled`                  | Enable zwave host device passthrough. Also enables privileged container mode. | `false` |
