@@ -16,8 +16,7 @@ spec:
       template:
         metadata:
           labels:
-            app: {{ template "influxdb.fullname" . }}
-            release: "{{ .Release.Name }}"
+            {{- include "influxdb.selectorLabels" . | nindent 12 }}
         spec:
           restartPolicy: OnFailure
           volumes:

@@ -13,8 +13,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "influxdb.fullname" . }}
-        release: "{{ .Release.Name }}"
+        {{- include "influxdb.selectorLabels" . | nindent 8 }}
     spec:
       containers:
       - name: {{ template "influxdb.fullname" . }}-set-auth

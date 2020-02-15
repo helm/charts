@@ -47,5 +47,4 @@ spec:
     targetPort: {{ .Values.config.rpc.bind_address }}
   {{- end }}
   selector:
-    app: {{ template "influxdb.fullname" . }}
-    release: "{{ .Release.Name }}"
+    {{- include "influxdb.selectorLabels" . | nindent 4 }}
