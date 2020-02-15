@@ -57,6 +57,9 @@ spec:
         {{- if .Values.dryRun }}
         - --dry-run
         {{- end }}
+        {{- if .Values.triggerLoopOnEvent }}
+        - --events
+        {{- end }}
         {{- if .Values.namespace }}
         - --namespace={{ .Values.namespace }}
         {{- end }}
