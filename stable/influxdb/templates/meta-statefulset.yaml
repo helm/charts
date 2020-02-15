@@ -2,23 +2,22 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: "{{ template "influxdb.fullname" . }}-meta"
+  name: {{ include "influxdb.fullname" . }}-meta
   labels:
-    app: "{{ template "influxdb.fullname" . }}-meta"
-    chart: "{{ template "influxdb.chart" . }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "influxdb.labels" . | nindent 4 }}
+    app.kubernetes.io/component: meta
 spec:
   replicas: {{ .Values.enterprise.meta.clusterSize }}
   selector:
     matchLabels:
-      app: "{{ template "influxdb.fullname" . }}-meta"
-  serviceName: "{{ template "influxdb.fullname" . }}-meta"
+      {{- include "influxdb.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: meta
+  serviceName: "{{ include "influxdb.fullname" . }}-meta"
   template:
     metadata:
       labels:
-        app: "{{ template "influxdb.fullname" . }}-meta"
-        release: "{{ .Release.Name }}"
+        {{- include "influxdb.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: meta
       {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
@@ -31,7 +30,7 @@ spec:
       {{- end}}
       {{- end }}
       containers:
-      - name: "{{ template "influxdb.fullname" . }}-meta"
+      - name: "{{ include "influxdb.fullname" . }}-meta"
         image: "{{ .Values.image.repository }}:{{ .Values.enterprise.meta.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         resources:
@@ -48,7 +47,7 @@ spec:
 {{ toYaml .Values.env | indent 10 }}
           # Values.env's HOSTNAME isn't fundamentally different from $HOSTNAME, but this way we get a distinguished name for InfluxDB at runtime.
           - name: INFLUXDB_HOSTNAME
-            value: "$(_HOSTNAME).{{ template "influxdb.fullname" . }}-meta"
+            value: "$(_HOSTNAME).{{ include "influxdb.fullname" . }}-meta"
         {{- end }}
         livenessProbe:
           httpGet:
@@ -71,7 +70,7 @@ spec:
           periodSeconds: {{ .Values.startupProbe.periodSeconds | default 5 }}
         {{- end }}
         volumeMounts:
-        - name: {{ template "influxdb.fullname" . }}-meta
+        - name: {{ include "influxdb.fullname" . }}-meta
           mountPath: {{ .Values.config.storage_directory }}
         - name: config
           mountPath: /etc/influxdb
@@ -82,14 +81,14 @@ spec:
       volumes:
       - name: config
         configMap:
-          name: {{ template "influxdb.fullname" . }}-meta
+          name: {{ include "influxdb.fullname" . }}-meta
       {{- if .Values.initScripts.enabled }}
       - name: init
         configMap:
-          name: {{ template "influxdb.fullname" . }}-init
+          name: {{ include "influxdb.fullname" . }}-init
       {{- end }}
       {{- if (not .Values.persistence.enabled ) }}
-      - name: {{ template "influxdb.fullname" . }}-meta
+      - name: {{ include "influxdb.fullname" . }}-meta
         emptyDir: {}
       {{- end }}
     {{- if .Values.schedulerName }}
@@ -110,7 +109,7 @@ spec:
   {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:
-        name: {{ template "influxdb.fullname" . }}-meta
+        name: {{ include "influxdb.fullname" . }}-meta
         annotations:
         {{- range $key, $value := .Values.persistence.annotations }}
           {{ $key }}: "{{ $value }}"

@@ -6,12 +6,10 @@ metadata:
   annotations:
 {{ toYaml .Values.service.annotations | indent 4 }}
 {{- end }}
-  name: "{{ template "influxdb.fullname" . }}-meta"
+  name: {{ include "influxdb.fullname" . }}-meta
   labels:
-    app: "{{ template "influxdb.fullname" . }}-meta"
-    chart: "{{ template "influxdb.chart" . }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "influxdb.labels" . | nindent 4 }}
+    app.kubernets.io/component: meta
 spec:
   type: ClusterIP
   clusterIP: None
@@ -22,5 +20,6 @@ spec:
       port: {{ .Values.config.meta.bind_address }}
       targetPort: {{ .Values.config.meta.bind_address }}
   selector:
-    app: "{{ template "influxdb.fullname" . }}-meta"
+    {{- include "influxdb.selectorLabels" . | nindent 4 }}
+    app.kubernets.io/component: meta
 {{- end }}
