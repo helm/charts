@@ -29,6 +29,7 @@ spec:
         - name: {{ . }}
       {{- end}}
       {{- end }}
+      serviceAccountName: {{ include "influxdb.serviceAccountName" . }}
       containers:
       - name: "{{ include "influxdb.fullname" . }}-meta"
         image: "{{ .Values.image.repository }}:{{ .Values.enterprise.meta.image.tag }}"
