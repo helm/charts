@@ -2,12 +2,10 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: "{{ template "influxdb.fullname" . }}-backup"
+  name: {{ include "influxdb.fullname" . }}-backup
   labels:
-    app: "{{ template "influxdb.fullname" . }}"
-    chart: "{{ template "influxdb.chart" . }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "influxdb.labels" . | nindent 4 }}
+    app.kubernetes.io/component: backup
   annotations:
     {{- toYaml .Values.backup.annotations | nindent 4 }}
 spec:
@@ -30,6 +28,7 @@ spec:
             secret:
               secretName: {{ .Values.backup.gcs.serviceAccountSecret | quote }}
           {{- end }}
+          serviceAccountName: {{ include "influxdb.serviceAccountName" . }}
           initContainers:
           - name: influxdb-backup
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
