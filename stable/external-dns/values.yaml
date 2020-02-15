@@ -290,6 +290,9 @@ annotationFilter: ""
 ## When enabled, prints DNS record changes rather than actually performing them
 ##
 dryRun: false
+## When enabled, triggers run loop on create/update/delete events (optional, in addition of regular interval)
+##
+triggerLoopOnEvent: false
 ## Adjust the interval for DNS updates
 ##
 interval: "1m"
