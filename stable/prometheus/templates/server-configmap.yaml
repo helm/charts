@@ -40,7 +40,7 @@ data:
 {{- if $root.Values.extraScrapeConfigs }}
 {{ tpl $root.Values.extraScrapeConfigs $root | indent 4 }}
 {{- end -}}
-{{- if $root.Values.alertmanager.enabled }}
+{{- if or ($root.Values.alertmanager.enabled) ($root.Values.server.alertmanagers) }}
     alerting:
 {{- if $root.Values.alertRelabelConfigs }}
 {{ $root.Values.alertRelabelConfigs | toYaml  | trimSuffix "\n" | indent 6 }}
