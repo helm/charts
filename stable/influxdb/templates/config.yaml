@@ -1,22 +1,30 @@
-
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "{{ template "influxdb.fullname" . }}"
+  name: {{ include "influxdb.fullname" . }}
   labels:
-    app: "{{ template "influxdb.fullname" . }}"
-    chart: "{{ template "influxdb.chart" . }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "influxdb.labels" . | nindent 4 }}
 data:
   influxdb.conf: |+
     reporting-disabled = {{ .Values.config.reporting_disabled | default false }}
     bind-address = ":{{ .Values.config.rpc.bind_address }}"
 
+    {{ if .Values.enterprise.enabled -}}
+    [enterprise]
+      license-key = {{ .Values.enterprise.licensekey | quote }}
+    [hinted-handoff]
+      enabled = true
+      dir = "{{ .Values.config.storage_directory }}/hh"
+    {{- end }}
+
     [meta]
       dir = "{{ .Values.config.storage_directory }}/meta"
       retention-autocreate = {{ .Values.config.meta.retention_autocreate }}
       logging-enabled = {{ .Values.config.meta.logging_enabled }}
+      {{- if .Values.enterprise.enabled }}
+      internal-shared-secret = "{{ sha256sum .Values.enterprise.meta.seed }}"
+      meta-auth-enabled = {{ .Values.config.meta.authEnabled }}
+      {{- end }}
 
     [data]
       dir = "{{ .Values.config.storage_directory }}/data"
@@ -85,9 +93,9 @@ data:
       realm = "{{ .Values.config.http.realm }}"
       unix-socket-enabled = {{ .Values.config.http.unix_socket_enabled }}
       bind-socket = "{{ .Values.config.http.bind_socket }}"
-    
+
     # TODO: allow multiple graphite listeners
-    
+
     [[graphite]]
       enabled = {{ .Values.config.graphite.enabled }}
       bind-address = ":{{ .Values.config.graphite.bind_address }}"
@@ -107,7 +115,7 @@ data:
         {{- end }}
       ]
       {{- end }}
-    
+
     # TODO: allow multiple collectd listeners with templates
 
     [[collectd]]
@@ -122,7 +130,7 @@ data:
       typesdb = "{{ .Values.config.collectd.typesdb }}"
       security-level = "{{ .Values.config.collectd.security_level }}"
       auth-file = "{{ .Values.config.collectd.auth_file }}"
-    
+
     # TODO: allow multiple opentsdb listeners with templates
 
     [[opentsdb]]
@@ -137,7 +145,7 @@ data:
       batch-pending = {{ .Values.config.opentsdb.batch_pending | int64 }}
       batch-timeout = "{{ .Values.config.opentsdb.batch_timeout }}"
       log-point-errors = {{ .Values.config.opentsdb.log_point_errors }}
-    
+
     # TODO: allow multiple udp listeners with templates
 
     [[udp]]

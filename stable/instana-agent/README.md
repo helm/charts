@@ -8,7 +8,7 @@ This chart adds the Instana Agent to all schedulable nodes in your cluster via a
 
 ## Prerequisites
 
-Kubernetes 1.9.x - 1.14.x
+Kubernetes 1.9.x - 1.16.x
 
 Working `helm` and `tiller`.
 
@@ -106,6 +106,7 @@ The following table lists the configurable parameters of the Instana chart and t
 | `agent.pod.requests.memory`        | Container memory requests in MiB                                        | `512`                                                                                                       |
 | `agent.pod.requests.cpu`           | Container cpu requests in cpu cores                                     | `0.5`                                                                                                       |
 | `agent.pod.tolerations`            | Tolerations for pod assignment                                          | `[]`                                                                                                        |
+| `agent.env`                        | Additional environment variables for the agent                          | `{}`                                                                                                        |
 | `agent.redactKubernetesSecrets`    | Enable additional secrets redaction for selected Kubernetes resources   | `nil` See [Kubernetes secrets](https://docs.instana.io/quick_start/agent_setup/container/kubernetes/#secrets) for more details.   |
 | `cluster.name`                     | Display name of the monitored cluster                                   | Value of `zone.name`                                                                                        |
 | `podSecurityPolicy.enable`         | Whether a PodSecurityPolicy should be authorized for the Instana Agent pods. Requires `rbac.create` to be `true` as well. | `false` See [PodSecurityPolicy](https://docs.instana.io/quick_start/agent_setup/container/kubernetes/#podsecuritypolicy) for more details. |

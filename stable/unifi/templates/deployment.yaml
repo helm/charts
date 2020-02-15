@@ -2,6 +2,12 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "unifi.fullname" . }}
+  {{- if .Values.deploymentAnnotations }}
+  annotations:
+    {{- range $key, $value := .Values.deploymentAnnotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
   labels:
     app.kubernetes.io/name: {{ include "unifi.name" . }}
     helm.sh/chart: {{ include "unifi.chart" . }}
@@ -75,6 +81,10 @@ spec:
               value: "{{ .Values.UID }}"
             - name: UNIFI_GID
               value: "{{ .Values.GID }}"
+            {{- if .Values.extraJvmOpts }}
+            - name: JVM_EXTRA_OPTS
+              value: "{{- join " " .Values.extraJvmOpts }}"
+            {{- end }}
             {{- if .Values.mongodb.enabled }}
             - name: DB_URI
               value: "{{ .Values.mongodb.dbUri }}"
@@ -96,6 +106,10 @@ spec:
             - mountPath: /unifi/init.d
               name: unifi-data
               subPath: init.d
+            {{- if .Values.extraConfigFiles }}
+            - name: extra-config
+              mountPath: /configmap
+            {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
       volumes:
@@ -106,6 +120,11 @@ spec:
         {{- else }}
           emptyDir: {}
         {{ end }}
+        {{- if .Values.extraConfigFiles }}
+        - name: extra-config
+          configMap:
+            name: {{ template "unifi.fullname" . }}
+        {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

@@ -1,3 +1,10 @@
+# DEPRECATED
+
+This chart has been deprecated in favor of
+Kong's official chart [repository](https://github.com/kong/charts).
+
+All users are advised to immediately migrate over to the new repository.
+
 ## Kong for Kubernetes
 
 [Kong for Kubernetes](https://github.com/Kong/kubernetes-ingress-controller)
@@ -460,6 +467,12 @@ If your SMTP server requires authentication, you should the `username` and
 value is your SMTP password.
 
 ## Changelog
+
+### 0.36.6
+
+This version has no code changes and Kong's chart is now deprecated in this
+repository. Please use Kong's official
+[chart repository](https://github.com/kong/charts).
 
 ### 0.36.5
 

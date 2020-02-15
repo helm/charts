@@ -2,12 +2,9 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
+  name: {{ include "influxdb.fullname" . }}-set-auth
   labels:
-    app: "{{ template "influxdb.fullname" . }}"
-    chart: "{{ template "influxdb.chart" . }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
-  name: {{ template "influxdb.fullname" . }}-set-auth
+    {{- include "influxdb.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": post-install
     "helm.sh/hook-delete-policy": hook-succeeded
@@ -16,8 +13,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "influxdb.fullname" . }}
-        release: "{{ .Release.Name }}"
+        {{- include "influxdb.selectorLabels" . | nindent 8 }}
     spec:
       containers:
       - name: {{ template "influxdb.fullname" . }}-set-auth

@@ -65,6 +65,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.http.http_user`        | Optional username credential for Basic Authentication. | `` |
 | `backend.http.http_passwd:`     | Password for user defined in HTTP_User. | `` |
 | `backend.http.format`         | Specify the data format to be used in the HTTP request body, by default it uses msgpack, optionally it can be set to json.  | `msgpack` |
+| `backend.http.json_date_format`         | Specify the format of the date. Supported formats are double and iso8601 | `double` |
 | `backend.http.headers`          | HTTP Headers | `[]` |
 | `backend.http.tls`              | Enable or disable TLS support | `off` |
 | `backend.http.tls_verify`       | Force certificate validation  | `on` |
@@ -92,6 +93,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `audit.enable`                     | Enable collection of audit logs                         | `false`                             |
 | `audit.input.memBufLimit`          | Specify Mem_Buf_Limit in tail input                     | `35mb`                              |
 | `audit.input.parser`               | Specify Parser in tail input                            | `docker`                            |
+| `audit.input.tag`                  | Specify Tag in tail input                               | `audit.*`                           |
 | `audit.input.path`                 | Specify log file(s) through the use of common wildcards | `/var/log/kube-apiserver-audit.log` |
 | `audit.input.bufferChunkSize`      | Specify Buffer_Chunk_Size in tail                       | `2MB`                               |
 | `audit.input.bufferMaxSize`        | Specify Buffer_Max_Size in tail                         | `10MB`                              |
