@@ -175,12 +175,24 @@ spec:
 {{- if .Values.clusterAgent.volumeMounts }}
 {{ toYaml .Values.clusterAgent.volumeMounts | indent 10 }}
 {{- end }}
+{{- if .Values.clusterAgent.datadog_cluster_yaml }}
+          - name: cluster-agent-yaml
+            mountPath: /etc/datadog-agent/datadog-cluster.yaml
+            subPath: datadog-cluster.yaml
+            readOnly: true
+{{- end}}
       volumes:
 {{- if .Values.clusterAgent.confd }}
         - name: confd
           configMap:
             name: {{ template "datadog.fullname" . }}-cluster-agent-confd
 {{- end }}
+{{- if .Values.clusterAgent.datadog_cluster_yaml }}
+        - name: cluster-agent-yaml
+          configMap:
+            name: {{ template "datadog.fullname" . }}-cluster-agent-config
+{{- end}}
+
 {{- if .Values.clusterAgent.volumes }}
 {{ toYaml .Values.clusterAgent.volumes | indent 10 }}
 {{- end }}
