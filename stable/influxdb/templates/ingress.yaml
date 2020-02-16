@@ -20,6 +20,6 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: {{ template "influxdb.fullname" . }}
+          serviceName: {{ include "influxdb.fullname" . }}
           servicePort: 8086
 {{- end -}}
