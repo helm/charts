@@ -17,7 +17,7 @@ spec:
   publishNotReadyAddresses: true
   ports:
     - name: meta
-      port: {{ .Values.config.meta.bind_address }}
+      port: {{ .Values.config.meta.bind_address | default 8091 }}
       targetPort: meta
   selector:
     {{- include "influxdb.selectorLabels" . | nindent 4 }}
