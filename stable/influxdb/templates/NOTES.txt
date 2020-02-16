@@ -1,10 +1,10 @@
-InfluxDB can be accessed via port {{ .Values.config.http.bind_address }} on the following DNS name from within your cluster:
+InfluxDB can be accessed via port {{ .Values.config.http.bind_address | default 8086 }} on the following DNS name from within your cluster:
 
-- http://{{ template "influxdb.fullname" . }}.{{ .Release.Namespace }}:{{ .Values.config.http.bind_address }}
+- http://{{ template "influxdb.fullname" . }}.{{ .Release.Namespace }}:{{ .Values.config.http.bind_address | default 8086 }}
 
 You can easily connect to the remote instance with your local influx cli. To forward the API port to localhost:8086 run the following:
 
-- kubectl port-forward --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "influxdb.fullname" . }} -o jsonpath='{ .items[0].metadata.name }') 8086:{{ .Values.config.http.bind_address }}
+- kubectl port-forward --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "influxdb.fullname" . }} -o jsonpath='{ .items[0].metadata.name }') 8086:{{ .Values.config.http.bind_address | default 8086 }}
 
 You can also connect to the influx cli from inside the container. To open a shell session in the InfluxDB pod run the following:
 
