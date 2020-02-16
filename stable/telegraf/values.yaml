@@ -27,6 +27,10 @@ resources: {}
   #   memory: 128Mi
   #   cpu: 100m
 
+## Node labels for pod assignment
+## ref: https://kubernetes.io/docs/user-guide/node-selection/
+nodeSelector: {}
+
 service:
   enabled: true
   type: ClusterIP
