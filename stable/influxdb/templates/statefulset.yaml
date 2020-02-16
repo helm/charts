@@ -53,32 +53,28 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         ports:
         - name: api
-          containerPort: {{ .Values.config.http.bind_address }}
-        {{- if .Values.config.admin.enabled }}
-        - name: admin
-          containerPort: {{ .Values.config.admin.bind_address }}
-        {{- end }}
+          containerPort: {{ .Values.config.http.bind_address | default 8086 }}
         {{- if .Values.config.graphite.enabled }}
         - name: graphite
-          containerPort: {{ .Values.config.graphite.bind_address }}
+          containerPort: {{ .Values.config.graphite.bind_address | default 2003 }}
         {{- end }}
         {{- if .Values.config.collectd.enabled }}
         - name: collectd
-          containerPort: {{ .Values.config.collectd.bind_address }}
+          containerPort: {{ .Values.config.collectd.bind_address |  default 25826 }}
         {{- end }}
         {{- if .Values.config.udp.enabled }}
         - name: udp
-          containerPort: {{ .Values.config.udp.bind_address }}
+          containerPort: {{ .Values.config.udp.bind_address |  default 8089 }}
         {{- end }}
         {{- if .Values.config.opentsdb.enabled }}
         - name: opentsdb
-          containerPort: {{ .Values.config.opentsdb.bind_address }}
+          containerPort: {{ .Values.config.opentsdb.bind_address |  default 4242 }}
         {{- end }}
         {{- if .Values.enterprise.enabled }}
         - name: rpc
-          containerPort: {{ .Values.config.rpc.bind_address }}
+          containerPort: {{ .Values.config.rpc.bind_address | default 8088 }}
         - name: meta
-          containerPort: {{ .Values.config.meta.bind_address }}
+          containerPort: {{ .Values.config.meta.bind_address | default 8091 }}
         {{- end }}
         {{- if .Values.env }}
         env:
@@ -110,7 +106,7 @@ spec:
         {{- end }}
         volumeMounts:
         - name: {{ include "influxdb.fullname" . }}-data
-          mountPath: {{ .Values.config.storage_directory }}
+          mountPath: /var/lib/influxdb
         - name: config
           mountPath: /etc/influxdb
         {{- if .Values.initScripts.enabled }}

@@ -38,11 +38,11 @@ spec:
 {{ toYaml .Values.enterprise.meta.resources | indent 10 }}
         ports:
         - name: udp
-          containerPort: {{ .Values.config.udp.bind_address }}
+          containerPort: {{ .Values.config.udp.bind_address |  default 8089 }}
         - name: rpc
-          containerPort: {{ .Values.config.rpc.bind_address }}
+          containerPort: {{ .Values.config.rpc.bind_address | default 8088 }}
         - name: meta
-          containerPort: {{ .Values.config.meta.bind_address }}
+          containerPort: {{ .Values.config.meta.bind_address | default 8091 }}
         {{- if .Values.env }}
         env:
 {{ toYaml .Values.env | indent 10 }}
@@ -72,7 +72,7 @@ spec:
         {{- end }}
         volumeMounts:
         - name: {{ include "influxdb.fullname" . }}-meta
-          mountPath: {{ .Values.config.storage_directory }}
+          mountPath: /var/lib/influxdb
         - name: config
           mountPath: /etc/influxdb
         {{- if .Values.initScripts.enabled }}
