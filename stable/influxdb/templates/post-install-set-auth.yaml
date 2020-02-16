@@ -41,7 +41,7 @@ spec:
           - "/bin/sh"
           - "-c"
           - |
-             curl -X POST http://{{ template "influxdb.fullname" . }}:{{ .Values.config.http.bind_address }}/query \
+             curl -X POST http://{{ template "influxdb.fullname" . }}:{{ .Values.config.http.bind_address | default 8086 }}/query \
              --data-urlencode \
              "q=CREATE USER \"${INFLUXDB_USER}\" WITH PASSWORD '${INFLUXDB_PASSWORD}' {{ .Values.setDefaultUser.user.privileges }}"
       restartPolicy: {{ .Values.setDefaultUser.restartPolicy }}
