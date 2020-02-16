@@ -11,11 +11,12 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-  {{- if .Values.config.http.enabled }}
   - name: api
     port: {{ .Values.config.http.bind_address | default 8086 }}
     targetPort: api
-  {{- end }}
+  - name: rpc
+    port: {{ .Values.config.rpc.bind_address | default 8088 }}
+    targetPort: rpc
   {{- if .Values.config.graphite.enabled }}
   - name: graphite
     port: {{ .Values.config.graphite.bind_address | default 2003 }}
@@ -35,11 +36,6 @@ spec:
   - name: opentsdb
     port: {{ .Values.config.opentsdb.bind_address |  default 4242 }}
     targetPort: opentsdb
-  {{- end }}
-  {{- if .Values.config.rpc.enabled }}
-  - name: rpc
-    port: {{ .Values.config.rpc.bind_address | default 8088 }}
-    targetPort: rpc
   {{- end }}
   selector:
     {{- include "influxdb.selectorLabels" . | nindent 4 }}
