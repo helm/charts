@@ -14,37 +14,37 @@ spec:
   {{- if .Values.config.http.enabled }}
   - name: api
     port: {{ .Values.config.http.bind_address }}
-    targetPort: {{ .Values.config.http.bind_address }}
+    targetPort: api
   {{- end }}
   {{- if .Values.config.admin.enabled }}
   - name: admin
     port: {{ .Values.config.admin.bind_address }}
-    targetPort: {{ .Values.config.admin.bind_address }}
+    targetPort: admin
   {{- end }}
   {{- if .Values.config.graphite.enabled }}
   - name: graphite
     port: {{ .Values.config.graphite.bind_address }}
-    targetPort: {{ .Values.config.graphite.bind_address }}
+    targetPort: graphite
   {{- end }}
   {{- if .Values.config.collectd.enabled }}
   - name: collectd
     port: {{ .Values.config.collectd.bind_address }}
-    targetPort: {{ .Values.config.collectd.bind_address }}
+    targetPort: collectd
   {{- end }}
   {{- if .Values.config.udp.enabled }}
   - name: udp
     port: {{ .Values.config.udp.bind_address }}
-    targetPort: {{ .Values.config.udp.bind_address }}
+    targetPort: udp
   {{- end }}
   {{- if .Values.config.opentsdb.enabled }}
   - name: opentsdb
     port: {{ .Values.config.opentsdb.bind_address }}
-    targetPort: {{ .Values.config.opentsdb.bind_address }}
+    targetPort: opentsdb
   {{- end }}
   {{- if .Values.config.rpc.enabled }}
   - name: rpc
     port: {{ .Values.config.rpc.bind_address }}
-    targetPort: {{ .Values.config.rpc.bind_address }}
+    targetPort: rpc
   {{- end }}
   selector:
     {{- include "influxdb.selectorLabels" . | nindent 4 }}

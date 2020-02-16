@@ -18,7 +18,7 @@ spec:
   ports:
     - name: meta
       port: {{ .Values.config.meta.bind_address }}
-      targetPort: {{ .Values.config.meta.bind_address }}
+      targetPort: meta
   selector:
     {{- include "influxdb.selectorLabels" . | nindent 4 }}
     app.kubernets.io/component: meta
