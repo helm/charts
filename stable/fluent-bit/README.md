@@ -122,7 +122,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `filter.mergeLogKey`               | If set, append the processed log keys under a new root key specified by this variable. | `nil` |
 | `filter.useJournal`                | If true, the filter reads logs coming in Journald format.  | `false` |
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
-| `image.fluent_bit.tag`             | Image tag                                  | `1.3.5`                                           |
+| `image.fluent_bit.tag`             | Image tag                                  | `1.3.7`                                           |
 | `image.pullPolicy`                 | Image pull policy                          | `Always`                                          |
 | `nameOverride`                     | Override name of app                   | `nil`                                        |
 | `fullnameOverride`                 | Override full name of app              | `nil`                                        |
