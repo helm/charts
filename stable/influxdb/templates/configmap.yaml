@@ -42,11 +42,6 @@ data:
       {{ $key }} = {{ $value }}
       {{- end }}
 
-    [admin]
-      {{- range $key, $value := index .Values.config.admin }}
-      {{ $key }} = {{ $value }}
-      {{- end }}
-
     [monitor]
       {{- range $key, $value := index .Values.config.monitor }}
       {{ $key }} = {{ $value }}
