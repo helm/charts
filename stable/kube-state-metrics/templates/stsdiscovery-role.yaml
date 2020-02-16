@@ -1,0 +1,27 @@
+{{- if and .Values.autosharding.enabled .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: stsdiscovery-{{ template "kube-state-metrics.fullname" . }}
+  namespace: {{ template "kube-state-metrics.namespace" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "kube-state-metrics.name" . }}
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - get
+- apiGroups:
+  - apps
+  resourceNames:
+  - kube-state-metrics
+  resources:
+  - statefulsets
+  verbs:
+  - get
+{{- end }}

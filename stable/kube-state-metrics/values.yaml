@@ -5,6 +5,13 @@ image:
   tag: v1.9.4
   pullPolicy: IfNotPresent
 
+# If set to true, this will deploy kube-state-metrics as a StatefulSet and the data
+# will be automatically sharded across <.Values.replicas> pods using the built-in
+# autodiscovery feature: https://github.com/kubernetes/kube-state-metrics#automated-sharding
+# This is an experimental feature and there are no stability guarantees.
+autosharding:
+  enabled: false
+
 replicas: 1
 
 service:
