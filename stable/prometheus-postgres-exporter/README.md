@@ -52,6 +52,8 @@ The following table lists the configurable parameters of the postgres Exporter c
 | `serviceMonitor.interval`         | How frequently Prometheus should scrape                                 |                             |
 | `serviceMonitor.telemetryPath`    | path to cloudwatch-exporter telemtery-path                              |                             |
 | `serviceMonitor.labels`           | labels for the ServiceMonitor passed to Prometheus Operator             | `{}`                        |
+| `serviceMonitor.podTargetLabels`  | podTargetLabels for the ServiceMonitor passed to Prometheus Operator    | `[]`                        |
+| `serviceMonitor.targetLabels`     | targetLabels for the ServiceMonitor passed to Prometheus Operator       | `[]`                        |
 | `serviceMonitor.timeout`          | Timeout after which the scrape is ended                                 |                             |
 | `resources`          |                                  |                    `{}`                                  |
 | `config.datasource`                 | Postgresql datasource configuration                      |  see [values.yaml](values.yaml)              |

@@ -28,6 +28,10 @@ serviceMonitor:
   # telemetryPath: /metrics
   # Set labels for the ServiceMonitor, use this to define your scrape label for Prometheus Operator
   # labels:
+  # Set targetLabels for the SeriviceMonitor, use this to define your scrape podTargetLabels for Prometheus Operator
+  # targetLabels: []
+  # Set podTargetLabels for the SeriviceMonitor, use this to define your scrape podTargetLabels for Prometheus Operator
+  # podTargetLabels: []
   # Set timeout for scrape
   # timeout: 10s
 

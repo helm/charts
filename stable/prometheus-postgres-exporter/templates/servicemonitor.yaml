@@ -23,6 +23,14 @@ spec:
     scrapeTimeout: {{ .Values.serviceMonitor.timeout }}
 {{- end }}
   jobLabel: {{ template "prometheus-postgres-exporter.fullname" . }}
+{{- if .Values.serviceMonitor.targetLabels }}
+  targetLabels:
+{{ toYaml .Values.serviceMonitor.targetLabels | indent 4 -}}
+{{- end }}
+{{- if .Values.serviceMonitor.podTargetLabels }}
+  podTargetLabels:
+{{ toYaml .Values.serviceMonitor.podTargetLabels | indent 4 -}}
+{{- end }}
   namespaceSelector:
     matchNames:
     - {{ .Release.Namespace }}
