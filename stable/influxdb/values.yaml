@@ -14,18 +14,20 @@ serviceAccount:
   name:
   annotations: {}
 
-## Customize livenessProbe and readinessProbe
+## Customize liveness, readiness and startup probes
 ## ref: https://docs.influxdata.com/influxdb/v1.7/tools/api/#ping-http-endpoint
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
 ##
-livenessProbe:
-  probePath: "/ping"
+livenessProbe: {}
+  # initialDelaySeconds: 30
+  # timeoutSeconds: 5
 
-readinessProbe:
-  probePath: "/ping"
+readinessProbe: {}
+  # initialDelaySeconds: 5
+  # timeoutSeconds: 1
 
 startupProbe:
   enabled: false
-  probePath: "/ping"
   # failureThreshold: 6
   # periodSeconds: 5
 
