@@ -7,6 +7,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: {{ printf "%s-%s" (include "prometheus-operator.fullname" .) "kubernetes-system-apiserver" | trunc 63 | trimSuffix "-" }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "prometheus-operator.name" . }}
 {{ include "prometheus-operator.labels" . | indent 4 }}
@@ -23,24 +24,39 @@ spec:
     rules:
     - alert: KubeAPILatencyHigh
       annotations:
-        message: The API server has a 99th percentile latency of {{`{{ $value }}`}} seconds for {{`{{ $labels.verb }}`}} {{`{{ $labels.resource }}`}}.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeapilatencyhigh
-      expr: cluster_quantile:apiserver_request_duration_seconds:histogram_quantile{job="apiserver",quantile="0.99",subresource!="log",verb!~"LIST|WATCH|WATCHLIST|PROXY|CONNECT"} > 1
-      for: 10m
+        message: The API server has an abnormal latency of {{`{{ $value }}`}} seconds for {{`{{ $labels.verb }}`}} {{`{{ $labels.resource }}`}}.
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeapilatencyhigh
+      expr: |-
+        (
+          cluster:apiserver_request_duration_seconds:mean5m{job="apiserver"}
+          >
+          on (verb) group_left()
+          (
+            avg by (verb) (cluster:apiserver_request_duration_seconds:mean5m{job="apiserver"} >= 0)
+            +
+            2*stddev by (verb) (cluster:apiserver_request_duration_seconds:mean5m{job="apiserver"} >= 0)
+          )
+        ) > on (verb) group_left()
+        1.2 * avg by (verb) (cluster:apiserver_request_duration_seconds:mean5m{job="apiserver"} >= 0)
+        and on (verb,resource)
+        cluster_quantile:apiserver_request_duration_seconds:histogram_quantile{job="apiserver",quantile="0.99"}
+        >
+        1
+      for: 5m
       labels:
         severity: warning
     - alert: KubeAPILatencyHigh
       annotations:
         message: The API server has a 99th percentile latency of {{`{{ $value }}`}} seconds for {{`{{ $labels.verb }}`}} {{`{{ $labels.resource }}`}}.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeapilatencyhigh
-      expr: cluster_quantile:apiserver_request_duration_seconds:histogram_quantile{job="apiserver",quantile="0.99",subresource!="log",verb!~"LIST|WATCH|WATCHLIST|PROXY|CONNECT"} > 4
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeapilatencyhigh
+      expr: cluster_quantile:apiserver_request_duration_seconds:histogram_quantile{job="apiserver",quantile="0.99"} > 4
       for: 10m
       labels:
         severity: critical
     - alert: KubeAPIErrorsHigh
       annotations:
         message: API server is returning errors for {{`{{ $value | humanizePercentage }}`}} of requests.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeapierrorshigh
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeapierrorshigh
       expr: |-
         sum(rate(apiserver_request_total{job="apiserver",code=~"5.."}[5m]))
           /
@@ -51,7 +67,7 @@ spec:
     - alert: KubeAPIErrorsHigh
       annotations:
         message: API server is returning errors for {{`{{ $value | humanizePercentage }}`}} of requests.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeapierrorshigh
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeapierrorshigh
       expr: |-
         sum(rate(apiserver_request_total{job="apiserver",code=~"5.."}[5m]))
           /
@@ -62,7 +78,7 @@ spec:
     - alert: KubeAPIErrorsHigh
       annotations:
         message: API server is returning errors for {{`{{ $value | humanizePercentage }}`}} of requests for {{`{{ $labels.verb }}`}} {{`{{ $labels.resource }}`}} {{`{{ $labels.subresource }}`}}.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeapierrorshigh
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeapierrorshigh
       expr: |-
         sum(rate(apiserver_request_total{job="apiserver",code=~"5.."}[5m])) by (resource,subresource,verb)
           /
@@ -73,7 +89,7 @@ spec:
     - alert: KubeAPIErrorsHigh
       annotations:
         message: API server is returning errors for {{`{{ $value | humanizePercentage }}`}} of requests for {{`{{ $labels.verb }}`}} {{`{{ $labels.resource }}`}} {{`{{ $labels.subresource }}`}}.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeapierrorshigh
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeapierrorshigh
       expr: |-
         sum(rate(apiserver_request_total{job="apiserver",code=~"5.."}[5m])) by (resource,subresource,verb)
           /
@@ -84,14 +100,14 @@ spec:
     - alert: KubeClientCertificateExpiration
       annotations:
         message: A client certificate used to authenticate to the apiserver is expiring in less than 7.0 days.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeclientcertificateexpiration
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeclientcertificateexpiration
       expr: apiserver_client_certificate_expiration_seconds_count{job="apiserver"} > 0 and histogram_quantile(0.01, sum by (job, le) (rate(apiserver_client_certificate_expiration_seconds_bucket{job="apiserver"}[5m]))) < 604800
       labels:
         severity: warning
     - alert: KubeClientCertificateExpiration
       annotations:
         message: A client certificate used to authenticate to the apiserver is expiring in less than 24.0 hours.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeclientcertificateexpiration
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeclientcertificateexpiration
       expr: apiserver_client_certificate_expiration_seconds_count{job="apiserver"} > 0 and histogram_quantile(0.01, sum by (job, le) (rate(apiserver_client_certificate_expiration_seconds_bucket{job="apiserver"}[5m]))) < 86400
       labels:
         severity: critical
@@ -99,7 +115,7 @@ spec:
     - alert: KubeAPIDown
       annotations:
         message: KubeAPI has disappeared from Prometheus target discovery.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeapidown
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeapidown
       expr: absent(up{job="apiserver"} == 1)
       for: 15m
       labels:

@@ -54,6 +54,12 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: spec.nodeName
+        # OPENEBS_SERVICE_ACCOUNT provides the service account of this pod as
+        # environment variable
+        - name: OPENEBS_SERVICE_ACCOUNT
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.serviceAccountName
         # OPENEBS_IO_BASE_PATH is the environment variable that provides the
         # default base path on the node where host-path PVs will be provisioned.
         - name: OPENEBS_IO_ENABLE_ANALYTICS
@@ -61,7 +67,7 @@ spec:
         - name: OPENEBS_IO_BASE_PATH
           value: "{{ .Values.localprovisioner.basePath }}"
         - name: OPENEBS_IO_HELPER_IMAGE
-          value: "{{ .Values.localprovisioner.helperImage }}:{{ .Values.localprovisioner.helperImageTag }}"
+          value: "{{ .Values.helper.image }}:{{ .Values.helper.imageTag }}"
         - name: OPENEBS_IO_INSTALLER_TYPE
           value: "charts-helm"
         livenessProbe:

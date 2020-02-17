@@ -41,7 +41,7 @@ The following table lists the configurable parameters of the karma chart and the
 |-------------------------------------|--------------------------------------------------------|-------------------------------------------|
 | `replicaCount`                      | Number of replicas                                     | `1`                                       |
 | `image.repository`                  | The image to run                                       | `lmierzwa/karma`                          |
-| `image.tag`                         | The image tag to pull                                  | `v0.50`                                   |
+| `image.tag`                         | The image tag to pull                                  | `v0.55`                                   |
 | `image.pullPolicy`                  | Image pull policy                                      | `IfNotPresent`                            |
 | `nameOverride`                      | Override name of app                                   | ``                                        |
 | `fullnameOverride`                  | Override full name of app                              | ``                                        |
@@ -64,6 +64,7 @@ The following table lists the configurable parameters of the karma chart and the
 | `livenessProbe.period`              | Speicy period of liveness probe                        | `5`                                       |
 | `livenessProbe.path`                | Specify path liveness probe should hit                 | `/`                                       |
 | `configMap.enabled`                 | Provide a custom karma configuration                   | `false`                                   |
+| `configMap.annotations`             | Annotations to add to the config map                   | `{}`                                      |
 | `configMap.rawConfig`               | A karma compatible YAML configuration                  | ``                                        |
 | `certSecretNames`                   | Mount Alertmanager certificates to `/etc/certs/<name>` | `[]`                                      |
 

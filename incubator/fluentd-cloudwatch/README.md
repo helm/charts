@@ -67,7 +67,9 @@ The following table lists the configurable parameters of the Fluentd Cloudwatch 
 | `rbac.create`                   | If true, create & use RBAC resources                                            | `false`                               |
 | `rbac.serviceAccountName`       | existing ServiceAccount to use (ignored if rbac.create=true)                    | `default`                             |
 | `rbac.pspEnabled`               | PodSecuritypolicy                                                               | `false`                               |
-| `rbac.serviceAccountAnnotations`| Additional Service Account annotations	                                        | `{}`                                  |
+| `rbac.serviceAccountAnnotations`| Additional Service Account annotations                                          | `{}`                                  |
+| `volumeMounts`                  | Add volume mounts to daemon set                                                 | `[]`                                  |
+| `volumes`                       | Add volumes to daemon set                                                       | `[]`                                  |
 | `tolerations`                   | Add tolerations                                                                 | `[]`                                  |
 | `extraVars`                     | Add pod environment variables (must be specified as a single line object)       | `[]`                                  |
 | `updateStrategy`                | Define daemonset update strategy                                                | `OnDelete`                            |

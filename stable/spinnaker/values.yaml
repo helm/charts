@@ -7,6 +7,8 @@ halyard:
   # Set to false to disable persistence data volume for halyard
   persistence:
     enabled: true
+  # Provide additional parameters to halyard deploy apply command
+  additionalInstallParameters: []
   # Provide a config map with Hal commands that will be run the core config (storage)
   # The config map should contain a script in the config.sh key
   additionalScripts:
@@ -145,6 +147,10 @@ dockerRegistries:
 #   username: _json_key
 #   password: '<INSERT YOUR SERVICE ACCOUNT JSON HERE>'
 #   email: 1234@5678.com
+# - name: ecr
+#   address: <AWS-ACCOUNT-ID>.dkr.ecr.<REGION>.amazonaws.com
+#   username: AWS
+#   passwordCommand: "aws --region <REGION> ecr get-authorization-token --output text --query 'authorizationData[].authorizationToken' | base64 -d | sed 's/^AWS://'"
 
 # If you don't want to put your passwords into a values file
 # you can use a pre-created secret instead of putting passwords
@@ -250,7 +256,8 @@ redis:
 # Minio is not exposed publically
 minio:
   enabled: true
-  imageTag: RELEASE.2019-02-13T19-48-27Z
+  image:
+    tag: RELEASE.2018-08-25T01-56-38Z
   serviceType: ClusterIP
   accessKey: spinnakeradmin
   secretKey: spinnakeradmin

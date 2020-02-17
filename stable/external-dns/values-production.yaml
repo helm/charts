@@ -13,7 +13,7 @@
 image:
   registry: docker.io
   repository: bitnami/external-dns
-  tag: 0.5.17-debian-9-r50
+  tag: 0.6.0-debian-10-r0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -40,13 +40,34 @@ sources:
 # - crd
 
 ## DNS provider where the DNS records will be created. Available providers are:
-## - aws, azure, cloudflare, coredns, designate, digitalocoean, google, infoblox, rfc2136
+## - aws, azure, cloudflare, coredns, designate, digitalocoean, google, infoblox, rfc2136, transip
 ##
 provider: aws
 
-## Whether to publish DNS records for ClusterIP services or not (optional)
+## Flags related to processing sources
+## ref: https://github.com/kubernetes-incubator/external-dns/blob/master/pkg/apis/externaldns/types.go#L272
+##
+## Limit sources of endpoints to a specific namespace (default: all namespaces)
+##
+namespace: ""
+## Templated strings that are used to generate DNS names from sources that don't define a hostname themselves
+##
+fqdnTemplates: []
+## Combine FQDN template and annotations instead of overwriting
+##
+combineFQDNAnnotation: false
+## Ignore hostname annotation when generating DNS names, valid only when fqdn-template is set
+##
+ignoreHostnameAnnotation: false
+## Allow external-dns to publish DNS records for ClusterIP services
 ##
 publishInternalServices: false
+## Allow external-dns to publish host-ip for headless services
+##
+publishHostIP: false
+## The service types to take care about (default: all, options: ClusterIP, NodePort, LoadBalancer, ExternalName)
+##
+serviceTypeFilter: []
 
 ## AWS configuration to be set via arguments/env. variables
 ##
@@ -59,6 +80,11 @@ aws:
     ## pre external-dns 0.5.9 home dir should be `/root/.aws`
     ##
     mountPath: "/.aws"
+    ## Use an existing secret with key "credentials" defined.
+    ## This ignores aws.credentials.secretKey, and aws.credentials.accessKey
+    ##
+    # secretName:
+
   ## AWS region
   ##
   region: "us-east-1"
@@ -77,6 +103,9 @@ aws:
   ## Enable AWS Prefer CNAME. Available values are: true, false
   ##
   preferCNAME: ""
+  ## Enable AWS evaluation of target health. Available values are: true, false
+  ##
+  evaluateTargetHealth: ""  
 
 ## Azure configuration to be set via arguments/env. variables
 ##
@@ -118,6 +147,10 @@ cloudflare:
   ## `CF_API_KEY` to set in the environment
   ##
   apiKey: ""
+  ## Use an existing secret with keys "cloudflare_api_token" or "cloudflare_api_key" defined.
+  ## This ignores cloudflare.apiToken, and cloudflare.apiKey
+  ##
+  # secretName:
   ## `CF_API_EMAIL` to set in the environment
   ##
   email: ""
@@ -184,6 +217,10 @@ digitalocean:
   ## `DO_TOKEN` to set in the environment
   ##
   apiToken: ""
+  ## Use an existing secret with key "digitalocean_api_token" defined.
+  ## This ignores digitalocean.apiToken
+  ##
+  # secretName:
 
 ## Google configuration to be set via arguments/env. variables
 ##
@@ -194,6 +231,7 @@ google:
   ## Google Application Credentials
   ##
   serviceAccountSecret: ""
+  serviceAccountSecretKey: "credentials.json"
   serviceAccountKey: ""
 
 ## Infoblox configuration to be set via arguments/env. variables
@@ -231,6 +269,16 @@ pdns:
   apiPort: "8081"
   apiKey: ""
 
+## TransIP configuration to be set via arguments/env. variables
+##
+transip:
+  ## Account name to be used
+  ##
+  account: ""
+  ##
+  ## API key that is authorised for the account
+  apiKey: ""
+
 ## Limit possible target zones by domain suffixes (optional)
 ##
 domainFilters: []
@@ -246,6 +294,9 @@ dryRun: false
 ## Adjust the interval for DNS updates
 ##
 interval: "1m"
+## When enabled, triggers run loop on create/update/delete events (optional, in addition of regular interval)
+##
+triggerLoopOnEvent: false
 ## Verbosity of the ExternalDNS logs. Available values are:
 ## - panic, debug, info, warn, error, fatal
 ##

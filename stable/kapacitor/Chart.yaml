@@ -15,4 +15,6 @@ sources:
 maintainers:
 - name: jackzampolin
   email: jack@influxdb.com
+- name: aisuko
+  email: urakiny@gmail.com
 engine: gotpl

@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```console
-$ helm install stable/moodle
+$ helm install my-release stable/moodle
 ```
 
 ## Introduction
@@ -28,7 +28,7 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/moodle
+$ helm install my-release stable/moodle
 ```
 
 The command deploys Moodle on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
@@ -61,6 +61,7 @@ The following table lists the configurable parameters of the Moodle chart and th
 | `image.pullSecrets`                        | Specify docker-registry secret names as an array                                                    | `[]` (does not add image pull secrets to deployed pods)      |
 | `nameOverride`                             | String to partially override moodle.fullname template with a string (will prepend the release name) | `nil`                                                        |
 | `fullnameOverride`                         | String to fully override moodle.fullname template with a string                                     | `nil`                                                        |
+| `moodleSkipInstall`                        | Skip moodle installation wizard (`no` / `yes`)                                                      | `no`                                                         |
 | `moodleUsername`                           | User of the application                                                                             | `user`                                                       |
 | `moodlePassword`                           | Application password                                                                                | _random 10 character alphanumeric string_                    |
 | `moodleEmail`                              | Admin email                                                                                         | `user@example.com`                                           |
@@ -137,7 +138,7 @@ The above parameters map to the env variables defined in [bitnami/moodle](http:/
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install --name my-release \
+$ helm install my-release \
   --set moodleUsername=admin,moodlePassword=password,mariadb.mariadbRootPassword=secretpassword \
     stable/moodle
 ```
@@ -147,7 +148,7 @@ The above command sets the Moodle administrator account username and password to
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml stable/moodle
+$ helm install my-release -f values.yaml stable/moodle
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

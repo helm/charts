@@ -1,20 +1,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ template "kong.fullname" . }}"
+  name: {{ template "kong.fullname" . }}
   labels:
-    app: "{{ template "kong.name" . }}"
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
-    component: app
+    {{- include "kong.metaLabels" . | nindent 4 }}
+    app.kubernetes.io/component: app
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "kong.name" . }}
-      release: {{ .Release.Name }}
-      component: app
+      {{- include "kong.selectorLabels" . | nindent 6 }}
   {{- if .Values.updateStrategy }}
   strategy:
 {{ toYaml .Values.updateStrategy | indent 4 }}
@@ -23,6 +18,9 @@ spec:
   template:
     metadata:
       annotations:
+        {{- if .Values.ingressController.admissionWebhook.enabled }}
+        checksum/admission-webhook.yaml: {{ include (print $.Template.BasePath "/admission-webhook.yaml") . | sha256sum }}
+        {{- end }}
         {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off" )) }}
         {{- if .Values.dblessConfig.config }}
         checksum/dbless.config: {{ toYaml .Values.dblessConfig.config | sha256sum }}
@@ -32,9 +30,8 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
         {{- end }}
       labels:
-        app: {{ template "kong.name" . }}
-        release: {{ .Release.Name }}
-        component: app
+        {{- include "kong.metaLabels" . | nindent 8 }}
+        app.kubernetes.io/component: app
     spec:
       {{- if or .Values.ingressController.enabled .Values.podSecurityPolicy.enabled }}
       serviceAccountName: {{ template "kong.serviceAccountName" . }}
@@ -53,143 +50,11 @@ spec:
       {{- if .Values.ingressController.enabled }}
       {{- include "kong.controller-container" . | nindent 6 }}
       {{ end }}
-      - name: {{ template "kong.name" . }}
+      - name: "proxy"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
-        - name: KONG_LUA_PACKAGE_PATH
-          value: "/opt/?.lua;;"
-        {{- if not .Values.env.admin_listen }}
-        {{- if .Values.admin.useTLS }}
-        - name: KONG_ADMIN_LISTEN
-          value: "0.0.0.0:{{ .Values.admin.containerPort }} ssl"
-        {{- else }}
-        - name: KONG_ADMIN_LISTEN
-          value: 0.0.0.0:{{ .Values.admin.containerPort }}
-        {{- end }}
-        {{- end }}
-        {{- if .Values.admin.ingress.enabled }}
-        - name: KONG_ADMIN_API_URI
-          value: {{ include "kong.ingress.serviceUrl" .Values.admin.ingress }}
-        {{- end }}
-        {{- if not .Values.env.proxy_listen }}
-        - name: KONG_PROXY_LISTEN
-          value: {{ template "kong.kongProxyListenValue" . }}
-        {{- end }}
-        {{- if and (not .Values.env.admin_gui_listen) (.Values.enterprise.enabled) }}
-        - name: KONG_ADMIN_GUI_LISTEN
-          value: {{ template "kong.kongManagerListenValue" . }}
-        {{- end }}
-        {{- if and (.Values.manager.ingress.enabled) (.Values.enterprise.enabled) }}
-        - name: KONG_ADMIN_GUI_URL
-          value: {{ include "kong.ingress.serviceUrl" .Values.manager.ingress }}
-        {{- end }}
-        {{- if and (not .Values.env.portal_gui_listen) (.Values.enterprise.enabled) (.Values.enterprise.portal.enabled) }}
-        - name: KONG_PORTAL_GUI_LISTEN
-          value: {{ template "kong.kongPortalListenValue" . }}
-        {{- end }}
-        {{- if and (.Values.portal.ingress.enabled) (.Values.enterprise.enabled) (.Values.enterprise.portal.enabled) }}
-        - name: KONG_PORTAL_GUI_HOST
-          value: {{ .Values.portal.ingress.hostname }}
-        {{- if .Values.portal.ingress.tls }}
-        - name: KONG_PORTAL_GUI_PROTOCOL
-          value: https
-        {{- else }}
-        - name: KONG_PORTAL_GUI_PROTOCOL
-          value: http
-        {{- end }}
-        {{- end }}
-        {{- if and (not .Values.env.portal_api_listen) (.Values.enterprise.enabled) (.Values.enterprise.portal.enabled) }}
-        - name: KONG_PORTAL_API_LISTEN
-          value: {{ template "kong.kongPortalApiListenValue" . }}
-        {{- end }}
-        {{- if and (.Values.portalapi.ingress.enabled) (.Values.enterprise.enabled) (.Values.enterprise.portal.enabled) }}
-        - name: KONG_PORTAL_API_URL
-          value: {{ include "kong.ingress.serviceUrl" .Values.portalapi.ingress }}
-        {{- end }}
-        - name: KONG_NGINX_DAEMON
-          value: "off"
-        {{- if .Values.enterprise.enabled }}
-        {{- if .Values.enterprise.vitals.enabled }}
-        - name: KONG_VITALS
-          value: "on"
-        {{- end }}
-        {{- if .Values.enterprise.portal.enabled }}
-        - name: KONG_PORTAL
-          value: "on"
-        {{- if .Values.enterprise.portal.portal_auth }}
-        - name: KONG_PORTAL_AUTH
-          value: {{ .Values.enterprise.portal.portal_auth }}
-        - name: KONG_PORTAL_SESSION_CONF
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.enterprise.portal.session_conf_secret }}
-              key: portal_session_conf
-        {{- end }}
-        {{- end }}
-        {{- if .Values.enterprise.rbac.enabled }}
-        - name: KONG_ENFORCE_RBAC
-          value: "on"
-        - name: KONG_ADMIN_GUI_AUTH
-          value: {{ .Values.enterprise.rbac.admin_gui_auth | default "basic-auth" }}
-        - name: KONG_ADMIN_GUI_AUTH_CONF
-          value: '{{ toJson .Values.enterprise.rbac.admin_gui_auth_conf }}'
-        - name: KONG_ADMIN_GUI_SESSION_CONF
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.enterprise.rbac.session_conf_secret }}
-              key: admin_gui_session_conf
-        {{- end }}
-        {{- if .Values.enterprise.smtp.enabled }}
-        - name: KONG_PORTAL_EMAILS_FROM
-          value: {{ .Values.enterprise.smtp.portal_emails_from }}
-        - name: KONG_PORTAL_EMAILS_REPLY_TO
-          value: {{ .Values.enterprise.smtp.portal_emails_reply_to }}
-        - name: KONG_ADMIN_EMAILS_FROM
-          value: {{ .Values.enterprise.smtp.admin_emails_from }}
-        - name: KONG_ADMIN_EMAILS_REPLY_TO
-          value: {{ .Values.enterprise.smtp.admin_emails_reply_to }}
-        - name: KONG_SMTP_HOST
-          value: {{ .Values.enterprise.smtp.smtp_host }}
-        - name: KONG_SMTP_PORT
-          value: {{ .Values.enterprise.smtp.smtp_port | quote }}
-        - name: KONG_SMTP_STARTTLS
-          value: {{ .Values.enterprise.smtp.smtp_starttls | quote }}
-        {{- if .Values.enterprise.smtp.auth.smtp_username }}
-        - name: KONG_SMTP_USERNAME
-          value: {{ .Values.enterprise.smtp.auth.smtp_username }}
-        - name: KONG_SMTP_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.enterprise.smtp.auth.smtp_password_secret }}
-              key: smtp_password
-        {{- end }}
-        {{- else }}
-        - name: KONG_SMTP_MOCK
-          value: "on"
-        {{- end }}
-        {{- include "kong.license" . | nindent 8 }}
-        {{- end }}
-        - name: KONG_NGINX_HTTP_INCLUDE
-          value: /kong/servers.conf
-        {{- if .Values.postgresql.enabled }}
-        - name: KONG_PG_HOST
-          value: {{ template "kong.postgresql.fullname" . }}
-        - name: KONG_PG_PORT
-          value: "{{ .Values.postgresql.service.port }}"
-        - name: KONG_PG_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "kong.postgresql.fullname" . }}
-              key: postgresql-password
-        {{- end }}
-        {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
-        - name: KONG_DECLARATIVE_CONFIG
-          value: "/kong_dbless/kong.yml"
-        {{- end }}
-        - name: KONG_PLUGINS
-          value: {{ template "kong.plugins" . }}
-        {{- include "kong.env" .  | indent 8 }}
+        {{- include "kong.final_env" . | nindent 8 }}
         lifecycle:
           preStop:
             exec:
@@ -287,6 +152,8 @@ spec:
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
     {{- end }}
+      securityContext:
+      {{- include "kong.podsecuritycontext" . | nindent 8 }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}

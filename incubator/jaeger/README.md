@@ -1,4 +1,14 @@
-# Jaeger
+# DEPRECATED Jaeger
+
+**This chart has been deprecated and moved to its new home:**
+
+- **GitHub repo:** https://github.com/jaegertracing/helm-charts
+- **Charts repo:** https://jaegertracing.github.io/helm-charts
+
+To add the repo:
+```
+$ helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
+```
 
 [Jaeger](http://jaeger.readthedocs.io/en/latest/) is a distributed tracing system.
 

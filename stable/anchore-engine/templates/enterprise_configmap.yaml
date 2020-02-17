@@ -115,4 +115,18 @@ data:
         ssl_key: "/home/anchore/certs/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}"
         {{- end }}
       {{- end }}
+      {{- if .Values.anchoreEnterpriseNotifications.enabled }}
+      notifications:
+        enabled: true
+        require_auth: true
+        endpoint_hostname: {{ template "anchore-engine.enterprise-notifications.fullname" . }}
+        listen: '0.0.0.0'
+        port: {{ .Values.anchoreEnterpriseNotifications.service.port }}
+        authorization_handler: external
+        authorization_handler_config:
+          endpoint: "http://localhost:{{- .Values.anchoreEnterpriseRbac.service.authPort }}"
+        cycle_timers:
+          {{- toYaml .Values.anchoreEnterpriseNotifications.cycleTimers | nindent 10 }}
+        ui_url: {{ include "anchore-engine.enterprise-ui.fullname" . | quote }}
+      {{- end }}
 {{- end -}}

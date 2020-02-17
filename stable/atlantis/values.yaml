@@ -53,6 +53,9 @@ orgWhitelist: <replace-me>
   #   insteadOf = ssh://git@gitlab.com
 # Source: https://stackoverflow.com/questions/42148841/github-clone-with-oauth-access-token
 
+# If managing secrets outside the chart for the gitconfig, use this variable to reference the secret name
+ # gitconfigSecretName: 'mygitconfigsecret'
+
 # To specify AWS credentials to be mapped to ~/.aws:
 # aws:
 #   credentials: |
@@ -79,7 +82,7 @@ serviceAccountSecrets:
 
 image:
   repository: runatlantis/atlantis
-  tag: v0.8.2
+  tag: v0.11.1
   pullPolicy: IfNotPresent
 
 ## Optionally specify an array of imagePullSecrets.
@@ -192,6 +195,13 @@ serviceAccount:
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
+  # Annotations for the Service Account
+  # Example:
+  #
+  # annotations:
+  #   annotation1: value
+  #   annotation2: value
+  annotations: {}
 
 # tlsSecretName: tls
 

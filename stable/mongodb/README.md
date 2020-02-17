@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```bash
-$ helm install stable/mongodb
+$ helm install my-release stable/mongodb
 ```
 
 ## Introduction
@@ -26,7 +26,7 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/mongodb
+$ helm install my-release stable/mongodb
 ```
 
 The command deploys MongoDB on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
@@ -63,7 +63,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `volumePermissions.enabled`                        | Enable init container that changes volume permissions in the data directory (for cases where the default k8s `runAsUser` and `fsUser` values do not work) | `false`                                                  |
 | `volumePermissions.image.registry`                 | Init container volume-permissions image registry                                                                                                          | `docker.io`                                              |
 | `volumePermissions.image.repository`               | Init container volume-permissions image name                                                                                                              | `bitnami/minideb`                                        |
-| `volumePermissions.image.tag`                      | Init container volume-permissions image tag                                                                                                               | `stretch`                                                |
+| `volumePermissions.image.tag`                      | Init container volume-permissions image tag                                                                                                               | `buster`                                                 |
 | `volumePermissions.image.pullPolicy`               | Init container volume-permissions image pull policy                                                                                                       | `Always`                                                 |
 | `volumePermissions.resources`                      | Init container resource requests/limit                                                                                                                    | `nil`                                                    |
 | `clusterDomain`                                    | Default Kubernetes cluster domain                                                                                                                         | `cluster.local`                                          |
@@ -75,7 +75,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `mongodbDatabase`                                  | Database to create                                                                                                                                        | `nil`                                                    |
 | `mongodbEnableIPv6`                                | Switch to enable/disable IPv6 on MongoDB                                                                                                                  | `false`                                                  |
 | `mongodbDirectoryPerDB`                            | Switch to enable/disable DirectoryPerDB on MongoDB                                                                                                        | `false`                                                  |
-| `mongodbSystemLogVerbosity`                        | MongoDB systen log verbosity level                                                                                                                        | `0`                                                      |
+| `mongodbSystemLogVerbosity`                        | MongoDB system log verbosity level                                                                                                                        | `0`                                                      |
 | `mongodbDisableSystemLog`                          | Whether to disable MongoDB system log or not                                                                                                              | `false`                                                  |
 | `mongodbExtraFlags`                                | MongoDB additional command line flags                                                                                                                     | `[]`                                                     |
 | `service.name`                                     | Kubernetes service name                                                                                                                                   | `nil`                                                    |
@@ -115,6 +115,12 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `securityContext.fsGroup`                          | Group ID for the container                                                                                                                                | `1001`                                                   |
 | `securityContext.runAsUser`                        | User ID for the container                                                                                                                                 | `1001`                                                   |
 | `schedulerName`                                    | Name of the k8s scheduler (other than default)                                                                                                            | `nil`                                                    |
+| `sidecars`                                         | Add additional containers to pod                                                                                                                          | `[]`                                                     |
+| `extraVolumes`                                     | Add additional volumes to deployment                                                                                                                      | `[]`                                                     |
+| `extraVolumeMounts`                                | Add additional volumes mounts to pod                                                                                                                      | `[]`                                                     |
+| `sidecarsArbiter`                                  | Add additional containers to arbiter pod                                                                                                                  | `[]`                                                     |
+| `extraVolumesArbiter`                              | Add additional volumes to arbiter deployment                                                                                                              | `[]`                                                     |
+| `extraVolumeMountsArbiter`                         | Add additional volumes mounts to arbiter pod                                                                                                              | `[]`                                                     |
 | `persistence.enabled`                              | Use a PVC to persist data                                                                                                                                 | `true`                                                   |
 | `persistence.mountPath`                            | Path to mount the volume at                                                                                                                               | `/bitnami/mongodb`                                       |
 | `persistence.subPath`                              | Subdirectory of the volume to mount at                                                                                                                    | `""`                                                     |
@@ -123,6 +129,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `persistence.size`                                 | Size of data volume                                                                                                                                       | `8Gi`                                                    |
 | `persistence.annotations`                          | Persistent Volume annotations                                                                                                                             | `{}`                                                     |
 | `persistence.existingClaim`                        | Name of an existing PVC to use (avoids creating one if this is given)                                                                                     | `nil`                                                    |
+| `useStatefulSet`                                   | Set to true to use StatefulSet instead of Deployment even when replicaSet.enalbed=false                                                                   | `nil`                                                    |
 | `extraInitContainers`                              | Additional init containers as a string to be passed to the `tpl` function                                                                                 | `{}`                                                     |
 | `livenessProbe.enabled`                            | Enable/disable the Liveness probe                                                                                                                         | `true`                                                   |
 | `livenessProbe.initialDelaySeconds`                | Delay before liveness probe is initiated                                                                                                                  | `30`                                                     |
@@ -181,7 +188,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
   --set mongodbRootPassword=secretpassword,mongodbUsername=my-user,mongodbPassword=my-password,mongodbDatabase=my-database \
     stable/mongodb
 ```
@@ -191,7 +198,7 @@ The above command sets the MongoDB `root` account password to `secretpassword`. 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/mongodb
+$ helm install my-release -f values.yaml stable/mongodb
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

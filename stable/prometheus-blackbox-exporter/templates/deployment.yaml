@@ -1,3 +1,4 @@
+{{- if (eq .Values.kind "Deployment") }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -58,8 +59,13 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
             readOnlyRootFilesystem: {{ .Values.readOnlyRootFilesystem }}
+            {{- if .Values.allowIcmp }}
+            capabilities:
+              add: ["NET_RAW"]
+            {{- else }}
             runAsNonRoot: {{ .Values.runAsNonRoot  }}
             runAsUser: {{ .Values.runAsUser }}
+            {{- end }}
           args:
 {{- if .Values.config }}
             - "--config.file=/config/blackbox.yaml"
@@ -85,6 +91,18 @@ spec:
           volumeMounts:
             - mountPath: /config
               name: config
+          {{- range .Values.extraConfigmapMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              subPath: {{ .subPath | default "" }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
+          {{- range .Values.extraSecretMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              subPath: {{ .subPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
       volumes:
         - name: config
 {{- if .Values.secretConfig }}
@@ -93,4 +111,17 @@ spec:
 {{- else }}
           configMap:
             name: {{ template "prometheus-blackbox-exporter.fullname" . }}
+{{- end }}
+      {{- range .Values.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
+            defaultMode: {{ .defaultMode }}
+      {{- end }}
+      {{- range .Values.extraSecretMounts }}
+        - name: {{ .name }}
+          secret:
+            secretName: {{ .secretName }}
+            defaultMode: {{ .defaultMode }}
+      {{- end }}
 {{- end }}

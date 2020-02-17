@@ -7,6 +7,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: {{ printf "%s-%s" (include "prometheus-operator.fullname" .) "kubernetes-resources" | trunc 63 | trimSuffix "-" }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "prometheus-operator.name" . }}
 {{ include "prometheus-operator.labels" . | indent 4 }}
@@ -24,7 +25,7 @@ spec:
     - alert: KubeCPUOvercommit
       annotations:
         message: Cluster has overcommitted CPU resource requests for Pods and cannot tolerate node failure.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubecpuovercommit
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubecpuovercommit
       expr: |-
         sum(namespace:kube_pod_container_resource_requests_cpu_cores:sum)
           /
@@ -37,7 +38,7 @@ spec:
     - alert: KubeMemOvercommit
       annotations:
         message: Cluster has overcommitted memory resource requests for Pods and cannot tolerate node failure.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubememovercommit
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubememovercommit
       expr: |-
         sum(namespace:kube_pod_container_resource_requests_memory_bytes:sum)
           /
@@ -52,7 +53,7 @@ spec:
     - alert: KubeCPUOvercommit
       annotations:
         message: Cluster has overcommitted CPU resource requests for Namespaces.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubecpuovercommit
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubecpuovercommit
       expr: |-
         sum(kube_resourcequota{job="kube-state-metrics", type="hard", resource="cpu"})
           /
@@ -64,7 +65,7 @@ spec:
     - alert: KubeMemOvercommit
       annotations:
         message: Cluster has overcommitted memory resource requests for Namespaces.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubememovercommit
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubememovercommit
       expr: |-
         sum(kube_resourcequota{job="kube-state-metrics", type="hard", resource="memory"})
           /
@@ -76,7 +77,7 @@ spec:
     - alert: KubeQuotaExceeded
       annotations:
         message: Namespace {{`{{ $labels.namespace }}`}} is using {{`{{ $value | humanizePercentage }}`}} of its {{`{{ $labels.resource }}`}} quota.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubequotaexceeded
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubequotaexceeded
       expr: |-
         kube_resourcequota{job="kube-state-metrics", type="used"}
           / ignoring(instance, job, type)
@@ -88,7 +89,7 @@ spec:
     - alert: CPUThrottlingHigh
       annotations:
         message: '{{`{{ $value | humanizePercentage }}`}} throttling of CPU in namespace {{`{{ $labels.namespace }}`}} for container {{`{{ $labels.container }}`}} in pod {{`{{ $labels.pod }}`}}.'
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-cputhrottlinghigh
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-cputhrottlinghigh
       expr: |-
         sum(increase(container_cpu_cfs_throttled_periods_total{container!="", }[5m])) by (container, pod, namespace)
           /

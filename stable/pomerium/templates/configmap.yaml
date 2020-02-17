@@ -32,6 +32,9 @@ data:
 {{- end -}}
 
 {{- end -}}
+{{- if .Values.forwardAuth.enabled }}
+    forward_auth_url: https://{{ template "pomerium.forwardAuth.name" . }}
+{{- end -}}
 {{- if .Values.config.policy }}
     policy: 
 {{ toYaml .Values.config.policy | indent 6 }}

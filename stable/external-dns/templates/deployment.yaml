@@ -14,7 +14,7 @@ spec:
         {{- if or .Values.podAnnotations .Values.metrics.enabled }}
         {{ include "external-dns.podAnnotations" . | nindent 8 }}
         {{- end }}
-        {{- if or (and .Values.aws.credentials.secretKey .Values.aws.credentials.accessKey) (or .Values.cloudflare.apiToken .Values.cloudflare.apiKey) .Values.digitalocean.apiToken (and .Values.infoblox.wapiUsername .Values.infoblox.wapiPassword) .Values.rfc2136.tsigSecret .Values.extraEnv .Values.google.serviceAccountKey }}
+        {{- if (include "external-dns.createSecret" .) }}
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
         {{- end }}
         {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
@@ -57,8 +57,29 @@ spec:
         {{- if .Values.dryRun }}
         - --dry-run
         {{- end }}
+        {{- if .Values.triggerLoopOnEvent }}
+        - --events
+        {{- end }}
+        {{- if .Values.namespace }}
+        - --namespace={{ .Values.namespace }}
+        {{- end }}
+        {{- if .Values.fqdnTemplates }}
+        - --fqdn-template={{ join "," .Values.fqdnTemplates }}{{/* Explicitly wants comma separated list */}}
+        {{- end }}
+        {{- if .Values.combineFQDNAnnotation }}
+        - --combine-fqdn-annotation
+        {{- end }}
+        {{- if and .Values.ignoreHostnameAnnotation .Values.fqdnTemplates }}
+        - --ignore-hostname-annotation
+        {{- end }}
         {{- if .Values.publishInternalServices }}
         - --publish-internal-services
+        {{- end }}
+        {{- if .Values.publishHostIP }}
+        - --publish-host-ip
+        {{- end }}
+        {{- range .Values.serviceTypeFilter }}
+        - --service-type-filter={{ . }}
         {{- end }}
         {{- range .Values.domainFilters }}
         - --domain-filter={{ . }}
@@ -111,10 +132,16 @@ spec:
         {{- if .Values.aws.preferCNAME }}
         - --aws-prefer-cname
         {{- end }}
+        {{- if and (kindIs "bool" .Values.aws.evaluateTargetHealth) (not .Values.aws.evaluateTargetHealth) }}
+        - --no-aws-evaluate-target-health
+        {{- end }}
         # Azure Arguments
-        {{- if eq .Values.provider "azure" }}
+        {{- if or (eq .Values.provider "azure") (eq .Values.provider "azure-private-dns") }}
         {{- if .Values.azure.resourceGroup }}
         - --azure-resource-group={{ .Values.azure.resourceGroup }}
+        {{- end }}
+        {{- if .Values.azure.subscriptionId }}
+        - --azure-subscription-id={{ .Values.azure.subscriptionId }}
         {{- end }}
         {{- end }}
         # Cloudflare arguments
@@ -165,6 +192,11 @@ spec:
         - --pdns-server={{ .Values.pdns.apiUrl }}:{{ .Values.pdns.apiPort }}
         - --pdns-api-key=$(PDNS_API_KEY)
         {{- end }}
+        # TransIP arguments
+        {{- if eq .Values.provider "transip" }}
+        - --transip-account={{ .Values.transip.account }}
+        - --transip-keyfile=/transip/transip-api-key
+        {{- end }}
         # Extra arguments
         {{- range $key, $value := .Values.extraArgs }}
           {{- if $value }}
@@ -189,19 +221,34 @@ spec:
           value: {{ .Values.aws.credentials.mountPath }}/credentials
         {{- end }}
         {{- end }}
+        # Azure Private DNS variables 
+        {{- if eq .Values.provider "azure-private-dns" }}
+        {{- if .Values.azure.tenantId }}
+        - name: AZURE_TENANT_ID
+          value: {{ .Values.azure.tenantId }}
+        {{- end }}
+        {{- if .Values.azure.aadClientId }}
+        - name: AZURE_CLIENT_ID
+          value: {{ .Values.azure.aadClientId }}
+        {{- end }}
+        {{- if .Values.azure.aadClientSecret }}
+        - name: AZURE_CLIENT_SECRET
+          value: {{ .Values.azure.aadClientSecret }}
+        {{- end }}
+        {{- end }}
         # Cloudflare environment variables
         {{- if eq .Values.provider "cloudflare" }}
-        {{- if .Values.cloudflare.apiToken }}
+        {{- if or .Values.cloudflare.apiToken .Values.cloudflare.secretName }}
         - name: CF_API_TOKEN
           valueFrom:
             secretKeyRef:
-              name: {{ template "external-dns.fullname" . }}
+              name: {{ template "external-dns.secretName" . }}
               key: cloudflare_api_token
-        {{- else }}
+        {{- else if or .Values.cloudflare.apiKey .Values.cloudflare.secretName }}
         - name: CF_API_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ template "external-dns.fullname" . }}
+              name: {{ template "external-dns.secretName" . }}
               key: cloudflare_api_key
         - name: CF_API_EMAIL
           value: {{ required "cloudflare.email is required if cloudflare.apiToken is not provided" .Values.cloudflare.email | quote }}
@@ -221,11 +268,11 @@ spec:
         {{- end }}
         {{- end }}
         # DigitalOcean environment variables
-        {{- if eq .Values.provider "digitalocean" }}
+        {{- if and (eq .Values.provider "digitalocean") (or .Values.digitalocean.apiToken .Values.digitalocean.secretName) }}
         - name: DO_TOKEN
           valueFrom:
             secretKeyRef:
-              name: {{ template "external-dns.fullname" . }}
+              name: {{ template "external-dns.secretName" . }}
               key: digitalocean_api_token
         {{- end }}
         # Google environment variables
@@ -249,12 +296,12 @@ spec:
         - name: EXTERNAL_DNS_INFOBLOX_WAPI_USERNAME
           valueFrom:
             secretKeyRef:
-              name: {{ template "external-dns.fullname" . }}
+              name: {{ template "external-dns.secretName" . }}
               key: infoblox_wapi_username
         - name: EXTERNAL_DNS_INFOBLOX_WAPI_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "external-dns.fullname" . }}
+              name: {{ template "external-dns.secretName" . }}
               key: infoblox_wapi_password
         {{- end }}
         {{- end }}
@@ -263,7 +310,7 @@ spec:
         - name: EXTERNAL_DNS_RFC2136_TSIG_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ template "external-dns.fullname" . }}
+              name: {{ template "external-dns.secretName" . }}
               key: rfc2136_tsig_secret
         {{- end }}
         {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
@@ -275,7 +322,7 @@ spec:
         - name: PDNS_API_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ template "external-dns.fullname" . }}
+              name: {{ template "external-dns.secretName" . }}
               key: pdns_api_key
         {{- end }}
         # Extra environment variables
@@ -295,7 +342,7 @@ spec:
         {{- end }}
         volumeMounts:
         # AWS mountPath(s)
-        {{- if and (eq .Values.provider "aws") (or .Values.aws.assumeRoleArn (and .Values.aws.credentials.secretKey .Values.aws.credentials.accessKey)) }}
+        {{- if and (eq .Values.provider "aws") (or (and .Values.aws.credentials.secretKey .Values.aws.credentials.accessKey) .Values.aws.credentials.secretName) }}
         - name: aws-credentials
           mountPath: {{ .Values.aws.credentials.mountPath }}
           readOnly: true
@@ -317,11 +364,9 @@ spec:
           readOnly: true
         {{- end }}
         # Google mountPath(s)
-        {{- if eq .Values.provider "google" }}
-        {{- if or .Values.google.serviceAccountSecret .Values.google.serviceAccountKey }}
+        {{- if and (eq .Values.provider "google") (or .Values.google.serviceAccountKey .Values.google.serviceAccountSecret) }}
         - name: google-service-account
           mountPath: /etc/secrets/service-account/
-        {{- end }}
         {{- end }}
         # Designate mountPath(s)
         {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
@@ -329,22 +374,25 @@ spec:
           mountPath: {{ .Values.designate.customCA.mountPath }}
           readOnly: true
         {{- end }}
+        # TransIP mountPath(s)
+        {{- if (eq .Values.provider "transip") }}
+        - name: transip-api-key
+          mountPath: /transip
+          readOnly: true
+        {{- end }}
       volumes:
       # AWS volume(s)
-      {{- if and (eq .Values.provider "aws") (or .Values.aws.assumeRoleArn (and .Values.aws.credentials.secretKey .Values.aws.credentials.accessKey)) }}
+      {{- if and (eq .Values.provider "aws") (or (and .Values.aws.credentials.secretKey .Values.aws.credentials.accessKey) .Values.aws.credentials.secretName) }}
       - name: aws-credentials
         secret:
-          secretName: {{ template "external-dns.fullname" . }}
+          secretName: {{ template "external-dns.secretName" . }}
       {{- end }}
       # Azure volume(s)
       {{- if eq .Values.provider "azure" }}
       - name: azure-config-file
-        {{- if .Values.azure.secretName }}
+        {{- if or .Values.azure.secretName (and .Values.azure.resourceGroup .Values.azure.tenantId .Values.azure.subscriptionId) }}
         secret:
-          secretName: {{ .Values.azure.secretName }}
-        {{- else if (and .Values.azure.resourceGroup .Values.azure.tenantId .Values.azure.subscriptionId) }}
-        secret:
-          secretName: {{ template "external-dns.fullname" . }}
+          secretName: {{ template "external-dns.secretName" . }}
         {{- else if not .Values.azure.useManagedIdentityExtension }}
         hostPath:
           path: /etc/kubernetes/azure.json
@@ -359,16 +407,15 @@ spec:
           defaultMode: 400
       {{- end }}
       # Google volume(s)
-      {{- if eq .Values.provider "google" }}
-      {{- if .Values.google.serviceAccountSecret }}
+      {{- if and (eq .Values.provider "google") (or .Values.google.serviceAccountKey .Values.google.serviceAccountSecret) }}
       - name: google-service-account
         secret:
-          secretName: {{ .Values.google.serviceAccountSecret | quote }}
-      {{- else if .Values.google.serviceAccountKey }}
-      - name: google-service-account
-        secret:
-          secretName: {{ template "external-dns.fullname" . }}
-      {{- end}}
+          secretName: {{ template "external-dns.secretName" . }}
+          {{- if and .Values.google.serviceAccountSecret .Values.google.serviceAccountSecretKey }}
+          items:
+          - key: {{ .Values.google.serviceAccountSecretKey | quote }}
+            path: credentials.json
+          {{- end }}
       {{- end }}
       # Designate volume(s)
       {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
@@ -378,4 +425,10 @@ spec:
           items:
           - key: {{ .Values.designate.customCA.filename }}
             path: {{ .Values.designate.customCA.filename }}
+      {{- end }}
+      # TransIP volume(s)
+      {{- if (eq .Values.provider "transip") }}
+      - name: transip-api-key
+        secret:
+          name: {{ template "external-dns.fullname" . }}
       {{- end }}

@@ -1,3 +1,12 @@
+# !!DEPRECATED!! Please use https://github.com/datawire/ambassador-chart.
+
+[helm/charts](https://github.com/helm/charts) has been deprecated and will be obsolete by Nov 13 2020. For this reason, the datawire team as retaken ownership of this chart.
+
+The Ambassador Chart is now hosted at [datawire/ambassador-chart](https://github.com/datawire/ambassador-chart).
+
+---
+
+
 # Ambassador
 
 Ambassador is an open source, Kubernetes-native [microservices API gateway](https://www.getambassador.io/about/microservices-api-gateways) built on the [Envoy Proxy](https://www.envoyproxy.io/).
@@ -71,6 +80,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `podAnnotations`                   | Additional annotations for ambassador pods                                      | `{}`                              |
 | `deploymentAnnotations`            | Additional annotations for ambassador DaemonSet/Deployment                      | `{}`                              |
 | `podLabels`                        | Additional labels for ambassador pods                                           |                                   |
+| `extraLabels`                      | Additional labels for ambassador Kubernetes resources                           |                                   |
 | `affinity`                         | Affinity for ambassador pods                                                    | `{}`                              |
 | `priorityClassName`                | The name of the priorityClass for the ambassador DaemonSet/Deployment           | `""`                              |
 | `rbac.create`                      | If `true`, create and use RBAC resources                                        | `true`                            |

@@ -18,6 +18,7 @@ spec:
       hosts:
         - {{ printf "authorize.%s" .Values.config.rootDomain | quote }}
         - {{ printf "authenticate.%s" .Values.config.rootDomain | quote }}
+        - {{ template "pomerium.forwardAuth.name" . }}
       {{- if not .Values.ingress.hosts }}
       {{- range .Values.config.policy }}
         - {{ .from | trimPrefix "https://" | trimPrefix "http://" | quote }}
@@ -36,7 +37,7 @@ spec:
               serviceName: {{ template "pomerium.proxy.fullname" $ }}
               servicePort: https
     {{- end }}
-    {{- if not .Values.ingress.hosts }}
+    {{- if not (or .Values.ingress.hosts .Values.forwardAuth.enabled) }}
     {{- range .Values.config.policy }}
     - host: {{ .from | trimPrefix "https://" | trimPrefix "http://" | quote }}
       http:
@@ -46,6 +47,15 @@ spec:
               serviceName: {{ template "pomerium.proxy.fullname" $ }}
               servicePort: https
     {{- end }}
+    {{- end }}
+    {{- if .Values.forwardAuth.enabled }}
+    - host: {{ template "pomerium.forwardAuth.name" . }}
+      http:
+        paths:
+          - paths:
+            backend:
+              serviceName: {{ template "pomerium.proxy.fullname" . }}
+              servicePort: https
     {{- end }}
     {{- if not .Values.service.authorize.headless }}
     - host:  {{ printf "authorize.%s" .Values.config.rootDomain }}
