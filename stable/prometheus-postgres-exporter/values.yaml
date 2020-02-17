@@ -64,7 +64,7 @@ config:
     host:
     user: postgres
     # Only one of password and passwordSecret can be specified
-    password: somepassword
+    password:
     # Specify passwordSecret if DB password is stored in secret.
     passwordSecret: {}
     # Secret name
