@@ -16,7 +16,7 @@ spec:
         {{- include "influxdb.selectorLabels" . | nindent 8 }}
     spec:
       containers:
-      - name: {{ template "influxdb.fullname" . }}-set-auth
+      - name: {{ include "influxdb.fullname" . }}-set-auth
         image: "{{ .Values.setDefaultUser.image }}"
         env:
           - name: INFLUXDB_USER
@@ -25,7 +25,7 @@ spec:
                 {{- if .Values.setDefaultUser.user.existingSecret }}
                 name: {{ .Values.setDefaultUser.user.existingSecret -}}
                 {{ else }}
-                name: {{ template "influxdb.fullname" . }}-auth
+                name: {{ include "influxdb.fullname" . }}-auth
                 {{- end }}
                 key: influxdb-user
           - name: INFLUXDB_PASSWORD
@@ -34,14 +34,14 @@ spec:
                 {{- if .Values.setDefaultUser.user.existingSecret }}
                 name: {{ .Values.setDefaultUser.user.existingSecret -}}
                 {{ else }}
-                name: {{ template "influxdb.fullname" . }}-auth
+                name: {{ include "influxdb.fullname" . }}-auth
                 {{- end }}
                 key: influxdb-password
         args:
           - "/bin/sh"
           - "-c"
           - |
-             curl -X POST http://{{ template "influxdb.fullname" . }}:{{ .Values.config.http.bind_address | default 8086 }}/query \
+             curl -X POST http://{{ include "influxdb.fullname" . }}:{{ .Values.config.http.bind_address | default 8086 }}/query \
              --data-urlencode \
              "q=CREATE USER \"${INFLUXDB_USER}\" WITH PASSWORD '${INFLUXDB_PASSWORD}' {{ .Values.setDefaultUser.user.privileges }}"
       restartPolicy: {{ .Values.setDefaultUser.restartPolicy }}
