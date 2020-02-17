@@ -40,7 +40,7 @@ sources:
 # - crd
 
 ## DNS provider where the DNS records will be created. Available providers are:
-## - aws, azure, azure-private-dns, cloudflare, coredns, designate, digitalocean, google, infoblox, rfc2136
+## - aws, azure, azure-private-dns, cloudflare, coredns, designate, digitalocean, google, infoblox, rfc2136, transip
 ##
 provider: aws
 
@@ -268,6 +268,16 @@ pdns:
   apiPort: "8081"
   apiKey: ""
 
+## TransIP configuration to be set via arguments/env. variables
+##
+transip:
+  ## Account name to be used
+  ##
+  account: ""
+  ##
+  ## API key that is authorised for the account
+  apiKey: ""
+
 ## Limit possible target zones by domain suffixes (optional)
 ##
 domainFilters: []
@@ -280,6 +290,9 @@ annotationFilter: ""
 ## When enabled, prints DNS record changes rather than actually performing them
 ##
 dryRun: false
+## When enabled, triggers run loop on create/update/delete events (optional, in addition of regular interval)
+##
+triggerLoopOnEvent: false
 ## Adjust the interval for DNS updates
 ##
 interval: "1m"
