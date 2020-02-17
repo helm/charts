@@ -39,6 +39,20 @@ sources:
 - ingress
 # - crd
 
+## Use a custom CA (optional)
+##
+customCA:
+  enabled: false
+  ## The content of the custom CA file
+  ##
+  content: ""
+  ## Location to mount custom CA
+  ##
+  mountPath: "/etc/ssl/certs"
+  ## Custom CA filename
+  ##
+  filename: "ca-certificates.crt"
+
 ## DNS provider where the DNS records will be created. Available providers are:
 ## - aws, azure, azure-private-dns, cloudflare, coredns, designate, digitalocean, google, infoblox, rfc2136, transip
 ##
@@ -195,23 +209,9 @@ coredns:
 
 ## OpenStack Designate provider configuration to be set via arguments/env. variables
 ##
-designate:
-  ## Use a custom CA (optional)
-  ##
-  customCA:
-    enabled: false
-    ## The content of the custom CA file
-    ##
-    content: ""
-    ## Location to mount custom CA
-    ##
-    mountPath: "/config/designate"
-    ## Custom CA filename
-    ##
-    filename: "designate-ca.pem"
-
+designate: {}
   ## Use a host path custom CA (optional)
-  ##  This conflicts setting the above customCA to true and chart rendering will fail if you set customCA to true and specify customCAHostPath
+  ##  This conflicts with global customCA settings. Chart rendering will fail if you set customCA to true and specify customCAHostPath
   # customCAHostPath: /path/to/cafile
 
   ## Set Openstack environment variables (optional).  Username and password will be saved in a kubernetes secret.
@@ -222,6 +222,7 @@ designate:
   # regionName: "dev"
   # userDomainName: "development"
   # projectName: "myteamname"
+
 ## DigitalOcean configuration to be set via arguments/env. variables
 ##
 digitalocean:

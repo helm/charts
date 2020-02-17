@@ -39,6 +39,20 @@ sources:
 - ingress
 # - crd
 
+## Use a custom CA (optional)
+##
+customCA:
+  enabled: false
+  ## The content of the custom CA file
+  ##
+  content: ""
+  ## Location to mount custom CA
+  ##
+  mountPath: "/etc/ssl/certs"
+  ## Custom CA filename
+  ##
+  filename: "ca-certificates.crt"
+
 ## DNS provider where the DNS records will be created. Available providers are:
 ## - aws, azure, cloudflare, coredns, designate, digitalocoean, google, infoblox, rfc2136, transip
 ##
@@ -193,23 +207,6 @@ coredns:
     ## Will be used by external-dns to authenticate against etcd
     ##
     keyFilename: "key.pem"
-
-## OpenStack Designate provider configuration to be set via arguments/env. variables
-##
-designate:
-  ## Use a custom CA (optional)
-  ##
-  customCA:
-    enabled: false
-    ## The content of the custom CA file
-    ##
-    content: ""
-    ## Location to mount custom CA
-    ##
-    mountPath: "/config/designate"
-    ## Custom CA filename
-    ##
-    filename: "designate-ca.pem"
 
 ## DigitalOcean configuration to be set via arguments/env. variables
 ##
