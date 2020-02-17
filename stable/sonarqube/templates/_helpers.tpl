@@ -12,7 +12,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 */}}
 {{- define "sonarqube.fullname" -}}
 {{- if .Values.fullnameOverride -}}
-{{- printf "%s" .Values.fullnameOverride | trunc 63 -}}
+{{- .Values.fullnameOverride | trunc 63 -}}
 {{- else -}}
 {{- printf "%s-%s" .Release.Name (include "sonarqube.name" .) | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
