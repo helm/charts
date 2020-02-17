@@ -17,7 +17,7 @@ spec:
         {{- if (include "external-dns.createSecret" .) }}
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
         {{- end }}
-        {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
+        {{- if .Values.customCA.enabled }}
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- end }}
     spec:
@@ -269,9 +269,9 @@ spec:
         {{- end }}
         # Designate environment variables
         {{- if eq .Values.provider "designate" }}
-        {{- if .Values.designate.customCA.enabled }}
+        {{- if .Values.customCA.enabled }}
         - name: OPENSTACK_CA_FILE
-          value: {{ .Values.designate.customCA.mountPath }}/{{ .Values.designate.customCA.filename }}
+          value: {{ .Values.customCA.mountPath }}/{{ .Values.customCA.filename }}
         {{- else if .Values.designate.customCAHostPath }}
         - name: OPENSTACK_CA_FILE
           value: {{ .Values.designate.customCAHostPath }}
@@ -406,11 +406,11 @@ spec:
         {{- end }}
         # Designate mountPath(s)
         {{- if eq .Values.provider "designate" }}
-        {{- if and (.Values.designate.customCAHostPath) (.Values.designate.customCA.enabled) }}
-        {{- fail "designate.customCAHostPath cannot be specified with designate.customCA.enabled set to true"}}
-        {{- else if .Values.designate.customCA.enabled }}
+        {{- if and (.Values.designate.customCAHostPath) (.Values.customCA.enabled) }}
+        {{- fail "designate.customCAHostPath cannot be specified with customCA.enabled set to true"}}
+        {{- else if .Values.customCA.enabled }}
         - name: designate-custom-ca
-          mountPath: {{ .Values.designate.customCA.mountPath }}
+          mountPath: {{ .Values.customCA.mountPath }}
           readOnly: true
         {{- else if .Values.designate.customCAHostPath }}
         - name: designate-custom-ca-hostpath
@@ -463,13 +463,13 @@ spec:
       {{- end }}
       # Designate volume(s)
       {{- if eq .Values.provider "designate" }}
-      {{- if .Values.designate.customCA.enabled }}
+      {{- if .Values.customCA.enabled }}
       - name: designate-custom-ca
         configMap:
           name: {{ template "external-dns.fullname" . }}
           items:
-          - key: {{ .Values.designate.customCA.filename }}
-            path: {{ .Values.designate.customCA.filename }}
+          - key: {{ .Values.customCA.filename }}
+            path: {{ .Values.customCA.filename }}
       {{- else if .Values.designate.customCAHostPath }}
       - name: designate-custom-ca-hostpath
         hostPath:
