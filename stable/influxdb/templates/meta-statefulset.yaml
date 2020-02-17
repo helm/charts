@@ -52,20 +52,20 @@ spec:
         {{- end }}
         livenessProbe:
           httpGet:
-            path: {{ .Values.livenessProbe.probePath }}
+            path: /ping
             port: meta
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds | default 30 }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds | default 5 }}
         readinessProbe:
           httpGet:
-            path: {{ .Values.readinessProbe.probePath }}
+            path: /ping
             port: meta
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds | default 5 }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds | default 1 }}
         {{- if .Values.startupProbe.enabled }}
         startupProbe:
           httpGet:
-            path: {{ .Values.startupProbe.probePath }}
+            path: /ping
             port: meta
           failureThreshold: {{ .Values.startupProbe.failureThreshold | default 6 }}
           periodSeconds: {{ .Values.startupProbe.periodSeconds | default 5 }}
