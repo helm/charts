@@ -138,6 +138,9 @@ data:
 {{- end }}
 {{- if .Values.backend.es.logstash_prefix }}
         Logstash_Prefix {{ .Values.backend.es.logstash_prefix }}
+{{- if .Values.backend.es.logstash_prefix_key }}
+        Logstash_Prefix_Key {{ .Values.backend.es.logstash_prefix_key }}
+{{- end }}
 {{ else if .Values.backend.es.index }}
         Index {{ .Values.backend.es.index }}
 {{- end }}
