@@ -27,7 +27,7 @@ spec:
           - name: GRAYLOG_PASSWORD_SECRET
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.existingRootSecret | default (include "graylog.fullname" .) }}
+                name: {{ .Values.graylog.existingRootSecret | default (include "graylog.fullname" .) }}
 
                 key: graylog-password-secret
         volumeMounts:
