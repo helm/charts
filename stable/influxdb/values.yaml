@@ -2,7 +2,7 @@
 ## ref: https://hub.docker.com/r/library/influxdb/tags/
 image:
   repository: "influxdb"
-  tag: "1.7.6-alpine"
+  tag: "1.7.9-alpine"
   pullPolicy: IfNotPresent
   ## If specified, use these secrets to access the images
   # pullSecrets:
