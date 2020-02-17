@@ -95,12 +95,12 @@ spec:
             - name: GRAYLOG_PASSWORD_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.existingRootSecret | default (include "graylog.fullname" .) }}
+                  name: {{ .Values.graylog.existingRootSecret | default (include "graylog.fullname" .) }}
                   key: graylog-password-secret
             - name: GRAYLOG_ROOT_PASSWORD_SHA2
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.existingRootSecret | default (include "graylog.fullname" .) }}
+                  name: {{ .Values.graylog.existingRootSecret | default (include "graylog.fullname" .) }}
                   key: graylog-password-sha2
             {{- range $key, $value := .Values.graylog.env }}
             - name: {{ $key }}
