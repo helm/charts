@@ -43,8 +43,6 @@ spec:
                chown 999:999 -R $(printf "/opt/sonarqube/${1-%s\n}" temp logs data extensions/downloads extensions/plugins/tmp extensions/plugins)'
           image: busybox:1.31
           imagePullPolicy: IfNotPresent
-          securityContext:
-            privileged: true
           volumeMounts:
           - mountPath: /opt/sonarqube/temp
             name: sonarqube
