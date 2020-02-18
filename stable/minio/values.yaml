@@ -222,6 +222,10 @@ buckets: []
   #   policy: none
   #   purge: false
 
+## Additional Annotations for the Kubernetes Batch (make-bucket-job)
+makeBucketJob:
+  annotations:
+
 s3gateway:
   enabled: false
   replicas: 4
