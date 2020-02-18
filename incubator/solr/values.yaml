@@ -29,7 +29,7 @@ terminationGracePeriodSeconds: 180
 # Solr image settings
 image:
   repository: solr
-  tag: 7.7.2
+  tag: 8.4.0
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
