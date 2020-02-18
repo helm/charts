@@ -128,6 +128,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `persistence.size`                   | Size of data volume                             | `10Gi`                                                     |
 | `resources`                          | CPU/Memory resource requests/limits             | Memory: `4Gi`, CPU: `2`                                    |
 | `service.type`                       | k8s service type exposing ports, e.g. `NodePort`| `ClusterIP`                                                |
+| `service.annotations`                | Annotations to apply to cassandra service       | `""`                                                       |
 | `podManagementPolicy`                | podManagementPolicy of the StatefulSet          | `OrderedReady`                                             |
 | `podDisruptionBudget`                | Pod distruption budget                          | `{}`                                                       |
 | `podAnnotations`                     | pod annotations for the StatefulSet             | `{}`                                                       |
