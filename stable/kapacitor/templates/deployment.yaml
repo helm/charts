@@ -29,6 +29,18 @@ spec:
         - name: {{ $key }}
           value: {{ $val | quote }}
         {{- end }}
+        {{- if .Values.existingSecret }}
+        - name: KAPACITOR_INFLUXDB_0_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: influxdb-user
+              name: {{ .Values.existingSecret }}
+        - name: KAPACITOR_INFLUXDB_0_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: influxdb-password
+              name: {{ .Values.existingSecret }}
+        {{- end }}
         ports:
         - containerPort: 9092
         volumeMounts:
