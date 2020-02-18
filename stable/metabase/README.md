@@ -90,7 +90,7 @@ The following table lists the configurable parameters of the Metabase chart and 
 | ingress.hosts                    | Ingress resource hostnames                                  | null              |
 | ingress.path                     | Ingress path                                                | /                 |
 | ingress.labels                   | Ingress labels configuration                                | null              |
-| ingress.annotations              | Ingress annotations configuration                           | null              |
+| ingress.annotations              | Ingress annotations configuration                           | {}                |
 | ingress.tls                      | Ingress TLS configuration                                   | null              |
 | log4jProperties                  | Custom `log4j.properties` file                              | null              |
 | resources                        | Server resource requests and limits                         | {}                |
