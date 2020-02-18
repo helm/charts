@@ -94,6 +94,7 @@ and their default values.
 | `nodeSelector`                                 | Node labels for pod assignment                                                                                                                                                                        | `{}`                                                       |
 | `persistentVolume.accessMode`                  | Persistent volume access modes                                                                                                                                                                        | `[ReadWriteOnce]`                                          |
 | `persistentVolume.annotations`                 | Persistent volume annotations                                                                                                                                                                         | `{}`                                                       |
+| `persistentVolume.labels`                      | Persistent volume labels                                                                                                                                                                              | `{}`                                                       |
 | `persistentVolume.enabled`                     | If `true`, persistent volume claims are created                                                                                                                                                       | `false`                                                    |
 | `persistentVolume.name`                        | Persistent volume name                                                                                                                                                                                | `data`                                                     |
 | `persistentVolume.size`                        | Persistent volume size                                                                                                                                                                                | `8Gi`                                                      |
@@ -279,3 +280,6 @@ The `tpl` function allows us to pass values from `values.yaml` through the templ
 
 * `extraContainers`
 * `extraInitContainers`
+* `persistentVolume.annotations`
+* `persistentVolume.labels`
+* `service.annotations`
