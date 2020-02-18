@@ -194,6 +194,10 @@ spec:
       securityContext:
         {{ toYaml .Values.securityContext | nindent 8 | trim }}
       {{- end }}
+      {{- if .Values.updateStrategy }}
+      strategy:
+        {{ toYaml .Values.updateStrategy | nindent 8 | trim }}
+      {{- end }}
       {{- if eq .Values.cloudProvider "gce" }}
       volumes:
         - name: cloudconfig
