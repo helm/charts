@@ -35,20 +35,24 @@ incompatible breaking change needing manual actions.
 
 This version requires Helm >= 2.12.0.
 
+### To 5.0.0
+
+You have to add --force to your helm upgrade command as the labels of the chart have changed.
+
 ## Configuration
 
 | Parameter                                 | Description                                   | Default                                                 |
 |-------------------------------------------|-----------------------------------------------|---------------------------------------------------------|
 | `replicas`                                | Number of nodes                               | `1`                                                     |
-| `podDisruptionBudget.minAvailable`        | Pod disruption minimum available              | `nil`                                                     |
-| `podDisruptionBudget.maxUnavailable`      | Pod disruption maximum unavailable            | `nil`                                                     |
+| `podDisruptionBudget.minAvailable`        | Pod disruption minimum available              | `nil`                                                   |
+| `podDisruptionBudget.maxUnavailable`      | Pod disruption maximum unavailable            | `nil`                                                   |
 | `deploymentStrategy`                      | Deployment strategy                           | `{ "type": "RollingUpdate" }`                           |
 | `livenessProbe`                           | Liveness Probe settings                       | `{ "httpGet": { "path": "/api/health", "port": 3000 } "initialDelaySeconds": 60, "timeoutSeconds": 30, "failureThreshold": 10 }` |
 | `readinessProbe`                          | Readiness Probe settings                      | `{ "httpGet": { "path": "/api/health", "port": 3000 } }`|
 | `securityContext`                         | Deployment securityContext                    | `{"runAsUser": 472, "fsGroup": 472}`                    |
 | `priorityClassName`                       | Name of Priority Class to assign pods         | `nil`                                                   |
 | `image.repository`                        | Image repository                              | `grafana/grafana`                                       |
-| `image.tag`                               | Image tag (`Must be >= 5.0.0`)                | `6.5.2`                                                 |
+| `image.tag`                               | Image tag (`Must be >= 5.0.0`)                | `6.6.1`                                                 |
 | `image.pullPolicy`                        | Image pull policy                             | `IfNotPresent`                                          |
 | `image.pullSecrets`                       | Image pull secrets                            | `{}`                                                    |
 | `service.type`                            | Kubernetes service type                       | `ClusterIP`                                             |
@@ -73,11 +77,11 @@ This version requires Helm >= 2.12.0.
 | `nodeSelector`                            | Node labels for pod assignment                | `{}`                                                    |
 | `tolerations`                             | Toleration labels for pod assignment          | `[]`                                                    |
 | `affinity`                                | Affinity settings for pod assignment          | `{}`                                                    |
-| `extraInitContainers`                     | Init containers to add to the grafana pod     | `{}` |
-| `extraContainers`                         | Sidecar containers to add to the grafana pod  | `{}` |
+| `extraInitContainers`                     | Init containers to add to the grafana pod     | `{}`                                                    |
+| `extraContainers`                         | Sidecar containers to add to the grafana pod  | `{}`                                                    |
 | `schedulerName`                           | Name of the k8s scheduler (other than default) | `nil`                                                  |
 | `persistence.enabled`                     | Use persistent volume to store data           | `false`                                                 |
-| `persistence.type`                        | Type of persistence (`pvc` or `statefulset`)  | `pvc`                                                 |
+| `persistence.type`                        | Type of persistence (`pvc` or `statefulset`)  | `pvc`                                                   |
 | `persistence.size`                        | Size of persistent volume claim               | `10Gi`                                                  |
 | `persistence.existingClaim`               | Use an existing PVC to persist data           | `nil`                                                   |
 | `persistence.storageClassName`            | Type of persistent volume claim               | `nil`                                                   |
@@ -97,28 +101,28 @@ This version requires Helm >= 2.12.0.
 | `envRenderSecret`                         | Sensible environment variables passed to pods and stored as secret | `{}`                               |
 | `extraSecretMounts`                       | Additional grafana server secret mounts       | `[]`                                                    |
 | `extraVolumeMounts`                       | Additional grafana server volume mounts       | `[]`                                                    |
-| `extraConfigmapMounts`                    | Additional grafana server configMap volume mounts  | `[]`                                               |
-| `extraEmptyDirMounts`                     | Additional grafana server emptyDir volume mounts   | `[]`                                               |
+| `extraConfigmapMounts`                    | Additional grafana server configMap volume mounts | `[]`                                                |
+| `extraEmptyDirMounts`                     | Additional grafana server emptyDir volume mounts | `[]`                                                 |
 | `plugins`                                 | Plugins to be loaded along with Grafana       | `[]`                                                    |
-| `datasources`                             | Configure grafana datasources (passed through tpl) | `{}`                                                    |
-| `notifiers`                               | Configure grafana notifiers | `{}`                                                                      |
+| `datasources`                             | Configure grafana datasources (passed through tpl) | `{}`                                               |
+| `notifiers`                               | Configure grafana notifiers                   | `{}`                                                    |
 | `dashboardProviders`                      | Configure grafana dashboard providers         | `{}`                                                    |
 | `dashboards`                              | Dashboards to import                          | `{}`                                                    |
 | `dashboardsConfigMaps`                    | ConfigMaps reference that contains dashboards | `{}`                                                    |
 | `grafana.ini`                             | Grafana's primary configuration               | `{}`                                                    |
 | `ldap.enabled`                            | Enable LDAP authentication                    | `false`                                                 |
 | `ldap.existingSecret`                     | The name of an existing secret containing the `ldap.toml` file, this must have the key `ldap-toml`. | `""` |
-| `ldap.config  `                           | Grafana's LDAP configuration                  | `""`                                                    |
+| `ldap.config`                             | Grafana's LDAP configuration                  | `""`                                                    |
 | `annotations`                             | Deployment annotations                        | `{}`                                                    |
 | `labels`                                  | Deployment labels                             | `{}`                                                    |
 | `podAnnotations`                          | Pod annotations                               | `{}`                                                    |
 | `podLabels`                               | Pod labels                                    | `{}`                                                    |
 | `podPortName`                             | Name of the grafana port on the pod           | `grafana`                                               |
-| `sidecar.image`                           | Sidecar image                                 | `kiwigrid/k8s-sidecar:0.1.75`                           |
+| `sidecar.image`                           | Sidecar image                                 | `kiwigrid/k8s-sidecar:0.1.99`                           |
 | `sidecar.imagePullPolicy`                 | Sidecar image pull policy                     | `IfNotPresent`                                          |
 | `sidecar.resources`                       | Sidecar resources                             | `{}`                                                    |
 | `sidecar.dashboards.enabled`              | Enables the cluster wide search for dashboards and adds/updates/deletes them in grafana | `false`       |
-| `sidecar.dashboards.SCProvider`           | Enables creation of sidecar provider          | `true`
+| `sidecar.dashboards.SCProvider`           | Enables creation of sidecar provider          | `true`                                                  |
 | `sidecar.dashboards.provider.name`        | Unique name of the grafana provider           | `sidecarProvider`                                       |
 | `sidecar.dashboards.provider.orgid`       | Id of the organisation, to which the dashboards should be added | `1`                                   |
 | `sidecar.dashboards.provider.folder`      | Logical folder in which grafana groups dashboards | `""`                                                |
@@ -126,10 +130,10 @@ This version requires Helm >= 2.12.0.
 | `sidecar.dashboards.provider.allowUiUpdates` | Allow updating provisioned dashboards from the UI | `false`                                          |
 | `sidecar.dashboards.provider.type`        | Provider type                                 | `file`                                                  |
 | `sidecar.dashboards.watchMethod`          | Method to use to detect ConfigMap changes. With WATCH the sidecar will do a WATCH requests, with SLEEP it will list all ConfigMaps, then sleep for 60 seconds. | `WATCH` |
-| `sidecar.skipTlsVerify`                   | Set to true to skip tls verification for kube api calls | `nil`       |
+| `sidecar.skipTlsVerify`                   | Set to true to skip tls verification for kube api calls | `nil`                                         |
 | `sidecar.dashboards.label`                | Label that config maps with dashboards should have to be added | `grafana_dashboard`                                |
-| `sidecar.dashboards.folder`                | Folder in the pod that should hold the collected dashboards (unless `sidecar.dashboards.defaultFolderName` is set). This path will be mounted. | `/tmp/dashboards`    |
-| `sidecar.dashboards.defaultFolderName`                | The default folder name, it will create a subfolder under the `sidecar.dashboards.folder` and put dashboards in there instead | `nil`                                |
+| `sidecar.dashboards.folder`               | Folder in the pod that should hold the collected dashboards (unless `sidecar.dashboards.defaultFolderName` is set). This path will be mounted. | `/tmp/dashboards`    |
+| `sidecar.dashboards.defaultFolderName`    | The default folder name, it will create a subfolder under the `sidecar.dashboards.folder` and put dashboards in there instead | `nil`                                |
 | `sidecar.dashboards.searchNamespace`      | If specified, the sidecar will search for dashboard config-maps inside this namespace. Otherwise the namespace in which the sidecar is running will be used. It's also possible to specify ALL to search in all namespaces | `nil`                                |
 | `sidecar.datasources.enabled`             | Enables the cluster wide search for datasources and adds/updates/deletes them in grafana |`false`       |
 | `sidecar.datasources.label`               | Label that config maps with datasources should have to be added | `grafana_datasource`                               |
@@ -140,24 +144,26 @@ This version requires Helm >= 2.12.0.
 | `admin.existingSecret`                    | The name of an existing secret containing the admin credentials. | `""`                                 |
 | `admin.userKey`                           | The key in the existing admin secret containing the username. | `"admin-user"`                          |
 | `admin.passwordKey`                       | The key in the existing admin secret containing the password. | `"admin-password"`                      |
-| `serviceAccount.annotations`              | ServiceAccount annotations                                                                              |
-| `serviceAccount.create`                   | Create service account | `true` |
+| `serviceAccount.annotations`              | ServiceAccount annotations                    |                                                         |
+| `serviceAccount.create`                   | Create service account                        | `true`                                                  |
 | `serviceAccount.name`                     | Service account name to use, when empty will be set to created account if `serviceAccount.create` is set else to `default` | `` |
 | `serviceAccount.nameTest`                 | Service account name to use for test, when empty will be set to created account if `serviceAccount.create` is set else to `default` | `` |
-| `rbac.create`                             | Create and use RBAC resources | `true` |
+| `rbac.create`                             | Create and use RBAC resources                 | `true`                                                  |
 | `rbac.namespaced`                         | Creates Role and Rolebinding instead of the default ClusterRole and ClusteRoleBindings for the grafana instance  | `false` |
-| `rbac.pspEnabled`                         | Create PodSecurityPolicy (with `rbac.create`, grant roles permissions as well) | `true` |
-| `rbac.pspUseAppArmor`                     | Enforce AppArmor in created PodSecurityPolicy (requires `rbac.pspEnabled`)  | `true` |
-| `rbac.extraRoleRules`                     | Additional rules to add to the Role                                                                     | [] |
-| `rbac.extraClusterRoleRules`              | Additional rules to add to the ClusterRole                                                              | [] |
-| `command`                     | Define command to be executed by grafana container at startup  | `nil` |
-| `testFramework.enabled`                   | Whether to create test-related resources       | `true`                                                 |
-| `testFramework.image`                     | `test-framework` image repository.             | `dduportal/bats`                                       |
-| `testFramework.tag`                       | `test-framework` image tag.                    | `0.4.0`                                                |
-| `testFramework.securityContext`           | `test-framework` securityContext                | `{}`                                                   |
-| `downloadDashboards.env`                  | Environment variables to be passed to the `download-dashboards` container | `{}`                                                   |
-| `namespaceOverride`                       | Override the deployment namespace     | `""` (`Release.Namespace`)             |
-
+| `rbac.pspEnabled`                         | Create PodSecurityPolicy (with `rbac.create`, grant roles permissions as well) | `true`                 |
+| `rbac.pspUseAppArmor`                     | Enforce AppArmor in created PodSecurityPolicy (requires `rbac.pspEnabled`)  | `true`                    |
+| `rbac.extraRoleRules`                     | Additional rules to add to the Role           | []                                                      |
+| `rbac.extraClusterRoleRules`              | Additional rules to add to the ClusterRole    | []                                                      |
+| `command`                     | Define command to be executed by grafana container at startup  | `nil`                                              |
+| `testFramework.enabled`                   | Whether to create test-related resources      | `true`                                                  |
+| `testFramework.image`                     | `test-framework` image repository.            | `bats/bats`                                        |
+| `testFramework.tag`                       | `test-framework` image tag.                   | `v1.1.0`                                                 |
+| `testFramework.securityContext`           | `test-framework` securityContext              | `{}`                                                    |
+| `downloadDashboards.env`                  | Environment variables to be passed to the `download-dashboards` container | `{}`                        |
+| `downloadDashboardsImage.repository`      | Curl docker image repo                        | `curlimages/curl`                                       |
+| `downloadDashboardsImage.tag`             | Curl docker image tag                         | `7.68.0`                                                |
+| `downloadDashboardsImage.pullPolicy`      | Curl docker image pull policy                 | `IfNotPresent`                                          |
+| `namespaceOverride`                       | Override the deployment namespace             | `""` (`Release.Namespace`)                              |
 
 ### Example of extraVolumeMounts
 
@@ -312,3 +318,4 @@ stringData:
       editable: false
 
 ```
+

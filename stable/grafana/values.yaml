@@ -50,7 +50,7 @@ livenessProbe:
 
 image:
   repository: grafana/grafana
-  tag: 6.6.0
+  tag: 6.6.1
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -62,8 +62,8 @@ image:
 
 testFramework:
   enabled: true
-  image: "dduportal/bats"
-  tag: "0.4.0"
+  image: "bats/bats"
+  tag: "v1.1.0"
   securityContext: {}
 
 securityContext:
@@ -88,8 +88,8 @@ extraEmptyDirMounts: []
 # priorityClassName:
 
 downloadDashboardsImage:
-  repository: appropriate/curl
-  tag: latest
+  repository: curlimages/curl
+  tag: 7.68.0
   pullPolicy: IfNotPresent
 
 downloadDashboards:
@@ -207,7 +207,7 @@ initChownData:
   ##
   image:
     repository: busybox
-    tag: "1.30"
+    tag: "1.31.1"
     pullPolicy: IfNotPresent
 
   ## initChownData resource requests and limits
@@ -429,7 +429,7 @@ smtp:
 ## Sidecars that collect the configmaps with specified label and stores the included files them into the respective folders
 ## Requires at least Grafana 5 to work and can't be used together with parameters dashboardProviders, datasources and dashboards
 sidecar:
-  image: kiwigrid/k8s-sidecar:0.1.75
+  image: kiwigrid/k8s-sidecar:0.1.99
   imagePullPolicy: IfNotPresent
   resources: {}
 #   limits:
