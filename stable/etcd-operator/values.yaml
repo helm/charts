@@ -127,10 +127,9 @@ etcdCluster:
   name: etcd-cluster
   size: 3
   version: 3.2.25
-  image:
-    repository: quay.io/coreos/etcd
-    tag: v3.2.25
-    pullPolicy: Always
+  # the repository used for the etcd docker images, defaults to quay.io/coreos/etcd in the etcd-operator
+  # https://github.com/coreos/etcd-operator/blob/master/pkg/apis/etcd/v1beta2/cluster.go#L26
+  repository:
   enableTLS: false
   # TLS configs
   tls:
@@ -142,6 +141,9 @@ etcdCluster:
   ## etcd cluster pod specific values
   ## Ref: https://github.com/coreos/etcd-operator/blob/master/doc/user/spec_examples.md#three-members-cluster-with-resource-requirement
   pod:
+    # busyboxImage used for the init-container, defaults to busybox:1.28.0-glibc in the etcd-operator
+    # https://github.com/coreos/etcd-operator/blob/master/pkg/util/k8sutil/k8sutil.go#L65
+    busyboxImage:
     ## Antiaffinity for etcd pod assignment
     ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
     antiAffinity: false

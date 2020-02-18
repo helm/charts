@@ -11,6 +11,9 @@ metadata:
     release: {{ .Release.Name }}
 spec:
   size: {{ .Values.etcdCluster.size }}
+  {{- if .Values.etcdCluster.repository }}
+  repository: "{{ .Values.etcdCluster.repository }}"
+  {{- end }}
   version: "{{ .Values.etcdCluster.version }}"
   pod:
 {{ toYaml .Values.etcdCluster.pod | indent 4 }}
