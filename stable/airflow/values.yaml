@@ -604,7 +604,7 @@ postgresql:
 
   ##
   ## If you are bringing your own PostgreSQL, you should set postgresHost and
-  ## also probably service.port, postgresUser, postgresPassword, and postgresDatabase
+  ## also probably service.port, postgresqlUsername, postgresqlPassword, and postgresqlDatabase
   ## postgresHost:
   ##
   ## PostgreSQL port
