@@ -101,7 +101,7 @@ data:
 
       if [ -n "$JMXDISABLE" ]
       then
-          MAIN=org.apache.zookeeper.server.quorum.QuorumPeerMain
+          MAIN="-Dzookeeper.jmx.disable=true org.apache.zookeeper.server.quorum.QuorumPeerMain"
       else
           MAIN="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=$JMXPORT -Dcom.sun.management.jmxremote.authenticate=$JMXAUTH -Dcom.sun.management.jmxremote.ssl=$JMXSSL -Dzookeeper.jmx.log4j.disable=$JMXLOG4J org.apache.zookeeper.server.quorum.QuorumPeerMain"
       fi
