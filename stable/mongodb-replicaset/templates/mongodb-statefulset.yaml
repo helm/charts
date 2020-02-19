@@ -293,6 +293,9 @@ spec:
             initialDelaySeconds: 30
             periodSeconds: 10
 {{ end }}
+        {{- if .Values.sidecarContainers }}
+        {{- toYaml .Values.sidecarContainers | nindent 8 }}
+        {{- end }}
    {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
@@ -329,6 +332,9 @@ spec:
           emptyDir: {}
         - name: configdir
           emptyDir: {}
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 8}}
+{{- end }}
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
     - metadata:

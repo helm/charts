@@ -55,6 +55,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `securityContext.fsGroup`           | Group ID for the container                                                | `999`                                               |
 | `securityContext.runAsUser`         | User ID for the container                                                 | `999`                                               |
 | `securityContext.runAsNonRoot`      |                                                                           | `true`                                              |
+| `sidecarContainers`                 | Array of snippets with your sidecar containers for mongodb-replicasets    | `[]`                                                |
 | `resources`                         | Pod resource requests and limits                                          | `{}`                                                |
 | `persistentVolume.enabled`          | If `true`, persistent volume claims are created                           | `true`                                              |
 | `persistentVolume.storageClass`     | Persistent volume storage class                                           | ``                                                  |
@@ -109,6 +110,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `readinessProbe.timeoutSeconds`     | Readiness probe timeout seconds                                           | `1`                                                 |
 | `extraVars`                         | Set environment variables for the main container                          | `{}`                                                |
 | `extraLabels`                       | Additional labels to add to resources                                     | `{}`                                                |
+| `extraVolumes`                      | Additional volumes to add to the resources                                | `[]`                                                |
 
 *MongoDB config file*
 
