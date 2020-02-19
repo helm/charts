@@ -41,8 +41,6 @@ spec:
       initContainers:
         - name: chmod-volume-mounts
           image: busybox:1.31
-          securityContext:
-            privileged: true
           command:
             - "sh"
             - "-c"

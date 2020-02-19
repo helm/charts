@@ -486,6 +486,10 @@ clusterAgent:
   #   - name: <VOLUME_NAME>
   #     mountPath: <CONTAINER_PATH>
   #     readOnly: true
+  ## @param datadog-cluster.yaml - object - optional
+  ## Specify custom contents for the datadog cluster agent config (datadog-cluster.yaml).
+  #
+  # datadog_cluster_yaml: {}
 
 rbac:
 
@@ -760,7 +764,7 @@ daemonset:
 deployment:
   ## @param enabled - boolean - required
   ## Apart from DaemonSet, deploy Datadog agent pods and related service for
-  ## applications that want to send custom metrics. Provides DogStasD service.
+  ## applications that want to send custom metrics. Provides DogStatsD service.
   #
   enabled: false
 

@@ -294,6 +294,9 @@ dryRun: false
 ## Adjust the interval for DNS updates
 ##
 interval: "1m"
+## When enabled, triggers run loop on create/update/delete events (optional, in addition of regular interval)
+##
+triggerLoopOnEvent: false
 ## Verbosity of the ExternalDNS logs. Available values are:
 ## - panic, debug, info, warn, error, fatal
 ##
