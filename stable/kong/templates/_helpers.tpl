@@ -498,7 +498,10 @@ the template that it itself is using form the above sections.
   value: {{ template "kong.plugins" . }}
 {{- include "kong.env" . }}
 {{- end -}}
-
+{{- if .Values.env.trusted_ips }}
+- name: KONG_TRUSTED_IPS
+  value: "{{ .Values.env.trusted_ips }}"
+{{- end }}
 {{- define "kong.wait-for-postgres" -}}
 - name: wait-for-postgres
   image: "{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
