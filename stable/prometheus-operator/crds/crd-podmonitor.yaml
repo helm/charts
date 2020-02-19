@@ -4,10 +4,9 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.2.4
+    helm.sh/hook: crd-install
   creationTimestamp: null
   name: podmonitors.monitoring.coreos.com
-  annotations:
-    "helm.sh/hook": crd-install
 spec:
   group: monitoring.coreos.com
   names:
