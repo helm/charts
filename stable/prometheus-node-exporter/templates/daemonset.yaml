@@ -9,10 +9,10 @@ spec:
     matchLabels:
       app: {{ template "prometheus-node-exporter.name" . }}
       release: {{ .Release.Name }}
+  {{- if .Values.updateStrategy }}
   updateStrategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 1
+{{ toYaml .Values.updateStrategy | indent 4 }}
+  {{- end }}
   template:
     metadata:
       labels: {{ include "prometheus-node-exporter.labels" . | indent 8 }}
