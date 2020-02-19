@@ -37,12 +37,33 @@ Create the name of the service account to use
 {{- end -}}
 {{- end -}}
 
+{{/*
+Create the name of the headless service
+*/}}
+{{- define "graylog.service.headless.name" }}
+{{- printf "%s-%s" (include "graylog.fullname" .) .Values.graylog.service.headless.suffix | trimSuffix "-" -}}
+{{- end -}}
 
 {{/*
-Print Host URL
+Craft url taking into account the TLS settings of the server
+*/}}
+{{- define "graylog.formatUrl" -}}
+{{- $env := index . 0 }}
+{{- $url := index . 1 }}
+{{- if $env.Values.graylog.tls.enabled }}
+{{- printf "https://%s" $url }}
+{{- else }}
+{{- printf "http://%s" $url }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Print external URI
 */}}
 {{- define "graylog.url" -}}
-{{- if .Values.graylog.ingress.enabled }}
+{{- if .Values.graylog.externalUri }}
+{{- include "graylog.formatUrl" (list . .Values.graylog.externalUri) }}
+{{- else if .Values.graylog.ingress.enabled }}
 {{- if .Values.graylog.ingress.tls }}
 {{- range .Values.graylog.ingress.tls }}{{ range .hosts }}https://{{ . }}{{ end }}{{ end }}
 {{- else }}
@@ -80,4 +101,26 @@ Create chart name and version as used by the chart label.
 */}}
 {{- define "graylog.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
+Standard metadata labels used by the chart.
+*/}}
+{{- define "graylog.metadataLabels" -}}
+helm.sh/chart: {{ template "graylog.chart" . }}
+{{ template "graylog.selectorLabels" . }}
+app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
+{{- end -}}
+
+{{/*
+Selector labels used by the chart.
+*/}}
+{{- define "graylog.selectorLabels" -}}
+app.kubernetes.io/name: {{ template "graylog.name" . }}
+app.kubernetes.io/instance: "{{ .Release.Name }}"
+{{- if .Values.helm2Compatibility }}
+app.kubernetes.io/managed-by: "Tiller"
+{{- else }}
+app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+{{- end -}}
 {{- end -}}

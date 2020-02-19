@@ -235,7 +235,7 @@ rabbitmq: LDAP
     Invalid LDAP configuration. When enabling LDAP support, the parameters "ldap.server",
     "ldap.port", and "ldap. user_dn_pattern" are mandatory. Please provide them:
 
-    $ helm install --name {{ .Release.Name }} stable/rabbitmq \
+    $ helm install {{ .Release.Name }} stable/rabbitmq \
       --set ldap.enabled=true \
       --set ldap.server="lmy-ldap-server" \
       --set ldap.port="389" \

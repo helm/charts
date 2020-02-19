@@ -335,6 +335,10 @@ master:
     accessModes:
     - ReadWriteOnce
     size: 8Gi
+    ## Persistent Volume selectors
+    ## https://kubernetes.io/docs/concepts/storage/persistent-volumes/#selector
+    matchLabels: {}
+    matchExpressions: {}
 
   ## Update strategy, can be set to RollingUpdate or onDelete by default.
   ## https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#updating-statefulsets
@@ -455,6 +459,10 @@ slave:
     accessModes:
     - ReadWriteOnce
     size: 8Gi
+    ## Persistent Volume selectors
+    ## https://kubernetes.io/docs/concepts/storage/persistent-volumes/#selector
+    matchLabels: {}
+    matchExpressions: {}
 
   ## Update strategy, can be set to RollingUpdate or onDelete by default.
   ## https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#updating-statefulsets
@@ -569,7 +577,7 @@ volumePermissions:
   image:
     registry: docker.io
     repository: bitnami/minideb
-    tag: stretch
+    tag: buster
     pullPolicy: Always
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -599,7 +607,7 @@ sysctlImage:
   command: []
   registry: docker.io
   repository: bitnami/minideb
-  tag: stretch
+  tag: buster
   pullPolicy: Always
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.

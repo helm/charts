@@ -5,7 +5,7 @@ controller:
   name: controller
   image:
     repository: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
-    tag: "0.28.0"
+    tag: "0.29.0"
     pullPolicy: IfNotPresent
     # www-data -> uid 101
     runAsUser: 101
@@ -254,7 +254,7 @@ controller:
     ## Ref: https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typeloadbalancer
     externalTrafficPolicy: ""
 
-    # Must be either "None" or "ClusterIP" if set. Kubernetes will default to "None".
+    # Must be either "None" or "ClientIP" if set. Kubernetes will default to "None".
     # Ref: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
     sessionAffinity: ""
 

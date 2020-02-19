@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```console
-$ helm install stable/external-dns
+$ helm install my-release stable/external-dns
 ```
 
 ## Introduction
@@ -24,7 +24,7 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/external-dns
+$ helm install my-release stable/external-dns
 ```
 
 The command deploys ExternalDNS on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
@@ -123,6 +123,8 @@ The following table lists the configurable parameters of the external-dns chart 
 | `pdns.apiUrl`                       | When using the PowerDNS provider, specify the API URL of the server.                                     | `""`                                                        |
 | `pdns.apiPort`                      | When using the PowerDNS provider, specify the API port of the server.                                    | `8081`                                                      |
 | `pdns.apiKey`                       | When using the PowerDNS provider, specify the API key of the server.                                     | `""`                                                        |
+| `transip.account`                   | When using the TransIP provider, specify the account name.                                               | `""`                                                        |
+| `transip.apiKey`                    | When using the TransIP provider, specify the API key to use.                                             | `""`                                                        |
 | `annotationFilter`                  | Filter sources managed by external-dns via annotation using label selector (optional)                    | `""`                                                        |
 | `domainFilters`                     | Limit possible target zones by domain suffixes (optional)                                                | `[]`                                                        |
 | `zoneIdFilters`                     | Limit possible target zones by zone id (optional)                                                        | `[]`                                                        |
@@ -133,6 +135,7 @@ The following table lists the configurable parameters of the external-dns chart 
 | `logLevel`                          | Verbosity of the logs (options: panic, debug, info, warn, error, fatal)                                  | `info`                                                      |
 | `logFormat`                         | Which format to output logs in (options: text, json)                                                     | `text`                                                      |
 | `interval`                          | Interval update period to use                                                                            | `1m`                                                        |
+| `triggerLoopOnEvent`                | When enabled, triggers run loop on create/update/delete events in addition to regular interval (optional)| `false`                                                     |
 | `istioIngressGateways`              | The fully-qualified name of the Istio ingress gateway services .                                         | `""`                                                        |
 | `policy`                            | Modify how DNS records are sychronized between sources and providers (options: sync, upsert-only )       | `upsert-only`                                               |
 | `registry`                          | Registry method to use (options: txt, noop)                                                              | `txt`                                                       |
@@ -176,14 +179,14 @@ The following table lists the configurable parameters of the external-dns chart 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install --name my-release \
+$ helm install my-release \
   --set provider=aws stable/external-dns
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/external-dns
+$ helm install my-release -f values.yaml stable/external-dns
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -227,7 +230,7 @@ For instance, to install ExternalDNS on AWS, you need to:
 > Note: replace the placeholder HOSTED_ZONE_IDENTIFIER and HOSTED_ZONE_NAME, with your hosted zoned identifier and name, respectively.
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
   --set provider=aws \
   --set aws.zoneType=public \
   --set txtOwnerId=HOSTED_ZONE_IDENTIFIER \

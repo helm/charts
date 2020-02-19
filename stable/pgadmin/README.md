@@ -42,11 +42,13 @@ The command removes nearly all the Kubernetes components associated with the cha
 | --------- | ----------- | ------- |
 | `replicaCount` | Number of pgadmin replicas | `1` |
 | `image.repository` | Docker image | `dpage/pgadmin4` |
-| `image.tag` | Docker image tag | `4.17` |
+| `image.tag` | Docker image tag | `4.18` |
 | `image.pullPolicy` | Docker image pull policy | `IfNotPresent` |
 | `service.type` | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP` |
 | `service.port` | Service port | `80` |
 | `strategy` | Specifies the strategy used to replace old Pods by new ones | `{}` |
+| `serverDefinitions.enabled` | Enables Server Definitions | `false` |
+| `serverDefinitions.servers` | Pre-configured server parameters | `` |
 | `ingress.enabled` | Enables Ingress | `false` |
 | `ingress.annotations` | Ingress annotations | `{}` |
 | `ingress.hosts` | Ingress accepted hostnames | `nil` |
