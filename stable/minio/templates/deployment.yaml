@@ -133,7 +133,11 @@ spec:
               mountPath: {{ .Values.certsPath }}
             {{ end }}
           ports:
-            - name: service
+            {{- if .Values.tls.enabled }}
+            - name: https
+            {{ else }}
+            - name: http
+            {{- end }}
               containerPort: 9000
           env:
             - name: MINIO_ACCESS_KEY
@@ -157,7 +161,11 @@ spec:
           livenessProbe:
             httpGet:
               path: /minio/health/live
-              port: service
+              {{- if .Values.tls.enabled }}
+              port: https
+              {{ else }}
+              port: http
+              {{- end }}
               {{- if .Values.tls.enabled }}
               scheme: HTTPS
               {{ else }}
@@ -174,7 +182,11 @@ spec:
               scheme: HTTPS
               {{- end }}
               path: /minio/health/ready
-              port: service
+              {{- if .Values.tls.enabled }}
+              port: https
+              {{ else }}
+              port: http
+              {{- end }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
