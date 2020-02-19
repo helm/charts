@@ -195,6 +195,9 @@ podAnnotations: {}
 # Additional pod labels to apply
 podLabels: {}
 
+# Additional statefulset labels to apply
+statefulsetLabels : {}
+
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
 ##
