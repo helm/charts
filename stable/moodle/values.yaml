@@ -128,7 +128,8 @@ mariadb:
       ##   GKE, AWS & OpenStack)
       ##
       # storageClass: "-"
-      accessMode: ReadWriteOnce
+      accessModes:
+      - ReadWriteOnce
       size: 8Gi
 
 
