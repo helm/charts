@@ -77,7 +77,7 @@ Create a default fully qualified elasticsearch name or use the `graylog.elastics
 Or use chart dependencies with release name
 */}}
 {{- define "graylog.elasticsearch.hosts" -}}
-{{- if .Values.graylog.elasticsearch.secret.enable }}
+{{- if .Values.graylog.elasticsearch.uriSecretKey }}
     {{- printf "${GRAYLOG_ELASTICSEARCH_HOST}" -}}
 {{- else if .Values.graylog.elasticsearch.hosts }}
     {{- .Values.graylog.elasticsearch.hosts -}}
@@ -91,7 +91,7 @@ Create a default fully qualified mongodb name or use the `graylog.mongodb.uri` v
 Or use chart dependencies with release name
 */}}
 {{- define "graylog.mongodb.uri" -}}
-{{- if .Values.graylog.mongodb.secret.enable }}
+{{- if .Values.graylog.mongodb.uriSecretKey }}
     {{- printf "${GRAYLOG_MONGODB_URI}" -}}
 {{- else if .Values.graylog.mongodb.uri }}
     {{- .Values.graylog.mongodb.uri -}}

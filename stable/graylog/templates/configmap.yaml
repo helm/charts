@@ -186,7 +186,7 @@ data:
     echo "Starting graylog"
     # Original docker-entrypoint.sh in Graylog Docker will error while executing since you can't chown readonly files in `config`
     # exec /docker-entrypoint.sh graylog
-  {{- if or (.Values.graylog.elasticsearch.secret.enable) (.Values.graylog.mongodb.secret.enable) }}
+  {{- if or (.Values.graylog.elasticsearch.uriSecretKey) (.Values.graylog.mongodb.uriSecretKey) }}
     # Interpolate
     sed 's/"/\\\"/g;s/.*/echo "&"/e' ${GRAYLOG_HOME}/config/graylog.conf > ${GRAYLOG_HOME}/graylog.conf.subst
   {{- end }}
@@ -200,7 +200,7 @@ data:
       -Dgraylog2.installation_source=docker \
       ${GRAYLOG_HOME}/graylog.jar \
       server \
-    {{- if or (.Values.graylog.elasticsearch.secret.enable) (.Values.graylog.mongodb.secret.enable) }}
+    {{- if or (.Values.graylog.elasticsearch.uriSecretKey) (.Values.graylog.mongodb.uriSecretKey) }}
       -f ${GRAYLOG_HOME}/graylog.conf.subst
     {{- else }}
       -f ${GRAYLOG_HOME}/config/graylog.conf
