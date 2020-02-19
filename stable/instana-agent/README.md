@@ -10,9 +10,7 @@ This chart adds the Instana Agent to all schedulable nodes in your cluster via a
 
 Kubernetes 1.9.x - 1.16.x
 
-Working `helm` and `tiller`.
-
-_Note:_ Tiller may need a service account and role binding if RBAC is enabled in your cluster.
+Working `helm` (version 3) with the `stable` repo added to your helm client.
 
 ## Installing the Chart
 
@@ -51,20 +49,20 @@ Agent can have APM, INFRASTRUCTURE or AWS mode. Default is APM and if you want t
 
 * agent.mode
 
+First, create a namespace for the instana-agent
+
+```bash
+$ kubectl create namespace instana-agent
+```
+
 To install the chart with the release name `instana-agent` and set the values on the command line run:
 
 ```bash
-$ helm install --name instana-agent --namespace instana-agent \
+$ helm install instana-agent --namespace instana-agent \
 --set agent.key=INSTANA_AGENT_KEY \
 --set agent.endpointHost=HOST \
 --set zone.name=ZONE_NAME \
 stable/instana-agent
-```
-
-To install the chart with the release name `instana-agent` after editing the **values.yaml** file, run:
-
-```bash
-$ helm install --name instana-agent --namespace instana-agent stable/instana-agent
 ```
 
 ## Uninstalling the Chart
