@@ -7,6 +7,10 @@ rbac:
   ##
   create: true
 
+  resources:
+    - pods
+    - secrets
+
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
   ##
@@ -124,7 +128,15 @@ graylog:
     type: ClusterIP
     port: 9000
 
+    headless:
+      ## Add suffix to headless service name
+      ##
+      suffix: ""
+
     master:
+      ## Enable Graylog master service
+      ##
+      enabled: true
       ## Graylog master service Ingress annotations
       ##
       annotations: {}
@@ -150,6 +162,21 @@ graylog:
     #   ports:
     #     - name: syslog
     #       port: 12222
+
+  tls:
+    ## If true, Graylog server will run with TLS enabled
+    ##
+    enabled: false
+    ## TLS certificate key file
+    ##
+    keyFile: /etc/graylog/server/server.key
+    ## TLS certificate file
+    ##
+    certFile: /etc/graylog/server/server.cert
+
+  ## External URL to access Graylog at
+  ##
+  externalUri: ""
 
   ingress:
     ## If true, Graylog server Ingress will be created
@@ -298,14 +325,15 @@ graylog:
   ## For example, you can put server certificates or authorized clients certificates here
   ##
   serverFiles: {}
-    # graylog-server.key: |
-    # graylog-server.cert: |
+    # server.key: |
+    # server.cert: |
 
   ## Specify a Bash script to run as Kubernetes Job (running on Alpine with curl and bash packages already installed).
   ## Useful for calling the API to pre-configure some aspect of Graylog, as in the example.
   ##
   provisioner:
     enabled: false
+    useGraylogServiceAccount: false
     # script: |
     #  json='{
     #    "username_header": "X-Auth-Request-User",
