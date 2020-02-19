@@ -82,6 +82,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `replicaSet.pdb.minAvailable.arbiter`              | PDB for the MongoDB Arbiter nodes                                                            | `1`                                                     |
 | `podAnnotations`                                   | Annotations to be added to pods                                                              | {}                                                      |
 | `podLabels`                                        | Additional labels for the pod(s).                                                            | {}                                                      |
+| `statefulsetLabels`                                        | Additional labels for the statefulset.                                                            | {}                                                      |
 | `resources`                                        | Pod resources                                                                                | {}                                                      |
 | `priorityClassName`                                | Pod priority class name                                                                      | ``                                                      |
 | `nodeSelector`                                     | Node labels for pod assignment                                                               | {}                                                      |

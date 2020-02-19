@@ -137,6 +137,10 @@ podAnnotations: {}
 # Additional pod labels to apply
 podLabels: {}
 
+# Additional statefulset labels to apply
+statefulsetLabels :
+  app : nsnk
+  why : what
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##

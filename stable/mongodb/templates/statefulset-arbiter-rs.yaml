@@ -7,6 +7,9 @@ metadata:
     chart: {{ template "mongodb.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+   {{- if .Values.statefulsetLabels }}
+{{ toYaml .Values.statefulsetLabels | indent 4 }}
+   {{- end }}
   name: {{ template "mongodb.fullname" . }}-arbiter
 spec:
   selector:
