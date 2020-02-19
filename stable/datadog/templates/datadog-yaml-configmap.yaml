@@ -28,8 +28,9 @@ data:
       - name: kubelet
         polling: true
 
+    # Enable APM by setting the DD_APM_ENABLED envvar to true, or override this configuration
     apm_config:
-      enabled: true
+      enabled: false
       apm_non_local_traffic: true
       max_memory: 0
       max_cpu_percent: 0
