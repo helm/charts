@@ -38,6 +38,9 @@ spec:
       initContainers:
 {{ toYaml .Values.speaker.initContainers | indent 8 }}
 {{- end }}
+{{- if .Values.speaker.priorityClassName }}
+      priorityClassName: {{ .Values.speaker.priorityClassName }}
+{{- end }}
       containers:
       - name: speaker
         image: {{ .Values.speaker.image.repository }}:{{ .Values.speaker.image.tag }}
