@@ -7,9 +7,7 @@
 {{ toYaml .Values.agents.containers.traceAgent.resources | indent 4 }}
   ports:
   - containerPort: 8126
-    {{- if .Values.datadog.apm.enabled }}
     hostPort: 8126
-    {{- end }}
     name: traceport
     protocol: TCP
   env:
@@ -23,7 +21,7 @@
       value: {{ .Values.datadog.nonLocalTraffic | quote }}
     {{- end }}     
     - name: DD_APM_NON_LOCAL_TRAFFIC
-      value: {{ .Values.datadog.apm.enabled | quote }}
+      value: "true"
 {{- if .Values.agents.containers.traceAgent.env }}
 {{ toYaml .Values.agents.containers.traceAgent.env | indent 4 }}
 {{- end }}
