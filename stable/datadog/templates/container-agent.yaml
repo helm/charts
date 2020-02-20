@@ -7,7 +7,7 @@
 {{ toYaml .Values.agents.containers.agent.resources | indent 4 }}
   ports:
   - containerPort: {{ .Values.datadog.dogstatsd.port }}
-    {{- if .Values.agents.dogstatsd.useHostPort }}
+    {{- if .Values.datadog.dogstatsd.useHostPort }}
     hostPort: {{ .Values.datadog.dogstatsd.port }}
     {{- end }}
     name: dogstatsdport

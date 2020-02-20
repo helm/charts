@@ -278,8 +278,8 @@ helm install --name <RELEASE_NAME> \
 | `datadog.useCriSocketVolume`             | Enable mounting the container runtime socket in Agent containers                          | `True`                                      |
 | `datadog.dogstatsd.originDetection`       | Enable origin detection for container tagging                                             | `False`                                     |
 | `datadog.dogstatsd.port`                  | Used to override the default agent DogStatsD Port                                         | `8125`                                      |
-| `agents.dogstatsd.useHostPID`.                  | If true, use the host's PID namespace                                                     | `nil`                                       |
-| `agents.dogstatsd.useHostPort`                  | If true, use the same ports for both host and container                                   | `nil`                                       |
+| `datadog.dogstatsd.useHostPID`.           | If true, use the host's PID namespace                                                     | `nil`                                       |
+| `datadog.dogstatsd.useHostPort`           | If true, use the same ports for both host and container                                   | `nil`                                       |
 | `datadog.dogstatsd.nonLocalTraffic`      | Enable statsd reporting from any external ip                                              | `False`                                     |
 | `datadog.dogstatsd.useSocketVolume`       | Enable dogstatsd over Unix Domain Socket                                                  | `False`                                     |
 | `datadog.dogstatsd.socketPath`            | Custom path to the socket, has to be located in the `/var/run/datadog` folder path        | `/var/run/datadog/dsd.socket`               |

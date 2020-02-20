@@ -48,8 +48,8 @@ spec:
       hostNetwork: {{ .Values.agents.useHostNetwork }}
       dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
-      {{- if .Values.agents.dogstatsd.useHostPID }}
-      hostPID: {{ .Values.agents.dogstatsd.useHostPID }}
+      {{- if .Values.datadog.dogstatsd.useHostPID }}
+      hostPID: {{ .Values.datadog.dogstatsd.useHostPID }}
       {{- end }}
       {{- if .Values.agents.image.pullSecrets }}
       imagePullSecrets:
