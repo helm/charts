@@ -6,9 +6,9 @@
   resources:
 {{ toYaml .Values.agents.containers.agent.resources | indent 4 }}
   ports:
-  - containerPort: {{ default 8125 .Values.datadog.dogstatsd.port }}
+  - containerPort: {{ .Values.datadog.dogstatsd.port }}
     {{- if .Values.agents.dogstatsd.useHostPort }}
-    hostPort: {{ default 8125 .Values.datadog.dogstatsd.port }}
+    hostPort: {{ .Values.datadog.dogstatsd.port }}
     {{- end }}
     name: dogstatsdport
     protocol: UDP

@@ -132,7 +132,7 @@ datadog:
     ## Override the Agent DogStatsD port.
     ## Note: Make sure your client is sending to the same UDP port.
     #
-    # port:
+    port: 8125
 
     ## @param originDetection - boolean - optional
     ## Enable origin detection for container tagging
@@ -215,7 +215,7 @@ datadog:
     ## Override the trace Agent DogStatsD port.
     ## Note: Make sure your client is sending to the same UDP port.
     #
-    # port:
+    port: 8126
 
   ## @param env - list of object - optional
   ## The dd-agent supports many environment variables

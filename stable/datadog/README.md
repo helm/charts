@@ -269,7 +269,7 @@ helm install --name <RELEASE_NAME> \
 | `datadog.logsConfigContainerCollectAll`  | Collect logs from all containers                                                          | `nil`                                       |
 | `datadog.logsPointerHostPath`            | Host path to store the log tailing state in                                               | `/var/lib/datadog-agent/logs`               |
 | `datadog.apm.enabled`                    | Enable tracing from the host                                                              | `false`                                       |
-| `datadog.apm.port`                       | Used to override the default agent Apm Port                                               | `8126`                                      |
+| `datadog.apm.port`                       | Used to override the default agent APM Port                                               | `8126`                                      |
 | `datadog.processAgent.enabled`           | Control live process and container monitoring. Possible values: `nil` for container monitoring only, `true` for container and process monitoring, `false` turns off process-agent | `nil`|
 | `datadog.checksd`                        | Additional custom checks as python code                                                   | `nil`                                       |
 | `datadog.confd`                          | Additional check configurations (static and Autodiscovery)                                | `nil`                                       |

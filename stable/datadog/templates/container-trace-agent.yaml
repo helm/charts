@@ -6,8 +6,8 @@
   resources:
 {{ toYaml .Values.agents.containers.traceAgent.resources | indent 4 }}
   ports:
-  - containerPort: {{ default 8126 .Values.datadog.apm.port }}
-    hostPort: {{ default 8126 .Values.datadog.apm.port }}
+  - containerPort: {{ .Values.datadog.apm.port }}
+    hostPort: {{ .Values.datadog.apm.port }}
     name: traceport
     protocol: TCP
   env:
