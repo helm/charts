@@ -142,8 +142,8 @@ spec:
 {{  if .Values.collectors.verticalpodautoscalers  }}
         - --collectors=verticalpodautoscalers
 {{  end  }}
-{{  if .Values.collectors.volumeattachements  }}
-        - --collectors=volumeattachements
+{{  if .Values.collectors.volumeattachments  }}
+        - --collectors=volumeattachments
 {{  end  }}
 {{ if .Values.namespace }}
         - --namespace={{ .Values.namespace }}
