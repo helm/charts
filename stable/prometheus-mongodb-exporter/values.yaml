@@ -87,3 +87,8 @@ serviceMonitor:
   additionalLabels: {}
 
 tolerations: []
+
+cacert:
+  enabled: false
+  mpunthPath: /var/mongodb_exporter/config
+  content: ""
