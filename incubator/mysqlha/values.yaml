@@ -1,7 +1,7 @@
 ## mysql image version
 ## ref: https://hub.docker.com/r/library/mysql/tags/
 ##
-mysqlImage: mysql:5.7.13
+mysqlImage: mysql:5.7.29
 xtraBackupImage: gcr.io/google-samples/xtrabackup:1.0
 
 ## Specify an imagePullPolicy (Required)
