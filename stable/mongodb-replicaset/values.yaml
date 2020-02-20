@@ -101,6 +101,20 @@ affinity: {}
 
 tolerations: []
 
+# Additional containers to add to the StatefulSet
+extraContainers: []
+#  - name: mongo-sidecar
+#    image: stefanprodan/mgob:latest
+#    ports:
+#    - name: sidecar-http
+#      containerPort: 8090
+#    volumeMounts:
+#    - mountPath: /config/test1.yml
+#      name: mgob-config
+#      subPath: test1.yml
+#    - name: mgob-storage
+#      mountPath: /storage
+
 extraLabels: {}
 
 ## Additional volumes which can be used by sidecar containers
@@ -131,20 +145,6 @@ serviceAnnotations: {}
 
 # Annotations to be added to the statefulSet
 statefulSetAnnotations: {}
-
-# Array of snippets with sidecar containers for mongodb-replicasets
-sidecarContainers: []
-#  - name: mongo-sidecar
-#    image: stefanprodan/mgob:latest
-#    ports:
-#    - name: sidecar-http
-#      containerPort: 8090
-#    volumeMounts:
-#    - mountPath: /config/test1.yml
-#      name: mgob-config
-#      subPath: test1.yml
-#    - name: mgob-storage
-#      mountPath: /storage
 
 terminationGracePeriodSeconds: 30
 
