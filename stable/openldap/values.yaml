@@ -38,7 +38,6 @@ extraLabels: {}
 podAnnotations: {}
 service:
   annotations: {}
-  clusterIP: ""
 
   ldapPort: 389
   sslLdapPort: 636  # Only used if tls.enabled is true
