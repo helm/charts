@@ -7,7 +7,9 @@ metadata:
     chart: {{ template "mongodb.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-{{- toYaml .Values.statefulsetLabels | nindent 4}}
+    {{- with .Values.statefulsetLabels }}
+{{ toYaml . | indent 4 }}
+    {{- end }}
   name: {{ template "mongodb.fullname" . }}
 spec:
   accessModes:
