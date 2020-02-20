@@ -210,6 +210,18 @@ designate:
     ##
     filename: "designate-ca.pem"
 
+  ## Use a host path custom CA (optional)
+  ##  This conflicts setting the above customCA to true and chart rendering will fail if you set customCA to true and specify customCAHostPath
+  # customCAHostPath: /path/to/cafile
+
+  ## Set Openstack environment variables (optional).  Username and password will be saved in a kubernetes secret.
+  ## The alternative to this is to export the necessary Openstack environment variables in the extraEnv argument.
+  # username: "someuser"
+  # password: "p@55w0rd"
+  # authUrl: "https://mykeystone.example.net:5000/v3/"
+  # regionName: "dev"
+  # userDomainName: "development"
+  # projectName: "myteamname"
 ## DigitalOcean configuration to be set via arguments/env. variables
 ##
 digitalocean:
