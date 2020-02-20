@@ -1,5 +1,5 @@
 {{- if (include "newrelic.areValuesValid" .) }}
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   labels: {{ include "newrelic.labels" . | indent 4 }}
