@@ -270,12 +270,20 @@ graylog:
     ##
     # hosts: http://elasticsearch-client.graylog.svc.cluster.local:9200
     hosts: ""
+    # Allow elasticsearch hosts to be fetched from a k8s secret
+    # {{ graylog.fullname }} will be used as uriSecretName if left empty
+    uriSecretName: ""
+    uriSecretKey: ""
 
   mongodb:
     ## MongoDB connection string
     ## See https://docs.mongodb.com/manual/reference/connection-string/ for details
     # uri: mongodb://user:pass@host1:27017,host2:27017,host3:27017/graylog?replicaSet=rs01
     uri: ""
+    # Allow mongodb uri to be fetched from a k8s secret
+    # {{ graylog.fullname }} will be used as uriSecretName if left empty
+    uriSecretName: ""
+    uriSecretKey: ""
 
     ## Increase this value according to the maximum connections your MongoDB server can handle from a single client
     ## if you encounter MongoDB connection problems.
