@@ -18,6 +18,7 @@ $ helm install stable/kube-state-metrics
 | `image.tag`                                  | The image tag to pull from                                                            | `v1.9.4`                                   |
 | `image.pullPolicy`                           | Image pull policy                                                                     | `IfNotPresent`                             |
 | `replicas`                                   | Number of replicas                                                                    | `1`                                        |
+| `autosharding.enabled`                       | Set to `true` to automatically shard data across `replicas` pods. EXPERIMENTAL        | `false`                                    |
 | `service.port`                               | The port of the container                                                             | `8080`                                     |
 | `service.annotations`                        | Annotations to be added to the service                                                | `{}`                                       |
 | `customLabels`                               | Custom labels to apply to service, deployment and pods                                | `{}`                                       |
