@@ -11,9 +11,7 @@ metadata:
     {{- with .Values.labels }}
 {{ toYaml . | indent 4 }}
     {{- end }}
-    {{- with .Values.statefulsetLabels }}
-{{ toYaml . | indent 4 }}
-    {{- end }}
+{{- toYaml .Values.statefulsetLabels | nindent 4}}
   {{- with .Values.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
