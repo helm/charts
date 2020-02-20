@@ -1,4 +1,4 @@
-{{- if and .Values.rbac.create .Values.server.kubernetes.enabled -}}
+{{ if and .Values.rbac.create (or .Values.server.kubernetes.enabled .Values.runner.enabled ) -}}
 apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
 kind: ClusterRole
 metadata:

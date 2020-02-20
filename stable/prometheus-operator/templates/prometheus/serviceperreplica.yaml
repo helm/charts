@@ -2,12 +2,12 @@
 {{- $count := .Values.prometheus.prometheusSpec.replicas | int -}}
 {{- $serviceValues := .Values.prometheus.servicePerReplica -}} 
 apiVersion: v1
-kind: ServiceList
+kind: List
 metadata:
   name: {{ include "prometheus-operator.fullname" $ }}-prometheus-serviceperreplica
   namespace: {{ $.Release.Namespace }}
 items:
-{{ range $i, $e := until $count }}
+{{- range $i, $e := until $count }}
   - apiVersion: v1
     kind: Service
     metadata:
