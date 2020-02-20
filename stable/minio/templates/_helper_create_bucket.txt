@@ -1,6 +1,13 @@
 #!/bin/sh
 set -e ; # Have script exit in the event of a failed command.
 
+{{- if .Values.configPathmc }}
+MC_CONFIG_DIR="{{ .Values.configPathmc }}"
+MC="/usr/bin/mc --config-dir ${MC_CONFIG_DIR}"
+{{- else }}
+MC="/usr/bin/mc"
+{{- end }}
+
 # connectToMinio
 # Use a check-sleep-check loop to wait for Minio service to be available
 connectToMinio() {
@@ -10,7 +17,7 @@ connectToMinio() {
   ACCESS=$(cat /config/accesskey) ; SECRET=$(cat /config/secretkey) ;
   set +e ; # The connections to minio are allowed to fail.
   echo "Connecting to Minio server: $SCHEME://$MINIO_ENDPOINT:$MINIO_PORT" ;
-  MC_COMMAND="mc config host add myminio $SCHEME://$MINIO_ENDPOINT:$MINIO_PORT $ACCESS $SECRET" ;
+  MC_COMMAND="${MC} config host add myminio $SCHEME://$MINIO_ENDPOINT:$MINIO_PORT $ACCESS $SECRET" ;
   $MC_COMMAND ;
   STATUS=$? ;
   until [ $STATUS = 0 ]
@@ -32,7 +39,7 @@ connectToMinio() {
 # Check if the bucket exists, by using the exit code of `mc ls`
 checkBucketExists() {
   BUCKET=$1
-  CMD=$(/usr/bin/mc ls myminio/$BUCKET > /dev/null 2>&1)
+  CMD=$(${MC} ls myminio/$BUCKET > /dev/null 2>&1)
   return $?
 }
 
@@ -49,7 +56,7 @@ createBucket() {
     if checkBucketExists $BUCKET ; then
       echo "Purging bucket '$BUCKET'."
       set +e ; # don't exit if this fails
-      /usr/bin/mc rm -r --force myminio/$BUCKET
+      ${MC} rm -r --force myminio/$BUCKET
       set -e ; # reset `e` as active
     else
       echo "Bucket '$BUCKET' does not exist, skipping purge."
@@ -59,7 +66,7 @@ createBucket() {
   # Create the bucket if it does not exist
   if ! checkBucketExists $BUCKET ; then
     echo "Creating bucket '$BUCKET'"
-    /usr/bin/mc mb myminio/$BUCKET
+    ${MC} mb myminio/$BUCKET
   else
     echo "Bucket '$BUCKET' already exists."
   fi
@@ -67,7 +74,7 @@ createBucket() {
   # At this point, the bucket should exist, skip checking for existence
   # Set policy on the bucket
   echo "Setting policy of bucket '$BUCKET' to '$POLICY'."
-  /usr/bin/mc policy set $POLICY myminio/$BUCKET
+  ${MC} policy set $POLICY myminio/$BUCKET
 }
 
 # Try connecting to Minio instance

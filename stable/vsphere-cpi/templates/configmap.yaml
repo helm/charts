@@ -10,7 +10,7 @@ metadata:
     component: cloud-controller
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  namespace: kube-system
+  namespace: {{ .Release.Namespace }}
 data:
   vsphere.conf: |
     [Global]
@@ -19,7 +19,7 @@ data:
     insecure-flag = "1" #set to 1 if the vCenter uses a self-signed cert
     # settings for using k8s secret
     secret-name = "vsphere-cpi"
-    secret-namespace = "kube-system"
+    secret-namespace = "{{ .Release.Namespace }}"
 
     [VirtualCenter "{{ .Values.config.vcenter }}"]
     datacenters = "{{ .Values.config.datacenter }}"
