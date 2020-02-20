@@ -6,22 +6,18 @@
   resources:
 {{ toYaml .Values.agents.containers.traceAgent.resources | indent 4 }}
   ports:
-  - containerPort: 8126
-    hostPort: 8126
+  - containerPort: {{ default 8126 .Values.datadog.apm.port }}
+    hostPort: {{ default 8126 .Values.datadog.apm.port }}
     name: traceport
     protocol: TCP
   env:
     {{- include "containers-common-env" . | nindent 4 }}
-    - name: DD_APM_ENABLED
-      value: {{ .Values.datadog.apm.enabled | quote }}
     - name: DD_LOG_LEVEL
       value: {{ .Values.agents.containers.traceAgent.logLevel | default .Values.datadog.logLevel | quote }}
-    {{- if .Values.datadog.nonLocalTraffic }}
-    - name: DD_DOGSTATSD_NON_LOCAL_TRAFFIC
-      value: {{ .Values.datadog.nonLocalTraffic | quote }}
-    {{- end }}     
     - name: DD_APM_NON_LOCAL_TRAFFIC
       value: "true"
+    - name: DD_APM_RECEIVER_PORT
+      value: {{ default 8126 .Values.datadog.apm.port | quote }}
 {{- if .Values.agents.containers.traceAgent.env }}
 {{ toYaml .Values.agents.containers.traceAgent.env | indent 4 }}
 {{- end }}

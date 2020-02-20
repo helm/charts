@@ -269,17 +269,20 @@ helm install --name <RELEASE_NAME> \
 | `datadog.logsConfigContainerCollectAll`  | Collect logs from all containers                                                          | `nil`                                       |
 | `datadog.logsPointerHostPath`            | Host path to store the log tailing state in                                               | `/var/lib/datadog-agent/logs`               |
 | `datadog.apm.enabled`                    | Enable tracing from the host                                                              | `false`                                       |
+| `datadog.apm.port`                       | Used to override the default agent Apm Port                                               | `8126`                                      |
 | `datadog.processAgent.enabled`           | Control live process and container monitoring. Possible values: `nil` for container monitoring only, `true` for container and process monitoring, `false` turns off process-agent | `nil`|
 | `datadog.checksd`                        | Additional custom checks as python code                                                   | `nil`                                       |
 | `datadog.confd`                          | Additional check configurations (static and Autodiscovery)                                | `nil`                                       |
 | `datadog.criSocketPath`                  | Path to the container runtime socket (default is Docker runtime)                          | `/var/run/docker.sock`                      |
 | `datadog.tags`                           | Set host tags                                                                             | `nil`                                       |
-| `datadog.nonLocalTraffic`                | Enable statsd reporting and APM from any external ip                                      | `False`                                     |
 | `datadog.useCriSocketVolume`             | Enable mounting the container runtime socket in Agent containers                          | `True`                                      |
-| `datadog.dogstatsdOriginDetection`       | Enable origin detection for container tagging                                             | `False`                                     |
-| `datadog.dogStatsDPort`                  | Used to override the default agent DogStatsD Port                                         | `8125`                                      |
-| `datadog.useDogStatsDSocketVolume`       | Enable dogstatsd over Unix Domain Socket                                                  | `False`                                     |
-| `datadog.dogStatsDSocketPath`            | Custom path to the socket, has to be located in the `/var/run/datadog` folder path        | `/var/run/datadog/dsd.socket`               |
+| `datadog.dogstatsd.originDetection`       | Enable origin detection for container tagging                                             | `False`                                     |
+| `datadog.dogstatsd.port`                  | Used to override the default agent DogStatsD Port                                         | `8125`                                      |
+| `agents.dogstatsd.useHostPID`.                  | If true, use the host's PID namespace                                                     | `nil`                                       |
+| `agents.dogstatsd.useHostPort`                  | If true, use the same ports for both host and container                                   | `nil`                                       |
+| `datadog.dogstatsd.nonLocalTraffic`      | Enable statsd reporting from any external ip                                              | `False`                                     |
+| `datadog.dogstatsd.useSocketVolume`       | Enable dogstatsd over Unix Domain Socket                                                  | `False`                                     |
+| `datadog.dogstatsd.socketPath`            | Custom path to the socket, has to be located in the `/var/run/datadog` folder path        | `/var/run/datadog/dsd.socket`               |
 | `datadog.nodeLabelsAsTags`               | Kubernetes Node Labels to Datadog Tags mapping                                            | `nil`                                       |
 | `datadog.podAnnotationsAsTags`           | Kubernetes Annotations to Datadog Tags mapping                                            | `nil`                                       |
 | `datadog.podLabelsAsTags`                | Kubernetes Labels to Datadog Tags mapping                                                 | `nil`                                       |
@@ -301,8 +304,6 @@ helm install --name <RELEASE_NAME> \
 | `agents.nodeSelector`                 | Node selectors                                                                            | `nil`                                       |
 | `agents.affinity`                     | Node affinities                                                                           | `nil`                                       |
 | `agents.useHostNetwork`               | If true, use the host's network                                                           | `nil`                                       |
-| `agents.useHostPID`.                  | If true, use the host's PID namespace                                                     | `nil`                                       |
-| `agents.useHostPort`                  | If true, use the same ports for both host and container                                   | `nil`                                       |
 | `agents.containers.agent.env`                          | Additional list of environment variables to use in the agent container                 | `nil`                                         |
 | `agents.containers.agent.logLevel`                     | Agent log verbosity                                                                    | `INFO`                                        |
 | `agents.containers.agent.resources.limits.cpu`         | CPU resource limits for the agent container                                            | `200m`                                        |

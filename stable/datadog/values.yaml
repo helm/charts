@@ -122,30 +122,56 @@ datadog:
   #   - <KEY_1>:<VALUE_1>
   #   - <KEY_2>:<VALUE_2>
 
-  ## @param dogstatsdOriginDetection - boolean - optional
-  ## Enable origin detection for container tagging
-  ## https://docs.datadoghq.com/developers/dogstatsd/unix_socket/#using-origin-detection-for-container-tagging
+  ## @param dogstatsd - object - required
+  ## dogstatsd configuration
+  ## ref: https://docs.datadoghq.com/agent/kubernetes/dogstatsd/
+  ## To emit custom metrics from your Kubernetes application, use DogStatsD.
   #
-  # dogstatsdOriginDetection: true
+  dogstatsd:
+    ## @param port - integer - optional - default: 8125
+    ## Override the Agent DogStatsD port.
+    ## Note: Make sure your client is sending to the same UDP port.
+    #
+    # port:
 
-  ## @param useDogStatsDSocketVolume - boolean - optional
-  ## Enable dogstatsd over Unix Domain Socket
-  ## ref: https://docs.datadoghq.com/developers/dogstatsd/unix_socket/
-  #
-  # useDogStatsDSocketVolume: true
+    ## @param originDetection - boolean - optional
+    ## Enable origin detection for container tagging
+    ## https://docs.datadoghq.com/developers/dogstatsd/unix_socket/#using-origin-detection-for-container-tagging
+    #
+    # originDetection: true
 
-  #  # dogStatsDPort - integer - optional - default: 8125
-  #  # Override the Agent DogStatsD port.
-  #  # Note: Make sure your client is sending to the same UDP port.
-  #
-  # dogStatsDPort:
+    ## @param useSocketVolume - boolean - optional
+    ## Enable dogstatsd over Unix Domain Socket
+    ## ref: https://docs.datadoghq.com/developers/dogstatsd/unix_socket/
+    #
+    # useSocketVolume: true
 
-  ## @param nonLocalTraffic - boolean - optional - default: false
-  ## Enable this to make each node accept non-local statsd traffic.
-  ## This option must be set to "true" in order to use APM.
-  ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
-  #
-  # nonLocalTraffic: false
+    ## @param socketPath - string - optional
+    ## Path to the DogStatsD socket
+    #
+    # socketPath: /var/run/datadog/dsd.socket
+
+    ## @param useHostPort - boolean - optional
+    ## Sets the hostPort to the same value of the container port. Needs to be used
+    ## for sending custom metrics.
+    ## The ports need to be available on all hosts.
+    ##
+    ## WARNING: Make sure that hosts using this are properly firewalled otherwise
+    ## metrics and traces are accepted from any host able to connect to this host.
+    #
+    # useHostPort: true
+
+    ## @param useHostPID - boolean - optional
+    ## Run the agent in the host's PID namespace. This is required for Dogstatsd origin
+    ## detection to work. See https://docs.datadoghq.com/developers/dogstatsd/unix_socket/
+    #
+    # useHostPID: true
+
+    ## @param nonLocalTraffic - boolean - optional - default: false
+    ## Enable this to make each node accept non-local statsd traffic.
+    ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
+    #
+    # nonLocalTraffic: false
 
   ## @param collectEvents - boolean - optional - default: false
   ## Enables this to start event collection from the kubernetes API
@@ -184,6 +210,12 @@ datadog:
     ## ref: https://github.com/DataDog/docker-dd-agent#tracing-from-the-host
     #
     enabled: false
+
+    ## @param port - integer - optional - default: 8126
+    ## Override the trace Agent DogStatsD port.
+    ## Note: Make sure your client is sending to the same UDP port.
+    #
+    # port:
 
   ## @param env - list of object - optional
   ## The dd-agent supports many environment variables
@@ -226,10 +258,6 @@ datadog:
   #
   criSocketPath: /var/run/docker.sock
 
-  ## @param dogStatsDSocketPath - string - optional
-  ## Path to the DogStatsD socket
-  #
-  # dogStatsDSocketPath: /var/run/datadog/dsd.socket
 
   ## @param processAgent - object - required
   ## Enable process agent and provide custom configs
@@ -687,22 +715,6 @@ agents:
   ## metrics and traces are accepted from any host able to connect to this host.
   #
   # useHostNetwork: true
-
-  ## @param useHostPort - boolean - optional
-  ## Sets the hostPort to the same value of the container port. Needs to be used
-  ## to receive traces in a standard APM set up. Can be used as for sending custom metrics.
-  ## The ports need to be available on all hosts.
-  ##
-  ## WARNING: Make sure that hosts using this are properly firewalled otherwise
-  ## metrics and traces are accepted from any host able to connect to this host.
-  #
-  # useHostPort: true
-
-  ## @param useHostPID - boolean - optional
-  ## Run the agent in the host's PID namespace. This is required for Dogstatsd origin
-  ## detection to work. See https://docs.datadoghq.com/developers/dogstatsd/unix_socket/
-  #
-  # useHostPID: true
 
   ## @param podAnnotations - list of key:value strings - optional
   ## Annotations to add to the DaemonSet's Pods

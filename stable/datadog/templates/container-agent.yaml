@@ -6,9 +6,9 @@
   resources:
 {{ toYaml .Values.agents.containers.agent.resources | indent 4 }}
   ports:
-  - containerPort: {{ default 8125 .Values.datadog.dogStatsDPort }}
-    {{- if .Values.agents.useHostPort }}
-    hostPort: {{ default 8125 .Values.datadog.dogStatsDPort }}
+  - containerPort: {{ default 8125 .Values.datadog.dogstatsd.port }}
+    {{- if .Values.agents.dogstatsd.useHostPort }}
+    hostPort: {{ default 8125 .Values.datadog.dogstatsd.port }}
     {{- end }}
     name: dogstatsdport
     protocol: UDP
@@ -24,20 +24,18 @@
     {{- if .Values.datadog.logLevel }}
     - name: DD_LOG_LEVEL
       value: {{ .Values.agents.containers.agent.logLevel | default .Values.datadog.logLevel | quote }}
-    {{- end }}
-    {{- if .Values.datadog.dogStatsDPort }}
+    {{- end }}  
+    {{- if .Values.datadog.dogstatsd.port }}
     - name: DD_DOGSTATD_PORT
-      value: {{ .Values.datadog.dogStatsDPort | quote }}
+      value: {{ .Values.datadog.dogstatsd.port | quote }}
     {{- end }}
-    {{- if .Values.datadog.nonLocalTraffic }}
+    {{- if .Values.datadog.dogstatsd.nonLocalTraffic }}
     - name: DD_DOGSTATSD_NON_LOCAL_TRAFFIC
-      value: {{ .Values.datadog.nonLocalTraffic | quote }}
+      value: {{ .Values.datadog.dogstatsd.nonLocalTraffic | quote }}
     {{- end }}
-    - name: DD_APM_NON_LOCAL_TRAFFIC
-      value: {{ .Values.datadog.apm.enabled | quote }}
-    {{- if .Values.datadog.dogstatsdOriginDetection }}
+    {{- if .Values.datadog.dogstatsd.originDetection }}
     - name: DD_DOGSTATSD_ORIGIN_DETECTION
-      value: {{ .Values.datadog.dogstatsdOriginDetection | quote }}
+      value: {{ .Values.datadog.dogstatsd.originDetection | quote }}
     {{- end }}
     {{- if .Values.datadog.acInclude }}
     - name: DD_AC_INCLUDE
@@ -99,9 +97,9 @@
     - name: DD_HEALTH_PORT
       value: "5555"
     {{- end }}
-    {{- if .Values.datadog.useDogStatsDSocketVolume }}
+    {{- if .Values.datadog.dogstatsd.useSocketVolume }}
     - name: DD_DOGSTATSD_SOCKET
-      value: {{ default "/var/run/datadog/dsd.socket" .Values.datadog.dogStatsDSocketPath | quote }}
+      value: {{ default "/var/run/datadog/dsd.socket" .Values.datadog.dogstatsd.socketPath | quote }}
     {{- end }}
     {{- if and .Values.datadog.clusterChecks.enabled  (not .Values.clusterChecksRunner.enabled) }}
     - name: DD_EXTRA_CONFIG_PROVIDERS
@@ -123,7 +121,7 @@
       mountPath: {{ .Values.datadog.criSocketPath }}
       readOnly: true
     {{- end }}
-    {{- if .Values.datadog.useDogStatsDSocketVolume }}
+    {{- if .Values.datadog.dogstatsd.useSocketVolume }}
     - name: dsdsocket
       mountPath: "/var/run/datadog"
     {{- end }}

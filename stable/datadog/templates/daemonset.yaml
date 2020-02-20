@@ -48,8 +48,8 @@ spec:
       hostNetwork: {{ .Values.agents.useHostNetwork }}
       dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
-      {{- if .Values.agents.useHostPID }}
-      hostPID: {{ .Values.agents.useHostPID }}
+      {{- if .Values.agents.dogstatsd.useHostPID }}
+      hostPID: {{ .Values.agents.dogstatsd.useHostPID }}
       {{- end }}
       {{- if .Values.agents.image.pullSecrets }}
       imagePullSecrets:
@@ -82,7 +82,7 @@ spec:
             path: {{ .Values.datadog.criSocketPath }}
           name: runtimesocket
         {{- end }}
-        {{- if .Values.datadog.useDogStatsDSocketVolume }}
+        {{- if .Values.datadog.dogstatsd.useSocketVolume }}
         - hostPath:
             path: "/var/run/datadog/"
           name: dsdsocket
