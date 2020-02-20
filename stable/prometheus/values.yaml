@@ -306,6 +306,10 @@ alertmanager:
 ## Ref: https://github.com/jimmidyson/configmap-reload
 ##
 configmapReload:
+  ## If false, the configmap-reload container will not be deployed
+  ##
+  enabled: true
+
   ## configmap-reload container name
   ##
   name: configmap-reload
