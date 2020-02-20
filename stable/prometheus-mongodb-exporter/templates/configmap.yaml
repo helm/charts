@@ -1,0 +1,13 @@
+{{- if .Values.cacert.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "prometheus-mongodb-exporter.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "prometheus-mongodb-exporter.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "prometheus-mongodb-exporter.chart" . }}
+data:
+    ca.pem: {{ .Values.cacert.content }}
+{{- end -}}

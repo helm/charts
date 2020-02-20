@@ -70,4 +70,8 @@ spec:
       terminationGracePeriodSeconds: 30
       tolerations:
         {{- toYaml .Values.tolerations | nindent 8 }}
-
+  {{- if .Values.cacert.enabled  }}
+  volumeMounts:
+    - name: {{ $name }}-volume
+      mountPath: "/var/mongodb_exporter/config"
+  {{- end -}}
