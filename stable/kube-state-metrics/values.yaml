@@ -2,7 +2,7 @@
 prometheusScrape: true
 image:
   repository: quay.io/coreos/kube-state-metrics
-  tag: v1.9.4
+  tag: v1.9.5
   pullPolicy: IfNotPresent
 
 # If set to true, this will deploy kube-state-metrics as a StatefulSet and the data
@@ -116,7 +116,7 @@ collectors:
   storageclasses: true
   validatingwebhookconfigurations: false
   verticalpodautoscalers: false
-  volumeattachements: false
+  volumeattachments: false
 
 # Namespace to be enabled for collecting resources. By default all namespaces are collected.
 # namespace: ""
