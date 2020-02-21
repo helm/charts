@@ -50,7 +50,29 @@ The default configuration values for this chart are listed in `values.yaml`.
 | Parameter | Description | Default |
 |---|---|---|
 | image.repository | Image repository url | influxdb |
-| image.tag| Image tag | 1.7.6-alpine |
+| image.tag | Image tag | 1.7.6-alpine |
+| image.pullPolicy | Image pull policy | IfNotPresent |
+| image.pullSecrets | It will store the repository's credentials to pull image | nil |
+| serviceAccount.create | It will create service account | true |
+|  |  |  |
+|  |  |  |
+|  |  |  |
+|  |  |  |
+|  |  |  |
+|  |  |  |
+|  |  |  |
+|  |  |  |
+|  |  |  |
+|  |  |  |
+|  |  |  |
+|  |  |  |
+|  |  |  |
+|  |  |  |
+|  |  |  |
+|  |  |  |
+|  |  |  |
+|  |  |  |
+
 
 The [full image documentation](https://hub.docker.com/_/influxdb/) contains more information about running InfluxDB in docker.
 
