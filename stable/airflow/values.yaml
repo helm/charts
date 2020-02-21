@@ -231,6 +231,13 @@ flower:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+  extraConfigmapMounts: []
+  # Use-case example: adding a public certificate used for connection to a remote TLS endpoint
+  # - name: extra-cert
+  #   mountPath: /etc/ssl/certs/extra-cert.pem
+  #   configMap: extra-certificates
+  #   readOnly: true
+  #   subPath: extra-cert.pem
 
 web:
   ##
