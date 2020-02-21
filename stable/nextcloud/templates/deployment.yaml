@@ -201,6 +201,7 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
+        {{- if .Values.extraVolumeMounts }}{{ toYaml .Values.extraVolumeMounts | trim | nindent 8 }}{{ end }}
         - name: nextcloud-data
           mountPath: /var/www/
           subPath: root
@@ -318,6 +319,7 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       volumes:
+      {{- if .Values.extraVolumes  }}{{ toYaml .Values.extraVolumes | trim | nindent 6 }}{{ end }}  
       - name: nextcloud-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
