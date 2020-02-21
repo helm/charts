@@ -476,6 +476,11 @@ grafana:
   #   url: https://prometheus.svc:9090
   #   version: 1
 
+  ## Passed to grafana subchart and used by servicemonitor below
+  ##
+  service:
+    portName: service
+
   ## If true, create a serviceMonitor for grafana
   ##
   serviceMonitor:
