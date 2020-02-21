@@ -716,7 +716,7 @@ prometheusRule:
   ## Define individual alerting rules as required
   ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#rulegroup
   ##      https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/
-  groups: {}
+  groups: []
 
   ## Used to pass Labels that are used by the Prometheus installed in your cluster to select Prometheus Rules to work with
   ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
