@@ -337,7 +337,7 @@ clusterAgent:
     ## @param tag - string - required
     ## Define the Cluster-Agent version to use.
     #
-    tag: 1.4.0
+    tag: 1.5.2
 
     ## @param pullPolicy - string - required
     ## The Kubernetes pull policy.

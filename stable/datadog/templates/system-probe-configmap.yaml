@@ -1,4 +1,4 @@
-{{- if and .Values.datadog.systemProbe.enabled }}
+{{- if .Values.datadog.systemProbe.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -16,9 +16,10 @@ data:
       enabled: {{ $.Values.datadog.systemProbe.enabled }}
       debug_port:  {{ $.Values.datadog.systemProbe.debugPort }}
       sysprobe_socket: /opt/datadog-agent/run/sysprobe.sock
-{{- if eq .Values.datadog.systemProbe.seccomp "localhost/system-probe" }}
       enable_conntrack : {{ $.Values.datadog.systemProbe.enableConntrack }}
       bpf_debug: {{ $.Values.datadog.systemProbe.bpfDebug }}
+
+{{- if eq .Values.datadog.systemProbe.seccomp "localhost/system-probe" }}
 ---
 apiVersion: v1
 kind: ConfigMap

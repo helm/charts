@@ -32,7 +32,7 @@ spec:
         {{- if .Values.agents.customAgentConfig }}
         checksum/agent-config: {{ tpl (toYaml .Values.agents.customAgentConfig) . | sha256sum }}
         {{- end }}
-        {{- if and .Values.datadog.systemProbe.enabled }}
+        {{- if .Values.datadog.systemProbe.enabled }}
         container.apparmor.security.beta.kubernetes.io/system-probe: {{ .Values.datadog.systemProbe.apparmor }}
         container.seccomp.security.alpha.kubernetes.io/system-probe: {{ .Values.datadog.systemProbe.seccomp }}
         {{- end }}
@@ -123,7 +123,7 @@ spec:
             path: /etc/passwd
           name: passwd
         {{- end }}
-        {{- if and .Values.datadog.systemProbe.enabled }}
+        {{- if .Values.datadog.systemProbe.enabled }}
         - name: sysprobe-config
           configMap:
             name: {{ template "datadog.fullname" . }}-system-probe-config
