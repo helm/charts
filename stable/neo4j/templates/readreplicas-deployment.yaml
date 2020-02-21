@@ -12,6 +12,11 @@ spec:
 {{- if not .Values.readReplica.autoscaling.enabled }}
   replicas: {{ .Values.readReplica.numberOfServers }}
 {{- end }}
+  selector:
+    matchLabels:
+      app: {{ template "neo4j.name" . }}
+      release: {{ .Release.Name | quote }}
+      component: replica
   template:
     metadata:
       labels:
