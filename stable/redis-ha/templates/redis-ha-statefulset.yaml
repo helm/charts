@@ -84,6 +84,9 @@ spec:
                     {{ template "redis-ha.fullname" . }}: replica
                 topologyKey: failure-domain.beta.kubernetes.io/zone
     {{- end }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets: {{ toYaml .Values.imagePullSecrets | nindent 8 }}
+      {{- end }}
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
       serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}
@@ -237,6 +240,10 @@ spec:
               {{- end }}
                 key: {{ .Values.authKey }}
         {{- end }}
+        {{- if .Values.exporter.script }}
+          - name: REDIS_EXPORTER_SCRIPT
+            value: /script/script.lua
+        {{- end }}
         livenessProbe:
           httpGet:
             path: {{ .Values.exporter.scrapePath }}
@@ -249,6 +256,11 @@ spec:
         ports:
           - name: exporter-port
             containerPort: {{ .Values.exporter.port }}
+        {{- if .Values.exporter.script }}
+        volumeMounts:
+          - mountPath: /script
+            name: script-mount
+        {{- end }}
 {{- end }}
 {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
@@ -261,6 +273,14 @@ spec:
       - name: host-sys
         hostPath:
           path: /sys
+      {{- end }}
+      {{- if .Values.exporter.script }}
+      - name: script-mount
+        configMap:
+          name: {{ template "redis-ha.fullname" . }}-exporter-script-configmap
+          items:
+            - key: script
+              path: script.lua
       {{- end }}
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:

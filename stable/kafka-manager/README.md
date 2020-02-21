@@ -50,9 +50,9 @@ Parameter | Description | Default
 `zkHosts` | Zookeeper hosts required by the kafka-manager | `localhost:2181`
 `clusters` | Configuration of the clusters to manage | `{}`
 `applicationSecret` | Kafka-manager application secret | `""`
-`basicAuth.enabled` | If ture, enable basic authentication | `false`
+`basicAuth.enabled` | If true, enable basic authentication | `false`
 `basicAuth.username` | Username for basic auth | `admin`
-`basicAuth.password` | Paswword for basic auth | `""`
+`basicAuth.password` | Password for basic auth | `""`
 `javaOptions` | Java runtime options | `""`
 `service.type` | Kafka-manager service type | `ClusterIP`
 `service.port` | Kafka-manager service port | `9000`
@@ -67,7 +67,7 @@ Parameter | Description | Default
 `tolerations` | Tolerations for pod assignment | `[]`
 `affinity` | Affinity for pod assignment | `{}`
 `zookeeper.enabled` | If true, deploy Zookeeper | `false`
-`zookeeper.env` | Enviromental variables for Zookeeper | `ZK_HEAP_SIZE: "1G"`
+`zookeeper.env` | Environmental variables for Zookeeper | `ZK_HEAP_SIZE: "1G"`
 `zookeeper.persistence` | If true, enable persistence for Zookeeper | `false`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

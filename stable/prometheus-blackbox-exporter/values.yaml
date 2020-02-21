@@ -1,5 +1,7 @@
 restartPolicy: Always
 
+kind: Deployment
+
 podDisruptionBudget: {}
   # maxUnavailable: 0
 
