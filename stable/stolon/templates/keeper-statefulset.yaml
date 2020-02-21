@@ -55,6 +55,9 @@ spec:
               export STKEEPER_PG_LISTEN_ADDRESS=$POD_IP
               export STOLON_DATA=/stolon-data
               chown stolon:stolon $STOLON_DATA
+              {{- if .Values.shmVolume.enabled }}
+              chmod -R 777 /dev/shm
+              {{- end }}
               exec gosu stolon stolon-keeper --data-dir $STOLON_DATA
           env:
             - name: POD_NAME
@@ -117,6 +120,10 @@ spec:
           resources:
 {{ toYaml .Values.keeper.resources | indent 12 }}
           volumeMounts:
+{{- if .Values.shmVolume.enabled }}
+          - name: dshm
+            mountPath: /dev/shm
+{{- end }}
           - name: data
             mountPath: /stolon-data
 {{- if .Values.tls.enabled }}
@@ -173,6 +180,11 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
       volumes:
+{{- if .Values.shmVolume.enabled }}
+        - name: dshm
+          emptyDir:
+            medium: Memory
+{{- end }}
 {{- if .Values.tls.enabled }}
         - name: certs
           secret:
