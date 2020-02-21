@@ -11,6 +11,7 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+    component: server
 spec:
   type: {{ .Values.service.type }}
   {{- if and (hasKey .Values.service "loadBalancerIP") (eq .Values.service.type "LoadBalancer") }}
