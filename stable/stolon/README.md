@@ -34,6 +34,7 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `etcdImage.tag`                         | `etcd` image tag                               | `2.3.7`                                                      |
 | `etcdImage.pullPolicy`                  | `etcd` image pull policy                       | `IfNotPresent`                                               |
 | `debug`                                 | Debug mode                                     | `false`                                                      |
+| `shmVolume.enabled`                     | Enable emptyDir volume for /dev/shm  on keepers pods | `false`                                                 |
 | `persistence.enabled`                   | Use a PVC to persist data                      | `true`                                                       |
 | `persistence.storageClassName`          | Storage class name of backing PVC              | `""`                                                         |
 | `persistence.accessModes`               | Persistent volumes access modes                | `["ReadWriteOnce"]`                                          |
