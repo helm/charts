@@ -137,6 +137,8 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `readinessProbe.successThreshold`                            | Minimum consecutive successes for the probe             | `1`                                                     |
 | `deploymentAnnotations`                                      | Annotations to be added at 'deployment' level           | not set                                                 |
 | `podAnnotations`                                             | Annotations to be added at 'pod' level                  | not set                                                 |
+| `extraVolumes`                                             | List of extra volumes to be defined                  | not set                                                 |
+| `extraVolumeMounts`                                             | List of extra volume mounts to nextcloud container                  | not set                                                 |
 
 > **Note**:
 >
