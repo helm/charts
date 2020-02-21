@@ -5,6 +5,14 @@ image:
   repository: redis
   tag: 5.0.6-alpine
   pullPolicy: IfNotPresent
+
+## Reference to one or more secrets to be used when pulling images
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+## This imagePullSecrets is only for redis images
+##
+imagePullSecrets: []
+# - name: "image-pull-secret"
+
 ## replicas number for each component
 replicas: 3
 
@@ -38,6 +46,13 @@ haproxy:
     repository: haproxy
     tag: 2.0.4
     pullPolicy: IfNotPresent
+
+  ## Reference to one or more secrets to be used when pulling images
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  imagePullSecrets: []
+  # - name: "image-pull-secret"
+
   annotations: {}
   resources: {}
   ## Enable sticky sessions to Redis nodes via HAProxy
