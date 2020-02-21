@@ -4,10 +4,7 @@ metadata:
   name: {{ template "grafana.fullname" . }}
   namespace: {{ template "grafana.namespace" . }}
   labels:
-    app: {{ template "grafana.name" . }}
-    chart: {{ template "grafana.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    {{- include "grafana.labels" . | nindent 4 }}
 {{- if .Values.service.labels }}
 {{ toYaml .Values.service.labels | indent 4 }}
 {{- end }}
@@ -46,5 +43,4 @@ spec:
       nodePort: {{.Values.service.nodePort}}
 {{ end }}
   selector:
-    app: {{ template "grafana.name" . }}
-    release: {{ .Release.Name }}
+    {{- include "grafana.selectorLabels" . | nindent 4 }}

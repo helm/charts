@@ -35,6 +35,15 @@ Just `helm install stable/<chart>`. This is the default repository for Helm whic
 
 For more information on using Helm, refer to the [Helm documentation](https://github.com/kubernetes/helm#docs).
 
+## How Do I Enable the Stable Repository for Helm 3?
+
+To add the Helm Stable Charts for your local client, run `helm repo add`:
+
+```
+$ helm repo add stable https://kubernetes-charts.storage.googleapis.com
+"stable" has been added to your repositories
+```
+
 ## How Do I Enable the Incubator Repository?
 
 To add the Incubator charts for your local client, run `helm repo add`:

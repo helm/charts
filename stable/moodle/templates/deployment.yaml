@@ -73,6 +73,8 @@ spec:
               name: {{ printf "%s-%s" .Release.Name "externaldb" }}
               key: db-password
         {{- end }}
+        - name: MOODLE_SKIP_INSTALL
+          value: {{ default "no" .Values.moodleSkipInstall | quote }}
         - name: MOODLE_USERNAME
           value: {{ default "" .Values.moodleUsername | quote }}
         - name: MOODLE_PASSWORD
