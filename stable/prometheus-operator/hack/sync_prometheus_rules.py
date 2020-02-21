@@ -54,6 +54,7 @@ condition_map = {
     'general.rules': ' .Values.defaultRules.rules.general',
     'k8s.rules': ' .Values.defaultRules.rules.k8s',
     'kube-apiserver.rules': ' .Values.kubeApiServer.enabled .Values.defaultRules.rules.kubeApiserver',
+    'kube-apiserver-error': ' .Values.kubeApiServer.enabled .Values.defaultRules.rules.kubeApiserverError',
     'kube-prometheus-node-alerting.rules': ' .Values.defaultRules.rules.kubePrometheusNodeAlerting',
     'kube-prometheus-node-recording.rules': ' .Values.defaultRules.rules.kubePrometheusNodeRecording',
     'kube-scheduler.rules': ' .Values.kubeScheduler.enabled .Values.defaultRules.rules.kubeScheduler',
@@ -61,6 +62,8 @@ condition_map = {
     'kubernetes-resources': ' .Values.defaultRules.rules.kubernetesResources',
     'kubernetes-storage': ' .Values.defaultRules.rules.kubernetesStorage',
     'kubernetes-system': ' .Values.defaultRules.rules.kubernetesSystem',
+    'kubernetes-system-apiserver': ' .Values.defaultRules.rules.kubernetesSystem', # kubernetes-system was split into more groups in 1.14, one of them is kubernetes-system-apiserver
+    'kubernetes-system-kubelet': ' .Values.defaultRules.rules.kubernetesSystem', # kubernetes-system was split into more groups in 1.14, one of them is kubernetes-system-kubelet
     'kubernetes-system-controller-manager': ' .Values.kubeControllerManager.enabled',
     'kubernetes-system-scheduler': ' .Values.kubeScheduler.enabled .Values.defaultRules.rules.kubeScheduler',
     'node-exporter.rules': ' .Values.nodeExporter.enabled .Values.defaultRules.rules.node',
@@ -70,6 +73,7 @@ condition_map = {
     'node-time': ' .Values.defaultRules.rules.time',
     'prometheus-operator': ' .Values.defaultRules.rules.prometheusOperator',
     'prometheus.rules': ' .Values.defaultRules.rules.prometheus',
+    'prometheus': ' .Values.defaultRules.rules.prometheus', # kube-prometheus >= 1.14 uses prometheus as group instead of prometheus.rules
     'kubernetes-apps': ' .Values.kubeStateMetrics.enabled .Values.defaultRules.rules.kubernetesApps',
     'etcd': ' .Values.kubeEtcd.enabled .Values.defaultRules.rules.etcd',
 }
@@ -102,6 +106,17 @@ replacement_map = {
     'alertmanager-$1': {
         'replacement': '$1',
         'init': ''},
+    'https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#': {
+        'replacement': '{{ .Values.defaultRules.runbookUrl }}',
+        'init': ''},
+    'job="kube-state-metrics"': {
+        'replacement': 'job="kube-state-metrics", namespace=~"{{ $targetNamespace }}"',
+        'limitGroup': ['kubernetes-apps'],
+        'init': '{{- $targetNamespace := .Values.defaultRules.appNamespacesTarget }}'},
+    'job="kubelet"': {
+        'replacement': 'job="kubelet", namespace=~"{{ $targetNamespace }}"',
+        'limitGroup': ['kubernetes-storage'],
+        'init': '{{- $targetNamespace := .Values.defaultRules.appNamespacesTarget }}'},
 }
 
 # standard header
@@ -114,6 +129,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: {{ printf "%%s-%%s" (include "prometheus-operator.fullname" .) "%(name)s" | trunc 63 | trimSuffix "-" }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "prometheus-operator.name" . }}
 {{ include "prometheus-operator.labels" . | indent 4 }}
@@ -196,13 +212,14 @@ def add_rules_conditions(rules, indent=4):
 
 def write_group_to_file(group, url, destination, min_kubernetes, max_kubernetes):
     fix_expr(group['rules'])
+    group_name = group['name']
 
     # prepare rules string representation
     rules = yaml_str_repr(group)
     # add replacements of custom variables and include their initialisation in case it's needed
     init_line = ''
     for line in replacement_map:
-        if line in rules:
+        if group_name in replacement_map[line].get('limitGroup', [group_name]) and line in rules:
             rules = rules.replace(line, replacement_map[line]['replacement'])
             if replacement_map[line]['init']:
                 init_line += '\n' + replacement_map[line]['init']

@@ -1,6 +1,6 @@
 image:
   repository: quay.io/bitnami/sealed-secrets-controller
-  tag: v0.9.6
+  tag: v0.9.7
   pullPolicy: IfNotPresent
 
 resources: {}
@@ -26,6 +26,19 @@ rbac:
 # secretName: The name of the TLS secret containing the key used to encrypt secrets
 secretName: "sealed-secrets-key"
 
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /v1/cert.pem
+  hosts:
+    - chart-example.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
 crd:
   # crd.create: `true` if the crd resources should be created
   create: true
@@ -37,3 +50,7 @@ networkPolicy: false
 securityContext:
   # securityContext.runAsUser defines under which user the operator Pod and its containers/processes run.
   runAsUser: 1001
+
+podAnnotations: {}
+
+priorityClassName: ""

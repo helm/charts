@@ -10,48 +10,49 @@ metadata:
     heritage: {{ .Release.Service }}
 data:
   config.yaml: |
+{{- if or .Values.rules.default .Values.rules.custom }}
     rules:
 {{- if .Values.rules.default }}
-    - seriesQuery: '{__name__=~"^container_.*",container_name!="POD",namespace!="",pod_name!=""}'
+    - seriesQuery: '{__name__=~"^container_.*",container!="POD",namespace!="",pod!=""}'
       seriesFilters: []
       resources:
         overrides:
           namespace:
             resource: namespace
-          pod_name:
+          pod:
             resource: pod
       name:
         matches: ^container_(.*)_seconds_total$
         as: ""
-      metricsQuery: sum(rate(<<.Series>>{<<.LabelMatchers>>,container_name!="POD"}[5m]))
+      metricsQuery: sum(rate(<<.Series>>{<<.LabelMatchers>>,container!="POD"}[5m]))
         by (<<.GroupBy>>)
-    - seriesQuery: '{__name__=~"^container_.*",container_name!="POD",namespace!="",pod_name!=""}'
+    - seriesQuery: '{__name__=~"^container_.*",container!="POD",namespace!="",pod!=""}'
       seriesFilters:
       - isNot: ^container_.*_seconds_total$
       resources:
         overrides:
           namespace:
             resource: namespace
-          pod_name:
+          pod:
             resource: pod
       name:
         matches: ^container_(.*)_total$
         as: ""
-      metricsQuery: sum(rate(<<.Series>>{<<.LabelMatchers>>,container_name!="POD"}[5m]))
+      metricsQuery: sum(rate(<<.Series>>{<<.LabelMatchers>>,container!="POD"}[5m]))
         by (<<.GroupBy>>)
-    - seriesQuery: '{__name__=~"^container_.*",container_name!="POD",namespace!="",pod_name!=""}'
+    - seriesQuery: '{__name__=~"^container_.*",container!="POD",namespace!="",pod!=""}'
       seriesFilters:
       - isNot: ^container_.*_total$
       resources:
         overrides:
           namespace:
             resource: namespace
-          pod_name:
+          pod:
             resource: pod
       name:
         matches: ^container_(.*)$
         as: ""
-      metricsQuery: sum(<<.Series>>{<<.LabelMatchers>>,container_name!="POD"}) by (<<.GroupBy>>)
+      metricsQuery: sum(<<.Series>>{<<.LabelMatchers>>,container!="POD"}) by (<<.GroupBy>>)
     - seriesQuery: '{namespace!="",__name__!~"^container_.*"}'
       seriesFilters:
       - isNot: .*_total$
@@ -81,6 +82,7 @@ data:
 {{- end -}}
 {{- if .Values.rules.custom }}
 {{ toYaml .Values.rules.custom | indent 4 }}
+{{- end -}}
 {{- end -}}
 {{- if .Values.rules.external }}
     externalRules:

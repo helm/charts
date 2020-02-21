@@ -110,6 +110,53 @@ imagePullSecrets:
 {{- end -}}
 {{- end -}}
 
+{{/*
+Return true if a secret object should be created
+*/}}
+{{- define "external-dns.createSecret" -}}
+{{- if and (eq .Values.provider "aws") .Values.aws.credentials.secretKey .Values.aws.credentials.accessKey (not .Values.aws.credentials.secretName) }}
+    {{- true -}}
+{{- else if and (eq .Values.provider "azure") (or (and .Values.azure.resourceGroup .Values.azure.tenantId .Values.azure.subscriptionId .Values.azure.aadClientId .Values.azure.aadClientSecret (not .Values.azure.useManagedIdentityExtension)) (and .Values.azure.resourceGroup .Values.azure.tenantId .Values.azure.subscriptionId .Values.azure.useManagedIdentityExtension)) (not .Values.azure.secretName) -}}
+    {{- true -}}
+{{- else if and (eq .Values.provider "cloudflare") (or .Values.cloudflare.apiToken .Values.cloudflare.apiKey) (not .Values.cloudflare.secretName) -}}
+    {{- true -}}
+{{- else if and (eq .Values.provider "designate") (or .Values.designate.username .Values.designate.password) -}}
+    {{- true -}}
+{{- else if and (eq .Values.provider "digitalocean") .Values.digitalocean.apiToken (not .Values.digitalocean.secretName) -}}
+    {{- true -}}
+{{- else if and (eq .Values.provider "google") .Values.google.serviceAccountKey (not .Values.google.serviceAccountSecret) -}}
+    {{- true -}}
+{{- else if and (eq .Values.provider "infoblox") (and .Values.infoblox.wapiUsername .Values.infoblox.wapiPassword) -}}
+    {{- true -}}
+{{- else if and (eq .Values.provider "rfc2136") .Values.rfc2136.tsigSecret -}}
+    {{- true -}}
+{{- else if and (eq .Values.provider "pdns") .Values.pdns.apiKey -}}
+    {{- true -}}
+{{- else if and (eq .Values.provider "transip") .Values.transip.apiKey -}}
+    {{- true -}}
+{{- else -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the name of the Secret used to store the passwords
+*/}}
+{{- define "external-dns.secretName" -}}
+{{- if and (eq .Values.provider "aws") .Values.aws.credentials.secretName }}
+{{- .Values.aws.credentials.secretName }}
+{{- else if and (eq .Values.provider "azure") .Values.azure.secretName }}
+{{- .Values.azure.secretName }}
+{{- else if and (eq .Values.provider "cloudflare") .Values.cloudflare.secretName }}
+{{- .Values.cloudflare.secretName }}
+{{- else if and (eq .Values.provider "digitalocean") .Values.digitalocean.secretName }}
+{{- .Values.digitalocean.secretName }}
+{{- else if and (eq .Values.provider "google") .Values.google.serviceAccountSecret }}
+{{- .Values.google.serviceAccountSecret }}
+{{- else -}}
+{{- template "external-dns.fullname" . }}
+{{- end -}}
+{{- end -}}
+
 {{- define "external-dns.aws-credentials" }}
 [default]
 aws_access_key_id = {{ .Values.aws.credentials.accessKey }}
@@ -119,7 +166,6 @@ aws_secret_access_key = {{ .Values.aws.credentials.secretKey }}
 {{- define "external-dns.aws-config" }}
 [profile default]
 region = {{ .Values.aws.region }}
-source_profile = default
 {{ end }}
 
 {{- define "external-dns.azure-credentials" -}}
@@ -159,6 +205,8 @@ Compile all warnings into a single message, and call fail.
 {{- $messages := append $messages (include "external-dns.validateValues.azure.useManagedIdentityExtensionAadClientSecret" .) -}}
 {{- $messages := append $messages (include "external-dns.validateValues.azure.aadClientId" .) -}}
 {{- $messages := append $messages (include "external-dns.validateValues.azure.aadClientSecret" .) -}}
+{{- $messages := append $messages (include "external-dns.validateValues.transip.account" .) -}}
+{{- $messages := append $messages (include "external-dns.validateValues.transip.apiKey" .) -}}
 {{- $messages := without $messages "" -}}
 {{- $message := join "\n" $messages -}}
 
@@ -354,5 +402,29 @@ Validate values of Azure DNS:
 external-dns: azure.seManagedIdentityExtension
     You must provide the Azure AAD Client Secret when provider="azure" and useManagedIdentityExtension is not set.
     Please set set the aadClientSecret parameter (--set azure.aadClientSecret="xxxx")
+{{- end -}}
+{{- end -}}
+
+{{/*
+Validate values of TransIP DNS:
+- must provide the account name when provider is "transip"
+*/}}
+{{- define "external-dns.validateValues.transip.account" -}}
+{{- if and (eq .Values.provider "transip") (not .Values.transip.account) -}}
+external-dns: transip.account
+    You must provide the TransIP account name when provider="transip".
+    Please set the account parameter (--set transip.account="xxxx")
+{{- end -}}
+{{- end -}}
+
+{{/*
+Validate values of TransIP DNS:
+- must provide the API key when provider is "transip"
+*/}}
+{{- define "external-dns.validateValues.transip.apiKey" -}}
+{{- if and (eq .Values.provider "transip") (not .Values.transip.apiKey) -}}
+external-dns: transip.apiKey
+    You must provide the TransIP API key when provider="transip".
+    Please set the apiKey parameter (--set transip.apiKey="xxxx")
 {{- end -}}
 {{- end -}}

@@ -181,6 +181,9 @@ master:
   # this will be an external load balancer and allowing inbound 0.0.0.0/0, a HUGE
   # security risk:  https://github.com/kubernetes/charts/issues/1341
   slaveListenerServiceType: "ClusterIP"
+  # Optionally assign an IP to the LoadBalancer slaveListenerService LoadBalancer
+  # GKE users: only regional static IPs will work for Service Load balancer.
+  # slaveListenerLoadBalancerIP: 1.2.3.4
   slaveListenerServiceAnnotations: {}
   slaveKubernetesNamespace:
 
@@ -210,11 +213,11 @@ master:
 
   # List of plugins to be install during Jenkins master start
   installPlugins:
-    - kubernetes:1.18.2
-    - workflow-job:2.33
+    - kubernetes:1.21.2
+    - workflow-job:2.36
     - workflow-aggregator:2.6
-    - credentials-binding:1.19
-    - git:3.11.0
+    - credentials-binding:1.20
+    - git:4.0.0
 
   # Enable to always override the installed plugins with the values of 'master.installPlugins' on upgrade or redeployment.
   # overwritePlugins: true
@@ -250,7 +253,7 @@ master:
   JCasC:
     enabled: false
     defaultConfig: false
-    pluginVersion: "1.27"
+    pluginVersion: "1.32"
     # it's only used when plugin version is <=1.18 for later version the
     # configuration as code support plugin is no longer needed
     supportPluginVersion: "1.18"
@@ -320,6 +323,8 @@ master:
   # ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
   # priorityClass: system-cluster-critical
   podAnnotations: {}
+  # Add deployment annotation
+  deploymentAnnotations: {}
 
   # The below two configuration-related values are deprecated and replaced by Jenkins Configuration as Code (see above
   # JCasC key).  They will be deleted in an upcoming version.
@@ -470,6 +475,8 @@ agent:
   #     - key: "key"
   #       operator: "Equal"
   #       value: "value"
+  # Timeout in seconds for an agent to be online
+  slaveConnectTimeout: 100
 
 persistence:
   enabled: true

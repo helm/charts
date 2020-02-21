@@ -92,6 +92,14 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            {{- range $key, $value := .Values.agent.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
           securityContext:
             privileged: true
           volumeMounts:
@@ -105,6 +113,8 @@ spec:
               mountPath: /sys
             - name: var-log
               mountPath: /var/log
+            - name: var-lib
+              mountPath: /var/lib/containers/storage
             - name: machine-id
               mountPath: /etc/machine-id
             - name: configuration
@@ -118,8 +128,8 @@ spec:
             httpGet:
               path: /status
               port: 42699
-            initialDelaySeconds: 75
-            periodSeconds: 5
+            initialDelaySeconds: 300
+            timeoutSeconds: 3
           resources:
             requests:
               memory: "{{ default 512 .Values.agent.pod.requests.memory }}Mi"
@@ -149,8 +159,8 @@ spec:
             httpGet:
               path: /status
               port: 42699
-            initialDelaySeconds: 75
-            periodSeconds: 5
+            initialDelaySeconds: 300
+            timeoutSeconds: 3
           ports:
             - containerPort: {{ .Values.agent.leaderElectorPort }}
       {{- if .Values.agent.pod.tolerations }}
@@ -173,6 +183,9 @@ spec:
         - name: var-log
           hostPath:
             path: /var/log
+        - name: var-lib
+          hostPath:
+            path: /var/lib/containers/storage
         - name: machine-id
           hostPath:
             path: /etc/machine-id

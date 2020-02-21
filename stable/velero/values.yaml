@@ -5,8 +5,8 @@
 # Details of the container image to use in the Velero deployment & daemonset (if
 # enabling restic). Required.
 image:
-  repository: gcr.io/heptio-images/velero
-  tag: v1.1.0
+  repository: velero/velero
+  tag: v1.2.0
   pullPolicy: IfNotPresent
 
 # Annotations to add to the Velero deployment's pod template. Optional.
@@ -19,16 +19,14 @@ podAnnotations: {}
 # Resource requests/limits to specify for the Velero deployment. Optional.
 resources: {}
 
-# Pod priority class name to use for the Velero deployment. Optional.
-priorityClassName: {}
-
-# Init containers to add to the Velero deployment's pod spec. Optional.
+# Init containers to add to the Velero deployment's pod spec. At least one plugin provider image is required.
 initContainers: []
-  # - name:
-  #   image:
+  # - name: velero-plugin-for-aws
+  #   image: velero/velero-plugin-for-aws:v1.0.0
+  #   imagePullPolicy: IfNotPresent
   #   volumeMounts:
-  #     - name: plugins
-  #       mountPath: /target
+  #     - mountPath: /target
+  #       name: plugins
 
 # Tolerations to use for the Velero deployment. Optional.
 tolerations: []
@@ -42,9 +40,9 @@ extraVolumes: []
 # Extra volumeMounts for the Velero deployment. Optional.
 extraVolumeMounts: []
 
-# Settings for Velero's prometheus metrics. Disabled by default.
+# Settings for Velero's prometheus metrics. Enabled by default.
 metrics:
-  enabled: false
+  enabled: true
   scrapeInterval: 30s
 
   # Pod annotations for Prometheus

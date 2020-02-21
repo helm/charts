@@ -84,7 +84,7 @@ spec:
         - /bin/bash
         - -c
         - |
-          {{- if (eq .Values.securityContext.runAsUser 0.0) }}
+          {{- if (eq (.Values.securityContext.runAsUser | int) 0) }}
           useradd redis
           chown -R redis {{ .Values.slave.persistence.path }}
           {{- end }}
@@ -414,6 +414,15 @@ spec:
           requests:
             storage: {{ .Values.slave.persistence.size | quote }}
         {{ include "redis.slave.storageClass" . }}
+        selector:
+        {{- if .Values.slave.persistence.matchLabels }}
+          matchLabels:
+{{ toYaml .Values.slave.persistence.matchLabels | indent 12 }}
+        {{- end -}}
+        {{- if .Values.slave.persistence.matchExpressions }}
+          matchExpressions:
+{{ toYaml .Values.slave.persistence.matchExpressions | indent 12 }}
+        {{- end -}}
   {{- end }}
   updateStrategy:
     type: {{ .Values.slave.statefulset.updateStrategy }}

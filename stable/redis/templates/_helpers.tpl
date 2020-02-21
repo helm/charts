@@ -193,9 +193,9 @@ Get the password key to be retrieved from Redis secret.
 Return Redis password
 */}}
 {{- define "redis.password" -}}
-{{- if .Values.global.redis.password }}
+{{- if not (empty .Values.global.redis.password) }}
     {{- .Values.global.redis.password -}}
-{{- else if .Values.password -}}
+{{- else if not (empty .Values.password) -}}
     {{- .Values.password -}}
 {{- else -}}
     {{- randAlphaNum 10 -}}
@@ -208,7 +208,7 @@ Return sysctl image
 {{- define "redis.sysctl.image" -}}
 {{- $registryName :=  default "docker.io" .Values.sysctlImage.registry -}}
 {{- $repositoryName := .Values.sysctlImage.repository -}}
-{{- $tag := default "stretch" .Values.sysctlImage.tag | toString -}}
+{{- $tag := default "buster" .Values.sysctlImage.tag | toString -}}
 {{/*
 Helm 2.11 supports the assignment of a value to a variable defined in a different scope,
 but Helm 2.9 and 2.10 doesn't support it, so we need to implement this if-else logic.

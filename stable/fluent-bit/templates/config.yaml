@@ -49,8 +49,25 @@ data:
 {{- end }}
         Max_Entries     {{ .Values.input.systemd.maxEntries }}
         Read_From_Tail  {{ .Values.input.systemd.readFromTail }}
+        Strip_Underscores  {{ .Values.input.systemd.stripUnderscores }}
 {{- end }}
 {{ .Values.extraEntries.input | indent 8 }}
+
+{{- if .Values.audit.enable }}
+    [INPUT]
+        Name              tail
+        Path              {{ .Values.audit.input.path }}
+        Parser            {{ .Values.audit.input.parser }}
+        DB                /var/log/audit.db
+        Tag               {{ .Values.audit.input.tag }}
+        Refresh_Interval  5
+        Mem_Buf_Limit     {{ .Values.audit.input.memBufLimit }}
+        Buffer_Chunk_Size {{ .Values.audit.input.bufferChunkSize }}
+        Buffer_Max_Size   {{ .Values.audit.input.bufferMaxSize }}
+        Skip_Long_Lines   {{ .Values.audit.input.skipLongLines}}
+        Key               {{ .Values.audit.input.key}}
+{{ .Values.extraEntries.audit | indent 8 }}
+{{- end }}
 
   fluent-bit-filter.conf: |
     [FILTER]
@@ -73,6 +90,9 @@ data:
 {{- end }}
 {{- if .Values.filter.enableExclude }}
         K8S-Logging.Exclude On
+{{- end }}
+{{- if .Values.filter.useJournal }}
+        Use_Journal         On
 {{- end }}
 {{ .Values.extraEntries.filter | indent 8 }}
 
@@ -118,6 +138,9 @@ data:
 {{- end }}
 {{- if .Values.backend.es.logstash_prefix }}
         Logstash_Prefix {{ .Values.backend.es.logstash_prefix }}
+{{- if .Values.backend.es.logstash_prefix_key }}
+        Logstash_Prefix_Key {{ .Values.backend.es.logstash_prefix_key }}
+{{- end }}
 {{ else if .Values.backend.es.index }}
         Index {{ .Values.backend.es.index }}
 {{- end }}
@@ -178,6 +201,9 @@ data:
         Proxy {{ .Values.backend.http.proxy }}
 {{- end }}
         Format {{ .Values.backend.http.format }}
+{{- end }}
+{{- if .Values.backend.http.json_date_format }}
+        json_date_format {{ .Values.backend.http.json_date_format }}
 {{- end }}
 {{- range  .Values.backend.http.headers }}
         Header  {{ . }}

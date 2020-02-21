@@ -39,7 +39,10 @@ spec:
       containers:
       - name: user-create-job
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        command: ["sentry","createuser","--no-input","--email", "{{ .Values.user.email }}", "--superuser","--password","$(SENTRY_USER_PASSWORD)"]
+        command: ["/bin/bash"]
+        args:
+          - "-c"
+          - "export output=$(sentry createuser --no-input --email {{ .Values.user.email }} --superuser --password $SENTRY_USER_PASSWORD) || if echo $output | grep -q 'already exists'; then exit 0; else exit 1; fi"
         env:
         - name: SENTRY_SECRET_KEY
           valueFrom:
@@ -58,7 +61,7 @@ spec:
             {{- else }}
               name: {{ template "sentry.postgresql.secret" . }}
             {{- end }}
-              key: postgresql-password
+              key: {{ template "sentry.postgresql.secretKey" . }}
         - name: SENTRY_POSTGRES_HOST
           value: {{ template "sentry.postgresql.host" . }}
         - name: SENTRY_POSTGRES_PORT
@@ -72,7 +75,7 @@ spec:
             {{- else }}
               name: {{ template "sentry.redis.secret" . }}
             {{- end }}
-              key: redis-password
+              key: {{ template "sentry.redis.secretKey" . }}
         {{- end }}
         - name: SENTRY_REDIS_HOST
           value: {{ template "sentry.redis.host" . }}

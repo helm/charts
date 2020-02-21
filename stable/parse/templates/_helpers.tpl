@@ -93,10 +93,24 @@ but Helm 2.9 and 2.10 does not support it, so we need to implement this if-else 
 
 {{/*
 Gets the port to access Parse outside the cluster.
-When using ingress, we should use the port 80 instead of service.port
+When using ingress, we should use the port 80/443 instead of service.port
 */}}
 {{- define "parse.external-port" -}}
-{{- ternary "80" .Values.server.port .Values.ingress.enabled -}}
+{{/*
+Helm 2.11 supports the assignment of a value to a variable defined in a different scope,
+but Helm 2.9 and 2.10 does not support it, so we need to implement this if-else logic.
+*/}}
+{{- if .Values.ingress.enabled -}}
+{{- $ingressHttpPort := "80" -}}
+{{- $ingressHttpsPort := "443" -}}
+{{- if eq .Values.dashboard.parseServerUrlProtocol "https" -}}
+{{- $ingressHttpsPort -}}
+{{- else -}}
+{{- $ingressHttpPort -}}
+{{- end -}}
+{{- else -}}
+{{ .Values.server.port }}
+{{- end -}}
 {{- end -}}
 
 {{/*
@@ -278,4 +292,33 @@ Usage:
     {{- else }}
         {{- tpl (.value | toYaml) .context }}
     {{- end }}
+{{- end -}}
+
+{{/*
+Compile all warnings into a single message, and call fail.
+*/}}
+{{- define "parse.validateValues" -}}
+{{- $messages := list -}}
+{{- $messages := append $messages (include "parse.validateValues.dashboard.serverUrlProtocol" .) -}}
+{{- $messages := without $messages "" -}}
+{{- $message := join "\n" $messages -}}
+
+{{- if $message -}}
+{{-   printf "\nVALUES VALIDATION:\n%s" $message | fail -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Validate values of Parse Dashboard - if tls is enable on server side must provide https protocol
+*/}}
+{{- define "parse.validateValues.dashboard.serverUrlProtocol" -}}
+{{- if .Values.ingress.enabled -}}
+{{- range .Values.ingress.server.hosts -}}
+{{- if and (.tls) (ne $.Values.dashboard.parseServerUrlProtocol "https") -}}
+parse: dashboard.parseServerUrlProtocol
+    If Parse Server is using ingress with tls enable then It must be set as "https"
+    in order to form the URLs with this protocol, in another case, Parse Dashboard will always redirect to "http".
+{{- end -}}
+{{- end -}}
+{{- end -}}
 {{- end -}}

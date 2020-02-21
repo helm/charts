@@ -15,4 +15,6 @@ maintainers:
   email: jack@influxdb.com
 - name: aisuko
   email: urakiny@gmail.com
+- name: naseemkullah
+  email: naseem@transit.app
 engine: gotpl

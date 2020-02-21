@@ -9,6 +9,10 @@ metadata:
 {{- if .Values.extraLabels }}
 {{ toYaml .Values.extraLabels | indent 4 }}
 {{- end }}
+{{- if .Values.statefulSetAnnotations }}
+  annotations:
+{{ toYaml .Values.statefulSetAnnotations | indent 4 }}
+{{- end }}
   name: {{ template "mongodb-replicaset.fullname" . }}
 spec:
   selector:
@@ -120,6 +124,10 @@ spec:
               value: {{ .Values.replicaSetName }}
             - name: TIMEOUT
               value: "{{ .Values.init.timeout }}"
+            - name: SKIP_INIT
+              value: "{{ .Values.skipInitialization }}"
+            - name: TLS_MODE
+              value: {{ .Values.tls.mode }}
           {{- if .Values.auth.enabled }}
             - name: AUTH
               value: "true"
@@ -185,7 +193,7 @@ spec:
             - --keyFile=/data/configdb/key.txt
           {{- end }}
           {{- if .Values.tls.enabled }}
-            - --sslMode=requireSSL
+            - --sslMode={{ .Values.tls.mode }}
             - --sslCAFile=/data/configdb/tls.crt
             - --sslPEMKeyFile=/work-dir/mongo.pem
           {{- end }}
@@ -237,16 +245,7 @@ spec:
             - -c
             - >-
               /bin/mongodb_exporter
-            {{- if .Values.auth.enabled }}
-              --mongodb.uri mongodb://$METRICS_USER:$METRICS_PASSWORD@localhost:{{ .Values.port }}
-            {{- else }}
-              --mongodb.uri mongodb://localhost:{{ .Values.port }}
-            {{- end }}
-            {{- if .Values.tls.enabled }}
-              --mongodb.tls
-              --mongodb.tls-ca=/ca/tls.crt
-              --mongodb.tls-cert=/work-dir/mongo.pem
-            {{- end }}
+              --mongodb.uri {{ template "mongodb-replicaset.connection-string" . }}
               --mongodb.socket-timeout={{ .Values.metrics.socketTimeout }}
               --mongodb.sync-timeout={{ .Values.metrics.syncTimeout }}
               --web.telemetry-path={{ .Values.metrics.path }}
@@ -281,7 +280,6 @@ spec:
           {{- if .Values.metrics.securityContext.enabled }}
           securityContext:
             runAsUser: {{ .Values.metrics.securityContext.runAsUser }}
-            fsGroup: {{ .Values.metrics.securityContext.fsGroup }}
           {{- end }}
           livenessProbe:
             exec:
@@ -290,16 +288,7 @@ spec:
                 - -c
                 - >-
                   /bin/mongodb_exporter
-                {{- if .Values.auth.enabled }}
-                  --mongodb.uri mongodb://$METRICS_USER:$METRICS_PASSWORD@localhost:{{ .Values.port }}
-                {{- else }}
-                  --mongodb.uri mongodb://localhost:{{ .Values.port }}
-                {{- end }}
-                {{- if .Values.tls.enabled }}
-                  --mongodb.tls
-                  --mongodb.tls-ca=/ca/tls.crt
-                  --mongodb.tls-cert=/work-dir/mongo.pem
-                {{- end }}
+                  --mongodb.uri {{ template "mongodb-replicaset.connection-string" . }}
                   --test
             initialDelaySeconds: 30
             periodSeconds: 10

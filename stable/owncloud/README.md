@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```console
-$ helm install stable/owncloud
+$ helm install my-release stable/owncloud
 ```
 
 ## Introduction
@@ -28,7 +28,7 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/owncloud
+$ helm install my-release stable/owncloud
 ```
 
 The command deploys ownCloud on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
@@ -95,6 +95,7 @@ The following table lists the configurable parameters of the ownCloud chart and 
 | `persistence.owncloud.existingClaim`| An Existing PVC name for ownCloud volume   | `nil` (uses alpha storage class annotation)             |
 | `persistence.owncloud.accessMode`   | PVC Access Mode for ownCloud volume        | `ReadWriteOnce`                                         |
 | `persistence.owncloud.size`         | PVC Storage Request for ownCloud volume    | `8Gi`                                                   |
+| `updateStrategy.type`               | Owncloud deployment strategy               | `RollingUpdate`                                         |
 | `resources`                         | CPU/Memory resource requests/limits        | Memory: `512Mi`, CPU: `300m`                            |
 | `podAnnotations`                    | Pod annotations                            | `{}`                                                    |
 | `affinity`                          | Map of node/pod affinities                 | `{}`                                                    |
@@ -126,7 +127,7 @@ The above parameters map to the env variables defined in [bitnami/owncloud](http
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install --name my-release \
+$ helm install my-release \
   --set owncloudUsername=admin,owncloudPassword=password,mariadb.mariadbRootPassword=secretpassword \
     stable/owncloud
 ```
@@ -136,7 +137,7 @@ The above command sets the ownCloud administrator account username and password 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml stable/owncloud
+$ helm install my-release -f values.yaml stable/owncloud
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

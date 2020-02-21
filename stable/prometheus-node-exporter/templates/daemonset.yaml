@@ -9,13 +9,17 @@ spec:
     matchLabels:
       app: {{ template "prometheus-node-exporter.name" . }}
       release: {{ .Release.Name }}
+  {{- if .Values.updateStrategy }}
   updateStrategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 1
+{{ toYaml .Values.updateStrategy | indent 4 }}
+  {{- end }}
   template:
     metadata:
       labels: {{ include "prometheus-node-exporter.labels" . | indent 8 }}
+      {{- if .Values.podAnnotations }}
+      annotations:
+      {{- toYaml .Values.podAnnotations | nindent 8 }}
+      {{- end }}
     spec:
 {{- if and .Values.rbac.create .Values.serviceAccount.create }}
       serviceAccountName: {{ template "prometheus-node-exporter.serviceAccountName" . }}

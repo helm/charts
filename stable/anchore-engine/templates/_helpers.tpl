@@ -97,6 +97,15 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/*
+Create a default fully qualified app name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "anchore-engine.enterprise-notifications.fullname" -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- printf "%s-%s-%s" .Release.Name $name "enterprise-notifications"| trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
 Create a default fully qualified dependency name for the db.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
@@ -118,4 +127,15 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 */}}
 {{- define "redis.fullname" -}}
 {{- printf "%s-%s" .Release.Name "anchore-ui-redis" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
+Return Anchore Engine default admin password
+*/}}
+{{- define "anchore-engine.defaultAdminPassword" -}}
+{{- if .Values.anchoreGlobal.defaultAdminPassword }}
+    {{- .Values.anchoreGlobal.defaultAdminPassword -}}
+{{- else -}}
+    {{- randAlphaNum 32 -}}
+{{- end -}}
 {{- end -}}

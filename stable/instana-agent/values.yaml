@@ -26,9 +26,9 @@ agent:
     # agent.image.name is the name of the container image of the Instana agent.
     name: instana/agent
     # agent.image.tag is the tag name of the agent container image.
-    tag: 1.0.29
+    tag: latest
     # agent.image.pullPolicy specifies when to pull the image container.
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
 
   pod:
     # agent.pod.annotations are additional annotations to be added to the agent pods.
@@ -61,6 +61,12 @@ agent:
   # proxyPassword: null
   # agent.proxyUseDNS sets the INSTANA_AGENT_PROXY_USE_DNS environment variable.
   # proxyUseDNS: null
+
+  # use this to set additional environment variables for the instana agent
+  # for example:
+  # env:
+  #   INSTANA_AGENT_TAGS: dev
+  env: {}
 
   configuration_yaml: |
     # Place agent configuration here

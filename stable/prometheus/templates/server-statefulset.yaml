@@ -83,18 +83,14 @@ spec:
             - --storage.tsdb.path={{ .Values.server.persistentVolume.mountPath }}
             - --web.console.libraries=/etc/prometheus/console_libraries
             - --web.console.templates=/etc/prometheus/consoles
-            - --web.enable-lifecycle
+          {{- range .Values.server.extraFlags }}
+            - --{{ . }}
+          {{- end }}
           {{- range $key, $value := .Values.server.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}
           {{- if .Values.server.baseURL }}
             - --web.external-url={{ .Values.server.baseURL }}
-          {{- end }}
-          {{- if .Values.server.enableAdminApi }}
-            - --web.enable-admin-api
-          {{- end }}
-          {{- if .Values.server.skipTSDBLock }}
-            - --storage.tsdb.no-lockfile
           {{- end }}
           ports:
             - containerPort: 9090

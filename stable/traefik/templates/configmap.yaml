@@ -210,6 +210,18 @@ data:
       format = {{ .Values.accessLogs.format | quote }}
     [accessLog.fields]
       defaultMode = {{ .Values.accessLogs.fields.defaultMode | quote }}
+    {{- if .Values.accessLogs.filters }}
+    [accessLog.filters]
+      {{- if .Values.accessLogs.filters.statusCodes }}
+      statusCodes = {{ toJson .Values.accessLogs.filters.statusCodes }}
+      {{- end }}
+      {{- if .Values.accessLogs.filters.retryAttempts }}
+      retryAttempts = {{ .Values.accessLogs.filters.retryAttempts }}
+      {{- end }}
+      {{- if .Values.accessLogs.filters.minDuration }}
+      minDuration = {{ .Values.accessLogs.filters.minDuration | quote }}
+      {{- end }}
+    {{- end }}
     [accessLog.fields.names]
     {{- range $field, $action := .Values.accessLogs.fields.names }}
       {{ printf "\"%s\" = \"%s\"" $field $action }}
@@ -295,9 +307,13 @@ data:
     {{- end }}
     entryPoint = "https"
     onHostRule = {{ .Values.acme.onHostRule }}
-    {{- if .Values.acme.staging }}
+    {{- if .Values.acme.caServer }}
+    caServer = {{ .Values.acme.caServer | quote }}
+    {{- else }}
+      {{- if eq (toString (.Values.acme.staging)) "true" }}
     caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
-    {{- end }}
+      {{- end }}
+    {{- end -}}
     {{- if .Values.acme.logging }}
     acmeLogging = true
     {{- end }}
@@ -312,7 +328,7 @@ data:
       {{- end }}
     {{- else if eq .Values.acme.challengeType "http-01" }}
       [acme.httpChallenge]
-      entryPoint = {{ .Values.acme.httpChallenge.entrypoint }}
+      entryPoint = {{ .Values.acme.httpChallenge.entrypoint | quote }}
     {{- else if eq .Values.acme.challengeType "tls-alpn-01" }}
       [acme.tlsChallenge]
     {{- end }}

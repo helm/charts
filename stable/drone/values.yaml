@@ -4,7 +4,7 @@ images:
   ##
   server:
     repository: "docker.io/drone/drone"
-    tag: 1.6.1
+    tag: 1.6.5
     pullPolicy: IfNotPresent
 
   ## The official drone (agent) image, change tag to use a different version.
@@ -12,7 +12,7 @@ images:
   ##
   agent:
     repository: "docker.io/drone/agent"
-    tag: 1.6.1
+    tag: 1.6.2
     pullPolicy: IfNotPresent
 
   ## The official docker (dind) image, change tag to use a different version.
@@ -21,6 +21,19 @@ images:
   dind:
     repository: "docker.io/library/docker"
     tag: 18.06.1-ce-dind
+    pullPolicy: IfNotPresent
+
+  ## The official drone (runner-kubernetes) image, change tag to use a different version.
+  ## ref: https://hub.docker.com/r/drone/drone-runner-kube/tags/
+  ##
+  runner:
+    repository: "docker.io/drone/drone-runner-kube"
+    tag: 1.0.0-beta.2
+    pullPolicy: IfNotPresent
+
+  secrets:
+    repository: "robotinfra/drone-kubernetes-secrets"
+    tag: 0c5746b
     pullPolicy: IfNotPresent
 
 service:
@@ -58,12 +71,10 @@ ingress:
   # annotations:
   #   kubernetes.io/ingress.class: nginx
   #   kubernetes.io/tls-acme: 'true'
-
   ## Drone hostnames must be provided if Ingress is enabled
   ##
   # hosts:
   #   - drone.domain.io
-
   ## Drone Ingress TLS configuration secrets
   ## Must be manually created in the namespace
   ##
@@ -94,6 +105,9 @@ sourceControl:
     clientSecretValue:
     server:
   gitea:
+    clientID:
+    clientSecretKey: clientSecret
+    clientSecretValue:
     server:
   gogs:
     server:
@@ -116,6 +130,19 @@ server:
 
   ## protocol should be http or https
   protocol: http
+  database:
+    driver: "sqlite3"
+    dataSource: "/var/lib/drone/drone.sqlite"
+  logs:
+    color: false
+    debug: false
+    pretty: false
+    trace: false
+    text: true
+
+  ## http port
+  ## Set to > 1024 if you want to run the pod as non-root user
+  httpPort: 80
 
   ## rpcProtocol for rpc connection to the server should be http or https
   rpcProtocol: http
@@ -130,15 +157,14 @@ server:
   ## when your source code management system (e.g. GitHub Enterprise) has private mode enabled.
   alwaysAuth: false
 
-  ## Configures drone to use kubernetes to run pipelines rather than agents, if enabled
-  ## will not deploy any agents.
+  ## Configures drone to use legacy kubernetes runner to run pipelines rather than agents
+  ## if enabled will not deploy any agents.
   kubernetes:
-    ## set to true if you want drone to use kubernetes to run pipelines
+    ## set to true if you want drone to use old kubernetes legacy to run pipelines
     enabled: true
     ## you can run pipeline jobs in another namespace, if you choose to do this
     ## you'll need to create that namespace manually.
     # namespace:
-
     ## alternative service account to create to create drone pipelines. this account
     ## will be given cluster-admin rights.
     ## if not set the rights will be given to the default drone service account name.
@@ -151,10 +177,6 @@ server:
   ## ref: https://docs.drone.io/reference/server/
   ##
   env:
-    DRONE_LOGS_DEBUG: "false"
-    DRONE_DATABASE_DRIVER: "sqlite3"
-    DRONE_DATABASE_DATASOURCE: "/var/lib/drone/drone.sqlite"
-
   ## Secret environment variables are configured in `server.envSecrets`.
   ## Each item in `server.envSecrets` references a Kubernetes Secret.
   ## These Secrets should be created before they are referenced.
@@ -200,6 +222,10 @@ server:
   ##
   tolerations: []
 
+  ## securityContext for drone server
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+  securityContext: {}
+
   ## additional siecar containers, e. g. for a database proxy, such as Google's cloudsql-proxy.
   ## ex: https://github.com/kubernetes/charts/tree/master/stable/keycloak
   ##
@@ -209,13 +235,128 @@ server:
   ##
   extraVolumes: |
 
+## Kubernetes runner is the new method to run pipelines, might requires changes to `.drone.yaml` files
+runner:
+  # requires server.kubernetes.enabled=`false`
+  enabled: false
+
+  logs:
+    debug: false
+
+  ## Number of drone kube-runner replicas
+  replicas: 1
+
+  ## Additional kube-runner annotations.
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  ##
+  annotations: {}
+
+  ## Liveness and readiness probe values
+  ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
+  ## drone runner does not currently have a health endpoint to check against.
+  livenessProbe: {}
+  readinessProbe: {}
+
+  ## Use an alternate scheduler, e.g. "stork".
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  # schedulerName:
+
+  ## Pod scheduling preferences.
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ##
+  affinity: {}
+
+  ## Node labels for pod assignment
+  ## ref: https://kubernetes.io/docs/user-guide/node-selection
+  ##
+  nodeSelector: {}
+
+  ## Node taints to tolerate
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
+
+  ## Drone kube-runner configuration.
+  ## Values in here get injected as environment variables to the kube-runner
+  ## Ref: https://kube-runner.docs.drone.io/installation/reference/
+  ##
+  env: {}
+
+  ## CPU and memory limits for drone kube-runner
+  ##
+  resources: {}
+  #  requests:
+  #    memory: 32Mi
+  #    cpu: 40m
+  #  limits:
+  #    memory: 2Gi
+  #    cpu: 1
+
+# kubernetes secrets plugins container
+secrets:
+  # runner.enabled must also be `true`
+  enabled: false
+  service:
+    httpPort: 80
+    # annotations:
+
+  logs:
+    debug: false
+
+  httpPort: 3000
+
+  ## Number of drone kube-runner replicas
+  replicas: 1
+
+  ## Additional kubernetes secrets annotations.
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  ##
+  annotations: {}
+
+  ## Liveness and readiness probe values
+  ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
+  ## drone runner does not currently have a health endpoint to check against.
+  livenessProbe: {}
+  readinessProbe: {}
+
+  ## Use an alternate scheduler, e.g. "stork".
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  # schedulerName:
+
+  ## Pod scheduling preferences.
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ##
+  affinity: {}
+
+  ## Node labels for pod assignment
+  ## ref: https://kubernetes.io/docs/user-guide/node-selection
+  ##
+  nodeSelector: {}
+
+  ## Node taints to tolerate
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
+
+  ## CPU and memory limits for drone kube-runner
+  ##
+  resources: {}
+  #  requests:
+  #    memory: 32Mi
+  #    cpu: 40m
+  #  limits:
+  #    memory: 2Gi
+  #    cpu: 1
+
 agent:
   ## Drone agent configuration.
   ## Values in here get injected as environment variables.
   ## ref: https://docs.drone.io/reference/agent/
   ##
   env:
-    DRONE_LOGS_DEBUG: "false"
+    # DRONE_LOGS_DEBUG: "false"
 
   ## Number of drone agent replicas
   replicas: 1

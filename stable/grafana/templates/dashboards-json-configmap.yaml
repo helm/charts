@@ -5,12 +5,9 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "grafana.fullname" $ }}-dashboards-{{ $provider }}
-  namespace: {{ $.Release.Namespace }}
+  namespace: {{ template "grafana.namespace" $ }}
   labels:
-    app: {{ template "grafana.name" $ }}
-    chart: {{ template "grafana.chart" $ }}
-    release: {{ $.Release.Name }}
-    heritage: {{ $.Release.Service }}
+    {{- include "grafana.labels" $ | nindent 4 }}
     dashboard-provider: {{ $provider }}
 {{- if $dashboards }}
 data:
