@@ -1,5 +1,6 @@
 {{- if .Values.server.enabled -}}
 {{- if .Values.server.statefulSet.enabled -}}
+{{- if and .Values.server.service.type (eq .Values.server.service.type "ClusterIP") -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -22,5 +23,6 @@ spec:
       targetPort: 9090
   selector:
     {{- include "prometheus.server.matchLabels" . | nindent 4 }}
+{{- end -}}
 {{- end -}}
 {{- end -}}

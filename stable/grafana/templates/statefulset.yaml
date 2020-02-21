@@ -1,4 +1,4 @@
-{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) (eq .Values.persistence.type "statefulset")}}
+{{- if and .Values.persistence.enabled (eq .Values.persistence.type "statefulset") }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -15,7 +15,11 @@ spec:
   selector:
     matchLabels:
       {{- include "grafana.selectorLabels" . | nindent 6 }}
+  {{- if and .Values.service.type (eq .Values.service.type "ClusterIP") }}
   serviceName: {{ template "grafana.fullname" . }}-headless
+  {{- else }}
+  serviceName: {{ template "grafana.fullname" . }}
+  {{- end }}
   template:
     metadata:
       labels:

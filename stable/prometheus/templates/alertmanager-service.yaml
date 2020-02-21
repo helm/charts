@@ -1,4 +1,5 @@
 {{- if .Values.alertmanager.enabled -}}
+{{- if and .Values.alertmanager.service.type (ne .Values.alertmanager.service.type "ClusterIP") }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -49,4 +50,5 @@ spec:
   sessionAffinity: {{ .Values.alertmanager.service.sessionAffinity }}
 {{- end }}
   type: "{{ .Values.alertmanager.service.type }}"
+{{- end }}
 {{- end }}
