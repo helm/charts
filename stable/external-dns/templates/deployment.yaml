@@ -221,7 +221,7 @@ spec:
           value: {{ .Values.aws.credentials.mountPath }}/credentials
         {{- end }}
         {{- end }}
-        # Azure Private DNS variables 
+        # Azure Private DNS variables
         {{- if eq .Values.provider "azure-private-dns" }}
         {{- if .Values.azure.tenantId }}
         - name: AZURE_TENANT_ID
@@ -265,6 +265,46 @@ spec:
           value: {{ .Values.coredns.etcdTLS.mountPath }}/{{ .Values.coredns.etcdTLS.keyFilename }}
         - name: ETCD_CA_FILE
           value: {{ .Values.coredns.etcdTLS.mountPath }}/{{ .Values.coredns.etcdTLS.caFilename }}
+        {{- end }}
+        {{- end }}
+        # Designate environment variables
+        {{- if eq .Values.provider "designate" }}
+        {{- if .Values.designate.customCA.enabled }}
+        - name: OPENSTACK_CA_FILE
+          value: {{ .Values.designate.customCA.mountPath }}/{{ .Values.designate.customCA.filename }}
+        {{- else if .Values.designate.customCAHostPath }}
+        - name: OPENSTACK_CA_FILE
+          value: {{ .Values.designate.customCAHostPath }}
+        {{- end }}
+        {{- if .Values.designate.username}}
+        - name: OS_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "external-dns.secretName" . }}
+              key: designate_username
+        {{- end }}
+        {{- if .Values.designate.password}}
+        - name: OS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "external-dns.secretName" . }}
+              key: designate_password
+        {{- end }}
+        {{- if .Values.designate.authUrl }}
+        - name: OS_AUTH_URL
+          value: {{ .Values.designate.authUrl }}
+        {{- end }}
+        {{- if .Values.designate.regionName }}
+        - name: OS_REGION_NAME
+          value: {{ .Values.designate.regionName }}
+        {{- end }}
+        {{- if .Values.designate.userDomainName }}
+        - name: OS_USER_DOMAIN_NAME
+          value: {{ .Values.designate.userDomainName }}
+        {{- end }}
+        {{- if .Values.designate.projectName }}
+        - name: OS_PROJECT_NAME
+          value: {{ .Values.designate.projectName }}
         {{- end }}
         {{- end }}
         # DigitalOcean environment variables
@@ -312,10 +352,6 @@ spec:
             secretKeyRef:
               name: {{ template "external-dns.secretName" . }}
               key: rfc2136_tsig_secret
-        {{- end }}
-        {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
-        - name: OPENSTACK_CA_FILE
-          value: {{ .Values.designate.customCA.mountPath }}/{{ .Values.designate.customCA.filename }}
         {{- end }}
         # PowerDNS environment variables
         {{- if and (eq .Values.provider "pdns") .Values.pdns.apiKey }}
@@ -369,10 +405,18 @@ spec:
           mountPath: /etc/secrets/service-account/
         {{- end }}
         # Designate mountPath(s)
-        {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
+        {{- if eq .Values.provider "designate" }}
+        {{- if and (.Values.designate.customCAHostPath) (.Values.designate.customCA.enabled) }}
+        {{- fail "designate.customCAHostPath cannot be specified with designate.customCA.enabled set to true"}}
+        {{- else if .Values.designate.customCA.enabled }}
         - name: designate-custom-ca
           mountPath: {{ .Values.designate.customCA.mountPath }}
           readOnly: true
+        {{- else if .Values.designate.customCAHostPath }}
+        - name: designate-custom-ca-hostpath
+          mountPath: {{ .Values.designate.customCAHostPath }}
+          readOnly: true
+        {{- end }}
         {{- end }}
         # TransIP mountPath(s)
         {{- if (eq .Values.provider "transip") }}
@@ -418,13 +462,19 @@ spec:
           {{- end }}
       {{- end }}
       # Designate volume(s)
-      {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
+      {{- if eq .Values.provider "designate" }}
+      {{- if .Values.designate.customCA.enabled }}
       - name: designate-custom-ca
         configMap:
           name: {{ template "external-dns.fullname" . }}
           items:
           - key: {{ .Values.designate.customCA.filename }}
             path: {{ .Values.designate.customCA.filename }}
+      {{- else if .Values.designate.customCAHostPath }}
+      - name: designate-custom-ca-hostpath
+        hostPath:
+          path: {{ .Values.designate.customCAHostPath }}
+      {{- end }}
       {{- end }}
       # TransIP volume(s)
       {{- if (eq .Values.provider "transip") }}
