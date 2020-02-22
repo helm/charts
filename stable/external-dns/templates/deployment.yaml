@@ -414,10 +414,6 @@ spec:
         {{- if eq .Values.provider "designate" }}
         {{- if and (.Values.designate.customCAHostPath) (.Values.customCA.enabled) }}
         {{- fail "designate.customCAHostPath cannot be specified with customCA.enabled set to true"}}
-        {{- else if .Values.customCA.enabled }}
-        - name: designate-custom-ca
-          mountPath: {{ .Values.customCA.mountPath }}
-          readOnly: true
         {{- else if .Values.designate.customCAHostPath }}
         - name: designate-custom-ca-hostpath
           mountPath: {{ .Values.designate.customCAHostPath }}
@@ -478,14 +474,7 @@ spec:
       {{- end }}
       # Designate volume(s)
       {{- if eq .Values.provider "designate" }}
-      {{- if .Values.customCA.enabled }}
-      - name: designate-custom-ca
-        configMap:
-          name: {{ template "external-dns.fullname" . }}
-          items:
-          - key: {{ .Values.customCA.filename }}
-            path: {{ .Values.customCA.filename }}
-      {{- else if .Values.designate.customCAHostPath }}
+      {{- if .Values.designate.customCAHostPath }}
       - name: designate-custom-ca-hostpath
         hostPath:
           path: {{ .Values.designate.customCAHostPath }}
