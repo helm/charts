@@ -377,6 +377,12 @@ spec:
         resources: {{ toYaml .Values.resources | nindent 10 }}
         {{- end }}
         volumeMounts:
+        # Generic CA mount
+        {{- if .Values.customCA.enabled }}
+        - name: ca-certificates
+          mountPath: {{ .Values.customCA.mountPath }}
+          readOnly: true
+        {{- end }}
         # AWS mountPath(s)
         {{- if and (eq .Values.provider "aws") (or (and .Values.aws.credentials.secretKey .Values.aws.credentials.accessKey) .Values.aws.credentials.secretName) }}
         - name: aws-credentials
@@ -425,6 +431,15 @@ spec:
           readOnly: true
         {{- end }}
       volumes:
+      # Generic CA volume
+      {{- if .Values.customCA.enabled }}
+      - name: ca-certificates
+        configMap:
+          name: {{ template "external-dns.fullname" . }}
+          items:
+          - key: {{ .Values.customCA.filename }}
+            path: {{ .Values.customCA.filename }}
+      {{- end }}
       # AWS volume(s)
       {{- if and (eq .Values.provider "aws") (or (and .Values.aws.credentials.secretKey .Values.aws.credentials.accessKey) .Values.aws.credentials.secretName) }}
       - name: aws-credentials
