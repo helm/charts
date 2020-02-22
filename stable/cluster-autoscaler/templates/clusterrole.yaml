@@ -44,6 +44,7 @@ rules:
     - list
     - get
     - update
+    - patch
   - apiGroups:
     - ""
     resources:
