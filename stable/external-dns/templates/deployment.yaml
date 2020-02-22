@@ -344,6 +344,10 @@ spec:
               name: {{ template "external-dns.secretName" . }}
               key: infoblox_wapi_password
         {{- end }}
+        {{- if .Values.customCA.enabled }}
+        - name: EXTERNAL_DNS_INFOBLOX_SSL_VERIFY
+          value: {{ .Values.customCA.mountPath }}/{{ .Values.customCA.filename }}
+        {{- end }}
         {{- end }}
         # RFC 2136 environment variables
         {{- if and .Values.rfc2136.tsigSecret }}
