@@ -70,6 +70,8 @@ The following table lists the configurable parameters of the Node Exporter chart
 | `configmaps`                          | Allow mounting additional configmaps.                                                                                         | `[]`                                             |
 | `namespaceOverride`                   | Override the deployment namespace                                                                                             | `""` (`Release.Namespace`)                       |
 | `updateStrategy`                      | Configure a custom update strategy for the daemonset                                                                          | `Rolling update with 1 max unavailable`          |
+| `sidecars`               | Additional containers for export metrics to text file     | `[]`           |  |
+| `sidecarVolumeMount`               | Volume for sidecar containers     | `[]`           |  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
