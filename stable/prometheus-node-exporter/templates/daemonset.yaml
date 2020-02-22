@@ -88,14 +88,14 @@ spec:
             {{- end }}
 {{- if .Values.sidecars }}
 {{ toYaml .Values.sidecars | indent 8 }}
-           {{- if .Values.sidecarVolumeMount }}
-           volumeMounts:
-             {{- range $_, $mount := .Values.sidecarVolumeMount }}
-             - name: {{ $mount.name }}
-               mountPath: {{ $mount.mountPath }}
-               readOnly: {{ $mount.readOnly }}
-             {{- end }}
-           {{- end }}
+          {{- if .Values.sidecarVolumeMount }}
+          volumeMounts:
+            {{- range $_, $mount := .Values.sidecarVolumeMount }}
+            - name: {{ $mount.name }}
+              mountPath: {{ $mount.mountPath }}
+              readOnly: {{ $mount.readOnly }}
+            {{- end }}
+          {{- end }}
 {{- end }}
       hostNetwork: {{ .Values.hostNetwork }}
       hostPID: true
