@@ -66,7 +66,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ template "kafka-manager.fullname" . }}
-                  key: basicAuthLDAPPssword
+                  key: basicAuthLDAPPassword
             - name: KAFKA_MANAGER_LDAP_SEARCH_BASE_DN
               value: {{ .Values.basicAuth.ldap.searchBaseDn | quote }}
             - name: KAFKA_MANAGER_LDAP_SEARCH_FILTER
