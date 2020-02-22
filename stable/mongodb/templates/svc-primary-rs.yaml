@@ -8,6 +8,9 @@ metadata:
     chart: {{ template "mongodb.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+    {{- with .Values.labels }}
+{{ toYaml . | indent 4 }}
+    {{- end }}
 {{- with .Values.service.annotations }}
   annotations: {{ tpl (toYaml .) $ | nindent 4 }}
 {{- end }}
