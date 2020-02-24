@@ -443,8 +443,8 @@ clusterAgent:
   #
   livenessProbe:
     httpGet:
-      port: 8080
-      path: /healthz
+      port: 5000
+      path: /metrics
       scheme: HTTP
 
   ## @param readinessProbe - object - required
@@ -452,8 +452,8 @@ clusterAgent:
   #
   readinessProbe:
     httpGet:
-      port: 8080
-      path: /healthz
+      port: 5000
+      path: /metrics
       scheme: HTTP
 
   ## @param strategy - string - required
