@@ -31,6 +31,11 @@ The following table lists the configurable parameters of the Zeppelin chart and 
 | `ingress.hosts`                      | Ingress Hostnames                                                 | `["zeppelin.local"]`                                       |
 | `ingress.path`                       | Path within the URL structure                                     | `/`                                                        |
 | `ingress.tls`                        | Ingress TLS configuration                                         | `[]`                                                       |
+| `spark.ui.ingress.enabled`           | Enable Spark UI ingress                                                    | `false`                                                    |
+| `spark.ui.ingress.annotations`       | Spark UI Ingress annotations                                               | `{}`                                                       |
+| `spark.ui.ingress.hosts`             | Spark UI Ingress Hostnames                                                 | `["zeppelin-spark.local"]`                                       |
+| `spark.ui.ingress.path`              | Spark UI Path within the URL structure                                     | `/`                                                        |
+| `spark.ui.ingress.tls`               | Spark UI Ingress TLS configuration                                         | `[]`                                                       |
 | `nodeSelecor`                        | Node selector for the Zeppelin deployment                         | `{}`                                                       |
 
 ## Related charts
