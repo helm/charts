@@ -12,6 +12,8 @@ spec:
   ports:
   - port: 8080
     name: web
+  - port: 4040
+    name: spark
   selector:
     app: {{ template "zeppelin.name" . }}
     release: {{ .Release.Name }}
