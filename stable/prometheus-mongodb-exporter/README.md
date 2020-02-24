@@ -64,7 +64,9 @@ podAnnotations:
 | `tolerations` | List of node taints to tolerate  | `[]` |
 | `tolerations` | List of node taints to tolerate  | `[]` |
 | `cacert.enabled` | Enable TLS  | `false` |
-| `cacert.mountPath` | Enable TLS  | `false` |
+| `cacert.mountPath` | Mount path for certification | `/var/mongodb_exporter/config` |
+| `cacert.content` | Contents of where the certification is mounted. | `/var/mongodb_exporter/config` |
+| `cacert.name` | Name of volume | `/var/mongodb_exporter/config` |
 ## Limitations
 
 Connecting to MongoDB via TLS is currently not supported.
