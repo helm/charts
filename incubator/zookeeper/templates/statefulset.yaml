@@ -47,6 +47,10 @@ spec:
 {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
 {{- end }}
+{{- if .Values.image.imagePullSecret }}
+      imagePullSecrets:
+        - name: {{ tpl .Values.image.imagePullSecret . }}
+{{- end }}
       containers:
 
         - name: zookeeper

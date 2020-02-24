@@ -19,6 +19,7 @@ image:
   repository: zookeeper     # Container image repository for zookeeper container.
   tag: 3.5.5                # Container image tag for zookeeper container.
   pullPolicy: IfNotPresent  # Image pull criteria for zookeeper container.
+  imagePullSecret: ""       # Secret name to use for pulling the image, maybe also be a template.
 
 service:
   type: ClusterIP  # Exposes zookeeper on a cluster-internal IP.
