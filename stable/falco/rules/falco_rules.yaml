@@ -744,7 +744,7 @@
 
 - macro: ms_oms_writing_conf
   condition: >
-    ((proc.name in (omiagent,omsagent,in_heartbeat_r*,omsadmin.sh,PerformInventor)
+    ((proc.name in (omiagent,omsagent,in_heartbeat_r*,omsadmin.sh,PerformInventor,dsc_host)
        or proc.pname in (ms_oms_binaries)
        or proc.aname[2] in (ms_oms_binaries))
      and (fd.name startswith /etc/opt/omi or fd.name startswith /etc/opt/microsoft/omsagent))
@@ -1156,6 +1156,16 @@
 - macro: automount_using_mtab
   condition: (proc.pname = automount and fd.name startswith /etc/mtab)
 
+- macro: mcafee_writing_cma_d
+  condition: (proc.name=macompatsvc and fd.directory=/etc/cma.d)
+
+- macro: avinetworks_supervisor_writing_ssh
+  condition: >
+    (proc.cmdline="se_supervisor.p /opt/avi/scripts/se_supervisor.py -d" and
+      (fd.name startswith /etc/ssh/known_host_ or
+       fd.name startswith /etc/ssh/ssh_monitor_config_ or
+       fd.name startswith /etc/ssh/ssh_config_))
+
 # Add conditions to this macro (probably in a separate file,
 # overwriting this macro) to allow for specific combinations of
 # programs writing below specific directories below
@@ -1190,6 +1200,7 @@
                           qualys-cloud-ag, locales.postins, nomachine_binaries,
                           adclient, certutil, crlutil, pam-auth-update, parallels_insta,
                           openshift-launc, update-rc.d, puppet)
+    and not (container and proc.cmdline in ("cp /run/secrets/kubernetes.io/serviceaccount/ca.crt /etc/pki/ca-trust/source/anchors/openshift-ca.crt"))
     and not proc.pname in (sysdigcloud_binaries, mail_config_binaries, hddtemp.postins, sshkit_script_binaries, locales.postins, deb_binaries, dhcp_binaries)
     and not fd.name pmatch (safe_etc_dirs)
     and not fd.name in (/etc/container_environment.sh, /etc/container_environment.json, /etc/motd, /etc/motd.svc)
@@ -1273,6 +1284,8 @@
     and not etcd_manager_updating_dns
     and not user_known_write_below_etc_activities
     and not automount_using_mtab
+    and not mcafee_writing_cma_d
+    and not avinetworks_supervisor_writing_ssh
 
 - rule: Write below etc
   desc: an attempt to write to any file below /etc
@@ -1340,6 +1353,9 @@
 - macro: user_known_write_below_root_activities
   condition: (never_true)
 
+- macro: runc_writing_exec_fifo
+  condition: (proc.cmdline="runc:[1:CHILD] init" and fd.name=/exec.fifo)
+
 - rule: Write below root
   desc: an attempt to write to any file directly below / or /root
   condition: >
@@ -1359,6 +1375,7 @@
     and not galley_writing_state
     and not calico_writing_state
     and not rancher_writing_root
+    and not runc_writing_exec_fifo
     and not known_root_conditions
     and not user_known_write_root_conditions
     and not user_known_write_below_root_activities
@@ -1529,7 +1546,7 @@
   condition: >
     evt.type = setns
     and not proc.name in (docker_binaries, k8s_binaries, lxd_binaries, sysdigcloud_binaries,
-                          sysdig, nsenter, calico, oci-umount, network_plugin_binaries)
+                          sysdig, nsenter, calico, oci-umount, cilium-cni, network_plugin_binaries)
     and not proc.name in (user_known_change_thread_namespace_binaries)
     and not proc.name startswith "runc"
     and not proc.cmdline startswith "containerd"
@@ -1668,7 +1685,8 @@
                            mesos_shell_binaries,
                            erl_child_setup, exechealthz,
                            PM2, PassengerWatchd, c_rehash, svlogd, logrotate, hhvm, serf,
-                           lb-controller, nvidia-installe, runsv, statsite, erlexec)
+                           lb-controller, nvidia-installe, runsv, statsite, erlexec, calico-node,
+                           "puma reactor")
     and not proc.cmdline in (known_shell_spawn_cmdlines)
     and not proc.aname in (unicorn_launche)
     and not consul_running_net_scripts
