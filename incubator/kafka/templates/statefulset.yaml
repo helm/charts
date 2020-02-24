@@ -54,6 +54,10 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
 {{- end }}
+{{- if .Values.imagePullSecret }}
+      imagePullSecrets:
+        - name: {{ tpl .Values.imagePullSecret . }}
+{{- end }}
       containers:
       {{- if .Values.prometheus.jmx.enabled }}
       - name: metrics
