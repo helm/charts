@@ -14,6 +14,14 @@ rules:
   resources:
   - events
   - pods
+  verbs:
+  - list
+  - get
+  - watch
+{{- if or (.Values.containerToken) (.Values.infraToken) }}
+- apiGroups:
+  - ""
+  resources:
   - configmaps
   - nodes
   - secrets
@@ -52,4 +60,5 @@ rules:
   - get
   - watch
   - list
+{{- end }}
 {{- end }}
