@@ -15,6 +15,10 @@ metadata:
 {{- end }}
   name: {{ template "mongodb-replicaset.fullname" . }}
 spec:
+{{- if .Values.updateStrategy }}
+  updateStrategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}
+{{- end }}
   selector:
     matchLabels:
       app: {{ template "mongodb-replicaset.name" . }}
