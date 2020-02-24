@@ -40,7 +40,7 @@ To get the password for "{{ .Values.mongodbUsername }}" run:
 
 To connect to your database run the following command:
 
-    kubectl run --namespace {{ .Release.Namespace }} {{ template "mongodb.fullname" . }}-client --rm --tty -i --restart='Never' --image bitnami/mongodb --command -- mongo admin --host {{ template "mongodb.serviceName" . }} {{- if .Values.usePassword }} --authenticationDatabase admin -u root -p $MONGODB_ROOT_PASSWORD{{- end }}
+    kubectl run --namespace {{ .Release.Namespace }} {{ template "mongodb.fullname" . }}-client --rm --tty -i --restart='Never' --image {{ template "mongodb.image" . }} --command -- mongo admin --host {{ template "mongodb.serviceName" . }} {{- if .Values.usePassword }} --authenticationDatabase admin -u root -p $MONGODB_ROOT_PASSWORD{{- end }}
 
 To connect to your database from outside the cluster execute the following commands:
 
@@ -56,7 +56,7 @@ To connect to your database from outside the cluster execute the following comma
         Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "mongodb.serviceName" . }}'
 
     export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "mongodb.serviceName" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
-    mongo --host $SERVICE_IP --port {{ .Values.service.nodePort }} {{- if .Values.usePassword }} --authenticationDatabase admin -p $MONGODB_ROOT_PASSWORD{{- end }}
+    mongo --host $SERVICE_IP --port {{ .Values.service.port }} {{- if .Values.usePassword }} --authenticationDatabase admin -p $MONGODB_ROOT_PASSWORD{{- end }}
 
 {{- else if contains "ClusterIP" .Values.service.type }}
 
