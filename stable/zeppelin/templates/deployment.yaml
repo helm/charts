@@ -25,7 +25,11 @@ spec:
           ports:
             - containerPort: 8080
               name: web
+            - containerPort: 4040
+              name: spark
           env:
+            - name: ZEPPELIN_ADDR
+              value: "0.0.0.0"
             - name: ZEPPELIN_PORT
               value: "8080"
             - name: ZEPPELIN_JAVA_OPTS
@@ -51,7 +55,7 @@ spec:
             httpGet:
               path: /
               port: 8080
-            initialDelaySeconds: 20
+            initialDelaySeconds: 40
             timeoutSeconds: 1
 {{- if .Values.hadoop.useConfigMap }}
       volumes:
