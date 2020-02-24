@@ -62,7 +62,9 @@ podAnnotations:
 | `serviceMonitor.namespace` | The namespace where the Prometheus Operator is deployed | `` |
 | `serviceMonitor.additionalLabels` | Additional labels to add to the ServiceMonitor | `{}` |
 | `tolerations` | List of node taints to tolerate  | `[]` |
-
+| `tolerations` | List of node taints to tolerate  | `[]` |
+| `cacert.enabled` | Enable TLS  | `false` |
+| `cacert.mountPath` | Enable TLS  | `false` |
 ## Limitations
 
 Connecting to MongoDB via TLS is currently not supported.
