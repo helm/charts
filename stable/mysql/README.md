@@ -16,7 +16,7 @@ This chart bootstraps a single node MySQL deployment on a [Kubernetes](http://ku
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/mysql
+$ helm install my-release stable/mysql
 ```
 
 The command deploys MySQL on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -127,7 +127,7 @@ Some of the parameters above map to the env variables defined in the [MySQL Dock
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
   --set mysqlRootPassword=secretpassword,mysqlUser=my-user,mysqlPassword=my-password,mysqlDatabase=my-database \
     stable/mysql
 ```
@@ -137,7 +137,7 @@ The above command sets the MySQL `root` account password to `secretpassword`. Ad
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/mysql
+$ helm install my-release -f values.yaml stable/mysql
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
