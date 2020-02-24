@@ -188,6 +188,8 @@ spec:
         - name: bootstrap
           emptyDir: {}
 {{- end }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
       tolerations:

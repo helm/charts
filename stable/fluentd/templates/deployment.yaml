@@ -15,11 +15,14 @@ spec:
 {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
 {{- end }}
+{{- if .Values.autoscaling.enabled }}
+  serviceName: {{ template "fluentd.name" . }}
+{{- end }}
   selector:
     matchLabels:
       app: {{ template "fluentd.name" . }}
       release: {{ .Release.Name }}
-  {{- if .Values.persistence.enabled }}
+  {{- if and .Values.persistence.enabled (not .Values.autoscaling.enabled) }}
   strategy:
     type: Recreate
   {{- end }}

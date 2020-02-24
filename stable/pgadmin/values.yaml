@@ -6,7 +6,7 @@ replicaCount: 1
 ##
 image:
   repository: dpage/pgadmin4
-  tag: 4.17
+  tag: 4.18
   pullPolicy: IfNotPresent
 
 service:
@@ -21,6 +21,26 @@ strategy: {}
   # rollingUpdate:
   #   maxSurge: 0
   #   maxUnavailable: 1
+
+## Server definitions will be loaded at launch time. This allows connection
+## information to be pre-loaded into the instance of pgAdmin in the container.
+## Ref: https://www.pgadmin.org/docs/pgadmin4/4.13/import_export_servers.html
+##
+serverDefinitions:
+  ## If true, server definitions will be created
+  ##
+  enabled: false
+
+  servers: |-
+  #  "1": {
+  #    "Name": "Minimally Defined Server",
+  #    "Group": "Servers",
+  #    "Port": 5432,
+  #    "Username": "postgres",
+  #    "Host": "localhost",
+  #    "SSLMode": "prefer",
+  #    "MaintenanceDB": "postgres"
+  #  }
 
 ingress:
   ## If true, pgAdmin Ingress will be created

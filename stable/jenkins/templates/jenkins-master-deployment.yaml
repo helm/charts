@@ -371,12 +371,14 @@ spec:
       - name: plugin-dir
         emptyDir: {}
       {{- end }}
+      {{- if not (contains "jenkins-home" (quote .Values.persistence.volumes)) }}
       - name: jenkins-home
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
           claimName: {{ .Values.persistence.existingClaim | default (include "jenkins.fullname" .) }}
       {{- else }}
         emptyDir: {}
+      {{- end -}}
       {{- end -}}
       {{- if .Values.master.JCasC.enabled }}
       - name: sc-config-volume
