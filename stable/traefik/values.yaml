@@ -423,6 +423,8 @@ accessLogs:
         # Authorization: redact
 rbac:
   enabled: false
+  serviceAccount:
+    annotations: {}
 ## Enable the /metrics endpoint, for now only supports prometheus
 ## set to true to enable metric collection by prometheus
 metrics:
