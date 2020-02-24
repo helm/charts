@@ -108,7 +108,7 @@ certs:
     caDays: 10000
     certDays: 10000
     altNames:
-      - dex.io
+      - dex.example.com
     altIPs: {}
     secret:
       tlsName: dex-web-server-tls
@@ -120,7 +120,7 @@ certs:
     create: true
     activeDeadlineSeconds: 300
     altNames:
-      - dex.io
+      - dex.example.com
     altIPs: {}
     secret:
       serverTlsName: dex-grpc-server-tls
@@ -162,7 +162,7 @@ podDisruptionBudget: {}
   # maxUnavailable: 1
 
 config:
-  issuer: http://dex.io:8080
+  issuer: http://dex.example.com:8080
   storage:
     type: kubernetes
     config:
