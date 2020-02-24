@@ -1,6 +1,6 @@
 dependencies:
   - name: postgresql
-    version: 8.2.0
+    version: latest
     repository: https://kubernetes-charts.storage.googleapis.com/
     condition: postgresql.enabled
   - name: mysql
