@@ -123,6 +123,7 @@ service:
   # name: svc-mongo
   ## Provide any additional annotations which may be required.
   ## The value is evaluated as a template, so, for example, the value can depend on .Release or .Chart
+  labels: {}
   annotations: {}
   type: ClusterIP
   # clusterIP: None
