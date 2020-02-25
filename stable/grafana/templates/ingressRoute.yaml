@@ -1,0 +1,70 @@
+{{- if .Values.ingressRoute.enabled }}
+{{- $fullName := include "grafana.fullname" . -}}
+{{- $namespace := include "grafana.namespace" . -}}
+{{- $servicePort := .Values.service.port -}}
+{{- $ingressPath := .Values.ingressRoute.path -}}
+{{- $stripPrefix := (and .Values.ingressRoute.path (ne .Values.ingressRoute.path "/")) -}}
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ $fullName }}
+  namespace: {{ template "grafana.namespace" . }}
+  labels:
+    {{- include "grafana.labels" . | nindent 4 }}
+{{- if .Values.ingressRoute.labels }}
+{{ toYaml .Values.ingressRoute.labels | indent 4 }}
+{{- end }}
+spec:
+{{- if .Values.ingressRoute.entryPoints }}
+  entryPoints:
+  {{- range .Values.ingressRoute.entryPoints }}
+    - {{ . }}
+  {{- end }}
+{{- end }}
+{{- if .Values.ingressRoute.tls }}
+  tls:
+{{ toYaml .Values.ingressRoute.tls | indent 4 }}
+{{- end }}
+  routes:
+  {{- if .Values.ingressRoute.hosts }}
+    {{- range $host := .Values.ingressRoute.hosts }}
+    - match: Host(`{{ tpl $host $ }}`) && PathPrefix(`{{ $ingressPath }}`)
+      kind: Rule
+      services:
+        - name: {{ $fullName }}
+          kind: Service
+          port: {{ $servicePort }}
+      {{- if $stripPrefix }}
+      middlewares:
+        - name: {{ $namespace }}-{{ $fullName }}-stripprefix@kubernetescrd
+      {{- end }}
+    {{- end }}
+  {{- else }}
+    - match: PathPrefix(`{{ $ingressPath }}`)
+      kind: Rule
+      services:
+        - name: {{ $fullName }}
+          kind: Service
+          port: {{ $servicePort }}
+      {{- if $stripPrefix }}
+      middlewares:
+        - name: {{ $namespace }}-{{ $fullName }}-stripprefix@kubernetescrd
+      {{- end }}
+  {{- end }}
+  
+{{- if $stripPrefix }}
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ $fullName }}-stripprefix
+  namespace: {{ template "grafana.namespace" . }}
+  labels:
+    {{- include "grafana.labels" . | nindent 4 }}
+spec:
+  stripPrefix:
+    prefixes:
+      - {{ $ingressPath }}
+{{- end }}
+  
+{{- end }}

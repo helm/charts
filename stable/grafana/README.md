@@ -73,6 +73,12 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `ingress.hosts`                           | Ingress accepted hostnames                    | `[]`                                                    |
 | `ingress.extraPaths`                      | Ingress extra paths to prepend to every host configuration. Useful when configuring [custom actions with AWS ALB Ingress Controller](https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/ingress/annotation/#actions). | `[]`                                                    |
 | `ingress.tls`                             | Ingress TLS configuration                     | `[]`                                                    |
+| `ingressRoute.enabled`                    | Enables IngressRoute for [traefik2](https://docs.traefik.io/routing/providers/kubernetes-crd/#kind-ingressroute)| `false` |
+| `ingressRoute.labels`                     | Custom labels                                 | `{}`                                                    |
+| `ingressRoute.entryPoints`                | Traefik 2 entry points accepted               | `{}`                                                    |
+| `ingressRoute.hosts`                      | Traefik 2 IngressRoute accepted hostnames     | `[]`                                                    |
+| `ingressRoute.path`                       | Traefik 2 IngressRoute accepted path          | `/`                                                     |
+| `ingressRoute.tls`                        | Traefik 2 IngressRoute TLS configuration      | `{}`                                                    |
 | `resources`                               | CPU/Memory resource requests/limits           | `{}`                                                    |
 | `nodeSelector`                            | Node labels for pod assignment                | `{}`                                                    |
 | `tolerations`                             | Toleration labels for pod assignment          | `[]`                                                    |

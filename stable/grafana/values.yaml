@@ -139,6 +139,23 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
+ingressRoute:
+  ## More info: https://docs.traefik.io/routing/routers/
+  enabled: false
+
+  labels: {}
+
+  entryPoints: []
+  #  - websecure
+
+  hosts: []
+  #  - chart-example.local
+
+  path: /
+
+  tls: {}
+  #  certResolver: exampleResolver
+
 resources: {}
 #  limits:
 #    cpu: 100m
