@@ -144,16 +144,16 @@ ingressRoute:
   enabled: false
 
   labels: {}
-  
+
   entryPoints: []
   #  - websecure
-  
+
   hosts: []
   #  - chart-example.local
 
   path: /
-  
-  tls: {} 
+
+  tls: {}
   #  certResolver: exampleResolver
 
 resources: {}
