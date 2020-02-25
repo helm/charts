@@ -50,9 +50,18 @@ Parameter | Description | Default
 `zkHosts` | Zookeeper hosts required by the kafka-manager | `localhost:2181`
 `clusters` | Configuration of the clusters to manage | `{}`
 `applicationSecret` | Kafka-manager application secret | `""`
-`basicAuth.enabled` | If ture, enable basic authentication | `false`
+`basicAuth.enabled` | If true, enable basic authentication | `false`
 `basicAuth.username` | Username for basic auth | `admin`
-`basicAuth.password` | Paswword for basic auth | `""`
+`basicAuth.password` | Password for basic auth | `""`
+`basicAuth.ldap.enabled` | If true, enable LDAP authentication | `false`
+`basicAuth.ldap.server` | FQDN of the LDAP server | `""`
+`basicAuth.ldap.port` | Port used for LDAP | `""`
+`basicAuth.ldap.username` | Optional LDAP DN to bind for query | `""`
+`basicAuth.ldap.pasword`  | Optional LDAP password for the DN | `""`
+`basicAuth.ldap.searchBaseDn` | LDAP search base | `""`
+`basicAuth.ldap.searchFilter` | LDAP search filter for a valid account | `""`
+`basicAuth.ldap.connectionPoolSize` | LDAP connection pool size | `10`
+`basicAuth.ldap.ssl` | Enable LDAPS (not StartTLS) | `false`
 `javaOptions` | Java runtime options | `""`
 `service.type` | Kafka-manager service type | `ClusterIP`
 `service.port` | Kafka-manager service port | `9000`
@@ -67,7 +76,7 @@ Parameter | Description | Default
 `tolerations` | Tolerations for pod assignment | `[]`
 `affinity` | Affinity for pod assignment | `{}`
 `zookeeper.enabled` | If true, deploy Zookeeper | `false`
-`zookeeper.env` | Enviromental variables for Zookeeper | `ZK_HEAP_SIZE: "1G"`
+`zookeeper.env` | Environmental variables for Zookeeper | `ZK_HEAP_SIZE: "1G"`
 `zookeeper.persistence` | If true, enable persistence for Zookeeper | `false`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

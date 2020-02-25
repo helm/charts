@@ -147,6 +147,14 @@ priorityClassName: ""
 #     drop:
 #       - all
 
+## Deployment update strategy
+## Ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+# updateStrategy:
+#   rollingUpdate:
+#     maxSurge: 1
+#     maxUnavailable: 0
+#   type: RollingUpdate
+
 service:
   annotations: {}
 
