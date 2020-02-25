@@ -40,7 +40,7 @@ Run the following if you want to deploy the chart with the Datadog Cluster Agent
 ```bash
 helm install --name datadog-monitoring \
     --set datadog.apiKey=<DATADOG_API_KEY> \
-    --set datadog.appKey=<DATADOG_APP_KEY \
+    --set datadog.appKey=<DATADOG_APP_KEY> \
     --set clusterAgent.enabled=true \
     --set clusterAgent.metricsProvider.enabled=true \
     stable/datadog

@@ -569,7 +569,7 @@ agents:
 
     agent:
       ## @param env - list - required
-      ## Additionnal environment variables for the agent container.
+      ## Additional environment variables for the agent container.
       #
       # env:
 
@@ -608,7 +608,7 @@ agents:
 
     processAgent:
       ## @param env - list - required
-      ## Additionnal environment variables for the process-agent container.
+      ## Additional environment variables for the process-agent container.
       #
       # env:
 
@@ -632,7 +632,7 @@ agents:
 
     traceAgent:
       ## @param env - list - required
-      ## Additionnal environment variables for the trace-agent container.
+      ## Additional environment variables for the trace-agent container.
       #
       # env:
 
@@ -668,7 +668,7 @@ agents:
 
     systemProbe:
       ## @param env - list - required
-      ## Additionnal environment variables for the system-probe container.
+      ## Additional environment variables for the system-probe container.
       #
       # env:
 
