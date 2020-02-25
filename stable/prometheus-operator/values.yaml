@@ -378,6 +378,14 @@ alertmanager:
     ##
     containers: []
 
+    ## InitContainers allows adding initContainers to the pod definition.
+    ## Those can be used to e.g. fetch secrets for injection into the Alertmanager configuration from external sources.
+    ## Any errors during the execution of an initContainer will lead to a restart of the Pod.
+    ## More info: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
+    ## Using initContainers for any use case other then secret fetching is entirely outside the scope of what the maintainers
+    ## will support and by doing so, you accept that this behaviour may break at any time without notice.
+    initContainers: []
+
     ## Priority class assigned to the Pods
     ##
     priorityClassName: ""

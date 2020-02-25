@@ -97,6 +97,10 @@ spec:
   containers:
 {{ toYaml .Values.alertmanager.alertmanagerSpec.containers | indent 4 }}
 {{- end }}
+{{- if .Values.alertmanager.alertmanagerSpec.initContainers }}
+  initContainers:
+{{ toYaml .Values.alertmanager.alertmanagerSpec.initContainers | indent 4 }}
+{{- end }}
 {{- if .Values.alertmanager.alertmanagerSpec.priorityClassName }}
   priorityClassName: {{.Values.alertmanager.alertmanagerSpec.priorityClassName }}
 {{- end }}
