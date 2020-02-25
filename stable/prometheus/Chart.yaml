@@ -1,7 +1,7 @@
 apiVersion: v1
 name: prometheus
-version: 10.4.1
-appVersion: 2.15.2
+version: 10.5.0
+appVersion: 2.16.0
 description: Prometheus is a monitoring system and time series database.
 home: https://prometheus.io/
 icon: https://raw.githubusercontent.com/prometheus/prometheus.github.io/master/assets/prometheus_logo-cb55bb5c346.png
