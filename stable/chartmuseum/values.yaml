@@ -187,6 +187,7 @@ persistence:
   accessMode: ReadWriteOnce
   size: 8Gi
   labels: {}
+  path: /storage
   #   name: value
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true

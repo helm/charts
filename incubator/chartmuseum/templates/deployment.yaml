@@ -44,7 +44,7 @@ spec:
         args:
         - --port=8080
 {{- if eq .Values.env.open.STORAGE "local" }}
-        - --storage-local-rootdir=/storage
+        - --storage-local-rootdir={{ .Values.persistence.path }}
 {{- end }}
         ports:
         - name: http
@@ -61,7 +61,7 @@ spec:
 {{ toYaml .Values.probes.readiness | indent 10 }}
 {{- if eq .Values.env.open.STORAGE "local" }}
         volumeMounts:
-        - mountPath: /storage
+        - mountPath: {{ .Values.persistence.path }}
           name: storage-volume
 {{- end }}
       {{- with .Values.resources }}

@@ -76,6 +76,7 @@ their default values. See values.yaml for all available options.
 | `image.tag`                             | Container image tag to deploy                                               | `v0.8.0`                             |
 | `persistence.accessMode`                | Access mode to use for PVC                                                  | `ReadWriteOnce`                      |
 | `persistence.enabled`                   | Whether to use a PVC for persistent storage                                 | `false`                              |
+| `persistence.path`                      | PV mount path                                                               | `/storage`                              |
 | `persistence.size`                      | Amount of space to claim for PVC                                            | `8Gi`                                |
 | `persistence.labels`                    | Additional labels for PVC                                                   | `{}`                                 |
 | `persistence.storageClass`              | Storage Class to use for PVC                                                | `-`                                  |
