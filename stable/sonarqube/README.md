@@ -1,5 +1,7 @@
 # SonarQube
 
+**This chart has been deprecated and moved to [Oteemo Charts](https://github.com/oteemo/charts)**
+
 [SonarQube](https://www.sonarqube.org/) is an open sourced code quality scanning tool.
 
 ## Introduction
