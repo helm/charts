@@ -67,7 +67,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.image`                    | Master image name                    | `jenkins/jenkins`                         |
 | `master.tag`                      | Master image tag                     | `lts`                                     |
 | `master.imagePullPolicy`          | Master image pull policy             | `Always`                                  |
-| `master.imagePullSecret`          | Master image pull secret             | Not set                                   |
+| `master.imagePullSecretName`          | Master image pull secret             | Not set                                   |
 | `master.numExecutors`             | Set Number of executors              | 0                                         |
 | `master.customJenkinsLabels`      | Append Jenkins labels to the master  | `{}`                                      |
 | `master.useSecurity`              | Use basic security                   | `true`                                    |
