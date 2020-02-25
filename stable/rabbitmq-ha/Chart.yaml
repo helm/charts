@@ -1,20 +1,17 @@
-name: rabbitmq-ha
 apiVersion: v1
 appVersion: 3.8.0
 version: 1.40.1
-description: Highly available RabbitMQ cluster, the open source message broker
-  software that implements the Advanced Message Queuing Protocol (AMQP).
+name: rabbitmq-ha
+description: The chart is based on the fork of the official RabbitMQ-HA chart.
+sources:
+  - https://gitlab.tpondemand.net/infrastructure/rabbitmq-ha/
+  - https://github.com/Cyreex/charts/tree/master/stable/rabbitmq-ha
+maintainers:
+  - name: Valentin Zayash
+    email: zayash@targetprocess.com
+  - name: Artem Romanchik
+    email: romanchik@targetprocess.com
 keywords:
-- rabbitmq
-- message queue
-- AMQP
-- AMQPS
-- MQTT
-- STOMP
+  - dep-opt-glusterfs
 home: https://www.rabbitmq.com
 icon: https://bitnami.com/assets/stacks/rabbitmq/img/rabbitmq-stack-220x234.png
-sources:
-- https://github.com/rabbitmq/rabbitmq
-- https://github.com/docker-library/rabbitmq
-maintainers:
-- name: steven-sheehy

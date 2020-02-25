@@ -114,3 +114,17 @@ users, virtual hosts, permissions and parameters) to load by the management plug
   ]
 }
 {{- end -}}
+
+{{/*
+TargetProcess
+Common labels
+*/}}
+{{- define "rabbitmq-ha.labels" -}}
+app.kubernetes.io/name: {{ include "rabbitmq-ha.name" . }}
+helm.sh/chart: {{ include "rabbitmq-ha.chart" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end -}}
