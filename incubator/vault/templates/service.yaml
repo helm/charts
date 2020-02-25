@@ -45,3 +45,6 @@ spec:
   selector:
     app: {{ template "vault.name" . }}
     release: {{ .Release.Name }}
+    {{- with .Values.service.additonalSelector }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
