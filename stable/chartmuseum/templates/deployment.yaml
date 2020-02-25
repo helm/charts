@@ -38,6 +38,20 @@ spec:
 {{ toYaml .Values.deployment.labels | indent 8 }}
 {{- end }}
     spec:
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+      {{- else if .Values.persistence.enabled }}
+      initContainers:
+      - name: volume-permissions
+        image: {{ template "chartmuseum.volumePermissions.image" . }}
+        imagePullPolicy: "{{ .Values.volumePermissions.image.pullPolicy }}"
+        command: ['sh', '-c', 'chown -R {{ .Values.securityContext.fsGroup }}:{{ .Values.securityContext.fsGroup }} {{ .Values.persistence.path }}']
+        volumeMounts:
+        - mountPath: {{ .Values.persistence.path }}
+          name: storage-volume
+      {{- end }}
+{{- include "chartmuseum.imagePullSecrets" . | indent 6 }}
       containers:
       - name: {{ .Chart.Name }}
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -144,10 +158,6 @@ spec:
       serviceAccountName: {{ include "chartmuseum.fullname" . }}
     {{- else if .Values.serviceAccount.name }}
       serviceAccountName: {{ .Values.serviceAccount.name }}
-    {{- end }}
-    {{- with .Values.securityContext }}
-      securityContext:
-{{ toYaml . | indent 8 }}
     {{- end }}
       volumes:
       - name: storage-volume
