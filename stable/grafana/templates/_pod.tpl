@@ -100,6 +100,8 @@ containers:
     image: "{{ .Values.sidecar.image }}"
     imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
     env:
+      - name: METHOD
+        value: {{ .Values.sidecar.dashboards.watchMethod }}
       - name: LABEL
         value: "{{ .Values.sidecar.dashboards.label }}"
       - name: FOLDER
@@ -161,7 +163,7 @@ containers:
 {{- end }}
 {{- end -}}
 {{- if .Values.dashboardsConfigMaps }}
-{{- range keys .Values.dashboardsConfigMaps }}
+{{- range (keys .Values.dashboardsConfigMaps | sortAlpha) }}
       - name: dashboards-{{ . }}
         mountPath: "/var/lib/grafana/dashboards/{{ . }}"
 {{- end }}
@@ -184,9 +186,11 @@ containers:
 {{- if .Values.sidecar.dashboards.enabled }}
       - name: sc-dashboard-volume
         mountPath: {{ .Values.sidecar.dashboards.folder | quote }}
+{{ if .Values.sidecar.dashboards.SCProvider }}
       - name: sc-dashboard-provider
         mountPath: "/etc/grafana/provisioning/dashboards/sc-dashboardproviders.yaml"
         subPath: provider.yaml
+{{- end}}
 {{- end}}
 {{- if .Values.sidecar.datasources.enabled }}
       - name: sc-datasources-volume
@@ -222,7 +226,7 @@ containers:
             name: {{ .Values.admin.existingSecret | default (include "grafana.fullname" .) }}
             key: {{ .Values.admin.userKey | default "admin-user" }}
       {{- end }}
-      {{- if not .Values.env.GF_SECURITY_ADMIN_PASSWORD }}
+      {{- if and (not .Values.env.GF_SECURITY_ADMIN_PASSWORD) (not .Values.env.GF_SECURITY_ADMIN_PASSWORD__FILE) }}
       - name: GF_SECURITY_ADMIN_PASSWORD
         valueFrom:
           secretKeyRef:
@@ -248,6 +252,11 @@ containers:
             name: {{ .Values.smtp.existingSecret }}
             key: {{ .Values.smtp.passwordKey | default "password" }}
       {{- end }}
+    {{- range $key, $value := .Values.envValueFrom }}
+      - name: {{ $key | quote }}
+        valueFrom:
+{{ toYaml $value | indent 10 }}
+    {{- end }}
 {{- range $key, $value := .Values.env }}
       - name: "{{ $key }}"
         value: "{{ $value }}"
@@ -268,8 +277,8 @@ containers:
 {{ toYaml .Values.readinessProbe | indent 6 }}
     resources:
 {{ toYaml .Values.resources | indent 6 }}
-{{- if .Values.extraContainers }}
-{{ toYaml .Values.extraContainers | indent 2}}
+{{- with .Values.extraContainers }}
+{{ tpl . $ | indent 2 }}
 {{- end }}
 {{- with .Values.nodeSelector }}
 nodeSelector:
@@ -293,7 +302,7 @@ volumes:
       name: {{ .configMap }}
 {{- end }}
   {{- if .Values.dashboards }}
-    {{- range keys .Values.dashboards }}
+    {{- range (keys .Values.dashboards | sortAlpha) }}
   - name: dashboards-{{ . }}
     configMap:
       name: {{ template "grafana.fullname" $ }}-dashboards-{{ . }}
@@ -332,7 +341,7 @@ volumes:
 {{- if .Values.sidecar.dashboards.enabled }}
   - name: sc-dashboard-volume
     emptyDir: {}
-{{- if .Values.sidecar.dashboards.enabled }}
+{{- if .Values.sidecar.dashboards.SCProvider }}
   - name: sc-dashboard-provider
     configMap:
       name: {{ template "grafana.fullname" . }}-config-dashboards

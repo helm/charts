@@ -1,3 +1,12 @@
+# !!DEPRECATED!! Please use https://github.com/datawire/ambassador-chart.
+
+[helm/charts](https://github.com/helm/charts) has been deprecated and will be obsolete by Nov 13 2020. For this reason, the datawire team as retaken ownership of this chart.
+
+The Ambassador Chart is now hosted at [datawire/ambassador-chart](https://github.com/datawire/ambassador-chart).
+
+---
+
+
 # Ambassador
 
 Ambassador is an open source, Kubernetes-native [microservices API gateway](https://www.getambassador.io/about/microservices-api-gateways) built on the [Envoy Proxy](https://www.envoyproxy.io/).
@@ -64,13 +73,14 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `env`                              | Any additional environment variables for ambassador pods                        | `{}`                              |
 | `image.pullPolicy`                 | Ambassador image pull policy                                                    | `IfNotPresent`                    |
 | `image.repository`                 | Ambassador image                                                                | `quay.io/datawire/ambassador`     |
-| `image.tag`                        | Ambassador image tag                                                            | `0.85.0`                          |
+| `image.tag`                        | Ambassador image tag                                                            | `0.86.1`                          |
 | `imagePullSecrets`                 | Image pull secrets                                                              | `[]`                              |
 | `namespace.name`                   | Set the `AMBASSADOR_NAMESPACE` environment variable                             | `metadata.namespace`              |
 | `scope.singleNamespace`            | Set the `AMBASSADOR_SINGLE_NAMESPACE` environment variable and create namespaced RBAC if `rbac.enabled: true` | `false`|
 | `podAnnotations`                   | Additional annotations for ambassador pods                                      | `{}`                              |
 | `deploymentAnnotations`            | Additional annotations for ambassador DaemonSet/Deployment                      | `{}`                              |
 | `podLabels`                        | Additional labels for ambassador pods                                           |                                   |
+| `extraLabels`                      | Additional labels for ambassador Kubernetes resources                           |                                   |
 | `affinity`                         | Affinity for ambassador pods                                                    | `{}`                              |
 | `priorityClassName`                | The name of the priorityClass for the ambassador DaemonSet/Deployment           | `""`                              |
 | `rbac.create`                      | If `true`, create and use RBAC resources                                        | `true`                            |
@@ -80,6 +90,12 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `securityContext`                  | Set security context for pod                                                    | `{ "runAsUser": "8888" }`         |
 | `initContainers`                   | Containers used to initialize context for pods                                  | `[]`                              |
 | `sidecarContainers`                | Containers that share the pod context                                           | `[]`                              |
+| `livenessProbe.initialDelaySeconds` | Initial delay (s) for Ambassador pod's liveness probe                          | `30`                              |
+| `livenessProbe.periodSeconds`       | Probe period (s) for Ambassador pod's liveness probe                           | `3`                               |
+| `livenessProbe.failureThreshold`    | Failure threshold for Ambassador pod's liveness probe                          | `3`                               |
+| `readinessProbe.initialDelaySeconds`| Initial delay (s) for Ambassador pod's readiness probe                         | `30`                              |
+| `readinessProbe.periodSeconds`      | Probe period (s) for Ambassador pod's readiness probe                          | `3`                               |
+| `readinessProbe.failureThreshold`   | Failure threshold for Ambassador pod's readiness probe                         | `3`                               |
 | `service.annotations`              | Annotations to apply to Ambassador service                                      | `""`                              |
 | `service.externalTrafficPolicy`    | Sets the external traffic policy for the service                                | `""`                              |
 | `service.ports`                    | List of ports Ambassador is listening on                                        |  `[{"name": "http","port": 80,"targetPort": 8080},{"name": "https","port": 443,"targetPort": 8443}]` |
@@ -92,7 +108,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `volumes`                          | Volumes for the ambassador service                                              | `[]`                              |
 | `pro.enabled`                      | Installs the Ambassador Pro container as a sidecar to Ambassador                | `false`                           |
 | `pro.image.repository`             | Ambassador Pro image                                                            | `quay.io/datawire/ambassador_pro` |
-| `pro.image.tag`                    | Ambassador Pro image tag                                                        | `0.10.0`                          |
+| `pro.image.tag`                    | Ambassador Pro image tag                                                        | `0.11.0`                          |
 | `pro.image.customBuildTag`         | Image for a custom build of Ambassador Pro using a `Plugin`                     | ``                                |
 | `pro.ports.auth`                   | Ambassador Pro authentication port                                              | `8500`                            |
 | `pro.ports.ratelimit`              | Ambassador Pro ratelimit port                                                   | `8500`                            |
@@ -195,6 +211,14 @@ $ helm upgrade --install --wait my-release -f values.yaml stable/ambassador
 ---
 
 # Upgrading
+
+## To 5.0.0
+
+### Breaking changes
+
+**Note** If upgrading an existing helm 2 installation no action is needed, previously installed CRDs will not be modified.
+
+- Helm 3 support for CRDs was added. Specifically, the CRD templates were moved to non-templated files in the `/crds` directory, and to keep Helm 2 support they are globbed from there by `/templates/crds.yaml`. However, because Helm 3 CRDs are not templated, the labels for new installations have necessarily changed
 
 ## To 4.0.0
 

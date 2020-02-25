@@ -48,15 +48,16 @@ Parameter | Description | Default
 --- | --- | ---
 `controller.name` | name of the controller component | `controller`
 `controller.image.repository` | controller container image repository | `quay.io/kubernetes-ingress-controller/nginx-ingress-controller`
-`controller.image.tag` | controller container image tag | `0.26.1`
+`controller.image.tag` | controller container image tag | `0.30.0`
 `controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
-`controller.image.runAsUser` | User ID of the controller process. Value depends on the Linux distribution used inside of the container image. By default uses debian one. | `33`
+`controller.image.runAsUser` | User ID of the controller process. Value depends on the Linux distribution used inside of the container image. | `101`
 `controller.containerPort.http` | The port that the controller container listens on for http connections. | `80`
 `controller.containerPort.https` | The port that the controller container listens on for https connections. | `443`
 `controller.config` | nginx [ConfigMap](https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/configmap.md) entries | none
 `controller.hostNetwork` | If the nginx deployment / daemonset should run on the host's network namespace. Do not set this when `controller.service.externalIPs` is set and `kube-proxy` is used as there will be a port-conflict for port `80` | false
-`controller.defaultBackendService` | default 404 backend service; needed only if `defaultBackend.enabled = false` | `""`
+`controller.defaultBackendService` | default 404 backend service; needed only if `defaultBackend.enabled = false` and version < 0.21.0| `""`
 `controller.dnsPolicy` | If using `hostNetwork=true`, change to `ClusterFirstWithHostNet`. See [pod's dns policy](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy) for details | `ClusterFirst`
+`controller.dnsConfig` | custom pod dnsConfig. See [pod's dns config](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-config) for details | `{}`
 `controller.reportNodeInternalIp` | If using `hostNetwork=true`, setting `reportNodeInternalIp=true`, will pass the flag `report-node-internal-ip-address` to nginx-ingress. This sets the status of all Ingress objects to the internal IP address of all nodes running the NGINX Ingress controller.
 `controller.electionID` | election ID to use for the status update | `ingress-controller-leader`
 `controller.extraEnvs` | any additional environment variables to set in the pods | `{}`
@@ -65,10 +66,12 @@ Parameter | Description | Default
 `controller.extraVolumes` | Additional volumes to the controller pod | `{}`
 `controller.extraInitContainers` | Containers, which are run before the app containers are started | `[]`
 `controller.ingressClass` | name of the ingress class to route through this controller | `nginx`
+`controller.maxmindLicenseKey` | Maxmind license key to download GeoLite2 Databases. See [Accessing and using GeoLite2 database](https://blog.maxmind.com/2019/12/18/significant-changes-to-accessing-and-using-geolite2-databases/) | `""`
 `controller.scope.enabled` | limit the scope of the ingress controller | `false` (watch all namespaces)
 `controller.scope.namespace` | namespace to watch for ingress | `""` (use the release namespace)
 `controller.extraArgs` | Additional controller container arguments | `{}`
 `controller.kind` | install as Deployment, DaemonSet or Both | `Deployment`
+`controller.deploymentAnnotations` | annotations to be added to deployment | `{}`
 `controller.autoscaling.enabled` | If true, creates Horizontal Pod Autoscaler | false
 `controller.autoscaling.minReplicas` | If autoscaling enabled, this field sets minimum replica count | `2`
 `controller.autoscaling.maxReplicas` | If autoscaling enabled, this field sets maximum replica count | `11`
@@ -95,10 +98,11 @@ Parameter | Description | Default
 `controller.publishService.enabled` | if true, the controller will set the endpoint records on the ingress objects to reflect those on the service | `false`
 `controller.publishService.pathOverride` | override of the default publish-service name | `""`
 `controller.service.enabled` | if disabled no service will be created. This is especially useful when `controller.kind` is set to `DaemonSet` and `controller.daemonset.useHostPorts` is `true` | true
-`controller.service.clusterIP` | internal controller cluster service IP | `""`
-`controller.service.omitClusterIP` | To omit the `clusterIP` from the controller service | `false`
+`controller.service.clusterIP` | internal controller cluster service IP (set to `"-"` to pass an empty value) | `nil`
+`controller.service.omitClusterIP` | (Deprecated) To omit the `clusterIP` from the controller service | `false`
 `controller.service.externalIPs` | controller service external IP addresses. Do not set this when `controller.hostNetwork` is set to `true` and `kube-proxy` is used as there will be a port-conflict for port `80` | `[]`
 `controller.service.externalTrafficPolicy` | If `controller.service.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable [source IP preservation](https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typenodeport) | `"Cluster"`
+`controller.service.sessionAffinity` | Enables client IP based session affinity. Must be `ClientIP` or `None` if set.  | `""`
 `controller.service.healthCheckNodePort` | If `controller.service.type` is `NodePort` or `LoadBalancer` and `controller.service.externalTrafficPolicy` is set to `Local`, set this to [the managed health-check port the kube-proxy will expose](https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typenodeport). If blank, a random port in the `NodePort` range will be assigned | `""`
 `controller.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `controller.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
@@ -127,8 +131,8 @@ Parameter | Description | Default
 `controller.readinessProbe.port` | The port number that the readiness probe will listen on. | 10254
 `controller.metrics.enabled` | if `true`, enable Prometheus metrics | `false`
 `controller.metrics.service.annotations` | annotations for Prometheus metrics service | `{}`
-`controller.metrics.service.clusterIP` | cluster IP address to assign to service | `""`
-`controller.metrics.service.omitClusterIP` | To omit the `clusterIP` from the metrics service | `false`
+`controller.metrics.service.clusterIP` | cluster IP address to assign to service (set to `"-"` to pass an empty value) | `nil`
+`controller.metrics.service.omitClusterIP` | (Deprecated) To omit the `clusterIP` from the metrics service | `false`
 `controller.metrics.service.externalIPs` | Prometheus metrics service external IP addresses | `[]`
 `controller.metrics.service.labels` | labels for metrics service | `{}`
 `controller.metrics.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
@@ -149,8 +153,8 @@ Parameter | Description | Default
 `controller.admissionWebhooks.failurePolicy` | Failure policy for admission webhooks | `Fail`
 `controller.admissionWebhooks.port` | Admission webhook port | `8080`
 `controller.admissionWebhooks.service.annotations` | Annotations for admission webhook service | `{}`
-`controller.admissionWebhooks.service.omitClusterIP` | To omit the `clusterIP` from the admission webhook service | `false`
-`controller.admissionWebhooks.service.clusterIP` | cluster IP address to assign to admission webhook service | `""`
+`controller.admissionWebhooks.service.omitClusterIP` | (Deprecated) To omit the `clusterIP` from the admission webhook service | `false`
+`controller.admissionWebhooks.service.clusterIP` | cluster IP address to assign to admission webhook service (set to `"-"` to pass an empty value) | `nil`
 `controller.admissionWebhooks.service.externalIPs` | Admission webhook service external IP addresses | `[]`
 `controller.admissionWebhooks.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `controller.admissionWebhooks.service.loadBalancerSourceRanges` | List of IP CIDRs allowed access to load balancer (if supported) | `[]`
@@ -202,19 +206,20 @@ Parameter | Description | Default
 `defaultBackend.priorityClassName` | default backend  priorityClassName | `nil`
 `defaultBackend.podSecurityContext` | Security context policies to add to the default backend | `{}`
 `defaultBackend.service.annotations` | annotations for default backend service | `{}`
-`defaultBackend.service.clusterIP` | internal default backend cluster service IP | `""`
-`defaultBackend.service.omitClusterIP` | To omit the `clusterIP` from the default backend service | `false`
+`defaultBackend.service.clusterIP` | internal default backend cluster service IP (set to `"-"` to pass an empty value) | `nil`
+`defaultBackend.service.omitClusterIP` | (Deprecated) To omit the `clusterIP` from the default backend service | `false`
 `defaultBackend.service.externalIPs` | default backend service external IP addresses | `[]`
 `defaultBackend.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `defaultBackend.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `defaultBackend.service.type` | type of default backend service to create | `ClusterIP`
+`defaultBackend.serviceAccount.create` | if `true`, create a backend service account. Only useful if you need a pod security policy to run the backend. | `true`
+`defaultBackend.serviceAccount.name` | The name of the backend service account to use. If not set and `create` is `true`, a name is generated using the fullname template. Only useful if you need a pod security policy to run the backend. | ``
 `imagePullSecrets` | name of Secret resource containing private registry credentials | `nil`
 `rbac.create` | if `true`, create & use RBAC resources | `true`
+`rbac.scope` | if `true`, do not create & use clusterrole and -binding. Set to `true` in combination with `controller.scope.enabled=true` to disable load-balancer status updates and scope the ingress entirely. | `false`
 `podSecurityPolicy.enabled` | if `true`, create & use Pod Security Policy resources | `false`
 `serviceAccount.create` | if `true`, create a service account for the controller | `true`
 `serviceAccount.name` | The name of the controller service account to use. If not set and `create` is `true`, a name is generated using the fullname template. | ``
-`serviceAccount.backend.create` | if `true`, create a backend service account. Only useful if you need a pod security policy to run the backend. | `true`
-`serviceAccount.backend.name` | The name of the backend service account to use. If not set and `create` is `true`, a name is generated using the fullname template. Only useful if you need a pod security policy to run the backend. | ``
 `revisionHistoryLimit` | The number of old history to retain to allow rollback. | `10`
 `tcp` | TCP service key:value pairs. The value is evaluated as a template. | `{}`
 `udp` | UDP service key:value pairs The value is evaluated as a template. | `{}`
@@ -318,3 +323,5 @@ Error: UPGRADE FAILED: Service "?????-controller" is invalid: spec.clusterIP: In
 ```
 
 Detail of how and why are in [this issue](https://github.com/helm/charts/pull/13646) but to resolve this you can set `xxxx.service.omitClusterIP` to `true` where `xxxx` is the service referenced in the error.
+
+As of version `1.26.0` of this chart, by simply not providing any clusterIP value, `invalid: spec.clusterIP: Invalid value: "": field is immutable` will no longer occur since `clusterIP: ""` will not be rendered.

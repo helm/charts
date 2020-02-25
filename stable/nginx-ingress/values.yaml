@@ -5,10 +5,10 @@ controller:
   name: controller
   image:
     repository: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
-    tag: "0.26.1"
+    tag: "0.30.0"
     pullPolicy: IfNotPresent
-    # www-data -> uid 33
-    runAsUser: 33
+    # www-data -> uid 101
+    runAsUser: 101
     allowPrivilegeEscalation: true
 
   # Configures the ports the nginx-controller listens on
@@ -29,6 +29,9 @@ controller:
   # since CNI and hostport don't mix yet. Can be deprecated once https://github.com/kubernetes/kubernetes/issues/23920
   # is merged
   hostNetwork: false
+
+  # Optionally customize the pod dnsConfig.
+  dnsConfig: {}
 
   # Optionally change this to ClusterFirstWithHostNet in case you have 'hostNetwork: true'.
   # By default, while using host network, name resolution uses the host's DNS. If you wish nginx-controller
@@ -117,6 +120,10 @@ controller:
   ## DaemonSet or Deployment
   ##
   kind: Deployment
+
+  ## Annotations to be added to the controller deployment
+  ##
+  deploymentAnnotations: {}
 
   # The update strategy to apply to the Deployment or DaemonSet
   ##
@@ -227,8 +234,9 @@ controller:
 
     annotations: {}
     labels: {}
+    ## Deprecated, instead simply do not provide a clusterIP value
     omitClusterIP: false
-    clusterIP: ""
+    # clusterIP: ""
 
     ## List of IP addresses at which the controller services are available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
@@ -245,6 +253,10 @@ controller:
     ## providers supporting it
     ## Ref: https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typeloadbalancer
     externalTrafficPolicy: ""
+
+    # Must be either "None" or "ClientIP" if set. Kubernetes will default to "None".
+    # Ref: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
+    sessionAffinity: ""
 
     healthCheckNodePort: 0
 
@@ -317,8 +329,9 @@ controller:
 
     service:
       annotations: {}
+      ## Deprecated, instead simply do not provide a clusterIP value
       omitClusterIP: false
-      clusterIP: ""
+      # clusterIP: ""
       externalIPs: []
       loadBalancerIP: ""
       loadBalancerSourceRanges: []
@@ -347,8 +360,9 @@ controller:
       # prometheus.io/scrape: "true"
       # prometheus.io/port: "10254"
 
+      ## Deprecated, instead simply do not provide a clusterIP value
       omitClusterIP: false
-      clusterIP: ""
+      # clusterIP: ""
 
       ## List of IP addresses at which the stats-exporter service is available
       ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
@@ -420,6 +434,10 @@ defaultBackend:
     # nobody user -> uid 65534
     runAsUser: 65534
 
+  # Maxmind license key to download GeoLite2 Databases
+  # https://blog.maxmind.com/2019/12/18/significant-changes-to-accessing-and-using-geolite2-databases
+  maxmindLicenseKey: ""
+
   extraArgs: {}
 
   serviceAccount:
@@ -490,8 +508,9 @@ defaultBackend:
 
   service:
     annotations: {}
+    ## Deprecated, instead simply do not provide a clusterIP value
     omitClusterIP: false
-    clusterIP: ""
+    # clusterIP: ""
 
     ## List of IP addresses at which the default backend service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
@@ -508,6 +527,7 @@ defaultBackend:
 ## Enable RBAC as per https://github.com/kubernetes/ingress/tree/master/examples/rbac/nginx and https://github.com/kubernetes/ingress/issues/266
 rbac:
   create: true
+  scope: false
 
 # If true, create & use Pod Security Policy resources
 # https://kubernetes.io/docs/concepts/policy/pod-security-policy/

@@ -36,7 +36,8 @@ The default configuration values for this chart are listed in `values.yaml`.
 | `contour.image.pullPolicy`           | Image pull policy                                                     | `IfNotPresent`                             |
 | `contour.replicas`                   | Replica count for the contour deployment                              | `2`                                        |
 | `contour.resources`                   | 	Resource definitions for the contour pods                        | `{}`                                       |
-| `customResourceDefinitions.create`   | Wether the release should install CRDs                                | `true`                                     |
+| `customResourceDefinitions.create`   | Whether the release should install CRDs. Regardless of this value, Helm v3+ will install the CRDs if those are not present already. Use `--skip-crds` with `helm install` if you want to skip CRD creation                               | `true`
+| `customResourceDefinitions.cleanup`   | Whether to remove installed CRD definitions and CRDs                | `false`                                    |
 | `envoy.image.registry`                | Registry for envoy container image                         | `docker.io/envoyproxy/envoy-alpine`                 |
 | `envoy.image.tag`                     | Envoy image tag                                              | `v1.11.1`                                           |
 | `envoy.image.pullPolicy`              | Image pull policy                                            | `IfNotPresent`                                      |
@@ -49,12 +50,14 @@ The default configuration values for this chart are listed in `values.yaml`.
 | `init.image.tag`                     | Init image tag                                              | `v0.15.0`                                           |
 | `init.image.pullPolicy`              | Image pull policy                                            | `IfNotPresent`                                      |                               |
 | `init.resources`                     | 	Resource definitions for the init pods                | `{}` |
-| `rbac.create`                        | Wether the release should create RBAC objects                         | `true`                                     |
+| `rbac.create`                        | Whether the release should create RBAC objects                         | `true`                                     |
 | `serviceType`                        | The type of Service Contour will use                                  | `LoadBalancer`                                      |
 | `service.nodePorts.http`             | Desired nodePort for service of type NodePort used for http requests  | nil `""` - will assign a dynamic node port |
 | `service.nodePorts.https`            | Desired nodePort for service of type NodePort used for https requests | nil `""` - will assign a dynamic node port |
-| `serviceAccounts.create`             | Wether the release should create Service Account objects              | `true`                                     |
+| `serviceAccounts.create`             | Whether the release should create Service Account objects              | `true`                                     |
+## Project Contour CRDs
 
+The CRDs are provisioned using crd-install hooks, rather than relying on a separate chart installation. If you already have these CRDs provisioned and don't want to remove them, you can disable the CRD creation by these hooks by passing `customResourceDefinitions.create=false` (not required if using Helm v3).
 
 ## Example workload
 

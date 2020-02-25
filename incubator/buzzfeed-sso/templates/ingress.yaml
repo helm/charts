@@ -1,3 +1,4 @@
+{{- if .Values.ingress.enabled }}
 {{- if ne .Values.auth.domain "<your_auth_domain>" -}}
 {{- $fullName := include "buzzfeed-sso.fullname" . -}}
 {{- $authDomain := .Values.auth.domain -}}
@@ -52,4 +53,5 @@ spec:
             backend:
               serviceName: {{ $fullName }}-auth
               servicePort: http
+{{- end }}
 {{- end }}

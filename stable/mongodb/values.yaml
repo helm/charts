@@ -18,7 +18,7 @@ image:
   ## Bitnami MongoDB image tag
   ## ref: https://hub.docker.com/r/bitnami/mongodb/tags/
   ##
-  tag: 4.0.13-debian-9-r22
+  tag: 4.2.3-debian-10-r10
   ## Specify a imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   ##
@@ -51,7 +51,7 @@ volumePermissions:
   image:
     registry: docker.io
     repository: bitnami/minideb
-    tag: stretch
+    tag: buster
     pullPolicy: Always
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -144,6 +144,12 @@ service:
   ##
   # loadBalancerSourceRanges: []
 
+# Add custom extra environment variables to all the MongoDB containers
+# extraEnvVars:
+
+## Use StatefulSet instead of Deployment when deploying standalone
+useStatefulSet: false
+
 ## Setting up replication
 ## ref: https://github.com/bitnami/bitnami-docker-mongodb#setting-up-a-replication
 #
@@ -232,6 +238,45 @@ tolerations: []
 ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
 updateStrategy:
   type: RollingUpdate
+
+## Add sidecars to the pod
+##
+## For example:
+## sidecars:
+##   - name: your-image-name
+##     image: your-image
+##     imagePullPolicy: Always
+##     ports:
+##       - name: portname
+##         containerPort: 1234
+sidecars: []
+## Array to add extra volumes
+##
+extraVolumes: []
+## Array to add extra mounts (normally used with extraVolumes)
+##
+extraVolumeMounts: []
+
+## Add sidecars to the arbiter pod
+# used only when replica set is enabled
+##
+## For example:
+## sidecars:
+##   - name: your-image-name
+##     image: your-image
+##     imagePullPolicy: Always
+##     ports:
+##       - name: portname
+##         containerPort: 1234
+sidecarsArbiter: []
+## Array to add extra volumes to the arbiter
+# used only when replica set is enabled
+##
+extraVolumesArbiter: []
+## Array to add extra mounts (normally used with extraVolumes) to the arbiter
+# used only when replica set is enabled
+##
+extraVolumeMountsArbiter: []
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
@@ -394,8 +439,8 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/mongodb-exporter
-    tag: 0.10.0-debian-9-r49
-    pullPolicy: Always
+    tag: 0.10.0-debian-10-r9
+    pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -404,7 +449,7 @@ metrics:
     #   - myRegistryKeySecretName
 
   ## String with extra arguments to the metrics exporter
-  ## ref: https://github.com/dcu/mongodb_exporter/blob/master/mongodb_exporter.go
+  ## ref: https://github.com/percona/mongodb_exporter/blob/master/mongodb_exporter.go
   extraArgs: ""
 
   ## Metrics exporter resource requests and limits

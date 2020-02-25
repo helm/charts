@@ -3,6 +3,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: {{ template "redis-ha.fullname" . }}-haproxy
+  namespace: {{ .Release.Namespace }}
   labels:
 {{ include "labels.standard" . | indent 4 }}
 spec:
@@ -101,6 +102,9 @@ spec:
           readOnly: true
         - name: data
           mountPath: /data
+      {{- if .Values.haproxy.imagePullSecrets }}
+      imagePullSecrets: {{ toYaml .Values.haproxy.imagePullSecrets | nindent 8 }}
+      {{- end }}
       securityContext:
 {{ toYaml .Values.haproxy.securityContext | indent 8 }}
       containers:
@@ -119,6 +123,10 @@ spec:
         {{- if .Values.haproxy.readOnly.enabled }}
         - name: readonlyport
           containerPort: {{ default "6380" .Values.haproxy.readOnly.port }}
+        {{- end }}
+        {{- if .Values.haproxy.metrics.enabled }}
+        - name: metrics-port
+          containerPort: {{ default "9101" .Values.haproxy.metrics.port }}
         {{- end }}
         resources:
 {{ toYaml .Values.haproxy.resources | indent 10 }}

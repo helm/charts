@@ -1,0 +1,62 @@
+# This service only exists to create DNS entries for each pod in
+# the StatefulSet such that they can resolve each other's IP addresses.
+# It does not create a load-balanced ClusterIP and should not be used directly
+# by clients in most circumstances.
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ template "cockroachdb.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    helm.sh/chart: {{ template "cockroachdb.chart" . }}
+    app.kubernetes.io/name: {{ template "cockroachdb.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+  {{- with .Values.service.discovery.labels }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.labels }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  annotations:
+    # Use this annotation in addition to the actual field below because the
+    # annotation will stop being respected soon, but the field is broken in
+    # some versions of Kubernetes:
+    # https://github.com/kubernetes/kubernetes/issues/58662
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+    # Enable automatic monitoring of all instances when Prometheus is running
+    # in the cluster.
+    prometheus.io/scrape: "true"
+    prometheus.io/path: _status/vars
+    prometheus.io/port: {{ .Values.service.ports.http.port | quote }}
+  {{- with .Values.service.discovery.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  clusterIP: None
+  # We want all Pods in the StatefulSet to have their addresses published for
+  # the sake of the other CockroachDB Pods even before they're ready, since they
+  # have to be able to talk to each other in order to become ready.
+  publishNotReadyAddresses: true
+  ports:
+  {{- $ports := .Values.service.ports }}
+    # The main port, served by gRPC, serves Postgres-flavor SQL, inter-node
+    # traffic and the CLI.
+    - name: {{ $ports.grpc.external.name | quote }}
+      port: {{ $ports.grpc.external.port | int64 }}
+      targetPort: grpc
+  {{- if ne ($ports.grpc.internal.port | int64) ($ports.grpc.external.port | int64) }}
+    - name: {{ $ports.grpc.internal.name | quote }}
+      port: {{ $ports.grpc.internal.port | int64 }}
+      targetPort: grpc
+  {{- end }}
+    # The secondary port serves the UI as well as health and debug endpoints.
+    - name: {{ $ports.http.name | quote }}
+      port: {{ $ports.http.port | int64 }}
+      targetPort: http
+  selector:
+    app.kubernetes.io/name: {{ template "cockroachdb.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+  {{- with .Values.statefulset.labels }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}

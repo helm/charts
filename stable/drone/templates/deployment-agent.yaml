@@ -1,4 +1,4 @@
-{{- if not .Values.server.kubernetes.enabled -}}
+{{- if and (not .Values.server.kubernetes.enabled) (not .Values.runner.enabled) -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -54,7 +54,7 @@ spec:
           protocol: TCP
         env:
           - name: DRONE_RPC_SERVER
-            value: http://{{ template "drone.fullname" . }}
+            value: "{{ template "drone.rpcServer" . }}"
           - name: DRONE_RPC_SECRET
             valueFrom:
               secretKeyRef:

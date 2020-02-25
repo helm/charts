@@ -41,6 +41,12 @@ incompatible breaking change needing manual actions.
 
 This version upgrade oauth2-proxy to v4.0.0. Please see the [changelog](https://github.com/pusher/oauth2_proxy/blob/v4.0.0/CHANGELOG.md#v400) in order to upgrade.
 
+### To 2.0.0
+
+Version 2.0.0 of this chart introduces support for Kubernetes v1.16.x by way of addressing the deprecation of the Deployment object apiVersion `apps/v1beta2`.  See [the v1.16 API deprecations page](https://kubernetes.io/blog/2019/07/18/api-deprecations-in-1-16/) for more information.
+
+Due to [this issue](https://github.com/helm/helm/issues/6583) there may be errors performing a `helm upgrade`of this chart from versions earlier than 2.0.0.
+
 ## Configuration
 
 The following table lists the configurable parameters of the oauth2-proxy chart and their default values.
@@ -83,6 +89,8 @@ Parameter | Description | Default
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to add to each pod | `{}`
 `podLabels` | additional labesl to add to each pod | `{}`
+`podDisruptionBudget.enabled`| Enabled creation of PodDisruptionBudget (only if replicaCount > 1) | true
+`podDisruptionBudget.minAvailable`| minAvailable parameter for PodDisruptionBudget | 1
 `priorityClassName` | priorityClassName | `nil`
 `readinessProbe.enabled` | enable Kubernetes readinessProbe. Disable to use oauth2-proxy with Istio mTLS. See [Istio FAQ](https://istio.io/help/faq/security/#k8s-health-checks) | `true`
 `readinessProbe.initialDelaySeconds` | number of seconds | 0
@@ -99,6 +107,7 @@ Parameter | Description | Default
 `tolerations` | list of node taints to tolerate | `[]`
 `securityContext.enabled` | enable Kubernetes security context | `false`
 `securityContext.runAsNonRoot` | make sure that the container runs as a non-root user | `true`
+`proxyVarsAsSecrets` | choose between environment values or secrets for setting up OAUTH2_PROXY variables. When set to false, remember to add the variables OAUTH2_PROXY_CLIENT_ID, OAUTH2_PROXY_CLIENT_SECRET, OAUTH2_PROXY_COOKIE_SECRET in extraEnv | `true`
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

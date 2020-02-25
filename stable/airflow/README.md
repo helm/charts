@@ -69,12 +69,12 @@ image.
 Please also note that the Airflow UI and Flower do not behave the same:
 
 - Airflow Web UI behaves transparently, to configure it one just needs to specify the
-  `ingress.web.path` value.
+  `web.baseUrl` value. Ingress can be configured with `ingress.web.host` and `ingress.web.path`.
 - Flower cannot handle this scheme directly and requires a URL rewrite mechanism in front
   of it. In short, it is able to generate the right URLs in the returned HTML file but cannot
   respond to these URL. It is commonly found in software that wasn't intended to work under
   something else than a root URL or localhost port. To use it, see the `values.yaml` for how
-  to configure your ingress controller to rewrite the URL (or "strip" the prefix path).
+  to configure your ingress controller to rewrite the URL (or "strip" the prefix path) and `flower.urlPrefix`.
 
   Note: unreleased Flower (as of June 2018) does not need the prefix strip feature anymore. It is
   integrated in `docker-airflow-dev:2.0dev` image.
@@ -274,6 +274,10 @@ To share a PV with multiple Pods, the PV needs to have accessMode 'ReadOnlyMany'
 
 Since you're unlikely to be using init-container with this configuration, you'll need to mount a file to /requirements.txt to get additional Python modules for your DAGs to be installed on container start. Use the extraConfigMapMounts configuration option for this.
 
+### Git-Sync sidecar container
+
+This is probably the most popular way for airflow users to syncronize there dags. Its a pretty simple set up just a sidecar container in the pods that pulls dags from your repository of choice using git. To do this you must set up all the git values in this chart to a point where you can successfully connect to the repo. These are the values you will definitley need to set after enabling `dags.git.gitSync.enabled`. `dags.git.url` `dags.git.ref` `dags.git.gitSync.refreshTime`. If you are going the ssh connect route make sure to set the following `dags.git.privateKeyName`, `dags.git.repoHost`, `dags.git.secret`. In the secret have the private key and the known_hosts file as well so the host does not mistake the containers connection as a man in the middle attack and deny connection.
+
 ### Use init-container
 
 If you enable set `dags.init_container.enabled=true`, the pods will try upon startup to fetch the
@@ -284,6 +288,12 @@ This is the easiest way of deploying your DAGs to Airflow.
 If you are using a private Git repo, you can set `dags.gitSecret` to the name of a secret you created containing private keys and a `known_hosts` file.
 
 For example, this will create a secret named `my-git-secret` from your ed25519 key and known_hosts file stored in your home directory:  `kubectl create secret generic my-git-secret --from-file=id_ed25519=~/.ssh/id_ed25519 --from-file=known_hosts=~/.ssh/known_hosts --from-file=id_id_ed25519.pub=~/.ssh/id_ed25519.pub`
+
+#### Init-container git connection ssh
+
+This set of instructions will enable you to clone your repository in the initContainer git-clone.sh script through an ssh connection.
+
+To do this you must have `dags.initContainer.enabled` set to true. Then you need to have the following set. `dags.git.url` This is the repository of your dags. `dags.git.ref` This is the branch with your dags on your repo. `dags.git.secret` This is the name of the secret cotaining your private ssh key. With this you need `dags.git.privateKeyName`, this is the name of the private key in the secret mounted in the keys directory on the initContainer. The last variable you need is this `dags.git.repoHost`. This is the host of your repo, for example if hosted on gitlab set the value as gitlab.com and if github put github.com. This enables us to tell ssh to use our private key when cloning otherwise we would recieve an unable to recognize host bug. 
 
 ### Embedded DAGs
 
@@ -333,6 +343,21 @@ To be able to expose metrics to prometheus you need install a plugin, this can b
 This exposes dag and task based metrics from Airflow.
 For service monitor configuration see the generic [Helm chart Configuration](#helm-chart-configuration).
 
+## Additional manifests 
+
+It is possible to add additional manifests into a deployment, to extend the chart. One of the reason is to deploy a manifest specific to a cloud provider ( BackendConfig on GKE for example ).
+
+```yaml
+extraManifests:
+  - apiVersion: cloud.google.com/v1beta1
+    kind: BackendConfig
+    metadata:
+      name: "{{ .Release.Name }}-test"
+    spec:
+      securityPolicy:
+        name: "gcp-cloud-armor-policy-test"
+```
+
 ## Helm chart Configuration
 
 The following table lists the configurable parameters of the Airflow chart and their default values.
@@ -344,7 +369,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.service.annotations`            | (optional) service annotations for Airflow UI           | `{}`                      |
 | `airflow.service.externalPort`           | (optional) external port for Airflow UI                 | `8080`                    |
 | `airflow.service.nodePort.http`          | (optional) when using service.type == NodePort, an optional NodePort to request | ``|
-| `airflow.service.serviceSessionAffinity` | The session affinity for the airflow UI                 | `None`                    |
+| `airflow.service.sessionAffinity`        | The session affinity for the airflow UI                 | `None`                    |
 | `airflow.service.sessionAffinityConfig`  | The session affinity config for the airflow UI          | `None`                    |
 | `airflow.executor`                       | the executor to run                                     | `Celery`                  |
 | `airflow.initRetryLoop`                  | max number of retries during container init             |                           |
@@ -365,15 +390,20 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.extraVolumeMounts`              | additional volumeMounts to the main container in scheduler, worker & web pods | `[]`|
 | `airflow.extraVolumes`                   | additional volumes for the scheduler, worker & web pods | `[]`                      |
 | `airflow.initdb`                         | run `airflow initdb` when starting the scheduler        | `true`                    |
+| `flower.enabled`                         | enable flow                                             | `true`                    |
+| `flower.extraConfigmapMounts`            | Additional configMap volume mounts on the flower pod.   | `[]`                      |
+| `flower.urlPrefix`                       | path of the flower ui                                   | ""                        |
 | `flower.resources`                       | custom resource configuration for flower pod            | `{}`                      |
 | `flower.labels`                          | labels for the flower deployment                        | `{}`                      |
 | `flower.annotations`                     | annotations for the flower deployment                   | `{}`                      |
 | `flower.service.type`                    | service type for Flower UI                              | `ClusterIP`               |
 | `flower.service.annotations`             | (optional) service annotations for Flower UI            | `{}`                      |
 | `flower.service.externalPort`            | (optional) external port for Flower UI                  | `5555`                    |
+| `web.baseUrl`                            | webserver UI URL                                        | `http://localhost:8080`   |
 | `web.resources`                          | custom resource configuration for web pod               | `{}`                      |
 | `web.labels`                             | labels for the web deployment                           | `{}`                      |
 | `web.annotations`                        | annotations for the web deployment                      | `{}`                      |
+| `web.podAnnotations`                     | pod-annotations for the web deployment                  | `{}`                      |
 | `web.initialStartupDelay`                | amount of time webserver pod should sleep before initializing webserver             | `60`  |
 | `web.minReadySeconds`                    | minReadySeconds in the web deployment                   | `120`
 | `web.livenessProbe.periodSeconds`        | interval between probes                         | `60`  |
@@ -390,6 +420,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `scheduler.resources`                    | custom resource configuration for scheduler pod         | `{}`                      |
 | `scheduler.labels`                       | labels for the scheduler deployment                     | `{}`                      |
 | `scheduler.annotations`                  | annotations for the scheduler deployment                | `{}`                      |
+| `scheduler.podAnnotations`               | podAnnotations for the scheduler deployment             | `{}`                      |
 | `workers.enabled`                        | enable workers                                          | `true`                    |
 | `workers.replicas`                       | number of workers pods to launch                        | `1`                       |
 | `workers.terminationPeriod`              | gracefull termination period for workers to stop        | `30`                      |
@@ -397,6 +428,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `workers.celery.instances`               | number of parallel celery tasks per worker              | `1`                       |
 | `workers.labels`                         | labels for the worker statefulSet                       | `{}`                      |
 | `workers.annotations`                    | annotations for the worker statefulSet                  | `{}`                      |
+| `workers.podAnnotations`                 | podAnnotations for the worker statefulSet               | `{}`                      |
 | `workers.celery.gracefullTermination`    | cancel the consumer and wait for the current task to finish before stopping the worker      | `false`     |
 | `workers.podAnnotations`                 | annotations for the worker pods                         | `{}`                      |
 | `workers.secretsDir`                     | directory in which to mount secrets on worker nodes     | /var/airflow/secrets      |
@@ -440,6 +472,12 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `dags.git.url`                           | url to clone the git repository                         | nil                       |
 | `dags.git.ref`                           | branch name, tag or sha1 to reset to                    | `master`                  |
 | `dags.git.secret`                        | name of a secret containing an ssh deploy key           | nil                       |
+| `dags.git.privateKeyName`                | name of private key mounted in secret(only needed if using ssh to connect to git)   | ''                        |
+| `dags.git.repoHost`                      | Host of git repo you are establish an ssh connection to ex. github.com (only needed if using ssh to connect to git)            | ''                        |
+| `dags.git.gitSync.enabled`               | Enables a sidecar container that syncs dags             | `false`                   |
+| `dags.git.gitSync.image.repository`      | Image of the sidecar container that syncs dags          | `alpine/git`                  |
+| `dags.git.gitSync.image.tag`             | Image tag of sidecar container that syncs dags          | `1.0.4`                  |
+| `dags.git.gitSync.refreshTime`           | How often the sidecar container syncs dags up with repository(in seconds)         | nil                  |
 | `logs.path`                              | mount path for logs persistent volume                   | `/usr/local/airflow/logs` |
 | `rbac.create`                            | create RBAC resources                                   | `true`                    |
 | `serviceAccount.create`                  | create a service account                                | `true`                    |
@@ -449,18 +487,19 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `postgresql.existingSecretKey`           | The name of the key containing the password in the secret named `postgresql.existingSecret`  | `postgres-password` |
 | `postgresql.uri`                         | full URL to custom postgres setup                       | (undefined)               |
 | `postgresql.postgresHost`                | PostgreSQL Hostname                                     | (undefined)               |
-| `postgresql.postgresUser`                | PostgreSQL User                                         | `postgres`                |
-| `postgresql.postgresPassword`            | PostgreSQL Password                                     | `airflow`                 |
-| `postgresql.postgresDatabase`            | PostgreSQL Database name                                | `airflow`                 |
+| `postgresql.postgresqlUsername`                | PostgreSQL User                                         | `postgres`                |
+| `postgresql.postgresqlPassword`            | PostgreSQL Password                                     | `airflow`                 |
+| `postgresql.postgresqlDatabase`            | PostgreSQL Database name                                | `airflow`                 |
 | `postgresql.persistence.enabled`         | Enable Postgres PVC                                     | `true`                    |
 | `postgresql.persistence.storageClass`    | Persistent class                                        | (undefined)               |
-| `postgresql.persistence.accessMode`      | Access mode                                             | `ReadWriteOnce`           |
+| `postgresql.persistence.accessModes`      | Access modes                                             | `[ ReadWriteOnce ]`           |
 | `redis.enabled`                          | Create a Redis cluster                                  | `true`                    |
 | `redis.existingSecret`                   | The name of an existing secret with a key named `redis.existingSecretKey` to use as the password  | `nil` |
 | `redis.existingSecretKey`                | The name of the key containing the password in the secret named `redis.existingSecret`  | `redis-password` |
 | `redis.redisHost`                        | Redis Hostname                                          | (undefined)               |
 | `redis.password`                         | Redis password                                          | `airflow`                 |
 | `redis.master.persistence.enabled`       | Enable Redis PVC                                        | `false`                   |
+| `redis.master.persistence.accessModes`   | Access modes                                            | `[ ReadWriteOnce ]`       |
 | `redis.cluster.enabled`                  | enable master-slave cluster                             | `false`                   |
 | `serviceMonitor.enabled`                 | enable service monitor                                  | `false`                   |
 | `serviceMonitor.interval`                | Interval at which metrics should be scraped             | `30s`                     |
@@ -469,11 +508,33 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `prometheusRule.enabled`                 | enable prometheus rule                                  | `false`                   |
 | `prometheusRule.groups`                  | define alerting rules                                   | `{}`                      |
 | `prometheusRule.additionalLabels`        | add additional labels to the prometheus rule            | `{}`                      |
+| `extraManifests`                         | add additional manifests to deploy                      | `[]`                      |
 
 
 Full and up-to-date documentation can be found in the comments of the `values.yaml` file.
 
 ## Upgrading
+
+### To 6.0.0
+This version updates `postgresql` and `redis` dependencies.
+There are a few config key changes, in order to upgrade from a 5.x chart, modify your `values.yaml` by mapping the keys as follows:
+
+| 5.x.x                                | 6.x.x                                 | Notes                                                     |
+|--------------------------------------|---------------------------------------|-----------------------------------------------------------|
+|`postgresql.postgresUser`             |`postgresql.postgresqlUsername`        |                                                           |
+|`postgresql.postgresPassword`         |`postgresql.postgresqlPassword`        |                                                           |
+|`postgresql.postgresDatabase`         |`postgresql.postgresqlDatabase`        |                                                           |
+|`postgresql.persistence.accessMode`   |`postgresql.persistence.accessModes`   | Instead of a single value, now the config accepts an array|
+|`redis.master.persistence.accessMode` |`redis.master.persistence.accessModes` | Instead of a single value, now the config accepts an array|
+
+### To 5.0.0
+This version splits the configuration for webserver and flower web UI from ingress configurations for separation of concerns.
+
+Two new parameters:
+  - `web.baseUrl`
+  - `flower.urlPrefix`
+
+This upgrade will fail if a custom ingress path is set for web and/or flower and `web.baseUrl` and/or `flower.urlPrefix`
 
 ### To 4.0.0
 This version splits the specs for the NodeSelector, Affinity and Toleration features. Instead of being global, and injected in every component, they are now defined _by component_ to provide more flexibility for your deployments. As such, the migration steps are really simple. Just copy and paste your node/affinity/tolerance definitions in the four airflow components, which are `worker`, `scheduler`, `flower` and `web`. The default values file should help you with locating those.

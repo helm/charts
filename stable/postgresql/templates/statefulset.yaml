@@ -70,33 +70,55 @@ spec:
       {{- if .Values.serviceAccount.enabled }}
       serviceAccountName: {{ default (include "postgresql.fullname" . ) .Values.serviceAccount.name }}
       {{- end }}
-      {{- if or .Values.master.extraInitContainers (and .Values.volumePermissions.enabled .Values.persistence.enabled) }}
+      {{- if or .Values.master.extraInitContainers (and .Values.volumePermissions.enabled (or .Values.persistence.enabled (and .Values.shmVolume.enabled .Values.shmVolume.chmod.enabled))) }}
       initContainers:
-      {{- if and .Values.volumePermissions.enabled .Values.persistence.enabled }}
+      {{- if and .Values.volumePermissions.enabled (or .Values.persistence.enabled (and .Values.shmVolume.enabled .Values.shmVolume.chmod.enabled)) }}
         - name: init-chmod-data
           image: {{ template "postgresql.volumePermissions.image" . }}
-          imagePullPolicy: "{{ .Values.volumePermissions.image.pullPolicy }}"
+          imagePullPolicy: {{ .Values.volumePermissions.image.pullPolicy | quote }}
           {{- if .Values.resources }}
           resources: {{- toYaml .Values.resources | nindent 12 }}
           {{- end }}
           command:
             - /bin/sh
-            - -c
+            - -cx
             - |
+              {{ if .Values.persistence.enabled }}
               mkdir -p {{ .Values.persistence.mountPath }}/data
               chmod 700 {{ .Values.persistence.mountPath }}/data
-              find {{ .Values.persistence.mountPath }} -mindepth 0 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" | \
+              find {{ .Values.persistence.mountPath }} -mindepth 1 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" | \
+              {{- if eq ( toString ( .Values.volumePermissions.securityContext.runAsUser )) "auto" }}
+                xargs chown -R `id -u`:`id -G | cut -d " " -f2`
+              {{- else }}
                 xargs chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }}
+              {{- end }}
+              {{- end }}
+              {{- if and .Values.shmVolume.enabled .Values.shmVolume.chmod.enabled }}
+              chmod -R 777 /dev/shm
+              {{- end }}
+          {{- if eq ( toString ( .Values.volumePermissions.securityContext.runAsUser )) "auto" }}
+          securityContext:
+          {{- else }}
           securityContext:
             runAsUser: {{ .Values.volumePermissions.securityContext.runAsUser }}
+          {{- end }}
           volumeMounts:
+            {{ if .Values.persistence.enabled }}
             - name: data
               mountPath: {{ .Values.persistence.mountPath }}
               subPath: {{ .Values.persistence.subPath }}
+            {{- end }}
+            {{- if .Values.shmVolume.enabled }}
+            - name: dshm
+              mountPath: /dev/shm
+            {{- end }}
       {{- end }}
       {{- if .Values.master.extraInitContainers }}
 {{ tpl .Values.master.extraInitContainers . | indent 8 }}
       {{- end }}
+      {{- end }}
+      {{- if .Values.master.priorityClassName }}
+      priorityClassName: {{ .Values.master.priorityClassName }}
       {{- end }}
       containers:
         - name: {{ template "postgresql.fullname" . }}
@@ -226,8 +248,13 @@ spec:
             - name: POSTGRESQL_LDAP_URL
               value: {{ .Values.ldap.url }}
             {{- end}}
+          {{- if .Values.extraEnvVarsCM }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.extraEnvVarsCM }}
+          {{- end }}
           ports:
-            - name: postgresql
+            - name: tcp-postgresql
               containerPort: {{ template "postgresql.port" . }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
@@ -277,6 +304,10 @@ spec:
             - name: postgresql-password
               mountPath: /opt/bitnami/postgresql/secrets/
             {{- end }}
+            {{- if .Values.shmVolume.enabled }}
+            - name: dshm
+              mountPath: /dev/shm
+            {{- end }}
             {{- if .Values.persistence.enabled }}
             - name: data
               mountPath: {{ .Values.persistence.mountPath }}
@@ -317,7 +348,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /
-              port: metrics
+              port: http-metrics
             initialDelaySeconds: {{ .Values.metrics.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.metrics.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.metrics.livenessProbe.timeoutSeconds }}
@@ -328,7 +359,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /
-              port: metrics
+              port: http-metrics
             initialDelaySeconds: {{ .Values.metrics.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.metrics.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.metrics.readinessProbe.timeoutSeconds }}
@@ -347,7 +378,7 @@ spec:
           args: ["--extend.query-path", "/conf/custom-metrics.yaml"]
             {{- end }}
           ports:
-            - name: metrics
+            - name: http-metrics
               containerPort: 9187
           {{- if .Values.metrics.resources }}
           resources: {{- toYaml .Values.metrics.resources | nindent 12 }}
@@ -382,11 +413,17 @@ spec:
         {{- if .Values.master.extraVolumes }}
         {{- toYaml .Values.master.extraVolumes | nindent 8 }}
         {{- end }}
-{{- if and .Values.metrics.enabled .Values.metrics.customMetrics }}
+        {{- if and .Values.metrics.enabled .Values.metrics.customMetrics }}
         - name: custom-metrics
           configMap:
             name: {{ template "postgresql.metricsCM" . }}
-{{- end }}
+        {{- end }}
+        {{- if .Values.shmVolume.enabled }}
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Gi
+        {{- end }}
 {{- if and .Values.persistence.enabled .Values.persistence.existingClaim }}
         - name: data
           persistentVolumeClaim:

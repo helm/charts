@@ -104,6 +104,7 @@ ingress:
   # annotations:
   #   kubernetes.io/ingress.class: nginx
   #   kubernetes.io/tls-acme: "true"
+  # path: /
   # tls:
   #   Secrets must be manually created in the namespace.
   #   - secretName: chart-example-tls

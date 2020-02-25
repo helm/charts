@@ -36,6 +36,7 @@ rules:
   - watch
   # delete is required only for for 'patronictl remove'
   - delete
+  - deletecollection
 - apiGroups: [""]
   resources: ["pods"]
   verbs:

@@ -3,6 +3,9 @@ image:
   repository: sorintlab/stolon
   tag: v0.13.0-pg10
   pullPolicy: IfNotPresent
+  ## Add secrets manually via kubectl on kubernetes cluster and reference here
+  # pullSecrets:
+  #   - name: "myKubernetesSecret"
 
 # used by create-cluster-job when store.backend is etcd
 etcdImage:
@@ -11,6 +14,10 @@ etcdImage:
   pullPolicy: IfNotPresent
 
 debug: false
+
+# Enable the creation of a shm volume
+shmVolume:
+  enabled: false
 
 persistence:
   enabled: true
@@ -66,6 +73,18 @@ ports:
   metrics:
     containerPort: 8080
 
+serviceMonitor:
+  # When set to true then use a ServiceMonitor to collect metrics
+  enabled: false
+  # Custom labels to use in the ServiceMonitor to be matched with a specific Prometheus
+  labels: {}
+  # Set the namespace the ServiceMonitor should be deployed to
+  # namespace: default
+  # Set how frequently Prometheus should scrape
+  # interval: 30s
+  # Set timeout for scrape
+  # scrapeTimeout: 10s
+
 job:
   autoCreateCluster: true
   autoUpdateClusterSpec: true
@@ -91,6 +110,7 @@ keeper:
   annotations: {}
   resources: {}
   priorityClassName: ""
+  fsGroup: ""
   service:
     type: ClusterIP
     annotations: {}

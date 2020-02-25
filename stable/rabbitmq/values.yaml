@@ -14,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/rabbitmq
-  tag: 3.8.1-debian-9-r0
+  tag: 3.8.2-debian-10-r25
 
   ## set to true if you would like to see extra information on logs
   ## it turns BASH and NAMI debugging in minideb
@@ -114,6 +114,9 @@ rabbitmq:
   clustering:
     address_type: hostname
     k8s_domain: cluster.local
+    ## Rebalance master for queues in cluster when new replica is created
+    ## ref: https://www.rabbitmq.com/rabbitmq-queues.8.html#rebalance
+    rebalance: false
 
   loadDefinition:
     enabled: false
@@ -145,6 +148,22 @@ rabbitmq:
 
   ## Configuration file content: advanced configuration
   ## Use this as additional configuraton in classic config format (Erlang term configuration format)
+  ##
+  ## If you set LDAP with TLS/SSL enabled and you are using self-signed certificates, uncomment these lines.
+  ## advancedConfiguration: |-
+  ##   [{
+  ##     rabbitmq_auth_backend_ldap,
+  ##     [{
+  ##         ssl_options,
+  ##         [{
+  ##             verify, verify_none
+  ##         }, {
+  ##             fail_if_no_peer_cert,
+  ##             false
+  ##         }]
+  ##     ]}
+  ##   }].
+  ##
   advancedConfiguration: |-
 
   ## Enable encryption to rabbitmq
@@ -167,11 +186,8 @@ ldap:
   port: "389"
   user_dn_pattern: cn=${username},dc=example,dc=org
   tls:
+    # If you enabled TLS/SSL you can set advaced options using the advancedConfiguration parameter.
     enabled: false
-    caCertificate: |-
-    serverCertificate: |-
-    serverKey: |-
-    # existingSecret: name-of-existing-secret-to-rabbitmq
 
 ## Kubernetes service type
 service:
@@ -262,6 +278,30 @@ persistence:
 ##
 resources: {}
 
+networkPolicy:
+  ## Enable creation of NetworkPolicy resources. Only Ingress traffic is filtered for now.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/network-policies/
+  ##
+  enabled: false
+
+  ## The Policy model to apply. When set to false, only pods with the correct
+  ## client label will have network access to the ports RabbitMQ is listening
+  ## on. When true, RabbitMQ will accept connections from any source
+  ## (with the correct destination port).
+  ##
+  allowExternal: true
+
+  ## Additional NetworkPolicy Ingress "from" rules to set. Note that all rules are OR-ed.
+  ##
+  # additionalRules:
+  #  - matchLabels:
+  #    - role: frontend
+  #  - matchExpressions:
+  #    - key: role
+  #      operator: In
+  #      values:
+  #        - frontend
+
 ## Replica count, set to 1 to provide a default available cluster
 replicas: 1
 
@@ -340,7 +380,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/rabbitmq-exporter
-    tag: 0.29.0-debian-9-r82
+    tag: 0.29.0-debian-10-r23
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -363,7 +403,7 @@ metrics:
   resources: {}
   annotations:
     prometheus.io/scrape: "true"
-    prometheus.io/port: "9090"
+    prometheus.io/port: "9419"
 
   livenessProbe:
     enabled: true
@@ -397,9 +437,82 @@ metrics:
     # relabellings:
     ## Specify honorLabels parameter to add the scrape endpoint
     honorLabels: false
+    ## Specify the release for ServiceMonitor. Sometimes it should be custom for prometheus operator to work
+    # release: ""
     ## Used to pass Labels that are used by the Prometheus installed in your cluster to select Service Monitors to work with
     ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
     additionalLabels: {}
+
+  ## Custom PrometheusRule to be defined
+  ## The value is evaluated as a template, so, for example, the value can depend on .Release or .Chart
+  ## ref: https://github.com/coreos/prometheus-operator#customresourcedefinitions
+  prometheusRule:
+    enabled: false
+    additionalLabels: {}
+    namespace: ""
+    rules: []
+      ## List of reules, used as template by Helm.
+      ## These are just examples rules inspired from https://awesome-prometheus-alerts.grep.to/rules.html
+      ## Please adapt them to your needs.
+      ## Make sure to constraint the rules to the current rabbitmq service.
+      ## Also make sure to escape what looks like helm template.
+      # - alert: RabbitmqDown
+      #   expr: rabbitmq_up{service="{{ template "rabbitmq.fullname" . }}"} == 0
+      #   for: 5m
+      #   labels:
+      #     severity: error
+      #   annotations:
+      #     summary: Rabbitmq down (instance {{ "{{ $labels.instance }}" }})
+      #     description: RabbitMQ node down
+
+      # - alert: ClusterDown
+      #   expr: |
+      #     sum(rabbitmq_running{service="{{ template "rabbitmq.fullname" . }}"})
+      #     < {{ .Values.replicas }}
+      #   for: 5m
+      #   labels:
+      #     severity: error
+      #   annotations:
+      #     summary: Cluster down (instance {{ "{{ $labels.instance }}" }})
+      #     description: |
+      #         Less than {{ .Values.replicas }} nodes running in RabbitMQ cluster
+      #         VALUE = {{ "{{ $value }}" }}
+
+      # - alert: ClusterPartition
+      #   expr: rabbitmq_partitions{service="{{ template "rabbitmq.fullname" . }}"} > 0
+      #   for: 5m
+      #   labels:
+      #     severity: error
+      #   annotations:
+      #     summary: Cluster partition (instance {{ "{{ $labels.instance }}" }})
+      #     description: |
+      #         Cluster partition
+      #         VALUE = {{ "{{ $value }}" }}
+
+      # - alert: OutOfMemory
+      #   expr: |
+      #     rabbitmq_node_mem_used{service="{{ template "rabbitmq.fullname" . }}"}
+      #     / rabbitmq_node_mem_limit{service="{{ template "rabbitmq.fullname" . }}"}
+      #     * 100 > 90
+      #   for: 5m
+      #   labels:
+      #     severity: warning
+      #   annotations:
+      #     summary: Out of memory (instance {{ "{{ $labels.instance }}" }})
+      #     description: |
+      #         Memory available for RabbmitMQ is low (< 10%)\n  VALUE = {{ "{{ $value }}" }}
+      #         LABELS: {{ "{{ $labels }}" }}
+
+      # - alert: TooManyConnections
+      #   expr: rabbitmq_connectionsTotal{service="{{ template "rabbitmq.fullname" . }}"} > 1000
+      #   for: 5m
+      #   labels:
+      #     severity: warning
+      #   annotations:
+      #     summary: Too many connections (instance {{ "{{ $labels.instance }}" }})
+      #     description: |
+      #         RabbitMQ instance has too many connections (> 1000)
+      #         VALUE = {{ "{{ $value }}" }}\n  LABELS: {{ "{{ $labels }}" }}
 
 ##
 ## Init containers parameters:
@@ -410,7 +523,7 @@ volumePermissions:
   image:
     registry: docker.io
     repository: bitnami/minideb
-    tag: stretch
+    tag: buster
     pullPolicy: Always
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.

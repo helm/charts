@@ -25,14 +25,16 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 
 | Parameter                               | Description                                    | Default                                                      |
 | --------------------------------------- | ---------------------------------------------- | ------------------------------------------------------------ |
-| `clusterName`                           | `stolon` cluster name                          | `nil`                                                |
+| `clusterName`                           | `stolon` cluster name                          | `nil`                                                        |
 | `image.repository`                      | `stolon` image repository                      | `sorintlab/stolon`                                           |
 | `image.tag`                             | `stolon` image tag                             | `v0.13.0-pg10`                                               |
 | `image.pullPolicy`                      | `stolon` image pull policy                     | `IfNotPresent`                                               |
+| `image.pullSecrets`                     | `stolon` image pull secrets as an array        | `[]` (does not add image pull secrets to deployed pods)      |
 | `etcdImage.repository`                  | `etcd` image repository                        | `k8s.gcr.io/etcd-amd64`                                      |
 | `etcdImage.tag`                         | `etcd` image tag                               | `2.3.7`                                                      |
 | `etcdImage.pullPolicy`                  | `etcd` image pull policy                       | `IfNotPresent`                                               |
 | `debug`                                 | Debug mode                                     | `false`                                                      |
+| `shmVolume.enabled`                     | Enable emptyDir volume for /dev/shm  on keepers pods | `false`                                                 |
 | `persistence.enabled`                   | Use a PVC to persist data                      | `true`                                                       |
 | `persistence.storageClassName`          | Storage class name of backing PVC              | `""`                                                         |
 | `persistence.accessModes`               | Persistent volumes access modes                | `["ReadWriteOnce"]`                                          |
@@ -55,18 +57,24 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `store.kubeResourceKind`                | Kubernetes resource kind (only for kubernetes) | `configmap`                                                  |
 | `pgParameters`                          | [`postgresql.conf`][pgconf] options used during cluster creation | `{}`                                       |
 | `ports`                                 | Ports to expose on pods                        | `{"stolon":{"containerPort": 5432},"metrics":{"containerPort": 8080}}`|
+| `serviceMonitor.enabled`                | Creates a Prometheus serviceMonitor and service object | `false`                                              |
+| `serviceMonitor.labels`                 | Overrides the default labels added by chart to the ServiceMonitor with labels specified. | `{}`               |
+| `serviceMonitor.namespace`              | Set to use a different value than the release namespace for deploying the ServiceMonitor object | `nil`       |
+| `serviceMonitor.interval`               | Set to use a different value than the default Prometheus scrape interval | `nil`                              |
+| `serviceMonitor.scrapeTimeout`          | Set to use a different value than the default Prometheus scrape timeout | `nil`                               |
 | `job.autoCreateCluster`                 | Set to `false` to force-disable auto-cluster-creation which may clear pre-existing postgres db data | `true`  |
 | `job.autoUpdateClusterSpec`             | Set to `false` to force-disable auto-cluster-spec-update | `true`                                             |
 | `clusterSpec`                           | Stolon cluster spec [reference](https://github.com/sorintlab/stolon/blob/master/doc/cluster_spec.md) | `{}`   |
 | `tls.enabled`                           | Enable tls support to postgresql               | `false`                                                      |
-| `tls.rootCa`                            | Ca certificate                                | `""`                                                         |
+| `tls.rootCa`                            | Ca certificate                                 | `""`                                                         |
 | `tls.serverCrt`                         | Server cerfificate                             | `""`                                                         |
 | `tls.serverKey`                         | Server key                                     | `""`                                                         |
-| `tls.existingSecret`                    | Existing secret with certificate content to stolon credentials | `""`                                                         |
+| `tls.existingSecret`                    | Existing secret with certificate content to stolon credentials | `""`                                         |
 | `keeper.uid_prefix`                     | Keeper prefix name                             | `keeper`                                                     |
 | `keeper.replicaCount`                   | Number of keeper nodes                         | `2`                                                          |
 | `keeper.resources`                      | Keeper resource requests/limit                 | `{}`                                                         |
 | `keeper.priorityClassName`              | Keeper priorityClassName                       | `nil`                                                        |
+| `keeper.fsGroup`                        | Keeper securityContext fsGroup, do not set if pg9 or 10 | ``                                                  |
 | `keeper.nodeSelector`                   | Node labels for keeper pod assignment          | `{}`                                                         |
 | `keeper.affinity`                       | Affinity settings for keeper pod assignment    | `{}`                                                         |
 | `keeper.tolerations`                    | Toleration labels for keeper pod assignment    | `[]`                                                         |

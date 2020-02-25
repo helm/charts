@@ -47,9 +47,10 @@ The following table lists the configurable parameters of the Redmine chart and t
 
 |            Parameter              |              Description                 |                          Default                        | 
 | --------------------------------- | ---------------------------------------- | ------------------------------------------------------- |
+| `env`                             | additional env variables                 | `{}`                                                     |
 | `replicaCount`                    | Number of replicas to start              | `1`                                                     |
 | `image.repository`                | Bookstack image name                     | `solidnerd/bookstack`                                   |
-| `image.tag`                       | Bookstack image tag                      | `0.27.4-1`                                                |
+| `image.tag`                       | Bookstack image tag                      | `0.27.5`                                                |
 | `image.pullPolicy`                | Bookstack image pull policy              | `IfNotPresent`                                          |
 | `externalDatabase.host`           | Host of the external database            | `nil`                                                   |
 | `externalDatabase.port`           | Port of the external database            | `3306`                                                  |
@@ -61,7 +62,7 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `mariadb.db.user`                 | Database user to create                  | `bookstack`                                             |
 | `mariadb.db.password`             | Password for the database                | `nil`                                                   |
 | `mariadb.rootUser.password`        | MariaDB admin password                   | `nil`                                                   |
-| `mariadb.master.persistence.enabled`        | Enable MariaDB persistence using PVC     | `true`                                                  |
+| `mariadb.master.persistence.enabled`        | Enable MariaDB persistence using PVC     | `false`                                                  |
 | `mariadb.master.persistence.storageClass`   | PVC Storage Class for MariaDB volume     | `nil` (uses alpha storage class annotation)             |
 | `mariadb.master.persistence.accessMode`     | PVC Access Mode for MariaDB volume       | `ReadWriteOnce`                                         |
 | `mariadb.master.persistence.size`           | PVC Storage Request for MariaDB volume   | `8Gi`                                                   |
@@ -73,12 +74,12 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `serviceAccount.name`		         | Name of the ServiceAccount to use           | `null`					      |
 | `persistence.uploads.enabled`             | Enable persistence using PVC for uploads             | `true`                                      |
 | `persistence.uploads.storageClass`        | PVC Storage Class                        | `nil` (uses alpha storage class annotation)             |
-| `persistence.uploads.accessMode`          | PVC Access Mode                          | `ReadWriteMany`                                         |
+| `persistence.uploads.accessMode`          | PVC Access Mode                          | `ReadWriteOnce`                                         |
 | `persistence.uploads.size`                | PVC Storage Request                      | `8Gi`                                                   |
 | `persistence.uploads.existingClaim`        | If PVC exists & bounded for uploads   | `nil` (when nil, new one is requested)                  |
 | `persistence.storage.enabled`             | Enable persistence using PVC for uploads             | `true`                                      |
 | `persistence.storage.storageClass`        | PVC Storage Class                        | `nil` (uses alpha storage class annotation)             |
-| `persistence.storage.accessMode`          | PVC Access Mode                          | `ReadWriteMany`                                         |
+| `persistence.storage.accessMode`          | PVC Access Mode                          | `ReadWriteOnce`                                         |
 | `persistence.storage.size`                | PVC Storage Request                      | `8Gi`                                                   |
 | `persistence.storage.existingClaim`        | If PVC exists & bounded for storage   | `nil` (when nil, new one is requested)                  |
 | `ingress.enabled`                 | Enable or disable the ingress            | `false`                                                 |

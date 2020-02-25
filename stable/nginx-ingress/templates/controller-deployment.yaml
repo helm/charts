@@ -9,12 +9,16 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "nginx-ingress.controller.fullname" . }}
+  annotations:
+{{ toYaml .Values.controller.deploymentAnnotations | indent 4}}
 spec:
   selector:
     matchLabels:
       app: {{ template "nginx-ingress.name" . }}
       release: {{ .Release.Name }}
+{{- if not .Values.controller.autoscaling.enabled }}
   replicas: {{ .Values.controller.replicaCount }}
+{{- end }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   strategy:
 {{ toYaml .Values.controller.updateStrategy | indent 4 }}
@@ -35,6 +39,10 @@ spec:
 {{ toYaml .Values.controller.podLabels | indent 8 }}
         {{- end }}
     spec:
+{{- if .Values.controller.dnsConfig }}
+      dnsConfig:
+{{ toYaml .Values.controller.dnsConfig | indent 8 }}
+{{- end }}
       dnsPolicy: {{ .Values.controller.dnsPolicy }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -57,7 +65,15 @@ spec:
           {{- end }}
           args:
             - /nginx-ingress-controller
-            - --default-backend-service={{ if .Values.defaultBackend.enabled }}{{ .Release.Namespace }}/{{ template "nginx-ingress.defaultBackend.fullname" . }}{{ else }}{{ .Values.controller.defaultBackendService }}{{ end }}
+          {{- if .Values.defaultBackend.enabled }}
+            - --default-backend-service={{ .Release.Namespace }}/{{ template "nginx-ingress.defaultBackend.fullname" . }}
+          {{- else }}
+            {{- if (semverCompare "<0.21.0" .Values.controller.image.tag) }}
+            - --default-backend-service={{ required ".Values.controller.defaultBackendService is required if .Values.defaultBackend.enabled=false and .Values.controller.image.tag < 0.21.0" .Values.controller.defaultBackendService }}
+            {{- else if .Values.controller.defaultBackendService }}
+            - --default-backend-service={{ .Values.controller.defaultBackendService }}
+            {{- end }}
+          {{- end }}
           {{- if and (semverCompare ">=0.9.0-beta.1" .Values.controller.image.tag) .Values.controller.publishService.enabled }}
             - --publish-service={{ template "nginx-ingress.controller.publishServicePath" . }}
           {{- end }}
@@ -81,6 +97,9 @@ spec:
           {{- if .Values.controller.scope.enabled }}
             - --watch-namespace={{ default .Release.Namespace .Values.controller.scope.namespace }}
           {{- end }}
+          {{- if and (.Values.controller.scope.enabled) (.Values.rbac.scope) }}
+            - --update-status=false
+          {{- end }}
           {{- if and (.Values.controller.reportNodeInternalIp) (.Values.controller.hostNetwork) }}
             - --report-node-internal-ip-address={{ .Values.controller.reportNodeInternalIp }}
           {{- end }}
@@ -88,6 +107,9 @@ spec:
             - --validating-webhook=:{{ .Values.controller.admissionWebhooks.port }}
             - --validating-webhook-certificate=/usr/local/certificates/cert
             - --validating-webhook-key=/usr/local/certificates/key
+          {{- end }}
+          {{- if .Values.controller.maxmindLicenseKey }}
+            - --maxmind-license-key={{ .Values.controller.maxmindLicenseKey }}
           {{- end }}
           {{- range $key, $value := .Values.controller.extraArgs }}
             {{- if $value }}

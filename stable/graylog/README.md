@@ -98,20 +98,24 @@ The following table lists the configurable parameters of the Graylog chart and t
 
 | Parameter                               | Description                                                                                                                                           | Default                               |
 |-----------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------|
-| `graylog.image.repository`              | `graylog` image repository   | `graylog/graylog:3.1.2-1`                 |
+| `graylog.image.repository`              | `graylog` image repository   | `graylog/graylog:3.1`                 |
 | `graylog.imagePullPolicy`               | Image pull policy                                                                                                                                     | `IfNotPresent`                        |
 | `graylog.replicas`                      | The number of Graylog instances in the cluster. The chart will automatic create assign master to one of replicas                                      | `2`                                   |
 | `graylog.resources`                     | CPU/Memory resource requests/limits                                                                                                                   | Memory: `1024Mi`, CPU: `500m`         |
 | `graylog.heapSize`                      | Override Java heap size. If this value empty, chart will allocate heapsize using `-XX:+UseCGroupMemoryLimitForHeap`                                   | ``                                    |
+| `graylog.externalUri`                   | External URI that Graylog is available at                                                                                                             | ``                                    |
 | `graylog.nodeSelector`                  | Graylog server pod assignment                                                                                                                         | `{}`                                  |
 | `graylog.affinity`                      | Graylog server affinity                                                                                                                               | `{}`                                  |
 | `graylog.tolerations`                   | Graylog server tolerations                                                                                                                            | `[]`                                  |
 | `graylog.nodeSelector`                  | Graylog server node selector                                                                                                                          | `{}`                                  |
 | `graylog.env`                           | Graylog server env variables                                                                                                                          | `{}`                                  |
+| `graylog.additionalJavaOpts`            | Graylog service additional `JAVA_OPTS`                                                                                                                | ``                                    |
 | `graylog.service.type`                  | Kubernetes Service type                                                                                                                               | `ClusterIP`                           |
 | `graylog.service.port`                  | Graylog Service port                                                                                                                                  | `9000`                                |
+| `graylog.service.master.enabled`        | If true, Graylog Master Service will be created                                                                                                       | `true`                                |
 | `graylog.service.master.port`           | Graylog Master Service port                                                                                                                           | `9000`                                |
 | `graylog.service.master.annotations`    | Graylog Master Service annotations                                                                                                                    | `{}`                                  |
+| `graylog.service.headless.suffix`       | If present, suffix appended to the name of the chart to form the headless service name, ie: `-headless` would result in `graylog-headless`            | ``                                    |
 | `graylog.podAnnotations`                | Kubernetes Pod annotations                                                                                                                            | `{}`                                  |
 | `graylog.terminationGracePeriodSeconds` | Pod termination grace period                                                                                                                          | `120`                                 |
 | `graylog.updateStrategy`                | Update Strategy of the StatefulSet                                                                                                                    | `RollingUpdate`                           |
@@ -119,6 +123,9 @@ The following table lists the configurable parameters of the Graylog chart and t
 | `graylog.persistence.storageClass`      | Storage class of backing PVC                                                                                                                          | `nil` (uses storage class annotation) |
 | `graylog.persistence.accessMode`        | Use volume as ReadOnly or ReadWrite                                                                                                                   | `ReadWriteOnce`                       |
 | `graylog.persistence.size`              | Size of data volume                                                                                                                                   | `10Gi`                                |
+| `graylog.tls.enabled`                   | If true, Graylog will listen on HTTPS                                                                                                                 | `false`                               |
+| `graylog.tls.keyFile`                   | Path to key file for HTTPS                                                                                                                            | `/etc/graylog/server/server.key`      |
+| `graylog.tls.certFile`                  | Path to crt file for HTTPS                                                                                                                            | `/etc/graylog/server/server.cert`     |
 | `graylog.ingress.enabled`               | If true, Graylog Ingress will be created                                                                                                              | `false`                               |
 | `graylog.ingress.port`                  | Graylog Ingress port                                                                                                                                  | `false`                               |
 | `graylog.ingress.annotations`           | Graylog Ingress annotations                                                                                                                           | `{}`                                  |
@@ -130,22 +137,31 @@ The following table lists the configurable parameters of the Graylog chart and t
 | `graylog.geoip.enabled`                 | If true, Maxmind Geoip Lite will be installed to ${GRAYLOG_HOME}/etc/GeoLite2-City.mmdb                                                               | `false`                               |
 | `graylog.plugins`                       | A list of Graylog installation plugins                                                                                                                | `[]`                                  |
 | `graylog.rootUsername`                  | Graylog root user name                                                                                                                                | `admin`                               |
-| `graylog.rootPassword`                  | Graylog root password. If not set, random 10-character alphanumeric string                                                                            | ``                                    |
+| `graylog.rootPassword`                  | Graylog root password. If not set, random 16-character alphanumeric string                                                                            | ``                                    |
 | `graylog.rootEmail`                     | Graylog root email.                                                                                                                                   | ``                                    |
 | `graylog.existingRootSecret`            | Graylog existing root secret                                                                                                                          | ``                                    |
 | `graylog.rootTimezone`                  | Graylog root timezone.                                                                                                                                | `UTC`                                 |
 | `graylog.elasticsearch.hosts`           | Graylog Elasticsearch host name. You need to specific where data will be stored.                                                                      | ``                                    |
+| `graylog.elasticsearch.uriSecretName`   | K8s secret name where elasticsearch hosts will be set from.                                                                                           | `{{ graylog.fullname }}`              |
+| `graylog.elasticsearch.uriSecretKey`    | K8s secret key name where elasticsearch hosts will be set from.                                                                                       | ``                                    |
 | `graylog.mongodb.uri`                   | Graylog MongoDB connection string. You need to specific where data will be stored.                                                                    | ``                                    |
+| `graylog.mongodb.uriSecretName`         | K8s secret name where MongoDB URI will be set from.                                                                                                   | `{{ graylog.fullname }}`              |
+| `graylog.mongodb.uriSecretKey`          | K8s secret key name where MongoDB URI will be set from.                                                                                               | ``                                    |
 | `graylog.transportEmail.enabled`        | If true, enable transport email settings on Graylog                                                                                                   | `false`                               |
 | `graylog.config`                        | Add additional server configuration to `graylog.conf` file.                                                                                           | ``                                    |
 | `graylog.serverFiles`                   | Add additional server files on /etc/graylog/server. This is useful for enable TLS on input                                                            | `{}`                                  |
 | `graylog.journal.deleteBeforeStart`     | Delete all journal files before start Graylog                                                                                                         | `false`                               |
 | `graylog.init.resources`                | Configure resource requests and limits for the Graylog StatefulSet initContainer                                                                      | `{}`                                  |
 | `graylog.provisioner.enabled`           | Enable optional Job to run an arbitrary Bash script                                                                                                   | `false`                               |
+| `graylog.provisioner.useGraylogServiceAccount` | Use the same ServiceAccount used by Graylog pod                                                                                                | `false`                               |
 | `graylog.provisioner.script`            | The contents of the provisioner Bash script                                                                                                           | ``                                    |
+| `graylog.extraVolumeMounts`             | Additional Volume mounts                                                                                                                              | `[]`                                  |
+| `graylog.extraVolumes`                  | Additional Volumes                                                                                                                                    | `[]`                                  |
+| `graylog.extraInitContainers`           | Additional Init containers                                                                                                                            | `[]`                                  |
 | `rbac.create`                           | If true, create & use RBAC resources                                                                                                                  | `true`                                |
-| `rbac.serviceAccount.create`            | If true, create the Graylog service account                                                                                                           | `true`                                |
-| `rbac.serviceAccount.name`              | Name of the server service account to use or create                                                                                                   | `{{ graylog.fullname }}`              |
+| `rbac.resources`                        | List of resources                                                                                                                                     | `[pods, secrets]`                     |
+| `serviceAccount.create`                 | If true, create the Graylog service account                                                                                                           | `true`                                |
+| `serviceAccount.name`                   | Name of the server service account to use or create                                                                                                   | `{{ graylog.fullname }}`              |
 | `tags.install-mongodb`                  | If true, this chart will install MongoDB from requirement dependencies. If you want to install MongoDB by yourself, please set to `false`             | `true`                                |
 | `tags.install-elasticsearch`            | If true, this chart will install Elasticsearch from requirement dependencies. If you want to install Elasticsearch by yourself, please set to `false` | `true`                                |
 
@@ -181,7 +197,8 @@ Note: Name must be in IANA_SVC_NAME (at most 15 characters, matching regex [a-z0
 Note: The port list should be sorted by port number.
 
 
-## Input TLS
+## TLS
+
 To enable TLS on input in Graylog, you need to specify the server private key and certificate. You can add them in `graylog.serverFiles` value. For example
 
 ```yaml
@@ -212,13 +229,26 @@ graylog:
       -----END PRIVATE KEY-----
 ```
 
-Then configure Graylog input to
+### Input TLS
+
+The certificates will be mounted into the `/etc/graylog/server`, so Inputs (e.g. TCP/UDP) can be configured to leverage
+those certificates with the following Input API configuration:
 
 | Parameter      | Value                           |
 |----------------|---------------------------------|
 | tls_cert_file: | /etc/graylog/server/server.cert |
 | tls_enable:    | true                            |
 | tls_key_file:  | /etc/graylog/server/server.key  |
+
+### Web HTTPS
+
+Graylog can be autoconfigured to run in HTTPS mode when provided certificates by setting the `graylog.tls.enabled` value to `true`.
+
+If the certificates are different than those provided above (different hostname for example), then the web-specific
+certificates can be added to `graylog.serverFiles` and you can configure the `graylog.tls.certPath` and `graylog.tls.keyPath` to match.
+
+Each Graylog node coordinates with each other through the DNS entry exposed via the headless service, so when generating
+the certificates, be sure to include a SAN entry for `*.graylog[-<suffix>].<namespace>.cluster.local` (or your configured FQDN).
 
 ## Get Graylog status
 You can get your Graylog status by running the command

@@ -18,7 +18,7 @@ This chart will do the following:
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/jenkins
+$ helm install my-release stable/jenkins
 ```
 
 ## Upgrading an existing Release to a new major version
@@ -107,6 +107,8 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.csrf.defaultCrumbIssuer.enabled` | Enable the default CSRF Crumb issuer | `true`                             |
 | `master.csrf.defaultCrumbIssuer.proxyCompatability` | Enable proxy compatibility | `true`                            |
 | `master.cli`                      | Enable CLI over remoting             | `false`                                   |
+| `master.slaveListenerServiceType` | Defines how to expose the slaveListener service | `ClusterIP`                    |
+| `master.slaveListenerLoadBalancerIP`  | Static IP for the slaveListener LoadBalancer | Not set                       | 
 | `master.loadBalancerSourceRanges` | Allowed inbound IP addresses         | `0.0.0.0/0`                               |
 | `master.loadBalancerIP`           | Optional fixed external IP           | Not set                                   |
 | `master.jmxPort`                  | Open a port, for JMX stats           | Not set                                   |
@@ -133,7 +135,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.JCasC.enabled`            | Wheter Jenkins Configuration as Code is enabled or not | `false`                 |
 | `master.JCasC.defaultConfig`      | Enables default Jenkins configuration via configuration as code plugin | `false` |
 | `master.JCasC.configScripts`      | List of Jenkins Config as Code scripts | `{}`                                    |
-| `master.enableXmlConfig`          | enables configuration done via XML files | `false`                               |
+| `master.enableXmlConfig`          | enables configuration done via XML files | `true`                               |
 | `master.sidecars.configAutoReload` | Jenkins Config as Code auto-reload settings |                                   |
 | `master.sidecars.configAutoReload.enabled` | Jenkins Config as Code auto-reload settings (Attention: rbac needs to be enabled otherwise the sidecar can't read the config map) | `false`                                                      |
 | `master.sidecars.configAutoReload.image` | Image which triggers the reload | `kiwigrid/k8s-sidecar:0.1.20`           |
@@ -152,6 +154,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.schedulerName`            | Kubernetes scheduler name            | Not set                                   |
 | `master.tolerations`              | Toleration labels for pod assignment | `[]`                                      |
 | `master.podAnnotations`           | Annotations for master pod           | `{}`                                      |
+| `master.deploymentAnnotations`           | Annotations for master deployment           | `{}`                                      |
 | `master.customConfigMap`          | Deprecated: Use a custom ConfigMap   | `false`                                   |
 | `master.additionalConfig`         | Deprecated: Add additional config files | `{}`                                   |
 | `master.jenkinsUriPrefix`         | Root Uri Jenkins will be served on   | Not set                                   |
@@ -165,7 +168,14 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.prometheus.alertingrules` | Array of prometheus alerting rules | `[]`                                        |
 | `master.prometheus.alertingRulesAdditionalLabels` | Additional labels to add to the prometheus rule object     | `{}`                                   |
 | `master.priorityClassName`        | The name of a `priorityClass` to apply to the master pod | Not set               |
-| `master.testEnabled`              | Can be used to disable rendering test resources when using helm template | `true`                                 |
+| `master.testEnabled`              | Can be used to disable rendering test resources when using helm template | `true`                         |
+| `master.httpsKeyStore.enable`     | Enables https keystore on jenkins master      | `false`      | 
+| `master.httpsKeyStore.jenkinsHttpsJksSecretName`     | Name of the secret that already has ssl keystore      | ``      | 
+| `master.httpsKeyStore.httpPort`   | Http Port that Jenkins should listen on along with https, it also serves liveness and readiness probs port. When https keystore is enabled servicePort and targetPort will be used as https port  | `8081`   |
+| `master.httpsKeyStore.path`       | Path of https keystore file                  |     `/var/jenkins_keystore`     |
+| `master.httpsKeyStore.fileName`  | Jenkins keystore filename which will apear under master.httpsKeyStore.path      | `keystore.jks` |
+| `master.httpsKeyStore.password`   | Jenkins keystore password                                           | `password` |
+| `master.httpsKeyStore.jenkinsKeyStoreBase64Encoded`  | Base64 ecoded Keystore content. Keystore must be converted to base64 then being pasted here  | a self signed cert |
 | `networkPolicy.enabled`           | Enable creation of NetworkPolicy resources. | `false`                            |
 | `networkPolicy.apiVersion`        | NetworkPolicy ApiVersion             | `networking.k8s.io/v1`                    |
 | `rbac.create`                     | Whether RBAC resources are created   | `true`                                    |
@@ -202,6 +212,7 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.podName`            | Agent Pod base name                             | Not set                |
 | `agent.idleMinutes`        | Allows the Pod to remain active for reuse       | 0                      |
 | `agent.yamlTemplate`       | The raw yaml of a Pod API Object to merge into the agent spec | Not set                |
+| `agent.slaveConnectTimeout`| Timeout in seconds for an agent to be online    | 100                    |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
@@ -209,7 +220,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/jenkins
+$ helm install my-release -f values.yaml stable/jenkins
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -294,6 +305,7 @@ It is possible to mount several volumes using `persistence.volumes` and `persist
 | --------------------------- | ------------------------------- | --------------- |
 | `persistence.enabled`       | Enable the use of a Jenkins PVC | `true`          |
 | `persistence.existingClaim` | Provide the name of a PVC       | `nil`           |
+| `persistence.storageClass`  | Storage class for the PVC       | `nil`           |
 | `persistence.annotations`   | Annotations for the PVC         | `{}`            |
 | `persistence.accessMode`    | The PVC access mode             | `ReadWriteOnce` |
 | `persistence.size`          | The size of the PVC             | `8Gi`           |
@@ -308,8 +320,21 @@ It is possible to mount several volumes using `persistence.volumes` and `persist
 3. Install the chart
 
 ```bash
-$ helm install --name my-release --set persistence.existingClaim=PVC_NAME stable/jenkins
+$ helm install my-release --set persistence.existingClaim=PVC_NAME stable/jenkins
 ```
+
+#### Storage Class
+
+It is possible to define which storage class to use:
+
+```bash
+$ helm install my-release --set persistence.storageClass=customStorageClass stable/jenkins
+```
+
+If set to a dash (`-`, as in `persistence.storageClass=-`), the dynamic provision is disabled.
+
+If the storage class is set to null or left undefined (`persistence.storageClass=`),
+the default provisioner is used (gp2 on AWS, standard on GKE, AWS & OpenStack).
 
 ## Configuration as Code
 Jenkins Configuration as Code is now a standard component in the Jenkins project.  Add a key under configScripts for each configuration area, where each corresponds to a plugin or section of the UI.  The keys (prior to | character) are just labels, and can be any value.  They are only used to give the section a meaningful name.  The only restriction is they must conform to RFC 1123 definition of a DNS label, so may only contain lowercase letters, numbers, and hyphens.  Each key will become the name of a configuration yaml file on the master in /var/jenkins_home/casc_configs (by default) and will be processed by the Configuration as Code Plugin during Jenkins startup.  The lines after each | become the content of the configuration yaml file.  The first line after this is a JCasC root element, eg jenkins, credentials, etc.  Best reference is the Documentation link here: https://<jenkins_url>/configuration-as-code.  The example below creates ldap settings:
@@ -515,3 +540,26 @@ and provide the file `templates/config.tpl` in your parent chart for your use ca
     <CONTENTS_HERE>
 {{ end }}
 ```
+
+## Https keystore configuration
+This configuration enable jenkins to use keystore inorder to serve https: https://wiki.jenkins.io/pages/viewpage.action?pageId=135468777 <br />
+Here is the value file section related to keystore configuration. <br />
+Keystore itself should be placed in front of `jenkinsKeyStoreBase64Encoded` key and in base64 encoded format. To achive that after having `keystore.jks` file simply do this: `cat keystore.jks | base64` and paste the output in front of `jenkinsKeyStoreBase64Encoded` . <br />
+After enabling `httpsKeyStore.enable` make sure that `httpPort` and `targetPort` are not the same as `targetPort` will serve https. <br />
+Do not set `master.httpsKeyStore.httpPort` to `-1` because it will cause readiness and liveliness prob to fail. <br />
+If you already have a kubernetes secret that has keystore and its password you can specify its' name in front of `jenkinsHttpsJksSecretName`, You need to remember that your secret should have proper data key names `jenkins-jks-file` and `https-jks-password`. <br /> 
+
+```yaml
+master:
+   httpsKeyStore:
+       enable: true
+       jenkinsHttpsJksSecretName: ''
+       httpPort: 8081
+       path: "/var/jenkins_keystore"
+       fileName: "keystore.jks"
+       password: "changeit"
+       jenkinsKeyStoreBase64Encoded: ''
+```
+
+
+

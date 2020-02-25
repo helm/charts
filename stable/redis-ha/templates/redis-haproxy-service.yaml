@@ -3,8 +3,10 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "redis-ha.fullname" . }}-haproxy
+  namespace: {{ .Release.Namespace }}
   labels:
 {{ include "labels.standard" . | indent 4 }}
+    component: {{ template "redis-ha.fullname" . }}-haproxy
   annotations:
   {{- if .Values.haproxy.service.annotations }}
 {{ toYaml .Values.haproxy.service.annotations | indent 4 }}
@@ -32,7 +34,7 @@ spec:
   - name: {{ .Values.haproxy.metrics.portName }}
     port: {{ .Values.haproxy.metrics.port }}
     protocol: TCP
-    targetPort: exporter-port
+    targetPort: metrics-port
 {{- end }}
   selector:
     release: {{ .Release.Name }}

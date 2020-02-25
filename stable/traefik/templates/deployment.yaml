@@ -19,7 +19,9 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
+{{- if not .Values.autoscaling }}
   replicas: {{ default 1 .Values.replicas }}
+{{- end }}
   selector:
     matchLabels:
       app: {{ template "traefik.name" . }}
@@ -76,6 +78,7 @@ spec:
       {{- end }}
       containers:
       - image: {{ .Values.image }}:{{ .Values.imageTag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
         name: {{ template "traefik.fullname" . }}
         resources:
         {{- if or .Values.cpuRequest .Values.memoryRequest .Values.cpuLimit .Values.memoryLimit }}
