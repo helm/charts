@@ -432,9 +432,9 @@ clusterAgent:
   #
   # nodeSelector: {}
 
-  ## @param healthPort - integer - optional - default: 443
+  ## @param healthPort - integer - optional - default: 8080
   ## Port number use the cluster-agent to server healthz endpoint
-  # healthPort: 8080
+  healthPort: 8080
 
   ## @param livenessProbe - object - required
   ## Override the agent's liveness probe logic from the default:

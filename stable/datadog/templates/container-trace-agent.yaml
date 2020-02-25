@@ -17,7 +17,7 @@
     - name: DD_APM_NON_LOCAL_TRAFFIC
       value: "true"
     - name: DD_APM_RECEIVER_PORT
-      value: {{ default 8126 .Values.datadog.apm.port | quote }}
+      value: {{ .Values.datadog.apm.port | quote }}
 {{- if .Values.agents.containers.traceAgent.env }}
 {{ toYaml .Values.agents.containers.traceAgent.env | indent 4 }}
 {{- end }}
