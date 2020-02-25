@@ -51,7 +51,6 @@ spec:
         - name: {{ $namespace }}-{{ $fullName }}-stripprefix@kubernetescrd
       {{- end }}
   {{- end }}
-
 {{- if $stripPrefix }}
 ---
 apiVersion: traefik.containo.us/v1alpha1
