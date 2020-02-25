@@ -88,7 +88,7 @@ service:
   clusterPort: 8201
   # clusterIP: None
   annotations: {}
-  additonalSelector: {}
+  additionalSelector: {}
   #   cloud.google.com/load-balancer-type: "Internal"
   #
   # An example using type:loadbalancer and AWS internal ELB on kops
