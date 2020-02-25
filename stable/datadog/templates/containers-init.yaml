@@ -7,6 +7,8 @@
   volumeMounts:
     - name: config
       mountPath: /opt/datadog-agent
+  resources:
+{{ toYaml .Values.agents.containers.initContainers.resources | indent 4 }}
 - name: init-config
   image: "{{ .Values.agents.image.repository }}:{{ .Values.agents.image.tag }}"
   command: ["bash", "-c"]
@@ -38,4 +40,6 @@
     {{- if .Values.datadog.env }}
       {{ toYaml .Values.datadog.env | nindent 4 }}
     {{- end }}
+  resources:
+{{ toYaml .Values.agents.containers.initContainers.resources | indent 4 }}
 {{- end -}}

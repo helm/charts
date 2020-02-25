@@ -690,6 +690,18 @@ agents:
       #    cpu: 100m
       #    memory: 200Mi
 
+    initContainers:
+      ## @param resources - object - required
+      ## Resource requests and limits for the init containers.
+      #
+      resources: {}
+      #  requests:
+      #    cpu: 100m
+      #    memory: 200Mi
+      #  limits:
+      #    cpu: 100m
+      #    memory: 200Mi
+
   ## @param volumes - list of objects - optional
   ## Specify additional volumes to mount in the dd-agent container
   #

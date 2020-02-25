@@ -328,6 +328,10 @@ helm install --name <RELEASE_NAME> \
 | `agents.containers.systemProbe.resources.requests.cpu`         | CPU resource requests for the system-probe container                                    | `100m`                                        |
 | `agents.containers.systemProbe.resources.limits.memory`        | Memory resource limits for the system-probe container                                   | `200Mi`                                       |
 | `agents.containers.systemProbe.resources.requests.memory`      | Memory resource requests for the system-probe container                                 | `200Mi`                                       |
+| `agents.containers.initContainers.resources.limits.cpu`         | CPU resource limits for the init containers container                                            | `200m`                                        |
+| `agents.containers.initContainers.resources.requests.cpu`       | CPU resource requests for the init containers container                                          | `200m`                                        |
+| `agents.containers.initContainers.resources.limits.memory`      | Memory resource limits for the init containers container                                         | `256Mi`                                       |
+| `agents.containers.initContainers.resources.requests.memory`    | Memory resource requests for the init containers container                                       | `256Mi`                                       |
 | `agents.priorityClassName`            | Which Priority Class to associate with the daemonset                                      | `nil`                                       |
 | `agents.useConfigMap`                 | Configures a configmap to provide the agent configuration                                 | `false`                                     |
 | `agents.customAgentConfig`            | Specify custom contents for the datadog agent config (datadog.yaml).                      | `{}`                                        |
