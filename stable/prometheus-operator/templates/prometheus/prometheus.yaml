@@ -27,6 +27,10 @@ spec:
 {{- else }}
       []
 {{- end }}
+{{- if .Values.prometheus.prometheusSpec.apiserverConfig }}
+  apiserverConfig:
+{{ toYaml .Values.prometheus.prometheusSpec.apiserverConfig | indent 4}}
+{{- end }}
 {{- if .Values.prometheus.prometheusSpec.image }}
   baseImage: {{ .Values.prometheus.prometheusSpec.image.repository }}
   version: {{ .Values.prometheus.prometheusSpec.image.tag }}

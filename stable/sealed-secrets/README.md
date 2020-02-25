@@ -51,7 +51,7 @@ Read about kubeseal usage on [sealed-secrets docs](https://github.com/bitnami-la
 | **serviceAccount.create**     | Whether to create a service account or not                                 | `true`                                      |
 | **serviceAccount.name**       | The name of the service account to create or use                           | `"sealed-secrets-controller"`               |
 | **secretName**                | The name of the TLS secret containing the key used to encrypt secrets      | `"sealed-secrets-key"`                      |
-| **image.tag**                 | The `Sealed Secrets` image tag                                             | `v0.9.6`                                    |
+| **image.tag**                 | The `Sealed Secrets` image tag                                             | `v0.9.7`                                    |
 | **image.pullPolicy**          | The image pull policy for the deployment                                   | `IfNotPresent`                              |
 | **image.repository**          | The repository to get the controller image from                            | `quay.io/bitnami/sealed-secrets-controller` |
 | **resources**                 | CPU/Memory resource requests/limits                                        | `{}`                                        |
@@ -65,6 +65,8 @@ Read about kubeseal usage on [sealed-secrets docs](https://github.com/bitnami-la
 | **ingress.path**              | Ingress path                                                               | `/v1/cert.pem`                              |
 | **ingress.hosts**             | Ingress accepted hostnames                                                 | `["chart-example.local"]`                   |
 | **ingress.tls**               | Ingress TLS configuration                                                  | `[]`                                        |
+| **podAnnotations**            | Annotations to annotate pods with.                                         | `{}`                                        |
+| **priorityClassName**         | Optional class to specify priority for pods                                | `""`                                        |
 
 
 - In the case that **serviceAccount.create** is `false` and **rbac.create** is `true` it is expected for a service account with the name **serviceAccount.name** to exist _in the same namespace as this chart_ before installation.

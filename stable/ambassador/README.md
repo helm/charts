@@ -1,3 +1,12 @@
+# !!DEPRECATED!! Please use https://github.com/datawire/ambassador-chart.
+
+[helm/charts](https://github.com/helm/charts) has been deprecated and will be obsolete by Nov 13 2020. For this reason, the datawire team as retaken ownership of this chart.
+
+The Ambassador Chart is now hosted at [datawire/ambassador-chart](https://github.com/datawire/ambassador-chart).
+
+---
+
+
 # Ambassador
 
 Ambassador is an open source, Kubernetes-native [microservices API gateway](https://www.getambassador.io/about/microservices-api-gateways) built on the [Envoy Proxy](https://www.envoyproxy.io/).

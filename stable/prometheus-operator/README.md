@@ -148,6 +148,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `defaultRules.rules.general` | Create General default rules| `true` |
 | `defaultRules.rules.k8s` | Create K8S default rules| `true` |
 | `defaultRules.rules.kubeApiserver` | Create Api Server default rules| `true` |
+| `defaultRules.rules.kubeApiserverError` | Create Api Server Error default rules| `true` |
 | `defaultRules.rules.kubePrometheusNodeAlerting` | Create Node Alerting default rules| `true` |
 | `defaultRules.rules.kubePrometheusNodeRecording` | Create Node Recording default rules| `true` |
 | `defaultRules.rules.kubeScheduler` | Create Kubernetes Scheduler default rules| `true` |
@@ -264,6 +265,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.prometheusSpec.additionalPrometheusSecretsAnnotations` | additionalPrometheusSecretsAnnotations allows to add annotations to the kubernetes secret. This can be useful when deploying via spinnaker to disable versioning on the secret, strategy.spinnaker.io/versioned: 'false' | `{}` |
 | `prometheus.prometheusSpec.affinity` | Assign custom affinity rules to the prometheus instance https://kubernetes.io/docs/concepts/configuration/assign-pod-node/ | `{}` |
 | `prometheus.prometheusSpec.alertingEndpoints` | Alertmanagers to which alerts will be sent https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#alertmanagerendpoints Default configuration will connect to the alertmanager deployed as part of this release | `[]` |
+| `prometheus.prometheusSpec.apiserverConfig` | Custom `kubernetes_sd_config` https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#apiserverconfig Default configuration will connect to current Kubernetes cluster | `{}` |
 | `prometheus.prometheusSpec.configMaps` | ConfigMaps is a list of ConfigMaps in the same namespace as the Prometheus object, which shall be mounted into the Prometheus Pods. The ConfigMaps are mounted into /etc/prometheus/configmaps/ | `[]` |
 | `prometheus.prometheusSpec.containers` | Containers allows injecting additional containers. This is meant to allow adding an authentication proxy to a Prometheus pod. |`[]`|
 | `prometheus.prometheusSpec.disableCompaction` | If true, pass --storage.tsdb.max-block-duration=2h to prometheus. This is already done if using Thanos |`false`|
@@ -422,6 +424,7 @@ For a full list of configurable values please refer to the [Grafana chart](https
 | `grafana.ingress.labels` | Custom labels for Grafana Ingress | `{}` |
 | `grafana.ingress.tls` | Ingress TLS configuration for Grafana | `[]` |
 | `grafana.rbac.pspUseAppArmor` | Enforce AppArmor in created PodSecurityPolicy (requires rbac.pspEnabled) | `true` |
+| `grafana.service.portName` | Allow to customize Grafana service portname. Will be used by servicemonitor as well | `service` |
 | `grafana.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping the grafana instance. | `` |
 | `grafana.serviceMonitor.relabelings` | The `relabel_configs` for scraping the grafana instance. | `` |
 | `grafana.serviceMonitor.selfMonitor` | Create a `serviceMonitor` to automatically monitor the grafana instance | `true` |

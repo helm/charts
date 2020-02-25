@@ -1,3 +1,4 @@
+{{- if (eq .Values.kind "Deployment") }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -58,8 +59,13 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
             readOnlyRootFilesystem: {{ .Values.readOnlyRootFilesystem }}
+            {{- if .Values.allowIcmp }}
+            capabilities:
+              add: ["NET_RAW"]
+            {{- else }}
             runAsNonRoot: {{ .Values.runAsNonRoot  }}
             runAsUser: {{ .Values.runAsUser }}
+            {{- end }}
           args:
 {{- if .Values.config }}
             - "--config.file=/config/blackbox.yaml"
@@ -118,3 +124,4 @@ spec:
             secretName: {{ .secretName }}
             defaultMode: {{ .defaultMode }}
       {{- end }}
+{{- end }}

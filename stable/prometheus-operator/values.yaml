@@ -26,6 +26,7 @@ defaultRules:
     general: true
     k8s: true
     kubeApiserver: true
+    kubeApiserverError: true
     kubePrometheusNodeAlerting: true
     kubePrometheusNodeRecording: true
     kubernetesAbsent: true
@@ -474,6 +475,11 @@ grafana:
   #   type: prometheus
   #   url: https://prometheus.svc:9090
   #   version: 1
+
+  ## Passed to grafana subchart and used by servicemonitor below
+  ##
+  service:
+    portName: service
 
   ## If true, create a serviceMonitor for grafana
   ##
@@ -1382,10 +1388,13 @@ prometheus:
   ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
   ##
   prometheusSpec:
-
     ## If true, pass --storage.tsdb.max-block-duration=2h to prometheus. This is already done if using Thanos
     ##
     disableCompaction: false
+    ## APIServerConfig
+    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#apiserverconfig
+    ##
+    apiserverConfig: {}
 
     ## Interval between consecutive scrapes.
     ##

@@ -1,4 +1,4 @@
-{{- if not .Values.server.kubernetes.enabled -}}
+{{- if and (not .Values.server.kubernetes.enabled) (not .Values.runner.enabled) -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
