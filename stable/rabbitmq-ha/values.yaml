@@ -430,7 +430,7 @@ clusterDomain: cluster.local
 podDisruptionBudget: {}
 
 lifecycle: {}
-#Add possibility to use hostPath for persistant data
+
 ## Sensu CRD configuration
 sensu:
   ignoreCrd: true
