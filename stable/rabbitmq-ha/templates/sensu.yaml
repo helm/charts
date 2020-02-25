@@ -1,0 +1,11 @@
+{{- if not .Values.sensu.ignoreCrd -}}
+apiVersion: apiextensions.targetprocess.com/v1
+kind: Sensu
+metadata:
+  name: {{ .Values.sensu.crdName | default .Release.Name }}
+spec:
+  subscriptions:
+    {{- if .Values.sensu.subscriptions }}
+{{ toYaml .Values.sensu.subscriptions | indent 2 }}
+    {{- end }}
+{{- end -}}

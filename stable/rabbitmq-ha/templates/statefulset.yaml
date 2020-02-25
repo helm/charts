@@ -11,12 +11,6 @@ metadata:
 {{- if .Values.extraLabels }}
 {{ toYaml .Values.extraLabels | indent 4 }}
 {{- end }}
-{{- if .Values.statefulSetAnnotations }}
-  annotations:
-{{- range $key, $value := .Values.statefulSetAnnotations }}
-    {{ $key }}: {{ $value | quote }}
-{{- end }}
-{{- end }}
 spec:
   podManagementPolicy: {{ .Values.podManagementPolicy }}
   serviceName: {{ template "rabbitmq-ha.fullname" . }}-discovery
@@ -39,17 +33,9 @@ spec:
         {{- if not .Values.existingConfigMap }}
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- end }}
-        {{- if not .Values.existingSecret }}
-        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
-        {{- end }}
         {{- if and .Values.prometheus.exporter.enabled (not .Values.prometheus.operator.enabled) }}
         prometheus.io/scrape: "true"
         prometheus.io/port: {{ .Values.prometheus.exporter.port | quote }}
-        {{- end }}
-        {{- if and .Values.rabbitmqPrometheusPlugin.enabled (not .Values.prometheus.operator.enabled) }}
-        prometheus.io/scrape: "true"
-        prometheus.io/port: {{ .Values.rabbitmqPrometheusPlugin.port | quote }}
-        prometheus.io/path: {{ .Values.rabbitmqPrometheusPlugin.path | quote }}
         {{- end }}
 {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
@@ -181,10 +167,6 @@ spec:
             {{- toYaml .Values.livenessProbe | trim | nindent 12 }}
           readinessProbe:
             {{- toYaml .Values.readinessProbe | trim | nindent 12 }}
-          {{- if .Values.lifecycle }}
-          lifecycle:
-            {{- toYaml .Values.lifecycle | trim | nindent 12 }}
-          {{- end }}
           env:
             - name: MY_POD_NAME
               valueFrom:
@@ -280,10 +262,14 @@ spec:
         {{- if .Values.extraContainers }}
 {{ tpl (toYaml .Values.extraContainers) . | indent 8 }}
         {{- end }}
-      {{- if .Values.nodeSelector }}
+{{- if .Values.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
-      {{- end }}
+  {{- range $_, $nodeSelector :=  .Values.nodeSelector }}
+    {{- range $key, $value :=  $nodeSelector }}
+        {{ $key }}: "{{ $value }}"
+    {{- end }}
+  {{- end }}
+{{- end }}
       {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
@@ -291,12 +277,6 @@ spec:
       {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
       {{- end }}
-      {{- if .Values.affinity }}
-      affinity:
-      {{- with .Values.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- else }}
       {{- if or (eq .Values.podAntiAffinity "hard") (.Values.hostPath.enabled) }}
       affinity:
         podAntiAffinity:
@@ -318,8 +298,6 @@ spec:
                     app: {{ template "rabbitmq-ha.name" . }}
                     release: {{ .Release.Name }}
       {{- end }}
-      {{- end }}
-
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
       {{- end }}
@@ -349,9 +327,9 @@ spec:
     - metadata:
         name: {{ .Values.persistentVolume.name }}
         annotations:
-{{ tpl (toYaml .Values.persistentVolume.annotations) . | indent 10 }}
-        labels:
-{{ tpl (toYaml .Values.persistentVolume.labels) . | indent 10 }}
+        {{- range $key, $value := .Values.persistentVolume.annotations }}
+          {{ $key }}: {{ $value }}
+        {{- end }}
       spec:
         accessModes:
         {{- range .Values.persistentVolume.accessModes }}
