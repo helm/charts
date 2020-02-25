@@ -197,6 +197,10 @@ service:
   ##
   # nodePort: 30672
 
+  ## Set the LoadBalancerIP
+  ##
+  # loadBalancerIP:
+
   ## Node port Tls
   ##
   # nodeTlsPort: 30671
