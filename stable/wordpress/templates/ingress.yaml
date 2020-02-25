@@ -24,7 +24,7 @@ spec:
       - path: /
         backend:
           serviceName: "{{ template "wordpress.fullname" $ }}"
-          servicePort: http
+          servicePort:  {{ .Values.service.port }}
   {{- end }}
   {{- range .Values.ingress.hosts }}
   - host: {{ .name }}
@@ -33,7 +33,7 @@ spec:
       - path: {{ default "/" .path }}
         backend:
           serviceName: "{{ template "wordpress.fullname" $ }}"
-          servicePort: http
+          servicePort:  {{ .Values.service.port }}
   {{- end }}
   {{- if .Values.ingress.tls }}
   tls:
