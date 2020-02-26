@@ -10,6 +10,7 @@ metadata:
     "helm.sh/hook-delete-policy": {{ .Values.setDefaultUser.hookDeletePolicy }}
 spec:
   activeDeadlineSeconds: {{ .Values.setDefaultUser.activeDeadlineSeconds }}
+  backoffLimit: {{ .Values.setDefaultUser.backoffLimit }}
   template:
     metadata:
       labels:

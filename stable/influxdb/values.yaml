@@ -98,6 +98,11 @@ setDefaultUser:
   ##
   activeDeadline: 300
 
+  ## Specify the number of retries before considering job as failed.
+  ## https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/#pod-backoff-failure-policy
+  ##
+  backoffLimit: 6
+
   ## Hook delete policy for helm.
   ## Default: hookDeletePolicy: hook-succeeded
   ##
