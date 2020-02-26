@@ -182,6 +182,7 @@ metrics:
     annotations:
       prometheus.io/scrape: "true"
       prometheus.io/path: "/metrics"
+      prometheus.io/port: "8080"
 
 # customVolume is the configuration for any volume mounted as '/data/custom/' (e.g. to mount a volume with custom JARs)
 # customVolume:
