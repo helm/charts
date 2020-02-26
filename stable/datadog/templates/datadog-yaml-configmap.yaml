@@ -1,26 +1,22 @@
-{{- if .Values.daemonset.useConfigMap }}
+{{- if .Values.agents.useConfigMap }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "datadog.fullname" . }}-datadog-yaml
   labels:
-    app: "{{ template "datadog.fullname" . }}"
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
     helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     app.kubernetes.io/name: "{{ template "datadog.fullname" . }}"
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
     app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
   annotations:
-    {{- if .Values.daemonset.customAgentConfig }}
-    checksum/agent-config: {{ tpl (toYaml .Values.daemonset.customAgentConfig) . | sha256sum }}
+    {{- if .Values.agents.customAgentConfig }}
+    checksum/agent-config: {{ tpl (toYaml .Values.agents.customAgentConfig) . | sha256sum }}
     {{- end }}
 data:
   datadog.yaml: |
-  {{- if .Values.daemonset.customAgentConfig }}
-{{ tpl (toYaml .Values.daemonset.customAgentConfig) . | indent 4 }}
+  {{- if .Values.agents.customAgentConfig }}
+{{ tpl (toYaml .Values.agents.customAgentConfig) . | indent 4 }}
   {{- else }}
     ## Provides autodetected defaults, for kubernetes environments,
     ## please see datadog.yaml.example for all supported options
@@ -34,8 +30,10 @@ data:
 
     # Enable APM by setting the DD_APM_ENABLED envvar to true, or override this configuration
     apm_config:
-      enabled: false
+      enabled: true
       apm_non_local_traffic: true
+      max_memory: 0
+      max_cpu_percent: 0
 
     {{- $version := (.Values.image.tag | toString | trimSuffix "-jmx") }}
     {{- $length := len (split "." $version ) -}} 
