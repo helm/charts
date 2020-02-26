@@ -1,12 +1,9 @@
+{{- if not .Values.cluster.externalAccess.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "redis.fullname" . }}-headless
-  labels:
-    app: {{ template "redis.name" . }}
-    chart: {{ template "redis.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+  labels: {{- include "redis.labels" . | nindent 4 }}
 spec:
   type: ClusterIP
   clusterIP: None
@@ -14,11 +11,10 @@ spec:
   - name: redis
     port: {{ .Values.redisPort }}
     targetPort: redis
-{{- if .Values.sentinel.enabled }}
-  - name: redis-sentinel
-    port: {{ .Values.sentinel.port }}
-    targetPort: redis-sentinel
+{{- if .Values.cluster.enabled }}
+  - name: redis-cluster
+    port: {{ .Values.cluster.busPort }}
+    targetPort: redis-cluster
 {{- end }}
-  selector:
-    app: {{ template "redis.name" . }}
-    release: {{ .Release.Name }}
+  selector: {{- include "redis.matchLabels" $ | nindent 4 }}
+{{- end }}

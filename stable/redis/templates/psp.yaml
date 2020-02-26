@@ -3,11 +3,7 @@ apiVersion: {{ template "podSecurityPolicy.apiVersion" . }}
 kind: PodSecurityPolicy
 metadata:
   name: {{ template "redis.fullname" . }}
-  labels:
-    app: {{ template "redis.name" . }}
-    chart: {{ template "redis.chart" . }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+  labels: {{- include "redis.labels" . | nindent 4 }}
 spec:
   allowPrivilegeEscalation: false
   fsGroup:

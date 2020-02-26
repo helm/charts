@@ -39,89 +39,37 @@
         }
       }
     },
-    "master": {
+    "persistence": {
       "type": "object",
-      "title": "Master replicas settings",
+      "title": "Persistence",
       "form": true,
       "properties": {
-        "persistence": {
-          "type": "object",
-          "title": "Persistence for master replicas",
+        "enabled": {
+          "type": "boolean",
           "form": true,
-          "properties": {
-            "enabled": {
-              "type": "boolean",
-              "form": true,
-              "title": "Enable persistence",
-              "description": "Enable persistence using Persistent Volume Claims"
-            },
-            "size": {
-              "type": "string",
-              "title": "Persistent Volume Size",
-              "form": true,
-              "render": "slider",
-              "sliderMin": 1,
-              "sliderMax": 100,
-              "sliderUnit": "Gi",
-              "hidden": {
-                "condition": false,
-                "value": "master.persistence.enabled"
-              }
-            },
-            "matchLabels": {
-              "type": "object",
-              "title": "Persistent Match Labels Selector"
-            },
-            "matchExpressions": {
-              "type": "object",
-              "title": "Persistent Match Expressions Selector"
-            }
-          }
-        }
-      }
-    },
-    "slave": {
-      "type": "object",
-      "title": "Slave replicas settings",
-      "form": true,
-      "hidden": {
-        "condition": false,
-        "value": "cluster.enabled"
-      },
-      "properties": {
-        "persistence": {
-          "type": "object",
-          "title": "Persistence for slave replicas",
+          "title": "Enable persistence",
+          "description": "Enable persistence using Persistent Volume Claims"
+        },
+        "size": {
+          "type": "string",
+          "title": "Persistent Volume Size",
           "form": true,
-          "properties": {
-            "enabled": {
-              "type": "boolean",
-              "form": true,
-              "title": "Enable persistence",
-              "description": "Enable persistence using Persistent Volume Claims"
-            },
-            "size": {
-              "type": "string",
-              "title": "Persistent Volume Size",
-              "form": true,
-              "render": "slider",
-              "sliderMin": 1,
-              "sliderMax": 100,
-              "sliderUnit": "Gi",
-              "hidden": {
-                "condition": false,
-                "value": "slave.persistence.enabled"
-              }
-            },
-            "matchLabels": {
-              "type": "object",
-              "title": "Persistent Match Labels Selector"
-            },
-            "matchExpressions": {
-              "type": "object",
-              "title": "Persistent Match Expressions Selector"
-            }
+          "render": "slider",
+          "sliderMin": 1,
+          "sliderMax": 100,
+          "sliderUnit": "Gi",
+          "hidden": {
+            "condition": false,
+            "value": "persistence.enabled"
           }
+        },
+        "matchLabels": {
+          "type": "object",
+          "title": "Persistent Match Labels Selector"
+        },
+        "matchExpressions": {
+          "type": "object",
+          "title": "Persistent Match Expressions Selector"
         }
       }
     },

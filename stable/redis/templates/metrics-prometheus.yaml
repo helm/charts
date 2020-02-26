@@ -6,11 +6,7 @@ metadata:
   {{- if .Values.metrics.serviceMonitor.namespace }}
   namespace: {{ .Values.metrics.serviceMonitor.namespace }}
   {{- end }}
-  labels:
-    app: {{ template "redis.name" . }}
-    chart: {{ template "redis.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+  labels: {{- include "redis.labels" . | nindent 4 }}
     {{- range $key, $value := .Values.metrics.serviceMonitor.selector }}
     {{ $key }}: {{ $value | quote }}
     {{- end }}
@@ -21,9 +17,7 @@ spec:
     interval: {{ .Values.metrics.serviceMonitor.interval }}
     {{- end }}
   selector:
-    matchLabels:
-      app: {{ template "redis.name" . }}
-      release: {{ .Release.Name }}
+    matchLabels: {{- include "redis.matchLabels" . | nindent 6 }}
   namespaceSelector:
     matchNames:
     - {{ .Release.Namespace }}

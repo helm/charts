@@ -1,11 +1,5 @@
-master:
-  extraFlags:
-    - --maxmemory-policy allkeys-lru
-  persistence:
-    enabled: false
-slave:
-  extraFlags:
-    - --maxmemory-policy allkeys-lru
-  persistence:
-    enabled: false
+extraFlags:
+  - --maxmemory-policy allkeys-lru
+persistence:
+  enabled: false
 usePassword: false

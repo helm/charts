@@ -88,29 +88,6 @@ Also, we can't use a single if because lazy evaluation is not an option
 {{- end -}}
 
 {{/*
-Return the proper Redis Sentinel image name
-*/}}
-{{- define "sentinel.image" -}}
-{{- $registryName := .Values.sentinel.image.registry -}}
-{{- $repositoryName := .Values.sentinel.image.repository -}}
-{{- $tag := .Values.sentinel.image.tag | toString -}}
-{{/*
-Helm 2.11 supports the assignment of a value to a variable defined in a different scope,
-but Helm 2.9 and 2.10 doesn't support it, so we need to implement this if-else logic.
-Also, we can't use a single if because lazy evaluation is not an option
-*/}}
-{{- if .Values.global }}
-    {{- if .Values.global.imageRegistry }}
-        {{- printf "%s/%s:%s" .Values.global.imageRegistry $repositoryName $tag -}}
-    {{- else -}}
-        {{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
-    {{- end -}}
-{{- else -}}
-    {{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
 Return the proper image name (for the metrics image)
 */}}
 {{- define "redis.metrics.image" -}}
@@ -278,16 +255,12 @@ imagePullSecrets:
 WARNING: Rolling tag detected ({{ .Values.image.repository }}:{{ .Values.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
 +info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
 {{- end }}
-{{- if and (contains "bitnami/" .Values.sentinel.image.repository) (not (.Values.sentinel.image.tag | toString | regexFind "-r\\d+$|sha256:")) }}
-WARNING: Rolling tag detected ({{ .Values.sentinel.image.repository }}:{{ .Values.sentinel.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
-+info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
-{{- end }}
 {{- end -}}
 
 {{/*
-Return  the proper Storage Class for master
+Return the proper Storage Class
 */}}
-{{- define "redis.master.storageClass" -}}
+{{- define "redis.storageClass" -}}
 {{/*
 Helm 2.11 supports the assignment of a value to a variable defined in a different scope,
 but Helm 2.9 and 2.10 does not support it, so we need to implement this if-else logic.
@@ -300,56 +273,79 @@ but Helm 2.9 and 2.10 does not support it, so we need to implement this if-else 
             {{- printf "storageClassName: %s" .Values.global.storageClass -}}
         {{- end -}}
     {{- else -}}
-        {{- if .Values.master.persistence.storageClass -}}
-              {{- if (eq "-" .Values.master.persistence.storageClass) -}}
+        {{- if .Values.persistence.storageClass -}}
+              {{- if (eq "-" .Values.persistence.storageClass) -}}
                   {{- printf "storageClassName: \"\"" -}}
               {{- else }}
-                  {{- printf "storageClassName: %s" .Values.master.persistence.storageClass -}}
+                  {{- printf "storageClassName: %s" .Values.persistence.storageClass -}}
               {{- end -}}
         {{- end -}}
     {{- end -}}
 {{- else -}}
-    {{- if .Values.master.persistence.storageClass -}}
-        {{- if (eq "-" .Values.master.persistence.storageClass) -}}
+    {{- if .Values.persistence.storageClass -}}
+        {{- if (eq "-" .Values.persistence.storageClass) -}}
             {{- printf "storageClassName: \"\"" -}}
         {{- else }}
-            {{- printf "storageClassName: %s" .Values.master.persistence.storageClass -}}
+            {{- printf "storageClassName: %s" .Values.persistence.storageClass -}}
         {{- end -}}
     {{- end -}}
 {{- end -}}
 {{- end -}}
 
 {{/*
-Return  the proper Storage Class for slave
+Return the proper number of Redis instances
 */}}
-{{- define "redis.slave.storageClass" -}}
-{{/*
-Helm 2.11 supports the assignment of a value to a variable defined in a different scope,
-but Helm 2.9 and 2.10 does not support it, so we need to implement this if-else logic.
-*/}}
-{{- if .Values.global -}}
-    {{- if .Values.global.storageClass -}}
-        {{- if (eq "-" .Values.global.storageClass) -}}
-            {{- printf "storageClassName: \"\"" -}}
-        {{- else }}
-            {{- printf "storageClassName: %s" .Values.global.storageClass -}}
-        {{- end -}}
-    {{- else -}}
-        {{- if .Values.slave.persistence.storageClass -}}
-              {{- if (eq "-" .Values.slave.persistence.storageClass) -}}
-                  {{- printf "storageClassName: \"\"" -}}
-              {{- else }}
-                  {{- printf "storageClassName: %s" .Values.slave.persistence.storageClass -}}
-              {{- end -}}
-        {{- end -}}
-    {{- end -}}
+{{- define "redis.replicaCount" -}}
+{{- if and .Values.cluster.enabled .Values.cluster.nodes -}}
+replicas: {{ .Values.cluster.nodes }}
 {{- else -}}
-    {{- if .Values.slave.persistence.storageClass -}}
-        {{- if (eq "-" .Values.slave.persistence.storageClass) -}}
-            {{- printf "storageClassName: \"\"" -}}
-        {{- else }}
-            {{- printf "storageClassName: %s" .Values.slave.persistence.storageClass -}}
+replicas: 1
+{{- end -}}
+{{- end -}}
+
+{{/*
+Renders a value that contains template.
+Usage:
+{{ include "redis.tplValue" ( dict "value" .Values.path.to.the.Value "context" $) }}
+*/}}
+{{- define "redis.tplValue" -}}
+    {{- if typeIs "string" .value }}
+        {{- tpl .value .context }}
+    {{- else }}
+        {{- tpl (.value | toYaml) .context }}
+    {{- end }}
+{{- end -}}
+
+{{/*
+Determines whether or not to create the Statefulset
+*/}}
+{{- define "redis.createStatefulSet" -}}
+    {{- if not .Values.cluster.enabled -}}
+        {{- true -}}
+    {{- else -}}
+        {{- if not .Values.cluster.externalAccess.enabled -}}
+            {{- true -}}
+        {{- end -}}
+        {{- if and .Values.cluster.externalAccess.enabled .Values.cluster.externalAccess.service.loadBalancerIP -}}
+            {{- true -}}
         {{- end -}}
     {{- end -}}
 {{- end -}}
+
+{{/*
+Common labels
+*/}}
+{{- define "redis.labels" -}}
+app.kubernetes.io/name: {{ include "redis.name" . }}
+helm.sh/chart: {{ include "redis.chart" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end -}}
+
+{{/*
+Labels to use on deploy.spec.selector.matchLabels and svc.spec.selector
+*/}}
+{{- define "redis.matchLabels" -}}
+app.kubernetes.io/name: {{ include "redis.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}

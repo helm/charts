@@ -1,9 +1,8 @@
-master:
-  persistence:
-    enabled: false
+persistence:
+  enabled: false
 
 cluster:
   enabled: true
-  slaveCount: 1
+  replicas: 1
 
 usePassword: false

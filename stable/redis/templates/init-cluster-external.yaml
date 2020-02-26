@@ -1,0 +1,42 @@
+{{- if and ( and .Values.cluster.enabled .Values.cluster.externalAccess.enabled ) .Values.cluster.externalAccess.service.loadBalancerIP }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "redis.fullname" . }}-cluster-trigger
+  labels: {{- include "redis.labels" . | nindent 4 }}
+spec:
+  template:
+    spec:
+      containers:
+      - name: trigger
+        image: "{{ template "redis.image" . }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        {{- if .Values.securityContext.enabled }}
+        securityContext:
+          runAsUser: {{ .Values.securityContext.runAsUser }}
+        {{- end }}
+        env:
+        - name: REDISCLI_AUTH # Supported by the Redis CLI itself
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "redis.secretName" . }}
+              key: {{ template "redis.secretPasswordKey" . }}
+        command:
+            - /bin/bash
+            - -c
+            - |
+              nodes=($(echo "{{ .Values.cluster.externalAccess.service.loadBalancerIP }}" | cut -d [ -f2 | cut -d ] -f 1))
+              # Wait until all redis instances are ready to accept connections
+              for node in ${nodes[@]}; do
+                echo "Checking node ${node}"
+                while [[ $(redis-cli -h $node -p {{ .Values.cluster.externalAccess.service.port }} ping) != 'PONG' ]]; do
+                    echo "Node $node not ready, waiting for all the nodes to be ready..."
+                    sleep 1
+                done
+              done
+              # Initialize the cluster
+              echo "All nodes are ready to create the cluster, initializing cluster..."
+              echo "Executing: redis-cli --cluster create ${nodes[@]/%/:{{ .Values.cluster.externalAccess.service.port }}} --cluster-replicas {{ .Values.cluster.replicas }}"
+              redis-cli --cluster create ${nodes[@]/%/:{{ .Values.cluster.externalAccess.service.port }}} --cluster-replicas {{ .Values.cluster.replicas }} --cluster-yes
+      restartPolicy: Never      
+{{- end }}

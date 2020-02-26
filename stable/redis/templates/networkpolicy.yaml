@@ -3,11 +3,7 @@ kind: NetworkPolicy
 apiVersion: {{ template "networkPolicy.apiVersion" . }}
 metadata:
   name: {{ template "redis.fullname" . }}
-  labels:
-    app: {{ template "redis.name" . }}
-    chart: {{ template "redis.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+  labels: {{- include "redis.labels" . | nindent 4 }}
 spec:
   podSelector:
     matchLabels:
@@ -25,21 +21,19 @@ spec:
     # Allow outbound connections to other cluster pods
     - ports:
       - port: {{ .Values.redisPort }}
-      {{- if .Values.sentinel.enabled }}
-      - port: {{ .Values.sentinel.port }}
+      {{- if .Values.cluster.enabled }}
+      - port: {{ .Values.cluster.busPort }}
       {{- end }}
       to:
       - podSelector:
-          matchLabels:
-            app: {{ template "redis.name" . }}
-            release: {{ .Release.Name }}
+          matchLabels: {{- include "redis.matchLabels" . | nindent 12 }}
   {{- end }}
   ingress:
     # Allow inbound connections
     - ports:
       - port: {{ .Values.redisPort }}
-      {{- if .Values.sentinel.enabled }}
-      - port: {{ .Values.sentinel.port }}
+      {{- if .Values.cluster.enabled }}
+      - port: {{ .Values.cluster.busPort }}
       {{- end }}
       {{- if not .Values.networkPolicy.allowExternal }}
       from:
@@ -47,9 +41,7 @@ spec:
           matchLabels:
             {{ template "redis.fullname" . }}-client: "true"
       - podSelector:
-          matchLabels:
-            app: {{ template "redis.name" . }}
-            release: {{ .Release.Name }}
+          matchLabels: {{- include "redis.matchLabels" . | nindent 12 }}
       {{- if .Values.networkPolicy.ingressNSMatchLabels }}
       - namespaceSelector:
           matchLabels:

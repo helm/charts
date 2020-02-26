@@ -1,13 +1,13 @@
 ** Please be patient while the chart is being deployed **
 
-{{- if contains .Values.master.service.type "LoadBalancer" }}
+{{- if contains .Values.service.type "LoadBalancer" }}
 {{- if not .Values.usePassword }}
 {{ if and (not .Values.networkPolicy.enabled) (.Values.networkPolicy.allowExternal) }}
 
 -------------------------------------------------------------------------------
  WARNING
 
-    By specifying "master.service.type=LoadBalancer" and "usePassword=false" you have
+    By specifying "service.type=LoadBalancer" and "usePassword=false" you have
     most likely exposed the Redis service externally without any authentication
     mechanism.
 
@@ -20,33 +20,55 @@
 {{- end }}
 {{- end }}
 
-{{- if .Values.cluster.enabled }}
-{{- if .Values.sentinel.enabled }}
-Redis can be accessed via port {{ .Values.sentinel.service.redisPort }} on the following DNS name from within your cluster:
 
-{{ template "redis.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }} for read only operations
+{{- if and .Values.cluster.enabled .Values.cluster.externalAccess.enabled }}
 
-For read/write operations, first access the Redis Sentinel cluster, which is available in port {{ .Values.sentinel.service.sentinelPort }} using the same domain name above.
+To connect to your Redis server from outside the cluster check the following information:
 
-{{- else }}
-Redis can be accessed via port {{ .Values.redisPort }} on the following DNS names from within your cluster:
+{{- if contains "NodePort" .Values.cluster.externalAccess.service.type }}
 
-{{ template "redis.fullname" . }}-master.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }} for read/write operations
-{{ template "redis.fullname" . }}-slave.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }} for read-only operations
+    To get the Nodes IP execute `kubectl get nodes`
+    The NodePorts are: {{ .Values.cluster.externalAccess.service.nodePort }}
+
+{{- else if contains "LoadBalancer" .Values.cluster.externalAccess.service.type }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "redis.fullname" . }}'
+
+    You will have a different external IP for each Redis node. Get the external ip from `-external` suffixed services: `kubectl get svc`.
+    Redis port: {{ .Values.cluster.externalAccess.service.port }}
+
+    {{- if not .Values.cluster.externalAccess.service.loadBalancerIP }}
+    Once the LoadBalancerIPs are ready, you need to provide them and perform a Helm Upgrade:
+    `helm upgrade {{ .Release.name }} --set cluster.externalAccess.enabled=true,cluster.externalAccess.service.type=LoadBalancer{{- $root := . }}{{ $count := .Values.cluster.nodes | int }}{{ range $i, $v := until $count }},cluster.externalAccess.service.loadBalancerIP[{{ $i }}]=load-balancerip-{{- $i }}{{- end }} bitnami/redis`
+    Where loadbalancer-ip-i are the LoadBalancerIPs provided by the cluster.
+    {{- end }}
+
+{{- end }}
+
+{{- else if .Values.cluster.enabled }}
+
+You have deployed a Redis Cluster accessible only from within you Kubernetes Cluster.
+To connect to your Redis cluster:
+
+1. Run a Redis pod that you can use as a client:
+
+kubectl run --namespace {{ .Release.Namespace }} {{ template "redis.fullname" . }}-client --rm --tty -i --restart='Never' \
+{{ if .Values.usePassword }} --env REDIS_PASSWORD=$REDIS_PASSWORD \{{ end }}
+{{- if and (.Values.networkPolicy.enabled) (not .Values.networkPolicy.allowExternal) }}--labels="{{ template "redis.fullname" . }}-client=true" \{{- end }}
+--image {{ template "redis.image" . }} -- bash
+
+2. Connect using the Redis CLI:
+
+redis-cli -c -h {{ template "redis.fullname" . }}{{ if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }}
+
+{{ if and (.Values.networkPolicy.enabled) (not .Values.networkPolicy.allowExternal) }}
+Note: Since NetworkPolicy is enabled, only pods with label
+{{ template "redis.fullname" . }}-client=true"
+will be able to connect to redis.
 {{- end }}
 
 {{- else }}
-Redis can be accessed via port {{ .Values.redisPort }} on the following DNS name from within your cluster:
-
-{{ template "redis.fullname" . }}-master.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
-
-{{- end }}
-
-{{ if .Values.usePassword }}
-To get your password run:
-
-    export REDIS_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "redis.secretName" . }} -o jsonpath="{.data.redis-password}" | base64 --decode)
-{{- end }}
 
 To connect to your Redis server:
 
@@ -59,46 +81,42 @@ To connect to your Redis server:
 
 2. Connect using the Redis CLI:
 
-{{- if .Values.cluster.enabled }}
-   {{- if .Values.sentinel.enabled }}
-   redis-cli -h {{ template "redis.fullname" . }} -p {{ .Values.sentinel.service.redisPort }}{{ if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }} # Read only operations
-   redis-cli -h {{ template "redis.fullname" . }} -p {{ .Values.sentinel.service.sentinelPort }}{{ if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }} # Sentinel access
-   {{- else }}
-   redis-cli -h {{ template "redis.fullname" . }}-master{{ if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }}
-   redis-cli -h {{ template "redis.fullname" . }}-slave{{ if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }}
-   {{- end }}
-{{- else }}
-   redis-cli -h {{ template "redis.fullname" . }}-master{{ if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }}
-{{- end }}
+  redis-cli -c -h {{ template "redis.fullname" . }}{{ if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }}
 
 {{ if and (.Values.networkPolicy.enabled) (not .Values.networkPolicy.allowExternal) }}
 Note: Since NetworkPolicy is enabled, only pods with label
 {{ template "redis.fullname" . }}-client=true"
 will be able to connect to redis.
-{{- else -}}
+{{- end -}}
 
 To connect to your database from outside the cluster execute the following commands:
 
-{{- if contains "NodePort" .Values.master.service.type }}
+{{- if contains "NodePort" .Values.service.type }}
 
     export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-    export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "redis.fullname" . }}-master)
+    export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "redis.fullname" . }})
     redis-cli -h $NODE_IP -p $NODE_PORT {{- if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }}
 
-{{- else if contains "LoadBalancer" .Values.master.service.type }}
+{{- else if contains "LoadBalancer" .Values.service.type }}
 
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
         Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "redis.fullname" . }}'
 
     export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "redis.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
-    redis-cli -h $SERVICE_IP -p {{ .Values.master.service.port }} {{- if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }}
+    redis-cli -h $SERVICE_IP -p {{ .Values.service.port }} {{- if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }}
 
-{{- else if contains "ClusterIP" .Values.master.service.type }}
+{{- else if contains "ClusterIP" .Values.service.type }}
 
-    kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "redis.fullname" . }}-master {{ .Values.redisPort }}:{{ .Values.redisPort }} &
+    kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "redis.fullname" . }} {{ .Values.redisPort }}:{{ .Values.redisPort }} &
     redis-cli -h 127.0.0.1 -p {{ .Values.redisPort }} {{- if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }}
 
 {{- end }}
+{{- end }}
+
+{{ if .Values.usePassword }}
+To get your password run:
+
+    export REDIS_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "redis.secretName" . }} -o jsonpath="{.data.redis-password}" | base64 --decode)
 {{- end }}
 
 {{ include "redis.checkRollingTags" . }}

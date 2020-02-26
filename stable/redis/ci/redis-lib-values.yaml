@@ -6,8 +6,5 @@ image:
   repository: redis
   tag: '5.0.5'
 
-master:
-  command: "redis-server"
+command: "redis-server"
 
-slave:
-  command: "redis-server"

@@ -6,11 +6,7 @@ metadata:
 {{- with .Values.metrics.prometheusRule.namespace }}
   namespace: {{ . }}
 {{- end }}
-  labels:
-    app: {{ template "redis.name" . }}
-    chart: {{ template "redis.chart" . }}
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
+  labels: {{- include "redis.labels" . | nindent 4 }}
 {{- with .Values.metrics.prometheusRule.additionalLabels }}
 {{ toYaml . | indent 4 }}
 {{- end }}
