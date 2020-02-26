@@ -20,7 +20,7 @@ autolock:
   enabled: false
   image:
     repository: docker.io/bitnami/kubectl
-    tag: 1.15.4
+    tag: 1.15.3
   scheduleUnlock: 0 4 * * *
   schedulelock: 0 6 * * *
 

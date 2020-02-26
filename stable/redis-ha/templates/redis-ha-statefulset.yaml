@@ -84,6 +84,9 @@ spec:
                     {{ template "redis-ha.fullname" . }}: replica
                 topologyKey: failure-domain.beta.kubernetes.io/zone
     {{- end }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets: {{ toYaml .Values.imagePullSecrets | nindent 8 }}
+      {{- end }}
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
       serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}

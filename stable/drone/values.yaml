@@ -12,7 +12,7 @@ images:
   ##
   agent:
     repository: "docker.io/drone/agent"
-    tag: 1.6.5
+    tag: 1.6.2
     pullPolicy: IfNotPresent
 
   ## The official docker (dind) image, change tag to use a different version.
