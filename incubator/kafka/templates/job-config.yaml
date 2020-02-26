@@ -19,6 +19,10 @@ spec:
           configMap:
             name: {{ template "kafka.fullname" . }}-config
             defaultMode: 0744
+{{- if .Values.imagePullSecret }}
+      imagePullSecrets:
+        - name: {{ tpl .Values.imagePullSecret . }}
+{{- end }}            
       containers:
         - name: {{ template "kafka.fullname" . }}-config
           image: "{{ .Values.image }}:{{ .Values.imageTag }}"
