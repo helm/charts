@@ -436,7 +436,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `workers.podAnnotations`                 | annotations for the worker pods                         | `{}`                      |
 | `workers.secretsDir`                     | directory in which to mount secrets on worker nodes     | /var/airflow/secrets      |
 | `workers.secrets`                        | secrets to mount as volumes on worker nodes             | []                        |
-| `worker.securityContext`                 | (optional) security context for the worker statefulSet  | `{}`                      |
+| `workers.securityContext`                 | (optional) security context for the worker statefulSet  | `{}`                      |
 | `nodeSelector`                           | Node labels for pod assignment                          | `{}`                      |
 | `affinity`                               | Affinity labels for pod assignment                      | `{}`                      |
 | `tolerations`                            | Toleration labels for pod assignment                    | `[]`                      |
