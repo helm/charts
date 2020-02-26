@@ -31,6 +31,22 @@ serviceMonitor:
   # Set timeout for scrape
   # timeout: 10s
 
+prometheusRule:
+  enabled: false
+  additionalLabels: {}
+  namespace: ""
+  rules: []
+    ## These are just examples rules, please adapt them to your needs.
+    ## Make sure to constraint the rules to the current prometheus-postgres-exporter service.
+    # - alert: HugeReplicationLag
+    #   expr: pg_replication_lag{service="{{ template "prometheus-postgres-exporter.fullname" . }}-metrics"} / 3600 > 1
+    #   for: 1m
+    #   labels:
+    #     severity: critical
+    #   annotations:
+    #     description: replication for {{ template "prometheus-postgres-exporter.fullname" . }} PostgreSQL is lagging by {{ "{{ $value }}" }} hour(s).
+    #     summary: PostgreSQL replication is lagging by {{ "{{ $value }}" }} hour(s).
+
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
