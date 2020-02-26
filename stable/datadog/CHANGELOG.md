@@ -1,0 +1,12 @@
+# Datadog changelog
+
+## 2.0
+
+### 2.0.0
+
+* Remove Datadog agent deployment configuration.
+* Cleanup resources labels, to fit with recommended labels.
+* Cleanup useless or unused values parameters.
+* each component have its own RBAC configuration (create,configuration).
+* container runtime socket update values configuration simplification.
+* `nameOverride` `fullnameOverride` is now optional in values.yaml

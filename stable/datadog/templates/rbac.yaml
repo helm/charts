@@ -1,12 +1,8 @@
-{{- if .Values.rbac.create -}}
+{{- if .Values.agents.rbac.create -}}
 apiVersion: {{ template "rbac.apiVersion" . }}
 kind: ClusterRole
 metadata:
   labels:
-    app: "{{ template "datadog.fullname" . }}"
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
     helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     app.kubernetes.io/name: "{{ template "datadog.fullname" . }}"
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
@@ -88,15 +84,11 @@ rules:
   verbs:
   - get
 ---
-{{- if not .Values.clusterchecksDeployment.rbac.dedicated }}
+{{- if not .Values.clusterChecksRunner.rbac.dedicated }}
 apiVersion: {{ template "rbac.apiVersion" . }}
 kind: ClusterRoleBinding
 metadata:
   labels:
-    app: "{{ template "datadog.fullname" . }}"
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
     helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     app.kubernetes.io/name: "{{ template "datadog.fullname" . }}"
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
@@ -117,10 +109,6 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   labels:
-    app: "{{ template "datadog.fullname" . }}"
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
     helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     app.kubernetes.io/name: "{{ template "datadog.fullname" . }}"
     app.kubernetes.io/instance: {{ .Release.Name | quote }}

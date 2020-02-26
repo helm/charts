@@ -1,27 +1,27 @@
 {{- define "container-process-agent" -}}
 - name: process-agent
-  image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-  imagePullPolicy: {{ .Values.image.pullPolicy }}
+  image: "{{ .Values.agents.image.repository }}:{{ .Values.agents.image.tag }}"
+  imagePullPolicy: {{ .Values.agents.image.pullPolicy }}
   command: ["process-agent", "-config=/etc/datadog-agent/datadog.yaml"]
   resources:
-{{ toYaml .Values.daemonset.containers.processAgent.resources | indent 4 }}
+{{ toYaml .Values.agents.containers.processAgent.resources | indent 4 }}
   env:
     {{- include "containers-common-env" . | nindent 4 }}
-    {{- if not (kindIs "invalid" .Values.datadog.processAgentEnabled) }}
+    {{- if not (kindIs "invalid" .Values.datadog.processAgent.enabled) }}
     - name: DD_PROCESS_AGENT_ENABLED
-      value: {{ .Values.datadog.processAgentEnabled | quote }}
+      value: {{ .Values.datadog.processAgent.enabled | quote }}
     {{- end }}
     - name: DD_LOG_LEVEL
-      value: {{ .Values.daemonset.containers.processAgent.logLevel | default .Values.datadog.logLevel | quote }}
-    {{- if .Values.systemProbe.enabled }}
+      value: {{ .Values.agents.containers.processAgent.logLevel | default .Values.datadog.logLevel | quote }}
+    {{- if .Values.datadog.systemProbe.enabled }}
     - name: DD_SYSTEM_PROBE_ENABLED
-      value: {{ .Values.systemProbe.enabled | quote }}
+      value: {{ .Values.datadog.systemProbe.enabled | quote }}
     {{- end }}
-{{- if .Values.daemonset.containers.processAgent.env }}
-{{ toYaml .Values.daemonset.containers.processAgent.env | indent 4 }}
+{{- if .Values.agents.containers.processAgent.env }}
+{{ toYaml .Values.agents.containers.processAgent.env | indent 4 }}
 {{- end }}
   volumeMounts:
-    {{- if .Values.daemonset.useConfigMap }}
+    {{- if .Values.agents.useConfigMap }}
     - name: {{ template "datadog.fullname" . }}-datadog-yaml
       mountPath: /etc/datadog-agent/datadog.yaml
       subPath: datadog.yaml
@@ -36,12 +36,12 @@
     - name: procdir
       mountPath: /host/proc
       readOnly: true
-    {{- if .Values.datadog.useCriSocketVolume }}
-    - name: runtimesocket
-      mountPath: {{ default "/var/run/docker.sock" .Values.datadog.criSocketPath | quote }}
+    {{- if .Values.datadog.criSocketPath }}
+    - name: runtimesocketdir
+      mountPath: {{ print "/host/" (dir .Values.datadog.criSocketPath) | clean }}
       readOnly: true
     {{- end }}
-    {{- if .Values.systemProbe.enabled }}
+    {{- if .Values.datadog.systemProbe.enabled }}
     - name: sysprobe-socket-dir
       mountPath: /opt/datadog-agent/run
       readOnly: true

@@ -1,15 +1,10 @@
-{{- if and .Values.systemProbe.enabled .Values.daemonset.useDedicatedContainers }}
+{{- if .Values.datadog.systemProbe.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "datadog.fullname" . }}-system-probe-config
   namespace: {{ $.Release.Namespace }}
   labels:
-    app: {{ $.Chart.Name }}
-    service: {{ $.Chart.Name }}
-    chart_version: {{ $.Chart.Version }}
-    chart_name: {{ $.Chart.Name }}
-    heritage: {{ .Release.Service | quote }}
     helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     app.kubernetes.io/name: "{{ template "datadog.fullname" . }}"
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
@@ -18,12 +13,13 @@ metadata:
 data:
   system-probe.yaml: |
     system_probe_config:
-      enabled: {{ $.Values.systemProbe.enabled }}
-      debug_port:  {{ $.Values.systemProbe.debugPort }}
+      enabled: {{ $.Values.datadog.systemProbe.enabled }}
+      debug_port:  {{ $.Values.datadog.systemProbe.debugPort }}
       sysprobe_socket: /opt/datadog-agent/run/sysprobe.sock
-      enable_conntrack : {{ $.Values.systemProbe.enableConntrack }}
-      bpf_debug: {{ $.Values.systemProbe.bpfDebug }}
-{{- if eq .Values.systemProbe.seccomp "localhost/system-probe" }}
+      enable_conntrack : {{ $.Values.datadog.systemProbe.enableConntrack }}
+      bpf_debug: {{ $.Values.datadog.systemProbe.bpfDebug }}
+
+{{- if eq .Values.datadog.systemProbe.seccomp "localhost/system-probe" }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -31,11 +27,6 @@ metadata:
   name: {{ template "datadog.fullname" . }}-security
   namespace: {{ $.Release.Namespace }}
   labels:
-    app: {{ $.Chart.Name }}
-    service: {{ $.Chart.Name }}
-    chart_version: {{ $.Chart.Version }}
-    chart_name: {{ $.Chart.Name }}
-    heritage: {{ .Release.Service | quote }}
     helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     app.kubernetes.io/name: "{{ template "datadog.fullname" . }}"
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
