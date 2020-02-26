@@ -593,7 +593,7 @@ helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
 
 ### Setting local storage permissions with initContainers
 
-Some clusters do not allow using securityContext to set permissions for persistent volumes. Instead, an initContainer can be created to run `chown` on the mounted volume. To enable it, set `volumePermissions.enabled` to `true`.
+Some clusters do not allow using securityContext to set permissions for persistent volumes. Instead, an initContainer can be created to run `chown` on the mounted volume. To enable it, set `securityContext.enabled` to `false`.
 
 
 #### Example storage class
