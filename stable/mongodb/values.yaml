@@ -43,6 +43,9 @@ image:
 ##
 # fullnameOverride:
 
+## does your cluster have rbac enabled? assume yes by default
+rbacEnabled: true
+
 ## Init containers parameters:
 ## volumePermissions: Change the owner and group of the persistent volume mountpoint to runAsUser:fsGroup values from the securityContext section.
 ##

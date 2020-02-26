@@ -43,6 +43,9 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
     spec:
+      {{- if .Values.rbacEnabled}}
+      serviceAccountName: {{ template "mongodb.fullname" . }}
+      {{- end }}
       {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
       {{- end }}
