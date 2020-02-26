@@ -174,6 +174,10 @@ spec:
               subPath: {{ .subPath }}
               {{ end }}
           {{- end }}
+          {{- if .Values.airflow.extraStartupScripts }}
+            - name: extra-startup-scripts
+              mountPath: /usr/local/extra-startup-scripts/
+          {{- end}}
 {{- if .Values.airflow.extraVolumeMounts }}
 {{ toYaml .Values.airflow.extraVolumeMounts | indent 12 }}
 {{- end }}
@@ -204,6 +208,10 @@ spec:
               echo "adding pools" &&
               airflow pool -i /usr/local/variables-pools/pools.json &&
             {{- end }}
+            {{- if .Values.airflow.extraStartupScripts }}
+              echo "running extra startup scripts" &&
+              /usr/local/extra-startup-scripts/run.sh &&
+            {{- end }}
               echo "executing scheduler" &&
               airflow scheduler -n {{ .Values.airflow.schedulerNumRuns }}
           {{- else }}
@@ -227,6 +235,10 @@ spec:
             {{- if .Values.airflow.pools }}
               echo "adding pools" &&
               airflow pool -i /usr/local/variables-pools/pools.json &&
+            {{- end }}
+            {{- if .Values.airflow.extraStartupScripts }}
+              echo "running extra startup scripts" &&
+              /usr/local/extra-startup-scripts/run.sh &&
             {{- end }}
               echo "executing scheduler" &&
               airflow scheduler -n {{ .Values.airflow.schedulerNumRuns }}
@@ -279,6 +291,12 @@ spec:
         - name: {{ .name }}
           configMap:
             name: {{ .configMap }}
+        {{- end }}
+        {{- if .Values.airflow.extraStartupScripts }}
+        - name: extra-startup-scripts
+          configMap:
+            name: {{ .Values.airflow.extraStartupScripts }}
+            defaultMode: 0755
         {{- end }}
 {{- if .Values.airflow.extraVolumes }}
 {{ toYaml .Values.airflow.extraVolumes | indent 8 }}
