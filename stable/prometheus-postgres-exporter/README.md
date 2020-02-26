@@ -53,6 +53,10 @@ The following table lists the configurable parameters of the postgres Exporter c
 | `serviceMonitor.telemetryPath`    | path to cloudwatch-exporter telemtery-path                              |                             |
 | `serviceMonitor.labels`           | labels for the ServiceMonitor passed to Prometheus Operator             | `{}`                        |
 | `serviceMonitor.timeout`          | Timeout after which the scrape is ended                                 |                             |
+| `prometheusRule.enabled`          | Set this to true to create prometheusRules for Prometheus operator      | `false`                     |
+| `prometheusRule.additionalLabels` | Additional labels that can be used so prometheusRules will be discovered by Prometheus  | `{}`        |
+| `prometheusRule.namespace`        | namespace where prometheusRules resource should be created          |                             |
+| `prometheusRule.rules`            | [rules](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) to be created, check values for an example. | `[]` 
 | `resources`          |                                  |                    `{}`                                  |
 | `config.datasource`                 | Postgresql datasource configuration                      |  see [values.yaml](values.yaml)              |
 | `config.queries`                | SQL queries that the exporter will run | [postgres exporter defaults](https://github.com/wrouesnel/postgres_exporter/blob/master/queries.yaml) |
