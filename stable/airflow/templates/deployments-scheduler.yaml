@@ -68,6 +68,10 @@ spec:
       tolerations:
 {{ toYaml .Values.scheduler.tolerations | indent 8 }}
       {{- end }}
+      {{- if .Values.scheduler.securityContext }}
+      securityContext:
+{{ toYaml .Values.scheduler.securityContext | indent 8 }}
+      {{- end }}
       serviceAccountName: {{ template "airflow.serviceAccountName" . }}
       {{- if .Values.dags.initContainer.enabled }}
       initContainers:
