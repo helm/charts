@@ -390,6 +390,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.extraVolumeMounts`              | additional volumeMounts to the main container in scheduler, worker & web pods | `[]`|
 | `airflow.extraVolumes`                   | additional volumes for the scheduler, worker & web pods | `[]`                      |
 | `airflow.initdb`                         | run `airflow initdb` when starting the scheduler        | `true`                    |
+| `airflow.removeDefaultConnections`       | remove the default connections that come with airflow   | `false`                   |
 | `flower.enabled`                         | enable flow                                             | `true`                    |
 | `flower.extraConfigmapMounts`            | Additional configMap volume mounts on the flower pod.   | `[]`                      |
 | `flower.urlPrefix`                       | path of the flower ui                                   | ""                        |

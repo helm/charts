@@ -173,6 +173,8 @@ airflow:
   ##
   ## Run initdb when the scheduler starts.
   initdb: true
+  ## Whether to remove the default connections or not.
+  removeDefaultConnections: false
 
 
 scheduler:

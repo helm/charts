@@ -192,6 +192,10 @@ spec:
               echo "executing initdb" &&
               airflow initdb &&
               {{- end }}
+            {{- if .Values.airflow.removeDefaultConnections }}
+              echo "removing default connections" &&
+              /usr/local/scripts/remove-default-connections.sh &&
+            {{- end }}
             {{- if .Values.airflow.connections }}
               echo "adding connections" &&
               /usr/local/connections/add-connections.sh &&
@@ -216,6 +220,10 @@ spec:
               echo "executing initdb" &&
               airflow initdb &&
               {{- end }}
+            {{- if .Values.airflow.removeDefaultConnections }}
+              echo "removing default connections" &&
+              /usr/local/scripts/remove-default-connections.sh &&
+            {{- end }}
             {{- if .Values.airflow.connections }}
               echo "adding connections" &&
               /usr/local/connections/add-connections.sh &&

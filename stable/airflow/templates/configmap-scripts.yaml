@@ -30,3 +30,47 @@ data:
     while (( $(celery -b $AIRFLOW__CELERY__BROKER_URL inspect active --json | python -c "import sys, json; print(len(json.load(sys.stdin)['celery@$HOSTNAME']))") > 0 )); do
     sleep 60
     done
+  remove-default-connections.sh: |
+    #!/bin/sh -e
+    AIRFLOW_DEFAULT_CONN_IDS="
+    airflow_db
+    aws_default
+    azure_container_instances_default
+    azure_cosmos_default
+    azure_data_lake_default
+    beeline_default
+    bigquery_default
+    cassandra_default
+    databricks_default
+    dingding_default
+    druid_broker_default
+    druid_ingest_default
+    emr_default
+    fs_default
+    google_cloud_default
+    hive_cli_default
+    hiveserver2_default
+    http_default
+    local_mysql
+    metastore_default
+    mongo_default
+    mssql_default
+    mysql_default
+    opsgenie_default
+    pig_cli_default
+    postgres_default
+    presto_default
+    qubole_default
+    redis_default
+    segment_default
+    sftp_default
+    spark_default
+    sqlite_default
+    sqoop_default
+    ssh_default
+    vertica_default
+    wasb_default
+    webhdfs_default
+    "
+
+    for CONN_ID in ${AIRFLOW_DEFAULT_CONN_IDS}; do echo "airflow connections --delete --conn_id '$CONN_ID'"; airflow connections --delete --conn_id "$CONN_ID"; done
