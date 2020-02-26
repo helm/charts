@@ -21,6 +21,9 @@ spec:
   ports:
     - port: {{ .Values.service.externalPort }}
       targetPort: {{ .Values.service.internalPort }}
+{{- if .Values.service.nodePort }}
+      nodePort: {{ .Values.service.nodePort }}
+{{- end}}
       protocol: TCP
       name: {{ .Values.service.name }}
   selector:
