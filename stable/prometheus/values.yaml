@@ -353,7 +353,7 @@ kubeStateMetrics:
   ##
   image:
     repository: quay.io/coreos/kube-state-metrics
-    tag: v1.9.1
+    tag: v1.9.5
     pullPolicy: IfNotPresent
 
   ## kube-state-metrics priorityClassName
@@ -589,7 +589,7 @@ server:
   ##
   image:
     repository: prom/prometheus
-    tag: v2.15.2
+    tag: v2.16.0
     pullPolicy: IfNotPresent
 
   ## prometheus server priorityClassName
