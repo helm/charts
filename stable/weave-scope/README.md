@@ -87,6 +87,7 @@ The **agent** section controls how the Weave Scope node agent pods are installed
 | **dockerBridge** | the name of the Docker bridge interface | `docker0` |
 | **scopeFrontendAddr** | the host:port of a Scope frontend to send data to -- this is only needed in cases where the frontend is deployed separately from the agent (e.g. an install outside the cluster or a pre-existing install inside it) | |
 | **probeToken** | the token used to connect to Weave Cloud -- this is not needed for connecting to non-cloud Scope frontends | |
+| **priorityClassName** | The priorityClassName used for the Daemonset | |
 | **readOnly** | disables all controls (e.g. start/stop, terminal, logs, etc.) | `false` |
 | **resources.*** | controls requests/limits for the agent (these values are all optional) | |
 | **resources.requests.cpu** | CPU request in MHz (m) | |
