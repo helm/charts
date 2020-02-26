@@ -22,6 +22,9 @@ image:
   tag: 1.2.4
   pullPolicy: IfNotPresent
 
+init:
+  image: busybox
+
 # Spcifies an existing secret to be used for admin and config user passwords
 existingSecret: ""
 

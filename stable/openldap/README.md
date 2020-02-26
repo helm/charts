@@ -30,6 +30,7 @@ The following table lists the configurable parameters of the openldap chart and 
 | `image.repository`                 | Container image repository                                                                                                                | `osixia/openldap`   |
 | `image.tag`                        | Container image tag                                                                                                                       | `1.1.10`            |
 | `image.pullPolicy`                 | Container pull policy                                                                                                                     | `IfNotPresent`      |
+| `init.image`                       | Init Container image                                                                                                                      | `busybox`           |
 | `extraLabels`                      | Labels to add to the Resources                                                                                                            | `{}`                |
 | `podAnnotations`                   | Annotations to add to the pod                                                                                                             | `{}`                |
 | `existingSecret`                   | Use an existing secret for admin and config user passwords                                                                                | `""`                |

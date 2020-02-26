@@ -39,7 +39,7 @@ spec:
       {{- end }}
       {{- if .Values.customLdifFiles }}
       - name: {{ .Chart.Name }}-init-ldif
-        image: busybox
+        image: {{ .Values.init.image }}
         command: ['sh', '-c', 'cp /customldif/* /ldifworkingdir']
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         volumeMounts:
@@ -52,7 +52,7 @@ spec:
       {{- end }}
       {{- if .Values.tls.enabled }}
       - name: {{ .Chart.Name }}-init-tls
-        image: busybox
+        image: {{ .Values.init.image }}
         command: ['sh', '-c', 'cp /tls/* /certs']
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         volumeMounts:
@@ -64,7 +64,7 @@ spec:
 {{ toYaml .Values.initResources | indent 10 }}
       {{- if .Values.tls.CA.enabled }}
       - name: {{ .Chart.Name }}-init-catls
-        image: busybox
+        image: {{ .Values.init.image }}
         command: ['sh', '-c', 'cp /catls/ca.crt /certs']
         volumeMounts:
           - name: catls
