@@ -98,6 +98,11 @@ setDefaultUser:
   ##
   activeDeadline: 300
 
+  ## Hook delete policy for helm.
+  ## Default: hookDeletePolicy: hook-succeeded
+  ##
+  hookDeletePolicy: hook-succeeded
+
   ## Restart policy for job
   ## Default: OnFailure
   restartPolicy: OnFailure
