@@ -358,6 +358,9 @@ Parameter | Description | Default
 `server.service.servicePort` | Prometheus server service port | `80`
 `server.service.sessionAffinity` | Session Affinity for server service, can be `None` or `ClientIP` | `None`
 `server.service.type` | type of Prometheus server service to create | `ClusterIP`
+`server.service.gRPC.enabled` | If true, open a second port on the service for gRPC | `false`
+`server.service.gRPC.servicePort` | Prometheus service gRPC port, (ignored if `server.service.gRPC.enabled` is not `true`) | `10901`
+`server.service.gRPC.nodePort` | Port to be used as gRPC nodePort in the prometheus service | `0`
 `server.service.statefulsetReplica.enabled` | If true, send the traffic from the service to only one replica of the replicaset | `false`
 `server.service.statefulsetReplica.replica` | Which replica to send the traffice to | `0`
 `server.sidecarContainers` | array of snippets with your sidecar containers for prometheus server | `""`
