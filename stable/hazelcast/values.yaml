@@ -182,6 +182,7 @@ metrics:
     annotations:
       prometheus.io/scrape: "true"
       prometheus.io/path: "/metrics"
+      prometheus.io/port: "8080"
 
 # customVolume is the configuration for any volume mounted as '/data/custom/' (e.g. to mount a volume with custom JARs)
 # customVolume:
@@ -222,6 +223,10 @@ mancenter:
 
   # javaOpts are additional JAVA_OPTS properties for Hazelcast Management Center
   javaOpts:
+
+  # contextPath is the value for the MC_CONTEXT_PATH environment variable, thus overriding the default context path for Hazelcast Management Center
+  # ref: https://hub.docker.com/r/hazelcast/management-center/
+  contextPath:
 
   # licenseKey is the license key for Hazelcast Management Center
   # if not provided, it can be filled in the Management Center web interface

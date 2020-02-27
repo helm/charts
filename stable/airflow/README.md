@@ -391,6 +391,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.extraVolumes`                   | additional volumes for the scheduler, worker & web pods | `[]`                      |
 | `airflow.initdb`                         | run `airflow initdb` when starting the scheduler        | `true`                    |
 | `flower.enabled`                         | enable flow                                             | `true`                    |
+| `flower.extraConfigmapMounts`            | Additional configMap volume mounts on the flower pod.   | `[]`                      |
 | `flower.urlPrefix`                       | path of the flower ui                                   | ""                        |
 | `flower.resources`                       | custom resource configuration for flower pod            | `{}`                      |
 | `flower.labels`                          | labels for the flower deployment                        | `{}`                      |
@@ -481,6 +482,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `rbac.create`                            | create RBAC resources                                   | `true`                    |
 | `serviceAccount.create`                  | create a service account                                | `true`                    |
 | `serviceAccount.name`                    | the service account name                                | ``                        |
+| `serviceAccount.annotations`             | (optional) annotations for the service account          | `{}`                      |
 | `postgresql.enabled`                     | create a postgres server                                | `true`                    |
 | `postgresql.existingSecret`              | The name of an existing secret with a key named `postgresql.existingSecretKey` to use as the password  | `nil` |
 | `postgresql.existingSecretKey`           | The name of the key containing the password in the secret named `postgresql.existingSecret`  | `postgres-password` |
