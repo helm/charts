@@ -131,6 +131,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.route.annotations`        | Route annotations                    | `{}`                                      |
 | `master.route.labels`             | Route labels                         | `{}`                                      |
 | `master.route.path`               | Route path                           | Not set                                   |
+| `master.route.ingressRouterName`  | Ingress routerName                   | Not set                                   |
 | `master.jenkinsUrlProtocol`       | Set protocol for JenkinsLocationConfiguration.xml | Set to `https` if `Master.ingress.tls`, `http` otherwise |
 | `master.JCasC.enabled`            | Wheter Jenkins Configuration as Code is enabled or not | `false`                 |
 | `master.JCasC.defaultConfig`      | Enables default Jenkins configuration via configuration as code plugin | `false` |

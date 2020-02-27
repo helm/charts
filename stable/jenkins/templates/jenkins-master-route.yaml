@@ -30,3 +30,8 @@ spec:
     weight: 100
   wildcardPolicy: None
 {{- end }}
+{{- if .Values.master.route.ingressRouterName }}
+status:
+  ingress:
+  - routerName: {{ .Values.master.route.ingressRouterName }}
+{{- end }}
