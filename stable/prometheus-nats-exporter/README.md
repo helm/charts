@@ -36,30 +36,34 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the postgres Exporter chart and their default values.
 
-| Parameter                       | Description                                   | Default                                                    |
-| ------------------------------- | --------------------------------------------- | ---------------------------------------------------------- |
-| `image`                         | Image                                         | `synadia/prometheus-nats-exporter`                         |
-| `imageTag`                      | Image tag                                     | `0.6.0`                                                    |
-| `imagePullPolicy`               | Image pull policy                             | `IfNotPresent`                                             |
-| `service.type`                  | Service type                                  | `ClusterIP`                                                |
-| `service.port`                  | The service port                              | `80`                                                       |
-| `service.targetPort`            | The target port of the container              | `7777`                                                     |
-| `resources`                     |                                               | `{}`                                                       |
-| `config.nats.service`            | NATS monitoring [service name][svc-name]      | `nats-nats-monitoring`                                     |
-| `config.nats.namespace`          | Namespace in which NATS deployed              | `default`                                                  |
-| `config.nats.port`               | NATS monitoring service port                  | `8222`                                                     |
-| `config.metrics.varz`            | NATS varz metrics                             | `true`                                                     |
-| `config.metrics.channelz`        | NATS channelz metrics                         | `true`                                                     |
-| `config.metrics.connz`           | NATS connz metrics                            | `true`                                                     |
-| `config.metrics.routez`          | NATS routez metrics                           | `true`                                                     |
-| `config.metrics.serverz`         | NATS serverz metrics                          | `true`                                                     |
-| `config.metrics.subz`            | NATS subz metrics                             | `true`                                                     |
-| `tolerations`                   | Add tolerations                               | `[]`                                                       |
-| `nodeSelector`                  | node labels for pod assignment                | `{}`                                                       |
-| `affinity`                       | node/pod affinities                            | `{}`                                                       |
-| `annotations`                   | Deployment annotations                        | `{}`                                                       |
-| `extraContainers`               | Additional sidecar containers                 | `""`                                                       |
-| `extraVolumes`                  | Additional volumes for use in extraContainers | `""`                                                       |
+| Parameter                         | Description                                             | Default                                          |
+| --------------------------------- | ------------------------------------------------------- | ------------------------------------------------ |
+| `image`                           | Image                                                   | `synadia/prometheus-nats-exporter`               |
+| `imageTag`                        | Image tag                                               | `0.6.0`                                          |
+| `imagePullPolicy`                 | Image pull policy                                       | `IfNotPresent`                                   |
+| `service.type`                    | Service type                                            | `ClusterIP`                                      |
+| `service.port`                    | The service port                                        | `80`                                             |
+| `service.targetPort`              | The target port of the container                        | `7777`                                           |
+| `serviceMonitor.enabled`          | Set to true if using the Prometheus Operator            | `false`                                          |
+| `serviceMonitor.interval`         | Interval at which metrics should be scraped             | ``                                               |
+| `serviceMonitor.namespace`        | The namespace where the Prometheus Operator is deployed | ``                                               |
+| `serviceMonitor.additionalLabels` | Additional labels to add to the ServiceMonitor          | `{}`                                             |
+| `resources`                       |                                                         | `{}`                                             |
+| `config.nats.service`             | NATS monitoring [service name][svc-name]                | `nats-nats-monitoring`                           |
+| `config.nats.namespace`           | Namespace in which NATS deployed                        | `default`                                        |
+| `config.nats.port`                | NATS monitoring service port                            | `8222`                                           |
+| `config.metrics.varz`             | NATS varz metrics                                       | `true`                                           |
+| `config.metrics.channelz`         | NATS channelz metrics                                   | `true`                                           |
+| `config.metrics.connz`            | NATS connz metrics                                      | `true`                                           |
+| `config.metrics.routez`           | NATS routez metrics                                     | `true`                                           |
+| `config.metrics.serverz`          | NATS serverz metrics                                    | `true`                                           |
+| `config.metrics.subz`             | NATS subz metrics                                       | `true`                                           |
+| `tolerations`                     | Add tolerations                                         | `[]`                                             |
+| `nodeSelector`                    | node labels for pod assignment                          | `{}`                                             |
+| `affinity`                        | node/pod affinities                                     | `{}`                                             |
+| `annotations`                     | Deployment annotations                                  | `{}`                                             |
+| `extraContainers`                 | Additional sidecar containers                           | `""`                                             |
+| `extraVolumes`                    | Additional volumes for use in extraContainers           | `""`                                             |
 
 [svc-name]: https://github.com/helm/charts/blob/master/stable/nats/templates/monitoring-svc.yaml
 
