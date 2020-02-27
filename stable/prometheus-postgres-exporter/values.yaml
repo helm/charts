@@ -39,7 +39,7 @@ prometheusRule:
     ## These are just examples rules, please adapt them to your needs.
     ## Make sure to constraint the rules to the current prometheus-postgres-exporter service.
     # - alert: HugeReplicationLag
-    #   expr: pg_replication_lag{service="{{ template "prometheus-postgres-exporter.fullname" . }}-metrics"} / 3600 > 1
+    #   expr: pg_replication_lag{service="{{ template "prometheus-postgres-exporter.fullname" . }}"} / 3600 > 1
     #   for: 1m
     #   labels:
     #     severity: critical
