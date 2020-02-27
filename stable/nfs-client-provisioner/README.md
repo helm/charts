@@ -4,6 +4,14 @@ The [NFS client provisioner](https://github.com/kubernetes-incubator/external-st
 
 ## TL;DR;
 
+Helm version >= 3:
+
+```console
+$ helm install --set nfs.server=x.x.x.x --set nfs.path=/exported/path stable/nfs-client-provisioner --generate-name
+```
+
+Helm version <= 2:
+
 ```console
 $ helm install --set nfs.server=x.x.x.x --set nfs.path=/exported/path stable/nfs-client-provisioner
 ```
@@ -22,6 +30,14 @@ This charts installs custom [storage class](https://kubernetes.io/docs/concepts/
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
+
+Helm version >= 3:
+
+```console
+$ helm install my-release --set nfs.server=x.x.x.x --set nfs.path=/exported/path stable/nfs-client-provisioner
+```
+
+Helm version <= 2:
 
 ```console
 $ helm install --name my-release --set nfs.server=x.x.x.x --set nfs.path=/exported/path stable/nfs-client-provisioner
