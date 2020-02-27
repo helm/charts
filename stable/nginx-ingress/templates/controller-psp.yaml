@@ -21,12 +21,20 @@ spec:
     - 'secret'
     #- 'downwardAPI'
   hostNetwork: {{ .Values.controller.hostNetwork }}
-{{- if .Values.controller.hostNetwork }}
+{{- if or .Values.controller.hostNetwork .Values.controller.daemonset.useHostPort }}
   hostPorts:
+{{- if .Values.controller.hostNetwork }}
 {{- range $key, $value := .Values.controller.containerPort }}
   # {{ $key }}
   - min: {{ $value }}
     max: {{ $value }}
+{{- end }}
+{{- else if .Values.controller.daemonset.useHostPort }}
+{{- range $key, $value := .Values.controller.daemonset.hostPorts }}
+  # {{ $key }}
+  - min: {{ $value }}
+    max: {{ $value }}
+{{- end }}
 {{- end }}
 {{- if .Values.controller.metrics.enabled }}
   # metrics

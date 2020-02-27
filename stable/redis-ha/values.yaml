@@ -5,6 +5,14 @@ image:
   repository: redis
   tag: 5.0.6-alpine
   pullPolicy: IfNotPresent
+
+## Reference to one or more secrets to be used when pulling images
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+## This imagePullSecrets is only for redis images
+##
+imagePullSecrets: []
+# - name: "image-pull-secret"
+
 ## replicas number for each component
 replicas: 3
 
@@ -38,6 +46,13 @@ haproxy:
     repository: haproxy
     tag: 2.0.4
     pullPolicy: IfNotPresent
+
+  ## Reference to one or more secrets to be used when pulling images
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  imagePullSecrets: []
+  # - name: "image-pull-secret"
+
   annotations: {}
   resources: {}
   ## Enable sticky sessions to Redis nodes via HAProxy
@@ -258,6 +273,31 @@ exporter:
 
   # Additional args for redis exporter
   extraArgs: {}
+
+  # Used to mount a LUA-Script via config map and use it for metrics-collection
+  # script: |
+  #   -- Example script copied from: https://github.com/oliver006/redis_exporter/blob/master/contrib/sample_collect_script.lua
+  #   -- Example collect script for -script option
+  #   -- This returns a Lua table with alternating keys and values.
+  #   -- Both keys and values must be strings, similar to a HGETALL result.
+  #   -- More info about Redis Lua scripting: https://redis.io/commands/eval
+  #
+  #   local result = {}
+  #
+  #   -- Add all keys and values from some hash in db 5
+  #   redis.call("SELECT", 5)
+  #   local r = redis.call("HGETALL", "some-hash-with-stats")
+  #   if r ~= nil then
+  #   for _,v in ipairs(r) do
+  #   table.insert(result, v) -- alternating keys and values
+  #   end
+  #   end
+  #
+  #   -- Set foo to 42
+  #   table.insert(result, "foo")
+  #   table.insert(result, "42") -- note the string, use tostring() if needed
+  #
+  #   return result
 
   serviceMonitor:
     # When set true then use a ServiceMonitor to configure scraping

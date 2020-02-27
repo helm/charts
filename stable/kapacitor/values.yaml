@@ -60,3 +60,9 @@ resources:
 ## ref: https://docs.influxdata.com/kapacitor/v1.1/introduction/getting_started/
 ##
 # influxURL: http://influxdb-influxdb.tick:8086
+
+## Name of an existing Secrect used to set the environment variables for the
+## InfluxDB user and password. The expected keys in the secret are
+## `influxdb-user` and `influxdb-password`.
+##
+# existingSecret: influxdb-auth

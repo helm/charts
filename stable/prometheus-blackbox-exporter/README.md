@@ -43,6 +43,7 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 
 | Parameter                                 | Description                                                                      | Default                                                                      |
 | ----------------------------------------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `kind`                                    | You can choose between `Deployment` or `DaemonSet`                               | `Deployment`                                                                 |
 | `config`                                  | Prometheus blackbox configuration                                                | {}                                                                           |
 | `secretConfig`                            | Whether to treat blackbox configuration as secret                                | `false`                                                                      |
 | `extraArgs`                               | Optional flags for blackbox                                                      | `[]`                                                                         |
@@ -63,6 +64,7 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 | `podAnnotations`                          | annotations to add to each pod                                                   | `{}`                                                                         |
 | `podDisruptionBudget`                     | pod disruption budget                                                            | `{}`                                                                         |
 | `priorityClassName`                       | priority class name                                                              | None                                                                         |
+| `allowIcmp`                               | whether to enable ICMP probes, by giving the pods `CAP_NET_RAW` and running as root | `false`                                                                   |
 | `resources`                               | pod resource requests & limits                                                   | `{}`                                                                         |
 | `restartPolicy`                           | container restart policy                                                         | `Always`                                                                     |
 | `service.annotations`                     | annotations for the service                                                      | `{}`                                                                         |

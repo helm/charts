@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```console
-$ helm install stable/ghost
+$ helm install my-release stable/ghost
 ```
 
 ## Introduction
@@ -28,7 +28,7 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/ghost
+$ helm install my-release stable/ghost
 ```
 
 The command deploys Ghost on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
@@ -63,7 +63,7 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `fullnameOverride`                  | String to fully override ghost.fullname template with a string                                     | `nil`               |
 | `volumePermissions.image.registry`  | Init container volume-permissions image registry              | `docker.io`                                              |
 | `volumePermissions.image.repository`| Init container volume-permissions image name                  | `bitnami/minideb`                                        |
-| `volumePermissions.image.tag`       | Init container volume-permissions image tag                   | `stretch`                                                |
+| `volumePermissions.image.tag`       | Init container volume-permissions image tag                   | `buster`                                                 |
 | `volumePermissions.image.pullPolicy`| Init container volume-permissions image pull policy           | `Always`                                                 |
 | `ghostHost`                         | Ghost host to create application URLs                         | `nil`                                                    |
 | `ghostPort`                         | Ghost port to use in application URLs (defaults to `service.port` if `nil`) | `nil`                                      |
@@ -150,7 +150,7 @@ The above parameters map to the env variables defined in [bitnami/ghost](http://
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install --name my-release \
+$ helm install my-release \
   --set ghostUsername=admin,ghostPassword=password,mariadb.mariadbRootPassword=secretpassword \
     stable/ghost
 ```
@@ -160,7 +160,7 @@ The above command sets the Ghost administrator account username and password to 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml stable/ghost
+$ helm install my-release -f values.yaml stable/ghost
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
