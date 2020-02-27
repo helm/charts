@@ -33,7 +33,8 @@ spec:
        {{- if eq (.Values.omsagent.domain | lower) "opinsights.azure.cn" }}
        image: "dockerhub.azk8s.cn/microsoft/oms:{{ .Values.omsagent.image.tag }}"
        {{- else }}
-       image: "mcr.microsoft.com/azuremonitor/containerinsights/ciprod:{{ .Values.omsagent.image.tag }}"
+       # image: "mcr.microsoft.com/azuremonitor/containerinsights/ciprod:{{ .Values.omsagent.image.tag }}"
+       image: "ganga1980/omsagent-cri:{{ .Values.omsagent.image.tag }}"
        {{- end }}
        imagePullPolicy: IfNotPresent
        resources:
@@ -56,6 +57,8 @@ spec:
          valueFrom:
             fieldRef:
               fieldPath: status.hostIP
+       - name: USER_ASSIGNED_IDENTITY_CLIENT_ID
+         value: ""
        {{- if .Values.omsagent.logsettings.logflushintervalsecs }}
        - name: FBIT_SERVICE_FLUSH_INTERVAL
          value: {{ .Values.omsagent.logsettings.logflushintervalsecs | quote }}
