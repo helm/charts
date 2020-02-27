@@ -10,13 +10,13 @@ Jenkins configuration and management.
 The jenkins operator manages Jenkins instances deployed to [Kubernetes](https://k8s.io) and automates tasks related to operating a Jenkins server
 
 - Create and Destroy instances
-- Create and Destroy Jobs and Credentials
+- Configure instances via [Jenkins-Configuration-As-code plugin](https://github.com/jenkinsci/configuration-as-code-plugin)
 
 For more information on using the operator please see [the documentation](https://github.com/samsung-cnct/jenkins-operator).
 
 ## Prerequisites
 
-- Kubernetes 1.9+
+- Kubernetes 1.11+
 - Jenkins 2.1+
 
 ## Installing the Chart

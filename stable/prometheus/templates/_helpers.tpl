@@ -7,6 +7,13 @@ Expand the name of the chart.
 {{- end -}}
 
 {{/*
+Create chart name and version as used by the chart label.
+*/}}
+{{- define "prometheus.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
 Create unified labels for prometheus components
 */}}
 {{- define "prometheus.common.matchLabels" -}}
@@ -15,7 +22,7 @@ release: {{ .Release.Name }}
 {{- end -}}
 
 {{- define "prometheus.common.metaLabels" -}}
-chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+chart: {{ template "prometheus.chart" . }}
 heritage: {{ .Release.Service }}
 {{- end -}}
 
@@ -173,6 +180,26 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/*
+Return the appropriate apiVersion for deployment.
+*/}}
+{{- define "prometheus.deployment.apiVersion" -}}
+{{- if semverCompare "<1.9-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "extensions/v1beta1" -}}
+{{- else if semverCompare "^1.9-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "apps/v1" -}}
+{{- end -}}
+{{- end -}}
+{{/*
+Return the appropriate apiVersion for daemonset.
+*/}}
+{{- define "prometheus.daemonset.apiVersion" -}}
+{{- if semverCompare "<1.9-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "extensions/v1beta1" -}}
+{{- else if semverCompare "^1.9-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "apps/v1" -}}
+{{- end -}}
+{{- end -}}
+{{/*
 Return the appropriate apiVersion for networkpolicy.
 */}}
 {{- define "prometheus.networkPolicy.apiVersion" -}}
@@ -180,6 +207,16 @@ Return the appropriate apiVersion for networkpolicy.
 {{- print "extensions/v1beta1" -}}
 {{- else if semverCompare "^1.7-0" .Capabilities.KubeVersion.GitVersion -}}
 {{- print "networking.k8s.io/v1" -}}
+{{- end -}}
+{{- end -}}
+{{/*
+Return the appropriate apiVersion for podsecuritypolicy.
+*/}}
+{{- define "prometheus.podSecurityPolicy.apiVersion" -}}
+{{- if semverCompare ">=1.3-0, <1.10-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "extensions/v1beta1" -}}
+{{- else if semverCompare "^1.10-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "policy/v1beta1" -}}
 {{- end -}}
 {{- end -}}
 

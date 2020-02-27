@@ -60,8 +60,11 @@ replicaCount: 1
 revisionHistoryLimit: 10
 image:
   repository: quay.io/external_storage/efs-provisioner
-  tag: latest
+  tag: v2.4.0
   pullPolicy: IfNotPresent
+  # If specified, use these secrets to access the images
+  # pullSecrets:
+  #   - registry-secret
 
 busyboxImage:
   repository: gcr.io/google_containers/busybox
@@ -76,6 +79,8 @@ annotations: {}
 ## https://github.com/kubernetes-incubator/external-storage/tree/master/aws/efs#deployment
 ##
 efsProvisioner:
+  # If specified, use this DNS or IP to connect the EFS
+  #dnsName: "my-custom-efs-dns.com"
   efsFileSystemId: fs-12345678
   awsRegion: us-east-2
   path: /example-pv
@@ -126,4 +131,10 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+
+# Configure podsecuritypolicy
+# Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+podSecurityPolicy:
+  enabled: true
+  annotations: {}
 ```

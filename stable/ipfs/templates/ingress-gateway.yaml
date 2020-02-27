@@ -1,0 +1,31 @@
+{{- if .Values.ingressGateway.enabled -}}
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  labels:
+    app: {{ template "ipfs.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "ipfs.fullname" . }}-gateway
+  annotations:
+          {{- range $key, $value := .Values.ingressGateway.annotations }}
+          {{ $key }}: {{ $value | quote }}
+        {{- end }}
+spec:
+  rules:
+          {{- range .Values.ingressGateway.hosts }}
+          {{- $url := splitList "/" . }}
+    - host: {{ first $url }}
+      http:
+        paths:
+          - path: /{{ rest $url | join "/" }}
+            backend:
+              serviceName: {{ include "ipfs.fullname" . }}
+              servicePort: 8080
+        {{- end -}}
+        {{- if .Values.ingressGateway.tls }}
+  tls:
+        {{ toYaml .Values.ingressGateway.tls | indent 4 }}
+        {{- end -}}
+        {{- end -}}

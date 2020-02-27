@@ -39,7 +39,7 @@ The following table lists the configurable parameters of the postgres Exporter c
 | Parameter                       | Description                                | Default                                                    |
 | ------------------------------- | ------------------------------------------ | ---------------------------------------------------------- |
 | `image`                         | Image                                      | `wrouesnel/postgres_exporter`                      |
-| `imageTag`                      | Image tag                                  | `v0.4.6`                                      |
+| `imageTag`                      | Image tag                                  | `v0.5.1`                                      |
 | `imagePullPolicy`               | Image pull policy                          | `IfNotPresent` |
 | `service.annotations`           | annotations for the service                | `{}`           |
 | `service.type`      | Service type |  `ClusterIP` |
@@ -47,10 +47,18 @@ The following table lists the configurable parameters of the postgres Exporter c
 | `service.targetPort`                      | The target port of the container                               | `9187`                                        |
 | `service.name`                  | Name of the service port                   | `http`                                                     |
 | `service.labels`                | Labels to add to the service               | `{}`                                                       |
+| `serviceMonitor.enabled`          | Use servicemonitor from prometheus operator                             | `false`                     |
+| `serviceMonitor.namespace`        | Namespace thes Servicemonitor  is installed in                          |                             |
+| `serviceMonitor.interval`         | How frequently Prometheus should scrape                                 |                             |
+| `serviceMonitor.telemetryPath`    | path to cloudwatch-exporter telemtery-path                              |                             |
+| `serviceMonitor.labels`           | labels for the ServiceMonitor passed to Prometheus Operator             | `{}`                        |
+| `serviceMonitor.timeout`          | Timeout after which the scrape is ended                                 |                             |
 | `resources`          |                                  |                    `{}`                                  |
 | `config.datasource`                 | Postgresql datasource configuration                      |  see [values.yaml](values.yaml)              |
 | `config.queries`                | SQL queries that the exporter will run | [postgres exporter defaults](https://github.com/wrouesnel/postgres_exporter/blob/master/queries.yaml) |
 | `config.disableDefaultMetrics`  | Specifies whether to use only metrics from `queries.yaml`| `false` |
+| `config.autoDiscoverDatabases`  | Specifies whether to autodiscover all databases | `false` |
+| `config.excludeDatabases`  | When autodiscover is enabled, list databases to exclude| `[]` |
 | `rbac.create`                   | Specifies whether RBAC resources should be created.| `true` |
 | `rbac.pspEnabled`               | Specifies whether a PodSecurityPolicy should be created.| `true` |
 | `serviceAccount.create`         | Specifies whether a service account should be created.| `true` |
@@ -62,6 +70,7 @@ The following table lists the configurable parameters of the postgres Exporter c
 | `podLabels`                      | Additional labels to add to each pod      | `{}` |
 | `extraContainers`                | Additional sidecar containers | `""` |
 | `extraVolumes`                   | Additional volumes for use in extraContainers | `""` |
+| `securityContext`                | Security options the pod should run with. [More info](https://kubernetes.io/docs/concepts/policy/security-context/) | `{}` |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

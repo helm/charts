@@ -9,7 +9,9 @@ metadata:
     app: {{ template "neo4j.name" . }}
     component: replica
 spec:
+{{- if not .Values.readReplica.autoscaling.enabled }}
   replicas: {{ .Values.readReplica.numberOfServers }}
+{{- end }}
   template:
     metadata:
       labels:
@@ -66,12 +68,26 @@ spec:
         volumeMounts:
         - name: plugins
           mountPath: /plugins
+        resources:
+{{ toYaml .Values.readReplica.resources | indent 10 }}
 {{- if .Values.core.sidecarContainers }}
 {{ toYaml .Values.core.sidecarContainers | indent 6 }}
 {{- end }}
 {{- if .Values.readReplica.initContainers }}
       initContainers:
 {{ toYaml .Values.readReplica.initContainers | indent 6 }}
+{{- end }}
+{{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
 {{- end }}
       volumes:
         - name: plugins

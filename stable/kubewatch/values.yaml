@@ -47,16 +47,24 @@ resourcesToWatch:
   persistentvolume: false
 
 image:
-  registry: "docker.io"
-  repository: "bitnami/kubewatch"
-  tag: "0.0.4"
-  pullPolicy: "Always"
+  registry: docker.io
+  repository: bitnami/kubewatch
+  tag: 0.0.4-debian-10-r29
+  pullPolicy: Always
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
   # pullSecrets:
   #   - myRegistryKeySecretName
+
+## String to partially override kubewatch.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override kubewatch.fullname template
+##
+# fullnameOverride:
 
 rbac:
   # If true, create & use RBAC resources

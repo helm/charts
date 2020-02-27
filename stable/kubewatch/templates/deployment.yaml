@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: {{ template "kubewatch.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   labels:

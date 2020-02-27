@@ -1,10 +1,11 @@
+{{- if .Values.testFramework.enabled  }}
 apiVersion: v1
 kind: Pod
 metadata:
   name: {{ template "traefik.fullname" . }}-test
   labels:
     app: {{ template "traefik.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "traefik.chart" . }}
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
   annotations:
@@ -40,3 +41,4 @@ spec:
   - name: tools
     emptyDir: {}
   restartPolicy: Never
+{{- end }}

@@ -8,11 +8,7 @@ metadata:
 {{- end }}
   name: {{ template "graylog.fullname" . }}-tcp
   labels:
-    app.kubernetes.io/name: {{ template "graylog.name" . }}
-    helm.sh/chart: {{ template "graylog.chart" . }}
-    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
-    app.kubernetes.io/instance: "{{ .Release.Name }}"
-    app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
+{{ include "graylog.metadataLabels" . | indent 4 }}
     app.kubernetes.io/component: "TCP"
 spec:
   ports:
@@ -21,12 +17,12 @@ spec:
       port: {{ .port }}
       protocol: TCP
       targetPort: {{ .port }}
+    {{- if eq "NodePort" $.Values.graylog.input.tcp.service.type }}
+      {{- if .nodePort }}
+      nodePort:  {{ .nodePort }}
+      {{- end }}
+    {{- end }}
   {{- end }}
-{{- if contains "NodePort" .Values.graylog.input.tcp.service.type }}
-  {{- if .Values.graylog.input.tcp.service.nodePort }}
-      nodePort:  {{ .Values.graylog.input.tcp.service.nodePort }}
-  {{- end }}
-{{- end }}
 {{- if .Values.graylog.input.tcp.service.externalIPs }}
   externalIPs:
 {{ toYaml .Values.graylog.input.tcp.service.externalIPs | indent 4 }}

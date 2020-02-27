@@ -17,7 +17,10 @@ rules:
       - namespaces
       - pods
       - replicationcontrollers
+      - replicasets
       - services
+      - daemonsets
+      - deployments
       - events
       - configmaps
     verbs:
@@ -29,4 +32,14 @@ rules:
       - /healthz/*
     verbs:
       - get
+{{- if .Values.podSecurityPolicy.create }}
+  - apiGroups:
+      - extensions
+    resources:
+      - podsecuritypolicies
+    resourceNames:
+      - {{ template "falco.fullname" . }}
+    verbs:
+      - use
+{{- end }}
 {{- end }}

@@ -1,0 +1,30 @@
+{{- if .Values.collector.autoscaling.enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ template "jaeger.collector.name" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "jaeger.name" . }}
+    helm.sh/chart: {{ include "jaeger.chart" . }}
+    app.kubernetes.io/component: collector
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ template "jaeger.collector.name" . }}
+  minReplicas: {{ .Values.collector.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.collector.autoscaling.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ .Values.collector.autoscaling.targetCPUUtilizationPercentage | default 80 }}
+  {{- if .Values.collector.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: {{ .Values.collector.autoscaling.targetMemoryUtilizationPercentage }}
+  {{- end }}
+{{- end }}

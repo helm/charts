@@ -1,252 +1,88 @@
-{{- if .Values.daemonset.enabled }}
+{{- if .Values.agents.enabled }}
 {{- if (or (.Values.datadog.apiKeyExistingSecret) (.Values.datadog.apiKey)) }}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ template "datadog.fullname" . }}
   labels:
-    app: "{{ template "datadog.fullname" . }}"
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app.kubernetes.io/name: "{{ template "datadog.fullname" . }}"
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "datadog.fullname" . }}
+        {{- if .Values.agents.podLabels }}
+{{ toYaml .Values.agents.podLabels | indent 6 }}
+        {{- end }}
   template:
     metadata:
       labels:
         app: {{ template "datadog.fullname" . }}
-        {{- if .Values.daemonset.podLabels }}
-{{ toYaml .Values.daemonset.podLabels | indent 8 }}
+        {{- if .Values.agents.podLabels }}
+{{ toYaml .Values.agents.podLabels | indent 8 }}
         {{- end }}
       name: {{ template "datadog.fullname" . }}
       annotations:
         checksum/autoconf-config: {{ tpl (toYaml .Values.datadog.autoconf) . | sha256sum }}
         checksum/confd-config: {{ tpl (toYaml .Values.datadog.confd) . | sha256sum }}
         checksum/checksd-config: {{ tpl (toYaml .Values.datadog.checksd) . | sha256sum }}
-      {{- if .Values.daemonset.podAnnotations }}
-{{ toYaml .Values.daemonset.podAnnotations | indent 8 }}
+        {{- if .Values.agents.customAgentConfig }}
+        checksum/agent-config: {{ tpl (toYaml .Values.agents.customAgentConfig) . | sha256sum }}
+        {{- end }}
+        {{- if .Values.datadog.systemProbe.enabled }}
+        container.apparmor.security.beta.kubernetes.io/system-probe: {{ .Values.datadog.systemProbe.apparmor }}
+        container.seccomp.security.alpha.kubernetes.io/system-probe: {{ .Values.datadog.systemProbe.seccomp }}
+        {{- end }}
+      {{- if .Values.agents.podAnnotations }}
+{{ toYaml .Values.agents.podAnnotations | indent 8 }}
       {{- end }}
     spec:
       {{- if .Values.datadog.securityContext }}
       securityContext:
 {{ toYaml .Values.datadog.securityContext | indent 8 }}
       {{- end }}
-      {{- if .Values.daemonset.useHostNetwork }}
-      hostNetwork: {{ .Values.daemonset.useHostNetwork }}
+      {{- if .Values.agents.useHostNetwork }}
+      hostNetwork: {{ .Values.agents.useHostNetwork }}
       dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
-      {{- if .Values.daemonset.useHostPID }}
-      hostPID: {{ .Values.daemonset.useHostPID }}
+      {{- if .Values.datadog.dogstatsd.useHostPID }}
+      hostPID: {{ .Values.datadog.dogstatsd.useHostPID }}
       {{- end }}
-      {{- if .Values.image.pullSecrets }}
+      {{- if .Values.agents.image.pullSecrets }}
       imagePullSecrets:
-{{ toYaml .Values.image.pullSecrets | indent 8 }}
+{{ toYaml .Values.agents.image.pullSecrets | indent 8 }}
       {{- end }}
-      {{- if .Values.daemonset.priorityClassName }}
-      priorityClassName: {{ .Values.daemonset.priorityClassName }}
+      {{- if .Values.agents.priorityClassName }}
+      priorityClassName: {{ .Values.agents.priorityClassName }}
       {{- end }}
       containers:
-      - name: {{ default .Chart.Name .Values.datadog.name }}
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        resources:
-{{ toYaml .Values.datadog.resources | indent 12 }}
-        ports:
-        - containerPort: 8125
-          {{- if .Values.daemonset.useHostPort }}
-          hostPort: 8125
-          {{- end }}
-          name: dogstatsdport
-          protocol: UDP
-        {{- if .Values.datadog.apmEnabled }}
-        - containerPort: 8126
-          {{- if .Values.daemonset.useHostPort }}
-          hostPort: 8126
-          {{- end }}
-          name: traceport
-          protocol: TCP
+        {{- include "container-agent" . | nindent 8 }}
+        {{- if .Values.datadog.apm.enabled }}
+          {{- include "container-trace-agent" . | nindent 8 }}
         {{- end }}
-        env:
-          - name: DD_API_KEY
-            valueFrom:
-              secretKeyRef:
-                name: {{ template "datadog.apiSecretName" . }}
-                key: api-key
-          {{- if .Values.datadog.clusterName }}
-          - name: DD_CLUSTER_NAME
-            value: {{ .Values.datadog.clusterName | quote }}
-          {{- end }}
-          {{- if .Values.datadog.site }}
-          - name: DD_SITE
-            value: {{ .Values.datadog.site | quote }}
-          {{- end }}
-          {{- if .Values.datadog.dd_url }}
-          - name: DD_DD_URL
-            value: {{ .Values.datadog.dd_url | quote }}
-          {{- end }}
-          {{- if .Values.datadog.logLevel }}
-          - name: DD_LOG_LEVEL
-            value: {{ .Values.datadog.logLevel | quote }}
-          {{- end }}
-          {{- if .Values.datadog.nonLocalTraffic }}
-          - name: DD_DOGSTATSD_NON_LOCAL_TRAFFIC
-            value: {{ .Values.datadog.nonLocalTraffic | quote }}
-          {{- end }}
-          {{- if .Values.datadog.dogstatsdOriginDetection }}
-          - name: DD_DOGSTATSD_ORIGIN_DETECTION
-            value: {{ .Values.datadog.dogstatsdOriginDetection | quote }}
-          {{- end }}
-          {{- if .Values.datadog.tags }}
-          - name: DD_TAGS
-            value: {{ .Values.datadog.tags | quote }}
-          {{- end }}
-          {{- if .Values.datadog.apmEnabled }}
-          - name: DD_APM_ENABLED
-            value: {{ .Values.datadog.apmEnabled | quote }}
-          {{- end }}
-          {{- if .Values.datadog.processAgentEnabled }}
-          - name: DD_PROCESS_AGENT_ENABLED
-            value: {{ .Values.datadog.processAgentEnabled | quote }}
-          {{- end }}
-          {{- if .Values.datadog.hostname }}
-          - name: DD_HOSTNAME
-            value: {{ .Values.datadog.hostname | quote }}
-          {{- end }}
-          {{- if .Values.datadog.acInclude }}
-          - name: DD_AC_INCLUDE
-            value: {{ .Values.datadog.acInclude | quote }}
-          {{- end }}
-          {{- if .Values.datadog.acExclude }}
-          - name: DD_AC_EXCLUDE
-            value: {{ .Values.datadog.acExclude | quote }}
-          {{- end }}
-          {{- if not .Values.clusterAgent.enabled }}
-          {{- if .Values.datadog.leaderElection }}
-          - name: DD_LEADER_ELECTION
-            value: {{ .Values.datadog.leaderElection | quote}}
-          {{- end }}
-          {{- if .Values.datadog.leaderLeaseDuration }}
-          - name: DD_LEADER_LEASE_DURATION
-            value: {{ .Values.datadog.leaderLeaseDuration | quote }}
-          {{- end }}
-          {{- if .Values.datadog.collectEvents }}
-          - name: DD_COLLECT_KUBERNETES_EVENTS
-            value: {{.Values.datadog.collectEvents | quote}}
-          {{- end }}
-          {{- else }}
-          - name: DD_CLUSTER_AGENT_ENABLED
-            value: {{ .Values.clusterAgent.enabled | quote }}
-          - name: DD_CLUSTER_AGENT_KUBERNETES_SERVICE_NAME
-            value: {{ template "datadog.fullname" . }}-cluster-agent
-          - name: DD_CLUSTER_AGENT_AUTH_TOKEN
-            valueFrom:
-              secretKeyRef:
-                name: {{ template "datadog.fullname" . }}-cluster-agent
-                key: token
-          {{- end }}
-          - name: KUBERNETES
-            value: "yes"
-          {{- if .Values.datadog.podLabelsAsTags }}
-          - name: DD_KUBERNETES_POD_LABELS_AS_TAGS
-            value: '{{ toJson .Values.datadog.podLabelsAsTags }}'
-          {{- end }}
-          {{- if .Values.datadog.podAnnotationsAsTags }}
-          - name: DD_KUBERNETES_POD_ANNOTATIONS_AS_TAGS
-            value: '{{ toJson .Values.datadog.podAnnotationsAsTags }}'
-          {{- end }}
-          {{- if semverCompare "^1.7-0" .Capabilities.KubeVersion.GitVersion }}
-          - name: DD_KUBERNETES_KUBELET_HOST
-            valueFrom:
-              fieldRef:
-                fieldPath: status.hostIP
-          {{- end }}
-          {{- if .Values.datadog.logsEnabled }}
-          - name: DD_LOGS_ENABLED
-            value: {{.Values.datadog.logsEnabled | quote}}
-          {{- end }}
-          {{- if .Values.datadog.logsConfigContainerCollectAll }}
-          - name: DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL
-            value: {{.Values.datadog.logsConfigContainerCollectAll | quote}}
-          {{- end }}
-          {{- if .Values.datadog.criSocketPath }}
-          - name: DD_CRI_SOCKET_PATH
-            value: {{ .Values.datadog.criSocketPath | quote }}
-          {{- end }}
-          {{- if not .Values.datadog.livenessProbe }}
-          - name: DD_HEALTH_PORT
-            value: "5555"
-          {{- end }}
-          {{- if .Values.datadog.useDogStatsDSocketVolume }}
-          - name: DD_DOGSTATSD_SOCKET
-            value: "/var/run/datadog/dsd.socket"
-          {{- end }}
-          {{- if and .Values.clusterAgent.clusterChecks.enabled  (not .Values.clusterchecksDeployment.enabled) }}
-          - name: DD_EXTRA_CONFIG_PROVIDERS
-            value: "clusterchecks"
-          {{- end }}
-{{- if .Values.datadog.env }}
-{{ toYaml .Values.datadog.env | indent 10 }}
-{{- end }}
-        volumeMounts:
-          {{- if .Values.datadog.useCriSocketVolume }}
-          - name: runtimesocket
-            mountPath: {{ default "/var/run/docker.sock" .Values.datadog.criSocketPath | quote }}
-            readOnly: true
-          {{- end }}
-          {{- if .Values.datadog.useDogStatsDSocketVolume }}
-          - name: dsdsocket
-            mountPath: "/var/run/datadog"
-          {{- end }}
-          - name: procdir
-            mountPath: /host/proc
-            readOnly: true
-          - name: cgroups
-            mountPath: /host/sys/fs/cgroup
-            readOnly: true
-          - name: s6-run
-            mountPath: /var/run/s6
-          {{- if (or (.Values.datadog.confd) (.Values.datadog.autoconf)) }}
-          - name: confd
-            mountPath: /conf.d
-            readOnly: true
-          {{- end }}
-          {{- if .Values.datadog.checksd }}
-          - name: checksd
-            mountPath: /checks.d
-            readOnly: true
-          {{- end }}
-          {{- if .Values.datadog.logsEnabled }}
-          - name: pointerdir
-            mountPath: /opt/datadog-agent/run
-          {{- end }}
-          {{- if .Values.datadog.processAgentEnabled }}
-          - name: passwd
-            mountPath: /etc/passwd
-            readOnly: true
-          {{- end }}
-{{- if .Values.datadog.volumeMounts }}
-{{ toYaml .Values.datadog.volumeMounts | indent 10 }}
-{{- end }}
-{{- if .Values.datadog.livenessProbe }}
-        livenessProbe:
-{{ toYaml .Values.datadog.livenessProbe | indent 10 }}
-{{- else }}
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 5555
-          initialDelaySeconds: 15
-          periodSeconds: 15
-          timeoutSeconds: 5
-          successThreshold: 1
-          failureThreshold: 6
-{{- end }}
+        {{- if or (kindIs "invalid" .Values.datadog.processAgent.enabled) .Values.datadog.processAgent.enabled }}
+          {{- include "container-process-agent" . | nindent 8 }}
+        {{- end }}
+        {{- if .Values.datadog.systemProbe.enabled }}
+          {{- include "container-system-probe" . | nindent 8 }}
+        {{- end }}
+      initContainers:
+        {{ include "containers-init" . | nindent 8 }}
+        {{- if and .Values.datadog.systemProbe.enabled (eq .Values.datadog.systemProbe.seccomp "localhost/system-probe") }}
+          {{ include "system-probe-init" . | nindent 8 }}
+        {{- end }}
       volumes:
-        {{- if .Values.datadog.useCriSocketVolume }}
+        - name: config
+          emptyDir: {}
+        {{- if .Values.datadog.criSocketPath }}
         - hostPath:
-            path: {{ default "/var/run/docker.sock" .Values.datadog.criSocketPath | quote }}
-          name: runtimesocket
+            path: {{ dir .Values.datadog.criSocketPath }}
+          name: runtimesocketdir
         {{- end }}
-        {{- if .Values.datadog.useDogStatsDSocketVolume }}
+        {{- if .Values.datadog.dogstatsd.useSocketVolume }}
         - hostPath:
             path: "/var/run/datadog/"
           name: dsdsocket
@@ -271,31 +107,62 @@ spec:
         {{- end }}
         {{- if .Values.datadog.logsEnabled }}
         - hostPath:
-            path: {{ default "/var/lib/datadog-agent/logs" .Values.datadog.logsPointerHostPath | quote }}
+            path: "/var/lib/datadog-agent/logs"
           name: pointerdir
+        - hostPath:
+            path: /var/log/pods
+          name: logpodpath
+        {{- if regexFind "^.*docker.*$" $.Values.datadog.criSocketPath }}
+        - hostPath:
+            path: /var/lib/docker/containers
+          name: logdockercontainerpath
         {{- end }}
-        {{- if .Values.datadog.processAgentEnabled }}
+        {{- end }}
+        {{- if or .Values.datadog.processAgent.enabled .Values.datadog.systemProbe.enabled }}
         - hostPath:
             path: /etc/passwd
           name: passwd
         {{- end }}
-{{- if .Values.datadog.volumes }}
-{{ toYaml .Values.datadog.volumes | indent 8 }}
+        {{- if .Values.datadog.systemProbe.enabled }}
+        - name: sysprobe-config
+          configMap:
+            name: {{ template "datadog.fullname" . }}-system-probe-config
+        {{- if eq .Values.systemProbe.seccomp "localhost/system-probe" }}
+        - name: datadog-agent-security
+          configMap:
+            name: {{ template "datadog.fullname" . }}-security
+        - hostPath:
+            path: {{ .Values.datadog.systemProbe.seccompRoot }}
+          name: seccomp-root
+        {{- end }}
+        - hostPath:
+            path: /sys/kernel/debug
+          name: debugfs
+        - name: sysprobe-socket-dir
+          emptyDir: {}
+        {{- end }}
+        {{- if .Values.agents.useConfigMap }}
+        - name: {{ template "datadog.fullname" . }}-datadog-yaml
+          configMap:
+            name: {{ template "datadog.fullname" . }}-datadog-yaml
+        {{- end }}
+{{- if .Values.agents.volumes }}
+{{ toYaml .Values.agents.volumes | indent 8 }}
 {{- end }}
-      {{- if .Values.daemonset.tolerations }}
+      {{- if .Values.agents.tolerations }}
       tolerations:
-{{ toYaml .Values.daemonset.tolerations | indent 8 }}
+{{ toYaml .Values.agents.tolerations | indent 8 }}
       {{- end }}
-      {{- if .Values.daemonset.affinity }}
+      {{- if .Values.agents.affinity }}
       affinity:
-{{ toYaml .Values.daemonset.affinity | indent 8 }}
+{{ toYaml .Values.agents.affinity | indent 8 }}
       {{- end }}
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "datadog.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
-      {{- if .Values.daemonset.nodeSelector }}
+      serviceAccountName: {{ if .Values.agents.rbac.create }}{{ template "datadog.fullname" . }}{{ else }}"{{ .Values.agents.rbac.serviceAccountName }}"{{ end }}
+      {{- if .Values.agents.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.daemonset.nodeSelector | indent 8 }}
+{{ toYaml .Values.agents.nodeSelector | indent 8 }}
       {{- end }}
   updateStrategy:
-    type: {{ default "RollingUpdate" .Values.daemonset.updateStrategy | quote }}
+{{ toYaml .Values.agents.updateStrategy | indent 4 }}
 {{ end }}
 {{ end }}

@@ -1,0 +1,42 @@
+{{- if .Values.rbac.create }}
+{{- if .Values.podSecurityPolicy.enabled }}
+apiVersion: {{ template "prometheus.podSecurityPolicy.apiVersion" . }}
+kind: PodSecurityPolicy
+metadata:
+  name: {{ template "prometheus.kubeStateMetrics.fullname" . }}
+  labels:
+    {{- include "prometheus.kubeStateMetrics.labels" . | nindent 4 }}
+  annotations:
+{{- if .Values.kubeStateMetrics.podSecurityPolicy.annotations }}
+{{ toYaml .Values.kubeStateMetrics.podSecurityPolicy.annotations | indent 4 }}
+{{- end }}
+spec:
+  privileged: false
+  allowPrivilegeEscalation: false
+  requiredDropCapabilities:
+    - ALL
+  volumes:
+    - 'secret'
+  allowedHostPaths: []
+  hostNetwork: false
+  hostPID: false
+  hostIPC: false
+  runAsUser:
+    rule: 'RunAsAny'
+  seLinux:
+    rule: 'RunAsAny'
+  supplementalGroups:
+    rule: 'MustRunAs'
+    ranges:
+      # Forbid adding the root group.
+      - min: 1
+        max: 65535
+  fsGroup:
+    rule: 'MustRunAs'
+    ranges:
+      # Forbid adding the root group.
+      - min: 1
+        max: 65535
+  readOnlyRootFilesystem: true
+{{- end }}
+{{- end }}

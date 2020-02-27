@@ -4,32 +4,56 @@ kind: Role
 metadata:
   labels:
 {{ include "reloader-labels.chart" . | indent 4 }}
-{{ include "reloader-labels.selector" . | indent 4 }}
 {{- if .Values.reloader.rbac.labels }}
 {{ toYaml .Values.reloader.rbac.labels | indent 4 }}
 {{- end }}
 {{- if .Values.reloader.matchLabels }}
 {{ toYaml .Values.reloader.matchLabels | indent 4 }}
 {{- end }}
-  name: {{ template "reloader-name" . }}-role
+  name: {{ template "reloader-fullname" . }}-role
   namespace: {{ .Release.Namespace }}
 rules:
   - apiGroups:
       - ""
-    resources:      
+    resources:
+{{- if .Values.reloader.ignoreSecrets }}{{- else }}
       - secrets
+{{- end }}
+{{- if .Values.reloader.ignoreConfigMaps }}{{- else }}
       - configmaps
+{{- end }}
     verbs:
       - list
       - get
       - watch
+{{- if or (.Capabilities.APIVersions.Has "apps.openshift.io/v1") (.Values.isOpenshift) }}
   - apiGroups:
-      - "extensions"
+      - "apps.openshift.io"
+      - ""
+    resources:
+      - deploymentconfigs
+    verbs:
+      - list
+      - get
+      - update
+      - patch
+{{- end }}
+  - apiGroups:
       - "apps"
     resources:
       - deployments
       - daemonsets
       - statefulsets
+    verbs:
+      - list
+      - get
+      - update
+      - patch
+  - apiGroups:
+      - "extensions"
+    resources:
+      - deployments
+      - daemonsets
     verbs:
       - list
       - get

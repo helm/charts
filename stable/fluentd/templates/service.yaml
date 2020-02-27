@@ -7,8 +7,13 @@ metadata:
     chart: {{ template "fluentd.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+  annotations:
+{{ toYaml .Values.service.annotations | indent 4 }}
 spec:
   type: {{ .Values.service.type }}
+  {{ if (and (eq .Values.service.type "LoadBalancer") (not (empty .Values.service.loadBalancerIP))) }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+  {{ end }}
   ports:
   {{- range $port := .Values.service.ports }}
     - name: {{ $port.name }}
@@ -19,6 +24,12 @@ spec:
   {{ if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
       nodePort: {{ .Values.service.nodePort }}
   {{ end }}
+  {{- if .Values.metrics.enabled }}
+    - name: metrics
+      port: {{ .Values.metrics.service.port }}
+      targetPort: metrics
+      protocol: TCP
+  {{- end }}
   selector:
     app: {{ template "fluentd.name" . }}
     release: {{ .Release.Name }}

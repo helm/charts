@@ -3,7 +3,7 @@ description: A Helm chart for ELK
 home: https://www.elastic.co/products
 icon: https://www.elastic.co/assets/bltb35193323e8f1770/logo-elastic-stack-lt.svg
 name: elastic-stack
-version: 1.6.0
+version: 1.8.0
 appVersion: 6.0
 maintainers:
 - name: rendhalver

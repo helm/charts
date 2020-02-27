@@ -1,5 +1,5 @@
 {{- if .Values.nodeExporter.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "prometheus.daemonset.apiVersion" . }}
 kind: DaemonSet
 metadata:
 {{- if .Values.nodeExporter.deploymentAnnotations }}
@@ -64,6 +64,9 @@ spec:
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
               readOnly: {{ .readOnly }}
+            {{- if .mountPropagation }}
+              mountPropagation: {{ .mountPropagation }}
+            {{- end }}
           {{- end }}
           {{- range .Values.nodeExporter.extraConfigmapMounts }}
             - name: {{ .name }}

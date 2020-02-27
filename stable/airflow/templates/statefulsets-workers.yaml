@@ -12,6 +12,13 @@ metadata:
     chart: {{ template "airflow.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    {{- with .Values.workers.labels }}
+{{ toYaml . | indent 4 }}
+    {{- end }}
+  {{- with .Values.workers.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
 spec:
   serviceName: "{{ template "airflow.fullname" . }}-worker"
   updateStrategy:
@@ -32,7 +39,6 @@ spec:
         checksum/config-env: {{ include (print $.Template.BasePath "/configmap-env.yaml") . | sha256sum }}
         checksum/config-git-clone: {{ include (print $.Template.BasePath "/configmap-git-clone.yaml") . | sha256sum }}
         checksum/config-scripts: {{ include (print $.Template.BasePath "/configmap-scripts.yaml") . | sha256sum }}
-        checksum/secret-env: {{ include (print $.Template.BasePath "/secret-env.yaml") . | sha256sum }}
 {{- if .Values.airflow.podAnnotations }}
 {{ toYaml .Values.airflow.podAnnotations | indent 8 }}
 {{- end }}
@@ -49,19 +55,19 @@ spec:
         - name: {{ .Values.airflow.image.pullSecret }}
       {{- end }}
       restartPolicy: Always
-      terminationGracePeriodSeconds: 30
+      terminationGracePeriodSeconds: {{ .Values.workers.terminationPeriod }}
       serviceAccountName: {{ template "airflow.serviceAccountName" . }}
-      {{- if .Values.nodeSelector }}
+      {{- if .Values.workers.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+{{ toYaml .Values.workers.nodeSelector | indent 8 }}
       {{- end }}
-      {{- if .Values.affinity }}
+      {{- if .Values.workers.affinity }}
       affinity:
-{{ toYaml .Values.affinity | indent 8 }}
+{{ toYaml .Values.workers.affinity | indent 8 }}
       {{- end }}
-      {{- if .Values.tolerations }}
+      {{- if .Values.workers.tolerations }}
       tolerations:
-{{ toYaml .Values.tolerations | indent 8 }}
+{{ toYaml .Values.workers.tolerations | indent 8 }}
       {{- end }}
 
       {{- if .Values.dags.initContainer.enabled }}
@@ -69,12 +75,19 @@ spec:
         - name: git-clone
           image: {{ .Values.dags.initContainer.image.repository }}:{{ .Values.dags.initContainer.image.tag }} # Any image with git will do
           imagePullPolicy: {{ .Values.dags.initContainer.image.pullPolicy }}
+          envFrom:
+          - configMapRef:
+              name: "{{ template "airflow.fullname" . }}-env"
+          env:
+          {{- include "airflow.mapenvsecrets" . | indent 10 }}
           command:
           - /usr/local/git/git-clone.sh
           args:
           - "{{ .Values.dags.git.url }}"
           - "{{ .Values.dags.git.ref }}"
           - "/dags"
+          - "{{ .Values.dags.git.repoHost}}"
+          - "{{ .Values.dags.git.privateKeyName }}"
           volumeMounts:
           - name: git-clone
             mountPath: /usr/local/git
@@ -86,9 +99,43 @@ spec:
           {{- end }}
       {{- end }}
       containers:
+        {{- if .Values.dags.git.gitSync.enabled }}
+        - name: git-sync
+          image: {{ .Values.dags.git.gitSync.image.repository }}:{{ .Values.dags.git.gitSync.image.tag }} # Any image with git will do
+          imagePullPolicy: {{ .Values.dags.git.gitSync.image.pullPolicy }}
+          envFrom:
+          - configMapRef:
+              name: "{{ template "airflow.fullname" . }}-env"
+          env:
+          {{- include "airflow.mapenvsecrets" . | indent 10 }}
+          command:
+            - /usr/local/git/git-sync.sh
+          args:
+            - "{{ .Values.dags.git.url }}"
+            - "{{ .Values.dags.git.ref }}"
+            - "/dags"
+            - "{{ .Values.dags.git.repoHost}}"
+            - "{{ .Values.dags.git.privateKeyName }}"
+            - "{{ .Values.dags.git.gitSync.refreshTime }}"
+          volumeMounts:
+            - name: git-clone
+              mountPath: /usr/local/git
+            - name: dags-data
+              mountPath: /dags
+            {{- if .Values.dags.git.secret }}
+            - name: git-clone-secret
+              mountPath: /keys
+            {{- end }}
+        {{- end }}
         - name: {{ .Chart.Name }}-worker
           imagePullPolicy: {{ .Values.airflow.image.pullPolicy }}
           image: "{{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}"
+          {{- if and (eq .Values.airflow.executor "Celery") (.Values.workers.celery.gracefullTermination)}}
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/entrypoint.sh","/usr/local/scripts/stop-worker.sh"]
+          {{- end}}
           envFrom:
             - configMapRef:
                 name: "{{ template "airflow.fullname" . }}-env"
@@ -102,14 +149,19 @@ spec:
             - name: {{ . }}-volume
               readOnly: true
               mountPath: {{ $secretsDir }}/{{ . }}
-              subPath: {{ . }}
           {{- end }}
           {{- if .Values.persistence.enabled }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
+              subPath: {{ .Values.persistence.subPath | default "" }}
           {{- else if .Values.dags.initContainer.enabled }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
+          {{- end }}
+          {{- if .Values.logsPersistence.enabled }}
+            - name: logs-data
+              mountPath: {{ .Values.logs.path }}
+              subPath: {{ .Values.logsPersistence.subPath | default "" }}
           {{- end }}
           {{- range .Values.airflow.extraConfigmapMounts }}
             - name: {{ .name }}
@@ -169,6 +221,11 @@ spec:
             claimName: {{ .Values.persistence.existingClaim | default (include "airflow.fullname" .) }}
         {{- else }}
           emptyDir: {}
+        {{- end }}
+        {{- if .Values.logsPersistence.enabled }}
+        - name: logs-data
+          persistentVolumeClaim:
+            claimName: {{ .Values.logsPersistence.existingClaim | default (printf "%s-logs" (include "airflow.fullname" . | trunc 58 )) }}
         {{- end }}
         {{- if .Values.dags.initContainer.enabled }}
         - name: git-clone

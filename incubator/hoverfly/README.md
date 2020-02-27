@@ -43,7 +43,7 @@ The following table lists the configurable parameters of the Hoverfly chart and 
 | Parameter                         | Description                                | Default                                                   |
 | --------------------------------- | ------------------------------------------ | --------------------------------------------------------- |
 | `image.repository`                | Hoverfly Image name                        | `docker.io/spectolabs/hoverfly`                           |
-| `image.tag`                       | Hoverfly Image tag                         | `v1.0.0-rc.2`                                             |
+| `image.tag`                       | Hoverfly Image tag                         | `v1.1.1`                                             |
 | `hoverflyFlags`                   | Flags to start Hoverfly with, eg. '-auth'  | `""`                                                      |
 | `healthcheckEndpoint`             | Admin API path for Kubernetes healthcheck  | `/api/health`                                             |
 | `service.type`                    | Kubernetes Service type                    | `ClusterIP`                                               |
@@ -52,6 +52,10 @@ The following table lists the configurable parameters of the Hoverfly chart and 
 | `service.externalAdminPort`       | Service Admin port                         | `8888`                                                    |
 | `service.externalProxyPort`       | Service Proxy port                         | `8500`                                                    |
 | `resources`                       | CPU/Memory resource requests/limits        | Memory: `200Mi`, CPU: `0.2`                               |
+| `openshift.route.admin.enabled`   | Create an Openshift route for the Hoverfly Admin Interface | `false` |
+| `openshift.route.admin.hostname`  | Specify the route URL for the Hoverfly Admin Interface     | `""` |
+| `openshift.route.proxy.enabled`   | Create an Openshift route for the Hoverfly Proxy Endpoint  | `false` |
+| `openshift.route.proxy.hostname`  | Specify the route URL for the Hoverfly Proxy Interface     | `""` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

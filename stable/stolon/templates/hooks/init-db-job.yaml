@@ -1,0 +1,58 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: init-scripts
+data:
+{{- with .Values.initdbScripts }}
+{{ toYaml . | indent 2 }}
+{{- end }}
+---
+{{- if .Values.initdbScripts }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: '{{template "stolon.clusterName" .}}-createdb'
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "2"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    metadata:
+      name: "{{.Release.Name}}"
+      labels:
+        heritage: {{.Release.Service | quote }}
+        release: {{.Release.Name | quote }}
+        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: create-database-job
+        image: 'postgres'
+        env:
+          - name: USERNAME
+            value: {{ .Values.superuserUsername }}
+          - name: PGPASSWORD
+            value: {{ .Values.superuserPassword }}
+          - name: HOST
+            value: {{ template "stolon.fullname" . }}-proxy
+        command: ["/bin/bash", "-e", "/tmp/sql-script/create_script.sh"]
+        volumeMounts:
+          - mountPath: "/tmp/sql-script"
+            readOnly: true
+            name: sql-script
+      volumes:
+        - name: sql-script
+          configMap:
+            name: init-scripts
+            defaultMode: 420
+      initContainers:
+        - name: wait-for-database
+          image: jwilder/dockerize
+          command: ['dockerize', '-timeout', '30s', '-wait', 'tcp://{{ template "stolon.fullname" . }}-proxy:5432']
+{{- end }}

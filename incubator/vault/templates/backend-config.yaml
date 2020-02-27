@@ -1,0 +1,14 @@
+{{- if .Values.vault.backendPolicy -}}
+apiVersion: cloud.google.com/v1beta1
+kind: BackendConfig
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ template "vault.fullname" . }}
+  labels:
+    app: {{ template "vault.name" . }}
+    chart: "{{ template "vault.chart" . }}"
+    release: "{{ .Release.Name }}"
+spec:
+  securityPolicy:
+    name: {{ .Values.vault.backendPolicy }}
+{{- end -}}

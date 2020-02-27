@@ -45,7 +45,7 @@ spec:
         - >
           if [ "$enablePVC" == "true" ]; then
             export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS \
-            -Dspark.history.fs.logDirectory=file:/mnt/$eventsDir";
+            -Dspark.history.fs.logDirectory=file:/data/$eventsDir";
           elif [ "$enableGCS" == "true" ]; then
             export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS \
             -Dspark.hadoop.google.cloud.auth.service.account.json.keyfile=/etc/secrets/$key \
@@ -95,7 +95,7 @@ spec:
         {{- if .Values.pvc.enablePVC }}
         volumeMounts:
         - name: data
-          mountPath: /mnt/{{ .Values.pvc.eventsDir }}
+          mountPath: /data
         {{- else if .Values.gcs.enableGCS }}
         volumeMounts:
         - name: secrets-volume

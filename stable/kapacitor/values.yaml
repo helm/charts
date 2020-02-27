@@ -42,12 +42,15 @@ resources:
 
 ## Set the environment variables for kapacitor (or anything else you want to use)
 ## ref: https://hub.docker.com/_/kapacitor/
+## ref: https://docs.influxdata.com/kapacitor/latest/administration/configuration/
 ##
 # Examples below
 #
 # envVars:
 #   KAPACITOR_SLACK_ENABLED: true
 #   KAPACITOR_SLACK_URL: "http://slack.com/xxxxx/xxxxx/xxxx/xxxxxxx"
+#   KAPACITOR_HTTP_LOG_ENABLED: true
+#   KAPACITOR_LOGGING_LEVEL: "INFO"
 #
 # or, at your terminal, with
 #
@@ -57,3 +60,9 @@ resources:
 ## ref: https://docs.influxdata.com/kapacitor/v1.1/introduction/getting_started/
 ##
 # influxURL: http://influxdb-influxdb.tick:8086
+
+## Name of an existing Secrect used to set the environment variables for the
+## InfluxDB user and password. The expected keys in the secret are
+## `influxdb-user` and `influxdb-password`.
+##
+# existingSecret: influxdb-auth

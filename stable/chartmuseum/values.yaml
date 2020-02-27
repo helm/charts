@@ -5,7 +5,7 @@ strategy:
     maxUnavailable: 0
 image:
   repository: chartmuseum/chartmuseum
-  tag: v0.8.2
+  tag: v0.11.0
   pullPolicy: IfNotPresent
 env:
   open:
@@ -131,6 +131,9 @@ service:
   servicename:
   type: ClusterIP
   externalTrafficPolicy: Local
+  ## Limits which cidr blocks can connect to service's load balancer
+  ## Only valid if service.type: LoadBalancer
+  loadBalancerSourceRanges: []
   # clusterIP: None
   externalPort: 8080
   nodePort:
@@ -162,6 +165,8 @@ probes:
 serviceAccount:
   create: false
   # name:
+  ## Annotations for the Service Account
+  annotations: {}
 
 # UID/GID 1000 is the default user "chartmuseum" used in
 # the container image starting in v0.8.0 and above. This

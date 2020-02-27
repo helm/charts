@@ -8,7 +8,7 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-    suite: pachyderm
+    suite: {{ template "fullname" . }}
 spec:
   ports:
     - name: client-port

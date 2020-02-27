@@ -1,7 +1,11 @@
 {{- if .Values.ingress.enabled -}}
 {{- $serviceName := include "sonarqube.fullname" . -}}
 {{- $servicePort := .Values.service.externalPort -}}
+{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
+apiVersion: networking.k8s.io/v1beta1
+{{ else }}
 apiVersion: extensions/v1beta1
+{{ end -}}
 kind: Ingress
 metadata:
   name: {{ template "sonarqube.fullname" . }}
@@ -22,14 +26,15 @@ metadata:
 spec:
   rules:
     {{- range .Values.ingress.hosts }}
+    {{- $path := default "/" .path }}
     - host: {{ .name }}
       http:
         paths:
-          - path: {{ default "/" .path }}
+          - path: {{ $path }}
             backend:
               serviceName: {{ $serviceName }}
               servicePort: {{ $servicePort }}
-          - path: {{ printf "%s/*" .path }}
+          - path: {{ printf "%s/*" (trimSuffix "/" $path) }}
             backend:
               serviceName: {{ $serviceName }}
               servicePort: {{ $servicePort }}
