@@ -68,6 +68,10 @@ spec:
             - name: flower
               containerPort: 5555
               protocol: TCP
+          {{- if .Values.flower.extraConfigmapMounts }}
+          volumeMounts:
+{{ toYaml .Values.flower.extraConfigmapMounts | indent 12 }}
+          {{- end }}
           args: ["flower"]
           livenessProbe:
             httpGet:

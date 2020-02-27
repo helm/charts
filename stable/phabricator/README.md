@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```console
-$ helm install stable/phabricator
+$ helm install my-release stable/phabricator
 ```
 
 ## Introduction
@@ -28,7 +28,7 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/phabricator
+$ helm install my-release stable/phabricator
 ```
 
 The command deploys Phabricator on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
@@ -129,8 +129,9 @@ The above parameters map to the env variables defined in [bitnami/phabricator](h
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install stable/phabricator --name my-release \
+$ helm install my-release \
   --set phabricatorUsername=admin,phabricatorPassword=password,mariadb.mariadbRootPassword=secretpassword \
+  stable/phabricator
 ```
 
 The above command sets the Phabricator administrator account username and password to `admin` and `password` respectively. Additionally, it sets the MariaDB `root` user password to `secretpassword`.
@@ -138,7 +139,7 @@ The above command sets the Phabricator administrator account username and passwo
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml stable/phabricator
+$ helm install my-release -f values.yaml stable/phabricator
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

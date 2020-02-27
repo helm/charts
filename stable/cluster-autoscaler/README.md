@@ -176,6 +176,7 @@ Parameter | Description | Default
 `securityContext` | [Security context for pod](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) | `nil`
 `containerSecurityContext` | [Security context for container](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) | `nil`
 `resources` | pod resource requests & limits | `{}`
+`updateStrategy` | [Deployment update strategy](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy) | `nil`
 `service.annotations` | annotations to add to service | none
 `service.externalIPs` | service external IP addresses | `[]`
 `service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`

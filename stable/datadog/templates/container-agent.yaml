@@ -1,14 +1,14 @@
 {{- define "container-agent" -}}
 - name: agent
-  image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-  imagePullPolicy: {{ .Values.image.pullPolicy }}
+  image: "{{ .Values.agents.image.repository }}:{{ .Values.agents.image.tag }}"
+  imagePullPolicy: {{ .Values.agents.image.pullPolicy }}
   command: ["agent", "start"]
   resources:
-{{ toYaml .Values.daemonset.containers.agent.resources | indent 4 }}
+{{ toYaml .Values.agents.containers.agent.resources | indent 4 }}
   ports:
-  - containerPort: {{ default 8125 .Values.datadog.dogStatsDPort }}
-    {{- if .Values.daemonset.useHostPort }}
-    hostPort: {{ default 8125 .Values.datadog.dogStatsDPort }}
+  - containerPort: {{ .Values.datadog.dogstatsd.port }}
+    {{- if .Values.datadog.dogstatsd.useHostPort }}
+    hostPort: {{ .Values.datadog.dogstatsd.port }}
     {{- end }}
     name: dogstatsdport
     protocol: UDP
@@ -23,21 +23,19 @@
     {{- end }}
     {{- if .Values.datadog.logLevel }}
     - name: DD_LOG_LEVEL
-      value: {{ .Values.daemonset.containers.agent.logLevel | default .Values.datadog.logLevel | quote }}
-    {{- end }}
-    {{- if .Values.datadog.dogStatsDPort }}
+      value: {{ .Values.agents.containers.agent.logLevel | default .Values.datadog.logLevel | quote }}
+    {{- end }}  
+    {{- if .Values.datadog.dogstatsd.port }}
     - name: DD_DOGSTATD_PORT
-      value: {{ .Values.datadog.dogStatsDPort | quote }}
+      value: {{ .Values.datadog.dogstatsd.port | quote }}
     {{- end }}
-    {{- if .Values.datadog.nonLocalTraffic }}
+    {{- if .Values.datadog.dogstatsd.nonLocalTraffic }}
     - name: DD_DOGSTATSD_NON_LOCAL_TRAFFIC
-      value: {{ .Values.datadog.nonLocalTraffic | quote }}
-    - name: DD_APM_NON_LOCAL_TRAFFIC
-      value: {{ .Values.datadog.nonLocalTraffic | quote }}
+      value: {{ .Values.datadog.dogstatsd.nonLocalTraffic | quote }}
     {{- end }}
-    {{- if .Values.datadog.dogstatsdOriginDetection }}
+    {{- if .Values.datadog.dogstatsd.originDetection }}
     - name: DD_DOGSTATSD_ORIGIN_DETECTION
-      value: {{ .Values.datadog.dogstatsdOriginDetection | quote }}
+      value: {{ .Values.datadog.dogstatsd.originDetection | quote }}
     {{- end }}
     {{- if .Values.datadog.acInclude }}
     - name: DD_AC_INCLUDE
@@ -93,37 +91,37 @@
     {{- end }}
     {{- if .Values.datadog.criSocketPath }}
     - name: DD_CRI_SOCKET_PATH
-      value: {{ .Values.datadog.criSocketPath | quote }}
+      value: {{ print "/host/" .Values.datadog.criSocketPath | clean }}
     {{- end }}
     {{- if not .Values.datadog.livenessProbe }}
     - name: DD_HEALTH_PORT
       value: "5555"
     {{- end }}
-    {{- if .Values.datadog.useDogStatsDSocketVolume }}
+    {{- if .Values.datadog.dogstatsd.useSocketVolume }}
     - name: DD_DOGSTATSD_SOCKET
-      value: {{ default "/var/run/datadog/dsd.socket" .Values.datadog.dogStatsDSocketPath | quote }}
+      value: {{ default "/var/run/datadog/dsd.socket" .Values.datadog.dogstatsd.socketPath | quote }}
     {{- end }}
-    {{- if and .Values.clusterAgent.clusterChecks.enabled  (not .Values.clusterchecksDeployment.enabled) }}
+    {{- if and .Values.datadog.clusterChecks.enabled  (not .Values.clusterChecksRunner.enabled) }}
     - name: DD_EXTRA_CONFIG_PROVIDERS
       value: "clusterchecks"
     {{- end }}
-{{- if .Values.daemonset.containers.agent.env }}
-{{ toYaml .Values.daemonset.containers.agent.env | indent 4 }}
+{{- if .Values.agents.containers.agent.env }}
+{{ toYaml .Values.agents.containers.agent.env | indent 4 }}
 {{- end }}
   volumeMounts:
     - name: config
       mountPath: /etc/datadog-agent
-    {{- if .Values.daemonset.useConfigMap }}
+    {{- if .Values.agents.useConfigMap }}
     - name: {{ template "datadog.fullname" . }}-datadog-yaml
       mountPath: /etc/datadog-agent/datadog.yaml
       subPath: datadog.yaml
     {{- end }}
-    {{- if .Values.datadog.useCriSocketVolume }}
-    - name: runtimesocket
-      mountPath: {{ default "/var/run/docker.sock" .Values.datadog.criSocketPath | quote }}
+    {{- if .Values.datadog.criSocketPath }}
+    - name: runtimesocketdir
+      mountPath: {{ print "/host/" (dir .Values.datadog.criSocketPath) | clean }}
       readOnly: true
     {{- end }}
-    {{- if .Values.datadog.useDogStatsDSocketVolume }}
+    {{- if .Values.datadog.dogstatsd.useSocketVolume }}
     - name: dsdsocket
       mountPath: "/var/run/datadog"
     {{- end }}
@@ -139,27 +137,15 @@
     - name: logpodpath
       mountPath: /var/log/pods
       readOnly: true
-    {{- if .Values.datadog.containerLogsPath }}
-    - name: logcontainerpath
-      mountPath: {{ .Values.datadog.containerLogsPath | quote }}
+    {{- if regexFind "^.*docker.*$" $.Values.datadog.criSocketPath }}
+    - name: logdockercontainerpath
+      mountPath: /var/lib/docker/containers
       readOnly: true
     {{- end }}
     {{- end }}
-{{- if .Values.datadog.volumeMounts }}
-{{ toYaml .Values.datadog.volumeMounts | indent 4 }}
+{{- if .Values.agents.volumeMounts }}
+{{ toYaml .Values.agents.volumeMounts | indent 4 }}
 {{- end }}
-{{- if .Values.datadog.livenessProbe }}
   livenessProbe:
-{{ toYaml .Values.datadog.livenessProbe | indent 4 }}
-{{- else }}
-  livenessProbe:
-    httpGet:
-      path: /health
-      port: 5555
-    initialDelaySeconds: 15
-    periodSeconds: 15
-    timeoutSeconds: 5
-    successThreshold: 1
-    failureThreshold: 6
-{{- end }}
+{{ toYaml .Values.agents.containers.agent.livenessProbe | indent 4 }}
 {{- end -}}

@@ -49,6 +49,7 @@ The following table lists the configurable parameters of the cerebro chart and t
 | `init.image.tag`                    | The image tag to pull               | `musl`                                    |
 | `init.image.pullPolicy`             | Image pull policy                   | `IfNotPresent`                            |
 | `deployment.annotations`            | Annotations for deployment          | `{}`                                      |
+| `deployment.labels`                 | Additional labels for deployment    | `{}`                                      |
 | `service.type`                      | Type of Service                     | `ClusterIP`                               |
 | `service.port`                      | Port for kubernetes service         | `80`                                      |
 | `service.annotations`               | Annotations to add to the service   | `{}`                                      |
