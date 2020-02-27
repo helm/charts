@@ -414,6 +414,15 @@ spec:
           requests:
             storage: {{ .Values.slave.persistence.size | quote }}
         {{ include "redis.slave.storageClass" . }}
+        selector:
+        {{- if .Values.slave.persistence.matchLabels }}
+          matchLabels:
+{{ toYaml .Values.slave.persistence.matchLabels | indent 12 }}
+        {{- end -}}
+        {{- if .Values.slave.persistence.matchExpressions }}
+          matchExpressions:
+{{ toYaml .Values.slave.persistence.matchExpressions | indent 12 }}
+        {{- end -}}
   {{- end }}
   updateStrategy:
     type: {{ .Values.slave.statefulset.updateStrategy }}

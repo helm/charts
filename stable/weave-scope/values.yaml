@@ -60,6 +60,7 @@ weave-scope-frontend:
 weave-scope-agent:
   enabled: true
   flags: []
+  # priorityClassName:
   # weave-scope-agent.dockerBridge: (required if agent.enabled == true) the name of the Docker bridge interface
   dockerBridge: "docker0"
   # weave-scope-agent.scopeFrontendAddr: the host:port of a Scope frontend to send data to

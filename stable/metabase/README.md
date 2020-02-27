@@ -50,6 +50,7 @@ The following table lists the configurable parameters of the Metabase chart and 
 | image.repository                 | controller container image repository                       | metabase/metabase |
 | image.tag                        | controller container image tag                              | v0.34.0           |
 | image.pullPolicy                 | controller container image pull policy                      | IfNotPresent      |
+| fullnameOverride                 | String to fully override metabase.fullname template         | null              |
 | listen.host                      | Listening on a specific network host                        | 0.0.0.0           |
 | listen.port                      | Listening on a specific network port                        | 3000              |
 | ssl.enabled                      | Enable SSL to run over HTTPS                                | false             |
@@ -84,12 +85,13 @@ The following table lists the configurable parameters of the Metabase chart and 
 | service.loadBalancerSourceRanges | Array of Source Ranges                                      | null              |
 | service.externalPort             | Service external port                                       | 80                |
 | service.internalPort             | Service internal port, should be the same as `listen.port`  | 3000              |
+| service.nodePort                 | Service node port                                           | null              |
 | service.annotations              | Service annotations                                         | {}                |
 | ingress.enabled                  | Enable ingress controller resource                          | false             |
 | ingress.hosts                    | Ingress resource hostnames                                  | null              |
 | ingress.path                     | Ingress path                                                | /                 |
 | ingress.labels                   | Ingress labels configuration                                | null              |
-| ingress.annotations              | Ingress annotations configuration                           | null              |
+| ingress.annotations              | Ingress annotations configuration                           | {}                |
 | ingress.tls                      | Ingress TLS configuration                                   | null              |
 | log4jProperties                  | Custom `log4j.properties` file                              | null              |
 | resources                        | Server resource requests and limits                         | {}                |

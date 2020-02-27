@@ -228,6 +228,9 @@ the same or one minor release greater than Hazelcast image version)
 |`+mancenter.image.pullSecrets+` |Specify docker-registry secret names as an
 array |`+nil+`
 
+|`+mancenter.contextPath+` |the value for the MC_CONTEXT_PATH environment variable,
+thus overriding the default context path for Hazelcast Management Center |`+nil+`
+
 |`+mancenter.javaOpts+` |Additional JAVA_OPTS properties for Hazelcast
 Management Center |`+nil+`
 

@@ -128,3 +128,14 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- define "redis.fullname" -}}
 {{- printf "%s-%s" .Release.Name "anchore-ui-redis" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Return Anchore Engine default admin password
+*/}}
+{{- define "anchore-engine.defaultAdminPassword" -}}
+{{- if .Values.anchoreGlobal.defaultAdminPassword }}
+    {{- .Values.anchoreGlobal.defaultAdminPassword -}}
+{{- else -}}
+    {{- randAlphaNum 32 -}}
+{{- end -}}
+{{- end -}}
