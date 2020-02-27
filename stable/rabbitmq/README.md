@@ -94,6 +94,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `ldap.tls.enabled`                           | Enable TLS for LDAP connections                  | `false` (if set to true, check advancedConfiguration parameter in values.yml)   |
 | `service.type`                               | Kubernetes Service type                          | `ClusterIP`                                             |
 | `service.port`                               | Amqp port                                        | `5672`                                                  |
+| `service.loadBalancerIP`                    | LoadBalancerIP for the service                   | `nil`                                                   |
 | `service.tlsPort`                            | Amqp TLS port                                    | `5671`                                                  |
 | `service.distPort`                           | Erlang distribution server port                  | `25672`                                                 |
 | `service.nodePort`                           | Node port override, if serviceType NodePort      | _random available between 30000-32767_                  |
