@@ -342,7 +342,7 @@ You must include in your values.yaml the caCertificate, serverCertificate and se
     -----END RSA PRIVATE KEY-----
 ```
 
-This will be generate a secret with the certs, but is possible specify an existing secret using `existingSecret: name-of-existing-secret-to-rabbitmq`
+This will be generate a secret with the certs, but is possible specify an existing secret using `existingSecret: name-of-existing-secret-to-rabbitmq`. The secret is of type `kubernetes.io/tls`.
 
 Disabling [failIfNoPeerCert](https://www.rabbitmq.com/ssl.html#peer-verification-configuration) allows a TLS connection if client fails to provide a certificate
 
