@@ -13,6 +13,11 @@ updateStrategy:
   type: RollingUpdate
 
 ## refs:
+## - https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#pod-management-policy
+## - https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#parallel-pod-management
+podManagementPolicy: Parallel
+
+## refs:
 ## - https://github.com/kubernetes/contrib/tree/master/statefulsets/zookeeper
 ## - https://github.com/kubernetes/contrib/blob/master/statefulsets/zookeeper/Makefile#L1
 image:

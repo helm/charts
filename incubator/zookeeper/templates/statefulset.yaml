@@ -18,6 +18,7 @@ spec:
       component: server
   updateStrategy:
 {{ toYaml .Values.updateStrategy | indent 4 }}
+  podManagementPolicy: {{ .Values.podManagementPolicy }}
   template:
     metadata:
       labels:
