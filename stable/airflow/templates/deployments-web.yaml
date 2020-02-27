@@ -74,12 +74,20 @@ spec:
           envFrom:
           - configMapRef:
               name: "{{ template "airflow.fullname" . }}-env"
+          {{- if .Values.dags.git.repoSecret }}
+          - secretRef:
+              name: {{ .Values.dags.git.repoSecret }}
+          {{- end }}
           env:
           {{- include "airflow.mapenvsecrets" . | indent 10 }}
           command:
             - /usr/local/git/git-clone.sh
           args:
+            {{- if .Values.dags.git.repoSecret }}
+            - "$(DAG_GIT_REPO)"
+            {{- else }}
             - "{{ .Values.dags.git.url }}"
+            {{- end }}
             - "{{ .Values.dags.git.ref }}"
             - "/dags"
             - "{{ .Values.dags.git.repoHost}}"
@@ -102,12 +110,20 @@ spec:
           envFrom:
           - configMapRef:
               name: "{{ template "airflow.fullname" . }}-env"
+          {{- if .Values.dags.git.repoSecret }}
+          - secretRef:
+              name: {{ .Values.dags.git.repoSecret }}
+          {{- end }}
           env:
           {{- include "airflow.mapenvsecrets" . | indent 10 }}
           command:
             - /usr/local/git/git-sync.sh
           args:
+            {{- if .Values.dags.git.repoSecret }}
+            - "$(DAG_GIT_REPO)"
+            {{- else }}
             - "{{ .Values.dags.git.url }}"
+            {{- end }}
             - "{{ .Values.dags.git.ref }}"
             - "/dags"
             - "{{ .Values.dags.git.repoHost}}"

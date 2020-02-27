@@ -541,6 +541,9 @@ dags:
     repoHost: ""
     ## The name of the private key in your git sync secret (Only need if using ssh not https git sync)
     privateKeyName: ""
+    ## The name of the pre-created secret containing the key DAG_GIT_REPO with the git repo url.
+    ## Use this secret if your url contains sensitive information such as a token.
+    repoSecret: ""
     gitSync:
       ## Turns on the side car container
       enabled: false
