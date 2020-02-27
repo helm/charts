@@ -101,6 +101,7 @@ user:
   # Default is true as the initial installation.
   create: true
   email: admin@sentry.local
+  # password: admin-password
 
 # BYO Email server
 # TODO: Add exim4 template
