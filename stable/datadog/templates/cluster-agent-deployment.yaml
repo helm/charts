@@ -153,7 +153,9 @@ spec:
         readinessProbe:
 {{ toYaml .Values.clusterAgent.readinessProbe | indent 10 }}
         volumeMounts:
+{{- if .Values.clusterAgent.volumeMounts }}
 {{ toYaml .Values.clusterAgent.volumeMounts | indent 10 }}
+{{- end }}
 {{- if .Values.clusterAgent.confd }}
           - name: confd
             mountPath: /conf.d

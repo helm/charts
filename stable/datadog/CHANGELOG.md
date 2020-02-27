@@ -2,6 +2,11 @@
 
 ## 2.0
 
+## 2.0.1
+
+* Add parameters `datadog.logs.enabled` and `datadog.logs.containerCollectAll` to replace `datadog.logsEnabled` and `datadog.logsConfigContainerCollectAll`.
+* Update the migration document link in the `Readme.md`.
+
 ### 2.0.0
 
 * Remove Datadog agent deployment configuration.
