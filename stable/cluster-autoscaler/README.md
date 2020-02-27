@@ -173,7 +173,10 @@ Parameter | Description | Default
 `replicaCount` | desired number of pods | `1`
 `priorityClassName` | priorityClassName | `nil`
 `dnsPolicy` | dnsPolicy | `nil`
+`securityContext` | [Security context for pod](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) | `nil`
+`containerSecurityContext` | [Security context for container](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) | `nil`
 `resources` | pod resource requests & limits | `{}`
+`updateStrategy` | [Deployment update strategy](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy) | `nil`
 `service.annotations` | annotations to add to service | none
 `service.externalIPs` | service external IP addresses | `[]`
 `service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
@@ -190,6 +193,7 @@ Parameter | Description | Default
 `serviceMonitor.enabled` | if `true`, creates a Prometheus Operator ServiceMonitor | `false`
 `serviceMonitor.interval` | Interval that Prometheus scrapes Cluster Autoscaler metrics | `10s`
 `serviceMonitor.namespace` | Namespace which Prometheus is running in | `monitoring`
+`serviceMonitor.path` | The path to scrape for metrics | `/metrics`
 `serviceMonitor.selector` | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install | `{ prometheus: kube-prometheus }`
 `azureClientID` | Service Principal ClientID with contributor permission to Cluster and Node ResourceGroup | none
 `azureClientSecret` | Service Principal ClientSecret with contributor permission to Cluster and Node ResourceGroup | none

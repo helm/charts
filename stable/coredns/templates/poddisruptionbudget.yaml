@@ -1,0 +1,28 @@
+{{- if .Values.podDisruptionBudget -}}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "coredns.fullname" . }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    {{- if .Values.isClusterService }}
+    k8s-app: {{ .Chart.Name | quote }}
+    kubernetes.io/cluster-service: "true"
+    kubernetes.io/name: "CoreDNS"
+    {{- end }}
+    app.kubernetes.io/name: {{ template "coredns.name" . }}
+{{- if .Values.customLabels }}
+{{ toYaml .Values.customLabels | indent 4 }}
+{{- end }}
+spec:
+  selector:
+    matchLabels:
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        {{- if .Values.isClusterService }}
+        k8s-app: {{ .Chart.Name | quote }}
+        {{- end }}
+        app.kubernetes.io/name: {{ template "coredns.name" . }}
+{{ toYaml .Values.podDisruptionBudget | indent 2 }}
+{{- end }}

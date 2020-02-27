@@ -19,9 +19,9 @@ metadata:
     heritage: {{ .Release.Service }}
 rules:
 - apiGroups: [""]
-  resources: ["pods", "events", "nodes", "namespaces", "services"]
+  resources: ["pods", "events", "nodes", "nodes/stats", "nodes/metrics", "namespaces", "services"]
   verbs: ["list", "get", "watch"]
-- apiGroups: ["extensions"]
+- apiGroups: ["apps", "extensions"]
   resources: ["replicasets"]
   verbs: ["list"]
 - apiGroups: ["azmon.container.insights"]

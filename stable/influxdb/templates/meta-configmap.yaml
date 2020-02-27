@@ -1,0 +1,35 @@
+{{ if .Values.enterprise.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "influxdb.fullname" . }}-meta
+  labels:
+    {{- include "influxdb.labels" . | nindent 4 }}
+    app.kubernetes.io/component: meta
+data:
+  influxdb-meta.conf: |+
+    reporting-disabled = {{ .Values.config.reporting_disabled | default false }}
+    bind-address = ":{{ .Values.config.meta.bind_address | default 8091 }}"
+
+    [enterprise]
+      license-key = {{ .Values.enterprise.licensekey | quote }}
+
+    [meta]
+      dir = "/var/lib/influxdb/meta"
+      {{- range $key, $value := index .Values.config.meta }}
+      {{ $key }} = {{ $value }}
+      {{- end }}
+      {{- if .Values.enterprise.enabled }}
+      meta-auth-enabled = {{ .Values.config.meta.authEnabled }}
+      {{- end }}
+
+    [logging]
+      {{- range $key, $value := index .Values.config.logging }}
+      {{ $key }} = {{ $value }}
+      {{- end }}
+
+    [tls]
+      {{- range $key, $value := index .Values.config.tls }}
+      {{ $key }} = {{ $value }}
+      {{- end }}
+{{- end }}
