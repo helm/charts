@@ -474,6 +474,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `dags.git.secret`                        | name of a secret containing an ssh deploy key           | nil                       |
 | `dags.git.privateKeyName`                | name of private key mounted in secret(only needed if using ssh to connect to git)   | ''                        |
 | `dags.git.repoHost`                      | Host of git repo you are establish an ssh connection to ex. github.com (only needed if using ssh to connect to git)            | ''                        |
+| `dags.git.repoSecret`                    | The name of an existing secret with a key named `DAG_GIT_REPO` to use as the repo URL for git sync and git clone | ''                   |
 | `dags.git.gitSync.enabled`               | Enables a sidecar container that syncs dags             | `false`                   |
 | `dags.git.gitSync.image.repository`      | Image of the sidecar container that syncs dags          | `alpine/git`                  |
 | `dags.git.gitSync.image.tag`             | Image tag of sidecar container that syncs dags          | `1.0.4`                  |
