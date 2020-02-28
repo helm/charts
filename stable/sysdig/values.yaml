@@ -92,7 +92,7 @@ sysdig:
   # Required: You need your Sysdig Monitor access key before running agents.
   accessKey: ""
 
-  settings:
+  settings: {}
     ### Agent tags
     # tags: linux:ubuntu,dept:dev,local:nyc
     #### Sysdig Software related config ####
