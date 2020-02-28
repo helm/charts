@@ -58,6 +58,15 @@ spec:
           {{- toYaml .Values.resources | nindent 10 }}
         securityContext:
           {{- toYaml .Values.securityContext | nindent 10 }}
+      {{- if .Values.cacert.enabled }}
+        volumeMounts:
+          - name: {{ include "prometheus-mongodb-exporter.fullname" . }}-cacert
+            mountPath: /var/mongodb_exporter/config
+      volumes:
+        - name: {{ include "prometheus-mongodb-exporter.fullname" . }}-cacert
+          configMap:
+            name: {{ include "prometheus-mongodb-exporter.fullname" . }}-cacert
+      {{- end }}
       affinity:
         {{- toYaml .Values.affinity | nindent 8 }}
       imagePullSecrets:
@@ -70,8 +79,3 @@ spec:
       terminationGracePeriodSeconds: 30
       tolerations:
         {{- toYaml .Values.tolerations | nindent 8 }}
-  {{- if .Values.cacert.enabled  }}
-  volumeMounts:
-    - name: {{- toYaml .Values.cacert.name }}-volume
-      mountPath: "/var/mongodb_exporter/config"
-  {{- end -}}

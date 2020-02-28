@@ -92,4 +92,4 @@ cacert:
   enabled: false
   mountPath: /var/mongodb_exporter/config
   content: ""
-  name: ""
+  
