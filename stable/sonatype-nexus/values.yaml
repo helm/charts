@@ -153,6 +153,13 @@ nexusBackup:
     # If PersistentDisk already exists you can create a PV for it by including the 2 following keypairs.
     # pdName: nexus-backup-disk
     # fsType: ext4
+  resources: {}
+    # requests:
+      # cpu: 100m
+      # memory: 256Mi
+    # limits:
+      # cpu: 200m
+      # memory: 512Mi
 
 serviceAccount:
   # Specifies whether a service account should be created
