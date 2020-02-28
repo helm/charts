@@ -3,6 +3,12 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.7.3
+
+### Minor changes
+
+* Removed dependency on ebpf.enabled to set environment variables
+
 ## v1.7.2
 
 ### Minor changes
