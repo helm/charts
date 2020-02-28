@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```console
-$ helm install my-release stable/wordpress
+helm install my-release stable/wordpress
 ```
 
 ## Introduction
@@ -28,7 +28,7 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install my-release stable/wordpress
+helm install my-release stable/wordpress
 ```
 
 The command deploys WordPress on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
@@ -40,132 +40,173 @@ The command deploys WordPress on the Kubernetes cluster in the default configura
 To uninstall/delete the `my-release` deployment:
 
 ```console
-$ helm delete my-release
+helm delete my-release
 ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
 ## Parameters
 
-The following table lists the configurable parameters of the WordPress chart and their default values.
+The following table lists the configurable parameters of the WordPress chart and their default values per section/component:
 
-|                 Parameter                 |                                              Description                                               |                           Default                            |
-|-------------------------------------------|--------------------------------------------------------------------------------------------------------|--------------------------------------------------------------|
-| `global.imageRegistry`                    | Global Docker image registry                                                                           | `nil`                                                        |
-| `global.imagePullSecrets`                 | Global Docker registry secret names as an array                                                        | `[]` (does not add image pull secrets to deployed pods)      |
-| `global.storageClass`                     | Global storage class for dynamic provisioning                                                          | `nil`                                                        |
-| `image.registry`                          | WordPress image registry                                                                               | `docker.io`                                                  |
-| `image.repository`                        | WordPress image name                                                                                   | `bitnami/wordpress`                                          |
-| `image.tag`                               | WordPress image tag                                                                                    | `{TAG_NAME}`                                                 |
-| `image.pullPolicy`                        | Image pull policy                                                                                      | `IfNotPresent`                                               |
-| `image.pullSecrets`                       | Specify docker-registry secret names as an array                                                       | `[]` (does not add image pull secrets to deployed pods)      |
-| `nameOverride`                            | String to partially override wordpress.fullname template with a string (will prepend the release name) | `nil`                                                        |
-| `fullnameOverride`                        | String to fully override wordpress.fullname template with a string                                     | `nil`                                                        |
-| `wordpressSkipInstall`                    | Skip wizard installation                                                                               | `false`                                                      |
-| `wordpressUsername`                       | User of the application                                                                                | `user`                                                       |
-| `wordpressPassword`                       | Application password                                                                                   | _random 10 character long alphanumeric string_               |
-| `wordpressEmail`                          | Admin email                                                                                            | `user@example.com`                                           |
-| `wordpressFirstName`                      | First name                                                                                             | `FirstName`                                                  |
-| `wordpressLastName`                       | Last name                                                                                              | `LastName`                                                   |
-| `wordpressBlogName`                       | Blog name                                                                                              | `User's Blog!`                                               |
-| `wordpressTablePrefix`                    | Table prefix                                                                                           | `wp_`                                                        |
-| `wordpressScheme`                         | Scheme to generate application URLs [`http`, `https`]                                                  | `http`                                                       |
-| `allowEmptyPassword`                      | Allow DB blank passwords                                                                               | `true`                                                       |
-| `allowOverrideNone`                       | Set Apache AllowOverride directive to None                                                             | `false`                                                      |
-| `customHTAccessCM`                        | Configmap with custom wordpress-htaccess.conf directives                                               | `nil`                                                        |
-| `smtpHost`                                | SMTP host                                                                                              | `nil`                                                        |
-| `smtpPort`                                | SMTP port                                                                                              | `nil`                                                        |
-| `smtpUser`                                | SMTP user                                                                                              | `nil`                                                        |
-| `smtpPassword`                            | SMTP password                                                                                          | `nil`                                                        |
-| `smtpUsername`                            | User name for SMTP emails                                                                              | `nil`                                                        |
-| `smtpProtocol`                            | SMTP protocol [`tls`, `ssl`, `none`]                                                                   | `nil`                                                        |
-| `replicaCount`                            | Number of WordPress Pods to run                                                                        | `1`                                                          |
-| `extraEnv`                                | Additional container environment variables                                                             | `[]`                                                         |
-| `extraVolumeMounts`                       | Additional volume mounts                                                                               | `[]`                                                         |
-| `extraVolumes`                            | Additional volumes                                                                                     | `[]`                                                         |
-| `mariadb.enabled`                         | Deploy MariaDB container(s)                                                                            | `true`                                                       |
-| `mariadb.rootUser.password`               | MariaDB admin password                                                                                 | `nil`                                                        |
-| `mariadb.db.name`                         | Database name to create                                                                                | `bitnami_wordpress`                                          |
-| `mariadb.db.user`                         | Database user to create                                                                                | `bn_wordpress`                                               |
-| `mariadb.db.password`                     | Password for the database                                                                              | _random 10 character long alphanumeric string_               |
-| `externalDatabase.host`                   | Host of the external database                                                                          | `localhost`                                                  |
-| `externalDatabase.user`                   | Existing username in the external db                                                                   | `bn_wordpress`                                               |
-| `externalDatabase.password`               | Password for the above username                                                                        | `nil`                                                        |
-| `externalDatabase.database`               | Name of the existing database                                                                          | `bitnami_wordpress`                                          |
-| `externalDatabase.port`                   | Database port number                                                                                   | `3306`                                                       |
-| `service.annotations`                     | Service annotations                                                                                    | `{}`                                                         |
-| `service.type`                            | Kubernetes Service type                                                                                | `LoadBalancer`                                               |
-| `service.port`                            | Service HTTP port                                                                                      | `80`                                                         |
-| `service.httpsPort`                       | Service HTTPS port                                                                                     | `443`                                                        |
-| `service.httpsTargetPort`                 | Service Target HTTPS port                                                                              | `https`                                                      |
-| `service.loadBalancerSourceRanges`        | Restricts access for LoadBalancer (only with `service.type: LoadBalancer`)                             | `[]`                                                         |
-| `service.metricsPort`                     | Service Metrics port                                                                                   | `9117`                                                       |
-| `service.externalTrafficPolicy`           | Enable client source IP preservation                                                                   | `Cluster`                                                    |
-| `service.nodePorts.http`                  | Kubernetes http node port                                                                              | `""`                                                         |
-| `service.nodePorts.https`                 | Kubernetes https node port                                                                             | `""`                                                         |
-| `service.nodePorts.metrics`               | Kubernetes metrics node port                                                                           | `""`                                                         |
-| `service.extraPorts`                      | Extra ports to expose in the service (normally used with the `sidecar` value)                          | `nil`                                                        |
-| `healthcheckHttps`                        | Use https for liveliness and readiness                                                                 | `false`                                                      |
-| `livenessProbe.enabled`                   | Enable/disable livenessProbe                                                                          | `true`                                                       |
-| `livenessProbe.initialDelaySeconds`       | Delay before liveness probe is initiated                                                               | `120`                                                        |
-| `livenessProbe.periodSeconds`             | How often to perform the probe                                                                         | `10`                                                         |
-| `livenessProbe.timeoutSeconds`            | When the probe times out                                                                               | `5`                                                          |
-| `livenessProbe.failureThreshold`          | Minimum consecutive failures for the probe                                                             | `6`                                                          |
-| `livenessProbe.successThreshold`          | Minimum consecutive successes for the probe                                                            | `1`                                                          |
-| `livenessProbeHeaders`                    | Headers to use for livenessProbe                                                                       | `nil`                                                        |
-| `readiness.enabled`                       | Enable/disable readinessProbe                                                                          | `true`                                                       |
-| `readinessProbe.initialDelaySeconds`      | Delay before readiness probe is initiated                                                              | `30`                                                         |
-| `readinessProbe.periodSeconds`            | How often to perform the probe                                                                         | `10`                                                         |
-| `readinessProbe.timeoutSeconds`           | When the probe times out                                                                               | `5`                                                          |
-| `readinessProbe.failureThreshold`         | Minimum consecutive failures for the probe                                                             | `6`                                                          |
-| `readinessProbe.successThreshold`         | Minimum consecutive successes for the probe                                                            | `1`                                                          |
-| `readinessProbeHeaders`                   | Headers to use for readinessProbe                                                                      | `nil`                                                        |
-| `ingress.enabled`                         | Enable ingress controller resource                                                                     | `false`                                                      |
-| `ingress.certManager`                     | Add annotations for cert-manager                                                                       | `false`                                                      |
-| `ingress.hostname`                        | Default host for the ingress resource                                                                  | `wordpress.local`                                            |
-| `ingress.annotations`                     | Ingress annotations                                                                                    | `[]`                                                         |
-| `ingress.hosts[0].name`                   | Hostname to your Wordpress installation                                                                | `wordpress.local`                                            |
-| `ingress.hosts[0].path`                   | Path within the url structure                                                                          | `/`                                                          |
-| `ingress.tls[0].hosts[0]`                 | TLS hosts                                                                                              | `wordpress.local`                                            |
-| `ingress.tls[0].secretName`               | TLS Secret (certificates)                                                                              | `wordpress.local-tls`                                        |
-| `ingress.secrets[0].name`                 | TLS Secret Name                                                                                        | `nil`                                                        |
-| `ingress.secrets[0].certificate`          | TLS Secret Certificate                                                                                 | `nil`                                                        |
-| `ingress.secrets[0].key`                  | TLS Secret Key                                                                                         | `nil`                                                        |
-| `schedulerName`                           | Name of the alternate scheduler                                                                        | `nil`                                                        |
-| `persistence.enabled`                     | Enable persistence using PVC                                                                           | `true`                                                       |
-| `persistence.existingClaim`               | Enable persistence using an existing PVC                                                               | `nil`                                                        |
-| `persistence.storageClass`                | PVC Storage Class                                                                                      | `nil` (uses alpha storage class annotation)                  |
-| `persistence.accessMode`                  | PVC Access Mode                                                                                        | `ReadWriteOnce`                                              |
-| `persistence.size`                        | PVC Storage Request                                                                                    | `10Gi`                                                       |
-| `nodeSelector`                            | Node labels for pod assignment                                                                         | `{}`                                                         |
-| `tolerations`                             | List of node taints to tolerate                                                                        | `[]`                                                         |
-| `affinity`                                | Map of node/pod affinities                                                                             | `{}`                                                         |
-| `podAnnotations`                          | Pod annotations                                                                                        | `{}`                                                         |
-| `metrics.enabled`                         | Start a side-car prometheus exporter                                                                   | `false`                                                      |
-| `metrics.image.registry`                  | Apache exporter image registry                                                                         | `docker.io`                                                  |
-| `metrics.image.repository`                | Apache exporter image name                                                                             | `bitnami/apache-exporter`                                    |
-| `metrics.image.tag`                       | Apache exporter image tag                                                                              | `{TAG_NAME}`                                                 |
-| `metrics.image.pullPolicy`                | Image pull policy                                                                                      | `IfNotPresent`                                               |
-| `metrics.image.pullSecrets`               | Specify docker-registry secret names as an array                                                       | `[]` (does not add image pull secrets to deployed pods)      |
-| `metrics.podAnnotations`                  | Additional annotations for Metrics exporter pod                                                        | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}` |
-| `metrics.resources`                       | Exporter resource requests/limit                                                                       | `{}`                                                         |
-| `metrics.serviceMonitor.enabled`          | Create ServiceMonitor Resource for scraping metrics using PrometheusOperator                           | `false`                                                      |
-| `metrics.serviceMonitor.namespace`        | Namespace where servicemonitor resource should be created                                              | `nil`                                                        |
-| `metrics.serviceMonitor.interval`         | Specify the interval at which metrics should be scraped                                                | `30s`                                                        |
-| `metrics.serviceMonitor.scrapeTimeout`    | Specify the timeout after which the scrape is ended                                                    | `nil`                                                        |
-| `metrics.serviceMonitor.relabellings`     | Specify Metric Relabellings to add to the scrape endpoint                                              | `nil`                                                        |
-| `metrics.serviceMonitor.honorLabels`      | honorLabels chooses the metric's labels on collisions with target labels.                              | `false`                                                      |
-| `metrics.serviceMonitor.additionalLabels` | Used to pass Labels that are required by the Installed Prometheus Operator                             | `{}`                                                         |
-| `sidecars`                                | Attach additional containers to the pod                                                                | `nil`                                                        |
-| `updateStrategy`                          | Set up update strategy                                                                                 | `RollingUpdate`                                              |
+### Global parameters
+
+| Parameter                 | Description                                     | Default                                                 |
+|---------------------------|-------------------------------------------------|---------------------------------------------------------|
+| `global.imageRegistry`    | Global Docker image registry                    | `nil`                                                   |
+| `global.imagePullSecrets` | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
+| `global.storageClass`     | Global storage class for dynamic provisioning   | `nil`                                                   |
+
+### Common parameters
+
+| Parameter                 | Description                                     | Default                                                 |
+|---------------------------|-------------------------------------------------|---------------------------------------------------------|
+| `nameOverride`            | String to partially override wordpress.fullname | `nil`                                                   |
+| `fullnameOverride`        | String to fully override wordpress.fullname     | `nil`                                                   |
+| `clusterDomain`           | Default Kubernetes cluster domain               | `cluster.local`                                         |
+
+### WordPress parameters
+
+| Parameter                            | Description                                                                   | Default                                                 |
+|--------------------------------------|-------------------------------------------------------------------------------|---------------------------------------------------------|
+| `image.registry`                     | WordPress image registry                                                      | `docker.io`                                             |
+| `image.repository`                   | WordPress image name                                                          | `bitnami/wordpress`                                     |
+| `image.tag`                          | WordPress image tag                                                           | `{TAG_NAME}`                                            |
+| `image.pullPolicy`                   | WordPress image pull policy                                                   | `IfNotPresent`                                          |
+| `image.pullSecrets`                  | Specify docker-registry secret names as an array                              | `[]` (does not add image pull secrets to deployed pods) |
+| `image.debug`                        | Specify if debug logs should be enabled                                       | `false`                                                 |
+| `wordpressSkipInstall`               | Skip wizard installation                                                      | `false`                                                 |
+| `wordpressUsername`                  | User of the application                                                       | `user`                                                  |
+| `wordpressPassword`                  | Application password                                                          | _random 10 character long alphanumeric string_          |
+| `wordpressEmail`                     | Admin email                                                                   | `user@example.com`                                      |
+| `wordpressFirstName`                 | First name                                                                    | `FirstName`                                             |
+| `wordpressLastName`                  | Last name                                                                     | `LastName`                                              |
+| `wordpressBlogName`                  | Blog name                                                                     | `User's Blog!`                                          |
+| `wordpressTablePrefix`               | Table prefix                                                                  | `wp_`                                                   |
+| `wordpressScheme`                    | Scheme to generate application URLs [`http`, `https`]                         | `http`                                                  |
+| `allowEmptyPassword`                 | Allow DB blank passwords                                                      | `true`                                                  |
+| `allowOverrideNone`                  | Set Apache AllowOverride directive to None                                    | `false`                                                 |
+| `customHTAccessCM`                   | Configmap with custom wordpress-htaccess.conf directives                      | `nil`                                                   |
+| `smtpHost`                           | SMTP host                                                                     | `nil`                                                   |
+| `smtpPort`                           | SMTP port                                                                     | `nil`                                                   |
+| `smtpUser`                           | SMTP user                                                                     | `nil`                                                   |
+| `smtpPassword`                       | SMTP password                                                                 | `nil`                                                   |
+| `smtpUsername`                       | User name for SMTP emails                                                     | `nil`                                                   |
+| `smtpProtocol`                       | SMTP protocol [`tls`, `ssl`, `none`]                                          | `nil`                                                   |
+| `extraEnv`                           | Additional container environment variables                                    | `[]`                                                    |
+| `extraVolumeMounts`                  | Additional volume mounts                                                      | `[]`                                                    |
+| `extraVolumes`                       | Additional volumes                                                            | `[]`                                                    |
+| `sidecars`                           | Attach additional sidecar containers to the pod                               | `nil`                                                   |
+| `replicaCount`                       | Number of WordPress Pods to run                                               | `1`                                                     |
+| `updateStrategy`                     | Set up update strategy                                                        | `RollingUpdate`                                         |
+| `schedulerName`                      | Name of the alternate scheduler                                               | `nil`                                                   |
+| `securityContext.enabled`            | Enable security context for WordPress pods                                    | `true`                                                  |
+| `securityContext.fsGroup`            | Group ID for the WordPress filesystem                                         | `1001`                                                  |
+| `securityContext.runAsUser`          | User ID for the WordPress container                                           | `1001`                                                  |
+| `resources.limits`                   | The resources limits for the WordPress container                              | `{}`                                                    |
+| `resources.requests`                 | The requested resources for the WordPress container                           | `{"memory": "512Mi", "cpu": "300m"}`                    |
+| `nodeSelector`                       | Node labels for pod assignment                                                | `{}` (evaluated as a template)                          |
+| `tolerations`                        | Tolerations for pod assignment                                                | `[]` (evaluated as a template)                          |
+| `affinity`                           | Affinity for pod assignment                                                   | `{}` (evaluated as a template)                          |
+| `podAnnotations`                     | Pod annotations                                                               | `{}` (evaluated as a template)                          |
+| `healthcheckHttps`                   | Use https for liveliness and readiness                                        | `false`                                                 |
+| `livenessProbe.enabled`              | Enable/disable livenessProbe                                                  | `true`                                                  |
+| `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated                                      | `120`                                                   |
+| `livenessProbe.periodSeconds`        | How often to perform the probe                                                | `10`                                                    |
+| `livenessProbe.timeoutSeconds`       | When the probe times out                                                      | `5`                                                     |
+| `livenessProbe.failureThreshold`     | Minimum consecutive failures for the probe                                    | `6`                                                     |
+| `livenessProbe.successThreshold`     | Minimum consecutive successes for the probe                                   | `1`                                                     |
+| `livenessProbeHeaders`               | Headers to use for livenessProbe                                              | `{}`                                                    |
+| `readinessProbe.enabled`             | Enable/disable readinessProbe                                                 | `true`                                                  |
+| `readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated                                     | `30`                                                    |
+| `readinessProbe.periodSeconds`       | How often to perform the probe                                                | `10`                                                    |
+| `readinessProbe.timeoutSeconds`      | When the probe times out                                                      | `5`                                                     |
+| `readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe                                    | `6`                                                     |
+| `readinessProbe.successThreshold`    | Minimum consecutive successes for the probe                                   | `1`                                                     |
+| `readinessProbeHeaders`              | Headers to use for readinessProbe                                             | `{}`                                                    |
+| `service.annotations`                | Service annotations                                                           | `{}` (evaluated as a template)                          |
+| `service.type`                       | Kubernetes Service type                                                       | `LoadBalancer`                                          |
+| `service.port`                       | Service HTTP port                                                             | `80`                                                    |
+| `service.httpsPort`                  | Service HTTPS port                                                            | `443`                                                   |
+| `service.httpsTargetPort`            | Service Target HTTPS port                                                     | `https`                                                 |
+| `service.loadBalancerSourceRanges`   | Restricts access for LoadBalancer (only with `service.type: LoadBalancer`)    | `[]`                                                    |
+| `service.metricsPort`                | Service Metrics port                                                          | `9117`                                                  |
+| `service.externalTrafficPolicy`      | Enable client source IP preservation                                          | `Cluster`                                               |
+| `service.nodePorts.http`             | Kubernetes http node port                                                     | `""`                                                    |
+| `service.nodePorts.https`            | Kubernetes https node port                                                    | `""`                                                    |
+| `service.nodePorts.metrics`          | Kubernetes metrics node port                                                  | `""`                                                    |
+| `service.extraPorts`                 | Extra ports to expose in the service (normally used with the `sidecar` value) | `nil`                                                   |
+| `persistence.enabled`                | Enable persistence using PVC                                                  | `true`                                                  |
+| `persistence.existingClaim`          | Enable persistence using an existing PVC                                      | `nil`                                                   |
+| `persistence.storageClass`           | PVC Storage Class                                                             | `nil` (uses alpha storage class annotation)             |
+| `persistence.accessMode`             | PVC Access Mode                                                               | `ReadWriteOnce`                                         |
+| `persistence.size`                   | PVC Storage Request                                                           | `10Gi`                                                  |
+
+### Ingress parameters
+
+| Parameter                         | Description                                              | Default                        |
+|-----------------------------------|----------------------------------------------------------|--------------------------------|
+| `ingress.enabled`                 | Enable ingress controller resource                       | `false`                        |
+| `ingress.certManager`             | Add annotations for cert-manager                         | `false`                        |
+| `ingress.hostname`                | Default host for the ingress resource                    | `wordpress.local`              |
+| `ingress.annotations`             | Ingress annotations                                      | `[]` (evaluated as a template) |
+| `ingress.extraHosts[0].name`      | Additional hostnames to be covered                       | `nil`                          |
+| `ingress.extraHosts[0].path`      | Additional hostnames to be covered                       | `nil`                          |
+| `ingress.extraTls[0].hosts[0]`    | TLS configuration for additional hostnames to be covered | `nil`                          |
+| `ingress.extraTls[0].secretName`  | TLS configuration for additional hostnames to be covered | `nil`                          |
+| `ingress.secrets[0].name`         | TLS Secret Name                                          | `nil`                          |
+| `ingress.secrets[0].certificate`  | TLS Secret Certificate                                   | `nil`                          |
+| `ingress.secrets[0].key`          | TLS Secret Key                                           | `nil`                          |
+
+### Database parameters
+
+| Parameter                                | Description                             | Default                                        |
+|------------------------------------------|-----------------------------------------|------------------------------------------------|
+| `mariadb.enabled`                        | Deploy MariaDB container(s)             | `true`                                         |
+| `mariadb.rootUser.password`              | MariaDB admin password                  | `nil`                                          |
+| `mariadb.db.name`                        | Database name to create                 | `bitnami_wordpress`                            |
+| `mariadb.db.user`                        | Database user to create                 | `bn_wordpress`                                 |
+| `mariadb.db.password`                    | Password for the database               | _random 10 character long alphanumeric string_ |
+| `mariadb.replication.enabled`            | MariaDB replication enabled             | `false`                                        |
+| `mariadb.master.persistence.enabled`     | Enable database persistence using PVC   | `true`                                         |
+| `mariadb.master.persistence.accessModes` | Database Persistent Volume Access Modes | `[ReadWriteOnce]`                              |
+| `mariadb.master.persistence.size`        | Database Persistent Volume Size         | `8Gi`                                          |
+| `externalDatabase.host`                  | Host of the external database           | `localhost`                                    |
+| `externalDatabase.user`                  | Existing username in the external db    | `bn_wordpress`                                 |
+| `externalDatabase.password`              | Password for the above username         | `nil`                                          |
+| `externalDatabase.database`              | Name of the existing database           | `bitnami_wordpress`                            |
+| `externalDatabase.port`                  | Database port number                    | `3306`                                         |
+
+### Metrics parameters
+
+| Parameter                                 | Description                                                                  | Default                                                      |
+|-------------------------------------------|------------------------------------------------------------------------------|--------------------------------------------------------------|
+| `metrics.enabled`                         | Start a side-car prometheus exporter                                         | `false`                                                      |
+| `metrics.image.registry`                  | Apache exporter image registry                                               | `docker.io`                                                  |
+| `metrics.image.repository`                | Apache exporter image name                                                   | `bitnami/apache-exporter`                                    |
+| `metrics.image.tag`                       | Apache exporter image tag                                                    | `{TAG_NAME}`                                                 |
+| `metrics.image.pullPolicy`                | Image pull policy                                                            | `IfNotPresent`                                               |
+| `metrics.image.pullSecrets`               | Specify docker-registry secret names as an array                             | `[]` (does not add image pull secrets to deployed pods)      |
+| `metrics.podAnnotations`                  | Additional annotations for Metrics exporter pod                              | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}` |
+| `metrics.resources.limits`                | The resources limits for the metrics exporter container                      | `{}`                                                         |
+| `metrics.resources.requests`              | The requested resources for the metrics exporter container                   | `{}`                                                         |
+| `metrics.serviceMonitor.enabled`          | Create ServiceMonitor Resource for scraping metrics using PrometheusOperator | `false`                                                      |
+| `metrics.serviceMonitor.namespace`        | Namespace where servicemonitor resource should be created                    | `nil`                                                        |
+| `metrics.serviceMonitor.interval`         | Specify the interval at which metrics should be scraped                      | `30s`                                                        |
+| `metrics.serviceMonitor.scrapeTimeout`    | Specify the timeout after which the scrape is ended                          | `nil`                                                        |
+| `metrics.serviceMonitor.relabellings`     | Specify Metric Relabellings to add to the scrape endpoint                    | `nil`                                                        |
+| `metrics.serviceMonitor.honorLabels`      | honorLabels chooses the metric's labels on collisions with target labels.    | `false`                                                      |
+| `metrics.serviceMonitor.additionalLabels` | Used to pass Labels that are required by the Installed Prometheus Operator   | `{}`                                                         |
 
 The above parameters map to the env variables defined in [bitnami/wordpress](http://github.com/bitnami/bitnami-docker-wordpress). For more information please refer to the [bitnami/wordpress](http://github.com/bitnami/bitnami-docker-wordpress) image documentation.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install my-release \
-  --set wordpressUsername=admin,wordpressPassword=password,mariadb.mariadbRootPassword=secretpassword \
+helm install my-release \
+  --set wordpressUsername=admin \
+  --set wordpressPassword=password \
+  --set mariadb.mariadbRootPassword=secretpassword \
     stable/wordpress
 ```
 
@@ -174,7 +215,7 @@ The above command sets the WordPress administrator account username and password
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install my-release -f values.yaml stable/wordpress
+helm install my-release -f values.yaml stable/wordpress
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -192,43 +233,49 @@ Bitnami will release a new chart updating its containers if a new version of the
 This chart includes a `values-production.yaml` file where you can find some parameters oriented to production configuration in comparison to the regular `values.yaml`. You can use this file instead of the default one.
 
 - Set Apache AllowOverride directive to None:
+
 ```diff
 - allowOverrideNone: false
 + allowOverrideNone: true
 ```
 
-- Number of WordPress Pods to run
+- Number of WordPress Pods to run:
+
 ```diff
 - replicaCount: 1
 + replicaCount: 3
 ```
 
 - Enable client source IP preservation:
+
 ```diff
 - service.externalTrafficPolicy: Cluster
 + service.externalTrafficPolicy: Local
 ```
 
 - PVC Access Mode:
+
 ```diff
 - persistence.accessMode: ReadWriteOnce
-+ ##
 + ## To use the /admin portal and to ensure you can scale wordpress you need to provide a
 + ## ReadWriteMany PVC, if you dont have a provisioner for this type of storage
 + ## We recommend that you install the nfs provisioner and map it to a RWO volume
 + ## helm install nfs-server stable/nfs-server-provisioner --set persistence.enabled=true,persistence.size=10Gi
++ ##
 + persistence.accessMode: ReadWriteMany
 ```
 
 - Start a side-car prometheus exporter:
+
 ```diff
 - metrics.enabled: false
 + metrics.enabled: true
 ```
 
-Note that [values-production.yaml](values-production.yaml) includes a replicaCount of 3, so there will be 3 WordPress pods. As a result, to use the /admin portal and to ensure you can scale wordpress you need to provide a ReadWriteMany PVC, if you don't have a provisioner for this type of storage, we recommend that you install the nfs provisioner (with the correct parameters, such as `persistence.enabled=true` and `persistence.size=10Gi`) and map it to a RWO volume.
+Note that [values-production.yaml](values-production.yaml) includes a replicaCount of 3, so there will be 3 WordPress pods. As a result, to use the "/admin" portal and to ensure you can scale wordpress you need to provide a ReadWriteMany PVC, if you don't have a provisioner for this type of storage, we recommend that you install the NFS provisioner chart (with the correct parameters, such as `persistence.enabled=true` and `persistence.size=10Gi`) and map it to a RWO volume.
 
 Then you can deploy WordPress chart using the proper parameters:
+
 ```console
 persistence.storageClass=nfs
 mariadb.master.persistence.storageClass=nfs
@@ -246,6 +293,7 @@ sidecars:
   ports:
   - name: portname
    containerPort: 1234
+```
 
 If these sidecars export extra ports, you can add extra port definitions using the `service.extraPorts` value:
 
@@ -281,36 +329,37 @@ To enable ingress integration, please set `ingress.enabled` to `true`
 
 ### Hosts
 
-Most likely you will only want to have one hostname that maps to this WordPress installation. If that's your case, the property `ingress.hostname` will set it. However, it is possible to have more than one host. To facilitate this, the `ingress.hosts` object is can be specified as an array.
+Most likely you will only want to have one hostname that maps to this WordPress installation. If that's your case, the property `ingress.hostname` will set it. However, it is possible to have more than one host. To facilitate this, the `ingress.extraHosts` object is can be specified as an array. You can also use `ingress.extraTLS` to add the TLS configuration for extra hosts.
 
-For each item, please indicate a `name`, `tls`, `tlsSecret`, and any `annotations` that you may want the ingress controller to know about.
+For each host indicated at `ingress.extraHosts`, please indicate a `name`, `path`, and any `annotations` that you may want the ingress controller to know about.
 
-Indicating TLS will cause WordPress to generate HTTPS URLs, and WordPress will be connected to at port 443.  The actual secret that `tlsSecret` references do not have to be generated by this chart. However, please note that if TLS is enabled, the ingress record will not work until this secret exists.
+Indicating TLS will cause WordPress to generate HTTPS URLs, and WordPress will be connected to at port 443. The actual TLS secret do not have to be generated by this chart. However, please note that if TLS is enabled, the ingress record will not work until this secret exists.
 
-For annotations, please see [this document](https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/annotations.md).
-Not all annotations are supported by all ingress controllers, but this document does a good job of indicating which annotation is supported by many popular ingress controllers.
+For annotations, please see [this document](https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/annotations.md). Not all annotations are supported by all ingress controllers, but this document does a good job of indicating which annotation is supported by many popular ingress controllers.
 
 ### TLS Secrets
 
 This chart will facilitate the creation of TLS secrets for use with the ingress controller, however, this is not required.  There are three common use cases:
 
-* helm generates/manages certificate secrets
-* user generates/manages certificates separately
-* an additional tool (like [kube-lego](https://kubeapps.com/charts/stable/kube-lego)) manages the secrets for the application
+- Helm generates/manages certificate secrets
+- User generates/manages certificates separately
+- An additional tool (like [kube-lego](https://kubeapps.com/charts/stable/kube-lego)) manages the secrets for the application
 
 In the first two cases, one will need a certificate and a key.  We would expect them to look like this:
 
-* certificate files should look like (and there can be more than one certificate if there is a certificate chain)
+- certificate files should look like (and there can be more than one certificate if there is a certificate chain)
 
-```
+```console
 -----BEGIN CERTIFICATE-----
 MIID6TCCAtGgAwIBAgIJAIaCwivkeB5EMA0GCSqGSIb3DQEBCwUAMFYxCzAJBgNV
 ...
 jScrvkiBO65F46KioCL9h5tDvomdU1aqpI/CBzhvZn1c0ZTf87tGQR8NK7v7
 -----END CERTIFICATE-----
 ```
-* keys should look like:
-```
+
+- keys should look like:
+
+```console
 -----BEGIN RSA PRIVATE KEY-----
 MIIEogIBAAKCAQEAvLYcyu8f3skuRyUgeeNpeDvYBCDcgq+LsWap6zbX5f8oLqp4
 ...
@@ -330,11 +379,11 @@ In cases where HTTPS/TLS is terminated on the ingress, you may run into an issue
 
 ```yaml
 livenessProbeHeaders:
-- name: X-Forwarded-Proto
-  value: https
+  - name: X-Forwarded-Proto
+    value: https
 readinessProbeHeaders:
-- name: X-Forwarded-Proto
-  value: https
+  - name: X-Forwarded-Proto
+    value: https
 ```
 
 Any number of name/value pairs may be specified; they are all copied into the liveness or readiness probe definition.
@@ -359,6 +408,19 @@ See the [Parameters](#parameters) section to configure the PVC or to disable per
 
 ## Upgrading
 
+### To 9.0.0
+
+The [Bitnami WordPress](https://github.com/bitnami/bitnami-docker-wordpress) image was migrated to a "non-root" user approach. Previously the container ran as the `root` user and the Apache daemon was started as the `daemon` user. From now on, both the container and the Apache daemon run as user `1001`. You can revert this behavior by setting the parameters `securityContext.runAsUser`, and `securityContext.fsGroup` to `root`.
+Chart labels and Ingress configuration were also adapted to follow the Helm charts best practices.
+
+Consequences:
+
+- The HTTP/HTTPS ports exposed by the container are now `8080/8443` instead of `80/443`.
+- No writing permissions will be granted on `wp-config.php` by default.
+- Backwards compatibility is not guaranteed.
+
+To upgrade to `9.0.0`, install a new WordPress chart, and migrate your WordPress site using backup/restore tools such as [VaultPress](https://vaultpress.com/) or [All-in-One WP Migration](https://wordpress.org/plugins/all-in-one-wp-migration/).
+
 ### To 8.0.0
 
 Helm performs a lookup for the object based on its group (apps), version (v1), and kind (Deployment). Also known as its GroupVersionKind, or GVK. Changing the GVK is considered a compatibility breaker from Kubernetes' point of view, so you cannot "upgrade" those objects to the new GVK in-place. Earlier versions of Helm 3 did not perform the lookup correctly which has since been fixed to match the spec.
@@ -373,6 +435,6 @@ Backwards compatibility is not guaranteed unless you modify the labels used on t
 Use the workaround below to upgrade from versions previous to `3.0.0`. The following example assumes that the release name is `wordpress`:
 
 ```console
-$ kubectl patch deployment wordpress-wordpress --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
-$ kubectl delete statefulset wordpress-mariadb --cascade=false
+kubectl patch deployment wordpress-wordpress --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
+kubectl delete statefulset wordpress-mariadb --cascade=false
 ```
