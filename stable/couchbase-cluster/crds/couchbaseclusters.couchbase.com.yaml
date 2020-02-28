@@ -1,0 +1,371 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: couchbaseclusters.couchbase.com
+spec:
+  group: couchbase.com
+  names:
+    kind: CouchbaseCluster
+    plural: couchbaseclusters
+    shortNames:
+    - couchbase
+    - cbc
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        spec:
+          properties:
+            adminConsoleServiceType:
+              enum:
+              - NodePort
+              - LoadBalancer
+              type: string
+            adminConsoleServices:
+              items:
+                enum:
+                - data
+                - index
+                - query
+                - search
+                - eventing
+                - analytics
+                type: string
+              type: array
+            antiAffinity:
+              type: boolean
+            authSecret:
+              minLength: 1
+              type: string
+            baseImage:
+              type: string
+            buckets:
+              items:
+                properties:
+                  compressionMode:
+                    enum:
+                    - "off"
+                    - passive
+                    - active
+                    type: string
+                  conflictResolution:
+                    enum:
+                    - seqno
+                    - lww
+                    type: string
+                  enableFlush:
+                    type: boolean
+                  enableIndexReplica:
+                    type: boolean
+                  evictionPolicy:
+                    enum:
+                    - valueOnly
+                    - fullEviction
+                    - noEviction
+                    - nruEviction
+                    type: string
+                  ioPriority:
+                    enum:
+                    - high
+                    - low
+                    type: string
+                  memoryQuota:
+                    minimum: 100
+                    type: integer
+                  name:
+                    pattern: ^[a-zA-Z0-9._\-%]*$
+                    type: string
+                  replicas:
+                    maximum: 3
+                    minimum: 0
+                    type: integer
+                  type:
+                    enum:
+                    - couchbase
+                    - ephemeral
+                    - memcached
+                    type: string
+                required:
+                - name
+                - type
+                - memoryQuota
+                type: object
+              type: array
+            cluster:
+              properties:
+                analyticsServiceMemoryQuota:
+                  minimum: 1024
+                  type: integer
+                autoFailoverMaxCount:
+                  maximum: 3
+                  minimum: 1
+                  type: integer
+                autoFailoverOnDataDiskIssues:
+                  type: boolean
+                autoFailoverOnDataDiskIssuesTimePeriod:
+                  maximum: 3600
+                  minimum: 5
+                  type: integer
+                autoFailoverServerGroup:
+                  type: boolean
+                autoFailoverTimeout:
+                  maximum: 3600
+                  minimum: 5
+                  type: integer
+                clusterName:
+                  type: string
+                dataServiceMemoryQuota:
+                  minimum: 256
+                  type: integer
+                eventingServiceMemoryQuota:
+                  minimum: 256
+                  type: integer
+                indexServiceMemoryQuota:
+                  minimum: 256
+                  type: integer
+                indexStorageSetting:
+                  enum:
+                  - plasma
+                  - memory_optimized
+                  type: string
+                searchServiceMemoryQuota:
+                  minimum: 256
+                  type: integer
+              required:
+              - dataServiceMemoryQuota
+              - indexServiceMemoryQuota
+              - searchServiceMemoryQuota
+              - eventingServiceMemoryQuota
+              - analyticsServiceMemoryQuota
+              - indexStorageSetting
+              - autoFailoverTimeout
+              - autoFailoverMaxCount
+              type: object
+            disableBucketManagement:
+              type: boolean
+            dns:
+              properties:
+                domain:
+                  type: string
+              required:
+              - domain
+              type: object
+            exposeAdminConsole:
+              type: boolean
+            exposedFeatureServiceType:
+              enum:
+              - NodePort
+              - LoadBalancer
+              type: string
+            exposedFeatureTrafficPolicy:
+              enum:
+              - Local
+              - Cluster
+              type: string
+            exposedFeatures:
+              items:
+                enum:
+                - admin
+                - xdcr
+                - client
+                type: string
+              type: array
+            logRetentionCount:
+              minimum: 0
+              type: integer
+            logRetentionTime:
+              pattern: ^\d+(ns|us|ms|s|m|h)$
+              type: string
+            paused:
+              type: boolean
+            platform:
+              enum:
+              - aws
+              - gce
+              - azure
+              type: string
+            serverGroups:
+              items:
+                type: string
+              type: array
+            servers:
+              items:
+                properties:
+                  name:
+                    minLength: 1
+                    pattern: ^[-_a-zA-Z0-9]+$
+                    type: string
+                  pod:
+                    properties:
+                      automountServiceAccountToken:
+                        type: boolean
+                      couchbaseEnv:
+                        items:
+                          properties:
+                            name:
+                              type: string
+                            value:
+                              type: string
+                          type: object
+                        type: array
+                      labels:
+                        type: object
+                      nodeSelector:
+                        type: object
+                      resources:
+                        properties:
+                          limits:
+                            properties:
+                              cpu:
+                                type: string
+                              memory:
+                                type: string
+                              storage:
+                                type: string
+                            type: object
+                          requests:
+                            properties:
+                              cpu:
+                                type: string
+                              memory:
+                                type: string
+                              storage:
+                                type: string
+                            type: object
+                        type: object
+                      tolerations:
+                        items:
+                          properties:
+                            effect:
+                              type: string
+                            key:
+                              type: string
+                            operator:
+                              type: string
+                            tolerationSeconds:
+                              type: integer
+                            value:
+                              type: string
+                          required:
+                          - key
+                          - operator
+                          - value
+                          - effect
+                          type: object
+                        type: array
+                      volumeMounts:
+                        properties:
+                          analytics:
+                            items:
+                              type: string
+                            type: array
+                          data:
+                            type: string
+                          default:
+                            type: string
+                          index:
+                            type: string
+                          logs:
+                            type: string
+                        type: object
+                    type: object
+                  serverGroups:
+                    items:
+                      type: string
+                    type: array
+                  services:
+                    items:
+                      enum:
+                      - data
+                      - index
+                      - query
+                      - search
+                      - eventing
+                      - analytics
+                      type: string
+                    minLength: 1
+                    type: array
+                  size:
+                    minimum: 1
+                    type: integer
+                required:
+                - size
+                - name
+                - services
+                type: object
+              minLength: 1
+              type: array
+            serviceAnnotations:
+              type: object
+            softwareUpdateNotifications:
+              type: boolean
+            tls:
+              properties:
+                static:
+                  properties:
+                    member:
+                      properties:
+                        serverSecret:
+                          type: string
+                      required:
+                      - serverSecret
+                      type: object
+                    operatorSecret:
+                      type: string
+                  required:
+                  - member
+                  - operatorSecret
+                  type: object
+              required:
+              - static
+              type: object
+            version:
+              pattern: ^([\w\d]+-)?\d+\.\d+.\d+(-[\w\d]+)?$
+              type: string
+            volumeClaimTemplates:
+              items:
+                properties:
+                  metadata:
+                    properties:
+                      name:
+                        type: string
+                    required:
+                    - name
+                    type: object
+                  spec:
+                    properties:
+                      resources:
+                        properties:
+                          limits:
+                            properties:
+                              storage:
+                                type: string
+                            required:
+                            - storage
+                            type: object
+                          requests:
+                            properties:
+                              storage:
+                                type: string
+                            required:
+                            - storage
+                            type: object
+                        type: object
+                      storageClassName:
+                        type: string
+                    required:
+                    - resources
+                    type: object
+                required:
+                - metadata
+                - spec
+                type: object
+              type: array
+          required:
+          - baseImage
+          - version
+          - authSecret
+          - cluster
+          - servers
+          type: object
+  version: v1
