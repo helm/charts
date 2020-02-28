@@ -355,9 +355,9 @@ clusterAgent:
 
   containerName: cluster-agent
   image:
-    repository: datadog/cluster-agent
-    tag: 1.4.0
-    pullPolicy: IfNotPresent
+    repository: marcotc/cluster-agent # TODO revert me
+    tag: latest
+    pullPolicy: Always # TODO revert me
 
   ## @param token - string - required
   ## This needs to be at least 32 characters a-zA-z
@@ -485,6 +485,44 @@ clusterAgent:
   #   - name: <VOLUME_NAME>
   #     mountPath: <CONTAINER_PATH>
   #     readOnly: true
+
+  admissionController:
+    enabled: true
+
+  # To _fail closed_ on failures, change to Fail. During initial testing, we
+  # recommend leaving the failure policy as Ignore.
+  admissionControllerFailurePolicy: Ignore # TODO revert me
+#  admissionControllerFailurePolicy: Fail
+
+  admissionControllerRules:
+#    - operations: [ "CREATE" ]
+#      apiGroups: ["*"]
+#      apiVersions: ["*"]
+#      resources: ["pods"]
+    - operations: [ "CREATE" ]
+      apiGroups: ["apps", ""]
+      apiVersions: ["v1"]
+      resources: ["deployments","services","pods"]
+
+  # Setup the webhook using cert-manager
+  certManager:
+    enabled: false
+
+  # The helm Chart will automatically generate a CA and server certificate for
+  # the webhook. If you want to supply your own certificates, set the field below to
+  # false and add the PEM encoded CA certificate and server key pair below.
+  #
+  # WARNING: The common name name in the server certificate MUST match the
+  # hostname of the service that exposes the OPA to the apiserver. For example.
+  # if the service name is created in the "default" namespace with name "datadog"
+  # the common name MUST be set to "opa.default.svc".
+  #
+  # If the common name is not set correctly, the apiserver will refuse to
+  # communicate with the OPA.
+  generateAdmissionControllerCerts: true
+  admissionControllerCA: ""
+  admissionControllerCert: ""
+  admissionControllerKey: ""
 
 rbac:
 

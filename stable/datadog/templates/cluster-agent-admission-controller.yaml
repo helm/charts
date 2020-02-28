@@ -1,0 +1,126 @@
+{{- if .Values.clusterAgent.enabled }}
+
+{{- $cn := printf "%s-cluster-agent.%s.svc" ( include "datadog.fullname" . ) .Release.Namespace }}
+{{- $ca := genCA "datadog-admission-ca" 3650 -}}
+{{- $cert := genSignedCert $cn nil nil 3650 $ca -}}
+
+kind: MutatingWebhookConfiguration
+apiVersion: admissionregistration.k8s.io/v1beta1
+metadata:
+  name: {{ template "datadog.fullname" . }}-cluster-agent-mutating-webhook
+  annotations:
+{{- if .Values.clusterAgent.certManager.enabled }}
+    certmanager.k8s.io/inject-ca-from: {{ printf "%s/%s" .Release.Namespace (include "datadog.rootCACertificate" .) | quote }}
+{{- end }}
+  labels:
+{{ include "datadog.labels.standard" . | indent 4 }}
+webhooks:
+  - name: {{ template "datadog.fullname" . }}.cluster-agent-mutating-webhook.local
+{{- with .Values.clusterAgent.admissionControllerNamespaceSelector }}
+    namespaceSelector:
+{{ toYaml . | indent 6 }}
+{{ end }}
+    failurePolicy: {{ .Values.clusterAgent.admissionControllerFailurePolicy }}
+    rules:
+{{ toYaml .Values.clusterAgent.admissionControllerRules | indent 6 }}
+    clientConfig:
+{{ if not .Values.clusterAgent.certManager.enabled }}
+{{ if .Values.clusterAgent.generateAdmissionControllerCerts }}
+      caBundle: {{ b64enc $ca.Cert }}
+{{ else }}
+      caBundle: {{ b64enc .Values.clusterAgent.admissionControllerCA }}
+{{ end }}
+{{ end }}
+      service:
+        name: {{ template "datadog.fullname" . }}-cluster-agent
+        namespace: {{ .Release.Namespace }}
+        path: /api/v1/application-mutating-webhook
+        port: 5004
+    sideEffects: {{ .Values.clusterAgent.admissionControllerSideEffect }}
+{{ if .Values.clusterAgent.timeoutSeconds }}
+    timeoutSeconds: {{ .Values.clusterAgent.timeoutSeconds }}
+{{ end }}
+
+{{ if .Values.clusterAgent.certManager.enabled }}
+---
+# Create a selfsigned Issuer, in order to create a root CA certificate for
+# signing webhook serving certificates
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Issuer
+metadata:
+  name: {{ include "datadog.selfSignedIssuer" . }}
+  labels:
+{{ include "datadog.labels.standard" . | indent 4 }}
+spec:
+  selfSigned: {}
+
+---
+# Generate a CA Certificate used to sign certificates for the webhook
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: {{ include "datadog.rootCACertificate" . }}
+  labels:
+{{ include "datadog.labels.standard" . | indent 4 }}
+spec:
+  secretName: {{ include "datadog.rootCACertificate" . }}
+  duration: 43800h # 5y
+  issuerRef:
+    name: {{ include "datadog.selfSignedIssuer" . }}
+  commonName: "ca.webhook.datadog"
+  isCA: true
+
+---
+# Create an Issuer that uses the above generated CA certificate to issue certs
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Issuer
+metadata:
+  name: {{ include "datadog.rootCAIssuer" . }}
+  labels:
+{{ include "datadog.labels.standard" . | indent 4 }}
+spec:
+  ca:
+    secretName: {{ include "datadog.rootCACertificate" . }}
+
+---
+
+# Finally, generate a serving certificate for the webhook to use
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: {{ include "datadog.servingCertificate" . }}
+  labels:
+{{ include "datadog.labels.standard" . | indent 4 }}
+spec:
+  secretName: {{ template "datadog.fullname" . }}-admission-cert
+  duration: 8760h # 1y
+  issuerRef:
+    name: {{ include "datadog.rootCAIssuer" . }}
+  dnsNames:
+  - {{ include "datadog.fullname" . }}
+  - {{ include "datadog.fullname" . }}.{{ .Release.Namespace }}
+  - {{ include "datadog.fullname" . }}.{{ .Release.Namespace }}.svc
+{{ end }}
+{{- if not .Values.clusterAgent.certManager.enabled }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ template "datadog.fullname" . }}-admission-cert
+  labels:
+    app: {{ template "datadog.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+type: Opaque
+data:
+{{ if .Values.clusterAgent.generateAdmissionControllerCerts }}
+  tls.crt: {{ b64enc $cert.Cert }}
+  tls.key: {{ b64enc $cert.Key }}
+{{ else }}
+  tls.crt: {{ b64enc .Values.clusterAgent.admissionControllerCert }}
+  tls.key: {{ b64enc .Values.clusterAgent.admissionControllerKey }}
+{{ end }}
+{{ end }}
+
+{{- end -}}

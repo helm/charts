@@ -18,9 +18,12 @@ spec:
   selector:
     app: {{ template "datadog.fullname" . }}-cluster-agent
   ports:
-  - port: 5005
-    name: agentport
+  - port: 5005 # Cluster Agent commands: has to be the same as the one exposed in the DCA.
     protocol: TCP
+    name: agentport
+  - port: 5004 # K8S Admission Webhooks: has to be the same as the one exposed in the DCA.
+    protocol: TCP
+    name: webhook
 {{ end }}
 
 {{- if and .Values.clusterAgent.enabled .Values.clusterAgent.metricsProvider.enabled -}}

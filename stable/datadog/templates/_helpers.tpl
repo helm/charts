@@ -69,3 +69,29 @@ Return the appropriate apiVersion for RBAC APIs.
 "rbac.authorization.k8s.io/v1beta1"
 {{- end -}}
 {{- end -}}
+
+{{/*
+Define standard labels for frequently used metadata.
+*/}}
+{{- define "datadog.labels.standard" -}}
+app: {{ template "datadog.fullname" . }}
+chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+release: "{{ .Release.Name }}"
+heritage: "{{ .Release.Service }}"
+{{- end -}}
+
+{{- define "datadog.selfSignedIssuer" -}}
+{{ printf "%s-selfsign" (include "datadog.fullname" .) }}
+{{- end -}}
+
+{{- define "datadog.rootCAIssuer" -}}
+{{ printf "%s-ca" (include "datadog.fullname" .) }}
+{{- end -}}
+
+{{- define "datadog.rootCACertificate" -}}
+{{ printf "%s-ca" (include "datadog.fullname" .) }}
+{{- end -}}
+
+{{- define "datadog.servingCertificate" -}}
+{{ printf "%s-webhook-tls" (include "datadog.fullname" .) }}
+{{- end -}}
