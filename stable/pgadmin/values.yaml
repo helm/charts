@@ -73,16 +73,12 @@ ingress:
 env:
   email: chart@example.local
   password: SuperSecret
-##########################################################################
-# enhanced_cookie_protection: Allows pgAdmin4 to create session cookies based on IP address, so even
-# if a cookie is stolen, the attacker will not be able to connect to the
-# server using that stolen cookie.
-# Note: This can cause problems when the server is deployed in dynamic IP
-# address hosting environments, such as Kubernetes or behind load
-# balancers. In such cases, this option should be set to False.
-# https://github.com/postgres/pgadmin4/blob/master/web/config.py
-##########################################################################
-  enhanced_cookie_protection: False
+
+  ## If True, allows pgAdmin to create session cookies based on IP address
+  ## Ref: https://www.pgadmin.org/docs/pgadmin4/4.18/config_py.html
+  #
+  enhanced_cookie_protection: "False"
+
 persistentVolume:
   ## If true, pgAdmin will create/use a Persistent Volume Claim
   ## If false, use emptyDir
