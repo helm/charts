@@ -382,7 +382,8 @@ mariadb:
       ##   GKE, AWS & OpenStack)
       ##
       # storageClass: "-"
-      accessMode: ReadWriteOnce
+      accessModes:
+        - ReadWriteOnce
       size: 8Gi
 
 ##
@@ -390,7 +391,7 @@ mariadb:
 ##
 ## All of these values are only used when mariadb.enabled is set to false
 ##
-externalDatabase:  
+externalDatabase:
   ## Database host
   ##
   host: localhost

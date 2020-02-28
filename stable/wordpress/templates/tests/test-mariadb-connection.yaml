@@ -13,7 +13,6 @@ spec:
       {{- if .Values.securityContext.enabled }}
       securityContext:
         runAsUser: {{ .Values.securityContext.runAsUser }}
-        fsGroup: {{ .Values.securityContext.fsGroup }}
       {{- end }}
       env:
         - name: MARIADB_HOST

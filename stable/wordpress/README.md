@@ -117,7 +117,7 @@ The following table lists the configurable parameters of the WordPress chart and
 | `livenessProbe.failureThreshold`     | Minimum consecutive failures for the probe                                    | `6`                                                     |
 | `livenessProbe.successThreshold`     | Minimum consecutive successes for the probe                                   | `1`                                                     |
 | `livenessProbeHeaders`               | Headers to use for livenessProbe                                              | `{}`                                                    |
-| `readiness.enabled`                  | Enable/disable readinessProbe                                                 | `true`                                                  |
+| `readinessProbe.enabled`             | Enable/disable readinessProbe                                                 | `true`                                                  |
 | `readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated                                     | `30`                                                    |
 | `readinessProbe.periodSeconds`       | How often to perform the probe                                                | `10`                                                    |
 | `readinessProbe.timeoutSeconds`      | When the probe times out                                                      | `5`                                                     |
@@ -160,18 +160,22 @@ The following table lists the configurable parameters of the WordPress chart and
 
 ### Database parameters
 
-| Parameter                    | Description                             | Default                                        |
-|------------------------------|-----------------------------------------|------------------------------------------------|
-| `mariadb.enabled`            | Deploy MariaDB container(s)             | `true`                                         |
-| `mariadb.rootUser.password`  | MariaDB admin password                  | `nil`                                          |
-| `mariadb.db.name`            | Database name to create                 | `bitnami_wordpress`                            |
-| `mariadb.db.user`            | Database user to create                 | `bn_wordpress`                                 |
-| `mariadb.db.password`        | Password for the database               | _random 10 character long alphanumeric string_ |
-| `externalDatabase.host`      | Host of the external database           | `localhost`                                    |
-| `externalDatabase.user`      | Existing username in the external db    | `bn_wordpress`                                 |
-| `externalDatabase.password`  | Password for the above username         | `nil`                                          |
-| `externalDatabase.database`  | Name of the existing database           | `bitnami_wordpress`                            |
-| `externalDatabase.port`      | Database port number                    | `3306`                                         |
+| Parameter                                | Description                             | Default                                        |
+|------------------------------------------|-----------------------------------------|------------------------------------------------|
+| `mariadb.enabled`                        | Deploy MariaDB container(s)             | `true`                                         |
+| `mariadb.rootUser.password`              | MariaDB admin password                  | `nil`                                          |
+| `mariadb.db.name`                        | Database name to create                 | `bitnami_wordpress`                            |
+| `mariadb.db.user`                        | Database user to create                 | `bn_wordpress`                                 |
+| `mariadb.db.password`                    | Password for the database               | _random 10 character long alphanumeric string_ |
+| `mariadb.replication.enabled`            | MariaDB replication enabled             | `false`                                        |
+| `mariadb.master.persistence.enabled`     | Enable database persistence using PVC   | `true`                                         |
+| `mariadb.master.persistence.accessModes` | Database Persistent Volume Access Modes | `[ReadWriteOnce]`                              |
+| `mariadb.master.persistence.size`        | Database Persistent Volume Size         | `8Gi`                                          |
+| `externalDatabase.host`                  | Host of the external database           | `localhost`                                    |
+| `externalDatabase.user`                  | Existing username in the external db    | `bn_wordpress`                                 |
+| `externalDatabase.password`              | Password for the above username         | `nil`                                          |
+| `externalDatabase.database`              | Name of the existing database           | `bitnami_wordpress`                            |
+| `externalDatabase.port`                  | Database port number                    | `3306`                                         |
 
 ### Metrics parameters
 
@@ -325,7 +329,7 @@ To enable ingress integration, please set `ingress.enabled` to `true`
 
 ### Hosts
 
-Most likely you will only want to have one hostname that maps to this WordPress installation. If that's your case, the property `ingress.hostname` will set it. However, it is possible to have more than one host. To facilitate this, the `ingress.extraHosts` object is can be specified as an array. You can also use `ingress.extraTLS` to add the TLS configuration for extra hosts. 
+Most likely you will only want to have one hostname that maps to this WordPress installation. If that's your case, the property `ingress.hostname` will set it. However, it is possible to have more than one host. To facilitate this, the `ingress.extraHosts` object is can be specified as an array. You can also use `ingress.extraTLS` to add the TLS configuration for extra hosts.
 
 For each host indicated at `ingress.extraHosts`, please indicate a `name`, `path`, and any `annotations` that you may want the ingress controller to know about.
 
