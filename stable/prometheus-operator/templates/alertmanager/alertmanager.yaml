@@ -8,6 +8,10 @@ metadata:
     app: {{ template "prometheus-operator.name" . }}-alertmanager
 {{ include "prometheus-operator.labels" . | indent 4 }}
 spec:
+{{- if .Values.alertmanager.alertmanagerSpec.initContainers }}
+  initContainers:
+{{ toYaml .Values.alertmanager.alertmanagerSpec.initContainers | indent 4 }}
+{{- end }}
 {{- if .Values.alertmanager.alertmanagerSpec.image }}
   baseImage: {{ .Values.alertmanager.alertmanagerSpec.image.repository }}
   version: {{ .Values.alertmanager.alertmanagerSpec.image.tag }}
