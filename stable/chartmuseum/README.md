@@ -10,32 +10,35 @@ Please also see https://github.com/kubernetes-helm/chartmuseum
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 
-- [Prerequisites](#prerequisites)
-- [Configuration](#configuration)
-- [Installation](#installation)
-  - [Using with Amazon S3](#using-with-amazon-s3)
-    - [permissions grant with access keys](#permissions-grant-with-access-keys)
-    - [permissions grant with IAM instance profile](#permissions-grant-with-iam-instance-profile)
-    - [permissions grant with IAM assumed role](#permissions-grant-with-iam-assumed-role)
-    - [permissions grant with IAM Roles for Service Accounts](#permissions-grant-with-iam-roles-for-service-accounts)
-  - [Using with Google Cloud Storage](#using-with-google-cloud-storage)
-  - [Using with Google Cloud Storage and a Google Service Account](#using-with-google-cloud-storage-and-a-google-service-account)
-  - [Using with Microsoft Azure Blob Storage](#using-with-microsoft-azure-blob-storage)
-  - [Using with Alibaba Cloud OSS Storage](#using-with-alibaba-cloud-oss-storage)
-  - [Using with Openstack Object Storage](#using-with-openstack-object-storage)
-  - [Using with Oracle Object Storage](#using-with-oracle-object-storage)
-  - [Using an existing secret](#using-an-existing-secret)
-  - [Using with local filesystem storage](#using-with-local-filesystem-storage)
-    - [Example storage class](#example-storage-class)
-  - [Authentication](#authentication)
-    - [Basic Authentication](#basic-authentication)
-    - [Bearer/Token auth](#bearertoken-auth)
-  - [Ingress](#ingress)
-    - [Hosts](#hosts)
-    - [Extra Paths](#extra-paths)
-    - [Annotations](#annotations)
-    - [Example Ingress configuration](#example-ingress-configuration)
-- [Uninstall](#uninstall)
+- [ChartMuseum Helm Chart](#chartmuseum-helm-chart)
+  - [Table of Content](#table-of-content)
+  - [Prerequisites](#prerequisites)
+  - [Configuration](#configuration)
+  - [Installation](#installation)
+    - [Using with Amazon S3](#using-with-amazon-s3)
+      - [permissions grant with access keys](#permissions-grant-with-access-keys)
+      - [permissions grant with IAM instance profile](#permissions-grant-with-iam-instance-profile)
+      - [permissions grant with IAM assumed role](#permissions-grant-with-iam-assumed-role)
+      - [permissions grant with IAM Roles for Service Accounts](#permissions-grant-with-iam-roles-for-service-accounts)
+    - [Using with Google Cloud Storage](#using-with-google-cloud-storage)
+    - [Using with Google Cloud Storage and a Google Service Account](#using-with-google-cloud-storage-and-a-google-service-account)
+    - [Using with Microsoft Azure Blob Storage](#using-with-microsoft-azure-blob-storage)
+    - [Using with Alibaba Cloud OSS Storage](#using-with-alibaba-cloud-oss-storage)
+    - [Using with Openstack Object Storage](#using-with-openstack-object-storage)
+    - [Using with Oracle Object Storage](#using-with-oracle-object-storage)
+    - [Using an existing secret](#using-an-existing-secret)
+    - [Using with local filesystem storage](#using-with-local-filesystem-storage)
+    - [Setting local storage permissions with initContainers](#setting-local-storage-permissions-with-initcontainers)
+      - [Example storage class](#example-storage-class)
+    - [Authentication](#authentication)
+      - [Basic Authentication](#basic-authentication)
+      - [Bearer/Token auth](#bearertoken-auth)
+    - [Ingress](#ingress)
+      - [Hosts](#hosts)
+      - [Extra Paths](#extra-paths)
+      - [Annotations](#annotations)
+      - [Example Ingress configuration](#example-ingress-configuration)
+  - [Uninstall](#uninstall)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -73,6 +76,7 @@ their default values. See values.yaml for all available options.
 | `image.tag`                             | Container image tag to deploy                                               | `v0.8.0`                             |
 | `persistence.accessMode`                | Access mode to use for PVC                                                  | `ReadWriteOnce`                      |
 | `persistence.enabled`                   | Whether to use a PVC for persistent storage                                 | `false`                              |
+| `persistence.path`                      | PV mount path                                                               | `/storage`                              |
 | `persistence.size`                      | Amount of space to claim for PVC                                            | `8Gi`                                |
 | `persistence.labels`                    | Additional labels for PVC                                                   | `{}`                                 |
 | `persistence.storageClass`              | Storage Class to use for PVC                                                | `-`                                  |
@@ -83,6 +87,10 @@ their default values. See values.yaml for all available options.
 | `persistence.pv.nfs.server`             | NFS server for PV                                                           | ``                                   |
 | `persistence.pv.nfs.path`               | Storage Path                                                                | ``                                   |
 | `persistence.pv.pvname`                 | Custom name for private volume                                              | ``                                   |
+| `volumePermissions.image.registry`      | Init container volume-permissions image registry                            | `docker.io`                          |
+| `volumePermissions.image.repository`    | Init container volume-permissions image name                                | `bitnami/minideb`                    |
+| `volumePermissions.image.tag`           | Init container volume-permissions image tag                                 | `buster`                             |
+| `volumePermissions.image.pullPolicy`    | Init container volume-permissions image pull policy                         | `Always`                             |
 | `replicaCount`                          | k8s replicas                                                                | `1`                                  |
 | `resources.limits.cpu`                  | Container maximum CPU                                                       | `100m`                               |
 | `resources.limits.memory`               | Container maximum memory                                                    | `128Mi`                              |
@@ -91,7 +99,8 @@ their default values. See values.yaml for all available options.
 | `serviceAccount.create`                 | If true, create the service account                                         | `false`                              |
 | `serviceAccount.name`                   | Name of the serviceAccount to create or use                                 | `{{ chartmuseum.fullname }}`         |
 | `serviceAccount.annotations`            | Additional Service Account annotations                                      | `{}`                                 |
-| `securityContext`                       | Map of securityContext for the pod                                          | `{ fsGroup: 1000 }`                  |
+| `securityContext.enabled`               | Enable securityContext                                                      | `true`                               |
+| `securityContext.fsGroup`               | Group ID for the container                                                  | `1000`                               |
 | `nodeSelector`                          | Map of node labels for pod assignment                                       | `{}`                                 |
 | `tolerations`                           | List of node taints to tolerate                                             | `[]`                                 |
 | `affinity`                              | Map of node/pod affinities                                                  | `{}`                                 |
@@ -581,6 +590,11 @@ Run command to install
 ```shell
 helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
+
+### Setting local storage permissions with initContainers
+
+Some clusters do not allow using securityContext to set permissions for persistent volumes. Instead, an initContainer can be created to run `chown` on the mounted volume. To enable it, set `securityContext.enabled` to `false`.
+
 
 #### Example storage class
 
