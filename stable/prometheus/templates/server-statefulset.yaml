@@ -44,30 +44,32 @@ spec:
 {{- end }}
       serviceAccountName: {{ template "prometheus.serviceAccountName.server" . }}
       containers:
-        - name: {{ template "prometheus.name" . }}-{{ .Values.server.name }}-{{ .Values.configmapReload.name }}
-          image: "{{ .Values.configmapReload.image.repository }}:{{ .Values.configmapReload.image.tag }}"
-          imagePullPolicy: "{{ .Values.configmapReload.image.pullPolicy }}"
+        {{- if .Values.configmapReload.prometheus.enabled }}
+        - name: {{ template "prometheus.name" . }}-{{ .Values.server.name }}-{{ .Values.configmapReload.prometheus.name }}
+          image: "{{ .Values.configmapReload.prometheus.image.repository }}:{{ .Values.configmapReload.prometheus.image.tag }}"
+          imagePullPolicy: "{{ .Values.configmapReload.prometheus.image.pullPolicy }}"
           args:
             - --volume-dir=/etc/config
             - --webhook-url=http://127.0.0.1:9090{{ .Values.server.prefixURL }}/-/reload
-          {{- range $key, $value := .Values.configmapReload.extraArgs }}
+          {{- range $key, $value := .Values.configmapReload.prometheus.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}
-          {{- range .Values.configmapReload.extraVolumeDirs }}
+          {{- range .Values.configmapReload.prometheus.extraVolumeDirs }}
             - --volume-dir={{ . }}
           {{- end }}
           resources:
-{{ toYaml .Values.configmapReload.resources | indent 12 }}
+{{ toYaml .Values.configmapReload.prometheus.resources | indent 12 }}
           volumeMounts:
             - name: config-volume
               mountPath: /etc/config
               readOnly: true
-          {{- range .Values.configmapReload.extraConfigmapMounts }}
-            - name: {{ $.Values.configmapReload.name }}-{{ .name }}
+          {{- range .Values.configmapReload.prometheus.extraConfigmapMounts }}
+            - name: {{ $.Values.configmapReload.prometheus.name }}-{{ .name }}
               mountPath: {{ .mountPath }}
               subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
+        {{- end }}
         - name: {{ template "prometheus.name" . }}-{{ .Values.server.name }}
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
           imagePullPolicy: "{{ .Values.server.image.pullPolicy }}"
@@ -168,8 +170,8 @@ spec:
           hostPath:
             path: {{ .hostPath }}
       {{- end }}
-      {{- range .Values.configmapReload.extraConfigmapMounts }}
-        - name: {{ $.Values.configmapReload.name }}-{{ .name }}
+      {{- range .Values.configmapReload.prometheus.extraConfigmapMounts }}
+        - name: {{ $.Values.configmapReload.prometheus.name }}-{{ .name }}
           configMap:
             name: {{ .configMap }}
       {{- end }}
@@ -183,7 +185,7 @@ spec:
           secret:
             secretName: {{ .secretName }}
       {{- end }}
-      {{- range .Values.configmapReload.extraConfigmapMounts }}
+      {{- range .Values.configmapReload.prometheus.extraConfigmapMounts }}
         - name: {{ .name }}
           configMap:
             name: {{ .configMap }}
