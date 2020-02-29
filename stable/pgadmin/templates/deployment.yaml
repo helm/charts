@@ -54,6 +54,8 @@ spec:
             {{- .Values.readinessProbe | toYaml | nindent 12 }}
         {{- end }}
           env:
+            - name: PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION
+              value: !!string {{ .Values.env.enhanced_cookie_protection }}
             - name: PGADMIN_DEFAULT_EMAIL
               value: {{ .Values.env.email }}
             - name: PGADMIN_DEFAULT_PASSWORD
