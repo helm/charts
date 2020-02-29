@@ -67,6 +67,9 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `nodeSelector` | Node labels for pod assignment | `{}` |
 | `tolerations` | Node tolerations for pod assignment | `[]` |
 | `affinity` | Node affinity for pod assignment | `{}` |
+| `env.email` | pgAdmin default email | `chart@example.local` |
+| `env.password` | pgAdmin default password | `SuperSecret` |
+| `env.enhanced_cookie_protection` | Allows pgAdmin4 to create session cookies based on IP address | `"False"` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
