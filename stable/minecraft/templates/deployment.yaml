@@ -174,7 +174,7 @@ spec:
 
         {{- range $key, $value := .Values.extraEnv }}
         - name: {{ $key }}
-          value: {{ $value }}
+          value: {{ $value | quote }}
         {{- end }}
 
         ports:
