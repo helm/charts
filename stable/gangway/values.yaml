@@ -1,5 +1,16 @@
 replicaCount: 1
 
+# Optional array of environment variables to be injected into the deployment. 
+# Use this in order to inject values.
+# You can use the `secretKeyRef` to inject values from pre-existing secrets
+# - name: GANGWAY_CLIENT_SECRET
+#   valueFrom:
+#     secretKeyRef:
+#       key: GANGWAY_CLIENT_SECRET
+#       name: pre-existing-gangway-secret
+
+env: []
+
 image:
   repository: gcr.io/heptio-images/gangway
   tag: v3.2.0
