@@ -18,7 +18,6 @@ metadata:
     checksum/health: {{ include (print $.Template.BasePath "/health-configmap.yaml") . | sha256sum }}
 spec:
   backoffLimit: 1
-  #activeDeadlineSeconds: 120
   template:
     spec: 
 {{- include "redis.imagePullSecrets" . | indent 6 }}
