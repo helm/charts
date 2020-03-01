@@ -107,6 +107,7 @@ airflow:
   ##     AIRFLOW__CORE__EXPOSE_CONFIG: "True"
   ##     HTTP_PROXY: "http://proxy.mycompany.com:123"
   config: {}
+  AIRFLOW_DEPS: "kubernetes" 
   ##
   ## Configure pod disruption budget for the scheduler
   podDisruptionBudgetEnabled: true
