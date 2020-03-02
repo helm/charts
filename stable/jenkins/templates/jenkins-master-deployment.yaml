@@ -323,6 +323,9 @@ spec:
               value: "http://localhost:8080{{- .Values.master.jenkinsUriPrefix -}}/reload-configuration-as-code/?casc-reload-token=$(POD_NAME)"
             - name: REQ_METHOD
               value: "POST"
+            {{- if .Values.master.sidecars.configAutoReload.env }}
+{{ toYaml .Values.master.sidecars.configAutoReload.env | indent 12 }}
+            {{- end }}
           resources:
 {{ toYaml .Values.master.sidecars.configAutoReload.resources | indent 12 }}
           volumeMounts:
