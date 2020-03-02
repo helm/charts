@@ -43,8 +43,12 @@ image:
 ##
 # fullnameOverride:
 
-## does your cluster have rbac enabled? assume yes by default
-rbacEnabled: true
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
 
 # Add custom extra environment variables to all the MongoDB containers
 # extraEnvVars:

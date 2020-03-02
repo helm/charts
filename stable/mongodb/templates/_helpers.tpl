@@ -250,3 +250,16 @@ in the values file. If the name is not explicitly set it will take the "mongodb.
     {{ template "mongodb.fullname" .}}
   {{- end -}}
 {{- end -}}
+
+{{/*
+Returns the proper service account name depending if an explicit service account name is set
+in the values file. If the name is not set it will default to either mongodb.fullname if serviceAccount.create
+is true or default otherwise.
+*/}}
+{{- define "mongodb.serviceAccountName" -}}
+    {{- if .Values.serviceAccount.create -}}
+        {{ default (include "mongodb.fullname" .) .Values.serviceAccount.name }}
+    {{- else -}}
+        {{ default "default" .Values.serviceAccount.name }}
+    {{- end -}}
+{{- end -}}

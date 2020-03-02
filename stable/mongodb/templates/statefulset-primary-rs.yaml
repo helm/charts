@@ -48,9 +48,7 @@ spec:
 {{- end }}
       {{- end }}
     spec:
-      {{- if .Values.rbacEnabled}}
-      serviceAccountName: {{ template "mongodb.fullname" . }}
-      {{- end }}
+      serviceAccountName: {{ template "mongodb.serviceAccountName" . }}
       {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
       {{- end }}
