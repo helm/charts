@@ -1,5 +1,7 @@
 restartPolicy: Always
 
+kind: Deployment
+
 podDisruptionBudget: {}
   # maxUnavailable: 0
 
@@ -57,6 +59,8 @@ extraSecretMounts: []
   #   secretName: blackbox-secret-files
   #   readOnly: true
   #   defaultMode: 420
+
+allowIcmp: false
 
 resources: {}
   # limits:

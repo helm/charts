@@ -26,6 +26,7 @@ defaultRules:
     general: true
     k8s: true
     kubeApiserver: true
+    kubeApiserverError: true
     kubePrometheusNodeAlerting: true
     kubePrometheusNodeRecording: true
     kubernetesAbsent: true
@@ -474,6 +475,11 @@ grafana:
   #   type: prometheus
   #   url: https://prometheus.svc:9090
   #   version: 1
+
+  ## Passed to grafana subchart and used by servicemonitor below
+  ##
+  service:
+    portName: service
 
   ## If true, create a serviceMonitor for grafana
   ##
@@ -1174,7 +1180,7 @@ prometheusOperator:
   ##
   image:
     repository: quay.io/coreos/prometheus-operator
-    tag: v0.35.0
+    tag: v0.36.0
     pullPolicy: IfNotPresent
 
   ## Configmap-reload image to use for reloading configmaps
@@ -1187,7 +1193,7 @@ prometheusOperator:
   ##
   prometheusConfigReloaderImage:
     repository: quay.io/coreos/prometheus-config-reloader
-    tag: v0.35.0
+    tag: v0.36.0
 
   ## Set the prometheus config reloader side-car CPU limit
   ##
