@@ -13,9 +13,6 @@ serviceAccounts:
   alertmanager:
     create: true
     name:
-  kubeStateMetrics:
-    create: true
-    name:
   nodeExporter:
     create: true
     name:
@@ -383,112 +380,11 @@ configmapReload:
     ##
     resources: {}
 
-
 kubeStateMetrics:
-  ## If false, kube-state-metrics will not be installed
+  ## If false, kube-state-metrics sub-chart will not be installed
+  ## Please see https://github.com/helm/charts/tree/master/stable/kube-state-metrics for configurable values
   ##
   enabled: true
-
-  ## kube-state-metrics container name
-  ##
-  name: kube-state-metrics
-
-  ## kube-state-metrics container image
-  ##
-  image:
-    repository: quay.io/coreos/kube-state-metrics
-    tag: v1.9.5
-    pullPolicy: IfNotPresent
-
-  ## kube-state-metrics priorityClassName
-  ##
-  priorityClassName: ""
-
-  ## kube-state-metrics container arguments
-  ##
-  args: {}
-
-  ## Node tolerations for kube-state-metrics scheduling to nodes with taints
-  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-  ##
-  tolerations: []
-    # - key: "key"
-    #   operator: "Equal|Exists"
-    #   value: "value"
-    #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
-
-  ## Node labels for kube-state-metrics pod assignment
-  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
-  ##
-  nodeSelector: {}
-
-  ## Annotations to be added to kube-state-metrics pods
-  ##
-  podAnnotations: {}
-
-  ## Specify if a Pod Security Policy for node-exporter must be created
-  ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
-  ##
-  podSecurityPolicy:
-    annotations: {}
-      ## Specify pod annotations
-      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#apparmor
-      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#seccomp
-      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#sysctl
-      ##
-      # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
-      # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
-      # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
-
-  pod:
-    labels: {}
-
-  replicaCount: 1
-
-  ## PodDisruptionBudget settings
-  ## ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
-  ##
-  podDisruptionBudget:
-    enabled: false
-    maxUnavailable: 1
-
-  ## kube-state-metrics resource requests and limits
-  ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
-  ##
-  resources: {}
-    # limits:
-    #   cpu: 10m
-    #   memory: 16Mi
-    # requests:
-    #   cpu: 10m
-    #   memory: 16Mi
-
-  ## Security context to be added to kube-state-metrics pods
-  ##
-  securityContext:
-    runAsUser: 65534
-    runAsNonRoot: true
-
-  service:
-    annotations:
-      prometheus.io/scrape: "true"
-    labels: {}
-
-    # Exposed as a headless service:
-    # https://kubernetes.io/docs/concepts/services-networking/service/#headless-services
-    clusterIP: None
-
-    ## List of IP addresses at which the kube-state-metrics service is available
-    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
-    ##
-    externalIPs: []
-
-    loadBalancerIP: ""
-    loadBalancerSourceRanges: []
-    servicePort: 80
-    # Port for Kubestatemetric self telemetry
-    serviceTelemetryPort: 81
-    type: ClusterIP
 
 nodeExporter:
   ## If false, node-exporter will not be installed
