@@ -87,48 +87,51 @@ Express Edition (64-bit) on Linux (Ubuntu 16.04.3 LTS)
 
 The configuration parameters in this section control the resources requested and utilized by the SQL Server instance.
 
-| Parameter        | Description                                                                                    | Default                          |
-| ---------------- | ---------------------------------------------------------------------------------------------- | -------------------------------- |
-| acceptEula.value | EULA that needs to be accepted.  It will need to be changed via commandline or values.yaml.    | `n`                              |
-| edition.value    | The edition of SQL Server to install.  See section [Editions](#sql-server-for-linux-editions). | `Express`                        |
-| sapassword       | Password for sa login                                                                          | `Random (20-AlphNum)`<sup>1<sup> |
-| existingSecret   | Name of an existing secret containing the sa password                                          | `Empty String`                   |
-| existingSecretKey| Name of key of the password in existing secret                                                 | `sapassword`                     |
-| image.repository | The docker hub repo for SQL Server                                                             | `microsoft/mssql-server-linux`   |
-| image.tag        | The tag for the image                                                                          | `2017-CU5`                       |
-| image.pullPolicy | The pull policy for the deployment                                                             | `IfNotPresent`                   |
-| image.pullSecrets   | Specify an image pull secret if needed  | `Commented Out`  |
-| nodeSelector     | Node labels for pod assignment                                                                 | `{}`                             |
-| service.headless   | Allows you to setup a headless service  | `false`  |
-| service.type     | Service Type                                                                                   | `ClusterIP`                      |
-| service.loadBalancerIP     | Loadbalancer IP                                                                                   | `nil`                      |
-| service.port     | Service Port                                                                                   | `1433`                           |
-| service.nodePort | Optional NodePort to use when `service.type` is `NodePort`                                     | None                             |
-| service.annotations | Kubernetes service annotations                                                              | `{}`                             |
-| service.labels   | Kubernetes service labels                                                                      | `{}`                             |
-| deployment.annotations | Kubernetes deployment annotations                                                        | `{}`                             |
-| deployment.labels | Kubernetes deployment labels                                                                  | `{}`                             |
-| pod.annotations   | Kubernetes pod annotations                                                                    | `{}`                             |
-| pod.labels        | Kubernetes pod labels                                                                         | `{}`                             |
-| collation        | Default collation for SQL Server                                                               | `SQL_Latin1_General_CP1_CI_AS`   |
-| lcid             | Default languages for SQL Server                                                               | `1033`                           |
-| hadr             | Enable Availability Group                                                                      | `0`                              |
-| agent.enabled    | Enable Agent                                                                                   | `false`                          |
-| schedulerName    | Name of the k8s scheduler (other than default)                                                 | `nil`                            |
-| persistence.enabled | Persist the Data and Log files for SQL Server                                               | `true`                          |
-| persistence.existingDataClaim | Identify an existing Claim to be used for the Data Directory                      | `Commented Out`                  |
-| persistence.existingTransactionLogClaim  | Identify an existing Claim to be used for the Log Directory            | `Commented Out`                  |
-| persistence.existingBackupClaim | Identify an existing Claim to be used for the SQL Database Backups              | `Commented Out`                  |
-| persistence.existingMasterClaim | Identify an existing Claim to be used for the Master Database log & file        | `Commented Out`                  |
-| persistence.storageClass      | Storage Class to be used                                                          | `Commented Out`                  |
-| persistence.dataAccessMode    | Data Access Mode to be used for the Data Directory                                | `ReadWriteOnce`                  |
-| persistence.dataSize          | PVC Size for Data Directory                                                       | `1Gi`                            |
-| persistence.logAccessMode     | Data Access Mode to be used for the Log Directory                                 | `ReadWriteOnce`                  |
-| persistence.logSize           | PVC Size for Log Directory                                                        | `1Gi`                            |
-| persistence.backupAccessMode  | Data Access Mode to be used for the Backup Directory                              | `ReadWriteOnce`                  |
-| persistence.backupSize        | PVC Size for Backup Directory                                                     | `1Gi`                            |
-| persistence.masterAccessMode  | Data Access Mode to be used for the Master Database                               | `ReadWriteOnce`                  |
-| persistence.masterSize        | PVC Size for Master Database                                                      | `1Gi`                            |
+| Parameter                               | Description                                                                                    | Default                          |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------- | -------------------------------- |
+| acceptEula.value                        | EULA that needs to be accepted.  It will need to be changed via commandline or values.yaml.    | `n`                              |
+| edition.value                           | The edition of SQL Server to install.  See section [Editions](#sql-server-for-linux-editions). | `Express`                        |
+| sapassword                              | Password for sa login                                                                          | `Random (20-AlphNum)`<sup>1<sup> |
+| existingSecret                          | Name of an existing secret containing the sa password                                          | `Empty String`                   |
+| existingSecretKey                       | Name of key of the password in existing secret                                                 | `sapassword`                     |
+| image.repository                        | The docker hub repo for SQL Server                                                             | `microsoft/mssql-server-linux`   |
+| image.tag                               | The tag for the image                                                                          | `2017-CU5`                       |
+| image.pullPolicy                        | The pull policy for the deployment                                                             | `IfNotPresent`                   |
+| image.pullSecrets                       | Specify an image pull secret if needed                                                         | `Commented Out`                  |
+| nodeSelector                            | Node labels for pod assignment                                                                 | `{}`                             |
+| service.headless                        | Allows you to setup a headless service                                                         | `false`                          |
+| service.type                            | Service Type                                                                                   | `ClusterIP`                      |
+| service.loadBalancerIP                  | Loadbalancer IP                                                                                | `nil`                            |
+| service.port                            | Service Port                                                                                   | `1433`                           |
+| service.nodePort                        | Optional NodePort to use when `service.type` is `NodePort`                                     | None                             |
+| service.annotations                     | Kubernetes service annotations                                                                 | `{}`                             |
+| service.labels                          | Kubernetes service labels                                                                      | `{}`                             |
+| deployment.annotations                  | Kubernetes deployment annotations                                                              | `{}`                             |
+| deployment.labels                       | Kubernetes deployment labels                                                                   | `{}`                             |
+| pod.annotations                         | Kubernetes pod annotations                                                                     | `{}`                             |
+| pod.labels                              | Kubernetes pod labels                                                                          | `{}`                             |
+| collation                               | Default collation for SQL Server                                                               | `SQL_Latin1_General_CP1_CI_AS`   |
+| lcid                                    | Default languages for SQL Server                                                               | `1033`                           |
+| hadr                                    | Enable Availability Group                                                                      | `0`                              |
+| agent.enabled                           | Enable Agent                                                                                   | `false`                          |
+| schedulerName                           | Name of the k8s scheduler (other than default)                                                 | `nil`                            |
+| persistence.enabled                     | Persist the Data and Log files for SQL Server                                                  | `true`                           |
+| persistence.existingDataClaim           | Identify an existing Claim to be used for the Data Directory                                   | `Commented Out`                  |
+| persistence.existingTransactionLogClaim | Identify an existing Claim to be used for the Log Directory                                    | `Commented Out`                  |
+| persistence.existingBackupClaim         | Identify an existing Claim to be used for the SQL Database Backups                             | `Commented Out`                  |
+| persistence.existingMasterClaim         | Identify an existing Claim to be used for the Master Database log & file                       | `Commented Out`                  |
+| persistence.storageClass                | Storage Class to be used                                                                       | `Commented Out`                  |
+| persistence.dataAccessMode              | Data Access Mode to be used for the Data Directory                                             | `ReadWriteOnce`                  |
+| persistence.dataSize                    | PVC Size for Data Directory                                                                    | `1Gi`                            |
+| persistence.logAccessMode               | Data Access Mode to be used for the Log Directory                                              | `ReadWriteOnce`                  |
+| persistence.logSize                     | PVC Size for Log Directory                                                                     | `1Gi`                            |
+| persistence.backupAccessMode            | Data Access Mode to be used for the Backup Directory                                           | `ReadWriteOnce`                  |
+| persistence.backupSize                  | PVC Size for Backup Directory                                                                  | `1Gi`                            |
+| persistence.masterAccessMode            | Data Access Mode to be used for the Master Database                                            | `ReadWriteOnce`                  |
+| persistence.masterSize                  | PVC Size for Master Database                                                                   | `1Gi`                            |
+| tolerations                             | List of node taints to tolerate                                                                | `[]`                             |
+| affinity                                | Map of node/pod affinities                                                                     | `{}`                             |
+| securityContext                         | SecurityContext to apply to the pod                                                            | `{}`                             |
 
 > 1 - [Please read password requirements](https://docs.microsoft.com/en-us/sql/relational-databases/security/password-policy)
 
@@ -145,10 +148,10 @@ The SQL Server instance has liveness and readiness checks specified. These param
 
 ### Readiness Probes
 
-| Parameter                           | Description                                                                          | Default |
-| ----------------------------------- | ------------------------------------------------------------------------------------ | ------- |
-| readinessprobe.initialDelaySeconds  | Tells the kubelet that it should wait XX second(s) before performing the first probe | 5       |
-| readinessprobe.periodSeconds        | Field specifies that the kubelet should perform a liveness probe every XX second(s)  | 10      |
+| Parameter                          | Description                                                                          | Default |
+| ---------------------------------- | ------------------------------------------------------------------------------------ | ------- |
+| readinessprobe.initialDelaySeconds | Tells the kubelet that it should wait XX second(s) before performing the first probe | 5       |
+| readinessprobe.periodSeconds       | Field specifies that the kubelet should perform a liveness probe every XX second(s)  | 10      |
 
 ## Resources
 
