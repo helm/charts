@@ -195,6 +195,9 @@ spec:
           {{- if .Values.extraVolumeMounts }}
 {{ toYaml .Values.extraVolumeMounts | indent 12}}
           {{- end }}
+          {{- if .Values.extraVolumeMountsSecondary }}
+{{ toYaml .Values.extraVolumeMountsSecondary | indent 12}}
+{{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
 {{- if .Values.metrics.enabled }}
@@ -257,8 +260,16 @@ spec:
         {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 8}}
         {{- end }}
-{{- if .Values.persistence.enabled }}
+        {{- if .Values.extraVolumesSecondary }}
+{{ toYaml .Values.extraVolumesSecondary | indent 8}}
+        {{- end }}
+{{- if not .Values.persistence.enabled }}
+        - name: datadir
+          emptyDir: {}
+{{- end}}
+{{- if or .Values.persistence.enabled .Values.extraVolumeClaimTemplatesSecondary }}
   volumeClaimTemplates:
+  {{- if .Values.persistence.enabled }}
     - metadata:
         name: datadir
         annotations:
@@ -274,8 +285,9 @@ spec:
           requests:
             storage: {{ .Values.persistence.size | quote }}
         {{ include "mongodb.storageClass" . }}
-{{- else }}
-        - name: datadir
-          emptyDir: {}
+  {{- end }}
+  {{- if .Values.extraVolumeClaimTemplatesSecondary }}
+{{ toYaml .Values.extraVolumeClaimTemplatesSecondary | indent 4}}
+  {{- end }}
 {{- end }}
 {{- end }}
