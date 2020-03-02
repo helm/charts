@@ -346,6 +346,7 @@ persistence:
   ## Persistent Volume Storage Size.
   ##
   size: 1Gi
+  annotations: {}
 
 ## Configuration values for the postgresql dependency.
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
