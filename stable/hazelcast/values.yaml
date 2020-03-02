@@ -168,6 +168,8 @@ securityContext:
   enabled: true
   # runAsUser is the user ID used to run the container
   runAsUser: 65534
+  # runAsGroup is the primary group ID used to run all processes within any container of the pod
+  runAsGroup: 65534
   # fsGroup is the group ID associated with the container
   fsGroup: 65534
   # readOnlyRootFilesystem is a flag to enable readOnlyRootFilesystem for the Hazelcast security context

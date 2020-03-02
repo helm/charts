@@ -195,6 +195,9 @@ Management Center |`+true+`
 |`+securityContext.runAsUser+` |User ID used to run the Hazelcast and Management
 Center containers |`+65534+`
 
+| `securityContext.runAsGroup` |Primary Group ID used to run all processes in the
+ Hazelcast Jet and Hazelcast Jet Management Center containers | `+65534+`
+
 |`+securityContext.fsGroup+` |Group ID associated with the Hazelcast and
 Management Center container |`+65534+`
 
