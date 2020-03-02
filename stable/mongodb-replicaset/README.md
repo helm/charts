@@ -106,6 +106,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `readinessProbe.timeoutSeconds`     | Readiness probe timeout seconds                                           | `1`                                                 |
 | `extraVars`                         | Set environment variables for the main container                          | `{}`                                                |
 | `extraLabels`                       | Additional labels to add to resources                                     | `{}`                                                |
+| `global.namespaceOverride`          | Override the deployment namespace                                         | Not set (`Release.Namespace`)                       |
 
 *MongoDB config file*
 

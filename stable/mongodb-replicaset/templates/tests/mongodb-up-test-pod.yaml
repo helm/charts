@@ -9,6 +9,7 @@ metadata:
   name: {{ template "mongodb-replicaset.fullname" . }}-test
   annotations:
     "helm.sh/hook": test-success
+  namespace: {{ template "mongodb-replicaset.namespace" . }}
 spec:
   initContainers:
     - name: test-framework
