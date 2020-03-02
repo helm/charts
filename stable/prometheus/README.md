@@ -203,31 +203,7 @@ Parameter | Description | Default
 `initChownData.image.tag` | init-chown-data container image tag | `latest`
 `initChownData.image.pullPolicy` | init-chown-data container image pull policy | `IfNotPresent`
 `initChownData.resources` | init-chown-data pod resource requests & limits | `{}`
-`kubeStateMetrics.enabled` | If true, create kube-state-metrics | `true`
-`kubeStateMetrics.name` | kube-state-metrics container name | `kube-state-metrics`
-`kubeStateMetrics.image.repository` | kube-state-metrics container image repository| `quay.io/coreos/kube-state-metrics`
-`kubeStateMetrics.image.tag` | kube-state-metrics container image tag | `v1.9.5`
-`kubeStateMetrics.image.pullPolicy` | kube-state-metrics container image pull policy | `IfNotPresent`
-`kubeStateMetrics.args` | kube-state-metrics container arguments | `{}`
-`kubeStateMetrics.nodeSelector` | node labels for kube-state-metrics pod assignment | `{}`
-`kubeStateMetrics.podAnnotations` | annotations to be added to kube-state-metrics pods | `{}`
-`kubeStateMetrics.deploymentAnnotations` | annotations to be added to kube-state-metrics deployment | `{}`
-`kubeStateMetrics.podSecurityPolicy.annotations` | Specify pod annotations in the pod security policy | `{}` |
-`kubeStateMetrics.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
-`kubeStateMetrics.replicaCount` | desired number of kube-state-metrics pods | `1`
-`kubeStateMetrics.podDisruptionBudget.enabled` | If true, create a PodDisruptionBudget | `false`
-`kubeStateMetrics.podDisruptionBudget.maxUnavailable` | Maximum unavailable instances in PDB | `1`
-`kubeStateMetrics.priorityClassName` | kube-state-metrics priorityClassName | `nil`
-`kubeStateMetrics.resources` | kube-state-metrics resource requests and limits (YAML) | `{}`
-`kubeStateMetrics.securityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for kube-state-metrics containers | `{}`
-`kubeStateMetrics.service.annotations` | annotations for kube-state-metrics service | `{prometheus.io/scrape: "true"}`
-`kubeStateMetrics.service.clusterIP` | internal kube-state-metrics cluster service IP | `None`
-`kubeStateMetrics.service.externalIPs` | kube-state-metrics service external IP addresses | `[]`
-`kubeStateMetrics.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
-`kubeStateMetrics.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
-`kubeStateMetrics.service.servicePort` | kube-state-metrics service port | `80`
-`kubeStateMetrics.service.serviceTelemetryPort` | kube-state-metrics service port for self Telemetry | `81`
-`kubeStateMetrics.service.type` | type of kube-state-metrics service to create | `ClusterIP`
+`kubeStateMetrics.enabled` | If true, create kube-state-metrics sub-chart, see the [kube-state-metrics chart for configuration options](https://github.com/helm/charts/tree/master/stable/kube-state-metrics) | `true`
 `nodeExporter.enabled` | If true, create node-exporter | `true`
 `nodeExporter.name` | node-exporter container name | `node-exporter`
 `nodeExporter.image.repository` | node-exporter container image repository| `prom/node-exporter`
