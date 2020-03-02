@@ -65,7 +65,13 @@ podAnnotations:
 | `tolerations` | List of node taints to tolerate  | `[]` |
 | `cacert.enabled` | Enable TLS  | `false` |
 | `cacert.content` | Contents of where the certification is mounted. | `""` |
-## Limitations
+## Connecting via TLS
 
-Connecting to MongoDB via TLS is currently not supported.
+Connecting to MongoDB via TLS is supported with custom certificates, you will need to specify this in the connection string.
+`docdb.amazonaws.com:27017/?ssl=true&ssl_ca_certs=/var/mongodb_exporter/config/ca.pem`
+
+The certificate needs to be passed using `cacert.content` 
+
+## Limitations 
+This will not work with AWS docDB. This is a limitation of the exporter itself.
 
