@@ -46,6 +46,8 @@ chart and their default values.
 | `image.repository`                | Gogs image                                                   | `gogs/gogs`                                                |
 | `image.tag`                       | Gogs image tag                                           | `0.11.86`                                                  |
 | `image.pullPolicy`                | Gogs image pull policy                                       | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
+| `persistence.enabled`             | Weather or not to persistent gogs data             | `true`                                                     |
+| `postgresql.annotations`             | PVC annotations                                  | `{}`                                                     |
 | `postgresql.install`             | Weather or not to install PostgreSQL dependency              | `true`                                                     |
 | `postgresql.postgresHost`        | PostgreSQL host (if `postgresql.install == false`)           | `nil`                                                      |
 | `postgresql.postgresUser`        | PostgreSQL User to create                                    | `gogs`                                                     |
