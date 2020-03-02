@@ -9,5 +9,5 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     helm.sh/chart: {{ include "prometheus-mongodb-exporter.chart" . }}
 data:
-    ca.pem: {{ .Values.cacert.content | quote }}
+    ca.pem: {{ .Values.cacert.content | quote  }}
 {{- end -}}
