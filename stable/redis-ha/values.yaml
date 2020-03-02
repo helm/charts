@@ -120,6 +120,8 @@ haproxy:
   # extraConfig: |-
       # Define configuration here
 
+  extraContainers: []
+  ## Additional containers to be added to the haproxy pods
 
 ## Role Based Access
 ## Ref: https://kubernetes.io/docs/admin/authorization/rbac/
@@ -173,6 +175,9 @@ redis:
   #    cpu: 100m
   #  limits:
   #    memory: 700Mi
+
+  extraContainers: []
+  ## Additional containers to be added to the redis server pods
 
 ## Sentinel specific configuration options
 sentinel:

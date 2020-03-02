@@ -135,6 +135,9 @@ spec:
           mountPath: /usr/local/etc/haproxy
         - name: shared-socket
           mountPath: /run/haproxy
+{{- with .Values.haproxy.extraContainers }}
+{{ tpl . $ | indent 6 }}
+{{- end }}
 {{- if .Values.haproxy.priorityClassName }}
       priorityClassName: {{ .Values.haproxy.priorityClassName }}
 {{- end }}

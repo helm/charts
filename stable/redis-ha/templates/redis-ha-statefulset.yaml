@@ -262,6 +262,9 @@ spec:
             name: script-mount
         {{- end }}
 {{- end }}
+{{- with .Values.redis.extraContainers }}
+{{ tpl . $ | indent 6 }}
+{{- end }}
 {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
 {{- end }}
