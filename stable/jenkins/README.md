@@ -152,6 +152,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.nodeSelector`             | Node labels for pod assignment       | `{}`                                      |
 | `master.affinity`                 | Affinity settings                    | `{}`                                      |
 | `master.schedulerName`            | Kubernetes scheduler name            | Not set                                   |
+| `master.terminationGracePeriodSeconds` | Set TerminationGracePeriodSeconds   | Not set                               |
 | `master.tolerations`              | Toleration labels for pod assignment | `[]`                                      |
 | `master.podAnnotations`           | Annotations for master pod           | `{}`                                      |
 | `master.deploymentAnnotations`           | Annotations for master deployment           | `{}`                                      |

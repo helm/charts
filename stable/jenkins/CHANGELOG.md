@@ -5,6 +5,10 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.9.21
+
+Add `master.terminationGracePeriodSeconds` option
+
 ## 1.9.20
 
 Update default plugins
@@ -15,7 +19,6 @@ Update default plugins
 - credentials-binding:1.21
 - git:4.2.0
 - configuration-as-code:1.36
-
 
 ## 1.9.19
 
