@@ -108,10 +108,12 @@ rbac:
   ## If true, create & use RBAC resources
   ##
   create: false
+  ## If true, the service account won't be created, this allows to reuse an existing one
+  skipServiceAccountCreation: false
   ## If true, create & use Pod Security Policy resources
   ## https://kubernetes.io/docs/concepts/policy/pod-security-policy/
   pspEnabled: false
-  ## Ignored if rbac.create is true
+  ## Ignored if rbac.create is true and skipServiceAccountCreation is false
   ##
   serviceAccountName: default
   ## Annotations for the Service Account
