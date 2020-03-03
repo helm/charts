@@ -94,11 +94,14 @@ The following tables lists the configurable parameters of the Unifi chart and th
 | `persistence.existingClaim`                  | Use an existing PVC to persist data                                                                                    | `nil`                        |
 | `persistence.storageClass`                   | Type of persistent volume claim                                                                                        | `-`                          |
 | `persistence.accessModes`                    | Persistence access modes                                                                                               | `[]`                         |
+| `extraConfigFiles`                           | Dictionary containing files mounted to `/configmap` inside the pod (See [values.yaml](values.yaml) for examples)       | `{}`                         |
+| `extraJvmOpts`                               | List of additional JVM options, e.g. `["-Dlog4j.configurationFile=file:/configmap/log4j2.xml"]`                        | `[]`                         |
 | `resources`                                  | CPU/Memory resource requests/limits                                                                                    | `{}`                         |
 | `nodeSelector`                               | Node labels for pod assignment                                                                                         | `{}`                         |
 | `tolerations`                                | Toleration labels for pod assignment                                                                                   | `[]`                         |
 | `affinity`                                   | Affinity settings for pod assignment                                                                                   | `{}`                         |
 | `podAnnotations`                             | Key-value pairs to add as pod annotations                                                                              | `{}`                         |
+| `deploymentAnnotations`                             | Key-value pairs to add as deployment annotations                                                                              | `{}`                         |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

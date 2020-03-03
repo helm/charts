@@ -15,6 +15,9 @@ spec:
       release: {{ .Release.Name }}
   endpoints:
   - interval: {{ .Values.prometheus.operator.serviceMonitor.interval }}
+  {{- if .Values.prometheus.operator.serviceMonitor.scrapeTimeout }}
+    scrapeTimeout: {{ .Values.prometheus.operator.serviceMonitor.scrapeTimeout }}
+  {{- end }}
   {{- if .Values.rabbitmqPrometheusPlugin.enabled }}
     port: metrics
     path: {{ .Values.rabbitmqPrometheusPlugin.path }}

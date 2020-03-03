@@ -3,7 +3,7 @@ affinity: {}
 
 image:
   repository: directxman12/k8s-prometheus-adapter-amd64
-  tag: v0.5.0
+  tag: v0.6.0
   pullPolicy: IfNotPresent
 
 logLevel: 4
@@ -125,3 +125,11 @@ tolerations: []
 
 # Annotations added to the pod
 podAnnotations: {}
+
+hostNetwork:
+  # Specifies if prometheus-adapter should be started in hostNetwork mode.
+  #
+  # You would require this enabled if you use alternate overlay networking for pods and
+  # API server unable to communicate with metrics-server. As an example, this is required
+  # if you use Weave network on EKS
+  enabled: false

@@ -123,6 +123,9 @@ persistentVolume:
 # Annotations to be added to the service
 serviceAnnotations: {}
 
+# Annotations to be added to the statefulSet
+statefulSetAnnotations: {}
+
 terminationGracePeriodSeconds: 30
 
 tls:

@@ -210,6 +210,18 @@ data:
       format = {{ .Values.accessLogs.format | quote }}
     [accessLog.fields]
       defaultMode = {{ .Values.accessLogs.fields.defaultMode | quote }}
+    {{- if .Values.accessLogs.filters }}
+    [accessLog.filters]
+      {{- if .Values.accessLogs.filters.statusCodes }}
+      statusCodes = {{ toJson .Values.accessLogs.filters.statusCodes }}
+      {{- end }}
+      {{- if .Values.accessLogs.filters.retryAttempts }}
+      retryAttempts = {{ .Values.accessLogs.filters.retryAttempts }}
+      {{- end }}
+      {{- if .Values.accessLogs.filters.minDuration }}
+      minDuration = {{ .Values.accessLogs.filters.minDuration | quote }}
+      {{- end }}
+    {{- end }}
     [accessLog.fields.names]
     {{- range $field, $action := .Values.accessLogs.fields.names }}
       {{ printf "\"%s\" = \"%s\"" $field $action }}

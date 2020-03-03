@@ -34,6 +34,7 @@ spec:
           image: "{{ .Values.prometheusOperator.image.repository }}:{{ .Values.prometheusOperator.image.tag }}"
           imagePullPolicy: "{{ .Values.prometheusOperator.image.pullPolicy }}"
           args:
+            - --manage-crds={{ $.Values.prometheusOperator.manageCrds }}
           {{- if .Values.prometheusOperator.kubeletService.enabled }}
             - --kubelet-service={{ .Values.prometheusOperator.kubeletService.namespace }}/{{ template "prometheus-operator.fullname" . }}-kubelet
           {{- end }}

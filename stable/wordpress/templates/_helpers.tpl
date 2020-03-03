@@ -22,6 +22,32 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create chart name and version as used by the chart label.
+*/}}
+{{- define "wordpress.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
+Common labels
+*/}}
+{{- define "wordpress.labels" -}}
+app.kubernetes.io/name: {{ include "wordpress.name" . }}
+helm.sh/chart: {{ include "wordpress.chart" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end -}}
+
+{{/*
+Labels to use on {deploy|sts}.spec.selector.matchLabels and svc.spec.selector
+*/}}
+{{- define "wordpress.matchLabels" -}}
+app.kubernetes.io/name: {{ include "wordpress.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end -}}
+
 {{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
@@ -51,13 +77,6 @@ Also, we can't use a single if because lazy evaluation is not an option
 {{- else -}}
     {{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
 {{- end -}}
-{{- end -}}
-
-{{/*
-Create chart name and version as used by the chart label.
-*/}}
-{{- define "wordpress.chart" -}}
-{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
@@ -180,4 +199,82 @@ Return the appropriate apiVersion for deployment.
 {{- else -}}
 {{- print "apps/v1" -}}
 {{- end -}}
+{{- end -}}
+
+{{/*
+Renders a value that contains template.
+Usage:
+{{ include "wordpress.tplValue" ( dict "value" .Values.path.to.the.Value "context" $) }}
+*/}}
+{{- define "wordpress.tplValue" -}}
+    {{- if typeIs "string" .value }}
+        {{- tpl .value .context }}
+    {{- else }}
+        {{- tpl (.value | toYaml) .context }}
+    {{- end }}
+{{- end -}}
+
+{{/*
+Return the MariaDB Hostname
+*/}}
+{{- define "wordpress.databaseHost" -}}
+{{- if .Values.mariadb.enabled }}
+    {{- printf "%s" (include "mariadb.fullname" .) -}}
+{{- else -}}
+    {{- printf "%s" .Values.externalDatabase.host -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the MariaDB Port
+*/}}
+{{- define "wordpress.databasePort" -}}
+{{- if .Values.mariadb.enabled }}
+    {{- printf "3306" -}}
+{{- else -}}
+    {{- printf "%d" (.Values.externalDatabase.port | int ) -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the MariaDB Database Name
+*/}}
+{{- define "wordpress.databaseName" -}}
+{{- if .Values.mariadb.enabled }}
+    {{- printf "%s" .Values.mariadb.db.name -}}
+{{- else -}}
+    {{- printf "%s" .Values.externalDatabase.database -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the MariaDB User
+*/}}
+{{- define "wordpress.databaseUser" -}}
+{{- if .Values.mariadb.enabled }}
+    {{- printf "%s" .Values.mariadb.db.user -}}
+{{- else -}}
+    {{- printf "%s" .Values.externalDatabase.user -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the MariaDB User
+*/}}
+{{- define "wordpress.databaseSecretName" -}}
+{{- if .Values.mariadb.enabled }}
+    {{- printf "%s" (include "mariadb.fullname" .) -}}
+{{- else -}}
+    {{- printf "%s-%s" .Release.Name "externaldb" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Check if there are rolling tags in the images
+*/}}
+{{- define "wordpress.checkRollingTags" -}}
+{{- if and (contains "bitnami/" .Values.image.repository) (not (.Values.image.tag | toString | regexFind "-r\\d+$|sha256:")) }}
+WARNING: Rolling tag detected ({{ .Values.image.repository }}:{{ .Values.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
++info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
+{{- end }}
 {{- end -}}
