@@ -49,9 +49,9 @@ spec:
 {{ toYaml .Values.deployment.podLabels | indent 8 }}
         {{- end }}
     spec:
-      {{- if .Values.securityContext }}
+      {{- if .Values.podSecurityContext }}
       securityContext:
-{{ toYaml .Values.securityContext | indent 8 }}
+{{ toYaml .Values.podSecurityContext | indent 8 }}
       {{- end }}
       {{- if .Values.rbac.enabled }}
       serviceAccountName: {{ template "traefik.fullname" . }}
@@ -189,6 +189,10 @@ spec:
         - --configfile=/config/traefik.toml
         {{- range .Values.startupArguments }}
         - {{ . }}
+        {{- end }}
+        {{- if .Values.containerSecurityContext }}
+        securityContext:
+{{ toYaml .Values.containerSecurityContext | indent 10 }}
         {{- end }}
 
       volumes:

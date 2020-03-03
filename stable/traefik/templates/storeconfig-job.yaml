@@ -37,6 +37,10 @@ spec:
           env:
 {{ toYaml .Values.env | indent 12 }}
           {{- end }}
+          {{- if .Values.containerSecurityContext }}
+          securityContext:
+{{ toYaml .Values.containerSecurityContext | indent 10 }}
+          {{- end }}
       volumes:
       - name: config
         configMap:
