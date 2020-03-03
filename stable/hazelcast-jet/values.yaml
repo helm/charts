@@ -250,7 +250,7 @@ managementcenter:
   # if not provided, it can be filled in the Management Center web interface
   licenseKey:
   # licenseKeySecretName is the name of the secret where the Hazelcast Jet Management Center License Key is stored (can be used instead of licenseKey)
-  #licenseKeySecretName:
+  # licenseKeySecretName:
 
   # affinity specifies the Hazelcast Jet Management Center affinity/anti-affinity of different pods
   # affinity:
