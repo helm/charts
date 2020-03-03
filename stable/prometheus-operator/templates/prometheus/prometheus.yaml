@@ -14,7 +14,7 @@ metadata:
 spec:
 {{- if .Values.prometheus.prometheusSpec.initContainers }}
   initContainers:
-{{ toYaml.Values.prometheus.prometheusSpec.initContainers | indent 4 }}
+{{ toYaml .Values.prometheus.prometheusSpec.initContainers | indent 4 }}
 {{- end }}
   alerting:
     alertmanagers:
