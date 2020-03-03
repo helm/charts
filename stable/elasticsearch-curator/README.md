@@ -48,7 +48,7 @@ their default values.
 | `cronjob.schedule`                   | Schedule for the CronJob                                    | `0 1 * * *`                                  |
 | `cronjob.annotations`                | Annotations to add to the cronjob                           | {}                                           |
 | `cronjob.labels`                     | Labels to add to the cronjob                                | {}                                           |
-| `cronjob.concurrencyPolicy`          | `Allow|Forbid|Replace` concurrent jobs                      | `nil`                                        |
+| `cronjob.concurrencyPolicy`          | `Allow\|Forbid\|Replace` concurrent jobs                    | `nil`                                        |
 | `cronjob.failedJobsHistoryLimit`     | Specify the number of failed Jobs to keep                   | `nil`                                        |
 | `cronjob.successfulJobsHistoryLimit` | Specify the number of completed Jobs to keep                | `nil`                                        |
 | `cronjob.jobRestartPolicy`           | Control the Job restartPolicy                               | `Never`                                      |
