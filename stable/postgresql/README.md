@@ -142,6 +142,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `master.extraInitContainers`                  | Additional init containers to add to the pods (postgresql master)                                                                                                         | `[]`                                                          |
 | `master.extraVolumeMounts`                    | Additional volume mounts to add to the pods (postgresql master)                                                                                                           | `[]`                                                          |
 | `master.extraVolumes`                         | Additional volumes to add to the pods (postgresql master)                                                                                                                 | `[]`                                                          |
+| `master.sidecars`                                         | Add additional containers to the pod                                                                                                                          | `[]`                                                     |
 | `slave.nodeSelector`                          | Node labels for pod assignment (postgresql slave)                                                                                                                         | `{}`                                                          |
 | `slave.affinity`                              | Affinity labels for pod assignment (postgresql slave)                                                                                                                     | `{}`                                                          |
 | `slave.tolerations`                           | Toleration labels for pod assignment (postgresql slave)                                                                                                                   | `[]`                                                          |
@@ -153,6 +154,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `slave.extraInitContainers`                   | Additional init containers to add to the pods (postgresql slave)                                                                                                          | `[]`                                                          |
 | `slave.extraVolumeMounts`                     | Additional volume mounts to add to the pods (postgresql slave)                                                                                                            | `[]`                                                          |
 | `slave.extraVolumes`                          | Additional volumes to add to the pods (postgresql slave)                                                                                                                  | `[]`                                                          |
+| `slave.sidecars`                                         | Add additional containers to the pod                                                                                                                          | `[]`                                                     |
 | `terminationGracePeriodSeconds`               | Seconds the pod needs to terminate gracefully                                                                                                                             | `nil`                                                         |
 | `resources`                                   | CPU/Memory resource requests/limits                                                                                                                                       | Memory: `256Mi`, CPU: `250m`                                  |
 | `securityContext.enabled`                     | Enable security context                                                                                                                                                   | `true`                                                        |
@@ -302,6 +304,31 @@ Alternatively, you can specify custom scripts using the `initdbScripts` paramete
 In addition to these options, you can also set an external ConfigMap with all the initialization scripts. This is done by setting the `initdbScriptsConfigMap` parameter. Note that this will override the two previous options. If your initialization scripts contain sensitive information such as credentials or passwords, you can use the `initdbScriptsSecret` parameter.
 
 The allowed extensions are `.sh`, `.sql` and `.sql.gz`.
+
+### Sidecars
+
+If you need  additional containers to run within the same pod as PostgreSQL (e.g. an additional metrics or logging exporter), you can do so via the `sidecars` config parameter. Simply define your container according to the Kubernetes container spec.
+
+```yaml
+# For the PostgreSQL master
+master:
+  sidecars:
+  - name: your-image-name
+    image: your-image
+    imagePullPolicy: Always
+    ports:
+    - name: portname
+     containerPort: 1234
+# For the PostgreSQL replicas
+slave:
+  sidecars:
+  - name: your-image-name
+    image: your-image
+    imagePullPolicy: Always
+    ports:
+    - name: portname
+     containerPort: 1234
+```
 
 ### Metrics
 

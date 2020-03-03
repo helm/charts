@@ -239,6 +239,9 @@ spec:
             {{- if .Values.slave.extraVolumeMounts }}
             {{- toYaml .Values.slave.extraVolumeMounts | nindent 12 }}
             {{- end }}
+{{- if .Values.slave.sidecars }}
+{{- include "postgresql.tplValue" ( dict "value" .Values.slave.sidecars "context" $ ) | nindent 8 }}
+{{- end }}
       volumes:
         {{- if .Values.usePasswordFile }}
         - name: postgresql-password
