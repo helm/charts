@@ -36,6 +36,14 @@ spec:
       nodeSelector:
 {{ toYaml .Values.managementcenter.nodeSelector | indent 8 }}
       {{- end }}
+      {{- if .Values.managementcenter.affinity }}
+      affinity:
+{{ toYaml .Values.managementcenter.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.managementcenter.tolerations }}
+      tolerations:
+{{ toYaml .Values.managementcenter.tolerations | indent 8 }}
+      {{- end }}
       {{- if .Values.securityContext.enabled }}
       securityContext:
         runAsUser: {{ .Values.securityContext.runAsUser }}
@@ -51,6 +59,8 @@ spec:
         ports:
         - name: mc-port
           containerPort: 8081
+        - name: mc-https-port
+          containerPort: 443
         {{- if .Values.managementcenter.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
