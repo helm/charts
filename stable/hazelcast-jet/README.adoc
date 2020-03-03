@@ -99,16 +99,25 @@ their default values.
 
 |`+cluster.memberCount+` |Number of Hazelcast Jet members |2
 
-|`+jet.rest+` |Enable REST endpoints for Hazelcast Jet member |`+true+`
-
 |`+jet.javaOpts+` |Additional JAVA_OPTS properties for Hazelcast Jet member
 |`+nil+`
+
+|`jet.loggingLevel` |Level of Hazelcast Jet logs (SEVERE, WARNING,
+INFO, CONFIG, FINE, FINER, and FINEST); note that changing this value
+requires setting `securityContext.runAsUser` to `0` |`nil`
 
 |`+jet.yaml.hazelcast-jet+` and `+jet.yaml.hazelcast+` |Hazelcast Jet and IMDG
 YAML configurations (`+hazelcast-jet.yaml+` and `+hazelcast.yaml+` embedded into
 `+values.yaml+`) |`+{DEFAULT_JET_YAML}+` and `+{DEFAULT_HAZELCAST_YAML}+`
 
 |`+jet.configurationFiles+` |Hazelcast configuration files |`+nil+`
+
+|`+hostPort+` |Port under which Hazelcast Jet PODs are exposed on the host
+machines |`+nil+`
+
+|`+affinity+` |Hazelcast Node affinity |`+nil+`
+
+|`+tolerations+` |Hazelcast Node tolerations |`+nil+`
 
 |`+nodeSelector+` |Hazelcast Node labels for pod assignment |`+nil+`
 
@@ -132,6 +141,13 @@ to be considered successful after having failed |`+1+`
 |`+livenessProbe.failureThreshold+` |Minimum consecutive failures for the probe
 to be considered failed after having succeeded. |`+3+`
 
+|`livenessProbe.path` |URL path that will be called to check liveness. |
+`/hazelcast/health/node-state`
+
+|`livenessProbe.port` |Port that will be used in liveness probe calls. |`nil`
+
+|`livenessProbe.scheme` |HTTPS or HTTP scheme. |`HTTP`
+
 |`+readinessProbe.enabled+` |Turn on and off readiness probe |`+true+`
 
 |`+readinessProbe.initialDelaySeconds+` |Delay before readiness probe is
@@ -147,12 +163,22 @@ probe to be considered successful after having failed |`+1+`
 |`+readinessProbe.failureThreshold+` |Minimum consecutive failures for the probe
 to be considered failed after having succeeded. |`+3+`
 
+|`readinessProbe.path` |URL path that will be called to check readiness. |
+`/hazelcast/health/ready`
+
+|`readinessProbe.port` |Port that will be used in readiness probe calls. |`nil`
+
+|`readinessProbe.scheme` |HTTPS or HTTP scheme. |`HTTP`
+
 |`+resources+` |CPU/Memory resource requests/limits |`+nil+`
 
 |`+service.type+` |Kubernetes service type (`ClusterIP', `LoadBalancer', or
 `NodePort') |`+ClusterIP+`
 
 |`+service.port+` |Kubernetes service port |`+5701+`
+
+|`+service.clusterIP+` |IP of the service, "None" makes the service
+headless |`+None+`
 
 |`+rbac.create+` |Enable installing RBAC Role authorization |`+true+`
 
@@ -207,6 +233,12 @@ Center |`+nil+`
 |`+managementcenter.licenseKeySecretName+` |Kubernetes Secret Name, where Jet
 Management Center License Key is stored (can be used instead of licenseKey)
 |`+nil+`
+
+|`+managementcenter.affinity+` |Hazelcast Jet Management Center node affinity
+|`+nil+`
+
+|`+managementcenter.tolerations+` |Hazelcast Jet Management Center node
+tolerations |`+nil+`
 
 |`+managementcenter.nodeSelector+` |Hazelcast Jet Management Center node labels
 for pod assignment |`+nil+`
@@ -278,8 +310,7 @@ $ helm install --name my-release \
 endif::[]
 
 
-The above command sets number of Hazelcast Jet members to 3 and disables REST
-endpoints.
+The above command sets number of Hazelcast Jet members to 3.
 
 Alternatively, a YAML file that specifies the values for the parameters can be
 provided while installing the chart. For example,
@@ -364,3 +395,25 @@ $ helm install --name my-jet-release \
     stable/hazelcast-jet
 ----
 endif::[]
+
+== Notable changes
+
+=== 1.4.0
+
+Hazelcast REST Endpoints are no longer enabled by default and the
+parameter `jet.rest` is no longer available. If you want to  enable
+REST, please add the related `endpoint-groups` to the Hazelcast
+Configuration (`jet.yaml.hazelcast`). For example:
+
+[source,yaml]
+----
+rest-api:
+  enabled: true
+  endpoint-groups:
+    HEALTH_CHECK:
+      enabled: true
+    CLUSTER_READ:
+      enabled: true
+    CLUSTER_WRITE:
+      enabled: true
+----
