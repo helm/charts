@@ -35,7 +35,7 @@ spec:
         - -config
         - /gangway/gangway.yaml
         env:
-{{ if .Values.env -}}
+{{- if .Values.env }}
 {{ toYaml .Values.env | indent 8 }}
 {{- end }}
         - name: GANGWAY_SESSION_SECURITY_KEY
