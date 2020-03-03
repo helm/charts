@@ -183,6 +183,17 @@ data:
       enabled: {{ .Values.falco.httpOutput.enabled }}
       url: {{ .Values.falco.httpOutput.url }}
 
+    grpc:
+      enabled: {{ .Values.falco.grpc.enabled }}
+      bind_address: {{ .Values.falco.grpc.bindAddress }}
+      threadiness: {{ .Values.falco.grpc.threadiness }}
+      private_key: {{ .Values.falco.grpc.privateKey }}
+      cert_chain: {{ .Values.falco.grpc.certChain }}
+      root_certs: {{ .Values.falco.grpc.rootCerts }}
+
+    grpc_output:
+      enabled: {{ .Values.falco.grpcOutput.enabled }}
+
   {{- if .Values.integrations.snsOutput.enabled }}
   aws_default_region: {{ .Values.integrations.snsOutput.aws_default_region }}
   {{- end }}
