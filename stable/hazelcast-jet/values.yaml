@@ -201,11 +201,13 @@ securityContext:
   # enabled is a flag to enable Security Context
   enabled: true
   # runAsUser is the user ID used to run the container
-  runAsUser: 1001
+  runAsUser: 65534
   # runAsGroup is the primary group ID used to run all processes within any container of the pod
-  runAsGroup: 1001
+  runAsGroup: 65534
   # fsGroup is the group ID associated with the container
-  fsGroup: 1001
+  fsGroup: 65534
+  # readOnlyRootFilesystem is a flag to enable readOnlyRootFilesystem for the Hazelcast security context
+  readOnlyRootFilesystem: true
 
 # Allows to enable a Prometheus to scrape pods
 metrics:

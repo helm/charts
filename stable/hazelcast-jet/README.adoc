@@ -191,13 +191,16 @@ generated using the fullname template |`+nil+`
 Hazelcast Jet Management Center |`+true+`
 
 |`+securityContext.runAsUser+` |User ID used to run the Hazelcast Jet and
-Hazelcast Jet Management Center containers |`+1001+`
+Hazelcast Jet Management Center containers |`+65534+`
 
-| `securityContext.runAsGroup` |Primary Group ID used to run all processes in the
+|`securityContext.runAsGroup` |Primary Group ID used to run all processes in the
  Hazelcast Jet and Hazelcast Jet Management Center containers | `+65534+`
 
 |`+securityContext.fsGroup+` |Group ID associated with the Hazelcast Jet and
-Hazelcast Jet Management Center container |`+1001+`
+Hazelcast Jet Management Center container |`+65534+`
+
+|`+securityContext.readOnlyRootFilesystem+` |Enables readOnlyRootFilesystem in 
+the Hazelcast Jet and Hazelcast Jet Management Center security containers |`+true+`
 
 |`+metrics.enabled+` |Turn on and off JMX Prometheus metrics available at
 `+/metrics+` |`+false+`
