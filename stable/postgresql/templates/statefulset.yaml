@@ -251,7 +251,7 @@ spec:
           {{- if .Values.extraEnvVarsCM }}
           envFrom:
             - configMapRef:
-                name: {{ .Values.extraEnvVarsCM }}
+                name: {{ tpl .Values.extraEnvVarsCM . }}
           {{- end }}
           ports:
             - name: tcp-postgresql
