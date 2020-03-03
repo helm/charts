@@ -203,25 +203,25 @@ spec:
         volumeMounts:
         - name: nextcloud-data
           mountPath: /var/www/
-          subPath: root
+          subPath: {{ ternary "root" (printf "%s/%s" .Values.nextcloud.persistence.subPath "root") (empty .Values.nextcloud.persistence.subPath) }}
         - name: nextcloud-data
           mountPath: /var/www/html
-          subPath: html
+          subPath: {{ ternary "html" (printf "%s/%s" .Values.nextcloud.persistence.subPath "html") (empty .Values.nextcloud.persistence.subPath) }}
         - name: nextcloud-data
           mountPath: {{ .Values.nextcloud.datadir }}
-          subPath: data
+          subPath: {{ ternary "data" (printf "%s/%s" .Values.nextcloud.persistence.subPath "data") (empty .Values.nextcloud.persistence.subPath) }}
         - name: nextcloud-data
           mountPath: /var/www/html/config
-          subPath: config
+          subPath: {{ ternary "config" (printf "%s/%s" .Values.nextcloud.persistence.subPath "config") (empty .Values.nextcloud.persistence.subPath) }}
         - name: nextcloud-data
           mountPath: /var/www/html/custom_apps
-          subPath: custom_apps
+          subPath: {{ ternary "custom_apps" (printf "%s/%s" .Values.nextcloud.persistence.subPath "custom_apps") (empty .Values.nextcloud.persistence.subPath) }}
         - name: nextcloud-data
           mountPath: /var/www/tmp
-          subPath: tmp
+          subPath: {{ ternary "tmp" (printf "%s/%s" .Values.nextcloud.persistence.subPath "tmp") (empty .Values.nextcloud.persistence.subPath) }}
         - name: nextcloud-data
           mountPath: /var/www/html/themes
-          subPath: themes
+          subPath: {{ ternary "themes" (printf "%s/%s" .Values.nextcloud.persistence.subPath "themes") (empty .Values.nextcloud.persistence.subPath) }}
         {{- range $key, $value := .Values.nextcloud.configs }}
         - name: nextcloud-config
           mountPath: /var/www/html/config/{{ $key }}
@@ -282,25 +282,25 @@ spec:
         volumeMounts:
         - name: nextcloud-data
           mountPath: /var/www/
-          subPath: root
+          subPath: {{ ternary "root" (printf "%s/%s" .Values.nextcloud.persistence.subPath "root") (empty .Values.nextcloud.persistence.subPath) }}
         - name: nextcloud-data
           mountPath: /var/www/html
-          subPath: html
+          subPath: {{ ternary "html" (printf "%s/%s" .Values.nextcloud.persistence.subPath "html") (empty .Values.nextcloud.persistence.subPath) }}
         - name: nextcloud-data
           mountPath: {{ .Values.nextcloud.datadir }}
-          subPath: data
+          subPath: {{ ternary "data" (printf "%s/%s" .Values.nextcloud.persistence.subPath "data") (empty .Values.nextcloud.persistence.subPath) }}
         - name: nextcloud-data
           mountPath: /var/www/html/config
-          subPath: config
+          subPath: {{ ternary "config" (printf "%s/%s" .Values.nextcloud.persistence.subPath "config") (empty .Values.nextcloud.persistence.subPath) }}
         - name: nextcloud-data
           mountPath: /var/www/html/custom_apps
-          subPath: custom_apps
+          subPath: {{ ternary "custom_apps" (printf "%s/%s" .Values.nextcloud.persistence.subPath "custom_apps") (empty .Values.nextcloud.persistence.subPath) }}
         - name: nextcloud-data
           mountPath: /var/www/tmp
-          subPath: tmp
+          subPath: {{ ternary "tmp" (printf "%s/%s" .Values.nextcloud.persistence.subPath "tmp") (empty .Values.nextcloud.persistence.subPath) }}
         - name: nextcloud-data
           mountPath: /var/www/html/themes
-          subPath: themes
+          subPath: {{ ternary "themes" (printf "%s/%s" .Values.nextcloud.persistence.subPath "themes") (empty .Values.nextcloud.persistence.subPath) }}
         - name: nextcloud-nginx-config
           mountPath: /etc/nginx/nginx.conf
           subPath: nginx.conf
