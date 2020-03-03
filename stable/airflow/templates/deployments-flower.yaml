@@ -68,9 +68,19 @@ spec:
             - name: flower
               containerPort: 5555
               protocol: TCP
-          {{- if .Values.flower.extraConfigmapMounts }}
+          {{- if or .Values.airflow.extraVolumeMounts .Values.airflow.extraConfigmapMounts }}
           volumeMounts:
-{{ toYaml .Values.flower.extraConfigmapMounts | indent 12 }}
+          {{- if .Values.airflow.extraVolumeMounts }}
+{{ toYaml .Values.airflow.extraVolumeMounts | indent 12 }}
+          {{- end }}
+          {{- range .Values.airflow.extraConfigmapMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+              {{ if .subPath }}
+              subPath: {{ .subPath }}
+              {{ end }}
+          {{- end }}
           {{- end }}
           args: ["flower"]
           livenessProbe:
@@ -84,4 +94,15 @@ spec:
             failureThreshold: 5
           resources:
 {{ toYaml .Values.flower.resources | indent 12 }}
+      {{- if or .Values.airflow.extraVolumes .Values.airflow.extraConfigmapMounts }}
+      volumes:
+        {{- if .Values.airflow.extraVolumes }}
+{{ toYaml .Values.airflow.extraVolumes | indent 8 }}
+        {{- end }}
+        {{- range .Values.airflow.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
+        {{- end }}
+      {{- end }}
 {{- end }}
