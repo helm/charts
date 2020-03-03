@@ -89,14 +89,14 @@ spec:
             - "{{ .Values.dags.git.url }}"
             {{- end }}
             - "{{ .Values.dags.git.ref }}"
-            - "/dags"
+            - "{{ .Values.dags.initContainer.mountPath }}{{ .Values.dags.initContainer.syncSubPath | default "" }}"
             - "{{ .Values.dags.git.repoHost}}"
             - "{{ .Values.dags.git.privateKeyName }}"
           volumeMounts:
             - name: git-clone
               mountPath: /usr/local/git
             - name: dags-data
-              mountPath: /dags
+              mountPath: "{{ .Values.dags.initContainer.mountPath }}"
             {{- if .Values.dags.git.secret }}
             - name: git-clone-secret
               mountPath: /keys
@@ -125,7 +125,7 @@ spec:
             - "{{ .Values.dags.git.url }}"
             {{- end }}
             - "{{ .Values.dags.git.ref }}"
-            - "/dags"
+            - "{{ .Values.dags.initContainer.mountPath }}{{ .Values.dags.initContainer.syncSubPath | default "" }}"
             - "{{ .Values.dags.git.repoHost}}"
             - "{{ .Values.dags.git.privateKeyName }}"
             - "{{ .Values.dags.git.gitSync.refreshTime }}"
@@ -133,7 +133,7 @@ spec:
             - name: git-clone
               mountPath: /usr/local/git
             - name: dags-data
-              mountPath: /dags
+              mountPath: "{{ .Values.dags.initContainer.mountPath }}"
             {{- if .Values.dags.git.secret }}
             - name: git-clone-secret
               mountPath: /keys

@@ -66,6 +66,7 @@ Read about kubeseal usage on [sealed-secrets docs](https://github.com/bitnami-la
 | **ingress.hosts**             | Ingress accepted hostnames                                                 | `["chart-example.local"]`                   |
 | **ingress.tls**               | Ingress TLS configuration                                                  | `[]`                                        |
 | **podAnnotations**            | Annotations to annotate pods with.                                         | `{}`                                        |
+| **podLabels**                 | Labels to be added to pods                                                 | `{}`                                        |
 | **priorityClassName**         | Optional class to specify priority for pods                                | `""`                                        |
 
 

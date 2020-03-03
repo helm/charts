@@ -61,10 +61,10 @@ You can specify the Datadog Cluster Agent token used to secure the communication
 
 #### From 1.x to 2.x
 
-⚠️ Migrating from 1.x to 2.x requires a manual action.
+⚠️  Migrating from 1.x to 2.x requires a manual action.
 
 The `datadog` chart has been refactored to regroup the `values.yaml` parameters in a more logical way.
-Please follow the [migration guide](docs/Migration_1.x_to_2.x.md) to update you `values.yaml` file.
+Please follow the [migration guide](https://github.com/helm/charts/blob/master/stable/datadog/docs/Migration_1.x_to_2.x.md) to update you `values.yaml` file.
 
 #### From 1.19.0 onwards
 
@@ -265,8 +265,8 @@ helm install --name <RELEASE_NAME> \
 | `datadog.dd_url`                         | Datadog intake server                                                                     | `nil`                                       |
 | `datadog.env`                            | Additional Datadog environment variables                                                  | `nil`                                       |
 | `datadog.logLevel`                       | Agent log verbosity (possible values: trace, debug, info, warn, error, critical, and off) | `INFO`                                      |
-| `datadog.logsEnabled`                    | Enable log collection                                                                     | `nil`                                       |
-| `datadog.logsConfigContainerCollectAll`  | Collect logs from all containers                                                          | `nil`                                       |
+| `datadog.logs.enabled`                    | Enable log collection                                                                     | `nil`                                       |
+| `datadog.logs.containerCollectAll`  | Collect logs from all containers                                                          | `nil`                                       |
 | `datadog.logsPointerHostPath`            | Host path to store the log tailing state in                                               | `/var/lib/datadog-agent/logs`               |
 | `datadog.apm.enabled`                    | Enable tracing from the host                                                              | `false`                                       |
 | `datadog.apm.port`                       | Used to override the default agent APM Port                                               | `8126`                                      |
