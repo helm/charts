@@ -16,10 +16,3 @@ keywords:
 - go
 sources:
 - https://github.com/drone/drone
-maintainers:
-- name: christian-roggia
-  email: christian.roggia@gmail.com
-- name: paulczar
-  email: username.taken@gmail.com
-- name: zakkg3
-  email: zakkg3@gmail.com
