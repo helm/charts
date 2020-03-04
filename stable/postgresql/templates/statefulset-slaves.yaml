@@ -66,32 +66,44 @@ spec:
       {{- if .Values.serviceAccount.enabled }}
       serviceAccountName: {{ default (include "postgresql.fullname" . ) .Values.serviceAccount.name}}
       {{- end }}
-      {{- if or .Values.slave.extraInitContainers (and .Values.volumePermissions.enabled .Values.persistence.enabled) .Values.shmVolume.enabled }}
+      {{- if or .Values.slave.extraInitContainers (and .Values.volumePermissions.enabled (or .Values.persistence.enabled (and .Values.shmVolume.enabled .Values.shmVolume.chmod.enabled))) }}
       initContainers:
-      {{- if or (and .Values.volumePermissions.enabled .Values.persistence.enabled) .Values.shmVolume.enabled }}
+      {{- if and .Values.volumePermissions.enabled (or .Values.persistence.enabled (and .Values.shmVolume.enabled .Values.shmVolume.chmod.enabled)) }}
         - name: init-chmod-data
           image: {{ template "postgresql.volumePermissions.image" . }}
-          imagePullPolicy: "{{ .Values.volumePermissions.image.pullPolicy }}"
+          imagePullPolicy: {{ .Values.volumePermissions.image.pullPolicy | quote }}
           {{- if .Values.resources }}
           resources: {{- toYaml .Values.resources | nindent 12 }}
           {{- end }}
           command:
             - /bin/sh
-            - -c
+            - -cx
             - |
+              {{ if .Values.persistence.enabled }}
               mkdir -p {{ .Values.persistence.mountPath }}/data
               chmod 700 {{ .Values.persistence.mountPath }}/data
-              find {{ .Values.persistence.mountPath }} -mindepth 0 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" | \
+              find {{ .Values.persistence.mountPath }} -mindepth 1 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" | \
+              {{- if eq ( toString ( .Values.volumePermissions.securityContext.runAsUser )) "auto" }}
+                xargs chown -R `id -u`:`id -G | cut -d " " -f2`
+              {{- else }}
                 xargs chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }}
-              {{- if .Values.shmVolume.enabled }}
+              {{- end }}
+              {{- end }}
+              {{- if and .Values.shmVolume.enabled .Values.shmVolume.chmod.enabled }}
               chmod -R 777 /dev/shm
               {{- end }}
+          {{- if eq ( toString ( .Values.volumePermissions.securityContext.runAsUser )) "auto" }}
+          securityContext:
+          {{- else }}
           securityContext:
             runAsUser: {{ .Values.volumePermissions.securityContext.runAsUser }}
+          {{- end }}
           volumeMounts:
+            {{ if .Values.persistence.enabled }}
             - name: data
               mountPath: {{ .Values.persistence.mountPath }}
               subPath: {{ .Values.persistence.subPath }}
+            {{- end }}
             {{- if .Values.shmVolume.enabled }}
             - name: dshm
               mountPath: /dev/shm
@@ -227,6 +239,9 @@ spec:
             {{- if .Values.slave.extraVolumeMounts }}
             {{- toYaml .Values.slave.extraVolumeMounts | nindent 12 }}
             {{- end }}
+{{- if .Values.slave.sidecars }}
+{{- include "postgresql.tplValue" ( dict "value" .Values.slave.sidecars "context" $ ) | nindent 8 }}
+{{- end }}
       volumes:
         {{- if .Values.usePasswordFile }}
         - name: postgresql-password

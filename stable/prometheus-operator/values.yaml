@@ -26,6 +26,7 @@ defaultRules:
     general: true
     k8s: true
     kubeApiserver: true
+    kubeApiserverError: true
     kubePrometheusNodeAlerting: true
     kubePrometheusNodeRecording: true
     kubernetesAbsent: true
@@ -80,6 +81,10 @@ alertmanager:
   ## Deploy alertmanager
   ##
   enabled: true
+
+  ## Api that prometheus will use to communicate with alertmanager. Possible values are v1, v2
+  ##
+  apiVersion: v2
 
   ## Service account for Alertmanager to use.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
@@ -242,7 +247,7 @@ alertmanager:
     ##
     image:
       repository: quay.io/prometheus/alertmanager
-      tag: v0.19.0
+      tag: v0.20.0
 
     ## If true then the user will be responsible to provide a secret with alertmanager configuration
     ## So when true the config part will be ignored (including templateFiles) and the one in the secret will be used
@@ -470,6 +475,11 @@ grafana:
   #   type: prometheus
   #   url: https://prometheus.svc:9090
   #   version: 1
+
+  ## Passed to grafana subchart and used by servicemonitor below
+  ##
+  service:
+    portName: service
 
   ## If true, create a serviceMonitor for grafana
   ##
@@ -977,11 +987,14 @@ prometheus-node-exporter:
 prometheusOperator:
   enabled: true
 
+  # If true prometheus operator will create and update its CRDs on startup
+  manageCrds: true
+
   tlsProxy:
     enabled: true
     image:
       repository: squareup/ghostunnel
-      tag: v1.4.1
+      tag: v1.5.2
       pullPolicy: IfNotPresent
     resources: {}
 
@@ -1167,7 +1180,7 @@ prometheusOperator:
   ##
   image:
     repository: quay.io/coreos/prometheus-operator
-    tag: v0.34.0
+    tag: v0.36.0
     pullPolicy: IfNotPresent
 
   ## Configmap-reload image to use for reloading configmaps
@@ -1180,7 +1193,7 @@ prometheusOperator:
   ##
   prometheusConfigReloaderImage:
     repository: quay.io/coreos/prometheus-config-reloader
-    tag: v0.34.0
+    tag: v0.36.0
 
   ## Set the prometheus config reloader side-car CPU limit
   ##
@@ -1375,6 +1388,13 @@ prometheus:
   ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
   ##
   prometheusSpec:
+    ## If true, pass --storage.tsdb.max-block-duration=2h to prometheus. This is already done if using Thanos
+    ##
+    disableCompaction: false
+    ## APIServerConfig
+    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#apiserverconfig
+    ##
+    apiserverConfig: {}
 
     ## Interval between consecutive scrapes.
     ##
@@ -1398,7 +1418,7 @@ prometheus:
     ##
     image:
       repository: quay.io/prometheus/prometheus
-      tag: v2.13.1
+      tag: v2.15.2
 
     ## Tolerations for use with node taints
     ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
@@ -1419,6 +1439,10 @@ prometheus:
     #   namespace: ""
     #   port: http
     #   scheme: http
+    #   pathPrefix: ""
+    #   tlsConfig: {}
+    #   bearerTokenFile: ""
+    #   apiVersion: v2
 
     ## External labels to add to any time series or alerts when communicating with external systems
     ##

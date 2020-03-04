@@ -50,6 +50,20 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
 {{- end }}
+{{- if .Values.configOverrides }}
+      initContainers:
+      - name: config-copier
+        image: busybox
+        command: [ 'sh', '-c', 'cp /configmap-files/* /cassandra-configs/ && chown 999:999 /cassandra-configs/*']
+        volumeMounts:
+{{- range $key, $value := .Values.configOverrides }}
+        - name: cassandra-config-{{ $key | replace "." "-" | replace "_" "--" }}
+          mountPath: /configmap-files/{{ $key }}
+          subPath: {{ $key }}
+{{- end }}
+        - name: cassandra-configs
+          mountPath: /cassandra-configs/
+{{- end }}
       containers:
 {{- if .Values.exporter.enabled }}
       - name: cassandra-exporter
@@ -153,11 +167,10 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /var/lib/cassandra
-{{- range $key, $value := .Values.configOverrides }}
-        - name: cassandra-config-{{ $key | replace "." "-" }}
-          mountPath: /etc/cassandra/{{ $key }}
-          subPath: {{ $key }}
-{{- end }}
+        {{- if .Values.configOverrides }}
+        - name: cassandra-configs
+          mountPath: /etc/cassandra
+        {{- end }}
         {{- if not .Values.persistence.enabled }}
         lifecycle:
           preStop:
@@ -175,7 +188,11 @@ spec:
 {{- range $key, $value := .Values.configOverrides }}
       - configMap:
           name: cassandra
-        name: cassandra-config-{{ $key | replace "." "-" }}
+        name: cassandra-config-{{ $key | replace "." "-" | replace "_" "--" }}
+{{- end }}
+{{- if .Values.configOverrides }}
+      - name: cassandra-configs
+        emptyDir: {}
 {{- end }}
 {{- if not .Values.persistence.enabled }}
       - name: data
