@@ -60,6 +60,7 @@ guiService:
   # externalTrafficPolicy: Cluster
 
 captivePortalService:
+  enabled: true
   type: ClusterIP
   http: 8880
   https: 8843

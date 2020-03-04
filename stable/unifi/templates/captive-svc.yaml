@@ -1,4 +1,4 @@
-{{ if not .Values.unifiedService.enabled }}
+{{ if not .Values.captivePortalService.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -45,14 +45,14 @@ spec:
       targetPort: captive-http
       protocol: TCP
       name: captive-http
-{{ if (and (eq .Values.captivePortalService.type "NodePort") (not (empty .Values.captivePortalService.nodePort))) }}
+{{ if (and (eq .Values.captivePortalService.type "NodePort") (not (empty .Values.captivePortalService.nodePorts.http))) }}
       nodePort: {{.Values.captivePortalService.nodePorts.http}}
 {{ end }}
     - port: {{ .Values.captivePortalService.https }}
       targetPort: captive-https
       protocol: TCP
       name: captive-https
-{{ if (and (eq .Values.captivePortalService.type "NodePort") (not (empty .Values.captivePortalService.nodePort))) }}
+{{ if (and (eq .Values.captivePortalService.type "NodePort") (not (empty .Values.captivePortalService.nodePorts.https))) }}
       nodePort: {{.Values.captivePortalService.nodePorts.https}}
 {{ end }}
   selector:
