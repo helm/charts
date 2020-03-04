@@ -40,10 +40,24 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 Return the appropriate apiVersion for networkpolicy.
 */}}
 {{- define "postgresql.networkPolicy.apiVersion" -}}
-{{- if semverCompare ">=1.4-0, <1.7-0" (default .Capabilities.KubeVersion.GitVersion .Capabilities.KubeVersion.Version) -}}
+{{- if semverCompare ">=1.4-0, <1.7-0" (include "postgresql.kubernetesVersion" .)  -}}
 "extensions/v1beta1"
-{{- else if semverCompare "^1.7-0" (default .Capabilities.KubeVersion.GitVersion .Capabilities.KubeVersion.Version) -}}
+{{- else if semverCompare "^1.7-0" (include "postgresql.kubernetesVersion" .) -}}
 "networking.k8s.io/v1"
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the kubernetes semantic version.
+In Helm 2.x, the version is .Capabilities.KubeVersion.GitVersion.
+In Helm 3.x, the version is .Capabilities.KubeVersion.Version.
+*/}}
+{{- define "postgresql.kubernetesVersion" -}}
+{{- $kubeVersion := .Capabilities.KubeVersion -}}
+{{- if contains "gitversion" (toJson $kubeVersion | lower) -}}
+{{ $kubeVersion.GitVersion }}
+{{- else -}}
+{{ $kubeVersion.Version }}
 {{- end -}}
 {{- end -}}
 
@@ -386,7 +400,7 @@ Usage:
 Return the appropriate apiVersion for statefulset.
 */}}
 {{- define "postgresql.statefulset.apiVersion" -}}
-{{- if semverCompare "<1.14-0" (default .Capabilities.KubeVersion.GitVersion .Capabilities.KubeVersion.Version) -}}
+{{- if semverCompare "<1.14-0" (include "postgresql.kubernetesVersion" .) -}}
 {{- print "apps/v1beta2" -}}
 {{- else -}}
 {{- print "apps/v1" -}}
