@@ -47,7 +47,7 @@ The following tables lists the configurable parameters of the Unifi chart and th
 | `guiService.loadBalancerIP`                  | Loadbalance IP for the Unifi GUI                                                                                       | `{}`                         |
 | `guiService.loadBalancerSourceRanges`        | List of IP CIDRs allowed access to load balancer (if supported)                                                        | None                         |
 | `guiService.externalTrafficPolicy`           | Set the externalTrafficPolicy in the Service to either Cluster or Local                                                | `Cluster`                    |
-| `captivePortalService.enabled`                            | Install the captive portal service (needed if you want guest captive portal)                                                | `true`                  |
+| `captivePortalService.enabled`                            | Install the captive portal service (needed if you want guest captive portal)                                                | `false`                  |
 | `captivePortalService.type`                            | Kubernetes service type for the captive portal                                                                              | `ClusterIP`                  |
 | `captivePortalService.http`                            | Kubernetes port where the captive portal is exposed                                                                         | `8880`                       |
 | `captivePortalService.https`                            | Kubernetes port where the captive portal is exposed (with SSL)                                                                         | `8843`                       |
