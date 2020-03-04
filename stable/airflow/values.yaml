@@ -232,6 +232,19 @@ flower:
   affinity: {}
   tolerations: []
 
+  ## Extra environment variables to mount in the Flower pod
+  # NOTE: this is especially useful if you use a Redis broker with TLS-enabled, as
+  # Flower does handle the TLS configuration using the `rediss://` procotol while
+  # Airflow does not handle that protocol. Using the following configuration you can
+  # override the AIRFLOW__CELERY__BROKER_URL or AIRFLOW__CELERY__BROKER_URL_CMD variable
+  # in order to provide Flower with its separate configuration.
+  extraEnv:
+  #  - name: AIRFLOW__CELERY__BROKER_URL
+  #    valueFrom:
+  #      secretKeyRef:
+  #        name: airflow
+  #        key: flower_broker_url
+
 web:
   ##
   ## Set AIRFLOW__WEBSERVER__BASE_URL
