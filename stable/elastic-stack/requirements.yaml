@@ -1,10 +1,10 @@
 dependencies:
 - name: elasticsearch
-  version: ^1.22.0
+  version: ^1.32.0
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: elasticsearch.enabled
 - name: kibana
-  version: ^3.0.0
+  version: ^3.2.0
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: kibana.enabled
 - name: filebeat
@@ -12,15 +12,15 @@ dependencies:
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: filebeat.enabled
 - name: logstash
-  version: ^1.6.0
+  version: ^2.3.0
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: logstash.enabled
 - name: fluentd
-  version: ^1.5.0
+  version: ^2.2.0
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: fluentd.enabled
 - name: fluent-bit
-  version: ^1.9.0
+  version: ^2.8.0
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: fluent-bit.enabled
 - name: fluentd-elasticsearch
@@ -32,10 +32,10 @@ dependencies:
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: nginx-ldapauth-proxy.enabled
 - name: elasticsearch-curator
-  version: ^1.2.0
+  version: ^2.1.0
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: elasticsearch-curator.enabled
 - name: elasticsearch-exporter
-  version: ^1.1.0
+  version: ^2.1.0
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: elasticsearch-exporter.enabled
