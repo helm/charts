@@ -50,6 +50,12 @@ spec:
             - name: stun
               containerPort: 3478
               protocol: UDP
+            - name: captive-http
+              containerPort: 8880
+              protocol: TCP
+            - name: captive-https
+              containerPort: 8843
+              protocol: TCP
           {{- if not .Values.runAsRoot }}
           securityContext:
             capabilities:

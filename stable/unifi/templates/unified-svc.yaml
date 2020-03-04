@@ -69,6 +69,20 @@ spec:
 {{ if (and (eq .Values.unifiedService.type "NodePort") (not (empty .Values.guiService.nodePort))) }}
       nodePort: {{.Values.guiService.nodePort}}
 {{ end }}
+    - name: captive-http
+      port: {{ .Values.captivePortalService.http }}
+      protocol: TCP
+      targetPort: captive-http
+{{ if (and (eq .Values.unifiedService.type "NodePort") (not (empty .Values.captivePortalService.nodePort))) }}
+      nodePort: {{.Values.captivePortalService.nodePorts.http}}
+{{ end }}
+    - name: captive-https
+      port: {{ .Values.captivePortalService.https }}
+      protocol: TCP
+      targetPort: captive-https
+{{ if (and (eq .Values.unifiedService.type "NodePort") (not (empty .Values.captivePortalService.nodePort))) }}
+      nodePort: {{.Values.captivePortalService.nodePorts.https}}
+{{ end }}
   selector:
     app.kubernetes.io/name: {{ include "unifi.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
