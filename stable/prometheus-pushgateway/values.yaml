@@ -67,6 +67,8 @@ ingress:
   ## Enable Ingress.
   ##
   enabled: false
+  # AWS ALB requires path of /*
+  path: /
 
     ## Annotations.
     ##
