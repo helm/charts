@@ -1,7 +1,6 @@
 {{- if and .Values.prometheus.enabled .Values.prometheus.servicePerReplica.enabled }}
 {{- $count := .Values.prometheus.prometheusSpec.replicas | int -}}
-{{- $serviceValues := .Values.prometheus.servicePerReplica -}}
-{{- $portName := .Values.prometheus.prometheusSpec.portName -}}
+{{- $serviceValues := .Values.prometheus.servicePerReplica -}} 
 apiVersion: v1
 kind: List
 metadata:
@@ -32,7 +31,7 @@ items:
       {{- end }}
       {{- end }}
       ports:
-        - name: {{ $portName }}
+        - name: {{ $.Values.prometheus.prometheusSpec.portName }}
           {{- if eq $serviceValues.type "NodePort" }}
           nodePort: {{ $serviceValues.nodePort }}
           {{- end }}

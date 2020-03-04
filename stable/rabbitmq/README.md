@@ -94,6 +94,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `ldap.tls.enabled`                           | Enable TLS for LDAP connections                  | `false` (if set to true, check advancedConfiguration parameter in values.yml)   |
 | `service.type`                               | Kubernetes Service type                          | `ClusterIP`                                             |
 | `service.port`                               | Amqp port                                        | `5672`                                                  |
+| `service.loadBalancerIP`                    | LoadBalancerIP for the service                   | `nil`                                                   |
 | `service.tlsPort`                            | Amqp TLS port                                    | `5671`                                                  |
 | `service.distPort`                           | Erlang distribution server port                  | `25672`                                                 |
 | `service.nodePort`                           | Node port override, if serviceType NodePort      | _random available between 30000-32767_                  |
@@ -341,7 +342,7 @@ You must include in your values.yaml the caCertificate, serverCertificate and se
     -----END RSA PRIVATE KEY-----
 ```
 
-This will be generate a secret with the certs, but is possible specify an existing secret using `existingSecret: name-of-existing-secret-to-rabbitmq`
+This will be generate a secret with the certs, but is possible specify an existing secret using `existingSecret: name-of-existing-secret-to-rabbitmq`. The secret is of type `kubernetes.io/tls`.
 
 Disabling [failIfNoPeerCert](https://www.rabbitmq.com/ssl.html#peer-verification-configuration) allows a TLS connection if client fails to provide a certificate
 

@@ -73,7 +73,7 @@ setup() {
     until [[ "$ready" -eq $(replicas) ]]; do
         echo "Waiting for application to become ready" >&2
         sleep 1
-
+        ready=0
         for ((i = 0; i < $(replicas); ++i)); do
             response=$(mongo $MONGOARGS "--host=$(pod_name "$i")" "--eval=rs.status().ok" || true)
             if [[ "$response" -eq 1 ]]; then
