@@ -55,8 +55,8 @@ spec:
       tolerations:
 {{ toYaml .Values.flower.tolerations | indent 8 }}
       {{- end }}
-      {{- if .Values.flower.securityContext }}
       serviceAccountName: {{ template "airflow.serviceAccountName" . }}
+      {{- if .Values.flower.securityContext }}
       securityContext:
 {{ toYaml .Values.flower.securityContext | indent 8 }}
       {{- end }}
