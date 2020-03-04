@@ -1,3 +1,6 @@
+This chart has been deprecated and moved to https://github.com/oteemo/charts
+
+
 1. Get the application URL by running these commands:
 {{- if .Values.ingress.enabled }}
 {{- range .Values.ingress.hosts }}

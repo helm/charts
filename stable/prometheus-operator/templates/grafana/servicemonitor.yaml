@@ -10,8 +10,8 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: grafana
-      release: {{ $.Release.Name | quote }}
+      app.kubernetes.io/name: grafana
+      app.kubernetes.io/instance: {{ $.Release.Name | quote }}
   namespaceSelector:
     matchNames:
       - {{ $.Release.Namespace | quote }}
