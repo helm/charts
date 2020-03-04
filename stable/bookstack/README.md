@@ -95,6 +95,19 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `ldap.pass`                    | Password of user performing search queries.  | `nil` |
 | `ldap.userFilter`                    | A filter to use when searching for users | `nil` |
 | `ldap.version`                    | Set the LDAP version to use when connecting to the server. Required especially when using AD. | `nil` |
+| `livenessProbe.enabled`                    | Enable/disable the Liveness probe | `true` |
+| `livenessProbe.failureThreshold`                    | Minimum consecutive failures for the liveness probe to be considered failed after having succeeded | `3` |
+| `livenessProbe.initialDelaySeconds`                    | Delay before liveness probe is initiated | `30` |
+| `livenessProbe.periodSeconds`                    | How often to perform the liveness probe | `10` |
+| `livenessProbe.successThreshold`                    | Minimum consecutive successes for the liveness probe to be considered successful after having failed | `1` |
+| `livenessProbe.timeoutSeconds`                    | When the liveness probe times out  | `1` |
+| `readinessProbe.enabled`                    | Enable/disable the Readiness probe | `true` |
+| `readinessProbe.failureThreshold`                    | Minimum consecutive failures for the readiness probe to be considered failed after having succeeded | `3` |
+| `readinessProbe.initialDelaySeconds`                    | Delay before readiness probe is initiated   | `30` |
+| `readinessProbe.periodSeconds`                    | How often to perform the readiness probe  | `10` |
+| `readinessProbe.successThreshold`                    | Minimum consecutive successes for the readiness probe to be considered successful after having failed | `1` |
+| `readinessProbe.timeoutSeconds`                    | When the readiness probe times out   | `1` |
+
 
 The above parameters map to the env variables defined in the [Bookstack image](https://hub.docker.com/r/solidnerd/bookstack/) and the MariaDB/MySQL database settings. For more information please refer to the [Bookstack](https://hub.docker.com/r/solidnerd/bookstack/) image documentation.
 

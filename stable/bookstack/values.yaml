@@ -172,3 +172,20 @@ ldap:
   pass:
   userFilter:
   version:
+
+## Configure liveness and readiness probe values
+## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
+livenessProbe:
+  enabled: true
+  failureThreshold: 3
+  initialDelaySeconds: 30 # very conservative value, to give enough time for database migrations
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 1
+readinessProbe:
+  enabled: true
+  failureThreshold: 3
+  initialDelaySeconds: 30 # very conservative value, to give enough time for database migrations
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 1
