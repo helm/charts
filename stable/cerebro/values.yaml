@@ -12,6 +12,8 @@ image:
   pullPolicy: IfNotPresent
 
 deployment:
+  # additionals labels
+  labels: {}
   annotations: {}
 
 service:
