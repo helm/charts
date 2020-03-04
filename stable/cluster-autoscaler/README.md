@@ -167,8 +167,8 @@ Parameter | Description | Default
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to add to each pod | `{}`
 `rbac.create` | If true, create & use RBAC resources | `false`
-`rbac.skipServiceAccountCreation` | If true (and rbac.create is true), no service account will be created  | `false`
-`rbac.serviceAccountName` | existing ServiceAccount to use (ignored if rbac.create=true and rbac.skipServiceAccountCreation=false) | `default`
+`rbac.serviceAccount.create` | If true and rbac.create is also true, a service account will be created | `true`
+`rbac.serviceAccount.name` | existing ServiceAccount to use (ignored if rbac.create=true and rbac.serviceAccount.create=true) | `default`
 `rbac.serviceAccountAnnotations` | Additional Service Account annotations	| `{}`
 `rbac.pspEnabled` | Must be used with `rbac.create` true. If true, creates & uses RBAC resources required in the cluster with [Pod Security Policies](https://kubernetes.io/docs/concepts/policy/pod-security-policy/) enabled. | `false`
 `replicaCount` | desired number of pods | `1`
