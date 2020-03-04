@@ -49,16 +49,9 @@ Return the appropriate apiVersion for networkpolicy.
 
 {{/*
 Return the kubernetes semantic version.
-In Helm 2.x, the version is .Capabilities.KubeVersion.GitVersion.
-In Helm 3.x, the version is .Capabilities.KubeVersion.Version.
 */}}
 {{- define "postgresql.kubernetesVersion" -}}
-{{- $kubeVersion := .Capabilities.KubeVersion -}}
-{{- if contains "gitversion" (toJson $kubeVersion | lower) -}}
-{{ $kubeVersion.GitVersion }}
-{{- else -}}
-{{ $kubeVersion.Version }}
-{{- end -}}
+{{ (default .Capabilities.KubeVersion.GitVersion .Capabilities.KubeVersion.String) }}
 {{- end -}}
 
 {{/*
