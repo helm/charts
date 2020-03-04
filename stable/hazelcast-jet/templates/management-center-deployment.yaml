@@ -107,7 +107,6 @@ spec:
           runAsNonRoot: {{ if eq (int .Values.securityContext.runAsUser) 0 }}false{{ else }}true{{ end }}
           runAsUser: {{ .Values.securityContext.runAsUser }}
           runAsGroup: {{ .Values.securityContext.runAsGroup }}
-          fsGroup: {{ .Values.securityContext.fsGroup }}
           privileged: false
           readOnlyRootFilesystem: false
           allowPrivilegeEscalation: false
