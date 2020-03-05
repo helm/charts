@@ -76,3 +76,14 @@ Create the name for the key secret.
   {{- printf $string | quote -}}
   {{- end -}}
 {{- end -}}
+
+{{/*
+Allow the release namespace to be overridden for multi-namespace deployments in combined charts.
+*/}}
+{{- define "mongodb-replicaset.namespace" -}}
+  {{- if and ((hasKey .Values "global") .Values.global.namespaceOverride) -}}
+    {{- .Values.global.namespaceOverride -}}
+  {{- else -}}
+    {{- .Release.Namespace -}}
+  {{- end -}}
+{{- end -}}
