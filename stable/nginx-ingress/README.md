@@ -295,6 +295,35 @@ controller:
       service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: '3600'
 ```
 
+## AWS L4 NLB with SSL Redirection
+
+`ssl-redirect` and `force-ssl-redirect` flag are not working with AWS Network Load Balancer. You need to turn if off and add additional port with `server-snippet` in order to make it work.
+
+The port NLB `80` will be mapped to nginx container port `80` and NLB port `443` will be mapped to nginx container port `8000` (special). Then we use `$server_port` to manage redirection on port `80`
+```
+controller:
+  config:
+    ssl-redirect: "false" # we use `special` port to control ssl redirection 
+    server-snippet: |
+      listen 8000;
+      if ( $server_port = 80 ) {
+         return 308 https://$host$request_uri;
+      }
+  containerPort:
+    http: 80
+    https: 443
+    special: 8000
+  service:
+    targetPorts:
+      http: http
+      https: special
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "tcp"
+      service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+      service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "your-arn"
+      service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+```
+
 ## AWS route53-mapper
 
 To configure the LoadBalancer service with the [route53-mapper addon](https://github.com/kubernetes/kops/tree/master/addons/route53-mapper), add the `domainName` annotation and `dns` label:
