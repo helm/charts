@@ -4,7 +4,7 @@ Installs the [Prometheus Adapter](https://github.com/DirectXMan12/k8s-prometheus
 
 ## Prerequisites
 
-Kubernetes 1.11+
+Kubernetes 1.14+
 
 ## Installing the Chart
 
@@ -74,9 +74,9 @@ rules:
             resource: node
           namespace:
             resource: namespace
-          pod_name:
+          pod:
             resource: pod
-      containerLabel: container_name
+      containerLabel: container
     memory:
       containerQuery: sum(container_memory_working_set_bytes{<<.LabelMatchers>>}) by (<<.GroupBy>>)
       nodeQuery: sum(container_memory_working_set_bytes{<<.LabelMatchers>>,id='/'}) by (<<.GroupBy>>)
@@ -86,9 +86,9 @@ rules:
             resource: node
           namespace:
             resource: namespace
-          pod_name:
+          pod:
             resource: pod
-      containerLabel: container_name
+      containerLabel: container
     window: 3m
 ```
 
@@ -112,7 +112,7 @@ The following table lists the configurable parameters of the Prometheus Adapter 
 | ------------------------------- | ------------------------------------------------------------------------------- | --------------------------------------------|
 | `affinity`                      | Node affinity                                                                   | `{}`                                        |
 | `image.repository`              | Image repository                                                                | `directxman12/k8s-prometheus-adapter-amd64` |
-| `image.tag`                     | Image tag                                                                       | `v0.5.0`                                    |
+| `image.tag`                     | Image tag                                                                       | `v0.6.0`                                    |
 | `image.pullPolicy`              | Image pull policy                                                               | `IfNotPresent`                              |
 | `image.pullSecrets`             | Image pull secrets                                                              | `{}`                                        |
 | `logLevel`                      | Log level                                                                       | `4`                                         |

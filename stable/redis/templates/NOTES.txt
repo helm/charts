@@ -54,7 +54,7 @@ To connect to your Redis server:
 
    kubectl run --namespace {{ .Release.Namespace }} {{ template "redis.fullname" . }}-client --rm --tty -i --restart='Never' \
    {{ if .Values.usePassword }} --env REDIS_PASSWORD=$REDIS_PASSWORD \{{ end }}
-   {{- if and (.Values.networkPolicy.enabled) (not .Values.networkPolicy.allowExternal) }}--labels="{{ template "redis.name" . }}-client=true" \{{- end }}
+   {{- if and (.Values.networkPolicy.enabled) (not .Values.networkPolicy.allowExternal) }}--labels="{{ template "redis.fullname" . }}-client=true" \{{- end }}
    --image {{ template "redis.image" . }} -- bash
 
 2. Connect using the Redis CLI:
@@ -91,7 +91,7 @@ To connect to your database from outside the cluster execute the following comma
         Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "redis.fullname" . }}'
 
     export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "redis.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
-    redis-cli -h $SERVICE_IP -p {{ .Values.master.service.nodePort }} {{- if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }}
+    redis-cli -h $SERVICE_IP -p {{ .Values.master.service.port }} {{- if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }}
 
 {{- else if contains "ClusterIP" .Values.master.service.type }}
 

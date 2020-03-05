@@ -16,9 +16,9 @@ spec:
   loadBalancerIP: {{ .Values.metrics.service.loadBalancerIP }}
   {{- end }}
   ports:
-    - name: metrics
+    - name: http-metrics
       port: 9187
-      targetPort: metrics
+      targetPort: http-metrics
   selector:
     app: {{ template "postgresql.name" . }}
     release: {{ .Release.Name }}

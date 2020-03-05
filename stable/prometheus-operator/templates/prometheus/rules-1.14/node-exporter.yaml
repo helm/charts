@@ -1,12 +1,15 @@
-# Generated from 'node-exporter' group from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml
-# Do not change in-place! In order to change this file first read following link:
-# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
+{{- /*
+Generated from 'node-exporter' group from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml
+Do not change in-place! In order to change this file first read following link:
+https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
+*/ -}}
 {{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
 {{- if and (semverCompare ">=1.14.0-0" $kubeTargetVersion) (semverCompare "<9.9.9-9" $kubeTargetVersion) .Values.defaultRules.create .Values.nodeExporter.enabled .Values.defaultRules.rules.node }}
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: {{ printf "%s-%s" (include "prometheus-operator.fullname" .) "node-exporter" | trunc 63 | trimSuffix "-" }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "prometheus-operator.name" . }}
 {{ include "prometheus-operator.labels" . | indent 4 }}
@@ -24,7 +27,7 @@ spec:
     - alert: NodeFilesystemSpaceFillingUp
       annotations:
         description: Filesystem on {{`{{ $labels.device }}`}} at {{`{{ $labels.instance }}`}} has only {{`{{ printf "%.2f" $value }}`}}% available space left and is filling up.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodefilesystemspacefillingup
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodefilesystemspacefillingup
         summary: Filesystem is predicted to run out of space within the next 24 hours.
       expr: |-
         (
@@ -40,7 +43,7 @@ spec:
     - alert: NodeFilesystemSpaceFillingUp
       annotations:
         description: Filesystem on {{`{{ $labels.device }}`}} at {{`{{ $labels.instance }}`}} has only {{`{{ printf "%.2f" $value }}`}}% available space left and is filling up fast.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodefilesystemspacefillingup
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodefilesystemspacefillingup
         summary: Filesystem is predicted to run out of space within the next 4 hours.
       expr: |-
         (
@@ -56,7 +59,7 @@ spec:
     - alert: NodeFilesystemAlmostOutOfSpace
       annotations:
         description: Filesystem on {{`{{ $labels.device }}`}} at {{`{{ $labels.instance }}`}} has only {{`{{ printf "%.2f" $value }}`}}% available space left.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodefilesystemalmostoutofspace
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodefilesystemalmostoutofspace
         summary: Filesystem has less than 5% space left.
       expr: |-
         (
@@ -70,7 +73,7 @@ spec:
     - alert: NodeFilesystemAlmostOutOfSpace
       annotations:
         description: Filesystem on {{`{{ $labels.device }}`}} at {{`{{ $labels.instance }}`}} has only {{`{{ printf "%.2f" $value }}`}}% available space left.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodefilesystemalmostoutofspace
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodefilesystemalmostoutofspace
         summary: Filesystem has less than 3% space left.
       expr: |-
         (
@@ -84,7 +87,7 @@ spec:
     - alert: NodeFilesystemFilesFillingUp
       annotations:
         description: Filesystem on {{`{{ $labels.device }}`}} at {{`{{ $labels.instance }}`}} has only {{`{{ printf "%.2f" $value }}`}}% available inodes left and is filling up.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodefilesystemfilesfillingup
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodefilesystemfilesfillingup
         summary: Filesystem is predicted to run out of inodes within the next 24 hours.
       expr: |-
         (
@@ -100,7 +103,7 @@ spec:
     - alert: NodeFilesystemFilesFillingUp
       annotations:
         description: Filesystem on {{`{{ $labels.device }}`}} at {{`{{ $labels.instance }}`}} has only {{`{{ printf "%.2f" $value }}`}}% available inodes left and is filling up fast.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodefilesystemfilesfillingup
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodefilesystemfilesfillingup
         summary: Filesystem is predicted to run out of inodes within the next 4 hours.
       expr: |-
         (
@@ -116,7 +119,7 @@ spec:
     - alert: NodeFilesystemAlmostOutOfFiles
       annotations:
         description: Filesystem on {{`{{ $labels.device }}`}} at {{`{{ $labels.instance }}`}} has only {{`{{ printf "%.2f" $value }}`}}% available inodes left.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodefilesystemalmostoutoffiles
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodefilesystemalmostoutoffiles
         summary: Filesystem has less than 5% inodes left.
       expr: |-
         (
@@ -130,7 +133,7 @@ spec:
     - alert: NodeFilesystemAlmostOutOfFiles
       annotations:
         description: Filesystem on {{`{{ $labels.device }}`}} at {{`{{ $labels.instance }}`}} has only {{`{{ printf "%.2f" $value }}`}}% available inodes left.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodefilesystemalmostoutoffiles
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodefilesystemalmostoutoffiles
         summary: Filesystem has less than 3% inodes left.
       expr: |-
         (
@@ -144,7 +147,7 @@ spec:
     - alert: NodeNetworkReceiveErrs
       annotations:
         description: '{{`{{ $labels.instance }}`}} interface {{`{{ $labels.device }}`}} has encountered {{`{{ printf "%.0f" $value }}`}} receive errors in the last two minutes.'
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodenetworkreceiveerrs
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodenetworkreceiveerrs
         summary: Network interface is reporting many receive errors.
       expr: increase(node_network_receive_errs_total[2m]) > 10
       for: 1h
@@ -153,7 +156,7 @@ spec:
     - alert: NodeNetworkTransmitErrs
       annotations:
         description: '{{`{{ $labels.instance }}`}} interface {{`{{ $labels.device }}`}} has encountered {{`{{ printf "%.0f" $value }}`}} transmit errors in the last two minutes.'
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodenetworktransmiterrs
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodenetworktransmiterrs
         summary: Network interface is reporting many transmit errors.
       expr: increase(node_network_transmit_errs_total[2m]) > 10
       for: 1h

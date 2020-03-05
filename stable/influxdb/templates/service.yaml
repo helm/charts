@@ -5,63 +5,37 @@ metadata:
   annotations:
 {{ toYaml .Values.service.annotations | indent 4 }}
 {{- end }}
-  name: "{{ template "influxdb.fullname" . }}"
+  name: {{ include "influxdb.fullname" . }}
   labels:
-    app: "{{ template "influxdb.fullname" . }}"
-    chart: "{{ template "influxdb.chart" . }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "influxdb.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
-  {{- if .Values.service.clusterIP }}
-  clusterIP: {{ .Values.service.clusterIP }}
-  {{- end }}
-  {{- if .Values.service.externalIPs }}
-  externalIPs:
-  {{ toYaml .Values.service.externalIPs | indent 4 }}
-  {{- end }}
-  {{- if .Values.service.loadBalancerIP }}
-  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
-  {{- end }}
-  {{- with .Values.service.loadBalancerSourceRanges }}
-  loadBalancerSourceRanges:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
   ports:
-  {{- if .Values.config.http.enabled }}
   - name: api
-    port: {{ .Values.config.http.bind_address }}
-    targetPort: {{ .Values.config.http.bind_address }}
-  {{- end }}
-  {{- if .Values.config.admin.enabled }}
-  - name: admin
-    port: {{ .Values.config.admin.bind_address }}
-    targetPort: {{ .Values.config.admin.bind_address }}
-  {{- end }}
+    port: {{ .Values.config.http.bind_address | default 8086 }}
+    targetPort: api
+  - name: rpc
+    port: {{ .Values.config.rpc.bind_address | default 8088 }}
+    targetPort: rpc
   {{- if .Values.config.graphite.enabled }}
   - name: graphite
-    port: {{ .Values.config.graphite.bind_address }}
-    targetPort: {{ .Values.config.graphite.bind_address }}
+    port: {{ .Values.config.graphite.bind_address | default 2003 }}
+    targetPort: graphite
   {{- end }}
   {{- if .Values.config.collectd.enabled }}
   - name: collectd
-    port: {{ .Values.config.collectd.bind_address }}
-    targetPort: {{ .Values.config.collectd.bind_address }}
+    port: {{ .Values.config.collectd.bind_address |  default 25826 }}
+    targetPort: collectd
   {{- end }}
   {{- if .Values.config.udp.enabled }}
   - name: udp
-    port: {{ .Values.config.udp.bind_address }}
-    targetPort: {{ .Values.config.udp.bind_address }}
+    port: {{ .Values.config.udp.bind_address |  default 8089 }}
+    targetPort: udp
   {{- end }}
   {{- if .Values.config.opentsdb.enabled }}
   - name: opentsdb
-    port: {{ .Values.config.opentsdb.bind_address }}
-    targetPort: {{ .Values.config.opentsdb.bind_address }}
-  {{- end }}
-  {{- if .Values.config.rpc.enabled }}
-  - name: rpc
-    port: {{ .Values.config.rpc.bind_address }}
-    targetPort: {{ .Values.config.rpc.bind_address }}
+    port: {{ .Values.config.opentsdb.bind_address |  default 4242 }}
+    targetPort: opentsdb
   {{- end }}
   selector:
-    app: {{ template "influxdb.fullname" . }}
+    {{- include "influxdb.selectorLabels" . | nindent 4 }}

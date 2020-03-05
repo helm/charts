@@ -8,11 +8,9 @@ This chart adds the Instana Agent to all schedulable nodes in your cluster via a
 
 ## Prerequisites
 
-Kubernetes 1.9.x - 1.14.x
+Kubernetes 1.9.x - 1.16.x
 
-Working `helm` and `tiller`.
-
-_Note:_ Tiller may need a service account and role binding if RBAC is enabled in your cluster.
+Working `helm` (version 3) with the `stable` repo added to your helm client.
 
 ## Installing the Chart
 
@@ -51,20 +49,20 @@ Agent can have APM, INFRASTRUCTURE or AWS mode. Default is APM and if you want t
 
 * agent.mode
 
+First, create a namespace for the instana-agent
+
+```bash
+$ kubectl create namespace instana-agent
+```
+
 To install the chart with the release name `instana-agent` and set the values on the command line run:
 
 ```bash
-$ helm install --name instana-agent --namespace instana-agent \
+$ helm install instana-agent --namespace instana-agent \
 --set agent.key=INSTANA_AGENT_KEY \
 --set agent.endpointHost=HOST \
 --set zone.name=ZONE_NAME \
 stable/instana-agent
-```
-
-To install the chart with the release name `instana-agent` after editing the **values.yaml** file, run:
-
-```bash
-$ helm install --name instana-agent --namespace instana-agent stable/instana-agent
 ```
 
 ## Uninstalling the Chart
@@ -88,8 +86,8 @@ The following table lists the configurable parameters of the Instana chart and t
 | `agent.endpointHost`               | Instana Agent backend endpoint host                                     | `saas-us-west-2.instana.io`                                                                                 |
 | `agent.endpointPort`               | Instana Agent backend endpoint port                                     | `443`                                                                                                       |
 | `agent.image.name`                 | The image name to pull                                                  | `instana/agent`                                                                                             |
-| `agent.image.tag`                  | The image tag to pull                                                   | `1.0.29`                                                                                                    |
-| `agent.image.pullPolicy`           | Image pull policy                                                       | `IfNotPresent`                                                                                              |
+| `agent.image.tag`                  | The image tag to pull                                                   | `latest`                                                                                                    |
+| `agent.image.pullPolicy`           | Image pull policy                                                       | `Always`                                                                                                    |
 | `agent.key`                        | Your Instana Agent key                                                  | `nil` You must provide your own key                                                                         |
 | `agent.leaderElectorPort`          | Instana leader elector sidecar port                                     | `42655`                                                                                                     |
 | `agent.listenAddress`              | List of addresses to listen on, or "*" for all interfaces               | `nil`                                                                                                       |
@@ -106,6 +104,7 @@ The following table lists the configurable parameters of the Instana chart and t
 | `agent.pod.requests.memory`        | Container memory requests in MiB                                        | `512`                                                                                                       |
 | `agent.pod.requests.cpu`           | Container cpu requests in cpu cores                                     | `0.5`                                                                                                       |
 | `agent.pod.tolerations`            | Tolerations for pod assignment                                          | `[]`                                                                                                        |
+| `agent.env`                        | Additional environment variables for the agent                          | `{}`                                                                                                        |
 | `agent.redactKubernetesSecrets`    | Enable additional secrets redaction for selected Kubernetes resources   | `nil` See [Kubernetes secrets](https://docs.instana.io/quick_start/agent_setup/container/kubernetes/#secrets) for more details.   |
 | `cluster.name`                     | Display name of the monitored cluster                                   | Value of `zone.name`                                                                                        |
 | `podSecurityPolicy.enable`         | Whether a PodSecurityPolicy should be authorized for the Instana Agent pods. Requires `rbac.create` to be `true` as well. | `false` See [PodSecurityPolicy](https://docs.instana.io/quick_start/agent_setup/container/kubernetes/#podsecuritypolicy) for more details. |

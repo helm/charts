@@ -10,7 +10,7 @@ This feature is not natively supported by kured but is added using Kubernetes Cr
 | Config                  | Description                                                                 | Default                    |
 | ------                  | -----------                                                                 | -------                    |
 | `image.repository`      | Image repository                                                            | `weaveworks/kured` |
-| `image.tag`             | Image tag                                                                   | `1.2.0`                    |
+| `image.tag`             | Image tag                                                                   | `1.3.0`                    |
 | `image.pullPolicy`      | Image pull policy                                                           | `IfNotPresent`             |
 | `image.pullSecrets`     | Image pull secrets                                                          | `[]`                       |
 | `extraArgs`             | Extra arguments to pass to `/usr/bin/kured`. See below.                     | `{}`                       |
@@ -36,3 +36,14 @@ extraArgs:
   bar-baz: 2
 ```
 becomes `/usr/bin/kured ... --foo=1 --bar-baz=2`.
+
+## Prometheus Metrics
+
+Kured exposes a single prometheus metric indicating whether a reboot is required or not (see [kured docs](https://github.com/weaveworks/kured#prometheus-metrics)) for details. It can be scraped with the following set of annotations:
+
+```yaml
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/path: "/metrics"
+  prometheus.io/port: "8080"
+```

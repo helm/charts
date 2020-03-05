@@ -5,6 +5,61 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.9.21
+
+Add `master.terminationGracePeriodSeconds` option
+
+## 1.9.20
+
+Update default plugins
+
+- kubernetes:1.24.1
+- workflow-job:2.36
+- workflow-aggregator:2.6
+- credentials-binding:1.21
+- git:4.2.0
+- configuration-as-code:1.36
+
+## 1.9.19
+
+Update docs for Helm 3
+
+## 1.9.18
+
+Make `jenkins-home` attachable to Azure Disks without pvc
+
+```
+ volumes:
+  - name: jenkins-home
+    azureDisk:
+      kind: Managed
+      diskName: myAKSDisk
+      diskURI: /subscriptions/<subscriptionID>/resourceGroups/MC_myAKSCluster_myAKSCluster_eastus/providers/Microsoft.Compute/disks/myAKSDisk
+```
+
+## 1.9.16
+
+Fix PodLabel for NetworkPolicy to work if enabled
+
+## 1.9.14
+
+Properly fix case sense in `Values.master.overwriteConfig` in `config.yaml`
+
+## 1.9.13
+
+Fix case sense in `Values.master.overwriteConfig` in `config.yaml`
+
+## 1.9.12
+
+Scriptapprovals are overwritten when overwriteConfig is enabled
+
+## 1.9.10
+
+Added documentation for `persistence.storageClass`.
+
+## 1.9.9
+Make `master.deploymentAnnotation` configurable.
+
 ## 1.9.8
 
 Make `agent.slaveConnectTimeout` configurable: by increasing this value Jenkins will not cancel&ask k8s for a pod again, while it's on `ContainerCreating`. Useful when you have big images or autoscaling takes some time.

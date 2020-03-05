@@ -1,8 +1,8 @@
 apiVersion: v1
 name: sonatype-nexus
-version: 1.21.2
-appVersion: 3.19.1-01
-description: Sonatype Nexus is an open source repository manager
+version: 1.23.1
+appVersion: 3.20.1-01
+description: DEPRECATED - Sonatype Nexus is an open source repository manager
 keywords:
   - artifacts
   - dependency
@@ -17,8 +17,6 @@ sources:
   - https://github.com/travelaudience/docker-nexus
   - https://github.com/travelaudience/kubernetes-nexus
   - https://github.com/travelaudience/docker-nexus-backup
-maintainers:
-  - name: rjkernick
-    email: rjkernick@gmail.com
-  - name: tsiddique
-    email: tsiddique@live.com
+# This chart has been deprecated https://github.com/helm/charts/blob/master/PROCESSES.md#deprecating-a-chart
+# It is now maintained at https://github.com/oteemo/charts
+deprecated: true

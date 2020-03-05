@@ -84,6 +84,9 @@ spec:
                     {{ template "redis-ha.fullname" . }}: replica
                 topologyKey: failure-domain.beta.kubernetes.io/zone
     {{- end }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets: {{ toYaml .Values.imagePullSecrets | nindent 8 }}
+      {{- end }}
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
       serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}
@@ -92,6 +95,8 @@ spec:
       - name: init-sysctl
         image: {{ template "redis.sysctl.image" . }}
         imagePullPolicy: {{ .Values.sysctlImage.pullPolicy }}
+        resources:
+{{ toYaml .Values.sysctlImage.resources | indent 10 }}
         {{- if .Values.sysctlImage.mountHostSys }}
         volumeMounts:
         - name: host-sys
@@ -155,7 +160,7 @@ spec:
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
-        - redis-server 
+        - redis-server
         args:
         - /data/conf/redis.conf
         env:
@@ -235,6 +240,10 @@ spec:
               {{- end }}
                 key: {{ .Values.authKey }}
         {{- end }}
+        {{- if .Values.exporter.script }}
+          - name: REDIS_EXPORTER_SCRIPT
+            value: /script/script.lua
+        {{- end }}
         livenessProbe:
           httpGet:
             path: {{ .Values.exporter.scrapePath }}
@@ -247,6 +256,11 @@ spec:
         ports:
           - name: exporter-port
             containerPort: {{ .Values.exporter.port }}
+        {{- if .Values.exporter.script }}
+        volumeMounts:
+          - mountPath: /script
+            name: script-mount
+        {{- end }}
 {{- end }}
 {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
@@ -259,6 +273,14 @@ spec:
       - name: host-sys
         hostPath:
           path: /sys
+      {{- end }}
+      {{- if .Values.exporter.script }}
+      - name: script-mount
+        configMap:
+          name: {{ template "redis-ha.fullname" . }}-exporter-script-configmap
+          items:
+            - key: script
+              path: script.lua
       {{- end }}
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
@@ -282,6 +304,9 @@ spec:
     {{- else }}
       storageClassName: "{{ .Values.persistentVolume.storageClass }}"
     {{- end }}
+    {{- end }}
+    {{- if .Values.persistentVolume.reclaimPolicy }}
+    persistentVolumeReclaimPolicy: "{{ .Values.persistentVolume.reclaimPolicy }}"
     {{- end }}
 {{- else if .Values.hostPath.path }}
       - name: data

@@ -2,24 +2,32 @@
 ## ref: https://hub.docker.com/r/library/influxdb/tags/
 image:
   repository: "influxdb"
-  tag: "1.7.6-alpine"
+  tag: "1.7.9-alpine"
   pullPolicy: IfNotPresent
   ## If specified, use these secrets to access the images
   # pullSecrets:
   #   - registry-secret
 
-## Customize livenessProbe and readinessProbe
-## ref: https://docs.influxdata.com/influxdb/v1.7/tools/api/#ping-http-endpoint
-##
-livenessProbe:
-  probePath: "/ping"
 
-readinessProbe:
-  probePath: "/ping"
+serviceAccount:
+  create: true
+  name:
+  annotations: {}
+
+## Customize liveness, readiness and startup probes
+## ref: https://docs.influxdata.com/influxdb/v1.7/tools/api/#ping-http-endpoint
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+##
+livenessProbe: {}
+  # initialDelaySeconds: 30
+  # timeoutSeconds: 5
+
+readinessProbe: {}
+  # initialDelaySeconds: 5
+  # timeoutSeconds: 1
 
 startupProbe:
   enabled: false
-  probePath: "/ping"
   # failureThreshold: 6
   # periodSeconds: 5
 
@@ -31,14 +39,6 @@ service:
   ## Add annotations to service
   # annotations: {}
   type: ClusterIP
-  ## Add IP Cluster
-  # clusterIP: ""
-  ## Add external IPs that route to one or more cluster nodes
-  # externalIPs: []
-  ## Specify LoadBalancer IP (only allow on some cloud provider)
-  # loadBalancerIP: ""
-  ## Allow source IPs to access on service (if empty, any access allow)
-  # loadBalancerSourceRanges: []
 
 ## Persist data to a persistent volume
 ##
@@ -56,6 +56,32 @@ persistence:
   accessMode: ReadWriteOnce
   size: 8Gi
 
+## Deploy InfluxDB Enterprise - License required
+## ref: https://www.influxdata.com/products/influxdb-enterprise/
+enterprise:
+  enabled: false
+  licensekey: {}
+  clusterSize: 4
+  meta:
+    image:
+      ## This image contains the enterprise meta node package for clustering.
+      ## It is meant to be used in conjunction with the influxdb:data package of the same version.
+      ## ref: https://hub.docker.com/_/influxdb
+      tag: meta
+    clusterSize: 3
+    ## seed is hashed and used as `internal-shared-secret` for Meta service.
+    seed: dead-beef-cafe-bae
+    ## Configure resource requests and limits
+    ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+    resources: {}
+  #  resources:
+  #    requests:
+  #      memory: 512Mi
+  #      cpu: 2
+  #    limits:
+  #      memory: 1Gi
+  #      cpu: 4
+
 ## Create default user through Kubernetes job
 ## Defaults indicated below
 ##
@@ -72,6 +98,16 @@ setDefaultUser:
   ##
   activeDeadline: 300
 
+  ## Specify the number of retries before considering job as failed.
+  ## https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/#pod-backoff-failure-policy
+  ##
+  backoffLimit: 6
+
+  ## Hook delete policy for helm.
+  ## Default: hookDeletePolicy: hook-succeeded
+  ##
+  hookDeletePolicy: hook-succeeded
+
   ## Restart policy for job
   ## Default: OnFailure
   restartPolicy: OnFailure
@@ -87,6 +123,11 @@ setDefaultUser:
     ## Default: (Randomly generated 10 characters of AlphaNum)
     # password:
 
+    ## The user name and password are obtained from an existing secret. The expected
+    ## keys are `influxdb-user` and `influxdb-password`.
+    ## If set, the username and password values above are ignored.
+    # existingSecret: influxdb-auth
+
     ## User privileges
     ## Default: "WITH ALL PRIVILEGES"
     privileges: "WITH ALL PRIVILEGES"
@@ -101,7 +142,7 @@ resources: {}
 #    memory: 16Gi
 #    cpu: 8
 
-# Annotations to be added to InfuxDB pods
+# Annotations to be added to InfluxDB pods
 podAnnotations: {}
 
 ingress:
@@ -144,133 +185,26 @@ env: {}
   # - name: INFLUXDB_DB
   #   value: "demo"
 
-## Change InfluxDB configuration parameters below:
-## Defaults are indicated
+## InfluxDB configuration
 ## ref: https://docs.influxdata.com/influxdb/v1.7/administration/config
 config:
   reporting_disabled: false
-  storage_directory: /var/lib/influxdb
-  rpc:
-    enabled: true
-    bind_address: 8088
-  meta:
-    retention_autocreate: true
-    logging_enabled: true
-  data:
-    query_log_enabled: true
-    cache_max_memory_size: 1073741824
-    cache_snapshot_memory_size: 26214400
-    cache_snapshot_write_cold_duration: 10m0s
-    compact_full_write_cold_duration: 4h0m0s
-    max_series_per_database: 1000000
-    max_values_per_tag: 100000
-    index_version: inmem
-    trace_logging_enabled: false
-  coordinator:
-    write_timeout: 10s
-    max_concurrent_queries: 0
-    query_timeout: 0s
-    log_queries_after: 0s
-    max_select_point: 0
-    max_select_series: 0
-    max_select_buckets: 0
-  retention:
-    enabled: true
-    check_interval: 30m0s
-  shard_precreation:
-    enabled: true
-    check_interval: 10m0s
-    advance_period: 30m0s
-  admin:
-    enabled: false
-    bind_address: 8083
-    https_enabled: false
-    https_certificate: /etc/ssl/influxdb.pem
-  monitor:
-    store_enabled: true
-    store_database: _internal
-    store_interval: 10s
-  subscriber:
-    enabled: true
-    http_timeout: 30s
-    insecure_skip_verify: false
-    ca_certs: ""
-    write_concurrency: 40
-    write_buffer_size: 1000
-  http:
-    enabled: true
-    bind_address: 8086
-    auth_enabled: false
-    flux_enabled: true
-    log_enabled: true
-    write_tracing: false
-    pprof_enabled: true
-    https_enabled: false
-    https_certificate: /etc/ssl/influxdb.pem
-    https_private_key: ""
-    max_row_limit: 10000
-    max_connection_limit: 0
-    shared_secret: "beetlejuicebeetlejuicebeetlejuice"
-    realm: InfluxDB
-    unix_socket_enabled: false
-    bind_socket: /var/run/influxdb.sock
-  graphite:
-    enabled: false
-    bind_address: 2003
-    database: graphite
-    retention_policy: autogen
-    protocol: tcp
-    batch_size: 5000
-    batch_pending: 10
-    batch_timeout: 1s
-    consistency_level: one
-    separator: .
-    udp_read_buffer: 0
-    # Uncomment to define graphite templates
-    # templates:
-    #   - "graphite.metric.*.*.* measurement.run"
-  collectd:
-    enabled: false
-    bind_address: 25826
-    database: collectd
-    retention_policy: autogen
-    batch_size: 5000
-    batch_pending: 10
-    batch_timeout: 10s
-    read_buffer: 0
-    typesdb: /usr/share/collectd/types.db
-    security_level: none
-    auth_file: /etc/collectd/auth_file
-  opentsdb:
-    enabled: false
-    bind_address: 4242
-    database: opentsdb
-    retention_policy: autogen
-    consistency_level: one
-    tls_enabled: false
-    certificate: /etc/ssl/influxdb.pem
-    batch_size: 1000
-    batch_pending: 5
-    batch_timeout: 1s
-    log_point_errors: true
-  udp:
-    enabled: false
-    bind_address: 8089
-    database: udp
-    retention_policy: autogen
-    batch_size: 5000
-    batch_pending: 10
-    read_buffer: 0
-    batch_timeout: 1s
-    precision: "ns"
-  continuous_queries:
-    log_enabled: true
-    enabled: true
-    run_interval: 1s
-  logging:
-    format: auto
-    level: info
-    supress_logo: false
+  rpc: {}
+  meta: {}
+  data: {}
+  coordinator: {}
+  retention: {}
+  shard_precreation: {}
+  monitor: {}
+  http: {}
+  logging: {}
+  subscriber: {}
+  graphite: {}
+  collectd: {}
+  opentsdb: {}
+  udp: {}
+  continuous_queries: {}
+  tls: {}
 
 # Allow executing custom init scripts
 #

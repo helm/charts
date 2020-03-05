@@ -14,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/mediawiki
-  tag: 1.33.1-debian-9-r25
+  tag: 1.34.0-debian-10-r31
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -55,6 +55,11 @@ mediawikiEmail: user@example.com
 ## ref: https://github.com/bitnami/bitnami-docker-mediawiki#environment-variables
 ##
 mediawikiName: My Wiki
+
+## Mediawiki host to create application URLs
+## ref: https://github.com/bitnami/bitnami-docker-mediawiki#configuration
+##
+# mediawikiHost:
 
 ## Set to `yes` to allow the container to be started with blank passwords
 ## ref: https://github.com/bitnami/bitnami-docker-mediawiki#environment-variables
@@ -275,7 +280,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/apache-exporter
-    tag: 0.7.0-debian-9-r104
+    tag: 0.7.0-debian-10-r29
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.

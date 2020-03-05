@@ -55,7 +55,7 @@ The following table lists the configurable parameters for this chart and their d
 | `settings.prometheus_port`            | Prometheus exporter port                   | `20257`                                                      |
 | `serviceAccount.create`               | Whether a ServiceAccount should be created | `true`                                                       |
 | `serviceAccount.name`                 | Name of the ServiceAccount to create       | Generated value from template                                |
-| `tolerations`                         | Optional daemonset tolerations             | `[]`                                                         |
+| `tolerations`                         | Optional daemonset tolerations             | `["effect: NoSchedule,operator: Exists"]`                                                         |
 | `nodeSelector`                        | Optional daemonset nodeSelector            | `{}`                                                         |
 | `env`                                 | Optional daemonset environment variables   | `[]`                                                         |
 

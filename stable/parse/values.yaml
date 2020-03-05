@@ -24,7 +24,7 @@ volumePermissions:
   image:
     registry: docker.io
     repository: bitnami/minideb
-    tag: stretch
+    tag: buster
     pullPolicy: Always
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -63,7 +63,7 @@ server:
   image:
     registry: docker.io
     repository: bitnami/parse
-    tag: 3.9.0-debian-9-r26
+    tag: 3.10.0-debian-10-r30
     ## Specify a imagePullPolicy
     ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
     ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -186,7 +186,7 @@ dashboard:
   image:
     registry: docker.io
     repository: bitnami/parse-dashboard
-    tag: 2.0.5-debian-9-r25
+    tag: 2.0.5-debian-10-r27
     ## Specify a imagePullPolicy
     ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
     ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -259,6 +259,10 @@ dashboard:
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   ##
   tolerations: {}
+
+  ## Protocol to form URLs to Parse
+  ##
+  parseServerUrlProtocol: "http"
 
   ## An array to add extra env vars
   ## For example:
@@ -333,8 +337,8 @@ ingress:
         ## Useful when the Ingress controller supports www-redirection
         ## If not specified, the above host name will be used
         # tlsHosts:
-        # - www.parse.local
-        # - parse.local
+        # - www.parse-server.local
+        # - parse-server.local
 
         ## If TLS is set to true, you must declare what secret will store the key/certificate for TLS
         ##

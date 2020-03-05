@@ -19,6 +19,7 @@ spec:
   securityContext:
     runAsNonRoot: true
     runAsUser: 1001
+    runAsGroup: 1001
   {{- if .Values.nodeSelector }}
   nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 4 }}
@@ -32,12 +33,13 @@ spec:
     - |
       set -ex
       # Get the HTTP Response Code of the Health Check
-      HEALTH_CHECK_HTTP_RESPONSE_CODE=$(curl --write-out %{http_code} --silent --output /dev/null {{ template "mancenter.fullname" . }}:{{ .Values.mancenter.service.port }}/hazelcast-mancenter/health)
+      HEALTH_CHECK_HTTP_RESPONSE_CODE=$(curl --write-out %{http_code} --silent --output /dev/null {{ template "mancenter.fullname" . }}:{{ .Values.mancenter.service.port }}{{ .Values.mancenter.contextPath }}/health)
       # Test the currect number of Hazelcast members
       test ${HEALTH_CHECK_HTTP_RESPONSE_CODE} -eq 200
     securityContext:
       runAsNonRoot: true
       runAsUser: 1001
+      runAsGroup: 1001
       privileged: false
       readOnlyRootFilesystem: true
       allowPrivilegeEscalation: false

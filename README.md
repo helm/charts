@@ -25,7 +25,7 @@ Note that this project has been under active development for some time, so you m
 
 ## Where to Find Us
 
-For general Helm Chart discussions join the Helm Charts (#charts) room in the [Kubernetes](http://slack.kubernetes.io/).
+For general Helm Chart discussions join the Helm Charts (#charts) room in the [Kubernetes Slack instance](http://slack.kubernetes.io/).
 
 For issues and support for Helm and Charts see [Support Channels](CONTRIBUTING.md#support-channels).
 
@@ -34,6 +34,15 @@ For issues and support for Helm and Charts see [Support Channels](CONTRIBUTING.m
 Just `helm install stable/<chart>`. This is the default repository for Helm which is located at https://kubernetes-charts.storage.googleapis.com/ and is installed by default.
 
 For more information on using Helm, refer to the [Helm documentation](https://github.com/kubernetes/helm#docs).
+
+## How Do I Enable the Stable Repository for Helm 3?
+
+To add the Helm Stable Charts for your local client, run `helm repo add`:
+
+```
+$ helm repo add stable https://kubernetes-charts.storage.googleapis.com
+"stable" has been added to your repositories
+```
 
 ## How Do I Enable the Incubator Repository?
 
