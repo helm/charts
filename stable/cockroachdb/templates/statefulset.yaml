@@ -235,6 +235,7 @@ spec:
               mountPath: {{ printf "/etc/cockroach/secrets/%s" . | quote }}
               readOnly: true
           {{- end }}
+          {{- if .Values.statefulset.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
               path: /health
@@ -242,8 +243,12 @@ spec:
             {{- if .Values.tls.enabled }}
               scheme: HTTPS
             {{- end }}
-            initialDelaySeconds: 30
-            periodSeconds: 5
+            initialDelaySeconds: {{ .Values.statefulset.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.statefulset.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.statefulset.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.statefulset.livenessProbe.failureThreshold }}
+          {{- end }}
+          {{- if .Values.statefulset.readinessProbe.enabled }}
           readinessProbe:
             httpGet:
               path: /health?ready=1
@@ -251,9 +256,11 @@ spec:
             {{- if .Values.tls.enabled }}
               scheme: HTTPS
             {{- end }}
-            initialDelaySeconds: 10
-            periodSeconds: 5
-            failureThreshold: 2
+            initialDelaySeconds: {{ .Values.statefulset.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.statefulset.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.statefulset.readinessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.statefulset.readinessProbe.failureThreshold }}
+          {{- end }}
         {{- with .Values.statefulset.resources }}
           resources: {{- toYaml . | nindent 12 }}
         {{- end }}

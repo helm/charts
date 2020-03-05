@@ -202,6 +202,23 @@ statefulset:
     #   cpu: 100m
     #   memory: 512Mi
 
+  # Controls settings for the liveness probe. We recommend against using a
+  # liveness probe with CockroachDB. See https://github.com/cockroachdb/cockroach/issues/44832
+  # further discussion.
+  livenessProbe:
+    enabled: no
+    initialDelaySeconds: 30
+    periodSeconds: 5
+    timeoutSeconds: 1
+    failureThreshold: 3
+
+  # Controls settings for the readiness probe.
+  readinessProbe:
+    enabled: yes
+    initialDelaySeconds: 10
+    periodSeconds: 5
+    timeoutSeconds: 1
+    failureThreshold: 2
 
 service:
   ports:
