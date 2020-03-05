@@ -240,6 +240,9 @@ graylog:
     ## If true, Maxmind GeoLite2 will be installed to ${GRAYLOG_HOME}/geoip location
     ##
     enabled: false
+    ## If true, ddbbUri points to the URI where to find the DDBB
+    # https://blog.maxmind.com/2019/12/18/significant-changes-to-accessing-and-using-geolite2-databases/
+      ddbbUri: ""
 
   ## Graylog root user name
   ##
