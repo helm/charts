@@ -1,6 +1,6 @@
-{{- if .Values.ingress.enabled -}}
+{{- if (and .Values.captivePortalService.ingress.enabled (not .Values.unifiedService.enabled)) }}
 {{- $fullName := include "unifi.fullname" . -}}
-{{- $ingressPath := .Values.ingress.path -}}
+{{- $ingressPath := .Values.captivePortalService.ingress.path -}}
 {{- $unifiedServiceEnabled := .Values.unifiedService.enabled -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -11,14 +11,14 @@ metadata:
     helm.sh/chart: {{ include "unifi.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-{{- with .Values.ingress.annotations }}
+{{- with .Values.captivePortalService.ingress.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
 {{- end }}
 spec:
-{{- if .Values.ingress.tls }}
+{{- if .Values.captivePortalService.ingress.tls }}
   tls:
-  {{- range .Values.ingress.tls }}
+  {{- range .Values.captivePortalService.ingress.tls }}
     - hosts:
       {{- range .hosts }}
         - {{ . | quote }}
@@ -27,20 +27,6 @@ spec:
   {{- end }}
 {{- end }}
   rules:
-  {{- range .Values.ingress.hosts }}
-    - host: {{ . }}
-      http:
-        paths:
-          - path: {{ $ingressPath }}
-            backend:
-              {{- if $unifiedServiceEnabled }}
-              serviceName: {{ $fullName }}
-              {{- else }}
-              serviceName: {{ $fullName }}-gui
-              {{- end }}
-              servicePort: https-gui
-  {{- end }}
-  {{- if $unifiedServiceEnabled -}}
   {{- range .Values.captivePortalService.ingress.hosts }}
     - host: {{ . }}
       http:
@@ -49,6 +35,5 @@ spec:
             backend:
               serviceName: {{ $fullName }}-captivePortalService
               servicePort: captive-http
-  {{- end }}
   {{- end }}
 {{- end }}
