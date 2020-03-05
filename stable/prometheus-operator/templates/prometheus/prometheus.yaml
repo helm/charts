@@ -229,3 +229,6 @@ spec:
 {{- end }}
   portName: {{ .Values.prometheus.prometheusSpec.portName }}
 {{- end }}
+{{- if .Values.prometheus.prometheusSpec.enforcedNamespaceLabel }}
+  enforcedNamespaceLabel: {{ .Values.prometheus.prometheusSpec.enforcedNamespaceLabel }}
+{{- end }}
