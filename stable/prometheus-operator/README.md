@@ -169,6 +169,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `global.rbac.pspEnabled` | Create pod security policy resources | `true` |
 | `kubeTargetVersionOverride` | Provide a target gitVersion of K8S, in case .Capabilites.KubeVersion is not available (e.g. `helm template`) |`""`|
 | `nameOverride` | Provide a name in place of `prometheus-operator` |`""`|
+| `kubeTargetVersionOverride` | Provide a k8s version |`""`|
 
 ### Prometheus Operator
 | Parameter | Description | Default |
@@ -272,6 +273,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.prometheusSpec.containers` | Containers allows injecting additional containers. This is meant to allow adding an authentication proxy to a Prometheus pod. |`[]`|
 | `prometheus.prometheusSpec.disableCompaction` | If true, pass --storage.tsdb.max-block-duration=2h to prometheus. This is already done if using Thanos |`false`|
 | `prometheus.prometheusSpec.enableAdminAPI` | EnableAdminAPI enables Prometheus the administrative HTTP API which includes functionality such as deleting time series. | `false` |
+| `prometheus.prometheusSpec.enforcedNamespaceLabel` | enforces adding a namespace label of origin for each alert and metric that is user created. | `""` |
 | `prometheus.prometheusSpec.evaluationInterval` | Interval between consecutive evaluations. | `""` |
 | `prometheus.prometheusSpec.externalLabels` | The labels to add to any time series or alerts when communicating with external systems (federation, remote storage, Alertmanager). | `{}` |
 | `prometheus.prometheusSpec.externalUrl` | The external URL the Prometheus instances will be available under. This is necessary to generate correct URLs. This is necessary if Prometheus is not served from root of a DNS name. | `""` |
