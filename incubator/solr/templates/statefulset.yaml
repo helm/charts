@@ -158,7 +158,7 @@ spec:
             - name: "SOLR_HOST"
               value: "$(POD_HOSTNAME).{{ include "solr.headless-service-name" . }}.{{ .Release.Namespace }}"
             - name: "ZK_HOST"
-              value: "{{ include "solr.zookeeper-service-name" . }}:2181"
+              value: "{{ include "solr.zookeeper-name" . }}-0.{{ include "solr.zookeeper-service-name" . }}:2181,{{ include "solr.zookeeper-name" . }}-1.{{ include "solr.zookeeper-service-name" . }}:2181,{{ include "solr.zookeeper-name" . }}-2.{{ include "solr.zookeeper-service-name" . }}:2181"
             - name: "SOLR_LOG_LEVEL"
               value: "{{ .Values.logLevel }}"
 {{- if .Values.extraEnvVars }}
