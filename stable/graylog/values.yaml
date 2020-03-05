@@ -242,7 +242,7 @@ graylog:
     enabled: false
     ## If true, ddbbUri points to the URI where to find the DDBB
     # https://blog.maxmind.com/2019/12/18/significant-changes-to-accessing-and-using-geolite2-databases/
-      ddbbUri: ""
+    ddbbUri: ""
 
   ## Graylog root user name
   ##
