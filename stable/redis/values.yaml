@@ -50,7 +50,7 @@ cluster:
   # The busPort should be obtained adding 10000 to the redisPort. By default: 10000 + 6379 = 16379
   busPort: 16379
 
-  ## Configuration to access the Redis Cluster from outside the Kubernetes cluster 
+  ## Configuration to access the Redis Cluster from outside the Kubernetes cluster
   externalAccess:
     enabled: false
     service:
@@ -241,7 +241,7 @@ persistence:
   ## The subdirectory of the volume to mount to, useful in dev environments
   ## and one PV for multiple services.
   subPath: ""
-  ## redis data Persistent Volume Storage Class
+  ## Redis data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
   ## If undefined (the default) or set to null, no storageClassName spec is
@@ -356,7 +356,6 @@ metrics:
       #    annotations:
       #      summary: Redis instance {{ "{{ $instance }}" }} has evicted keys
       #      description: Redis instance {{ "{{ $instance }}" }} has evicted {{ "{{ $value }}" }} keys in the last 5 minutes.
-
 
   ## Metrics exporter pod priorityClassName
   # priorityClassName: {}
