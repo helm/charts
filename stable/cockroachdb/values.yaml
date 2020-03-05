@@ -191,6 +191,10 @@ statefulset:
   # https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   tolerations: []
 
+  # PriorityClassName given to Pods of this StatefulSet
+  # https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/#priorityclass
+  priorityClassName: ""
+
   # Uncomment the following resources definitions or pass them from
   # command line to control the CPU and memory resources allocated
   # by Pods of this StatefulSet.

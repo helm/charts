@@ -262,6 +262,7 @@ For details see the [`values.yaml`](values.yaml) file.
 | `statefulset.podAntiAffinity.type`       | Type of auto [anti-affinity rules][1]                           | `soft`                                           |
 | `statefulset.podAntiAffinity.weight`     | Weight for `soft` auto [anti-affinity rules][1]                 | `100`                                            |
 | `statefulset.nodeSelector`               | Node labels for StatefulSet Pods assignment                     | `{}`                                             |
+| `statefulset.priorityClassName`          | [PriorityClassName][4] for StatefulSet Pods                     | `""`                                          |
 | `statefulset.tolerations`                | Node taints to tolerate by StatefulSet Pods                     | `[]`                                             |
 | `statefulset.resources`                  | Resource requests and limits for StatefulSet Pods               | `{}`                                             |
 | `service.ports.grpc.external.port`       | CockroachDB primary serving port in Services                    | `26257`                                          |
@@ -461,3 +462,4 @@ Note, that if you are running in secure mode (`tls.enabled` is `yes`/`true`) and
 [1]: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#inter-pod-affinity-and-anti-affinity
 [2]: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#node-affinity
 [3]: https://cert-manager.io/
+[4]: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/#priorityclass
