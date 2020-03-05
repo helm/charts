@@ -59,6 +59,11 @@ spec:
       imagePullSecrets:
         - name: {{ .Values.nexus.imagePullSecret }}
       {{- end }}
+      {{- if .Values.serviceAccount.create }}
+      serviceAccountName: {{ template "nexus.fullname" . }}
+      {{- else }}
+      serviceAccountName: {{ .Values.serviceAccount.name | quote }}
+      {{- end }}
       containers:
         - name: nexus
           image: {{ .Values.nexus.imageName }}:{{ .Values.nexus.imageTag }}
@@ -179,6 +184,8 @@ spec:
         - name: nexus-backup
           image: {{ .Values.nexusBackup.imageName }}:{{ .Values.nexusBackup.imageTag }}
           imagePullPolicy: {{ .Values.nexusBackup.imagePullPolicy }}
+          resources:
+{{ toYaml .Values.nexusBackup.resources | indent 12 }}
           env:
             - name: NEXUS_AUTHORIZATION
               valueFrom:

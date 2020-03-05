@@ -119,6 +119,7 @@ Parameter                                            | Description              
 `worker.hpa.maxpods`                                 | Max pods for the worker HorizontalPodAutoscaler                                                            | `10`
 `user.create`                                        | Create the default admin                                                                                   | `true`
 `user.email`                                         | Username for default admin                                                                                 | `admin@sentry.local`
+`user.password`                                      | Password for default admin                                                                                 | Randomly generated
 `email.from_address`                                 | Email notifications are from                                                                               | `smtp`
 `email.host`                                         | SMTP host for sending email                                                                                | `smtp`
 `email.port`                                         | SMTP port                                                                                                  | `25`

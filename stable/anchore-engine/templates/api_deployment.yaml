@@ -81,6 +81,11 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
+        - name: ANCHORE_CLI_PASS
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "anchore-engine.fullname" . }}
+              key: ANCHORE_ADMIN_PASSWORD
         ports:
         - containerPort: {{ .Values.anchoreApi.service.port }}
           name: external-api

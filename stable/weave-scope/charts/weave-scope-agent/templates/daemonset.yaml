@@ -25,6 +25,9 @@ spec:
       tolerations:
         - effect: NoSchedule
           operator: Exists
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+      {{- end }}
       containers:
         - name: {{ template "weave-scope-agent.name" . }}
           image: "{{ .Values.global.image.repository }}:{{ .Values.global.image.tag }}"

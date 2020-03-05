@@ -45,4 +45,10 @@ data:
     git clone $REPO -b $REF $DIR
     {{- end }}
     cd $DIR
-    while true; do git pull; date; sleep $SYNC_TIME; done
+    while true; do
+      git fetch origin $REF;
+      git reset --hard origin/$REF;
+      git clean -fd;
+      date;
+      sleep $SYNC_TIME;
+    done

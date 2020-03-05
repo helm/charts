@@ -15,6 +15,10 @@ etcdImage:
 
 debug: false
 
+# Enable the creation of a shm volume
+shmVolume:
+  enabled: false
+
 persistence:
   enabled: true
   ## If defined, storageClassName: <storageClass>

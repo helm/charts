@@ -124,6 +124,8 @@ podDisruptionBudget: {}
 
 nodeSelector: {}
 
+affinity: {}
+
 tolerations: []
 
 extraVolumeMounts: []
