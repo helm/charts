@@ -9,6 +9,26 @@ config:
   password: "pass"
   datacenter: "dc"
 
+## Specify if a Pod Security Policy for kube-state-metrics must be created
+## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+podSecurityPolicy:
+  enabled: false
+  annotations: {}
+    # Specify pod annotations
+    # Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#apparmor
+    # Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#seccomp
+    # Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#sysctl
+    #
+    # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
+    # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
+    # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
+
+# Run containers to have security context. Default is 'nobody' (65534/65534) in distroless
+securityContext:
+  enabled: false
+  runAsUser: 65534
+  fsGroup: 65534
+
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
@@ -22,7 +42,7 @@ serviceAccount:
 daemonset:
   annotations: {}
   image: gcr.io/cloud-provider-vsphere/cpi/release/manager
-  tag: v1.0.0
+  tag: v1.1.0
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
   cmdline:
@@ -44,6 +64,10 @@ daemonset:
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
+  ## Allows for the default selector to be replaced with user-defined ones
+  nodeSelector: {}
+  ## Allows for the default tolerations to be replaced with user-defined ones
+  tolerations: []
 
 service:
   enabled: false

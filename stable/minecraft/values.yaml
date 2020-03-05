@@ -10,6 +10,9 @@ resources:
     memory: 512Mi
     cpu: 500m
 
+# upgrade strategy type (e.g. Recreate or RollingUpdate)
+strategyType: Recreate
+
 nodeSelector: {}
 
 tolerations: []
@@ -29,6 +32,9 @@ livenessProbe:
     - status
   initialDelaySeconds: 30
   periodSeconds: 5
+  failureThreshold: 10
+  successThreshold: 1
+  timeoutSeconds: 1
 readinessProbe:
   command:
     - mcstatus
@@ -36,6 +42,9 @@ readinessProbe:
     - status
   initialDelaySeconds: 30
   periodSeconds: 5
+  failureThreshold: 10
+  successThreshold: 1
+  timeoutSeconds: 1
 minecraftServer:
   # This must be overridden, since we can't accept this for the user.
   eula: "FALSE"

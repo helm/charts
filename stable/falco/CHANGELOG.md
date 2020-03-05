@@ -3,6 +3,21 @@
 This file documents all notable changes to Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+
+## v1.1.3
+
+### Minor Changes
+
+* Allow configuration using values for `grpc` setting
+* Allow configuration using values for `grpc_output` setting
+
+## v1.1.2
+
+### Minor Changes
+
+* Upgrade to Falco 0.20.0
+* Upgrade rules to Falco 0.20.0
+
 ## v1.1.1
 
 ### Minor Changes

@@ -195,6 +195,9 @@ Management Center |`+true+`
 |`+securityContext.runAsUser+` |User ID used to run the Hazelcast and Management
 Center containers |`+65534+`
 
+| `securityContext.runAsGroup` |Primary Group ID used to run all processes in the
+ Hazelcast Jet and Hazelcast Jet Management Center containers | `+65534+`
+
 |`+securityContext.fsGroup+` |Group ID associated with the Hazelcast and
 Management Center container |`+65534+`
 
@@ -227,6 +230,9 @@ the same or one minor release greater than Hazelcast image version)
 
 |`+mancenter.image.pullSecrets+` |Specify docker-registry secret names as an
 array |`+nil+`
+
+|`+mancenter.contextPath+` |the value for the MC_CONTEXT_PATH environment variable,
+thus overriding the default context path for Hazelcast Management Center |`+nil+`
 
 |`+mancenter.javaOpts+` |Additional JAVA_OPTS properties for Hazelcast
 Management Center |`+nil+`
