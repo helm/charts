@@ -1,5 +1,7 @@
 # Nexus
 
+**This chart has been deprecated and moved to [Oteemo Charts](https://github.com/oteemo/charts)**
+
 [Nexus OSS](https://www.sonatype.com/nexus-repository-oss) is a free open source repository manager. It supports a wide range of package formats and it's used by hundreds of tech companies.
 
 ## Introduction
