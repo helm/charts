@@ -1,0 +1,14 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ template "opa.fullname" . }}
+  labels:
+{{ include "opa.labels.standard" . | indent 4 }}
+spec:
+  selector:
+    app: {{ template "opa.fullname" . }}
+  ports:
+  - name: https
+    protocol: TCP
+    port: 443
+    targetPort: {{ .Values.port }}

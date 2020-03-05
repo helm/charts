@@ -33,17 +33,47 @@ spec:
       env:
         - name: FULL_NAME
           value: {{ template "mongodb-replicaset.fullname" . }}
+        - name: NAMESPACE
+          value: {{ .Release.Namespace }}
         - name: REPLICAS
           value: "{{ .Values.replicas }}"
+      {{- if .Values.auth.enabled }}
+        - name: AUTH
+          value: "true"
+        - name: ADMIN_USER
+          valueFrom:
+            secretKeyRef:
+              name: "{{ template "mongodb-replicaset.adminSecret" . }}"
+              key: user
+        - name: ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: "{{ template "mongodb-replicaset.adminSecret" . }}"
+              key: password
+      {{- end }}
       volumeMounts:
         - name: tools
           mountPath: /tools
         - name: tests
           mountPath: /tests
+      {{- if .Values.tls.enabled }}
+        - name: tls
+          mountPath: /tls
+      {{- end }}
   volumes:
     - name: tools
       emptyDir: {}
     - name: tests
       configMap:
         name: {{ template "mongodb-replicaset.fullname" . }}-tests
+  {{- if .Values.tls.enabled }}
+    - name: tls
+      secret:
+        secretName: {{ template "mongodb-replicaset.fullname" . }}-ca
+        items:
+          - key: tls.crt
+            path: tls.crt
+          - key: tls.key
+            path: tls.key
+  {{- end }}
   restartPolicy: Never

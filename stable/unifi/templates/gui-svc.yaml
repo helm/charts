@@ -1,12 +1,13 @@
+{{ if not .Values.unifiedService.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "unifi.fullname" . }}-gui
   labels:
-    app: {{ template "unifi.name" . }}
-    chart: {{ template "unifi.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "unifi.name" . }}
+    helm.sh/chart: {{ include "unifi.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- if .Values.guiService.labels }}
 {{ toYaml .Values.guiService.labels | indent 4 }}
 {{- end }}
@@ -48,5 +49,6 @@ spec:
       nodePort: {{.Values.guiService.nodePort}}
 {{ end }}
   selector:
-    app: {{ template "unifi.name" . }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ include "unifi.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{ end }}

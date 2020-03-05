@@ -14,16 +14,20 @@ rules:
     resources:
       - pods
       - nodes
+      - nodes/stats
       - namespaces
     verbs:
       - get
       - list
       - watch
+  {{- if .Values.rbac.pspEnabled }}
   - apiGroups:
-    - ""
+    - extensions
     resources:
-    - nodes/stats
+    - podsecuritypolicies
+    resourceNames:
+    - privileged-{{ template "metrics-server.fullname" . }}
     verbs:
-    - get
-    - create
+    - use
+  {{- end -}}
 {{- end -}}

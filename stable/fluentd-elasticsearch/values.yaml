@@ -3,7 +3,7 @@ image:
 ## Specify an imagePullPolicy (Required)
 ## It's recommended to change this to 'Always' if the image tag is 'latest'
 ## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
-  tag: v2.3.1
+  tag: v2.3.2
   pullPolicy: IfNotPresent
 
 ## Configure resource requests and limits
@@ -20,8 +20,23 @@ resources: {}
 elasticsearch:
   host: 'elasticsearch-client'
   port: 9200
+  scheme: 'http'
+  ssl_version: TLSv1_2
   buffer_chunk_limit: 2M
   buffer_queue_limit: 8
+  logstash_prefix: 'logstash'
+
+# If you want to add custom environment variables, use the env dict
+# You can then reference these in your config file e.g.:
+#     user "#{ENV['OUTPUT_USER']}"
+env:
+  # OUTPUT_USER: my_user
+
+# If you want to add custom environment variables from secrets, use the secret list
+secret:
+# - name: ELASTICSEARCH_PASSWORD
+#   secret_name: elasticsearch
+#   secret_key: password
 
 rbac:
   create: true
@@ -33,12 +48,34 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
 
+## Specify if a Pod Security Policy for node-exporter must be created
+## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+##
+podSecurityPolicy:
+  enabled: false
+  annotations: {}
+    ## Specify pod annotations
+    ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#apparmor
+    ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#seccomp
+    ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#sysctl
+    ##
+    # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
+    # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
+    # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
+
 livenessProbe:
   enabled: true
 
 annotations: {}
+
+podAnnotations: {}
   # prometheus.io/scrape: "true"
   # prometheus.io/port: "24231"
+
+## DaemonSet update strategy
+## Ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
+updateStrategy:
+  type: RollingUpdate
 
 tolerations: {}
   # - key: node-role.kubernetes.io/master
@@ -420,10 +457,14 @@ configMaps:
       @type elasticsearch
       @log_level info
       include_tag_key true
-      type_name fluentd
+      type_name _doc
       host "#{ENV['OUTPUT_HOST']}"
       port "#{ENV['OUTPUT_PORT']}"
+      scheme "#{ENV['OUTPUT_SCHEME']}"
+      ssl_version "#{ENV['OUTPUT_SSL_VERSION']}"
       logstash_format true
+      logstash_prefix "#{ENV['LOGSTASH_PREFIX']}"
+      reconnect_on_error true
       <buffer>
         @type file
         path /var/log/fluentd-buffers/kubernetes.system.buffer

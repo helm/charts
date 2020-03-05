@@ -1,0 +1,61 @@
+{{- if and .Values.prometheusOperator.admissionWebhooks.enabled .Values.prometheusOperator.admissionWebhooks.patch.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name:  {{ template "prometheus-operator.fullname" . }}-admission-patch
+  namespace: {{ $.Release.Namespace }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+  labels:
+    app: {{ template "prometheus-operator.name" $ }}-admission-patch
+{{- include "prometheus-operator.labels" $ | indent 4 }}
+spec:
+  {{- if .Capabilities.APIVersions.Has "batch/v1alpha1" }}
+  # Alpha feature since k8s 1.12
+  ttlSecondsAfterFinished: 0
+  {{- end }}
+  template:
+    metadata:
+      name:  {{ template "prometheus-operator.fullname" . }}-admission-patch
+{{- with .Values.prometheusOperator.admissionWebhooks.patch.podAnnotations }}
+      annotations:
+{{ toYaml .  | indent 8 }}
+{{- end }}
+      labels:
+        app: {{ template "prometheus-operator.name" $ }}-admission-patch
+{{- include "prometheus-operator.labels" $ | indent 8 }}
+    spec:
+      {{- if .Values.prometheusOperator.admissionWebhooks.patch.priorityClassName }}
+      priorityClassName: {{ .Values.prometheusOperator.admissionWebhooks.patch.priorityClassName }}
+      {{- end }}
+      containers:
+        - name: patch
+          image: {{ .Values.prometheusOperator.admissionWebhooks.patch.image.repository }}:{{ .Values.prometheusOperator.admissionWebhooks.patch.image.tag }}
+          imagePullPolicy: {{ .Values.prometheusOperator.admissionWebhooks.patch.pullPolicy }}
+          args:
+            - patch
+            - --webhook-name={{ template "prometheus-operator.fullname" . }}-admission
+            - --namespace={{ $.Release.Namespace }}
+            - --secret-name={{ template "prometheus-operator.fullname" . }}-admission
+            - --patch-failure-policy={{ .Values.prometheusOperator.admissionWebhooks.failurePolicy }}
+          resources:
+{{ toYaml .Values.prometheusOperator.admissionWebhooks.patch.resources | indent 12 }}
+      restartPolicy: OnFailure
+      serviceAccountName: {{ template "prometheus-operator.fullname" . }}-admission
+      {{- with .Values.prometheusOperator.admissionWebhooks.patch.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.prometheusOperator.admissionWebhooks.patch.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.prometheusOperator.admissionWebhooks.patch.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 2000
+{{- end }}

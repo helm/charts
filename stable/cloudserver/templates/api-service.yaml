@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  {{- if .Values.api.service.annotations }}
+  annotations:
+{{ toYaml .Values.api.service.annotations | indent 4 }}
+  {{- end }}
+  name: {{ template "cloudserver.fullname" . }}
+  labels:
+    app: {{ template "cloudserver.name" . }}
+    chart: {{ template "cloudserver.chart" . }}
+    component: api
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  type: {{ .Values.api.service.type }}
+  ports:
+    - port: {{ .Values.api.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ template "cloudserver.name" . }}
+    component: api
+    release: {{ .Release.Name }}

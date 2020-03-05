@@ -39,15 +39,17 @@ The following table lists the configurable parameters of the Hadoop chart and th
 
 | Parameter                                         | Description                                                                        | Default                                                          |
 | ------------------------------------------------- | -------------------------------                                                    | ---------------------------------------------------------------- |
-| `image`                                           | Hadoop image ([source](https://github.com/Comcast/kube-yarn/tree/master/image))    | `danisla/hadoop:{VERSION}`                                       |
-| `imagePullPolicy`                                 | Pull policy for the images                                                         | `IfNotPresent`                                                   |
-| `hadoopVersion`                                   | Version of hadoop libraries being used                                              | `{VERSION}`                                                      |
+| `image.repository`                                | Hadoop image ([source](https://github.com/Comcast/kube-yarn/tree/master/image))    | `danisla/hadoop`                                                 |
+| `image.tag`                                       | Hadoop image tag                                                                   | `2.9.0`                                                          |
+| `imagee.pullPolicy`                               | Pull policy for the images                                                         | `IfNotPresent`                                                   |
+| `hadoopVersion`                                   | Version of hadoop libraries being used                                             | `2.9.0`                                                          |
 | `antiAffinity`                                    | Pod antiaffinity, `hard` or `soft`                                                 | `hard`                                                           |
 | `hdfs.nameNode.pdbMinAvailable`                   | PDB for HDFS NameNode                                                              | `1`                                                              |
 | `hdfs.nameNode.resources`                         | resources for the HDFS NameNode                                                    | `requests:memory=256Mi,cpu=10m,limits:memory=2048Mi,cpu=1000m`   |
 | `hdfs.dataNode.replicas`                          | Number of HDFS DataNode replicas                                                   | `1`                                                              |
 | `hdfs.dataNode.pdbMinAvailable`                   | PDB for HDFS DataNode                                                              | `1`                                                              |
 | `hdfs.dataNode.resources`                         | resources for the HDFS DataNode                                                    | `requests:memory=256Mi,cpu=10m,limits:memory=2048Mi,cpu=1000m`   |
+| `hdfs.webhdfs.enabled`                            | Enable WebHDFS REST API                                                            | `false`
 | `yarn.resourceManager.pdbMinAvailable`            | PDB for the YARN ResourceManager                                                   | `1`                                                              |
 | `yarn.resourceManager.resources`                  | resources for the YARN ResourceManager                                             | `requests:memory=256Mi,cpu=10m,limits:memory=2048Mi,cpu=1000m`   |
 | `yarn.nodeManager.pdbMinAvailable`                | PDB for the YARN NodeManager                                                       | `1`                                                              |

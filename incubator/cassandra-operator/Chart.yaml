@@ -1,0 +1,22 @@
+apiVersion: v1
+description: A Helm chart for CassKop - the Orange Cassandra Kubernetes operator
+icon: https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Cassandra_logo.svg/330px-Cassandra_logo.svg.png
+name: cassandra-operator
+home: https://github.com/Orange-OpenSource/cassandra-k8s-operator
+sources:
+  - https://github.com/Orange-OpenSource/cassandra-k8s-operator
+version: 0.3.3
+appVersion: 0.3.1-mater
+maintainers:
+  - name: allamand
+    email: sebastien.allamand@orange.com
+  - name: Orange-cscetbon
+    email: cscetbon.ext@orange.com
+  - name: jal06
+    email: jeanarmel.luce@orange.com
+keywords:
+- operator
+- cassandra
+- casskop
+- database
+- nosql

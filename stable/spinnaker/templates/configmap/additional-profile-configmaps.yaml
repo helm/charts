@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "spinnaker.fullname" . }}-additional-profile-config-maps
+  labels:
+{{ include "spinnaker.standard-labels" . | indent 4 }}
+{{/*
+Render profiles for each service by merging predefined defaults with values passed by
+.Values.halyard.additionalProfileConfigMaps.data
+*/}}
+{{- $profiles := dict "gate-local.yml" dict -}}
+
+{{- /* Defaults: Disable S3 versioning on Front50 if Minio storage is used */}}
+{{- /* https://www.spinnaker.io/setup/install/storage/minio/#editing-your-storage-settings */}}
+{{- if .Values.minio.enabled -}}
+{{- $_ := set $profiles "front50-local.yml" (dict "spinnaker" (dict "s3" (dict "versioning" false))) -}}
+{{- end -}}
+
+{{- /* Defaults: Add special settings for gate if GCE or ALB ingress is used */}}
+{{- /* https://github.com/spinnaker/spinnaker/issues/1630#issuecomment-467359999 */}}
+{{- if index $.Values.ingress "annotations" -}}
+{{- if eq (index $.Values.ingress.annotations "kubernetes.io/ingress.class" | default "") "gce" "alb" "nsx" }}
+{{- $tomcatProxySettings := dict -}}
+{{- $_ := set $tomcatProxySettings "protocolHeader" "X-Forwarded-Proto" -}}
+{{- $_ := set $tomcatProxySettings "remoteIpHeader" "X-Forwarded-For" -}}
+{{- $_ := set $tomcatProxySettings "internalProxies" ".*" -}}
+{{- $_ := set $tomcatProxySettings "httpsServerPort" "X-Forwarded-Port" -}}
+{{- $_ := set $profiles "gate-local.yml" (dict "server" (dict "tomcat" $tomcatProxySettings)) -}}
+{{- end -}}
+{{- end -}}
+
+{{- /* Merge dictionaries with passed values */}}
+{{- $customProfilesEnabled := .Values.halyard.additionalProfileConfigMaps.create | default true -}}
+{{- if and $customProfilesEnabled .Values.halyard.additionalProfileConfigMaps.data -}}
+{{- $_ := mergeOverwrite $profiles .Values.halyard.additionalProfileConfigMaps.data -}}
+{{- end -}}
+
+{{- /* Convert the content of profiles to string unless it's already a string */}}
+{{- range $filename, $content := $profiles -}}
+{{- if not (typeIs "string" $content) -}}
+{{- $_ := set $profiles $filename ($content | toYaml) -}}
+{{- end -}}
+{{- end -}}
+
+{{- /* Pass content of profiles through tpl */}}
+{{- range $filename, $content := $profiles -}}
+{{- $_ := set $profiles $filename (tpl $content $) -}}
+{{- end -}}
+
+data:
+{{ $profiles | toYaml | indent 2 }}

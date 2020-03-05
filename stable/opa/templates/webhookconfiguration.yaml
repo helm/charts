@@ -1,0 +1,119 @@
+{{- $cn := printf "%s.%s.svc" ( include "opa.fullname" . ) .Release.Namespace }}
+{{- $ca := genCA "opa-admission-ca" 3650 -}}
+{{- $cert := genSignedCert $cn nil nil 3650 $ca -}}
+kind: {{ .Values.admissionControllerKind }}
+apiVersion: admissionregistration.k8s.io/v1beta1
+metadata:
+  name: {{ template "opa.fullname" . }}
+  annotations:
+{{- if .Values.certManager.enabled }}
+    certmanager.k8s.io/inject-ca-from: {{ printf "%s/%s" .Release.Namespace (include "opa.rootCACertificate" .) | quote }}
+{{- end }}
+  labels:
+{{ include "opa.labels.standard" . | indent 4 }}
+webhooks:
+  - name: webhook.openpolicyagent.org
+{{- with .Values.admissionControllerNamespaceSelector }}
+    namespaceSelector:
+{{ toYaml . | indent 6 }}
+{{ end }}
+    failurePolicy: {{ .Values.admissionControllerFailurePolicy }}
+    rules:
+{{ toYaml .Values.admissionControllerRules | indent 6 }}
+    clientConfig:
+{{ if not .Values.certManager.enabled }}
+{{ if .Values.generateAdmissionControllerCerts }}
+      caBundle: {{ b64enc $ca.Cert }}
+{{ else }}
+      caBundle: {{ b64enc .Values.admissionControllerCA }}
+{{ end }}
+{{ end }}
+      service:
+        name: {{ template "opa.fullname" . }}
+        namespace: {{ .Release.Namespace }}
+    sideEffects: {{ .Values.admissionControllerSideEffect }}
+{{ if .Values.timeoutSeconds }}
+    timeoutSeconds: {{ .Values.timeoutSeconds }}
+{{ end }}
+
+{{ if .Values.certManager.enabled }}
+---
+# Create a selfsigned Issuer, in order to create a root CA certificate for
+# signing webhook serving certificates
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Issuer
+metadata:
+  name: {{ include "opa.selfSignedIssuer" . }}
+  labels:
+{{ include "opa.labels.standard" . | indent 4 }}
+spec:
+  selfSigned: {}
+
+---
+# Generate a CA Certificate used to sign certificates for the webhook
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: {{ include "opa.rootCACertificate" . }}
+  labels:
+{{ include "opa.labels.standard" . | indent 4 }}
+spec:
+  secretName: {{ include "opa.rootCACertificate" . }}
+  duration: 43800h # 5y
+  issuerRef:
+    name: {{ include "opa.selfSignedIssuer" . }}
+  commonName: "ca.webhook.opa"
+  isCA: true
+
+---
+# Create an Issuer that uses the above generated CA certificate to issue certs
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Issuer
+metadata:
+  name: {{ include "opa.rootCAIssuer" . }}
+  labels:
+{{ include "opa.labels.standard" . | indent 4 }}
+spec:
+  ca:
+    secretName: {{ include "opa.rootCACertificate" . }}
+
+---
+
+# Finally, generate a serving certificate for the webhook to use
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: {{ include "opa.servingCertificate" . }}
+  labels:
+{{ include "opa.labels.standard" . | indent 4 }}
+spec:
+  secretName: {{ template "opa.fullname" . }}-cert
+  duration: 8760h # 1y
+  issuerRef:
+    name: {{ include "opa.rootCAIssuer" . }}
+  dnsNames:
+  - {{ include "opa.fullname" . }}
+  - {{ include "opa.fullname" . }}.{{ .Release.Namespace }}
+  - {{ include "opa.fullname" . }}.{{ .Release.Namespace }}.svc
+{{ end }}
+{{- if not .Values.certManager.enabled }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ template "opa.fullname" . }}-cert
+  labels:
+    app: {{ template "opa.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+type: Opaque
+data:
+{{ if .Values.generateAdmissionControllerCerts }}
+  tls.crt: {{ b64enc $cert.Cert }}
+  tls.key: {{ b64enc $cert.Key }}
+{{ else }}
+  tls.crt: {{ b64enc .Values.admissionControllerCert }}
+  tls.key: {{ b64enc .Values.admissionControllerKey }}
+{{ end }}
+{{ end }}

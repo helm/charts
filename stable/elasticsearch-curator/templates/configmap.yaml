@@ -8,14 +8,5 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-  action_file.yml: {{ toYaml .Values.configMaps.action_file_yml | indent 2 }}
-  {{ if .Values.configMaps.config_yml }}
-  config.yml: {{ toYaml .Values.configMaps.config_yml | indent 2 }}
-  {{ else }}
-  config.yml: |
-    client:
-      hosts: 
-        - {{ range .Values.config.elasticsearch.hosts }} {{ . }} {{ end }}
-      port: {{ .Values.config.elasticsearch.port }}
-  {{ end }}
-  
+  action_file.yml: {{ required "A valid .Values.configMaps.action_file_yml entry is required!" (toYaml .Values.configMaps.action_file_yml | indent 2) }}
+  config.yml: {{ required "A valid .Values.configMaps.config_yml entry is required!" (toYaml .Values.configMaps.config_yml | indent 2) }}

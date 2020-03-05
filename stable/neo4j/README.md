@@ -56,24 +56,30 @@ deletes the release.
 The following table lists the configurable parameters of the Neo4j chart and
 their default values.
 
-| Parameter                            | Description                                                                                                                             | Default                                         |
-| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| `image`                              | Neo4j image                                                                                                                             | `neo4j`                                         |
-| `imageTag`                           | Neo4j version                                                                                                                           | `{VERSION}`                                     |
-| `imagePullPolicy`                    | Image pull policy                                                                                                                       | `IfNotPresent`                                  |
-| `podDisruptionBudget`                | Pod disruption budget                                                                                                                   | `{}`                                            |
-| `authEnabled`                        | Is login/password required?                                                                                                             | `true`                                          |
-| `core.numberOfServers`               | Number of machines in CORE mode                                                                                                         | `3`                                             |
-| `core.sideCarContainers`             | Sidecar containers to add to the core pod. Example use case is a sidecar which identifies and labels the leader when using the http API | `{}`                                            |
-| `core.initContainers`                | Init containers to add to the core pod. Example use case is a script that installs the APOC library                                     | `{}`                                            |
-| `core.persistentVolume.storageClass` | Storage class of backing PVC                                                                                                            | `standard` (uses beta storage class annotation) |
-| `core.persistentVolume.size`         | Size of data volume                                                                                                                     | `10Gi`                                          |
-| `core.persistentVolume.mountPath`    | Persistent Volume mount root path                                                                                                       | `/data`                                         |
-| `core.persistentVolume.subPath`      | Subdirectory of the volume to mount                                                                                                     | `nil`                                           |
-| `core.persistentVolume.annotations`  | Persistent Volume Claim annotations                                                                                                     | `{}`                                            |
-| `readReplica.numberOfServers`        | Number of machines in READ_REPLICA mode                                                                                                 | `0`                                             |
-| `readReplica.initContainers`         | Init containers to add to the replica pod. Example use case is a script that installs the APOC library                                  | `{}`                                            |
-| `resources`                          | Resources required (e.g. CPU, memory)                                                                                                   | `{}`                                            |
+| Parameter                             | Description                                                                                                                             | Default                                         |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| `image`                               | Neo4j image                                                                                                                             | `neo4j`                                         |
+| `imageTag`                            | Neo4j version                                                                                                                           | `{VERSION}`                                     |
+| `imagePullPolicy`                     | Image pull policy                                                                                                                       | `IfNotPresent`                                  |
+| `podDisruptionBudget`                 | Pod disruption budget                                                                                                                   | `{}`                                            |
+| `authEnabled`                         | Is login/password required?                                                                                                             | `true`                                          |
+| `core.numberOfServers`                | Number of machines in CORE mode                                                                                                         | `3`                                             |
+| `core.sideCarContainers`              | Sidecar containers to add to the core pod. Example use case is a sidecar which identifies and labels the leader when using the http API | `{}`                                            |
+| `core.initContainers`                 | Init containers to add to the core pod. Example use case is a script that installs the APOC library                                     | `{}`                                            |
+| `core.persistentVolume.enabled`       | Whether or not persistence is enabled                                                                                                   | `true`                                          |
+| `core.persistentVolume.storageClass`  | Storage class of backing PVC                                                                                                            | `standard` (uses beta storage class annotation) |
+| `core.persistentVolume.size`          | Size of data volume                                                                                                                     | `10Gi`                                          |
+| `core.persistentVolume.mountPath`     | Persistent Volume mount root path                                                                                                       | `/data`                                         |
+| `core.persistentVolume.subPath`       | Subdirectory of the volume to mount                                                                                                     | `nil`                                           |
+| `core.persistentVolume.annotations`   | Persistent Volume Claim annotations                                                                                                     | `{}`                                            |
+| `readReplica.numberOfServers`         | Number of machines in READ_REPLICA mode                                                                                                 | `0`                                             |
+| `readReplica.autoscaling.enabled`  | Enable horizontal pod autoscaler  | `false`  |
+| `readReplica.autoscaling.targetAverageUtilization`  | Target CPU utilization  | `70`  |
+| `readReplica.autoscaling.minReplicas` | Min replicas for autoscaling  | `1`  |
+| `readReplica.autoscaling.maxReplicas`  | Max replicas for autoscaling  | `3` |
+| `readReplica.initContainers`          | Init containers to add to the replica pod. Example use case is a script that installs the APOC library                                  | `{}`                                            |
+| `resources`                           | Resources required (e.g. CPU, memory)                                                                                                   | `{}`                                            |
+| `clusterDomain`                       | Cluster domain                                                                                                                          | `cluster.local`                                 |
 
 The above parameters map to the env variables defined in the
 [Neo4j docker image](https://github.com/neo4j/docker-neo4j).

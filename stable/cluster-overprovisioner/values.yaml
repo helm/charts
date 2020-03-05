@@ -1,0 +1,27 @@
+priorityClassOverprovision:
+  name: overprovisioning
+  value: -1
+
+priorityClassDefault:
+  enabled: true
+  name: default
+  value: 0
+
+image:
+  repository: k8s.gcr.io/pause
+  tag: 3.1
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+
+fullnameOverride: ""
+
+deployments: []
+  # - name: default
+  #   annotations: {}
+  #   replicaCount: 1
+  #   nodeSelector: {}
+  #   resources: {}
+  #   tolerations: []
+  #   affinity: {}
+  #   labels: {}

@@ -1,4 +1,9 @@
-# Kapacitor
+# DEPRECATED - Kapacitor
+
+**This chart has been deprecated and moved to its new home:**
+
+- **GitHub repo:** https://github.com/influxdata/helm-charts
+- **Charts repo:** https://helm.influxdata.com/
 
 ##  An Open-Source Time Series ETL and Alerting Engine
 
@@ -48,7 +53,7 @@ The following table lists the configurable parameters of the Kapacitor chart and
 | Parameter               | Description                           | Default                                                    |
 | ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
 | `image.repository` | Kapacitor image | `kapacitor` |
-| `image.tag` | Kapacitor image version | `1.5.1-alpine` |
+| `image.tag` | Kapacitor image version | `1.5.2-alpine` |
 | `image.pullPolicy` | Kapacitor image pull policy |  `IfNotPresent` |
 | `service.type` | Kapacitor web service type  | `ClusterIP` |
 | `persistence.enabled` | Enable Kapacitor persistence using Persistent Volume Claims | `false` |
@@ -62,6 +67,7 @@ The following table lists the configurable parameters of the Kapacitor chart and
 | `resources.limits.cpu` | Kapacitor cpu limit | `2` |
 | `envVars` | Environment variables to set initial Kapacitor configuration (https://hub.docker.com/_/kapacitor/) | `{}` |
 | `influxURL` | InfluxDB url used to interact with Kapacitor (also can be set with ```envVars.KAPACITOR_INFLUXDB_0_URLS_0```) | `http://influxdb-influxdb.tick:8086` |
+| `existingSecret` | Name of an existing Secrect used to set the environment variables for the InfluxDB user and password. The expected keys in the secret are `influxdb-user` and `influxdb-password`. |
 
 The configurable parameters of the Kapacitor chart and the default values are listed in `values.yaml`.
 

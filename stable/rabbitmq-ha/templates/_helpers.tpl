@@ -25,6 +25,13 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 
 {{/*
+Create chart name and version as used by the chart label.
+*/}}
+{{- define "rabbitmq-ha.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
 Create the name of the service account to use
 */}}
 {{- define "rabbitmq-ha.serviceAccountName" -}}
@@ -55,6 +62,9 @@ users, virtual hosts, permissions and parameters) to load by the management plug
 */}}
 {{- define "rabbitmq-ha.definitions" -}}
 {
+  "global_parameters": [
+{{ .Values.definitions.globalParameters | indent 4 }}
+  ],
   "users": [
     {
       "name": {{ .Values.managementUsername | quote }},

@@ -1,24 +1,54 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "kube-ops-view.fullname" . }}
+  name: {{ include "kube-ops-view.name" .}}
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app.kubernetes.io/name: {{ include "kube-ops-view.name" . }}
+    helm.sh/chart: {{ include "kube-ops-view.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/part-of: {{ .Release.Name }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "kube-ops-view.name" . }}
+      app.kubernetes.io/part-of: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "kube-ops-view.fullname" . }}
-{{- if .Values.podLabels }}
+        app.kubernetes.io/name: {{ include "kube-ops-view.name" . }}
+        helm.sh/chart: {{ include "kube-ops-view.chart" . }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/version: {{ .Chart.AppVersion }}
+        app.kubernetes.io/part-of: {{ .Release.Name }}
+        {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
-{{- end }}
+        {{- end }}
     spec:
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
+      {{- with .Values.securityContext }}
+      securityContext:
+{{ toYaml . | indent 8 }}
+      {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "kube-ops-view.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- if .Values.redis.enabled }}
+        args:
+        - --redis-url=redis://{{ .Release.Name }}-redis-master:{{ .Values.redis.master.port }}
+        {{- end }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
         livenessProbe:

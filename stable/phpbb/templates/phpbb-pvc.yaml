@@ -2,23 +2,17 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "phpbb.fullname" . }}-phpbb
+  name: "{{ template "phpbb.fullname" . }}-phpbb"
   labels:
-    app: {{ template "phpbb.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: "{{ template "phpbb.fullname" . }}"
+    chart: "{{ template "phpbb.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   accessModes:
     - {{ .Values.persistence.phpbb.accessMode | quote }}
   resources:
     requests:
       storage: {{ .Values.persistence.phpbb.size | quote }}
-{{- if .Values.persistence.phpbb.storageClass }}
-{{- if (eq "-" .Values.persistence.phpbb.storageClass) }}
-  storageClassName: ""
-{{- else }}
-  storageClassName: "{{ .Values.persistence.phpbb.storageClass }}"
-{{- end }}
-{{- end }}
+  {{ include "phpbb.storageClass" . }}
 {{- end -}}

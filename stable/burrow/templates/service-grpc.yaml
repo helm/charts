@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "burrow.name" . }}
+    chart: {{ template "burrow.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  name:  {{ template "burrow.fullname" . }}-grpc
+spec:
+  type: {{ .Values.grpc.service.type }}
+{{- if .Values.grpc.service.loadBalance }}
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 600
+{{- end }}
+  ports:
+    - name: grpc
+      port: {{ $.Values.config.RPC.GRPC.ListenPort }}
+      targetPort: grpc
+      protocol: TCP
+  selector:
+    app: {{ template "burrow.name" . }}
+    release: {{ .Release.Name }}
+{{- if not .Values.grpc.service.loadBalance }}
+    nodeNumber: {{ .Values.grpc.service.node | quote }}
+{{- end }}

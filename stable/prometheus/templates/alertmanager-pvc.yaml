@@ -1,3 +1,4 @@
+{{- if not .Values.alertmanager.statefulSet.enabled -}}
 {{- if and .Values.alertmanager.enabled .Values.alertmanager.persistentVolume.enabled -}}
 {{- if not .Values.alertmanager.persistentVolume.existingClaim -}}
 apiVersion: v1
@@ -8,11 +9,7 @@ metadata:
 {{ toYaml .Values.alertmanager.persistentVolume.annotations | indent 4 }}
   {{- end }}
   labels:
-    app: {{ template "prometheus.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.alertmanager.name }}"
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    {{- include "prometheus.alertmanager.labels" . | nindent 4 }}
   name: {{ template "prometheus.alertmanager.fullname" . }}
 spec:
   accessModes:
@@ -24,8 +21,12 @@ spec:
   storageClassName: "{{ .Values.alertmanager.persistentVolume.storageClass }}"
 {{- end }}
 {{- end }}
+{{- if .Values.alertmanager.persistentVolume.volumeBindingMode }}
+  volumeBindingModeName: "{{ .Values.alertmanager.persistentVolume.volumeBindingMode }}"
+{{- end }}
   resources:
     requests:
       storage: "{{ .Values.alertmanager.persistentVolume.size }}"
+{{- end -}}
 {{- end -}}
 {{- end -}}

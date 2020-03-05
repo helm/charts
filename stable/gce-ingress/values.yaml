@@ -31,6 +31,9 @@ serviceAccount:
 #   key.json: < base64 encoded JSON service account key>
 secret: ~
 
+## If the google auth file is saved in a different secret key you can specify it here
+# secretKey: key.json
+
 # gce config, replace values to match your environment
 config:
   projectID:
@@ -46,7 +49,7 @@ controller:
   replicaCount: 1
   image:
     repository: k8s.gcr.io/ingress-gce-glbc-amd64
-    tag: v1.1.1
+    tag: v1.4.0
     pullPolicy: IfNotPresent
   resources: {}
     # requests:

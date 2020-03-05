@@ -5,7 +5,7 @@ name: chaoskube
 image: quay.io/linki/chaoskube
 
 # docker image tag
-imageTag: v0.10.0
+imageTag: v0.14.0
 
 # number of replicas to run
 replicas: 1
@@ -28,6 +28,12 @@ dryRun: true
 # Enable debug logging
 debug: false
 
+# regular expression pattern for pod names to include (all included by default)
+includedPodNames:
+
+# regular expression pattern for pod names to exclude (none excluded by default)
+excludedPodNames:
+
 # Set values for exempting specific week days from Chaoskube Actions
 excludedWeekdays:
 
@@ -40,7 +46,35 @@ excludedDaysOfYear:
 # Set specific Timezone for Actions to take place
 timezone: UTC
 
+# If nothing set, defaults to "text". Switch to "json" to enable structured logging
+logFormat:
+
+# minimum lifetime of a pod before it's considered for termination (0: immediately)
 minimumAge: 0s
+
+# grace period to give pods when terminating them (negative: pod decides)
+gracePeriod: -1s
+
+metrics:
+  # Enable metrics handler
+  enabled: false
+
+  # Listening port for metrics handler
+  port: 8080
+
+  service:
+    # Metrics service type
+    type: ClusterIP
+
+    # Metrics service port
+    port: 8080
+
+  serviceMonitor:
+    # Set this to `true` to create ServiceMonitor for Prometheus operator
+    enabled: false
+
+    # Additional labels that can be used so ServiceMonitor will be discovered by Prometheus
+    additionalLabels: {}
 
 priorityClassName: ""
 
@@ -74,4 +108,10 @@ affinity: {}
   #     - topologyKey: "kubernetes.io/hostname"
   #       labelSelector:
   #         matchLabels:
-  #           app: chaoskube
+  #           app.kubernetes.io/name: chaoskube
+
+podAnnotations: {}
+  ## Annotations for the chaoskube pod.
+  #  podAnnotations:
+  #    prometheus.io/scrape: "true"
+  #    prometheus.io/port: "8080"

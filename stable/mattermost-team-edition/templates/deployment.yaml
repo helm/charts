@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "mattermost-team-edition.fullname" . }}
+  name: {{ include "mattermost-team-edition.fullname" . }}
   labels:
-    chart: {{ template "mattermost-team-edition.chart" . }}
-    app: {{ template "mattermost-team-edition.fullname" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "mattermost-team-edition.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "mattermost-team-edition.chart" . }}
 spec:
   replicas: 1
   strategy:
@@ -15,32 +15,40 @@ spec:
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   selector:
     matchLabels:
-      app: {{ template "mattermost-team-edition.fullname" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "mattermost-team-edition.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/managed-by: {{ .Release.Service }}
   template:
     metadata:
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/configmap-config.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/secret-config.yaml") . | sha256sum }}
       labels:
-        app: {{ template "mattermost-team-edition.fullname" . }}
-        release: {{ .Release.Name }}
-        chart: {{ template "mattermost-team-edition.chart" . }}
-        heritage: {{ .Release.Service }}
+        app.kubernetes.io/name: {{ include "mattermost-team-edition.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        helm.sh/chart: {{ include "mattermost-team-edition.chart" . }}
     spec:
-      {{ if not .Values.externalDB.enabled }}
       initContainers:
+      {{- if not .Values.externalDB.enabled }}
       - name: "init-mysql"
-        image: "appropriate/curl:latest"
-        imagePullPolicy: "IfNotPresent"
+        image: "{{ .Values.initContainerImage.repository }}:{{ .Values.initContainerImage.tag }}"
+        imagePullPolicy: {{ .Values.initContainerImage.imagePullPolicy }}
         command: ["sh", "-c", "until curl --max-time 5 http://{{ .Release.Name }}-mysql:3306; do echo waiting for {{ .Release.Name }}-mysql; sleep 5; done;"]
-      {{ end }}
+      {{- end }}
+      {{- if .Values.extraInitContainers }}
+      {{- .Values.extraInitContainers | toYaml | nindent 6 }}
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.imagePullPolicy }}
+        env:
+        {{- if .Values.extraEnvVars }}
+          {{- .Values.extraEnvVars | toYaml | nindent 10 }}
+        {{- end }}
         ports:
         - name: http
-          containerPort: 80
+          containerPort: {{ .Values.service.internalPort }}
           protocol: TCP
         livenessProbe:
           initialDelaySeconds: 90
@@ -48,14 +56,14 @@ spec:
           periodSeconds: 15
           httpGet:
             path: /api/v4/system/ping
-            port: {{ .Values.service.internalPort }}
+            port: http
         readinessProbe:
           initialDelaySeconds: 15
           timeoutSeconds: 5
           periodSeconds: 15
           httpGet:
             path: /api/v4/system/ping
-            port: {{ .Values.service.internalPort }}
+            port: http
         volumeMounts:
         - mountPath: /mattermost/config/config.json
           name: config-json
@@ -63,18 +71,15 @@ spec:
         - mountPath: /mattermost/data
           name: mattermost-data
         resources:
-{{ toYaml .Values.resources | indent 12 }}
+          {{- .Values.resources | toYaml | nindent 12 }}
       volumes:
       - name: config-json
-        configMap:
-          name: {{ template "mattermost-team-edition.fullname" . }}-config-json
-          items:
-          - key: config.json
-            path: config.json
+        secret:
+          secretName: {{ include "mattermost-team-edition.fullname" . }}-config-json
       - name: mattermost-data
       {{ if .Values.persistence.data.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim | default (include "mattermost-team-edition.fullname" .) }}
+          claimName: {{ .Values.persistence.data.existingClaim | default (include "mattermost-team-edition.fullname" .) }}
       {{ else }}
         emptyDir: {}
       {{ end }}

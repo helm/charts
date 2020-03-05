@@ -16,5 +16,9 @@ spec:
       protocol: TCP
       targetPort: {{ .Values.coreDns.service.targetPort }}
   selector:
-{{ include "prometheus-operator.rangeskipempty" .Values.coreDns.service.selector | indent 4 }}
+    {{- if .Values.coreDns.service.selector }}
+{{ toYaml .Values.coreDns.service.selector | indent 4 }}
+    {{- else}}
+    k8s-app: kube-dns
+    {{- end}}
 {{- end }}

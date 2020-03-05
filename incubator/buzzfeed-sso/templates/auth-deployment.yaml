@@ -1,0 +1,150 @@
+{{- if and (or .Values.auth.customSecret .Values.auth.secret) (or .Values.provider.google.customSecret .Values.provider.google.secret) (ne .Values.auth.domain "<your_auth_domain>") -}}
+{{- $fullName := include "buzzfeed-sso.fullname" . -}}
+{{- $googleSecret := .Values.provider.google.customSecret | default (printf "%s-google" ($fullName)) -}}
+{{- $authSecret := .Values.auth.customSecret | default ($fullName) -}}
+{{- $name := include "buzzfeed-sso.name" . -}}
+{{- $authDomain := .Values.auth.domain -}}
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ $fullName }}-auth
+  labels:
+    app: {{ $name }}
+    chart: {{ template "buzzfeed-sso.chart" . }}
+    component: {{ $name }}-auth
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.auth.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ $name }}
+      component: {{ $name }}-auth
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        {{- with .Values.auth.annotations }}
+{{ toYaml . | indent 8 }}
+        {{- end }}
+      labels:
+        app: {{ $name }}
+        component: {{ $name }}-auth
+        release: {{ .Release.Name }}
+    spec:
+    {{- if .Values.provider.google }}
+      volumes:
+        - name: google-service-account
+          secret:
+            secretName: {{ $googleSecret }}
+            items:
+            - key: service-account
+              path: sso-serviceaccount.json
+    {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}-auth
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/sso-auth"]
+          ports:
+            - name: http
+              containerPort: 4180
+              protocol: TCP
+          env:
+            - name: AUTHORIZE_EMAIL_DOMAINS
+              value: {{ .Values.emailDomain | quote }}
+            {{- if .Values.whitelistedEmails }}
+            - name: AUTHORIZE_EMAIL_ADDRESSES
+              value: {{ .Values.whitelistedEmails }}
+            {{- end }}
+            - name: SERVER_SCHEME
+              value: https
+            - name: SERVER_HOST
+              value: {{ $authDomain }}
+            - name: AUTHORIZE_PROXY_DOMAINS
+              value: {{ .Values.rootDomain | quote }}
+            - name: CLIENT_PROXY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $authSecret }}
+                  key: proxy-client-id
+            - name: CLIENT_PROXY_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $authSecret }}
+                  key: proxy-client-secret
+            - name: SESSION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $authSecret }}
+                  key: auth-code-secret
+            - name: SESSION_COOKIE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $authSecret }}
+                  key: auth-cookie-secret
+            - name: SESSION_COOKIE_SECURE
+              value: "true"
+            - name: CLUSTER
+              value: {{ .Values.cluster | quote }}
+            # Provider variables
+          {{- with .Values.provider.google }}
+            - name: PROVIDER_GOOGLE_TYPE
+              value: google
+            - name: PROVIDER_GOOGLE_SLUG
+              value: {{ .slug | default "oauth2" | quote }}
+          {{- if .adminEmail }}
+            - name: PROVIDER_GOOGLE_GOOGLE_IMPERSONATE
+              value: {{ .adminEmail | quote }}
+            - name: PROVIDER_GOOGLE_GOOGLE_CREDENTIALS
+              value: /creds/sso-serviceaccount.json
+          {{- end }}
+            - name: PROVIDER_GOOGLE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $googleSecret }}
+                  key: google-client-id
+            - name: PROVIDER_GOOGLE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $googleSecret }}
+                  key: google-client-secret
+          {{- end }}
+          {{- if .Values.auth.extraEnv }}
+{{ toYaml .Values.auth.extraEnv | indent 12 }}
+          {{- end }}
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: 4180
+              scheme: HTTP
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: 4180
+              scheme: HTTP
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+        {{- if .Values.provider.google.adminEmail }}
+          volumeMounts:
+            - name: google-service-account
+              mountPath: /creds
+              readOnly: true
+        {{- end }}
+          resources:
+{{ toYaml .Values.auth.resources | indent 12 }}
+    {{- with .Values.auth.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.auth.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.auth.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+{{- end }}

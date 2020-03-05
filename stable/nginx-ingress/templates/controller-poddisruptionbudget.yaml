@@ -1,10 +1,10 @@
-{{- if gt .Values.controller.replicaCount 1.0 }}
+{{- if or (and .Values.controller.autoscaling.enabled (gt (.Values.controller.autoscaling.minReplicas | int) 1)) (gt (.Values.controller.replicaCount | int) 1) }}
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
   labels:
     app: {{ template "nginx-ingress.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "nginx-ingress.chart" . }}
     component: "{{ .Values.controller.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}

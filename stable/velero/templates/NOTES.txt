@@ -1,0 +1,21 @@
+***
+Please note that this chart has been deprecated and moved to https://github.com/vmware-tanzu/helm-charts/tree/master/charts/velero.
+Going forward please use the vmware-tanzu helm repo of this chart.
+
+To add the chart repo:
+$ helm repo add vmware-tanzu https://vmware-tanzu.github.io/helm-charts
+***
+
+Check that the velero is up and running:
+
+    kubectl get deployment/{{ include "velero.fullname" . }} -n {{ .Release.Namespace }}
+
+Check that the secret has been created:
+
+    kubectl get secret/{{ include "velero.fullname" . }} -n {{ .Release.Namespace }}
+
+Once velero server is up and running you need the client before you can use it
+1. wget https://github.com/vmware-tanzu/velero/releases/download/{{ .Values.image.tag }}/velero-{{ .Values.image.tag }}-darwin-amd64.tar.gz
+2. tar -xvf velero-{{ .Values.image.tag }}-darwin-amd64.tar.gz -C velero-client
+
+More info on the official site: https://velero.io/docs

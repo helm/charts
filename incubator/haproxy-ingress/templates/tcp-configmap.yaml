@@ -1,0 +1,18 @@
+---
+{{- if .Values.controller.tcp }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ template "haproxy-ingress.name" . }}
+    chart: {{ template "haproxy-ingress.chart" . }}
+    component: "{{ .Values.controller.name }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  name: {{ template "haproxy-ingress.controller.fullname" . }}-tcp
+  namespace: {{ .Release.Namespace }}
+data:
+{{- range $key, $value := .Values.controller.tcp }}
+  {{ tpl $key $ | quote }}: {{ tpl $value $ | quote }}
+{{- end }}
+{{- end }}

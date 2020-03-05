@@ -1,0 +1,30 @@
+# Default values for hoverfly.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+image:
+  repository: docker.io/spectolabs/hoverfly
+  tag: v1.1.1
+  pullPolicy: IfNotPresent
+service:
+  type: ClusterIP
+  externalAdminPort: 8888
+  adminPort: 8888
+  externalProxyPort: 8500
+  proxyPort: 8500
+healthcheckEndpoint: /api/health
+hoverflyFlags:
+# resources:
+#   limits:
+#     cpu: 0.2
+#     memory: 200Mi
+#   requests:
+#     cpu: 0.1
+#     memory: 100Mi
+openshift:
+  route:
+    admin:
+      enabled: false
+      hostname: ""
+    proxy:
+      enabled: false
+      hostname: ""

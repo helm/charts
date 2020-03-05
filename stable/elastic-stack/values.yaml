@@ -1,10 +1,13 @@
 # Default values for elk.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+elasticsearch:
+  enabled: true
 
 kibana:
+  enabled: true
   env:
-    ELASTICSEARCH_URL: http://http.default.svc.cluster.local:9200
+    ELASTICSEARCH_HOSTS: http://{{ .Release.Name }}-elasticsearch-client:9200
 
 logstash:
   enabled: true

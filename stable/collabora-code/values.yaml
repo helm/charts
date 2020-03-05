@@ -1,0 +1,75 @@
+# Default values for collabora-code.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: collabora/code
+  tag: 4.0.3.1
+  pullPolicy: IfNotPresent
+
+strategy: Recreate
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 9980
+
+ingress:
+  enabled: false
+  annotations: {}
+  paths: []
+  hosts: []
+  tls: []
+
+collabora:
+  DONT_GEN_SSL_CERT: true
+  domain: nextcloud\\.domain
+  extra_params: --o:ssl.termination=true --o:ssl.enable=false
+  server_name: collabora\.domain
+  password: examplepass
+  username: admin
+  dictionaries: de_DE en_GB en_US es_ES fr_FR it nl pt_BR pt_PT ru
+
+securitycontext:
+  allowPrivilegeEscalation: true
+  capabilities:
+    add:
+    - MKNOD
+
+resources: {}
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 30
+  timeoutSeconds: 2
+  periodSeconds: 10
+  successThreshold: 1
+  failureThreshold: 3
+  scheme: HTTP
+  path: /
+
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 30
+  timeoutSeconds: 2
+  periodSeconds: 10
+  successThreshold: 1
+  failureThreshold: 3
+  scheme: HTTP
+  path: /

@@ -1,0 +1,23 @@
+# In order to Atlantis to start, it must have at least one source control
+# provider configured.  However, we do not want to define a default in
+# values.yaml as this would require all users of this chart who are not using
+# GitHub to override the value.
+github:
+  user: foo
+  token: bar
+  secret: baz
+
+service:
+  annotations:
+    serviceAnnotation1: value1
+    serviceAnnotation2: value2
+
+podTemplate:
+  annotations:
+    podTemplateAnnotation1: value3
+    podTemplateAnnotation2: value4
+
+statefulSet:
+  annotations:
+    statefulSetAnnotation1: value5
+    statefulSetAnnotation2: value6

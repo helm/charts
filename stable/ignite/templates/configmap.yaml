@@ -1,0 +1,88 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "ignite.fullname" . }}-configmap
+data:
+  ignite-config.xml: |
+    <?xml version="1.0" encoding="UTF-8"?>
+
+    <!--
+      Licensed to the Apache Software Foundation (ASF) under one or more
+      contributor license agreements.  See the NOTICE file distributed with
+      this work for additional information regarding copyright ownership.
+      The ASF licenses this file to You under the Apache License, Version 2.0
+      (the "License"); you may not use this file except in compliance with
+      the License.  You may obtain a copy of the License at
+
+           http://www.apache.org/licenses/LICENSE-2.0
+
+      Unless required by applicable law or agreed to in writing, software
+      distributed under the License is distributed on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+      See the License for the specific language governing permissions and
+      limitations under the License.
+    -->
+
+    <!--
+        Configuration example with Kubernetes IP finder and Ignite persistence enabled.
+        WAL files and database files are stored in separate disk drives.
+    -->
+    <beans xmlns="http://www.springframework.org/schema/beans"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="
+            http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+        <bean class="org.apache.ignite.configuration.IgniteConfiguration">
+
+            <property name="peerClassLoadingEnabled" value="{{ .Values.peerClassLoadingEnabled | default false }}"/>
+
+            <!-- Ignite Data Storage Configuration -->
+            <property name="dataStorageConfiguration">
+                <bean class="org.apache.ignite.configuration.DataStorageConfiguration">
+{{- if (.Values.persistence.enabled) }}
+                    <!-- Ignite Persistent Storage -->
+                    <property name="defaultDataRegionConfiguration">
+                        <bean class="org.apache.ignite.configuration.DataRegionConfiguration">
+                            <property name="persistenceEnabled" value="true"/>
+                        </bean>
+                    </property>
+
+                    <!--
+                       Sets a path to the root directory where data and indexes are
+                       to be persisted. It's assumed the directory is on a dedicated disk.
+                    -->
+                    <property name="storagePath" value="/persistence"/>
+
+                    <!--
+                        Sets a path to the directory where WAL is stored.
+                        It's assumed the directory is on a dedicated disk.
+                    -->
+                    <property name="walPath" value="/wal"/>
+
+                    <!--
+                        Sets a path to the directory where WAL archive is stored.
+                        It's assumed the directory is on the same drive with the WAL files.
+                    -->
+                    <property name="walArchivePath" value="/wal/archive"/>
+{{- end }}
+{{ .Values.dataStorage.config | indent 20 }}
+                </bean>
+            </property>
+
+            <!-- Explicitly configure TCP discovery SPI to provide list of initial nodes. -->
+            <property name="discoverySpi">
+                <bean class="org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi">
+                    <property name="ipFinder">
+                        <!--
+                            Enables Kubernetes IP finder and setting custom namespace and service names.
+                        -->
+                        <bean class="org.apache.ignite.spi.discovery.tcp.ipfinder.kubernetes.TcpDiscoveryKubernetesIpFinder">
+                            <property name="namespace" value="{{ .Release.Namespace }}"/>
+                            <property name="serviceName" value="{{ include "ignite.fullname" . }}"/>
+                        </bean>
+                    </property>
+                </bean>
+            </property>
+        </bean>
+    </beans>

@@ -1,24 +1,24 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "parse.fullname" . }}
-  labels:
-    app: {{ template "parse.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+  name: {{ include "parse.fullname" . }}
+  labels: {{ include "parse.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.serviceType }}
-  {{- if eq .Values.serviceType "LoadBalancer" }}
-  loadBalancerIP: {{ .Values.loadBalancerIP | quote }}
+  type: {{ .Values.service.type }}
+  {{- if and (.Values.service.loadBalancerIP) (eq .Values.service.type "LoadBalancer") }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP | quote }}
+  {{- end }}
+  {{- if (or (eq .Values.service.type "LoadBalancer") (eq .Values.service.type "NodePort")) }}
+  externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy | quote }}
   {{- end }}
   ports:
-  - name: server-http
-    port: {{ .Values.server.port }}
-    targetPort: server-http
-  - name: dashboard-http
-    port: 80
-    targetPort: dashboard-http
-  selector:
-    app: {{ template "parse.name" . }}
-    release: "{{ .Release.Name }}"
+    - name: server-http
+      port: {{ .Values.server.port }}
+      targetPort: server-http
+    - name: dashboard-http
+      port: {{ .Values.service.port }}
+      targetPort: dashboard-http
+      {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePorts.http)))}}
+      nodePort: {{ .Values.service.nodePorts.http }}
+      {{- end }}
+  selector: {{ include "parse.matchLabels" . | nindent 4 }}

@@ -8,12 +8,14 @@ metadata:
   labels:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    app: {{ template "centrifugo.name" . }}
-  name: {{ template "centrifugo.fullname" . }}
+    chart: {{ include "centrifugo.chart" . }}
+    app: {{ include "centrifugo.name" . }}
+  name: {{ include "centrifugo.fullname" . }}
 spec:
   type: "{{ .Values.service.type }}"
+{{- if .Values.service.clusterIP }}
   clusterIP: "{{ .Values.service.clusterIP }}"
+{{- end }}
 {{- if .Values.service.externalIPs }}
   externalIPs:
 {{ toYaml .Values.service.externalIPs | indent 4 }}
@@ -34,5 +36,5 @@ spec:
       nodePort: {{ .Values.service.nodePort }}
       {{- end }}
   selector:
-    app: {{ template "centrifugo.name" . }}
+    app: {{ include "centrifugo.name" . }}
     release: {{ .Release.Name }}

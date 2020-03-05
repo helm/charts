@@ -1,0 +1,177 @@
+{{- if .Values.collector.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/name : {{ template "wavefront.fullname" . }}
+    helm.sh/chart: {{ template "wavefront.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io.instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/component: collector    
+  name: {{ template "wavefront.collector.fullname" . }}-config
+data:
+  config.yaml: |
+    clusterName: {{ .Values.clusterName }}    
+    enableDiscovery: {{ .Values.collector.discovery.enabled }}
+    defaultCollectionInterval: {{ .Values.collector.interval | default "60s" }}
+    flushInterval: {{ .Values.collector.flushInterval | default "10s" }}
+    sinkExportDataTimeout: {{ .Values.collector.sinkDelay | default "20s" }}
+
+    sinks:
+    {{- if .Values.collector.useProxy }}
+    {{- if .Values.collector.proxyAddress }}
+    - proxyAddress: {{ .Values.collector.proxyAddress }}
+    {{- else }}
+    - proxyAddress: {{ template "wavefront.proxy.fullname" . }}:{{ .Values.proxy.port }}
+    {{- end }}
+    {{- else }}
+    - server: {{ .Values.wavefront.url }}
+      token: {{ .Values.wavefront.token }}
+    {{- end }}
+    {{- if .Values.collector.tags }}
+      tags:
+{{ tpl (toYaml .Values.collector.tags) . | indent 8 }}
+    {{- end }}     
+      filters:
+        # Filter out infrequently used kube-state-metrics.
+        metricBlacklist:
+        - 'kube.configmap.annotations.gauge'
+        - 'kube.configmap.metadata.resource.version.gauge'
+        - 'kube.endpoint.*'
+        - 'kube.job.owner.gauge'
+        - 'kube.job.labels.gauge'
+        - 'kube.job.spec.completions.gauge'
+        - 'kube.job.spec.parallelism.gauge'
+        - 'kube.job.status.start.time.gauge'
+        - 'kube.limitrange.*'
+        - 'kube.namespace.annotations.gauge'
+        - 'kube.persistentvolume.*'
+        - 'kube.persistentvolumeclaim.*'
+        - 'kube.pod.container.resource.limits.*'
+        - 'kube.pod.container.*.reason.gauge'
+        - 'kube.pod.owner.gauge'
+        - 'kube.pod.start.time.gauge'
+        - 'kube.pod.status.scheduled.gauge'
+        - 'kube.pod.status.scheduled.time.gauge'
+        - 'kube.replicationcontroller.created.gauge'
+        - 'kube.replicationcontroller.metadata.generation.gauge'
+        - 'kube.replicationcontroller.spec.replicas.gauge'
+        - 'kube.resourcequota.*'
+        - 'kube.secret.*'
+        - 'kube.statefulset.*'
+        - 'kube.storageclass.*'
+        # Filter out generated labels
+        tagExclude:
+        - 'label?controller?revision*'
+        - 'label?pod?template*'
+        - 'annotation_kubectl_kubernetes_io_last_applied_configuration'
+
+    sources:
+      kubernetes_source:
+        {{- if .Values.collector.useReadOnlyPort }} 
+        url: 
+        kubeletPort: 10255
+        kubeletHttps: false
+        {{- else }}
+        url: https://kubernetes.default.svc
+        kubeletPort: 10250
+        kubeletHttps: true
+        {{- end }}
+        {{- if .Values.serviceAccount.create }}
+        useServiceAccount: true
+        {{- else }}
+        useServiceAccount: false
+        {{- end }}
+        insecure: true
+        prefix: kubernetes.
+        filters:
+          metricBlacklist:
+          - 'kubernetes.sys_container.*'
+          - 'kubernetes.node.ephemeral_storage.*'    
+
+      internal_stats_source:
+        prefix: kubernetes.
+
+      telegraf_sources:
+      - plugins: []        
+
+      {{- if .Values.collector.apiServerMetrics }}
+      # Kubernetes API Server
+      prometheus_sources:
+      - url: https://kubernetes.default.svc.cluster.local:443/metrics
+        httpConfig:
+          bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+          tls_config:
+            ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+            insecure_skip_verify: true
+        prefix: kube.apiserver.
+        filters:
+          metricWhitelist:
+          - 'kube.apiserver.apiserver.*'
+          - 'kube.apiserver.etcd.*'
+          - 'kube.apiserver.process.*'        
+      {{- end }}
+
+    {{- if .Values.collector.discovery.enabled }}
+
+    discovery:
+      {{- if .Values.collector.discovery.annotationPrefix }}
+      annotation_prefix: {{ .Values.collector.discovery.annotationPrefix | quote }}
+      {{- end }}
+      plugins:
+
+
+      # auto-discover kube DNS
+      - name: kube-dns-discovery
+        type: prometheus
+        selectors:
+          images:
+          - '*kube-dns/sidecar*'
+          labels:
+            k8s-app:
+            - kube-dns
+        port: 10054
+        path: /metrics
+        scheme: http
+        prefix: kube.dns.
+        filters:
+          metricWhitelist:
+          - 'kube.dns.http.request.duration.microseconds'
+          - 'kube.dns.http.request.size.bytes'
+          - 'kube.dns.http.requests.total.counter'
+          - 'kube.dns.http.response.size.bytes'
+          - 'kube.dns.kubedns.dnsmasq.*'
+          - 'kube.dns.process.*'    
+
+      # auto-discover coredns
+      - name: coredns-discovery
+        type: prometheus
+        selectors:
+          images:
+          - '*coredns:*'
+          labels:
+            k8s-app:
+            - kube-dns
+        port: 9153
+        path: /metrics
+        scheme: http
+        prefix: kube.coredns.  
+        filters:
+          metricWhitelist:
+          - 'kube.coredns.coredns.cache.*'
+          - 'kube.coredns.coredns.dns.request.count.total.counter'
+          - 'kube.coredns.coredns.dns.request.duration.seconds'
+          - 'kube.coredns.coredns.dns.request.size.bytes'
+          - 'kube.coredns.coredns.dns.request.type.count.total.counter'
+          - 'kube.coredns.coredns.dns.response.rcode.count.total.counter'
+          - 'kube.coredns.coredns.dns.response.size.bytes'          
+          - 'kube.coredns.process.*'      
+
+    {{- if .Values.collector.discovery.config }}
+
+    # user supplied discovery config
+{{ tpl (toYaml .Values.collector.discovery.config) . | indent 6 }}
+    {{- end }}
+    {{- end }}
+
+{{- end }}

@@ -1,0 +1,57 @@
+{{- if .Values.collector.enabled }}
+{{- if not .Values.collector.useDaemonset }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name : {{ template "wavefront.fullname" . }}
+    helm.sh/chart: {{ template "wavefront.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io.instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/component: collector
+  name: {{ template "wavefront.collector.fullname" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name : {{ template "wavefront.fullname" .}}
+      app.kubernetes.io/component: collector
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name : {{ template "wavefront.fullname" .}}
+        app.kubernetes.io/component: collector
+    spec:
+      serviceAccountName: {{ template "wavefront.collector.serviceAccountName" . }}
+      containers:
+      - name: wavefront-collector
+        image: {{ .Values.collector.image.repository }}:{{ .Values.collector.image.tag }}
+        imagePullPolicy: {{ .Values.collector.image.pullPolicy }}
+        command:
+        - /wavefront-collector
+        - --daemon=false
+        - --config-file=/etc/collector/config.yaml
+        {{- if .Values.collector.maxProcs }}
+        - --max-procs={{ .Values.collector.maxProcs }}
+        {{- end }}
+        {{- if .Values.collector.logLevel }}
+        - --log-level={{ .Values.collector.logLevel }}
+        {{- end }}
+        resources:
+{{ toYaml .Values.collector.resources | indent 10 }}
+        volumeMounts:
+        - name: config
+          mountPath: /etc/collector/
+          readOnly: true        
+        - name: ssl-certs
+          mountPath: /etc/ssl/certs
+          readOnly: true
+      volumes:
+      - name: config
+        configMap:
+          name: {{ template "wavefront.collector.fullname" . }}-config
+      - name: ssl-certs
+        hostPath:
+          path: /etc/ssl/certs
+{{- end }}
+{{- end }}

@@ -40,3 +40,22 @@ Create chart name and version as used by the chart label.
 {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create the name of the configmap for storing custom monitor definitions
+*/}}
+{{- define "node-problem-detector.customConfig" -}}
+{{- $fullname := include "node-problem-detector.fullname" . -}}
+{{- printf "%s-custom-config" $fullname | replace "+" "_" | trunc 63 -}}
+{{- end -}}
+
+{{/*
+Return the appropriate apiVersion for podSecurityPolicy.
+*/}}
+{{- define "podSecurityPolicy.apiVersion" -}}
+{{- if semverCompare ">=1.10-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "policy/v1beta1" -}}
+{{- else -}}
+{{- print "extensions/v1beta1" -}}
+{{- end -}}
+{{- end -}}

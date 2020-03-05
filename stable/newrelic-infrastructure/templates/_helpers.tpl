@@ -19,12 +19,22 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 {{- end -}}
 
+{{/* Generate mode label */}}
+{{- define "newrelic.mode" }}
+{{- if .Values.privileged -}}
+privileged
+{{- else -}}
+unprivileged
+{{- end }}
+{{- end -}}
+
 {{/* Generate basic labels */}}
 {{- define "newrelic.labels" }}
 app: {{ template "newrelic.name" . }}
 chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
 heritage: {{.Release.Service }}
 release: {{.Release.Name }}
+mode: {{ template "newrelic.mode" . }}
 {{- end }}
 
 {{/*
@@ -43,4 +53,87 @@ Create the name of the service account to use
 {{- else -}}
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
+{{- end -}}
+
+{{/*
+Create the image name depending on the "privileged" flag
+*/}}
+{{- define "newrelic.image" -}}
+{{- if .Values.privileged -}}
+"{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+{{- else -}}
+"{{ .Values.image.repository }}:{{ .Values.image.tag }}-unprivileged"
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the licenseKey
+*/}}
+{{- define "newrelic.licenseKey" -}}
+{{- if .Values.global}}
+  {{- if .Values.global.licenseKey }}
+      {{- .Values.global.licenseKey -}}
+  {{- else -}}
+      {{- .Values.licenseKey | default "" -}}
+  {{- end -}}
+{{- else -}}
+    {{- .Values.licenseKey | default "" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the cluster
+*/}}
+{{- define "newrelic.cluster" -}}
+{{- if .Values.global -}}
+  {{- if .Values.global.cluster -}}
+      {{- .Values.global.cluster -}}
+  {{- else -}}
+      {{- .Values.cluster | default "" -}}
+  {{- end -}}
+{{- else -}}
+  {{- .Values.cluster | default "" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the customSecretName
+*/}}
+{{- define "newrelic.customSecretName" -}}
+{{- if .Values.global }}
+  {{- if .Values.global.customSecretName }}
+      {{- .Values.global.customSecretName -}}
+  {{- else -}}
+      {{- .Values.customSecretName | default "" -}}
+  {{- end -}}
+{{- else -}}
+    {{- .Values.customSecretName | default "" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the customSecretLicenseKey
+*/}}
+{{- define "newrelic.customSecretLicenseKey" -}}
+{{- if .Values.global }}
+  {{- if .Values.global.customSecretLicenseKey }}
+      {{- .Values.global.customSecretLicenseKey -}}
+  {{- else -}}
+      {{- .Values.customSecretLicenseKey | default "" -}}
+  {{- end -}}
+{{- else -}}
+    {{- .Values.customSecretLicenseKey | default "" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Returns if the template should render, it checks if the required values
+licenseKey and cluster are set.
+*/}}
+{{- define "newrelic.areValuesValid" -}}
+{{- $cluster := include "newrelic.cluster" . -}}
+{{- $licenseKey := include "newrelic.licenseKey" . -}}
+{{- $customSecretName := include "newrelic.customSecretName" . -}}
+{{- $customSecretLicenseKey := include "newrelic.customSecretLicenseKey" . -}}
+{{- and (or $licenseKey (and $customSecretName $customSecretLicenseKey)) $cluster}}
 {{- end -}}

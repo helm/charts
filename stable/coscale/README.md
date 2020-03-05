@@ -45,7 +45,7 @@ The following table lists the configurable parameters of the CoScale chart and t
 | `coscale.accessToken`       | Your CoScale Access Token          | `Nil` You must provide your own           |
 | `coscale.templateId`        | Your CoScale Agent Template Id     | `Nil` You must provide your own           |
 | `image.repository`          | The image repository to pull from  | `coscale/coscale-agent`                   |
-| `image.tag`                 | The image tag to pull              | `3.10.11`                                 |
+| `image.tag`                 | The image tag to pull              | `3.16.0`                                 |
 | `image.pullPolicy`          | The Image pull policy              | `IfNotPresent`                            |
 
 

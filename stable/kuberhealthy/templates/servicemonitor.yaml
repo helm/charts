@@ -1,0 +1,27 @@
+{{- if .Values.prometheus.enabled -}}
+{{- if .Values.prometheus.serviceMonitor -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app: {{ template "kuberhealthy.name" . }}
+    chart: {{ .Chart.Name }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    prometheus: {{ .Values.prometheus.name }}
+  name: {{ template "kuberhealthy.name" . }}
+spec:
+  jobLabel: component
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+      release: {{ .Release.Name }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  endpoints:
+  - port: http
+    interval: 15s
+    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+{{- end -}}
+{{- end -}}

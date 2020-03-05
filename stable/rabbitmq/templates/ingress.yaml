@@ -4,10 +4,10 @@ kind: Ingress
 metadata:
   name: "{{ template "rabbitmq.fullname" . }}"
   labels:
-    app: {{ template "rabbitmq.name" . }}
-    chart: {{ template "rabbitmq.chart" .  }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: "{{ template "rabbitmq.name" . }}"
+    chart: "{{ template "rabbitmq.chart" .  }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
   annotations:
     {{- if .Values.ingress.tls }}
     ingress.kubernetes.io/secure-backends: "true"
@@ -24,10 +24,10 @@ spec:
   - http:
   {{- end }}
       paths:
-        - path: {{ default "/" .path }}
+        - path: {{ .Values.ingress.path }}
           backend:
             serviceName: {{ template "rabbitmq.fullname" . }}
-            servicePort: {{ .Values.rabbitmq.managerPort }}
+            servicePort: {{ .Values.service.managerPort }}
 {{- if .Values.ingress.tls }}
   tls:
   - hosts:

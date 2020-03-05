@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "kong.fullname" . }}-default-custom-server-blocks
+  labels:
+    {{- include "kong.metaLabels" . | nindent 4 }}
+data:
+  servers.conf: |
+    # Prometheus metrics and health-checking server
+    server {
+        server_name kong_prometheus_exporter;
+        listen 0.0.0.0:9542; # can be any other port as well
+        access_log off;
+        location /status {
+            default_type text/plain;
+            return 200;
+        }
+        location /metrics {
+            default_type text/plain;
+            content_by_lua_block {
+                 local prometheus = require "kong.plugins.prometheus.exporter"
+                 prometheus:collect()
+            }
+        }
+        location /nginx_status {
+            internal;
+            access_log off;
+            stub_status;
+        }
+    }

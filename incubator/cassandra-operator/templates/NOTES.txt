@@ -1,0 +1,5 @@
+Congratulations. You have just deployed CassKop the Cassandra Operator.
+Check its status by running:
+kubectl --namespace {{ .Release.Namespace }} get pods -l "release={{ .Release.Name }}"
+
+Visit https://github.com/Orange-OpenSource/cassandra-k8s-operator for instructions on hot to create & configure Cassandra clusters using the operator.

@@ -1,0 +1,24 @@
+airflow:
+  image:
+    repository: puckel/docker-airflow
+    tag: 1.10.2
+    pullPolicy: IfNotPresent
+  service:
+    type: NodePort
+  webReplicas: 1
+  config:
+    AIRFLOW__CORE__LOGGING_LEVEL: DEBUG
+    AIRFLOW__CORE__LOAD_EXAMPLES: True
+
+  variables: '{ "environment": "dev" }'
+  pools: '{ "example": { "description": "This is an example of a pool", "slots": 2 } }'
+
+workers:
+  replicas: 1
+  celery:
+    instances: 1
+
+persistence:
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 1Gi

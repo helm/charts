@@ -1,0 +1,15 @@
+{{- if and .Values.tls.certData .Values.tls.keyData -}}
+apiVersion: v1
+type: kubernetes.io/tls
+kind: Secret
+metadata:
+  name: {{ include "gangway.fullname" . }}-tls
+  labels:
+    app.kubernetes.io/name: {{ include "gangway.name" . }}
+    helm.sh/chart: {{ include "gangway.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  tls.crt: {{ .Values.tls.certData | b64enc }}
+  tls.key: {{ .Values.tls.keyData | b64enc }}
+{{- end -}}

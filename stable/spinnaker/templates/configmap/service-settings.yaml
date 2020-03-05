@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "spinnaker.fullname" . }}-service-settings
+  labels:
+{{ include "spinnaker.standard-labels" . | indent 4 }}
+
+{{/*
+Render settings for each service by merging predefined defaults with values passed by
+.Values.halyard.additionalServiceSettings
+*/}}
+{{- $settings := dict -}}
+
+{{- /* Defaults: redis service */}}
+{{- $redisDefaults := dict -}}
+{{- $_ := set $redisDefaults "skipLifeCycleManagement" true -}}
+{{- $_ := set $redisDefaults "overrideBaseUrl" (include "spinnaker.redisBaseURL" $) -}}
+{{- $_ := set $settings "redis.yml" $redisDefaults -}}
+
+{{/* Defaults: gate service */}}
+{{- if .Values.ingress.enabled -}}
+{{- $gateDefaults := dict -}}
+{{- $_ := set $gateDefaults "kubernetes" (dict "useExecHealthCheck" false "serviceType" "NodePort") -}}
+{{- $_ := set $settings "gate.yml" $gateDefaults -}}
+{{- end -}}
+
+{{/* Defaults: deck service */}}
+{{- $deckDefaults := dict -}}
+{{- $_ := set $deckDefaults "env" (dict "API_HOST" "http://spin-gate:8084") -}}
+{{- if .Values.ingress.enabled -}}
+{{- $_ := set $deckDefaults "kubernetes" (dict "useExecHealthCheck" false "serviceType" "NodePort") -}}
+{{- end -}}
+{{- $_ := set $settings "deck.yml" $deckDefaults -}}
+
+{{- /* Merge dictionaries with passed values */}}
+{{- if .Values.halyard.additionalServiceSettings -}}
+{{- $_ := mergeOverwrite $settings .Values.halyard.additionalServiceSettings -}}
+{{- end -}}
+
+{{- /* Convert the content of settings key to YAML string */}}
+{{- range $filename, $content := $settings -}}
+{{- if not (typeIs "string" $content) -}}
+{{- $_ := set $settings $filename ($content | toYaml) -}}
+{{- end -}}
+{{- end -}}
+
+data:
+{{ $settings | toYaml | indent 2 }}

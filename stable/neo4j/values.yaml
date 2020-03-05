@@ -15,12 +15,27 @@ podDisruptionBudget: {}
   # minAvailable: 2
   # maxUnavailable: 1
 
+## Node labels for pod assignment
+## ref: https://kubernetes.io/docs/user-guide/node-selection/
+nodeSelector: {}
+
+## Tolerations for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
+
+## Affinity for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}
+
 # Use password authentication
 authEnabled: true
 
 ## Specify password for neo4j user
 ## Defaults to a random 10-character alphanumeric string if not set and authEnabled is true
 # neo4jPassword:
+
+# Specify cluster domain (used eg. as suffix in definition of NEO4J_causal__clustering_initial__discovery__members environment variable)
+clusterDomain: "cluster.local"
 
 # Specs for the images used for running tests against the Helm package
 testImage: "markhneedham/k8s-kubectl"
@@ -30,6 +45,9 @@ testImageTag: "master"
 core:
   numberOfServers: 3
   persistentVolume:
+    ## whether or not persistence is enabled
+    ##
+    enabled: true
 
     ## core server data Persistent Volume mount root path
     ##
@@ -83,6 +101,19 @@ core:
 
 # Read Replicas
 readReplica:
+  resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 512Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 512Mi
+  autoscaling:
+    enabled: false
+    targetAverageUtilization: 70
+    minReplicas: 1
+    maxReplicas: 3
+
   numberOfServers: 0
   ## Pass extra environment variables to the Neo4j container.
   ##

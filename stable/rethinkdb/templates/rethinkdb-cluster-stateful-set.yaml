@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: "{{ template "rethinkdb.fullname" . }}-cluster"
@@ -10,6 +10,12 @@ metadata:
 spec:
   serviceName: "{{ template "rethinkdb.fullname" . }}-cluster"
   replicas: {{ .Values.cluster.replicas }}
+  selector:
+    matchLabels:
+      app: "{{ template "rethinkdb.name" . }}-cluster"
+      heritage: {{ .Release.Service | quote }}
+      release: {{ .Release.Name | quote }}
+      chart: {{ template "rethinkdb.chart" . }}
   template:
     metadata:
       name: "{{ template "rethinkdb.fullname" . }}-cluster"

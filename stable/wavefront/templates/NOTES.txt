@@ -1,0 +1,59 @@
+{{- $validClusterName := and (.Values.clusterName) (ne .Values.clusterName "KUBERNETES_CLUSTER_NAME") -}}
+{{- $validUrl := and (.Values.wavefront.url) (ne .Values.wavefront.url "https://YOUR_CLUSTER.wavefront.com") -}}
+{{- $validToken := and (.Values.wavefront.token) (ne .Values.wavefront.token "YOUR_API_TOKEN") -}}
+
+{{- if not $validClusterName }}
+
+##### ERROR:
+You must set the value for 'clusterName' to uniquely identify this Kubernetes cluster in Wavefront.
+#####
+{{- end }}
+
+{{- if .Values.collector.useProxy }}
+	{{- if and (not .Values.proxy.enabled) (not .Values.collector.proxyAddress) }}
+
+##### ERROR:
+Collector is set to use proxy but `proxy.enabled` is not true and `collector.proxyAddress` is not provided.
+#####
+	{{- end }}
+{{- else }}
+	{{- if or (not $validUrl) (not $validToken) }}
+
+##### ERROR:
+Collector is set to use direct ingestion API but `wavefront.url` or `wavefront.token` are not specified.
+#####
+	{{- end }}
+{{- end }}
+
+{{- if .Values.proxy.enabled }}
+	{{- if or (not $validUrl) (not $validToken) }}
+	
+##### ERROR:
+Proxy is enabled but `wavefront.url` or `wavefront.token` are not specified.
+#####
+	{{- end }}
+{{- end }}
+
+
+{{- if or (not $validUrl) (not $validToken) }}
+
+You did not specify a valid URL or Token for Wavefront.
+If you do not have a Wavefront instance you can get a free trial here
+
+https://www.wavefront.com/sign-up
+
+If you already have access to Wavefront please specify your URL and Token then try again.
+{{- end }}
+
+
+Wavefront is setup and configured to collect metrics from your Kubernetes cluster.  You
+should see metrics flowing within a few minutes.
+
+You can visit this dashboard in Wavefront to see your Kubernetes metrics:
+
+{{ .Values.wavefront.url }}/dashboard/integration-kubernetes-main
+
+##### DEPRECATED:
+This chart has been deprecated. Use the chart now maintained on the Wavefront Helm
+repository at: https://github.com/wavefrontHQ/helm
+#####

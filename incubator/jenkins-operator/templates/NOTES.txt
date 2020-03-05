@@ -1,0 +1,156 @@
+1.  jenkins-operator deployed.
+
+    Check the jenkins-operator logs:
+        export POD=$(kubectl get pods -l app={{ template "jenkins-operator.name" . }} --namespace {{ .Release.Namespace }} --output name)
+        kubectl logs $POD --namespace={{ .Release.Namespace }}
+
+2.  If want to deploy a jenkins instance, please create Custom Resource objects, like so:
+
+a) Create a ServiceAccount :
+
+kubectl create sa jenkins
+
+b) Create admin secret (user: admin, password: password):
+
+kubectl apply -f - <<EOF
+apiVersion: v1
+data:
+  JENKINS_ADMIN_USER: cGFzc3dvcmQ=
+  JENKINS_ADMIN_PASSWORD: YWRtaW4=
+kind: Secret
+metadata:
+  name: admin-secret
+type: Opaque
+EOF
+
+c) Create a ConfigMap for configuring the instance, plugins, credentials, etc:
+
+kubectl apply -f - <<EOF
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jenkins-config
+data:
+  jenkins: |
+    jobs:
+      - script: >
+           pipelineJob('casc-job') {
+             definition {
+               cps {
+                 script("""\
+                   pipeline {
+                     agent any
+                     stages {
+                       stage ('test') {
+                         steps {
+                           echo "hello"
+                         }
+                       }
+                     }
+                   }""".stripIndent())
+               }
+             }
+           }
+    jenkins:
+      agentProtocols:
+        - "JNLP4-connect"
+        - "Ping"
+      authorizationStrategy:
+        loggedInUsersCanDoAnything:
+          allowAnonymousRead: false
+      crumbIssuer:
+        standard:
+          excludeClientIPFromCrumb: false
+      disableRememberMe: false
+      mode: NORMAL
+      numExecutors: 1
+      primaryView:
+        all:
+          name: "all"
+      quietPeriod: 5
+      scmCheckoutRetryCount: 3
+      securityRealm:
+        local:
+          allowsSignup: false
+          enableCaptcha: false
+          users:
+            - id: ${JENKINS_ADMIN_USER}
+              password: ${JENKINS_ADMIN_PASSWORD}
+      slaveAgentPort: 50000
+      systemMessage: "jenkins-operator managed Jenkins instance\n\n"
+      clouds:
+        - kubernetes:
+            name: "casc-k8s-config"
+            serverUrl: "https://kubernetes.default.svc.cluster.local"
+            skipTlsVerify: true
+            namespace: "default"
+            credentialsId: "casc-k8s-config-credentials"
+            jenkinsUrl: "http://jenkins:8080"
+            jenkinsTunnel: "jenkins:50000"
+            connectTimeout: 0
+            readTimeout: 0
+            containerCapStr: 10000
+            maxRequestsPerHostStr: 64
+            retentionTimeout: 5
+    security:
+      remotingCLI:
+        enabled: false
+    unclassified:
+      location:
+        adminAddress: admin@domain.com
+        url: https://jenkins.domain.com
+    tool:
+      git:
+        installations:
+          - home: "git"
+            name: "Default"
+      jdk:
+        defaultProperties:
+          - installSource:
+              installers:
+                - jdkInstaller:
+                    acceptLicense: false
+    credentials:
+      system:
+        domainCredentials:
+        - credentials:
+              - fileSystemServiceAccountCredential:
+                  description: "File system service account credential from CASC plugin"
+                  id: "casc-k8s-config-credentials"
+                  scope: GLOBAL
+EOF
+
+d) Create jenkins instance custom resource:
+
+kubectl apply -f - <<EOF
+apiVersion: jenkins.jenkinsoperator.samsung-cnct.github.com/v1alpha2
+kind: JenkinsInstance
+metadata:
+  labels:
+    controller-tools.k8s.io: "1.0"
+  name: jenkinsinstance
+spec:
+  image: "jenkins/jenkins:lts"
+  plugins:
+    - id: kubernetes
+      version: latest
+  cascconfig:
+    configmap: jenkins-config
+  cascsecret: admin-secret
+  executors: 1
+  adminsecret: admin-secret
+  service:
+    name: jenkins
+    servicetype: NodePort
+  storage:
+    jobspvc: jenkins
+    jobspvcspec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1G
+EOF
+
+3. For more details on supported custom resource object please refer to jenkins operator documentation:
+        https://github.com/samsung-cnct/jenkins-operator

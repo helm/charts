@@ -17,13 +17,13 @@ spec:
   {{- end }}
   ports:
   - name: http
-    port: 80
+    port: {{ .Values.service.port }}
     targetPort: http
     {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePorts.http)))}}
     nodePort: {{ .Values.service.nodePorts.http }}
     {{- end }}
   - name: https
-    port: 443
+    port: {{ .Values.service.httpsPort }}
     targetPort: https
     {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePorts.https)))}}
     nodePort: {{ .Values.service.nodePorts.https }}

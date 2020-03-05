@@ -1,6 +1,6 @@
 {{ if .Values.jupyter.enabled -}}
 
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "dask.fullname" . }}-jupyter
@@ -26,6 +26,8 @@ spec:
         release: {{ .Release.Name | quote }}
         component: jupyter
     spec:
+      imagePullSecrets:
+        {{- toYaml .Values.jupyter.image.pullSecrets | nindent 8 }}
       containers:
         - name: {{ template "dask.fullname" . }}-jupyter
           image: "{{ .Values.jupyter.image.repository }}:{{ .Values.jupyter.image.tag }}"
@@ -33,19 +35,32 @@ spec:
           ports:
             - containerPort: 8888
           resources:
-{{ toYaml .Values.jupyter.resources | indent 12 }}
+            {{- toYaml .Values.jupyter.resources | nindent 12 }}
           volumeMounts:
             - name: config-volume
               mountPath: /home/jovyan/.jupyter
           env:
             - name: DASK_SCHEDULER_ADDRESS
               value: {{ template "dask.fullname" . }}-scheduler:{{ .Values.scheduler.servicePort }}
-{{- if .Values.jupyter.env }}
-{{ toYaml .Values.jupyter.env | indent 12 }}
-{{- end }}
+          {{- if .Values.jupyter.env }}
+            {{- toYaml .Values.jupyter.env | nindent 12 }}
+          {{- end }}
+      nodeSelector:
+        {{- toYaml .Values.jupyter.nodeSelector | nindent 8 }}
       volumes:
         - name: config-volume
           configMap:
             name: {{ template "dask.fullname" . }}-jupyter-config
-
-{{ end }}
+    {{- with .Values.jupyter.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.jupyter.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.jupyter.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+{{- end }}

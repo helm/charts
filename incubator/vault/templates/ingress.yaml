@@ -1,13 +1,13 @@
 {{- if .Values.ingress.enabled -}}
 {{- $serviceName := include "vault.fullname" . -}}
-{{- $servicePort := .Values.service.port -}}
-apiVersion: extensions/v1beta1
+{{- $servicePort := .Values.service.externalPort -}}
+apiVersion: {{ template "ingress.apiVersion" . }}
 kind: Ingress
 metadata:
   name: {{ template "vault.fullname" . }}
   labels:
     app: {{ template "vault.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    chart: "{{ template "vault.chart" . }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 {{- if .Values.ingress.labels }}
@@ -23,10 +23,12 @@ spec:
     - host: {{ $host }}
       http:
         paths:
-          - path: /
-            backend:
+          - backend:
               serviceName: {{ $serviceName }}
               servicePort: {{ $servicePort }}
+          {{- if $.Values.ingress.path }}
+            path: {{ $.Values.ingress.path }}
+          {{- end }}
     {{- end -}}
   {{- if .Values.ingress.tls }}
   tls:

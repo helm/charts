@@ -1,26 +1,19 @@
-{{- if .Values.networkPolicy.enabled }}
+{{- if and .Values.alertmanager.enabled .Values.networkPolicy.enabled -}}
 apiVersion: {{ template "prometheus.networkPolicy.apiVersion" . }}
 kind: NetworkPolicy
 metadata:
   name: {{ template "prometheus.alertmanager.fullname" . }}
   labels:
-    app: {{ template "prometheus.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.alertmanager.name }}"
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    {{- include "prometheus.alertmanager.labels" . | nindent 4 }}
 spec:
   podSelector:
     matchLabels:
-      app: {{ template "prometheus.name" . }}
-      component: "{{ .Values.alertmanager.name }}"
-      release: {{ .Release.Name }}
+      {{- include "prometheus.alertmanager.matchLabels" . | nindent 6 }}
   ingress:
     - from:
       - podSelector:
           matchLabels:
-            release: {{ .Release.Name }}
-            component: "{{ .Values.server.name }}"
+            {{- include "prometheus.server.matchLabels" . | nindent 12 }}
     - ports:
       - port: 9093
-{{- end }}
+{{- end -}}

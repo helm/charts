@@ -1,0 +1,140 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "cloudserver.fullname" . }}
+  labels:
+    app: {{ template "cloudserver.name" . }}
+    chart: {{ template "cloudserver.chart" . }}
+    component: api
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+{{- if not .Values.api.autoscaling.enabled }}
+  replicas: {{ .Values.api.replicaCount }}
+{{- end }}
+  selector:
+    matchLabels:
+      app: {{ template "cloudserver.name" . }}
+      component: api
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/api-configmap.yaml") . | sha256sum }}
+      labels:
+        app: {{ template "cloudserver.name" . }}
+        component: api
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ template "cloudserver.serviceAccountName.api" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          terminationMessagePolicy: FallbackToLogsOnError
+          ports:
+            - name: http
+              containerPort: 8000
+          env:
+            - name: REMOTE_MANAGEMENT_DISABLE
+              value: "1"
+            {{- range $key, $value := .Values.env }}
+            - name: {{ $key | upper | replace "." "_" }}
+              value: {{ $value | quote }}
+            {{- end }}
+            - name: S3METADATA
+              value: "mongodb"
+            - name: MONGODB_HOSTS
+              value: "{{ template "mongodb-replicaset.url" . }}"
+            - name: MONGODB_RS
+              value: "{{ default "rs0" (index .Values "mongodb-replicaset" "replicaSet") }}"
+            - name: S3_LOCATION_FILE
+              value: "/etc/config/locationConfig.json"
+            - name: DATA_HOST
+              value: {{ template "cloudserver.localdata.fullname" . }}
+            - name: REDIS_HOST
+              value: "{{- printf "%s-%s" .Release.Name "redis-ha" | trunc 63 | trimSuffix "-" -}}"
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_SENTINELS
+              value: "{{ template "redis-ha.url" . }}"
+            - name: REDIS_HA_NAME
+              value: "{{ index .Values "redis-ha" "redis" "masterGroupName" }}"
+            - name: LOG_LEVEL
+              value: {{ .Values.api.logLevel }}
+            - name: ENDPOINT
+              value: "{{ template "cloudserver.fullname" . }},{{ .Values.api.endpoint }}"
+            - name: HEALTHCHECKS_ALLOWFROM
+              value: "0.0.0.0/0"
+            {{- if .Values.api.proxy.http }}
+            - name: http_proxy
+              value: "{{ .Values.api.proxy.http }}"
+            - name: HTTP_PROXY
+              value: "{{ .Values.api.proxy.http }}"
+            - name: https_proxy
+              value: "{{- if .Values.api.proxy.https }}{{ .Values.api.proxy.https }}{{- else }}{{ .Values.api.proxy.http }}{{- end }}"
+            - name: HTTPS_PROXY
+              value: "{{- if .Values.api.proxy.https }}{{ .Values.api.proxy.https }}{{- else }}{{ .Values.api.proxy.http }}{{- end }}"
+            {{- else if .Values.api.proxy.https }}
+            - name: https_proxy
+              value: "{{ .Values.api.proxy.https }}"
+            - name: HTTPS_PROXY
+              value: "{{ .Values.api.proxy.https }}"
+            {{- end }}
+            {{- if .Values.api.proxy.caCert }}
+            - name: NODE_EXTRA_CA_CERTS
+              value: "/ssl/ca.crt"
+            {{- end }}
+            {{- if .Values.api.proxy.no_proxy }}
+            - name: no_proxy
+              value: "{{ .Values.api.proxy.no_proxy }}"
+            - name: NO_PROXY
+              value: "{{ .Values.api.proxy.no_proxy }}"
+            {{- end }}
+            - name: SCALITY_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "cloudserver.fullname" . }}
+                  key: accessKey
+            - name: SCALITY_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "cloudserver.fullname" . }}
+                  key: secretKey
+          args: ['npm', 'run', 'start_s3server']
+          livenessProbe:
+            httpGet:
+              path: /_/healthcheck
+              port: http
+            initialDelaySeconds: 60
+          volumeMounts:
+            - name: location-config
+              mountPath: /etc/config
+            {{- if .Values.api.proxy.caCert }}
+            - name: proxy-cert
+              mountPath: "/ssl"
+              readOnly: true
+            {{- end }}
+          resources:
+{{ toYaml .Values.api.resources | indent 12 }}
+    {{- with .Values.api.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+{{- if .Values.api.affinity }}
+      affinity:
+{{ toYaml .Values.api.affinity | indent 8 }}
+    {{- end }}
+    {{- with .Values.api.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+        - name: location-config
+          configMap:
+            name: {{ template "cloudserver.fullname" . }}
+        {{- if .Values.api.proxy.caCert }}
+        - name: proxy-cert
+          secret:
+            secretName: {{ template "cloudserver.fullname" . }}-cacert
+        {{- end }}

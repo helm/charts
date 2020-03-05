@@ -1,0 +1,32 @@
+{{- if and .Values.grafana.enabled .Values.grafana.serviceMonitor.selfMonitor }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "prometheus-operator.fullname" . }}-grafana
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: {{ template "prometheus-operator.name" . }}-grafana
+{{ include "prometheus-operator.labels" . | indent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: grafana
+      app.kubernetes.io/instance: {{ $.Release.Name | quote }}
+  namespaceSelector:
+    matchNames:
+      - {{ $.Release.Namespace | quote }}
+  endpoints:
+  - port: {{ .Values.grafana.service.portName }}
+    {{- if .Values.grafana.serviceMonitor.interval }}
+    interval: {{ .Values.grafana.serviceMonitor.interval }}
+    {{- end }}
+    path: "/metrics"
+{{- if .Values.grafana.serviceMonitor.metricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.grafana.serviceMonitor.metricRelabelings | indent 6) . }}
+{{- end }}
+{{- if .Values.grafana.serviceMonitor.relabelings }}
+    relabelings:
+{{ toYaml .Values.grafana.serviceMonitor.relabelings | indent 6 }}
+{{- end }}
+{{- end }}

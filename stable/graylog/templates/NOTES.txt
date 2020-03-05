@@ -1,0 +1,85 @@
+To connect to your Graylog server:
+
+1. Get the application URL by running these commands:
+{{- if .Values.graylog.ingress.enabled }}
+{{- range .Values.graylog.ingress.hosts }}
+  http://{{ . }}
+{{- end }}
+{{- else if eq "NodePort" .Values.graylog.service.type }}
+
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "graylog.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+{{- else if eq "LoadBalancer" .Values.graylog.service.type }}
+
+     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+           You can watch the status of by running 'kubectl get svc -w {{ template "graylog.fullname" . }}'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "graylog.fullname" . }}-web -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP:{{ default 9000 .Values.graylog.service.port }}
+{{- else if eq "ClusterIP" .Values.graylog.service.type }}
+
+  Graylog Web Interface uses JavaScript to get detail of each node. The client JavaScript cannot communicate to node when service type is `ClusterIP`. 
+  If you want to access Graylog Web Interface, you need to enable Ingress.
+    NOTE: Port Forward does not work with web interface.
+{{- end }}
+
+2. The Graylog root users
+
+  echo "User: {{ .Values.graylog.rootUsername }}"
+  echo "Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "graylog.fullname" . }} -o "jsonpath={.data['graylog-password-secret']}" | base64 --decode)"
+
+To send logs to graylog:
+
+  NOTE: If `graylog.input` is empty, you cannot send logs from other services. Please make sure the value is not empty.
+        See https://github.com/helm/charts/tree/master/stable/graylog#input for detail
+
+{{- if .Values.graylog.input.tcp }}
+1. TCP
+
+{{- if eq "NodePort" .Values.graylog.input.tcp.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "graylog.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo $NODE_IP:$NODE_PORT
+{{- else if eq "LoadBalancer" .Values.graylog.input.tcp.service.type }}
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "graylog.fullname" . }}-tcp -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  {{- range .Values.graylog.input.tcp.ports }}
+  echo "{{ .name }} on $SERVICE_IP:{{ .port }}"
+  {{- end }}
+
+     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+           You can watch the status of by running 'kubectl get svc -w {{ template "graylog.fullname" . }}-tcp'
+
+{{- else if eq "ClusterIP" .Values.graylog.input.tcp.service.type }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ template "graylog.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  {{- range .Values.graylog.input.tcp.ports }}
+  Run the command
+  kubectl port-forward $POD_NAME {{ .port }}:{{ .port }}
+  Then send logs to 127.0.0.1:{{ .port }}
+  {{- end }}
+{{- end }}
+{{- end }}
+{{- if .Values.graylog.input.udp }}
+2. UDP
+
+{{- if eq "NodePort" .Values.graylog.input.udp.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "graylog.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo $NODE_IP:$NODE_PORT
+{{- else if eq "LoadBalancer" .Values.graylog.input.udp.service.type }}
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "graylog.fullname" . }}-udp -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  {{- range .Values.graylog.input.udp.ports }}
+  echo "{{ .name }} on $SERVICE_IP:{{ .port }}"
+  {{- end }}
+
+     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+           You can watch the status of by running 'kubectl get svc -w {{ template "graylog.fullname" . }}-udp'
+
+{{- else if eq "ClusterIP" .Values.graylog.input.udp.service.type }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ template "graylog.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  {{- range .Values.graylog.input.udp.ports }}
+  Run the command
+  kubectl port-forward $POD_NAME {{ .port }}:{{ .port }}
+  Then send logs to 127.0.0.1:{{ .port }}
+  {{- end }}
+{{- end }}
+{{- end }}

@@ -1,0 +1,16 @@
+apiVersion: v1
+appVersion: 0.3.0
+description: A Helm chart for Kubernetes Jenkins Operator
+name: jenkins-operator
+version: 0.3.0
+icon: https://wiki.jenkins-ci.org/download/attachments/2916393/logo.png
+keywords:
+- jenkins
+- testing
+home: https://github.com/samsung-cnct/jenkins-operator
+sources:
+- https://github.com/samsung-cnct/jenkins-operator
+- https://github.com/jenkinsci/jenkins
+maintainers:
+- name: maratoid
+  email: maratoid@gmail.com

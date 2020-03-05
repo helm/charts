@@ -1,5 +1,5 @@
 {{- if eq true .Values.firefoxDebug.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "selenium.firefoxDebug.fullname" . }}
@@ -7,6 +7,10 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
   replicas: {{ .Values.firefoxDebug.replicas }}
+  selector:
+    matchLabels:
+       app: {{ template "selenium.firefoxDebug.fullname" . }}
+       release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
@@ -14,7 +18,10 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
-      annotations: 
+      {{- if .Values.firefoxDebug.podAnnotations }}
+      annotations:
+{{ toYaml .Values.firefoxDebug.podAnnotations | indent 8 }}
+      {{- end}}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -26,13 +33,13 @@ spec:
               name: jmx
               protocol: TCP
             {{- end }}
-            - containerPort: 5900 
+            - containerPort: 5900
               name: vnc
           env:
             - name: HUB_PORT_4444_TCP_ADDR
               value: {{ template "selenium.hub.fullname" . }}
             - name: HUB_PORT_4444_TCP_PORT
-              value: {{ .Values.hub.port | quote }}
+              value: {{ .Values.hub.servicePort | quote }}
             - name: JAVA_TOOL_OPTIONS
               value: {{ default "" .Values.firefoxDebug.javaOpts | quote }}
             - name: SE_OPTS
@@ -77,8 +84,17 @@ spec:
             - name: TZ
               value: {{ .Values.firefoxDebug.timeZone | quote }}
             {{- end }}
+            {{- if .Values.firefoxDebug.extraEnvs }}
+{{ toYaml .Values.firefoxDebug.extraEnvs | indent 12 }}
+            {{- end }}
           resources:
 {{ toYaml .Values.firefoxDebug.resources | indent 12 }}
+{{- if or .Values.global.imagePullSecrets .Values.firefoxDebug.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.firefoxDebug.imagePullSecrets | default .Values.global.imagePullSecrets | quote }}
+{{- end }}
+      hostAliases:
+{{ toYaml .Values.global.hostAliases | indent 8 }}
       nodeSelector:
 {{- if .Values.firefoxDebug.nodeSelector }}
 {{ toYaml .Values.firefoxDebug.nodeSelector | indent 8  }}

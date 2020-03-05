@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "kafka-manager.fullname" . }}
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "kafka-manager.name" . }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | replace "+" "_" | trunc 63 }}
+    helm.sh/chart: {{ include "kafka-manager.chart" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "kafka-manager.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "kafka-manager.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ template "kafka-manager.serviceAccountName" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: kafka-manager
+              containerPort: 9000
+              protocol: TCP
+          env:
+            - name: ZK_HOSTS
+              value: {{ include "kafka-manager.zkHosts" . | quote }}
+            - name: JAVA_OPTS
+              value: {{ .Values.javaOptions }}
+            - name: APPLICATION_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "kafka-manager.fullname" . }}
+                  key: applicationSecret
+            - name: KAFKA_MANAGER_AUTH_ENABLED
+              value: {{ .Values.basicAuth.enabled | quote }}
+            - name: KAFKA_MANAGER_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "kafka-manager.fullname" . }}
+                  key: basicAuthUsername
+            - name: KAFKA_MANAGER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "kafka-manager.fullname" . }}
+                  key: basicAuthPassword
+            - name: KAFKA_MANAGER_LDAP_ENABLED
+              value: {{ .Values.basicAuth.ldap.enabled | quote }}
+            - name: KAFKA_MANAGER_LDAP_SERVER
+              value: {{ .Values.basicAuth.ldap.server | quote }}
+            - name: KAFKA_MANAGER_LDAP_PORT
+              value: {{ .Values.basicAuth.ldap.port | quote }}
+            - name: KAFKA_MANAGER_LDAP_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "kafka-manager.fullname" . }}
+                  key: basicAuthLDAPUsername
+            - name: KAFKA_MANAGER_LDAP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "kafka-manager.fullname" . }}
+                  key: basicAuthLDAPPassword
+            - name: KAFKA_MANAGER_LDAP_SEARCH_BASE_DN
+              value: {{ .Values.basicAuth.ldap.searchBaseDn | quote }}
+            - name: KAFKA_MANAGER_LDAP_SEARCH_FILTER
+              value: {{ .Values.basicAuth.ldap.searchFilter | quote }}
+            - name: KAFKA_MANAGER_LDAP_CONNECTION_POOL_SIZE
+              value: {{ .Values.basicAuth.ldap.connectionPoolSize | quote }}
+            - name: KAFKA_MANAGER_LDAP_SSL
+              value: {{ .Values.basicAuth.ldap.ssl | quote }}
+          livenessProbe:
+{{ toYaml .Values.livenessProbe | indent 12 }}
+          readinessProbe:
+{{ toYaml .Values.readinessProbe | indent 12 }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

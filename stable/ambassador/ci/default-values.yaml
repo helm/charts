@@ -1,0 +1,13 @@
+env:
+  AMBASSADOR_NO_KUBEWATCH: no_kubewatch
+
+ambassadorConfig: |
+  apiVersion: ambassador/v1
+  kind: Module
+  name: ambassador
+  config:
+    service_port: 8080
+
+crds:
+  create: false
+  keep: false

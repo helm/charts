@@ -11,6 +11,7 @@ image:
     repository: tomcat
     tag: "7.0"
   pullPolicy: IfNotPresent
+  pullSecrets: []
 
 deploy:
   directory: /usr/local/tomcat/webapps
@@ -20,6 +21,8 @@ service:
   type: LoadBalancer
   externalPort: 80
   internalPort: 8080
+
+hostPort: 8009
 
 ingress:
   enabled: false
@@ -33,6 +36,37 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+
+env: []
+  # - name: env
+  #   value: test
+
+extraVolumes: []
+  # - name: extra
+  #   emptyDir: {}
+
+extraVolumeMounts: []
+  # - name: extra
+  #   mountPath: /usr/local/tomcat/webapps/app
+  #   readOnly: true
+
+extraInitContainers: []
+  # - name: do-something
+  #   image: busybox
+  #   command: ['do', 'something']
+
+readinessProbe:
+  path: "/sample"
+  initialDelaySeconds: 60
+  periodSeconds: 30
+  failureThreshold: 6
+  timeoutSeconds: 5
+livenessProbe:
+  path: "/sample"
+  initialDelaySeconds: 60
+  periodSeconds: 30
+  failureThreshold: 6
+  timeoutSeconds: 5
 
 resources: {}
 #  limits:

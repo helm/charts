@@ -1,14 +1,19 @@
 approvers:
   - lachie83
-  - linki
-  - mgoodness
   - prydonius
   - sameersbn
-  - seanknox
   - viglesiasce
-  - foxish
   - unguiculus
   - scottrigby
   - mattfarina
   - davidkarlsen
   - paulczar
+  - cpanato
+  - jlegrone
+  - maorfr
+emeritus:
+  - foxish
+  - linki
+  - mgoodness
+  - seanknox
+  

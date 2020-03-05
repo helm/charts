@@ -1,8 +1,8 @@
 name: fluentd-elasticsearch
-version: 1.1.0
-appVersion: 2.3.1
+version: 2.0.7
+appVersion: 2.3.2
 home: https://www.fluentd.org/
-description: A Fluentd Helm chart for Kubernetes with Elasticsearch output
+description: DEPRECATED! - A Fluentd Helm chart for Kubernetes with Elasticsearch output
 icon: https://raw.githubusercontent.com/fluent/fluentd-docs/master/public/logo/Fluentd_square.png
 keywords:
 - fluentd
@@ -15,7 +15,5 @@ sources:
 - https://github.com/fluent/fluentd-kubernetes-daemonset
 - https://github.com/GoogleCloudPlatform/fluent-plugin-detect-exceptions
 - https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/fluentd-elasticsearch/fluentd-es-image
-maintainers:
-- name: monotek
-  email: monotek23@gmail.com
 engine: gotpl
+deprecated: true

@@ -1,0 +1,72 @@
+{{- range $kind, $enabled := .Values.hooks }}
+{{ if $enabled }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "elasticsearch-curator.fullname" $ }}-on-{{ $kind }}
+  labels:
+    app: {{ template "elasticsearch-curator.name" $ }}
+    chart: {{ template "elasticsearch-curator.chart" $ }}
+    release: {{ $.Release.Name }}
+    heritage: {{ $.Release.Service }}
+  annotations:
+    "helm.sh/hook": post-{{ $kind }}
+    "helm.sh/hook-weight": "1"
+    "helm.sh/hook-delete-policy": before-hook-creation
+{{- if $.Values.cronjob.annotations }}
+{{ toYaml $.Values.cronjob.annotations | indent 4 }}
+{{- end }}
+spec:
+ template:
+    metadata:
+      labels:
+        app: {{ template "elasticsearch-curator.name" $ }}
+        release: {{ $.Release.Name }}
+{{- if $.Values.pod.annotations }}
+      annotations:
+{{ toYaml $.Values.pod.annotations | indent 8 }}
+{{- end }}
+    spec:
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ template "elasticsearch-curator.fullname" $ }}-config
+{{- if $.Values.extraVolumes }}
+{{ toYaml $.Values.extraVolumes | indent 8 }}
+{{- end }}
+      restartPolicy: Never
+{{- if $.Values.priorityClassName }}
+      priorityClassName: "{{ $.Values.priorityClassName }}"
+{{- end }}
+      containers:
+        - name: {{ $.Chart.Name }}
+          image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/es-curator
+    {{- if $.Values.extraVolumeMounts }}
+{{ toYaml $.Values.extraVolumeMounts | indent 12 }}
+    {{- end }}
+{{ if $.Values.command }}
+          command:
+{{ toYaml $.Values.command | indent 12 }}
+{{- end }}
+          args: [ "--config", "/etc/es-curator/config.yml", "/etc/es-curator/action_file.yml" ]
+          resources:
+{{ toYaml $.Values.resources | indent 12 }}
+    {{- with $.Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with $.Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with $.Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+{{- end -}}
+{{ end }}

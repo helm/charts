@@ -1,10 +1,12 @@
 {{- if .Values.ingress.enabled -}}
 {{- $serviceName := include "metabase.fullname" . -}}
 {{- $servicePort := .Values.service.externalPort -}}
+{{- $ingressPath := .Values.ingress.path -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ template "metabase.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "metabase.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
@@ -23,7 +25,7 @@ spec:
     - host: {{ $host }}
       http:
         paths:
-          - path: /
+          - path: {{ $ingressPath }}
             backend:
               serviceName: {{ $serviceName }}
               servicePort: {{ $servicePort }}

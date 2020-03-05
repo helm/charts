@@ -11,8 +11,12 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 {{- define "coredns.fullname" -}}
+{{- if .Values.fullnameOverride -}}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
 {{- end -}}
 
 {{/*
@@ -41,6 +45,10 @@ Generate the list of ports automatically from the server definitions
         */}}
         {{- range .zones -}}
             {{- if has (default "" .scheme) (list "dns://") -}}
+                {{/* Optionally enable tcp for this service as well */}}
+                {{- if eq .use_tcp true }}
+                    {{- $innerdict := set $innerdict "istcp" true -}}
+                {{- end }}
                 {{- $innerdict := set $innerdict "isudp" true -}}
             {{- end -}}
 
@@ -49,9 +57,10 @@ Generate the list of ports automatically from the server definitions
             {{- end -}}
         {{- end -}}
 
-        {{/* If none of the zones specify scheme, default to UDP (CoreDNS defaults to dns://) */}}
+        {{/* If none of the zones specify scheme, default to dns:// on both tcp & udp */}}
         {{- if and (not (index $innerdict "istcp")) (not (index $innerdict "isudp")) -}}
             {{- $innerdict := set $innerdict "isudp" true -}}
+            {{- $innerdict := set $innerdict "istcp" true -}}
         {{- end -}}
 
         {{/* Write the dict back into the outer dict */}}
@@ -61,10 +70,10 @@ Generate the list of ports automatically from the server definitions
     {{/* Write out the ports according to the info collected above */}}
     {{- range $port, $innerdict := $ports -}}
         {{- if index $innerdict "isudp" -}}
-            {{- printf "- {port: %v, protocol: UDP}\n" $port -}}
+            {{- printf "- {port: %v, protocol: UDP, name: udp-%s}\n" $port $port -}}
         {{- end -}}
         {{- if index $innerdict "istcp" -}}
-            {{- printf "- {port: %v, protocol: TCP}\n" $port -}}
+            {{- printf "- {port: %v, protocol: TCP, name: tcp-%s}\n" $port $port -}}
         {{- end -}}
     {{- end -}}
 {{- end -}}
@@ -95,6 +104,10 @@ Generate the list of ports automatically from the server definitions
         */}}
         {{- range .zones -}}
             {{- if has (default "" .scheme) (list "dns://") -}}
+                {{/* Optionally enable tcp for this service as well */}}
+                {{- if eq .use_tcp true }}
+                    {{- $innerdict := set $innerdict "istcp" true -}}
+                {{- end }}
                 {{- $innerdict := set $innerdict "isudp" true -}}
             {{- end -}}
 
@@ -103,9 +116,10 @@ Generate the list of ports automatically from the server definitions
             {{- end -}}
         {{- end -}}
 
-        {{/* If none of the zones specify scheme, default to UDP (CoreDNS defaults to dns://) */}}
+        {{/* If none of the zones specify scheme, default to dns:// on both tcp & udp */}}
         {{- if and (not (index $innerdict "istcp")) (not (index $innerdict "isudp")) -}}
             {{- $innerdict := set $innerdict "isudp" true -}}
+            {{- $innerdict := set $innerdict "istcp" true -}}
         {{- end -}}
 
         {{/* Write the dict back into the outer dict */}}
@@ -115,10 +129,21 @@ Generate the list of ports automatically from the server definitions
     {{/* Write out the ports according to the info collected above */}}
     {{- range $port, $innerdict := $ports -}}
         {{- if index $innerdict "isudp" -}}
-            {{- printf "- {containerPort: %v, protocol: UDP}\n" $port -}}
+            {{- printf "- {containerPort: %v, protocol: UDP, name: udp-%s}\n" $port $port -}}
         {{- end -}}
         {{- if index $innerdict "istcp" -}}
-            {{- printf "- {containerPort: %v, protocol: TCP}\n" $port -}}
+            {{- printf "- {containerPort: %v, protocol: TCP, name: tcp-%s}\n" $port $port -}}
         {{- end -}}
     {{- end -}}
+{{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "coredns.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "coredns.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
 {{- end -}}

@@ -1,0 +1,9 @@
+{{- if (.Values.persistence.enabled) }}
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: {{ include "ignite.fullname" . }}-persistence-storage-class
+provisioner: {{ .Values.persistence.persistenceVolume.provisioner }}
+parameters:
+{{ toYaml .Values.persistence.persistenceVolume.provisionerParameters | indent 2 }}
+{{- end }}
