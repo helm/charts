@@ -2,6 +2,10 @@
 
 ## 2.0
 
+## 2.0.2
+
+* Revert the docker socket path inside the agent container to its standard location to fix #21223
+
 ## 2.0.1
 
 * Add parameters `datadog.logs.enabled` and `datadog.logs.containerCollectAll` to replace `datadog.logsEnabled` and `datadog.logsConfigContainerCollectAll`.

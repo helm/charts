@@ -31,8 +31,8 @@
       mountPath: /host/proc
       readOnly: true
     {{- if .Values.datadog.criSocketPath }}
-    - name: runtimesocketdir
-      mountPath: {{ print "/host/" (dir .Values.datadog.criSocketPath) | clean }}
+    - name: runtimesocket
+      mountPath: {{ .Values.datadog.criSocketPath }}
       readOnly: true
     {{- end }}
   env:
