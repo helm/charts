@@ -79,8 +79,8 @@ spec:
           emptyDir: {}
         {{- if .Values.datadog.criSocketPath }}
         - hostPath:
-            path: {{ dir .Values.datadog.criSocketPath }}
-          name: runtimesocketdir
+            path: {{ .Values.datadog.criSocketPath }}
+          name: runtimesocket
         {{- end }}
         {{- if .Values.datadog.dogstatsd.useSocketVolume }}
         - hostPath:
