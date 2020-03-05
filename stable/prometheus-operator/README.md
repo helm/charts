@@ -112,6 +112,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | Parameter | Description | Default |
 | ----- | ----------- | ------ |
 | `nameOverride` | Provide a name in place of `prometheus-operator` |`""`|
+| `kubeTargetVersionOverride` | Provide a k8s version |`""`|
 | `fullNameOverride` | Provide a name to substitute for the full names of resources |`""`|
 | `commonLabels` | Labels to apply to all resources | `[]` |
 | `defaultRules.create` | Create default rules for monitoring the cluster | `true` |
