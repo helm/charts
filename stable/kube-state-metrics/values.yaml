@@ -99,9 +99,9 @@ collectors:
   ingresses: true
   jobs: true
   limitranges: true
-  mutatingwebhookconfigurations: false
+  mutatingwebhookconfigurations: true
   namespaces: true
-  networkpolicies: false
+  networkpolicies: true
   nodes: true
   persistentvolumeclaims: true
   persistentvolumes: true
@@ -114,9 +114,9 @@ collectors:
   services: true
   statefulsets: true
   storageclasses: true
-  validatingwebhookconfigurations: false
-  verticalpodautoscalers: false
-  volumeattachments: false
+  validatingwebhookconfigurations: true
+  verticalpodautoscalers: true
+  volumeattachments: true
 
 # Namespace to be enabled for collecting resources. By default all namespaces are collected.
 # namespace: ""
