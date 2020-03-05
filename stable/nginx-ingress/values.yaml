@@ -19,6 +19,10 @@ controller:
   # Will add custom configuration options to Nginx https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/
   config: {}
 
+  # Maxmind license key to download GeoLite2 Databases
+  # https://blog.maxmind.com/2019/12/18/significant-changes-to-accessing-and-using-geolite2-databases
+  maxmindLicenseKey: ""
+
   # Will add custom headers before sending traffic to backends according to https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers
   proxySetHeaders: {}
 
@@ -433,10 +437,6 @@ defaultBackend:
     pullPolicy: IfNotPresent
     # nobody user -> uid 65534
     runAsUser: 65534
-
-  # Maxmind license key to download GeoLite2 Databases
-  # https://blog.maxmind.com/2019/12/18/significant-changes-to-accessing-and-using-geolite2-databases
-  maxmindLicenseKey: ""
 
   extraArgs: {}
 
