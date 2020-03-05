@@ -10,6 +10,9 @@ resources:
     memory: 512Mi
     cpu: 500m
 
+# upgrade strategy type (e.g. Recreate or RollingUpdate)
+strategyType: Recreate
+
 nodeSelector: {}
 
 tolerations: []
