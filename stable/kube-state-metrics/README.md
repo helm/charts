@@ -28,7 +28,7 @@ $ helm install stable/kube-state-metrics
 | `serviceAccount.create`                      | If true, create & use serviceAccount                                                  | `true`                                     |
 | `serviceAccount.name`                        | If not set & create is true, use template fullname                                    |                                            |
 | `serviceAccount.imagePullSecrets`            | Specify image pull secrets field                                                      | `[]`                                       |
-| `podSecurityPolicy.enabled`                  | If true, create & use PodSecurityPolicy resources                                     | `false`                                    |
+| `podSecurityPolicy.enabled`                  | If true, create & use PodSecurityPolicy resources. Note that related RBACs are created only if `rbac.enabled` is `true. | `false`  |
 | `podSecurityPolicy.annotations`              | Specify pod annotations in the pod security policy                                    | {}                                         |
 | `securityContext.enabled`                    | Enable security context                                                               | `true`                                     |
 | `securityContext.fsGroup`                    | Group ID for the container                                                            | `65534`                                    |
