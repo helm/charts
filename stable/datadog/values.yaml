@@ -189,6 +189,22 @@ datadog:
   #
   # leaderLeaseDuration: 60
 
+  ## @param logs - object - required
+  ## Enable logs agent and provide custom configs
+  #
+  logs:
+    ## @param enabled - boolean - optional - default: false
+    ## Enables this to activate Datadog Agent log collection.
+    ## ref: https://docs.datadoghq.com/agent/basic_agent_usage/kubernetes/#log-collection-setup
+    #
+    enabled: false
+
+    ## @param containerCollectAll - boolean - optional - default: false
+    ## Enable this to allow log collection for all containers.
+    ## ref: https://docs.datadoghq.com/agent/basic_agent_usage/kubernetes/#log-collection-setup
+    #
+    # containerCollectAll: false
+
   ## @param logsEnabled - boolean - optional - default: false
   ## Enables this to activate Datadog Agent log collection.
   ## ref: https://docs.datadoghq.com/agent/basic_agent_usage/kubernetes/#log-collection-setup
