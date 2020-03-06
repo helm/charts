@@ -22,8 +22,9 @@ proxy:
   ldapPort: 389
   ldapGroup: "memberUid"
   ldapDN: "dc=example,dc=com"
-  ldapFilter: "objectClass=organizationalPerson"
+  ldapFilter: "?uid?sub?(&(objectClass=organizationalPerson))"
   ldapBindDN: "cn=auth,dc=example,dc=com"
+  ldapMaxDownRetries: 10
   requires:
     - name: "authGroup"
       filter: "cn=secret,ou=groups,dc=example,dc=com"

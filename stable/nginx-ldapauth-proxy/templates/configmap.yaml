@@ -24,11 +24,12 @@ data:
 
 {{- if and .Values.proxy.ldapHost .Values.secrets.ldapBindPassword }}
         ldap_server ldapserver {
-            url {{ .Values.proxy.protocol }}://{{ .Values.proxy.ldapHost }}:{{ .Values.proxy.ldapPort }}/{{ .Values.proxy.ldapDN }}?uid?sub?(&({{ .Values.proxy.ldapFilter}}));
+            url {{ .Values.proxy.protocol }}://{{ .Values.proxy.ldapHost }}:{{ .Values.proxy.ldapPort }}/{{ .Values.proxy.ldapDN }}{{ .Values.proxy.ldapFilter}};
             binddn "{{ .Values.proxy.ldapBindDN }}";
             binddn_passwd {{ .Values.secrets.ldapBindPassword }};
             group_attribute {{ .Values.proxy.ldapGroup }};
             group_attribute_is_dn on;
+            max_down_retries {{ .Values.proxy.ldapMaxDownRetries }};
         {{- range $require := .Values.proxy.requires }}
             require group {{ $require.filter | quote }};
         {{- end }}
