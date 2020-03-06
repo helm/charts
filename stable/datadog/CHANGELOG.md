@@ -2,6 +2,16 @@
 
 ## 2.0
 
+## 2.0.4
+
+* Mount the directory containing the CRI socket instead of the socket itself
+  This is to handle the cases where the docker daemon is restarted.
+  In this case, the docker daemon will recreate its docker socket and,
+  if the container bind-mounted directly the socket, the container would
+  still have access to the old socket instead of the one of the new docker
+  daemon.
+  ⚠ This version of the chart requires an agent image 7.18.0 or more recent
+
 ## 2.0.3
 
 * Honor the image pull policy in init containers
