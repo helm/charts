@@ -1197,7 +1197,7 @@ prometheusOperator:
   ##
   prometheusConfigReloaderImage:
     repository: quay.io/coreos/prometheus-config-reloader
-    tag: v0.36.0
+    tag: v0.37.0
 
   ## Set the prometheus config reloader side-car CPU limit
   ##
