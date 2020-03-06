@@ -33,8 +33,8 @@
       mountPath: /host/proc
       readOnly: true
     {{- if .Values.datadog.criSocketPath }}
-    - name: runtimesocket
-      mountPath: {{ .Values.datadog.criSocketPath }}
+    - name: runtimesocketdir
+      mountPath: {{ print "/host/" (dir .Values.datadog.criSocketPath) | clean }}
       readOnly: true
     {{- end }}
   env:
@@ -44,7 +44,7 @@
     {{- end }}
     {{- if .Values.datadog.criSocketPath }}
     - name: DD_CRI_SOCKET_PATH
-      value: {{ .Values.datadog.criSocketPath }}
+      value: {{ print "/host/" .Values.datadog.criSocketPath | clean }}
     {{- end }}
   resources:
 {{ toYaml .Values.agents.containers.initContainers.resources | indent 4 }}
