@@ -210,7 +210,7 @@ extraEnv: []
 # initdbScriptsSecret:
 
 ## Specify the PostgreSQL username and password to execute the initdb scripts
-# initdbUser:
+# initdbUsername:
 # initdbPassword:
 
 ## Optional duration in seconds the pod needs to terminate gracefully.

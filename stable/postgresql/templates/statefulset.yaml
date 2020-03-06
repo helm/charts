@@ -146,13 +146,13 @@ spec:
             - name: POSTGRES_INITDB_WALDIR
               value: {{ .Values.postgresqlInitdbWalDir | quote }}
             {{- end }}
-            {{- if .Values.initdbUser }}
+            {{- if .Values.initdbUsername }}
             - name: POSTGRESQL_INITSCRIPTS_USERNAME
-              value: {{ .Values.initdbUser }}
+              value: {{ .Values.initdbUsername }}
             {{- end }}
             {{- if .Values.initdbPassword }}
             - name: POSTGRESQL_INITSCRIPTS_PASSWORD
-              value: .Values.initdbPassword
+              value: {{ .Values.initdbPassword }}
             {{- end }}
             {{- if .Values.persistence.mountPath }}
             - name: PGDATA
