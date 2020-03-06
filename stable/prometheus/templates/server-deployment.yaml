@@ -18,6 +18,9 @@ spec:
   {{- if .Values.server.strategy }}
   strategy:
 {{ toYaml .Values.server.strategy | indent 4 }}
+  {{- if eq .Values.server.strategy.type "Recreate" }}
+  rollingUpdate: null
+  {{- end }}
   {{- end }}
   template:
     metadata:
