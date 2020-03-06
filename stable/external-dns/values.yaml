@@ -45,7 +45,7 @@ sources:
 provider: aws
 
 ## Flags related to processing sources
-## ref: https://github.com/kubernetes-incubator/external-dns/blob/master/pkg/apis/externaldns/types.go#L272
+## ref: https://github.com/kubernetes-sigs/external-dns/blob/master/pkg/apis/externaldns/types.go#L272
 ##
 ## Limit sources of endpoints to a specific namespace (default: all namespaces)
 ##
@@ -320,7 +320,7 @@ logFormat: text
 ##
 policy: upsert-only
 ## Registry Type. Available types are: txt, noop
-## ref: https://github.com/kubernetes-incubator/external-dns/blob/master/docs/proposal/registry.md
+## ref: https://github.com/kubernetes-sigs/external-dns/blob/master/docs/proposal/registry.md
 ##
 registry: "txt"
 ## TXT Registry Identifier

@@ -1,6 +1,6 @@
 # external-dns
 
-[ExternalDNS](https://github.com/kubernetes-incubator/external-dns) is a Kubernetes addon that configures public DNS servers with information about exposed Kubernetes services to make them discoverable.
+[ExternalDNS](https://github.com/kubernetes-sigs/external-dns) is a Kubernetes addon that configures public DNS servers with information about exposed Kubernetes services to make them discoverable.
 
 ## TL;DR;
 
@@ -226,12 +226,12 @@ This chart includes a `values-production.yaml` file where you can find some para
 
 Find information about the requirements for each DNS provider on the link below:
 
-- [ExternalDNS Tutorials](https://github.com/kubernetes-incubator/external-dns/tree/master/docs/tutorials)
+- [ExternalDNS Tutorials](https://github.com/kubernetes-sigs/external-dns/tree/master/docs/tutorials)
 
 For instance, to install ExternalDNS on AWS, you need to:
 
-- Provide the K8s worker node which runs the cluster autoscaler with a minimum IAM policy (check [IAM permissions docs](https://github.com/kubernetes-incubator/external-dns/blob/master/docs/tutorials/aws.md#iam-permissions) for more information).
-- Setup a hosted zone on Route53 and annotate the Hosted Zone ID and its associated "nameservers" as described on [these docs](https://github.com/kubernetes-incubator/external-dns/blob/master/docs/tutorials/aws.md#set-up-a-hosted-zone).
+- Provide the K8s worker node which runs the cluster autoscaler with a minimum IAM policy (check [IAM permissions docs](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#iam-permissions) for more information).
+- Setup a hosted zone on Route53 and annotate the Hosted Zone ID and its associated "nameservers" as described on [these docs](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#set-up-a-hosted-zone).
 - Install ExternalDNS chart using the command below:
 
 > Note: replace the placeholder HOSTED_ZONE_IDENTIFIER and HOSTED_ZONE_NAME, with your hosted zoned identifier and name, respectively.
