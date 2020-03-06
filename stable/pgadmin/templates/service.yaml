@@ -11,6 +11,9 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+      {{- if .Values.service.nodePort }}
+      nodePort: {{ .Values.service.nodePort }}
+      {{- end }}
   selector:
     app.kubernetes.io/name: {{ include "pgadmin.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}

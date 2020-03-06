@@ -46,6 +46,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `image.pullPolicy` | Docker image pull policy | `IfNotPresent` |
 | `service.type` | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP` |
 | `service.port` | Service port | `80` |
+| `service.nodePort` | Service nodePort | `nil` |
 | `strategy` | Specifies the strategy used to replace old Pods by new ones | `{}` |
 | `serverDefinitions.enabled` | Enables Server Definitions | `false` |
 | `serverDefinitions.servers` | Pre-configured server parameters | `` |
