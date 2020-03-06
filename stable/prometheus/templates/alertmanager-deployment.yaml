@@ -10,9 +10,12 @@ spec:
     matchLabels:
       {{- include "prometheus.alertmanager.matchLabels" . | nindent 6 }}
   replicas: {{ .Values.alertmanager.replicaCount }}
-  {{- if .Values.server.strategy }}
+  {{- if .Values.alertmanager.strategy }}
   strategy:
-{{ toYaml .Values.server.strategy | indent 4 }}
+{{ toYaml .Values.alertmanager.strategy | indent 4 }}
+  {{- if eq .Values.alertmanager.strategy.type "Recreate" }}
+  rollingUpdate: null
+  {{- end }}
   {{- end }}
   template:
     metadata:
