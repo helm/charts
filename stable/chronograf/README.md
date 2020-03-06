@@ -1,4 +1,9 @@
-# Chronograf
+# DEPRECATED - Chronograf
+
+**This chart has been deprecated and moved to its new home:**
+
+- **GitHub repo:** https://github.com/influxdata/helm-charts
+- **Charts repo:** https://helm.influxdata.com/
 
 ##  An Open-Source Time Series Visualization Tool
 
