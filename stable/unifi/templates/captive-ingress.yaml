@@ -5,7 +5,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ $fullName }}
+  name: {{ $fullName }}-captive
   labels:
     app.kubernetes.io/name: {{ include "unifi.name" . }}
     helm.sh/chart: {{ include "unifi.chart" . }}
