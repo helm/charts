@@ -40,18 +40,11 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 Return the appropriate apiVersion for networkpolicy.
 */}}
 {{- define "postgresql.networkPolicy.apiVersion" -}}
-{{- if semverCompare ">=1.4-0, <1.7-0" (include "postgresql.kubernetesVersion" .)  -}}
+{{- if semverCompare ">=1.4-0, <1.7-0" .Capabilities.KubeVersion.GitVersion -}}
 "extensions/v1beta1"
-{{- else if semverCompare "^1.7-0" (include "postgresql.kubernetesVersion" .) -}}
+{{- else if semverCompare "^1.7-0" .Capabilities.KubeVersion.GitVersion -}}
 "networking.k8s.io/v1"
 {{- end -}}
-{{- end -}}
-
-{{/*
-Return the kubernetes semantic version.
-*/}}
-{{- define "postgresql.kubernetesVersion" -}}
-{{ (default .Capabilities.KubeVersion.GitVersion .Capabilities.KubeVersion.String) }}
 {{- end -}}
 
 {{/*
@@ -393,7 +386,7 @@ Usage:
 Return the appropriate apiVersion for statefulset.
 */}}
 {{- define "postgresql.statefulset.apiVersion" -}}
-{{- if semverCompare "<1.14-0" (include "postgresql.kubernetesVersion" .) -}}
+{{- if semverCompare "<1.14-0" .Capabilities.KubeVersion.GitVersion -}}
 {{- print "apps/v1beta2" -}}
 {{- else -}}
 {{- print "apps/v1" -}}
