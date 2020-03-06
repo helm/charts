@@ -42,6 +42,10 @@
     {{- if .Values.datadog.env }}
       {{ toYaml .Values.datadog.env | nindent 4 }}
     {{- end }}
+    {{- if .Values.datadog.criSocketPath }}
+    - name: DD_CRI_SOCKET_PATH
+      value: {{ .Values.datadog.criSocketPath }}
+    {{- end }}
   resources:
 {{ toYaml .Values.agents.containers.initContainers.resources | indent 4 }}
 {{- end -}}
