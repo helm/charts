@@ -259,7 +259,7 @@ env:
 
   ## The number of Ticks that an ensemble member is allowed to perform leader
   ## election.
-  ZOO_INIT_LIMIT: 5
+  ZOO_INIT_LIMIT: 10
 
   ZOO_TICK_TIME: 2000
 
@@ -268,7 +268,7 @@ env:
   ZOO_MAX_CLIENT_CNXNS: 60
 
   ## The number of Tick by which a follower may lag behind the ensembles leader.
-  ZK_SYNC_LIMIT: 10
+  ZK_SYNC_LIMIT: 5
 
   ## The number of wall clock ms that corresponds to a Tick for the ensembles
   ## internal time.
