@@ -1,8 +1,9 @@
 apiVersion: v1
 name: influxdb
-version: 4.3.1
+version: 4.3.2
 appVersion: 1.7.9
-description: Scalable datastore for metrics, events, and real-time analytics.
+deprecated: true
+description: DEPRECATED Scalable datastore for metrics, events, and real-time analytics.
 keywords:
 - influxdb
 - database
@@ -10,11 +11,4 @@ keywords:
 home: https://www.influxdata.com/time-series-platform/influxdb/
 sources:
 - https://github.com/influxdata/influxdb
-maintainers:
-- name: jackzampolin
-  email: jack@influxdb.com
-- name: aisuko
-  email: urakiny@gmail.com
-- name: naseemkullah
-  email: naseem@transit.app
 engine: gotpl
