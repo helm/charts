@@ -7,7 +7,12 @@ metadata:
     app: {{ template "prometheus-operator.name" . }}-prometheus
 {{ include "prometheus-operator.labels" . | indent 4 }}
 rules:
+{{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
+{{- if semverCompare "> 1.15.0-0" $kubeTargetVersion }}
+- apiGroups: ['policy']
+{{- else }}
 - apiGroups: ['extensions']
+{{- end }}
   resources: ['podsecuritypolicies']
   verbs:     ['use']
   resourceNames:
