@@ -44,7 +44,7 @@ The following table lists the configurable parameters and their default values.
 | ---------------------- | --------------------------------------------------- | ------------------------- |
 | `replicaCount`         | desired number of prometheus-redis-exporter pods    | `1`                       |
 | `image.repository`     | prometheus-redis-exporter image repository          | `oliver006/redis_exporter`|
-| `image.tag`            | prometheus-redis-exporter image tag                 | `v1.0.4`                 |
+| `image.tag`            | prometheus-redis-exporter image tag                 | `v1.3.4`                 |
 | `image.pullPolicy`     | image pull policy                                   | `IfNotPresent`            |
 | `image.pullSecrets`    | image pull secrets                                  | {}                        |
 | `extraArgs`            | extra arguments for the binary; possible values [here](https://github.com/oliver006/redis_exporter#flags)| {}
@@ -54,7 +54,7 @@ The following table lists the configurable parameters and their default values.
 | `service.port`         | service external port                               | `9121`                    |
 | `service.annotations`  | Custom annotations for service                      | `{}`                      |
 | `service.labels`       | Additional custom labels for the service            | `{}`                      |
-| `redisAddress`         | Address of the Redis instance to scrape      | `redis://myredis:6379`    |
+| `redisAddress`         | Address of the Redis instance to scrape. Use `rediss://` for SSL.      | `redis://myredis:6379`    |
 | `annotations`          | pod annotations for easier discovery                | {}                        |
 | `rbac.create`           | Specifies whether RBAC resources should be created.| `true` |
 | `rbac.pspEnabled`       | Specifies whether a PodSecurityPolicy should be created.| `true` |

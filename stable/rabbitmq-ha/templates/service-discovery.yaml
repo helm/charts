@@ -3,7 +3,7 @@ kind: Service
 metadata:
 {{- if .Values.service.annotations }}
   annotations:
-{{ toYaml .Values.service.annotations | indent 4 }}
+{{ tpl (toYaml .Values.service.annotations) . | indent 4 }}
 {{- end }}
   name: {{ printf "%s-discovery" (include "rabbitmq-ha.fullname" .) | trunc 63 | trimSuffix "-" }}
   namespace: {{ .Release.Namespace }}

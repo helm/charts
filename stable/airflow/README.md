@@ -223,7 +223,7 @@ This approach has the additional advantage of keeping secrets outside of the Hel
 
 It is possible to specify additional environment variables using the same format as in a pod's `.spec.containers.env` definition.
 These environment variables will be mounted in the web, scheduler, and worker pods.
-You can use this feature to pass additional secret environment variables to Airflow. 
+You can use this feature to pass additional secret environment variables to Airflow.
 
 Here is a simple example showing how to pass in a Fernet key and LDAP password.
 Of course, for this example to work, both the `airflow` and `ldap` Kubernetes secrets must already exist in the proper namespace; be sure to create those before running Helm.
@@ -293,7 +293,7 @@ For example, this will create a secret named `my-git-secret` from your ed25519 k
 
 This set of instructions will enable you to clone your repository in the initContainer git-clone.sh script through an ssh connection.
 
-To do this you must have `dags.initContainer.enabled` set to true. Then you need to have the following set. `dags.git.url` This is the repository of your dags. `dags.git.ref` This is the branch with your dags on your repo. `dags.git.secret` This is the name of the secret cotaining your private ssh key. With this you need `dags.git.privateKeyName`, this is the name of the private key in the secret mounted in the keys directory on the initContainer. The last variable you need is this `dags.git.repoHost`. This is the host of your repo, for example if hosted on gitlab set the value as gitlab.com and if github put github.com. This enables us to tell ssh to use our private key when cloning otherwise we would recieve an unable to recognize host bug. 
+To do this you must have `dags.initContainer.enabled` set to true. Then you need to have the following set. `dags.git.url` This is the repository of your dags. `dags.git.ref` This is the branch with your dags on your repo. `dags.git.secret` This is the name of the secret cotaining your private ssh key. With this you need `dags.git.privateKeyName`, this is the name of the private key in the secret mounted in the keys directory on the initContainer. The last variable you need is this `dags.git.repoHost`. This is the host of your repo, for example if hosted on gitlab set the value as gitlab.com and if github put github.com. This enables us to tell ssh to use our private key when cloning otherwise we would recieve an unable to recognize host bug.
 
 ### Embedded DAGs
 
@@ -321,7 +321,7 @@ You can also persist logs using a `PersistentVolume` using `logsPersistence.enab
 To use an existing volume, pass the name to `logsPersistence.existingClaim`.
 Otherwise, a new volume will be created.
 
-Note that it is also possible to persist logs by mounting a `PersistentVolume` to the log directory (`/usr/local/airflow/logs` by default) using `airflow.extraVolumes` and `airflow.extraVolumeMounts`. 
+Note that it is also possible to persist logs by mounting a `PersistentVolume` to the log directory (`/usr/local/airflow/logs` by default) using `airflow.extraVolumes` and `airflow.extraVolumeMounts`.
 
 Refer to the `Mount a Shared Persistent Volume` section above for details on using persistent volumes.
 
@@ -343,7 +343,7 @@ To be able to expose metrics to prometheus you need install a plugin, this can b
 This exposes dag and task based metrics from Airflow.
 For service monitor configuration see the generic [Helm chart Configuration](#helm-chart-configuration).
 
-## Additional manifests 
+## Additional manifests
 
 It is possible to add additional manifests into a deployment, to extend the chart. One of the reason is to deploy a manifest specific to a cloud provider ( BackendConfig on GKE for example ).
 
@@ -390,6 +390,8 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.extraVolumeMounts`              | additional volumeMounts to the main container in scheduler, worker & web pods | `[]`|
 | `airflow.extraVolumes`                   | additional volumes for the scheduler, worker & web pods | `[]`                      |
 | `airflow.initdb`                         | run `airflow initdb` when starting the scheduler        | `true`                    |
+| `flower.enabled`                         | enable flow                                             | `true`                    |
+| `flower.extraConfigmapMounts`            | Additional configMap volume mounts on the flower pod.   | `[]`                      |
 | `flower.urlPrefix`                       | path of the flower ui                                   | ""                        |
 | `flower.resources`                       | custom resource configuration for flower pod            | `{}`                      |
 | `flower.labels`                          | labels for the flower deployment                        | `{}`                      |
@@ -467,6 +469,8 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `dags.initContainer.image.repository`    | Init container Docker image.                            | `alpine/git`              |
 | `dags.initContainer.image.tag`           | Init container Docker image tag.                        | `1.0.4`                   |
 | `dags.initContainer.installRequirements` | auto install requirements.txt deps                      | `true`                    |
+| `dags.initContainer.mountPath`           | Mountpath inside init container for dags                | `/dags`                   |
+| `dags.initContainer.syncSubPath`         | Path inside init container used to sync/clone git repo to; appended to `dags.initContainer.mountPath` | ``                      |
 | `dags.git.url`                           | url to clone the git repository                         | nil                       |
 | `dags.git.ref`                           | branch name, tag or sha1 to reset to                    | `master`                  |
 | `dags.git.secret`                        | name of a secret containing an ssh deploy key           | nil                       |
@@ -480,23 +484,25 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `rbac.create`                            | create RBAC resources                                   | `true`                    |
 | `serviceAccount.create`                  | create a service account                                | `true`                    |
 | `serviceAccount.name`                    | the service account name                                | ``                        |
+| `serviceAccount.annotations`             | (optional) annotations for the service account          | `{}`                      |
 | `postgresql.enabled`                     | create a postgres server                                | `true`                    |
 | `postgresql.existingSecret`              | The name of an existing secret with a key named `postgresql.existingSecretKey` to use as the password  | `nil` |
 | `postgresql.existingSecretKey`           | The name of the key containing the password in the secret named `postgresql.existingSecret`  | `postgres-password` |
 | `postgresql.uri`                         | full URL to custom postgres setup                       | (undefined)               |
 | `postgresql.postgresHost`                | PostgreSQL Hostname                                     | (undefined)               |
-| `postgresql.postgresUser`                | PostgreSQL User                                         | `postgres`                |
-| `postgresql.postgresPassword`            | PostgreSQL Password                                     | `airflow`                 |
-| `postgresql.postgresDatabase`            | PostgreSQL Database name                                | `airflow`                 |
+| `postgresql.postgresqlUsername`                | PostgreSQL User                                         | `postgres`                |
+| `postgresql.postgresqlPassword`            | PostgreSQL Password                                     | `airflow`                 |
+| `postgresql.postgresqlDatabase`            | PostgreSQL Database name                                | `airflow`                 |
 | `postgresql.persistence.enabled`         | Enable Postgres PVC                                     | `true`                    |
 | `postgresql.persistence.storageClass`    | Persistent class                                        | (undefined)               |
-| `postgresql.persistence.accessMode`      | Access mode                                             | `ReadWriteOnce`           |
+| `postgresql.persistence.accessModes`      | Access modes                                             | `[ ReadWriteOnce ]`           |
 | `redis.enabled`                          | Create a Redis cluster                                  | `true`                    |
 | `redis.existingSecret`                   | The name of an existing secret with a key named `redis.existingSecretKey` to use as the password  | `nil` |
 | `redis.existingSecretKey`                | The name of the key containing the password in the secret named `redis.existingSecret`  | `redis-password` |
 | `redis.redisHost`                        | Redis Hostname                                          | (undefined)               |
 | `redis.password`                         | Redis password                                          | `airflow`                 |
 | `redis.master.persistence.enabled`       | Enable Redis PVC                                        | `false`                   |
+| `redis.master.persistence.accessModes`   | Access modes                                            | `[ ReadWriteOnce ]`       |
 | `redis.cluster.enabled`                  | enable master-slave cluster                             | `false`                   |
 | `serviceMonitor.enabled`                 | enable service monitor                                  | `false`                   |
 | `serviceMonitor.interval`                | Interval at which metrics should be scraped             | `30s`                     |
@@ -511,6 +517,18 @@ The following table lists the configurable parameters of the Airflow chart and t
 Full and up-to-date documentation can be found in the comments of the `values.yaml` file.
 
 ## Upgrading
+
+### To 6.0.0
+This version updates `postgresql` and `redis` dependencies.
+There are a few config key changes, in order to upgrade from a 5.x chart, modify your `values.yaml` by mapping the keys as follows:
+
+| 5.x.x                                | 6.x.x                                 | Notes                                                     |
+|--------------------------------------|---------------------------------------|-----------------------------------------------------------|
+|`postgresql.postgresUser`             |`postgresql.postgresqlUsername`        |                                                           |
+|`postgresql.postgresPassword`         |`postgresql.postgresqlPassword`        |                                                           |
+|`postgresql.postgresDatabase`         |`postgresql.postgresqlDatabase`        |                                                           |
+|`postgresql.persistence.accessMode`   |`postgresql.persistence.accessModes`   | Instead of a single value, now the config accepts an array|
+|`redis.master.persistence.accessMode` |`redis.master.persistence.accessModes` | Instead of a single value, now the config accepts an array|
 
 ### To 5.0.0
 This version splits the configuration for webserver and flower web UI from ingress configurations for separation of concerns.

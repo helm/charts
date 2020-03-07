@@ -3,21 +3,21 @@
 image:
   registry: docker.io
   repository: falcosecurity/falco
-  tag: 0.17.1
+  tag: 0.20.0
   pullPolicy: IfNotPresent
 
 docker:
   enabled: true
   socket: /var/run/docker.sock
 
-cri:
+containerd:
   enabled: true
   socket: /run/containerd/containerd.sock
 
 resources:
   # Although resources needed are subjective on the actual workload we provide
   # a sane defaults ones. If you have more questions or concerns, please refer
-  # to Sysdig Support for more info about it
+  # to #falco slack channel for more info about it
   requests:
     cpu: 100m
     memory: 512Mi
@@ -81,6 +81,14 @@ ebpf:
     # Needed to correctly detect the kernel version for the eBPF program
     # Set to false if not running on Google COS
     mountEtcVolume: true
+
+auditLog:
+  # true here activates the K8s Audit Log feature for Falco
+  enabled: false
+
+  dynamicBackend:
+    # true here configures an AuditSink who will receive the K8s audit logs
+    enabled: false
 
 falco:
   # The location of the rules file(s). This can contain one or more paths to
@@ -181,12 +189,11 @@ falco:
 
   # Falco contains an embedded webserver that can be used to accept K8s
   # Audit Events. These config options control the behavior of that
-  # webserver. (By default, the webserver is disabled).
+  # webserver. (By default, the webserver is enabled).
   webserver:
-    enabled: false
+    enabled: true
     listenPort: 8765
     k8sAuditEndpoint: /k8s-audit
-    clusterIP:
 
   # Possible additional things you might want to do with program output:
   #   - send to a slack webhook:
@@ -221,6 +228,23 @@ falco:
   httpOutput:
     enabled: false
     url: http://some.url
+
+  # The gRPC server is secure by default (mutual TLS) so you need to generate certificates and update their paths here.
+  # By default the gRPC server is off.
+  # You can configure the address to bind and expose it.
+  # By modifying the threadiness configuration you can fine-tune the number of threads (and context) it will use.
+  grpc:
+    enabled: false
+    bindAddress: "0.0.0.0:5060"
+    threadiness: 8
+    privateKey: "/etc/falco/certs/server.key"
+    certChain: "/etc/falco/certs/server.crt"
+    rootCerts: "/etc/falco/certs/ca.crt"
+
+  # By default it is off.
+  # By enabling this all the output events will be kept in memory until you read them with a gRPC client.
+  grpcOutput:
+    enabled: false
 
 customRules: {}
   # Although Falco comes with a nice default rule set for detecting weird

@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```bash
-$ helm install stable/rabbitmq
+$ helm install my-release stable/rabbitmq
 ```
 
 ## Introduction
@@ -25,7 +25,7 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/rabbitmq
+$ helm install my-release stable/rabbitmq
 ```
 
 The command deploys RabbitMQ on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
@@ -70,6 +70,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `rabbitmq.extraPlugins`                      | Extra plugings to enable                         | `nil`                                                   |
 | `rabbitmq.clustering.address_type`           | Switch clustering mode                           | `ip` or `hostname`                                      |
 | `rabbitmq.clustering.k8s_domain`             | Customize internal k8s cluster domain            | `cluster.local`                                         |
+| `rabbitmq.clustering.rebalance`              | Rebalance master for queues in cluster when new replica is created            | `false`                                         |
 | `rabbitmq.logs`                              | Value for the RABBITMQ_LOGS environment variable | `-`                                                     |
 | `rabbitmq.setUlimitNofiles`                  | Specify if max file descriptor limit should be set | `true`                                                |
 | `rabbitmq.ulimitNofiles`                     | Max File Descriptor limit                        | `65536`                                                 |
@@ -93,6 +94,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `ldap.tls.enabled`                           | Enable TLS for LDAP connections                  | `false` (if set to true, check advancedConfiguration parameter in values.yml)   |
 | `service.type`                               | Kubernetes Service type                          | `ClusterIP`                                             |
 | `service.port`                               | Amqp port                                        | `5672`                                                  |
+| `service.loadBalancerIP`                    | LoadBalancerIP for the service                   | `nil`                                                   |
 | `service.tlsPort`                            | Amqp TLS port                                    | `5671`                                                  |
 | `service.distPort`                           | Erlang distribution server port                  | `25672`                                                 |
 | `service.nodePort`                           | Node port override, if serviceType NodePort      | _random available between 30000-32767_                  |
@@ -164,7 +166,12 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `metrics.serviceMonitor.relabellings`        | Specify Metric Relabellings to add to the scrape endpoint                      | `nil`                     |
 | `metrics.serviceMonitor.honorLabels`         | honorLabels chooses the metric's labels on collisions with target labels.      | `false`                   |
 | `metrics.serviceMonitor.additionalLabels`    | Used to pass Labels that are required by the Installed Prometheus Operator     | `{}`                      |
-| `metrics.port        `                       | Prometheus metrics exporter port                 | `9419`                                                  |
+| `metrics.serviceMonitor.release`             | Used to pass Labels release that sometimes should be custom for Prometheus Operator     | `nil`                      |
+| `metrics.prometheusRule.enabled`             | Set this to true to create prometheusRules for Prometheus operator                                                              | `false`                    |
+| `metrics.prometheusRule.additionalLabels`    | Additional labels that can be used so prometheusRules will be discovered by Prometheus                                          | `{}`                       |
+| `metrics.prometheusRule.namespace`           | namespace where prometheusRules resource should be created                                                                      | Same namespace as rabbitmq |
+| `metrics.prometheusRule.rules`               | [rules](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) to be created, check values for an example.  | `[]`                       |
+| `metrics.port`                               | Prometheus metrics exporter port                 | `9419`                                                  |
 | `metrics.env`                                | Exporter [configuration environment variables](https://github.com/kbudde/rabbitmq_exporter#configuration) | `{}` |
 | `metrics.resources`                          | Exporter resource requests/limit                 | `nil`                                                   |
 | `metrics.capabilities`                       | Exporter: Comma-separated list of extended [scraping capabilities supported by the target RabbitMQ server](https://github.com/kbudde/rabbitmq_exporter#extended-rabbitmq-capabilities) | `bert,no_sort` |
@@ -172,7 +179,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `volumePermissions.enabled`                  | Enable init container that changes volume permissions in the data directory (for cases where the default k8s `runAsUser` and `fsUser` values do not work) | `false |
 | `volumePermissions.image.registry`           | Init container volume-permissions image registry     | `docker.io`                                         |
 | `volumePermissions.image.repository`         | Init container volume-permissions image name         | `bitnami/minideb`                                   |
-| `volumePermissions.image.tag`                | Init container volume-permissions image tag          | `stretch`                                           |
+| `volumePermissions.image.tag`                | Init container volume-permissions image tag          | `buster`                                            |
 | `volumePermissions.image.pullPolicy`         | Init container volume-permissions image pull policy  | `Always`                                            |
 | `volumePermissions.resources`                | Init container resource requests/limit               | `nil`                                               |
 | `forceBoot.enabled`                          | Executes 'rabbitmqctl force_boot' to force boot cluster shut down unexpectedly in an unknown order. Use it only if you prefer availability over integrity. | `false` |
@@ -183,7 +190,7 @@ The above parameters map to the env variables defined in [bitnami/rabbitmq](http
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
   --set rabbitmq.username=admin,rabbitmq.password=secretpassword,rabbitmq.erlangCookie=secretcookie \
     stable/rabbitmq
 ```
@@ -193,7 +200,7 @@ The above command sets the RabbitMQ admin username and password to `admin` and `
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/rabbitmq
+$ helm install my-release -f values.yaml stable/rabbitmq
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -335,7 +342,7 @@ You must include in your values.yaml the caCertificate, serverCertificate and se
     -----END RSA PRIVATE KEY-----
 ```
 
-This will be generate a secret with the certs, but is possible specify an existing secret using `existingSecret: name-of-existing-secret-to-rabbitmq`
+This will be generate a secret with the certs, but is possible specify an existing secret using `existingSecret: name-of-existing-secret-to-rabbitmq`. The secret is of type `kubernetes.io/tls`.
 
 Disabling [failIfNoPeerCert](https://www.rabbitmq.com/ssl.html#peer-verification-configuration) allows a TLS connection if client fails to provide a certificate
 
@@ -379,7 +386,7 @@ The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/pers
 1. Install the chart
 
 ```bash
-$ helm install --set persistence.existingClaim=PVC_NAME rabbitmq
+$ helm install my-release --set persistence.existingClaim=PVC_NAME stable/rabbitmq
 ```
 
 ### Adjust permissions of the persistence volume mountpoint

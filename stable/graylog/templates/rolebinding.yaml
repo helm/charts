@@ -4,11 +4,7 @@ kind: RoleBinding
 metadata:
   name: {{ template "graylog.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ template "graylog.name" . }}
-    helm.sh/chart: {{ template "graylog.chart" . }}
-    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
-    app.kubernetes.io/instance: "{{ .Release.Name }}"
-    app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
+{{ include "graylog.metadataLabels" . | indent 4 }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role

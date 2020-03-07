@@ -201,6 +201,7 @@ scheduler:
   tolerations: []
 
 flower:
+  enabled: true
   ##
   ## Set AIRFLOW__CELERY__FLOWER_URL_PREFIX
   ## Prefix should match Ingress configuration ingress.flower.path
@@ -230,6 +231,13 @@ flower:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+  extraConfigmapMounts: []
+  # Use-case example: adding a public certificate used for connection to a remote TLS endpoint
+  # - name: extra-cert
+  #   mountPath: /etc/ssl/certs/extra-cert.pem
+  #   configMap: extra-certificates
+  #   readOnly: true
+  #   subPath: extra-cert.pem
 
 web:
   ##
@@ -561,6 +569,11 @@ dags:
       pullPolicy: IfNotPresent
     ## install requirements.txt dependencies automatically
     installRequirements: true
+    ## Path to mount dags-data volume to
+    mountPath: "/dags"
+    ## Path to add to `mountPath` where we clone/sync git to. Include leading /
+    ## example: "/subdirWithDags"
+    syncSubPath: ""
 
 ##
 ## Configure logs
@@ -583,6 +596,7 @@ serviceAccount:
   ## The name of the ServiceAccount to use.
   ## If not set and create is true, a name is generated using the fullname template
   name:
+  annotations: {}
 
 
 ##
@@ -599,25 +613,25 @@ postgresql:
   existingSecret:
 
   ## Name of the key containing the secret.
-  existingSecretKey: postgres-password
+  existingSecretKey: postgresql-password
 
   ##
   ## If you are bringing your own PostgreSQL, you should set postgresHost and
-  ## also probably service.port, postgresUser, postgresPassword, and postgresDatabase
+  ## also probably service.port, postgresqlUsername, postgresqlPassword, and postgresqlDatabase
   ## postgresHost:
   ##
   ## PostgreSQL port
   service:
     port: 5432
   ## PostgreSQL User to create.
-  postgresUser: postgres
+  postgresqlUsername: postgres
   ##
   ## PostgreSQL Password for the new user.
   ## If not set, a random 10 characters password will be used.
-  postgresPassword: airflow
+  postgresqlPassword: airflow
   ##
   ## PostgreSQL Database to create.
-  postgresDatabase: airflow
+  postgresqlDatabase: airflow
   ##
   ## Persistent Volume Storage configuration.
   ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
@@ -629,8 +643,9 @@ postgresql:
     ## Persistant class
     # storageClass: classname
     ##
-    ## Access mode:
-    accessMode: ReadWriteOnce
+    ## Access modes:
+    accessModes:
+      - ReadWriteOnce
 
 
 ## Configuration values for the Redis dependency.
@@ -675,7 +690,8 @@ redis:
       # storageClass: classname
       ##
       ## Access mode:
-      accessMode: ReadWriteOnce
+      accessModes:
+      - ReadWriteOnce
   ##
   ## Disable cluster management by default.
   cluster:

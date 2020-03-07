@@ -50,9 +50,9 @@ spec:
             privileged: true
           args:
             - /usr/bin/falco
-            {{- if (and .Values.cri.enabled .Values.cri.socket) }}
+            {{- if .Values.containerd.enabled }}
             - --cri
-            - /host/var/run/cri.sock
+            - /host/run/containerd/containerd.sock
             {{- end }}
             - -K
             - /var/run/secrets/kubernetes.io/serviceaccount/token
@@ -88,13 +88,13 @@ spec:
               value: "{{ $value }}"
           {{- end }}
           volumeMounts:
-            {{- if (and .Values.docker.enabled .Values.docker.socket) }}
+            {{- if .Values.docker.enabled }}
             - mountPath: /host/var/run/docker.sock
               name: docker-socket
             {{- end}}
-            {{- if (and .Values.cri.enabled .Values.cri.socket) }}
-            - mountPath: /host/var/run/cri.sock
-              name: cri-socket
+            {{- if .Values.containerd.enabled }}
+            - mountPath: /host/run/containerd/containerd.sock
+              name: containerd-socket
             {{- end}}
             - mountPath: /host/dev
               name: dev-fs
@@ -197,15 +197,15 @@ spec:
         - name: dshm
           emptyDir:
             medium: Memory
-        {{- if (and .Values.docker.enabled .Values.docker.socket) }}
+        {{- if .Values.docker.enabled }}
         - name: docker-socket
           hostPath:
             path: {{ .Values.docker.socket }}
         {{- end}}
-        {{- if (and .Values.cri.enabled .Values.cri.socket) }}
-        - name: cri-socket
+        {{- if .Values.containerd.enabled }}
+        - name: containerd-socket
           hostPath:
-            path: {{ .Values.cri.socket }}
+            path: {{ .Values.containerd.socket }}
         {{- end}}
         - name: dev-fs
           hostPath:
@@ -239,7 +239,7 @@ spec:
                 path: falco_rules.local.yaml
               - key: application_rules.yaml
                 path: rules.available/application_rules.yaml
-              {{- if .Values.falco.webserver.enabled }}
+              {{- if .Values.auditLog.enabled }}
               - key: k8s_audit_rules.yaml
                 path: k8s_audit_rules.yaml
               {{- end }}
