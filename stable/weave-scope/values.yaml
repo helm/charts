@@ -36,6 +36,16 @@ weave-scope-frontend:
         # cpu: ""
         # weave-scope-frontend.resources.limits.memory: memory limit in MiB (Mi)
         # memory: ""
+  # weave-scope-frontend.nodeSelector: Specify nodeSelector
+  # nodeSelector:
+  #   beta.kubernetes.io/os: linux
+  # weave-scope-frontend.nodeSelector: Specify tolerations
+  # tolerations:
+  #   - effect: NoSchedule
+  #     key: cattle.io/os
+  #     operator: Equal
+  #     value: linux
+
   flags: []
   # weave-scope-frontend Ingress
   ingress:
@@ -85,6 +95,15 @@ weave-scope-agent:
       # cpu: ""
       # weave-scope-agent.resources.limits.memory: memory limit in MiB (Mi)
       # memory: ""
+  # weave-scope-agent.nodeSelector: Specify nodeSelector
+  # nodeSelector:
+  #   beta.kubernetes.io/os: linux
+  # weave-scope-agent.nodeSelector: Specify tolerations
+  # tolerations:
+  #   - effect: NoSchedule
+  #     key: cattle.io/os
+  #     operator: Equal
+  #     value: linux
 
 # weave-scope-agent.* controls how the Weave Scope node agent pods are installed
 weave-scope-cluster-agent:
@@ -123,3 +142,12 @@ weave-scope-cluster-agent:
       # cpu: ""
       # weave-scope-cluster-agent.resources.limits.memory: memory limit in MiB (Mi)
       # memory: ""
+  # weave-scope-cluster-agent.nodeSelector: Specify nodeSelector
+  # nodeSelector:
+  #   beta.kubernetes.io/os: linux
+  # weave-scope-cluster-agent.nodeSelector: Specify tolerations
+  # tolerations:
+  #   - effect: NoSchedule
+  #     key: cattle.io/os
+  #     operator: Equal
+  #     value: linux

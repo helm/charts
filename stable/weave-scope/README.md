@@ -70,6 +70,8 @@ The **weave-scope-frontend** section controls how the Scope frontend is installe
 | **resources.requests.memory** | memory request in MiB (Mi) | |
 | **resources.limits.cpu** | CPU limit in MHz (m) | |
 | **resources.limits.memory** | memory limit in MiB (Mi) | |
+| **nodeSelector** | specify key/value pair for node selection | |
+| **tolerations** | specify tolerations to match Nodes taints | |
 | **ingress.enabled** | Enables Ingress for weave-scope-frontend | false |
 | **ingress.annotations** |	Ingress annotations | {} |
 | **ingress.paths** |	Ingress paths | [] |
@@ -94,6 +96,8 @@ The **agent** section controls how the Weave Scope node agent pods are installed
 | **resources.requests.memory** | memory request in MiB (Mi)| |
 | **resources.limits.cpu** | CPU limit in MHz (m) | |
 | **resources.limits.memory** | memory limit in MiB (Mi) | |
+| **nodeSelector** | specify key/value pair for node selection | |
+| **tolerations** | specify tolerations to match Nodes taints | |
 
 ### Weave Scope cluster agent
 
@@ -115,6 +119,8 @@ The **agent** section controls how the Weave Scope node agent pods are installed
 | **resources.requests.memory** | memory request in MiB (Mi)| |
 | **resources.limits.cpu** | CPU limit in MHz (m) | |
 | **resources.limits.memory** | memory limit in MiB (Mi) | |
+| **nodeSelector** | specify key/value pair for node selection | |
+| **tolerations** | specify tolerations to match Nodes taints | |
 
 ## Other notes
 
