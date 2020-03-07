@@ -62,14 +62,11 @@ guiService:
 captivePortalService:
   enabled: false
   type: ClusterIP
-  http: 8880
-  https: 8843
   ## Specify the nodePort value for the LoadBalancer and NodePort service types.
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
   ##
-  # nodePort:
-  #   http: 8880
-  #   https: 8843
+  http: 8880
+  https: 8843
   ## Provide any additional annotations which may be required. This can be used to
   ## set the LoadBalancer service type to internal only.
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
