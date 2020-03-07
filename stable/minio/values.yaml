@@ -14,7 +14,7 @@ clusterDomain: cluster.local
 ##
 image:
   repository: minio/minio
-  tag: RELEASE.2020-02-07T23-28-16Z
+  tag: RELEASE.2020-03-06T22-23-56Z
   pullPolicy: IfNotPresent
 
 ## Set default image, imageTag, and imagePullPolicy for the `mc` (the minio
@@ -22,7 +22,7 @@ image:
 ##
 mcImage:
   repository: minio/mc
-  tag: RELEASE.2020-02-14T19-35-50Z
+  tag: RELEASE.2020-03-06T23-29-45Z
   pullPolicy: IfNotPresent
 
 ## minio server mode, i.e. standalone or distributed.
@@ -277,27 +277,7 @@ b2gateway:
 ## Use this field to add environment variables relevant to Minio server. These fields will be passed on to Minio container(s)
 ## when Chart is deployed
 environment:
-  ## To disable Minio Browser, set this value to off
-  MINIO_BROWSER: "on"
-  ## To enable virtual-host-style requests, set this value to Minio host domain name.
-  # MINIO_DOMAIN: ""
-  ## Minio Cache settings, refer: https://docs.minio.io/docs/minio-disk-cache-guide.html
-  # MINIO_CACHE_DRIVES: ""
-  # MINIO_CACHE_EXCLUDE: ""
-  # MINIO_CACHE_EXPIRY: ""
-  # MINIO_CACHE_MAXUSE: ""
-  ## Minio WORM setting, refer: https://docs.minio.io/docs/minio-server-configuration-guide.html
-  # MINIO_WORM: ""
-  ## Minio KMS settings, refer: https://docs.minio.io/docs/minio-kms-quickstart-guide.html
-  # MINIO_SSE_VAULT_ENDPOINT: ""
-  # MINIO_SSE_VAULT_APPROLE_ID: ""
-  # MINIO_SSE_VAULT_APPROLE_SECRET: ""
-  # MINIO_SSE_VAULT_KEY_NAME: ""
-  ## Minio Federation settings, refer: https://docs.minio.io/docs/minio-federation-quickstart-guide.html
-  # MINIO_ETCD_ENDPOINTS: ""
-  # MINIO_PUBLIC_IPS: ""
-  # MINIO_DOMAIN: ""
-  ## Add other environment variables relevant to Minio server here. These values will be added to the container(s) as this Chart is deployed
+  ## Please refer for comprehensive list https://docs.minio.io/docs/minio-server-configuration-guide.html
 
 networkPolicy:
   enabled: false
