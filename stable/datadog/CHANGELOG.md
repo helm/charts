@@ -2,6 +2,11 @@
 
 ## 2.0
 
+## 2.0.3
+
+* Fix templating error when `agents.useConfigMap` is set to true.
+* Add DD_APM_ENABLED environment variable to trace agent container.
+
 ## 2.0.2
 
 * Revert the docker socket path inside the agent container to its standard location to fix #21223
