@@ -18,6 +18,10 @@ spec:
     - name: {{ $key }}
 {{ toYaml $value | indent 6 }}
 {{- end }}
+{{ if .Values.keeper.postgresExporter.enabled }}
+    - name: pg-metrics
+      port: {{ .Values.keeper.postgresExporter.port }}
+{{ end }}
   selector:
     app: {{ template "stolon.name" . }}
     release: {{ .Release.Name }}

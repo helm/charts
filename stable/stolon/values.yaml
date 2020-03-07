@@ -13,12 +13,16 @@ etcdImage:
   tag: 2.3.7
   pullPolicy: IfNotPresent
 
-exporterImage:
+postgresExporterImage:
   repository: wrouesnel/postgres_exporter
   tag: v0.8.0
   pullPolicy: IfNotPresent
 
 debug: false
+
+# Enable the creation of a shm volume
+shmVolume:
+  enabled: false
 
 persistence:
   enabled: true
@@ -134,6 +138,13 @@ keeper:
   extraEnv: []
   #  - name: STKEEPER_LOG_LEVEL
   #    value: "info"
+  postgresExporter:
+    enabled: false
+    port: 9187
+    # Set how frequently Prometheus should scrape
+    # interval: 30s
+    # Set timeout for scrape
+    # scrapeTimeout: 10s
 
 proxy:
   replicaCount: 2
@@ -179,10 +190,6 @@ sentinel:
   extraEnv: []
   #  - name: STSENTINEL_LOG_LEVEL
   #    value: "info"
-
-monitoringPG:
-  enabled: false
-  port: 9187
 
 ## initdb scripts
 ## Specify dictionary of scripts to be run at first boot, the entry point script is create_script.sh

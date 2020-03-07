@@ -1,4 +1,4 @@
-{{- if .Values.serviceMonitor.enabled  }}
+{{- if or .Values.serviceMonitor.enabled .Values.keeper.postgresExporter.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -17,6 +17,7 @@ metadata:
   {{- end }}
 spec:
   endpoints:
+{{ if .Values.serviceMonitor.enabled }}
     - targetPort: "metrics"
       {{- if .Values.serviceMonitor.interval }}
       interval: {{ .Values.serviceMonitor.interval }}
@@ -24,6 +25,16 @@ spec:
       {{- if .Values.serviceMonitor.scrapeTimeout }}
       scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
       {{- end }}
+{{ end }}
+{{ if .Values.keeper.postgresExporter.enabled }}
+    - targetPort: "pg-metrics"
+      {{- if .Values.keeper.postgresExporter.interval }}
+      interval: {{ .Values.keeper.postgresExporter.interval }}
+      {{- end }}
+      {{- if .Values.keeper.postgresExporter.scrapeTimeout }}
+      scrapeTimeout: {{ .Values.keeper.postgresExporter.scrapeTimeout }}
+      {{- end }}
+{{ end }}
   namespaceSelector:
     matchNames:
       - {{ .Release.Namespace }}

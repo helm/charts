@@ -1,4 +1,4 @@
-{{- if .Values.serviceMonitor.enabled  }}
+{{- if or .Values.serviceMonitor.enabled .Values.keeper.postgresExporter.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -11,8 +11,14 @@ metadata:
     component: "all"
 spec:
   ports:
+{{ if .Values.serviceMonitor.enabled }}
     - name: metrics
       port: {{ .Values.ports.metrics.containerPort }}
+{{ end }}
+{{ if .Values.keeper.postgresExporter.enabled }}
+    - name: pg-metrics
+      port: {{ .Values.keeper.postgresExporter.port }}
+{{ end }}
   selector:
     app: {{ template "stolon.name" . }}
     release: {{ .Release.Name }}

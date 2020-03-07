@@ -41,12 +41,12 @@ spec:
 {{ toYaml .Values.image.pullSecrets | indent 8 }}
 {{- end }}
       containers:
-{{- if .Values.monitoringPG.enabled }}
-        - name: pg-exporter
-          image: "{{ .Values.exporterImage.repository }}:{{ .Values.exporterImage.tag }}"
-          imagePullPolicy: {{ .Values.exporterImage.pullPolicy }}
+{{- if .Values.keeper.postgresExporter.enabled }}
+        - name: postgres-exporter
+          image: "{{ .Values.postgresExporterImage.repository }}:{{ .Values.postgresExporterImage.tag }}"
+          imagePullPolicy: {{ .Values.postgresExporterImage.pullPolicy }}
           args:
-            - --web.listen-address=:{{ .Values.monitoringPG.port }}
+            - --web.listen-address=:{{ .Values.keeper.postgresExporter.port }}
           env:
             - name: STKEEPER_PG_SU_USERNAME
 {{ if not (empty .Values.superuserSecret.name) }}
@@ -76,8 +76,8 @@ spec:
               value: "postgresql://$(STKEEPER_PG_SU_USERNAME):$(STKEEPER_PG_SU_PASSWORD)@localhost:5432/postgres?sslmode=disable"
 {{- end }}
           ports:
-            - name: pg-exporter
-              containerPort: {{ .Values.monitoringPG.port }}
+            - name: pg-metrics
+              containerPort: {{ .Values.keeper.postgresExporter.port }}
 {{- if .Values.tls.enabled }}
           volumeMounts:
           - name: certs
@@ -99,6 +99,9 @@ spec:
               export STKEEPER_PG_LISTEN_ADDRESS=$POD_IP
               export STOLON_DATA=/stolon-data
               chown stolon:stolon $STOLON_DATA
+              {{- if .Values.shmVolume.enabled }}
+              chmod -R 777 /dev/shm
+              {{- end }}
               exec gosu stolon stolon-keeper --data-dir $STOLON_DATA
           env:
             - name: POD_NAME
@@ -161,6 +164,10 @@ spec:
           resources:
 {{ toYaml .Values.keeper.resources | indent 12 }}
           volumeMounts:
+{{- if .Values.shmVolume.enabled }}
+          - name: dshm
+            mountPath: /dev/shm
+{{- end }}
           - name: data
             mountPath: /stolon-data
 {{- if .Values.tls.enabled }}
@@ -217,6 +224,11 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
       volumes:
+{{- if .Values.shmVolume.enabled }}
+        - name: dshm
+          emptyDir:
+            medium: Memory
+{{- end }}
 {{- if .Values.tls.enabled }}
         - name: certs
           secret:
