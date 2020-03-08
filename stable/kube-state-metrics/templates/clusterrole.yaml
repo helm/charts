@@ -177,4 +177,15 @@ rules:
     - verticalpodautoscalers
   verbs: ["list", "watch"]
 {{ end -}}
+{{ if .Values.podSecurityPolicy.enabled }}
+{{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
+{{- if semverCompare "> 1.15.0-0" $kubeTargetVersion }}
+- apiGroups: ['policy']
+{{- else }}
+- apiGroups: ['extensions']
+{{- end }}
+  resources:
+    - podsecuritypolicies
+  verbs: ["use"]
+{{- end -}}
 {{- end -}}
