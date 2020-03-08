@@ -33,7 +33,7 @@ spec:
         paths:
           - path: {{ $ingressPath }}
             backend:
-              serviceName: {{ $fullName }}-captivePortalService
+              serviceName: {{ $fullName }}-captiveportalservice
               servicePort: captive-http
   {{- end }}
 {{- end }}
