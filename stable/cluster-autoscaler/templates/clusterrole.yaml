@@ -66,6 +66,16 @@ rules:
       - list
       - get
   - apiGroups:
+    - batch
+    - extensions
+    resources:
+    - jobs
+    verbs:
+    - get
+    - list
+    - patch
+    - watch
+  - apiGroups:
       - extensions
     resources:
       - replicasets
@@ -107,6 +117,21 @@ rules:
     verbs:
       - list
       - watch
+  - apiGroups:
+    - coordination.k8s.io
+    resources:
+    - leases
+    verbs:
+    - create
+  - apiGroups:
+    - coordination.k8s.io
+    resourceNames:
+    - cluster-autoscaler
+    resources:
+    - leases
+    verbs:
+    - get
+    - update
 {{- if .Values.rbac.pspEnabled }}
   - apiGroups:
     - extensions
