@@ -613,7 +613,7 @@ postgresql:
   existingSecret:
 
   ## Name of the key containing the secret.
-  existingSecretKey: postgresql-password
+  existingSecretKey: postgres-password
 
   ##
   ## If you are bringing your own PostgreSQL, you should set postgresHost and
