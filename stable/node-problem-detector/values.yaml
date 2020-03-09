@@ -61,6 +61,8 @@ resources: {}
 
 annotations: {}
 
+labels: {}
+
 tolerations:
   - effect: NoSchedule
     operator: Exists
