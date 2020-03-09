@@ -2,14 +2,20 @@
 
 ## 2.0
 
+## 2.0.4
+
+* Honor the image pull policy in init containers.
+* Pass the `DD_CRI_SOCKET_PATH` environment variable to the config init container so that it can adapt the agent config based on the CRI.
+
 ## 2.0.3
 
 * Fix templating error when `agents.useConfigMap` is set to true.
 * Add DD_APM_ENABLED environment variable to trace agent container.
 
+
 ## 2.0.2
 
-* Revert the docker socket path inside the agent container to its standard location to fix #21223
+* Revert the docker socket path inside the agent container to its standard location to fix #21223.
 
 ## 2.0.1
 
@@ -23,4 +29,4 @@
 * Cleanup useless or unused values parameters.
 * each component have its own RBAC configuration (create,configuration).
 * container runtime socket update values configuration simplification.
-* `nameOverride` `fullnameOverride` is now optional in values.yaml
+* `nameOverride` `fullnameOverride` is now optional in values.yaml.
