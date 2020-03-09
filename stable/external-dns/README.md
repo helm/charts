@@ -176,6 +176,8 @@ The following table lists the configurable parameters of the external-dns chart 
 | `resources`                         | CPU/Memory resource requests/limits.                                                                     | `{}`                                                        |
 | `livenessProbe`                     | Deployment Liveness Probe                                                                                | See `values.yaml`                                           |
 | `readinessProbe`                    | Deployment Readiness Probe                                                                               | See `values.yaml`                                           |
+| `extraVolumes`                      | A list of volumes to be added to the pod                                                                 | `[]`                                                        |
+| `extraVolumeMounts`                 | A list of volume mounts to be added to the pod                                                           | `[]`                                                        |
 | `metrics.enabled`                   | Enable prometheus to access external-dns metrics endpoint                                                | `false`                                                     |
 | `metrics.podAnnotations`            | Annotations for enabling prometheus to access the metrics endpoint                                       |                                                             |
 | `metrics.serviceMonitor.enabled`    | Create ServiceMonitor object                                                                             | `false`                                                     |

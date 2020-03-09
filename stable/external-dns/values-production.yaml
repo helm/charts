@@ -105,7 +105,7 @@ aws:
   preferCNAME: ""
   ## Enable AWS evaluation of target health. Available values are: true, false
   ##
-  evaluateTargetHealth: ""  
+  evaluateTargetHealth: ""
 
 ## Azure configuration to be set via arguments/env. variables
 ##
@@ -470,6 +470,12 @@ readinessProbe:
   timeoutSeconds: 5
   failureThreshold: 6
   successThreshold: 1
+
+## Configure extra volumes
+extraVolumes: []
+
+## Configure extra volumeMounts
+extraVolumeMounts: []
 
 ## Prometheus Exporter / Metrics
 ##
