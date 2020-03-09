@@ -89,12 +89,6 @@ spec:
               args: [ "--config", "/etc/es-curator/config.yml", "/etc/es-curator/action_file.yml" ]
 {{- end }}
               env:
-{{- if .Values.env }}
-{{- range $key,$value := .Values.env }}
-              - name: {{ $key | upper | quote}}
-                value: {{ $value | quote}}
-{{- end }}
-{{- end }}
 {{- if .Values.envFromSecrets }}
 {{- range $key,$value := .Values.envFromSecrets }}
               - name: {{ $key | upper | quote}}
@@ -102,6 +96,12 @@ spec:
                   secretKeyRef:
                     name: {{ $value.from.secret | quote}}
                     key: {{ $value.from.key | quote}}
+{{- end }}
+{{- end }}
+{{- if .Values.env }}
+{{- range $key,$value := .Values.env }}
+              - name: {{ $key | upper | quote}}
+                value: {{ $value | quote}}
 {{- end }}
 {{- end }}
               resources:

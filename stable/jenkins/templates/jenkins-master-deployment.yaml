@@ -63,6 +63,9 @@ spec:
       affinity:
 {{ toYaml .Values.master.affinity | indent 8 }}
       {{- end }}
+      {{- if quote .Values.master.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.master.terminationGracePeriodSeconds }}
+      {{- end }}
       {{- if and (.Capabilities.APIVersions.Has "scheduling.k8s.io/v1beta1") (.Values.master.priorityClassName) }}
       priorityClassName: {{ .Values.master.priorityClassName }}
       {{- end }}
@@ -371,12 +374,14 @@ spec:
       - name: plugin-dir
         emptyDir: {}
       {{- end }}
+      {{- if not (contains "jenkins-home" (quote .Values.persistence.volumes)) }}
       - name: jenkins-home
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
           claimName: {{ .Values.persistence.existingClaim | default (include "jenkins.fullname" .) }}
       {{- else }}
         emptyDir: {}
+      {{- end -}}
       {{- end -}}
       {{- if .Values.master.JCasC.enabled }}
       - name: sc-config-volume

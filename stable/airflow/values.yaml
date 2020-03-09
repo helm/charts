@@ -231,6 +231,13 @@ flower:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+  extraConfigmapMounts: []
+  # Use-case example: adding a public certificate used for connection to a remote TLS endpoint
+  # - name: extra-cert
+  #   mountPath: /etc/ssl/certs/extra-cert.pem
+  #   configMap: extra-certificates
+  #   readOnly: true
+  #   subPath: extra-cert.pem
 
 web:
   ##
@@ -562,6 +569,11 @@ dags:
       pullPolicy: IfNotPresent
     ## install requirements.txt dependencies automatically
     installRequirements: true
+    ## Path to mount dags-data volume to
+    mountPath: "/dags"
+    ## Path to add to `mountPath` where we clone/sync git to. Include leading /
+    ## example: "/subdirWithDags"
+    syncSubPath: ""
 
 ##
 ## Configure logs
@@ -584,6 +596,7 @@ serviceAccount:
   ## The name of the ServiceAccount to use.
   ## If not set and create is true, a name is generated using the fullname template
   name:
+  annotations: {}
 
 
 ##
@@ -604,7 +617,7 @@ postgresql:
 
   ##
   ## If you are bringing your own PostgreSQL, you should set postgresHost and
-  ## also probably service.port, postgresUser, postgresPassword, and postgresDatabase
+  ## also probably service.port, postgresqlUsername, postgresqlPassword, and postgresqlDatabase
   ## postgresHost:
   ##
   ## PostgreSQL port

@@ -1,3 +1,4 @@
+{{- if .Values.graylog.service.master.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -7,11 +8,7 @@ metadata:
 {{- end }}
   name: {{ template "graylog.fullname" . }}-master
   labels:
-    app.kubernetes.io/name: {{ template "graylog.name" . }}
-    helm.sh/chart: {{ template "graylog.chart" . }}
-    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
-    app.kubernetes.io/instance: "{{ .Release.Name }}"
-    app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
+{{ include "graylog.metadataLabels" . | indent 4 }}
     graylog-role: "master"
 spec:
   ports:
@@ -52,4 +49,5 @@ spec:
   - {{ . }}
   {{- end }}
   {{- end -}}
+{{- end -}}
 {{- end -}}
