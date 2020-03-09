@@ -86,7 +86,7 @@ spec:
               touch "${RABBITMQ_MNESIA_DIR}/force_load"
             fi
             {{- end }}
-            chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsGroup }} /var/lib/rabbitmq/
+            chown {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsGroup }} /var/lib/rabbitmq/.erlang.cookie
             chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsGroup }} /etc/rabbitmq
           env:
           - name: POD_NAME
