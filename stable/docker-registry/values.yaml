@@ -143,3 +143,7 @@ extraVolumes: []
 #        - key: cloudfront.pem
 #          path: cloudfront.pem
 #          mode: 511
+
+serviceAccount:
+  create: false
+  annotations: {}

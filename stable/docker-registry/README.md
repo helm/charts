@@ -76,6 +76,8 @@ their default values.
 | `ingress.tls`               | Ingress TLS configuration (YAML)                                                           | `[]`            |
 | `extraVolumeMounts`         | Additional volumeMounts to the registry container                                          | `[]`            |
 | `extraVolumes`              | Additional volumes to the pod                                                              | `[]`            |
+| `serviceAccount.create`     | Create and use a service account for pod                                                   | `false`         |
+| `serviceAccount.annotations`| Service account annotations                                                                | `{}`            |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.
