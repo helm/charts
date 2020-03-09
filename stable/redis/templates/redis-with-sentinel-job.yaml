@@ -34,8 +34,9 @@ spec:
         - /bin/bash
         - -c
         - |
-          $(timeout -s 9 {{ .Values.sentinel.initialCheckTimeout }} redis-cli --raw -h $REDIS_MASTER_HOST -a \"$REDIS_PASSWORD\" -p {{ .Values.sentinel.service.sentinelPort }} SENTINEL sentinels {{ .Values.sentinel.masterSet }} | awk -f /health/parse_sentinels_reset.awk)
-          redis-cli --raw -h $REDIS_MASTER_HOST -a \"$REDIS_PASSWORD\" -p 26379 SENTINEL reset {{ .Values.sentinel.masterSet }}
+          while [[ `redis-cli --raw --no-auth-warning -h $REDIS_MASTER_HOST -a $REDIS_PASSWORD -p {{ .Values.sentinel.service.sentinelPort }} PING` != "PONG" ]]; do sleep 1; done
+          $(timeout -s 9 {{ .Values.sentinel.initialCheckTimeout }} redis-cli --raw --no-auth-warning -h $REDIS_MASTER_HOST -a \"$REDIS_PASSWORD\" -p {{ .Values.sentinel.service.sentinelPort }} SENTINEL sentinels {{ .Values.sentinel.masterSet }} | awk -f /health/parse_sentinels_reset.awk)
+          redis-cli --raw --no-auth-warning -h $REDIS_MASTER_HOST -a \"$REDIS_PASSWORD\" -p {{ .Values.sentinel.port }} SENTINEL reset {{ .Values.sentinel.masterSet }}
         env:
         - name: REDIS_MASTER_HOST
           value: {{ template "redis.fullname" . }}-master-0.{{ template "redis.fullname" . }}-headless.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
