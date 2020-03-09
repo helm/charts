@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: signalsciences/sigsci-agent
-  tag: 4.4.1
+  tag: 4.5.0
   pullPolicy: IfNotPresent
 
 daemonset: {}

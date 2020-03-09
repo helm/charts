@@ -3,7 +3,7 @@ name: signalsciences
 home: https://signalsciences.com
 icon: https://dashboard.signalsciences.net/static/images/logo-icon-color.svg
 version: 2.0.0
-appVersion: 4.4.1
+appVersion: 4.5.0
 description: SignalSciences is a web application firewall. This chart is the installable agent.
 keywords:
 - signalsciences

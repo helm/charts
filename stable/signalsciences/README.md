@@ -46,7 +46,7 @@ The following table lists the configurable parameters of the SignalSciences char
 | `signalsciences.secretAccessKey`               | Your SignalSciences secretAccessKey                                       | `Nil` You must provide your own secretAccessKey |
 | `signalsciences.secretAccessKeyExistingSecret` | If set, use the secret with a provided name instead of creating a new one | `nil`                                           |
 | `image.repository`                             | The image repository to pull from                                         | `signalsciences/sigsci-agent`                             |
-| `image.tag`                                    | The image tag to pull                                                     | `4.4.1`                                        |
+| `image.tag`                                    | The image tag to pull                                                     | `4.5.0`                                        |
 | `image.pullPolicy`                             | Image pull policy                                                         | `IfNotPresent`                                  |
 | `signalsciences.agentTempVolume`       | Temporary volume to mount the socket and a writeable dir                                                    | `/sigsci/tmp`                                        |
 | `signalsciences.resources.requests.cpu`        | CPU resource requests                                                     | `200m`                                          |
