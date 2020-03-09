@@ -6,6 +6,10 @@
 ##
 nameOverride: ""
 
+## Provide a k8s version to auto dashboard import script example: kubeTargetVersionOverride: 1.16.6
+##
+kubeTargetVersionOverride: ""
+
 ## Provide a name to substitute for the full names of resources
 ##
 fullnameOverride: ""

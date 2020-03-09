@@ -168,6 +168,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `global.rbac.pspEnabled` | Create pod security policy resources | `true` |
 | `kubeTargetVersionOverride` | Provide a target gitVersion of K8S, in case .Capabilites.KubeVersion is not available (e.g. `helm template`) |`""`|
 | `nameOverride` | Provide a name in place of `prometheus-operator` |`""`|
+| `kubeTargetVersionOverride` | Provide a k8s version |`""`|
 
 ### Prometheus Operator
 | Parameter | Description | Default |
@@ -195,6 +196,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheusOperator.manageCrds` |If true prometheus operator will create and update its CRDs on startup | `true` |
 | `prometheusOperator.denyNamespaces` | Namespaces not to scope the interaction of the Prometheus Operator (deny list). This is mutually exclusive with `namespaces` | `[]` |
 | `prometheusOperator.enabled` | Deploy Prometheus Operator. Only one of these should be deployed into the cluster | `true` |
+| `enforcedNamespaceLabel` | enforces adding a namespace label of origin for each alert and metric that is user created. | `""` |
 | `prometheusOperator.hyperkubeImage.repository` | Image pull policy for hyperkube image used to perform maintenance tasks | `IfNotPresent` |
 | `prometheusOperator.hyperkubeImage.repository` | Repository for hyperkube image used to perform maintenance tasks | `k8s.gcr.io/hyperkube` |
 | `prometheusOperator.hyperkubeImage.tag` | Tag for hyperkube image used to perform maintenance tasks | `v1.12.1` |
