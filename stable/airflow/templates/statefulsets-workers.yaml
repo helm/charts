@@ -69,7 +69,10 @@ spec:
       tolerations:
 {{ toYaml .Values.workers.tolerations | indent 8 }}
       {{- end }}
-
+      {{- if .Values.workers.securityContext }}
+      securityContext:
+{{ toYaml .Values.workers.securityContext | indent 8 }}
+      {{- end }}
       {{- if .Values.dags.initContainer.enabled }}
       initContainers:
         - name: git-clone
