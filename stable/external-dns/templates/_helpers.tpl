@@ -428,3 +428,14 @@ external-dns: transip.apiKey
     Please set the apiKey parameter (--set transip.apiKey="xxxx")
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return the service account name.	Return the service account name used by the pod.
+*/}}
+{{- define "serviceaccount.name" -}}
+{{- if and .Values.rbac.create .Values.rbac.serviceAccount.create -}}
+{{ include "external-dns.fullname" . }}
+{{- else -}}
+{{ .Values.rbac.serviceAccount.name }}
+{{- end -}}	
+{{- end -}}

@@ -10,6 +10,6 @@ roleRef:
   name: {{ template "external-dns.fullname" . }}
 subjects:
 - kind: ServiceAccount
-  name: {{ template "external-dns.fullname" . }}
+  name: {{ template "serviceaccount.name" . }}
   namespace: {{ .Release.Namespace }}
 {{- end }}
