@@ -37,7 +37,7 @@ spec:
       nodePort: {{ .Values.alertmanager.service.nodePort }}
     {{- end }}
       port: {{ .Values.alertmanager.service.port }}
-      targetPort: 9093
+      targetPort: {{ .Values.alertmanager.service.targetPort }}
       protocol: TCP
   selector:
     app: alertmanager
