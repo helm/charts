@@ -171,7 +171,7 @@ unclassified:
 {{- end -}}
 
 {{/*
-Generate private key for jenkins CLI
+Generate private key for jenkins CLI (deprecated)
 */}}
 {{- define "jenkins.gen-key" -}}
 {{- if not .Values.master.adminSshKey -}}
