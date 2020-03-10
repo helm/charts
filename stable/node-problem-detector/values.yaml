@@ -36,12 +36,15 @@ settings:
   prometheus_address: 0.0.0.0
   prometheus_port: 20257
 
+  # The period at which k8s-exporter does forcibly sync with apiserver
+  heartBeatPeriod: 5m0s
+
 hostpath:
   logdir: /var/log/
 
 image:
   repository: k8s.gcr.io/node-problem-detector
-  tag: v0.7.0
+  tag: v0.8.1
   pullPolicy: IfNotPresent
 
 nameOverride: ""
