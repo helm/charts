@@ -58,6 +58,7 @@ The following table lists the configurable parameters for this chart and their d
 | `tolerations`                         | Optional daemonset tolerations             | `["effect: NoSchedule,operator: Exists"]`                                                         |
 | `nodeSelector`                        | Optional daemonset nodeSelector            | `{}`                                                         |
 | `env`                                 | Optional daemonset environment variables   | `[]`                                                         |
+| `labels`                              | Optional daemonset labels                  | `{}`                                                         |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install` or provide a YAML file containing the values for the above parameters:
 
