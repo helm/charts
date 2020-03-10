@@ -7,9 +7,9 @@ keywords:
 - external-dns
 - network
 - dns
-home: https://github.com/kubernetes-incubator/external-dns
+home: https://github.com/kubernetes-sigs/external-dns
 sources:
-- https://github.com/kubernetes-incubator/external-dns
+- https://github.com/kubernetes-sigs/external-dns
 - https://github.com/bitnami/bitnami-docker-external-dns
 maintainers:
 - name: Bitnami
