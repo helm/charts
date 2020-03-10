@@ -199,6 +199,9 @@ alertmanager:
     ## Port for Alertmanager Service to listen on
     ##
     port: 9093
+    ## To be used with a proxy extraContainer port
+    ##
+    targetPort: 9093
     ## Port to expose on each node
     ## Only used if service.type is 'NodePort'
     ##
