@@ -427,7 +427,7 @@ helm install postgres \
 It's necessary to specify the existing passwords while performing an upgrade to ensure the secrets are not updated with invalid randomly generated passwords. Remember to specify the existing values of the `postgresqlPassword` and `replication.password` parameters when upgrading the chart:
 
 ```bash
-$ helm upgrade my-release bitnami/influxdb \
+$ helm upgrade my-release stable/postgresql \
     --set postgresqlPassword=[POSTGRESQL_PASSWORD] \
     --set replication.password=[REPLICATION_PASSWORD]
 ```
