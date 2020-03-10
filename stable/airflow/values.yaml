@@ -129,7 +129,7 @@ airflow:
   ## This should be a json string with your variables in it
   ## Examples:
   ##   variables: '{ "environment": "dev" }'
-  variables: {}
+  variables: '{}'
 
   ## Add airflow ppols
   ## This should be a json string with your pools in it
