@@ -7,6 +7,9 @@ metadata:
     helm.sh/chart: {{ include "node-problem-detector.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- range $key, $val := .Values.labels }}
+    {{ $key }}: {{ $val | quote }}
+    {{- end}}
 spec:
   selector:
     matchLabels:
