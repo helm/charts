@@ -14,6 +14,7 @@ metadata:
 {{ toYaml .Values.statefulSetAnnotations | indent 4 }}
 {{- end }}
   name: {{ template "mongodb-replicaset.fullname" . }}
+  namespace: {{ template "mongodb-replicaset.namespace" . }}
 spec:
   selector:
     matchLabels:
