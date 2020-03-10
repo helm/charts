@@ -53,6 +53,15 @@ Parameter | Description | Default
 `basicAuth.enabled` | If true, enable basic authentication | `false`
 `basicAuth.username` | Username for basic auth | `admin`
 `basicAuth.password` | Password for basic auth | `""`
+`basicAuth.ldap.enabled` | If true, enable LDAP authentication | `false`
+`basicAuth.ldap.server` | FQDN of the LDAP server | `""`
+`basicAuth.ldap.port` | Port used for LDAP | `""`
+`basicAuth.ldap.username` | Optional LDAP DN to bind for query | `""`
+`basicAuth.ldap.pasword`  | Optional LDAP password for the DN | `""`
+`basicAuth.ldap.searchBaseDn` | LDAP search base | `""`
+`basicAuth.ldap.searchFilter` | LDAP search filter for a valid account | `""`
+`basicAuth.ldap.connectionPoolSize` | LDAP connection pool size | `10`
+`basicAuth.ldap.ssl` | Enable LDAPS (not StartTLS) | `false`
 `javaOptions` | Java runtime options | `""`
 `service.type` | Kafka-manager service type | `ClusterIP`
 `service.port` | Kafka-manager service port | `9000`

@@ -68,6 +68,14 @@ definitions:
 #     "write": ".*",
 #     "read": ".*"
 #   }
+  topicPermissions: |-
+#   {
+#     "user": "myUsername",
+#     "vhost": "/rabbit",
+#     "exchange": "myexchange",
+#     "write": ".*",
+#     "read": ".*"
+#   }
   queues: |-
 #    {
 #       "name":"myName",

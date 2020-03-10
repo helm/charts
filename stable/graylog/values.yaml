@@ -240,6 +240,9 @@ graylog:
     ## If true, Maxmind GeoLite2 will be installed to ${GRAYLOG_HOME}/geoip location
     ##
     enabled: false
+    ## If true, mmdbUri points to the URI where to find the DB
+    # https://blog.maxmind.com/2019/12/18/significant-changes-to-accessing-and-using-geolite2-databases/
+    mmdbUri: ""
 
   ## Graylog root user name
   ##
@@ -271,9 +274,10 @@ graylog:
     # hosts: http://elasticsearch-client.graylog.svc.cluster.local:9200
     hosts: ""
     # Allow elasticsearch hosts to be fetched from a k8s secret
-    # {{ graylog.fullname }} will be used as uriSecretName if left empty
+    # {{ graylog.fullname }}-es will be used as uriSecretName if left empty
     uriSecretName: ""
     uriSecretKey: ""
+    uriSSL: false
 
   mongodb:
     ## MongoDB connection string
@@ -281,7 +285,7 @@ graylog:
     # uri: mongodb://user:pass@host1:27017,host2:27017,host3:27017/graylog?replicaSet=rs01
     uri: ""
     # Allow mongodb uri to be fetched from a k8s secret
-    # {{ graylog.fullname }} will be used as uriSecretName if left empty
+    # {{ graylog.fullname }}-mongodb will be used as uriSecretName if left empty
     uriSecretName: ""
     uriSecretKey: ""
 
