@@ -53,6 +53,7 @@ The following table lists the configurable parameters for this chart and their d
 | `settings.custom_plugin_monitors`     | Custom plugin monitor config files         | `[]`                                                         |
 | `settings.prometheus_address`         | Prometheus exporter address                | `0.0.0.0`                                                    |
 | `settings.prometheus_port`            | Prometheus exporter port                   | `20257`                                                      |
+| `settings.heartBeatPeriod`            | Syncing interval with API server           | `5m0s`                                                       |
 | `serviceAccount.create`               | Whether a ServiceAccount should be created | `true`                                                       |
 | `serviceAccount.name`                 | Name of the ServiceAccount to create       | Generated value from template                                |
 | `tolerations`                         | Optional daemonset tolerations             | `["effect: NoSchedule,operator: Exists"]`                                                         |
