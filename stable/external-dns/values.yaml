@@ -482,6 +482,12 @@ readinessProbe:
   failureThreshold: 6
   successThreshold: 1
 
+## Configure extra volumes
+extraVolumes: []
+
+## Configure extra volumeMounts
+extraVolumeMounts: []
+
 ## Prometheus Exporter / Metrics
 ##
 metrics:

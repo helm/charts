@@ -97,6 +97,9 @@ users, virtual hosts, permissions and parameters) to load by the management plug
 {{ .Values.definitions.permissions | indent 4 }}
 {{- end }}
   ],
+  "topic_permissions": [
+{{ .Values.definitions.topicPermissions | indent 4 }}
+  ],
   "parameters": [
 {{ .Values.definitions.parameters| indent 4 }}
   ],
