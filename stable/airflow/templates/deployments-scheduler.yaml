@@ -186,53 +186,53 @@ spec:
             - "-c"
           {{- if and ( .Values.dags.initContainer.enabled ) ( .Values.dags.initContainer.installRequirements ) }}
             - >
-              echo 'waiting 10s...' &&
+              echo "*** waiting 10s..." &&
               sleep 10 &&
-              echo 'installing requirements...' &&
+              echo "*** installing requirements..." &&
               mkdir -p /usr/local/airflow/.local/bin &&
               export PATH=/usr/local/airflow/.local/bin:$PATH &&
               /usr/local/scripts/install-requirements.sh &&
+              {{- if .Values.airflow.variables }}
+                echo "*** adding variables" &&
+                airflow variables -i /usr/local/variables-pools/variables.json &&
+              {{- end }}
+              {{- if .Values.airflow.connections }}
+                echo "*** adding connections" &&
+                /usr/local/connections/add-connections.sh &&
+              {{- end }}
               {{- if .Values.airflow.initdb }}
-              echo "executing initdb" &&
+              echo "*** executing initdb" &&
               airflow initdb &&
               {{- end }}
-            {{- if .Values.airflow.connections }}
-              echo "adding connections" &&
-              /usr/local/connections/add-connections.sh &&
-            {{- end }}
-            {{- if .Values.airflow.variables }}
-              echo "adding variables" &&
-              airflow variables -i /usr/local/variables-pools/variables.json &&
-            {{- end }}
             {{- if .Values.airflow.pools }}
-              echo "adding pools" &&
+              echo "*** adding pools" &&
               airflow pool -i /usr/local/variables-pools/pools.json &&
             {{- end }}
-              echo "executing scheduler" &&
+              echo "*** executing scheduler" &&
               airflow scheduler -n {{ .Values.airflow.schedulerNumRuns }}
           {{- else }}
             - >
-              echo 'waiting 10s...' &&
+              echo "*** waiting 10s..." &&
               sleep 10 &&
               mkdir -p /usr/local/airflow/.local/bin &&
               export PATH=/usr/local/airflow/.local/bin:$PATH &&
+              {{- if .Values.airflow.variables }}
+                echo "*** adding variables" &&
+                airflow variables -i /usr/local/variables-pools/variables.json &&
+              {{- end }}
+              {{- if .Values.airflow.connections }}
+                echo "*** adding connections" &&
+                /usr/local/connections/add-connections.sh &&
+              {{- end }}
               {{- if .Values.airflow.initdb }}
-              echo "executing initdb" &&
+              echo "*** executing initdb" &&
               airflow initdb &&
               {{- end }}
-            {{- if .Values.airflow.connections }}
-              echo "adding connections" &&
-              /usr/local/connections/add-connections.sh &&
-            {{- end }}
-            {{- if .Values.airflow.variables }}
-              echo "adding variables" &&
-              airflow variables -i /usr/local/variables-pools/variables.json &&
-            {{- end }}
             {{- if .Values.airflow.pools }}
-              echo "adding pools" &&
+              echo "*** adding pools" &&
               airflow pool -i /usr/local/variables-pools/pools.json &&
             {{- end }}
-              echo "executing scheduler" &&
+              echo "*** executing scheduler" &&
               airflow scheduler -n {{ .Values.airflow.schedulerNumRuns }}
           {{- end }}
 {{- if .Values.airflow.extraContainers }}
