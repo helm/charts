@@ -1,4 +1,4 @@
-{{- /*
+{{- /* 
 Generated from 'kubernetes-system-apiserver' group from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml
 Do not change in-place! In order to change this file first read following link:
 https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
@@ -26,7 +26,7 @@ spec:
     rules:
     - alert: KubeAPILatencyHigh
       annotations:
-        message: The API server has an abnormal latency of {{`{{ $value }}`}} seconds for {{`{{ $labels.verb }}`}} {{`{{ $labels.resource }}`}}.
+        message: The API server has an abnormal latency of {{`{{`}} $value {{`}}`}} seconds for {{`{{`}} $labels.verb {{`}}`}} {{`{{`}} $labels.resource {{`}}`}}.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeapilatencyhigh
       expr: |-
         (
@@ -49,7 +49,7 @@ spec:
         severity: warning
     - alert: KubeAPILatencyHigh
       annotations:
-        message: The API server has a 99th percentile latency of {{`{{ $value }}`}} seconds for {{`{{ $labels.verb }}`}} {{`{{ $labels.resource }}`}}.
+        message: The API server has a 99th percentile latency of {{`{{`}} $value {{`}}`}} seconds for {{`{{`}} $labels.verb {{`}}`}} {{`{{`}} $labels.resource {{`}}`}}.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeapilatencyhigh
       expr: cluster_quantile:apiserver_request_duration_seconds:histogram_quantile{job="apiserver",quantile="0.99"} > 4
       for: 10m
@@ -57,7 +57,7 @@ spec:
         severity: critical
     - alert: KubeAPIErrorsHigh
       annotations:
-        message: API server is returning errors for {{`{{ $value | humanizePercentage }}`}} of requests.
+        message: API server is returning errors for {{`{{`}} $value | humanizePercentage {{`}}`}} of requests.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeapierrorshigh
       expr: |-
         sum(rate(apiserver_request_total{job="apiserver",code=~"5.."}[5m]))
@@ -68,7 +68,7 @@ spec:
         severity: critical
     - alert: KubeAPIErrorsHigh
       annotations:
-        message: API server is returning errors for {{`{{ $value | humanizePercentage }}`}} of requests.
+        message: API server is returning errors for {{`{{`}} $value | humanizePercentage {{`}}`}} of requests.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeapierrorshigh
       expr: |-
         sum(rate(apiserver_request_total{job="apiserver",code=~"5.."}[5m]))
@@ -79,7 +79,7 @@ spec:
         severity: warning
     - alert: KubeAPIErrorsHigh
       annotations:
-        message: API server is returning errors for {{`{{ $value | humanizePercentage }}`}} of requests for {{`{{ $labels.verb }}`}} {{`{{ $labels.resource }}`}} {{`{{ $labels.subresource }}`}}.
+        message: API server is returning errors for {{`{{`}} $value | humanizePercentage {{`}}`}} of requests for {{`{{`}} $labels.verb {{`}}`}} {{`{{`}} $labels.resource {{`}}`}} {{`{{`}} $labels.subresource {{`}}`}}.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeapierrorshigh
       expr: |-
         sum(rate(apiserver_request_total{job="apiserver",code=~"5.."}[5m])) by (resource,subresource,verb)
@@ -90,7 +90,7 @@ spec:
         severity: critical
     - alert: KubeAPIErrorsHigh
       annotations:
-        message: API server is returning errors for {{`{{ $value | humanizePercentage }}`}} of requests for {{`{{ $labels.verb }}`}} {{`{{ $labels.resource }}`}} {{`{{ $labels.subresource }}`}}.
+        message: API server is returning errors for {{`{{`}} $value | humanizePercentage {{`}}`}} of requests for {{`{{`}} $labels.verb {{`}}`}} {{`{{`}} $labels.resource {{`}}`}} {{`{{`}} $labels.subresource {{`}}`}}.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeapierrorshigh
       expr: |-
         sum(rate(apiserver_request_total{job="apiserver",code=~"5.."}[5m])) by (resource,subresource,verb)

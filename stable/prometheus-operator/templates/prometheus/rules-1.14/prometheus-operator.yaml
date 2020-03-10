@@ -1,4 +1,4 @@
-{{- /*
+{{- /* 
 Generated from 'prometheus-operator' group from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml
 Do not change in-place! In order to change this file first read following link:
 https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
@@ -28,14 +28,14 @@ spec:
     rules:
     - alert: PrometheusOperatorReconcileErrors
       annotations:
-        message: Errors while reconciling {{`{{ $labels.controller }}`}} in {{`{{ $labels.namespace }}`}} Namespace.
+        message: Errors while reconciling {{`{{`}} $labels.controller {{`}}`}} in {{`{{`}} $labels.namespace {{`}}`}} Namespace.
       expr: rate(prometheus_operator_reconcile_errors_total{job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[5m]) > 0.1
       for: 10m
       labels:
         severity: warning
     - alert: PrometheusOperatorNodeLookupErrors
       annotations:
-        message: Errors while reconciling Prometheus in {{`{{ $labels.namespace }}`}} Namespace.
+        message: Errors while reconciling Prometheus in {{`{{`}} $labels.namespace {{`}}`}} Namespace.
       expr: rate(prometheus_operator_node_address_lookup_errors_total{job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[5m]) > 0.1
       for: 10m
       labels:

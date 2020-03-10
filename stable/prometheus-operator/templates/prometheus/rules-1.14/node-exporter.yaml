@@ -1,4 +1,4 @@
-{{- /*
+{{- /* 
 Generated from 'node-exporter' group from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml
 Do not change in-place! In order to change this file first read following link:
 https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
@@ -26,7 +26,7 @@ spec:
     rules:
     - alert: NodeFilesystemSpaceFillingUp
       annotations:
-        description: Filesystem on {{`{{ $labels.device }}`}} at {{`{{ $labels.instance }}`}} has only {{`{{ printf "%.2f" $value }}`}}% available space left and is filling up.
+        description: Filesystem on {{`{{`}} $labels.device {{`}}`}} at {{`{{`}} $labels.instance {{`}}`}} has only {{`{{`}} printf "%.2f" $value {{`}}`}}% available space left and is filling up.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodefilesystemspacefillingup
         summary: Filesystem is predicted to run out of space within the next 24 hours.
       expr: |-
@@ -42,7 +42,7 @@ spec:
         severity: warning
     - alert: NodeFilesystemSpaceFillingUp
       annotations:
-        description: Filesystem on {{`{{ $labels.device }}`}} at {{`{{ $labels.instance }}`}} has only {{`{{ printf "%.2f" $value }}`}}% available space left and is filling up fast.
+        description: Filesystem on {{`{{`}} $labels.device {{`}}`}} at {{`{{`}} $labels.instance {{`}}`}} has only {{`{{`}} printf "%.2f" $value {{`}}`}}% available space left and is filling up fast.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodefilesystemspacefillingup
         summary: Filesystem is predicted to run out of space within the next 4 hours.
       expr: |-
@@ -58,7 +58,7 @@ spec:
         severity: critical
     - alert: NodeFilesystemAlmostOutOfSpace
       annotations:
-        description: Filesystem on {{`{{ $labels.device }}`}} at {{`{{ $labels.instance }}`}} has only {{`{{ printf "%.2f" $value }}`}}% available space left.
+        description: Filesystem on {{`{{`}} $labels.device {{`}}`}} at {{`{{`}} $labels.instance {{`}}`}} has only {{`{{`}} printf "%.2f" $value {{`}}`}}% available space left.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodefilesystemalmostoutofspace
         summary: Filesystem has less than 5% space left.
       expr: |-
@@ -72,7 +72,7 @@ spec:
         severity: warning
     - alert: NodeFilesystemAlmostOutOfSpace
       annotations:
-        description: Filesystem on {{`{{ $labels.device }}`}} at {{`{{ $labels.instance }}`}} has only {{`{{ printf "%.2f" $value }}`}}% available space left.
+        description: Filesystem on {{`{{`}} $labels.device {{`}}`}} at {{`{{`}} $labels.instance {{`}}`}} has only {{`{{`}} printf "%.2f" $value {{`}}`}}% available space left.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodefilesystemalmostoutofspace
         summary: Filesystem has less than 3% space left.
       expr: |-
@@ -86,7 +86,7 @@ spec:
         severity: critical
     - alert: NodeFilesystemFilesFillingUp
       annotations:
-        description: Filesystem on {{`{{ $labels.device }}`}} at {{`{{ $labels.instance }}`}} has only {{`{{ printf "%.2f" $value }}`}}% available inodes left and is filling up.
+        description: Filesystem on {{`{{`}} $labels.device {{`}}`}} at {{`{{`}} $labels.instance {{`}}`}} has only {{`{{`}} printf "%.2f" $value {{`}}`}}% available inodes left and is filling up.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodefilesystemfilesfillingup
         summary: Filesystem is predicted to run out of inodes within the next 24 hours.
       expr: |-
@@ -102,7 +102,7 @@ spec:
         severity: warning
     - alert: NodeFilesystemFilesFillingUp
       annotations:
-        description: Filesystem on {{`{{ $labels.device }}`}} at {{`{{ $labels.instance }}`}} has only {{`{{ printf "%.2f" $value }}`}}% available inodes left and is filling up fast.
+        description: Filesystem on {{`{{`}} $labels.device {{`}}`}} at {{`{{`}} $labels.instance {{`}}`}} has only {{`{{`}} printf "%.2f" $value {{`}}`}}% available inodes left and is filling up fast.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodefilesystemfilesfillingup
         summary: Filesystem is predicted to run out of inodes within the next 4 hours.
       expr: |-
@@ -118,7 +118,7 @@ spec:
         severity: critical
     - alert: NodeFilesystemAlmostOutOfFiles
       annotations:
-        description: Filesystem on {{`{{ $labels.device }}`}} at {{`{{ $labels.instance }}`}} has only {{`{{ printf "%.2f" $value }}`}}% available inodes left.
+        description: Filesystem on {{`{{`}} $labels.device {{`}}`}} at {{`{{`}} $labels.instance {{`}}`}} has only {{`{{`}} printf "%.2f" $value {{`}}`}}% available inodes left.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodefilesystemalmostoutoffiles
         summary: Filesystem has less than 5% inodes left.
       expr: |-
@@ -132,7 +132,7 @@ spec:
         severity: warning
     - alert: NodeFilesystemAlmostOutOfFiles
       annotations:
-        description: Filesystem on {{`{{ $labels.device }}`}} at {{`{{ $labels.instance }}`}} has only {{`{{ printf "%.2f" $value }}`}}% available inodes left.
+        description: Filesystem on {{`{{`}} $labels.device {{`}}`}} at {{`{{`}} $labels.instance {{`}}`}} has only {{`{{`}} printf "%.2f" $value {{`}}`}}% available inodes left.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodefilesystemalmostoutoffiles
         summary: Filesystem has less than 3% inodes left.
       expr: |-
@@ -146,7 +146,7 @@ spec:
         severity: critical
     - alert: NodeNetworkReceiveErrs
       annotations:
-        description: '{{`{{ $labels.instance }}`}} interface {{`{{ $labels.device }}`}} has encountered {{`{{ printf "%.0f" $value }}`}} receive errors in the last two minutes.'
+        description: '{{`{{`}} $labels.instance {{`}}`}} interface {{`{{`}} $labels.device {{`}}`}} has encountered {{`{{`}} printf "%.0f" $value {{`}}`}} receive errors in the last two minutes.'
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodenetworkreceiveerrs
         summary: Network interface is reporting many receive errors.
       expr: increase(node_network_receive_errs_total[2m]) > 10
@@ -155,7 +155,7 @@ spec:
         severity: warning
     - alert: NodeNetworkTransmitErrs
       annotations:
-        description: '{{`{{ $labels.instance }}`}} interface {{`{{ $labels.device }}`}} has encountered {{`{{ printf "%.0f" $value }}`}} transmit errors in the last two minutes.'
+        description: '{{`{{`}} $labels.instance {{`}}`}} interface {{`{{`}} $labels.device {{`}}`}} has encountered {{`{{`}} printf "%.0f" $value {{`}}`}} transmit errors in the last two minutes.'
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodenetworktransmiterrs
         summary: Network interface is reporting many transmit errors.
       expr: increase(node_network_transmit_errs_total[2m]) > 10

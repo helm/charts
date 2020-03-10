@@ -1,4 +1,4 @@
-{{- /*
+{{- /* 
 Generated from 'general.rules' group from https://raw.githubusercontent.com/coreos/kube-prometheus/release-0.1/manifests/prometheus-rules.yaml
 Do not change in-place! In order to change this file first read following link:
 https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
@@ -26,7 +26,7 @@ spec:
     rules:
     - alert: TargetDown
       annotations:
-        message: '{{`{{ $value }}`}}% of the {{`{{ $labels.job }}`}} targets are down.'
+        message: '{{`{{`}} $value {{`}}`}}% of the {{`{{`}} $labels.job {{`}}`}} targets are down.'
       expr: 100 * (count(up == 0) BY (job) / count(up) BY (job)) > 10
       for: 10m
       labels:

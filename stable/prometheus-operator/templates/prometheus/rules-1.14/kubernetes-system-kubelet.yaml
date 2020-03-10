@@ -1,4 +1,4 @@
-{{- /*
+{{- /* 
 Generated from 'kubernetes-system-kubelet' group from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml
 Do not change in-place! In order to change this file first read following link:
 https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
@@ -26,7 +26,7 @@ spec:
     rules:
     - alert: KubeNodeNotReady
       annotations:
-        message: '{{`{{ $labels.node }}`}} has been unready for more than 15 minutes.'
+        message: '{{`{{`}} $labels.node {{`}}`}} has been unready for more than 15 minutes.'
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubenodenotready
       expr: kube_node_status_condition{job="kube-state-metrics",condition="Ready",status="true"} == 0
       for: 15m
@@ -34,7 +34,7 @@ spec:
         severity: warning
     - alert: KubeNodeUnreachable
       annotations:
-        message: '{{`{{ $labels.node }}`}} is unreachable and some workloads may be rescheduled.'
+        message: '{{`{{`}} $labels.node {{`}}`}} is unreachable and some workloads may be rescheduled.'
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubenodeunreachable
       expr: kube_node_spec_taint{job="kube-state-metrics",key="node.kubernetes.io/unreachable",effect="NoSchedule"} == 1
       for: 2m
@@ -42,7 +42,7 @@ spec:
         severity: warning
     - alert: KubeletTooManyPods
       annotations:
-        message: Kubelet '{{`{{ $labels.node }}`}}' is running at {{`{{ $value | humanizePercentage }}`}} of its Pod capacity.
+        message: Kubelet '{{`{{`}} $labels.node {{`}}`}}' is running at {{`{{`}} $value | humanizePercentage {{`}}`}} of its Pod capacity.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubelettoomanypods
       expr: max(max(kubelet_running_pod_count{job="kubelet", metrics_path="/metrics"}) by(instance) * on(instance) group_left(node) kubelet_node_name{job="kubelet", metrics_path="/metrics"}) by(node) / max(kube_node_status_capacity_pods{job="kube-state-metrics"}) by(node) > 0.95
       for: 15m
