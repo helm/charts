@@ -18,6 +18,9 @@ spec:
     metadata:
       labels:
 {{ include "labels.standard" . | indent 8 }}
+    {{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+    {{- end }}
     {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
