@@ -37,7 +37,7 @@ spec:
 {{ toYaml .Values.service.externalIPs | indent 4 }}
 {{- end }}
   ports:
-    - name: api
+    - name: {{ .Values.service.portName }}
       port: {{ .Values.service.port }}
       protocol: TCP
       targetPort: 8123

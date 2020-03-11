@@ -56,6 +56,7 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `probes.startup.periodSeconds`      | Specify startup `periodSeconds` parameter for the deployment      | `10` |
 | `service.type`             | Kubernetes service type for the home-assistant GUI | `ClusterIP` |
 | `service.port`             | Kubernetes port where the home-assistant GUI is exposed| `8123` |
+| `service.portName`         | Kubernetes port name where the home-assistant GUI is exposed | `api` |
 | `service.annotations`      | Service annotations for the home-assistant GUI | `{}` |
 | `service.clusterIP`   | Cluster IP for the home-assistant GUI | `` |
 | `service.externalIPs`   | External IPs for the home-assistant GUI | `[]` |
