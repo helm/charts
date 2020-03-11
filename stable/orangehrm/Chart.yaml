@@ -1,8 +1,10 @@
 apiVersion: v1
 name: orangehrm
-version: 7.0.8
+version: 7.0.9
 appVersion: 4.3.4-0
-description: OrangeHRM is a free HR management system that offers a wealth of modules
+# The redis chart is deprecated and no longer maintained. For details deprecation, see the PROCESSES.md file.
+deprecated: true
+description: DEPRECATED OrangeHRM is a free HR management system that offers a wealth of modules
   to suit the needs of your business.
 keywords:
 - orangehrm
@@ -15,8 +17,6 @@ keywords:
 home: https://www.orangehrm.com
 sources:
 - https://github.com/bitnami/bitnami-docker-orangehrm
-maintainers:
-- name: Bitnami
-  email: containers@bitnami.com
+maintainers: []
 engine: gotpl
 icon: https://bitnami.com/assets/stacks/orangehrm/img/orangehrm-stack-110x117.png
