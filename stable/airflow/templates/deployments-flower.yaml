@@ -37,6 +37,9 @@ spec:
         app: {{ template "airflow.name" . }}
         component: flower
         release: {{ .Release.Name }}
+{{- if .Values.flower.podLabels }}
+{{ toYaml .Values.flower.podLabels | indent 8 }}
+{{- end }}
     spec:
       {{- if .Values.airflow.image.pullSecret }}
       imagePullSecrets:
