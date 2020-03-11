@@ -135,7 +135,7 @@ airflow:
   ## This should be a json string with your pools in it
   ## Examples:
   ##   pools: '{ "example": { "description": "This is an example of a pool", "slots": 2 } }'
-  pools: {}
+  pools: '{}'
 
   ##
   ## Annotations for the Scheduler, Worker and Web pods
@@ -554,9 +554,19 @@ dags:
         ## values: Always or IfNotPresent
         pullPolicy: IfNotPresent
       ## The amount of time in seconds to git pull dags
-      refreshTime:
+      refreshTime: 0
+      ## The amount of time in seconds before the first sync. (See notes in dags.initContainer for why you might want this.)
+      initDelay:
+        scheduler: 0
+        web: 0
+        worker: 0
   initContainer:
     ## Fetch the source code when the pods starts
+    ##
+    ## WARNING: if your synced resources include custom database hooks, it is possible to create unresolveable
+    ##          dependencies that will prevent initdb from completing. In that case you will want to disable
+    ##          the initContainer and set an appropriate dags.git.gitSync.initDelay.scheduler value
+    ##          in order to ensure that initdb finishes before the custom resources are loaded.
     enabled: false
     ## Image for the init container (any image with git will do)
     image:

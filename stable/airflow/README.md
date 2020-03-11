@@ -289,6 +289,8 @@ If you are using a private Git repo, you can set `dags.gitSecret` to the name of
 
 For example, this will create a secret named `my-git-secret` from your ed25519 key and known_hosts file stored in your home directory:  `kubectl create secret generic my-git-secret --from-file=id_ed25519=~/.ssh/id_ed25519 --from-file=known_hosts=~/.ssh/known_hosts --from-file=id_id_ed25519.pub=~/.ssh/id_ed25519.pub`
 
+If you have custom database hooks defined in your synced folder, it is possible to create dependency loops that will prevent initdb from completing successfully in the airflow scheduler.  In this case, you cannot use the init-container, but it is still possible to use the sidecar container: set `dags.initContainer.enabled` to false, but set `dags.git.gitSync.enabled` to true and set `dags.git.gitSync.initDelay.scheduler` to at least 60 in order to provide a window in which initdb can complete before any custom hooks are loaded.
+
 #### Init-container git connection ssh
 
 This set of instructions will enable you to clone your repository in the initContainer git-clone.sh script through an ssh connection.
@@ -483,6 +485,9 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `dags.git.gitSync.enabled`               | Enables a sidecar container that syncs dags             | `false`                   |
 | `dags.git.gitSync.image.repository`      | Image of the sidecar container that syncs dags          | `alpine/git`                  |
 | `dags.git.gitSync.image.tag`             | Image tag of sidecar container that syncs dags          | `1.0.4`                  |
+| `dags.git.gitSync.initDelay.scheduler`   | How long the git-sync sidecar pauses at startup before commencing synchronication for airflow-scheduler (in seconds) | nil |
+| `dags.git.gitSync.initDelay.web`         | How long the git-sync sidecar pauses at startup before commencing synchronication for airflow-web (in seconds) | nil |
+| `dags.git.gitSync.initDelay.worker`      | How long the git-sync sidecar pauses at startup before commencing synchronication for airflow-worker (in seconds) | nil |
 | `dags.git.gitSync.refreshTime`           | How often the sidecar container syncs dags up with repository(in seconds)         | nil                  |
 | `logs.path`                              | mount path for logs persistent volume                   | `/usr/local/airflow/logs` |
 | `rbac.create`                            | create RBAC resources                                   | `true`                    |

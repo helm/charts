@@ -120,6 +120,7 @@ spec:
             - "{{ .Values.dags.git.repoHost}}"
             - "{{ .Values.dags.git.privateKeyName }}"
             - "{{ .Values.dags.git.gitSync.refreshTime }}"
+            - "{{ .Values.dags.git.gitSync.initDelay.worker }}"
           volumeMounts:
             - name: git-clone
               mountPath: /usr/local/git
@@ -230,7 +231,7 @@ spec:
           persistentVolumeClaim:
             claimName: {{ .Values.logsPersistence.existingClaim | default (printf "%s-logs" (include "airflow.fullname" . | trunc 58 )) }}
         {{- end }}
-        {{- if .Values.dags.initContainer.enabled }}
+        {{- if or (.Values.dags.initContainer.enabled) (.Values.dags.git.gitSync.enabled) }}
         - name: git-clone
           configMap:
             name: {{ template "airflow.fullname" . }}-git-clone

@@ -35,6 +35,7 @@ data:
     REPO_HOST=$4
     PRIVATE_KEY=$5
     SYNC_TIME=$6
+    INIT_DELAY=$7
     {{- if .Values.dags.git.secret }}
     mkdir -p ~/.ssh/
     cp -rL /keys/* ~/.ssh/
@@ -44,11 +45,13 @@ data:
     {{- if eq .Values.dags.initContainer.enabled  false }}
     git clone $REPO -b $REF $DIR
     {{- end }}
+    if [ "${INIT_DELAY}" -gt 0 ] 2>/dev/null; then echo "*** sleeping ${INIT_DELAY} seconds before syncing"; sleep "${INIT_DELAY}"; fi
     cd $DIR
     while true; do
       git fetch origin $REF;
       git reset --hard origin/$REF;
       git clean -fd;
       date;
+      echo "*** sleeping ${SYNC_TIME} seconds"
       sleep $SYNC_TIME;
     done
