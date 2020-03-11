@@ -1965,7 +1965,6 @@ spec:
       required:
       - metadata
       - spec
-      type: object
   version: v1beta2
   versions:
   - name: v1beta2
@@ -3963,7 +3962,6 @@ spec:
       required:
       - metadata
       - spec
-      type: object
   version: v1beta2
   versions:
   - name: v1beta2

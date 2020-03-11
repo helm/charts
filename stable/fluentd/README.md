@@ -44,6 +44,7 @@ The following table lists the configurable parameters of the fluentd chart and t
 
 Parameter | Description | Default
 --- | --- | ---
+`useStatefulSet` | Deploy as a StatefulSet regardless of whether autoscaling is enabled | `nil`
 `affinity` | node/pod affinities | `{}`
 `configMaps` | Fluentd configuration | See [values.yaml](values.yaml)
 `output.host` | output host | `elasticsearch-client.default.svc.cluster.local`
