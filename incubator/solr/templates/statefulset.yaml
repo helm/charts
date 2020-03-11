@@ -58,6 +58,7 @@ spec:
       initContainers:
         - name: check-zk
           image: busybox:latest
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           command:
             - 'sh'
             - '-c'
@@ -85,6 +86,7 @@ spec:
               exit 1;
         - name: "cp-solr-xml"
           image: busybox:latest
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           command: ['sh', '-c', 'cp /tmp/solr.xml /tmp-config/solr.xml']
           volumeMounts:
             - name: "solr-xml"
