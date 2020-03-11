@@ -123,6 +123,11 @@ spec:
           ports:
             - containerPort: 9000
               name: graylog
+          {{- range .Values.graylog.service.ports }}
+            - containerPort: {{ .port }}
+              name: {{ .name}}
+              protocol: {{ .protocol }}
+          {{- end }}
           {{- with .Values.graylog.input }}
           {{- if .udp }}
           {{- range .udp.ports }}
@@ -220,7 +225,7 @@ spec:
         - name: kubectl
           emptyDir: {}
 {{- if .Values.graylog.extraVolumes }}
-{{ toYaml .Values.graylog.extraVolumes | indent 8}}
+{{ toYaml .Values.graylog.extraVolumes | indent 8 }}
 {{- end }}
 {{- if not .Values.graylog.persistence.enabled }}
         - name: journal

@@ -127,6 +127,9 @@ graylog:
   service:
     type: ClusterIP
     port: 9000
+    ## Add additional ports for the service/statefulset to expose
+    ##
+    ports: []
 
     headless:
       ## Add suffix to headless service name
