@@ -201,7 +201,7 @@ extraEnv: []
 #      echo "Do something."
 
 ## Specify the PostgreSQL username and password to execute the initdb scripts
-# initdbUser:
+# initdbUsername:
 # initdbPassword:
 
 ## ConfigMap with scripts to be run at first boot
