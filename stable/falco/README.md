@@ -104,7 +104,7 @@ The following table lists the configurable parameters of the Falco chart and the
 | `falco.httpOutput.enabled`                      | Enable http output for security notifications                                                                      | `false`                                                                                                                                   |
 | `falco.httpOutput.url`                          | Url to notify using the http output when a notification arrives                                                    | `http://some.url`                                                                                                                         |
 | `falco.grpc.enabled`                            | Enable the Falco gRPC server                                                          | `false`  
-| `falco.grpc.bindAddress`                        | Configure the address to bind and expose the Falco gRPC server                        | `0.0.0.0:5060` 
+| `falco.grpc.listenPort`                        | Port where Falco gRPC server listen to connections server                        | `5060` 
 | `falco.grpc.threadiness`                        | Number of threads (and context) the gRPC server will use                              | `8` 
 | `falco.grpc.privateKey`                         | Key file path for the Falco gRPC server                                               | `/etc/falco/certs/server.key` 
 | `falco.grpc.certChain`                          | Cert file path for the Falco gRPC server                                              | `/etc/falco/certs/server.crt` 
