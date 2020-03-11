@@ -1,8 +1,10 @@
 apiVersion: v1
 name: wordpress
-version: 9.0.1
+version: 9.0.2
 appVersion: 5.3.2
-description: Web publishing platform for building blogs and websites.
+# The redis chart is deprecated and no longer maintained. For details deprecation, see the PROCESSES.md file.
+deprecated: true
+description: DEPRECATED Web publishing platform for building blogs and websites.
 icon: https://bitnami.com/assets/stacks/wordpress/img/wordpress-stack-220x234.png
 keywords:
   - wordpress
@@ -15,7 +17,5 @@ keywords:
 home: http://www.wordpress.com/
 sources:
   - https://github.com/bitnami/bitnami-docker-wordpress
-maintainers:
-  - name: Bitnami
-    email: containers@bitnami.com
+maintainers: []
 engine: gotpl
