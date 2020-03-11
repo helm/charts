@@ -48,8 +48,8 @@ spec:
         app: {{ template "airflow.name" . }}
         component: web
         release: {{ .Release.Name }}
-{{- if .Values.scheduler.podLabels }}
-{{ toYaml .Values.scheduler.podLabels | indent 8 }}
+{{- if .Values.web.podLabels }}
+{{ toYaml .Values.web.podLabels | indent 8 }}
 {{- end }}
     spec:
       {{- if .Values.airflow.image.pullSecret }}
