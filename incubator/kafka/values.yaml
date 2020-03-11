@@ -142,6 +142,9 @@ external:
   type: NodePort
   # annotations:
   #  service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
+  # Labels to be added to external services
+  # labels:
+  #  aLabel: "value"
   dns:
     useInternal: false
     useExternal: true
