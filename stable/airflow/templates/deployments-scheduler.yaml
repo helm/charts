@@ -126,6 +126,7 @@ spec:
             - "{{ .Values.dags.git.repoHost}}"
             - "{{ .Values.dags.git.privateKeyName }}"
             - "{{ .Values.dags.git.gitSync.refreshTime }}"
+            - "{{ .Values.dags.git.gitSync.initDelay.scheduler }}"
           volumeMounts:
             - name: git-clone
               mountPath: /usr/local/git
@@ -153,7 +154,7 @@ spec:
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
               subPath: {{ .Values.persistence.subPath | default "" }}
-          {{- else if .Values.dags.initContainer.enabled }}
+          {{- else if or (.Values.dags.initContainer.enabled) (.Values.dags.git.gitSync.enabled) }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
           {{- end }}
