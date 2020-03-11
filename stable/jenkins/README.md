@@ -495,7 +495,7 @@ master.JCasC.enabled: true
 master.JCasC.defaultConfig: true
 ```
 The example below creates a python pod template in the kubernetes cloud.
-```
+```yaml
 agent:
   podTemplates:
     python: |
@@ -515,6 +515,59 @@ agent:
             resourceLimitMemory: "1024Mi"
 ```
 Best reference is https://<jenkins_url>/configuration-as-code/reference#Cloud-kubernetes.
+
+### Adding pod templates using additional `agent` values (multiple agents)
+
+Additional `agent` values may be used to configure kubernetes pod templates in the default configuration as code. For example,
+```yaml
+master:
+  JCasC:
+    enabled: true
+    defaultConfig: true
+
+agent:
+  enabled: true
+  podName: default
+  customJenkinsLabels: default
+  resources:
+    limits:
+      cpu: "1"
+      memory: "2048Mi"
+  podTemplates:
+    additionalAgents: |-
+      {{- /* save .Values.agent */}}
+      {{- $agent := .Values.agent }}
+
+      {{- range $name, $additionalAgent := .Values.additionalAgents }}
+        {{- /* merge original .Values.agent into additional agent to ensure it at least has the default values */}}
+        {{- $additionalAgent := merge $additionalAgent $agent }}
+        {{- /* set .Values.agent to $additionalAgent */}}
+        {{- $_ := set $.Values "agent" $additionalAgent }}
+        {{- include "jenkins.casc.podTemplate" $ | nindent 0 }}
+      {{- end }}
+
+      {{- /* restore .Values.agent */}}
+      {{- $_ := set .Values "agent" $agent }}
+
+# Each additional agent corresponds to a chart `agent` in terms of the configurable values.
+additionalAgents:
+  maven:
+    podName: maven
+    customJenkinsLabels: maven
+    # An example of overriding the jnlp container
+    sideContainerName: jnlp
+    image: jenkins/jnlp-agent-maven
+    tag: latest
+  python:
+    podName: python
+    customJenkinsLabels: python
+    sideContainerName: python
+    image: python
+    tag: "3"
+    command: "/bin/sh -c"
+    args: "cat"
+    TTYEnabled: true
+```
 
 ## Running behind a forward proxy
 

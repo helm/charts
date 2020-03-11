@@ -101,46 +101,10 @@ jenkins:
       serverUrl: "https://kubernetes.default"
       {{- if .Values.agent.enabled }}
       templates:
-      - containers:
-        - alwaysPullImage: {{ .Values.agent.alwaysPullImage }}
-          args: "{{ .Values.agent.args | replace "$" "^$" }}"
-          command: {{ .Values.agent.command }}
-          envVars:
-          - containerEnvVar:
-              key: "JENKINS_URL"
-              value: "http://{{ template "jenkins.fullname" . }}.{{ template "jenkins.namespace" . }}.svc.{{.Values.clusterZone}}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}"
-          {{- if .Values.agent.imageTag }}
-          image: "{{ .Values.agent.image }}:{{ .Values.agent.imageTag }}"
-          {{- else }}
-          image: "{{ .Values.agent.image }}:{{ .Values.agent.tag }}"
-          {{- end }}
-          name: "{{ .Values.agent.sideContainerName }}"
-          privileged: "{{- if .Values.agent.privileged }}true{{- else }}false{{- end }}"
-          resourceLimitCpu: {{.Values.agent.resources.limits.cpu}}
-          resourceLimitMemory: {{.Values.agent.resources.limits.memory}}
-          resourceRequestCpu: {{.Values.agent.resources.requests.cpu}}
-          resourceRequestMemory: {{.Values.agent.resources.requests.memory}}
-          ttyEnabled: {{ .Values.agent.TTYEnabled }}
-          workingDir: "/home/jenkins"
-        idleMinutes: {{ .Values.agent.idleMinutes }}
-        instanceCap: 2147483647
-        {{- if .Values.agent.imagePullSecretName }}
-        imagePullSecrets:
-        - name: {{ .Values.agent.imagePullSecretName }}
-        {{- end }}
-        label: "{{ .Release.Name }}-{{ .Values.agent.componentName }} {{ .Values.agent.customJenkinsLabels  | join " " }}"
-        name: "{{ .Values.agent.podName }}"
-        nodeUsageMode: "NORMAL"
-        podRetention: {{ .Values.agent.podRetention }}
-        showRawYaml: true
-        serviceAccount: "{{ include "jenkins.serviceAccountAgentName" . }}"
-        slaveConnectTimeoutStr: "{{ .Values.agent.slaveConnectTimeout }}"
-        yaml: |-
-          {{ tpl .Values.agent.yamlTemplate . | nindent 10 | trim }}
-        yamlMergeStrategy: "override"
+      {{- include "jenkins.casc.podTemplate" . | nindent 8 }}
       {{- if .Values.agent.podTemplates }}
         {{- range $key, $val := .Values.agent.podTemplates }}
-          {{- tpl $val $ | nindent 6 }}
+          {{- tpl $val $ | nindent 8 }}
         {{- end }}
       {{- end }}
       {{- end }}
@@ -158,6 +122,49 @@ unclassified:
   location:
     adminAddress: {{ default "" .Values.master.jenkinsAdminEmail }}
     url: {{ template "jenkins.url" . }}
+{{- end -}}
+
+{{/*
+Returns kubernetes pod template configuration as code
+*/}}
+{{- define "jenkins.casc.podTemplate" -}}
+- name: "{{ .Values.agent.podName }}"
+  containers:
+  - name: "{{ .Values.agent.sideContainerName }}"
+    alwaysPullImage: {{ .Values.agent.alwaysPullImage }}
+    args: "{{ .Values.agent.args | replace "$" "^$" }}"
+    command: {{ .Values.agent.command }}
+    envVars:
+    - containerEnvVar:
+        key: "JENKINS_URL"
+        value: "http://{{ template "jenkins.fullname" . }}.{{ template "jenkins.namespace" . }}.svc.{{.Values.clusterZone}}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}"
+    {{- if .Values.agent.imageTag }}
+    image: "{{ .Values.agent.image }}:{{ .Values.agent.imageTag }}"
+    {{- else }}
+    image: "{{ .Values.agent.image }}:{{ .Values.agent.tag }}"
+    {{- end }}
+    privileged: "{{- if .Values.agent.privileged }}true{{- else }}false{{- end }}"
+    resourceLimitCpu: {{.Values.agent.resources.limits.cpu}}
+    resourceLimitMemory: {{.Values.agent.resources.limits.memory}}
+    resourceRequestCpu: {{.Values.agent.resources.requests.cpu}}
+    resourceRequestMemory: {{.Values.agent.resources.requests.memory}}
+    ttyEnabled: {{ .Values.agent.TTYEnabled }}
+    workingDir: "/home/jenkins"
+  idleMinutes: {{ .Values.agent.idleMinutes }}
+  instanceCap: 2147483647
+  {{- if .Values.agent.imagePullSecretName }}
+  imagePullSecrets:
+  - name: {{ .Values.agent.imagePullSecretName }}
+  {{- end }}
+  label: "{{ .Release.Name }}-{{ .Values.agent.componentName }} {{ .Values.agent.customJenkinsLabels  | join " " }}"
+  nodeUsageMode: "NORMAL"
+  podRetention: {{ .Values.agent.podRetention }}
+  showRawYaml: true
+  serviceAccount: "{{ include "jenkins.serviceAccountAgentName" . }}"
+  slaveConnectTimeoutStr: "{{ .Values.agent.slaveConnectTimeout }}"
+  yaml: |-
+    {{ tpl .Values.agent.yamlTemplate . | nindent 10 | trim }}
+  yamlMergeStrategy: "override"
 {{- end -}}
 
 {{- define "jenkins.kubernetes-version" -}}

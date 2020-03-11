@@ -5,6 +5,12 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.11.4 Support multiple agents
+
+Move pod template configuration based on `agent` values to a new template `jenkins.casc.podTemplate`.
+
+Update README with an example of using additional `agent` values to configure kubernetes pod templates in the default configuration as code.
+
 ## 1.11.3
 
 Update the kubernetes plugin from 1.24.1 to 1.25.1 and grant 'watch' permission to 'events' which is required since this plugin version.
