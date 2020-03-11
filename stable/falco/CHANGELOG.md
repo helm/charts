@@ -3,6 +3,11 @@
 This file documents all notable changes to Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.1.4
+
+### Minor Changes
+
+* Make `/lib/modules` writable from the container
 
 ## v1.1.3
 
