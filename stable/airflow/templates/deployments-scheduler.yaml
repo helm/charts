@@ -50,6 +50,9 @@ spec:
         app: {{ template "airflow.name" . }}
         component: scheduler
         release: {{ .Release.Name }}
+{{- if .Values.scheduler.podLabels }}
+{{ toYaml .Values.scheduler.podLabels | indent 8 }}
+{{- end }}
     spec:
       {{- if .Values.airflow.image.pullSecret }}
       imagePullSecrets:
