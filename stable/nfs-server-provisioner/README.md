@@ -85,7 +85,7 @@ their default values.
 
 ```console
 $ helm install stable/nfs-server-provisioner --name my-release \
-  --set=image.tag=v1.0.8,resources.limits.cpu=200m
+  --set=resources.limits.cpu=200m
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters
