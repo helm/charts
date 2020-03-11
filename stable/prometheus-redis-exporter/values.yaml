@@ -59,11 +59,11 @@ serviceMonitor:
 ## ref: https://github.com/coreos/prometheus-operator#customresourcedefinitions
 prometheusRule:
   enabled: false
-  # additionalLabels: {}
-  # namespace: ""
-  # rules: []
+  additionalLabels: {}
+  namespace: ""
+  rules: []
     ## These are just examples rules, please adapt them to your needs.
-    ## Make sure to constraint the rules to the current service. 
+    ## Make sure to constraint the rules to the current service.
     #  - alert: RedisDown
     #    expr: redis_up{service="{{ template "prometheus-redis-exporter.fullname" . }}"} == 0
     #    for: 2m
