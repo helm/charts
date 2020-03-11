@@ -114,6 +114,10 @@ graylog:
     # - name: graylog-plugin-auth-sso-3.0.0.jar
     #   url: https://github.com/Graylog2/graylog-plugin-auth-sso/releases/download/3.0.0/graylog-plugin-auth-sso-3.0.0.jar
 
+  ## Sidecar containers
+  ##
+  sidecarContainers: []
+
   ## Additional init containers
   ##
   extraInitContainers: []
