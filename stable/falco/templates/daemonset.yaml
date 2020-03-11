@@ -107,7 +107,6 @@ spec:
               readOnly: true
             - mountPath: /host/lib/modules
               name: lib-modules
-              readOnly: true
             - mountPath: /host/usr
               name: usr-fs
               readOnly: true
