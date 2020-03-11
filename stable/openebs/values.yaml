@@ -130,7 +130,7 @@ webhook:
 
 jiva:
   image: "quay.io/openebs/jiva"
-  imageTag: "1.7.0"
+  imageTag: "1.7.1"
   replicas: 3
   defaultStoragePath: "/var/openebs"
 
