@@ -186,11 +186,15 @@ scheduler:
   ##
   ## Labels for the scheduler deployment
   labels: {}
-  ## Pod Annotations for the web deployment
-  podAnnotations: {}
+  ##
+  ## Pod Labels for the scheduler deployment
+  podLabels: {}
   ##
   ## Annotations for the scheduler deployment
   annotations: {}
+  ##
+  ## Pod Annotations for the scheduler deployment
+  podAnnotations: {}
 
   ## Support Node, affinity and tolerations for scheduler pod assignment
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
@@ -216,6 +220,9 @@ flower:
   ##
   ## Labels for the flower deployment
   labels: {}
+  ##
+  ## Pod Labels for the flower deployment
+  podLabels: {}
   ##
   ## Annotations for the flower deployment
   annotations: {}
@@ -255,10 +262,15 @@ web:
   ## Labels for the web deployment
   labels: {}
   ##
+  ## Pod Labels for the web deployment
+  podLabels: {}
+  ##
   ## Annotations for the web deployment
   annotations: {}
+  ##
   ## Pod Annotations for the web deployment
   podAnnotations: {}
+  ##
   initialStartupDelay: "60"
   initialDelaySeconds: "360"
   minReadySeconds: 120
@@ -310,6 +322,9 @@ workers:
   ##
   ## Labels for the Worker statefulSet
   labels: {}
+  ##
+  ## Pod Labels for the Worker statefulSet
+  podLabels: {}
   ##
   ## Annotations for the Worker statefulSet
   annotations: {}
