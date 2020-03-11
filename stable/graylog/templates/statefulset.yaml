@@ -120,6 +120,8 @@ spec:
             - name: {{ $key }}
               value: {{ $value | quote }}
             {{- end }}
+          securityContext:
+            privileged: {{ .Values.graylog.privileged }}
           ports:
             - containerPort: 9000
               name: graylog

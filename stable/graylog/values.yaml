@@ -55,6 +55,10 @@ graylog:
   ##
   env: {}
 
+  ## Run as privileged container
+  ##
+  privileged: false
+
   ## Pod affinity
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
   ##
