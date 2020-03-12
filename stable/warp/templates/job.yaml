@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "warp.fullname" . }}
+  labels:
+    {{- include "warp.labels" . | nindent 4 }}
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: {{ include "warp.fullname" . }}
+        image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args: ["{{ .Values.warpConfiguration.operationToBenchmark }}", "--warp-client", "warp-{0...3}.warp.default.svc.cluster.local", "--concurrent", "{{ .Values.warpConfiguration.concurrentOperations }}", "--obj.size", "{{ .Values.warpConfiguration.objectSize }}", "--objects", "{{ .Values.warpConfiguration.objectCount }}", "--duration", "{{ .Values.warpConfiguration.duration }}"]
+        env:
+          - name: WARP_HOST
+            value: {{ .Values.warpConfiguration.s3ServerURL | quote }}
+        {{- if .Values.warpConfiguration.s3ServerTLSEnabled }}
+          - name: WARP_TLS
+            value: "true"
+        {{- end }}
+          - name: WARP_REGION
+            value: {{ .Values.warpConfiguration.s3ServerRegion | quote }}
+          - name: WARP_ACCESS_KEY
+            value: {{ .Values.warpConfiguration.s3AccessKey | quote }}
+          - name: WARP_SECRET_KEY
+            value: {{ .Values.warpConfiguration.s3SecretKey | quote }}
+  backoffLimit: 4

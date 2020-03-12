@@ -1,0 +1,75 @@
+# Default values for warp.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Number of warp client instances
+replicaCount: 4
+
+image:
+  repository: minio/warp
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+warpConfiguration:
+  # MinIO or other S3 Compatible server URL
+  s3ServerURL: minio-{0...3}.minio.default.svc.cluster.local:9000
+  # Whether TLS enabled or not for above URL
+  s3ServerTLSEnabled: true
+  # Region for S3 Server
+  s3ServerRegion: "us-east-1"
+  # MinIO or other S3 Compatible server Access Key
+  s3AccessKey: "minio"
+  # MinIO or other S3 Compatible server Secret Key
+  s3SecretKey: "minio123"
+  # Operation to be benchmarked (get / put / delete / list / stat / mixed)
+  operationToBenchmark: mixed
+  # Number of objects to be used
+  objectCount: 1000
+  # Object size to be used for benchmarks
+  objectSize: 5 MiB
+  # Duration for which the benchmark will run
+  duration: 5m0s
+  # Number of parallel operations to run during benchmark
+  concurrentOperations: 1
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  port: 7761
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

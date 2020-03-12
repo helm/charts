@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "warp.fullname" . }}
+  labels:
+    {{- include "warp.labels" . | nindent 4 }}
+spec:
+  publishNotReadyAddresses: true
+  clusterIP: None
+  selector:
+    {{- include "warp.selectorLabels" . | nindent 4 }}
