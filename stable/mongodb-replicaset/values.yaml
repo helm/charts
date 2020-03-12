@@ -2,6 +2,10 @@
 nameOverride: ""
 fullnameOverride: ""
 
+# Override the deployment namespace
+# global:
+#   namespaceOverride: ""
+
 replicas: 3
 port: 27017
 
@@ -101,7 +105,27 @@ affinity: {}
 
 tolerations: []
 
+# Additional containers to add to the StatefulSet
+extraContainers: []
+#  - name: mongo-sidecar
+#    image: stefanprodan/mgob:latest
+#    ports:
+#    - name: sidecar-http
+#      containerPort: 8090
+#    volumeMounts:
+#    - mountPath: /config/test1.yml
+#      name: mgob-config
+#      subPath: test1.yml
+#    - name: mgob-storage
+#      mountPath: /storage
+
 extraLabels: {}
+
+## Additional volumes which can be used by sidecar containers
+extraVolumes: []
+# - name: mgob-config
+#   configMap:
+#     name: mgob-config
 
 priorityClassName: ""
 

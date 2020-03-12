@@ -33,6 +33,7 @@ probes:
 service:
   type: ClusterIP
   port: 8123
+  portName: api
   annotations: {}
   labels: {}
   clusterIP: ""

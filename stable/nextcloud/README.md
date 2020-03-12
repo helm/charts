@@ -72,6 +72,7 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `nextcloud.mail.smtp.name`                                   | SMTP username                                           | `''`                                                    |
 | `nextcloud.mail.smtp.password`                               | SMTP password                                           | `''`                                                    |
 | `nextcloud.configs`                                          | Config files created in `/var/www/html/config`          | `{}`                                                    |
+| `nextcloud.persistence.subPath`                              | Set the subPath for nextcloud to use in volume          | `nil`                                                   |
 | `nextcloud.phpConfigs`                                       | PHP Config files created in `/usr/local/etc/php/conf.d` | `{}`                                                    |
 | `nextcloud.defaultConfigs.\.htaccess`                        | Default .htaccess to protect `/var/www/html/config`     | `true`                                                  |
 | `nextcloud.defaultConfigs.\.redis\.config\.php`              | Default Redis configuration                             | `true`                                                  |

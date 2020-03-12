@@ -79,7 +79,7 @@ The following table lists the configurable parameters of the OpenEBS chart and t
 | `ndmOperator.image`                     | Image for NDM Operator                        | `quay.io/openebs/node-disk-operator-amd64`|
 | `ndmOperator.imageTag`                  | Image Tag for NDM Operator                    | `v0.4.7`                                  |
 | `jiva.image`                            | Image for Jiva                                | `quay.io/openebs/jiva`                    |
-| `jiva.imageTag`                         | Image Tag for Jiva                            | `1.7.0`                                   |
+| `jiva.imageTag`                         | Image Tag for Jiva                            | `1.7.1`                                   |
 | `jiva.replicas`                         | Number of Jiva Replicas                       | `3`                                       |
 | `jiva.defaultStoragePath`               | hostpath used by default Jiva StorageClass    | `/var/openebs`                            |
 | `cstor.pool.image`                      | Image for cStor Pool                          | `quay.io/openebs/cstor-pool`              |

@@ -50,6 +50,9 @@ spec:
         app: {{ template "airflow.name" . }}
         component: scheduler
         release: {{ .Release.Name }}
+{{- if .Values.scheduler.podLabels }}
+{{ toYaml .Values.scheduler.podLabels | indent 8 }}
+{{- end }}
     spec:
       {{- if .Values.airflow.image.pullSecret }}
       imagePullSecrets:
@@ -68,6 +71,10 @@ spec:
       tolerations:
 {{ toYaml .Values.scheduler.tolerations | indent 8 }}
       {{- end }}
+      {{- if .Values.scheduler.securityContext }}
+      securityContext:
+{{ toYaml .Values.scheduler.securityContext | indent 8 }}
+      {{- end }}
       serviceAccountName: {{ template "airflow.serviceAccountName" . }}
       {{- if .Values.dags.initContainer.enabled }}
       initContainers:
@@ -84,14 +91,14 @@ spec:
           args:
             - "{{ .Values.dags.git.url }}"
             - "{{ .Values.dags.git.ref }}"
-            - "/dags"
+            - "{{ .Values.dags.initContainer.mountPath }}{{ .Values.dags.initContainer.syncSubPath | default "" }}"
             - "{{ .Values.dags.git.repoHost}}"
             - "{{ .Values.dags.git.privateKeyName }}"
           volumeMounts:
             - name: git-clone
               mountPath: /usr/local/git
             - name: dags-data
-              mountPath: /dags
+              mountPath: "{{ .Values.dags.initContainer.mountPath }}"
             {{- if .Values.dags.git.secret }}
             - name: git-clone-secret
               mountPath: /keys
@@ -118,7 +125,7 @@ spec:
           args:
             - "{{ .Values.dags.git.url }}"
             - "{{ .Values.dags.git.ref }}"
-            - "/dags"
+            - "{{ .Values.dags.initContainer.mountPath }}"
             - "{{ .Values.dags.git.repoHost}}"
             - "{{ .Values.dags.git.privateKeyName }}"
             - "{{ .Values.dags.git.gitSync.refreshTime }}"
@@ -126,7 +133,7 @@ spec:
             - name: git-clone
               mountPath: /usr/local/git
             - name: dags-data
-              mountPath: /dags
+              mountPath: "{{ .Values.dags.initContainer.mountPath }}"
             {{- if .Values.dags.git.secret }}
             - name: git-clone-secret
               mountPath: /keys
@@ -182,53 +189,53 @@ spec:
             - "-c"
           {{- if and ( .Values.dags.initContainer.enabled ) ( .Values.dags.initContainer.installRequirements ) }}
             - >
-              echo 'waiting 10s...' &&
+              echo "*** waiting 10s..." &&
               sleep 10 &&
-              echo 'installing requirements...' &&
+              echo "*** installing requirements..." &&
               mkdir -p /usr/local/airflow/.local/bin &&
               export PATH=/usr/local/airflow/.local/bin:$PATH &&
               /usr/local/scripts/install-requirements.sh &&
+              {{- if .Values.airflow.variables }}
+                echo "*** adding variables" &&
+                airflow variables -i /usr/local/variables-pools/variables.json &&
+              {{- end }}
+              {{- if .Values.airflow.connections }}
+                echo "*** adding connections" &&
+                /usr/local/connections/add-connections.sh &&
+              {{- end }}
               {{- if .Values.airflow.initdb }}
-              echo "executing initdb" &&
+              echo "*** executing initdb" &&
               airflow initdb &&
               {{- end }}
-            {{- if .Values.airflow.connections }}
-              echo "adding connections" &&
-              /usr/local/connections/add-connections.sh &&
-            {{- end }}
-            {{- if .Values.airflow.variables }}
-              echo "adding variables" &&
-              airflow variables -i /usr/local/variables-pools/variables.json &&
-            {{- end }}
             {{- if .Values.airflow.pools }}
-              echo "adding pools" &&
+              echo "*** adding pools" &&
               airflow pool -i /usr/local/variables-pools/pools.json &&
             {{- end }}
-              echo "executing scheduler" &&
+              echo "*** executing scheduler" &&
               airflow scheduler -n {{ .Values.airflow.schedulerNumRuns }}
           {{- else }}
             - >
-              echo 'waiting 10s...' &&
+              echo "*** waiting 10s..." &&
               sleep 10 &&
               mkdir -p /usr/local/airflow/.local/bin &&
               export PATH=/usr/local/airflow/.local/bin:$PATH &&
+              {{- if .Values.airflow.variables }}
+                echo "*** adding variables" &&
+                airflow variables -i /usr/local/variables-pools/variables.json &&
+              {{- end }}
+              {{- if .Values.airflow.connections }}
+                echo "*** adding connections" &&
+                /usr/local/connections/add-connections.sh &&
+              {{- end }}
               {{- if .Values.airflow.initdb }}
-              echo "executing initdb" &&
+              echo "*** executing initdb" &&
               airflow initdb &&
               {{- end }}
-            {{- if .Values.airflow.connections }}
-              echo "adding connections" &&
-              /usr/local/connections/add-connections.sh &&
-            {{- end }}
-            {{- if .Values.airflow.variables }}
-              echo "adding variables" &&
-              airflow variables -i /usr/local/variables-pools/variables.json &&
-            {{- end }}
             {{- if .Values.airflow.pools }}
-              echo "adding pools" &&
+              echo "*** adding pools" &&
               airflow pool -i /usr/local/variables-pools/pools.json &&
             {{- end }}
-              echo "executing scheduler" &&
+              echo "*** executing scheduler" &&
               airflow scheduler -n {{ .Values.airflow.schedulerNumRuns }}
           {{- end }}
 {{- if .Values.airflow.extraContainers }}
