@@ -20,7 +20,7 @@
 #
 # kubeStateMetricsUrl - if provided, the discovery process for kube-state-metrics endpoint won't be triggered
 # Only HTTP is accepted. This is an example value: http://172.17.0.3:8080
-# kubeStateMetricsUrl:
+# disableKubeStateMetrics - disables KSM parsing by the DaemonSet. Defaults to "false" if not provided.
 
 verboseLog: false
 
@@ -29,7 +29,7 @@ verboseLog: false
 
 image:
   repository: newrelic/infrastructure-k8s
-  tag: 1.15.0
+  tag: 1.16.0
   pullPolicy: IfNotPresent
 
 resources:

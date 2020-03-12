@@ -55,6 +55,10 @@ spec:
                   {{- end }}
             - name: "CLUSTER_NAME"
               value: {{ include "newrelic.cluster" . }}
+            {{- if .Values.disableKubeStateMetrics }}
+            - name: "DISABLE_KUBE_STATE_METRICS"
+              value: {{ .Values.kubeStateMetricsPodLabel | quote }}
+            {{- end }}
             {{- if .Values.kubeStateMetricsUrl }}
             - name: "KUBE_STATE_METRICS_URL"
               value: {{ .Values.kubeStateMetricsUrl | quote }}
@@ -116,7 +120,7 @@ spec:
             - name: "NRIA_CUSTOM_ATTRIBUTES"
               value: {{ .Values.customAttribues }}
             - name: "NRIA_PASSTHROUGH_ENVIRONMENT"
-              value: "KUBERNETES_SERVICE_HOST,KUBERNETES_SERVICE_PORT,CLUSTER_NAME,CADVISOR_PORT,NRK8S_NODE_NAME,KUBE_STATE_METRICS_URL,KUBE_STATE_METRICS_POD_LABEL,TIMEOUT,ETCD_TLS_SECRET_NAME,ETCD_TLS_SECRET_NAMESPACE,API_SERVER_SECURE_PORT,KUBE_STATE_METRICS_SCHEME,KUBE_STATE_METRICS_PORT,SCHEDULER_ENDPOINT_URL,ETCD_ENDPOINT_URL,CONTROLLER_MANAGER_ENDPOINT_URL,API_SERVER_ENDPOINT_URL"
+              value: "KUBERNETES_SERVICE_HOST,KUBERNETES_SERVICE_PORT,CLUSTER_NAME,CADVISOR_PORT,NRK8S_NODE_NAME,KUBE_STATE_METRICS_URL,KUBE_STATE_METRICS_POD_LABEL,TIMEOUT,ETCD_TLS_SECRET_NAME,ETCD_TLS_SECRET_NAMESPACE,API_SERVER_SECURE_PORT,KUBE_STATE_METRICS_SCHEME,KUBE_STATE_METRICS_PORT,SCHEDULER_ENDPOINT_URL,ETCD_ENDPOINT_URL,CONTROLLER_MANAGER_ENDPOINT_URL,API_SERVER_ENDPOINT_URL,DISABLE_KUBE_STATE_METRICS"
             {{- if .Values.verboseLog }}
             - name: NRIA_VERBOSE
               value: "1"
@@ -194,7 +198,7 @@ spec:
         {{- if .Values.integrations_config }}
         - name: nri-integrations-cfg-volume
           configMap:
-            name: {{ template "newrelic.fullname" . }}-integrations-cfg 
+            name: {{ template "newrelic.fullname" . }}-integrations-cfg
         {{- end }}
       {{- if $.Values.priorityClassName }}
       priorityClassName: {{ $.Values.priorityClassName }}
