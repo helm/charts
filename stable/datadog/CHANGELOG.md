@@ -2,6 +2,10 @@
 
 ## 2.0
 
+## 2.0.5
+
+* Honor the `datadog.env` parameter in all containers.
+
 ## 2.0.4
 
 * Honor the image pull policy in init containers.

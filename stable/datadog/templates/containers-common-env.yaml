@@ -30,4 +30,7 @@
 - name: DD_DD_URL
   value: {{ .Values.datadog.dd_url | quote }}
 {{- end }}
+{{- if .Values.datadog.env }}
+{{ toYaml .Values.datadog.env }}
+{{- end }}
 {{- end -}}
