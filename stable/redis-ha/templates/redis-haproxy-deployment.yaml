@@ -111,6 +111,9 @@ spec:
       - name: haproxy
         image: {{ .Values.haproxy.image.repository }}:{{ .Values.haproxy.image.tag }}
         imagePullPolicy: {{ .Values.haproxy.image.pullPolicy }}
+        args:
+        - -f
+        - /usr/local/etc/haproxy/haproxy.cfg
         livenessProbe:
           httpGet:
             path: /healthz
