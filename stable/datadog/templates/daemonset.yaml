@@ -63,7 +63,7 @@ spec:
         {{- if .Values.datadog.apm.enabled }}
           {{- include "container-trace-agent" . | nindent 8 }}
         {{- end }}
-        {{- if or (kindIs "invalid" .Values.datadog.processAgent.enabled) .Values.datadog.processAgent.enabled }}
+        {{- if .Values.datadog.processAgent.enabled }}
           {{- include "container-process-agent" . | nindent 8 }}
         {{- end }}
         {{- if .Values.datadog.systemProbe.enabled }}
