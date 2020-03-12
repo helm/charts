@@ -128,6 +128,11 @@ spec:
               name: shared-pipe
               readOnly: false
             {{- end }}
+            {{- if .Values.falco.grpc.enabled }}
+            - mountPath: /etc/falco/certs
+              name: certs-volume
+              readOnly: true
+            {{- end}}
       {{- if .Values.integrations.natsOutput.enabled }}
         - name: {{ .Chart.Name }}-nats
           image: sysdig/falco-nats:latest
@@ -250,6 +255,18 @@ spec:
         {{- if (or .Values.integrations.natsOutput.enabled .Values.integrations.snsOutput.enabled .Values.integrations.pubsubOutput.enabled) }}
         - name: shared-pipe
           emptyDir: {}
+        {{- end }}
+        {{- if .Values.falco.grpc.enabled }}
+        - name: certs-volume
+          secret:
+            secretName: {{ template "falco.fullname" . }}-certs
+            items:
+              - key: server.key
+                path: server.key
+              - key: server.crt
+                path: server.crt
+              - key: ca.crt
+                path: ca.crt
         {{- end }}
   updateStrategy:
 {{ toYaml .Values.daemonset.updateStrategy | indent 4 }}
