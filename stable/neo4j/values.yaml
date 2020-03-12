@@ -151,3 +151,18 @@ resources: {}
 # requests:
 #   cpu: 100m
 #   memory: 512Mi
+
+## Expose Neo4j metrics
+## For now only Prometheus is supported by this chart
+metrics:
+  prometheus:
+    ## Publish metrics for polling as Prometheus endpoint
+    enabled: false
+    serviceMonitor:
+      ## Whether to create a ServiceMonitor used by the Prometheus Operator for scraping
+      enabled: false
+      ## How frequently Prometheus should scrape
+      interval: 30s
+      ## Additional labels for the ServiceMonitor
+      labels: {}
+        # prometheus: monitoring

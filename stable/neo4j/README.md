@@ -91,6 +91,10 @@ their default values.
 | `readReplica.initContainers`          | Init containers to add to the replica pods. Example use case is a script that installs custom plugins/extensions                        | `{}`                                            |
 | `resources`                           | Resources required (e.g. CPU, memory)                                                                                                   | `{}`                                            |
 | `clusterDomain`                       | Cluster domain                                                                                                                          | `cluster.local`                                 |
+| `metrics.prometheus.enabled` | Publish metrics for polling as Prometheus endpoint | `false` |
+| `metrics.prometheus.serviceMonitor.enabled` | Whether to create a ServiceMonitor used by the Prometheus Operator for scraping | `false` |
+| `metrics.prometheus.serviceMonitor.interval` | How frequently Prometheus should scrape | `30s` |
+| `metrics.prometheus.serviceMonitor.labels` | Additional labels for the ServiceMonitor | `{}` |
 
 The above parameters map to the env variables defined in the
 [Neo4j docker image](https://github.com/neo4j/docker-neo4j).

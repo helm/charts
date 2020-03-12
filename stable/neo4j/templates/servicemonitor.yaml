@@ -1,0 +1,28 @@
+{{- if and .Values.metrics.prometheus.enabled .Values.metrics.prometheus.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "neo4j.fullname" . }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "neo4j.name" . }}
+{{- with .Values.metrics.prometheus.serviceMonitor.labels }}
+    {{- toYaml . | nindent 4 }}
+{{- end }}
+spec:
+  endpoints:
+  - port: prometheus
+{{- if .Values.metrics.prometheus.serviceMonitor.interval }}
+    interval: {{ .Values.metrics.prometheus.serviceMonitor.interval }}
+{{- end }}
+  jobLabel: {{ template "neo4j.fullname" . }}
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      app: {{ template "neo4j.name" . }}
+      release: {{ .Release.Name }}
+{{- end }}

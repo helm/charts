@@ -23,6 +23,11 @@ spec:
     - name: https
       port: 7473
       targetPort: 7473
+{{- if .Values.metrics.prometheus.enabled }}
+    - name: prometheus
+      port: 2004
+      targetPort: 2004
+{{- end }}
   selector:
     app.kubernetes.io/name: {{ template "neo4j.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
