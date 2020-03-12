@@ -3,6 +3,13 @@
 This file documents all notable changes to Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.1.5
+
+### Minor Changes
+
+* Add headless service for gRPC server
+* Allow gRPC certificates configuration by using `--set-file`
+
 ## v1.1.4
 
 ### Minor Changes

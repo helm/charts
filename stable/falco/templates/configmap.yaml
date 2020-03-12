@@ -185,7 +185,7 @@ data:
 
     grpc:
       enabled: {{ .Values.falco.grpc.enabled }}
-      bind_address: {{ .Values.falco.grpc.bindAddress }}
+      bind_address: "0.0.0.0:{{ .Values.falco.grpc.listenPort }}"
       threadiness: {{ .Values.falco.grpc.threadiness }}
       private_key: {{ .Values.falco.grpc.privateKey }}
       cert_chain: {{ .Values.falco.grpc.certChain }}
