@@ -286,6 +286,12 @@ datadog:
     #
     enabled: false
 
+    ## @param processCollection - boolean - required
+    ## Set this to true to enable process collection in process monitoring agent
+    ## Requires processAgent.enabled to be set to true to have any effect
+    #
+    processCollection: false
+
   ## @param systemProbe - object - required
   ## Enable systemProbe agent and provide custom configs
   #
