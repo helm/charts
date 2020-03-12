@@ -195,6 +195,10 @@ spec:
               mkdir -p /usr/local/airflow/.local/bin &&
               export PATH=/usr/local/airflow/.local/bin:$PATH &&
               /usr/local/scripts/install-requirements.sh &&
+              {{- if .Values.airflow.initdb }}
+              echo "*** executing initdb" &&
+              airflow initdb &&
+              {{- end }}
               {{- if .Values.airflow.variables }}
                 echo "*** adding variables" &&
                 airflow variables -i /usr/local/variables-pools/variables.json &&
@@ -202,10 +206,6 @@ spec:
               {{- if .Values.airflow.connections }}
                 echo "*** adding connections" &&
                 /usr/local/connections/add-connections.sh &&
-              {{- end }}
-              {{- if .Values.airflow.initdb }}
-              echo "*** executing initdb" &&
-              airflow initdb &&
               {{- end }}
             {{- if .Values.airflow.pools }}
               echo "*** adding pools" &&
@@ -219,6 +219,10 @@ spec:
               sleep 10 &&
               mkdir -p /usr/local/airflow/.local/bin &&
               export PATH=/usr/local/airflow/.local/bin:$PATH &&
+              {{- if .Values.airflow.initdb }}
+              echo "*** executing initdb" &&
+              airflow initdb &&
+              {{- end }}
               {{- if .Values.airflow.variables }}
                 echo "*** adding variables" &&
                 airflow variables -i /usr/local/variables-pools/variables.json &&
@@ -226,10 +230,6 @@ spec:
               {{- if .Values.airflow.connections }}
                 echo "*** adding connections" &&
                 /usr/local/connections/add-connections.sh &&
-              {{- end }}
-              {{- if .Values.airflow.initdb }}
-              echo "*** executing initdb" &&
-              airflow initdb &&
               {{- end }}
             {{- if .Values.airflow.pools }}
               echo "*** adding pools" &&
