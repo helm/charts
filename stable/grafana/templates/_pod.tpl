@@ -37,6 +37,8 @@ initContainers:
     image: "{{ .Values.downloadDashboardsImage.repository }}:{{ .Values.downloadDashboardsImage.tag }}"
     imagePullPolicy: {{ .Values.downloadDashboardsImage.pullPolicy }}
     command: ["/bin/sh"]
+    resources:
+{{ toYaml .Values.downloadDashboardsImage.resources | indent 6 }}
     args: [ "-c", "mkdir -p /var/lib/grafana/dashboards/default && /bin/sh /etc/grafana/download_dashboards.sh" ]
     env:
 {{- range $key, $value := .Values.downloadDashboards.env }}
