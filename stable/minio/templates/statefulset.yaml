@@ -23,6 +23,8 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
     {{- with .Values.labels }}
+{{ toYaml . | indent 4 }}
+    {{- end }}
 spec:
   publishNotReadyAddresses: true
   clusterIP: None
