@@ -1,8 +1,8 @@
 halyard:
-  spinnakerVersion: 1.16.1
+  spinnakerVersion: 1.16.7
   image:
     repository: gcr.io/spinnaker-marketplace/halyard
-    tag: 1.23.2
+    tag: 1.31.1
     pullSecrets: []
   # Set to false to disable persistence data volume for halyard
   persistence:
@@ -257,11 +257,14 @@ redis:
 minio:
   enabled: true
   image:
-    tag: RELEASE.2018-08-25T01-56-38Z
-  serviceType: ClusterIP
+    tag: RELEASE.2020-01-03T19-12-21Z
+  service:
+    type: ClusterIP
   accessKey: spinnakeradmin
   secretKey: spinnakeradmin
-  bucket: "spinnaker"
+  defaultBucket:
+    enabled: true
+    name: "spinnaker"
   nodeSelector: {}
 # Uncomment if you don't want to create a PVC for minio
 #  persistence:
