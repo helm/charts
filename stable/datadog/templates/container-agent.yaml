@@ -26,7 +26,7 @@
       value: {{ .Values.agents.containers.agent.logLevel | default .Values.datadog.logLevel | quote }}
     {{- end }}  
     {{- if .Values.datadog.dogstatsd.port }}
-    - name: DD_DOGSTATD_PORT
+    - name: DD_DOGSTATSD_PORT
       value: {{ .Values.datadog.dogstatsd.port | quote }}
     {{- end }}
     {{- if .Values.datadog.dogstatsd.nonLocalTraffic }}
