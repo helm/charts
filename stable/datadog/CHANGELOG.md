@@ -2,6 +2,14 @@
 
 ## 2.0
 
+## 2.0.7
+
+* Pass expected `DD_DOGSTATSD_PORT` to datadog-agent rather than invalid `DD_DOGSTATD_PORT`
+
+## 2.0.6
+
+* Introduces `procesAgent.processCollection` to correctly configure `DD_PROCESS_AGENT_ENABLED` for the process agent.
+
 ## 2.0.5
 
 * Honor the `datadog.env` parameter in all containers.
