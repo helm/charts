@@ -2,7 +2,7 @@
 {{- $fullName := include "buzzfeed-sso.fullname" . -}}
 {{- $proxySecret := .Values.proxy.customSecret | default ($fullName) -}}
 {{- $name := include "buzzfeed-sso.name" . -}}
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ $fullName }}-proxy
