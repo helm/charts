@@ -386,6 +386,22 @@ grafana.ini:
     mode: console
   grafana_net:
     url: https://grafana.net
+## grafana Authentication can be enabled with the following values on grafana.ini
+ # server:
+      # The full public facing url you use in browser, used for redirects and emails
+ #    root_url:
+ # https://grafana.com/docs/grafana/latest/auth/github/#enable-github-in-grafana
+ # auth.github:
+ #    enabled: false
+ #    allow_sign_up: false
+ #    scopes: user:email,read:org
+ #    auth_url: https://github.com/login/oauth/authorize
+ #    token_url: https://github.com/login/oauth/access_token
+ #    api_url: https://github.com/user
+ #    team_ids:
+ #    allowed_organizations:
+ #    client_id:
+ #    client_secret:
 ## LDAP Authentication can be enabled with the following values on grafana.ini
 ## NOTE: Grafana will fail to start if the value for ldap.toml is invalid
   # auth.ldap:
