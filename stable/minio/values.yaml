@@ -171,11 +171,11 @@ securityContext:
   runAsGroup: 1000
   fsGroup: 1000
 
-# Additational pod annotations
-podAnnotations: {}
-
 # Additional labels to apply to the deployment or statefulsets
 labels: {}
+
+# Additational pod annotations
+podAnnotations: {}
 
 # Additional pod labels
 podLabels: {}
