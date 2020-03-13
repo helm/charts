@@ -140,6 +140,14 @@ service:
   annotations: {}
   labels: {}
 
+serviceMonitor:
+  enabled: false
+  # namespace: prometheus
+  labels: {}
+  metricsPath: "/metrics"
+  # timeout: 60
+  # interval: 60
+
 resources: {}
 #  limits:
 #    cpu: 100m
