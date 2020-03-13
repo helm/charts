@@ -139,6 +139,7 @@ The following table lists the configurable parameters of the MinIO chart and the
 | `nodeSelector`                            | Node labels for pod assignment                                                                                                          | `{}`                                       |
 | `affinity`                                | Affinity settings for pod assignment                                                                                                    | `{}`                                       |
 | `tolerations`                             | Toleration labels for pod assignment                                                                                                    | `[]`                                       |
+| `labels`                                  | Deployment and statefulset Labels
 | `podAnnotations`                          | Pod annotations                                                                                                                         | `{}`                                       |
 | `podLabels`                               | Pod Labels                                                                                                                              | `{}`                                       |
 | `tls.enabled`                             | Enable TLS for MinIO server                                                                                                             | `false`                                    |
