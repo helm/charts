@@ -174,7 +174,7 @@ securityContext:
 # Additional labels to apply to the deployment or statefulsets
 labels: {}
 
-# Additational pod annotations
+# Additional pod annotations
 podAnnotations: {}
 
 # Additional pod labels
