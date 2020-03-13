@@ -9,6 +9,7 @@ metadata:
     chart: {{ template "minio.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    {{- with .Values.labels }}
 spec:
   strategy:
     type: {{ .Values.DeploymentUpdate.type }}
