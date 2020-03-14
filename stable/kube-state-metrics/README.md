@@ -38,6 +38,7 @@ $ helm install stable/kube-state-metrics
 | `affinity`                                   | Affinity settings for pod assignment                                                  | {}                                         |
 | `tolerations`                                | Tolerations for pod assignment                                                        | []                                         |
 | `podAnnotations`                             | Annotations to be added to the pod                                                    | {}                                         |
+| `podDisruptionBudget`                        | Optional PodDisruptionBudget                                                          | {}                                         |
 | `resources`                                  | kube-state-metrics resource requests and limits                                       | {}                                         |
 | `collectors.certificatesigningrequests`      | Enable the certificatesigningrequests collector.                                      | `true`                                     |
 | `collectors.configmaps`                      | Enable the configmaps collector.                                                      | `true`                                     |
