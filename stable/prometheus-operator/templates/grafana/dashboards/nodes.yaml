@@ -30,7 +30,7 @@ data:
 
             ]
         },
-        "editable": false,
+        "editable": {{ $.Values.grafana.sidecar.dashboards.provider.allowUiUpdates }},
         "gnetId": null,
         "graphTooltip": 0,
         "hideControls": false,

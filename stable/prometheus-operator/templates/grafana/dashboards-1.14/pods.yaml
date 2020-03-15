@@ -43,7 +43,7 @@ data:
                 }
             ]
         },
-        "editable": false,
+        "editable": {{ $.Values.grafana.sidecar.dashboards.provider.allowUiUpdates }},
         "gnetId": null,
         "graphTooltip": 0,
         "hideControls": false,
@@ -101,7 +101,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "sum by(container) (container_memory_usage_bytes{job=\"kubelet\", cluster=\"$cluster\", namespace=\"$namespace\", pod=\"$pod\", container=~\"$container\", container!=\"POD\"})",
+                                "expr": "sum by(container) (container_memory_working_set_bytes{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=\"$namespace\", pod=\"$pod\", container=~\"$container\", container!=\"POD\"})",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "Current: {{`{{ container }}`}}",
@@ -122,7 +122,7 @@ data:
                                 "refId": "C"
                             },
                             {
-                                "expr": "sum by(container) (container_memory_cache{job=\"kubelet\", cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", container=~\"$container\", container!=\"POD\"})",
+                                "expr": "sum by(container) (container_memory_cache{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", container=~\"$container\", container!=\"POD\"})",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "Cache: {{`{{ container }}`}}",
@@ -226,7 +226,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "sum by (container) (irate(container_cpu_usage_seconds_total{job=\"kubelet\", cluster=\"$cluster\", namespace=\"$namespace\", image!=\"\", pod=\"$pod\", container=~\"$container\", container!=\"POD\"}[4m]))",
+                                "expr": "sum by (container) (irate(container_cpu_usage_seconds_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=\"$namespace\", image!=\"\", pod=\"$pod\", container=~\"$container\", container!=\"POD\"}[4m]))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "Current: {{`{{ container }}`}}",
@@ -344,14 +344,14 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "sort_desc(sum by (pod) (irate(container_network_receive_bytes_total{job=\"kubelet\", cluster=\"$cluster\", namespace=\"$namespace\", pod=\"$pod\"}[4m])))",
+                                "expr": "sort_desc(sum by (pod) (irate(container_network_receive_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=\"$namespace\", pod=\"$pod\"}[4m])))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "RX: {{`{{ pod }}`}}",
                                 "refId": "A"
                             },
                             {
-                                "expr": "sort_desc(sum by (pod) (irate(container_network_transmit_bytes_total{job=\"kubelet\", cluster=\"$cluster\", namespace=\"$namespace\", pod=\"$pod\"}[4m])))",
+                                "expr": "sort_desc(sum by (pod) (irate(container_network_transmit_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=\"$namespace\", pod=\"$pod\"}[4m])))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "TX: {{`{{ pod }}`}}",
@@ -521,8 +521,8 @@ data:
             "list": [
                 {
                     "current": {
-                        "text": "Prometheus",
-                        "value": "Prometheus"
+                        "text": "default",
+                        "value": "default"
                     },
                     "hide": 0,
                     "label": null,

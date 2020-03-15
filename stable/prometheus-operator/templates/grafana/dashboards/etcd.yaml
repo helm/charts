@@ -23,7 +23,7 @@ data:
             "list": []
         },
         "description": "etcd sample Grafana dashboard with Prometheus",
-        "editable": true,
+        "editable": {{ $.Values.grafana.sidecar.dashboards.provider.allowUiUpdates }},
         "gnetId": null,
         "hideControls": false,
         "id": 6,
@@ -32,7 +32,7 @@ data:
         "rows": [
             {
                 "collapse": false,
-                "editable": true,
+                "editable": {{ $.Values.grafana.sidecar.dashboards.provider.allowUiUpdates }},
                 "height": "250px",
                 "panels": [
                     {
@@ -45,7 +45,7 @@ data:
                             "rgba(50, 172, 45, 0.97)"
                         ],
                         "datasource": "$datasource",
-                        "editable": true,
+                        "editable": {{ $.Values.grafana.sidecar.dashboards.provider.allowUiUpdates }},
                         "error": false,
                         "format": "none",
                         "gauge": {
@@ -118,7 +118,7 @@ data:
                         "aliasColors": {},
                         "bars": false,
                         "datasource": "$datasource",
-                        "editable": true,
+                        "editable": {{ $.Values.grafana.sidecar.dashboards.provider.allowUiUpdates }},
                         "error": false,
                         "fill": 0,
                         "id": 23,
@@ -204,7 +204,7 @@ data:
                         "aliasColors": {},
                         "bars": false,
                         "datasource": "$datasource",
-                        "editable": true,
+                        "editable": {{ $.Values.grafana.sidecar.dashboards.provider.allowUiUpdates }},
                         "error": false,
                         "fill": 0,
                         "id": 41,
@@ -290,7 +290,7 @@ data:
             },
             {
                 "collapse": false,
-                "editable": true,
+                "editable": {{ $.Values.grafana.sidecar.dashboards.provider.allowUiUpdates }},
                 "height": "250px",
                 "panels": [
                     {
@@ -298,7 +298,7 @@ data:
                         "bars": false,
                         "datasource": "$datasource",
                         "decimals": null,
-                        "editable": true,
+                        "editable": {{ $.Values.grafana.sidecar.dashboards.provider.allowUiUpdates }},
                         "error": false,
                         "fill": 0,
                         "grid": {},
@@ -374,7 +374,7 @@ data:
                         "aliasColors": {},
                         "bars": false,
                         "datasource": "$datasource",
-                        "editable": true,
+                        "editable": {{ $.Values.grafana.sidecar.dashboards.provider.allowUiUpdates }},
                         "error": false,
                         "fill": 0,
                         "grid": {},
@@ -457,7 +457,7 @@ data:
                         "aliasColors": {},
                         "bars": false,
                         "datasource": "$datasource",
-                        "editable": true,
+                        "editable": {{ $.Values.grafana.sidecar.dashboards.provider.allowUiUpdates }},
                         "error": false,
                         "fill": 0,
                         "id": 29,
@@ -534,14 +534,14 @@ data:
             },
             {
                 "collapse": false,
-                "editable": true,
+                "editable": {{ $.Values.grafana.sidecar.dashboards.provider.allowUiUpdates }},
                 "height": "250px",
                 "panels": [
                     {
                         "aliasColors": {},
                         "bars": false,
                         "datasource": "$datasource",
-                        "editable": true,
+                        "editable": {{ $.Values.grafana.sidecar.dashboards.provider.allowUiUpdates }},
                         "error": false,
                         "fill": 5,
                         "id": 22,
@@ -617,7 +617,7 @@ data:
                         "aliasColors": {},
                         "bars": false,
                         "datasource": "$datasource",
-                        "editable": true,
+                        "editable": {{ $.Values.grafana.sidecar.dashboards.provider.allowUiUpdates }},
                         "error": false,
                         "fill": 5,
                         "id": 21,
@@ -693,7 +693,7 @@ data:
                         "aliasColors": {},
                         "bars": false,
                         "datasource": "$datasource",
-                        "editable": true,
+                        "editable": {{ $.Values.grafana.sidecar.dashboards.provider.allowUiUpdates }},
                         "error": false,
                         "fill": 0,
                         "id": 20,
@@ -770,7 +770,7 @@ data:
                         "bars": false,
                         "datasource": "$datasource",
                         "decimals": null,
-                        "editable": true,
+                        "editable": {{ $.Values.grafana.sidecar.dashboards.provider.allowUiUpdates }},
                         "error": false,
                         "fill": 0,
                         "grid": {},
@@ -847,14 +847,14 @@ data:
             },
             {
                 "collapse": false,
-                "editable": true,
+                "editable": {{ $.Values.grafana.sidecar.dashboards.provider.allowUiUpdates }},
                 "height": "250px",
                 "panels": [
                     {
                         "aliasColors": {},
                         "bars": false,
                         "datasource": "$datasource",
-                        "editable": true,
+                        "editable": {{ $.Values.grafana.sidecar.dashboards.provider.allowUiUpdates }},
                         "error": false,
                         "fill": 0,
                         "id": 40,
@@ -954,7 +954,7 @@ data:
                         "bars": false,
                         "datasource": "$datasource",
                         "decimals": 0,
-                        "editable": true,
+                        "editable": {{ $.Values.grafana.sidecar.dashboards.provider.allowUiUpdates }},
                         "error": false,
                         "fill": 0,
                         "id": 19,

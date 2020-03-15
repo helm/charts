@@ -30,7 +30,7 @@ data:
 
             ]
         },
-        "editable": false,
+        "editable": {{ $.Values.grafana.sidecar.dashboards.provider.allowUiUpdates }},
         "gnetId": null,
         "graphTooltip": 0,
         "hideControls": false,
@@ -142,15 +142,15 @@ data:
                         },
                         "id": 3,
                         "legend": {
-                            "alignAsTable": "true",
+                            "alignAsTable": true,
                             "avg": false,
-                            "current": "true",
+                            "current": true,
                             "max": false,
                             "min": false,
-                            "rightSide": "true",
-                            "show": "true",
+                            "rightSide": true,
+                            "show": true,
                             "total": false,
-                            "values": "true"
+                            "values": true
                         },
                         "lines": true,
                         "linewidth": 1,
@@ -254,15 +254,15 @@ data:
                         },
                         "id": 4,
                         "legend": {
-                            "alignAsTable": "true",
+                            "alignAsTable": true,
                             "avg": false,
-                            "current": "true",
+                            "current": true,
                             "max": false,
                             "min": false,
-                            "rightSide": "true",
-                            "show": "true",
+                            "rightSide": true,
+                            "show": true,
                             "total": false,
-                            "values": "true"
+                            "values": true
                         },
                         "lines": true,
                         "linewidth": 1,
@@ -595,15 +595,15 @@ data:
                         },
                         "id": 7,
                         "legend": {
-                            "alignAsTable": "true",
+                            "alignAsTable": true,
                             "avg": false,
-                            "current": "true",
+                            "current": true,
                             "max": false,
                             "min": false,
-                            "rightSide": "true",
-                            "show": "true",
+                            "rightSide": true,
+                            "show": true,
                             "total": false,
-                            "values": "true"
+                            "values": true
                         },
                         "lines": true,
                         "linewidth": 1,
@@ -977,8 +977,8 @@ data:
             "list": [
                 {
                     "current": {
-                        "text": "Prometheus",
-                        "value": "Prometheus"
+                        "text": "default",
+                        "value": "default"
                     },
                     "hide": 0,
                     "label": null,

@@ -30,7 +30,7 @@ data:
 
             ]
         },
-        "editable": false,
+        "editable": {{ $.Values.grafana.sidecar.dashboards.provider.allowUiUpdates }},
         "gnetId": null,
         "graphTooltip": 0,
         "hideControls": false,
@@ -521,7 +521,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "rate(node_disk_read_bytes_total{job=\"node-exporter\", instance=\"$instance\", device=~\"nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+\"}[$__interval])",
+                                "expr": "rate(node_disk_read_bytes_total{job=\"node-exporter\", instance=\"$instance\", device=~\"nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+\"}[$__interval])",
                                 "format": "time_series",
                                 "interval": "1m",
                                 "intervalFactor": 2,
@@ -529,7 +529,7 @@ data:
                                 "refId": "A"
                             },
                             {
-                                "expr": "rate(node_disk_written_bytes_total{job=\"node-exporter\", instance=\"$instance\", device=~\"nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+\"}[$__interval])",
+                                "expr": "rate(node_disk_written_bytes_total{job=\"node-exporter\", instance=\"$instance\", device=~\"nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+\"}[$__interval])",
                                 "format": "time_series",
                                 "interval": "1m",
                                 "intervalFactor": 2,
@@ -537,7 +537,7 @@ data:
                                 "refId": "B"
                             },
                             {
-                                "expr": "rate(node_disk_io_time_seconds_total{job=\"node-exporter\", instance=\"$instance\", device=~\"nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+\"}[$__interval])",
+                                "expr": "rate(node_disk_io_time_seconds_total{job=\"node-exporter\", instance=\"$instance\", device=~\"nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+\"}[$__interval])",
                                 "format": "time_series",
                                 "interval": "1m",
                                 "intervalFactor": 2,

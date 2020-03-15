@@ -24,7 +24,7 @@ data:
 
             ]
         },
-        "editable": true,
+        "editable": {{ $.Values.grafana.sidecar.dashboards.provider.allowUiUpdates }},
         "gnetId": null,
         "graphTooltip": 0,
         "hideControls": false,
@@ -1959,8 +1959,8 @@ data:
             "list": [
                 {
                     "current": {
-                        "text": "Prometheus",
-                        "value": "Prometheus"
+                        "text": "default",
+                        "value": "default"
                     },
                     "hide": 0,
                     "label": null,

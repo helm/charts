@@ -2,6 +2,7 @@
 """Fetch dashboards from provided urls into this chart."""
 import json
 import textwrap
+import re
 from os import makedirs, path
 
 import requests
@@ -99,6 +100,10 @@ def escape(s):
     return s.replace("{{", "{{`{{").replace("}}", "}}`}}")
 
 
+def editable(s):
+    return re.sub(r'"editable"[^,]*', "\"editable\": {{ $.Values.grafana.sidecar.dashboards.provider.allowUiUpdates }}", s)
+
+
 def yaml_str_repr(struct, indent=2):
     """represent yaml as a string"""
     text = yaml.dump(
@@ -107,6 +112,7 @@ def yaml_str_repr(struct, indent=2):
         default_flow_style=False  # to disable multiple items on single line
     )
     text = escape(text)  # escape {{ and }} for helm
+    text = editable(text)
     text = textwrap.indent(text, ' ' * indent)
     return text
 
