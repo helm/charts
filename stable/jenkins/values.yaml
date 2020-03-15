@@ -103,6 +103,12 @@ master:
   adminUser: "admin"
   # adminPassword: <defaults to random>
   # adminSshKey: <defaults to auto-generated>
+  # This values should not be changed unless you use your custom image of jenkins or any devired from. If you want to use
+  # Cloudbees Jenkins Distribution docker, you should set jenkinsHome: "/var/cloudbees-jenkins-distribution"
+  jenkinsHome: "/var/jenkins_home"
+  # This values should not be changed unless you use your custom image of jenkins or any devired from. If you want to use
+  # Cloudbees Jenkins Distribution docker, you should set jenkinsRef: "/usr/share/cloudbees-jenkins-distribution/ref"
+  jenkinsRef: "/usr/share/jenkins/ref"
   # If CasC auto-reload is enabled, an SSH (RSA) keypair is needed.  Can either provide your own, or leave unconfigured to allow a random key to be auto-generated.
   # If you supply your own, it is recommended that the values file that contains your key not be committed to source control in an unencrypted format
   rollingUpdate: {}

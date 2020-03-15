@@ -42,7 +42,7 @@ spec:
             - --container
             - jenkins
             - --path
-            - /var/jenkins_home
+            - {{ .Values.master.jenkinsHome }}
             - --dst
             - {{ .Values.backup.destination }}
             {{- with .Values.backup.extraArgs }}

@@ -120,7 +120,7 @@ spec:
           volumeMounts:
             - mountPath: /tmp
               name: tmp
-            - mountPath: /var/jenkins_home
+            - mountPath: {{ .Values.master.jenkinsHome }}
               name: jenkins-home
               {{- if .Values.persistence.subPath }}
               subPath: {{ .Values.persistence.subPath }}
@@ -138,7 +138,7 @@ spec:
               name: jenkins-jobs
               readOnly: true
             {{- end }}
-            - mountPath: /usr/share/jenkins/ref/secrets/
+            - mountPath: {{ .Values.master.jenkinsRef }}/secrets/
               name: secrets-dir
             {{- end }}
             {{- if .Values.master.secretsFilesSecret }}
@@ -147,7 +147,7 @@ spec:
               readOnly: true
             {{- end }}
             {{- if .Values.master.installPlugins }}
-            - mountPath: /usr/share/jenkins/ref/plugins
+            - mountPath: {{ .Values.master.jenkinsRef }}/plugins
               name: plugins
             - mountPath: /var/jenkins_plugins
               name: plugin-dir
@@ -212,7 +212,7 @@ spec:
             {{- end }}
             {{- if .Values.master.JCasC.enabled }}
             - name: CASC_JENKINS_CONFIG
-              value: {{ .Values.master.sidecars.configAutoReload.folder | default "/var/jenkins_home/casc_configs" | quote }}
+              value: {{ .Values.master.sidecars.configAutoReload.folder | default (printf "%s/casc_configs" (.Values.master.jenkinsRef)) }}
             {{- end }}
           ports:
             {{- if .Values.master.httpsKeyStore.enable }}
@@ -265,7 +265,7 @@ spec:
             {{- end }}
             - mountPath: /tmp
               name: tmp
-            - mountPath: /var/jenkins_home
+            - mountPath: {{ .Values.master.jenkinsHome }}
               name: jenkins-home
               readOnly: false
               {{- if .Values.persistence.subPath }}
@@ -285,7 +285,7 @@ spec:
               name: jenkins-jobs
               readOnly: true
             {{- end }}
-            - mountPath: /usr/share/jenkins/ref/secrets/
+            - mountPath: {{ .Values.master.jenkinsRef }}/secrets/
               name: secrets-dir
               readOnly: false
             {{- end }}
@@ -295,13 +295,13 @@ spec:
               readOnly: true
             {{- end }}
             {{- if .Values.master.installPlugins }}
-            - mountPath: /usr/share/jenkins/ref/plugins/
+            - mountPath: {{ .Values.master.jenkinsRef }}/plugins/
               name: plugin-dir
               readOnly: false
             {{- end }}
             {{- if and (.Values.master.JCasC.enabled) (.Values.master.sidecars.configAutoReload.enabled) }}
             - name: sc-config-volume
-              mountPath: {{ .Values.master.sidecars.configAutoReload.folder | default "/var/jenkins_home/casc_configs" | quote }}
+              mountPath: {{ .Values.master.sidecars.configAutoReload.folder | default (printf "%s/casc_configs" (.Values.master.jenkinsRef)) }}
             {{- end }}
 
 {{- if and (.Values.master.JCasC.enabled) (.Values.master.sidecars.configAutoReload.enabled) }}
@@ -329,7 +329,7 @@ spec:
             - name: sc-config-volume
               mountPath: {{ .Values.master.sidecars.configAutoReload.folder | quote }}
             - name: jenkins-home
-              mountPath: /var/jenkins_home
+              mountPath: {{ .Values.master.jenkinsHome }}
               {{- if .Values.persistence.subPath }}
                 subPath: {{ .Values.persistence.subPath }}
               {{- end }}
