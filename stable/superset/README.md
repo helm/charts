@@ -64,6 +64,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `tolerations`              | Toleration labels for pod assignment            | `[]`                                                         |
 | `livenessProbe`            | Parameter for liveness probe                    | See [values.yaml](./values.yaml)                             |
 | `readinessProbe`           | Parameter for readiness probe                   | See [values.yaml](./values.yaml)                             |
+| `podDisruptionBudget.enabled` | Create pdb resource when true                | `false`
 | `ingress.enabled`          | Create an ingress resource when true            | `false`                                                      |
 | `ingress.annotations`      | ingress annotations                             | `{}`                                                         |
 | `ingress.hosts`            | ingress hosts                                   | `[superset.domain.com]`                                      |
