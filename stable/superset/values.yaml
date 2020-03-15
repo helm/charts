@@ -115,7 +115,11 @@ service:
   ## loadbalancer source ranges. only used when service.type is "LoadBalancer"
   loadBalancerSourceRanges: []
   # - 172.31.0.0/16
-
+  
+podDisruptionBudget:
+    enabled: true
+    # minAvailable: 2
+    maxUnavailable: 1
 
 ingress:
   ## If true, superset Ingress will be created
