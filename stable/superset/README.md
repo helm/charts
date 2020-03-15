@@ -65,6 +65,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | `livenessProbe`            | Parameter for liveness probe                    | See [values.yaml](./values.yaml)                             |
 | `readinessProbe`           | Parameter for readiness probe                   | See [values.yaml](./values.yaml)                             |
 | `podDisruptionBudget.enabled` | Create pdb resource when true                | `false`
+| `podDisruptionBudget.minAvailable` | minAvailable pods                         | See [values.yaml](./values.yaml)                             |
+| `podDisruptionBudget.maxUnavailable`   | maxUnavailable pods                 | See [values.yaml](./values.yaml)                             |
 | `ingress.enabled`          | Create an ingress resource when true            | `false`                                                      |
 | `ingress.annotations`      | ingress annotations                             | `{}`                                                         |
 | `ingress.hosts`            | ingress hosts                                   | `[superset.domain.com]`                                      |
