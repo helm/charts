@@ -115,7 +115,10 @@ service:
   ## loadbalancer source ranges. only used when service.type is "LoadBalancer"
   loadBalancerSourceRanges: []
   # - 172.31.0.0/16
-  
+
+## If true, pod disruption budgets will be created.
+## ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+
 podDisruptionBudget:
     enabled: true
     # minAvailable: 2
