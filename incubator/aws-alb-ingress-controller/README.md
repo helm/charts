@@ -73,7 +73,6 @@ The following tables lists the configurable parameters of the alb-ingress-contro
 | `rbac.create`             | If true, create & use RBAC resources                                                                           | `true`                                                                    |
 |`rbac.serviceAccount.create` | If true and rbac.create is also true, a service account will be created                                      | `true`
 |`rbac.serviceAccount.name`   | existing ServiceAccount to use (ignored if rbac.create=true and rbac.serviceAccount.create=true)             | `default`
-
 | `rbac.serviceAccountAnnotations` | Service Account annotations                                                                             | `{}`                                                                      |
 | `scope.ingressClass`      | If provided, the ALB ingress controller will only act on Ingress resources annotated with this class           | `alb`                                                                     |
 | `scope.singleNamespace`   | If true, the ALB ingress controller will only act on Ingress resources in a single namespace                   | `false` (watch all namespaces)                                            |
