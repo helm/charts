@@ -60,6 +60,8 @@ The following tables lists the configurable parameters of the alb-ingress-contro
 | `enableLivenessProbe`     | enable livenessProbe on controller pod                                                                         | `false`                                                                   |
 | `livenessProbeTimeout`     | How long to wait before timeout (in seconds) when checking controller liveness                                |    1                                                                      |
 | `extraEnv`                | map of environment variables to be injected into the controller pod                                            | `{}`                                                                      |
+| `extraArgs`               | map of extra arguments to be setting for controller pod                                                        | `{}`                                                                      |
+| `debugLevel`              | set the debug log level for controller pod                                                                     | `""`                                                                      |
 | `volumesMounts`           | volumeMounts into the controller pod                                                                           | `[]`                                                                      |
 | `volumes`                 | volumes the controller pod                                                                                     | `[]`                                                                      |
 | `nodeSelector`            | node labels for controller pod assignment                                                                      | `{}`                                                                      |
@@ -69,8 +71,10 @@ The following tables lists the configurable parameters of the alb-ingress-contro
 | `priorityClassName`       | set to ensure your pods survive resource shortages                                                             | `""`                                                                      |
 | `resources`               | controller pod resource requests & limits                                                                      | `{}`                                                                      |
 | `rbac.create`             | If true, create & use RBAC resources                                                                           | `true`                                                                    |
-| `rbac.serviceAccountName` | ServiceAccount ALB ingress controller will use (ignored if rbac.create=true)                                   | `default`                                                                 |
-| `rbac.serviceAccountAnnotations` | Service Account annotations                                                                             | `{}`                                                           |
+|`rbac.serviceAccount.create` | If true and rbac.create is also true, a service account will be created                                      | `true`
+|`rbac.serviceAccount.name`   | existing ServiceAccount to use (ignored if rbac.create=true and rbac.serviceAccount.create=true)             | `default`
+
+| `rbac.serviceAccountAnnotations` | Service Account annotations                                                                             | `{}`                                                                      |
 | `scope.ingressClass`      | If provided, the ALB ingress controller will only act on Ingress resources annotated with this class           | `alb`                                                                     |
 | `scope.singleNamespace`   | If true, the ALB ingress controller will only act on Ingress resources in a single namespace                   | `false` (watch all namespaces)                                            |
 | `scope.watchNamespace`    | If scope.singleNamespace=true, the ALB ingress controller will only act on Ingress resources in this namespace | `""` (namespace of the ALB ingress controller)                            |

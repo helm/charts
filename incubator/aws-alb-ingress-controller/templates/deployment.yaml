@@ -50,6 +50,9 @@ spec:
           {{- range $key, $value := .Values.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}
+          {{- with .Values.debugLevel }}
+            - -v={{ . }}
+          {{- end }}
           env:
           {{- range $key, $value := .Values.extraEnv }}
             - name: {{ $key }}
@@ -101,5 +104,8 @@ spec:
       volumes:
 {{ toYaml . | indent 8 }}
     {{- end }}
-      serviceAccountName: {{ if .Values.rbac.create }}{{ include "aws-alb-ingress-controller.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      {{- with .Values.securityContext }}
+      securityContext: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ template "serviceaccount.name" . }}
       terminationGracePeriodSeconds: 60

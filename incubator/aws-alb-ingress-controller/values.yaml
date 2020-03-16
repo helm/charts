@@ -40,6 +40,8 @@ extraEnv: {}
   # AWS_ACCESS_KEY_ID: ""
   # AWS_SECRET_ACCESS_KEY: ""
 
+debugLevel: ""
+
 podAnnotations: {}
   # iam.amazonaws.com/role: alb-ingress-controller
 
@@ -70,7 +72,10 @@ rbac:
   ## If true, create & use RBAC resources
   ##
   create: true
-  serviceAccountName: default
+  serviceAccount:
+    create: true
+    name: default
+
   ## Annotations for the Service Account
   serviceAccountAnnotations: {}
 
@@ -104,6 +109,7 @@ tolerations: []
   #    effect: NoSchedule
 
 affinity: {}
+
 
 volumeMounts: []
   # - name: aws-iam-credentials
