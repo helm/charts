@@ -6,6 +6,10 @@
 ##
 nameOverride: ""
 
+## Provide a k8s version to auto dashboard import script example: kubeTargetVersionOverride: 1.16.6
+##
+kubeTargetVersionOverride: ""
+
 ## Provide a name to substitute for the full names of resources
 ##
 fullnameOverride: ""
@@ -195,6 +199,9 @@ alertmanager:
     ## Port for Alertmanager Service to listen on
     ##
     port: 9093
+    ## To be used with a proxy extraContainer port
+    ##
+    targetPort: 9093
     ## Port to expose on each node
     ## Only used if service.type is 'NodePort'
     ##
@@ -1180,7 +1187,7 @@ prometheusOperator:
   ##
   image:
     repository: quay.io/coreos/prometheus-operator
-    tag: v0.36.0
+    tag: v0.37.0
     pullPolicy: IfNotPresent
 
   ## Configmap-reload image to use for reloading configmaps
@@ -1193,7 +1200,7 @@ prometheusOperator:
   ##
   prometheusConfigReloaderImage:
     repository: quay.io/coreos/prometheus-config-reloader
-    tag: v0.36.0
+    tag: v0.37.0
 
   ## Set the prometheus config reloader side-car CPU limit
   ##

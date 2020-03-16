@@ -178,6 +178,7 @@ Parameter | Description | Default
 `alertmanager.service.servicePort` | alertmanager service port | `80`
 `alertmanager.service.sessionAffinity` | Session Affinity for alertmanager service, can be `None` or `ClientIP` | `None`
 `alertmanager.service.type` | type of alertmanager service to create | `ClusterIP`
+`alertmanager.strategy` | Deployment strategy | `{ "type": "RollingUpdate" }`
 `alertmanagerFiles.alertmanager.yml` | Prometheus alertmanager configuration | example configuration
 `configmapReload.prometheus.enabled` | If false, the configmap-reload container for Prometheus will not be deployed | `true`
 `configmapReload.prometheus.name` | configmap-reload container name | `configmap-reload`
@@ -203,31 +204,7 @@ Parameter | Description | Default
 `initChownData.image.tag` | init-chown-data container image tag | `latest`
 `initChownData.image.pullPolicy` | init-chown-data container image pull policy | `IfNotPresent`
 `initChownData.resources` | init-chown-data pod resource requests & limits | `{}`
-`kubeStateMetrics.enabled` | If true, create kube-state-metrics | `true`
-`kubeStateMetrics.name` | kube-state-metrics container name | `kube-state-metrics`
-`kubeStateMetrics.image.repository` | kube-state-metrics container image repository| `quay.io/coreos/kube-state-metrics`
-`kubeStateMetrics.image.tag` | kube-state-metrics container image tag | `v1.9.5`
-`kubeStateMetrics.image.pullPolicy` | kube-state-metrics container image pull policy | `IfNotPresent`
-`kubeStateMetrics.args` | kube-state-metrics container arguments | `{}`
-`kubeStateMetrics.nodeSelector` | node labels for kube-state-metrics pod assignment | `{}`
-`kubeStateMetrics.podAnnotations` | annotations to be added to kube-state-metrics pods | `{}`
-`kubeStateMetrics.deploymentAnnotations` | annotations to be added to kube-state-metrics deployment | `{}`
-`kubeStateMetrics.podSecurityPolicy.annotations` | Specify pod annotations in the pod security policy | `{}` |
-`kubeStateMetrics.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
-`kubeStateMetrics.replicaCount` | desired number of kube-state-metrics pods | `1`
-`kubeStateMetrics.podDisruptionBudget.enabled` | If true, create a PodDisruptionBudget | `false`
-`kubeStateMetrics.podDisruptionBudget.maxUnavailable` | Maximum unavailable instances in PDB | `1`
-`kubeStateMetrics.priorityClassName` | kube-state-metrics priorityClassName | `nil`
-`kubeStateMetrics.resources` | kube-state-metrics resource requests and limits (YAML) | `{}`
-`kubeStateMetrics.securityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for kube-state-metrics containers | `{}`
-`kubeStateMetrics.service.annotations` | annotations for kube-state-metrics service | `{prometheus.io/scrape: "true"}`
-`kubeStateMetrics.service.clusterIP` | internal kube-state-metrics cluster service IP | `None`
-`kubeStateMetrics.service.externalIPs` | kube-state-metrics service external IP addresses | `[]`
-`kubeStateMetrics.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
-`kubeStateMetrics.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
-`kubeStateMetrics.service.servicePort` | kube-state-metrics service port | `80`
-`kubeStateMetrics.service.serviceTelemetryPort` | kube-state-metrics service port for self Telemetry | `81`
-`kubeStateMetrics.service.type` | type of kube-state-metrics service to create | `ClusterIP`
+`kubeStateMetrics.enabled` | If true, create kube-state-metrics sub-chart, see the [kube-state-metrics chart for configuration options](https://github.com/helm/charts/tree/master/stable/kube-state-metrics) | `true`
 `nodeExporter.enabled` | If true, create node-exporter | `true`
 `nodeExporter.name` | node-exporter container name | `node-exporter`
 `nodeExporter.image.repository` | node-exporter container image repository| `prom/node-exporter`
@@ -295,7 +272,7 @@ Parameter | Description | Default
 `pushgateway.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `pushgateway.service.servicePort` | pushgateway service port | `9091`
 `pushgateway.service.type` | type of pushgateway service to create | `ClusterIP`
-`pushgateway.strategy.type` | Deployment strategy | `{ "type": "RollingUpdate" }`
+`pushgateway.strategy` | Deployment strategy | `{ "type": "RollingUpdate" }`
 `rbac.create` | If true, create & use RBAC resources | `true`
 `server.enabled` | If false, Prometheus server will not be created | `true`
 `server.name` | Prometheus server container name | `server`
@@ -374,6 +351,7 @@ Parameter | Description | Default
 `server.service.statefulsetReplica.enabled` | If true, send the traffic from the service to only one replica of the replicaset | `false`
 `server.service.statefulsetReplica.replica` | Which replica to send the traffice to | `0`
 `server.sidecarContainers` | array of snippets with your sidecar containers for prometheus server | `""`
+`server.strategy` | Deployment strategy | `{ "type": "RollingUpdate" }`
 `serviceAccounts.alertmanager.create` | If true, create the alertmanager service account | `true`
 `serviceAccounts.alertmanager.name` | name of the alertmanager service account to use or create | `{{ prometheus.alertmanager.fullname }}`
 `serviceAccounts.kubeStateMetrics.create` | If true, create the kubeStateMetrics service account | `true`

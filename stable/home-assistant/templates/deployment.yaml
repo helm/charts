@@ -230,7 +230,7 @@ spec:
             - --port={{ .Values.vscode.service.port }}
             {{- if (.Values.vscode.password) }}
             - --allow-http #Not supported without password
-            {{- end }}
+            {{- else }}
             - --auth=none
             {{- end }}
             {{- if .Values.vscode.vscodePath }}

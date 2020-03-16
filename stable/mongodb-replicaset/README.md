@@ -107,8 +107,11 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `readinessProbe.periodSeconds`      | Readiness probe period seconds                                            | `10`                                                |
 | `readinessProbe.successThreshold`   | Readiness probe success threshold                                         | `1`                                                 |
 | `readinessProbe.timeoutSeconds`     | Readiness probe timeout seconds                                           | `1`                                                 |
+| `extraContainers`                   | Additional containers to add to the StatefulSet                           | `[]`                                                |
 | `extraVars`                         | Set environment variables for the main container                          | `{}`                                                |
 | `extraLabels`                       | Additional labels to add to resources                                     | `{}`                                                |
+| `extraVolumes`                      | Additional volumes to add to the resources                                | `[]`                                                |
+| `global.namespaceOverride`          | Override the deployment namespace                                         | Not set (`Release.Namespace`)                       |
 
 *MongoDB config file*
 
