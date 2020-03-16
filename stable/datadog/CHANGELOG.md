@@ -2,6 +2,14 @@
 
 ## 2.0
 
+## 2.0.7
+
+* Do not enable the `cri` check when running on a `docker` setup.
+
+## 2.0.6
+
+* Introduce processAgent.processCollection to correctly configure DD\_PROCESS\_AGENT\_ENABLED
+
 ## 2.0.5
 
 * Honor the `datadog.env` parameter in all containers.
@@ -14,7 +22,7 @@
 ## 2.0.3
 
 * Fix templating error when `agents.useConfigMap` is set to true.
-* Add DD_APM_ENABLED environment variable to trace agent container.
+* Add DD\_APM\_ENABLED environment variable to trace agent container.
 
 
 ## 2.0.2
