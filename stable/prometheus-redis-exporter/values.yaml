@@ -54,6 +54,48 @@ serviceMonitor:
   # Set of labels to transfer on the Kubernetes Service onto the target.
   # targetLabels: []
 
+## Custom PrometheusRules to be defined
+## The value is evaluated as a template, so, for example, the value can depend on .Release or .Chart
+## ref: https://github.com/coreos/prometheus-operator#customresourcedefinitions
+prometheusRule:
+  enabled: false
+  additionalLabels: {}
+  namespace: ""
+  rules: []
+    ## These are just examples rules, please adapt them to your needs.
+    ## Make sure to constraint the rules to the current service.
+    #  - alert: RedisDown
+    #    expr: redis_up{service="{{ template "prometheus-redis-exporter.fullname" . }}"} == 0
+    #    for: 2m
+    #    labels:
+    #      severity: error
+    #    annotations:
+    #      summary: Redis instance {{ "{{ $labels.instance }}" }} down
+    #      description: Redis instance {{ "{{ $labels.instance }}" }} is down.
+    #  - alert: RedisMemoryHigh
+    #    expr: >
+    #       redis_memory_used_bytes{service="{{ template "prometheus-redis-exporter.fullname" . }}"} * 100
+    #       /
+    #       redis_memory_max_bytes{service="{{ template "prometheus-redis-exporter.fullname" . }}"}
+    #       > 90 <= 100
+    #    for: 2m
+    #    labels:
+    #      severity: error
+    #    annotations:
+    #      summary: Redis instance {{ "{{ $labels.instance }}" }} is using too much memory
+    #      description: |
+    #         Redis instance {{ "{{ $labels.instance }}" }} is using {{ "{{ $value }}" }}% of its available memory.
+    #  - alert: RedisKeyEviction
+    #    expr: |
+    #      increase(redis_evicted_keys_total{service="{{ template "prometheus-redis-exporter.fullname" . }}"}[5m]) > 0
+    #    for: 1s
+    #    labels:
+    #      severity: error
+    #    annotations:
+    #      summary: Redis instance {{ "{{ $labels.instance }}" }} has evicted keys
+    #      description: |
+    #        Redis instance {{ "{{ $labels.instance }}" }} has evicted {{ "{{ $value }}" }} keys in the last 5 minutes.
+
 # Used to mount a LUA-Script via config map and use it for metrics-collection
 # script:
 #   configmap: prometheus-redis-exporter-script

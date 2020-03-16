@@ -85,12 +85,13 @@ The following table lists the configurable parameters of the Metabase chart and 
 | service.loadBalancerSourceRanges | Array of Source Ranges                                      | null              |
 | service.externalPort             | Service external port                                       | 80                |
 | service.internalPort             | Service internal port, should be the same as `listen.port`  | 3000              |
+| service.nodePort                 | Service node port                                           | null              |
 | service.annotations              | Service annotations                                         | {}                |
 | ingress.enabled                  | Enable ingress controller resource                          | false             |
 | ingress.hosts                    | Ingress resource hostnames                                  | null              |
 | ingress.path                     | Ingress path                                                | /                 |
 | ingress.labels                   | Ingress labels configuration                                | null              |
-| ingress.annotations              | Ingress annotations configuration                           | null              |
+| ingress.annotations              | Ingress annotations configuration                           | {}                |
 | ingress.tls                      | Ingress TLS configuration                                   | null              |
 | log4jProperties                  | Custom `log4j.properties` file                              | null              |
 | resources                        | Server resource requests and limits                         | {}                |

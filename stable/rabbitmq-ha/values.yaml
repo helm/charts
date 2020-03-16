@@ -68,6 +68,14 @@ definitions:
 #     "write": ".*",
 #     "read": ".*"
 #   }
+  topicPermissions: |-
+#   {
+#     "user": "myUsername",
+#     "vhost": "/rabbit",
+#     "exchange": "myexchange",
+#     "write": ".*",
+#     "read": ".*"
+#   }
   queues: |-
 #    {
 #       "name":"myName",
@@ -395,6 +403,7 @@ persistentVolume:
     - ReadWriteOnce
   size: 8Gi
   annotations: {}
+  labels: {}
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
@@ -416,6 +425,12 @@ statefulSetAnnotations: {}
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 podAntiAffinity: soft
 podAntiAffinityTopologyKey: "kubernetes.io/hostname"
+
+## Affinity settings
+## Defining 'affinity' will disable any podAntiAffinity settings.
+## If you still need anti-affinity, you must include the configuration here.
+##
+affinity: {}
 
 ## Create default configMap
 ##

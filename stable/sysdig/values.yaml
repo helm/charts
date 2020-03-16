@@ -3,7 +3,7 @@
 image:
   registry: docker.io
   repository: sysdig/agent
-  tag: 9.5.0
+  tag: 9.7.0
   # Specify a imagePullPolicy
   # Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   # ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -92,7 +92,7 @@ sysdig:
   # Required: You need your Sysdig Monitor access key before running agents.
   accessKey: ""
 
-  settings:
+  settings: {}
     ### Agent tags
     # tags: linux:ubuntu,dept:dev,local:nyc
     #### Sysdig Software related config ####

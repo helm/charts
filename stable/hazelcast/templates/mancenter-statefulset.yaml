@@ -38,10 +38,13 @@ spec:
       hostNetwork: false
       hostPID: false
       hostIPC: false
+      {{- if .Values.securityContext.enabled }}
       securityContext:
         runAsNonRoot: {{ if eq (int .Values.securityContext.runAsUser) 0 }}false{{ else }}true{{ end }}
         runAsUser: {{ .Values.securityContext.runAsUser }}
+        runAsGroup: {{ .Values.securityContext.runAsGroup }}
         fsGroup: {{ .Values.securityContext.fsGroup }}
+      {{- end }}
       {{- if .Values.mancenter.affinity }}
       affinity:
 {{ toYaml .Values.mancenter.affinity | indent 8 }}
@@ -62,7 +65,7 @@ spec:
         {{- if .Values.mancenter.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
-            path: /health
+            path: {{ if .Values.mancenter.contextPath }}{{ .Values.mancenter.contextPath }}{{ end }}/health
             port: 8081
           initialDelaySeconds: {{ .Values.mancenter.livenessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.mancenter.livenessProbe.periodSeconds }}
@@ -73,7 +76,7 @@ spec:
         {{- if .Values.mancenter.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
-            path: /health
+            path: {{ if .Values.mancenter.contextPath }}{{ .Values.mancenter.contextPath }}{{ end }}/health
             port: 8081
           initialDelaySeconds: {{ .Values.mancenter.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.mancenter.readinessProbe.periodSeconds }}
@@ -85,6 +88,10 @@ spec:
         - name: mancenter-storage
           mountPath: /data
         env:
+        {{- if .Values.mancenter.contextPath }}
+        - name: MC_CONTEXT_PATH
+          value: {{ .Values.mancenter.contextPath }}
+        {{- end }}
         - name: MC_LICENSE_KEY
         {{- if .Values.mancenter.licenseKeySecretName }}
           valueFrom:
@@ -102,6 +109,7 @@ spec:
         securityContext:
           runAsNonRoot: {{ if eq (int .Values.securityContext.runAsUser) 0 }}false{{ else }}true{{ end }}
           runAsUser: {{ .Values.securityContext.runAsUser }}
+          runAsGroup: {{ .Values.securityContext.runAsGroup }}
           privileged: false
           readOnlyRootFilesystem: false
           allowPrivilegeEscalation: false
