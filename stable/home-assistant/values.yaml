@@ -33,6 +33,10 @@ probes:
 service:
   type: ClusterIP
   port: 8123
+  additionalPorts: {} #Ports that other integrations such as homematic might need to expose
+  # - name: homematicproxy
+  #   port: 2001
+  #   targetPort: 2001
   annotations: {}
   labels: {}
   clusterIP: ""
@@ -43,6 +47,7 @@ service:
   loadBalancerIP: ""
   loadBalancerSourceRanges: []
   # nodePort: 30000
+  publishNotReadyAddresses: false #Set to true if the editors (vscode or configurator) should be reachable when home assistant does not run
 
 ingress:
   enabled: false
