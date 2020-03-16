@@ -24,7 +24,7 @@
     {{- if .Values.datadog.logLevel }}
     - name: DD_LOG_LEVEL
       value: {{ .Values.agents.containers.agent.logLevel | default .Values.datadog.logLevel | quote }}
-    {{- end }}  
+    {{- end }}
     {{- if .Values.datadog.dogstatsd.port }}
     - name: DD_DOGSTATD_PORT
       value: {{ .Values.datadog.dogstatsd.port | quote }}
@@ -88,10 +88,9 @@
     {{- if .Values.datadog.criSocketPath }}
     - name: DD_CRI_SOCKET_PATH
       value: {{ print "/host/" .Values.datadog.criSocketPath | clean }}
-    {{- if regexMatch "docker\\.sock$" .Values.datadog.criSocketPath }}
+    {{- else }}
     - name: DOCKER_HOST
-      value: unix://{{ print "/host/" .Values.datadog.criSocketPath | clean }}
-    {{- end }}
+      value: unix://{{ print "/host/" (include "datadog.dockerOrCriSocketPath" .) | clean }}
     {{- end }}
     {{- if not .Values.datadog.livenessProbe }}
     - name: DD_HEALTH_PORT
@@ -116,11 +115,9 @@
       mountPath: /etc/datadog-agent/datadog.yaml
       subPath: datadog.yaml
     {{- end }}
-    {{- if .Values.datadog.criSocketPath }}
     - name: runtimesocketdir
-      mountPath: {{ print "/host/" (dir .Values.datadog.criSocketPath) | clean }}
+      mountPath: {{ print "/host/" (dir (include "datadog.dockerOrCriSocketPath" .)) | clean }}
       readOnly: true
-    {{- end }}
     {{- if .Values.datadog.dogstatsd.useSocketVolume }}
     - name: dsdsocket
       mountPath: "/var/run/datadog"
@@ -137,7 +134,7 @@
     - name: logpodpath
       mountPath: /var/log/pods
       readOnly: true
-    {{- if regexFind "^.*docker.*$" $.Values.datadog.criSocketPath }}
+    {{- if not .Values.datadog.criSocketPath }}
     - name: logdockercontainerpath
       mountPath: /var/lib/docker/containers
       readOnly: true

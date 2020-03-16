@@ -32,11 +32,9 @@
     - name: procdir
       mountPath: /host/proc
       readOnly: true
-    {{- if .Values.datadog.criSocketPath }}
     - name: runtimesocketdir
-      mountPath: {{ print "/host/" (dir .Values.datadog.criSocketPath) | clean }}
+      mountPath: {{ print "/host/" (dir (include "datadog.dockerOrCriSocketPath" .)) | clean }}
       readOnly: true
-    {{- end }}
   env:
     {{- include "containers-common-env" . | nindent 4 }}
     {{- if .Values.datadog.env }}
@@ -45,10 +43,9 @@
     {{- if .Values.datadog.criSocketPath }}
     - name: DD_CRI_SOCKET_PATH
       value: {{ print "/host/" .Values.datadog.criSocketPath | clean }}
-    {{- if regexMatch "docker\\.sock$" .Values.datadog.criSocketPath }}
+    {{- else }}
     - name: DOCKER_HOST
-      value: unix://{{ print "/host/" .Values.datadog.criSocketPath | clean }}
-    {{- end }}
+      value: unix://{{ print "/host/" (include "datadog.dockerOrCriSocketPath" .) | clean }}
     {{- end }}
   resources:
 {{ toYaml .Values.agents.containers.initContainers.resources | indent 4 }}

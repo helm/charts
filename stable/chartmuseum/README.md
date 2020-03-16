@@ -166,6 +166,12 @@ their default values. See values.yaml for all available options.
 | `service.loadBalancerSourceRanges`      | Restricts access for LoadBalancer (only for Service type LoadBalancer)      | `[]`                                 |
 | `service.servicename`                   | Custom name for service                                                     | ``                                   |
 | `service.labels`                        | Additional labels for service                                               | `{}`                                 |
+| `serviceMonitor.enabled`                | Enable the ServiceMontor resource to be deployed                            | `false`                              |
+| `serviceMonitor.labels`                 | Labels for the servicemonitor used by the Prometheus Operator               | `{}`                                 |
+| `serviceMonitor.namespace`              | Namespace of the ServiceMonitor resource                                    | `{{ .Release.Namespace }}`           |
+| `serviceMonitor.metricsPath`            | Path to the Chartmuseum metrics path                                        | `/metrics`                           |
+| `serviceMonitor.interval`               | Scrape interval, If not set, the Prometheus default scrape interval is used | `nil`                                |
+| `serviceMonitor.timeout`                | Scrape request timeout. If not set, the Prometheus default timeout is used  | `nil`                                |
 | `deployment.labels`                     | Additional labels for deployment                                            | `{}`                                 |
 | `deployment.matchlabes`                 | Match labels for deployment selector                                        | `{}`                                 |
 | `ingress.enabled`                       | Enable ingress controller resource                                          | `false`                              |

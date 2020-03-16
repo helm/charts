@@ -35,7 +35,7 @@ data:
       max_memory: 0
       max_cpu_percent: 0
 
-    {{- $version := (.Values.image.tag | toString | trimSuffix "-jmx") }}
+    {{- $version := (.Values.agents.image.tag | toString | trimSuffix "-jmx") }}
     {{- $length := len (split "." $version ) -}} 
     {{- if and (eq $length 1) (ge $version "6") -}}
     {{- $version := "6.15" }}  

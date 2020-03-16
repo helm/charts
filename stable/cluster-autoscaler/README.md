@@ -2,6 +2,8 @@
 
 [The cluster autoscaler](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler) scales worker nodes within an AWS autoscaling group (ASG) or Spotinst Elastigroup.
 
+Cluster Autoscaler version: **v1.17.1**
+
 ## TL;DR:
 
 ```console
