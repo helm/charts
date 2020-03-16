@@ -104,7 +104,7 @@ The following table lists the configurable parameters of the Falco chart and the
 | `falco.httpOutput.enabled`                      | Enable http output for security notifications                                                                      | `false`                                                                                                                                   |
 | `falco.httpOutput.url`                          | Url to notify using the http output when a notification arrives                                                    | `http://some.url`                                                                                                                         |
 | `falco.grpc.enabled`                            | Enable the Falco gRPC server                                                          | `false`  
-| `falco.grpc.bindAddress`                        | Configure the address to bind and expose the Falco gRPC server                        | `0.0.0.0:5060` 
+| `falco.grpc.listenPort`                        | Port where Falco gRPC server listen to connections                        | `5060` 
 | `falco.grpc.threadiness`                        | Number of threads (and context) the gRPC server will use                              | `8` 
 | `falco.grpc.privateKey`                         | Key file path for the Falco gRPC server                                               | `/etc/falco/certs/server.key` 
 | `falco.grpc.certChain`                          | Cert file path for the Falco gRPC server                                              | `/etc/falco/certs/server.crt` 
@@ -267,3 +267,21 @@ This means that the apiserver cannot recognize the `auditregistration.k8s.io`
 resource, which means that the dynamic auditing feature hasn't been enabled
 properly. You need to enable it or ensure that your using a Kubernetes version
 greater than v1.13.
+
+## Enabling gRPC service
+
+The Falco gRPC server and the Falco gRPC Outputs APIs are not enabled by default.
+
+The gRPC server can only be used with mutual authentication between the clients and the server using TLS certificates. How to generate the certificates is [documented here](https://falco.org/docs/grpc/#generate-valid-ca).
+
+To install Falco with gRPC enabled, you have to:
+
+```
+$ helm install --name my-release \
+  --set falco.grpc.enabled=true \
+  --set falco.grpcOutput.enabled=true \
+  --set-file certs.server.key=/path/to/server.key \
+  --set-file certs.server.crt=/path/to/certs/server.crt \
+  --set-file certs.ca.crt=/path/to/ca.crt \
+   stable/falco
+```

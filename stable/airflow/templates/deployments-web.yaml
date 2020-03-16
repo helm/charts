@@ -48,6 +48,9 @@ spec:
         app: {{ template "airflow.name" . }}
         component: web
         release: {{ .Release.Name }}
+{{- if .Values.web.podLabels }}
+{{ toYaml .Values.web.podLabels | indent 8 }}
+{{- end }}
     spec:
       {{- if .Values.airflow.image.pullSecret }}
       imagePullSecrets:
@@ -65,6 +68,11 @@ spec:
       {{- if .Values.web.tolerations }}
       tolerations:
 {{ toYaml .Values.web.tolerations | indent 8 }}
+      {{- end }}
+      serviceAccountName: {{ template "airflow.serviceAccountName" . }}
+      {{- if .Values.web.securityContext }}
+      securityContext:
+{{ toYaml .Values.web.securityContext | indent 8 }}
       {{- end }}
       {{- if .Values.dags.initContainer.enabled }}
       initContainers:
