@@ -120,9 +120,11 @@ replacement_map = {
 }
 
 # standard header
-header = '''# Generated from '%(name)s' group from %(url)s
-# Do not change in-place! In order to change this file first read following link:
-# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
+header = '''{{- /* 
+Generated from '%(name)s' group from %(url)s
+Do not change in-place! In order to change this file first read following link:
+https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
+*/ -}}
 {{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
 {{- if and (semverCompare ">=%(min_kubernetes)s" $kubeTargetVersion) (semverCompare "<%(max_kubernetes)s" $kubeTargetVersion) .Values.defaultRules.create%(condition)s }}%(init_line)s
 apiVersion: monitoring.coreos.com/v1

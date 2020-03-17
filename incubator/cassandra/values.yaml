@@ -215,6 +215,8 @@ exporter:
   # If exporter is enabled this will create a ServiceMonitor by default as well
   servicemonitor: true
   enabled: false
+  additionalLabels: {}
+    # prometheus: default
   image:
     repo: criteord/cassandra_exporter
     tag: 2.0.2

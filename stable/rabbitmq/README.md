@@ -2,6 +2,27 @@
 
 [RabbitMQ](https://www.rabbitmq.com/) is an open source message broker software that implements the Advanced Message Queuing Protocol (AMQP).
 
+## This Helm chart is deprecated
+
+Given the [`stable` deprecation timeline](https://github.com/helm/charts#deprecation-timeline), the Bitnami maintained RabbitMQ Helm chart is now located at [bitnami/charts](https://github.com/bitnami/charts/).
+
+The Bitnami repository is already included in the Hubs and we will continue providing the same cadence of updates, support, etc that we've been keeping here these years. Installation instructions are very similar, just adding the _bitnami_ repo and using it during the installation (`bitnami/<chart>` instead of `stable/<chart>`)
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm install my-release bitnami/<chart>           # Helm 3
+$ helm install --name my-release bitnami/<chart>    # Helm 2
+```
+
+To update an exisiting _stable_ deployment with a chart hosted in the bitnami repository you can execute
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm upgrade my-release bitnami/<chart>
+```
+
+Issues and PRs related to the chart itself will be redirected to `bitnami/charts` GitHub repository. In the same way, we'll be happy to answer questions related to this migration process in [this issue](https://github.com/helm/charts/issues/20969) created as a common place for discussion.
+
 ## TL;DR;
 
 ```bash
@@ -94,6 +115,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `ldap.tls.enabled`                           | Enable TLS for LDAP connections                  | `false` (if set to true, check advancedConfiguration parameter in values.yml)   |
 | `service.type`                               | Kubernetes Service type                          | `ClusterIP`                                             |
 | `service.port`                               | Amqp port                                        | `5672`                                                  |
+| `service.loadBalancerIP`                    | LoadBalancerIP for the service                   | `nil`                                                   |
 | `service.tlsPort`                            | Amqp TLS port                                    | `5671`                                                  |
 | `service.distPort`                           | Erlang distribution server port                  | `25672`                                                 |
 | `service.nodePort`                           | Node port override, if serviceType NodePort      | _random available between 30000-32767_                  |
@@ -341,7 +363,7 @@ You must include in your values.yaml the caCertificate, serverCertificate and se
     -----END RSA PRIVATE KEY-----
 ```
 
-This will be generate a secret with the certs, but is possible specify an existing secret using `existingSecret: name-of-existing-secret-to-rabbitmq`
+This will be generate a secret with the certs, but is possible specify an existing secret using `existingSecret: name-of-existing-secret-to-rabbitmq`. The secret is of type `kubernetes.io/tls`.
 
 Disabling [failIfNoPeerCert](https://www.rabbitmq.com/ssl.html#peer-verification-configuration) allows a TLS connection if client fails to provide a certificate
 

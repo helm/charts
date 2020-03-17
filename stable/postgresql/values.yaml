@@ -15,7 +15,7 @@ global:
 image:
   registry: docker.io
   repository: bitnami/postgresql
-  tag: 11.7.0-debian-10-r0
+  tag: 11.7.0-debian-10-r9
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -78,6 +78,7 @@ volumePermissions:
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
 ##
 # schedulerName:
+
 
 ## Pod Security Context
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
@@ -332,15 +333,27 @@ master:
   podAnnotations: {}
   priorityClassName: ""
   extraInitContainers: |
-  # - name: do-something
-  #   image: busybox
-  #   command: ['do', 'something']
+    # - name: do-something
+    #   image: busybox
+    #   command: ['do', 'something']
+
   ## Additional PostgreSQL Master Volume mounts
   ##
   extraVolumeMounts: []
   ## Additional PostgreSQL Master Volumes
   ##
   extraVolumes: []
+  ## Add sidecars to the pod
+  ##
+  ## For example:
+  ## sidecars:
+  ##   - name: your-image-name
+  ##     image: your-image
+  ##     imagePullPolicy: Always
+  ##     ports:
+  ##       - name: portname
+  ##         containerPort: 1234
+  sidecars: []
 
 ##
 ## PostgreSQL Slave parameters
@@ -360,15 +373,26 @@ slave:
   podAnnotations: {}
   priorityClassName: ""
   extraInitContainers: |
-  # - name: do-something
-  #   image: busybox
-  #   command: ['do', 'something']
+    # - name: do-something
+    #   image: busybox
+    #   command: ['do', 'something']
   ## Additional PostgreSQL Slave Volume mounts
   ##
   extraVolumeMounts: []
   ## Additional PostgreSQL Slave Volumes
   ##
   extraVolumes: []
+  ## Add sidecars to the pod
+  ##
+  ## For example:
+  ## sidecars:
+  ##   - name: your-image-name
+  ##     image: your-image
+  ##     imagePullPolicy: Always
+  ##     ports:
+  ##       - name: portname
+  ##         containerPort: 1234
+  sidecars: []
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -457,7 +481,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/postgres-exporter
-    tag: 0.8.0-debian-10-r15
+    tag: 0.8.0-debian-10-r28
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.

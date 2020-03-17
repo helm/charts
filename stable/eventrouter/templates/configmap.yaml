@@ -7,5 +7,6 @@ metadata:
 data:
   config.json: |-
     {
-      "sink": "{{ .Values.sink }}"
+      "sink": "{{ .Values.sink }}",
+      "enable-prometheus": "{{ .Values.enablePrometheus }}"
     }

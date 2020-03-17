@@ -1,14 +1,18 @@
 {{- define "containers-init" -}}
 - name: init-volume
-  image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+  image: "{{ .Values.agents.image.repository }}:{{ .Values.agents.image.tag }}"
+  imagePullPolicy: {{ .Values.agents.image.pullPolicy }}
   command: ["bash", "-c"]
   args:
     - cp -r /etc/datadog-agent /opt
   volumeMounts:
     - name: config
       mountPath: /opt/datadog-agent
+  resources:
+{{ toYaml .Values.agents.containers.initContainers.resources | indent 4 }}
 - name: init-config
-  image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+  image: "{{ .Values.agents.image.repository }}:{{ .Values.agents.image.tag }}"
+  imagePullPolicy: {{ .Values.agents.image.pullPolicy }}
   command: ["bash", "-c"]
   args:
     - for script in $(find /etc/cont-init.d/ -type f -name '*.sh' | sort) ; do bash $script ; done
@@ -28,9 +32,9 @@
     - name: procdir
       mountPath: /host/proc
       readOnly: true
-    {{- if .Values.datadog.useCriSocketVolume }}
+    {{- if .Values.datadog.criSocketPath }}
     - name: runtimesocket
-      mountPath: {{ default "/var/run/docker.sock" .Values.datadog.criSocketPath | quote }}
+      mountPath: {{ .Values.datadog.criSocketPath }}
       readOnly: true
     {{- end }}
   env:
@@ -38,4 +42,10 @@
     {{- if .Values.datadog.env }}
       {{ toYaml .Values.datadog.env | nindent 4 }}
     {{- end }}
+    {{- if .Values.datadog.criSocketPath }}
+    - name: DD_CRI_SOCKET_PATH
+      value: {{ .Values.datadog.criSocketPath }}
+    {{- end }}
+  resources:
+{{ toYaml .Values.agents.containers.initContainers.resources | indent 4 }}
 {{- end -}}

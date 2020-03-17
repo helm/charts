@@ -91,11 +91,25 @@ livenessProbe:
   # A trailing "/" must be included
   sonarWebContext: /
   # sonarWebContext: /sonarqube/
-
-# Set extra env variables. Like proxy settings.
-extraEnv: {}
   # If an ingress *path* is defined, it should be reflected here
   # sonar.web.context: /sonarqube
+
+## Provide a secret containing one or more certificate files in the keys that will be added to cacerts
+## The cacerts file will be set via SONARQUBE_WEB_JVM_OPTS
+##
+# caCerts:
+#   secret: my-secret
+
+## Values to add to SONARQUBE_WEB_JVM_OPTS
+##
+# jvmOpts: "-Djava.net.preferIPv4Stack=true"
+jvmOpts: ""
+
+## Environment variables to attach to the pods
+##
+# env:
+#   - name: VARIABLE
+#     value: my-value
 
 # Set annotations for pods
 annotations: {}
@@ -165,11 +179,6 @@ plugins:
 # The secret must contain the key 'sonar-secret.txt'.
 # The 'sonar.secretKeyPath' property will be set automatically.
 # sonarSecretKey: "settings-encryption-secret"
-
-customCerts:
-  ## Enable to override the default cacerts with your own one
-  enabled: false
-  secretName: my-cacerts
 
 ## Configuration value to select database type
 ## Option to use "postgresql" or "mysql" database type, by default "postgresql" is chosen

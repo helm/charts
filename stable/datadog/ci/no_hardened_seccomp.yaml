@@ -1,5 +1,6 @@
-# Empty values file for testing default parameters.
-
-systemProbe:
-  enabled: true
-  seccomp: runtime/default
+datadog:
+  apiKey: "00000000000000000000000000000000"
+  appKey: "0000000000000000000000000000000000000000"
+  systemProbe:
+    enabled: true
+    seccomp: runtime/default
