@@ -3,6 +3,13 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.7.6
+
+### Minor changes
+
+* Use rbac.authorization.k8s.io/v1 instead of the beta1 API.
+* Fix security key duplication when enabling secure and auditLog.
+
 ## v1.7.5
 
 ### Minor changes
