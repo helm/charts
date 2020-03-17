@@ -11,6 +11,11 @@ controller:
     runAsUser: 101
     allowPrivilegeEscalation: true
 
+  # This will fix the issue of HPA not being able to read the metrics.
+  # Note that if you enable it for existing deployments, it won't work as the labels are immutable.
+  # We recommend setting this to true for new deployments.
+  useComponentLabel: false
+
   # Configures the ports the nginx-controller listens on
   containerPort:
     http: 80
@@ -437,6 +442,11 @@ defaultBackend:
     pullPolicy: IfNotPresent
     # nobody user -> uid 65534
     runAsUser: 65534
+
+  # This will fix the issue of HPA not being able to read the metrics.
+  # Note that if you enable it for existing deployments, it won't work as the labels are immutable.
+  # We recommend setting this to true for new deployments.
+  useComponentLabel: false
 
   extraArgs: {}
 
