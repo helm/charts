@@ -158,8 +158,8 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `backup.destination`                 | Destination to store backup artifacts           | `s3://bucket/cassandra`                                    |
 | `backup.google.serviceAccountSecret` | Secret containing credentials if GCS is used as destination |                                                |
 | `exporter.enabled`                   | Enable Cassandra exporter                       | `false`                                                    |
-| `exporter.servicemonitor`            | Enable ServiceMonitor for exporter              | `true`                                                     |
-| `exporter.additionalLabels`          | Additional labels for Service Monitor           | `{}`                                                       |
+| `exporter.servicemonitor.enabled`    | Enable ServiceMonitor for exporter              | `true`                                                    |
+| `exporter.servicemonitor.additionalLabels`| Additional labels for Service Monitor           | `{}`                                                       |
 | `exporter.image.repo`                | Exporter image repository                       | `criteord/cassandra_exporter`                              |
 | `exporter.image.tag`                 | Exporter image tag                              | `2.0.2`                                                    |
 | `exporter.port`                      | Exporter port                                   | `5556`                                                     |
