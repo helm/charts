@@ -1,4 +1,4 @@
-# https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.35/example/prometheus-operator-crd/monitoring.coreos.com_prometheuses.yaml
+# https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.37/example/prometheus-operator-crd/monitoring.coreos.com_prometheuses.yaml
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
@@ -8,6 +8,18 @@ metadata:
   creationTimestamp: null
   name: prometheuses.monitoring.coreos.com
 spec:
+  additionalPrinterColumns:
+  - JSONPath: .spec.version
+    description: The version of Prometheus
+    name: Version
+    type: string
+  - JSONPath: .spec.replicas
+    description: The desired replicas number of Prometheuses
+    name: Replicas
+    type: integer
+  - JSONPath: .metadata.creationTimestamp
+    name: Age
+    type: date
   group: monitoring.coreos.com
   names:
     kind: Prometheus
@@ -16,6 +28,7 @@ spec:
     singular: prometheus
   preserveUnknownFields: false
   scope: Namespaced
+  subresources: {}
   validation:
     openAPIV3Schema:
       description: Prometheus defines a Prometheus deployment.
@@ -1153,7 +1166,7 @@ spec:
                               description: 'Selects a field of the pod: supports metadata.name,
                                 metadata.namespace, metadata.labels, metadata.annotations,
                                 spec.nodeName, spec.serviceAccountName, status.hostIP,
-                                status.podIP.'
+                                status.podIP, status.podIPs.'
                               properties:
                                 apiVersion:
                                   description: Version of the schema the FieldPath
@@ -1874,9 +1887,8 @@ spec:
                               in image metadata if unspecified. May also be set in
                               PodSecurityContext. If set in both SecurityContext and
                               PodSecurityContext, the value specified in SecurityContext
-                              takes precedence. This field is alpha-level and it is
-                              only honored by servers that enable the WindowsRunAsUserName
-                              feature flag.
+                              takes precedence. This field is beta-level and may be
+                              disabled with the WindowsRunAsUserName feature flag.
                             type: string
                         type: object
                     type: object
@@ -2095,7 +2107,7 @@ spec:
                             to SubPath but environment variable references $(VAR_NAME)
                             are expanded using the container's environment. Defaults
                             to "" (volume's root). SubPathExpr and SubPath are mutually
-                            exclusive. This field is beta in 1.15.
+                            exclusive.
                           type: string
                       required:
                       - mountPath
@@ -2252,7 +2264,7 @@ spec:
                               description: 'Selects a field of the pod: supports metadata.name,
                                 metadata.namespace, metadata.labels, metadata.annotations,
                                 spec.nodeName, spec.serviceAccountName, status.hostIP,
-                                status.podIP.'
+                                status.podIP, status.podIPs.'
                               properties:
                                 apiVersion:
                                   description: Version of the schema the FieldPath
@@ -2973,9 +2985,8 @@ spec:
                               in image metadata if unspecified. May also be set in
                               PodSecurityContext. If set in both SecurityContext and
                               PodSecurityContext, the value specified in SecurityContext
-                              takes precedence. This field is alpha-level and it is
-                              only honored by servers that enable the WindowsRunAsUserName
-                              feature flag.
+                              takes precedence. This field is beta-level and may be
+                              disabled with the WindowsRunAsUserName feature flag.
                             type: string
                         type: object
                     type: object
@@ -3194,7 +3205,7 @@ spec:
                             to SubPath but environment variable references $(VAR_NAME)
                             are expanded using the container's environment. Defaults
                             to "" (volume's root). SubPathExpr and SubPath are mutually
-                            exclusive. This field is beta in 1.15.
+                            exclusive.
                           type: string
                       required:
                       - mountPath
@@ -3239,9 +3250,25 @@ spec:
                 for deletion will be performed on the underlying objects.
               type: boolean
             podMetadata:
-              description: 'Standard object’s metadata. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#metadata
-                Metadata Labels and Annotations gets propagated to the prometheus
-                pods.'
+              description: PodMetadata configures Labels and Annotations which are
+                propagated to the prometheus pods.
+              properties:
+                annotations:
+                  additionalProperties:
+                    type: string
+                  description: 'Annotations is an unstructured key value map stored
+                    with a resource that may be set by external tools to store and
+                    retrieve arbitrary metadata. They are not queryable and should
+                    be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations'
+                  type: object
+                labels:
+                  additionalProperties:
+                    type: string
+                  description: 'Map of string keys and values that can be used to
+                    organize and categorize (scope and select) objects. May match
+                    selectors of replication controllers and services. More info:
+                    http://kubernetes.io/docs/user-guide/labels'
+                  type: object
               type: object
             podMonitorNamespaceSelector:
               description: Namespaces to be selected for PodMonitor discovery. If
@@ -4123,8 +4150,8 @@ spec:
                         metadata if unspecified. May also be set in PodSecurityContext.
                         If set in both SecurityContext and PodSecurityContext, the
                         value specified in SecurityContext takes precedence. This
-                        field is alpha-level and it is only honored by servers that
-                        enable the WindowsRunAsUserName feature flag.
+                        field is beta-level and may be disabled with the WindowsRunAsUserName
+                        feature flag.
                       type: string
                   type: object
               type: object
@@ -4516,6 +4543,25 @@ spec:
                     Defaults to the value of `version`. Version is ignored if Tag
                     is set.
                   type: string
+                tracingConfig:
+                  description: TracingConfig configures tracing in Thanos. This is
+                    an experimental feature, it may change in any upcoming release
+                    in a breaking way.
+                  properties:
+                    key:
+                      description: The key of the secret to select from.  Must be
+                        a valid secret key.
+                      type: string
+                    name:
+                      description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                        TODO: Add other useful fields. apiVersion, kind, uid?'
+                      type: string
+                    optional:
+                      description: Specify whether the Secret or its key must be defined
+                      type: boolean
+                  required:
+                  - key
+                  type: object
                 version:
                   description: Version describes the version of Thanos to use.
                   type: string
