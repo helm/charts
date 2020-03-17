@@ -36,6 +36,7 @@ spec:
   externalIPs:
 {{ toYaml .Values.service.externalIPs | indent 4 }}
 {{- end }}
+  publishNotReadyAddresses: {{ .Values.service.publishNotReadyAddresses }}
   ports:
     - name: {{ .Values.service.portName }}
       port: {{ .Values.service.port }}
@@ -61,6 +62,9 @@ spec:
 {{ if (and (eq .Values.vscode.service.type "NodePort") (not (empty .Values.vscode.service.nodePort))) }}
       nodePort: {{.Values.vscode.service.nodePort}}
 {{ end }}
+{{- end }}
+{{- if .Values.service.additionalPorts }}
+    {{- .Values.service.additionalPorts | toYaml | indent 4 }}
 {{- end }}
   selector:
     app.kubernetes.io/name: {{ include "home-assistant.name" . }}

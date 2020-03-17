@@ -74,6 +74,10 @@ spec:
             - name: api
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+          {{- range .Values.service.additionalPorts }}
+            - name: {{ .name }}
+              containerPort: {{ .targetPort }}
+          {{- end }}
           {{- if .Values.probes.liveness.enabled }}
           livenessProbe:
             httpGet:
@@ -223,10 +227,11 @@ spec:
           imagePullPolicy: {{ .Values.vscode.image.pullPolicy }}
           workingDir: {{ .Values.vscode.hassConfig }}
           args:
-            - --allow-http
             - --port={{ .Values.vscode.service.port }}
-            {{- if not (.Values.vscode.password) }}
-            - --no-auth
+            {{- if (.Values.vscode.password) }}
+            - --allow-http #Not supported without password
+            {{- else }}
+            - --auth=none
             {{- end }}
             {{- if .Values.vscode.vscodePath }}
             - --extensions-dir={{ .Values.vscode.vscodePath }}

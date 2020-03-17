@@ -34,6 +34,10 @@ service:
   type: ClusterIP
   port: 8123
   portName: api
+  additionalPorts: {}
+  # - name: homematicproxy
+  #   port: 2001
+  #   targetPort: 2001
   annotations: {}
   labels: {}
   clusterIP: ""
@@ -44,6 +48,7 @@ service:
   loadBalancerIP: ""
   loadBalancerSourceRanges: []
   # nodePort: 30000
+  publishNotReadyAddresses: false
 
 ingress:
   enabled: false

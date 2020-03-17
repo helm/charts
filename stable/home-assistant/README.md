@@ -57,11 +57,13 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `service.type`             | Kubernetes service type for the home-assistant GUI | `ClusterIP` |
 | `service.port`             | Kubernetes port where the home-assistant GUI is exposed| `8123` |
 | `service.portName`         | Kubernetes port name where the home-assistant GUI is exposed | `api` |
+| `service.additionalPorts`  | Add additional ports exposed by the home assistant container integrations. Example homematic needs to expose a proxy port | `{}` |
 | `service.annotations`      | Service annotations for the home-assistant GUI | `{}` |
 | `service.clusterIP`   | Cluster IP for the home-assistant GUI | `` |
 | `service.externalIPs`   | External IPs for the home-assistant GUI | `[]` |
 | `service.loadBalancerIP`   | Loadbalancer IP for the home-assistant GUI | `` |
 | `service.loadBalancerSourceRanges`   | Loadbalancer client IP restriction range for the home-assistant GUI | `[]` |
+| `service.publishNotReadyAddresses`   | Set to true if the editors (vscode or configurator) should be reachable when home assistant does not run | `false` |
 | `hostNetwork`              | Enable hostNetwork - might be needed for discovery to work | `false` |
 | `service.nodePort`   | nodePort to listen on for the home-assistant GUI | `` |
 | `ingress.enabled`              | Enables Ingress | `false` |
