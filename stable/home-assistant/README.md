@@ -36,7 +36,7 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | Parameter                  | Description                         | Default                                                 |
 |----------------------------|-------------------------------------|---------------------------------------------------------|
 | `image.repository`         | Image repository | `homeassistant/home-assistant` |
-| `image.tag`                | Image tag. Possible values listed [here](https://hub.docker.com/r/homeassistant/home-assistant/tags/).| `0.103.3`|
+| `image.tag`                | Image tag. Possible values listed [here](https://hub.docker.com/r/homeassistant/home-assistant/tags/).| `0.106.6`|
 | `image.pullPolicy`         | Image pull policy | `IfNotPresent` |
 | `image.pullSecrets`        | Secrets to use when pulling the image | `[]` |
 | `strategyType`             | Specifies the strategy used to replace old Pods by new ones | `Recreate` |
