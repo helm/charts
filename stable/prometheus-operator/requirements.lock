@@ -4,9 +4,9 @@ dependencies:
   version: 2.6.4
 - name: prometheus-node-exporter
   repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 1.8.2
+  version: 1.9.0
 - name: grafana
   repository: https://kubernetes-charts.storage.googleapis.com/
   version: 5.0.5
-digest: sha256:91fd7999520c95c52890b552bc27a4abfcd78372c3fa4e7432756319b952c032
-generated: "2020-03-05T09:02:41.550096-05:00"
+digest: sha256:095df42d92ddcad7b43b5c8569e647345d00cf97b3205834502c2160c9300143
+generated: "2020-03-12T13:15:37.444588+03:00"
