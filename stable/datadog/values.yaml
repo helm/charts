@@ -524,6 +524,11 @@ clusterAgent:
   #
   # datadog_cluster_yaml: {}
 
+  ## @param createPodDisruptionBudget - boolean - optional
+  ## Specify the pod disruption budget to apply to the cluster agents
+  #
+  createPodDisruptionBudget: false
+
 kubeStateMetrics:
 
   ## @param enabled - boolean - required
@@ -864,6 +869,11 @@ clusterChecksRunner:
     #
     # pullSecrets:
     #   - name: "<REG_SECRET>"
+
+  ## @param createPodDisruptionBudget - boolean - optional
+  ## Specify the pod disruption budget to apply to the cluster checks agents
+  #
+  createPodDisruptionBudget: false
 
   ## @param rbac - object - required
   ## Provide Cluster Checks Deployment pods RBAC configuration
