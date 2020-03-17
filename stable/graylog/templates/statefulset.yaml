@@ -120,9 +120,16 @@ spec:
             - name: {{ $key }}
               value: {{ $value | quote }}
             {{- end }}
+          securityContext:
+            privileged: {{ .Values.graylog.privileged }}
           ports:
             - containerPort: 9000
               name: graylog
+          {{- range .Values.graylog.service.ports }}
+            - containerPort: {{ .port }}
+              name: {{ .name}}
+              protocol: {{ .protocol }}
+          {{- end }}
           {{- with .Values.graylog.input }}
           {{- if .udp }}
           {{- range .udp.ports }}
@@ -193,6 +200,9 @@ spec:
                       -u "{{ .Values.graylog.rootUsername }}:${GRAYLOG_PASSWORD_SECRET}" \
                       -H "X-Requested-By: {{ template "graylog.fullname" . }}" \
                       {{ template "graylog.formatUrl" (list . "localhost:9000/api/system/shutdown/shutdown") }}
+      {{- if .Values.graylog.sidecarContainers }}
+        {{ toYaml .Values.graylog.sidecarContainers | nindent 8 }}
+      {{- end }}
       terminationGracePeriodSeconds: {{ default 30 .Values.graylog.terminationGracePeriodSeconds }}
       volumes:
         - name: config
@@ -220,7 +230,7 @@ spec:
         - name: kubectl
           emptyDir: {}
 {{- if .Values.graylog.extraVolumes }}
-{{ toYaml .Values.graylog.extraVolumes | indent 8}}
+{{ toYaml .Values.graylog.extraVolumes | indent 8 }}
 {{- end }}
 {{- if not .Values.graylog.persistence.enabled }}
         - name: journal
