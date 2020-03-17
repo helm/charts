@@ -541,7 +541,7 @@ agents:
   ## @param enabled - boolean - required
   ## You should keep Datadog DaemonSet enabled!
   ## The exceptional case could be a situation when you need to run
-  ## single DataDog pod per every namespace, but you do not need to
+  ## single Datadog pod per every namespace, but you do not need to
   ## re-create a DaemonSet for every non-default namespace install.
   ## Note: StatsD and DogStatsD work over UDP, so you may not
   ## get guaranteed delivery of the metrics in Datadog-per-namespace setup!
