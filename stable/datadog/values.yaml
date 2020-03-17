@@ -268,11 +268,16 @@ datadog:
   # checksd:
   #   service.py: |-
 
-  ## @param criSocketPath - string - required
+  ## @param dockerSocketPath - string - optional
+  ## Path to the docker socket
+  #
+  # dockerSocketPath: /var/run/docker.sock
+
+  ## @param criSocketPath - string - optional
   ## Path to the container runtime socket (if different from Docker)
   ## This is supported starting from agent 6.6.0
   #
-  criSocketPath: /var/run/docker.sock
+  # criSocketPath: /var/run/containerd/containerd.sock
 
 
   ## @param processAgent - object - required

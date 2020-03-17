@@ -77,11 +77,9 @@ spec:
       volumes:
         - name: config
           emptyDir: {}
-        {{- if .Values.datadog.criSocketPath }}
         - hostPath:
-            path: {{ .Values.datadog.criSocketPath }}
+            path: {{ template "datadog.dockerOrCriSocketPath" . }}
           name: runtimesocket
-        {{- end }}
         {{- if .Values.datadog.dogstatsd.useSocketVolume }}
         - hostPath:
             path: "/var/run/datadog/"
@@ -112,7 +110,7 @@ spec:
         - hostPath:
             path: /var/log/pods
           name: logpodpath
-        {{- if regexFind "^.*docker.*$" $.Values.datadog.criSocketPath }}
+        {{- if not .Values.datadog.criSocketPath }}
         - hostPath:
             path: /var/lib/docker/containers
           name: logdockercontainerpath

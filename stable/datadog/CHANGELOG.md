@@ -2,6 +2,10 @@
 
 ## 2.0
 
+## 2.0.10
+
+* Do not enable the `cri` check when running on a `docker` setup.
+
 ## 2.0.7
 
 * Pass expected `DD_DOGSTATSD_PORT` to datadog-agent rather than invalid `DD_DOGSTATD_PORT`
@@ -22,7 +26,7 @@
 ## 2.0.3
 
 * Fix templating error when `agents.useConfigMap` is set to true.
-* Add DD_APM_ENABLED environment variable to trace agent container.
+* Add DD\_APM\_ENABLED environment variable to trace agent container.
 
 
 ## 2.0.2

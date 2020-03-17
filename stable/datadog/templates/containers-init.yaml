@@ -32,15 +32,17 @@
     - name: procdir
       mountPath: /host/proc
       readOnly: true
-    {{- if .Values.datadog.criSocketPath }}
     - name: runtimesocket
-      mountPath: {{ .Values.datadog.criSocketPath }}
+      mountPath: {{ template "datadog.dockerOrCriSocketPath" . }}
       readOnly: true
-    {{- end }}
   env:
     {{- include "containers-common-env" . | nindent 4 }}
     {{- if .Values.datadog.env }}
       {{ toYaml .Values.datadog.env | nindent 4 }}
+    {{- end }}
+    {{- if .Values.datadog.dockerSocketPath }}
+    - name: DOCKER_HOST
+      value: unix://{{ .Values.datadog.dockerSocketPath }}
     {{- end }}
     {{- if .Values.datadog.criSocketPath }}
     - name: DD_CRI_SOCKET_PATH

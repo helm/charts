@@ -38,11 +38,9 @@
     - name: procdir
       mountPath: /host/proc
       readOnly: true
-    {{- if .Values.datadog.criSocketPath }}
     - name: runtimesocket
-      mountPath: {{ .Values.datadog.criSocketPath }}
+      mountPath: {{ template "datadog.dockerOrCriSocketPath" . }}
       readOnly: true
-    {{- end }}
     {{- if .Values.datadog.systemProbe.enabled }}
     - name: sysprobe-socket-dir
       mountPath: /opt/datadog-agent/run

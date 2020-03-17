@@ -69,3 +69,16 @@ Return the appropriate apiVersion for RBAC APIs.
 "rbac.authorization.k8s.io/v1beta1"
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return the container runtime socket
+*/}}
+{{- define "datadog.dockerOrCriSocketPath" -}}
+{{- if .Values.datadog.dockerSocketPath -}}
+{{- .Values.dockerSocketPath -}}
+{{- else if .Values.datadog.criSocketPath -}}
+{{- .Values.datadog.criSocketPath -}}
+{{- else -}}
+/var/run/docker.sock
+{{- end -}}
+{{- end -}}
