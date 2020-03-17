@@ -2,6 +2,10 @@
 
 ## 2.0
 
+## 2.0.11
+
+* Add missing syscalls in the `system-probe` seccomp profile
+
 ## 2.0.10
 
 * Do not enable the `cri` check when running on a `docker` setup.
