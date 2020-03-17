@@ -4,7 +4,7 @@
 
 image:
   repository: homeassistant/home-assistant
-  tag: 0.103.3
+  tag: 0.106.6
   pullPolicy: IfNotPresent
   pullSecrets: []
 
