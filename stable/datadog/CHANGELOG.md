@@ -2,6 +2,10 @@
 
 ## 2.0
 
+## 2.0.12
+
+* Fixed a bug where datadog.apm.enabled was not being respected
+
 ## 2.0.11
 
 * Add missing syscalls in the `system-probe` seccomp profile
