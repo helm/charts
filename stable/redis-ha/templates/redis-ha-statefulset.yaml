@@ -314,5 +314,6 @@ spec:
           path: {{ tpl .Values.hostPath.path .}}
 {{- else }}
       - name: data
-        emptyDir: {}
+        emptyDir:
+{{ toYaml .Values.emptyDir | indent 10 }}
 {{- end }}
