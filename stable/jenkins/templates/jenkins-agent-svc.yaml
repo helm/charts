@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "jenkins.fullname" . }}-agent
+  namespace: {{ template "jenkins.namespace" . }}
   labels:
     "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
     "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -24,3 +25,8 @@ spec:
     "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
     "app.kubernetes.io/instance": "{{ .Release.Name }}"
   type: {{ .Values.master.slaveListenerServiceType }}
+  {{  if eq .Values.master.slaveListenerServiceType "LoadBalancer"  }}
+  {{  if .Values.master.slaveListenerLoadBalancerIP  }}
+  loadBalancerIP: {{  .Values.master.slaveListenerLoadBalancerIP  }}
+  {{end}}
+  {{end}}

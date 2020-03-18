@@ -1,0 +1,51 @@
+{{- if .Values.agents.useConfigMap }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "datadog.fullname" . }}-datadog-yaml
+  labels:
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app.kubernetes.io/name: "{{ template "datadog.fullname" . }}"
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+  annotations:
+    {{- if .Values.agents.customAgentConfig }}
+    checksum/agent-config: {{ tpl (toYaml .Values.agents.customAgentConfig) . | sha256sum }}
+    {{- end }}
+data:
+  datadog.yaml: |
+  {{- if .Values.agents.customAgentConfig }}
+{{ tpl (toYaml .Values.agents.customAgentConfig) . | indent 4 }}
+  {{- else }}
+    ## Provides autodetected defaults, for kubernetes environments,
+    ## please see datadog.yaml.example for all supported options
+
+    # Autodiscovery for Kubernetes
+    listeners:
+      - name: kubelet
+    config_providers:
+      - name: kubelet
+        polling: true
+
+    # Enable APM by setting the DD_APM_ENABLED envvar to true, or override this configuration
+    apm_config:
+      enabled: true
+      apm_non_local_traffic: true
+      max_memory: 0
+      max_cpu_percent: 0
+
+    {{- $version := (.Values.agents.image.tag | toString | trimSuffix "-jmx") }}
+    {{- $length := len (split "." $version ) -}} 
+    {{- if and (eq $length 1) (ge $version "6") -}}
+    {{- $version := "6.15" }}  
+    {{- end -}}
+    {{ if semverCompare ">=6.15" $version }}
+    # Enable java container awareness (agent version >= 6.15)
+    jmx_use_container_support: true
+    {{ else }}
+    # Enable java cgroup memory awareness (agent version < 6.15)
+    jmx_use_cgroup_memory_limit: true
+    {{ end }}
+  {{- end }}
+{{- end }}

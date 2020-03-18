@@ -1,4 +1,3 @@
-{{- if or .Values.sysdig.settings .Values.secure.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -10,15 +9,21 @@ metadata:
     heritage: "{{ .Release.Service }}"
 data:
   dragent.yaml: |
-{{- if .Values.secure.enabled }}
+    new_k8s: true
+{{- if or .Values.secure.enabled .Values.auditLog.enabled }}
     security:
+{{- if .Values.auditLog.enabled }}
+      k8s_audit_server_url: {{ .Values.auditLog.auditServerUrl }}
+      k8s_audit_server_port: {{ .Values.auditLog.auditServerPort }}
+{{- end }}
+{{- if .Values.secure.enabled }}
       enabled: true
     commandlines_capture:
       enabled: true
     memdump:
       enabled: true
 {{- end }}
+{{- end }}
 {{- if .Values.sysdig.settings }}
 {{ toYaml .Values.sysdig.settings | indent 4 }}
-{{- end }}
 {{- end }}

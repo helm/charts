@@ -7,6 +7,9 @@ metadata:
     helm.sh/chart: {{ include "karma.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- if .Values.service.labels }}
+{{ toYaml .Values.service.labels | indent 4 }}
+{{- end }}
   annotations:
 {{ toYaml .Values.service.annotations | indent 4 }}
 spec:

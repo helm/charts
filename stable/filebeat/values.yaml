@@ -1,15 +1,10 @@
 image:
   repository: docker.elastic.co/beats/filebeat-oss
-  tag: 6.7.0
+  tag: 7.4.0
   pullPolicy: IfNotPresent
 
 config:
   filebeat.config:
-    prospectors:
-      # Mounted `filebeat-prospectors` configmap:
-      path: ${path.config}/prospectors.d/*.yml
-      # Reload prospectors configs as they change:
-      reload.enabled: false
     modules:
       path: ${path.config}/modules.d/*.yml
       # Reload module configs as they change:
@@ -18,7 +13,7 @@ config:
   processors:
     - add_cloud_metadata:
 
-  filebeat.prospectors:
+  filebeat.inputs:
     - type: log
       enabled: true
       paths:
@@ -30,7 +25,6 @@ config:
       - "*"
       processors:
         - add_kubernetes_metadata:
-            in_cluster: true
         - drop_event:
             when:
               equals:
@@ -89,6 +83,8 @@ extraVolumeMounts: []
   # - name: varlog
   #   mountPath: /host/var/log
   #   readOnly: true
+extraSecrets: {}
+  # secret: "TEST1"
 
 extraInitContainers: []
   # - name: echo

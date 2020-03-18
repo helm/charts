@@ -1,10 +1,10 @@
-{{- if gt .Values.defaultBackend.replicaCount 1.0 }}
+{{- if gt (.Values.defaultBackend.replicaCount | int) 1 }}
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
   labels:
     app: {{ template "nginx-ingress.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "nginx-ingress.chart" . }}
     component: "{{ .Values.defaultBackend.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}

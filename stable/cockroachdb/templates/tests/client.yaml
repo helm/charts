@@ -1,0 +1,65 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: {{ template "cockroachdb.fullname" . }}-test
+  namespace: {{ .Release.Namespace | quote }}
+{{- if .Values.networkPolicy.enabled }}
+  labels:
+    {{ template "cockroachdb.fullname" . }}-client: "true"
+{{- end }}
+  annotations:
+    helm.sh/hook: test-success
+spec:
+  restartPolicy: Never
+{{- if .Values.image.credentials }}
+  imagePullSecrets:
+    - name: {{ template "cockroachdb.fullname" . }}.db.registry
+{{- end }}
+  {{- if .Values.tls.certs.provided }}
+  volumes:
+    - name: client-certs
+      {{- if .Values.tls.certs.tlsSecret }}
+      projected:
+        sources:
+        - secret:
+            name: {{ .Values.tls.certs.clientRootSecret }}
+            items:
+            - key: ca.crt
+              path: ca.crt
+              mode: 0400
+            - key: tls.crt
+              path: client.root.crt
+              mode: 0400
+            - key: tls.key
+              path: client.root.key
+              mode: 0400
+      {{- else }}
+      secret:
+        secretName: {{ .Values.tls.certs.clientRootSecret }}
+        defaultMode: 0400
+      {{- end }}
+  {{- end }}
+  containers:
+    - name: client-test
+      image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+      imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+      {{- if .Values.tls.certs.provided }}
+      volumeMounts:
+      - name: client-certs
+        mountPath: /cockroach-certs
+      {{- end }}
+      command:
+        - /cockroach/cockroach
+        - sql
+        {{- if .Values.tls.certs.provided }}
+        - --certs-dir
+        - /cockroach-certs
+        {{- else }}
+        - --insecure
+        {{- end}}
+        - --host
+        - {{ template "cockroachdb.fullname" . }}-public.{{ .Release.Namespace }}
+        - --port
+        - {{ .Values.service.ports.grpc.external.port | quote }}
+        - -e
+        - SHOW DATABASES;

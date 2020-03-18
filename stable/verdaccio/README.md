@@ -57,8 +57,10 @@ and their default values.
 | `image.repository`                 | Verdaccio container image repository                            | `verdaccio/verdaccio`                                    |
 | `image.tag`                        | Verdaccio container image tag                                   | `3.11.6`                                                 |
 | `nodeSelector`                     | Node labels for pod assignment                                  | `{}`                                                     |
+| `tolerations`                      | List of node taints to tolerate                                 | `[]`                                                     |
 | `persistence.accessMode`           | PVC Access Mode for Verdaccio volume                            | `ReadWriteOnce`                                          |
 | `persistence.enabled`              | Enable persistence using PVC                                    | `true`                                                   |
+| `persistence.existingClaim`        | Use existing PVC                                                | `nil`                                                    |
 | `persistence.mounts`               | Additional mounts                                               | `nil`                                                    |
 | `persistence.size`                 | PVC Storage Request for Verdaccio volume                        | `8Gi`                                                    |
 | `persistence.storageClass`         | PVC Storage Class for Verdaccio volume                          | `nil`                                                    |
@@ -75,6 +77,7 @@ and their default values.
 | `service.port`                     | Service port to expose                                          | `4873`                                                   |
 | `service.nodePort`                 | Service port to expose                                          | none                                                     |
 | `service.type`                     | Type of service to create                                       | `ClusterIP`                                              |
+| `extraEnvVars`                     | Define environment variables to be passed to the container                                       | `{}`  
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

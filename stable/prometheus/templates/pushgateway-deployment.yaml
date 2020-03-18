@@ -1,5 +1,5 @@
 {{- if .Values.pushgateway.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "prometheus.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   labels:
@@ -7,9 +7,19 @@ metadata:
   name: {{ template "prometheus.pushgateway.fullname" . }}
 spec:
   selector:
+    {{- if .Values.schedulerName }}
+    schedulerName: "{{ .Values.schedulerName }}"
+    {{- end }}
     matchLabels:
       {{- include "prometheus.pushgateway.matchLabels" . | nindent 6 }}
   replicas: {{ .Values.pushgateway.replicaCount }}
+  {{- if .Values.pushgateway.strategy }}
+  strategy:
+{{ toYaml .Values.pushgateway.strategy | indent 4 }}
+  {{- if eq .Values.pushgateway.strategy.type "Recreate" }}
+  rollingUpdate: null
+  {{- end }}
+  {{- end }}
   template:
     metadata:
     {{- if .Values.pushgateway.podAnnotations }}
@@ -33,12 +43,22 @@ spec:
           {{- end }}
           ports:
             - containerPort: 9091
+          livenessProbe:
+            httpGet:
+            {{- if (index .Values "pushgateway" "extraArgs" "web.route-prefix") }}
+              path: /{{ index .Values "pushgateway" "extraArgs" "web.route-prefix" }}/-/healthy
+            {{- else }}
+              path: /-/healthy
+            {{- end }}
+              port: 9091
+            initialDelaySeconds: 10
+            timeoutSeconds: 10
           readinessProbe:
             httpGet:
             {{- if (index .Values "pushgateway" "extraArgs" "web.route-prefix") }}
-              path: /{{ index .Values "pushgateway" "extraArgs" "web.route-prefix" }}/#/status
+              path: /{{ index .Values "pushgateway" "extraArgs" "web.route-prefix" }}/-/ready
             {{- else }}
-              path: /#/status
+              path: /-/ready
             {{- end }}
               port: 9091
             initialDelaySeconds: 10
@@ -50,7 +70,7 @@ spec:
             - name: storage-volume
               mountPath: "{{ .Values.pushgateway.persistentVolume.mountPath }}"
               subPath: "{{ .Values.pushgateway.persistentVolume.subPath }}"
-          {{- end }}  
+          {{- end }}
     {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
       {{ toYaml .Values.imagePullSecrets | indent 2 }}

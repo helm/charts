@@ -4,7 +4,7 @@ apiVersion: v1
 metadata:
   name: {{ template "traefik.fullname" . }}
 ---
-kind: ClusterRole
+kind: {{ include "traefik.rbac.scope" . | printf "%sRole" }}
 {{- if semverCompare "^1.8-0" .Capabilities.KubeVersion.GitVersion }}
 apiVersion: rbac.authorization.k8s.io/v1
 {{- else }}
@@ -39,7 +39,7 @@ rules:
     verbs:
       - update
 ---
-kind: ClusterRoleBinding
+kind: {{ include "traefik.rbac.scope" . | printf "%sRoleBinding" }}
 {{- if semverCompare "^1.8-0" .Capabilities.KubeVersion.GitVersion }}
 apiVersion: rbac.authorization.k8s.io/v1
 {{- else }}
@@ -49,7 +49,7 @@ metadata:
   name: {{ template "traefik.fullname" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
+  kind: {{ include "traefik.rbac.scope" . | printf "%sRole" }}
   name: {{ template "traefik.fullname" . }}
 subjects:
 - kind: ServiceAccount

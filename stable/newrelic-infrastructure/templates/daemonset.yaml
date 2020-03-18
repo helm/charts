@@ -1,5 +1,5 @@
-{{- if and .Values.licenseKey .Values.cluster }}
-apiVersion: apps/v1beta2
+{{- if (include "newrelic.areValuesValid" .) }}
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   labels: {{ include "newrelic.labels" . | indent 4 }}
@@ -21,32 +21,92 @@ spec:
         app: {{ template "newrelic.name" . }}
         release: {{.Release.Name }}
         {{- if .Values.podLabels}}
-        {{ toYaml .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
         {{- end }}
+        mode: {{ template "newrelic.mode" . }}
     spec:
       serviceAccountName: {{ template "newrelic.serviceAccountName" . }}
+      {{- if .Values.privileged }}
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
       containers:
         - name: {{ template "newrelic.name" . }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: {{ template "newrelic.image" . }}
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           securityContext:
+            {{- if .Values.privileged }}
             privileged: true
+            {{- else }}
+            runAsUser: 1000 # nri-agent
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            {{- end }}
           env:
             - name: NRIA_LICENSE_KEY
               valueFrom:
                 secretKeyRef:
+                  {{- if (include "newrelic.licenseKey" .) }}
                   name: {{ template "newrelic.fullname" . }}-config
                   key: license
+                  {{- else }}
+                  name: {{ include "newrelic.customSecretName" . }}
+                  key: {{ include "newrelic.customSecretLicenseKey" . }}
+                  {{- end }}
             - name: "CLUSTER_NAME"
-              value: "{{ .Values.cluster }}"
-           {{- if .Values.kubeStateMetricsUrl }}
+              value: {{ include "newrelic.cluster" . }}
+            {{- if .Values.disableKubeStateMetrics }}
+            - name: "DISABLE_KUBE_STATE_METRICS"
+              value: {{ .Values.kubeStateMetricsPodLabel | quote }}
+            {{- end }}
+            {{- if .Values.kubeStateMetricsUrl }}
             - name: "KUBE_STATE_METRICS_URL"
-              value: "{{ .Values.kubeStateMetricsUrl }}"
-           {{- end }}
-           {{- if .Values.kubeStateMetricsTimeout }}
+              value: {{ .Values.kubeStateMetricsUrl | quote }}
+            {{- end }}
+            {{- if .Values.kubeStateMetricsPodLabel }}
+            - name: "KUBE_STATE_METRICS_POD_LABEL"
+              value: {{ .Values.kubeStateMetricsPodLabel | quote }}
+            {{- end }}
+            {{- if .Values.kubeStateMetricsTimeout }}
             - name: TIMEOUT
               value: {{ .Values.kubeStateMetricsTimeout | quote }}
-           {{- end }}
+            {{- end }}
+            {{- if .Values.kubeStateMetricsScheme }}
+            - name: "KUBE_STATE_METRICS_SCHEME"
+              value: {{ .Values.kubeStateMetricsScheme | quote }}
+            {{- end }}
+            {{- if .Values.kubeStateMetricsPort }}
+            - name: "KUBE_STATE_METRICS_PORT"
+              value: {{ .Values.kubeStateMetricsPort | quote }}
+            {{- end }}
+            {{- if .Values.etcdTlsSecretName }}
+            - name: ETCD_TLS_SECRET_NAME
+              value: {{ .Values.etcdTlsSecretName | quote }}
+            {{- end }}
+            {{- if .Values.etcdTlsSecretNamespace }}
+            - name: ETCD_TLS_SECRET_NAMESPACE
+              value: {{ .Values.etcdTlsSecretNamespace | quote }}
+            {{- end }}
+            {{- if .Values.etcdEndpointUrl }}
+            - name: "ETCD_ENDPOINT_URL"
+              value: {{ .Values.etcdEndpointUrl | quote }}
+            {{- end }}
+            {{- if .Values.apiServerSecurePort }}
+            - name: "API_SERVER_SECURE_PORT"
+              value: {{ .Values.apiServerSecurePort | quote }}
+            {{- end }}
+            {{- if .Values.apiServerEndpointUrl }}
+            - name: "API_SERVER_ENDPOINT_URL"
+              value: {{ .Values.apiServerEndpointUrl | quote }}
+            {{- end }}
+            {{- if .Values.schedulerEndpointUrl }}
+            - name: "SCHEDULER_ENDPOINT_URL"
+              value: {{ .Values.schedulerEndpointUrl | quote }}
+            {{- end }}
+            {{- if .Values.controllerManagerEndpointUrl }}
+            - name: "CONTROLLER_MANAGER_ENDPOINT_URL"
+              value: {{ .Values.controllerManagerEndpointUrl | quote }}
+            {{- end }}
             - name: "NRIA_DISPLAY_NAME"
               valueFrom:
                 fieldRef:
@@ -60,7 +120,7 @@ spec:
             - name: "NRIA_CUSTOM_ATTRIBUTES"
               value: {{ .Values.customAttribues }}
             - name: "NRIA_PASSTHROUGH_ENVIRONMENT"
-              value: "KUBERNETES_SERVICE_HOST,KUBERNETES_SERVICE_PORT,CLUSTER_NAME,CADVISOR_PORT,NRK8S_NODE_NAME,KUBE_STATE_METRICS_URL,TIMEOUT"
+              value: "KUBERNETES_SERVICE_HOST,KUBERNETES_SERVICE_PORT,CLUSTER_NAME,CADVISOR_PORT,NRK8S_NODE_NAME,KUBE_STATE_METRICS_URL,KUBE_STATE_METRICS_POD_LABEL,TIMEOUT,ETCD_TLS_SECRET_NAME,ETCD_TLS_SECRET_NAMESPACE,API_SERVER_SECURE_PORT,KUBE_STATE_METRICS_SCHEME,KUBE_STATE_METRICS_PORT,SCHEDULER_ENDPOINT_URL,ETCD_ENDPOINT_URL,CONTROLLER_MANAGER_ENDPOINT_URL,API_SERVER_ENDPOINT_URL,DISABLE_KUBE_STATE_METRICS"
             {{- if .Values.verboseLog }}
             - name: NRIA_VERBOSE
               value: "1"
@@ -75,6 +135,11 @@ spec:
               mountPath: /etc/newrelic-infra.yml
               subPath: newrelic-infra.yml
             {{- end }}
+            {{- if .Values.integrations_config }}
+            - name: nri-integrations-cfg-volume
+              mountPath: /etc/newrelic-infra/integrations.d/
+            {{- end }}
+            {{- if .Values.privileged }}
             - name: dev
               mountPath: /dev
             - name: host-docker-socket
@@ -84,23 +149,44 @@ spec:
             - name: host-volume
               mountPath: /host
               readOnly: true
+            {{- else }}
+            - mountPath: /var/db/newrelic-infra/data
+              name: tmpfs-data
+            - mountPath: /var/db/newrelic-infra/user_data
+              name: tmpfs-user-data
+            - mountPath: /tmp
+              name: tmpfs-tmp
+            - mountPath: /var/cache/nr-kubernetes
+              name: tmpfs-cache
+            {{- end }}
           {{- if .Values.resources }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           {{- end }}
       volumes:
+        {{- if .Values.privileged }}
         - name: dev
           hostPath:
             path: /dev
         - name: host-docker-socket
           hostPath:
-              path: /var/run/docker.sock
+            path: /var/run/docker.sock
         - name: log
           hostPath:
-              path: /var/log
+            path: /var/log
         - name: host-volume
           hostPath:
-              path: /
+            path: /
+        {{- else }}
+        - name: tmpfs-data
+          emptyDir: {}
+        - name: tmpfs-user-data
+          emptyDir: {}
+        - name: tmpfs-tmp
+          emptyDir: {}
+        - name: tmpfs-cache
+          emptyDir: {}
+        {{- end }}
         {{- if .Values.config }}
         - name: config
           configMap:
@@ -109,6 +195,14 @@ spec:
             - key: newrelic-infra.yml
               path: newrelic-infra.yml
         {{- end }}
+        {{- if .Values.integrations_config }}
+        - name: nri-integrations-cfg-volume
+          configMap:
+            name: {{ template "newrelic.fullname" . }}-integrations-cfg
+        {{- end }}
+      {{- if $.Values.priorityClassName }}
+      priorityClassName: {{ $.Values.priorityClassName }}
+      {{- end }}
       {{- if $.Values.nodeSelector }}
       nodeSelector:
 {{ toYaml $.Values.nodeSelector | indent 8 }}

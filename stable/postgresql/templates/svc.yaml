@@ -9,7 +9,7 @@ metadata:
     heritage: {{ .Release.Service | quote }}
 {{- with .Values.service.annotations }}
   annotations:
-{{ toYaml . | indent 4 }}
+{{ tpl (toYaml .) $ | indent 4 }}
 {{- end }}
 spec:
   type: {{ .Values.service.type }}
@@ -26,12 +26,12 @@ spec:
   clusterIP: {{ .Values.service.clusterIP }}
   {{- end }}
   ports:
-  - name: postgresql
-    port: {{ template "postgresql.port" . }}
-    targetPort: postgresql
-    {{- if .Values.service.nodePort }}
-    nodePort: {{ .Values.service.nodePort }}
-    {{- end }}
+    - name: tcp-postgresql
+      port: {{ template "postgresql.port" . }}
+      targetPort: tcp-postgresql
+      {{- if .Values.service.nodePort }}
+      nodePort: {{ .Values.service.nodePort }}
+      {{- end }}
   selector:
     app: {{ template "postgresql.name" . }}
     release: {{ .Release.Name | quote }}

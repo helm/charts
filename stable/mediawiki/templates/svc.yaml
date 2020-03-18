@@ -22,11 +22,13 @@ spec:
     {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePorts.http)))}}
     nodePort: {{ .Values.service.nodePorts.http }}
     {{- end }}
+  {{- if .Values.service.httpsPort }}
   - name: https
     port: {{ .Values.service.httpsPort }}
     targetPort: https
     {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePorts.https)))}}
     nodePort: {{ .Values.service.nodePorts.https }}
     {{- end }}
+  {{- end }}
   selector:
     app: {{ template "mediawiki.name" . }}

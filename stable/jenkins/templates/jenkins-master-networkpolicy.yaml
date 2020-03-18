@@ -3,6 +3,7 @@ kind: NetworkPolicy
 apiVersion: {{ .Values.networkPolicy.apiVersion }}
 metadata:
   name: "{{ .Release.Name }}-{{ .Values.master.componentName }}"
+  namespace: {{ template "jenkins.namespace" . }}
   labels:
     "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
     "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -17,7 +18,7 @@ spec:
   ingress:
     # Allow web access to the UI
     - ports:
-      - port: 8080
+      - port: {{ .Values.master.targetPort }}
     # Allow inbound connections from slave
     - from:
       - podSelector:
@@ -31,6 +32,7 @@ kind: NetworkPolicy
 apiVersion: {{ .Values.networkPolicy.apiVersion }}
 metadata:
   name: "{{ .Release.Name }}-{{ .Values.agent.componentName }}"
+  namespace: {{ template "jenkins.namespace" . }}
   labels:
     "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
     "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"

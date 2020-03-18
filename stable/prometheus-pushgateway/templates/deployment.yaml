@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "prometheus-pushgateway.fullname" . }}
@@ -37,18 +37,24 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /#/status
+              path: /-/healthy
               port: 9091
             initialDelaySeconds: 10
             timeoutSeconds: 10
           readinessProbe:
             httpGet:
-              path: /#/status
+              path: /-/ready
               port: 9091
             initialDelaySeconds: 10
             timeoutSeconds: 10
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+          {{- if .Values.persistentVolume.enabled }}
+          volumeMounts:
+            - name: storage-volume
+              mountPath: "{{ .Values.persistentVolume.mountPath }}"
+              subPath: "{{ .Values.persistentVolume.subPath }}"
+          {{- end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -61,3 +67,13 @@ spec:
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
     {{- end }}
+      {{- if .Values.persistentVolume.enabled }}
+    {{- if .Values.securityContext }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
+    {{- end }}
+      volumes:
+        - name: storage-volume
+          persistentVolumeClaim:
+            claimName: {{ if .Values.persistentVolume.existingClaim }}{{ .Values.persistentVolume.existingClaim }}{{- else }}{{ template "prometheus-pushgateway.fullname" . }}{{- end }}
+      {{- end -}}

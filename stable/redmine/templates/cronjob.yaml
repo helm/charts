@@ -1,0 +1,139 @@
+{{- if .Values.mailReceiver.enabled }}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ template "redmine.mailReceiver.fullname" . }}
+  labels: {{- include "redmine.mailReceiver.labels" . | nindent 4 }}
+spec:
+  schedule: "{{ .Values.mailReceiver.schedule }}"
+  suspend: {{ .Values.mailReceiver.suspend }}
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels: {{- include "redmine.mailReceiver.labels" . | nindent 12 }}
+        spec:
+          volumes:
+            - name: mail-receiver
+              configMap:
+                name: {{ template "redmine.fullname" . }}
+                defaultMode: 0744
+          restartPolicy: Never
+          containers:
+            - name: {{ template "redmine.mailReceiver.fullname" . }}
+              image: {{ template "redmine.mailReceiver.image" . }}
+              imagePullPolicy: {{ .Values.mailReceiver.image.pullPolicy | quote }}
+              command:
+                - bash
+              args:
+                - -c
+                - /cj/receive.sh
+              volumeMounts:
+                - name: mail-receiver
+                  mountPath: /cj
+              resources:
+{{ toYaml .Values.resources | indent 16 }}
+              env:
+                {{- if eq .Values.databaseType "mariadb" }}
+                - name: REDMINE_MAIL_RECEIVER_DB_MYSQL
+                {{- if .Values.mariadb.enabled }}
+                  value: {{ template "redmine.mariadb.fullname" . }}
+                - name: REDMINE_MAIL_RECEIVER_DB_DATABASE
+                  value: {{ .Values.mariadb.db.name | quote }}
+                - name: REDMINE_MAIL_RECEIVER_DB_USERNAME
+                  value: {{ .Values.mariadb.db.user | quote }}
+                - name: REDMINE_MAIL_RECEIVER_DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ template "redmine.mariadb.fullname" . }}
+                      key: mariadb-password
+                - name: REDMINE_MAIL_RECEIVER_DB_PORT
+                  value: "3306"
+                {{- else }}
+                  value: {{ .Values.externalDatabase.host | quote }}
+                {{- end }}
+                {{- else if eq .Values.databaseType "postgresql" }}
+                - name: REDMINE_MAIL_RECEIVER_DB_POSTGRES
+                {{- if .Values.postgresql.enabled }}
+                  value: {{ template "redmine.postgresql.fullname" . }}
+                - name: REDMINE_MAIL_RECEIVER_DB_DATABASE
+                  value: {{ .Values.postgresql.postgresqlDatabase | quote }}
+                - name: REDMINE_MAIL_RECEIVER_DB_USERNAME
+                  value: {{ .Values.postgresql.postgresqlUsername | quote }}
+                - name: REDMINE_MAIL_RECEIVER_DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ template "redmine.postgresql.fullname" . }}
+                      key: postgresql-password
+                - name: REDMINE_MAIL_RECEIVER_DB_PORT
+                  value: "5432"
+                {{- else }}
+                  value: {{ .Values.externalDatabase.host | quote }}
+                {{- end }}
+                {{- end }}
+                {{- if or (and (eq .Values.databaseType "mariadb") (not .Values.mariadb.enabled)) (and (eq .Values.databaseType "postgresql") (not .Values.postgresql.enabled)) }}
+                - name: REDMINE_MAIL_RECEIVER_DB_DATABASE
+                  value: {{ .Values.externalDatabase.name | quote }}
+                - name: REDMINE_MAIL_RECEIVER_DB_USERNAME
+                  value: {{ .Values.externalDatabase.user | quote }}
+                - name: REDMINE_MAIL_RECEIVER_DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ template "redmine.secretName" . }}
+                      key: external-db-password
+                - name: REDMINE_MAIL_RECEIVER_DB_PORT
+                  value: {{ .Values.externalDatabase.port | quote }}
+                {{- end }}
+                - name: REDMINE_MAIL_RECEIVER_HOST
+                  value: {{ .Values.mailReceiver.host | quote }}
+                - name: REDMINE_MAIL_RECEIVER_PORT
+                  value: {{ .Values.mailReceiver.port | quote }}
+                - name: REDMINE_MAIL_RECEIVER_USERNAME
+                  value: {{ .Values.mailReceiver.username | quote }}
+                - name: REDMINE_MAIL_RECEIVER_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ template "redmine.secretName" . }}
+                      key: mail-receiver-password
+                - name: REDMINE_MAIL_RECEIVER_USE_SSL
+                  value: {{ .Values.mailReceiver.ssl | quote }}
+                - name: REDMINE_MAIL_RECEIVER_STARTTLS
+                  value: {{ .Values.mailReceiver.startTLS | quote }}
+                - name: REDMINE_MAIL_RECEIVER_IMAP_FOLDER
+                  value: {{ .Values.mailReceiver.imapFolder | quote }}
+                - name: REDMINE_MAIL_RECEIVER_IMAP_MOVE_ON_SUCCESS
+                  value: {{ .Values.mailReceiver.moveOnSuccess | quote }}
+                - name: REDMINE_MAIL_RECEIVER_IMAP_MOVE_ON_FAILURE
+                  value: {{ .Values.mailReceiver.moveOnFailure | quote }}
+                - name: REDMINE_MAIL_RECEIVER_UNKNOWN_USER_ACTION
+                  value: {{ .Values.mailReceiver.unknownUserAction | quote }}
+                - name: REDMINE_MAIL_RECEIVER_NO_PERMISSION_CHECK
+                  value: {{ .Values.mailReceiver.noPermissionCheck | quote }}
+                - name: REDMINE_MAIL_RECEIVER_NO_ACCOUNT_NOTICE
+                  value: {{ .Values.mailReceiver.noAccountNotice | quote }}
+                - name: REDMINE_MAIL_RECEIVER_DEFAULT_GROUP
+                  value: {{ .Values.mailReceiver.defaultGroup | quote }}
+                - name: REDMINE_MAIL_RECEIVER_PROJECT
+                  value: {{ .Values.mailReceiver.project | quote }}
+                - name: REDMINE_MAIL_RECEIVER_PROJECT_FROM_SUBADDRESS
+                  value: {{ .Values.mailReceiver.projectFromSubaddress | quote }}
+                - name: REDMINE_MAIL_RECEIVER_STATUS
+                  value: {{ .Values.mailReceiver.status | quote }}
+                - name: REDMINE_MAIL_RECEIVER_TRACKER
+                  value: {{ .Values.mailReceiver.tracker | quote }}
+                - name: REDMINE_MAIL_RECEIVER_CATEGORY
+                  value: {{ .Values.mailReceiver.category | quote }}
+                - name: REDMINE_MAIL_RECEIVER_PRIORITY
+                  value: {{ .Values.mailReceiver.priority | quote }}
+                - name: REDMINE_MAIL_RECEIVER_ASSIGNED_TO
+                  value: {{ .Values.mailReceiver.assignedTo | quote }}
+                - name: REDMINE_MAIL_RECEIVER_ALLOW_OVERRIDE
+                  value: {{ .Values.mailReceiver.allowOverride | quote }}
+                - name: REDMINE_MAIL_RECEIVER_SECRET_KEY_BASE
+                  value: {{ randAlphaNum 64 | quote }}
+                - name: REDMINE_MAIL_RECEIVER_PROTOCOL
+                  value: {{ .Values.mailReceiver.mailProtocol | quote }}
+                - name: REDMINE_MAIL_RECEIVER_POP3_DELETE_UNPROCESSED
+                  value: {{ .Values.mailReceiver.moveOnFailure | quote }}
+{{- end }}

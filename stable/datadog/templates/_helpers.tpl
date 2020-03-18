@@ -49,6 +49,17 @@ Return secret name to be used based on provided values.
 {{- end -}}
 
 {{/*
+Return secret name to be used based on provided values.
+*/}}
+{{- define "clusterAgent.tokenSecretName" -}}
+{{- if not .Values.clusterAgent.tokenExistingSecret -}}
+{{- include "datadog.fullname" . -}}-cluster-agent
+{{- else -}}
+{{- .Values.clusterAgent.tokenExistingSecret -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Return the appropriate apiVersion for RBAC APIs.
 */}}
 {{- define "rbac.apiVersion" -}}
@@ -56,5 +67,18 @@ Return the appropriate apiVersion for RBAC APIs.
 "rbac.authorization.k8s.io/v1"
 {{- else -}}
 "rbac.authorization.k8s.io/v1beta1"
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the container runtime socket
+*/}}
+{{- define "datadog.dockerOrCriSocketPath" -}}
+{{- if .Values.datadog.dockerSocketPath -}}
+{{- .Values.dockerSocketPath -}}
+{{- else if .Values.datadog.criSocketPath -}}
+{{- .Values.datadog.criSocketPath -}}
+{{- else -}}
+/var/run/docker.sock
 {{- end -}}
 {{- end -}}

@@ -42,7 +42,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | Parameter                  | Description                                     | Default                                                      |
 | -------------------------- | ----------------------------------------------- | ------------------------------------------------------------ |
 | `image.repository`         | `superset` image repository                     | `amancevice/superset`                                        |
-| `image.tag`                | `superset` image tag                            | `0.28.1`                                                     |
+| `image.tag`                | `superset` image tag                            | `0.35.2`                                                     |
 | `image.pullPolicy`         | Image pull policy                               | `IfNotPresent`                                               |
 | `image.pullSecrets`        | Secrets for private registry                    | `[]`                                                         |
 | `configFile`               | Content of [`superset_config.py`](https://superset.incubator.apache.org/installation.html) | See values.yaml](./values.yaml) |
@@ -51,6 +51,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `replicas`                 | Number of replicas of superset                  | `1`                                                          |
 | `extraEnv`                 | Extra environment variables passed to pods      | `{}`                                                         |
 | `extraEnvFromSecret`       | The name of a Kubernetes secret (must be manually created in the same namespace) containing values to be added to the environment | `""` |
+| `deploymentAnnotations`              | Key Value pairs of deployment level annotations. Useful for 3rd party integrations | `{}` |
 | `persistence.enabled`      | Enable persistence                              | `false`                                                      |
 | `persistence.existingClaim`| Provide an existing PersistentVolumeClaim       | `""`                                                         |
 | `persistence.storageClass` | Storage class of backing PVC                    | `nil` (uses alpha storage class annotation)                  |

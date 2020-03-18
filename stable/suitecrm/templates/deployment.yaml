@@ -1,5 +1,5 @@
 {{- if include "host" . -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "suitecrm.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "suitecrm.fullname" . }}
@@ -126,9 +126,6 @@ spec:
         - name: suitecrm-data
           mountPath: /bitnami/suitecrm
           subPath: suitecrm
-        - name: suitecrm-data
-          mountPath: /bitnami/apache
-          subPath: apache
 {{- if .Values.metrics.enabled }}
       - name: metrics
         image: {{ template "suitecrm.metrics.image" . }}
@@ -159,5 +156,9 @@ spec:
           claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "suitecrm.fullname" . }}-suitecrm{{- end }}
       {{- else }}
         emptyDir: {}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
       {{- end }}
 {{- end -}}

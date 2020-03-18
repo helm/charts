@@ -1,0 +1,111 @@
+{{- $fullName := include "pgadmin.fullname" . -}}
+apiVersion: {{ template "deployment.apiVersion" . }}
+kind: Deployment
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "pgadmin.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "pgadmin.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+{{- if .Values.strategy }}
+  strategy:
+    {{- .Values.strategy | toYaml | nindent 4 }}
+{{- end }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "pgadmin.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      initContainers:
+        - name: init-pgadmin
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/chown", "-R", "5050:5050", "/var/lib/pgadmin"]
+          volumeMounts:
+            - name: pgadmin-data
+              mountPath: /var/lib/pgadmin
+          securityContext:
+            runAsUser: 0
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+        {{- if .Values.livenessProbe }}
+          livenessProbe:
+            httpGet:
+              path: /misc/ping
+              port: 80
+            {{- .Values.livenessProbe | toYaml | nindent 12 }}
+        {{- end }}
+        {{- if .Values.readinessProbe }}
+          readinessProbe:
+            httpGet:
+              path: /misc/ping
+              port: 80
+            {{- .Values.readinessProbe | toYaml | nindent 12 }}
+        {{- end }}
+          env:
+            - name: PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION
+              value: !!string {{ .Values.env.enhanced_cookie_protection }}
+            - name: PGADMIN_DEFAULT_EMAIL
+              value: {{ .Values.env.email }}
+            - name: PGADMIN_DEFAULT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $fullName }}
+                  key: password
+          volumeMounts:
+            - name: pgadmin-data
+              mountPath: /var/lib/pgadmin
+          {{- if .Values.serverDefinitions.enabled }}
+            - name: definitions
+              mountPath: /pgadmin4/servers.json
+              subPath: servers.json
+          {{- end }}
+          resources:
+            {{- .Values.resources | toYaml | nindent 12 }}
+      volumes:
+        - name: pgadmin-data
+        {{- if .Values.persistentVolume.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ if .Values.persistentVolume.existingClaim }}{{ .Values.persistentVolume.existingClaim }}{{- else }}{{ $fullName }}{{- end }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+      {{- if .Values.serverDefinitions.enabled }}
+        - name: definitions
+          secret:
+            secretName: {{ template "pgadmin.secretName" . }}
+            items:
+            - key: servers.json
+              path: servers.json
+      {{- end }}
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- .Values.iamgePullSecrets | toYaml | nindent 8 }}
+    {{- end }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+        {{- .Values.nodeSelector | toYaml | nindent 8 }}
+    {{- end }}
+    {{- if .Values.securityContext }}
+      securityContext:
+        {{- .Values.securityContext | toYaml | nindent 8 }}
+    {{- end }}
+    {{- if .Values.affinity }}
+      affinity:
+        {{- .Values.affinity | toYaml | nindent 8 }}
+    {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+        {{- .Values.tolerations | toYaml | nindent 8 }}
+    {{- end }}

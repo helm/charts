@@ -1,13 +1,13 @@
 {{- if .Values.podSecurityPolicy.enabled }}
-apiVersion: extensions/v1beta1
+apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: {{ template "kube-state-metrics.fullname" . }}
   labels:
-    app: {{ template "kube-state-metrics.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ template "kube-state-metrics.name" . }}
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
 {{- if .Values.podSecurityPolicy.annotations }}
   annotations:
 {{ toYaml .Values.podSecurityPolicy.annotations | indent 4 }}

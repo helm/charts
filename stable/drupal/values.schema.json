@@ -1,0 +1,175 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "type": "object",
+  "properties": {
+    "drupalUsername": {
+      "type": "string",
+      "title": "Username",
+      "form": true
+    },
+    "drupalPassword": {
+      "type": "string",
+      "title": "Password",
+      "form": true,
+      "description": "Defaults to a random 10-character alphanumeric string if not set"
+    },
+    "drupalEmail": {
+      "type": "string",
+      "title": "Admin email",
+      "form": true
+    },
+    "persistence": {
+      "type": "object",
+      "properties": {
+        "drupal": {
+          "type": "object",
+          "properties": {
+            "size": {
+              "type": "string",
+              "title": "Persistent Volume Size",
+              "form": true,
+              "render": "slider",
+              "sliderMin": 1,
+              "sliderMax": 100,
+              "sliderUnit": "Gi"
+            }
+          }
+        }
+      }
+    },
+    "ingress": {
+      "type": "object",
+      "form": true,
+      "title": "Ingress Details",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "form": true,
+          "title": "Use a custom hostname",
+          "description": "Enable the ingress resource that allows you to access the Drupal installation."
+        },
+        "hostname": {
+          "type": "string",
+          "form": true,
+          "title": "Hostname",
+          "hidden": {
+            "condition": false,
+            "value": "ingress.enabled"
+          }
+        }
+      }
+    },
+    "mariadb": {
+      "type": "object",
+      "title": "MariaDB Details",
+      "form": true,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Use a new MariaDB database hosted in the cluster",
+          "form": true,
+          "description": "Whether to deploy a mariadb server to satisfy the applications database requirements. To use an external database switch this off and configure the external database details"
+        },
+        "master": {
+          "type": "object",
+          "properties": {
+            "persistence": {
+              "type": "object",
+              "properties": {
+                "size": {
+                  "type": "string",
+                  "title": "Volume Size",
+                  "form": true,
+                  "hidden": {
+                    "condition": false,
+                    "value": "mariadb.enabled"
+                  },
+                  "render": "slider",
+                  "sliderMin": 1,
+                  "sliderMax": 100,
+                  "sliderUnit": "Gi"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "externalDatabase": {
+      "type": "object",
+      "title": "External Database Details",
+      "description": "If MariaDB is disabled. Use this section to specify the external database details",
+      "form": true,
+      "hidden": "mariadb.enabled",
+      "properties": {
+        "host": {
+          "type": "string",
+          "form": true,
+          "title": "Database Host"
+        },
+        "user": {
+          "type": "string",
+          "form": true,
+          "title": "Database Username"
+        },
+        "password": {
+          "type": "string",
+          "form": true,
+          "title": "Database Password"
+        },
+        "database": {
+          "type": "string",
+          "form": true,
+          "title": "Database Name"
+        },
+        "port": {
+          "type": "integer",
+          "form": true,
+          "title": "Database Port"
+        }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "title": "Requested Resources",
+      "description": "Configure resource requests",
+      "form": true,
+      "properties": {
+        "requests": {
+          "type": "object",
+          "properties": {
+            "memory": {
+              "type": "string",
+              "form": true,
+              "render": "slider",
+              "title": "Memory Request",
+              "sliderMin": 10,
+              "sliderMax": 2048,
+              "sliderUnit": "Mi"
+            },
+            "cpu": {
+              "type": "string",
+              "form": true,
+              "render": "slider",
+              "title": "CPU Request",
+              "sliderMin": 10,
+              "sliderMax": 2000,
+              "sliderUnit": "m"
+            }
+          }
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable Metrics",
+          "description": "Prometheus Exporter / Metrics",
+          "form": true
+        }
+      }
+    }
+  }
+}

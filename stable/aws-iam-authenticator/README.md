@@ -9,6 +9,7 @@ chart only installs the DaemonSet and a ConfigMap.)
 ## Values
 
 | Config                  | Description               | Default                                  |
+| ------                  | -----------               | -------                                  |
 | `image.repository`      | Image repo                | `gcr.io/heptio-images/authenticator`     |
 | `image.tag`             | Image tag                 | `v0.1.0`                                 |
 | `image.pullPolicy`      | Image pull policy         | `IfNotPresent`                           |

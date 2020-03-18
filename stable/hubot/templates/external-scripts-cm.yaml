@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "hubot.fullname" . }}-external-scripts
+  labels:
+{{ include "hubot.labels" . | indent 4 }}
+{{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels | indent 4 }}
+{{- end }}
+data:
+  external-scripts.json: |-
+    [
+    {{- range .Values.externalScripts }}
+      {{ . | quote }},
+    {{- end }}
+      "hubot-diagnostics",
+      "hubot-help",
+      "hubot-redis-brain",
+      "hubot-rules",
+      "hubot-health"
+    ]
