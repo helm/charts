@@ -1,3 +1,5 @@
+### 1.23.0
+* [efc2c8c](https://github.com/kubernetes/charts/commit/efc2c8c): Bump up GoCD Version to 20.2.0
 ### 1.22.1
 * [b856007](https://github.com/kubernetes/charts/commit/b856007): Ingress version api change
 * [e2f27a9](https://github.com/kubernetes/charts/commit/e2f27a9): Quote ingress host
