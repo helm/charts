@@ -102,7 +102,7 @@ their default values.
 |`+nil+`
 
 |`+hazelcast.existingConfigMap+` |ConfigMap which contains Hazelcast
-configuration file(s) that are used instead hazelcast.yaml embedded into
+configuration file(s) that are used instead of hazelcast.yaml file embedded into
 values.yaml |`+nil+`
 
 |`+hazelcast.yaml+` |Hazelcast YAML Configuration (`+hazelcast.yaml+` embedded
@@ -234,6 +234,8 @@ array |`+nil+`
 |`+mancenter.contextPath+` |the value for the MC_CONTEXT_PATH environment variable,
 thus overriding the default context path for Hazelcast Management Center |`+nil+`
 
+|`+mancenter.ssl+` |Enable SSL for Management |`+false+`
+
 |`+mancenter.javaOpts+` |Additional JAVA_OPTS properties for Hazelcast
 Management Center |`+nil+`
 
@@ -242,6 +244,10 @@ provided, can be filled in the web interface |`+nil+`
 
 |`+mancenter.licenseKeySecretName+` |Kubernetes Secret Name, where Management
 Center License Key is stored (can be used instead of licenseKey) |`+nil+`
+
+|`+mancenter.existingConfigMap+` |ConfigMap which contains Hazelcast Client configuration file(s) that are used instead of hazelcast-client.yaml file embedded into values.yaml |`+{DEFAULT_HAZELCAST_CLIENT_YAML}+`
+
+|`+mancenter.yaml+` |Hazelcast Client YAML Configuration (`hazelcast-client.yaml` used to connect to Hazelcast cluster |`+nil+`
 
 |`+mancenter.affinity+` |Management Center Node affinity |`+nil+`
 
@@ -311,6 +317,9 @@ for example |`+[]+`
 
 |`+mancenter.ingress.tls+` |List of TLS configuration for ingress, see
 `+values.yaml+` for example |`+[]+`
+
+|`+mancenter.secretsMountName+` |Secret name that is mounted as '/secrets/' (e.g. with keystore/trustore files) |`+nil+`
+
 |===
 
 Specify each parameter using the `+--set key=value[,key=value]+` argument to
