@@ -88,7 +88,7 @@ spec:
   {{- end }}
   selector:
     app: {{ template "nginx-ingress.name" . }}
-    component: "{{ .Values.controller.name }}"
     release: {{ .Release.Name }}
+    app.kubernetes.io/component: controller
   type: "{{ .Values.controller.service.type }}"
 {{- end }}

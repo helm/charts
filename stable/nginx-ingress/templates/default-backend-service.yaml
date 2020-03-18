@@ -39,7 +39,7 @@ spec:
       targetPort: http
   selector:
     app: {{ template "nginx-ingress.name" . }}
-    component: "{{ .Values.defaultBackend.name }}"
     release: {{ .Release.Name }}
+    app.kubernetes.io/component: default-backend
   type: "{{ .Values.defaultBackend.service.type }}"
 {{- end }}
