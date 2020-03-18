@@ -1,0 +1,23 @@
+{{- if .Values.enablePrometheus -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "eventrouter.fullname" . }}
+  labels:
+{{ include "eventrouter.labels" . | indent 4 }}
+{{- if .Values.service.annotations }}
+  annotations:
+{{ toYaml .Values.service.annotations | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.service.type}}
+  sessionAffinity: None
+  ports:
+    - name: metrics
+      port: 80
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: {{ template "eventrouter.name" . }}
+    release: {{ .Release.Name }}
+{{- end -}}

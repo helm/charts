@@ -37,3 +37,12 @@ securityContext: {}
   # runAsUser: 1000
 
 enablePrometheus: true
+
+# only required if `enablePrometheus` is true
+service:
+  annotations: {}
+  type: ClusterIP
+
+serviceMonitor:
+  enabled: false
+  interval: 15s

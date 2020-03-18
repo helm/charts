@@ -20,17 +20,21 @@ eventrouter has been installed!
 
 The following table lists the configurable parameters of the eventrouter chart and their default values.
 
-|        Parameter        |                                                         Description                                                         |              Default               |
-| ----------------------- | --------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
-| `image.repository`      | Container image name                                                                                                        | `gcr.io/heptio-images/eventrouter` |
-| `image.tag`             | Container image tag                                                                                                         | `v0.3`                             |
-| `rbac.create`           | If `true`, create and use RBAC resources                                                                                    | `true`                             |
-| `serviceAccount.name`   | Service account to be used. If not set and serviceAccount.create is `true`, a name is generated using the fullname template | ``                                 |
-| `serviceAccount.create` | If true, create a new service account                                                                                       | `true`                             |
-| `tolerations`           | List of node taints to tolerate                                                                                             | `[]`                               |
-| `nodeSelector`          | Node labels for pod assignment                                                                                              | `{}`                               |
-| `sink`                  | Sink to send the events to                                                                                                  | `glog`                             |
-| `podAnnotations`        | Annotations for pod metadata                                                                                                | `{}`                               |
-| `containerPorts`        | List of ports for the container                                                                                             | `[]`                               |
-| `securityContext`       | Security context for the pod                                                                                                | `{}`                               |
-| `enablePrometheus`      | Enable prometheus                                                                                                           | `true                              |
+|        Parameter          |                                                         Description                                                         |              Default               |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| `image.repository`        | Container image name                                                                                                        | `gcr.io/heptio-images/eventrouter` |
+| `image.tag`               | Container image tag                                                                                                         | `v0.3`                             |
+| `rbac.create`             | If `true`, create and use RBAC resources                                                                                    | `true`                             |
+| `serviceAccount.name`     | Service account to be used. If not set and serviceAccount.create is `true`, a name is generated using the fullname template | ``                                 |
+| `serviceAccount.create`   | If true, create a new service account                                                                                       | `true`                             |
+| `tolerations`             | List of node taints to tolerate                                                                                             | `[]`                               |
+| `nodeSelector`            | Node labels for pod assignment                                                                                              | `{}`                               |
+| `sink`                    | Sink to send the events to                                                                                                  | `glog`                             |
+| `podAnnotations`          | Annotations for pod metadata                                                                                                | `{}`                               |
+| `containerPorts`          | List of ports for the container                                                                                             | `[]`                               |
+| `securityContext`         | Security context for the pod                                                                                                | `{}`                               |
+| `enablePrometheus`        | Enable prometheus                                                                                                           | `true`                             |
+| `services.annotations`    | Service annotations, only used if `enablePrometheus` is `true`                                                              | `{}`                               |
+| `services.type`           | Service type, only used if `enablePrometheus` is `true`                                                                     | `ClusterIP`                        |
+| `serviceMonitor.enabled`  | Manage a Prometheus Operator's service monitor, only used if `enablePrometheus` is `true`                                   | `false`                            |
+| `serviceMonitor.interval` | Interval which Prometheus Operator's service monitor is polled, only used if `serviceMonitor.enabled` is `true`             | `15s`                              |

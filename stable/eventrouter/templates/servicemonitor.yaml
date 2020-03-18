@@ -1,0 +1,19 @@
+{{- if and .Values.enablePrometheus .Values.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "eventrouter.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "eventrouter.labels" . | indent 4 }}
+spec:
+  selector:
+    matchLabels:
+{{ include "eventrouter.labels" . | indent 6 }}
+  endpoints:
+    - port: metrics
+      interval: {{ .Values.serviceMonitor.interval }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+{{- end }}
