@@ -7,11 +7,9 @@
 {{ toYaml .Values.agents.containers.processAgent.resources | indent 4 }}
   env:
     {{- include "containers-common-env" . | nindent 4 }}
+    {{- if .Values.datadog.processAgent.processCollection }}
     - name: DD_PROCESS_AGENT_ENABLED
-    {{- if .Values.datadog.processAgent.enabled }}
-      value: {{ .Values.datadog.processAgent.processCollection | quote }}
-    {{- else }}
-      value: "disabled"
+      value: "true"
     {{- end }}
     - name: DD_LOG_LEVEL
       value: {{ .Values.agents.containers.processAgent.logLevel | default .Values.datadog.logLevel | quote }}
