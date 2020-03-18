@@ -75,6 +75,7 @@ Parameter | Description | Default
 `image.repository`                   | `openvpn` image repository                                           | `jfelten/openvpn-docker`
 `image.tag`                          | `openvpn` image tag                                                  | `1.1.0`
 `image.pullPolicy`                   | Image pull policy                                                    | `IfNotPresent`
+`imagePullSecretName`                | Docker registry pull secret name                                     |
 `service.type`                       | k8s service type exposing ports, e.g. `NodePort`                     | `LoadBalancer`
 `service.externalPort`               | TCP port reported when creating configuration files                  | `443`
 `service.internalPort`               | TCP port on which the service works                                  | `443`
