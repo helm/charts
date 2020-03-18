@@ -1,5 +1,0 @@
-nodeSelector:
-  pool: standard
-managementcenter:
-  nodeSelector:
-    pool: standard
