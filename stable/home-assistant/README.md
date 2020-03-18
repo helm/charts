@@ -10,7 +10,7 @@ $ helm install stable/home-assistant
 
 ## Introduction
 
-This code is adopted for [the official home assistant docker image](https://hub.docker.com/r/homeassistant/home-assistant/)
+This code is adapted for [the official home assistant docker image](https://hub.docker.com/r/homeassistant/home-assistant/)
 
 ## Installing the Chart
 
