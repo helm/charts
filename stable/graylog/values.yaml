@@ -55,6 +55,10 @@ graylog:
   ##
   env: {}
 
+  ## Run as privileged container
+  ##
+  privileged: false
+
   ## Pod affinity
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
   ##
@@ -110,6 +114,10 @@ graylog:
     # - name: graylog-plugin-auth-sso-3.0.0.jar
     #   url: https://github.com/Graylog2/graylog-plugin-auth-sso/releases/download/3.0.0/graylog-plugin-auth-sso-3.0.0.jar
 
+  ## Sidecar containers
+  ##
+  sidecarContainers: []
+
   ## Additional init containers
   ##
   extraInitContainers: []
@@ -127,6 +135,9 @@ graylog:
   service:
     type: ClusterIP
     port: 9000
+    ## Add additional ports for the service/statefulset to expose
+    ##
+    ports: []
 
     headless:
       ## Add suffix to headless service name

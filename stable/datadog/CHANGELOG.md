@@ -2,7 +2,7 @@
 
 ## 2.0
 
-## 2.0.8
+## 2.0.12
 
 * Mount the directory containing the CRI socket instead of the socket itself
   This is to handle the cases where the docker daemon is restarted.
@@ -10,15 +10,23 @@
   if the container bind-mounted directly the socket, the container would
   still have access to the old socket instead of the one of the new docker
   daemon.
-  ⚠ This version of the chart requires an agent image 7.18.0 or more recent
+  ⚠ This version of the chart requires an agent image 7.19.0 or more recent
 
-## 2.0.7
+## 2.0.11
+
+* Add missing syscalls in the `system-probe` seccomp profile
+
+## 2.0.10
 
 * Do not enable the `cri` check when running on a `docker` setup.
 
+## 2.0.7
+
+* Pass expected `DD_DOGSTATSD_PORT` to datadog-agent rather than invalid `DD_DOGSTATD_PORT`
+
 ## 2.0.6
 
-* Introduce processAgent.processCollection to correctly configure DD\_PROCESS\_AGENT\_ENABLED
+* Introduces `procesAgent.processCollection` to correctly configure `DD_PROCESS_AGENT_ENABLED` for the process agent.
 
 ## 2.0.5
 
