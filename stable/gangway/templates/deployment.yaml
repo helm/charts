@@ -21,6 +21,9 @@ spec:
       annotations:
         check/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         check/values: {{ .Files.Get   "../values.yaml"   | sha256sum }}
+{{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | trim | indent 8 }}  
+{{- end }}
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -35,11 +38,17 @@ spec:
         - -config
         - /gangway/gangway.yaml
         env:
+{{- if not .Values.env.GANGWAY_SESSION_SECURITY_KEY }}
         - name: GANGWAY_SESSION_SECURITY_KEY
           valueFrom:
             secretKeyRef:
               key: sessionkey
               name: {{ include "gangway.fullname" . }}-key
+{{- end }}
+{{- range $k, $v := .Values.env }}
+        - name: {{ $k }}
+          value: {{ $v }}
+{{- end }}
         ports:
         - name: http
           containerPort: {{ .Values.gangway.port }}
