@@ -2,6 +2,10 @@
 
 ## 2.0
 
+## 2.0.14
+
+* Fixed a bug where the `trace-agent` runs in the same container as `dd-agent`
+
 ## 2.0.13
 
 * Fix `system-probe` startup on latest versions of containerd.
@@ -13,7 +17,7 @@
       Message:      failed to create containerd task: OCI runtime create failed: container_linux.go:349: starting container process caused "close exec fds: ensure /proc/self/fd is on procfs: operation not permitted": unknown
       Exit Code:    128
    ```
-
+   
 ## 2.0.11
 
 * Add missing syscalls in the `system-probe` seccomp profile
