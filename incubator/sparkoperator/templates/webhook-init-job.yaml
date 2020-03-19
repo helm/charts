@@ -23,5 +23,11 @@ spec:
       - name: main
         image: {{ .Values.operatorImageName }}:{{ .Values.operatorVersion }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
+        {{- if .Values.securityContext }}
+        securityContext:
+          {{- range $securityPolicy, $value := .Values.securityContext }}
+            {{ $securityPolicy }}: {{ $value }}
+            {{- end }}
+        {{- end }}
         command: ["/usr/bin/gencerts.sh", "-n", "{{ .Release.Namespace }}", "-s", "{{ .Release.Name }}-webhook", "-p"]
 {{ end }}

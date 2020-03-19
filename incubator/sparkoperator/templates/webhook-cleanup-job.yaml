@@ -23,6 +23,12 @@ spec:
       - name: clean-secret
         image: {{ .Values.operatorImageName }}:{{ .Values.operatorVersion }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
+        {{- if .Values.securityContext }}
+        securityContext:
+          {{- range $securityPolicy, $value := .Values.securityContext }}
+            {{ $securityPolicy }}: {{ $value }}
+            {{- end }}
+        {{- end }}
         command:
         - "/bin/sh"
         - "-c"
