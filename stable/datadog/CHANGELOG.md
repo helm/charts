@@ -2,6 +2,18 @@
 
 ## 2.0
 
+## 2.0.13
+
+* Fix `system-probe` startup on latest versions of containerd.
+  Here is the error that this change fixes:
+  ```    State:          Waiting
+      Reason:       CrashLoopBackOff
+    Last State:     Terminated
+      Reason:       StartError
+      Message:      failed to create containerd task: OCI runtime create failed: container_linux.go:349: starting container process caused "close exec fds: ensure /proc/self/fd is on procfs: operation not permitted": unknown
+      Exit Code:    128
+   ```
+
 ## 2.0.11
 
 * Add missing syscalls in the `system-probe` seccomp profile
