@@ -38,10 +38,20 @@ spec:
           args:
             - --path.procfs=/host/proc
             - --path.sysfs=/host/sys
-            - --web.listen-address=0.0.0.0:{{ .Values.service.port }}
+            - --web.listen-address=$(HOST_IP):{{ .Values.service.port }}
 {{- if .Values.extraArgs }}
 {{ toYaml .Values.extraArgs | indent 12 }}
 {{- end }}
+          env:
+          - name: HOST_IP
+            {{- if .Values.service.listenOnAllInterfaces }}
+            value: 0.0.0.0
+            {{- else }}
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: status.hostIP
+            {{- end }}
           ports:
             - name: metrics
               containerPort: {{ .Values.service.targetPort }}
