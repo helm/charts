@@ -81,6 +81,8 @@
     - name: DD_KUBERNETES_POD_ANNOTATIONS_AS_TAGS
       value: '{{ toJson .Values.datadog.podAnnotationsAsTags }}'
     {{- end }}
+    - name: DD_APM_ENABLED
+      value: "false"
     - name: DD_LOGS_ENABLED
       value: {{  (default false (or .Values.datadog.logs.enabled .Values.datadog.logsEnabled)) | quote}}
     - name: DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL
