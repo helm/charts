@@ -37,9 +37,6 @@
       readOnly: true
   env:
     {{- include "containers-common-env" . | nindent 4 }}
-    {{- if .Values.datadog.env }}
-      {{ toYaml .Values.datadog.env | nindent 4 }}
-    {{- end }}
     {{- if .Values.datadog.dockerSocketPath }}
     - name: DOCKER_HOST
       value: unix://{{ .Values.datadog.dockerSocketPath }}
