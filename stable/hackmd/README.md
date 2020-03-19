@@ -46,6 +46,7 @@ Parameter | Description | Default
 `persistence.size` | Persistent Volume size | `2Gi`
 `persistence.storageClass` | Persistent Volume Storage Class |  `unset`
 `extraVars` | Hackmd's extra environment variables | `[]`
+`uploadsPath` | Hackmd's image storage | `/codimd/public/uploads`
 `podAnnotations` | Pod annotations | `{}`
 `sessionSecret` | Hackmd's session secret | `""` (Randomly generated)
 `postgresql.install` | Enable PostgreSQL as a chart dependency | `true`
@@ -57,11 +58,11 @@ Parameter | Description | Default
 
 ### Use persistent volume for image uploads
 
-If you want to use a Kubernetes Persistent volume for image upload (enabled by default), you can encourter a problem where your volume doesn't have proper ownershuip, so HackMD won't be able to write into it. You can use set the `HMD_IMAGE_UPLOAD_TYPE` to `filesystem` in your `values.yaml` to have the Docker entrypoint change volume's ownership:
+If you want to use a Kubernetes Persistent volume for image upload (enabled by default), you can encourter a problem where your volume doesn't have proper ownershuip, so HackMD won't be able to write into it. You can use set the `CMD_IMAGE_UPLOAD_TYPE` to `filesystem` in your `values.yaml` to have the Docker entrypoint change volume's ownership:
 
 ```yaml
 extraVars:
-  - name: HMD_IMAGE_UPLOAD_TYPE
+  - name: CMD_IMAGE_UPLOAD_TYPE
     value: filesystem
 ```
 

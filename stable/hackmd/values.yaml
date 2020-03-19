@@ -69,6 +69,7 @@ persistence:
 podAnnotations: {}
 
 extraVars: []
+uploadsPath: "/codimd/public/uploads"
 
 nodeSelector: {}
 
