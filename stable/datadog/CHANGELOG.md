@@ -2,6 +2,38 @@
 
 ## 2.0
 
+## 2.0.13
+
+* Fix `system-probe` startup on latest versions of containerd.
+  Here is the error that this change fixes:
+  ```    State:          Waiting
+      Reason:       CrashLoopBackOff
+    Last State:     Terminated
+      Reason:       StartError
+      Message:      failed to create containerd task: OCI runtime create failed: container_linux.go:349: starting container process caused "close exec fds: ensure /proc/self/fd is on procfs: operation not permitted": unknown
+      Exit Code:    128
+   ```
+
+## 2.0.11
+
+* Add missing syscalls in the `system-probe` seccomp profile
+
+## 2.0.10
+
+* Do not enable the `cri` check when running on a `docker` setup.
+
+## 2.0.7
+
+* Pass expected `DD_DOGSTATSD_PORT` to datadog-agent rather than invalid `DD_DOGSTATD_PORT`
+
+## 2.0.6
+
+* Introduces `procesAgent.processCollection` to correctly configure `DD_PROCESS_AGENT_ENABLED` for the process agent.
+
+## 2.0.5
+
+* Honor the `datadog.env` parameter in all containers.
+
 ## 2.0.4
 
 * Honor the image pull policy in init containers.
@@ -10,7 +42,7 @@
 ## 2.0.3
 
 * Fix templating error when `agents.useConfigMap` is set to true.
-* Add DD_APM_ENABLED environment variable to trace agent container.
+* Add DD\_APM\_ENABLED environment variable to trace agent container.
 
 
 ## 2.0.2

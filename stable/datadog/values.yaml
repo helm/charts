@@ -268,11 +268,16 @@ datadog:
   # checksd:
   #   service.py: |-
 
-  ## @param criSocketPath - string - required
+  ## @param dockerSocketPath - string - optional
+  ## Path to the docker socket
+  #
+  # dockerSocketPath: /var/run/docker.sock
+
+  ## @param criSocketPath - string - optional
   ## Path to the container runtime socket (if different from Docker)
   ## This is supported starting from agent 6.6.0
   #
-  criSocketPath: /var/run/docker.sock
+  # criSocketPath: /var/run/containerd/containerd.sock
 
 
   ## @param processAgent - object - required
@@ -285,6 +290,12 @@ datadog:
     ## ref: https://docs.datadoghq.com/graphing/infrastructure/process/#kubernetes-daemonset
     #
     enabled: false
+
+    ## @param processCollection - boolean - required
+    ## Set this to true to enable process collection in process monitoring agent
+    ## Requires processAgent.enabled to be set to true to have any effect
+    #
+    processCollection: false
 
   ## @param systemProbe - object - required
   ## Enable systemProbe agent and provide custom configs
@@ -518,6 +529,11 @@ clusterAgent:
   #
   # datadog_cluster_yaml: {}
 
+  ## @param createPodDisruptionBudget - boolean - optional
+  ## Specify the pod disruption budget to apply to the cluster agents
+  #
+  createPodDisruptionBudget: false
+
 kubeStateMetrics:
 
   ## @param enabled - boolean - required
@@ -530,7 +546,7 @@ agents:
   ## @param enabled - boolean - required
   ## You should keep Datadog DaemonSet enabled!
   ## The exceptional case could be a situation when you need to run
-  ## single DataDog pod per every namespace, but you do not need to
+  ## single Datadog pod per every namespace, but you do not need to
   ## re-create a DaemonSet for every non-default namespace install.
   ## Note: StatsD and DogStatsD work over UDP, so you may not
   ## get guaranteed delivery of the metrics in Datadog-per-namespace setup!
@@ -858,6 +874,11 @@ clusterChecksRunner:
     #
     # pullSecrets:
     #   - name: "<REG_SECRET>"
+
+  ## @param createPodDisruptionBudget - boolean - optional
+  ## Specify the pod disruption budget to apply to the cluster checks agents
+  #
+  createPodDisruptionBudget: false
 
   ## @param rbac - object - required
   ## Provide Cluster Checks Deployment pods RBAC configuration

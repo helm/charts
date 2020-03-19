@@ -18,6 +18,9 @@ podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 2
 
+# updateStrategy:
+  # type: RollingUpdate
+
 auth:
   enabled: false
   existingKeySecret: ""

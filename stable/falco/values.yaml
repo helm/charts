@@ -235,7 +235,7 @@ falco:
   # By modifying the threadiness configuration you can fine-tune the number of threads (and context) it will use.
   grpc:
     enabled: false
-    bindAddress: "0.0.0.0:5060"
+    listenPort: 5060
     threadiness: 8
     privateKey: "/etc/falco/certs/server.key"
     certChain: "/etc/falco/certs/server.crt"

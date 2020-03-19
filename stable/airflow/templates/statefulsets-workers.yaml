@@ -49,6 +49,9 @@ spec:
         app: {{ template "airflow.name" . }}
         component: worker
         release: {{ .Release.Name }}
+{{- if .Values.workers.podLabels }}
+{{ toYaml .Values.workers.podLabels | indent 8 }}
+{{- end }}
     spec:
       {{- if .Values.airflow.image.pullSecret }}
       imagePullSecrets:
