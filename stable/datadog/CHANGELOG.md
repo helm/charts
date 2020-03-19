@@ -4,7 +4,7 @@
 
 ## 2.0.12
 
-* Fixed a bug where datadog.apm.enabled was not being respected
+* Fixed a bug where the `trace-agent` runs in the same container as `dd-agent`
 
 ## 2.0.11
 
