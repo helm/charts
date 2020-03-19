@@ -35,6 +35,8 @@ spec:
         runAsUser: 8983
       affinity:
 {{ tpl (toYaml .Values.affinity) .  | indent 8 }}
+      tolerations:
+{{ tpl (toYaml .Values.tolerations) .  | indent 8 }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       volumes:
 {{- if .Values.tls.enabled }}

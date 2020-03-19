@@ -55,6 +55,9 @@ podAnnotations: {}
 # Affinity group rules or the solr pods
 affinity: {}
 
+# Tolerations for pod assignment
+tolerations: []
+
 # Update Strategy for solr pods
 updateStrategy:
   type: "RollingUpdate"
