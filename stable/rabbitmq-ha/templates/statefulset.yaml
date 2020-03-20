@@ -264,13 +264,13 @@ spec:
       {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
       {{- end }}
+
       {{- if .Values.affinity }}
       affinity:
       {{- with .Values.affinity }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- else }}
-      {{- if eq .Values.podAntiAffinity "hard" }}
+      {{- else if eq .Values.podAntiAffinity "hard" }}
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -290,7 +290,6 @@ spec:
                   matchLabels:
                     app: {{ template "rabbitmq-ha.name" . }}
                     release: {{ .Release.Name }}
-      {{- end }}
       {{- end }}
 
       {{- if .Values.priorityClassName }}
