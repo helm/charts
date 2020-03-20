@@ -23,6 +23,7 @@ rules:
   {{- if .Values.rbac.pspEnabled }}
   - apiGroups:
     - extensions
+    - policy
     resources:
     - podsecuritypolicies
     resourceNames:
