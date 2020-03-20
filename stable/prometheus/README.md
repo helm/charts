@@ -354,14 +354,18 @@ Parameter | Description | Default
 `server.strategy` | Deployment strategy | `{ "type": "RollingUpdate" }`
 `serviceAccounts.alertmanager.create` | If true, create the alertmanager service account | `true`
 `serviceAccounts.alertmanager.name` | name of the alertmanager service account to use or create | `{{ prometheus.alertmanager.fullname }}`
+`serviceAccounts.alertmanager.annotations` | annotations for the alertmanager service account | `{}`
 `serviceAccounts.kubeStateMetrics.create` | If true, create the kubeStateMetrics service account | `true`
 `serviceAccounts.kubeStateMetrics.name` | name of the kubeStateMetrics service account to use or create | `{{ prometheus.kubeStateMetrics.fullname }}`
 `serviceAccounts.nodeExporter.create` | If true, create the nodeExporter service account | `true`
 `serviceAccounts.nodeExporter.name` | name of the nodeExporter service account to use or create | `{{ prometheus.nodeExporter.fullname }}`
+`serviceAccounts.nodeExporter.annotations` | annotations for the nodeExporter service account | `{}`
 `serviceAccounts.pushgateway.create` | If true, create the pushgateway service account | `true`
 `serviceAccounts.pushgateway.name` | name of the pushgateway service account to use or create | `{{ prometheus.pushgateway.fullname }}`
+`serviceAccounts.pushgateway.annotations` | annotations for the pushgateway service account | `{}`
 `serviceAccounts.server.create` | If true, create the server service account | `true`
 `serviceAccounts.server.name` | name of the server service account to use or create | `{{ prometheus.server.fullname }}`
+`serviceAccounts.server.annotations` | annotations for the server service account | `{}`
 `server.terminationGracePeriodSeconds` | Prometheus server Pod termination grace period | `300`
 `server.retention` | (optional) Prometheus data retention | `"15d"`
 `serverFiles.alerts` | (Deprecated) Prometheus server alerts configuration | `{}`
