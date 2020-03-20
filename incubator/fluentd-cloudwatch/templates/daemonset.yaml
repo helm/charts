@@ -76,6 +76,9 @@ spec:
 {{- if .Values.volumeMounts }}
 {{ toYaml .Values.volumeMounts | indent 8 }}
 {{- end }}
+{{- if .Values.image.imagePullSecrets }}
+      imagePullSecrets: {{ toYaml .Values.image.imagePullSecrets | nindent 6}}
+{{- end }}
 {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
 {{- end }}
