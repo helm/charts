@@ -130,8 +130,6 @@ server:
     type: "NodePort"
     # server.service.httpPort is the GoCD Server HTTP port
     httpPort: 8153
-    # server.service.httpPort is the GoCD Server HTTPS port
-    httpsPort: 8154
     # Provide the nodeHttpPort and nodeHttpsPort if you want the service to be exposed on specific ports. Without this, random node ports will be assigned.
     # server.service.nodeHttpPort is the GoCD Server Service Node HTTP port
     nodeHttpPort:
