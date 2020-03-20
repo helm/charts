@@ -25,6 +25,18 @@ tolerations: []
   #   value: bar
   #   effect: NoSchedule
 
+securityContext:
+  # Rejecting containers trying to run with root privileges
+  # runAsNonRoot: true
+  # Preventing privilege escalation to root privileges
+  # allowPrivilegeEscalation: false
+  # Set the user ID used to run the container
+  # runAsUser: 1001
+  # Set the primary group ID used to run all processes within any container of the pod
+  # runAsGroup: 1001
+  # Set the group ID associated with the container
+  # fsGroup: 1001
+
 replicas: 1
 
 # resources:

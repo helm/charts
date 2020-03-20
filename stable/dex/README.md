@@ -95,6 +95,7 @@ Parameters introduced starting from v2
 | `ports.web.nodePort` | K8S Service node port for the dex http/https listener | `32000` |
 | `ports.web.servicePort` | K8S Service port for the dex http/https listener | `32000` |
 | `rbac.create` | If `true`, create & use RBAC resources | `true` |
+| `securityContext` | Allow setting the securityContext of the main dex deployment | `` |
 | `service.loadBalancerIP` | IP override for K8S LoadBalancer Service | `""` |
 | `livenessProbe.enabled` | k8s liveness probe enabled (cannot be enabled when `https = true`) | `false` |
 | `livenessProbe.path` |  k8s liveness probe http path | `"/healthz"`  |
