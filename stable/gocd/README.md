@@ -439,6 +439,12 @@ env:
 
 - If you are adding a plugin to an existing Go server, it will result in a new Go server pod being created that has the plugin installed and running.
 
+# TLS for GoCD
+
+As part of GoCD Release v20.2.0, GoCD changed how it handles SSL support. If you are upgrading to GoCD 20.2.0 or above, agents will have to be reconfigured to connect to the server. Know more about the GoCD SSL/TLS changes [here](https://github.com/gocd/gocd/issues/7872). 
+
+To set up TLS for GoCD, system admins will be required to front the GoCD server with a reverse proxy that supports TLS (like Apache, NGINX). Any existing agents that are using TLS, can connect to this reverse proxy. Reverse proxies have the advantage that they make it a lot easier and more convenient to setup and configure various TLS connection parameters. Refer the [GoCD documentation](https://docs.gocd.org/current/installation/configure-reverse-proxy.html) to setup a reverse proxy.
+
 # License
 
 ```plain
