@@ -279,7 +279,9 @@ data:
   {{- if not .Values.master.sidecars.configAutoReload.enabled }}
     mkdir -p {{ .Values.master.jenkinsHome }}/casc_configs;
     rm -rf {{ .Values.master.jenkinsHome }}/casc_configs/*
+    {{- if .Values.master.JCasC.configScripts }}
     cp -v /var/jenkins_config/*.yaml {{ .Values.master.jenkinsHome }}/casc_configs
+    {{- end }}
   {{- end }}
 {{- end }}
 {{- if .Values.master.enableXmlConfig }}
