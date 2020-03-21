@@ -9,7 +9,7 @@ TensorFlow is an open source software library for numerical computation using da
 
 ## Prerequisites
 
-- Kubernetes cluster v1.16+
+- Kubernetes cluster v1.12+
 
 ## Chart Details
 
@@ -89,7 +89,7 @@ chart and their default values.
 | `volumeMounts` | Volumes mounted into Pods (in standard k8s format) | host path volume mounted into */tmp/mnist-log* |
 | `hyperparams.batchsize` | batch size | `20` |
 | `hyperparams.learningrate` | learning rate | `0.001` |
-| `hyperparams.trainsteps` | train steps | `0` (continious run) |
+| `hyperparams.trainsteps` | train steps | `0` (continuous run) |
 | `hyperparams.datadir` | data directory | None |
 | `hyperparams.logdir` | logging directory | None |
 | `hyperparams.hiddenunits` | Hidden units in neural network | None |

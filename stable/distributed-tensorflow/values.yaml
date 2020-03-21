@@ -22,10 +22,3 @@ hyperparams:
   batchsize: 20
   learningrate: 0.001
   trainsteps: 0
-volumes:
-  - name: logs-volume
-    hostPath:
-      path: /tmp/mnist
-volumeMounts:
-  - name: logs-volume
-    mountPath: /tmp/mnist-log

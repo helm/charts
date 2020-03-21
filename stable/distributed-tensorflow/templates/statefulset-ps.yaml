@@ -94,10 +94,7 @@ spec:
         volumeMounts:
 {{ toYaml .Values.volumeMounts | indent 8 }}
 {{- end }}
-{{- if gt (int .Values.worker.gpuCount) 0 }}
+{{- if .Values.ps.resources }}
         resources:
-          limits:
-            nvidia.com/gpu: {{- .Values.worker.gpuCount }}
-          request:
-            nvidia.com/gpu: {{- .Values.worker.gpuCount }}
+{{ toYaml .Values.ps.resources | indent 10 }}
 {{- end }}
