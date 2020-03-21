@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Release.Name }}-zeppelin
@@ -8,10 +8,10 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  strategy:
-    rollingUpdate:
-      maxUnavailable: 0
-  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "zeppelin.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
