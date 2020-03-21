@@ -360,7 +360,7 @@ configScripts:
 
 Further JCasC examples can be found [here.](https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos)
 ### Config as Code with and without auto-reload
-Config as Code changes (to master.JCasC.configScripts) can either force a new pod to be created and only be applied at next startup, or can be auto-reloaded on-the-fly.  If you choose `master.sidecars.autoConfigReload.enabled: true`, a second, auxiliary container will be installed into the Jenkins master pod, known as a "sidecar".  This watches for changes to configScripts, copies the content onto the Jenkins file-system and issues a CLI command via SSH to reload configuration.  The admin user (or account you specify in master.adminUser) will have a random SSH private key (RSA 4096) assigned unless you specify a key in `master.adminSshKey`.  This will be saved to a k8s secret.  You can monitor this sidecar's logs using command `kubectl logs <master_pod> -c jenkins-sc-config -f`
+Config as Code changes (to master.JCasC.configScripts) can either force a new pod to be created and only be applied at next startup, or can be auto-reloaded on-the-fly.  If you choose `master.sidecars.autoConfigReload.enabled: true`, a second, auxiliary container will be installed into the Jenkins master pod, known as a "sidecar".  This watches for changes to configScripts, copies the content onto the Jenkins file-system and issues a POST to http://<jenkins_url>/reload-configuration-as-code with a pre-shared key.  You can monitor this sidecar's logs using command `kubectl logs <master_pod> -c jenkins-sc-config -f`
 If you want to enable auto-reload then you also need to configure rbac as the container which triggers the reload needs to watch the config maps.
 
 ```yaml
@@ -373,19 +373,6 @@ master:
 rbac:
   install: true
 ```
-
-### Auto-reload with non-Jenkins identities
-When enabling LDAP or another non-Jenkins identity source, the built-in admin account will no longer exist.  Since the admin account is used by the sidecar to reload config, in order to use auto-reload, you must change the .master.adminUser to a valid username on your LDAP (or other) server.  If you use the matrix-auth plugin, this user must also be granted Overall\Administer rights in Jenkins.  Failure to do this will cause the sidecar container to fail to authenticate via SSH and enter a restart loop.  You can enable LDAP using the example above and add a Config as Code block for matrix security that includes:
-```yaml
-configScripts:
-  matrix-auth: |
-    jenkins:
-      authorizationStrategy:
-        projectMatrix:
-          grantedPermissions:
-          - "Overall/Administer:<AdminUser_LDAP_username>"
-```
-You can instead grant this permission via the UI. When this is done, you can set `master.sidecars.configAutoReload.enabled: true` and upon the next Helm upgrade, auto-reload will be successfully enabled.
 
 ## RBAC
 

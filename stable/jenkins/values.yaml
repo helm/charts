@@ -94,23 +94,16 @@ master:
      </authorizationStrategy>
   hostNetworking: false
   # When enabling LDAP or another non-Jenkins identity source, the built-in admin account will no longer exist.
-  # Since the AdminUser is used by configAutoReload, in order to use configAutoReload you must change the
-  # .master.adminUser to a valid username on your LDAP (or other) server.  This user does not need
-  # to have administrator rights in Jenkins (the default Overall:Read is sufficient) nor will it be granted any
-  # additional rights.  Failure to do this will cause the sidecar container to fail to authenticate via SSH and enter
-  # a restart loop.  Likewise if you disable the non-Jenkins identity store and instead use the Jenkins internal one,
+  # If you disable the non-Jenkins identity store and instead use the Jenkins internal one,
   # you should revert master.adminUser to your preferred admin user:
   adminUser: "admin"
   # adminPassword: <defaults to random>
-  # adminSshKey: <defaults to auto-generated>
   # This values should not be changed unless you use your custom image of jenkins or any devired from. If you want to use
   # Cloudbees Jenkins Distribution docker, you should set jenkinsHome: "/var/cloudbees-jenkins-distribution"
   jenkinsHome: "/var/jenkins_home"
   # This values should not be changed unless you use your custom image of jenkins or any devired from. If you want to use
   # Cloudbees Jenkins Distribution docker, you should set jenkinsRef: "/usr/share/cloudbees-jenkins-distribution/ref"
   jenkinsRef: "/usr/share/jenkins/ref"
-  # If CasC auto-reload is enabled, an SSH (RSA) keypair is needed.  Can either provide your own, or leave unconfigured to allow a random key to be auto-generated.
-  # If you supply your own, it is recommended that the values file that contains your key not be committed to source control in an unencrypted format
   rollingUpdate: {}
   # Ignored if Persistence is enabled
   # maxSurge: 1
@@ -277,9 +270,8 @@ master:
   sidecars:
     configAutoReload:
       # If enabled: true, Jenkins Configuration as Code will be reloaded on-the-fly without a reboot.  If false or not-specified,
-      # jcasc changes will cause a reboot and will only be applied at the subsequent start-up.  Auto-reload uses the Jenkins CLI
-      # over SSH to reapply config when changes to the configScripts are detected.  The admin user (or account you specify in
-      # master.adminUser) will have a random SSH private key (RSA 4096) assigned unless you specify adminSshKey.  This will be saved to a k8s secret.
+      # jcasc changes will cause a reboot and will only be applied at the subsequent start-up.  Auto-reload uses the
+      # http://<jenkins_url>/reload-configuration-as-code endpoint to reapply config when changes to the configScripts are detected.
       enabled: false
       image: kiwigrid/k8s-sidecar:0.1.20
       imagePullPolicy: IfNotPresent
@@ -290,12 +282,6 @@ master:
         #   requests:
         #     cpu: 50m
         #     memory: 50Mi
-      # SSH port value can be set to any unused TCP port.  The default, 1044, is a non-standard SSH port that has been chosen at random.
-      # Is only used to reload jcasc config from the sidecar container running in the Jenkins master pod.
-      # This TCP port will not be open in the pod (unless you specifically configure this), so Jenkins will not be
-      # accessible via SSH from outside of the pod.  Note if you use non-root pod privileges (runAsUser & fsGroup),
-      # this must be > 1024:
-      sshTcpPort: 1044
       # folder in the pod that should hold the collected dashboards:
       folder: "/var/jenkins_home/casc_configs"
       # If specified, the sidecar will search for JCasC config-maps inside this namespace.

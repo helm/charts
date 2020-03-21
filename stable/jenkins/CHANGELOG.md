@@ -5,6 +5,14 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.9.24
+
+Update JCasC auto-reload docs and remove stale ssh key references from version "1.8.0 JCasC auto reload works without ssh keys"
+
+## 1.9.23
+
+Add jenkinsUriPrefix to casc reload uri
+
 ## 1.9.22
 
 Add `master.jenkinsHome` and `master.jenkinsRef` options to use docker images derivates from Jenkins
