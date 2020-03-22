@@ -99,6 +99,19 @@ basicAuth:
   ## Defaults to a random 10-character alphanumeric string if not set
   ##
   password: ""
+  ## LDAP Authentication
+  ## Ref : https://github.com/yahoo/CMAK#authenticating-a-user-with-ldap
+  ##
+  ldap:
+    enabled: false
+    server: ""
+    port: 389
+    username: ""
+    password: ""
+    searchBaseDn: ""
+    searchFilter: "(uid=$capturedLogin$)"
+    connectionPoolSize: 10
+    ssl: false
 
 ## Java runtime options. Passed through the JAVA_OPTS environmental variable
 ##

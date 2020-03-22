@@ -24,6 +24,8 @@ spec:
           configMap:
             name: {{ template "kafka-manager.bootstrap.fullname" . }}
             defaultMode: 0744
+      nodeSelector:
+        kubernetes.io/arch: amd64
       containers:
         - name: {{ .Chart.Name }}-bootstrap
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
