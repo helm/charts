@@ -40,3 +40,5 @@ persistence:
   size: 10Gi
   accessMode: ReadWriteOnce
  # matchLabels: {}
+
+annotations: {}

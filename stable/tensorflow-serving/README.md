@@ -147,6 +147,4 @@ chart and their default values.
 |`persistence.enabled` | enable pvc for the tensorflow serving | `false` |
 |`persistence.size`| the storage size to request | `5Gi` |
 |`persistence.matchLabels`| the selector for pv | `{}` |
-
-
-
+|`annotations`| Extra annotations for deployment | `{}` |

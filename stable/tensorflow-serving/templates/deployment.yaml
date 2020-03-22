@@ -10,6 +10,9 @@ metadata:
     app: {{ template "tensorflow-serving.name" . }}
   annotations:
     "helm.sh/created": {{ .Release.Time.Seconds | quote }}
+{{- with .Values.annotations }}
+{{ toYaml . | indent 4 }}
+{{- end }}
 spec:
   replicas: {{ .Values.replicas }}
   strategy:
