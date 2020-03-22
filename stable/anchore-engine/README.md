@@ -1,8 +1,8 @@
 # Anchore Engine Helm Chart
 
-This chart deploys the Anchore Engine docker container image analysis system. Anchore Engine requires a PostgreSQL database (>=9.6) which may be handled by the chart or supplied externally, and executes in a service based architecture utilizing the following Anchore Engine services: External API, Simplequeue, Catalog, Policy Engine, and Analyzer.
+This chart deploys the Anchore Engine docker container image analysis system. Anchore Engine requires a PostgreSQL database (>=9.6) which may be handled by the chart or supplied externally, and executes in a service based architecture utilizing the following Anchore Engine services: External API, SimpleQueue, Catalog, Policy Engine, and Analyzer.
 
-This chart can also be used to install the following Anchore Enterprise services: GUI, RBAC, Reporting, & On-premises Feeds. Enterprise services require a valid Anchore Enterprise License as well as credentials with access to the private Dockerhub repository hosting the images. These are not enabled by default.
+This chart can also be used to install the following Anchore Enterprise services: GUI, RBAC, Reporting, Notifications & On-premises Feeds. Enterprise services require a valid Anchore Enterprise License as well as credentials with access to the private DockerHub repository hosting the images. These are not enabled by default.
 
 Each of these services can be scaled and configured independently.
 
@@ -23,11 +23,17 @@ TL;DR - `helm install stable/anchore-engine`
 
 Anchore Engine will take approximately 3 minutes to bootstrap. After the initial bootstrap period, Anchore Engine will begin a vulnerability feed sync. During this time, image analysis will show zero vulnerabilities until the sync is completed. This sync can take multiple hours depending on which feeds are enabled. The following anchore-cli command is available to poll the system and report back when the engine is bootstrapped and the vulnerability feeds are all synced up. `anchore-cli system wait`
 
-The recommended way to install the Anchore Engine Helm Chart is with a customized values file and a custom release name. It is highly recommended to set non-default passwords when deploying, all passwords are set to defaults specified in the chart. It is also recommended to utilize an external database, rather than using the included postgresql chart.
+The recommended way to install the Anchore Engine Helm Chart is with a customized values file and a custom release name. It is highly recommended to set non-default passwords when deploying, all passwords are set to defaults specified in the chart. It is also recommended to utilize an external database, rather then using the included postgresql chart.
 
 Create a new file named `anchore_values.yaml` and add all desired custom values (examples below); then run the following command:
 
+  #### Helm v2 installation
   `helm install --name <release_name> -f anchore_values.yaml stable/anchore-engine`
+
+  #### Helm v3 installation
+  `helm repo add stable https://kubernetes-charts.storage.googleapis.com`
+
+  `helm install <release_name> -f anchore_values.yaml stable/anchore-engine`
 
 ##### Example anchore_values.yaml - using chart managed PostgreSQL service with custom passwords.
 *Note: Installs with chart managed PostgreSQL database. This is not a guaranteed production ready config.*
@@ -66,17 +72,28 @@ To use this Helm chart with the enterprise services enabled, perform these steps
 
     `kubectl create secret generic anchore-enterprise-license --from-file=license.yaml=<PATH/TO/LICENSE.YAML>`
 
-1. Create a kubernetes secret containing dockerhub credentials with access to the private anchore enterprise repositories.
+1. Create a kubernetes secret containing DockerHub credentials with access to the private anchore enterprise repositories.
 
     `kubectl create secret docker-registry anchore-enterprise-pullcreds --docker-server=docker.io --docker-username=<DOCKERHUB_USER> --docker-password=<DOCKERHUB_PASSWORD> --docker-email=<EMAIL_ADDRESS>`
 
 1. (demo) Install the Helm chart using default values
+    #### Helm v2 installation
+    `helm install --name <release_name> --set anchoreEnterpriseGlobal.enabled=true stable/anchore-engine`
 
-    `helm fetch stable/anchore-engine --untar && helm install --name enterprise stable/anchore-engine -f anchore-engine/enterprise_values.yaml`
+    #### Helm v3 installation
+    `helm repo add stable https://kubernetes-charts.storage.googleapis.com`
 
-1. (production) Install the Helm chart using a custom anchore_values.yaml file - *see examples below*
+    `helm install <release_name>  --set anchoreEnterpriseGlobal.enabled=true stable/anchore-engine`
 
-    `helm install --name <release_name> -f /path/to/anchore_values.yaml stable/anchore-engine`
+2. (production) Install the Helm chart using a custom anchore_values.yaml file - *see examples below*
+
+    #### Helm v2 installation
+    `helm install --name <release_name> -f anchore_values.yaml stable/anchore-engine`
+
+    #### Helm v3 installation
+    `helm repo add stable https://kubernetes-charts.storage.googleapis.com`
+
+    `helm install <release_name> -f anchore_values.yaml stable/anchore-engine`
 
 #### Example anchore_values.yaml - installing Anchore Enterprise
 

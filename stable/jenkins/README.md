@@ -18,7 +18,7 @@ This chart will do the following:
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/jenkins
+$ helm install my-release stable/jenkins
 ```
 
 ## Upgrading an existing Release to a new major version
@@ -152,6 +152,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.nodeSelector`             | Node labels for pod assignment       | `{}`                                      |
 | `master.affinity`                 | Affinity settings                    | `{}`                                      |
 | `master.schedulerName`            | Kubernetes scheduler name            | Not set                                   |
+| `master.terminationGracePeriodSeconds` | Set TerminationGracePeriodSeconds   | Not set                               |
 | `master.tolerations`              | Toleration labels for pod assignment | `[]`                                      |
 | `master.podAnnotations`           | Annotations for master pod           | `{}`                                      |
 | `master.deploymentAnnotations`           | Annotations for master deployment           | `{}`                                      |
@@ -220,7 +221,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/jenkins
+$ helm install my-release -f values.yaml stable/jenkins
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -320,7 +321,7 @@ It is possible to mount several volumes using `persistence.volumes` and `persist
 3. Install the chart
 
 ```bash
-$ helm install --name my-release --set persistence.existingClaim=PVC_NAME stable/jenkins
+$ helm install my-release --set persistence.existingClaim=PVC_NAME stable/jenkins
 ```
 
 #### Storage Class
@@ -328,7 +329,7 @@ $ helm install --name my-release --set persistence.existingClaim=PVC_NAME stable
 It is possible to define which storage class to use:
 
 ```bash
-$ helm install --name my-release --set persistence.storageClass=customStorageClass stable/jenkins
+$ helm install my-release --set persistence.storageClass=customStorageClass stable/jenkins
 ```
 
 If set to a dash (`-`, as in `persistence.storageClass=-`), the dynamic provision is disabled.

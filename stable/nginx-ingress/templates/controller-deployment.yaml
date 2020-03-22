@@ -68,7 +68,9 @@ spec:
           {{- if .Values.defaultBackend.enabled }}
             - --default-backend-service={{ .Release.Namespace }}/{{ template "nginx-ingress.defaultBackend.fullname" . }}
           {{- else }}
-            {{- if and (semverCompare "<0.21.0" .Values.controller.image.tag) }}
+            {{- if (semverCompare "<0.21.0" .Values.controller.image.tag) }}
+            - --default-backend-service={{ required ".Values.controller.defaultBackendService is required if .Values.defaultBackend.enabled=false and .Values.controller.image.tag < 0.21.0" .Values.controller.defaultBackendService }}
+            {{- else if .Values.controller.defaultBackendService }}
             - --default-backend-service={{ .Values.controller.defaultBackendService }}
             {{- end }}
           {{- end }}
@@ -94,6 +96,9 @@ spec:
           {{- end }}
           {{- if .Values.controller.scope.enabled }}
             - --watch-namespace={{ default .Release.Namespace .Values.controller.scope.namespace }}
+          {{- end }}
+          {{- if and (.Values.controller.scope.enabled) (.Values.rbac.scope) }}
+            - --update-status=false
           {{- end }}
           {{- if and (.Values.controller.reportNodeInternalIp) (.Values.controller.hostNetwork) }}
             - --report-node-internal-ip-address={{ .Values.controller.reportNodeInternalIp }}

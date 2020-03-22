@@ -128,6 +128,9 @@ nodeSelector: {}
 #     effect: NoSchedule
 tolerations: []
 
+# https://kubernetes.io/docs/tasks/run-application/configure-pdb/#specifying-a-poddisruptionbudget
+podDisruptionBudget: {}
+
 # configure custom zone files as per https://coredns.io/2017/05/08/custom-dns-entries-for-kubernetes/
 zoneFiles: []
 #  - filename: example.db
@@ -187,3 +190,9 @@ autoscaler:
     limits:
       cpu: "20m"
       memory: "10Mi"
+
+  # Options for autoscaler configmap
+  configmap:
+    ## Annotations for the coredns-autoscaler configmap
+    # i.e. strategy.spinnaker.io/versioned: "false" to ensure configmap isn't renamed
+    annotations: {}

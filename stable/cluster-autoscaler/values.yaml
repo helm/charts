@@ -147,6 +147,14 @@ priorityClassName: ""
 #     drop:
 #       - all
 
+## Deployment update strategy
+## Ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+# updateStrategy:
+#   rollingUpdate:
+#     maxSurge: 1
+#     maxUnavailable: 0
+#   type: RollingUpdate
+
 service:
   annotations: {}
 
@@ -180,6 +188,8 @@ serviceMonitor:
    ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
   selector:
     prometheus: kube-prometheus
+  # The metrics path to scrape - autoscaler exposes /metrics (standard)
+  path: /metrics
 
 ## String to partially override cluster-autoscaler.fullname template (will maintain the release name)
 nameOverride: ""

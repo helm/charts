@@ -72,6 +72,8 @@ nextcloud:
   update: 0
   datadir: /var/www/html/data
   tableprefix:
+  persistence:
+    subPath:
   mail:
     enabled: false
     fromAddress: user

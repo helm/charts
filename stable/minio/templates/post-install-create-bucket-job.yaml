@@ -11,11 +11,14 @@ metadata:
   annotations:
     "helm.sh/hook": post-install,post-upgrade
     "helm.sh/hook-delete-policy": hook-succeeded
+    {{- with .Values.makeBucketJob.annotations }}
+    {{ toYaml . | indent 4 }}
+    {{- end }}
 spec:
   template:
     metadata:
       labels:
-        app: {{ template "minio.name" . }}
+        app: {{ template "minio.name" . }}-job
         release: {{ .Release.Name }}
 {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
