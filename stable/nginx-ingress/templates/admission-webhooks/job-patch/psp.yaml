@@ -9,7 +9,7 @@ metadata:
   labels:
     app: {{ template "nginx-ingress.name" . }}
     chart: {{ template "nginx-ingress.chart" . }}
-    component: "{{ .Values.controller.name }}"
+    app.kubernetes.io/component: controller
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:

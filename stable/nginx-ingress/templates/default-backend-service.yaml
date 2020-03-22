@@ -11,7 +11,7 @@ metadata:
   labels:
     app: {{ template "nginx-ingress.name" . }}
     chart: {{ template "nginx-ingress.chart" . }}
-    component: "{{ .Values.defaultBackend.name }}"
+    app.kubernetes.io/component: default-backend
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "nginx-ingress.defaultBackend.fullname" . }}
