@@ -15,6 +15,10 @@ deployment:
   # additionals labels
   labels: {}
   annotations: {}
+  livenessProbe:
+    enabled: true
+  readinessProbe:
+    enabled: true
 
 service:
   type: ClusterIP
