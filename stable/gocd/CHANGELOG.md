@@ -1,3 +1,7 @@
+### 1.25.0
+
+* [21277f47](https://github.com/kubernetes/charts/commit/21277f47): Add docs for ingress
+
 ### 1.24.0
 
 * [5b3b6e173](https://github.com/kubernetes/charts/commit/5b3b6e173): Update docs to mention about TLS changes

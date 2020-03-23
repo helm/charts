@@ -439,11 +439,47 @@ env:
 
 - If you are adding a plugin to an existing Go server, it will result in a new Go server pod being created that has the plugin installed and running.
 
+# Ingress
+
+On a Kubernetes cluster, ingress is responsible for accepting incoming requests and forwarding them to the appropriate service in the backend. 
+The ingress controller acts as a reverse proxy in front of the GoCD server. The GoCD agents within the cluster can bypass ingress and connect to the service directly.
+GoCD agents outside of the Kubernetes cluster may connect to the GoCD server via the Ingress or LoadBalancer.
+
+You can secure an Ingress by specifying a `secret` that contains a TLS private key and certificate [here](https://github.com/helm/charts/blob/master/stable/gocd/values.yaml#L157).
+Please refer to [Ingress documentation](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) about how to configure TLS. 
+Many ingress controllers make configuring TLS easy with the use of annotations. You can use ingress annotations to configure some of the TLS parameters like a managed SSL certificate, redirecting http to https, etc. 
+
+| Parameter                                   | Description                                                                                   |
+|---------------------------------------------|-----------------------------------------------------------------------------------------------| 
+| ingress.kubernetes.io/force-ssl-redirect	  | Redirect non-TLS requests to TLS even when TLS is not configured.                             |
+| kubernetes.io/ingress.allow-http            | Whether to accept non-TLS HTTP connections. Supported on GCE. Default: true                   |
+| alb.ingress.kubernetes.io/backend-protocol  | Specifies the protocol used when route traffic to pods on EKS.                                |
+| ingress.kubernetes.io/proxy-pass-params     | Parameters for proxy-pass directives.                                                         |
+| kubernetes.io/ingress.global-static-ip-name | Name of the static global IP address in GCP to use when provisioning the HTTPS load balancer. |
+| networking.gke.io/managed-certificates      | Name of the ManagedCertificate on GCP                                                         |
+| alb.ingress.kubernetes.io/certificate-arn   | Certificate arn on AWS Cert Manager                                                           |
+
+Popular managed Kubernetes offerings like GKE, EKS, AKS etc provide a default ingress controller which supports many more annotations.
+
+| Ingress Controller | Annotations                                                                                                                   |
+|--------------------|-------------------------------------------------------------------------------------------------------------------------------|
+| AWS ALB            | https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/ingress/annotation/                                        |
+| GCE                | https://cloud.google.com/kubernetes-engine/docs/how-to/load-balance-ingress                                                   |
+| AKS                | https://github.com/Azure/application-gateway-kubernetes-ingress/blob/master/docs/annotations.md#list-of-supported-annotations |
+| Traefik            | https://docs.traefik.io/v1.6/configuration/backends/kubernetes/#general-annotations                                           |
+| Nginx              | https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/                                        |
+
+For GoCD, annotations can be configured [here](https://github.com/helm/charts/blob/master/stable/gocd/values.yaml#L154)
+
 # TLS for GoCD
 
 As part of GoCD Release v20.2.0, GoCD changed how it handles SSL support. If you are upgrading to GoCD 20.2.0 or above, agents will have to be reconfigured to connect to the server. Know more about the GoCD SSL/TLS changes [here](https://github.com/gocd/gocd/issues/7872). 
 
 To set up TLS for GoCD, system admins will be required to front the GoCD server with a reverse proxy that supports TLS (like Apache, NGINX). Any existing agents that are using TLS, can connect to this reverse proxy. Reverse proxies have the advantage that they make it a lot easier and more convenient to setup and configure various TLS connection parameters. Refer the [GoCD documentation](https://docs.gocd.org/current/installation/configure-reverse-proxy.html) to setup a reverse proxy.
+
+The GoCD agents within the cluster can bypass ingress and connect to the service directly via the 8153 port.
+
+GoCD agents outside of the Kubernetes cluster may connect to the GoCD server via the http(s) port exposed by the ingress or, via the load balancer if the GoCD service type is `LoadBalancer`.
 
 # License
 
