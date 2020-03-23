@@ -7,7 +7,6 @@ metadata:
 {{ toYaml .Values.serviceMonitor.labels | indent 4 }}
 {{- end }}
   name: {{ template "chartmuseum.fullname" . }}
-  namespace: {{ .Release.Namespace }}
 {{- if .Values.serviceMonitor.namespace }}
   namespace: {{ .Values.serviceMonitor.namespace }}
 {{- end }}
