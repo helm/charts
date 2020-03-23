@@ -144,6 +144,27 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `vscode.service.externalIPs`      | External IPs for the VS Code UI | `[]` |
 | `vscode.service.loadBalancerIP`   | Loadbalancer IP for the VS Code UI | `` |
 | `vscode.service.loadBalancerSourceRanges`   | Loadbalancer client IP restriction range for the VS Code UI | `[]` |
+| `vscode.enabled`                  | Enable the optional [VS Code Server Sidecar](https://github.com/cdr/code-server) | `false` |
+| `appdaemon.image.repository`         | Image repository | `acockburn/appdaemon` |
+| `appdaemon.image.tag`                | Image tag | `3.0.5`|
+| `appdaemon.image.pullPolicy`         | Image pull policy | `IfNotPresent` |
+| `appdaemon.haToken`                  | Home Assistant API token - you need to generate it in your Home Assistant profile and then copy here | `` |
+| `appdaemon.extraEnv`                 | Extra ENV vars to pass to the AppDaemon container | `{}` |
+| `appdaemon.ingress.enabled`          | Enables Ingress for the AppDaemon UI | `false` |
+| `appdaemon.ingress.annotations`      | Ingress annotations for the AppDaemon UI | `{}` |
+| `appdaemon.ingress.hosts`            | Ingress accepted hostnames for the AppDaemonUI | `appdaemon.local` |
+| `appdaemon.ingress.tls`              | Ingress TLS configuration for the AppDaemon UI | `[]` |
+| `appdaemon.resources`                | CPU/Memory resource requests/limits for the AppDaemon | `{}` |
+| `appdaemon.securityContext`          | Security context to be added to hass-appdaemon container | `{}` |
+| `appdaemon.service.type`             | Kubernetes service type for the AppDaemon UI | `ClusterIP` |
+| `appdaemon.service.port`             | Kubernetes port where the AppDaemon UI is exposed| `5050` |
+| `appdaemon.service.nodePort`         | nodePort to listen on for the AppDaemon UI | `` |
+| `appdaemon.service.annotations`      | Service annotations for the AppDaemon UI | `{}` |
+| `appdaemon.service.labels`           | Service labels to use for the AppDaemon UI | `{}` |
+| `appdaemon.service.clusterIP`        | Cluster IP for the AppDaemon UI | `` |
+| `appdaemon.service.externalIPs`      | External IPs for the AppDaemon UI | `[]` |
+| `appdaemon.service.loadBalancerIP`   | Loadbalancer IP for the AppDaemon UI | `` |
+| `appdaemon.service.loadBalancerSourceRanges`   | Loadbalancer client IP restriction range for the VS Code UI | `[]` |
 | `resources`                | CPU/Memory resource requests/limits or the home-assistant GUI | `{}` |
 | `nodeSelector`             | Node labels for pod assignment or the home-assistant GUI | `{}` |
 | `tolerations`              | Toleration labels for pod assignment or the home-assistant GUI | `[]` |
