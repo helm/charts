@@ -12,7 +12,6 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  clusterIP: None
   type: {{ .Values.service.type }}
   ports:
     {{- if .Values.exporter.enabled }}
