@@ -35,6 +35,9 @@ spec:
             ncat --recv-only {{ template "fullname" . }}-$(($ordinal-1)).{{ template "fullname" . }} 3307 | xbstream -x -C /var/lib/mysql
             # Prepare the backup.
             xtrabackup --prepare --user=${MYSQL_REPLICATION_USER} --password=${MYSQL_REPLICATION_PASSWORD} --target-dir=/var/lib/mysql
+            # ssl
+            cd /var/lib/mysql
+            ncat --recv-only {{ template "fullname" . }}-$(($ordinal-1)).{{ template "fullname" . }} 3308 | tar -xvf -
         env:
         - name: MYSQL_REPLICATION_USER
           value: {{ .Values.mysqlha.mysqlReplicationUser }}
@@ -177,14 +180,15 @@ spec:
           cd /var/lib/mysql
           # Determine binlog position of cloned data, if any.
           if [[ -f xtrabackup_slave_info ]]; then
-            # XtraBackup already generated a partial "CHANGE MASTER TO" query
-            # because we're cloning from an existing slave.
-            cp xtrabackup_slave_info change_master_to.sql.in
-          elif [[ -f xtrabackup_binlog_info ]]; then
             # We're cloning directly from master. Parse binlog position.
             [[ $(cat xtrabackup_binlog_info) =~ ^(.*?)[[:space:]]+(.*?)$ ]] || exit 1
             echo "CHANGE MASTER TO MASTER_LOG_FILE='${BASH_REMATCH[1]}',\
                   MASTER_LOG_POS=${BASH_REMATCH[2]}" > change_master_to.sql.in
+          elif [[ -f xtrabackup_binlog_info ]]; then
+            # XtraBackup already generated a partial "CHANGE MASTER TO" query
+            # because we're cloning from an existing slave.
+            cp xtrabackup_slave_info change_master_to.sql.in
+            sed -i 's/.$//' change_master_to.sql.in
           fi
 
           # Check if we need to complete a clone by starting replication.
@@ -206,6 +210,9 @@ spec:
           # Start a server to send backups when requested by peers.
           exec ncat --listen --keep-open --send-only --max-conns=1 3307 -c \
             "xtrabackup --backup --slave-info --stream=xbstream --host=127.0.0.1 --user=${MYSQL_REPLICATION_USER} --password=${MYSQL_REPLICATION_PASSWORD}"
+             # ssl
+          exec ncat --listen --keep-open --send-only --max-conns=1 3308 -c \
+            "tar -cvf - ca.pem ca-key.pem client-cert.pem client-key.pem private_key.pem public_key.pem server-cert.pem server-key.pem"
         volumeMounts:
         - name: data
           mountPath: /var/lib/mysql
