@@ -3,6 +3,10 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ template "airflow.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+{{- if .Values.serviceMonitor.namespace }}
+  namespace: {{ .Values.serviceMonitor.namespace }}
+{{- end }}
   labels:
     app: {{ template "airflow.name" . }}
     component: worker
@@ -22,4 +26,7 @@ spec:
   - port: web
     path: {{ .Values.serviceMonitor.path }}
     interval: {{ .Values.serviceMonitor.interval }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
 {{- end }}

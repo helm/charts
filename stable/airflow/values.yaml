@@ -716,6 +716,8 @@ redis:
 # Don't forget you need to install something like https://github.com/epoch8/airflow-exporter in your airflow docker container
 serviceMonitor:
   enabled: false
+  ## Namespace in which to install the ServiceMonitor resource.
+  namespace:
   interval: "30s"
   path: /admin/metrics
   ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
