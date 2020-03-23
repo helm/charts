@@ -512,6 +512,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `redis.master.persistence.accessModes`   | Access modes                                            | `[ ReadWriteOnce ]`       |
 | `redis.cluster.enabled`                  | enable master-slave cluster                             | `false`                   |
 | `serviceMonitor.enabled`                 | enable service monitor                                  | `false`                   |
+| `serviceMonitor.namespace`                | Namespace in which to install the ServiceMonitor resource. | ``                     |
 | `serviceMonitor.interval`                | Interval at which metrics should be scraped             | `30s`                     |
 | `serviceMonitor.path`                    | The path at which the metrics should be scraped         | `/admin/metrics`          |
 | `serviceMonitor.selector`                | label Selector for Prometheus to find ServiceMonitors   | `prometheus: kube-prometheus` |
