@@ -51,7 +51,12 @@ data:
               <name>{{ .Values.agent.podName }}</name>
               <instanceCap>2147483647</instanceCap>
               <idleMinutes>{{ .Values.agent.idleMinutes }}</idleMinutes>
-              <label>{{ .Release.Name }}-{{ .Values.agent.componentName }} {{ .Values.agent.customJenkinsLabels  | join " " }}</label>
+              {{- $additionalLabels := "" }}
+              {{- if .Values.agent.customJenkinsLabels }}
+              {{- $tmp := join " " .Values.agent.customJenkinsLabels }}
+              {{- $additionalLabels = printf " %s" $tmp }}
+              {{- end  }}
+              <label>{{ .Release.Name }}-{{ .Values.agent.componentName }}{{ $additionalLabels }}</label>
               <serviceAccount>{{ include "jenkins.serviceAccountAgentName" . }}</serviceAccount>
               <nodeSelector>
                 {{- $local := dict "first" true }}
