@@ -511,7 +511,7 @@ networkPolicy:
   # uncomment the lines below to allow agents to connect ONLY from namespaces with the defined labels
   #  namespaceLabels:
   #    project: myproject
-  # uncomment the lines below to allow agents from outside the cluster and from a given IP range to connect to master    
+  # uncomment the lines below to allow agents from outside the cluster and from a given IP range to connect to master
   # externalAgents:
   #   ipCIDR: 172.17.0.0/16
   #   except:
