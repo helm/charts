@@ -7,9 +7,10 @@ metadata:
     {{- include "influxdb.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": post-install
-    "helm.sh/hook-delete-policy": hook-succeeded
+    "helm.sh/hook-delete-policy": {{ .Values.setDefaultUser.hookDeletePolicy }}
 spec:
   activeDeadlineSeconds: {{ .Values.setDefaultUser.activeDeadlineSeconds }}
+  backoffLimit: {{ .Values.setDefaultUser.backoffLimit }}
   template:
     metadata:
       labels:

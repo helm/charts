@@ -15,6 +15,10 @@ deployment:
   # additionals labels
   labels: {}
   annotations: {}
+  livenessProbe:
+    enabled: true
+  readinessProbe:
+    enabled: true
 
 service:
   type: ClusterIP
@@ -62,3 +66,4 @@ config:
   # Secret used to sign session cookies. If empty it will be replaced with a
   # random 64 length string
   secret: ''
+  tlsVerify: true

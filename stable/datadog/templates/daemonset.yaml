@@ -63,7 +63,7 @@ spec:
         {{- if .Values.datadog.apm.enabled }}
           {{- include "container-trace-agent" . | nindent 8 }}
         {{- end }}
-        {{- if or (kindIs "invalid" .Values.datadog.processAgent.enabled) .Values.datadog.processAgent.enabled }}
+        {{- if .Values.datadog.processAgent.enabled }}
           {{- include "container-process-agent" . | nindent 8 }}
         {{- end }}
         {{- if .Values.datadog.systemProbe.enabled }}
@@ -77,11 +77,9 @@ spec:
       volumes:
         - name: config
           emptyDir: {}
-        {{- if .Values.datadog.criSocketPath }}
         - hostPath:
-            path: {{ dir .Values.datadog.criSocketPath }}
-          name: runtimesocketdir
-        {{- end }}
+            path: {{ template "datadog.dockerOrCriSocketPath" . }}
+          name: runtimesocket
         {{- if .Values.datadog.dogstatsd.useSocketVolume }}
         - hostPath:
             path: "/var/run/datadog/"
@@ -105,14 +103,14 @@ spec:
           configMap:
             name: {{ template "datadog.fullname" . }}-checksd
         {{- end }}
-        {{- if .Values.datadog.logsEnabled }}
+        {{- if or .Values.datadog.logs.enabled .Values.datadog.logsEnabled }}
         - hostPath:
             path: "/var/lib/datadog-agent/logs"
           name: pointerdir
         - hostPath:
             path: /var/log/pods
           name: logpodpath
-        {{- if regexFind "^.*docker.*$" $.Values.datadog.criSocketPath }}
+        {{- if not .Values.datadog.criSocketPath }}
         - hostPath:
             path: /var/lib/docker/containers
           name: logdockercontainerpath
@@ -127,7 +125,7 @@ spec:
         - name: sysprobe-config
           configMap:
             name: {{ template "datadog.fullname" . }}-system-probe-config
-        {{- if eq .Values.systemProbe.seccomp "localhost/system-probe" }}
+        {{- if eq .Values.datadog.systemProbe.seccomp "localhost/system-probe" }}
         - name: datadog-agent-security
           configMap:
             name: {{ template "datadog.fullname" . }}-security
