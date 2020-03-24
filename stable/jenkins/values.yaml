@@ -506,8 +506,8 @@ networkPolicy:
   apiVersion: networking.k8s.io/v1
   # You can allow agents to connect from both within the cluster (from within specific/all namespaces) AND/OR from a given external IP range
   # whether agents are allowed to connect from within the cluster and from which namespaces.
-  internalAgents: 
-   allowed: true
+  internalAgents:
+    allowed: true
   # uncomment the lines below to allow agents to connect ONLY from namespaces with the defined labels
   #  namespaceLabels:
   #    project: myproject
