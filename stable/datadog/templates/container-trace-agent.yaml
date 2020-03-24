@@ -37,6 +37,10 @@
       mountPath: {{ template "datadog.confPath" . }}/datadog.yaml
       subPath: datadog.yaml
     {{- end }}
+    {{- if .Values.datadog.dogstatsd.useSocketVolume }}
+    - name: dsdsocket
+      mountPath: "/var/run/datadog"
+    {{- end }}
   livenessProbe:
 {{ toYaml .Values.agents.containers.traceAgent.livenessProbe | indent 4 }}
 {{- end -}}
