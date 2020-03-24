@@ -39,7 +39,7 @@ extraEnvs: []
 #       key: mySecretKey
 
 ingress:
-  enabled: false  
+  enabled: false
   # hosts:
     # - locust.localhost.localdomain
     # - localhost.localdomain/locust
