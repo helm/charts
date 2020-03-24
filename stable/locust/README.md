@@ -38,6 +38,10 @@ helm install -n locust-nymph --set master.config.target-host=http://site.example
 | `extraVolumes`               | List of extra Volumes                   | `[]`                                                  |
 | `extraVolumeMounts`          | List of extra Volume Mounts             | `[]`                                                  |
 | `extraEnvs`                  | List of extra Environment Variables     | `[]`                                                  |
+| `ingress.enabled`            | Enables Ingress                         | `false`                                               |
+| `ingress.annotations`        | Ingress annotations                     | None:                                                 |
+| `ingress.hosts`              | Ingress accepted hostnames              | None:                                                 |
+| `ingress.tls`                | Ingress TLS configuration               | None:                                                 |
 | `master.config.target-host`  | locust target host                      | `http://site.example.com`                             |
 | `master.nodeSelector`        | k8s nodeselector                        | `{}`                                                  |
 | `master.tolerations`         | k8s tolerance                           | `{}`                                                  |

@@ -2,7 +2,13 @@
 
 Get the Locust URL to visit by running these commands in the same shell:
 
-{{- if contains "NodePort" .Values.service.type }}
+{{- if .Values.ingress.enabled }}
+  You're Locust Web URL: 
+  {{- range $i, $host := .Values.ingress.hosts }}  
+  https://{{ $host }}
+  {{- end -}}
+
+{{- else if contains "NodePort" .Values.service.type }}
   export NODE_PORT=$(kubectl get svc -n {{ .Release.Namespace }} {{ template "locust.master-svc" . }} -o jsonpath='{.spec.ports[?(@.name=="{{ .Values.service.name }}")].nodePort}')
   export NODE_IP=$(kubectl get no -o jsonpath="{.items[0].status.addresses[0].address}")
   export LOCUST_URL=http://$NODE_IP:$NODE_PORT/
@@ -21,4 +27,5 @@ Get the Locust URL to visit by running these commands in the same shell:
 {{- end }}
 
 For more information on Distributed load testing on Kubernetes using Locust, visit:
+
 https://cloud.google.com/solutions/distributed-load-testing-using-kubernetes

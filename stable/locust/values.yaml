@@ -2,7 +2,7 @@ Name: locust
 
 image:
   repository: greenbirdit/locust
-  tag: 0.9.0
+  tag: 0.13.2
   pullPolicy: IfNotPresent
   pullSecrets: []
 
@@ -38,9 +38,22 @@ extraEnvs: []
 #       name: mySecret
 #       key: mySecretKey
 
+ingress:
+  enabled: false  
+  # hosts:
+    # - locust.localhost.localdomain
+    # - localhost.localdomain/locust
+  # annotations:
+  #   kubernetes.io/ingress.class: nginx
+  #   kubernetes.io/tls-acme: "true"
+  # tls:
+    # - secretName: chart-example-tls
+    #   hosts:
+    #     - chart-example.local
+
 master:
   config:
-    target-host: https://site.example.com
+    target-host: https://d-rcs.developer.samsung.com/workspace
   resources:
     limits:
       cpu: 100m

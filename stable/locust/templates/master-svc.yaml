@@ -18,7 +18,11 @@ metadata:
   {{- end }}
   {{- end }}
 spec:
+  {{- if .Values.ingress.enabled }}
+  type: ClusterIP
+  {{- else }}
   type: {{ .Values.service.type }}
+  {{- end }}
   ports:
   - name: {{ .Values.service.name }}
     port: {{ .Values.service.externalPort }}
