@@ -41,7 +41,7 @@ spec:
       targetPort: metrics
   selector:
     app: {{ template "nginx-ingress.name" . }}
-    component: "{{ .Values.controller.name }}"
     release: {{ .Release.Name }}
+    app.kubernetes.io/component: controller
   type: "{{ .Values.controller.metrics.service.type }}"
 {{- end }}

@@ -64,7 +64,7 @@ minecraftServer:
   spigotDownloadUrl:
   # If type is set to PAPER, this sets the URL to download the PaperSpigot package
   paperDownloadUrl:
-  # If type is set to FTB, this sets the server mod to run
+  # If type is set to FTB, this sets the server mod to run. You can also provide the URL to download the FTB package
   ftbServerMod:
   # Set to true if running Feed The Beast and get an error like "unable to launch forgemodloader"
   ftbLegacyJavaFixer: false

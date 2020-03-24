@@ -37,7 +37,7 @@ The following tables lists the configurable parameters of the Unifi chart and th
 | Parameter                                       | Default                      | Description                                                                                                            |
 |-------------------------------------------------|------------------------------|------------------------------------------------------------------------------------------------------------------------|
 | `image.repository`                              | `jacobalberty/unifi`         | Image repository                                                                                                       |
-| `image.tag`                                     | `5.11.50`                    | Image tag. Possible values listed [here][docker].                                                                      |
+| `image.tag`                                     | `5.12.35`                    | Image tag. Possible values listed [here][docker].                                                                      |
 | `image.pullPolicy`                              | `IfNotPresent`               | Image pull policy                                                                                                      |
 | `strategyType`                                  | `Recreate`                   | Specifies the strategy used to replace old Pods by new ones                                                            |
 | `guiService.type`                               | `ClusterIP`                  | Kubernetes service type for the Unifi GUI                                                                              |
