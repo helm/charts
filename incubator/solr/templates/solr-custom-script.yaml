@@ -1,0 +1,13 @@
+{{ if not ( eq .Values.initScript  "" ) }}
+---
+
+apiVersion: "v1"
+kind: "ConfigMap"
+metadata:
+  name: "{{ include "solr.custom-script.configmap-name" . }}"
+  labels:
+{{ include "solr.common.labels" . | indent 4}}
+data:
+  solr-init.sh: |
+{{ .Files.Get .Values.initScript | indent 4}}
+{{ end }}
