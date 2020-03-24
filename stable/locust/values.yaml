@@ -53,7 +53,7 @@ ingress:
 
 master:
   config:
-    target-host: https://d-rcs.developer.samsung.com/workspace
+    target-host: https://site.example.com
   resources:
     limits:
       cpu: 100m
