@@ -2,6 +2,8 @@
 
 [The cluster autoscaler](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler) scales worker nodes within an AWS autoscaling group (ASG) or Spotinst Elastigroup.
 
+Cluster Autoscaler version: **v1.17.1**
+
 ## TL;DR:
 
 ```console
@@ -167,7 +169,8 @@ Parameter | Description | Default
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to add to each pod | `{}`
 `rbac.create` | If true, create & use RBAC resources | `false`
-`rbac.serviceAccountName` | existing ServiceAccount to use (ignored if rbac.create=true) | `default`
+`rbac.serviceAccount.create` | If true and rbac.create is also true, a service account will be created | `true`
+`rbac.serviceAccount.name` | existing ServiceAccount to use (ignored if rbac.create=true and rbac.serviceAccount.create=true) | `default`
 `rbac.serviceAccountAnnotations` | Additional Service Account annotations	| `{}`
 `rbac.pspEnabled` | Must be used with `rbac.create` true. If true, creates & uses RBAC resources required in the cluster with [Pod Security Policies](https://kubernetes.io/docs/concepts/policy/pod-security-policy/) enabled. | `false`
 `replicaCount` | desired number of pods | `1`
@@ -176,6 +179,7 @@ Parameter | Description | Default
 `securityContext` | [Security context for pod](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) | `nil`
 `containerSecurityContext` | [Security context for container](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) | `nil`
 `resources` | pod resource requests & limits | `{}`
+`updateStrategy` | [Deployment update strategy](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy) | `nil`
 `service.annotations` | annotations to add to service | none
 `service.externalIPs` | service external IP addresses | `[]`
 `service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`

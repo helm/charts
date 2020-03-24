@@ -109,9 +109,11 @@ The following table lists the configurable parameters of the Graylog chart and t
 | `graylog.tolerations`                   | Graylog server tolerations                                                                                                                            | `[]`                                  |
 | `graylog.nodeSelector`                  | Graylog server node selector                                                                                                                          | `{}`                                  |
 | `graylog.env`                           | Graylog server env variables                                                                                                                          | `{}`                                  |
+| `graylog.privileged`                    | Run as a privileged container                                                                                                        | `false`                                                |
 | `graylog.additionalJavaOpts`            | Graylog service additional `JAVA_OPTS`                                                                                                                | ``                                    |
 | `graylog.service.type`                  | Kubernetes Service type                                                                                                                               | `ClusterIP`                           |
 | `graylog.service.port`                  | Graylog Service port                                                                                                                                  | `9000`                                |
+| `graylog.service.ports`                 | Graylog Service extra ports                                                                                                                           | `[]`                                  |
 | `graylog.service.master.enabled`        | If true, Graylog Master Service will be created                                                                                                       | `true`                                |
 | `graylog.service.master.port`           | Graylog Master Service port                                                                                                                           | `9000`                                |
 | `graylog.service.master.annotations`    | Graylog Master Service annotations                                                                                                                    | `{}`                                  |
@@ -135,6 +137,7 @@ The following table lists the configurable parameters of the Graylog chart and t
 | `graylog.input`                         | Graylog Input configuration (YAML) Sees #Input section for detail                                                                                     | `{}`                                  |
 | `graylog.metrics.enabled`               | If true, add Prometheus annotations to pods                                                                                                           | `false`                               |
 | `graylog.geoip.enabled`                 | If true, Maxmind Geoip Lite will be installed to ${GRAYLOG_HOME}/etc/GeoLite2-City.mmdb                                                               | `false`                               |
+| `graylog.geoip.ddbbUri`                 | If set and geoip enabled,  Maxmind Geoip Lite will be installed from the URL you have defined to ${GRAYLOG_HOME}/etc/GeoLite2-City.mmdb                                                               | ``                               |
 | `graylog.plugins`                       | A list of Graylog installation plugins                                                                                                                | `[]`                                  |
 | `graylog.rootUsername`                  | Graylog root user name                                                                                                                                | `admin`                               |
 | `graylog.rootPassword`                  | Graylog root password. If not set, random 16-character alphanumeric string                                                                            | ``                                    |
@@ -142,8 +145,22 @@ The following table lists the configurable parameters of the Graylog chart and t
 | `graylog.existingRootSecret`            | Graylog existing root secret                                                                                                                          | ``                                    |
 | `graylog.rootTimezone`                  | Graylog root timezone.                                                                                                                                | `UTC`                                 |
 | `graylog.elasticsearch.hosts`           | Graylog Elasticsearch host name. You need to specific where data will be stored.                                                                      | ``                                    |
+| `graylog.elasticsearch.uriSecretName`   | K8s secret name where elasticsearch hosts will be set from.                                                                                           | `{{ graylog.fullname }}-es`           |
+| `graylog.elasticsearch.uriSecretKey`    | K8s secret key name where elasticsearch hosts will be set from.                                                                                       | ``                                    |
+| `graylog.elasticsearch.uriSSL`          | Prepends 'https://' to the URL fetched from 'uriSecretKey' if true. Prepends http:// otherwise.                                                       | false                                 |
 | `graylog.mongodb.uri`                   | Graylog MongoDB connection string. You need to specific where data will be stored.                                                                    | ``                                    |
+| `graylog.mongodb.uriSecretName`         | K8s secret name where MongoDB URI will be set from.                                                                                                   | `{{ graylog.fullname }}-mongodb`      |
+| `graylog.mongodb.uriSecretKey`          | K8s secret key name where MongoDB URI will be set from.                                                                                               | ``                                    |
 | `graylog.transportEmail.enabled`        | If true, enable transport email settings on Graylog                                                                                                   | `false`                               |
+| `graylog.transportEmail.hostname`       | The hostname of the server used to send the email                                                                                                     | ``                                    |
+| `graylog.transportEmail.port`           | The port of the server used to send the email                                                                                                         | ``                                    |
+| `graylog.transportEmail.useTls`         | If true, use TLS to connect to the mailserver                                                                                                         | ``                                    |
+| `graylog.transportEmail.useSsl`         | If true, use SSL to connect to the mailserver                                                                                                         | ``                                    |
+| `graylog.transportEmail.useAuth`        | If true, authenticate to the email server                                                                                                             | ``                                    |
+| `graylog.transportEmail.authUsername`   | The username for server authentication                                                                                                                | ``                                    |
+| `graylog.transportEmail.authPassword`   | The password for server authentication                                                                                                                | ``                                    |
+| `graylog.transportEmail.subjectPrefix`  | Prepend this string to every mail subjects                                                                                                            | ``                                    |
+| `graylog.transportEmail.fromEmail`      | Use this as a FROM address                                                                                                                            | ``                                    |
 | `graylog.config`                        | Add additional server configuration to `graylog.conf` file.                                                                                           | ``                                    |
 | `graylog.serverFiles`                   | Add additional server files on /etc/graylog/server. This is useful for enable TLS on input                                                            | `{}`                                  |
 | `graylog.journal.deleteBeforeStart`     | Delete all journal files before start Graylog                                                                                                         | `false`                               |
@@ -151,6 +168,7 @@ The following table lists the configurable parameters of the Graylog chart and t
 | `graylog.provisioner.enabled`           | Enable optional Job to run an arbitrary Bash script                                                                                                   | `false`                               |
 | `graylog.provisioner.useGraylogServiceAccount` | Use the same ServiceAccount used by Graylog pod                                                                                                | `false`                               |
 | `graylog.provisioner.script`            | The contents of the provisioner Bash script                                                                                                           | ``                                    |
+| `graylog.sidecarContainers`             | Sidecar containers to run in the server statefulset                                                                                                   | `[]`                                  |
 | `graylog.extraVolumeMounts`             | Additional Volume mounts                                                                                                                              | `[]`                                  |
 | `graylog.extraVolumes`                  | Additional Volumes                                                                                                                                    | `[]`                                  |
 | `graylog.extraInitContainers`           | Additional Init containers                                                                                                                            | `[]`                                  |
@@ -186,6 +204,19 @@ You can enable input ports by edit the `input` values. For example, you want to 
       ports:
         - name: syslog
           port: 5410
+```
+
+OR, if you want to expose only a single service with all the input ports open, you can do so by specifying the `service.ports` value:
+
+```
+  service:
+    ports:
+      - name: gelf
+        port: 12222
+        protocol: TCP
+      - name: syslog
+        port: 5410
+        protocol: UDP
 ```
 
 Note: Name must be in IANA_SVC_NAME (at most 15 characters, matching regex [a-z0-9]([a-z0-9-]*[a-z0-9])* and it must contains at least one letter [a-z], hyphens cannot be adjacent to other hyphens)

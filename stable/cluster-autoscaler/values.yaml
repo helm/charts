@@ -53,7 +53,7 @@ cloudConfigPath: /etc/gce.conf
 
 image:
   repository: k8s.gcr.io/cluster-autoscaler
-  tag: v1.14.6
+  tag: v1.17.1
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -111,9 +111,11 @@ rbac:
   ## If true, create & use Pod Security Policy resources
   ## https://kubernetes.io/docs/concepts/policy/pod-security-policy/
   pspEnabled: false
-  ## Ignored if rbac.create is true
-  ##
-  serviceAccountName: default
+  ## if rbac.create is false or (if rbac.create is true and rbac.serviceAccount.create is false)
+  ## the service account rbac.serviceAccount.name will be used instead
+  serviceAccount:
+    create: true
+    name: default
   ## Annotations for the Service Account
   ##
   serviceAccountAnnotations: {}
@@ -146,6 +148,14 @@ priorityClassName: ""
 #   capabilities:
 #     drop:
 #       - all
+
+## Deployment update strategy
+## Ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+# updateStrategy:
+#   rollingUpdate:
+#     maxSurge: 1
+#     maxUnavailable: 0
+#   type: RollingUpdate
 
 service:
   annotations: {}

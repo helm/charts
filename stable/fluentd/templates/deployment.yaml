@@ -1,5 +1,6 @@
+{{- $statefulSet := or (.Values.autoscaling.enabled) (.Values.useStatefulSet) -}}
 apiVersion: apps/v1
-{{- if .Values.autoscaling.enabled}}
+{{- if $statefulSet }}
 kind: StatefulSet
 {{- else}}
 kind: Deployment
@@ -111,7 +112,7 @@ spec:
           configMap:
             name: {{ template "fluentd.fullname" . }}
             defaultMode: 0777
-        {{- if and .Values.persistence.enabled (not .Values.autoscaling.enabled) }}
+        {{- if and .Values.persistence.enabled (not $statefulSet) }}
         - name: buffer
           persistentVolumeClaim:
             claimName: {{ template "fluentd.fullname" . }}
@@ -134,7 +135,7 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-{{- if and .Values.persistence.enabled (.Values.autoscaling.enabled) }}
+{{- if and .Values.persistence.enabled ($statefulSet) }}
   volumeClaimTemplates:
   - metadata:
       name: buffer

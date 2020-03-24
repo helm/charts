@@ -14,6 +14,10 @@ spec:
     {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 6 }}
     {{- end }}
+{{- if .Values.updateStrategy }}
+  strategy:
+    {{ toYaml .Values.updateStrategy | nindent 4 | trim }}
+{{- end }}
   template:
     metadata:
     {{- if .Values.podAnnotations }}
@@ -187,7 +191,7 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "cluster-autoscaler.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ template "serviceaccount.name" . }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- if .Values.securityContext }}

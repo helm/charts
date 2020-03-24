@@ -1,6 +1,27 @@
 # external-dns
 
-[ExternalDNS](https://github.com/kubernetes-incubator/external-dns) is a Kubernetes addon that configures public DNS servers with information about exposed Kubernetes services to make them discoverable.
+[ExternalDNS](https://github.com/kubernetes-sigs/external-dns) is a Kubernetes addon that configures public DNS servers with information about exposed Kubernetes services to make them discoverable.
+
+## This Helm chart is deprecated
+
+Given the [`stable` deprecation timeline](https://github.com/helm/charts#deprecation-timeline), the Bitnami maintained ExternalDNS Helm chart is now located at [bitnami/charts](https://github.com/bitnami/charts/).
+
+The Bitnami repository is already included in the Hubs and we will continue providing the same cadence of updates, support, etc that we've been keeping here these years. Installation instructions are very similar, just adding the _bitnami_ repo and using it during the installation (`bitnami/<chart>` instead of `stable/<chart>`)
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm install my-release bitnami/<chart>           # Helm 3
+$ helm install --name my-release bitnami/<chart>    # Helm 2
+```
+
+To update an exisiting _stable_ deployment with a chart hosted in the bitnami repository you can execute
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm upgrade my-release bitnami/<chart>
+```
+
+Issues and PRs related to the chart itself will be redirected to `bitnami/charts` GitHub repository. In the same way, we'll be happy to answer questions related to this migration process in [this issue](https://github.com/helm/charts/issues/20969) created as a common place for discussion.
 
 ## TL;DR;
 
@@ -95,10 +116,17 @@ The following table lists the configurable parameters of the external-dns chart 
 | `coredns.etcdTLS.caFilename`        | When using the CoreDNS provider, specify CA PEM file name from the `coredns.etcdTLS.secretName`          | `"ca.crt"`                                                  |
 | `coredns.etcdTLS.certFilename`      | When using the CoreDNS provider, specify cert PEM file name from the `coredns.etcdTLS.secretName`        | `"cert.pem"`                                                |
 | `coredns.etcdTLS.keyFilename`       | When using the CoreDNS provider, specify private key PEM file name from the `coredns.etcdTLS.secretName` | `"key.pem"`                                                 |
+| `designate.authUrl`                 | When using the Designate provider, specify the OpenStack authentication Url. (optional)                  | `none`                                                      |
 | `designate.customCA.enabled`        | When using the Designate provider, enable a custom CA (optional)                                         | false                                                       |
 | `designate.customCA.content`        | When using the Designate provider, set the content of the custom CA                                      | ""                                                          |
 | `designate.customCA.mountPath`      | When using the Designate provider, set the mountPath in which to mount the custom CA configuration       | "/config/designate"                                         |
 | `designate.customCA.filename`       | When using the Designate provider, set the custom CA configuration filename                              | "designate-ca.pem"                                          |
+| `designate.customCAHostPath`        | When using the Designate provider, use a CA file already on the host to validate Openstack APIs.  This conflicts with `designate.customCA.enabled` | `none`            |
+| `designate.password`                | When using the Designate provider, specify the OpenStack authentication password. (optional)             | `none`                                                      |
+| `designate.projectName              | When using the Designate provider, specify the OpenStack project name. (optional)                        | `none`                                                      |
+| `designate.regionName               | When using the Designate provider, specify the OpenStack region name. (optional)                         | `none`                                                      |
+| `designate.userDomainName`          | When using the Designate provider, specify the OpenStack user domain name. (optional)                    | `none`                                                      |
+| `designate.username`                | When using the Designate provider, specify the OpenStack authentication username. (optional)             | `none`                                                      |
 | `digitalocean.apiToken`             | When using the DigitalOcean provider, `DO_TOKEN` to set (optional)                                       | `""`                                                        |
 | `google.project`                    | When using the Google provider, specify the Google project (required when provider=google)               | `""`                                                        |
 | `google.serviceAccountSecret`       | When using the Google provider, specify the existing secret which contains credentials.json (optional)   | `""`                                                        |
@@ -123,6 +151,8 @@ The following table lists the configurable parameters of the external-dns chart 
 | `pdns.apiUrl`                       | When using the PowerDNS provider, specify the API URL of the server.                                     | `""`                                                        |
 | `pdns.apiPort`                      | When using the PowerDNS provider, specify the API port of the server.                                    | `8081`                                                      |
 | `pdns.apiKey`                       | When using the PowerDNS provider, specify the API key of the server.                                     | `""`                                                        |
+| `transip.account`                   | When using the TransIP provider, specify the account name.                                               | `""`                                                        |
+| `transip.apiKey`                    | When using the TransIP provider, specify the API key to use.                                             | `""`                                                        |
 | `annotationFilter`                  | Filter sources managed by external-dns via annotation using label selector (optional)                    | `""`                                                        |
 | `domainFilters`                     | Limit possible target zones by domain suffixes (optional)                                                | `[]`                                                        |
 | `zoneIdFilters`                     | Limit possible target zones by zone id (optional)                                                        | `[]`                                                        |
@@ -133,6 +163,7 @@ The following table lists the configurable parameters of the external-dns chart 
 | `logLevel`                          | Verbosity of the logs (options: panic, debug, info, warn, error, fatal)                                  | `info`                                                      |
 | `logFormat`                         | Which format to output logs in (options: text, json)                                                     | `text`                                                      |
 | `interval`                          | Interval update period to use                                                                            | `1m`                                                        |
+| `triggerLoopOnEvent`                | When enabled, triggers run loop on create/update/delete events in addition to regular interval (optional)| `false`                                                     |
 | `istioIngressGateways`              | The fully-qualified name of the Istio ingress gateway services .                                         | `""`                                                        |
 | `policy`                            | Modify how DNS records are sychronized between sources and providers (options: sync, upsert-only )       | `upsert-only`                                               |
 | `registry`                          | Registry method to use (options: txt, noop)                                                              | `txt`                                                       |
@@ -166,6 +197,8 @@ The following table lists the configurable parameters of the external-dns chart 
 | `resources`                         | CPU/Memory resource requests/limits.                                                                     | `{}`                                                        |
 | `livenessProbe`                     | Deployment Liveness Probe                                                                                | See `values.yaml`                                           |
 | `readinessProbe`                    | Deployment Readiness Probe                                                                               | See `values.yaml`                                           |
+| `extraVolumes`                      | A list of volumes to be added to the pod                                                                 | `[]`                                                        |
+| `extraVolumeMounts`                 | A list of volume mounts to be added to the pod                                                           | `[]`                                                        |
 | `metrics.enabled`                   | Enable prometheus to access external-dns metrics endpoint                                                | `false`                                                     |
 | `metrics.podAnnotations`            | Annotations for enabling prometheus to access the metrics endpoint                                       |                                                             |
 | `metrics.serviceMonitor.enabled`    | Create ServiceMonitor object                                                                             | `false`                                                     |
@@ -216,12 +249,12 @@ This chart includes a `values-production.yaml` file where you can find some para
 
 Find information about the requirements for each DNS provider on the link below:
 
-- [ExternalDNS Tutorials](https://github.com/kubernetes-incubator/external-dns/tree/master/docs/tutorials)
+- [ExternalDNS Tutorials](https://github.com/kubernetes-sigs/external-dns/tree/master/docs/tutorials)
 
 For instance, to install ExternalDNS on AWS, you need to:
 
-- Provide the K8s worker node which runs the cluster autoscaler with a minimum IAM policy (check [IAM permissions docs](https://github.com/kubernetes-incubator/external-dns/blob/master/docs/tutorials/aws.md#iam-permissions) for more information).
-- Setup a hosted zone on Route53 and annotate the Hosted Zone ID and its associated "nameservers" as described on [these docs](https://github.com/kubernetes-incubator/external-dns/blob/master/docs/tutorials/aws.md#set-up-a-hosted-zone).
+- Provide the K8s worker node which runs the cluster autoscaler with a minimum IAM policy (check [IAM permissions docs](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#iam-permissions) for more information).
+- Setup a hosted zone on Route53 and annotate the Hosted Zone ID and its associated "nameservers" as described on [these docs](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#set-up-a-hosted-zone).
 - Install ExternalDNS chart using the command below:
 
 > Note: replace the placeholder HOSTED_ZONE_IDENTIFIER and HOSTED_ZONE_NAME, with your hosted zoned identifier and name, respectively.

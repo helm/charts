@@ -223,7 +223,7 @@ This approach has the additional advantage of keeping secrets outside of the Hel
 
 It is possible to specify additional environment variables using the same format as in a pod's `.spec.containers.env` definition.
 These environment variables will be mounted in the web, scheduler, and worker pods.
-You can use this feature to pass additional secret environment variables to Airflow. 
+You can use this feature to pass additional secret environment variables to Airflow.
 
 Here is a simple example showing how to pass in a Fernet key and LDAP password.
 Of course, for this example to work, both the `airflow` and `ldap` Kubernetes secrets must already exist in the proper namespace; be sure to create those before running Helm.
@@ -293,7 +293,7 @@ For example, this will create a secret named `my-git-secret` from your ed25519 k
 
 This set of instructions will enable you to clone your repository in the initContainer git-clone.sh script through an ssh connection.
 
-To do this you must have `dags.initContainer.enabled` set to true. Then you need to have the following set. `dags.git.url` This is the repository of your dags. `dags.git.ref` This is the branch with your dags on your repo. `dags.git.secret` This is the name of the secret cotaining your private ssh key. With this you need `dags.git.privateKeyName`, this is the name of the private key in the secret mounted in the keys directory on the initContainer. The last variable you need is this `dags.git.repoHost`. This is the host of your repo, for example if hosted on gitlab set the value as gitlab.com and if github put github.com. This enables us to tell ssh to use our private key when cloning otherwise we would recieve an unable to recognize host bug. 
+To do this you must have `dags.initContainer.enabled` set to true. Then you need to have the following set. `dags.git.url` This is the repository of your dags. `dags.git.ref` This is the branch with your dags on your repo. `dags.git.secret` This is the name of the secret cotaining your private ssh key. With this you need `dags.git.privateKeyName`, this is the name of the private key in the secret mounted in the keys directory on the initContainer. The last variable you need is this `dags.git.repoHost`. This is the host of your repo, for example if hosted on gitlab set the value as gitlab.com and if github put github.com. This enables us to tell ssh to use our private key when cloning otherwise we would recieve an unable to recognize host bug.
 
 ### Embedded DAGs
 
@@ -321,7 +321,7 @@ You can also persist logs using a `PersistentVolume` using `logsPersistence.enab
 To use an existing volume, pass the name to `logsPersistence.existingClaim`.
 Otherwise, a new volume will be created.
 
-Note that it is also possible to persist logs by mounting a `PersistentVolume` to the log directory (`/usr/local/airflow/logs` by default) using `airflow.extraVolumes` and `airflow.extraVolumeMounts`. 
+Note that it is also possible to persist logs by mounting a `PersistentVolume` to the log directory (`/usr/local/airflow/logs` by default) using `airflow.extraVolumes` and `airflow.extraVolumeMounts`.
 
 Refer to the `Mount a Shared Persistent Volume` section above for details on using persistent volumes.
 
@@ -343,7 +343,7 @@ To be able to expose metrics to prometheus you need install a plugin, this can b
 This exposes dag and task based metrics from Airflow.
 For service monitor configuration see the generic [Helm chart Configuration](#helm-chart-configuration).
 
-## Additional manifests 
+## Additional manifests
 
 It is possible to add additional manifests into a deployment, to extend the chart. One of the reason is to deploy a manifest specific to a cloud provider ( BackendConfig on GKE for example ).
 
@@ -391,16 +391,20 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.extraVolumes`                   | additional volumes for the scheduler, worker & web pods | `[]`                      |
 | `airflow.initdb`                         | run `airflow initdb` when starting the scheduler        | `true`                    |
 | `flower.enabled`                         | enable flow                                             | `true`                    |
+| `flower.extraConfigmapMounts`            | Additional configMap volume mounts on the flower pod.   | `[]`                      |
 | `flower.urlPrefix`                       | path of the flower ui                                   | ""                        |
 | `flower.resources`                       | custom resource configuration for flower pod            | `{}`                      |
 | `flower.labels`                          | labels for the flower deployment                        | `{}`                      |
+| `flower.podLabels`                       | podLabels for the flower deployment                     | `{}`                      |
 | `flower.annotations`                     | annotations for the flower deployment                   | `{}`                      |
 | `flower.service.type`                    | service type for Flower UI                              | `ClusterIP`               |
 | `flower.service.annotations`             | (optional) service annotations for Flower UI            | `{}`                      |
 | `flower.service.externalPort`            | (optional) external port for Flower UI                  | `5555`                    |
+| `flower.securityContext`                 | (optional) security context for the flower deployment   | `{}`                      |
 | `web.baseUrl`                            | webserver UI URL                                        | `http://localhost:8080`   |
 | `web.resources`                          | custom resource configuration for web pod               | `{}`                      |
 | `web.labels`                             | labels for the web deployment                           | `{}`                      |
+| `web.podLabels`                          | podLabels for the web deployment                        | `{}`                      |
 | `web.annotations`                        | annotations for the web deployment                      | `{}`                      |
 | `web.podAnnotations`                     | pod-annotations for the web deployment                  | `{}`                      |
 | `web.initialStartupDelay`                | amount of time webserver pod should sleep before initializing webserver             | `60`  |
@@ -416,22 +420,26 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `web.initialDelaySeconds`                | initial delay on livenessprobe before checking if webserver is available    | `360` |
 | `web.secretsDir`                         | directory in which to mount secrets on webserver nodes  | /var/airflow/secrets      |
 | `web.secrets`                            | secrets to mount as volumes on webserver nodes          | []                        |
+| `web.securityContext`                    | (optional) security context for the web deployment      | `{}`                      |
 | `scheduler.resources`                    | custom resource configuration for scheduler pod         | `{}`                      |
 | `scheduler.labels`                       | labels for the scheduler deployment                     | `{}`                      |
+| `scheduler.podLabels`                    | podLabels for the scheduler deployment                  | `{}`                      |
 | `scheduler.annotations`                  | annotations for the scheduler deployment                | `{}`                      |
 | `scheduler.podAnnotations`               | podAnnotations for the scheduler deployment             | `{}`                      |
+| `scheduler.securityContext`              | (optional) security context for the scheduler deployment| `{}`                      |
 | `workers.enabled`                        | enable workers                                          | `true`                    |
 | `workers.replicas`                       | number of workers pods to launch                        | `1`                       |
 | `workers.terminationPeriod`              | gracefull termination period for workers to stop        | `30`                      |
 | `workers.resources`                      | custom resource configuration for worker pod            | `{}`                      |
 | `workers.celery.instances`               | number of parallel celery tasks per worker              | `1`                       |
 | `workers.labels`                         | labels for the worker statefulSet                       | `{}`                      |
+| `workers.podLabels`                      | podLabels for the worker statefulset                    | `{}`                      |
 | `workers.annotations`                    | annotations for the worker statefulSet                  | `{}`                      |
 | `workers.podAnnotations`                 | podAnnotations for the worker statefulSet               | `{}`                      |
 | `workers.celery.gracefullTermination`    | cancel the consumer and wait for the current task to finish before stopping the worker      | `false`     |
-| `workers.podAnnotations`                 | annotations for the worker pods                         | `{}`                      |
 | `workers.secretsDir`                     | directory in which to mount secrets on worker nodes     | /var/airflow/secrets      |
 | `workers.secrets`                        | secrets to mount as volumes on worker nodes             | []                        |
+| `workers.securityContext`                 | (optional) security context for the worker statefulSet  | `{}`                      |
 | `nodeSelector`                           | Node labels for pod assignment                          | `{}`                      |
 | `affinity`                               | Affinity labels for pod assignment                      | `{}`                      |
 | `tolerations`                            | Toleration labels for pod assignment                    | `[]`                      |
@@ -468,6 +476,8 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `dags.initContainer.image.repository`    | Init container Docker image.                            | `alpine/git`              |
 | `dags.initContainer.image.tag`           | Init container Docker image tag.                        | `1.0.4`                   |
 | `dags.initContainer.installRequirements` | auto install requirements.txt deps                      | `true`                    |
+| `dags.initContainer.mountPath`           | Mountpath inside init container for dags                | `/dags`                   |
+| `dags.initContainer.syncSubPath`         | Path inside init container used to sync/clone git repo to; appended to `dags.initContainer.mountPath` | ``                      |
 | `dags.git.url`                           | url to clone the git repository                         | nil                       |
 | `dags.git.ref`                           | branch name, tag or sha1 to reset to                    | `master`                  |
 | `dags.git.secret`                        | name of a secret containing an ssh deploy key           | nil                       |
@@ -481,6 +491,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `rbac.create`                            | create RBAC resources                                   | `true`                    |
 | `serviceAccount.create`                  | create a service account                                | `true`                    |
 | `serviceAccount.name`                    | the service account name                                | ``                        |
+| `serviceAccount.annotations`             | (optional) annotations for the service account          | `{}`                      |
 | `postgresql.enabled`                     | create a postgres server                                | `true`                    |
 | `postgresql.existingSecret`              | The name of an existing secret with a key named `postgresql.existingSecretKey` to use as the password  | `nil` |
 | `postgresql.existingSecretKey`           | The name of the key containing the password in the secret named `postgresql.existingSecret`  | `postgres-password` |

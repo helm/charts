@@ -2,6 +2,27 @@
 
 [Moodle](https://www.moodle.org) is a learning platform designed to provide educators, administrators and learners with a single robust, secure and integrated system to create personalized learning environments
 
+## This Helm chart is deprecated
+
+Given the [`stable` deprecation timeline](https://github.com/helm/charts#deprecation-timeline), the Bitnami maintained Moodle Helm chart is now located at [bitnami/charts](https://github.com/bitnami/charts/).
+
+The Bitnami repository is already included in the Hubs and we will continue providing the same cadence of updates, support, etc that we've been keeping here these years. Installation instructions are very similar, just adding the _bitnami_ repo and using it during the installation (`bitnami/<chart>` instead of `stable/<chart>`)
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm install my-release bitnami/<chart>           # Helm 3
+$ helm install --name my-release bitnami/<chart>    # Helm 2
+```
+
+To update an exisiting _stable_ deployment with a chart hosted in the bitnami repository you can execute
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm upgrade my-release bitnami/<chart>
+```
+
+Issues and PRs related to the chart itself will be redirected to `bitnami/charts` GitHub repository. In the same way, we'll be happy to answer questions related to this migration process in [this issue](https://github.com/helm/charts/issues/20969) created as a common place for discussion.
+
 ## TL;DR;
 
 ```console
@@ -106,7 +127,7 @@ The following table lists the configurable parameters of the Moodle chart and th
 | `mariadb.rootUser.password`                | MariaDB admin password                                                                              | `nil`                                                        |
 | `mariadb.master.persistence.enabled`       | Enable MariaDB persistence using PVC                                                                | `true`                                                       |
 | `mariadb.master.persistence.storageClass`  | PVC Storage Class for MariaDB volume                                                                | `generic`                                                    |
-| `mariadb.master.persistence.accessMode`    | PVC Access Mode for MariaDB volume                                                                  | `ReadWriteOnce`                                              |
+| `mariadb.master.persistence.accessModes`    | PVC Access Mode for MariaDB volume                                                                 | [`ReadWriteOnce`]                                            |
 | `mariadb.master.persistence.size`          | PVC Storage Request for MariaDB volume                                                              | `8Gi`                                                        |
 | `mariadb.master.persistence.existingClaim` | If PVC exists&bounded for MariaDB                                                                   | `nil` (when nil, new one is requested)                       |
 | `mariadb.affinity`                         | Set affinity for the MariaDB pods                                                                   | `nil`                                                        |

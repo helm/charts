@@ -13,7 +13,7 @@
 image:
   registry: docker.io
   repository: bitnami/external-dns
-  tag: 0.6.0-debian-10-r0
+  tag: 0.7.0-debian-10-r0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -40,12 +40,12 @@ sources:
 # - crd
 
 ## DNS provider where the DNS records will be created. Available providers are:
-## - aws, azure, cloudflare, coredns, designate, digitalocoean, google, infoblox, rfc2136
+## - aws, azure, cloudflare, coredns, designate, digitalocoean, google, infoblox, rfc2136, transip
 ##
 provider: aws
 
 ## Flags related to processing sources
-## ref: https://github.com/kubernetes-incubator/external-dns/blob/master/pkg/apis/externaldns/types.go#L272
+## ref: https://github.com/kubernetes-sigs/external-dns/blob/master/pkg/apis/externaldns/types.go#L272
 ##
 ## Limit sources of endpoints to a specific namespace (default: all namespaces)
 ##
@@ -105,7 +105,7 @@ aws:
   preferCNAME: ""
   ## Enable AWS evaluation of target health. Available values are: true, false
   ##
-  evaluateTargetHealth: ""  
+  evaluateTargetHealth: ""
 
 ## Azure configuration to be set via arguments/env. variables
 ##
@@ -269,6 +269,16 @@ pdns:
   apiPort: "8081"
   apiKey: ""
 
+## TransIP configuration to be set via arguments/env. variables
+##
+transip:
+  ## Account name to be used
+  ##
+  account: ""
+  ##
+  ## API key that is authorised for the account
+  apiKey: ""
+
 ## Limit possible target zones by domain suffixes (optional)
 ##
 domainFilters: []
@@ -284,6 +294,9 @@ dryRun: false
 ## Adjust the interval for DNS updates
 ##
 interval: "1m"
+## When enabled, triggers run loop on create/update/delete events (optional, in addition of regular interval)
+##
+triggerLoopOnEvent: false
 ## Verbosity of the ExternalDNS logs. Available values are:
 ## - panic, debug, info, warn, error, fatal
 ##
@@ -296,7 +309,7 @@ logFormat: text
 ##
 policy: upsert-only
 ## Registry Type. Available types are: txt, noop
-## ref: https://github.com/kubernetes-incubator/external-dns/blob/master/docs/proposal/registry.md
+## ref: https://github.com/kubernetes-sigs/external-dns/blob/master/docs/proposal/registry.md
 ##
 registry: "txt"
 ## TXT Registry Identifier
@@ -457,6 +470,12 @@ readinessProbe:
   timeoutSeconds: 5
   failureThreshold: 6
   successThreshold: 1
+
+## Configure extra volumes
+extraVolumes: []
+
+## Configure extra volumeMounts
+extraVolumeMounts: []
 
 ## Prometheus Exporter / Metrics
 ##

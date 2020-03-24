@@ -2,8 +2,15 @@
 prometheusScrape: true
 image:
   repository: quay.io/coreos/kube-state-metrics
-  tag: v1.9.4
+  tag: v1.9.5
   pullPolicy: IfNotPresent
+
+# If set to true, this will deploy kube-state-metrics as a StatefulSet and the data
+# will be automatically sharded across <.Values.replicas> pods using the built-in
+# autodiscovery feature: https://github.com/kubernetes/kube-state-metrics#automated-sharding
+# This is an experimental feature and there are no stability guarantees.
+autosharding:
+  enabled: false
 
 replicas: 1
 
@@ -79,6 +86,9 @@ podAnnotations: {}
 ## Assign a PriorityClassName to pods if set
 # priorityClassName: ""
 
+# Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+podDisruptionBudget: {}
+
 # Available collectors for kube-state-metrics. By default all available
 # collectors are enabled.
 collectors:
@@ -92,9 +102,9 @@ collectors:
   ingresses: true
   jobs: true
   limitranges: true
-  mutatingwebhookconfigurations: false
+  mutatingwebhookconfigurations: true
   namespaces: true
-  networkpolicies: false
+  networkpolicies: true
   nodes: true
   persistentvolumeclaims: true
   persistentvolumes: true
@@ -107,9 +117,9 @@ collectors:
   services: true
   statefulsets: true
   storageclasses: true
-  validatingwebhookconfigurations: false
-  verticalpodautoscalers: false
-  volumeattachements: false
+  validatingwebhookconfigurations: true
+  verticalpodautoscalers: true
+  volumeattachments: true
 
 # Namespace to be enabled for collecting resources. By default all namespaces are collected.
 # namespace: ""
