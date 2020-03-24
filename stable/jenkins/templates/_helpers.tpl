@@ -100,6 +100,9 @@ jenkins:
       namespace: "{{ template "jenkins.master.slaveKubernetesNamespace" . }}"
       serverUrl: "https://kubernetes.default"
       {{- if .Values.agent.enabled }}
+      podLabels:
+      - key: "jenkins/{{ .Release.Name }}-{{ .Values.agent.componentName }}"
+        value: "true"
       templates:
       - containers:
         - alwaysPullImage: {{ .Values.agent.alwaysPullImage }}
