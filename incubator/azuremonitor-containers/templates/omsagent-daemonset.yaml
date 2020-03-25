@@ -33,8 +33,7 @@ spec:
        {{- if eq (.Values.omsagent.domain | lower) "opinsights.azure.cn" }}
        image: "dockerhub.azk8s.cn/microsoft/oms:{{ .Values.omsagent.image.tag }}"
        {{- else }}
-       # image: "mcr.microsoft.com/azuremonitor/containerinsights/ciprod:{{ .Values.omsagent.image.tag }}"
-       image: "ganga1980/omsagent-cri:{{ .Values.omsagent.image.tag }}"
+       image: "mcr.microsoft.com/azuremonitor/containerinsights/ciprod:{{ .Values.omsagent.image.tag }}"       
        {{- end }}
        imagePullPolicy: IfNotPresent
        resources:
