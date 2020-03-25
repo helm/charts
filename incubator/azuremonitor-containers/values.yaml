@@ -63,11 +63,11 @@ omsagent:
                 - key: type
                   operator: NotIn
                   values:
-                    - virtual-kubelet  
+                    - virtual-kubelet 
                 - key: kubernetes.io/role
                   operator: NotIn
                   values:
-                    - master                    
+                    - master                   
 
   ## Configure resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
