@@ -105,7 +105,7 @@ spec:
         periodSeconds: 60
    nodeSelector:
     beta.kubernetes.io/os: linux
-   {{- with .Values.omsagent.affinity }}
+   {{- with .Values.omsagent.daemonset.affinity }}
    affinity: {{- toYaml . | nindent 8 }}
    {{- end }}
    {{- with .Values.omsagent.tolerations }}
