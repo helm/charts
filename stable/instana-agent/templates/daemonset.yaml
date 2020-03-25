@@ -147,17 +147,16 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
           command:
-            - "/app/server"
-            - "--election=instana"
-            - "--http=localhost:{{ default 42655 .Values.agent.leaderElectorPort }}"
-            - "--id=$(INSTANA_AGENT_POD_NAME)"
+            - "/busybox/sh"
+            - "-c"
+            - "sleep 12 && /app/server --election=instana --http=localhost:{{ default 42655 .Values.agent.leaderElectorPort }} --id=$(INSTANA_AGENT_POD_NAME)"
           resources:
             requests:
               cpu: 0.1
               memory: 64Mi
           livenessProbe:
             httpGet:
-              path: /status
+              path: /com.instana.agent.coordination.sidecar/health
               port: 42699
             initialDelaySeconds: 300
             timeoutSeconds: 3
