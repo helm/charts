@@ -52,7 +52,7 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `securityContext`                         | Deployment securityContext                    | `{"runAsUser": 472, "fsGroup": 472}`                    |
 | `priorityClassName`                       | Name of Priority Class to assign pods         | `nil`                                                   |
 | `image.repository`                        | Image repository                              | `grafana/grafana`                                       |
-| `image.tag`                               | Image tag (`Must be >= 5.0.0`)                | `6.6.2`                                                 |
+| `image.tag`                               | Image tag (`Must be >= 5.0.0`)                | `6.7.1`                                                 |
 | `image.pullPolicy`                        | Image pull policy                             | `IfNotPresent`                                          |
 | `image.pullSecrets`                       | Image pull secrets                            | `{}`                                                    |
 | `service.type`                            | Kubernetes service type                       | `ClusterIP`                                             |
