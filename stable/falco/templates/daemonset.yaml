@@ -64,7 +64,7 @@ spec:
         {{- end }}
           env:
           {{- if .Values.ebpf.enabled }}
-            - name: SYSDIG_BPF_PROBE
+            - name: FALCO_BPF_PROBE
               value:
           {{- end }}
           {{- if .Values.proxy.httpProxy }}
