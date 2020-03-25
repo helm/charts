@@ -18,6 +18,7 @@ ingress:
   # Used to create Ingress record (should used with service.type: ClusterIP).
   hosts:
     - web-page-test.local
+  path: / # depending on the ingress controller you may want to set this to /* to handle all the routes
   # It's best to add annotations to restrict who can access
   annotations:
     # kubernetes.io/ingress.class: nginx
