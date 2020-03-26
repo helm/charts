@@ -83,6 +83,7 @@ spec:
       tolerations: {{ toYaml . | nindent 8 }}
       {{- end }}
 {{- include "mariadb.imagePullSecrets" . | indent 6 }}
+      enableServiceLinks: false
       initContainers:
         {{- if .Values.master.extraInitContainers }}
 {{ tpl .Values.master.extraInitContainers . | indent 6}}
