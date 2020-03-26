@@ -2,6 +2,15 @@
 
 ## 2.0
 
+## 2.1.1
+
+* Add option to enable WPA in the Cluster Agent.
+
+## 2.1.0
+
+* Changed the default for `processAgent.enabled` to `true`.
+
+
 ## 2.0.14
 
 * Fixed a bug where the `trace-agent` runs in the same container as `dd-agent`
