@@ -27,7 +27,7 @@ data:
       tag oms.containerinsights.KubeEvents
       run_interval 60
       log_level debug
-      </source>  
+      </source>
 
      #Kubernetes Nodes
      <source>
@@ -35,7 +35,7 @@ data:
       tag oms.containerinsights.KubeNodeInventory
       run_interval 60
       log_level debug
-     </source>  
+     </source>
 
      #Kubernetes health
      <source>
@@ -83,7 +83,7 @@ data:
       buffer_queue_full_action drop_oldest_chunk
       flush_interval 20s
       retry_limit 10
-      retry_wait 5s      
+      retry_wait 5s
       max_retry_wait 5m
      </match>
 
@@ -100,7 +100,7 @@ data:
       retry_limit 10
       retry_wait 5s
       max_retry_wait 5m
-     </match>   
+     </match>
 
      <match oms.containerinsights.KubeServices**>
       type out_oms
