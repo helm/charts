@@ -36,6 +36,10 @@ customResources:
   createBackupCRD: false
   createRestoreCRD: false
 
+# options
+options:
+  clusterWide: true
+
 # etcdOperator
 etcdOperator:
   priorityClassName: ""
@@ -70,6 +74,7 @@ etcdOperator:
     timeoutSeconds: 1
     successThreshold: 1
     failureThreshold: 3
+  
 
 # backup spec
 backupOperator:
@@ -159,4 +164,3 @@ etcdCluster:
     ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
     nodeSelector: {}
     securityContext: {}
-    tolerations: []
