@@ -5,13 +5,17 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.10.0 Remove configuration-as-code-support plugins
+
+In recent version of configuration-as-code-plugin this is no longer necessary.
+
 ## 1.9.24
 
 Update JCasC auto-reload docs and remove stale ssh key references from version "1.8.0 JCasC auto reload works without ssh keys"
 
-## 1.9.23
+## 1.9.23 Support jenkinsUriPrefix when JCasC is enabled
 
-Add jenkinsUriPrefix to casc reload uri
+Fixed a bug in the configuration as code reload url, where it wouldn't work with a jenkinsUriPrefix set.
 
 ## 1.9.22
 
