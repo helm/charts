@@ -97,6 +97,7 @@ service:
   #  Add these labels to have metrics-server show up in `kubectl cluster-info`
   #  kubernetes.io/cluster-service: "true"
   #  kubernetes.io/name: "Metrics-server"
+  clusterIP: ""
   port: 443
   type: ClusterIP
 

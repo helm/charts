@@ -13,6 +13,9 @@ metadata:
   annotations:
     {{- toYaml .Values.service.annotations | trim | nindent 4 }}
 spec:
+  {{- with .Values.service.clusterIP  }}
+  clusterIP: {{ if eq "-" . }}""{{ else }}{{ . | quote }}{{ end }}
+  {{- end}}
   ports:
     - port: {{ .Values.service.port }}
       protocol: TCP

@@ -31,6 +31,7 @@ Parameter | Description | Default
 `readinessProbe` | Container readiness probe | See values.yaml
 `service.annotations` | Annotations to add to the service | `{}`
 `service.labels` | Labels to be added to the metrics-server service | `{}`
+`service.clusterIP` | ClusteIP of the service (set to "-" to pass an empty value) | `nil`
 `service.port` | Service port to expose | `443`
 `service.type` | Type of service to create | `ClusterIP`
 `podDisruptionBudget.enabled` | Create a PodDisruptionBudget | `false`
