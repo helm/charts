@@ -6,9 +6,9 @@
 ## ref: https://github.com/Microsoft/OMS-docker/tree/ci_feature_prod
 omsagent:
   image:
-    tag: "ciprod01072020"
+    tag: "ciprod03022020"
     pullPolicy: IfNotPresent
-    dockerProviderVersion: "8.0.0-2"
+    dockerProviderVersion: "8.0.0-3"
     agentVersion: "1.10.0.1"
   ## To get your workspace id and key do the following
   ## You can create a Azure Loganalytics workspace from portal.azure.com and get its ID & PRIMARY KEY from 'Advanced Settings' tab in the Ux.
@@ -42,16 +42,32 @@ omsagent:
   ## Pod scheduling preferences.
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
   ##
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-          - labelSelector:
-            matchExpressions:
-              - key: type
-                operator: NotIn
-                values:
-                  - virtual-kubelet
+  daemonset:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - labelSelector:
+              matchExpressions:
+                - key: type
+                  operator: NotIn
+                  values:
+                    - virtual-kubelet
+  deployment:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - labelSelector:
+              matchExpressions:
+                - key: type
+                  operator: NotIn
+                  values:
+                    - virtual-kubelet
+                - key: kubernetes.io/role
+                  operator: NotIn
+                  values:
+                    - master
 
   ## Configure resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
