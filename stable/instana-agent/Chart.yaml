@@ -2,7 +2,7 @@ apiVersion: v1
 appVersion: 1.1
 description: Instana Agent for Kubernetes
 home: https://www.instana.com/
-icon: http://instana-management-assets.s3-website-eu-west-1.amazonaws.com/stan_icon_front_black_big.png
+icon: https://instana-management-assets.s3-eu-west-1.amazonaws.com/stan-logo-2020.png
 maintainers:
 - email: jon.brisbin@instana.com
   name: jbrisbin
@@ -21,4 +21,4 @@ maintainers:
 name: instana-agent
 sources:
 - https://github.com/instana/instana-agent-docker
-version: 1.0.25
+version: 1.0.26

@@ -78,6 +78,9 @@ agent:
   host:
     repository: null
 
+  # agent.supportOpenshift specifies whether the cluster role should include openshift permissions
+  # supportOpenshift: true
+
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
