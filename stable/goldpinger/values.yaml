@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 image:
   repository: bloomberg/goldpinger
-  tag: 2.0.0
+  tag: 2.0.2
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -19,13 +19,13 @@ serviceAccount:
   name:
 
 goldpinger:
-  port: 80
+  port: 8080
 
 extraEnv: []
 
 service:
   type: LoadBalancer
-  port: 80
+  port: 8080
   annotations: {}
 
 ingress:

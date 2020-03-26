@@ -8,6 +8,8 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
+  updateStrategy:
+    type: RollingUpdate
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "goldpinger.name" . }}
@@ -19,43 +21,66 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
     {{- with .Values.podAnnotations }}
       annotations:
-    {{ toYaml . | nindent 8 }}
+    {{- toYaml . | nindent 8 }}
     {{- end }}
     spec:
+      {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
+      {{- end }}
       serviceAccountName: {{ template "goldpinger.serviceAccountName" . }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 2000
+      {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
-        - name: {{ .Values.image.pullSecrets }}
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
       containers:
-      - name: goldpinger-daemon
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
+      - name: goldpinger
         env:
-          - name: HOSTNAME
-            valueFrom:
-              fieldRef:
-                fieldPath: spec.nodeName
           - name: HOST
             value: "0.0.0.0"
           - name: PORT
             value: "{{ .Values.goldpinger.port }}"
+          # injecting real hostname will make for easier to understand graphs/metrics
+          - name: HOSTNAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          # podIP is used to select a randomized subset of nodes to ping.
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
           - name: LABEL_SELECTOR
             value: "app.kubernetes.io/name={{ include "goldpinger.name" . }}"
 {{- if .Values.extraEnv }}
 {{ toYaml .Values.extraEnv | indent 10 }}
 {{- end }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
         ports:
         - name: http
           containerPort: {{ .Values.goldpinger.port }}
           protocol: TCP
-        livenessProbe:
-          httpGet:
-            path: /
-            port: http
         readinessProbe:
           httpGet:
-            path: /
+            path: /healthz
             port: http
+          initialDelaySeconds: 20
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+          initialDelaySeconds: 20
+          periodSeconds: 5
         resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}

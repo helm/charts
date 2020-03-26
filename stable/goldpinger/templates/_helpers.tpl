@@ -3,7 +3,7 @@
 Expand the name of the chart.
 */}}
 {{- define "goldpinger.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- .Values.nameOverride | default .Chart.Name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
@@ -14,7 +14,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
-{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- $name := .Values.nameOverride | default .Chart.Name -}}
 {{- if contains $name .Release.Name -}}
 {{- .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -35,8 +35,8 @@ Create the name of the service account
 */}}
 {{- define "goldpinger.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}
-    {{ default (include "goldpinger.fullname" .) .Values.serviceAccount.name }}
+    {{ .Values.serviceAccount.name | default (printf "%s-serviceaccount" (include "goldpinger.fullname" .)) }}
 {{- else -}}
-    {{ default "default" .Values.serviceAccount.name }}
+    {{ .Values.serviceAccount.name | default "default" }}
 {{- end -}}
 {{- end -}}
