@@ -289,7 +289,7 @@ datadog:
     ## Note: /etc/passwd is automatically mounted to allow username resolution.
     ## ref: https://docs.datadoghq.com/graphing/infrastructure/process/#kubernetes-daemonset
     #
-    enabled: false
+    enabled: true
 
     ## @param processCollection - boolean - required
     ## Set this to true to enable process collection in process monitoring agent
