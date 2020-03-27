@@ -411,6 +411,11 @@ clusterAgent:
   metricsProvider:
     enabled: false
 
+    ## @param wpaController - boolean - optional
+    ## Enable informer and controller of the watermark pod autoscaler
+    #
+    wpaController: false
+
     ## Configuration for the service for the cluster-agent metrics server
     #
     service:
