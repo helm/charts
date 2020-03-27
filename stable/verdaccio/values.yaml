@@ -48,6 +48,11 @@ ingress:
 #     hosts:
 #       - npm.blah.com
 
+## Service account
+serviceAccount:
+  enabled: false
+  # name:
+
 # Extra Environment Values - allows yaml definitions
 extraEnvVars:
 #  - name: VALUE_FROM_SECRET

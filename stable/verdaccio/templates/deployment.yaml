@@ -8,6 +8,9 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "verdaccio.fullname" . }}
 spec:
+  {{- if .Values.serviceAccount.enabled }}
+  serviceAccountName: {{ template ".Values.serviceAccount.name" . }}
+  {{- end}}
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
