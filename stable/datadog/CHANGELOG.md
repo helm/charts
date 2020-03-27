@@ -1,5 +1,9 @@
 # Datadog changelog
 
+## 2.1.1
+
+* Add option to enable WPA in the Cluster Agent.
+
 ## 2.1.0
 
 * Changed the default for `processAgent.enabled` to `true`.
