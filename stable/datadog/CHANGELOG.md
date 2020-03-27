@@ -1,7 +1,5 @@
 # Datadog changelog
 
-## 2.0
-
 ## 2.1.1
 
 * Add option to enable WPA in the Cluster Agent.

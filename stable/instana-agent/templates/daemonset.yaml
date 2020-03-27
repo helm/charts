@@ -4,6 +4,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ template "instana-agent.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "instana-agent.commonLabels" . | nindent 4 }}
 spec:
@@ -19,6 +20,12 @@ spec:
         {{- toYaml .Values.agent.pod.annotations | nindent 8 }}
       {{- end }}
     spec:
+      {{- if .Values.agent.pod.nodeSelector }}
+      nodeSelector:
+      {{- range $key, $value := .Values.agent.pod.nodeSelector }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
+      {{- end }}
       serviceAccountName: {{ template "instana-agent.serviceAccountName" . }}
       hostIPC: true
       hostNetwork: true
@@ -32,8 +39,10 @@ spec:
               value: {{ .Values.agent.leaderElectorPort | quote }}
             - name: INSTANA_ZONE
               value: {{ .Values.zone.name | quote }}
+              {{- if .Values.cluster.name }}
             - name: INSTANA_KUBERNETES_CLUSTER_NAME
               value: {{ .Values.cluster.name | quote }}
+              {{- end }}
             - name: INSTANA_AGENT_ENDPOINT
               value: {{ .Values.agent.endpointHost | quote }}
             - name: INSTANA_AGENT_ENDPOINT_PORT
@@ -41,7 +50,7 @@ spec:
             - name: INSTANA_AGENT_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "instana-agent.fullname" . }}-agent-secret
+                  name: {{ template "instana-agent.fullname" . }}
                   key: key
             {{- if .Values.agent.mode }}
             - name: INSTANA_AGENT_MODE
@@ -51,8 +60,8 @@ spec:
             - name: INSTANA_DOWNLOAD_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "instana-agent.fullname" . }}-download-secret
-                  key: key
+                  name: {{ template "instana-agent.fullname" . }}
+                  key: downloadKey
             {{- end }}
             {{- if .Values.agent.proxyHost }}
             - name: INSTANA_AGENT_PROXY_HOST
@@ -87,6 +96,7 @@ spec:
               value: {{ .Values.agent.redactKubernetesSecrets | quote }}
             {{- end }}
             - name: JAVA_OPTS
+              # Approximately 1/3 of container memory limits to allow for direct-buffer memory usage and JVM overhead
               value: "-Xmx{{ div (default 512 .Values.agent.pod.requests.memory) 3 }}M -XX:+ExitOnOutOfMemoryError"
             - name: INSTANA_AGENT_POD_NAME
               valueFrom:
@@ -155,7 +165,7 @@ spec:
               cpu: 0.1
               memory: 64Mi
           livenessProbe:
-            httpGet:
+            httpGet: # Leader elector liveness is tied to agent, published on localhost:42699
               path: /com.instana.agent.coordination.sidecar/health
               port: 42699
             initialDelaySeconds: 300
