@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "locust.worker" . }}
@@ -9,6 +9,10 @@ metadata:
     app: {{ template "locust.fullname" . }}
     component: worker
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "locust.fullname" . }}
+      component: worker 
   replicas: {{ default 2 .Values.worker.replicaCount }}
   strategy:
     type: RollingUpdate

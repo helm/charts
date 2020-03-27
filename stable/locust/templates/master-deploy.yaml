@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "locust.master" . }}
@@ -9,6 +9,10 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: master
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "locust.fullname" . }}
+      release: {{ .Release.Name | quote }}
   replicas: 1
   strategy:
     type: RollingUpdate
