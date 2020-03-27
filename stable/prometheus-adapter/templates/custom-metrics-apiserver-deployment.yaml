@@ -20,6 +20,9 @@ spec:
         chart: {{ template "k8s-prometheus-adapter.chart" . }}
         release: {{ .Release.Name }}
         heritage: {{ .Release.Service }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | trim | nindent 8 }}
+        {{- end }}
       name: {{ template "k8s-prometheus-adapter.name" . }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/custom-metrics-configmap.yaml") . | sha256sum }}
