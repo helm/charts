@@ -1,6 +1,9 @@
 # Datadog changelog
 
-## 2.0
+## 2.1.0
+
+* Changed the default for `processAgent.enabled` to `true`.
+
 
 ## 2.0.14
 

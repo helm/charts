@@ -69,16 +69,20 @@ spec:
             - secretRef:
                 name: "{{ .Values.envFromSecretRef }}"
           {{- end }}
+          {{- if .Values.deployment.readinessProbe.enabled}}
           livenessProbe:
             httpGet:
               path: {{ .Values.config.basePath }}
               port: http
             initialDelaySeconds: 120
+          {{- end }}
+          {{- if .Values.deployment.livenessProbe.enabled}}
           readinessProbe:
             httpGet:
               path: {{ .Values.config.basePath }}
               port: http
             initialDelaySeconds: 120
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
       volumes:
