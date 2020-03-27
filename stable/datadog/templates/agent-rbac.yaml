@@ -71,6 +71,16 @@ rules:
   - "/healthz"
   verbs:
   - get
+{{- if and .Values.clusterAgent.metricsProvider.enabled .Values.clusterAgent.metricsProvider.wpaController }}
+- apiGroups:
+  - "datadoghq.com"
+  resources:
+  - "watermarkpodautoscalers"
+  verbs:
+  - "list"
+  - "get"
+  - "watch"
+{{- end }}
 ---
 apiVersion: {{ template "rbac.apiVersion" . }}
 kind: ClusterRoleBinding

@@ -95,6 +95,8 @@ spec:
             value: {{ .Values.clusterAgent.metricsProvider.enabled | quote }}
           - name: DD_EXTERNAL_METRICS_PROVIDER_PORT
             value: {{ .Values.clusterAgent.metricsProvider.service.port | quote }}
+          - name: DD_EXTERNAL_METRICS_PROVIDER_WPA_CONTROLLER
+            value: {{ .Values.clusterAgent.metricsProvider.wpaController | quote }}
           {{- end }}
           {{- if .Values.datadog.clusterChecks.enabled }}
           - name: DD_CLUSTER_CHECKS_ENABLED
