@@ -5,6 +5,10 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.10.1 Only copy JCasC files if there are any
+
+The chart always tried to copy Configuration as Code configs even if there are none. That resulted in an error which is resolved with this.
+
 ## 1.10.0 Remove configuration-as-code-support plugins
 
 In recent version of configuration-as-code-plugin this is no longer necessary.
