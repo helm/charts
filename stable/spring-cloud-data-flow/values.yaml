@@ -73,10 +73,6 @@ rabbitmq:
     # this value will be encoded into a secret
     password: changeme
 
-rabbitmq-ha:
-  enabled: false
-  rabbitmqUsername: user
-
 kafka:
   enabled: false
   replicas: 1

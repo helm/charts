@@ -28,7 +28,7 @@ spec:
         image: {{ .Values.skipper.image }}:{{ .Values.skipper.version }}
         imagePullPolicy: {{ .Values.skipper.imagePullPolicy }}
         volumeMounts:
-          {{- if or .Values.rabbitmq.enabled (index .Values "rabbitmq-ha" "enabled") }}
+          {{- if .Values.rabbitmq.enabled }}
           - name: rabbitmq
             mountPath: /etc/secrets/rabbitmq
             readOnly: true
@@ -72,28 +72,20 @@ spec:
           {{- else }}
           value: {{ template "scdf.fullname" . }}-skipper
           {{- end }}
-        {{- if or .Values.rabbitmq.enabled (index .Values "rabbitmq-ha" "enabled") }}
+        {{- if .Values.rabbitmq.enabled }}
         - name: RABBITMQ_PASSWORD
           valueFrom:
             secretKeyRef:
-              {{- if index .Values "rabbitmq-ha" "enabled" }}
-              name: {{ printf "%s-%s" .Release.Name "rabbitmq-ha" | trunc 63 | trimSuffix "-" }}
-              {{- else }}
               name: {{ printf "%s-%s" .Release.Name "rabbitmq" | trunc 63 | trimSuffix "-" }}
-              {{- end }}
               key: rabbitmq-password
         {{- end }}
         - name: KUBERNETES_TRUST_CERTIFICATES
           value: {{ .Values.skipper.trustCerts | quote }}
       volumes:
-        {{- if or .Values.rabbitmq.enabled (index .Values "rabbitmq-ha" "enabled") }}
+        {{- if .Values.rabbitmq.enabled }}
         - name: rabbitmq
           secret:
-            {{- if index .Values "rabbitmq-ha" "enabled" }}
-            secretName: {{ printf "%s-%s" .Release.Name "rabbitmq-ha" | trunc 63 | trimSuffix "-" }}
-            {{- else }}
             secretName: {{ printf "%s-%s" .Release.Name "rabbitmq" | trunc 63 | trimSuffix "-" }}
-            {{- end }}
         {{- end }}
         - name: database
           secret:

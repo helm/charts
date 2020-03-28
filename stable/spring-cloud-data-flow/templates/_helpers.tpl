@@ -106,25 +106,19 @@ Create the name of the service account to use
 {{- end -}}
 
 {{- define "scdf.broker.rabbitmq.host" -}}
-  {{- if index .Values "rabbitmq-ha" "enabled" -}}
-    {{- printf "%s-rabbitmq-ha" .Release.Name | trunc 63 | trimSuffix "-" -}}
-  {{- else if .Values.rabbitmq.enabled -}}
+  {{- if .Values.rabbitmq.enabled -}}
     {{- printf "${%s_RABBITMQ_SERVICE_HOST}" (include "scdf.envrelease" . ) -}}
   {{- end -}}
 {{- end -}}
 
 {{- define "scdf.broker.rabbitmq.port" -}}
-  {{- if index .Values "rabbitmq-ha" "enabled" -}}
-    {{- index .Values "rabbitmq-ha" "rabbitmqNodePort" -}}
-  {{- else if .Values.rabbitmq.enabled -}}
+  {{- if .Values.rabbitmq.enabled -}}
     {{- printf "${%s_RABBITMQ_SERVICE_PORT_AMQP}" (include "scdf.envrelease" . ) -}}
   {{- end -}}
 {{- end -}}
 
 {{- define "scdf.broker.rabbitmq.user" -}}
-  {{- if index .Values "rabbitmq-ha" "enabled" -}}
-    {{ index .Values "rabbitmq-ha" "rabbitmqUsername" }}
-  {{- else if .Values.rabbitmq.enabled -}}
+  {{- if .Values.rabbitmq.enabled -}}
     {{ .Values.rabbitmq.rabbitmq.username }}
   {{- end -}}
 {{- end -}}

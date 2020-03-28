@@ -49,14 +49,9 @@ In addition, you are required to set all fields listed in [External Database Con
 
 There are three messaging layers available in this chart:
 - RabbitMQ (default)
-- RabbitMQ HA
 - Kafka
 
-To change the messaging layer to a highly available (HA) version of RabbitMQ, use the following `set` flags to the `helm` command, for example:
-
-`--set rabbitmq-ha.enabled=true,rabbitmq.enabled=false`
-
-Alternatively, to change the messaging layer to Kafka, use the following `set` flags to the `helm` command, for example:
+To change the messaging layer to Kafka, use the following `set` flags to the `helm` command, for example:
 
 `--set kafka.enabled=true,rabbitmq.enabled=false`
 
@@ -151,13 +146,6 @@ The following tables list the configurable parameters and their default values.
 | rabbitmq.enabled            | Enable RabbitMQ as the middleware to use    | true
 | rabbitmq.rabbitmq.username  | RabbitMQ user name                          | user
 | rabbitmq.rabbitmq.password  | RabbitMQ password to encode into the secret | changeme
-
-### RabbitMQ HA Configuration
-
-| Parameter                     | Description                                 | Default                   |
-| ----------------------------- | ------------------------------------------- | ------------------------- |
-| rabbitmq-ha.enabled           | Enable RabbitMQ HA as the middleware to use | false
-| rabbitmq-ha.rabbitmqUsername  | RabbitMQ user name                          | user
 
 ### Kafka Configuration
 
