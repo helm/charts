@@ -77,7 +77,9 @@ and their default values.
 | `service.port`                     | Service port to expose                                          | `4873`                                                   |
 | `service.nodePort`                 | Service port to expose                                          | none                                                     |
 | `service.type`                     | Type of service to create                                       | `ClusterIP`                                              |
-| `extraEnvVars`                     | Define environment variables to be passed to the container                                       | `{}`  
+| `serviceAccount.enabled`           | Enable service account                                          | `false`                                                  |
+| `serviceAccount.name`              | Service account Name                                            | none                                                     |
+| `extraEnvVars`                     | Define environment variables to be passed to the container      | `{}`                                                     | 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
