@@ -142,6 +142,11 @@ jenkins:
         yaml: |-
           {{ tpl .Values.agent.yamlTemplate . | nindent 10 | trim }}
         yamlMergeStrategy: "override"
+      {{- if .Values.podTemplates }}
+        {{- range $key, $val := .Values.podTemplates }}
+          {{ tpl $val $| nindent 6 }}
+        {{- end }}
+      {{- end }}
       {{- end }}
   {{- if .Values.master.csrf.defaultCrumbIssuer.enabled }}
   crumbIssuer:
