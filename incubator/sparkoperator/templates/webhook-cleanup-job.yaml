@@ -37,5 +37,13 @@ spec:
           -H \"Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)\" \
           -H \"Accept: application/json\" \
           -H \"Content-Type: application/json\" \
-          https://kubernetes.default.svc/api/v1/namespaces/{{ .Release.Namespace }}/secrets/spark-webhook-certs"
+          https://kubernetes.default.svc/api/v1/namespaces/{{ .Release.Namespace }}/secrets/spark-webhook-certs \
+          && \
+          curl -ik \
+          -X DELETE \
+          -H \"Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)\" \
+          -H \"Accept: application/json\" \
+          -H \"Content-Type: application/json\" \
+          --data \"{\\\"kind\\\":\\\"DeleteOptions\\\",\\\"apiVersion\\\":\\\"batch/v1\\\",\\\"propagationPolicy\\\":\\\"Foreground\\\"}\" \
+          https://kubernetes.default.svc/apis/batch/v1/namespaces/{{ .Release.Namespace }}/jobs/{{ include "sparkoperator.fullname" . }}-webhook-init"
 {{ end }}
