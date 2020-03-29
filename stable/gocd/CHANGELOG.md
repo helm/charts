@@ -1,3 +1,7 @@
+### 1.25.1
+
+* [b70dd76](https://github.com/kubernetes/charts/commit/b70dd76): Update k8s supported versions to 1.14+.
+
 ### 1.25.0
 
 * [21277f47](https://github.com/kubernetes/charts/commit/21277f47): Add docs for ingress
