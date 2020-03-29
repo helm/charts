@@ -216,6 +216,15 @@ anchore-ui-redis:
   password: <PASSWORD>
 ```
 
+## Chart version 1.5.0
+Changes to the Helm Chart include:
+  * Anchore Engine image updated to v0.7.0
+  * Enterprise deployments now use a different image for core anchore-engine services - .Values.anchoreEnterpriseGlobal.engineImage
+  * Default feed sync timeout increased to 180s
+  * Added a optional configuration for including imagePullSecret on all anchore-engine images - .Values.anchoreGlobal.imagePullSecretName
+
+See the anchore-engine [CHANGELOG](https://github.com/anchore/anchore-engine/blob/master/CHANGELOG.md#070-2020-03-26) for updates to anchore engine
+
 ## Chart version 1.4.0
 The following features were added with this chart version:
   * Enterprise notifications service

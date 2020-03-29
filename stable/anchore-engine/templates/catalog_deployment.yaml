@@ -40,6 +40,10 @@ spec:
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
+      {{- with .Values.anchoreGlobal.imagePullSecretName }}
+      imagePullSecrets:
+      - name: {{ . }}
+      {{- end }}
       containers:
       {{- if .Values.cloudsql.enabled  }}
       - name: cloudsql-proxy
@@ -57,7 +61,11 @@ spec:
         {{- end }}
       {{- end }}
       - name: {{ .Chart.Name }}-{{ $component }}
+        {{- if .Values.anchoreEnterpriseGlobal.enabled }}
+        image: {{ .Values.anchoreEnterpriseGlobal.engineImage }}
+        {{- else }}
         image: {{ .Values.anchoreGlobal.image }}
+        {{- end }}
         imagePullPolicy: {{ .Values.anchoreGlobal.imagePullPolicy }}
         command: ["anchore-manager"]
         args: ["service", "start", "catalog"]

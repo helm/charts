@@ -37,6 +37,9 @@ data:
         # If enabled only sync specific feeds instead of all that are found.
         enabled: true
         feeds:
+          {{- if not .Values.anchoreEnterpriseGlobal.enabled }}
+          github: {{ default "true" .Values.anchoreGlobal.syncGithub }}
+          {{- end }}
           # Vulnerabilities feed is the feed for distro cve sources (redhat, debian, ubuntu, oracle, alpine....)
           vulnerabilities: {{ default "true" .Values.anchoreGlobal.syncVulnerabilites }}
           # NVD Data is used for non-distro CVEs (jars, npm, etc) that are not packaged and released by distros as rpms, debs, etc
@@ -71,7 +74,7 @@ data:
       anonymous_user_password: pbiU2RYZ2XrmYQ
       {{- end }}
       connection_timeout_seconds: {{ default 3 .Values.anchoreGlobal.feedsConnectionTimeout }}
-      read_timeout_seconds: {{ default 60 .Values.anchoreGlobal.feedsReadTimeout }}
+      read_timeout_seconds: {{ default 180 .Values.anchoreGlobal.feedsReadTimeout }}
     default_admin_password: ${ANCHORE_ADMIN_PASSWORD}
     default_admin_email: {{ .Values.anchoreGlobal.defaultAdminEmail }}
 
