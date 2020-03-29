@@ -22,6 +22,17 @@ agent:
   # agent.endpointPort is the port number (as a String) of the Instana server your agents will connect to.
   endpointPort: 443
 
+  # These settings are applicable only to the instana/agent image or its derivatives
+  updates:
+    # Which version of the updates pack to use without further updates (version pinning).
+    # This setting overrides 'agent.updates.dynamic.frequency' and 'agent.updates.dynamic.time'.
+    version:
+
+    # How often to update the agent. Valid values are "DAY" (default, results in daily updates), "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY" and "SUNDAY"; multiple values can be specified, comma separated.
+    frequency: 'DAY'
+    # Time of day when the update is executed, expected in hh:mm format in UTC. Default value is '04:30'.
+    time: '04:30'
+
   image:
     # agent.image.name is the name of the container image of the Instana agent.
     name: instana/agent

@@ -63,6 +63,18 @@ spec:
                   name: {{ template "instana-agent.fullname" . }}
                   key: downloadKey
             {{- end }}
+            {{- if .Values.agent.updates.version }}
+            - name: INSTANA_AGENT_UPDATES_VERSION
+              value: {{ .Values.agent.updates.version | quote }}
+            {{- end }}
+            {{- if .Values.agent.updates.frequency }}
+            - name: INSTANA_AGENT_UPDATES_FREQUENCY
+              value: {{ .Values.agent.updates.frequency | quote }}
+            {{- end }}
+            {{- if .Values.agent.updates.time }}
+            - name: INSTANA_AGENT_UPDATES_TIME
+              value: {{ .Values.agent.updates.time | quote }}
+            {{- end }}
             {{- if .Values.agent.proxyHost }}
             - name: INSTANA_AGENT_PROXY_HOST
               value: {{ .Values.agent.proxyHost | quote }}
