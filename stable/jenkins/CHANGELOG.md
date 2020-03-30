@@ -6,9 +6,17 @@ numbering uses [semantic versioning](http://semver.org).
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
 
-## 1.9.25
+## 1.11.0
 
 Add `master.networkPolicy.internalAgents` and `master.networkPolicy.externalAgents` stanzas to fine grained controls over where internal/external agents can connect from. Internal ones are allowed based on pod labels and (optionally) namespaces, and external ones are allowed based on IP ranges.
+
+## 1.10.1 Only copy JCasC files if there are any
+
+The chart always tried to copy Configuration as Code configs even if there are none. That resulted in an error which is resolved with this.
+
+## 1.10.0 Remove configuration-as-code-support plugins
+
+In recent version of configuration-as-code-plugin this is no longer necessary.
 
 ## 1.9.24
 
