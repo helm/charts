@@ -94,6 +94,7 @@ downloadDashboardsImage:
 
 downloadDashboards:
   env: {}
+  resources: {}
 
 ## Pod Annotations
 # podAnnotations: {}
