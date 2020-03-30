@@ -84,7 +84,7 @@ their default values.
 [width="100%",cols="22%,53%,25%",options="header",]
 |===
 |Parameter |Description |Default
-|`+image.repository+` |Hazelcast Image name |`+hazelcast/hazelcast-kubernetes+`
+|`+image.repository+` |Hazelcast Image name |`+hazelcast/hazelcast+`
 
 |`+image.tag+` |Hazelcast Image tag |`+{VERSION}+`
 
