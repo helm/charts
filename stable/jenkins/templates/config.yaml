@@ -279,7 +279,9 @@ data:
   {{- if not .Values.master.sidecars.configAutoReload.enabled }}
     mkdir -p {{ .Values.master.jenkinsHome }}/casc_configs;
     rm -rf {{ .Values.master.jenkinsHome }}/casc_configs/*
+    {{- if .Values.master.JCasC.configScripts }}
     cp -v /var/jenkins_config/*.yaml {{ .Values.master.jenkinsHome }}/casc_configs
+    {{- end }}
   {{- end }}
 {{- end }}
 {{- if .Values.master.enableXmlConfig }}
@@ -321,11 +323,6 @@ data:
 {{- if .Values.master.JCasC.enabled }}
   {{- if not (contains "configuration-as-code" (quote .Values.master.installPlugins)) }}
     configuration-as-code:{{ .Values.master.JCasC.pluginVersion }}
-  {{- end }}
-  {{- if semverCompare "<=1.19" (printf "%v" .Values.master.JCasC.pluginVersion) }}
-    {{- if not (contains "configuration-as-code-support" (quote .Values.master.installPlugins)) }}
-    configuration-as-code-support:{{ .Values.master.JCasC.supportPluginVersion }}
-    {{- end }}
   {{- end }}
 {{- end }}
 {{- end }}

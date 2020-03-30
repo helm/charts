@@ -289,7 +289,7 @@ datadog:
     ## Note: /etc/passwd is automatically mounted to allow username resolution.
     ## ref: https://docs.datadoghq.com/graphing/infrastructure/process/#kubernetes-daemonset
     #
-    enabled: false
+    enabled: true
 
     ## @param processCollection - boolean - required
     ## Set this to true to enable process collection in process monitoring agent
@@ -410,6 +410,11 @@ clusterAgent:
   #
   metricsProvider:
     enabled: false
+
+    ## @param wpaController - boolean - optional
+    ## Enable informer and controller of the watermark pod autoscaler
+    #
+    wpaController: false
 
     ## Configuration for the service for the cluster-agent metrics server
     #

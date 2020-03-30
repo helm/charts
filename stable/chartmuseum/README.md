@@ -73,7 +73,7 @@ their default values. See values.yaml for all available options.
 |-----------------------------------------|-----------------------------------------------------------------------------|--------------------------------------|
 | `image.pullPolicy`                      | Container pull policy                                                       | `IfNotPresent`                       |
 | `image.repository`                      | Container image to use                                                      | `chartmuseum/chartmuseum`            |
-| `image.tag`                             | Container image tag to deploy                                               | `v0.8.0`                             |
+| `image.tag`                             | Container image tag to deploy                                               | `v0.12.0`                             |
 | `persistence.accessMode`                | Access mode to use for PVC                                                  | `ReadWriteOnce`                      |
 | `persistence.enabled`                   | Whether to use a PVC for persistent storage                                 | `false`                              |
 | `persistence.path`                      | PV mount path                                                               | `/storage`                              |

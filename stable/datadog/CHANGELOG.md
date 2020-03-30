@@ -1,6 +1,17 @@
 # Datadog changelog
 
-## 2.0
+## 2.1.1
+
+* Add option to enable WPA in the Cluster Agent.
+
+## 2.1.0
+
+* Changed the default for `processAgent.enabled` to `true`.
+
+
+## 2.0.14
+
+* Fixed a bug where the `trace-agent` runs in the same container as `dd-agent`
 
 ## 2.0.13
 
@@ -13,7 +24,7 @@
       Message:      failed to create containerd task: OCI runtime create failed: container_linux.go:349: starting container process caused "close exec fds: ensure /proc/self/fd is on procfs: operation not permitted": unknown
       Exit Code:    128
    ```
-
+   
 ## 2.0.11
 
 * Add missing syscalls in the `system-probe` seccomp profile

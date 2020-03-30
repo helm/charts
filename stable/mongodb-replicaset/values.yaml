@@ -3,8 +3,8 @@ nameOverride: ""
 fullnameOverride: ""
 
 # Override the deployment namespace
-# global:
-#   namespaceOverride: ""
+global:
+#  namespaceOverride: ""
 
 replicas: 3
 port: 27017
