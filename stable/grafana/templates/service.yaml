@@ -42,5 +42,9 @@ spec:
 {{ if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
       nodePort: {{.Values.service.nodePort}}
 {{ end }}
+  {{- if .Values.extraExposePorts }}
+  {{- tpl (toYaml .Values.extraExposePorts) . | indent 4 }}
+  {{- end }}
   selector:
     {{- include "grafana.selectorLabels" . | nindent 4 }}
+

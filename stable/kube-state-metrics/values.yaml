@@ -86,6 +86,9 @@ podAnnotations: {}
 ## Assign a PriorityClassName to pods if set
 # priorityClassName: ""
 
+# Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+podDisruptionBudget: {}
+
 # Available collectors for kube-state-metrics. By default all available
 # collectors are enabled.
 collectors:
