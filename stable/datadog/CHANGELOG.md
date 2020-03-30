@@ -1,6 +1,13 @@
 # Datadog changelog
 
+## 2.3.10
+
+* Mount kernel headers in system-probe container
+* Fix the mount of the `system-probe` socket in core agent
+* Add parameters to enable eBPF based checks
+
 ## 2.3.9
+
 * Add `clusterAgent.podLabels` variable to add labels to the Cluster Agent Pod(s)
 
 ## 2.3.8
