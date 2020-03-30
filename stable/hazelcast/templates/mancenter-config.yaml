@@ -1,4 +1,4 @@
-{{- if and .Values.mancenter.yaml (not .Values.mancenter.existingConfigMap) }}
+{{- if and .Values.mancenter.enabled (and .Values.mancenter.yaml (not .Values.mancenter.existingConfigMap)) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
