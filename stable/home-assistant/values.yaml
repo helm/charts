@@ -204,8 +204,6 @@ monitoring:
     # namespace: monitoring
     # Set how frequently Prometheus should scrape
     # interval: 30s
-    # Set path to beats-exporter telemtery-path
-    # telemetryPath: /metrics
     # Set labels for the ServiceMonitor, use this to define your scrape label for Prometheus Operator
     # labels:
     # Set bearerTokenFile for home assistant auth (use long lived access tokens)
