@@ -144,7 +144,7 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `vscode.service.externalIPs`      | External IPs for the VS Code UI | `[]` |
 | `vscode.service.loadBalancerIP`   | Loadbalancer IP for the VS Code UI | `` |
 | `vscode.service.loadBalancerSourceRanges`   | Loadbalancer client IP restriction range for the VS Code UI | `[]` |
-| `vscode.enabled`                  | Enable the optional [VS Code Server Sidecar](https://github.com/cdr/code-server) | `false` |
+| `appdaemon.enabled`                  | Enable the optional [Appdaemon Sidecar](https://appdaemon.readthedocs.io/en/latest/) | `false` |
 | `appdaemon.image.repository`         | Image repository | `acockburn/appdaemon` |
 | `appdaemon.image.tag`                | Image tag | `3.0.5`|
 | `appdaemon.image.pullPolicy`         | Image pull policy | `IfNotPresent` |
@@ -201,6 +201,10 @@ Much of the home assistant configuration occurs inside the various files persist
 ### VS Code Server
 
 [VS Code Server](https://github.com/cdr/code-server) is added as an optional sidecar container to Home Assistant with access to the home assistant configuration for easy in-browser editing and manipulation of Home Assistant.  If using this, it is possible to manually install the [Home Assistant Config Helper Extension](https://github.com/keesschollaart81/vscode-home-assistant) in order to have a deeper integration with Home Assistant within VS Code while editing the configuration files.
+
+### AppDaemon
+[AppDaemon](https://www.home-assistant.io/docs/ecosystem/appdaemon/) is added as an optional sidecar container to Home Assistant with access to the home assistant configuration `/config/appdaemon`. This allows downloading apps with [HACS](https://github.com/hacs/integration)
+[Home Assistant Configurator UI](https://github.com/danielperna84/hass-configurator) is added as an optional sidecar container to Home Assistant with access to the home assistant configuration for easy in-browser editing and manipulation of Home Assistant.
 
 ## Git sync secret
 
