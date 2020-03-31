@@ -29,7 +29,7 @@ spec:
         message: Cluster has overcommitted CPU resource requests for Pods and cannot tolerate node failure.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubecpuovercommit
       expr: |-
-        sum(namespace:kube_pod_container_resource_requests_cpu_cores:sum)
+        sum(namespace:kube_pod_container_resource_requests_cpu_cores:sum{})
           /
         sum(kube_node_status_allocatable_cpu_cores)
           >
@@ -42,7 +42,7 @@ spec:
         message: Cluster has overcommitted memory resource requests for Pods and cannot tolerate node failure.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubememovercommit
       expr: |-
-        sum(namespace:kube_pod_container_resource_requests_memory_bytes:sum)
+        sum(namespace:kube_pod_container_resource_requests_memory_bytes:sum{})
           /
         sum(kube_node_status_allocatable_memory_bytes)
           >

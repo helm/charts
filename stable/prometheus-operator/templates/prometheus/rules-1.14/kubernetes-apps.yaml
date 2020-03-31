@@ -57,9 +57,15 @@ spec:
         message: Deployment {{`{{`}} $labels.namespace {{`}}`}}/{{`{{`}} $labels.deployment {{`}}`}} has not matched the expected number of replicas for longer than 15 minutes.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubedeploymentreplicasmismatch
       expr: |-
-        kube_deployment_spec_replicas{job="kube-state-metrics", namespace=~"{{ $targetNamespace }}"}
-          !=
-        kube_deployment_status_replicas_available{job="kube-state-metrics", namespace=~"{{ $targetNamespace }}"}
+        (
+          kube_deployment_spec_replicas{job="kube-state-metrics", namespace=~"{{ $targetNamespace }}"}
+            !=
+          kube_deployment_status_replicas_available{job="kube-state-metrics", namespace=~"{{ $targetNamespace }}"}
+        ) and (
+          changes(kube_deployment_status_replicas_updated{job="kube-state-metrics", namespace=~"{{ $targetNamespace }}"}[5m])
+            ==
+          0
+        )
       for: 15m
       labels:
         severity: critical
@@ -68,9 +74,15 @@ spec:
         message: StatefulSet {{`{{`}} $labels.namespace {{`}}`}}/{{`{{`}} $labels.statefulset {{`}}`}} has not matched the expected number of replicas for longer than 15 minutes.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubestatefulsetreplicasmismatch
       expr: |-
-        kube_statefulset_status_replicas_ready{job="kube-state-metrics", namespace=~"{{ $targetNamespace }}"}
-          !=
-        kube_statefulset_status_replicas{job="kube-state-metrics", namespace=~"{{ $targetNamespace }}"}
+        (
+          kube_statefulset_status_replicas_ready{job="kube-state-metrics", namespace=~"{{ $targetNamespace }}"}
+            !=
+          kube_statefulset_status_replicas{job="kube-state-metrics", namespace=~"{{ $targetNamespace }}"}
+        ) and (
+          changes(kube_statefulset_status_replicas_updated{job="kube-state-metrics", namespace=~"{{ $targetNamespace }}"}[5m])
+            ==
+          0
+        )
       for: 15m
       labels:
         severity: critical
