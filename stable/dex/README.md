@@ -43,6 +43,17 @@ The command removes all the Kubernetes components associated with the chart and 
 
 A major chart version change (like v1.5.1 -> v2.0.0) indicates that there is an incompatible breaking change which requires manual actions.
 
+### Upgrade to v3.0.0
+
+Breaking changes which should be considered and require manual actions during release upgrade:
+
+- `.Values.crd.present` replaced with `.Values.crd.appInstall` which is its negation
+- CRDs installation support added - with helm v2 won't be installed by default. with helm v3+ impossible to do that from the chart, will be installed by default unless passing the `--skip-crds` flag with `helm install`
+
+See the [Configuration](#configuration) section for the details on the parameters introduced in version 2.0.0.
+
+In order to upgrade, please update your values file and uninstall/reinstall the chart. 
+
 ### Upgrade to v2.0.0
 
 Breaking changes which should be considered and require manual actions during release upgrade:
@@ -63,6 +74,7 @@ Parameters introduced starting from v2
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
+| `deploy` | whether the release should deploy the application | `true` |
 | `certs.grpc.pod.annotations` | Annotations for the pod created by the `grpc-certs` job | `{}` |
 | `certs.web.pod.annotations` | Annotations for the pod created by the `web-certs` job | `{}` |
 | `config.connectors` | Maps to the dex config `connectors` dict param | `{}` |
@@ -84,7 +96,8 @@ Parameters introduced starting from v2
 | `config.web.tlsKey` | Maps to the dex config `web.tlsKey` param | `/etc/dex/tls/https/server/tls.key` |
 | `config.expiry.signingKeys` | Maps to the dex config `expiry.signingKeys` param | `6h` |
 | `config.expiry.idTokens` | Maps to the dex config `expiry.idTokens` param | `24h` |
-| `crd.present` | Whether dex's CRDs are already present (if not cluster role and cluster role binding will be created to enable dex to create them). Depends on `rbac.create` | `false` |
+| `crd.install` | whether the release should install CRDs. Regardless of this value, Helm v3+ will install the CRDs if those are not present already. Use `--skip-crds` with `helm install` if you want to skip CRD creation. Note that dex app itself has logic to install CRDs | `false` |
+| `crd.appInstall` | whether to create the needed resources (cluster role and cluster role binding) to enable dex app to install the CRDs. Depends on `rbac.create` | `true` |
 | `grpc` | Enable dex grpc endpoint | `true` |
 | `https` | Enable TLS termination for the dex http endpoint | `false` |
 | `podLabels` | Custom pod labels | `{}` |
