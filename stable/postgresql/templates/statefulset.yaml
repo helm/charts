@@ -320,6 +320,9 @@ spec:
             {{- if .Values.master.extraVolumeMounts }}
             {{- toYaml .Values.master.extraVolumeMounts | nindent 12 }}
             {{- end }}
+{{- if .Values.master.sidecars }}
+{{- include "postgresql.tplValue" ( dict "value" .Values.master.sidecars "context" $ ) | nindent 8 }}
+{{- end }}
 {{- if .Values.metrics.enabled }}
         - name: metrics
           image: {{ template "postgresql.metrics.image" . }}

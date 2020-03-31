@@ -1,4 +1,5 @@
-{{- if and .Values.persistence.enabled (not .Values.autoscaling.enabled) -}}
+{{- $statefulSet := or (.Values.autoscaling.enabled) (.Values.useStatefulSet) -}}
+{{- if and .Values.persistence.enabled (not $statefulSet) -}}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
