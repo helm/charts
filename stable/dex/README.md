@@ -48,7 +48,7 @@ A major chart version change (like v1.5.1 -> v2.0.0) indicates that there is an 
 Breaking changes which should be considered and require manual actions during release upgrade:
 
 - `.Values.crd.present` replaced with `.Values.crd.appInstall` which is its negation
-- CRDs installation support added - with helm v2 won't be installed by default. with helm v3+ impossible to do that from the chart, will be installed by default unless passing the `--skip-crds` flag with `helm install`
+- CRDs installation support added - with helm v2 won't be installed by default. with helm v3+ impossible to do that from the chart, will be installed by default unless passing the `--skip-crds` flag with `helm install`. Note that deletion of the release won't delete the CRDs in both cases.
 
 See the [Configuration](#configuration) section for the details on the parameters introduced in version 2.0.0.
 
