@@ -1,5 +1,5 @@
 {{- if .Values.rbac.create }}
-{{- if or .Values.certs.grpc.create .Values.certs.web.create .Values.crd.present }}
+{{- if or .Values.certs.grpc.create .Values.certs.web.create (not .Values.crd.appInstall) }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -8,7 +8,7 @@ metadata:
   name: {{ template "dex.fullname" . }}
   namespace: {{ .Release.Namespace }}
 rules:
-{{- if .Values.crd.present }}
+{{- if not .Values.crd.appInstall }}
 - apiGroups: ["dex.coreos.com"] # API group created by dex
   resources: ["*"]
   verbs: ["*"]

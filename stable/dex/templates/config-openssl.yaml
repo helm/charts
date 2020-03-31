@@ -1,3 +1,4 @@
+{{- if .Values.deploy }}
 {{- if and .Values.grpc .Values.certs.grpc.create }}
 apiVersion: v1
 kind: ConfigMap
@@ -9,3 +10,4 @@ data:
   openssl.conf: |
 {{ .Files.Get "config/openssl.conf" | indent 4 }}
 {{- end }}
+{{- end -}}

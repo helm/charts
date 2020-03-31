@@ -1,3 +1,4 @@
+{{- if .Values.deploy }}
 {{ $fullname := include "dex.fullname" . }}
 {{ $httpsTlsBuiltName := printf "%s-tls" $fullname }}
 {{ $httpsTlsSecretName := default $httpsTlsBuiltName .Values.certs.web.secret.tlsName }}
@@ -142,3 +143,4 @@ spec:
 {{- if ne (len .Values.extraVolumes) 0 }}
 {{ toYaml .Values.extraVolumes | indent 6 }}
 {{- end }}
+{{- end -}}
