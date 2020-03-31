@@ -3,9 +3,11 @@ kind: ServiceAccount
 apiVersion: v1
 metadata:
   name: {{ template "traefik.fullname" . }}
+  {{- if .Values.rbac.serviceAccount }}
   {{- with .Values.rbac.serviceAccount.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
+  {{- end }}
   {{- end }}
 ---
 kind: {{ include "traefik.rbac.scope" . | printf "%sRole" }}
