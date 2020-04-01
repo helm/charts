@@ -144,7 +144,7 @@ jenkins:
         yamlMergeStrategy: "override"
       {{- if .Values.agent.podTemplates }}
         {{- range $key, $val := .Values.agent.podTemplates }}
-          {{ tpl $val $| nindent 6 }}
+          {{- tpl $val $ | nindent 6 }}
         {{- end }}
       {{- end }}
       {{- end }}
