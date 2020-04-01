@@ -51,7 +51,7 @@ data:
         Read_From_Tail  {{ .Values.input.systemd.readFromTail }}
         Strip_Underscores  {{ .Values.input.systemd.stripUnderscores }}
 {{- end }}
-{{ .Values.extraEntries.input | indent 8 }}
+{{ .Values.extraEntries.input | indent 4 }}
 
 {{- if .Values.audit.enable }}
     [INPUT]
@@ -66,7 +66,7 @@ data:
         Buffer_Max_Size   {{ .Values.audit.input.bufferMaxSize }}
         Skip_Long_Lines   {{ .Values.audit.input.skipLongLines}}
         Key               {{ .Values.audit.input.key}}
-{{ .Values.extraEntries.audit | indent 8 }}
+{{ .Values.extraEntries.audit | indent 4 }}
 {{- end }}
 
   fluent-bit-filter.conf: |
@@ -94,7 +94,7 @@ data:
 {{- if .Values.filter.useJournal }}
         Use_Journal         On
 {{- end }}
-{{ .Values.extraEntries.filter | indent 8 }}
+{{ .Values.extraEntries.filter | indent 4 }}
 
   fluent-bit-output.conf: |
 {{ if eq .Values.backend.type "test" }}
@@ -208,7 +208,7 @@ data:
 {{- range  .Values.backend.http.headers }}
         Header  {{ . }}
 {{- end }}
-{{ .Values.extraEntries.output | indent 8 }}
+{{ .Values.extraEntries.output | indent 4 }}
 
 
   fluent-bit.conf: |
@@ -247,7 +247,7 @@ data:
         Decode_Field_As {{ .decodeFieldAs }} {{ .decodeField | default "log" }}
 {{- end}}
 {{- if .extraEntries }}
-{{ .extraEntries | indent 8 }}
+{{ .extraEntries | indent 4 }}
 {{- end }}
 {{ end }}
 {{- end }}
@@ -263,7 +263,7 @@ data:
         Time_Format {{ .timeFormat }}
 {{- end }}
 {{- if .extraEntries }}
-{{ .extraEntries | indent 8 }}
+{{ .extraEntries | indent 4 }}
 {{- end }}
 {{ end }}
 {{- end }}
