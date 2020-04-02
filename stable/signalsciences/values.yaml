@@ -5,8 +5,8 @@
 replicaCount: 1
 
 image:
-  repository: marc/sigsci-agent
-  tag: 3.12.1
+  repository: signalsciences/sigsci-agent
+  tag: 4.6.0
   pullPolicy: IfNotPresent
 
 daemonset: {}
@@ -45,12 +45,13 @@ signalsciences:
   ## Use existing Secret which stores the secretAccessKey instead of creating a new one
   # secretAccessKeyExistingSecret:
 
-  ## Directory to mount and create the shared unix socket file for mdule installation
-  socketDir: /var/run/sigsci
-
-  ## Filename of the shared socket file
-  socketFile: sigsci.sock
-
+  ## For added security, it is recommended that the sigsci-agent container be executed
+  ## with the root filesystem mounted read only. The agent, however, still needs to write
+  ## some temporary files such as the socket file for RPC communication and some periodically
+  ## updated files such as GeoIP data
+  agentTempVolume: /sigsci/tmp
+# If required (default is /sigsci/tmp/sigsci.sock for the container)
+# socketAddress: /sigsci/tmp/sigsci.sock
   resources:
     requests:
       cpu: 200m
