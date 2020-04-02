@@ -70,7 +70,10 @@ rbac:
   ## If true, create & use RBAC resources
   ##
   create: true
-  serviceAccountName: default
+  serviceAccount:
+    create: true
+    name: default
+
   ## Annotations for the Service Account
   serviceAccountAnnotations: {}
 
