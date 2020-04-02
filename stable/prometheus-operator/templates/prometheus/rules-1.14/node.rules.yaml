@@ -24,12 +24,16 @@ spec:
   groups:
   - name: node.rules
     rules:
-    - expr: sum(min(kube_pod_info) by (node))
+    - expr: sum(min(kube_pod_info) by (cluster, node))
       record: ':kube_pod_info_node_count:'
-    - expr: max(label_replace(kube_pod_info{job="kube-state-metrics"}, "pod", "$1", "pod", "(.*)")) by (node, namespace, pod)
+    - expr: |-
+        topk by(namespace, pod) (1,
+          max by (node, namespace, pod) (
+            label_replace(kube_pod_info{job="kube-state-metrics"}, "pod", "$1", "pod", "(.*)")
+        ))
       record: 'node_namespace_pod:kube_pod_info:'
     - expr: |-
-        count by (node) (sum by (node, cpu) (
+        count by (cluster, node) (sum by (node, cpu) (
           node_cpu_seconds_total{job="node-exporter"}
         * on (namespace, pod) group_left(node)
           node_namespace_pod:kube_pod_info:
@@ -44,6 +48,6 @@ spec:
             node_memory_MemFree_bytes{job="node-exporter"} +
             node_memory_Slab_bytes{job="node-exporter"}
           )
-        )
+        ) by (cluster)
       record: :node_memory_MemAvailable_bytes:sum
 {{- end }}

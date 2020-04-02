@@ -397,7 +397,7 @@ data:
                         "expr": "sum(irate(container_network_receive_bytes_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$interval:$resolution])) by (pod)",
                         "format": "time_series",
                         "intervalFactor": 1,
-                        "legendFormat": "{{`{{pod}}`}}",
+                        "legendFormat": "{{`{{`}}pod{{`}}`}}",
                         "refId": "A",
                         "step": 10
                     }
@@ -496,7 +496,7 @@ data:
                         "expr": "sum(irate(container_network_transmit_bytes_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$interval:$resolution])) by (pod)",
                         "format": "time_series",
                         "intervalFactor": 1,
-                        "legendFormat": "{{`{{pod}}`}}",
+                        "legendFormat": "{{`{{`}}pod{{`}}`}}",
                         "refId": "A",
                         "step": 10
                     }
@@ -606,7 +606,7 @@ data:
                                 "expr": "sum(irate(container_network_receive_packets_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$interval:$resolution])) by (pod)",
                                 "format": "time_series",
                                 "intervalFactor": 1,
-                                "legendFormat": "{{`{{pod}}`}}",
+                                "legendFormat": "{{`{{`}}pod{{`}}`}}",
                                 "refId": "A",
                                 "step": 10
                             }
@@ -705,7 +705,7 @@ data:
                                 "expr": "sum(irate(container_network_transmit_packets_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$interval:$resolution])) by (pod)",
                                 "format": "time_series",
                                 "intervalFactor": 1,
-                                "legendFormat": "{{`{{pod}}`}}",
+                                "legendFormat": "{{`{{`}}pod{{`}}`}}",
                                 "refId": "A",
                                 "step": 10
                             }
@@ -824,7 +824,7 @@ data:
                                 "expr": "sum(irate(container_network_receive_packets_dropped_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$interval:$resolution])) by (pod)",
                                 "format": "time_series",
                                 "intervalFactor": 1,
-                                "legendFormat": "{{`{{pod}}`}}",
+                                "legendFormat": "{{`{{`}}pod{{`}}`}}",
                                 "refId": "A",
                                 "step": 10
                             }
@@ -923,7 +923,7 @@ data:
                                 "expr": "sum(irate(container_network_transmit_packets_dropped_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$interval:$resolution])) by (pod)",
                                 "format": "time_series",
                                 "intervalFactor": 1,
-                                "legendFormat": "{{`{{pod}}`}}",
+                                "legendFormat": "{{`{{`}}pod{{`}}`}}",
                                 "refId": "A",
                                 "step": 10
                             }
@@ -978,7 +978,7 @@ data:
                 "type": "row"
             }
         ],
-        "refresh": "30s",
+        "refresh": "10s",
         "rows": [
 
         ],
@@ -991,13 +991,15 @@ data:
             "list": [
                 {
                     "current": {
-                        "text": "Prometheus",
-                        "value": "Prometheus"
+                        "text": "default",
+                        "value": "default"
                     },
                     "hide": 0,
                     "label": null,
                     "name": "datasource",
-                    "options": [],
+                    "options": [
+
+                    ],
                     "query": "prometheus",
                     "refresh": 1,
                     "regex": "",

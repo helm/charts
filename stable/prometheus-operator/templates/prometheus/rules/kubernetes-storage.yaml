@@ -27,7 +27,7 @@ spec:
     rules:
     - alert: KubePersistentVolumeUsageCritical
       annotations:
-        message: The PersistentVolume claimed by {{`{{ $labels.persistentvolumeclaim }}`}} in Namespace {{`{{ $labels.namespace }}`}} is only {{`{{ printf "%0.2f" $value }}`}}% free.
+        message: The PersistentVolume claimed by {{`{{`}} $labels.persistentvolumeclaim {{`}}`}} in Namespace {{`{{`}} $labels.namespace {{`}}`}} is only {{`{{`}} printf "%0.2f" $value {{`}}`}}% free.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubepersistentvolumeusagecritical
       expr: |-
         100 * kubelet_volume_stats_available_bytes{job="kubelet", namespace=~"{{ $targetNamespace }}"}
@@ -39,7 +39,7 @@ spec:
         severity: critical
     - alert: KubePersistentVolumeFullInFourDays
       annotations:
-        message: Based on recent sampling, the PersistentVolume claimed by {{`{{ $labels.persistentvolumeclaim }}`}} in Namespace {{`{{ $labels.namespace }}`}} is expected to fill up within four days. Currently {{`{{ printf "%0.2f" $value }}`}}% is available.
+        message: Based on recent sampling, the PersistentVolume claimed by {{`{{`}} $labels.persistentvolumeclaim {{`}}`}} in Namespace {{`{{`}} $labels.namespace {{`}}`}} is expected to fill up within four days. Currently {{`{{`}} printf "%0.2f" $value {{`}}`}}% is available.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubepersistentvolumefullinfourdays
       expr: |-
         100 * (
@@ -54,7 +54,7 @@ spec:
         severity: critical
     - alert: KubePersistentVolumeErrors
       annotations:
-        message: The persistent volume {{`{{ $labels.persistentvolume }}`}} has status {{`{{ $labels.phase }}`}}.
+        message: The persistent volume {{`{{`}} $labels.persistentvolume {{`}}`}} has status {{`{{`}} $labels.phase {{`}}`}}.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubepersistentvolumeerrors
       expr: kube_persistentvolume_status_phase{phase=~"Failed|Pending",job="kube-state-metrics"} > 0
       for: 5m

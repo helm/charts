@@ -26,7 +26,7 @@ spec:
     rules:
     - alert: KubeNodeNotReady
       annotations:
-        message: '{{`{{ $labels.node }}`}} has been unready for more than an hour.'
+        message: '{{`{{`}} $labels.node {{`}}`}} has been unready for more than an hour.'
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubenodenotready
       expr: kube_node_status_condition{job="kube-state-metrics",condition="Ready",status="true"} == 0
       for: 1h
@@ -34,7 +34,7 @@ spec:
         severity: warning
     - alert: KubeVersionMismatch
       annotations:
-        message: There are {{`{{ $value }}`}} different semantic versions of Kubernetes components running.
+        message: There are {{`{{`}} $value {{`}}`}} different semantic versions of Kubernetes components running.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeversionmismatch
       expr: count(count by (gitVersion) (label_replace(kubernetes_build_info{job!~"kube-dns|coredns"},"gitVersion","$1","gitVersion","(v[0-9]*.[0-9]*.[0-9]*).*"))) > 1
       for: 1h
@@ -42,7 +42,7 @@ spec:
         severity: warning
     - alert: KubeClientErrors
       annotations:
-        message: Kubernetes API server client '{{`{{ $labels.job }}`}}/{{`{{ $labels.instance }}`}}' is experiencing {{`{{ printf "%0.0f" $value }}`}}% errors.'
+        message: Kubernetes API server client '{{`{{`}} $labels.job {{`}}`}}/{{`{{`}} $labels.instance {{`}}`}}' is experiencing {{`{{`}} printf "%0.0f" $value {{`}}`}}% errors.'
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeclienterrors
       expr: |-
         (sum(rate(rest_client_requests_total{code=~"5.."}[5m])) by (instance, job)
@@ -54,7 +54,7 @@ spec:
         severity: warning
     - alert: KubeClientErrors
       annotations:
-        message: Kubernetes API server client '{{`{{ $labels.job }}`}}/{{`{{ $labels.instance }}`}}' is experiencing {{`{{ printf "%0.0f" $value }}`}} errors / second.
+        message: Kubernetes API server client '{{`{{`}} $labels.job {{`}}`}}/{{`{{`}} $labels.instance {{`}}`}}' is experiencing {{`{{`}} printf "%0.0f" $value {{`}}`}} errors / second.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeclienterrors
       expr: sum(rate(ksm_scrape_error_total{job="kube-state-metrics"}[5m])) by (instance, job) > 0.1
       for: 15m
@@ -62,7 +62,7 @@ spec:
         severity: warning
     - alert: KubeletTooManyPods
       annotations:
-        message: Kubelet {{`{{ $labels.instance }}`}} is running {{`{{ $value }}`}} Pods, close to the limit of 110.
+        message: Kubelet {{`{{`}} $labels.instance {{`}}`}} is running {{`{{`}} $value {{`}}`}} Pods, close to the limit of 110.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubelettoomanypods
       expr: kubelet_running_pod_count{job="kubelet"} > 110 * 0.9
       for: 15m
@@ -70,7 +70,7 @@ spec:
         severity: warning
     - alert: KubeAPILatencyHigh
       annotations:
-        message: The API server has a 99th percentile latency of {{`{{ $value }}`}} seconds for {{`{{ $labels.verb }}`}} {{`{{ $labels.resource }}`}}.
+        message: The API server has a 99th percentile latency of {{`{{`}} $value {{`}}`}} seconds for {{`{{`}} $labels.verb {{`}}`}} {{`{{`}} $labels.resource {{`}}`}}.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeapilatencyhigh
       expr: cluster_quantile:apiserver_request_latencies:histogram_quantile{job="apiserver",quantile="0.99",subresource!="log",verb!~"^(?:LIST|WATCH|WATCHLIST|PROXY|CONNECT)$"} > 1
       for: 10m
@@ -78,7 +78,7 @@ spec:
         severity: warning
     - alert: KubeAPILatencyHigh
       annotations:
-        message: The API server has a 99th percentile latency of {{`{{ $value }}`}} seconds for {{`{{ $labels.verb }}`}} {{`{{ $labels.resource }}`}}.
+        message: The API server has a 99th percentile latency of {{`{{`}} $value {{`}}`}} seconds for {{`{{`}} $labels.verb {{`}}`}} {{`{{`}} $labels.resource {{`}}`}}.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeapilatencyhigh
       expr: cluster_quantile:apiserver_request_latencies:histogram_quantile{job="apiserver",quantile="0.99",subresource!="log",verb!~"^(?:LIST|WATCH|WATCHLIST|PROXY|CONNECT)$"} > 4
       for: 10m
@@ -86,7 +86,7 @@ spec:
         severity: critical
     - alert: KubeAPIErrorsHigh
       annotations:
-        message: API server is returning errors for {{`{{ $value }}`}}% of requests.
+        message: API server is returning errors for {{`{{`}} $value {{`}}`}}% of requests.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeapierrorshigh
       expr: |-
         sum(rate(apiserver_request_count{job="apiserver",code=~"^(?:5..)$"}[5m]))
@@ -97,7 +97,7 @@ spec:
         severity: critical
     - alert: KubeAPIErrorsHigh
       annotations:
-        message: API server is returning errors for {{`{{ $value }}`}}% of requests.
+        message: API server is returning errors for {{`{{`}} $value {{`}}`}}% of requests.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeapierrorshigh
       expr: |-
         sum(rate(apiserver_request_count{job="apiserver",code=~"^(?:5..)$"}[5m]))
@@ -108,7 +108,7 @@ spec:
         severity: warning
     - alert: KubeAPIErrorsHigh
       annotations:
-        message: API server is returning errors for {{`{{ $value }}`}}% of requests for {{`{{ $labels.verb }}`}} {{`{{ $labels.resource }}`}} {{`{{ $labels.subresource }}`}}.
+        message: API server is returning errors for {{`{{`}} $value {{`}}`}}% of requests for {{`{{`}} $labels.verb {{`}}`}} {{`{{`}} $labels.resource {{`}}`}} {{`{{`}} $labels.subresource {{`}}`}}.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeapierrorshigh
       expr: |-
         sum(rate(apiserver_request_count{job="apiserver",code=~"^(?:5..)$"}[5m])) by (resource,subresource,verb)
@@ -119,7 +119,7 @@ spec:
         severity: critical
     - alert: KubeAPIErrorsHigh
       annotations:
-        message: API server is returning errors for {{`{{ $value }}`}}% of requests for {{`{{ $labels.verb }}`}} {{`{{ $labels.resource }}`}} {{`{{ $labels.subresource }}`}}.
+        message: API server is returning errors for {{`{{`}} $value {{`}}`}}% of requests for {{`{{`}} $labels.verb {{`}}`}} {{`{{`}} $labels.resource {{`}}`}} {{`{{`}} $labels.subresource {{`}}`}}.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeapierrorshigh
       expr: |-
         sum(rate(apiserver_request_count{job="apiserver",code=~"^(?:5..)$"}[5m])) by (resource,subresource,verb)

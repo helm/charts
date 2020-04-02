@@ -120,7 +120,7 @@ replacement_map = {
 }
 
 # standard header
-header = '''{{- /* 
+header = '''{{- /*
 Generated from '%(name)s' group from %(url)s
 Do not change in-place! In order to change this file first read following link:
 https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
@@ -153,7 +153,7 @@ def init_yaml_styles():
 
 
 def escape(s):
-    return s.replace("{{", "{{`{{").replace("}}", "}}`}}")
+    return s.replace("{{", "{{`{{").replace("}}", "}}`}}").replace("{{`{{", "{{`{{`}}").replace("}}`}}", "{{`}}`}}")
 
 
 def fix_expr(rules):
