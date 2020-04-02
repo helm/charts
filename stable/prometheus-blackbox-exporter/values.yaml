@@ -82,7 +82,7 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
   annotations: {}
-  
+
 ## An Ingress resource can provide name-based virtual hosting and TLS
 ## termination among other things for CouchDB deployments which are accessed
 ## from outside the Kubernetes cluster.
