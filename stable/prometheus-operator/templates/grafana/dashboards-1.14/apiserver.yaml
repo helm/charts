@@ -38,7 +38,7 @@ data:
         "links": [
 
         ],
-        "refresh": "",
+        "refresh": "10s",
         "rows": [
             {
                 "collapse": false,
@@ -105,7 +105,7 @@ data:
                         "tableColumn": "",
                         "targets": [
                             {
-                                "expr": "sum(up{job=\"apiserver\"})",
+                                "expr": "sum(up{job=\"apiserver\", cluster=\"$cluster\"})",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "",
@@ -172,28 +172,28 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "sum(rate(apiserver_request_total{job=\"apiserver\", instance=~\"$instance\",code=~\"2..\"}[5m]))",
+                                "expr": "sum(rate(apiserver_request_total{job=\"apiserver\", instance=~\"$instance\",code=~\"2..\", cluster=\"$cluster\"}[5m]))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "2xx",
                                 "refId": "A"
                             },
                             {
-                                "expr": "sum(rate(apiserver_request_total{job=\"apiserver\", instance=~\"$instance\",code=~\"3..\"}[5m]))",
+                                "expr": "sum(rate(apiserver_request_total{job=\"apiserver\", instance=~\"$instance\",code=~\"3..\", cluster=\"$cluster\"}[5m]))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "3xx",
                                 "refId": "B"
                             },
                             {
-                                "expr": "sum(rate(apiserver_request_total{job=\"apiserver\", instance=~\"$instance\",code=~\"4..\"}[5m]))",
+                                "expr": "sum(rate(apiserver_request_total{job=\"apiserver\", instance=~\"$instance\",code=~\"4..\", cluster=\"$cluster\"}[5m]))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "4xx",
                                 "refId": "C"
                             },
                             {
-                                "expr": "sum(rate(apiserver_request_total{job=\"apiserver\", instance=~\"$instance\",code=~\"5..\"}[5m]))",
+                                "expr": "sum(rate(apiserver_request_total{job=\"apiserver\", instance=~\"$instance\",code=~\"5..\", cluster=\"$cluster\"}[5m]))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "5xx",
@@ -254,15 +254,15 @@ data:
                         },
                         "id": 4,
                         "legend": {
-                            "alignAsTable": "true",
+                            "alignAsTable": true,
                             "avg": false,
-                            "current": "true",
+                            "current": true,
                             "max": false,
                             "min": false,
-                            "rightSide": "true",
-                            "show": "true",
+                            "rightSide": true,
+                            "show": true,
                             "total": false,
-                            "values": "true"
+                            "values": true
                         },
                         "lines": true,
                         "linewidth": 1,
@@ -284,10 +284,10 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "histogram_quantile(0.99, sum(rate(apiserver_request_duration_seconds_bucket{job=\"apiserver\", instance=~\"$instance\"}[5m])) by (verb, le))",
+                                "expr": "histogram_quantile(0.99, sum(rate(apiserver_request_duration_seconds_bucket{job=\"apiserver\", instance=~\"$instance\", verb!=\"WATCH\", cluster=\"$cluster\"}[5m])) by (verb, le))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{verb}}`}}",
+                                "legendFormat": "{{`{{`}}verb{{`}}`}}",
                                 "refId": "A"
                             }
                         ],
@@ -388,10 +388,10 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "sum(rate(workqueue_adds_total{job=\"apiserver\", instance=~\"$instance\"}[5m])) by (instance, name)",
+                                "expr": "sum(rate(workqueue_adds_total{job=\"apiserver\", instance=~\"$instance\", cluster=\"$cluster\"}[5m])) by (instance, name)",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}} {{`{{name}}`}}",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}} {{`{{`}}name{{`}}`}}",
                                 "refId": "A"
                             }
                         ],
@@ -479,10 +479,10 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "sum(rate(workqueue_depth{job=\"apiserver\", instance=~\"$instance\"}[5m])) by (instance, name)",
+                                "expr": "sum(rate(workqueue_depth{job=\"apiserver\", instance=~\"$instance\", cluster=\"$cluster\"}[5m])) by (instance, name)",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}} {{`{{name}}`}}",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}} {{`{{`}}name{{`}}`}}",
                                 "refId": "A"
                             }
                         ],
@@ -540,15 +540,15 @@ data:
                         },
                         "id": 7,
                         "legend": {
-                            "alignAsTable": "true",
+                            "alignAsTable": true,
                             "avg": false,
-                            "current": "true",
+                            "current": true,
                             "max": false,
                             "min": false,
-                            "rightSide": "true",
-                            "show": "true",
+                            "rightSide": true,
+                            "show": true,
                             "total": false,
-                            "values": "true"
+                            "values": true
                         },
                         "lines": true,
                         "linewidth": 1,
@@ -570,10 +570,10 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "histogram_quantile(0.99, sum(rate(workqueue_queue_duration_seconds_bucket{job=\"apiserver\", instance=~\"$instance\"}[5m])) by (instance, name, le))",
+                                "expr": "histogram_quantile(0.99, sum(rate(workqueue_queue_duration_seconds_bucket{job=\"apiserver\", instance=~\"$instance\", cluster=\"$cluster\"}[5m])) by (instance, name, le))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}} {{`{{name}}`}}",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}} {{`{{`}}name{{`}}`}}",
                                 "refId": "A"
                             }
                         ],
@@ -674,10 +674,10 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "etcd_helper_cache_entry_total{job=\"apiserver\", instance=~\"$instance\"}",
+                                "expr": "etcd_helper_cache_entry_total{job=\"apiserver\", instance=~\"$instance\", cluster=\"$cluster\"}",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}}",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}}",
                                 "refId": "A"
                             }
                         ],
@@ -765,17 +765,17 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "sum(rate(etcd_helper_cache_hit_total{job=\"apiserver\",instance=~\"$instance\"}[5m])) by (intance)",
+                                "expr": "sum(rate(etcd_helper_cache_hit_total{job=\"apiserver\",instance=~\"$instance\", cluster=\"$cluster\"}[5m])) by (instance)",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}} hit",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}} hit",
                                 "refId": "A"
                             },
                             {
-                                "expr": "sum(rate(etcd_helper_cache_miss_total{job=\"apiserver\",instance=~\"$instance\"}[5m])) by (instance)",
+                                "expr": "sum(rate(etcd_helper_cache_miss_total{job=\"apiserver\",instance=~\"$instance\", cluster=\"$cluster\"}[5m])) by (instance)",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}} miss",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}} miss",
                                 "refId": "B"
                             }
                         ],
@@ -863,17 +863,17 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "histogram_quantile(0.99,sum(rate(etcd_request_cache_get_duration_seconds_bucket{job=\"apiserver\",instance=~\"$instance\"}[5m])) by (instance, le))",
+                                "expr": "histogram_quantile(0.99,sum(rate(etcd_request_cache_get_duration_seconds_bucket{job=\"apiserver\",instance=~\"$instance\", cluster=\"$cluster\"}[5m])) by (instance, le))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}} get",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}} get",
                                 "refId": "A"
                             },
                             {
-                                "expr": "histogram_quantile(0.99,sum(rate(etcd_request_cache_add_duration_seconds_bucket{job=\"apiserver\",instance=~\"$instance\"}[5m])) by (instance, le))",
+                                "expr": "histogram_quantile(0.99,sum(rate(etcd_request_cache_add_duration_seconds_bucket{job=\"apiserver\",instance=~\"$instance\", cluster=\"$cluster\"}[5m])) by (instance, le))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}} miss",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}} miss",
                                 "refId": "B"
                             }
                         ],
@@ -974,10 +974,10 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "process_resident_memory_bytes{job=\"apiserver\",instance=~\"$instance\"}",
+                                "expr": "process_resident_memory_bytes{job=\"apiserver\",instance=~\"$instance\", cluster=\"$cluster\"}",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}}",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}}",
                                 "refId": "A"
                             }
                         ],
@@ -1065,10 +1065,10 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "rate(process_cpu_seconds_total{job=\"apiserver\",instance=~\"$instance\"}[5m])",
+                                "expr": "rate(process_cpu_seconds_total{job=\"apiserver\",instance=~\"$instance\", cluster=\"$cluster\"}[5m])",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}}",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}}",
                                 "refId": "A"
                             }
                         ],
@@ -1156,10 +1156,10 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "go_goroutines{job=\"apiserver\",instance=~\"$instance\"}",
+                                "expr": "go_goroutines{job=\"apiserver\",instance=~\"$instance\", cluster=\"$cluster\"}",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}}",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}}",
                                 "refId": "A"
                             }
                         ],
@@ -1222,8 +1222,8 @@ data:
             "list": [
                 {
                     "current": {
-                        "text": "Prometheus",
-                        "value": "Prometheus"
+                        "text": "default",
+                        "value": "default"
                     },
                     "hide": 0,
                     "label": null,
@@ -1239,6 +1239,33 @@ data:
                 {
                     "allValue": null,
                     "current": {
+                        "text": "prod",
+                        "value": "prod"
+                    },
+                    "datasource": "$datasource",
+                    "hide": 2,
+                    "includeAll": false,
+                    "label": null,
+                    "multi": false,
+                    "name": "cluster",
+                    "options": [
+
+                    ],
+                    "query": "label_values(apiserver_request_total, cluster)",
+                    "refresh": 1,
+                    "regex": "",
+                    "sort": 1,
+                    "tagValuesQuery": "",
+                    "tags": [
+
+                    ],
+                    "tagsQuery": "",
+                    "type": "query",
+                    "useTags": false
+                },
+                {
+                    "allValue": null,
+                    "current": {
 
                     },
                     "datasource": "$datasource",
@@ -1250,7 +1277,7 @@ data:
                     "options": [
 
                     ],
-                    "query": "label_values(apiserver_request_total{job=\"apiserver\"}, instance)",
+                    "query": "label_values(apiserver_request_total{job=\"apiserver\", cluster=\"$cluster\"}, instance)",
                     "refresh": 2,
                     "regex": "",
                     "sort": 1,
