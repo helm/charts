@@ -493,7 +493,6 @@ For this pod templates configuration to be loaded the following values must be s
 ```
 master.JCasC.enabled: true
 master.JCasC.defaultConfig: true
-master.JCasC.configScripts: at least one key (cannot be empty {})
 ```
 The example below creates a python pod template in the kubernetes cloud.
 ```

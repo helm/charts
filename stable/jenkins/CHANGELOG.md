@@ -5,7 +5,7 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
-## 1.10.2 Add support for configuring custom pod templates
+## 1.11.0 Add support for configuring custom pod templates
 
 Add `agent.podTemplates` option for declaring custom pod templates in the default configured kubernetes cloud.
 
