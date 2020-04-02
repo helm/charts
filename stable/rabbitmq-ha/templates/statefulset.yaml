@@ -69,6 +69,11 @@ spec:
         - name: bootstrap
           image: {{ .Values.busyboxImage.repository}}:{{ .Values.busyboxImage.tag}}
           imagePullPolicy: {{ .Values.busyboxImage.pullPolicy }}
+          securityContext:
+            fsGroup: 0
+            runAsGroup: 0
+            runAsNonRoot: false
+            runAsUser: 0
           command: ['sh']
           args:
           - "-c"
@@ -80,6 +85,10 @@ spec:
             if [ -d "${RABBITMQ_MNESIA_DIR}" ]; then
               touch "${RABBITMQ_MNESIA_DIR}/force_load"
             fi
+            {{- end }}
+            {{- if and (.Values.securityContext.runAsUser) (.Values.securityContext.fsGroup) }}
+            chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }} /var/lib/rabbitmq/
+            chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }} /etc/rabbitmq
             {{- end }}
           env:
           - name: POD_NAME
