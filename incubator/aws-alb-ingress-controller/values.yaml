@@ -122,3 +122,11 @@ volumes: []
 # ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
 # PriorityClass: system-cluster-critical
 priorityClassName: ""
+
+# Security Context
+# ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+# for Pod
+securityContext: {}
+
+# for Container
+containerSecurityContext: {}
