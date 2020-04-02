@@ -1,4 +1,4 @@
-{{- if and .Values.exporter.enabled .Values.exporter.servicemonitor.enabled }}
+{{- if and .Values.exporter.enabled .Values.exporter.serviceMonitor.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -9,8 +9,8 @@ metadata:
     chart: {{ template "cassandra.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    {{- if .Values.exporter.servicemonitor.additionalLabels }}
-{{ toYaml .Values.exporter.servicemonitor.additionalLabels | indent 4 }}
+    {{- if .Values.exporter.serviceMonitor.additionalLabels }}
+{{ toYaml .Values.exporter.serviceMonitor.additionalLabels | indent 4 }}
     {{- end }}
 spec:
   jobLabel: {{ template "cassandra.name" . }}
