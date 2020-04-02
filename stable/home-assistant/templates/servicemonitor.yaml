@@ -17,6 +17,12 @@ spec:
 {{- if .Values.monitoring.serviceMonitor.interval }}
     interval: {{ .Values.monitoring.serviceMonitor.interval }}
 {{- end }}
+{{- if .Values.monitoring.serviceMonitor.bearerTokenFile }}
+    bearerTokenFile: {{ .Values.monitoring.serviceMonitor.bearerTokenFile }}
+{{- end }}
+{{- if .Values.monitoring.serviceMonitor.bearerTokenSecret }}
+    bearerTokenSecret: {{ .Values.monitoring.serviceMonitor.bearerTokenSecret }}
+{{- end }}
   jobLabel: {{ template "home-assistant.fullname" . }}-prometheus-exporter
   namespaceSelector:
     matchNames:
