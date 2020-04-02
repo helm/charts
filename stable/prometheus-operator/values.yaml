@@ -566,6 +566,10 @@ kubelet:
     ##
     https: true
 
+    ## Enable scraping /metrics/cadvisor from kubelet's service
+    ##
+    cAdvisor: true
+
     ## Metric relabellings to apply to samples before ingestion
     ##
     cAdvisorMetricRelabelings: []
