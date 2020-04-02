@@ -49,7 +49,9 @@ The following table lists the configurable parameters of the cerebro chart and t
 | `init.image.tag`                    | The image tag to pull               | `musl`                                    |
 | `init.image.pullPolicy`             | Image pull policy                   | `IfNotPresent`                            |
 | `deployment.annotations`            | Annotations for deployment          | `{}`                                      |
+| `deployment.podAnnotations`         | Additional pod annotations          | `{}`                                      |
 | `deployment.labels`                 | Additional labels for deployment    | `{}`                                      |
+| `deployment.podLabels`              | Additional pod labels               | `{}`                                      |
 | `deployment.livenessProbe.enabled`  | Enable livenessProbe                | `true`                                    |
 | `deployment.readinessProbe.enabled` | Enable readinessProbe               | `true`                                    |
 | `service.type`                      | Type of Service                     | `ClusterIP`                               |
