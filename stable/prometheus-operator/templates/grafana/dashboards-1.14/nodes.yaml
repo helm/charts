@@ -92,7 +92,7 @@ data:
                                 "format": "time_series",
                                 "interval": "1m",
                                 "intervalFactor": 5,
-                                "legendFormat": "{{`{{cpu}}`}}",
+                                "legendFormat": "{{`{{`}}cpu{{`}}`}}",
                                 "refId": "A"
                             }
                         ],
@@ -521,27 +521,27 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "rate(node_disk_read_bytes_total{job=\"node-exporter\", instance=\"$instance\", device=~\"nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+\"}[$__interval])",
+                                "expr": "rate(node_disk_read_bytes_total{job=\"node-exporter\", instance=\"$instance\", device=~\"nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+\"}[$__interval])",
                                 "format": "time_series",
                                 "interval": "1m",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{device}}`}} read",
+                                "legendFormat": "{{`{{`}}device{{`}}`}} read",
                                 "refId": "A"
                             },
                             {
-                                "expr": "rate(node_disk_written_bytes_total{job=\"node-exporter\", instance=\"$instance\", device=~\"nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+\"}[$__interval])",
+                                "expr": "rate(node_disk_written_bytes_total{job=\"node-exporter\", instance=\"$instance\", device=~\"nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+\"}[$__interval])",
                                 "format": "time_series",
                                 "interval": "1m",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{device}}`}} written",
+                                "legendFormat": "{{`{{`}}device{{`}}`}} written",
                                 "refId": "B"
                             },
                             {
-                                "expr": "rate(node_disk_io_time_seconds_total{job=\"node-exporter\", instance=\"$instance\", device=~\"nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+\"}[$__interval])",
+                                "expr": "rate(node_disk_io_time_seconds_total{job=\"node-exporter\", instance=\"$instance\", device=~\"nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+\"}[$__interval])",
                                 "format": "time_series",
                                 "interval": "1m",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{device}}`}} io time",
+                                "legendFormat": "{{`{{`}}device{{`}}`}} io time",
                                 "refId": "C"
                             }
                         ],
@@ -751,7 +751,7 @@ data:
                                 "format": "time_series",
                                 "interval": "1m",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{device}}`}}",
+                                "legendFormat": "{{`{{`}}device{{`}}`}}",
                                 "refId": "A"
                             }
                         ],
@@ -843,7 +843,7 @@ data:
                                 "format": "time_series",
                                 "interval": "1m",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{device}}`}}",
+                                "legendFormat": "{{`{{`}}device{{`}}`}}",
                                 "refId": "A"
                             }
                         ],

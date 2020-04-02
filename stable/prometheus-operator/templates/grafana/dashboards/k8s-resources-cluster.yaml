@@ -1,5 +1,5 @@
 {{- /*
-Generated from ' 'k8s-resources-cluster' from https://raw.githubusercontent.com/coreos/kube-prometheus/release-0.1/manifests/grafana-dashboardDefinitions.yaml
+Generated from 'k8s-resources-cluster' from https://raw.githubusercontent.com/coreos/kube-prometheus/release-0.1/manifests/grafana-dashboardDefinitions.yaml
 Do not change in-place! In order to change this file first read following link:
 https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
 */ -}}
@@ -594,7 +594,7 @@ data:
                                 "expr": "sum(namespace_pod_name_container_name:container_cpu_usage_seconds_total:sum_rate{cluster=\"$cluster\"}) by (namespace)",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{namespace}}`}}",
+                                "legendFormat": "{{`{{`}}namespace{{`}}`}}",
                                 "legendLink": null,
                                 "step": 10
                             }
@@ -1013,7 +1013,7 @@ data:
                                 "expr": "sum(container_memory_rss{cluster=\"$cluster\", container_name!=\"\"}) by (namespace)",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{namespace}}`}}",
+                                "legendFormat": "{{`{{`}}namespace{{`}}`}}",
                                 "legendLink": null,
                                 "step": 10
                             }
