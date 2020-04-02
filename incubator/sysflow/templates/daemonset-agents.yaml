@@ -1,0 +1,257 @@
+#
+# Copyright (C) 2019 IBM Corporation.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+{{- if .Capabilities.APIVersions.Has "apps/v1" }}
+apiVersion: apps/v1
+{{- else if .Capabilities.APIVersions.Has "extensions/v1beta1" }}
+apiVersion: extensions/v1beta1
+{{- else }}
+apiVersion: apps/v1
+{{- end }}
+kind: DaemonSet
+metadata:
+  name: {{ template "sf-exporter-chart.fullname" . }}-agent
+  labels:
+    app: {{ template "sf-exporter-chart.fullname" . }}
+    chart: "{{ .Chart.Name }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "sf-exporter-chart.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "sf-exporter-chart.fullname" . }}
+        chart: "{{ .Chart.Name }}"
+        release: "{{ .Release.Name }}"
+        tier: agent
+    spec:
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+      {{- toYaml .Values.nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+      {{- toYaml .Values.affinity | nindent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+      {{- toYaml .Values.tolerations | nindent 8 }}
+      {{- end }}
+      {{- if .Values.registry.secretName }}
+      {{- if ne .Values.registry.secretName ""}}
+      imagePullSecrets:
+      - name: {{ .Values.registry.secretName }}
+      {{- end }}
+      {{- end }}
+      containers:
+      - name: sfcollector
+        image: {{ .Values.sfcollector.repository }}:{{ .Values.sfcollector.tag }}
+        imagePullPolicy: {{ .Values.sfcollector.imagePullPolicy | default "" | quote }}
+        resources:
+        {{- toYaml .Values.resources | nindent 10 }}
+        env:
+        - name: FILTER
+          value: {{ .Values.sfcollector.filter }}
+        - name: INTERVAL
+          value: "{{ .Values.sfcollector.interval }}"
+        - name: OUTPUT
+          value: {{ .Values.sfcollector.outDir }}
+        - name: LOCATION
+          value: {{ .Values.sfexporter.s3Location }}
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: EXPORTER_ID
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: NODE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        - name: POD_UUID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.uid
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: POD_SERVICE_ACCOUNT
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.serviceAccountName
+        {{- if .Values.sfcollector.criPath }}
+        {{- if ne .Values.sfcollector.criPath ""}}
+        - name: CRI_PATH
+          value: "{{ .Values.sfcollector.criPath }}"
+        - name: CRI_TIMEOUT
+          value: "5"
+        {{- end }}
+        {{- end }}
+        volumeMounts:
+        - mountPath: {{ .Values.sfcollector.outDir }}
+          name: data
+          readOnly: false
+        {{- if .Values.sfcollector.criPath }}
+        {{- if eq .Values.sfcollector.criPath "/var/run/containerd/containerd.sock"}}
+        - mountPath: /host/var/run/containerd/containerd.sock
+          name: containerd-vol
+          readOnly: false
+        {{- end }}
+        {{- end }}
+        {{- if .Values.sfcollector.criPath }}
+        {{- if eq .Values.sfcollector.criPath "/var/run/crio/crio.sock"}}
+        - mountPath: /host/var/run/crio/crio.sock
+          name: varrun-vol-crio
+          readOnly: false 
+        {{- end }}
+        {{- end }}
+        - mountPath: /host/var/run/docker.sock
+          name: dockersock
+          readOnly: false 
+        - mountPath: /host/dev
+          name: dev
+          readOnly: false
+        - mountPath: /host/proc
+          name: proc
+          readOnly: true
+        - mountPath: /host/boot
+          name: boot
+          readOnly: true
+        - mountPath: /host/lib/modules
+          name: modules
+          readOnly: true
+        - mountPath: /host/usr
+          name: usr
+          readOnly: true
+        securityContext:
+          privileged: true
+      - name: sfexporter
+        image: {{ .Values.sfexporter.repository }}:{{ .Values.sfexporter.tag }}
+        imagePullPolicy: {{ .Values.sfexporter.imagePullPolicy | default "" | quote }}
+        resources:
+        {{- toYaml .Values.resources | nindent 10 }}
+        volumeMounts:
+        - mountPath: {{ .Values.sfexporter.outDir }}
+          name: data
+          readOnly: false
+        - mountPath: "/run/secrets/k8s"
+          name: secrets
+          readOnly: true
+        env:
+        - name: S3_ENDPOINT
+          value: {{ .Values.sfexporter.s3Endpoint }}
+        - name: S3_PORT
+          value: "{{ .Values.sfexporter.s3Port }}"
+        - name: INTERVAL 
+          value: "{{ .Values.sfexporter.interval }}"
+        - name: S3_BUCKET
+          value: {{ .Values.sfexporter.s3Bucket }}
+        - name: S3_LOCATION
+          value: {{ .Values.sfexporter.s3Location }}
+        - name: SECURE
+          value: "{{ .Values.sfexporter.s3Secure }}"
+        - name: DIR
+          value: {{ .Values.sfexporter.outDir }}
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: NODE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        - name: EXPORTER_ID
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: POD_UUID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.uid
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: POD_SERVICE_ACCOUNT
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.serviceAccountName
+      volumes:
+      - name: secrets
+        secret:
+          secretName: {{ template "sf-exporter-chart.fullname" . }}-secrets
+          items:
+          - key: s3_access_key
+            path: "s3_access_key"
+          - key: s3_secret_key
+            path: "s3_secret_key"
+      - name: data
+        emptyDir:
+          medium: Memory
+          sizeLimit: {{ .Values.tmpfsSize }}
+      {{- if .Values.sfcollector.criPath }}
+      {{- if eq .Values.sfcollector.criPath "/var/run/containerd/containerd.sock"}}
+      - name: containerd-vol
+        hostPath:
+          path: /var/run/containerd/containerd.sock
+      {{- end }}
+      {{- end }}
+      - name: dockersock
+        hostPath:
+          path: /var/run/docker.sock
+      {{- if .Values.sfcollector.criPath }}
+      {{- if eq .Values.sfcollector.criPath "/var/run/crio/crio.sock"}}
+      - name: varrun-vol-crio
+        hostPath:
+          path: /var/run/crio/crio.sock 
+      {{- end }}
+      {{- end }}
+      - name: dev
+        hostPath:
+          path: /dev
+      - name: proc
+        hostPath:
+          path: /proc
+      - name: boot
+        hostPath:
+          path: /boot
+      - name: modules
+        hostPath:
+          path: /lib/modules
+      - name: usr
+        hostPath:
+          path: /usr

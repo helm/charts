@@ -1,0 +1,100 @@
+#
+# Copyright (C) 2019 IBM Corporation.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Template values for sf-exporter-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+registry:
+  secretName: ""
+
+# sysflow collection probe parameters
+sfcollector:
+  # image repository
+  repository: sysflowtelemetry/sf-collector
+  # image tag
+  tag: latest
+  # timeout in seconds to start roll a new trace files
+  interval: 300
+  # output directory, where traces are written to inside container
+  outDir: /mnt/data/
+  # collection filter
+  filter: "\"container.type!=host and container.name!=sfexporter and container.name!=sfcollector\""
+  #Use this criPath if running docker runtime
+  criPath: ""
+  #uUse this criPath if running containerd runtime
+  #criPath: "/var/run/containerd/containerd.sock"
+  #uUse this criPath if running crio runtime
+  #criPath: "/var/run/crio/crio.sock"
+  
+  
+# sysflow exporter parameters
+sfexporter:
+  # image repository
+  repository: sysflowtelemetry/sf-exporter
+  # image tag
+  tag: latest
+  # export inverval
+  interval: 30
+  # directory where traces are read from inside container
+  outDir: /mnt/data/
+  # object store address (overridden by install script)
+  s3Endpoint: "localhost"
+  # object store port
+  s3Port: 443
+  # object store bucket where to push traces
+  s3Bucket: "sf-monitoring"
+  # object store location (overridden by install script)
+  s3Location:  ""
+  # object store access key (overridden by install script)
+  s3AccessKey: ""
+  # object store secret key (overridden by install script)
+  s3SecretKey: ""
+  # object store connection, 'true' if TLS-enabled, 'false' otherwise
+  s3Secure: "true"
+
+nameOverride: "sfexporter"
+fullnameOverride: ""
+tmpfsSize: 500Mi # size of tmpfs shared volume between collector and exporter (where traces are written)
+
+## @param resources - object - optional
+## Resource requests and limits for the kube-state-metrics container.
+#
+resources: 
+  requests:
+    cpu: 600m
+    memory: 512Mi
+  limits:
+    cpu: 2000m
+    memory: 1536Mi
+   
+## @param nodeSelector - object - optional
+## Allow the ClusterChecks Deployment to schedule on selected nodes
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+#
+# nodeSelector: {}
+
+## @param tolerations - array - required
+## Tolerations for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+#
+# tolerations: []
+
+## @param affinity - object - optional
+## Allow the ClusterChecks Deployment to schedule using affinity rules.
+## By default, ClusterChecks Deployment Pods are forced to run on different Nodes.
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+#
+# affinity: {}
