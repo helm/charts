@@ -11,5 +11,6 @@ home: https://sysflow.readthedocs.io/en/latest/
 sources:
   - https://github.com/sysflow-telemetry/
 maintainers:
-  - name: Carlos Hsiao
-    email: weii666@gmail.com
+  - name: araujof
+  - name: terylt
+  - name: weii666
