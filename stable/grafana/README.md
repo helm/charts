@@ -159,8 +159,10 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `testFramework.enabled`                   | Whether to create test-related resources      | `true`                                                  |
 | `testFramework.image`                     | `test-framework` image repository.            | `bats/bats`                                        |
 | `testFramework.tag`                       | `test-framework` image tag.                   | `v1.1.0`                                                 |
+| `testFramework.imagePullPolicy`           | `test-framework` image pull policy.           | `IfNotPresent`                                             |
 | `testFramework.securityContext`           | `test-framework` securityContext              | `{}`                                                    |
 | `downloadDashboards.env`                  | Environment variables to be passed to the `download-dashboards` container | `{}`                        |
+| `downloadDashboards.resources`            | Resources of `download-dashboards` container  | `{}`                                                    |
 | `downloadDashboardsImage.repository`      | Curl docker image repo                        | `curlimages/curl`                                       |
 | `downloadDashboardsImage.tag`             | Curl docker image tag                         | `7.68.0`                                                |
 | `downloadDashboardsImage.pullPolicy`      | Curl docker image pull policy                 | `IfNotPresent`                                          |
