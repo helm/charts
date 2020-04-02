@@ -7,13 +7,13 @@ metadata:
     chart: {{ template "nginx-ingress.chart" . }}
     app.kubernetes.io/component: controller
     heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    release: {{ template "nginx-ingress.releaseLabel" . }}
   name: {{ template "nginx-ingress.controller.fullname" . }}
 spec:
   selector:
     matchLabels:
       app: {{ template "nginx-ingress.name" . }}
-      release: {{ .Release.Name }}
+      release: {{ template "nginx-ingress.releaseLabel" . }}
       {{- if .Values.controller.useComponentLabel }}
       app.kubernetes.io/component: controller
       {{- end }}

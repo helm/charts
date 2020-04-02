@@ -534,6 +534,9 @@ defaultBackend:
 
   priorityClassName: ""
 
+# If provided, the value will be used as the `release` label instead of .Release.Name
+releaseLabelOverride: ""
+
 ## Enable RBAC as per https://github.com/kubernetes/ingress/tree/master/examples/rbac/nginx and https://github.com/kubernetes/ingress/issues/266
 rbac:
   create: true
