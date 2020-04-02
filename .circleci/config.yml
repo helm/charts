@@ -20,6 +20,7 @@ jobs:
       - run:
           name: lint
           command: |
+            helm version --client
             git remote add k8s https://github.com/helm/charts
             git fetch k8s master
             ct lint --config test/ct.yaml
