@@ -72,6 +72,9 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 | `service.type`                            | type of service to create                                                        | `ClusterIP`                                                                  |
 | `service.port`                            | port for the blackbox http service                                               | `9115`                                                                       |
 | `service.externalIPs`                     | list of external ips                                                             | []                                                                           |
+| `serviceAccount.create`                   | Specifies whether a service account should be created.                           | `false`                                                                      |
+| `serviceAccount.name`                     | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template |                                 |
+| `serviceAccount.annotations`              | ServiceAccount annotations                                                       |                                                                              |
 | `serviceMonitor.enabled`                  | If true, a ServiceMonitor CRD is created for a prometheus operator               | `false`                                                                      |
 | `serviceMonitor.defaults.labels`          | Labels for prometheus operator                                                   | `{}`                                                                         |
 | `serviceMonitor.defaults.interval`        | Interval for prometheus operator endpoint                                        | `30s`                                                                        |
