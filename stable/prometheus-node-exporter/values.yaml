@@ -11,6 +11,7 @@ service:
   port: 9100
   targetPort: 9100
   nodePort:
+  listenOnAllInterfaces: true
   annotations:
     prometheus.io/scrape: "true"
 

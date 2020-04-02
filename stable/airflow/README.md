@@ -395,13 +395,16 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `flower.urlPrefix`                       | path of the flower ui                                   | ""                        |
 | `flower.resources`                       | custom resource configuration for flower pod            | `{}`                      |
 | `flower.labels`                          | labels for the flower deployment                        | `{}`                      |
+| `flower.podLabels`                       | podLabels for the flower deployment                     | `{}`                      |
 | `flower.annotations`                     | annotations for the flower deployment                   | `{}`                      |
 | `flower.service.type`                    | service type for Flower UI                              | `ClusterIP`               |
 | `flower.service.annotations`             | (optional) service annotations for Flower UI            | `{}`                      |
 | `flower.service.externalPort`            | (optional) external port for Flower UI                  | `5555`                    |
+| `flower.securityContext`                 | (optional) security context for the flower deployment   | `{}`                      |
 | `web.baseUrl`                            | webserver UI URL                                        | `http://localhost:8080`   |
 | `web.resources`                          | custom resource configuration for web pod               | `{}`                      |
 | `web.labels`                             | labels for the web deployment                           | `{}`                      |
+| `web.podLabels`                          | podLabels for the web deployment                        | `{}`                      |
 | `web.annotations`                        | annotations for the web deployment                      | `{}`                      |
 | `web.podAnnotations`                     | pod-annotations for the web deployment                  | `{}`                      |
 | `web.initialStartupDelay`                | amount of time webserver pod should sleep before initializing webserver             | `60`  |
@@ -417,22 +420,26 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `web.initialDelaySeconds`                | initial delay on livenessprobe before checking if webserver is available    | `360` |
 | `web.secretsDir`                         | directory in which to mount secrets on webserver nodes  | /var/airflow/secrets      |
 | `web.secrets`                            | secrets to mount as volumes on webserver nodes          | []                        |
+| `web.securityContext`                    | (optional) security context for the web deployment      | `{}`                      |
 | `scheduler.resources`                    | custom resource configuration for scheduler pod         | `{}`                      |
 | `scheduler.labels`                       | labels for the scheduler deployment                     | `{}`                      |
+| `scheduler.podLabels`                    | podLabels for the scheduler deployment                  | `{}`                      |
 | `scheduler.annotations`                  | annotations for the scheduler deployment                | `{}`                      |
 | `scheduler.podAnnotations`               | podAnnotations for the scheduler deployment             | `{}`                      |
+| `scheduler.securityContext`              | (optional) security context for the scheduler deployment| `{}`                      |
 | `workers.enabled`                        | enable workers                                          | `true`                    |
 | `workers.replicas`                       | number of workers pods to launch                        | `1`                       |
 | `workers.terminationPeriod`              | gracefull termination period for workers to stop        | `30`                      |
 | `workers.resources`                      | custom resource configuration for worker pod            | `{}`                      |
 | `workers.celery.instances`               | number of parallel celery tasks per worker              | `1`                       |
 | `workers.labels`                         | labels for the worker statefulSet                       | `{}`                      |
+| `workers.podLabels`                      | podLabels for the worker statefulset                    | `{}`                      |
 | `workers.annotations`                    | annotations for the worker statefulSet                  | `{}`                      |
 | `workers.podAnnotations`                 | podAnnotations for the worker statefulSet               | `{}`                      |
 | `workers.celery.gracefullTermination`    | cancel the consumer and wait for the current task to finish before stopping the worker      | `false`     |
-| `workers.podAnnotations`                 | annotations for the worker pods                         | `{}`                      |
 | `workers.secretsDir`                     | directory in which to mount secrets on worker nodes     | /var/airflow/secrets      |
 | `workers.secrets`                        | secrets to mount as volumes on worker nodes             | []                        |
+| `workers.securityContext`                 | (optional) security context for the worker statefulSet  | `{}`                      |
 | `nodeSelector`                           | Node labels for pod assignment                          | `{}`                      |
 | `affinity`                               | Affinity labels for pod assignment                      | `{}`                      |
 | `tolerations`                            | Toleration labels for pod assignment                    | `[]`                      |

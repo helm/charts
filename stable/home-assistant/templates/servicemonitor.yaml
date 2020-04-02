@@ -12,7 +12,7 @@ metadata:
 {{- end }}
 spec:
   endpoints:
-  - targetPort: api
+  - targetPort: {{ .Values.service.portName }}
     path: /api/prometheus
 {{- if .Values.monitoring.serviceMonitor.interval }}
     interval: {{ .Values.monitoring.serviceMonitor.interval }}
