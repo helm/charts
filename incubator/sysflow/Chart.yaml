@@ -11,5 +11,5 @@ home: https://sysflow.readthedocs.io/en/latest/
 sources:
   - https://github.com/sysflow-telemetry/
 maintainers:
-  - name: SysFlow Team
-    email: sysflow@us.ibm.com
+  - name: Carlos Hsiao
+    email: weii666@gmail.com
