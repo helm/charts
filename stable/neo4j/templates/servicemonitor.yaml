@@ -4,10 +4,10 @@ kind: ServiceMonitor
 metadata:
   name: {{ template "neo4j.fullname" . }}
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    app: {{ template "neo4j.name" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app.kubernetes.io/name: {{ template "neo4j.name" . }}
 {{- with .Values.metrics.prometheus.serviceMonitor.labels }}
     {{- toYaml . | nindent 4 }}
 {{- end }}
@@ -23,6 +23,6 @@ spec:
     - {{ .Release.Namespace }}
   selector:
     matchLabels:
-      app: {{ template "neo4j.name" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ template "neo4j.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name | quote }}
 {{- end }}
