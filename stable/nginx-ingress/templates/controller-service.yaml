@@ -16,7 +16,7 @@ metadata:
     chart: {{ template "nginx-ingress.chart" . }}
     component: "{{ .Values.controller.name }}"
     heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    release: {{ template "nginx-ingress.releaseLabel" . }}
   name: {{ template "nginx-ingress.controller.fullname" . }}
 spec:
 {{- if not .Values.controller.service.omitClusterIP }}
@@ -88,7 +88,7 @@ spec:
   {{- end }}
   selector:
     app: {{ template "nginx-ingress.name" . }}
-    release: {{ .Release.Name }}
+    release: {{ template "nginx-ingress.releaseLabel" . }}
     app.kubernetes.io/component: controller
   type: "{{ .Values.controller.service.type }}"
 {{- end }}

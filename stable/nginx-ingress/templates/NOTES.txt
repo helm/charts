@@ -22,7 +22,7 @@ It may take a few minutes for the LoadBalancer IP to be available.
 You can watch the status by running 'kubectl --namespace {{ .Release.Namespace }} get services -o wide -w {{ template "nginx-ingress.controller.fullname" . }}'
 {{- else if contains "ClusterIP"  .Values.controller.service.type }}
 Get the application URL by running these commands:
-  export POD_NAME=$(kubectl --namespace {{ .Release.Namespace }} get pods -o jsonpath="{.items[0].metadata.name}" -l "app={{ template "nginx-ingress.name" . }},component={{ .Values.controller.name }},release={{ .Release.Name }}")
+  export POD_NAME=$(kubectl --namespace {{ .Release.Namespace }} get pods -o jsonpath="{.items[0].metadata.name}" -l "app={{ template "nginx-ingress.name" . }},component={{ .Values.controller.name }},release={{ template "nginx-ingress.releaseLabel" . }}")
   kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8080:80
   echo "Visit http://127.0.0.1:8080 to access your application."
 {{- end }}

@@ -225,6 +225,7 @@ Parameter | Description | Default
 `revisionHistoryLimit` | The number of old history to retain to allow rollback. | `10`
 `tcp` | TCP service key:value pairs. The value is evaluated as a template. | `{}`
 `udp` | UDP service key:value pairs The value is evaluated as a template. | `{}`
+`releaseLabelOverride` | If provided, the value will be used as the `release` label instead of .Release.Name | `""`
 
 These parameters can be passed via Helm's `--set` option
 ```console
