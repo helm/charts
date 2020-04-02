@@ -123,6 +123,9 @@ extraVolumeMounts: []
 
 tolerations: []
 
+# Labels added to the pod
+podLabels: {}
+
 # Annotations added to the pod
 podAnnotations: {}
 

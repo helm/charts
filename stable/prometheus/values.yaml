@@ -13,15 +13,19 @@ serviceAccounts:
   alertmanager:
     create: true
     name:
+    annotations: {}
   nodeExporter:
     create: true
     name:
+    annotations: {}
   pushgateway:
     create: true
     name:
+    annotations: {}
   server:
     create: true
     name:
+    annotations: {}
 
 alertmanager:
   ## If false, alertmanager will not be installed

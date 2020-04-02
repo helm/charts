@@ -50,7 +50,7 @@ livenessProbe:
 
 image:
   repository: grafana/grafana
-  tag: 6.6.2
+  tag: 6.7.1
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -94,6 +94,7 @@ downloadDashboardsImage:
 
 downloadDashboards:
   env: {}
+  resources: {}
 
 ## Pod Annotations
 # podAnnotations: {}
@@ -118,6 +119,12 @@ service:
   annotations: {}
   labels: {}
   portName: service
+
+extraExposePorts: []
+ # - name: keycloak
+ #   port: 8080
+ #   targetPort: 8080
+ #   type: ClusterIP
 
 ingress:
   enabled: false
