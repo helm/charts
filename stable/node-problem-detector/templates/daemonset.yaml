@@ -55,7 +55,7 @@ spec:
 {{- end }}
           volumeMounts:
             - name: log
-              mountPath: /var/log
+              mountPath: {{ .Values.hostpath.logdir }}
             - name: localtime
               mountPath: /etc/localtime
               readOnly: true
