@@ -2,7 +2,7 @@
 ## ref: https://hub.docker.com/r/library/cassandra/
 image:
   repo: cassandra
-  tag: 3.11.5
+  tag: 3.11.6
   pullPolicy: IfNotPresent
   ## Specify ImagePullSecrets for Pods
   ## ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
@@ -212,10 +212,9 @@ backup:
 ## Cassandra exported configuration
 ## ref: https://github.com/criteo/cassandra_exporter
 exporter:
-  # If exporter is enabled this will create a ServiceMonitor by default as well
-  enabled: true
-  servicemonitor:
-    enabled: true
+  enabled: false
+  serviceMonitor:
+    enabled: false
     additionalLabels: {}
       # prometheus: default
   image:

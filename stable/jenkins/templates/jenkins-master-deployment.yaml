@@ -331,7 +331,7 @@ spec:
             - name: jenkins-home
               mountPath: {{ .Values.master.jenkinsHome }}
               {{- if .Values.persistence.subPath }}
-                subPath: {{ .Values.persistence.subPath }}
+              subPath: {{ .Values.persistence.subPath }}
               {{- end }}
 {{- end}}
 

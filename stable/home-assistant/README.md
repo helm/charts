@@ -151,6 +151,15 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `podAnnotations`            | Key-value pairs to add as pod annotations  | `{}` |
 | `extraVolumes`            | Any extra volumes to define for the pod  | `{}` |
 | `extraVolumeMounts`       | Any extra volumes mounts to define for each container of the pod  | `{}` |
+| `monitoring.enabled`                          | Enables Monitoring support | `false` |
+| `monitoring.serviceMonitor.enabled`           | Setup a ServiceMonitor to configure scraping | `false` |
+| `monitoring.serviceMonitor.namespace`         | Set the namespace the ServiceMonitor should be deployed | `false` |
+| `monitoring.serviceMonitor.interval`          | Set how frequently Prometheus should scrape | `30` |
+| `monitoring.serviceMonitor.labels`            | Set labels for the ServiceMonitor, use this to define your scrape label for Prometheus Operator | `{}` |
+| `monitoring.serviceMonitor.bearerTokenFile`   | Set bearerTokenFile for home-assistant auth (use long lived access tokens) | `nil` |
+| `monitoring.serviceMonitor.bearerTokenSecret` | Set bearerTokenSecret for home-assistant auth (use long lived access tokens) | `nil` |
+
+
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
