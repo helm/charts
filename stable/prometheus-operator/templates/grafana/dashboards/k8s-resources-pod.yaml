@@ -78,7 +78,7 @@ data:
                                 "expr": "sum(namespace_pod_name_container_name:container_cpu_usage_seconds_total:sum_rate{namespace=\"$namespace\", pod_name=\"$pod\", container_name!=\"POD\", cluster=\"$cluster\"}) by (container_name)",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{container_name}}`}}",
+                                "legendFormat": "{{`{{`}}container_name{{`}}`}}",
                                 "legendLink": null,
                                 "step": 10
                             }
@@ -443,7 +443,7 @@ data:
                                 "expr": "sum(container_memory_rss{cluster=\"$cluster\", namespace=\"$namespace\", pod_name=\"$pod\", container_name!=\"POD\", container_name!=\"\"}) by (container_name)",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{container_name}}`}} (RSS)",
+                                "legendFormat": "{{`{{`}}container_name{{`}}`}} (RSS)",
                                 "legendLink": null,
                                 "step": 10
                             },
@@ -451,7 +451,7 @@ data:
                                 "expr": "sum(container_memory_cache{cluster=\"$cluster\", namespace=\"$namespace\", pod_name=\"$pod\", container_name!=\"POD\", container_name!=\"\"}) by (container_name)",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{container_name}}`}} (Cache)",
+                                "legendFormat": "{{`{{`}}container_name{{`}}`}} (Cache)",
                                 "legendLink": null,
                                 "step": 10
                             },
@@ -459,7 +459,7 @@ data:
                                 "expr": "sum(container_memory_swap{cluster=\"$cluster\", namespace=\"$namespace\", pod_name=\"$pod\", container_name!=\"POD\", container_name!=\"\"}) by (container_name)",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{container_name}}`}} (Swap)",
+                                "legendFormat": "{{`{{`}}container_name{{`}}`}} (Swap)",
                                 "legendLink": null,
                                 "step": 10
                             }
