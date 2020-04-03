@@ -42,6 +42,7 @@ The following table lists the configurable parameters for this chart and their d
 | `image.pullPolicy`                    | Image pull policy                          | `IfNotPresent`                                               |
 | `image.repository`                    | Image                                      | `k8s.gcr.io/node-problem-detector`                           |
 | `image.tag`                           | Image tag                                  | `v0.6.3`                                                     |
+| `hostpath.logdir`                     | Log directory path on K8s host             | `/var/log`
 | `nameOverride`                        | Override the name of the chart             | `nil`                                                        |
 | `rbac.create`                         | RBAC                                       | `true`                                                       |
 | `rbac.pspEnabled`                     | PodSecuritypolicy                          | `false`                                                      |
