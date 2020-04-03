@@ -30,6 +30,10 @@ spec:
       {{- end }}
     spec:
       serviceAccountName: {{ template "rethinkdb.serviceAccountName" . }}
+      {{- if .Values.cluster.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.cluster.nodeSelector | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ template "rethinkdb.name" . }}-cluster
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"

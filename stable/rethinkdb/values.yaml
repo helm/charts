@@ -7,6 +7,7 @@ image:
 # RethinkDB Cluster Config
 cluster:
   replicas: 3
+  nodeSelector: {}
   resources: {}
     # limits:
     #   cpu: 100m
@@ -54,6 +55,7 @@ cluster:
 # RethinkDB Proxy Config
 proxy:
   replicas: 1
+  nodeSelector: {}
   resources: {}
     # limits:
     #   cpu: 100m

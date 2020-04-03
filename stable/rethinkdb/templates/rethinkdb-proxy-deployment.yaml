@@ -29,6 +29,10 @@ spec:
       {{- end }}
     spec:
       serviceAccountName: {{ template "rethinkdb.serviceAccountName" . }}
+      {{- if .Values.proxy.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.proxy.nodeSelector | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ template "rethinkdb.name" . }}-proxy
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
