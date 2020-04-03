@@ -2,6 +2,7 @@
 {{- $releaseName := .Release.Name -}}
 {{- $servicePort := .Values.HttpPort -}}
 {{- $serviceName := include "consul.fullname" . -}}
+{{- $serviceHost := .Values.uiIngress.path }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -27,8 +28,8 @@ spec:
           - backend:
               serviceName: {{ $serviceName }}
               servicePort: {{ $servicePort }}
-          {{- if .Values.uiIngress.path }}
-            path: {{ .Values.uiIngresspath }}
+          {{- if $serviceHost }}
+            path: {{ $serviceHost }}
           {{- end }}
   {{- end -}}
   {{- if .Values.uiIngress.tls }}

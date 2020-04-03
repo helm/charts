@@ -2,11 +2,31 @@
 
 [kubewatch](https://github.com/bitnami-labs/kubewatch) is a Kubernetes watcher that currently publishes notification to Slack. Run it in your k8s cluster, and you will get event notifications in a slack channel.
 
+## This Helm chart is deprecated
+
+Given the [`stable` deprecation timeline](https://github.com/helm/charts#deprecation-timeline), the Bitnami maintained Kubewatch Helm chart is now located at [bitnami/charts](https://github.com/bitnami/charts/).
+
+The Bitnami repository is already included in the Hubs and we will continue providing the same cadence of updates, support, etc that we've been keeping here these years. Installation instructions are very similar, just adding the _bitnami_ repo and using it during the installation (`bitnami/<chart>` instead of `stable/<chart>`)
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm install my-release bitnami/<chart>           # Helm 3
+$ helm install --name my-release bitnami/<chart>    # Helm 2
+```
+
+To update an exisiting _stable_ deployment with a chart hosted in the bitnami repository you can execute
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm upgrade my-release bitnami/<chart>
+```
+
+Issues and PRs related to the chart itself will be redirected to `bitnami/charts` GitHub repository. In the same way, we'll be happy to answer questions related to this migration process in [this issue](https://github.com/helm/charts/issues/20969) created as a common place for discussion.
 
 ## TL;DR;
 
 ```console
-$ helm install stable/kubewatch
+$ helm install my-release stable/kubewatch
 ```
 
 ## Introduction
@@ -23,7 +43,7 @@ This chart bootstraps a kubewatch deployment on a [Kubernetes](http://kubernetes
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install stable/kubewatch --name my-release
+$ helm install my-release stable/kubewatch
 ```
 
 The command deploys kubewatch on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
@@ -91,14 +111,14 @@ The following table lists the configurable parameters of the kubewatch chart and
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install stable/kubewatch --name my-release \
+$ helm install my-release stable/kubewatch \
   --set=slack.channel="#bots",slack.token="XXXX-XXXX-XXXX"
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install stable/kubewatch --name my-release -f values.yaml
+$ helm install my-release -f values.yaml stable/kubewatch
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

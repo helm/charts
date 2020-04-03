@@ -43,6 +43,7 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 
 | Parameter                                 | Description                                                                      | Default                                                                      |
 | ----------------------------------------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `kind`                                    | You can choose between `Deployment` or `DaemonSet`                               | `Deployment`                                                                 |
 | `config`                                  | Prometheus blackbox configuration                                                | {}                                                                           |
 | `secretConfig`                            | Whether to treat blackbox configuration as secret                                | `false`                                                                      |
 | `extraArgs`                               | Optional flags for blackbox                                                      | `[]`                                                                         |
@@ -63,6 +64,7 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 | `podAnnotations`                          | annotations to add to each pod                                                   | `{}`                                                                         |
 | `podDisruptionBudget`                     | pod disruption budget                                                            | `{}`                                                                         |
 | `priorityClassName`                       | priority class name                                                              | None                                                                         |
+| `allowIcmp`                               | whether to enable ICMP probes, by giving the pods `CAP_NET_RAW` and running as root | `false`                                                                   |
 | `resources`                               | pod resource requests & limits                                                   | `{}`                                                                         |
 | `restartPolicy`                           | container restart policy                                                         | `Always`                                                                     |
 | `service.annotations`                     | annotations for the service                                                      | `{}`                                                                         |
@@ -70,6 +72,9 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 | `service.type`                            | type of service to create                                                        | `ClusterIP`                                                                  |
 | `service.port`                            | port for the blackbox http service                                               | `9115`                                                                       |
 | `service.externalIPs`                     | list of external ips                                                             | []                                                                           |
+| `serviceAccount.create`                   | Specifies whether a service account should be created.                           | `false`                                                                      |
+| `serviceAccount.name`                     | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template |                                 |
+| `serviceAccount.annotations`              | ServiceAccount annotations                                                       |                                                                              |
 | `serviceMonitor.enabled`                  | If true, a ServiceMonitor CRD is created for a prometheus operator               | `false`                                                                      |
 | `serviceMonitor.defaults.labels`          | Labels for prometheus operator                                                   | `{}`                                                                         |
 | `serviceMonitor.defaults.interval`        | Interval for prometheus operator endpoint                                        | `30s`                                                                        |

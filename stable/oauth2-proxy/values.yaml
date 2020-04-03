@@ -30,7 +30,7 @@ config:
 
 image:
   repository: "quay.io/pusher/oauth2_proxy"
-  tag: "v4.0.0"
+  tag: "v5.1.0"
   pullPolicy: "IfNotPresent"
 
 # Optionally specify an array of imagePullSecrets.
@@ -115,6 +115,9 @@ tolerations: []
 # Node labels for pod assignment
 # Ref: https://kubernetes.io/docs/user-guide/node-selection/
 nodeSelector: {}
+
+# Whether to use secrets instead of environment values for setting up OAUTH2_PROXY variables
+proxyVarsAsSecrets: true
 
 # Configure Kubernetes liveness and readiness probes.
 # Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/

@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ include "pgadmin.fullname" . }}
   labels:
-{{ include "pgadmin.labels" . | indent 4 }}
+    {{- include "pgadmin.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:

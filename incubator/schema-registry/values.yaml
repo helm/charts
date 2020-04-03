@@ -59,10 +59,19 @@ kafkaStore:
   ## Additional Java arguments to pass to Kafka.
   # schemaRegistryOpts: -Dfoo=bar
 
-## Readiness probe config.
+## Liveness and readiness probe config.
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
 ##
+livenessProbe:
+  httpGet:
+    path: /
+    port: 8081
+  initialDelaySeconds: 10
+  timeoutSeconds: 5
 readinessProbe:
+  httpGet:
+    path: /
+    port: 8081
   initialDelaySeconds: 10
   periodSeconds: 10
   timeoutSeconds: 5

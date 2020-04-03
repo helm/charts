@@ -3,11 +3,11 @@ kind: Service
 metadata:
   name: {{ template "neo4j.fullname" . }}
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    app: {{ template "neo4j.name" . }}
-    component: core
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app.kubernetes.io/name: {{ template "neo4j.name" . }}
+    app.kubernetes.io/component: core
 spec:
   clusterIP: None
   ports:
@@ -18,6 +18,6 @@ spec:
       port: 7687
       targetPort: 7687
   selector:
-    app: {{ template "neo4j.name" . }}
-    release: {{ .Release.Name | quote }}
-    component: core
+    app.kubernetes.io/name: {{ template "neo4j.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/component: core

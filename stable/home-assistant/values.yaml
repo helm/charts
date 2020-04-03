@@ -4,7 +4,7 @@
 
 image:
   repository: homeassistant/home-assistant
-  tag: 0.103.3
+  tag: 0.107.7
   pullPolicy: IfNotPresent
   pullSecrets: []
 
@@ -15,21 +15,29 @@ strategyType: Recreate
 probes:
   liveness:
     enabled: true
+    scheme: HTTP
     initialDelaySeconds: 60
     failureThreshold: 5
     timeoutSeconds: 10
   readiness:
     enabled: true
+    scheme: HTTP
     initialDelaySeconds: 60
     failureThreshold: 5
     timeoutSeconds: 10
   startup:
     enabled: false
+    scheme: HTTP
     failureThreshold: 30
     periodSeconds: 10
 service:
   type: ClusterIP
   port: 8123
+  portName: api
+  additionalPorts: {}
+  # - name: homematicproxy
+  #   port: 2001
+  #   targetPort: 2001
   annotations: {}
   labels: {}
   clusterIP: ""
@@ -40,6 +48,7 @@ service:
   loadBalancerIP: ""
   loadBalancerSourceRanges: []
   # nodePort: 30000
+  publishNotReadyAddresses: false
 
 ingress:
   enabled: false
@@ -195,10 +204,13 @@ monitoring:
     # namespace: monitoring
     # Set how frequently Prometheus should scrape
     # interval: 30s
-    # Set path to beats-exporter telemtery-path
-    # telemetryPath: /metrics
     # Set labels for the ServiceMonitor, use this to define your scrape label for Prometheus Operator
     # labels:
+    # Set bearerTokenFile for home assistant auth (use long lived access tokens)
+    # bearerTokenFile:
+    # Set bearerTokenSecret for home assistant auth (use long lived access tokens)
+    # bearerTokenSecret:
+
 
 vscode:
   enabled: false

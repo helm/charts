@@ -41,17 +41,18 @@ spec:
       annotations: {{- toYaml . | nindent 8 }}
     {{- end }}
     spec:
-    {{- if or .Values.image.credentials (and .Values.tls.enabled .Values.tls.init.image.credentials) }}
+    {{- if or .Values.image.credentials (and .Values.tls.enabled .Values.tls.init.image.credentials (not .Values.tls.certs.provided)) }}
       imagePullSecrets:
       {{- if .Values.image.credentials }}
         - name: {{ template "cockroachdb.fullname" . }}.db.registry
       {{- end }}
-      {{- if and .Values.tls.enabled .Values.tls.init.image.credentials }}
+      {{- if and .Values.tls.enabled .Values.tls.init.image.credentials (not .Values.tls.certs.provided) }}
         - name: {{ template "cockroachdb.fullname" . }}.init-certs.registry
       {{- end }}
     {{- end }}
     {{- if .Values.tls.enabled }}
       serviceAccountName: {{ template "cockroachdb.tls.serviceAccount.name" . }}
+      {{- if not .Values.tls.certs.provided }}
       initContainers:
         # The init-certs container sends a CSR (certificate signing request) to
         # the Kubernetes cluster.
@@ -86,6 +87,7 @@ spec:
           volumeMounts:
             - name: certs
               mountPath: /cockroach-certs/
+      {{- end }}
     {{- end }}
     {{- if or .Values.statefulset.nodeAffinity .Values.statefulset.podAffinity .Values.statefulset.podAntiAffinity }}
       affinity:
@@ -268,7 +270,30 @@ spec:
         {{- end }}
       {{- if .Values.tls.enabled }}
         - name: certs
+          {{- if .Values.tls.certs.provided }}
+          {{- if .Values.tls.certs.tlsSecret }}
+          projected:
+            sources:
+            - secret:
+                name: {{ .Values.tls.certs.nodeSecret }}
+                items:
+                - key: ca.crt
+                  path: ca.crt
+                  mode: 0400
+                - key: tls.crt
+                  path: node.crt
+                  mode: 0400
+                - key: tls.key
+                  path: node.key
+                  mode: 0400
+          {{- else }}
+          secret:
+            secretName: {{ .Values.tls.certs.nodeSecret }}
+            defaultMode: 0400
+          {{- end }}
+          {{- else }}
           emptyDir: {}
+          {{- end }}
       {{- end }}
       {{- range .Values.statefulset.secretMounts }}
         - name: {{ printf "secret-%s" . | quote }}

@@ -5,7 +5,7 @@ strategy:
     maxUnavailable: 0
 image:
   repository: chartmuseum/chartmuseum
-  tag: v0.11.0
+  tag: v0.12.0
   pullPolicy: IfNotPresent
 env:
   open:
@@ -140,6 +140,14 @@ service:
   annotations: {}
   labels: {}
 
+serviceMonitor:
+  enabled: false
+  # namespace: prometheus
+  labels: {}
+  metricsPath: "/metrics"
+  # timeout: 60
+  # interval: 60
+
 resources: {}
 #  limits:
 #    cpu: 100m
@@ -170,9 +178,10 @@ serviceAccount:
 
 # UID/GID 1000 is the default user "chartmuseum" used in
 # the container image starting in v0.8.0 and above. This
-# is required for local persistant storage. If your cluster
+# is required for local persistent storage. If your cluster
 # does not allow this, try setting securityContext: {}
 securityContext:
+  enabled: true
   fsGroup: 1000
 
 nodeSelector: {}
@@ -186,6 +195,7 @@ persistence:
   accessMode: ReadWriteOnce
   size: 8Gi
   labels: {}
+  path: /storage
   #   name: value
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
@@ -210,6 +220,22 @@ persistence:
     nfs:
       server:
       path:
+
+## Init containers parameters:
+## volumePermissions: Change the owner of the persistent volume mountpoint to RunAsUser:fsGroup
+##
+volumePermissions:
+  image:
+    registry: docker.io
+    repository: bitnami/minideb
+    tag: buster
+    pullPolicy: Always
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistryKeySecretName
 
 ## Ingress for load balancer
 ingress:

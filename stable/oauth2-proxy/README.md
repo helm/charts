@@ -76,7 +76,7 @@ Parameter | Description | Default
 `httpScheme` | `http` or `https`. `name` used for port on the deployment. `httpGet` port `name` and `scheme` used for `liveness`- and `readinessProbes`. `name` and `targetPort` used for the service. | `http`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.repository` | Image repository | `quay.io/pusher/oauth2_proxy`
-`image.tag` | Image tag | `v4.0.0`
+`image.tag` | Image tag | `v5.1.0`
 `imagePullSecrets` | Specify image pull secrets | `nil` (does not add image pull secrets to deployed pods)
 `ingress.enabled` | Enable Ingress | `false`
 `ingress.path` | Ingress accepted path | `/`
@@ -107,6 +107,7 @@ Parameter | Description | Default
 `tolerations` | list of node taints to tolerate | `[]`
 `securityContext.enabled` | enable Kubernetes security context | `false`
 `securityContext.runAsNonRoot` | make sure that the container runs as a non-root user | `true`
+`proxyVarsAsSecrets` | choose between environment values or secrets for setting up OAUTH2_PROXY variables. When set to false, remember to add the variables OAUTH2_PROXY_CLIENT_ID, OAUTH2_PROXY_CLIENT_SECRET, OAUTH2_PROXY_COOKIE_SECRET in extraEnv | `true`
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

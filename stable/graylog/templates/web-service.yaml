@@ -7,11 +7,7 @@ metadata:
 {{- end }}
   name: {{ template "graylog.fullname" . }}-web
   labels:
-    app.kubernetes.io/name: {{ template "graylog.name" . }}
-    helm.sh/chart: {{ template "graylog.chart" . }}
-    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
-    app.kubernetes.io/instance: "{{ .Release.Name }}"
-    app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
+{{ include "graylog.metadataLabels" . | indent 4 }}
     app.kubernetes.io/component: "web"
 spec:
   ports:
@@ -24,6 +20,12 @@ spec:
       nodePort:  {{ .Values.graylog.service.nodePort }}
   {{- end }}
 {{- end }}
+{{- range .Values.graylog.service.ports }}
+    - name: {{ .name }}
+      port: {{ .port }}
+      protocol: {{ .protocol }}
+      targetPort: {{ .port }}
+{{- end }}
 {{- if .Values.graylog.service.externalIPs }}
   externalIPs:
 {{ toYaml .Values.graylog.service.externalIPs | indent 4 }}
@@ -32,7 +34,7 @@ spec:
   {{- if .Values.graylog.service.clusterIP }}
   clusterIP:  {{ .Values.graylog.service.clusterIP }}
   {{- end }}
-{{- end }}  
+{{- end }}
   selector:
     app.kubernetes.io/name: {{ template "graylog.name" . }}
     app.kubernetes.io/instance: "{{ .Release.Name }}"
