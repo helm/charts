@@ -11,7 +11,7 @@ metadata:
     chart: {{ template "nginx-ingress.chart" . }}
     component: "{{ .Values.controller.name }}"
     heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    release: {{ template "nginx-ingress.releaseLabel" . }}
     {{- if .Values.controller.metrics.serviceMonitor.additionalLabels }}
 {{ toYaml .Values.controller.metrics.serviceMonitor.additionalLabels | indent 4 }}
     {{- end }}
@@ -34,5 +34,5 @@ spec:
     matchLabels:
       app: {{ template "nginx-ingress.name" . }}
       component: "{{ .Values.controller.name }}"
-      release: {{ .Release.Name }}
+      release: {{ template "nginx-ingress.releaseLabel" . }}
 {{- end }}

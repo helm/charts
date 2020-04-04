@@ -24,42 +24,6 @@ spec:
   groups:
   - name: kube-apiserver-error
     rules:
-    - alert: ErrorBudgetBurn
-      annotations:
-        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-errorbudgetburn
-      expr: |-
-        (
-          status_class_5xx:apiserver_request_total:ratio_rate1h{job="apiserver"} > (14.4*0.010000)
-          and
-          status_class_5xx:apiserver_request_total:ratio_rate5m{job="apiserver"} > (14.4*0.010000)
-        )
-        or
-        (
-          status_class_5xx:apiserver_request_total:ratio_rate6h{job="apiserver"} > (6*0.010000)
-          and
-          status_class_5xx:apiserver_request_total:ratio_rate30m{job="apiserver"} > (6*0.010000)
-        )
-      labels:
-        job: apiserver
-        severity: critical
-    - alert: ErrorBudgetBurn
-      annotations:
-        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-errorbudgetburn
-      expr: |-
-        (
-          status_class_5xx:apiserver_request_total:ratio_rate1d{job="apiserver"} > (3*0.010000)
-          and
-          status_class_5xx:apiserver_request_total:ratio_rate2h{job="apiserver"} > (3*0.010000)
-        )
-        or
-        (
-          status_class_5xx:apiserver_request_total:ratio_rate3d{job="apiserver"} > (0.010000)
-          and
-          status_class_5xx:apiserver_request_total:ratio_rate6h{job="apiserver"} > (0.010000)
-        )
-      labels:
-        job: apiserver
-        severity: warning
     - expr: |-
         sum by (status_class) (
           label_replace(
