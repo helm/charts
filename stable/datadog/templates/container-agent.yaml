@@ -46,10 +46,6 @@
       value: {{ .Values.datadog.acExclude | quote }}
     {{- end }}
     {{- if not .Values.clusterAgent.enabled }}
-    {{- if .Values.datadog.leaderElection }}
-    - name: DD_LEADER_ELECTION
-      value: {{ .Values.datadog.leaderElection | quote}}
-    {{- end }}
     {{- if .Values.datadog.leaderLeaseDuration }}
     - name: DD_LEADER_LEASE_DURATION
       value: {{ .Values.datadog.leaderLeaseDuration | quote }}
