@@ -34,7 +34,7 @@ service:
   type: ClusterIP
   port: 8123
   portName: api
-  additionalPorts: {}
+  additionalPorts: []
   # - name: homematicproxy
   #   port: 2001
   #   targetPort: 2001
@@ -256,6 +256,51 @@ vscode:
     labels: {}
     clusterIP: ""
     ## List of IP addresses at which the hass-vscode service is available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
+    externalIPs: []
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+    # nodePort: 30000
+
+appdaemon:
+  enabled: false
+
+  ## code-server container image
+  ##
+  image:
+    repository: acockburn/appdaemon
+    tag: 3.0.5
+    pullPolicy: IfNotPresent
+
+  ## Home Assistant API token
+  # haToken:
+
+  ## Additional hass-vscode container environment variable
+  ## For instance to add a http_proxy
+  ##
+  extraEnv: {}
+
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - appdaemon.local
+    tls: []
+    #  - secretName: appdaemon-tls
+    #    hosts:
+    #      - appdaemon.local
+
+  service:
+    type: ClusterIP
+    port: 5050
+    annotations: {}
+    labels: {}
+    clusterIP: ""
+    ## List of IP addresses at which the hass-appdaemon service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
     ##
     externalIPs: []

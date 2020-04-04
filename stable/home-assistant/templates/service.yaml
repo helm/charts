@@ -63,6 +63,15 @@ spec:
       nodePort: {{.Values.vscode.service.nodePort}}
 {{ end }}
 {{- end }}
+{{- if .Values.appdaemon.enabled }}
+    - name: appdaemon
+      port: {{ .Values.appdaemon.service.port }}
+      protocol: TCP
+      targetPort: 5050
+{{ if (and (eq .Values.appdaemon.service.type "NodePort") (not (empty .Values.appdaemon.service.nodePort))) }}
+      nodePort: {{.Values.appdaemon.service.nodePort}}
+{{ end }}
+{{- end }}
 {{- if .Values.service.additionalPorts }}
     {{- .Values.service.additionalPorts | toYaml | indent 4 }}
 {{- end }}
