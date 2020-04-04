@@ -147,6 +147,9 @@ persistentVolume:
   size: 10Gi
   annotations: {}
 
+# Annotations to be added to the secrets
+secretAnnotations: {}
+
 # Annotations to be added to the service
 serviceAnnotations: {}
 
