@@ -7,9 +7,9 @@
 {{ toYaml .Values.agents.containers.processAgent.resources | indent 4 }}
   env:
     {{- include "containers-common-env" . | nindent 4 }}
-    {{- if not (kindIs "invalid" .Values.datadog.processAgent.enabled) }}
+    {{- if .Values.datadog.processAgent.processCollection }}
     - name: DD_PROCESS_AGENT_ENABLED
-      value: {{ .Values.datadog.processAgent.enabled | quote }}
+      value: "true"
     {{- end }}
     - name: DD_LOG_LEVEL
       value: {{ .Values.agents.containers.processAgent.logLevel | default .Values.datadog.logLevel | quote }}
@@ -36,11 +36,9 @@
     - name: procdir
       mountPath: /host/proc
       readOnly: true
-    {{- if .Values.datadog.criSocketPath }}
-    - name: runtimesocketdir
-      mountPath: {{ print "/host/" (dir .Values.datadog.criSocketPath) | clean }}
+    - name: runtimesocket
+      mountPath: {{ template "datadog.dockerOrCriSocketPath" . }}
       readOnly: true
-    {{- end }}
     {{- if .Values.datadog.systemProbe.enabled }}
     - name: sysprobe-socket-dir
       mountPath: /opt/datadog-agent/run

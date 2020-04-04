@@ -78,6 +78,7 @@ and their default values.
 | `definitions.vhosts`                                | Additional vhosts | `""` |
 | `definitions.parameters`                            | Additional parameters | `""` |
 | `definitions.permissions`                           | Additional permissions | `""` |
+| `definitions.topicPermissions`                      | Additional permissions for topic management | `""` |
 | `definitions.queues`                                | Pre-created queues | `""` |
 | `definitions.exchanges`                             | Pre-created exchanges | `""` |
 | `definitions.bindings`                              | Pre-created bindings | `""` |
@@ -154,6 +155,7 @@ and their default values.
 | `rbac.create`                                       | If true, create & use RBAC resources                                                                                                                                                                  | `true`                                                     |
 | `replicaCount`                                      | Number of replica                                                                                                                                                                                     | `3`                                                        |
 | `resources`                                         | CPU/Memory resource requests/limits                                                                                                                                                                   | `{}`                                                       |
+| `initContainer.resources`                           | CPU/Memory resource requests/limits for init container                                                                                                                                                | `{}` 
 | `schedulerName`                                     | alternate scheduler name                                                                                                                                                                              | `nil`                                                      |
 | `securityContext.fsGroup`                           | Group ID for the container's volumes                                                                                                                                                                  | `101`                                                      |
 | `securityContext.runAsGroup`                        | Group ID for the container                                                                                                                                                                            | `101`                                                      |
@@ -166,6 +168,7 @@ and their default values.
 | `service.clusterIP`                                 | IP address to assign to the service                                                                                                                                                                   | None                                                       |
 | `service.externalIPs`                               | Service external IP addresses                                                                                                                                                                         | `[]`                                                       |
 | `service.loadBalancerIP`                            | IP address to assign to load balancer (if supported)                                                                                                                                                  | `""`                                                       |
+| `service.externalTrafficPolicy`                     | Sets the external traffic policy for the service                                                                                                                                                     | `""`                                                       |
 | `service.loadBalancerSourceRanges`                  | List of IP CIDRs allowed access to load balancer (if supported)                                                                                                                                       | `[]`                                                       |
 | `service.type`                                      | Type of service to create                                                                                                                                                                             | `ClusterIP`                                                |
 | `ingress.enabled`                                   | Enable Ingress                                                                                                                                                                                        | `false`                                                    |
@@ -185,7 +188,6 @@ and their default values.
 | `busyboxImage.tag`                                  | Busybox initContainer image tag                                                                                                                                                                       | `1.30.1`                                                   |
 | `busyboxImage.pullPolicy`                           | Busybox initContainer image pullPolicy                                                                                                                                                                | `IfNotPresent`                                             |
 | `clusterDomain`                                     | The internal Kubernetes cluster domain                                                                                                                                                                | `cluster.local`                                            |
-
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash

@@ -109,9 +109,11 @@ The following table lists the configurable parameters of the Graylog chart and t
 | `graylog.tolerations`                   | Graylog server tolerations                                                                                                                            | `[]`                                  |
 | `graylog.nodeSelector`                  | Graylog server node selector                                                                                                                          | `{}`                                  |
 | `graylog.env`                           | Graylog server env variables                                                                                                                          | `{}`                                  |
+| `graylog.privileged`                    | Run as a privileged container                                                                                                        | `false`                                                |
 | `graylog.additionalJavaOpts`            | Graylog service additional `JAVA_OPTS`                                                                                                                | ``                                    |
 | `graylog.service.type`                  | Kubernetes Service type                                                                                                                               | `ClusterIP`                           |
 | `graylog.service.port`                  | Graylog Service port                                                                                                                                  | `9000`                                |
+| `graylog.service.ports`                 | Graylog Service extra ports                                                                                                                           | `[]`                                  |
 | `graylog.service.master.enabled`        | If true, Graylog Master Service will be created                                                                                                       | `true`                                |
 | `graylog.service.master.port`           | Graylog Master Service port                                                                                                                           | `9000`                                |
 | `graylog.service.master.annotations`    | Graylog Master Service annotations                                                                                                                    | `{}`                                  |
@@ -135,6 +137,7 @@ The following table lists the configurable parameters of the Graylog chart and t
 | `graylog.input`                         | Graylog Input configuration (YAML) Sees #Input section for detail                                                                                     | `{}`                                  |
 | `graylog.metrics.enabled`               | If true, add Prometheus annotations to pods                                                                                                           | `false`                               |
 | `graylog.geoip.enabled`                 | If true, Maxmind Geoip Lite will be installed to ${GRAYLOG_HOME}/etc/GeoLite2-City.mmdb                                                               | `false`                               |
+| `graylog.geoip.ddbbUri`                 | If set and geoip enabled,  Maxmind Geoip Lite will be installed from the URL you have defined to ${GRAYLOG_HOME}/etc/GeoLite2-City.mmdb                                                               | ``                               |
 | `graylog.plugins`                       | A list of Graylog installation plugins                                                                                                                | `[]`                                  |
 | `graylog.rootUsername`                  | Graylog root user name                                                                                                                                | `admin`                               |
 | `graylog.rootPassword`                  | Graylog root password. If not set, random 16-character alphanumeric string                                                                            | ``                                    |
@@ -165,6 +168,7 @@ The following table lists the configurable parameters of the Graylog chart and t
 | `graylog.provisioner.enabled`           | Enable optional Job to run an arbitrary Bash script                                                                                                   | `false`                               |
 | `graylog.provisioner.useGraylogServiceAccount` | Use the same ServiceAccount used by Graylog pod                                                                                                | `false`                               |
 | `graylog.provisioner.script`            | The contents of the provisioner Bash script                                                                                                           | ``                                    |
+| `graylog.sidecarContainers`             | Sidecar containers to run in the server statefulset                                                                                                   | `[]`                                  |
 | `graylog.extraVolumeMounts`             | Additional Volume mounts                                                                                                                              | `[]`                                  |
 | `graylog.extraVolumes`                  | Additional Volumes                                                                                                                                    | `[]`                                  |
 | `graylog.extraInitContainers`           | Additional Init containers                                                                                                                            | `[]`                                  |
@@ -200,6 +204,19 @@ You can enable input ports by edit the `input` values. For example, you want to 
       ports:
         - name: syslog
           port: 5410
+```
+
+OR, if you want to expose only a single service with all the input ports open, you can do so by specifying the `service.ports` value:
+
+```
+  service:
+    ports:
+      - name: gelf
+        port: 12222
+        protocol: TCP
+      - name: syslog
+        port: 5410
+        protocol: UDP
 ```
 
 Note: Name must be in IANA_SVC_NAME (at most 15 characters, matching regex [a-z0-9]([a-z0-9-]*[a-z0-9])* and it must contains at least one letter [a-z], hyphens cannot be adjacent to other hyphens)

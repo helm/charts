@@ -1,5 +1,9 @@
 ###### based on [dpage/pgadmin4]
 
+# Moved to new repo
+
+Duo to the deprecation timeline provided in [here](https://github.com/helm/charts), this chart has been moved towards a new repository that can be found [here](https://github.com/rowanruseler/helm-charts/tree/master/charts/pgadmin4).
+
 # pgAdmin
 
 [pgAdmin](https://www.pgadmin.org/) is the leading Open Source management tool for Postgres, the world’s most advanced Open Source database. pgAdmin is designed to meet the needs of both novice and experienced Postgres users alike, providing a powerful graphical interface that simplifies the creation, maintenance and use of database objects.

@@ -10,6 +10,12 @@ metadata:
   annotations:
     "helm.sh/hook": test-success
 spec:
+{{- if .Values.image.pullSecrets }}
+  imagePullSecrets:
+  {{- range $pullSecret := .Values.image.pullSecrets }}
+    - name: {{ $pullSecret }}
+  {{- end }}
+{{- end }}
   initContainers:
     - name: test-framework
       image: "{{ .Values.testFramework.image}}:{{ .Values.testFramework.tag }}"

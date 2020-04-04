@@ -19,7 +19,12 @@ rules:
       - get
       - update
 {{- if .Values.global.rbac.pspEnabled }}
+{{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
+{{- if semverCompare "> 1.15.0-0" $kubeTargetVersion }}
+  - apiGroups: ['policy']
+{{- else }}
   - apiGroups: ['extensions']
+{{- end }}
     resources: ['podsecuritypolicies']
     verbs:     ['use']
     resourceNames:
