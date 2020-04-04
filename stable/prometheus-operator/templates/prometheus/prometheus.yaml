@@ -227,6 +227,9 @@ spec:
   thanos:
 {{ toYaml .Values.prometheus.prometheusSpec.thanos | indent 4 }}
 {{- end }}
+{{- if .Values.prometheus.prometheusSpec.disableCompaction }}
+  disableCompaction: {{ .Values.prometheus.prometheusSpec.disableCompaction }}
+{{- end }}
   portName: {{ .Values.prometheus.prometheusSpec.portName }}
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.enforcedNamespaceLabel }}
