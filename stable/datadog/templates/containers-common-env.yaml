@@ -22,12 +22,6 @@
 {{- end }}
 - name: KUBERNETES
   value: "yes"
-{{- if not .Values.clusterAgent.enabled }}
-{{- if .Values.datadog.leaderElection }}
-- name: DD_LEADER_ELECTION
-  value: {{ .Values.datadog.leaderElection | quote}}
-{{- end }}
-{{- end }}
 {{- if .Values.datadog.site }}
 - name: DD_SITE
   value: {{ .Values.datadog.site | quote }}
