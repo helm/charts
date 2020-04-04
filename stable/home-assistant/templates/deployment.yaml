@@ -298,6 +298,8 @@ spec:
               value: {{ $value }}
             {{- end }}
           volumeMounts:
+          - mountPath: /ha-conf
+            name: config
           - mountPath: /conf
             subPath: appdaemon
             name: config
