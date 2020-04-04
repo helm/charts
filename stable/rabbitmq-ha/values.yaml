@@ -399,6 +399,8 @@ persistentVolume:
   ##   GKE, AWS & OpenStack)
   ##
   # storageClass: "-"
+  ## selector can be used to match an existing PersistentVolume
+  selector: {}
   name: data
   accessModes:
     - ReadWriteOnce

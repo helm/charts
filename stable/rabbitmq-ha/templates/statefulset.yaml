@@ -349,6 +349,10 @@ spec:
         storageClassName: "{{ .Values.persistentVolume.storageClass }}"
       {{- end }}
       {{- end }}
+      {{- with .Values.persistentVolume.selector }}
+        selector:
+          {{- toYaml . | nindent 10 }}
+      {{- end }}
 {{- else }}
         - name: {{ .Values.persistentVolume.name }}
           emptyDir: {}
