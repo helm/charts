@@ -216,6 +216,7 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.idleMinutes`        | Allows the Pod to remain active for reuse       | 0                      |
 | `agent.yamlTemplate`       | The raw yaml of a Pod API Object to merge into the agent spec | Not set                |
 | `agent.slaveConnectTimeout`| Timeout in seconds for an agent to be online    | 100                    |
+| `agent.podTemplates`       | Configures extra pod templates for the default kubernetes cloud | `{}`                              |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
@@ -481,6 +482,39 @@ master:
 
 Docs taken from https://github.com/jenkinsci/docker/blob/master/Dockerfile:
 _Jenkins is run with user `jenkins`, uid = 1000. If you bind mount a volume from the host or a data container,ensure you use the same uid_
+
+## Adding custom pod templates
+It is possible to add custom pod templates for the default configured kubernetes cloud.
+Add a key under `agent.podTemplates` for each pod template. Each key (prior to | character) is just a label, and can be any value.
+Keys are only used to give the pod template a meaningful name.  The only restriction is they may only contain RFC 1123 \ DNS label
+characters: lowercase letters, numbers, and hyphens. Each pod template can contain multiple containers.
+There's no need to add the *jnlp* container since the kubernetes plugin will automatically inject it into the pod.
+For this pod templates configuration to be loaded the following values must be set:
+```
+master.JCasC.enabled: true
+master.JCasC.defaultConfig: true
+```
+The example below creates a python pod template in the kubernetes cloud.
+```
+agent:
+  podTemplates:
+    python: |
+      - name: python
+        label: jenkins-python
+        serviceAccount: jenkins
+        containers:
+          - name: python
+            image: python:3
+            command: "/bin/sh -c"
+            args: "cat"
+            ttyEnabled: true
+            privileged: true
+            resourceRequestCpu: "400m"
+            resourceRequestMemory: "512Mi"
+            resourceLimitCpu: "1"
+            resourceLimitMemory: "1024Mi"
+```
+Best reference is https://<jenkins_url>/configuration-as-code/reference#Cloud-kubernetes.
 
 ## Running behind a forward proxy
 
