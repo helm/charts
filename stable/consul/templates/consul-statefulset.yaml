@@ -52,6 +52,10 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
     {{- end }}
+{{- if .Values.ImagePullSecretName }}
+      imagePullSecrets:
+      - name: {{ .Values.ImagePullSecretName }}
+{{- end -}}
       containers:
       - name: "{{ template "consul.fullname" . }}"
         image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"

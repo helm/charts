@@ -23,6 +23,7 @@ Replicas: 3
 Image: "consul"
 ImageTag: "1.5.3"
 ImagePullPolicy: "Always"
+# ImagePullSecretName: ""
 Resources: {}
  # requests:
  #   cpu: "100m"
