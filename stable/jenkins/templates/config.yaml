@@ -225,18 +225,18 @@ data:
 {{- if .Values.master.enableXmlConfig }}
     echo "false" > {{ .Values.master.jenkinsRef }}/secrets/slave-to-master-security-kill-switch;
 {{- if .Values.master.overwriteConfig }}
-    cp /var/jenkins_config/config.xml {{ $jenkinsHome }};
-    cp /var/jenkins_config/jenkins.CLI.xml {{ $jenkinsHome }};
-    cp /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml {{ $jenkinsHome }};
+    cp /var/jenkins_config/config.xml {{ .Values.master.jenkinsHome }};
+    cp /var/jenkins_config/jenkins.CLI.xml {{ .Values.master.jenkinsHome }};
+    cp /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml {{ .Values.master.jenkinsHome }};
   {{- if .Values.master.additionalConfig }}
   {{- range $key, $val := .Values.master.additionalConfig }}
     cp /var/jenkins_config/{{- $key }} {{ $jenkinsHome }};
   {{- end }}
   {{- end }}
 {{- else }}
-    yes n | cp -i /var/jenkins_config/config.xml {{ $jenkinsHome }};
-    yes n | cp -i /var/jenkins_config/jenkins.CLI.xml {{ $jenkinsHome }};
-    yes n | cp -i /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml {{ $jenkinsHome }};
+    yes n | cp -i /var/jenkins_config/config.xml {{ .Values.master.jenkinsHome }};
+    yes n | cp -i /var/jenkins_config/jenkins.CLI.xml {{ .Values.master.jenkinsHome }};
+    yes n | cp -i /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml {{ .Values.master.jenkinsHome }};
   {{- if .Values.master.additionalConfig }}
   {{- range $key, $val := .Values.master.additionalConfig }}
     yes n | cp -i /var/jenkins_config/{{- $key }} {{ $jenkinsHome }};
@@ -246,53 +246,53 @@ data:
 {{- else }}
 {{- if .Values.master.JCasC.enabled }}
     # Prevent Setup Wizard when JCasC is enabled
-    echo $JENKINS_VERSION > {{ $jenkinsHome }}/jenkins.install.UpgradeWizard.state
-    echo $JENKINS_VERSION > {{ $jenkinsHome }}/jenkins.install.InstallUtil.lastExecVersion
+    echo $JENKINS_VERSION > {{ .Values.master.jenkinsHome }}/jenkins.install.UpgradeWizard.state
+    echo $JENKINS_VERSION > {{ .Values.master.jenkinsHome }}/jenkins.install.InstallUtil.lastExecVersion
 {{- end }}
 {{- end }}
 {{- if .Values.master.overwritePlugins }}
     # remove all plugins from shared volume
-    rm -rf {{ $jenkinsHome }}/plugins/*
+    rm -rf {{ .Values.master.jenkinsHome }}/plugins/*
 {{- end }}
 {{- if .Values.master.installPlugins }}
     # Install missing plugins
-    cp /var/jenkins_config/plugins.txt {{ $jenkinsHome }};
+    cp /var/jenkins_config/plugins.txt {{ .Values.master.jenkinsHome }};
     rm -rf {{ .Values.master.jenkinsRef }}/plugins/*.lock
-    /usr/local/bin/install-plugins.sh `echo $(cat {{ $jenkinsHome }}/plugins.txt)`;
+    /usr/local/bin/install-plugins.sh `echo $(cat {{ .Values.master.jenkinsHome }}/plugins.txt)`;
     # Copy plugins to shared volume
     yes n | cp -i {{ .Values.master.jenkinsRef }}/plugins/* /var/jenkins_plugins/;
 {{- end }}
 {{- if .Values.master.scriptApproval }}
   {{- if .Values.master.overwriteConfig }}
-    cp /var/jenkins_config/scriptapproval.xml {{ $jenkinsHome }}/scriptApproval.xml;
+    cp /var/jenkins_config/scriptapproval.xml {{ .Values.master.jenkinsHome }}/scriptApproval.xml;
   {{- else }}
-    yes n | cp -i /var/jenkins_config/scriptapproval.xml {{ $jenkinsHome }}/scriptApproval.xml;
+    yes n | cp -i /var/jenkins_config/scriptapproval.xml {{ .Values.master.jenkinsHome }}/scriptApproval.xml;
   {{- end }}
 {{- end }}
 {{- if .Values.master.initScripts }}
-    mkdir -p {{ $jenkinsHome }}/init.groovy.d/;
+    mkdir -p {{ .Values.master.jenkinsHome }}/init.groovy.d/;
     {{- if .Values.master.overwriteConfig }}
-    rm -f {{ $jenkinsHome }}/init.groovy.d/*.groovy
+    rm -f {{ .Values.master.jenkinsHome }}/init.groovy.d/*.groovy
     {{- end }}
-    yes n | cp -i /var/jenkins_config/*.groovy {{ $jenkinsHome }}/init.groovy.d/;
+    yes n | cp -i /var/jenkins_config/*.groovy {{ .Values.master.jenkinsHome }}/init.groovy.d/;
 {{- end }}
 {{- if .Values.master.JCasC.enabled}}
   {{- if not .Values.master.sidecars.configAutoReload.enabled }}
-    mkdir -p {{ $jenkinsHome }}/casc_configs;
-    rm -rf {{ $jenkinsHome }}/casc_configs/*
+    mkdir -p {{ .Values.master.jenkinsHome }}/casc_configs;
+    rm -rf {{ .Values.master.jenkinsHome }}/casc_configs/*
     {{- if .Values.master.JCasC.configScripts }}
-    cp -v /var/jenkins_config/*.yaml {{ $jenkinsHome }}/casc_configs
+    cp -v /var/jenkins_config/*.yaml {{ .Values.master.jenkinsHome }}/casc_configs
     {{- end }}
   {{- end }}
 {{- end }}
 {{- if .Values.master.enableXmlConfig }}
 {{- if .Values.master.credentialsXmlSecret }}
-    yes n | cp -i /var/jenkins_credentials/credentials.xml {{ $jenkinsHome }};
+    yes n | cp -i /var/jenkins_credentials/credentials.xml {{ .Values.master.jenkinsHome }};
 {{- end }}
 {{- if .Values.master.jobs }}
     for job in $(ls /var/jenkins_jobs); do
-      mkdir -p {{ $jenkinsHome }}/jobs/$job
-      yes {{ if not .Values.master.overwriteJobs }}n{{ end }} | cp -i /var/jenkins_jobs/$job {{ $jenkinsHome }}/jobs/$job/config.xml
+      mkdir -p {{ .Values.master.jenkinsHome }}/jobs/$job
+      yes {{ if not .Values.master.overwriteJobs }}n{{ end }} | cp -i /var/jenkins_jobs/$job {{ .Values.master.jenkinsHome }}/jobs/$job/config.xml
     done
 {{- end }}
 {{- end }}
