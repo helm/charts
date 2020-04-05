@@ -87,11 +87,7 @@ data:
                   <alwaysPullImage>{{ .Values.agent.alwaysPullImage }}</alwaysPullImage>
                   <workingDir>/home/jenkins</workingDir>
                   <command>{{ .Values.agent.command }}</command>
-{{- if .Values.agent.args }}
                   <args>{{ .Values.agent.args }}</args>
-{{- else }}
-                  <args>${computer.jnlpmac} ${computer.name}</args>
-{{- end }}
                   <ttyEnabled>{{ .Values.agent.TTYEnabled }}</ttyEnabled>
                   # Resources configuration is a little hacky. This was to prevent breaking
                   # changes, and should be cleanned up in the future once everybody had
