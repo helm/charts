@@ -23,6 +23,10 @@ spec:
 {{ toYaml .Values.firefoxDebug.podAnnotations | indent 8 }}
       {{- end}}
     spec:
+      {{- if .Values.firefoxDebug.securityContext }}
+      securityContext:
+{{ toYaml .Values.firefoxDebug.securityContext | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.firefoxDebug.image }}:{{ .Values.firefoxDebug.tag }}"
