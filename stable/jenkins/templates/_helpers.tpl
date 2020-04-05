@@ -103,7 +103,7 @@ jenkins:
       templates:
       - containers:
         - alwaysPullImage: {{ .Values.agent.alwaysPullImage }}
-          args: "{{ .Values.agent.args | replace "$" "^$"}}"
+          args: "{{ .Values.agent.args | replace "$" "^$" }}"
           command: {{ .Values.agent.command }}
           envVars:
           - containerEnvVar:
