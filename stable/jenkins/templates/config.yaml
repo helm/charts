@@ -1,4 +1,5 @@
 {{- if not .Values.master.customConfigMap }}
+{{- $jenkinsHome := .Values.master.jenkinsHome -}}
 
 apiVersion: v1
 kind: ConfigMap
@@ -229,7 +230,7 @@ data:
     cp /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml {{ .Values.master.jenkinsHome }};
   {{- if .Values.master.additionalConfig }}
   {{- range $key, $val := .Values.master.additionalConfig }}
-    cp /var/jenkins_config/{{- $key }} {{ .Values.master.jenkinsHome }};
+    cp /var/jenkins_config/{{- $key }} {{ $jenkinsHome }};
   {{- end }}
   {{- end }}
 {{- else }}
@@ -238,7 +239,7 @@ data:
     yes n | cp -i /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml {{ .Values.master.jenkinsHome }};
   {{- if .Values.master.additionalConfig }}
   {{- range $key, $val := .Values.master.additionalConfig }}
-    yes n | cp -i /var/jenkins_config/{{- $key }} {{ .Values.master.jenkinsHome }};
+    yes n | cp -i /var/jenkins_config/{{- $key }} {{ $jenkinsHome }};
   {{- end }}
   {{- end }}
 {{- end }}
