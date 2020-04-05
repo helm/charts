@@ -5,6 +5,8 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.11.2 Configure agent.args in values.yaml
+
 ## 1.11.1 Support for master.additionalConfig
 
 Fixed a bug with jenkinsHome variable in range block when master.additionalConfig is set - Helm cannot evaluate field Values in type interface {}.

@@ -443,7 +443,7 @@ agent:
 
   # Executed command when side container gets started
   command:
-  args:
+  args: "${computer.jnlpmac} ${computer.name}"
   # Side container name
   sideContainerName: "jnlp"
   # Doesn't allocate pseudo TTY by default

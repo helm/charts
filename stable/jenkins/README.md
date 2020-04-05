@@ -208,7 +208,7 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.volumes`            | Additional volumes                              | `[]`                   |
 | `agent.envVars`            | Environment variables for the agent Pod         | `[]`                   |
 | `agent.command`            | Executed command when side container starts     | Not set                |
-| `agent.args`               | Arguments passed to executed command            | Not set                |
+| `agent.args`               | Arguments passed to executed command            | `${computer.jnlpmac} ${computer.name}` |
 | `agent.sideContainerName`  | Side container name in agent                    | jnlp                   |
 | `agent.TTYEnabled`         | Allocate pseudo tty to the side container       | false                  |
 | `agent.containerCap`       | Maximum number of agent                         | 10                     |
