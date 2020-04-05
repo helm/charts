@@ -91,6 +91,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `auth.metricsPassword`              | MongoDB clusterMonitor password                                           | ``                                                  |
 | `auth.existingMetricsSecret`        | If set, and existing secret with this name is used for the metrics user   | ``                                                  |
 | `auth.existingAdminSecret`          | If set, and existing secret with this name is used for the admin user     | ``                                                  |
+| `secretAnnotations`                 | Annotations to be added to the secret if auth is enabled                  | `{}`                                                |
 | `serviceAnnotations`                | Annotations to be added to the service                                    | `{}`                                                |
 | `configmap`                         | Content of the MongoDB config file                                        | ``                                                  |
 | `initMongodStandalone`              | If set, initContainer executes script in standalone mode                  | ``                                                  |
