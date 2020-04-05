@@ -103,11 +103,7 @@ jenkins:
       templates:
       - containers:
         - alwaysPullImage: {{ .Values.agent.alwaysPullImage }}
-          {{- if .Values.agent.args }}
-          args: "{{ .Values.agent.args }}"
-          {{- else }}
-          args: "^${computer.jnlpmac} ^${computer.name}"
-          {{- end }}
+          args: "{{ .Values.agent.args | replace "$" "^$" }}"
           command: {{ .Values.agent.command }}
           envVars:
           - containerEnvVar:
