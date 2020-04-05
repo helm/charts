@@ -30,7 +30,7 @@ The following table lists the configurable parameters of the consul chart and th
 | `Image`                 | Container image name                  | `consul`                                                   |
 | `ImageTag`              | Container image tag                   | `1.5.2`                                                    |
 | `ImagePullPolicy`       | Container pull policy                 | `Always`                                                   |
-| `ImagePullSecretName`   | Container image pull secret           | Not set                                                    |
+|`imagePullSecrets`       | Container image pull secrets          | `nil`                                                      |
 | `Replicas`              | k8s statefulset replicas              | `3`                                                        |
 | `Component`             | k8s selector key                      | `consul`                                                   |
 | `ConsulConfig`          | List of secrets and configMaps containing consul configuration | []                                |
