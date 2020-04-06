@@ -11,6 +11,6 @@ roleRef:
   name: {{ template "cluster-autoscaler.fullname" . }}
 subjects:
   - kind: ServiceAccount
-    name: {{ template "serviceaccount.name" . }}
+    name: {{ template "cluster-autoscaler.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
 {{- end -}}
