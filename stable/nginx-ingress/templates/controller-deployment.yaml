@@ -8,6 +8,9 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ template "nginx-ingress.releaseLabel" . }}
     app.kubernetes.io/component: controller
+    {{- if .Values.controller.deploymentLabels }}
+{{ toYaml .Values.controller.deploymentLabels | indent 4 }}
+    {{- end }}
   name: {{ template "nginx-ingress.controller.fullname" . }}
   annotations:
 {{ toYaml .Values.controller.deploymentAnnotations | indent 4}}
