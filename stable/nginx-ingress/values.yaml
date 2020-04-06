@@ -72,6 +72,9 @@ controller:
   ##
   ingressClass: nginx
 
+  # labels to add to the deployment metadata
+  deploymentLabels: {}
+
   # labels to add to the pod container metadata
   podLabels: {}
   #  key: value
@@ -490,6 +493,9 @@ defaultBackend:
   ## notes on enabling and using sysctls
   ##
   podSecurityContext: {}
+
+  # labels to add to the deployment metadata
+  deploymentLabels: {}
 
   # labels to add to the pod container metadata
   podLabels: {}
