@@ -32,7 +32,7 @@ $ git clone https://github.com/kubernetes/charts.git
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/sensu
+$ helm install my-release stable/sensu
 ```
 
 The command deploys Sensu on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -78,7 +78,7 @@ The following table lists the configurable parameters of the Sensu chart and the
 Configuration reference for sensu [Sensu/Docs](https://sensuapp.org/docs/latest/reference/)
 
 ```console
-$ helm install --name my-release \
+$ helm install my-release \
   --set imageTag=0.26.5 \
     stable/sensu
 ```
@@ -88,7 +88,7 @@ The above command sets the Sensu version to `0.26.5`.
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml stable/sensu
+$ helm install my-release -f values.yaml stable/sensu
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

@@ -17,7 +17,7 @@ This chart will do the following:
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/consul
+$ helm install my-release stable/consul
 ```
 
 ## Configuration
@@ -83,7 +83,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/consul
+$ helm install my-release -f values.yaml stable/consul
 ```
 > **Tip**: `ConsulConfig` is impossible to set using --set as it's not possible to set list of hashes with it at the moment, use a YAML file instead.
 

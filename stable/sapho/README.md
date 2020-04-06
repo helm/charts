@@ -18,7 +18,7 @@ It also packages the [MySQL chart](https://github.com/kubernetes/charts/tree/mas
 To install the chart:
 
 ```console
-$ helm install --name my-release stable/sapho
+$ helm install my-release stable/sapho
 ```
 > **Tip**: List all releases using `helm list`
 
@@ -67,7 +67,7 @@ The above command sets Sapho's JDBC connection's username and password to `root`
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml sapho
+$ helm install my-release -f values.yaml sapho
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

@@ -11,7 +11,7 @@ This chart bootstraps a hoard daemon on a [Kubernetes](http://kubernetes.io) clu
 To install the chart with the release name `my-release`, run:
 
 ```bash
-helm install --name my-release stable/hoard
+helm install my-release stable/hoard
 ```
 
 This installation defaults to persistent volume storage. The [configuration](#configuration) section below lists all possible parameters that can be configured.
@@ -69,13 +69,13 @@ The following table lists the configurable parameters of the Hoard chart and its
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release stable/hoard
+$ helm install my-release stable/hoard
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/hoard
+$ helm install my-release -f values.yaml stable/hoard
 ```
 
 ## Cloud Examples
@@ -86,21 +86,21 @@ For each of the supported cloud back-ends, please ensure you have the appropriat
 
 ```bash
 kubectl create secret generic cloud-credentials --from-literal access-key-id=${AWS_ACCESS_KEY_ID} --from-literal secret-access-key=${AWS_SECRET_ACCESS_KEY}
-helm install --name my-release stable/hoard --set storage.type=aws,storage.region="eu-central-1",storage.bucket="my-bucket",storage.prefix="folder",storage.secret="cloud-credentials"
+helm install my-release stable/hoard --set storage.type=aws,storage.region="eu-central-1",storage.bucket="my-bucket",storage.prefix="folder",storage.secret="cloud-credentials"
 ```
 
 ### [Azure](https://docs.microsoft.com/en-us/azure/storage/common/storage-account-manage)
 
 ```bash
 kubectl create secret generic cloud-credentials --from-literal storage-account-name=${AZURE_STORAGE_ACCOUNT_NAME} --from-literal storage-account-key=${AZURE_STORAGE_ACCOUNT_KEY}
-helm install --name my-release stable/hoard --set storage.type=azure,storage.bucket="my-bucket",storage.prefix="folder",storage.secret="cloud-credentials"
+helm install my-release stable/hoard --set storage.type=azure,storage.bucket="my-bucket",storage.prefix="folder",storage.secret="cloud-credentials"
 ```
 
 ### [GCP](https://cloud.google.com/iam/docs/creating-managing-service-account-keys)
 
 ```bash
 kubectl create secret generic cloud-credentials --from-literal service-key=${GCLOUD_SERVICE_KEY}
-helm install --name my-release stable/hoard --set storage.type=gcp,storage.bucket="my-bucket",storage.prefix="folder",storage.secret="cloud-credentials"
+helm install my-release stable/hoard --set storage.type=gcp,storage.bucket="my-bucket",storage.prefix="folder",storage.secret="cloud-credentials"
 ```
 
 ## OpenPGP Grants
@@ -109,7 +109,7 @@ Once configured, hoard can share access to a secret file by encrypting it with t
 
 ```bash
 kubectl create secret generic private-keyring --from-file ${GOPATH}/src/github.com/monax/hoard/grant/private.key.asc
-helm install --name my-release stable/hoard --set openpgp.id="10449759736975846181",openpgp.secret=private-keyring
+helm install my-release stable/hoard --set openpgp.id="10449759736975846181",openpgp.secret=private-keyring
 ```
 
 ## [Shared Secrets](https://github.com/monax/shared-secrets)
@@ -117,5 +117,5 @@ helm install --name my-release stable/hoard --set openpgp.id="104497597369758461
 To enable Hoard to act as a 'secrets broker', deploy our CustomResourceDefinition and controller:
 
 ```bash
-helm install --name my-release stable/hoard --set controller.enabled=true
+helm install my-release stable/hoard --set controller.enabled=true
 ```

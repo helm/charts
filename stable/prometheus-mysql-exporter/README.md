@@ -17,7 +17,7 @@ This chart bootstraps a prometheus [mysql exporter](http://github.com/prometheus
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/prometheus-mysql-exporter --set mysql.user="username",mysql.pass="password",mysql.host="example.com",mysql.port="3306"
+$ helm install my-release stable/prometheus-mysql-exporter --set mysql.user="username",mysql.pass="password",mysql.host="example.com",mysql.port="3306"
 ```
 
 The command deploys a mysql exporter on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -75,7 +75,7 @@ The following table lists the configurable parameters of the mysql exporter char
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install --name my-release \
+$ helm install my-release \
   --set mysql.user="username",mysql.password="password",mysql.host="localhost",mysql.port="3306"  \
     stable/prometheus-mysql-exporter
 ```
@@ -83,7 +83,7 @@ $ helm install --name my-release \
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml stable/prometheus-mysql-exporter
+$ helm install my-release -f values.yaml stable/prometheus-mysql-exporter
 ```
 
 Documentation for the MySQL Exporter can be found here: (<https://github.com/prometheus/mysqld_exporter>)

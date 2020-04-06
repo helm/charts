@@ -23,7 +23,7 @@ To install the chart with the release name `my-release`:
 
 ```bash
 $ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install --name my-release incubator/elastic-stack
+$ helm install my-release incubator/elastic-stack
 ```
 
 ## Deleting the Charts

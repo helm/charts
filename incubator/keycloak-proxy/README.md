@@ -24,7 +24,7 @@ Keycloak Proxy is designed primarily for Keycloak, an OpenID Connect identity pr
 To install the chart with the release name `keycloak-proxy`:
 
 ```console
-$ helm install --name keycloak-proxy incubator/keycloak-proxy
+$ helm install keycloak-proxy incubator/keycloak-proxy
 ```
 
 ## Uninstalling the Chart
@@ -71,7 +71,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name keycloak-proxy -f values.yaml incubator/keycloak-proxy
+$ helm install keycloak-proxy -f values.yaml incubator/keycloak-proxy
 ```
 
 ## Proxy Configuration

@@ -111,13 +111,13 @@ How to install the chart
 We strongly suggest that the installation of Pachyderm should be performed in its own namespace. Note that you should have RBAC enabled in your cluster to make the installation work with the default settings. The default installation will deploy Pachyderm on your local Kubernetes cluster:
 
 ```console
-$ helm install --namespace pachyderm --name my-release stable/pachyderm
+$ helm installspace pachyderm --name my-release stable/pachyderm
 ```
 
 You should install the chart specifying each parameter using the `--set key=value[,key=value]` argument to helm install. Please consult the `values.yaml` file for more information regarding the parameters. For example:
 
 ```console
-$ helm install --namespace pachyderm --name my-release \
+$ helm installspace pachyderm --name my-release \
 --set credentials=s3,s3.accessKey=myaccesskey,s3.secretKey=mysecretkey,s3.bucketName=default_bucket,s3.endpoint=domain.subdomain:8080,etcd.persistence.enabled=true,etcd.persistence.accessMode=ReadWriteMany \
 stable/pachyderm
 ```
@@ -125,7 +125,7 @@ stable/pachyderm
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart:
 
 ```console
-$ helm install --namespace pachyderm --name my-release -f values.yaml stable/pachyderm
+$ helm installspace pachyderm --name my-release -f values.yaml stable/pachyderm
 ```
 
 Specifying a pachyderm version
@@ -134,7 +134,7 @@ Specifying a pachyderm version
 To specify a pachyderm version run the following command:
 
 ```console
-$ helm install --namespace pachyderm --name my-release \
+$ helm installspace pachyderm --name my-release \
 --set pachd.image.tag=1.8.6,pachd.worker.tag=1.8.6 \
 stable/pachyderm
 ```

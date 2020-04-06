@@ -57,7 +57,7 @@ If the output contains "beta" or both "alpha" and "beta" you can proceed with no
 By default the RBAC resources are generated with the "v1beta1" apiVersion. To use "v1alpha1" do the following:
 
 ```console
-$ helm install --name my-release incubator/istio --set rbac.install=true,rbac.apiVersion=v1alpha1
+$ helm install my-release incubator/istio --set rbac.install=true,rbac.apiVersion=v1alpha1
 ```
 
 If it does not. Follow the steps below to disable.
@@ -67,7 +67,7 @@ If it does not. Follow the steps below to disable.
 If you don't want the RBAC roles and bindings to be created by the installation of this chart simply install the default chart.
 
 ```console
-$ helm install --name my-release incubator/istio
+$ helm install my-release incubator/istio
 ```
 
 ## Installing the Chart
@@ -81,7 +81,7 @@ The first step will install the prerequisite CRDs.
 To install the chart with the release name `istio` into the namespace istio-system:
 
 ```console
-$ helm install --name istio incubator/istio --namespace istio-system
+$ helm install istio incubator/istio --namespace istio-system
 ```
 
 The second step will install the Istio components
@@ -150,5 +150,5 @@ These addons can be selectively installed by setting `addons.<addon-name>.enable
 If you are running a Kubernetes 1.7+ and have the Initializers api enabled you may choose to enable the Initializer to be installed. See the [docs](https://kubernetes.io/docs/admin/extensible-admission-controllers/) on how to enable.
 
 ```console
-helm install --name my-release --devel incubator/istio --namespace istio-system --set istio.install=true,initializer.enabled=true
+helm install my-release --devel incubator/istio --namespace istio-system --set istio.install=true,initializer.enabled=true
 ```

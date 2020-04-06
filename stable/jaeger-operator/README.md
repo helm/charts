@@ -31,7 +31,7 @@ This chart bootstraps a jaeger-operator deployment on a [Kubernetes](http://kube
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/jaeger-operator
+$ helm install my-release stable/jaeger-operator
 ```
 
 The command deploys jaeger-operator on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.

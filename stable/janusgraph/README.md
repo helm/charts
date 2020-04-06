@@ -14,7 +14,7 @@ This chart bootstraps a JanusGraph deployment on a [Kubernetes](http://kubernete
 To install the chart with the release name `my-release`:
 
 ```shell
-helm install --name my-release stable/janusgraph
+helm install my-release stable/janusgraph
 ```
 
 
@@ -38,7 +38,7 @@ Specify your own parameters using the `--set key=value[,key=value]` argument to 
 Alternatively, your own YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```shell
-helm install --name my-release -f values.yaml stable/janusgraph
+helm install my-release -f values.yaml stable/janusgraph
 ```
 
 JanusGraph specific properties are nested under the properties key.

@@ -21,7 +21,7 @@ You can install the chart with the release name `mysr` as below.
 
 ```console
 $ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install --name mysr incubator/schema-registry
+$ helm install mysr incubator/schema-registry
 ```
 
 If you do not specify a name, helm will select a name for you.
@@ -51,7 +51,7 @@ You can specify each parameter using the `--set key=value[,key=value]` argument 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml incubator/schema-registry
+$ helm install my-release -f values.yaml incubator/schema-registry
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

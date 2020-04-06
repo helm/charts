@@ -17,7 +17,7 @@ This chart bootstraps an [IPFS](https://ipfs.io) deployment on a [Kubernetes](ht
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/ipfs
+$ helm install my-release stable/ipfs
 ```
 
 The command deploys IPFS on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -63,7 +63,7 @@ The following table lists the configurable parameters of the Memcached chart and
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
   --set persistence.size="20Gi" \
     stable/ipfs
 ```
@@ -73,7 +73,7 @@ The above command sets the disk size to 20Gi.
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/ipfs
+$ helm install my-release -f values.yaml stable/ipfs
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml) as a base for customization.

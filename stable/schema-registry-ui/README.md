@@ -21,7 +21,7 @@ This chart will do the following:
 You can install the chart with the release name `srui` as below.
 
 ```console
-$ helm install --name srui schema-registry-ui
+$ helm install srui schema-registry-ui
 ```
 
 If you do not specify a name, helm will select a name for you.
@@ -48,7 +48,7 @@ You can specify each parameter using the `--set key=value[,key=value]` argument 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml schema-registry-ui
+$ helm install my-release -f values.yaml schema-registry-ui
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

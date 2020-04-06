@@ -24,7 +24,7 @@ This chart stands up a GitLab Community Edition install. This includes:
 To install the chart with the release name `my-release` run:
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
     --set externalUrl=http://your-domain.com/ stable/gitlab-ce
 ```
 
@@ -49,7 +49,7 @@ Refer to [values.yaml](values.yaml) for the full run-down on defaults. These are
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
     --set externalUrl=http://your-domain.com/,gitlabRootPassword=pass1234 \
     stable/gitlab-ce
 ```
@@ -57,7 +57,7 @@ $ helm install --name my-release \
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/gitlab-ce
+$ helm install my-release -f values.yaml stable/gitlab-ce
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

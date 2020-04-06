@@ -25,7 +25,7 @@ This chart bootstraps a ClamAV deployment and service on a Kubernetes cluster us
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/clamav
+$ helm install my-release stable/clamav
 ```
 
 The command deploys ClamAV on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.

@@ -19,7 +19,7 @@
 You can install the chart with the release name `mymssql` as below.
 
 ```console
-$ helm install --name mymssql stable/mssql-linux --set acceptEula.value=Y --set edition.value=Developer
+$ helm install mymssql stable/mssql-linux --set acceptEula.value=Y --set edition.value=Developer
 ...
 ```
 

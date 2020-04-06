@@ -13,7 +13,7 @@ This chart will do the following:
 ## Installing the Chart:
 To install the chart with the release name jmeter:
 ```
-$ helm install --name distributed-jmeter stable/distributed-jmeter
+$ helm install distributed-jmeter stable/distributed-jmeter
 ```
 
 ## Deploying different versions of JMeter
@@ -21,7 +21,7 @@ The default [image](https://hub.docker.com/r/pedrocesarti/jmeter-docker/) allows
 
 To change the version running on the helm you only need:
 ```
-$ helm install --name distributed-jmeter --set master.image.tag=4.0 --set server.image.tag=4.0 stable/distributed-jmeter
+$ helm install distributed-jmeter --set master.image.tag=4.0 --set server.image.tag=4.0 stable/distributed-jmeter
 ```
 
 Enjoy! :)

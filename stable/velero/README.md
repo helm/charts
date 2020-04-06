@@ -44,7 +44,7 @@ See Velero's full [official documentation](https://velero.io/docs/v1.2.0/install
 Specify the necessary values using the --set key=value[,key=value] argument to helm install. For example,
 
 ```bash
-helm install --namespace <YOUR NAMESPACE> \
+helm installspace <YOUR NAMESPACE> \
 --set configuration.provider=<PROVIDER NAME> \
 --set-file credentials.secretContents.cloud=<FULL PATH TO FILE> \
 --set configuration.backupStorageLocation.name=<PROVIDER NAME> \
@@ -67,7 +67,7 @@ stable/velero
 Add/update the necessary values by changing the values.yaml from this repository, then running:
 
 ```bash
-helm install --namespace <NAMESPACE> -f values.yaml stable/velero
+helm installspace <NAMESPACE> -f values.yaml stable/velero
 ```
 
 #### Upgrade the configuration

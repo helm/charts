@@ -20,7 +20,7 @@ This chart will do the following:
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/elastic-stack
+$ helm install my-release stable/elastic-stack
 ```
 
 ## Deleting the Charts

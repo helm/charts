@@ -11,7 +11,7 @@ This chart contains the resources to use [sealed-secrets](https://github.com/bit
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --namespace kube-system --name my-release stable/sealed-secrets
+$ helm installspace kube-system --name my-release stable/sealed-secrets
 ```
 
 The command deploys a controller and [CRD](https://kubernetes.io/docs/tasks/access-kubernetes-api/custom-resources/custom-resource-definitions/) for sealed secrets on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.

@@ -371,7 +371,7 @@ For more information about some of the tunable parameters that Jaeger provides, 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name myrel \
+$ helm install myrel \
     --set cassandra.config.rack_name=rack2 \
     incubator/jaeger
 ```

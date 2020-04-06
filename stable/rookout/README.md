@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```bash
-$ helm install --name my-release stable/rookout --set token=YOUR_ORGANIZATIONAL_TOKEN
+$ helm install my-release stable/rookout --set token=YOUR_ORGANIZATIONAL_TOKEN
 ```
 
 ## Introduction
@@ -21,7 +21,7 @@ This chart bootstraps a [Rookout Router](https://docs.rookout.com/docs/installat
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/rookout --set token=YOUR_ORGANIZATIONAL_TOKEN
+$ helm install my-release stable/rookout --set token=YOUR_ORGANIZATIONAL_TOKEN
 ```
 
 The command deploys Rookout on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -59,7 +59,7 @@ The above parameters map to the env variables defined in [rookout/agent](https:/
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
   --set token=YOUR_TOKEN_HERE,listenAll=False,tags=tag1;tag2;tag3 \
     stable/rookout
 ```

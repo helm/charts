@@ -35,7 +35,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name casskop incubator/cassandra-operator -f values.yaml
+$ helm install casskop incubator/cassandra-operator -f values.yaml
 ```
 
 ### Installing the Chart
@@ -49,7 +49,7 @@ helm install --dry-run --debug.enabled incubator/cassandra-operator --set debug.
 To install the chart with the release name my-release:
 
 ```console
-$ helm install --name casskop incubator/cassandra-operator
+$ helm install casskop incubator/cassandra-operator
 ```
 
 We can surcharge default parameters using `--set` flag :
@@ -129,12 +129,12 @@ In that case you can get an error like :
 
 
 ```
-$ helm install --name casskop incubator/cassandra-operator
+$ helm install casskop incubator/cassandra-operator
 Error: customresourcedefinitions.apiextensions.k8s.io "cassandraclusters.db.orange.com" already exists
 ```
 
 In this case there si a parameter to say to not uses the hook to install the CRD :
 
 ```
-$ helm install --name casskop incubator/cassandra-operator --no-hooks
+$ helm install casskop incubator/cassandra-operator --no-hooks
 ```

@@ -193,7 +193,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to
 ## Installation
 
 ```shell
-helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
+helm install my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
 
 ### Using with Amazon S3
@@ -249,7 +249,7 @@ env:
 Run command to install
 
 ```shell
-helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
+helm install my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
 
 #### permissions grant with IAM instance profile
@@ -271,7 +271,7 @@ env:
 Run command to install
 
 ```shell
-helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
+helm install my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
 
 #### permissions grant with IAM assumed role
@@ -296,7 +296,7 @@ replica:
 Run command to install
 
 ```shell
-helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
+helm install my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
 
 #### permissions grant with IAM Roles for Service Accounts
@@ -321,7 +321,7 @@ serviceAccount:
 Run command to install
 
 ```shell
-helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
+helm install my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
 
 ### Using with Google Cloud Storage
@@ -370,7 +370,7 @@ gcp:
 Run command to install
 
 ```shell
-helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
+helm install my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
 
 In case that you don't mind adding your secret to tiller (you shouldn't do it), this are the commands
@@ -392,7 +392,7 @@ gcp:
 Run command to install
 
 ```shell
-helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
+helm install my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
 
 To set the values directly in the command line, use the following command. Note that we have to base64 encode the json file because we cannot pass a multi-line text as a value.
@@ -427,7 +427,7 @@ env:
 Run command to install
 
 ```shell
-helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
+helm install my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
 
 ### Using with Alibaba Cloud OSS Storage
@@ -455,7 +455,7 @@ env:
 Run command to install
 
 ```shell
-helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
+helm install my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
 
 ### Using with Openstack Object Storage
@@ -488,7 +488,7 @@ env:
 Run command to install
 
 ```shell
-helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
+helm install my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
 ### Using with Oracle Object Storage
 
@@ -526,7 +526,7 @@ oracle:
 Run command to install
 
 ```shell
-helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
+helm install my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
 
 ### Using an existing secret
@@ -561,7 +561,7 @@ env:
 Run command to install
 
 ```shell
-helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
+helm install my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
 
 ### Using with local filesystem storage
@@ -594,7 +594,7 @@ persistence:
 Run command to install
 
 ```shell
-helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
+helm install my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
 
 ### Setting local storage permissions with initContainers
@@ -695,7 +695,7 @@ In most cases, you should not specify values for `ingress.hosts[0].serviceName` 
 Specifying extra paths to prepend to every host configuration is especially useful when configuring [custom actions with AWS ALB Ingress Controller](https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/ingress/annotation/#actions).
 
 ```shell
-helm install --name my-chartmuseum stable/chartmuseum \
+helm install my-chartmuseum stable/chartmuseum \
   --set ingress.enabled=true \
   --set ingress.hosts[0].name=chartmuseum.domain.com \
   --set ingress.extraPaths[0].service=ssl-redirect \
@@ -710,7 +710,7 @@ For annotations, please see [this document for nginx](https://github.com/kuberne
 #### Example Ingress configuration
 
 ```shell
-helm install --name my-chartmuseum stable/chartmuseum \
+helm install my-chartmuseum stable/chartmuseum \
   --set ingress.enabled=true \
   --set ingress.hosts[0].name=chartmuseum.domain.com \
   --set ingress.hosts[0].path=/

@@ -11,7 +11,7 @@ The Bitnami repository is already included in the Hubs and we will continue prov
 ```bash
 $ helm repo add bitnami https://charts.bitnami.com/bitnami
 $ helm install my-release bitnami/<chart>           # Helm 3
-$ helm install --name my-release bitnami/<chart>    # Helm 2
+$ helm install my-release bitnami/<chart>    # Helm 2
 ```
 
 To update an exisiting _stable_ deployment with a chart hosted in the bitnami repository you can execute

@@ -11,7 +11,7 @@ More detailed information can be found at the [Elastabot](https://github.com/jer
 To install the chart with the release name `my-release`:
 
 ```console
-helm install --name my-release stable/elastabot
+helm install my-release stable/elastabot
 ```
 
 The command deploys Elastabot on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation. The [secrets](#secrets) section lists the required Kubernetes secrets.

@@ -34,7 +34,7 @@ Official containers are used wherever possible ( namingly [php](https://hub.dock
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/lamp
+$ helm install my-release stable/lamp
 ```
 
 The command deploys the LAMP chart on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -77,7 +77,7 @@ The following tables list the configurable parameters of the LAMP chart and thei
 You can specify each of the parameters using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install --name my-release \
+$ helm install my-release \
   --set init.clone.release=my-first-release-lamp,php.sockets=false,php.oldHTTPRoot=/var/www/my-website.com \
     stable/lamp
 ```
@@ -87,7 +87,7 @@ The above command sets up the chart to create its persistent contents by cloning
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml stable/lamp
+$ helm install my-release -f values.yaml stable/lamp
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml) file as a template

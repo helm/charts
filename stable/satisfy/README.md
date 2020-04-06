@@ -5,7 +5,7 @@
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/satisfy
+$ helm install my-release stable/satisfy
 ```
 
 ## Uninstalling the Chart

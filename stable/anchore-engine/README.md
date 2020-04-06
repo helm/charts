@@ -28,7 +28,7 @@ The recommended way to install the Anchore Engine Helm Chart is with a customize
 Create a new file named `anchore_values.yaml` and add all desired custom values (examples below); then run the following command:
 
   #### Helm v2 installation
-  `helm install --name <release_name> -f anchore_values.yaml stable/anchore-engine`
+  `helm install <release_name> -f anchore_values.yaml stable/anchore-engine`
 
   #### Helm v3 installation
   `helm repo add stable https://kubernetes-charts.storage.googleapis.com`
@@ -78,7 +78,7 @@ To use this Helm chart with the enterprise services enabled, perform these steps
 
 1. (demo) Install the Helm chart using default values
     #### Helm v2 installation
-    `helm install --name <release_name> --set anchoreEnterpriseGlobal.enabled=true stable/anchore-engine`
+    `helm install <release_name> --set anchoreEnterpriseGlobal.enabled=true stable/anchore-engine`
 
     #### Helm v3 installation
     `helm repo add stable https://kubernetes-charts.storage.googleapis.com`
@@ -88,7 +88,7 @@ To use this Helm chart with the enterprise services enabled, perform these steps
 2. (production) Install the Helm chart using a custom anchore_values.yaml file - *see examples below*
 
     #### Helm v2 installation
-    `helm install --name <release_name> -f anchore_values.yaml stable/anchore-engine`
+    `helm install <release_name> -f anchore_values.yaml stable/anchore-engine`
 
     #### Helm v3 installation
     `helm repo add stable https://kubernetes-charts.storage.googleapis.com`

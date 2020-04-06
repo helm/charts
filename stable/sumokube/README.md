@@ -15,7 +15,7 @@ This chart adds the Sumo Logic Collector to all nodes in your cluster via a Daem
 To install the chart with the release name `my-release`, retrieve your Sumo Logic Access ID and key from using the instructions found at [Sumo Logic Access Keys](https://help.sumologic.com/Manage/Security/Access_Keys) and run:
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
     --set sumologic.accessId=YOUR-ID-HERE,sumologic.accessKey=YOUR-KEY-HERE stable/sumokube
 ```
 
@@ -61,7 +61,7 @@ The following table lists the configurable parameters of the Sumokube chart and 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
     --set sumologic.accessId=YOUR-ID-HERE,sumologic.accessKey=YOUR-KEY-HERE,sumologic.categoryName=my-source-category-name \
     stable/sumokube
 ```
@@ -69,7 +69,7 @@ $ helm install --name my-release \
 Example of adding daemonset tolerations to run on master nodes. Requires Helm >=2.5
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
     --set sumologic.accessId=YOUR-ID-HERE,sumologic.accessKey=YOUR-KEY-HERE,sumologic.categoryName=my-source-category-name,daemonset.tolerations[0].effect=NoSchedule,daemonset.tolerations[0].key=node-role.kubernetes.io/master \
     stable/sumokube
 ```
@@ -77,7 +77,7 @@ $ helm install --name my-release \
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/sumokube
+$ helm install my-release -f values.yaml stable/sumokube
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

@@ -5,7 +5,7 @@ A Cassandra Chart for Kubernetes
 To install the Cassandra Chart into your Kubernetes cluster (This Chart requires persistent volume by default, you may need to create a storage class before install chart. To create storage class, see [Persist data](#persist_data) section)
 
 ```bash
-helm install --namespace "cassandra" -n "cassandra" incubator/cassandra
+helm installspace "cassandra" -n "cassandra" incubator/cassandra
 ```
 
 After installation succeeds, you can get a status of Chart
@@ -70,7 +70,7 @@ For example:
 Set cluster size to 5
 
 ```bash
-helm install --namespace "cassandra" -n "cassandra" --set config.cluster_size=5 incubator/cassandra/
+helm installspace "cassandra" -n "cassandra" --set config.cluster_size=5 incubator/cassandra/
 ```
 
 ## Install Chart with specific resource size

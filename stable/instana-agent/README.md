@@ -80,7 +80,7 @@ stable/instana-agent
 To install the chart with the release name `instana-agent` and set the values on the command line run:
 
 ```bash
-$ helm install --name instana-agent --namespace instana-agent \
+$ helm install instana-agent --namespace instana-agent \
 --set agent.key=INSTANA_AGENT_KEY \
 --set agent.endpointHost=HOST \
 --set zone.name=ZONE_NAME \

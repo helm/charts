@@ -16,7 +16,7 @@ Optionally you can also enable ingress.
 To install the chart with the release name `my-release`, run:
 
 ```bash
-$ helm install --name my-release stable/karma
+$ helm install my-release stable/karma
 ```
 
 After a few seconds, you should see service statuses being written to the configured output.
@@ -71,14 +71,14 @@ The following table lists the configurable parameters of the karma chart and the
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
     stable/karma
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/karma
+$ helm install my-release -f values.yaml stable/karma
 ```
 
 > **Tip**: You will have to define the URL to alertmanager in env-settings in [values.yaml](values.yaml), under key ALERTMANAGER_URI .

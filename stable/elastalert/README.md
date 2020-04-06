@@ -32,7 +32,7 @@ See the comment in the default `values.yaml` to know why `writebackIndex` is req
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/elastalert
+$ helm install my-release stable/elastalert
 ```
 
 The command deploys elastalert on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.

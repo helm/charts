@@ -24,7 +24,7 @@ cluster using the [Helm](https://helm.sh) package manager.
 To install the chart with the release name `my-release`:
 
 ```bash
-helm install --name my-release stable/hubot
+helm install my-release stable/hubot
 ```
 
 The command deploys Hubot on the Kubernetes cluster using the default configuration.
@@ -87,7 +87,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 For example:
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
     --set key_1=value_1,key_2=value_2 \
     stable/hubot
 ```
@@ -97,7 +97,7 @@ provided while installing the chart. For example,
 
 ```bash
 # example for staging
-$ helm install --name my-release -f values.yaml stable/hubot
+$ helm install my-release -f values.yaml stable/hubot
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

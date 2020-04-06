@@ -20,7 +20,7 @@ This chart bootstraps a [Gearman server](https://github.com/appscode/g2) deploym
 ## Installing the Chart
 To install the chart with the release name `my-release`:
 ```bash
-$ helm install --name my-release stable/g2
+$ helm install my-release stable/g2
 ```
 The command deploys G2 Gearman server on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
@@ -55,14 +55,14 @@ The following table lists the configurable parameters of the Stash chart and the
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
 ```bash
-$ helm install --name my-release --set image.tag=v0.2.1 stable/g2
+$ helm install my-release --set image.tag=v0.2.1 stable/g2
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while
 installing the chart. For example:
 
 ```bash
-$ helm install --name my-release --values values.yaml stable/g2
+$ helm install my-release --values values.yaml stable/g2
 ```
 
 ## RBAC
@@ -87,7 +87,7 @@ If the output contains "alpha" and/or "beta", you can may install the chart with
 To enable the creation of RBAC resources (On clusters with RBAC). Do the following:
 
 ```console
-$ helm install --name my-release stable/g2 --set rbac.install=true
+$ helm install my-release stable/g2 --set rbac.install=true
 ```
 
 ### Changing RBAC manifest apiVersion
@@ -95,5 +95,5 @@ $ helm install --name my-release stable/g2 --set rbac.install=true
 By default the RBAC resources are generated with the "v1beta1" apiVersion. To use "v1alpha1" do the following:
 
 ```console
-$ helm install --name my-release stable/g2 --set rbac.install=true,rbac.apiVersion=v1alpha1
+$ helm install my-release stable/g2 --set rbac.install=true,rbac.apiVersion=v1alpha1
 ```

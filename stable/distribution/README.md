@@ -29,7 +29,7 @@ This chart will do the following:
 ## Installing the Chart
 To install the chart with the release name `distribution`:
 ```
-helm install --name distribution stable/distribution
+helm install distribution stable/distribution
 ```
 
 ### Accessing Distribution
@@ -168,7 +168,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ### Ingress and TLS
 To get Helm to create an ingress object with a hostname, add these two lines to your Helm command:
 ```
-helm install --name distribution \
+helm install distribution \
   --set ingress.enabled=true \
   --set ingress.hosts[0]="distribution.company.com" \
   --set distribution.service.type=NodePort \

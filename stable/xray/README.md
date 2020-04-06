@@ -232,7 +232,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ### Ingress and TLS
 To get Helm to create an ingress object with a hostname, add these two lines to your Helm command:
 ```
-helm install --name xray \
+helm install xray \
   --set ingress.enabled=true \
   --set ingress.hosts[0]="xray.company.com" \
   --set server.service.type=NodePort \

@@ -118,6 +118,6 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name keel -f values.yaml stable/keel
+$ helm install keel -f values.yaml stable/keel
 ```
 > **Tip**: You can use the default [values.yaml](values.yaml)

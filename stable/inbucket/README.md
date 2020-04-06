@@ -22,7 +22,7 @@ cluster using the [Helm](https://helm.sh) package manager.
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/inbucket
+$ helm install my-release stable/inbucket
 ```
 
 The command deploys Inbucket on the Kubernetes cluster in the default configuration. The [configuration](#configuration)
@@ -71,7 +71,7 @@ Parameter | Description | Default
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
   --set image.tag=release-1.2.0 \
     stable/inbucket
 ```
@@ -79,7 +79,7 @@ $ helm install --name my-release \
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/inbucket
+$ helm install my-release -f values.yaml stable/inbucket
 ```
 
 ## Limitations

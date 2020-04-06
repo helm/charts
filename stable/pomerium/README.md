@@ -42,7 +42,7 @@ We welcome contributions in the [new repository](https://github.com/pomerium/pom
 ## TL;DR;
 
 ```console
-helm install --name my-release stable/pomerium
+helm install my-release stable/pomerium
 ```
 
 > Note: Pomerium depends on being configured with a third party identity providers to function properly. If you run pomerium without specifying default values, you will need to change those configuration variables following setup.

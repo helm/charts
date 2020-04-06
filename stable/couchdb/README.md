@@ -35,7 +35,7 @@ $ helm install stable/couchdb --set allowAdminParty=true
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/couchdb
+$ helm install my-release stable/couchdb
 ```
 
 This will create a Secret containing the admin credentials for the cluster.
@@ -55,7 +55,7 @@ $  kubectl create secret generic my-release-couchdb --from-literal=adminUsername
 and then install the chart while overriding the `createAdminSecret` setting:
 
 ```bash
-$ helm install --name my-release --set createAdminSecret=false stable/couchdb
+$ helm install my-release --set createAdminSecret=false stable/couchdb
 ```
 
 This Helm chart deploys CouchDB on the Kubernetes cluster in a default

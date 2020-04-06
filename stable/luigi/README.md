@@ -17,7 +17,7 @@ This chart bootstraps a [Luigi](https://github.com/spotify/luigi) deployment on 
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/luigi
+$ helm install my-release stable/luigi
 ```
 ## Uninstalling the Chart
 
@@ -56,7 +56,7 @@ Dependent charts can also have values overwritten. Preface values with postgresq
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install --name my-release \
+$ helm install my-release \
   --set persistence.enabled=false,email.host=email \
     stable/luigi
 ```
@@ -64,7 +64,7 @@ $ helm install --name my-release \
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml stable/luigi
+$ helm install my-release -f values.yaml stable/luigi
 ```
 
 Read through the [values.yaml](values.yaml) file. It has several commented out suggested values.

@@ -64,7 +64,7 @@ The following quickstart let's you set up Ingress Monitor Controller to register
 3. Deploy the controller by running the following command:
 
    ```bash
-   helm install --name imc-stakater . --namespace default
+   helm install imc-stakater . --namespace default
    ```
 
 ## Help

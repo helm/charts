@@ -57,14 +57,14 @@ The following table lists the configurable parameters of the swift chart and the
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
 ```console
-$ helm install --name my-release --set image.tag=v0.2.1 stable/swift
+$ helm install my-release --set image.tag=v0.2.1 stable/swift
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while
 installing the chart. For example:
 
 ```console
-$ helm install --name my-release --values values.yaml stable/swift
+$ helm install my-release --values values.yaml stable/swift
 ```
 
 ## RBAC
@@ -85,5 +85,5 @@ If the output contains "beta", you may install the chart with RBAC enabled (see 
 To enable the creation of RBAC resources (On clusters with RBAC). Do the following:
 
 ```console
-$ helm install --name my-release stable/swift --set rbac.create=true
+$ helm install my-release stable/swift --set rbac.create=true
 ```

@@ -22,7 +22,7 @@ This chart bootstraps a [Mercure Hub](https://mercure.rocks) deployment on a [Ku
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/mercure
+$ helm install my-release stable/mercure
 ```
 
 The command deploys the Mercure Hub on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -83,7 +83,7 @@ The following table lists the configurable parameters of the Mercure chart and t
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install --name my-release --set jwtKey=FooBar,corsAllowedOrigins=example.com stable/mercure
+$ helm install my-release --set jwtKey=FooBar,corsAllowedOrigins=example.com stable/mercure
 ```
 
 The above command sets the JWT key to `FooBar`.
@@ -92,7 +92,7 @@ Additionally it allows pages served from `example.com` to connect to the hub.
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml stable/mercure
+$ helm install my-release -f values.yaml stable/mercure
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

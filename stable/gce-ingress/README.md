@@ -22,7 +22,7 @@ This chart bootstraps a gce-ingress deployment on a [Kubernetes](http://kubernet
 To install the chart with the release name `my-release` into the `kube-system` namespace:
 
 ```console
-$ helm install --namespace kube-system --name my-release stable/gce-ingress
+$ helm installspace kube-system --name my-release stable/gce-ingress
 ```
 
 The command deploys gce-ingress on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.

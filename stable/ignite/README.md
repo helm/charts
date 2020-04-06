@@ -9,7 +9,7 @@ delivering in-memory speeds at petabyte scale
 ## Install
 
 ```console
-helm install --name my-release stable/ignite
+helm install my-release stable/ignite
 ```
 
 ## Configuration
@@ -46,7 +46,7 @@ Data persistence and WAL persistence can be enabled by specifying appropriate
 variables. Please note that default persistence configuration is for AWS EBS.
 
 ```console
-helm install --name my-release \
+helm install my-release \
     --set persistence.enabled=true \
     --set persistence.persistenceVolume.size=100Gi \
     --set persistence.walVolume.size=100Gi \

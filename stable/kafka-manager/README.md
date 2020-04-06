@@ -17,7 +17,7 @@ $ helm install stable/kafka-manager
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/kafka-manager
+$ helm install my-release stable/kafka-manager
 ```
 
 The command deploys Kafka Manager on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.

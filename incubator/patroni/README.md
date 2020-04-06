@@ -27,13 +27,13 @@ To install the chart with the release name `my-release`:
 ```console
 $ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
 $ helm dependency update
-$ helm install --name my-release incubator/patroni
+$ helm install my-release incubator/patroni
 ```
 
 To install the chart with randomly generated passwords:
 
 ```console
-$ helm install --name my-release incubator/patroni \
+$ helm install my-release incubator/patroni \
   --set credentials.superuser="$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c32)",credentials.admin="$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c32)",credentials.standby="$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c32)"
 ```
 
@@ -110,7 +110,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml incubator/patroni
+$ helm install my-release -f values.yaml incubator/patroni
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

@@ -16,7 +16,7 @@ This chart installs the Sematext Agent to all nodes in your cluster via a `Daemo
 To install the chart run the following command:
 
 ```bash
-$ helm install --name release_name \
+$ helm install release_name \
     --set containerToken=YOUR_CONTAINER_TOKEN,logsToken=YOUR_LOGS_TOKEN stable/sematext-agent
 ```
 
@@ -68,7 +68,7 @@ The following table lists the configuration parameters of the `sematext-agent` c
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
 ```bash
-$ helm install --name release_name \
+$ helm install release_name \
     --set containerToken=YOUR_CONTAINER_TOKEN \
     stable/sematext-agent
 ```
@@ -76,5 +76,5 @@ $ helm install --name release_name \
 Alternatively, you can use a YAML file that specifies the values while installing the chart. For example:
 
 ```bash
-$ helm install --name release_name -f custom_values.yaml stable/sematext-agent
+$ helm install release_name -f custom_values.yaml stable/sematext-agent
 ```

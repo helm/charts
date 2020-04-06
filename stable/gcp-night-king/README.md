@@ -21,7 +21,7 @@ This chart will do the following:
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/gcp-night-king
+$ helm install my-release stable/gcp-night-king
 ```
 
 ## Uninstalling the Chart

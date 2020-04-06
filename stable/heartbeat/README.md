@@ -17,7 +17,7 @@ By default this chart only ships a single output to a file on the local system. 
 To install the chart with the release name `my-release`, run:
 
 ```bash
-$ helm install --name my-release stable/heartbeat
+$ helm install my-release stable/heartbeat
 ```
 
 After a few minutes, you should see service statuses being written to the configured output, which is a log file inside the heartbeat container.
@@ -61,7 +61,7 @@ The following table lists the configurable parameters of the heartbeat chart and
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
     --set rbac.create=true \
     stable/heartbeat
 ```
@@ -69,7 +69,7 @@ $ helm install --name my-release \
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/heartbeat
+$ helm install my-release -f values.yaml stable/heartbeat
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

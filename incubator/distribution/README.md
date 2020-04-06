@@ -25,7 +25,7 @@ This chart will do the following:
 ## Installing the Chart
 To install the chart with the release name `distribution`:
 ```
-helm install --name distribution incubator/distribution
+helm install distribution incubator/distribution
 ```
 
 ### Accessing Distribution

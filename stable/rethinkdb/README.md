@@ -23,7 +23,7 @@ This chart implements a dynamically scalable [RethinkDB Cluster](https://www.ret
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/rethinkdb
+$ helm install my-release stable/rethinkdb
 ```
 
 ## Configuration
@@ -70,7 +70,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml stable/rethinkdb
+$ helm install my-release -f values.yaml stable/rethinkdb
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

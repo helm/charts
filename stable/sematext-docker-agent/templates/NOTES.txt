@@ -9,13 +9,13 @@
 Depending on which region you want to use, create a monitoring and/or logs apps
 to get your tokens. Then, start the app with:
 
-helm install --name release_name \
+helm install release_name \
   --set sematext.spmToken=YOUR_SPM_TOKEN,sematext.region=US \
   stable/sematext
 
 Or if you created both apps use:
 
-helm install --name release_name \
+helm install release_name \
   --set sematext.spmToken=YOUR_SPM_TOKEN,sematext.logseneToken=YOUR_LOGS_TOKEN,sematext.region=US \
   stable/sematext
 

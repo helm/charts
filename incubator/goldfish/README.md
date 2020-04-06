@@ -53,7 +53,7 @@ helm install -n goldfish . --set \
 Alternatively a YAML file that specifies the values for the parameters can be provided like this:
 
 ```bash
-$ helm install --name goldfish -f values.yaml .
+$ helm install goldfish -f values.yaml .
 ```
 
 ### Upgrading and Rollbacks

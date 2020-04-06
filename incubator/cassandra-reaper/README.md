@@ -5,7 +5,7 @@ A cassandra-reaper Chart for Kubernetes
 To install the cassandra-reaper Chart into your Kubernetes cluster
 
 ```bash
-helm install --namespace cassandra -n cassandra-reaper incubator/cassandra-reaper
+helm installspace cassandra -n cassandra-reaper incubator/cassandra-reaper
 ```
 
 If you want to delete your Chart, use this command

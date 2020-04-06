@@ -14,7 +14,7 @@ $ helm install stable/stolon
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/stolon
+$ helm install my-release stable/stolon
 ```
 
 ## Backend

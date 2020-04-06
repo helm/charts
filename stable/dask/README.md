@@ -31,7 +31,7 @@ This chart will deploy the following:
 To install the chart with the release name `my-release`:
 
 ```bash
-helm install --name my-release stable/dask
+helm install my-release stable/dask
 ```
 
 Depending on how your cluster was setup, you may also need to specify
@@ -141,7 +141,7 @@ custom YAML config file, and specify this file when installing your chart with
 the `-f` flag. Example:
 
 ```bash
-helm install --name my-release -f values.yaml stable/dask
+helm install my-release -f values.yaml stable/dask
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml) for reference
@@ -153,7 +153,7 @@ If you want to change parameters for a specific install without changing
 `helm install`, and it will override any default values. Example:
 
 ```bash
-helm install --name my-release --set jupyter.enabled=false stable/dask
+helm install my-release --set jupyter.enabled=false stable/dask
 ```
 
 ### Customizing Python Environment

@@ -22,7 +22,7 @@ This chart will deploy the followings:
 * To install the chart with the release name `notebook`:
 
   ```bash
-  $ helm install --name notebook stable/tensorflow-notebook
+  $ helm install notebook stable/tensorflow-notebook
   ```
 
 * To install with custom values via file :

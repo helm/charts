@@ -44,7 +44,7 @@ This chart bootstraps an nginx-lego deployment on a [Kubernetes](http://kubernet
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/nginx-lego
+$ helm install my-release stable/nginx-lego
 ```
 
 The command deploys nginx-lego on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -66,7 +66,7 @@ The command removes all the Kubernetes components associated with the chart and 
 See `values.yaml` for configuration notes. Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
   --set lego.enabled=false \
     stable/nginx-lego
 ```
@@ -76,7 +76,7 @@ Installs the chart without kube-lego and the ability to generate certs.
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/nginx-lego
+$ helm install my-release -f values.yaml stable/nginx-lego
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

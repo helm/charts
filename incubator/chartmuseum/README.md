@@ -102,7 +102,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to
 ## Installation
 
 ```shell
-helm install --name my-chartmuseum -f custom.yaml incubator/chartmuseum
+helm install my-chartmuseum -f custom.yaml incubator/chartmuseum
 ```
 
 ### Using with Amazon S3
@@ -158,7 +158,7 @@ env:
 Run command to install
 
 ```shell
-helm install --name my-chartmuseum -f custom.yaml incubator/chartmuseum
+helm install my-chartmuseum -f custom.yaml incubator/chartmuseum
 ```
 
 #### permissions grant with IAM instance profile
@@ -180,7 +180,7 @@ env:
 Run command to install
 
 ```shell
-helm install --name my-chartmuseum -f custom.yaml incubator/chartmuseum
+helm install my-chartmuseum -f custom.yaml incubator/chartmuseum
 ```
 
 #### permissions grant with IAM assumed role
@@ -205,7 +205,7 @@ replica:
 Run command to install
 
 ```shell
-helm install --name my-chartmuseum -f custom.yaml incubator/chartmuseum
+helm install my-chartmuseum -f custom.yaml incubator/chartmuseum
 ```
 
 ### Using with Google Cloud Storage
@@ -224,7 +224,7 @@ env:
 Run command to install
 
 ```shell
-helm install --name my-chartmuseum -f custom.yaml incubator/chartmuseum
+helm install my-chartmuseum -f custom.yaml incubator/chartmuseum
 ```
 
 ### Using with Microsoft Azure Blob Storage
@@ -252,7 +252,7 @@ env:
 Run command to install
 
 ```shell
-helm install --name my-chartmuseum -f custom.yaml incubator/chartmuseum
+helm install my-chartmuseum -f custom.yaml incubator/chartmuseum
 ```
 
 ### Using with Alibaba Cloud OSS Storage
@@ -280,7 +280,7 @@ env:
 Run command to install
 
 ```shell
-helm install --name my-chartmuseum -f custom.yaml incubator/chartmuseum
+helm install my-chartmuseum -f custom.yaml incubator/chartmuseum
 ```
 
 ### Using with local filesystem storage
@@ -313,7 +313,7 @@ persistence:
 Run command to install
 
 ```shell
-helm install --name my-chartmuseum -f custom.yaml incubator/chartmuseum
+helm install my-chartmuseum -f custom.yaml incubator/chartmuseum
 ```
 
 #### Example storage class
