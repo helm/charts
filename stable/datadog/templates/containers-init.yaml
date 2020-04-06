@@ -40,6 +40,12 @@
     {{- if .Values.datadog.env }}
       {{ toYaml .Values.datadog.env | nindent 4 }}
     {{- end }}
+    {{- if not .Values.clusterAgent.enabled }}
+    {{- if .Values.datadog.leaderElection }}
+    - name: DD_LEADER_ELECTION
+      value: {{ .Values.datadog.leaderElection | quote}}
+    {{- end }}
+    {{- end }}
     {{- if .Values.datadog.dockerSocketPath }}
     - name: DOCKER_HOST
       value: unix://{{ .Values.datadog.dockerSocketPath }}
