@@ -87,9 +87,16 @@
       value: {{  (default false (or .Values.datadog.logs.enabled .Values.datadog.logsEnabled)) | quote}}
     - name: DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL
       value: {{  (default false (or .Values.datadog.logs.containerCollectAll .Values.datadog.logsConfigContainerCollectAll)) | quote}}
+    - name: DD_LOGS_CONFIG_K8S_CONTAINER_USE_FILE
+      value: {{ .Values.datadog.logs.containerCollectUsingFiles | quote }}
     {{- if .Values.datadog.dockerSocketPath }}
     - name: DOCKER_HOST
+    {{- if eq .Values.targetSystem "linux" }}
       value: unix://{{ .Values.datadog.dockerSocketPath }}
+    {{- end }}
+    {{- if eq .Values.targetSystem "windows" }}
+      value: npipe://{{ .Values.datadog.dockerSocketPath | replace "\\" "/" }}
+    {{- end }}
     {{- end }}
     {{- if .Values.datadog.criSocketPath }}
     - name: DD_CRI_SOCKET_PATH
@@ -103,24 +110,27 @@
     - name: DD_DOGSTATSD_SOCKET
       value: {{ default "/var/run/datadog/dsd.socket" .Values.datadog.dogstatsd.socketPath | quote }}
     {{- end }}
-    {{- if and .Values.datadog.clusterChecks.enabled  (not .Values.clusterChecksRunner.enabled) }}
+    {{- if and .Values.datadog.clusterChecks.enabled (not .Values.clusterChecksRunner.enabled) }}
     - name: DD_EXTRA_CONFIG_PROVIDERS
-      value: "clusterchecks"
+      value: "clusterchecks endpointschecks"
     {{- end }}
 {{- if .Values.agents.containers.agent.env }}
 {{ toYaml .Values.agents.containers.agent.env | indent 4 }}
 {{- end }}
   volumeMounts:
     - name: config
-      mountPath: /etc/datadog-agent
-    {{- if .Values.agents.useConfigMap }}
-    - name: {{ template "datadog.fullname" . }}-datadog-yaml
-      mountPath: /etc/datadog-agent/datadog.yaml
-      subPath: datadog.yaml
-    {{- end }}
+      mountPath: {{ template "datadog.confPath" . }}
     - name: runtimesocket
       mountPath: {{ template "datadog.dockerOrCriSocketPath" . }}
+      {{- if eq .Values.targetSystem "linux" }}
       readOnly: true
+      {{- end }}
+    {{- if .Values.agents.useConfigMap }}
+    - name: {{ template "datadog.fullname" . }}-datadog-yaml
+      mountPath: {{ template "datadog.confPath" . }}/datadog.yaml
+      subPath: datadog.yaml
+    {{- end }}
+    {{- if eq .Values.targetSystem "linux" }}
     {{- if .Values.datadog.dogstatsd.useSocketVolume }}
     - name: dsdsocket
       mountPath: "/var/run/datadog"
@@ -140,6 +150,19 @@
     {{- if not .Values.datadog.criSocketPath }}
     - name: logdockercontainerpath
       mountPath: /var/lib/docker/containers
+      readOnly: true
+    {{- end }}
+    {{- end }}
+    {{- end }}
+    {{- if eq .Values.targetSystem "windows" }}
+    {{- if or .Values.datadog.logs.enabled .Values.datadog.logsEnabled }}
+    - name: pointerdir
+      mountPath: C:/var/log
+    - name: logpodpath
+      mountPath: C:/var/log/pods
+      readOnly: true
+    - name: logdockercontainerpath
+      mountPath: C:/ProgramData/docker/containers
       readOnly: true
     {{- end }}
     {{- end }}
