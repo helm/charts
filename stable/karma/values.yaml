@@ -70,7 +70,7 @@ securityContext: {}
 livenessProbe:
   delay: 5
   period: 5
-  path: /
+  path: /health
 
 # configMap dictates if a configmap based configuration for Karma should be used
 # to provide advanced configuration. NOTE, you must use port 8080!
