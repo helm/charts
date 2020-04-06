@@ -91,7 +91,7 @@ spec:
         - name: ANCHORE_CLI_PASS
           valueFrom:
             secretKeyRef:
-              name: {{ include "anchore-engine.fullname" . }}
+              name: {{ default (include "anchore-engine.fullname" .) .Values.anchoreGlobal.existingSecret }}
               key: ANCHORE_ADMIN_PASSWORD
         ports:
         - containerPort: {{ .Values.anchoreApi.service.port }}
