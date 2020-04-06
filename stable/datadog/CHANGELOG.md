@@ -1,5 +1,11 @@
 # Datadog changelog
 
+## 2.2.0
+
+* Add Windows support
+* Update documentation to reflect some changes that were made default
+* Enable endpoint checks by default in DCA/Agent
+
 ## 2.1.2
 
 * Fixed a bug where `DD_LEADER_ELECTION` was not set in the config init container, leading to a failure to adapt
@@ -12,7 +18,6 @@ config to this environment variable.
 ## 2.1.0
 
 * Changed the default for `processAgent.enabled` to `true`.
-
 
 ## 2.0.14
 
