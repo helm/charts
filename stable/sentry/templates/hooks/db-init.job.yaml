@@ -1,5 +1,5 @@
 # https://docs.sentry.io/server/installation/docker/#running-migrations
-{{- if .Values.hooks.dbInit.enabled -}}
+{{- if .Values.hooks.dbInit.enabled }}
 apiVersion: batch/v1
 kind: Job
 metadata:
