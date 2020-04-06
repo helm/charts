@@ -87,6 +87,7 @@ Parameter | Description | Default
 `controller.minReadySeconds` | how many seconds a pod needs to be ready before killing the next, during update | `0`
 `controller.nodeSelector` | node labels for pod assignment | `{}`
 `controller.podAnnotations` | annotations to be added to pods | `{}`
+`controller.deploymentLabels` | labels to add to the deployment metadata | `{}`
 `controller.podLabels` | labels to add to the pod container metadata | `{}`
 `controller.podSecurityContext` | Security context policies to add to the controller pod | `{}`
 `controller.replicaCount` | desired number of controller pods | `1`
@@ -201,6 +202,7 @@ Parameter | Description | Default
 `defaultBackend.affinity` | node/pod affinities (requires Kubernetes >=1.6) | `{}`
 `defaultBackend.nodeSelector` | node labels for pod assignment | `{}`
 `defaultBackend.podAnnotations` | annotations to be added to pods | `{}`
+`defaultBackend.deploymentLabels` | labels to add to the deployment metadata | `{}`
 `defaultBackend.podLabels` | labels to add to the pod container metadata | `{}`
 `defaultBackend.replicaCount` | desired number of default backend pods | `1`
 `defaultBackend.minAvailable` | minimum number of available default backend pods for PodDisruptionBudget | `1`
