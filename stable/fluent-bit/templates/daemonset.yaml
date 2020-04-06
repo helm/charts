@@ -114,11 +114,11 @@ spec:
           mountPath: /fluent-bit/etc/parsers_custom.conf
           subPath: parsers.conf
 {{- end }}
+{{- end }}
 {{- if and .Values.backend.type "stackdriver" .Values.backend.stackdriver.google_service_credentials }}
         - name: gcp-stackdriver-secret
           mountPath: /secure/google_service_credentials.json
           subPath: google_service_credentials.json
-{{- end }}
 {{- end }}
 {{- if or .Values.backend.es.tls_ca .Values.backend.es.tls_secret }}
         - name: es-tls-secret
