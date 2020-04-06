@@ -93,3 +93,7 @@ env:
 #    valueFrom:
 #      fieldRef:
 #        fieldPath: metadata.name
+
+extraVolumes: []
+
+extraVolumeMounts: []
