@@ -212,7 +212,7 @@ master:
 
   # List of plugins to be install during Jenkins master start
   installPlugins:
-    - kubernetes:1.24.1
+    - kubernetes:1.25.1
     - workflow-job:2.36
     - workflow-aggregator:2.6
     - credentials-binding:1.21
