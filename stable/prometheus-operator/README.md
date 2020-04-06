@@ -257,6 +257,8 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.ingressPerReplica.labels` | Prometheus per replica Ingress additional labels | `{}` |
 | `prometheus.ingressPerReplica.paths` | Prometheus per replica Ingress paths | `[]` |
 | `prometheus.ingressPerReplica.tlsSecretName` | Secret name containing the TLS certificate for Prometheus per replica ingress | `[]` |
+| `prometheus.ingressPerReplica.tlsSecretPerReplica.enabled` | If true, create an secret for TLS certificate for each Ingress | `false` |
+| `prometheus.ingressPerReplica.tlsSecretPerReplica.prefix` | Secret name prefix | `""` |
 | `prometheus.podDisruptionBudget.enabled` | If true, create a pod disruption budget for prometheus pods. The created resource cannot be modified once created - it must be deleted to perform a change | `false` |
 | `prometheus.podDisruptionBudget.maxUnavailable` | Maximum number / percentage of pods that may be made unavailable | `""` |
 | `prometheus.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `1` |
@@ -387,6 +389,15 @@ The following tables list the configurable parameters of the prometheus-operator
 | `alertmanager.ingress.labels` | Alertmanager Ingress additional labels | `{}` |
 | `alertmanager.ingress.paths` | Alertmanager Ingress paths | `[]` |
 | `alertmanager.ingress.tls` | Alertmanager Ingress TLS configuration (YAML) | `[]` |
+| `alertmanager.ingressPerReplica.annotations` | Alertmanager pre replica Ingress annotations | `{}` |
+| `alertmanager.ingressPerReplica.enabled` | If true, create an Ingress for each Alertmanager replica in the StatefulSet | `false` |
+| `alertmanager.ingressPerReplica.hostPrefix` |  | `""` |
+| `alertmanager.ingressPerReplica.hostDomain` |  | `""` |
+| `alertmanager.ingressPerReplica.labels` | Alertmanager per replica Ingress additional labels | `{}` |
+| `alertmanager.ingressPerReplica.paths` | Alertmanager per replica Ingress paths | `[]` |
+| `alertmanager.ingressPerReplica.tlsSecretName` | Secret name containing the TLS certificate for Alertmanager per replica ingress | `[]` |
+| `alertmanager.ingressPerReplica.tlsSecretPerReplica.enabled` | If true, create an secret for TLS certificate for each Ingress | `false` |
+| `alertmanager.ingressPerReplica.tlsSecretPerReplica.prefix` | Secret name prefix | `""` |
 | `alertmanager.podDisruptionBudget.enabled` | If true, create a pod disruption budget for Alertmanager pods. The created resource cannot be modified once created - it must be deleted to perform a change | `false` |
 | `alertmanager.podDisruptionBudget.maxUnavailable` | Maximum number / percentage of pods that may be made unavailable | `""` |
 | `alertmanager.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `1` |
@@ -401,6 +412,14 @@ The following tables list the configurable parameters of the prometheus-operator
 | `alertmanager.service.port` | Port for Alertmanager Service to listen on | `9093` |
 | `alertmanager.service.targetPort` | AlertManager Service internal port | `9093` |
 | `alertmanager.service.type` | Alertmanager Service type | `ClusterIP` |
+| `alertmanager.servicePerReplica.annotations` | Alertmanager per replica Service Annotations | `{}` |
+| `alertmanager.servicePerReplica.enabled` | If true, create a Service for each Alertmanager replica in the StatefulSet | `false` |
+| `alertmanager.servicePerReplica.labels` | Alertmanager per replica Service Labels | `{}` |
+| `alertmanager.servicePerReplica.loadBalancerSourceRanges` | Alertmanager per replica Service Loadbalancer Source Ranges | `[]` |
+| `alertmanager.servicePerReplica.nodePort` |  Alertmanager per replica Service port for NodePort Service type | `30904` |
+| `alertmanager.servicePerReplica.port` |  Port for Alertmanager per replica Service to listen on | `9093` |
+| `alertmanager.servicePerReplica.targetPort` |  Alertmanager per replica Service internal port | `9093` |
+| `alertmanager.servicePerReplica.type` |  Alertmanager per replica Service type | `ClusterIP` |
 | `alertmanager.serviceAccount.create` | Create a `serviceAccount` for alertmanager | `true` |
 | `alertmanager.serviceAccount.name` | Name for Alertmanager service account | `""` |
 | `alertmanager.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |

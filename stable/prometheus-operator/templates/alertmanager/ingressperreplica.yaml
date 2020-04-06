@@ -1,21 +1,21 @@
-{{- if and .Values.prometheus.enabled .Values.prometheus.servicePerReplica.enabled .Values.prometheus.ingressPerReplica.enabled }}
-{{- $count := .Values.prometheus.prometheusSpec.replicas | int -}}
-{{- $servicePort := .Values.prometheus.service.port -}}
-{{- $ingressValues := .Values.prometheus.ingressPerReplica -}}
+{{- if and .Values.alertmanager.enabled .Values.alertmanager.servicePerReplica.enabled .Values.alertmanager.ingressPerReplica.enabled }}
+{{- $count := .Values.alertmanager.alertmanagerSpec.replicas | int -}}
+{{- $servicePort := .Values.alertmanager.service.port -}}
+{{- $ingressValues := .Values.alertmanager.ingressPerReplica -}}
 apiVersion: v1
 kind: List
 metadata:
-  name: {{ include "prometheus-operator.fullname" $ }}-prometheus-ingressperreplica
+  name: {{ include "prometheus-operator.fullname" $ }}-alertmanager-ingressperreplica
   namespace: {{ $.Release.Namespace }}
 items:
 {{ range $i, $e := until $count }}
   - apiVersion: extensions/v1beta1
     kind: Ingress
     metadata:
-      name: {{ include "prometheus-operator.fullname" $ }}-prometheus-{{ $i }}
+      name: {{ include "prometheus-operator.fullname" $ }}-alertmanager-{{ $i }}
       namespace: {{ $.Release.Namespace }}
       labels:
-        app: {{ include "prometheus-operator.name" $ }}-prometheus
+        app: {{ include "prometheus-operator.name" $ }}-alertmanager
 {{ include "prometheus-operator.labels" $ | indent 8 }}
       {{- if $ingressValues.labels }}
       {{ toYaml $ingressValues.labels | indent 8 }}
@@ -32,7 +32,7 @@ items:
       {{- range $p := $ingressValues.paths }}
               - path: {{ tpl $p $ }}
                 backend:
-                  serviceName: {{ include "prometheus-operator.fullname" $ }}-prometheus-{{ $i }}
+                  serviceName: {{ include "prometheus-operator.fullname" $ }}-alertmanager-{{ $i }}
                   servicePort: {{ $servicePort }}
       {{- end -}}
       {{- if or $ingressValues.tlsSecretName $ingressValues.tlsSecretPerReplica.enabled }}
