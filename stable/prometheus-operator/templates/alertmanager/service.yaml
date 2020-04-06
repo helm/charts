@@ -6,6 +6,7 @@ metadata:
   namespace: {{ $.Release.Namespace }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-alertmanager
+    self-monitor: {{ .Values.alertmanager.serviceMonitor.selfMonitor | quote }}
 {{ include "prometheus-operator.labels" . | indent 4 }}
 {{- if .Values.alertmanager.service.labels }}
 {{ toYaml .Values.alertmanager.service.labels | indent 4 }}

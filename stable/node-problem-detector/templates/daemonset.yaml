@@ -62,6 +62,9 @@ spec:
             - name: custom-config
               mountPath: /custom-config
               readOnly: true
+{{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 12 }}
+{{- end }}
           ports:
             - containerPort: {{ .Values.settings.prometheus_port }}
               name: exporter
@@ -90,3 +93,6 @@ spec:
         - name: custom-config
           configMap:
             name: {{ include "node-problem-detector.customConfig" . }}
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 8 }}
+{{- end }}
