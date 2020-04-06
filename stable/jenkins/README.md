@@ -85,8 +85,8 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.initContainerEnv`         | Environment variables for Init Container                                 | Not set |
 | `master.containerEnv`             | Environment variables for Jenkins Container                              | Not set |
 | `master.usePodSecurityContext`    | Enable pod security context (must be `true` if `runAsUser` or `fsGroup` are set) | `true` |
-| `master.runAsUser`                | uid that jenkins runs with           | `0`                                       |
-| `master.fsGroup`                  | uid that will be used for persistent volume | `0`                                |
+| `master.runAsUser`                | uid that jenkins runs with           | `1000`                                       |
+| `master.fsGroup`                  | uid that will be used for persistent volume | `1000`                                |
 | `master.hostAliases`              | Aliases for IPs in `/etc/hosts`      | `[]`                                      |
 | `master.serviceAnnotations`       | Service annotations                  | `{}`                                      |
 | `master.serviceType`              | k8s service type                     | `ClusterIP`                               |
