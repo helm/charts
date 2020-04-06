@@ -1,5 +1,10 @@
 # Datadog changelog
 
+## 2.1.2
+
+* Fixed a bug where `DD_LEADER_ELECTION` was not set in the config init container, leading to a failure to adapt
+config to this environment variable.
+
 ## 2.1.1
 
 * Add option to enable WPA in the Cluster Agent.
@@ -24,7 +29,7 @@
       Message:      failed to create containerd task: OCI runtime create failed: container_linux.go:349: starting container process caused "close exec fds: ensure /proc/self/fd is on procfs: operation not permitted": unknown
       Exit Code:    128
    ```
-   
+
 ## 2.0.11
 
 * Add missing syscalls in the `system-probe` seccomp profile
