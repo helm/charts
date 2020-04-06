@@ -57,7 +57,7 @@ spec:
               value: {{ include "newrelic.cluster" . }}
             {{- if .Values.disableKubeStateMetrics }}
             - name: "DISABLE_KUBE_STATE_METRICS"
-              value: {{ .Values.kubeStateMetricsPodLabel | quote }}
+              value: {{ .Values.disableKubeStateMetrics | quote }}
             {{- end }}
             {{- if .Values.kubeStateMetricsUrl }}
             - name: "KUBE_STATE_METRICS_URL"
