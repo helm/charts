@@ -109,8 +109,9 @@ Update your [datadog-values.yaml](values.yaml) file with the following log colle
 ```
 datadog:
   (...)
- logsEnabled: true
- logsConfigContainerCollectAll: true
+  logs:
+    enabled: true
+    configContainerCollectAll: true
 ```
 
 then upgrade your Datadog Helm chart:
@@ -126,8 +127,9 @@ Update your [datadog-values.yaml](values.yaml) file with the process collection 
 ```
 datadog:
   (...)
-  processAgent.enabled: true
-  processAgent.processCollection: true
+  processAgent:
+    enabled: true
+    processCollection: true
 ```
 
 then upgrade your Datadog Helm chart:
@@ -250,6 +252,7 @@ helm install --name <RELEASE_NAME> \
 
 | Parameter                                                    | Description                                                                                                                                               | Default                                         |
 | ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| `targetSystem`                                               | Target OS of this installation (supported: `linux`, `windows`)                                                                                            | `linux`                                         |
 | `datadog.apiKey`                                             | Your Datadog API key                                                                                                                                      | `nil` You must provide your own key             |
 | `datadog.apiKeyExistingSecret`                               | If set, use the secret with a provided name instead of creating a new one                                                                                 | `nil`                                           |
 | `datadog.appKey`                                             | Datadog APP key required to use metricsProvider                                                                                                           | `nil` You must provide your own key             |
@@ -268,7 +271,7 @@ helm install --name <RELEASE_NAME> \
 | `datadog.logLevel`                                           | Agent log verbosity (possible values: trace, debug, info, warn, error, critical, and off)                                                                 | `INFO`                                          |
 | `datadog.logs.enabled`                                       | Enable log collection                                                                                                                                     | `nil`                                           |
 | `datadog.logs.containerCollectAll`                           | Collect logs from all containers                                                                                                                          | `nil`                                           |
-| `datadog.logsPointerHostPath`                                | Host path to store the log tailing state in                                                                                                               | `/var/lib/datadog-agent/logs`                   |
+| `datadog.logs.containerCollectUsingFiles`                    | Collect container logs from files on disk instead of container runtime API                                                                                | `true`                                          |
 | `datadog.apm.enabled`                                        | Enable tracing from the host                                                                                                                              | `false`                                         |
 | `datadog.apm.port`                                           | Used to override the default agent APM Port                                                                                                               | `8126`                                          |
 | `datadog.processAgent.enabled`                               | Enable live process and container monitoring agent. Possible values: `true` enable process-agent, `false` disable process-agent                           | `true`                                         |
@@ -276,12 +279,11 @@ helm install --name <RELEASE_NAME> \
 | `datadog.checksd`                                            | Additional custom checks as python code                                                                                                                   | `nil`                                           |
 | `datadog.confd`                                              | Additional check configurations (static and Autodiscovery)                                                                                                | `nil`                                           |
 | `datadog.dockerSocketPath`                                   | Path to the docker socket                                                                                                                                 | `/var/run/docker.sock`                          |
-| `datadog.criSocketPath`                                      | Path to the container runtime socket (default is Docker runtime)                                                                                          | `nil`                          |
+| `datadog.criSocketPath`                                      | Path to the container runtime socket (default is Docker runtime)                                                                                          | `nil`                                           |
 | `datadog.tags`                                               | Set host tags                                                                                                                                             | `nil`                                           |
-| `datadog.useCriSocketVolume`                                 | Enable mounting the container runtime socket in Agent containers                                                                                          | `True`                                          |
 | `datadog.dogstatsd.originDetection`                          | Enable origin detection for container tagging                                                                                                             | `False`                                         |
 | `datadog.dogstatsd.port`                                     | Used to override the default agent DogStatsD Port                                                                                                         | `8125`                                          |
-| `datadog.dogstatsd.useHostPID`.                              | If true, use the host's PID namespace                                                                                                                     | `nil`                                           |
+| `datadog.dogstatsd.useHostPID`                               | If true, use the host's PID namespace                                                                                                                     | `nil`                                           |
 | `datadog.dogstatsd.useHostPort`                              | If true, use the same ports for both host and container                                                                                                   | `nil`                                           |
 | `datadog.dogstatsd.nonLocalTraffic`                          | Enable statsd reporting from any external ip                                                                                                              | `False`                                         |
 | `datadog.dogstatsd.useSocketVolume`                          | Enable dogstatsd over Unix Domain Socket                                                                                                                  | `False`                                         |
@@ -394,3 +396,22 @@ helm install --name <RELEASE_NAME> \
 | `kube-state-metrics.serviceAccount.create`                   | If true, create & use serviceAccount                                                                                                                      | `true`                                          |
 | `kube-state-metrics.serviceAccount.name`                     | If not set & create is true, use template fullname                                                                                                        |                                                 |
 | `kube-state-metrics.resources`                               | Overwrite the default kube-state-metrics container resources (Optional)                                                                                   |                                                 |
+
+## Configuration options for Windows deployments
+
+Some options above are not working/not available on Windows, here is the list of **unsupported** options:
+
+| Parameter                                                    | Reason                                           |
+| ------------------------------------------------------------ | ------------------------------------------------ |
+| `datadog.dogstatsd.useHostPID`                               | Host PID not supported by Windows Containers     |
+| `datadog.dogstatsd.useSocketVolume`                          | Unix sockets not supported on Windows            |
+| `datadog.dogstatsd.socketPath`                               | Unix sockets not supported on Windows            |
+| `datadog.processAgent.processCollection`                     | Unable to access host/other containers processes |
+| `datadog.systemProbe.enabled`                                | System probe is not available for Windows        |
+| `datadog.systemProbe.seccomp`                                | System probe is not available for Windows        |
+| `datadog.systemProbe.seccompRoot`                            | System probe is not available for Windows        |
+| `datadog.systemProbe.debugPort`                              | System probe is not available for Windows        |
+| `datadog.systemProbe.enableConntrack`                        | System probe is not available for Windows        |
+| `datadog.systemProbe.bpfDebug`                               | System probe is not available for Windows        |
+| `datadog.systemProbe.apparmor`                               | System probe is not available for Windows        |
+| `agents.useHostNetwork`                                      | Host network not supported by Windows Containers |

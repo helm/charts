@@ -59,106 +59,69 @@ spec:
       priorityClassName: {{ .Values.agents.priorityClassName }}
       {{- end }}
       containers:
-        {{- include "container-agent" . | nindent 8 }}
+        {{- include "container-agent" . | nindent 6 }}
         {{- if .Values.datadog.apm.enabled }}
-          {{- include "container-trace-agent" . | nindent 8 }}
+          {{- include "container-trace-agent" . | nindent 6 }}
         {{- end }}
         {{- if .Values.datadog.processAgent.enabled }}
-          {{- include "container-process-agent" . | nindent 8 }}
+          {{- include "container-process-agent" . | nindent 6 }}
         {{- end }}
         {{- if .Values.datadog.systemProbe.enabled }}
-          {{- include "container-system-probe" . | nindent 8 }}
+          {{- include "container-system-probe" . | nindent 6 }}
         {{- end }}
       initContainers:
-        {{ include "containers-init" . | nindent 8 }}
+        {{- if eq .Values.targetSystem "windows" }}
+          {{ include "containers-init-windows" . | nindent 6 }}
+        {{- end }}
+        {{- if eq .Values.targetSystem "linux" }}
+          {{ include "containers-init-linux" . | nindent 6 }}
+        {{- end }}
         {{- if and .Values.datadog.systemProbe.enabled (eq .Values.datadog.systemProbe.seccomp "localhost/system-probe") }}
-          {{ include "system-probe-init" . | nindent 8 }}
+          {{ include "system-probe-init" . | nindent 6 }}
         {{- end }}
       volumes:
-        - name: config
-          emptyDir: {}
-        - hostPath:
-            path: {{ template "datadog.dockerOrCriSocketPath" . }}
-          name: runtimesocket
-        {{- if .Values.datadog.dogstatsd.useSocketVolume }}
-        - hostPath:
-            path: "/var/run/datadog/"
-          name: dsdsocket
-        {{- end }}
-        - hostPath:
-            path: /proc
-          name: procdir
-        - hostPath:
-            path: /sys/fs/cgroup
-          name: cgroups
-        - name: s6-run
-          emptyDir: {}
-        {{- if (or (.Values.datadog.confd) (.Values.datadog.autoconf)) }}
-        - name: confd
-          configMap:
-            name: {{ template "datadog.fullname" . }}-confd
-        {{- end }}
-        {{- if .Values.datadog.checksd }}
-        - name: checksd
-          configMap:
-            name: {{ template "datadog.fullname" . }}-checksd
-        {{- end }}
-        {{- if or .Values.datadog.logs.enabled .Values.datadog.logsEnabled }}
-        - hostPath:
-            path: "/var/lib/datadog-agent/logs"
-          name: pointerdir
-        - hostPath:
-            path: /var/log/pods
-          name: logpodpath
-        {{- if not .Values.datadog.criSocketPath }}
-        - hostPath:
-            path: /var/lib/docker/containers
-          name: logdockercontainerpath
-        {{- end }}
-        {{- end }}
-        {{- if or .Values.datadog.processAgent.enabled .Values.datadog.systemProbe.enabled }}
-        - hostPath:
-            path: /etc/passwd
-          name: passwd
-        {{- end }}
-        {{- if .Values.datadog.systemProbe.enabled }}
-        - name: sysprobe-config
-          configMap:
-            name: {{ template "datadog.fullname" . }}-system-probe-config
-        {{- if eq .Values.datadog.systemProbe.seccomp "localhost/system-probe" }}
-        - name: datadog-agent-security
-          configMap:
-            name: {{ template "datadog.fullname" . }}-security
-        - hostPath:
-            path: {{ .Values.datadog.systemProbe.seccompRoot }}
-          name: seccomp-root
-        {{- end }}
-        - hostPath:
-            path: /sys/kernel/debug
-          name: debugfs
-        - name: sysprobe-socket-dir
-          emptyDir: {}
-        {{- end }}
-        {{- if .Values.agents.useConfigMap }}
-        - name: {{ template "datadog.fullname" . }}-datadog-yaml
-          configMap:
-            name: {{ template "datadog.fullname" . }}-datadog-yaml
-        {{- end }}
-{{- if .Values.agents.volumes }}
-{{ toYaml .Values.agents.volumes | indent 8 }}
-{{- end }}
-      {{- if .Values.agents.tolerations }}
-      tolerations:
-{{ toYaml .Values.agents.tolerations | indent 8 }}
+      - name: config
+        emptyDir: {}
+      - hostPath:
+          path: {{ template "datadog.dockerOrCriSocketPath" . }}
+        name: runtimesocket
+      {{- if .Values.datadog.checksd }}
+      - name: checksd
+        configMap:
+          name: {{ template "datadog.fullname" . }}-checksd
       {{- end }}
-      {{- if .Values.agents.affinity }}
+      {{- if .Values.agents.useConfigMap }}
+      - name: {{ template "datadog.fullname" . }}-datadog-yaml
+        configMap:
+          name: {{ template "datadog.fullname" . }}-datadog-yaml
+      {{- end }}
+      {{- if eq .Values.targetSystem "windows" }}
+        {{ include "daemonset-volumes-windows" . | nindent 6 }}
+      {{- end }}
+      {{- if eq .Values.targetSystem "linux" }}
+        {{ include "daemonset-volumes-linux" . | nindent 6 }}
+      {{- end }}
+{{- if .Values.agents.volumes }}
+{{ toYaml .Values.agents.volumes | indent 6 }}
+{{- end }}
+      tolerations:
+      {{- if eq .Values.targetSystem "windows" }}
+      - effect: NoSchedule
+        key: node.kubernetes.io/os
+        value: windows
+        operator: Equal
+      {{- end }}
+      {{- if .Values.agents.tolerations }}
+{{ toYaml .Values.agents.tolerations | indent 6 }}
+      {{- end }}
       affinity:
 {{ toYaml .Values.agents.affinity | indent 8 }}
-      {{- end }}
       serviceAccountName: {{ if .Values.agents.rbac.create }}{{ template "datadog.fullname" . }}{{ else }}"{{ .Values.agents.rbac.serviceAccountName }}"{{ end }}
-      {{- if .Values.agents.nodeSelector }}
       nodeSelector:
+      {{- if .Values.agents.nodeSelector }}
 {{ toYaml .Values.agents.nodeSelector | indent 8 }}
+      {{- else if eq .Values.targetSystem "windows" }}
+        kubernetes.io/os: windows
       {{- end }}
   updateStrategy:
 {{ toYaml .Values.agents.updateStrategy | indent 4 }}
