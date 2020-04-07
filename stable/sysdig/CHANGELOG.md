@@ -3,6 +3,13 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.7.8
+
+### Minor changes
+
+* Add a image.overrideValue value which is a hack to support
+  RELATED_IMAGE_<identifier> feature in Helm based operators.
+
 ## v1.7.7
 
 ### Minor changes
