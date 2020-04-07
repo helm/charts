@@ -36,6 +36,18 @@ metricsPrefix: ""
 ##
 nodeSelector: {}
 
+## Tolerations for the sparkoperator deployment
+##
+## Example:
+##   - key: "toleration=key"
+##     operator: "Equal"
+##     value: "value"
+##     effect: "NoSchedule"
+##
+## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+##
+tolerations: []
+
 podAnnotations: {}
 
 ## Resources for the sparkoperator deployment
