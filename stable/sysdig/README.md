@@ -69,6 +69,7 @@ The following table lists the configurable parameters of the Sysdig chart and th
 | `auditLog.dynamicBackend.enabled` | Deploy the Audit Sink where Sysdig listens for K8s audit log events    | `false`                                     |
 | `customAppChecks`                 | The custom app checks deployed with your agent                         | `{}`                                        |
 | `tolerations`                     | The tolerations for scheduling                                         | `node-role.kubernetes.io/master:NoSchedule` |
+| `openshift.createSCC`             | Create OpenShift's Security Context Constraint if detected             | `true`                                      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
