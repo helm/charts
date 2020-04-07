@@ -74,8 +74,8 @@ rbac:
     create: true
     name: default
 
-  ## Annotations for the Service Account
-  serviceAccountAnnotations: {}
+    ## Annotations for the Service Account
+    annotations: {}
 
 image:
   repository: docker.io/amazon/aws-alb-ingress-controller
