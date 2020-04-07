@@ -199,6 +199,8 @@ kubeConfig:
 # Change this if youd like to expose Spinnaker outside the cluster
 ingress:
   enabled: false
+  # Setup the service as NodePort only relying on the ingress object being created elsewhere.
+  nodePortOnly: false
   # host: spinnaker.example.org
   # annotations:
     # ingress.kubernetes.io/ssl-redirect: 'true'
@@ -211,6 +213,8 @@ ingress:
 
 ingressGate:
   enabled: false
+  # Setup the service as NodePort only relying on the ingress object being created elsewhere.
+  nodePortOnly: false
   # host: gate.spinnaker.example.org
   # annotations:
     # ingress.kubernetes.io/ssl-redirect: 'true'

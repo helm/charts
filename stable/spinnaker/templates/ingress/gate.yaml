@@ -1,4 +1,4 @@
-{{- if .Values.ingressGate.enabled }}
+{{- if and .Values.ingressGate.enabled (not .Values.ingressGate.nodePortOnly) }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
