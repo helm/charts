@@ -1,0 +1,19 @@
+{{- if and ( .Capabilities.APIVersions.Has "monitoring.coreos.com/v1" ) ( .Values.prometheusRule.enabled ) }}
+{{- $fullName := include "prometheus-cloudwatch-exporter.fullname" . -}}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+{{- if .Values.prometheusRule.labels }}
+  labels:
+{{ toYaml .Values.prometheusRule.labels | indent 4}}
+{{- end }}
+  name: {{ $fullName }}
+{{- if .Values.prometheusRule.namespace }}
+  namespace: {{ .Values.prometheusRule.namespace }}
+{{- end }}
+spec:
+  groups:
+  - name: {{ $fullName }}
+    rules:
+      {{- toYaml .Values.prometheusRule.rules | nindent 6 }}
+{{- end }}
