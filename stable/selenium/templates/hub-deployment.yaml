@@ -65,7 +65,7 @@ spec:
               value: {{ .Values.hub.gridNodePolling | quote }}
             {{- end }}
             {{- if .Values.hub.gridCleanUpCycle }}
-            - name: GRID_CLEANUP_CYCLE
+            - name: GRID_CLEAN_UP_CYCLE
               value: {{ .Values.hub.gridCleanUpCycle | quote }}
             {{- end }}
             {{- if .Values.hub.gridTimeout }}

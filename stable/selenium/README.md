@@ -65,9 +65,9 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `hub.gridNewSessionWaitTimeout` | | `nil` |
 | `hub.gridJettyMaxThreads` | | `nil` |
 | `hub.gridNodePolling` | | `nil` |
-| `hub.gridCleanUpCycle` | | `nil` |
-| `hub.gridTimeout` | | `nil` |
-| `hub.gridBrowserTimeout` | | `nil` |
+| `hub.gridCleanUpCycle` | Specifies how often the hub will poll running proxies for timed-out (i.e. hung) threads **(in ms)**. Must also specify "timeout" option | `nil` |
+| `hub.gridTimeout` | Specifies the timeout before the server automatically kills a session that hasn't had any activity in the last X seconds.| `nil` |
+| `hub.gridBrowserTimeout` | Number of seconds a browser session is allowed to hang while a WebDriver command is running | `nil` |
 | `hub.gridMaxSession` | | `nil` |
 | `hub.gridUnregisterIfStillDownAfter` | | `nil` |
 | `hub.seOpts` | Command line arguments to pass to hub | `nil` |
