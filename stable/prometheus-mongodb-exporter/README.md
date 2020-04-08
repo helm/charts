@@ -49,7 +49,7 @@ podAnnotations:
 | `priorityClassName` | Pod priority class name | `` |
 | `replicas` | Number of replicas in the replica set | `1` |
 | `resources` | Pod resource requests and limits | `{}` |
-| `env` | Extra environment variables passed to pod | `{}` |
+| `env` | Extra environment variables passed to pod | `[]` |
 | `securityContext` | Security context for the pod | See values.yaml |
 | `service.annotations` | Annotations to be added to the service | `{}` |
 | `service.port` | The port to expose | `9216` |
@@ -66,4 +66,3 @@ podAnnotations:
 ## Limitations
 
 Connecting to MongoDB via TLS is currently not supported.
-

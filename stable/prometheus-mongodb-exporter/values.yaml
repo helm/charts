@@ -57,7 +57,7 @@ resources: {}
 #   memory: 128Mi
 
 # Extra environment variables that will be passed into the exporter pod
-env: {}
+env: []
 
 securityContext:
   allowPrivilegeEscalation: false
