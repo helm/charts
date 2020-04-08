@@ -94,17 +94,16 @@ master:
      </authorizationStrategy>
   hostNetworking: false
   # When enabling LDAP or another non-Jenkins identity source, the built-in admin account will no longer exist.
-  # Since the AdminUser is used by configAutoReload, in order to use configAutoReload you must change the
-  # .master.adminUser to a valid username on your LDAP (or other) server.  This user does not need
-  # to have administrator rights in Jenkins (the default Overall:Read is sufficient) nor will it be granted any
-  # additional rights.  Failure to do this will cause the sidecar container to fail to authenticate via SSH and enter
-  # a restart loop.  Likewise if you disable the non-Jenkins identity store and instead use the Jenkins internal one,
+  # If you disable the non-Jenkins identity store and instead use the Jenkins internal one,
   # you should revert master.adminUser to your preferred admin user:
   adminUser: "admin"
   # adminPassword: <defaults to random>
-  # adminSshKey: <defaults to auto-generated>
-  # If CasC auto-reload is enabled, an SSH (RSA) keypair is needed.  Can either provide your own, or leave unconfigured to allow a random key to be auto-generated.
-  # If you supply your own, it is recommended that the values file that contains your key not be committed to source control in an unencrypted format
+  # This values should not be changed unless you use your custom image of jenkins or any devired from. If you want to use
+  # Cloudbees Jenkins Distribution docker, you should set jenkinsHome: "/var/cloudbees-jenkins-distribution"
+  jenkinsHome: "/var/jenkins_home"
+  # This values should not be changed unless you use your custom image of jenkins or any devired from. If you want to use
+  # Cloudbees Jenkins Distribution docker, you should set jenkinsRef: "/usr/share/cloudbees-jenkins-distribution/ref"
+  jenkinsRef: "/usr/share/jenkins/ref"
   rollingUpdate: {}
   # Ignored if Persistence is enabled
   # maxSurge: 1
@@ -213,11 +212,11 @@ master:
 
   # List of plugins to be install during Jenkins master start
   installPlugins:
-    - kubernetes:1.21.2
+    - kubernetes:1.25.1
     - workflow-job:2.36
     - workflow-aggregator:2.6
-    - credentials-binding:1.20
-    - git:4.0.0
+    - credentials-binding:1.21
+    - git:4.2.0
 
   # Enable to always override the installed plugins with the values of 'master.installPlugins' on upgrade or redeployment.
   # overwritePlugins: true
@@ -253,10 +252,7 @@ master:
   JCasC:
     enabled: false
     defaultConfig: false
-    pluginVersion: "1.32"
-    # it's only used when plugin version is <=1.18 for later version the
-    # configuration as code support plugin is no longer needed
-    supportPluginVersion: "1.18"
+    pluginVersion: "1.36"
     configScripts: {}
     # welcome-message: |
     #   jenkins:
@@ -271,9 +267,8 @@ master:
   sidecars:
     configAutoReload:
       # If enabled: true, Jenkins Configuration as Code will be reloaded on-the-fly without a reboot.  If false or not-specified,
-      # jcasc changes will cause a reboot and will only be applied at the subsequent start-up.  Auto-reload uses the Jenkins CLI
-      # over SSH to reapply config when changes to the configScripts are detected.  The admin user (or account you specify in
-      # master.adminUser) will have a random SSH private key (RSA 4096) assigned unless you specify adminSshKey.  This will be saved to a k8s secret.
+      # jcasc changes will cause a reboot and will only be applied at the subsequent start-up.  Auto-reload uses the
+      # http://<jenkins_url>/reload-configuration-as-code endpoint to reapply config when changes to the configScripts are detected.
       enabled: false
       image: kiwigrid/k8s-sidecar:0.1.20
       imagePullPolicy: IfNotPresent
@@ -284,12 +279,6 @@ master:
         #   requests:
         #     cpu: 50m
         #     memory: 50Mi
-      # SSH port value can be set to any unused TCP port.  The default, 1044, is a non-standard SSH port that has been chosen at random.
-      # Is only used to reload jcasc config from the sidecar container running in the Jenkins master pod.
-      # This TCP port will not be open in the pod (unless you specifically configure this), so Jenkins will not be
-      # accessible via SSH from outside of the pod.  Note if you use non-root pod privileges (runAsUser & fsGroup),
-      # this must be > 1024:
-      sshTcpPort: 1044
       # folder in the pod that should hold the collected dashboards:
       folder: "/var/jenkins_home/casc_configs"
       # If specified, the sidecar will search for JCasC config-maps inside this namespace.
@@ -318,6 +307,9 @@ master:
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
   nodeSelector: {}
+
+  terminationGracePeriodSeconds:
+
   tolerations: []
   # Leverage a priorityClass to ensure your pods survive resource shortages
   # ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
@@ -451,7 +443,7 @@ agent:
 
   # Executed command when side container gets started
   command:
-  args:
+  args: "${computer.jnlpmac} ${computer.name}"
   # Side container name
   sideContainerName: "jnlp"
   # Doesn't allocate pseudo TTY by default
@@ -478,6 +470,30 @@ agent:
   # Timeout in seconds for an agent to be online
   slaveConnectTimeout: 100
 
+  # Below is the implementation of custom pod templates for the default configured kubernetes cloud.
+  # Add a key under podTemplates for each pod template. Each key (prior to | character) is just a label, and can be any value.
+  # Keys are only used to give the pod template a meaningful name.  The only restriction is they may only contain RFC 1123 \ DNS label
+  # characters: lowercase letters, numbers, and hyphens. Each pod template can contain multiple containers.
+  # For this pod templates configuration to be loaded the following values must be set:
+  # master.JCasC.enabled: true
+  # master.JCasC.defaultConfig: true
+  # Best reference is https://<jenkins_url>/configuration-as-code/reference#Cloud-kubernetes. The example below creates a python pod template.
+  podTemplates: {}
+  #  python: |
+  #    - name: python
+  #      label: jenkins-python
+  #      serviceAccount: jenkins
+  #      containers:
+  #        - name: python
+  #          image: python:3
+  #          command: "/bin/sh -c"
+  #          args: "cat"
+  #          ttyEnabled: true
+  #          privileged: true
+  #          resourceRequestCpu: "400m"
+  #          resourceRequestMemory: "512Mi"
+  #          resourceLimitCpu: "1"
+  #          resourceLimitMemory: "1024Mi"
 persistence:
   enabled: true
   ## A manually managed Persistent Volume and Claim

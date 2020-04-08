@@ -178,6 +178,7 @@ Parameter | Description | Default
 `alertmanager.service.servicePort` | alertmanager service port | `80`
 `alertmanager.service.sessionAffinity` | Session Affinity for alertmanager service, can be `None` or `ClientIP` | `None`
 `alertmanager.service.type` | type of alertmanager service to create | `ClusterIP`
+`alertmanager.strategy` | Deployment strategy | `{ "type": "RollingUpdate" }`
 `alertmanagerFiles.alertmanager.yml` | Prometheus alertmanager configuration | example configuration
 `configmapReload.prometheus.enabled` | If false, the configmap-reload container for Prometheus will not be deployed | `true`
 `configmapReload.prometheus.name` | configmap-reload container name | `configmap-reload`
@@ -271,7 +272,7 @@ Parameter | Description | Default
 `pushgateway.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `pushgateway.service.servicePort` | pushgateway service port | `9091`
 `pushgateway.service.type` | type of pushgateway service to create | `ClusterIP`
-`pushgateway.strategy.type` | Deployment strategy | `{ "type": "RollingUpdate" }`
+`pushgateway.strategy` | Deployment strategy | `{ "type": "RollingUpdate" }`
 `rbac.create` | If true, create & use RBAC resources | `true`
 `server.enabled` | If false, Prometheus server will not be created | `true`
 `server.name` | Prometheus server container name | `server`
@@ -350,16 +351,21 @@ Parameter | Description | Default
 `server.service.statefulsetReplica.enabled` | If true, send the traffic from the service to only one replica of the replicaset | `false`
 `server.service.statefulsetReplica.replica` | Which replica to send the traffice to | `0`
 `server.sidecarContainers` | array of snippets with your sidecar containers for prometheus server | `""`
+`server.strategy` | Deployment strategy | `{ "type": "RollingUpdate" }`
 `serviceAccounts.alertmanager.create` | If true, create the alertmanager service account | `true`
 `serviceAccounts.alertmanager.name` | name of the alertmanager service account to use or create | `{{ prometheus.alertmanager.fullname }}`
+`serviceAccounts.alertmanager.annotations` | annotations for the alertmanager service account | `{}`
 `serviceAccounts.kubeStateMetrics.create` | If true, create the kubeStateMetrics service account | `true`
 `serviceAccounts.kubeStateMetrics.name` | name of the kubeStateMetrics service account to use or create | `{{ prometheus.kubeStateMetrics.fullname }}`
 `serviceAccounts.nodeExporter.create` | If true, create the nodeExporter service account | `true`
 `serviceAccounts.nodeExporter.name` | name of the nodeExporter service account to use or create | `{{ prometheus.nodeExporter.fullname }}`
+`serviceAccounts.nodeExporter.annotations` | annotations for the nodeExporter service account | `{}`
 `serviceAccounts.pushgateway.create` | If true, create the pushgateway service account | `true`
 `serviceAccounts.pushgateway.name` | name of the pushgateway service account to use or create | `{{ prometheus.pushgateway.fullname }}`
+`serviceAccounts.pushgateway.annotations` | annotations for the pushgateway service account | `{}`
 `serviceAccounts.server.create` | If true, create the server service account | `true`
 `serviceAccounts.server.name` | name of the server service account to use or create | `{{ prometheus.server.fullname }}`
+`serviceAccounts.server.annotations` | annotations for the server service account | `{}`
 `server.terminationGracePeriodSeconds` | Prometheus server Pod termination grace period | `300`
 `server.retention` | (optional) Prometheus data retention | `"15d"`
 `serverFiles.alerts` | (Deprecated) Prometheus server alerts configuration | `{}`

@@ -75,6 +75,7 @@ Parameter | Description | Default
 `image.repository`                   | `openvpn` image repository                                           | `jfelten/openvpn-docker`
 `image.tag`                          | `openvpn` image tag                                                  | `1.1.0`
 `image.pullPolicy`                   | Image pull policy                                                    | `IfNotPresent`
+`imagePullSecretName`                | Docker registry pull secret name                                     |
 `service.type`                       | k8s service type exposing ports, e.g. `NodePort`                     | `LoadBalancer`
 `service.externalPort`               | TCP port reported when creating configuration files                  | `443`
 `service.internalPort`               | TCP port on which the service works                                  | `443`
@@ -188,7 +189,7 @@ If routes look correct on the client but data is not returning from the vpn then
 
 Recent Ubuntu releases use systemd-resolved for DNS which by default [won't honor/apply DNS settings from openvpn](https://askubuntu.com/questions/1032476/ubuntu-18-04-no-dns-resolution-when-connected-to-openvpn).
 
-Install the update-systemd-resolved package (`apt install update-systemd-resolved`) and add the following settings to the client ovpn file.
+Install the openvpn-systemd-resolved package (`apt install openvpn-systemd-resolved`) and add the following settings to the client ovpn file.
 
 ```
 script-security 2
@@ -196,6 +197,7 @@ up /etc/openvpn/update-systemd-resolved
 up-restart
 down /etc/openvpn/update-systemd-resolved
 down-pre
+dhcp-option DOMAIN-ROUTE .
 ```
 
 If all of your clients are Ubuntu you can set the `openvpn.clientConf` value when deploying this chart to have these lines added to all generated client ovpn files:
