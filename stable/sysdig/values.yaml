@@ -127,6 +127,9 @@ auditLog:
     # true here configures an AuditSink who will receive the K8s audit logs
     enabled: false
 
+scc:
+  create: false
+
 customAppChecks: {}
   # Allow passing custom app checks for Sysdig Agent.
   # Example:

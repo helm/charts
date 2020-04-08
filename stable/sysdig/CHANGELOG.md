@@ -3,6 +3,12 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.7.9
+
+### Major changes
+
+* Add the SecurityContextConstraints if the security.openshift.io/v1 API is detected.
+
 ## v1.7.8
 
 ### Minor changes
