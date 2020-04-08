@@ -5,6 +5,12 @@ This file documents all notable changes to prometheus-cloudwatch-exporter Helm C
 numbering uses [semantic versioning](http://semver.org).
 
 
+PrometheusRule support added to chart.
+
+Updated cloudwatch-exporter version to [0.8.0](https://github.com/prometheus/cloudwatch_exporter/releases/tag/cloudwatch_exporter-0.8.0)
+
+## 0.7.0
+
 NOTE: The change log until version 0.4.10 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
 ## 0.5.0
