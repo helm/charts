@@ -32,6 +32,7 @@ deployments:
 # you could use `helm template --values <values.yaml> --name release_name ... `
 # and create the resources yourself to deploy on your cluster later
 customResources:
+  create: false
   createEtcdClusterCRD: false
   createBackupCRD: false
   createRestoreCRD: false

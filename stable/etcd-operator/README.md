@@ -27,9 +27,9 @@ To install the chart with the release name `my-release`:
 $ helm install stable/etcd-operator --name my-release
 ```
 
-Note that by default chart installs etcd operator only. If you want to also deploy `etcd` cluster, enable `customResources.createEtcdClusterCRD` flag:
+Note that by default chart installs etcd operator only. If you want to also deploy `etcd` cluster, enable `customResources.create` and `customResources.createEtcdClusterCRD` flags:
 ```bash
-$ helm install --name my-release --set customResources.createEtcdClusterCRD=true stable/etcd-operator
+$ helm install --name my-release --set customResources.create=true --set customResources.createEtcdClusterCRD=true stable/etcd-operator
 ```
 
 ## Uninstalling the Chart
@@ -66,6 +66,7 @@ The following table lists the configurable parameters of the etcd-operator chart
 | `deployments.etcdOperator`                        | Deploy the etcd cluster operator                                     | `true`                                         |
 | `deployments.backupOperator`                      | Deploy the etcd backup operator                                      | `true`                                         |
 | `deployments.restoreOperator`                     | Deploy the etcd restore operator                                     | `true`                                         |
+| `customResources.create`                          | Create custom resource definitions                                   | `false`                                        |
 | `customResources.createEtcdClusterCRD`            | Create a custom resource: EtcdCluster                                | `false`                                        |
 | `customResources.createBackupCRD`                 | Create an a custom resource: EtcdBackup                              | `false`                                        |
 | `customResources.createRestoreCRD`                | Create an a custom resource: EtcdRestore                             | `false`                                        |
