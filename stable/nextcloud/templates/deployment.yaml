@@ -222,6 +222,11 @@ spec:
         - name: nextcloud-data
           mountPath: /var/www/html/themes
           subPath: {{ ternary "themes" (printf "%s/%s" .Values.nextcloud.persistence.subPath "themes") (empty .Values.nextcloud.persistence.subPath) }}
+        {{- range $key, $value := .Values.persistence.existingClaims }}
+        - name: {{ $key }}
+          mountPath: {{ $value.mountPath }}
+          subPath: {{ $value.subPath }}
+        {{- end }}
         {{- range $key, $value := .Values.nextcloud.configs }}
         - name: nextcloud-config
           mountPath: /var/www/html/config/{{ $key }}
@@ -301,6 +306,11 @@ spec:
         - name: nextcloud-data
           mountPath: /var/www/html/themes
           subPath: {{ ternary "themes" (printf "%s/%s" .Values.nextcloud.persistence.subPath "themes") (empty .Values.nextcloud.persistence.subPath) }}
+        {{- range $key, $value := .Values.persistence.existingClaims }}
+        - name: {{ $key }}
+          mountPath: {{ $value.mountPath }}
+          subPath: {{ $value.subPath }}
+        {{- end }}
         - name: nextcloud-nginx-config
           mountPath: /etc/nginx/nginx.conf
           subPath: nginx.conf
@@ -324,6 +334,11 @@ spec:
           claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "nextcloud.fullname" . }}-nextcloud{{- end }}
       {{- else }}
         emptyDir: {}
+      {{- end }}
+      {{- range $key, $value := .Values.persistence.existingClaims }}
+      - name: {{ $key }}
+        persistentVolumeClaim:
+          claimName: {{ $value.claimName }}
       {{- end }}
       {{- if .Values.nextcloud.configs }}
       - name: nextcloud-config

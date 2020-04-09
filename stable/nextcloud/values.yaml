@@ -273,6 +273,13 @@ persistence:
   ## If defined, PVC must be created manually before volume will be bound
   # existingClaim:
 
+  ## A list of extra Persistent Volume Claims to mount
+  existingClaims: {}
+#    my-pvc:
+#      claimName: my-pvc
+#      mountPath: /some/data
+#      subPath: ~
+
   accessMode: ReadWriteOnce
   size: 8Gi
 

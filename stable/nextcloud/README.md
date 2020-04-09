@@ -121,6 +121,7 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `persistence.annotations`                                    | PVC annotations                                         | `{}`                                                    |
 | `persistence.storageClass`                                   | PVC Storage Class for nextcloud volume                  | `nil` (uses alpha storage class annotation)             |
 | `persistence.existingClaim`                                  | An Existing PVC name for nextcloud volume               | `nil` (uses alpha storage class annotation)             |
+| `persistence.existingClaims`                                 | List of existing PVCs to mount                          | `{}`                                                    |
 | `persistence.accessMode`                                     | PVC Access Mode for nextcloud volume                    | `ReadWriteOnce`                                         |
 | `persistence.size`                                           | PVC Storage Request for nextcloud volume                | `8Gi`                                                   |
 | `resources`                                                  | CPU/Memory resource requests/limits                     | `{}`                                                    |
@@ -177,6 +178,16 @@ The [Nextcloud](https://hub.docker.com/_/nextcloud/) image stores the nextcloud 
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to enable persistence and configuration of the PVC.
+
+Additionally you can mount other existing PVCs in the container, you might use this for a `external local` storage, for example:
+
+```yaml
+persistence:
+  existingClaims:
+    my-data:
+      claimName: nextcloud-data
+      mountPath: /my-data
+```
 
 ## Cronjob
 
