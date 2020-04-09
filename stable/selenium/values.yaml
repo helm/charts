@@ -165,7 +165,7 @@ chrome:
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   pullPolicy: "IfNotPresent"
 
-  ## The number of pods in the deployment
+  ## The number of pods in the deployment. This is ignored if runAsDaemonSet is enabled.
   replicas: 1
 
   ## Configure annotations on the chrome pods
@@ -259,7 +259,7 @@ chromeDebug:
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   pullPolicy: "IfNotPresent"
 
-  ## The number of pods in the deployment
+  ## The number of pods in the deployment. This is ignored if runAsDaemonSet is enabled.
   replicas: 1
 
   ## Configure annotations on the chrome debug pods
@@ -352,7 +352,7 @@ firefox:
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   pullPolicy: "IfNotPresent"
 
-  ## The number of pods in the deployment
+  ## The number of pods in the deployment. This is ignored if runAsDaemonSet is enabled.
   replicas: 1
 
   ## Configure annotations on the firefox pods
@@ -432,7 +432,7 @@ firefoxDebug:
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   pullPolicy: "IfNotPresent"
 
-  ## The number of pods in the deployment
+  ## The number of pods in the deployment. This is ignored if runAsDaemonSet is enabled.
   replicas: 1
 
   ## Configure annotations on the firefox debug pods
