@@ -22,6 +22,9 @@ spec:
   {{- with .Values.cronjob.failedJobsHistoryLimit }}
   failedJobsHistoryLimit: {{ . }}
   {{- end }}
+  {{- with .Values.cronjob.startingDeadlineSeconds }}
+  startingDeadlineSeconds: {{ . }}
+  {{- end }}
   {{- with .Values.cronjob.successfulJobsHistoryLimit }}
   successfulJobsHistoryLimit: {{ . }}
   {{- end }}

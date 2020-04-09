@@ -50,6 +50,7 @@ their default values.
 | `cronjob.labels`                     | Labels to add to the cronjob                                | {}                                           |
 | `cronjob.concurrencyPolicy`          | `Allow\|Forbid\|Replace` concurrent jobs                    | `nil`                                        |
 | `cronjob.failedJobsHistoryLimit`     | Specify the number of failed Jobs to keep                   | `nil`                                        |
+| `cronjob.startingDeadlineSeconds`    | Secondes until now the controller counts the missed jobs    | `nil`                                        |
 | `cronjob.successfulJobsHistoryLimit` | Specify the number of completed Jobs to keep                | `nil`                                        |
 | `cronjob.jobRestartPolicy`           | Control the Job restartPolicy                               | `Never`                                      |
 | `pod.annotations`                    | Annotations to add to the pod                               | {}                                           |
