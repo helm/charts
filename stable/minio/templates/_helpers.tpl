@@ -91,6 +91,6 @@ Properly format optional additional arguments to Minio binary
 */}}
 {{- define "minio.extraArgs" -}}
 {{- range .Values.extraArgs -}}
-,{{ . | quote }}
+{{ " " }}{{ . }}
 {{- end -}}
 {{- end -}}

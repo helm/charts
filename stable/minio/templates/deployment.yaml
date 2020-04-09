@@ -73,43 +73,36 @@ spec:
           {{- if .Values.s3gateway.enabled }}
           command: [ "/bin/sh",
           "-ce",
-          "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} gateway s3 {{ .Values.s3gateway.serviceEndpoint }}"
-          {{- template "minio.extraArgs" . }} ]
+          "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} gateway s3 {{ .Values.s3gateway.serviceEndpoint }} {{- template `minio.extraArgs` . }}" ]
           {{- else }}
           {{- if .Values.azuregateway.enabled }}
           command: [ "/bin/sh",
           "-ce",
-          "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} gateway azure"
-          {{- template "minio.extraArgs" . }} ]
+          "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} gateway azure {{- template `minio.extraArgs` . }}" ]
           {{- else }}
           {{- if .Values.gcsgateway.enabled }}
           command: [ "/bin/sh",
           "-ce",
-          "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} gateway gcs {{ .Values.gcsgateway.projectId }}"
-          {{- template "minio.extraArgs" . }} ]
+          "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} gateway gcs {{ .Values.gcsgateway.projectId }} {{- template `minio.extraArgs` . }}" ]
           {{- else }}
           {{- if .Values.ossgateway.enabled }}
           command: [ "/bin/sh",
           "-ce",
-          "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} gateway oss {{ .Values.ossgateway.endpointURL }}"
-          {{- template "minio.extraArgs" . }} ]
+          "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} gateway oss {{ .Values.ossgateway.endpointURL }} {{- template `minio.extraArgs` . }}" ]
           {{- else }}
           {{- if .Values.nasgateway.enabled }}
           command: [ "/bin/sh",
           "-ce",
-          "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} gateway nas {{ $bucketRoot }}"
-          {{- template "minio.extraArgs" . }} ]
+          "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} gateway nas {{ $bucketRoot }} {{- template `minio.extraArgs` . }}" ]
           {{- else }}
           {{- if .Values.b2gateway.enabled }}
           command: [ "/bin/sh",
           "-ce",
-          "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} gateway b2"
-          {{- template "minio.extraArgs" . }} ]
+          "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} gateway b2 {{- template `minio.extraArgs` . }}" ]
           {{- else }}
           command: [ "/bin/sh",
           "-ce",
-          "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} server {{ $bucketRoot }}"
-          {{- template "minio.extraArgs" . }} ]
+          "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} server {{ $bucketRoot }} {{- template `minio.extraArgs` . }}" ]
           {{- end }}
           {{- end }}
           {{- end }}
