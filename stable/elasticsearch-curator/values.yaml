@@ -9,6 +9,7 @@ cronjob:
   labels: {}
   concurrencyPolicy: ""
   failedJobsHistoryLimit: ""
+  startingDeadlineSeconds: ""
   successfulJobsHistoryLimit: ""
   jobRestartPolicy: Never
 
