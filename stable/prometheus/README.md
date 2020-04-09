@@ -352,6 +352,7 @@ Parameter | Description | Default
 `server.service.gRPC.nodePort` | Port to be used as gRPC nodePort in the prometheus service | `0`
 `server.service.statefulsetReplica.enabled` | If true, send the traffic from the service to only one replica of the replicaset | `false`
 `server.service.statefulsetReplica.replica` | Which replica to send the traffice to | `0`
+`server.hostAliases` | /etc/hosts-entries in container(s) | []
 `server.sidecarContainers` | array of snippets with your sidecar containers for prometheus server | `""`
 `server.strategy` | Deployment strategy | `{ "type": "RollingUpdate" }`
 `serviceAccounts.alertmanager.create` | If true, create the alertmanager service account | `true`
