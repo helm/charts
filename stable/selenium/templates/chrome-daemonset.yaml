@@ -1,12 +1,11 @@
-{{- if and (eq true .Values.chrome.enabled) (eq false .Values.chrome.runAsDaemonSet) -}}
+{{- if and (eq true .Values.chrome.enabled) (eq true .Values.chrome.runAsDaemonSet) -}}
 apiVersion: {{ template "deployment.apiVersion" . }}
-kind: Deployment
+kind: DaemonSet
 metadata:
   name: {{ template "selenium.chrome.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
-  replicas: {{ .Values.chrome.replicas }}
   selector:
     matchLabels:
       app: {{ template "selenium.chrome.fullname" . }}
