@@ -1,5 +1,9 @@
 # Datadog changelog
 
+## 2.2.1
+
+* Updating `agents.useConfigMap` and `agents.customAgentConfig` parameter descriptions in the chart and main readme.
+
 ## 2.2.0
 
 * Add Windows support
