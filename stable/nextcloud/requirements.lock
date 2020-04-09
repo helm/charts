@@ -1,9 +1,9 @@
 dependencies:
 - name: mariadb
-  repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 7.1.0
+  repository: https://charts.bitnami.com/bitnami
+  version: 7.3.16
 - name: redis
-  repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 10.0.1
-digest: sha256:88489b3a1a5bf1cd3f9e264e540f8c3515d40020bb1073f3bb281f0da56efc3f
-generated: "2019-11-28T12:08:10.111637339+01:00"
+  repository: https://charts.bitnami.com/bitnami
+  version: 10.6.3
+digest: sha256:e3665c89dc40bb6d06b6da59a57dad4d14903a06acd0c5216c8aeadcdafdd596
+generated: "2020-04-09T11:16:20.566008+03:00"
