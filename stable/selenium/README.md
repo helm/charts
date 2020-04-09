@@ -89,7 +89,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `chrome.tag` | The selenium node chrome tag | `3.141.59` |
 | `chrome.imagePullSecrets` | The secret to use for pulling the image. Will override the global parameter if set | `nil` |
 | `chrome.pullPolicy` | The pull policy for the node chrome image | `IfNotPresent` |
-| `chrome.replicas` | The number of selenium node chrome pods | `1` |
+| `chrome.replicas` | The number of selenium node chrome pods. This is ignored if runAsDaemonSet is enabled. | `1` |
 | `chrome.podAnnotations` | Annotations on the chrome pods | `{}` |
 | `chrome.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
 | `chrome.javaOpts` | The java options for the selenium node chrome JVM, default sets the maximum heap size to 900 mb | `-Xmx900m` |
@@ -116,7 +116,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `chromeDebug.tag` | The selenium node chrome debug tag | `3.141.59` |
 | `chromeDebug.imagePullSecrets` | The secret to use for pulling the image. Will override the global parameter if set | `nil` |
 | `chromeDebug.pullPolicy` | The selenium node chrome debug pull policy | `IfNotPresent` |
-| `chromeDebug.replicas` | The number of selenium node chrome debug pods | `1` |
+| `chromeDebug.replicas` | The number of selenium node chrome debug pods. This is ignored if runAsDaemonSet is enabled. | `1` |
 | `chromeDebug.podAnnotations` | Annotations on the Chrome debug pod | `{}` |
 | `chromeDebug.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
 | `chromeDebug.javaOpts` | The java options for a selenium node chrome debug JVM, default sets the max heap size to 900 mb | `-Xmx900m` |
@@ -143,7 +143,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `firefox.tag` | The selenium node firefox tag | `3.141.59` |
 | `firefox.imagePullSecrets` | The secret to use for pulling the image. Will override the global parameter if set | `nil` |
 | `firefox.pullPolicy` | The selenium node firefox pull policy | `IfNotPresent` |
-| `firefox.replicas` | The number of selenium node firefox pods | `1` |
+| `firefox.replicas` | The number of selenium node firefox pods. This is ignored if runAsDaemonSet is enabled. | `1` |
 | `firefox.podAnnotations` | Annotations on the firefox pods | `{}` |
 | `firefox.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
 | `firefox.javaOpts` | The java options for a selenium node firefox JVM, default sets the max heap size to 900 mb | `-Xmx900m` |
@@ -168,7 +168,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `firefoxDebug.tag` | The selenium node firefox debug tag | `3.141.59` |
 | `firefoxDebug.imagePullSecrets` | The secret to use for pulling the image. Will override the global parameter if set | `nil` |
 | `firefoxDebug.pullPolicy` | The selenium node firefox debug pull policy | `IfNotPresent` |
-| `firefoxDebug.replicas` | The number of selenium node firefox debug pods | `1` |
+| `firefoxDebug.replicas` | The number of selenium node firefox debug pods. This is ignored if runAsDaemonSet is enabled. | `1` |
 | `firefoxDebug.podAnnotations` | Annotations on the firefox debug pods | `{}` |
 | `firefoxDebug.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
 | `firefoxDebug.javaOpts` | The java options for a selenium node firefox debug JVM, default sets the max heap size to 900 mb | `-Xmx900m` |
