@@ -84,6 +84,10 @@ The following table lists the configurable parameters of the Cloudwatch Exporter
 | `serviceMonitor.timeout`          | Timeout after which the scrape is ended                                 |                             |
 | `serviceMonitor.relabelings`      | RelabelConfigs to apply to samples before scraping.                     |                             |
 | `serviceMonitor.metricRelabelings`| MetricRelabelConfigs to apply to samples before ingestion.              |                             |
+| `prometheusRule.enabled`          | Namespace thes PrometheusRule  is installed in                          | `false`                     |
+| `prometheusRule.namespace`        | Use PrometheusRule from prometheus operator                             |                             |
+| `prometheusRule.labels`           | labels for the prometheusRule passed to Prometheus Operator             |                             |
+| `prometheusRule.rules`            | Specify alerting rules in YAML format for PrometheusRule                |                             |
 | `ingress.enabled`                 | Enables Ingress                                                         | `false`                     |
 | `ingress.annotations`             | Ingress annotations                                                     | `{}`                        |
 | `ingress.labels`                  | Custom labels                                                           | `{}`                        |
