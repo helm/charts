@@ -211,6 +211,7 @@ Parameter | Description | Default
 `nodeExporter.image.tag` | node-exporter container image tag | `v0.18.1`
 `nodeExporter.image.pullPolicy` | node-exporter container image pull policy | `IfNotPresent`
 `nodeExporter.extraArgs` | Additional node-exporter container arguments | `{}`
+`nodeExporter.extraInitContainers` | Init containers to launch alongside the node-exporter | `[]`
 `nodeExporter.extraHostPathMounts` | Additional node-exporter hostPath mounts | `[]`
 `nodeExporter.extraConfigmapMounts` | Additional node-exporter configMap mounts | `[]`
 `nodeExporter.hostNetwork` | If true, node-exporter pods share the host network namespace | `true`
@@ -241,6 +242,7 @@ Parameter | Description | Default
 `pushgateway.image.tag` | pushgateway container image tag | `v1.0.1`
 `pushgateway.image.pullPolicy` | pushgateway container image pull policy | `IfNotPresent`
 `pushgateway.extraArgs` | Additional pushgateway container arguments | `{}`
+`pushgateway.extraInitContainers` | Init containers to launch alongside the pushgateway | `[]`
 `pushgateway.ingress.enabled` | If true, pushgateway Ingress will be created | `false`
 `pushgateway.ingress.annotations` | pushgateway Ingress annotations | `{}`
 `pushgateway.ingress.hosts` | pushgateway Ingress hostnames | `[]`
