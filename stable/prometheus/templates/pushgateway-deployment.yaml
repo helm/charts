@@ -30,6 +30,10 @@ spec:
         {{- include "prometheus.pushgateway.labels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ template "prometheus.serviceAccountName.pushgateway" . }}
+      {{- if .Values.pushgateway.extraInitContainers }}
+      initContainers:
+{{ toYaml .Values.pushgateway.extraInitContainers | indent 8 }}
+      {{- end }}
 {{- if .Values.pushgateway.priorityClassName }}
       priorityClassName: "{{ .Values.pushgateway.priorityClassName }}"
 {{- end }}

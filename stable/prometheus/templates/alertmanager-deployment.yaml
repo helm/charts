@@ -33,6 +33,10 @@ spec:
       schedulerName: "{{ .Values.alertmanager.schedulerName }}"
 {{- end }}
       serviceAccountName: {{ template "prometheus.serviceAccountName.alertmanager" . }}
+      {{- if .Values.alertmanager.extraInitContainers }}
+      initContainers:
+{{ toYaml .Values.alertmanager.extraInitContainers | indent 8 }}
+      {{- end }}
 {{- if .Values.alertmanager.priorityClassName }}
       priorityClassName: "{{ .Values.alertmanager.priorityClassName }}"
 {{- end }}
