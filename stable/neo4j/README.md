@@ -16,12 +16,18 @@ This chart bootstraps a [Neo4j](https://github.com/neo4j/docker-neo4j)
 deployment on a [Kubernetes](http://kubernetes.io) cluster using the
 [Helm](https://helm.sh) package manager.
 
+This package is fairly similar to the Neo4j-maintained [GKE Marketplace](https://github.com/neo-technology/neo4j-google-k8s-marketplace) 
+entry, which is also built on helm.  This package tries to avoid Kubernetes distribution-specific features to be general, while the other
+is tailored specifically to GKE.
+
 ## Prerequisites
 
 * Kubernetes 1.6+ with Beta APIs enabled
 * PV provisioner support in the underlying infrastructure
 * Requires the following variables
   You must add `acceptLicenseAgreement` in the values.yaml file and set it to `yes` or include `--set acceptLicenseAgreement=yes` in the command line of helm install to accept the license.
+* This chart requires that you have a license for Neo4j Enterprise Edition.  Trial licenses 
+[can be obtained here](https://neo4j.com/lp/enterprise-cloud/?utm_content=kubernetes)
 
 ## Installing the Chart
 
@@ -63,6 +69,7 @@ their default values.
 | `imagePullPolicy`                     | Image pull policy                                                                                                                       | `IfNotPresent`                                  |
 | `podDisruptionBudget`                 | Pod disruption budget                                                                                                                   | `{}`                                            |
 | `authEnabled`                         | Is login/password required?                                                                                                             | `true`                                          |
+| `useAPOC`                             | Should the APOC plugins be automatically installed in the database?                                                                     | `true`                                          |
 | `neo4jPassword`                       | Password to log in the Neo4J database if password is required                                                                           | (random string of 10 characters)                |
 | `core.numberOfServers`                | Number of machines in CORE mode                                                                                                         | `3`                                             |
 | `core.sideCarContainers`              | Sidecar containers to add to the core pod. Example use case is a sidecar which identifies and labels the leader when using the http API | `{}`                                            |
@@ -105,6 +112,14 @@ $ helm install --name neo4j-helm -f values.yaml stable/neo4j
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
 Once you have all 3 pods in running, you can run the "test.sh" script in this directory, which will verify the role attached to each pod and also test recovery of a failed/deleted pod. This script requires that the $RELEASE_NAME environment variable be set, in order to access the pods, if you have specified a custom `namespace` or `replicas` value when installing you can set those via `RELEASE_NAMESPACE` and `CORE_REPLICAS` environment variables for this script.
+
+## Additional Documentation for Running Neo4j in Kubernetes
+
+- [Neo4j Considerations in Orchestration Environments](https://medium.com/neo4j/neo4j-considerations-in-orchestration-environments-584db747dca5) which covers
+how the smart-client routing protocol that Neo4j uses interacts with Kubernetes networking.  Make sure to read this if you are trying to expose the Neo4j database outside
+of Kubernetes
+- [How to Backup Neo4j Running in Kubernetes](https://medium.com/neo4j/how-to-backup-neo4j-running-in-kubernetes-3697761f229a)
+- [How to Restore Neo4j Backups on Kubernetes](https://medium.com/google-cloud/how-to-restore-neo4j-backups-on-kubernetes-and-gke-6841aa1e3961)
 
 ## Upgrading
 
