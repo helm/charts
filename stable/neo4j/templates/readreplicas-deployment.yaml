@@ -39,6 +39,8 @@ spec:
             value: DNS
           - name: NEO4J_causal__clustering_initial__discovery__members
             value: "{{ template "neo4j.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}:5000"
+          - name: NEO4J_causal__clustering_minimum__core__cluster__size__at__formation
+            value: 3
           {{- if .Values.useAPOC }}
           # In modern Neo4j docker containers, the following auto-installs APOC and configures it appropriately.
           - name: NEO4JLABS_PLUGINS
@@ -62,7 +64,12 @@ spec:
           - "/bin/bash"
           - "-c"
           - |
-            export NEO4J_dbms_connectors_default__advertised__address=$(hostname -f)
+            export NEO4J_dbms_default__listen__address=$(hostname -f)
+            export NEO4J_dbms_default__advertised__address=$(hostname -f)
+            export NEO4J_dbms_connector_bolt__advertised_address=$(hostname -f)
+            export NEO4J_dbms_connector_http_advertised__address=$(hostname -f)
+            export NEO4J_dbms_connector_https_advertised__address=$(hostname -f)
+            export NEO4J_dbms_default__database=neo4j
             export NEO4J_causal__clustering_transaction__advertised__address=$(hostname -f):6000
 
             if [ "${AUTH_ENABLED:-}" == "true" ]; then
