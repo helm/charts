@@ -44,7 +44,8 @@ Please note that in order to test using the default values when using the `ci` d
 
 For examples, you can take a look at existing tests in this repository (e.g. [Kibana Chart](https://github.com/helm/charts/tree/7755cea24c028db07e2e36933ec13c28efea9a32/stable/kibana/ci)).
 
-Please also note that it is a different concept than "[Helm Chart Test](https://github.com/helm/helm/blob/master/docs/chart_tests.md)", although the Helm Chart test, if defined, will be run by this test tool for each test values.
+Please also note that it is a different concept than "[Helm Chart Test](https://helm.sh/docs/topics/chart_tests/
+)", although the Helm Chart test, if defined, will be run by this test tool for each test values.
 
 #### Triggering
 
