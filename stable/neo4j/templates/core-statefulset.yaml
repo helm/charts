@@ -32,21 +32,27 @@ spec:
             value: "{{ .Values.core.numberOfServers }}"
           - name: AUTH_ENABLED
             value: "{{ .Values.authEnabled }}"
+          #- name: NEO4J_causal__clustering_discovery__type
+          #  value: DNS
+          #- name: NEO4J_causal__clustering_initial__discovery__members
+          #  value: "{{ template "neo4j.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}:5000"
           - name: NEO4J_causal__clustering_discovery__type
-            value: DNS
-          - name: NEO4J_causal__clustering_initial__discovery__members
-            value: "{{ template "neo4j.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}:5000"
+            value: K8S
+          - name: NEO4J_causal__clustering_kubernetes_label__selector
+            value: "app={{ template "neo4j.name" . }},component=core"
+          - name: NEO4J_causal__clustering_kubernetes_service__port__name
+            value: discovery
           - name: NEO4J_causal__clustering_minimum__core__cluster__size__at__formation
-            value: 3
+            value: "3"
           {{- if .Values.useAPOC }}
           # In modern Neo4j docker containers, the following auto-installs APOC and configures it appropriately.
           - name: NEO4JLABS_PLUGINS
-            value: ["apoc"]
+            value: "[\"apoc\"]"
           - name: NEO4J_apoc_import_file_use__neo4j__config
             value: "true"
           - name: NEO4J_dbms_security_procedures_unrestricted
             value: "apoc.*"
-          {{ -end }}
+          {{- end }}
           {{- if .Values.authEnabled }}
           - name: NEO4J_SECRETS_PASSWORD
             valueFrom:
@@ -97,6 +103,15 @@ spec:
           {{- end }}
         - name: plugins
           mountPath: /plugins
+        readinessProbe:
+          tcpSocket:
+            port: 7687
+          initialDelaySeconds: 30
+          periodSeconds: 3
+        livenessProbe:
+          initialDelaySeconds: 60
+          tcpSocket:
+            port: 7687
         resources:
 {{ toYaml .Values.resources | indent 10 }}
 {{- if .Values.core.sidecarContainers }}
