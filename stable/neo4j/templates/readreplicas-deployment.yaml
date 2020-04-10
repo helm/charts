@@ -39,6 +39,15 @@ spec:
             value: DNS
           - name: NEO4J_causal__clustering_initial__discovery__members
             value: "{{ template "neo4j.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}:5000"
+          {{- if .Values.useAPOC }}
+          # In modern Neo4j docker containers, the following auto-installs APOC and configures it appropriately.
+          - name: NEO4JLABS_PLUGINS
+            value: ["apoc"]
+          - name: NEO4J_apoc_import_file_use__neo4j__config
+            value: "true"
+          - name: NEO4J_dbms_security_procedures_unrestricted
+            value: "apoc.*"
+          {{ -end }}  
           {{- if .Values.authEnabled }}
           - name: NEO4J_SECRETS_PASSWORD
             valueFrom:
