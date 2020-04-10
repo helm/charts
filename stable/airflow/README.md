@@ -168,6 +168,37 @@ Provide custom metrics for autoscaler in `workers.autoscaling.metrics`, for more
 Also make sure you set requested resources for git-sync side car container in `dags.git.gitSync.resources` (if you use it for pulling DAGs),
 otherwise worker pods will not scale. 
 
+For example: you have a worker pod which is allowed to execute 10 tasks at once.
+```
+airflow:
+  config:
+    AIRFLOW__CELERY__WORKER_CONCURRENCY: 10
+```
+Every task a worker executes consumes approximately 200MB of worker's memory, so that makes memory a good metric for monitoring.
+Also do not forget to setup resources requested for the metric you monitor, both for a worker and git-sync (if used).
+For a git-sync 50MB should be enough. For a worker pod you can calculate it: WORKER_CONCURRENCY * 200MB. So if running 10 tasks 
+at the same time, a worker will consume ~2GB of memory.
+```
+workers:
+  replicas: 1
+  resources:
+    requests:
+      memory: "2Gi"
+  autoscaling:
+    enabled: true
+    maxReplicas: 30
+    metrics:
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
+```
+With this setup if a worker consumes 80% of 2GB (which will happen if it runs 9-10 tasks at the same time),
+an autoscaling will be triggered and a new worker will be added. If you have many tasks
+in a queue, Kubernetes will keep adding workers until maxReplicas reached.
+
 #### Worker secrets
 
 You can add kubernetes secrets which will be mounted as volumes on the worker nodes
