@@ -76,7 +76,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `serviceAccount.create`           | Specifies whether a service account should be created.                                                                        | `true`                          |
 | `serviceAccount.name`             | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template |                                 |
 | `serviceAccount.annotations`      | ServiceAccount annotations                                                                                                    |                                 |
-| `podSecurityPolicyEnabled`        | Create pod security policy resources                                                                                          | `false`                         |
+| `podSecurityPolicy.create`        | Create pod security policy resources                                                                                          | `false`                         |
 | `resources`                       | Container resource requests and limits                                                                                        | {}                              |
 | `rules`                           | Rule and alert configuration for Elastalert                                                                                   | {} example shown in values.yaml |
 | `runIntervalMins`                 | Default interval between alert checks, in minutes                                                                             | 1                               |

@@ -128,7 +128,8 @@ serviceAccount:
 
 # Enable pod security policy
 # https://kubernetes.io/docs/concepts/policy/pod-security-policy/
-podSecurityPolicyEnabled: false
+podSecurityPolicy:
+  create: false
 
 # Support using node selectors and tolerations
 # nodeSelector:

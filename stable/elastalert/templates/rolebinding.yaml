@@ -1,4 +1,4 @@
-{{- if .Values.podSecurityPolicyEnabled }}
+{{- if .Values.podSecurityPolicy.create }}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: RoleBinding
 metadata:
