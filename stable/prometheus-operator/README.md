@@ -65,6 +65,7 @@ kubectl delete crd prometheusrules.monitoring.coreos.com
 kubectl delete crd servicemonitors.monitoring.coreos.com
 kubectl delete crd podmonitors.monitoring.coreos.com
 kubectl delete crd alertmanagers.monitoring.coreos.com
+kubectl delete crd thanosrulers.monitoring.coreos.com
 ```
 
 ## Work-Arounds for Known Issues
@@ -81,12 +82,12 @@ You should upgrade to Helm 2.14 + in order to avoid this issue. However, if you 
 
 1. Create CRDs
 ```console
-kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.36/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagers.yaml
-kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.36/example/prometheus-operator-crd/monitoring.coreos.com_podmonitors.yaml
-kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.36/example/prometheus-operator-crd/monitoring.coreos.com_prometheuses.yaml
-kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.36/example/prometheus-operator-crd/monitoring.coreos.com_prometheusrules.yaml
-kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.36/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml
-kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.36/example/prometheus-operator-crd/monitoring.coreos.com_thanosrulers.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.37/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagers.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.37/example/prometheus-operator-crd/monitoring.coreos.com_podmonitors.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.37/example/prometheus-operator-crd/monitoring.coreos.com_prometheuses.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.37/example/prometheus-operator-crd/monitoring.coreos.com_prometheusrules.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.37/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.37/example/prometheus-operator-crd/monitoring.coreos.com_thanosrulers.yaml
 
 ```
 
@@ -168,6 +169,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `global.rbac.pspEnabled` | Create pod security policy resources | `true` |
 | `kubeTargetVersionOverride` | Provide a target gitVersion of K8S, in case .Capabilites.KubeVersion is not available (e.g. `helm template`) |`""`|
 | `nameOverride` | Provide a name in place of `prometheus-operator` |`""`|
+| `kubeTargetVersionOverride` | Provide a k8s version |`""`|
 
 ### Prometheus Operator
 | Parameter | Description | Default |
@@ -195,12 +197,12 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheusOperator.manageCrds` |If true prometheus operator will create and update its CRDs on startup | `true` |
 | `prometheusOperator.denyNamespaces` | Namespaces not to scope the interaction of the Prometheus Operator (deny list). This is mutually exclusive with `namespaces` | `[]` |
 | `prometheusOperator.enabled` | Deploy Prometheus Operator. Only one of these should be deployed into the cluster | `true` |
-| `prometheusOperator.hyperkubeImage.repository` | Image pull policy for hyperkube image used to perform maintenance tasks | `IfNotPresent` |
+| `prometheusOperator.hyperkubeImage.pullPolicy` | Image pull policy for hyperkube image used to perform maintenance tasks | `IfNotPresent` |
 | `prometheusOperator.hyperkubeImage.repository` | Repository for hyperkube image used to perform maintenance tasks | `k8s.gcr.io/hyperkube` |
 | `prometheusOperator.hyperkubeImage.tag` | Tag for hyperkube image used to perform maintenance tasks | `v1.12.1` |
 | `prometheusOperator.image.pullPolicy` | Pull policy for prometheus operator image | `IfNotPresent` |
 | `prometheusOperator.image.repository` | Repository for prometheus operator image | `quay.io/coreos/prometheus-operator` |
-| `prometheusOperator.image.tag` | Tag for prometheus operator image | `v0.36.0` |
+| `prometheusOperator.image.tag` | Tag for prometheus operator image | `v0.37.0` |
 | `prometheusOperator.kubeletService.enabled` | If true, the operator will create and maintain a service for scraping kubelets | `true` |
 | `prometheusOperator.kubeletService.namespace` | Namespace to deploy kubelet service | `kube-system` |
 | `prometheusOperator.logFormat` | Operator log output formatting | `"logfmt"` |
@@ -210,7 +212,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheusOperator.podLabels` | Labels to add to the operator pod | `{}` |
 | `prometheusOperator.priorityClassName` | Name of Priority Class to assign pods | `nil` |
 | `prometheusOperator.prometheusConfigReloaderImage.repository` | Repository for config-reloader image | `quay.io/coreos/prometheus-config-reloader` |
-| `prometheusOperator.prometheusConfigReloaderImage.tag` | Tag for config-reloader image | `v0.36.0` |
+| `prometheusOperator.prometheusConfigReloaderImage.tag` | Tag for config-reloader image | `v0.37.0` |
 | `prometheusOperator.resources` | Resource limits for prometheus operator | `{}` |
 | `prometheusOperator.securityContext` | SecurityContext for prometheus operator | `{"runAsNonRoot": true, "runAsUser": 65534}` |
 | `prometheusOperator.service.annotations` | Annotations to be added to the prometheus operator service | `{}` |
@@ -255,6 +257,8 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.ingressPerReplica.labels` | Prometheus per replica Ingress additional labels | `{}` |
 | `prometheus.ingressPerReplica.paths` | Prometheus per replica Ingress paths | `[]` |
 | `prometheus.ingressPerReplica.tlsSecretName` | Secret name containing the TLS certificate for Prometheus per replica ingress | `[]` |
+| `prometheus.ingressPerReplica.tlsSecretPerReplica.enabled` | If true, create an secret for TLS certificate for each Ingress | `false` |
+| `prometheus.ingressPerReplica.tlsSecretPerReplica.prefix` | Secret name prefix | `""` |
 | `prometheus.podDisruptionBudget.enabled` | If true, create a pod disruption budget for prometheus pods. The created resource cannot be modified once created - it must be deleted to perform a change | `false` |
 | `prometheus.podDisruptionBudget.maxUnavailable` | Maximum number / percentage of pods that may be made unavailable | `""` |
 | `prometheus.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `1` |
@@ -262,15 +266,17 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.prometheusSpec.additionalAlertManagerConfigs` | AdditionalAlertManagerConfigs allows for manual configuration of alertmanager jobs in the form as specified in the official Prometheus documentation: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#<alertmanager_config>. AlertManager configurations specified are appended to the configurations generated by the Prometheus Operator. As AlertManager configs are appended, the user is responsible to make sure it is valid. Note that using this feature may expose the possibility to break upgrades of Prometheus. It is advised to review Prometheus release notes to ensure that no incompatible AlertManager configs are going to break Prometheus after the upgrade. | `{}` |
 | `prometheus.prometheusSpec.additionalAlertRelabelConfigs` | AdditionalAlertRelabelConfigs allows specifying additional Prometheus alert relabel configurations. Alert relabel configurations specified are appended to the configurations generated by the Prometheus Operator. Alert relabel configurations specified must have the form as specified in the official Prometheus documentation: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#alert_relabel_configs. As alert relabel configs are appended, the user is responsible to make sure it is valid. Note that using this feature may expose the possibility to break upgrades of Prometheus. It is advised to review Prometheus release notes to ensure that no incompatible alert relabel configs are going to break Prometheus after the upgrade. | `[]` |
 | `prometheus.prometheusSpec.additionalScrapeConfigsExternal` | Enable additional scrape configs that are managed externally to this chart. This option requires a secret in the same namespace as Prometheus with the name, `prometheus-operator-prometheus-scrape-confg` and a key of `additional-scrape-configs.yaml`. Note that the prometheus will fail to provision if the correct secret does not exist. | `false` |
-| `prometheus.prometheusSpec.additionalScrapeConfigs` | AdditionalScrapeConfigs allows specifying additional Prometheus scrape configurations. Scrape configurations are appended to the configurations generated by the Prometheus Operator. Job configurations must have the form as specified in the official Prometheus documentation: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#<scrape_config>. As scrape configs are appended, the user is responsible to make sure it is valid. Note that using this feature may expose the possibility to break upgrades of Prometheus. It is advised to review Prometheus release notes to ensure that no incompatible scrape configs are going to break Prometheus after the upgrade. | `{}` |
+| `prometheus.prometheusSpec.additionalScrapeConfigs` | AdditionalScrapeConfigs allows specifying additional Prometheus scrape configurations. Scrape configurations are appended to the configurations generated by the Prometheus Operator. Job configurations must have the form as specified in the official Prometheus documentation: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#<scrape_config>. As scrape configs are appended, the user is responsible to make sure it is valid. Note that using this feature may expose the possibility to break upgrades of Prometheus. It is advised to review Prometheus release notes to ensure that no incompatible scrape configs are going to break Prometheus after the upgrade. | `[]` |
 | `prometheus.prometheusSpec.additionalPrometheusSecretsAnnotations` | additionalPrometheusSecretsAnnotations allows to add annotations to the kubernetes secret. This can be useful when deploying via spinnaker to disable versioning on the secret, strategy.spinnaker.io/versioned: 'false' | `{}` |
 | `prometheus.prometheusSpec.affinity` | Assign custom affinity rules to the prometheus instance https://kubernetes.io/docs/concepts/configuration/assign-pod-node/ | `{}` |
 | `prometheus.prometheusSpec.alertingEndpoints` | Alertmanagers to which alerts will be sent https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#alertmanagerendpoints Default configuration will connect to the alertmanager deployed as part of this release | `[]` |
 | `prometheus.prometheusSpec.apiserverConfig` | Custom `kubernetes_sd_config` https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#apiserverconfig Default configuration will connect to current Kubernetes cluster | `{}` |
 | `prometheus.prometheusSpec.configMaps` | ConfigMaps is a list of ConfigMaps in the same namespace as the Prometheus object, which shall be mounted into the Prometheus Pods. The ConfigMaps are mounted into /etc/prometheus/configmaps/ | `[]` |
 | `prometheus.prometheusSpec.containers` | Containers allows injecting additional containers. This is meant to allow adding an authentication proxy to a Prometheus pod. |`[]`|
+| `prometheus.prometheusSpec.initContainers` | InitContainers allows injecting specialized containers that run before app containers. This is meant to pre-configure and tune mounted volume permissions. |`[]`|
 | `prometheus.prometheusSpec.disableCompaction` | If true, pass --storage.tsdb.max-block-duration=2h to prometheus. This is already done if using Thanos |`false`|
 | `prometheus.prometheusSpec.enableAdminAPI` | EnableAdminAPI enables Prometheus the administrative HTTP API which includes functionality such as deleting time series. | `false` |
+| `prometheus.prometheusSpec.enforcedNamespaceLabel` | enforces adding a namespace label of origin for each alert and metric that is user created. | `""` |
 | `prometheus.prometheusSpec.evaluationInterval` | Interval between consecutive evaluations. | `""` |
 | `prometheus.prometheusSpec.externalLabels` | The labels to add to any time series or alerts when communicating with external systems (federation, remote storage, Alertmanager). | `{}` |
 | `prometheus.prometheusSpec.externalUrl` | The external URL the Prometheus instances will be available under. This is necessary to generate correct URLs. This is necessary if Prometheus is not served from root of a DNS name. | `""` |
@@ -384,6 +390,15 @@ The following tables list the configurable parameters of the prometheus-operator
 | `alertmanager.ingress.labels` | Alertmanager Ingress additional labels | `{}` |
 | `alertmanager.ingress.paths` | Alertmanager Ingress paths | `[]` |
 | `alertmanager.ingress.tls` | Alertmanager Ingress TLS configuration (YAML) | `[]` |
+| `alertmanager.ingressPerReplica.annotations` | Alertmanager pre replica Ingress annotations | `{}` |
+| `alertmanager.ingressPerReplica.enabled` | If true, create an Ingress for each Alertmanager replica in the StatefulSet | `false` |
+| `alertmanager.ingressPerReplica.hostPrefix` |  | `""` |
+| `alertmanager.ingressPerReplica.hostDomain` |  | `""` |
+| `alertmanager.ingressPerReplica.labels` | Alertmanager per replica Ingress additional labels | `{}` |
+| `alertmanager.ingressPerReplica.paths` | Alertmanager per replica Ingress paths | `[]` |
+| `alertmanager.ingressPerReplica.tlsSecretName` | Secret name containing the TLS certificate for Alertmanager per replica ingress | `[]` |
+| `alertmanager.ingressPerReplica.tlsSecretPerReplica.enabled` | If true, create an secret for TLS certificate for each Ingress | `false` |
+| `alertmanager.ingressPerReplica.tlsSecretPerReplica.prefix` | Secret name prefix | `""` |
 | `alertmanager.podDisruptionBudget.enabled` | If true, create a pod disruption budget for Alertmanager pods. The created resource cannot be modified once created - it must be deleted to perform a change | `false` |
 | `alertmanager.podDisruptionBudget.maxUnavailable` | Maximum number / percentage of pods that may be made unavailable | `""` |
 | `alertmanager.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `1` |
@@ -396,7 +411,16 @@ The following tables list the configurable parameters of the prometheus-operator
 | `alertmanager.service.loadBalancerSourceRanges` | Alertmanager Load Balancer Source Ranges | `[]` |
 | `alertmanager.service.nodePort` | Alertmanager Service port for NodePort service type | `30903` |
 | `alertmanager.service.port` | Port for Alertmanager Service to listen on | `9093` |
+| `alertmanager.service.targetPort` | AlertManager Service internal port | `9093` |
 | `alertmanager.service.type` | Alertmanager Service type | `ClusterIP` |
+| `alertmanager.servicePerReplica.annotations` | Alertmanager per replica Service Annotations | `{}` |
+| `alertmanager.servicePerReplica.enabled` | If true, create a Service for each Alertmanager replica in the StatefulSet | `false` |
+| `alertmanager.servicePerReplica.labels` | Alertmanager per replica Service Labels | `{}` |
+| `alertmanager.servicePerReplica.loadBalancerSourceRanges` | Alertmanager per replica Service Loadbalancer Source Ranges | `[]` |
+| `alertmanager.servicePerReplica.nodePort` |  Alertmanager per replica Service port for NodePort Service type | `30904` |
+| `alertmanager.servicePerReplica.port` |  Port for Alertmanager per replica Service to listen on | `9093` |
+| `alertmanager.servicePerReplica.targetPort` |  Alertmanager per replica Service internal port | `9093` |
+| `alertmanager.servicePerReplica.type` |  Alertmanager per replica Service type | `ClusterIP` |
 | `alertmanager.serviceAccount.create` | Create a `serviceAccount` for alertmanager | `true` |
 | `alertmanager.serviceAccount.name` | Name for Alertmanager service account | `""` |
 | `alertmanager.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
@@ -520,6 +544,7 @@ For a full list of configurable values please refer to the [Grafana chart](https
 | `kubeStateMetrics.serviceMonitor.relabelings` | The `relabel_configs` for scraping `kube-state-metrics`. | `` |
 | `kubelet.enabled` | Deploy servicemonitor to scrape the kubelet service. See also `prometheusOperator.kubeletService` | `true` |
 | `kubelet.namespace` | Namespace where the kubelet is deployed. See also `prometheusOperator.kubeletService.namespace` | `kube-system` |
+| `kubelet.serviceMonitor.cAdvisor` | Enable scraping `/metrics/cadvisor` from kubelet's service | `true` |
 | `kubelet.serviceMonitor.cAdvisorMetricRelabelings` | The `metric_relabel_configs` for scraping cAdvisor. | `` |
 | `kubelet.serviceMonitor.cAdvisorRelabelings` | The `relabel_configs` for scraping cAdvisor. | `[{"sourceLabels":["__metrics_path__"], "targetLabel":"metrics_path"}]` |
 | `kubelet.serviceMonitor.https` | Enable scraping of the kubelet over HTTPS. For more information, see https://github.com/coreos/prometheus-operator/issues/926 | `true` |

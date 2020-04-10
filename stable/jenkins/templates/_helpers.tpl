@@ -103,11 +103,7 @@ jenkins:
       templates:
       - containers:
         - alwaysPullImage: {{ .Values.agent.alwaysPullImage }}
-          {{- if .Values.agent.args }}
-          args: "{{ .Values.agent.args }}"
-          {{- else }}
-          args: "^${computer.jnlpmac} ^${computer.name}"
-          {{- end }}
+          args: "{{ .Values.agent.args | replace "$" "^$" }}"
           command: {{ .Values.agent.command }}
           envVars:
           - containerEnvVar:
@@ -142,6 +138,11 @@ jenkins:
         yaml: |-
           {{ tpl .Values.agent.yamlTemplate . | nindent 10 | trim }}
         yamlMergeStrategy: "override"
+      {{- if .Values.agent.podTemplates }}
+        {{- range $key, $val := .Values.agent.podTemplates }}
+          {{- tpl $val $ | nindent 6 }}
+        {{- end }}
+      {{- end }}
       {{- end }}
   {{- if .Values.master.csrf.defaultCrumbIssuer.enabled }}
   crumbIssuer:
@@ -168,16 +169,6 @@ unclassified:
       {{- end -}}
     {{- end -}}
   {{- end -}}
-{{- end -}}
-
-{{/*
-Generate private key for jenkins CLI
-*/}}
-{{- define "jenkins.gen-key" -}}
-{{- if not .Values.master.adminSshKey -}}
-{{- $key := genPrivateKey "rsa" -}}
-jenkins-admin-private-key: {{ $key | b64enc | quote }}
-{{- end -}}
 {{- end -}}
 
 {{/*

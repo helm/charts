@@ -1,5 +1,7 @@
 # Nexus
 
+**This chart has been deprecated and moved to [Oteemo Charts](https://github.com/oteemo/charts)**
+
 [Nexus OSS](https://www.sonatype.com/nexus-repository-oss) is a free open source repository manager. It supports a wide range of package formats and it's used by hundreds of tech companies.
 
 ## Introduction
@@ -123,6 +125,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `nexusBackup.persistence.storageSize`       | Size of Nexus backup data volume    | `8Gi`                                   |
 | `nexusBackup.persistence.annotations`       | PV annotations for backup           | `{}`                                    |
 | `nexusBackup.persistence.existingClaim`     | Existing PV name for backup         | `nil`                                   |
+| `nexusBackup.resources`                     | Backup resource requests and limits | `{}`                                    |
 | `ingress.enabled`                           | Create an ingress for Nexus         | `true`                                  |
 | `ingress.annotations`                       | Annotations to enhance ingress configuration  | `{}`                          |
 | `ingress.tls.enabled`                       | Enable TLS                          | `true`                                 |
