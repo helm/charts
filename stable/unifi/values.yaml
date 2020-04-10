@@ -162,7 +162,14 @@ persistence:
   ##
   ## If you want to reuse an existing claim, you can pass the name of the PVC using
   ## the existingClaim variable
-  # existingClaim: your-claim
+  # existingClaim: your-claim  
+  ##
+  ## If you want to use a custom volume (like hostPath), you can pass the specific configuration
+  ## using the customVolume variable
+  # customVolume:
+  #   hostPath:
+  #     path: /your/path/on/the/host
+  #     type: DirectoryOrCreate
   accessMode: ReadWriteOnce
   size: 5Gi
 
