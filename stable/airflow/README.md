@@ -159,6 +159,15 @@ requests the logs from each workers individually.
 This requires to expose a port (8793) and ensure the pod DNS is accessible to the web server pod,
 which is why StatefulSet is for.
 
+#### Worker autoscaler
+Celery workers can be scaled using the Horizontal Pod Autoscaler.
+To enable it you need to set `workers.autoscaling.enabled=true` and provide `workers.autoscaling.maxReplicas`.
+`workers.replicas` value will be used as a minimum amount. 
+Provide custom metrics for autoscaler in `workers.autoscaling.metrics`, for more information see the
+[Kubernetes documentation](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#support-for-metrics-apis).
+Also make sure you set requested resources for git-sync side car container in `dags.git.gitSync.resources` (if you use it for pulling DAGs),
+otherwise worker pods will not scale. 
+
 #### Worker secrets
 
 You can add kubernetes secrets which will be mounted as volumes on the worker nodes
@@ -440,6 +449,9 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `workers.secretsDir`                     | directory in which to mount secrets on worker nodes     | /var/airflow/secrets      |
 | `workers.secrets`                        | secrets to mount as volumes on worker nodes             | []                        |
 | `workers.securityContext`                 | (optional) security context for the worker statefulSet  | `{}`                      |
+| `workers.autoscaling.enabled`            | enable workers autoscaling                              | `false`                   |
+| `workers.autoscaling.maxReplicas`        | max worker pods allowed after autoscaling               | `2`              |
+| `workers.autoscaling.metrics`            | Kubernetes metrics used for autoscaling rules           | `{}`                      |
 | `nodeSelector`                           | Node labels for pod assignment                          | `{}`                      |
 | `affinity`                               | Affinity labels for pod assignment                      | `{}`                      |
 | `tolerations`                            | Toleration labels for pod assignment                    | `[]`                      |
@@ -487,6 +499,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `dags.git.gitSync.image.repository`      | Image of the sidecar container that syncs dags          | `alpine/git`                  |
 | `dags.git.gitSync.image.tag`             | Image tag of sidecar container that syncs dags          | `1.0.4`                  |
 | `dags.git.gitSync.refreshTime`           | How often the sidecar container syncs dags up with repository(in seconds)         | nil                  |
+| `dags.git.gitSync.resources`             | custom resource configuration for the git-sync side car container    | `{}`                      |
 | `logs.path`                              | mount path for logs persistent volume                   | `/usr/local/airflow/logs` |
 | `rbac.create`                            | create RBAC resources                                   | `true`                    |
 | `serviceAccount.create`                  | create a service account                                | `true`                    |
