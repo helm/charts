@@ -103,10 +103,10 @@ This repository is used by Chart developers for maintaining the official charts 
 * Allow customization of the application configuration
 * Provide a secure default configuration
 * Do not leverage alpha features of Kubernetes
-* Includes a [NOTES.txt](https://github.com/helm/helm/blob/master/docs/charts.md#chart-license-readme-and-notes) explaining how to use the application after install
-* Follows [best practices](https://github.com/helm/helm/tree/master/docs/chart_best_practices)
-  (especially for [labels](https://github.com/helm/helm/blob/master/docs/chart_best_practices/labels.md)
-  and [values](https://github.com/helm/helm/blob/master/docs/chart_best_practices/values.md))
+* Includes a [NOTES.txt](https://helm.sh/docs/chart_template_guide/notes_files/) explaining how to use the application after install
+* Follows [best practices](https://helm.sh/docs/chart_best_practices/)
+  (especially for [labels](https://helm.sh/docs/chart_best_practices/labels/)
+  and [values](https://helm.sh/docs/chart_best_practices/values/))
 
 ### Documentation Requirements
 
