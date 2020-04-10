@@ -205,6 +205,7 @@ Parameter | Description | Default
 `initChownData.image.pullPolicy` | init-chown-data container image pull policy | `IfNotPresent`
 `initChownData.resources` | init-chown-data pod resource requests & limits | `{}`
 `kubeStateMetrics.enabled` | If true, create kube-state-metrics sub-chart, see the [kube-state-metrics chart for configuration options](https://github.com/helm/charts/tree/master/stable/kube-state-metrics) | `true`
+`kube-state-metrics` | [kube-state-metrics configuration options](https://github.com/helm/charts/tree/master/stable/kube-state-metrics) | `Same as sub-chart's`
 `nodeExporter.enabled` | If true, create node-exporter | `true`
 `nodeExporter.name` | node-exporter container name | `node-exporter`
 `nodeExporter.image.repository` | node-exporter container image repository| `prom/node-exporter`
@@ -358,8 +359,6 @@ Parameter | Description | Default
 `serviceAccounts.alertmanager.create` | If true, create the alertmanager service account | `true`
 `serviceAccounts.alertmanager.name` | name of the alertmanager service account to use or create | `{{ prometheus.alertmanager.fullname }}`
 `serviceAccounts.alertmanager.annotations` | annotations for the alertmanager service account | `{}`
-`serviceAccounts.kubeStateMetrics.create` | If true, create the kubeStateMetrics service account | `true`
-`serviceAccounts.kubeStateMetrics.name` | name of the kubeStateMetrics service account to use or create | `{{ prometheus.kubeStateMetrics.fullname }}`
 `serviceAccounts.nodeExporter.create` | If true, create the nodeExporter service account | `true`
 `serviceAccounts.nodeExporter.name` | name of the nodeExporter service account to use or create | `{{ prometheus.nodeExporter.fullname }}`
 `serviceAccounts.nodeExporter.annotations` | annotations for the nodeExporter service account | `{}`
@@ -421,7 +420,7 @@ $ helm install stable/prometheus --name my-release -f values.yaml -f service1-al
 ```
 
 ### RBAC Configuration
-Roles and RoleBindings resources will be created automatically for `server` and `kubeStateMetrics` services.
+Roles and RoleBindings resources will be created automatically for `server` service.
 
 To manually setup RBAC you need to set the parameter `rbac.create=false` and specify the service account to be used for each service by setting the parameters: `serviceAccounts.{{ component }}.create` to `false` and `serviceAccounts.{{ component }}.name` to the name of a pre-existing service account.
 
