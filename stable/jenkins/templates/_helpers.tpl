@@ -102,6 +102,19 @@ jenkins:
       {{- if .Values.agent.enabled }}
       templates:
       {{- include "jenkins.casc.podTemplate" . | nindent 8 }}
+    {{- if .Values.additionalAgents }}
+      {{- /* save .Values.agent */}}
+      {{- $agent := .Values.agent }}
+      {{- range $name, $additionalAgent := .Values.additionalAgents }}
+        {{- /* merge original .Values.agent into additional agent to ensure it at least has the default values */}}
+        {{- $additionalAgent := merge $additionalAgent $agent }}
+        {{- /* set .Values.agent to $additionalAgent */}}
+        {{- $_ := set $.Values "agent" $additionalAgent }}
+        {{- include "jenkins.casc.podTemplate" $ | nindent 8 }}
+      {{- end }}
+      {{- /* restore .Values.agent */}}
+      {{- $_ := set .Values "agent" $agent }}
+    {{- end }}
       {{- if .Values.agent.podTemplates }}
         {{- range $key, $val := .Values.agent.podTemplates }}
           {{- tpl $val $ | nindent 8 }}
