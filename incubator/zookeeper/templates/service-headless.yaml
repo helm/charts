@@ -13,6 +13,7 @@ metadata:
 {{- end }}
 spec:
   clusterIP: None
+  publishNotReadyAddresses: true
   ports:
 {{- range $key, $port := .Values.ports }}
     - name: {{ $key }}
