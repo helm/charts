@@ -45,6 +45,10 @@ testImageTag: "master"
 # Comment out if you do not want to use it.
 useAPOC: "true"
 
+# The default name of the Neo4j database to use.
+# See https://neo4j.com/docs/operations-manual/current/manage-databases/introduction/#manage-databases-default
+defaultDatabase: "neo4j"
+
 # Cores
 core:
   numberOfServers: 3
