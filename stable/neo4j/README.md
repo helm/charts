@@ -34,7 +34,7 @@ is tailored specifically to GKE.
 To install the chart with the release name `neo4j-helm`:
 
 ```bash
-$ helm install --name neo4j-helm stable/neo4j --set acceptLicenseAgreement=yes --set neo4jPassword=mySecretPassword
+$ helm install my-neo4j stable/neo4j --set acceptLicenseAgreement=yes --set neo4jPassword=mySecretPassword
 ```
 
 You must explicitly accept the neo4j license agreement for the installation to be successful.
@@ -70,6 +70,7 @@ their default values.
 | `podDisruptionBudget`                 | Pod disruption budget                                                                                                                   | `{}`                                            |
 | `authEnabled`                         | Is login/password required?                                                                                                             | `true`                                          |
 | `useAPOC`                             | Should the APOC plugins be automatically installed in the database?                                                                     | `true`                                          |
+| `defaultDatabase`                     | The name of the default database to configure in Neo4j (dbms.default_database)                                                          | `neo4j`                                         |
 | `neo4jPassword`                       | Password to log in the Neo4J database if password is required                                                                           | (random string of 10 characters)                |
 | `core.numberOfServers`                | Number of machines in CORE mode                                                                                                         | `3`                                             |
 | `core.sideCarContainers`              | Sidecar containers to add to the core pod. Example use case is a sidecar which identifies and labels the leader when using the http API | `{}`                                            |
@@ -96,7 +97,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 install`. For example,
 
 ```bash
-$ helm install --name neo4j-helm --set core.numberOfServers=5,readReplica.numberOfServers=3 stable/neo4j
+$ helm install my-neo4j --set core.numberOfServers=5,readReplica.numberOfServers=3 stable/neo4j
 ```
 
 The above command creates a cluster containing 5 core servers and 3 read
@@ -122,6 +123,16 @@ of Kubernetes
 - [How to Restore Neo4j Backups on Kubernetes](https://medium.com/google-cloud/how-to-restore-neo4j-backups-on-kubernetes-and-gke-6841aa1e3961)
 
 ## Upgrading
+
+Version numbers here refer to helm chart versions, not Neo4j product versions.
+
+### To 3.0.0
+
+Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+The 2.0.0 chart was based around Neo4j's 3.5.x product series.  The 3.0 chart is based around Neo4j's 4.0.x product
+series, and there are *substantial differences* between these two.  Careful upgrade planning is advised before attempting
+to upgrade an existing chart.  Consult [the upgrade guide](https://neo4j.com/docs/operations-manual/current/upgrade/) and
+expect that additional configuration of this chart will be necessary.
 
 ### To 2.0.0
 
