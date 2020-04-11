@@ -17,7 +17,7 @@ spec:
   rules:
           {{- range .Values.ingressGateway.hosts }}
           {{- $url := splitList "/" . }}
-    - host: {{ first $url }}
+    - host: {{ first $url | quote }}
       http:
         paths:
           - path: /{{ rest $url | join "/" }}
