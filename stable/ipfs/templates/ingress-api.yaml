@@ -27,6 +27,6 @@ spec:
         {{- end -}}
         {{- if .Values.ingressApi.tls }}
   tls:
-        {{ toYaml .Values.ingressApi.tls | indent 4 }}
+{{ toYaml .Values.ingressApi.tls | indent 4 }}
         {{- end -}}
         {{- end -}}
