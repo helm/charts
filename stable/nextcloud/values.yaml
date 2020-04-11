@@ -3,7 +3,7 @@
 ##
 image:
   repository: nextcloud
-  tag: 17.0.0-apache
+  tag: 18.0.3-apache
   pullPolicy: IfNotPresent
   # pullSecrets:
   #   - myRegistrKeySecretName
@@ -217,9 +217,9 @@ cronjob:
     # pullSecrets:
     #   - myRegistrKeySecretName
   # Every 15 minutes
-  # Note: Setting this to any any other value than 15 minutes might
+  # Note: Setting this to any any other value than 5 minutes might
   #  cause issues with how nextcloud background jobs are executed
-  schedule: "*/15 * * * *"
+  schedule: "*/5 * * * *"
   annotations: {}
   # Set curl's insecure option if you use e.g. self-signed certificates
   curlInsecure: false

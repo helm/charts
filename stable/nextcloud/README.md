@@ -4,8 +4,14 @@
 
 ## TL;DR;
 
+Helm 2
 ```console
 $ helm install stable/nextcloud
+```
+
+Helm 3
+```console
+$ helm install nextcloud stable/nextcloud
 ```
 
 ## Introduction
