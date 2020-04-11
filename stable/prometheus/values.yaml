@@ -390,9 +390,13 @@ configmapReload:
 
 kubeStateMetrics:
   ## If false, kube-state-metrics sub-chart will not be installed
-  ## Please see https://github.com/helm/charts/tree/master/stable/kube-state-metrics for configurable values
   ##
   enabled: true
+
+## kube-state-metrics sub-chart configurable values
+## Please see https://github.com/helm/charts/tree/master/stable/kube-state-metrics
+##
+# kube-state-metrics:
 
 nodeExporter:
   ## If false, node-exporter will not be installed
