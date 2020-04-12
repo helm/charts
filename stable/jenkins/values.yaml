@@ -496,13 +496,13 @@ agent:
   #          resourceLimitMemory: "1024Mi"
 
 # Here you can add additional agents
-# They inherit all values from default agent so you only need to specify values which differ
+# They inherit all values from `agent` so you only need to specify values which differ
 additionalAgents: {}
 #  maven:
 #    podName: maven
 #    customJenkinsLabels: maven
 #    # An example of overriding the jnlp container
-#    sideContainerName: jnlp
+#    # sideContainerName: jnlp
 #    image: jenkins/jnlp-agent-maven
 #    tag: latest
 #  python:
@@ -514,6 +514,7 @@ additionalAgents: {}
 #    command: "/bin/sh -c"
 #    args: "cat"
 #    TTYEnabled: true
+
 persistence:
   enabled: true
   ## A manually managed Persistent Volume and Claim

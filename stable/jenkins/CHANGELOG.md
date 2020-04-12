@@ -7,10 +7,7 @@ NOTE: The change log until version 1.5.7 is auto generated based on git commits.
 
 ## 1.12.0 Support additional agents
 
-Add support for easy confingurations of additional agents which inherit values from the default agent.
-Also moved pod template configuration based on `agent` values to a new template `jenkins.casc.podTemplate`.
-
-Update README with an example of using additional agents to configure kubernetes pod templates in the default configuration as code.
+Add support for easy configuration of additional agents which inherit values from `agent`.
 
 ## 1.11.3
 

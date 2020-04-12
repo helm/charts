@@ -217,7 +217,7 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.yamlTemplate`       | The raw yaml of a Pod API Object to merge into the agent spec | Not set  |
 | `agent.slaveConnectTimeout`| Timeout in seconds for an agent to be online    | 100                    |
 | `agent.podTemplates`       | Configures extra pod templates for the default kubernetes cloud | `{}`   |
-| `additionalAgents`         | Configure additional agents which inherit settings from the default agent | `{}` |
+| `additionalAgents`         | Configure additional agents which inherit values from `agent` | `{}` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -517,31 +517,26 @@ agent:
 ```
 Best reference is https://<jenkins_url>/configuration-as-code/reference#Cloud-kubernetes.
 
-### Adding pod templates using additional `agent` values (multiple agents)
+### Adding pod templates using additionalAgents
 
-Additional `agent` values may be used to configure kubernetes pod templates in the default configuration as code. For example,
+`additionalAgents` may be used to configure additional kubernetes pod templates. Each additional agent corresponds to `agent` in terms of the configurable values and inherits all values from `agent` so you only need to specify values which differ. For example,
+
 ```yaml
-master:
-  JCasC:
-    enabled: true
-    defaultConfig: true
-
 agent:
-  enabled: true
   podName: default
   customJenkinsLabels: default
+  # set resources for additional agents to inherit
   resources:
     limits:
       cpu: "1"
       memory: "2048Mi"
 
-# Each additional agent corresponds to a chart `agent` in terms of the configurable values.
 additionalAgents:
   maven:
     podName: maven
     customJenkinsLabels: maven
     # An example of overriding the jnlp container
-    sideContainerName: jnlp
+    # sideContainerName: jnlp
     image: jenkins/jnlp-agent-maven
     tag: latest
   python:
