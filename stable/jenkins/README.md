@@ -193,7 +193,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 
 Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload sent to a Jenkins webhooks, e.g. URL of a pull-request being built. To display such data as processed HTML instead of raw text set `master.enableRawHtmlMarkupFormatter` to true. This option requires installation of OWASP Markup Formatter Plugin (antisamy-markup-formatter). The plugin is **not** installed by default, please update `master.installPlugins`.
 
-### Jenkins Agent
+### Jenkins Agent(s)
 
 | Parameter                  | Description                                     | Default                |
 | -------------------------- | ----------------------------------------------- | ---------------------- |
@@ -201,10 +201,10 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.customJenkinsLabels`| Append Jenkins labels to the agent              | `{}`                   |
 | `agent.enabled`            | Enable Kubernetes plugin jnlp-agent podTemplate | `true`                 |
 | `agent.image`              | Agent image name                                | `jenkins/jnlp-slave`   |
-| `agent.imagePullSecretName` | Agent image pull secret                         | Not set                |
+| `agent.imagePullSecretName` | Agent image pull secret                        | Not set                |
 | `agent.tag`                | Agent image tag                                 | `3.27-1`               |
 | `agent.privileged`         | Agent privileged container                      | `false`                |
-| `agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 512m, memory: 512Mi}, limits: {cpu: 512m, memory: 512Mi}}`|
+| `agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 512m, memory: 512Mi}, limits: {cpu: 512m, memory: 512Mi}}` |
 | `agent.volumes`            | Additional volumes                              | `[]`                   |
 | `agent.envVars`            | Environment variables for the agent Pod         | `[]`                   |
 | `agent.command`            | Executed command when side container starts     | Not set                |
@@ -214,10 +214,10 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.containerCap`       | Maximum number of agent                         | 10                     |
 | `agent.podName`            | Agent Pod base name                             | Not set                |
 | `agent.idleMinutes`        | Allows the Pod to remain active for reuse       | 0                      |
-| `agent.yamlTemplate`       | The raw yaml of a Pod API Object to merge into the agent spec | Not set                |
+| `agent.yamlTemplate`       | The raw yaml of a Pod API Object to merge into the agent spec | Not set  |
 | `agent.slaveConnectTimeout`| Timeout in seconds for an agent to be online    | 100                    |
-| `agent.podTemplates`       | Configures extra pod templates for the default kubernetes cloud | `{}`                              |
-
+| `agent.podTemplates`       | Configures extra pod templates for the default kubernetes cloud | `{}`   |
+| `additionalAgents`         | Configure additional agents which inherit values from `agent` | `{}` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -484,6 +484,7 @@ Docs taken from https://github.com/jenkinsci/docker/blob/master/Dockerfile:
 _Jenkins is run with user `jenkins`, uid = 1000. If you bind mount a volume from the host or a data container,ensure you use the same uid_
 
 ## Adding custom pod templates
+
 It is possible to add custom pod templates for the default configured kubernetes cloud.
 Add a key under `agent.podTemplates` for each pod template. Each key (prior to | character) is just a label, and can be any value.
 Keys are only used to give the pod template a meaningful name.  The only restriction is they may only contain RFC 1123 \ DNS label
@@ -495,7 +496,7 @@ master.JCasC.enabled: true
 master.JCasC.defaultConfig: true
 ```
 The example below creates a python pod template in the kubernetes cloud.
-```
+```yaml
 agent:
   podTemplates:
     python: |
@@ -515,6 +516,39 @@ agent:
             resourceLimitMemory: "1024Mi"
 ```
 Best reference is https://<jenkins_url>/configuration-as-code/reference#Cloud-kubernetes.
+
+### Adding pod templates using additionalAgents
+
+`additionalAgents` may be used to configure additional kubernetes pod templates. Each additional agent corresponds to `agent` in terms of the configurable values and inherits all values from `agent` so you only need to specify values which differ. For example,
+
+```yaml
+agent:
+  podName: default
+  customJenkinsLabels: default
+  # set resources for additional agents to inherit
+  resources:
+    limits:
+      cpu: "1"
+      memory: "2048Mi"
+
+additionalAgents:
+  maven:
+    podName: maven
+    customJenkinsLabels: maven
+    # An example of overriding the jnlp container
+    # sideContainerName: jnlp
+    image: jenkins/jnlp-agent-maven
+    tag: latest
+  python:
+    podName: python
+    customJenkinsLabels: python
+    sideContainerName: python
+    image: python
+    tag: "3"
+    command: "/bin/sh -c"
+    args: "cat"
+    TTYEnabled: true
+```
 
 ## Running behind a forward proxy
 
