@@ -5,6 +5,10 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.12.0 Support additional agents
+
+Add support for easy configuration of additional agents which inherit values from `agent`.
+
 ## 1.11.3
 
 Update the kubernetes plugin from 1.24.1 to 1.25.1 and grant 'watch' permission to 'events' which is required since this plugin version.
