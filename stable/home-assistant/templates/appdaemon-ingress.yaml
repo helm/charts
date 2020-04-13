@@ -1,4 +1,4 @@
-{{- if (.Values.appdaemon.enabled) and (.Values.appdaemon.ingress.enabled) }}
+{{- if and (.Values.appdaemon.enabled) (.Values.appdaemon.ingress.enabled) }}
 {{- $fullName := include "home-assistant.fullname" . -}}
 {{- $servicePort := .Values.appdaemon.service.port -}}
 {{- $ingressPath := .Values.appdaemon.ingress.path -}}
