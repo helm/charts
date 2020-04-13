@@ -5,3 +5,6 @@ master:
   JCasC:
     enabled: false
     defaultConfig: false
+  sidecars:
+    configAutoReload:
+      enabled: false

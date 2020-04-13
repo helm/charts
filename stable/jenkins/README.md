@@ -70,6 +70,9 @@ master:
   JCasC:
     enabled: true         # was false
     defaultConfig: true   # was false
+  sidecars:
+    configAutoReload:
+      enabled: true       # was false
 ```
 
 #### Migration steps
