@@ -10,6 +10,8 @@ metadata:
     app.kubernetes.io/component: core
 spec:
   clusterIP: None
+  # This next line is critical:  cluster members cannot discover each other without published
+  # addresses, but without this, they can't get addresses unless they're ready (Catch-22)
   publishNotReadyAddresses: true 
   ports:
     - name: http
