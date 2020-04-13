@@ -86,6 +86,8 @@ core:
 
   initContainers: []
   ## init containers to run before the Neo4j core pod e.g. to install plugins
+  ## They can also be used to restore from last available backup, to ensure that newly joining
+  ## core members have less TX history to catch up on before joining the cluster.
   ## Note that this is specifically *not* needed for APOC, which is included by default.
   # - name: init-plugins
   #   image: "appropriate/curl:latest"
@@ -125,6 +127,8 @@ readReplica:
 
   initContainers: []
   ## init containers to run before the Neo4j replica pod e.g. to install custom plugins
+  ## They can also be used to restore from last available backup, to ensure that newly joining
+  ## core members have less TX history to catch up on before joining the cluster.
   ## Note that this is specifically *not* needed for APOC, which is included by default.
   # - name: init-plugins
   #   image: "appropriate/curl:latest"
