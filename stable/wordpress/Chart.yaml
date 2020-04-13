@@ -1,8 +1,8 @@
 apiVersion: v1
 name: wordpress
-version: 9.0.2
+version: 9.0.3
 appVersion: 5.3.2
-# The redis chart is deprecated and no longer maintained. For details deprecation, see the PROCESSES.md file.
+# The wordpress chart is deprecated and no longer maintained. For details deprecation, see the PROCESSES.md file.
 deprecated: true
 description: DEPRECATED Web publishing platform for building blogs and websites.
 icon: https://bitnami.com/assets/stacks/wordpress/img/wordpress-stack-220x234.png

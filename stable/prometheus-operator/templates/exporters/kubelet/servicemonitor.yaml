@@ -28,6 +28,7 @@ spec:
     relabelings:
 {{ toYaml .Values.kubelet.serviceMonitor.relabelings | indent 4 }}
 {{- end }}
+{{- if .Values.kubelet.serviceMonitor.cAdvisor }}
   - port: https-metrics
     scheme: https
     path: /metrics/cadvisor
@@ -47,6 +48,7 @@ spec:
     relabelings:
 {{ toYaml .Values.kubelet.serviceMonitor.cAdvisorRelabelings | indent 4 }}
 {{- end }}
+{{- end }}
   {{- else }}
   - port: http-metrics
     {{- if .Values.kubelet.serviceMonitor.interval }}
@@ -61,6 +63,7 @@ spec:
     relabelings:
 {{ toYaml .Values.kubelet.serviceMonitor.relabelings | indent 4 }}
 {{- end }}
+{{- if .Values.kubelet.serviceMonitor.cAdvisor }}
   - port: http-metrics
     path: /metrics/cadvisor
     {{- if .Values.kubelet.serviceMonitor.interval }}
@@ -74,6 +77,7 @@ spec:
 {{- if .Values.kubelet.serviceMonitor.cAdvisorRelabelings }}
     relabelings:
 {{ toYaml .Values.kubelet.serviceMonitor.cAdvisorRelabelings | indent 4 }}
+{{- end }}
 {{- end }}
   {{- end }}
   jobLabel: k8s-app

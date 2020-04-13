@@ -12,9 +12,15 @@ image:
   pullPolicy: IfNotPresent
 
 deployment:
-  # additionals labels
+  # additional labels
   labels: {}
   annotations: {}
+  podLabels: {}
+  podAnnotations: {}
+  livenessProbe:
+    enabled: true
+  readinessProbe:
+    enabled: true
 
 service:
   type: ClusterIP
