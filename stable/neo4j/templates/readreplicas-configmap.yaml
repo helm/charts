@@ -7,7 +7,7 @@ metadata:
   name: {{ template "neo4j.replicaConfig.fullname" . }}
 data:
   NEO4J_ACCEPT_LICENSE_AGREEMENT: "{{ .Values.acceptLicenseAgreement }}"
-  NEO4J_dbms_mode: CORE
+  NEO4J_dbms_mode: READ_REPLICA
   NUMBER_OF_CORES: "{{ .Values.core.numberOfServers }}"
   AUTH_ENABLED: "{{ .Values.authEnabled }}"
   NEO4J_causal__clustering_discovery__type: LIST
