@@ -117,6 +117,20 @@ rules: {}
   #   pagerduty_service_key: dummy
   #   pagerduty_client_name: Elastalert Deadman Switch
 
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+# Enable pod security policy
+# https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+podSecurityPolicy:
+  create: false
+
 # Support using node selectors and tolerations
 # nodeSelector:
 #   "node-role.kubernetes.io/infra_worker": "true"

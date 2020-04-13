@@ -180,7 +180,15 @@ runAsRoot: false
 UID: 999
 GID: 999
 
-  # define an external mongoDB instead of using the built-in mongodb
+## If you provide your own custom certificate in <unifi-data>/cert
+## you can define the following parameters to configure the controller
+customCert:
+  enabled: false
+  isChain: false
+  certName: cert.pem
+  keyName: privkey.pem
+
+# define an external mongoDB instead of using the built-in mongodb
 mongodb:
   enabled: false
   dbUri: mongodb://mongo/unifi
