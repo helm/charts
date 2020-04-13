@@ -98,6 +98,9 @@ jenkins:
       maxRequestsPerHostStr: "32"
       name: "kubernetes"
       namespace: "{{ template "jenkins.master.slaveKubernetesNamespace" . }}"
+      podLabels:
+      - key: "jenkins/{{ .Release.Name }}-{{ .Values.agent.componentName }}"
+        value: "true"
       serverUrl: "https://kubernetes.default"
       {{- if .Values.agent.enabled }}
       templates:

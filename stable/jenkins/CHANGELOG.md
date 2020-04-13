@@ -5,6 +5,17 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+
+## 1.13.0 Configure pod labels using JCasC
+
+XML configuration already configured pod label. Now we also do this using configuration-as-code:
+
+```
+      podLabels:
+      - key: "jenkins/{{ .Release.Name }}-{{ .Values.agent.componentName }}"
+        value: "true"
+```
+
 ## 1.12.0 Support additional agents
 
 Add support for easy configuration of additional agents which inherit values from `agent`.
