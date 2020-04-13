@@ -17,6 +17,10 @@ spec:
       labels:
         app: {{ template "stolon.fullname" . }}
         release: {{ .Release.Name }}
+      annotations:
+{{- with .Values.job.annotations }}
+{{ toYaml . | indent 8 }}
+{{- end }}
     spec:
       restartPolicy: OnFailure
       serviceAccountName: {{ template "stolon.serviceAccountName" . }}
