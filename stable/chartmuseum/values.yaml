@@ -184,6 +184,8 @@ securityContext:
   enabled: true
   fsGroup: 1000
 
+priorityClassName: ""
+
 nodeSelector: {}
 
 tolerations: []
