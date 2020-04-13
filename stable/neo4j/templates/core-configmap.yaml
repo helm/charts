@@ -13,6 +13,7 @@ data:
   NEO4J_causal__clustering_discovery__type: LIST
   NEO4J_causal__clustering_initial__discovery__members: "{{ template "neo4j.fullname" . }}-core-0.{{ template "neo4j.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:5000,{{ template "neo4j.fullname" . }}-core-1.{{ template "neo4j.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:5000,{{ template "neo4j.fullname" . }}-core-2.{{ template "neo4j.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:5000"
   NEO4J_causal__clustering_minimum__core__cluster__size__at__formation: "3"
+  NEO4J_causal__clustering_minimum__core__cluster__size__at__runtime: "2"
   NEO4J_dbms_jvm_additional: "-XX:+ExitOnOutOfMemoryError"
   {{- if .Values.useAPOC }}
   NEO4JLABS_PLUGINS: "[\"apoc\"]"
