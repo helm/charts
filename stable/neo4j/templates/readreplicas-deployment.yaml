@@ -1,4 +1,4 @@
-apiVersion: "apps/v1beta2"
+apiVersion: "apps/v1"
 kind: Deployment
 metadata:
   name: "{{ template "neo4j.replica.fullname" . }}"
@@ -48,7 +48,12 @@ spec:
           - "/bin/bash"
           - "-c"
           - |
-            export HOST=$(hostname -f)            
+            # Replicas advertise by bare IP, not hostname.  This is because deployments in kubernetes
+            # don't provide good FQDNs. (https://github.com/kubernetes/kubernetes/issues/60789)
+            # The FQDN advertisement address is necessary for the akka cluster formation in Neo4j to work,
+            # so if you advertise with a bare local hostname or something invalid, the read replica will be
+            # unable to join the raft group.
+            export HOST=$(hostname -i)
             export NEO4J_causal__clustering_discovery__advertised__address=$HOST
             export NEO4J_dbms_default__listen__address=$HOST
             export NEO4J_dbms_default__advertised__address=$HOST
@@ -56,9 +61,9 @@ spec:
             export NEO4J_dbms_connector_http_advertised__address=$HOST
             export NEO4J_dbms_connector_https_advertised__address=$HOST
             export NEO4J_dbms_default__database={{ .Values.defaultDatabase }}
-            export NEO4J_causal__clustering_discovery__advertised__address=$(hostname -f):5000
-            export NEO4J_causal__clustering_transaction__advertised__address=$(hostname -f):6000
-            export NEO4J_causal__clustering_raft__advertised__address=$(hostname -f):7000
+            export NEO4J_causal__clustering_discovery__advertised__address=$HOST:5000
+            export NEO4J_causal__clustering_transaction__advertised__address=$HOST:6000
+            export NEO4J_causal__clustering_raft__advertised__address=$HOST:7000
 
             export NEO4J_dbms_jvm_additional="-XX:+ExitOnOutOfMemoryError"
 
@@ -71,12 +76,16 @@ spec:
             echo "Starting Neo4j READ_REPLICA on $HOST"
             exec /docker-entrypoint.sh "neo4j"
         ports:
+        - containerPort: 5000
+          name: discovery
+        - containerPort: 7000
+          name: raft
+        - containerPort: 6000
+          name: tx
         - containerPort: 7474
           name: browser
         - containerPort: 7687
           name: bolt
-        - containerPort: 6000
-          name: tx
         volumeMounts:
         - name: plugins
           mountPath: /plugins
