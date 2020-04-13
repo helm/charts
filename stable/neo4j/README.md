@@ -75,7 +75,7 @@ their default values.
 | `core.configMap`                      | Configmap providing configuration for core cluster members.  If not specified, defaults that come with the chart will be used.          | `$NAME-neo4j-core-config`                       |
 | `core.numberOfServers`                | Number of machines in CORE mode                                                                                                         | `3`                                             |
 | `core.sideCarContainers`              | Sidecar containers to add to the core pod. Example use case is a sidecar which identifies and labels the leader when using the http API | `{}`                                            |
-| `core.initContainers`                 | Init containers to add to the core pod. Example use case is a script that installs the APOC library                                     | `{}`                                            |
+| `core.initContainers`                 | Init containers to add to the core pod. Example use case is a script that installs custom plugins/extensions                            | `{}`                                            |
 | `core.persistentVolume.enabled`       | Whether or not persistence is enabled                                                                                                   | `true`                                          |
 | `core.persistentVolume.storageClass`  | Storage class of backing PVC                                                                                                            | `standard` (uses beta storage class annotation) |
 | `core.persistentVolume.size`          | Size of data volume                                                                                                                     | `10Gi`                                          |
@@ -88,7 +88,7 @@ their default values.
 | `readReplica.autoscaling.targetAverageUtilization`  | Target CPU utilization  | `70`  |
 | `readReplica.autoscaling.minReplicas` | Min replicas for autoscaling  | `1`  |
 | `readReplica.autoscaling.maxReplicas`  | Max replicas for autoscaling  | `3` |
-| `readReplica.initContainers`          | Init containers to add to the replica pod. Example use case is a script that installs the APOC library                                  | `{}`                                            |
+| `readReplica.initContainers`          | Init containers to add to the replica pods. Example use case is a script that installs custom plugins/extensions                        | `{}`                                            |
 | `resources`                           | Resources required (e.g. CPU, memory)                                                                                                   | `{}`                                            |
 | `clusterDomain`                       | Cluster domain                                                                                                                          | `cluster.local`                                 |
 
