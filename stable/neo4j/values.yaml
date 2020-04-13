@@ -51,6 +51,7 @@ defaultDatabase: "neo4j"
 
 # Cores
 core:
+  # configMap: "my-custom-configmap"
   numberOfServers: 3
   persistentVolume:
     ## whether or not persistence is enabled
@@ -78,14 +79,6 @@ core:
     ##
     ## subPath: ""
 
-  ## Pass extra environment variables to the Neo4j container.
-  ##
-  # extraVars:
-  # - name: EXTRA_VAR_1
-  #   value: extra-var-value-1
-  # - name: EXTRA_VAR_2
-  #   value: extra-var-value-2
-
   sidecarContainers: []
   ## Additional containers to be added to the Neo4j core pod.
   #  - name: my-sidecar
@@ -109,6 +102,7 @@ core:
 
 # Read Replicas
 readReplica:
+  # configMap: "my-custom-configmap"
   resources: {}
   # limits:
   #   cpu: 100m
@@ -123,13 +117,6 @@ readReplica:
     maxReplicas: 3
 
   numberOfServers: 0
-  ## Pass extra environment variables to the Neo4j container.
-  ##
-  # extraVars:
-  # - name: EXTRA_VAR_1
-  #   value: extra-var-value-1
-  # - name: EXTRA_VAR_2
-  #   value: extra-var-value-2
 
   sidecarContainers: []
   ## Additional containers to be added to the Neo4j replica pod.

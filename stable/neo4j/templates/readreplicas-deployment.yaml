@@ -28,28 +28,15 @@ spec:
       - name: neo4j
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: "{{ .Values.imagePullPolicy }}"
+        # Most pod config is factored into a different configMap, which is user overrideable.
+        envFrom:
+          - configMapRef:
+              {{- if .Values.readReplica.configMap }}
+              name: "{{ .Values.readReplica.configMap }}"
+              {{- else }}
+              name: {{ template "neo4j.replicaConfig.fullname" . }}
+              {{- end }}
         env:
-          - name: NEO4J_ACCEPT_LICENSE_AGREEMENT
-            value: "{{ .Values.acceptLicenseAgreement }}"
-          - name: NEO4J_dbms_mode
-            value: READ_REPLICA
-          - name: NEO4J_dbms_security_auth__enabled
-            value: "{{ .Values.authEnabled }}"
-          - name: NEO4J_causal__clustering_discovery__type
-            value: LIST
-          - name: NEO4J_causal__clustering_initial__discovery__members
-            value: {{ template "neo4j.fullname" . }}-core-0.{{ template "neo4j.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:5000,{{ template "neo4j.fullname" . }}-core-1.{{ template "neo4j.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:5000,{{ template "neo4j.fullname" . }}-core-2.{{ template "neo4j.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:5000
-          - name: NEO4J_causal__clustering_minimum__core__cluster__size__at__formation
-            value: "3"
-          {{- if .Values.useAPOC }}
-          # In modern Neo4j docker containers, the following auto-installs APOC and configures it appropriately.
-          - name: NEO4JLABS_PLUGINS
-            value: "[\"apoc\"]"
-          - name: NEO4J_apoc_import_file_use__neo4j__config
-            value: "true"
-          - name: NEO4J_dbms_security_procedures_unrestricted
-            value: "apoc.*"
-          {{- end }}  
           {{- if .Values.authEnabled }}
           - name: NEO4J_SECRETS_PASSWORD
             valueFrom:
@@ -57,9 +44,6 @@ spec:
                 name: {{ template "neo4j.secrets.fullname" . }}
                 key: neo4j-password
           {{- end }}
-{{- if .Values.readReplica.extraVars }}
-{{ toYaml .Values.readReplica.extraVars | indent 10 }}
-{{- end }}
         command:
           - "/bin/bash"
           - "-c"

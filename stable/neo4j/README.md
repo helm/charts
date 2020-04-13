@@ -72,6 +72,7 @@ their default values.
 | `useAPOC`                             | Should the APOC plugins be automatically installed in the database?                                                                     | `true`                                          |
 | `defaultDatabase`                     | The name of the default database to configure in Neo4j (dbms.default_database)                                                          | `neo4j`                                         |
 | `neo4jPassword`                       | Password to log in the Neo4J database if password is required                                                                           | (random string of 10 characters)                |
+| `core.configMap`                      | Configmap providing configuration for core cluster members.  If not specified, defaults that come with the chart will be used.          | `$NAME-neo4j-core-config`                       |
 | `core.numberOfServers`                | Number of machines in CORE mode                                                                                                         | `3`                                             |
 | `core.sideCarContainers`              | Sidecar containers to add to the core pod. Example use case is a sidecar which identifies and labels the leader when using the http API | `{}`                                            |
 | `core.initContainers`                 | Init containers to add to the core pod. Example use case is a script that installs the APOC library                                     | `{}`                                            |
@@ -81,6 +82,7 @@ their default values.
 | `core.persistentVolume.mountPath`     | Persistent Volume mount root path                                                                                                       | `/data`                                         |
 | `core.persistentVolume.subPath`       | Subdirectory of the volume to mount                                                                                                     | `nil`                                           |
 | `core.persistentVolume.annotations`   | Persistent Volume Claim annotations                                                                                                     | `{}`                                            |
+| `readReplica.configMap`               | Configmap providing configuration for RR cluster members.  If not specified, defaults that come with the chart will be used.            | `$NAME-neo4j-replica-config`                    |
 | `readReplica.numberOfServers`         | Number of machines in READ_REPLICA mode                                                                                                 | `0`                                             |
 | `readReplica.autoscaling.enabled`  | Enable horizontal pod autoscaler  | `false`  |
 | `readReplica.autoscaling.targetAverageUtilization`  | Target CPU utilization  | `70`  |
@@ -113,6 +115,20 @@ $ helm install --name neo4j-helm -f values.yaml stable/neo4j
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
 Once you have all 3 pods in running, you can run the "test.sh" script in this directory, which will verify the role attached to each pod and also test recovery of a failed/deleted pod. This script requires that the $RELEASE_NAME environment variable be set, in order to access the pods, if you have specified a custom `namespace` or `replicas` value when installing you can set those via `RELEASE_NAMESPACE` and `CORE_REPLICAS` environment variables for this script.
+
+## Using Custom Configuration
+
+The pods in two groups (Cores and read-replicas) are configured with regular ConfigMaps, which turn into environment variables.  Those
+environment variables configure the Neo4j pods according to [Neo4j environment variable configuration](https://neo4j.com/docs/operations-manual/current/docker/configuration/#docker-environment-variables).
+
+If you want to do custom configuration, just do so like this:
+
+```
+--set core.configMap=myConfigMapName --set readReplica.configMap=myReplicaConfigMap
+```
+
+And that will be used instead.   *Note*: configuration of some networking specific settings is still done at container start time,
+and this very small set of variables may still be overridden by the helm chart, in particular advertised addresses & hostnames for the containers.
 
 ## Additional Documentation for Running Neo4j in Kubernetes
 
