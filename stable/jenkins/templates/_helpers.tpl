@@ -103,6 +103,9 @@ jenkins:
         value: "true"
       serverUrl: "https://kubernetes.default"
       {{- if .Values.agent.enabled }}
+      podLabels:
+      - key: "jenkins/{{ .Release.Name }}-{{ .Values.agent.componentName }}"
+        value: "true"
       templates:
       {{- include "jenkins.casc.podTemplate" . | nindent 8 }}
     {{- if .Values.additionalAgents }}
@@ -192,7 +195,9 @@ Returns kubernetes pod template xml configuration
   <name>{{ .Values.agent.podName }}</name>
   <instanceCap>2147483647</instanceCap>
   <idleMinutes>{{ .Values.agent.idleMinutes }}</idleMinutes>
-  <label>{{ .Release.Name }}-{{ .Values.agent.componentName }} {{ .Values.agent.customJenkinsLabels  | join " " }}</label>
+  {{- $tmp := join " " .Values.agent.customJenkinsLabels }}
+  {{- $labels := printf "%s-%s %s" .Release.Name .Values.agent.componentName $tmp }}
+  <label>{{ $labels | trim  }}</label>
   <serviceAccount>{{ include "jenkins.serviceAccountAgentName" . }}</serviceAccount>
   <nodeSelector>
     {{- $local := dict "first" true }}
