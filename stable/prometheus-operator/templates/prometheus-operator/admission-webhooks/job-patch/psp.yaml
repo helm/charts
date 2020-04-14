@@ -9,6 +9,10 @@ metadata:
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
   labels:
     app: {{ template "prometheus-operator.name" . }}-admission
+{{- if .Values.global.rbac.pspAnnotations }}
+  annotations:
+{{ toYaml .Values.global.rbac.pspAnnotations | indent 4 }}
+{{- end }}
 {{ include "prometheus-operator.labels" . | indent 4 }}
 spec:
   privileged: false
