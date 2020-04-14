@@ -10,6 +10,10 @@ NOTE: The change log until version 1.5.7 is auto generated based on git commits.
 The README contains more details for this update.
 Please note that the updated values contain breaking changes.
 
+## 1.13.0
+
+Add `master.networkPolicy.internalAgents` and `master.networkPolicy.externalAgents` stanzas to fine grained controls over where internal/external agents can connect from. Internal ones are allowed based on pod labels and (optionally) namespaces, and external ones are allowed based on IP ranges.
+
 ## 1.12.0 Support additional agents
 
 Add support for easy configuration of additional agents which inherit values from `agent`.

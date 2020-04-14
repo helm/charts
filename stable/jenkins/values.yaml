@@ -546,6 +546,15 @@ networkPolicy:
   # For Kubernetes v1.4, v1.5 and v1.6, use 'extensions/v1beta1'
   # For Kubernetes v1.7, use 'networking.k8s.io/v1'
   apiVersion: networking.k8s.io/v1
+  # You can allow agents to connect from both within the cluster (from within specific/all namespaces) AND/OR from a given external IP range
+  internalAgents:
+    allowed: true
+    namespaceLabels: {}
+      # project: myproject
+  externalAgents: {}
+  #   ipCIDR: 172.17.0.0/16
+  #   except:
+  #     - 172.17.1.0/24
 
 ## Install Default RBAC roles and bindings
 rbac:
