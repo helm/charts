@@ -11,6 +11,11 @@ controller:
     runAsUser: 101
     allowPrivilegeEscalation: true
 
+  # This will fix the issue of HPA not being able to read the metrics.
+  # Note that if you enable it for existing deployments, it won't work as the labels are immutable.
+  # We recommend setting this to true for new deployments.
+  useComponentLabel: false
+
   # Configures the ports the nginx-controller listens on
   containerPort:
     http: 80
@@ -18,6 +23,10 @@ controller:
 
   # Will add custom configuration options to Nginx https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/
   config: {}
+
+  # Maxmind license key to download GeoLite2 Databases
+  # https://blog.maxmind.com/2019/12/18/significant-changes-to-accessing-and-using-geolite2-databases
+  maxmindLicenseKey: ""
 
   # Will add custom headers before sending traffic to backends according to https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers
   proxySetHeaders: {}
@@ -62,6 +71,9 @@ controller:
   ## Name of the ingress class to route through this controller
   ##
   ingressClass: nginx
+
+  # labels to add to the deployment metadata
+  deploymentLabels: {}
 
   # labels to add to the pod container metadata
   podLabels: {}
@@ -219,7 +231,7 @@ controller:
 
   autoscaling:
     enabled: false
-    minReplicas: 1
+    minReplicas: 2
     maxReplicas: 11
     targetCPUUtilizationPercentage: 50
     targetMemoryUtilizationPercentage: 50
@@ -434,9 +446,10 @@ defaultBackend:
     # nobody user -> uid 65534
     runAsUser: 65534
 
-  # Maxmind license key to download GeoLite2 Databases
-  # https://blog.maxmind.com/2019/12/18/significant-changes-to-accessing-and-using-geolite2-databases
-  maxmindLicenseKey: ""
+  # This will fix the issue of HPA not being able to read the metrics.
+  # Note that if you enable it for existing deployments, it won't work as the labels are immutable.
+  # We recommend setting this to true for new deployments.
+  useComponentLabel: false
 
   extraArgs: {}
 
@@ -481,6 +494,9 @@ defaultBackend:
   ##
   podSecurityContext: {}
 
+  # labels to add to the deployment metadata
+  deploymentLabels: {}
+
   # labels to add to the pod container metadata
   podLabels: {}
   #  key: value
@@ -523,6 +539,9 @@ defaultBackend:
     type: ClusterIP
 
   priorityClassName: ""
+
+# If provided, the value will be used as the `release` label instead of .Release.Name
+releaseLabelOverride: ""
 
 ## Enable RBAC as per https://github.com/kubernetes/ingress/tree/master/examples/rbac/nginx and https://github.com/kubernetes/ingress/issues/266
 rbac:

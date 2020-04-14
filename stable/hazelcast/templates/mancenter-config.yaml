@@ -1,0 +1,14 @@
+{{- if and .Values.mancenter.enabled (and .Values.mancenter.yaml (not .Values.mancenter.existingConfigMap)) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "mancenter.fullname" . }}-configuration
+  labels:
+    app.kubernetes.io/name: {{ template "hazelcast.name" . }}
+    helm.sh/chart: {{ template "hazelcast.chart" . }}
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+data:
+  hazelcast-client.yaml: |-
+{{ toYaml .Values.mancenter.yaml | indent 4 }}
+{{- end -}}

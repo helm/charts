@@ -12,9 +12,15 @@ image:
   pullPolicy: IfNotPresent
 
 deployment:
-  # additionals labels
+  # additional labels
   labels: {}
   annotations: {}
+  podLabels: {}
+  podAnnotations: {}
+  livenessProbe:
+    enabled: true
+  readinessProbe:
+    enabled: true
 
 service:
   type: ClusterIP
@@ -62,3 +68,4 @@ config:
   # Secret used to sign session cookies. If empty it will be replaced with a
   # random 64 length string
   secret: ''
+  tlsVerify: true

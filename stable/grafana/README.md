@@ -52,7 +52,7 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `securityContext`                         | Deployment securityContext                    | `{"runAsUser": 472, "fsGroup": 472}`                    |
 | `priorityClassName`                       | Name of Priority Class to assign pods         | `nil`                                                   |
 | `image.repository`                        | Image repository                              | `grafana/grafana`                                       |
-| `image.tag`                               | Image tag (`Must be >= 5.0.0`)                | `6.6.2`                                                 |
+| `image.tag`                               | Image tag (`Must be >= 5.0.0`)                | `6.7.1`                                                 |
 | `image.pullPolicy`                        | Image pull policy                             | `IfNotPresent`                                          |
 | `image.pullSecrets`                       | Image pull secrets                            | `{}`                                                    |
 | `service.type`                            | Kubernetes service type                       | `ClusterIP`                                             |
@@ -66,6 +66,7 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `service.loadBalancerIP`                  | IP address to assign to load balancer (if supported) | `nil`                                            |
 | `service.loadBalancerSourceRanges`        | list of IP CIDRs allowed access to lb (if supported) | `[]`                                             |
 | `serivce.externalIPs`                     | service external IP addresses                 | `[]`                                                    |
+| `extraExposePorts`                        | Additional service ports for sidecar containers| `[]`                                                   | 
 | `ingress.enabled`                         | Enables Ingress                               | `false`                                                 |
 | `ingress.annotations`                     | Ingress annotations                           | `{}`                                                    |
 | `ingress.labels`                          | Custom labels                                 | `{}`                                                    |
@@ -158,8 +159,10 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `testFramework.enabled`                   | Whether to create test-related resources      | `true`                                                  |
 | `testFramework.image`                     | `test-framework` image repository.            | `bats/bats`                                        |
 | `testFramework.tag`                       | `test-framework` image tag.                   | `v1.1.0`                                                 |
+| `testFramework.imagePullPolicy`           | `test-framework` image pull policy.           | `IfNotPresent`                                             |
 | `testFramework.securityContext`           | `test-framework` securityContext              | `{}`                                                    |
 | `downloadDashboards.env`                  | Environment variables to be passed to the `download-dashboards` container | `{}`                        |
+| `downloadDashboards.resources`            | Resources of `download-dashboards` container  | `{}`                                                    |
 | `downloadDashboardsImage.repository`      | Curl docker image repo                        | `curlimages/curl`                                       |
 | `downloadDashboardsImage.tag`             | Curl docker image tag                         | `7.68.0`                                                |
 | `downloadDashboardsImage.pullPolicy`      | Curl docker image pull policy                 | `IfNotPresent`                                          |
