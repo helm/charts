@@ -286,3 +286,8 @@ vault:
 rbac:
    ## Enable RBAC
   create: true
+
+securityContext:
+  usePodSecurityContext: false
+  runAsUser: 1000
+  fsGroup: 1000
