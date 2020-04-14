@@ -18,16 +18,13 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "aws-alb-ingress-controller.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
-      {{- if .Values.podLabels }}
-{{ toYaml .Values.podLabels | indent 8}}
-      {{- end }}
-    {{- if .Values.podAnnotations }}
-      annotations:
-{{ toYaml .Values.podAnnotations | indent 8}}
+      {{- with .Values.podLabels }}{{ toYaml . | nindent 8 }}{{- end }}
+    {{- with .Values.podAnnotations }}
+      annotations: {{ toYaml . | nindent 8 }}
     {{- end }}
     spec:
-      {{- if .Values.priorityClassName }}
-      priorityClassName: "{{ .Values.priorityClassName }}"
+      {{- with .Values.priorityClassName }}
+      priorityClassName: "{{ . }}"
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
@@ -35,8 +32,8 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
             - --cluster-name={{ required "specify clusterName via --set clusterName=YourClusterName" .Values.clusterName }}
-          {{- if .Values.scope.ingressClass }}
-            - --ingress-class={{ .Values.scope.ingressClass }}
+          {{- with .Values.scope.ingressClass }}
+            - --ingress-class={{ . }}
           {{- end }}
           {{- if .Values.scope.singleNamespace }}
             - --watch-namespace={{ default .Release.Namespace .Values.scope.watchNamespace }}
@@ -79,27 +76,27 @@ spec:
             periodSeconds: 60
             timeoutSeconds: {{ .Values.livenessProbeTimeout }}
           {{- end }}
-          resources:
-{{ toYaml .Values.resources | indent 12 }}
+          resources: {{ toYaml .Values.resources | nindent 12 }}
           {{- with .Values.volumeMounts }}
-          volumeMounts:
-{{ toYaml . | indent 12 }}
+          volumeMounts: {{ toYaml . | nindent 12 }}
           {{- end }}
-    {{- with .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.affinity }}
-      affinity:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.tolerations }}
-      tolerations:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.volumes }}
-      volumes:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-      serviceAccountName: {{ if .Values.rbac.create }}{{ include "aws-alb-ingress-controller.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+          {{- with .Values.containerSecurityContext }}
+          securityContext: {{ toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.volumes }}
+      volumes: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ template "serviceaccount.name" . }}
+      {{- with .Values.securityContext }}
+      securityContext: {{ toYaml . | nindent 8 }}
+      {{- end }}
       terminationGracePeriodSeconds: 60

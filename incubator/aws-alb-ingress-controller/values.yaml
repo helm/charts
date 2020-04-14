@@ -70,9 +70,12 @@ rbac:
   ## If true, create & use RBAC resources
   ##
   create: true
-  serviceAccountName: default
-  ## Annotations for the Service Account
-  serviceAccountAnnotations: {}
+  serviceAccount:
+    create: true
+    name: default
+
+    ## Annotations for the Service Account
+    annotations: {}
 
 image:
   repository: docker.io/amazon/aws-alb-ingress-controller
@@ -119,3 +122,11 @@ volumes: []
 # ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
 # PriorityClass: system-cluster-critical
 priorityClassName: ""
+
+# Security Context
+# ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+# for Pod
+securityContext: {}
+
+# for Container
+containerSecurityContext: {}
