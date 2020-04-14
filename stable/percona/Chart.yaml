@@ -1,7 +1,7 @@
 apiVersion: v1
 name: percona
-version: 1.2.0
-appVersion: 5.7.17
+version: 1.2.1
+appVersion: 5.7.26
 description: free, fully compatible, enhanced, open source drop-in replacement for
   MySQL
 keywords:

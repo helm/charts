@@ -71,3 +71,14 @@ Return the appropriate apiVersion for podsecuritypolicy.
 {{- print "policy/v1beta1" -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return the service account name used by the pod.
+*/}}
+{{- define "cluster-autoscaler.serviceAccountName" -}}
+{{- if .Values.rbac.serviceAccount.create -}}
+    {{ default (include "cluster-autoscaler.fullname" .) .Values.rbac.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.rbac.serviceAccount.name }}
+{{- end -}}
+{{- end -}}

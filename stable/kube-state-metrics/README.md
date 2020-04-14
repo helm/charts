@@ -15,9 +15,10 @@ $ helm install stable/kube-state-metrics
 | Parameter                                    | Description                                                                           | Default                                    |
 |:---------------------------------------------|:--------------------------------------------------------------------------------------|:-------------------------------------------|
 | `image.repository`                           | The image repository to pull from                                                     | quay.io/coreos/kube-state-metrics          |
-| `image.tag`                                  | The image tag to pull from                                                            | `v1.9.4`                                   |
+| `image.tag`                                  | The image tag to pull from                                                            | `v1.9.5`                                   |
 | `image.pullPolicy`                           | Image pull policy                                                                     | `IfNotPresent`                             |
 | `replicas`                                   | Number of replicas                                                                    | `1`                                        |
+| `autosharding.enabled`                       | Set to `true` to automatically shard data across `replicas` pods. EXPERIMENTAL        | `false`                                    |
 | `service.port`                               | The port of the container                                                             | `8080`                                     |
 | `service.annotations`                        | Annotations to be added to the service                                                | `{}`                                       |
 | `customLabels`                               | Custom labels to apply to service, deployment and pods                                | `{}`                                       |
@@ -27,7 +28,7 @@ $ helm install stable/kube-state-metrics
 | `serviceAccount.create`                      | If true, create & use serviceAccount                                                  | `true`                                     |
 | `serviceAccount.name`                        | If not set & create is true, use template fullname                                    |                                            |
 | `serviceAccount.imagePullSecrets`            | Specify image pull secrets field                                                      | `[]`                                       |
-| `podSecurityPolicy.enabled`                  | If true, create & use PodSecurityPolicy resources                                     | `false`                                    |
+| `podSecurityPolicy.enabled`                  | If true, create & use PodSecurityPolicy resources. Note that related RBACs are created only if `rbac.enabled` is `true. | `false`  |
 | `podSecurityPolicy.annotations`              | Specify pod annotations in the pod security policy                                    | {}                                         |
 | `securityContext.enabled`                    | Enable security context                                                               | `true`                                     |
 | `securityContext.fsGroup`                    | Group ID for the container                                                            | `65534`                                    |
@@ -37,6 +38,7 @@ $ helm install stable/kube-state-metrics
 | `affinity`                                   | Affinity settings for pod assignment                                                  | {}                                         |
 | `tolerations`                                | Tolerations for pod assignment                                                        | []                                         |
 | `podAnnotations`                             | Annotations to be added to the pod                                                    | {}                                         |
+| `podDisruptionBudget`                        | Optional PodDisruptionBudget                                                          | {}                                         |
 | `resources`                                  | kube-state-metrics resource requests and limits                                       | {}                                         |
 | `collectors.certificatesigningrequests`      | Enable the certificatesigningrequests collector.                                      | `true`                                     |
 | `collectors.configmaps`                      | Enable the configmaps collector.                                                      | `true`                                     |
@@ -48,8 +50,9 @@ $ helm install stable/kube-state-metrics
 | `collectors.ingresses`                       | Enable the ingresses collector.                                                       | `true`                                     |
 | `collectors.jobs`                            | Enable the jobs collector.                                                            | `true`                                     |
 | `collectors.limitranges`                     | Enable the limitranges collector.                                                     | `true`                                     |
-| `collectors.mutatingwebhookconfigurations`   | Enable the mutatingwebhookconfigurations collector.                                   | `false`                                    | 
+| `collectors.mutatingwebhookconfigurations`   | Enable the mutatingwebhookconfigurations collector.                                   | `true`                                     |
 | `collectors.namespaces`                      | Enable the namespaces collector.                                                      | `true`                                     |
+| `collectors.networkpolicies`                 | Enable the networkpolicies collector.                                                 | `true`                                     |
 | `collectors.nodes`                           | Enable the nodes collector.                                                           | `true`                                     |
 | `collectors.persistentvolumeclaims`          | Enable the persistentvolumeclaims collector.                                          | `true`                                     |
 | `collectors.persistentvolumes`               | Enable the persistentvolumes collector.                                               | `true`                                     |
@@ -62,9 +65,9 @@ $ helm install stable/kube-state-metrics
 | `collectors.services`                        | Enable the services collector.                                                        | `true`                                     |
 | `collectors.statefulsets`                    | Enable the statefulsets collector.                                                    | `true`                                     |
 | `collectors.storageclasses`                  | Enable the storageclasses collector.                                                  | `true`                                     |
-| `collectors.validatingwebhookconfigurations` | Enable the validatingwebhookconfigurations collector.                                 | `false`                                    |
-| `collectors.verticalpodautoscalers`          | Enable the verticalpodautoscalers collector.                                          | `false`                                    |
-| `collectors.volumeattachements`              | Enable the volumeattachments collector.                                               | `false`                                    |
+| `collectors.validatingwebhookconfigurations` | Enable the validatingwebhookconfigurations collector.                                 | `true`                                     |
+| `collectors.verticalpodautoscalers`          | Enable the verticalpodautoscalers collector.                                          | `true`                                     |
+| `collectors.volumeattachments`               | Enable the volumeattachments collector.                                               | `true`                                     |
 | `prometheus.monitor.enabled`                 | Set this to `true` to create ServiceMonitor for Prometheus operator                   | `false`                                    |
 | `prometheus.monitor.additionalLabels`        | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | `{}`                                       |
 | `prometheus.monitor.namespace`               | Namespace where servicemonitor resource should be created                             | `the same namespace as kube-state-metrics` |

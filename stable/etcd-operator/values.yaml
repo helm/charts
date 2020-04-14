@@ -38,6 +38,7 @@ customResources:
 
 # etcdOperator
 etcdOperator:
+  priorityClassName: ""
   name: etcd-operator
   replicaCount: 1
   image:
@@ -72,6 +73,7 @@ etcdOperator:
 
 # backup spec
 backupOperator:
+  priorityClassName: ""
   name: etcd-backup-operator
   replicaCount: 1
   image:
@@ -97,6 +99,7 @@ backupOperator:
 
 # restore spec
 restoreOperator:
+  priorityClassName: ""
   name: etcd-restore-operator
   replicaCount: 1
   image:

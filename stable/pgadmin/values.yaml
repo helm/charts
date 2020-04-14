@@ -74,6 +74,11 @@ env:
   email: chart@example.local
   password: SuperSecret
 
+  ## If True, allows pgAdmin to create session cookies based on IP address
+  ## Ref: https://www.pgadmin.org/docs/pgadmin4/4.18/config_py.html
+  #
+  enhanced_cookie_protection: "False"
+
 persistentVolume:
   ## If true, pgAdmin will create/use a Persistent Volume Claim
   ## If false, use emptyDir

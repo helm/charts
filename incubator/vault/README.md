@@ -76,6 +76,7 @@ The following table lists the configurable parameters of the Vault chart and the
 | `service.port`                    | The API port Vault is using              | `8200`                              |
 | `service.clusterExternalPort`     | External cluster port for the service    | `nil`                               |
 | `service.clusterPort`             | The cluster port Vault is using          | `8201`                              |
+| `service.additionalSelector`      | Additional selector the Vault service    | `{}`                                |
 | `annotations`                     | Annotations for deployment               | `{}`                                |
 | `labels`                          | Extra labels for deployment              | `{}`                                |
 | `ingress.labels`                  | Labels for ingress                       | `{}`                                |
@@ -111,6 +112,9 @@ The following table lists the configurable parameters of the Vault chart and the
 | `prometheusRules.defaultRules.vaultSealed`       | Specifies whether the vaulSealed rule should be included         | `true`           |
 | `prometheusRules.defaultRules.vaultStandby`      | Specifies whether the vaultStandy rule should be included        | `false`          |
 | `prometheusRules.extraRules`                     | Custom extra rules                                               | `[]`             |
+| `securityContext.usePodSecurityContext`         | Enable security context config                   | `false`                    |
+| `securityContext.runAsUser`         | Specifies that for any Containers in the Pod, all processes run with this user ID                  | `1000`                    |
+| `securityContext.fsGroup`         | specifies the primary group ID specified for all processes within any containers of the Pod. If this field is omitted, the primary group ID of the containers will be root(0). | `1000`                    |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

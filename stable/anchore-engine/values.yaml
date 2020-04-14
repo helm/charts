@@ -90,8 +90,10 @@ ingress:
 # Global configuration shared by all anchore-engine services.
 anchoreGlobal:
   # Image used for all anchore engine deployments (excluding enterprise components).
-  image: docker.io/anchore/anchore-engine:v0.6.1
+  image: docker.io/anchore/anchore-engine:v0.7.0
   imagePullPolicy: IfNotPresent
+  # Set image pull secret name if using an anchore-engine image from a private registry
+  imagePullSecretName:
 
   # Set this value to True to setup the chart for OpenShift deployment compatibility.
   openShiftDeployment: False
@@ -486,6 +488,9 @@ anchoreEnterpriseGlobal:
   # Name of the kubernetes secret containing your dockerhub creds with access to the anchore enterprise images.
   # Create this secret with the following command - kubectl create secret docker-registry anchore-dockerhub-creds --docker-server=docker.io --docker-username=<USERNAME> --docker-password=<PASSWORD> --docker-email=<EMAIL_ADDRESS>
   imagePullSecretName: anchore-enterprise-pullcreds
+
+  # Starting with chart v1.5.0 enterprise deployments use a different anchore-engine image then the OSS version.
+  engineImage: docker.io/anchore/anchore-engine:v0.6.1
 
 # Configure the second postgres database instance for the enterprise feeds service.
 # Only utilized if anchoreEnterpriseGlobal.enabled: true
