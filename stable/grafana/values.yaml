@@ -50,7 +50,7 @@ livenessProbe:
 
 image:
   repository: grafana/grafana
-  tag: 6.6.2
+  tag: 6.7.1
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -64,6 +64,7 @@ testFramework:
   enabled: true
   image: "bats/bats"
   tag: "v1.1.0"
+  imagePullPolicy: IfNotPresent
   securityContext: {}
 
 securityContext:
@@ -94,6 +95,7 @@ downloadDashboardsImage:
 
 downloadDashboards:
   env: {}
+  resources: {}
 
 ## Pod Annotations
 # podAnnotations: {}

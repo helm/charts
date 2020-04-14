@@ -42,6 +42,7 @@ The following table lists the configurable parameters for this chart and their d
 | `image.pullPolicy`                    | Image pull policy                          | `IfNotPresent`                                               |
 | `image.repository`                    | Image                                      | `k8s.gcr.io/node-problem-detector`                           |
 | `image.tag`                           | Image tag                                  | `v0.6.3`                                                     |
+| `hostpath.logdir`                     | Log directory path on K8s host             | `/var/log`
 | `nameOverride`                        | Override the name of the chart             | `nil`                                                        |
 | `rbac.create`                         | RBAC                                       | `true`                                                       |
 | `rbac.pspEnabled`                     | PodSecuritypolicy                          | `false`                                                      |
@@ -56,10 +57,12 @@ The following table lists the configurable parameters for this chart and their d
 | `settings.heartBeatPeriod`            | Syncing interval with API server           | `5m0s`                                                       |
 | `serviceAccount.create`               | Whether a ServiceAccount should be created | `true`                                                       |
 | `serviceAccount.name`                 | Name of the ServiceAccount to create       | Generated value from template                                |
-| `tolerations`                         | Optional daemonset tolerations             | `["effect: NoSchedule,operator: Exists"]`                                                         |
+| `tolerations`                         | Optional daemonset tolerations             | `["effect: NoSchedule,operator: Exists"]`                    |
 | `nodeSelector`                        | Optional daemonset nodeSelector            | `{}`                                                         |
 | `env`                                 | Optional daemonset environment variables   | `[]`                                                         |
 | `labels`                              | Optional daemonset labels                  | `{}`                                                         |
+| `extraVolumes`                        | Optional daemonset volumes to add          | `[]`                                                         |
+| `extraVolumeMounts`                   | Optional daemonset volumeMounts to add     | `[]`                                                         |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install` or provide a YAML file containing the values for the above parameters:
 

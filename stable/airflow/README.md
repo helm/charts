@@ -204,7 +204,7 @@ By default, insecure username/password combinations are used.
 For a real production deployment, it's a good idea to create secure credentials before installing the Helm chart.
 For example, from the command line, run:
 ```bash
-kubectl create secret generic airflow-postgres --from-literal=postgres-password=$(openssl rand -base64 13)
+kubectl create secret generic airflow-postgres --from-literal=postgresql-password=$(openssl rand -base64 13)
 kubectl create secret generic airflow-redis --from-literal=redis-password=$(openssl rand -base64 13)
 ```
 Next, you can use those secrets with the Helm chart:
@@ -494,7 +494,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `serviceAccount.annotations`             | (optional) annotations for the service account          | `{}`                      |
 | `postgresql.enabled`                     | create a postgres server                                | `true`                    |
 | `postgresql.existingSecret`              | The name of an existing secret with a key named `postgresql.existingSecretKey` to use as the password  | `nil` |
-| `postgresql.existingSecretKey`           | The name of the key containing the password in the secret named `postgresql.existingSecret`  | `postgres-password` |
+| `postgresql.existingSecretKey`           | The name of the key containing the password in the secret named `postgresql.existingSecret`  | `postgresql-password` |
 | `postgresql.uri`                         | full URL to custom postgres setup                       | (undefined)               |
 | `postgresql.postgresHost`                | PostgreSQL Hostname                                     | (undefined)               |
 | `postgresql.postgresqlUsername`                | PostgreSQL User                                         | `postgres`                |
