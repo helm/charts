@@ -60,6 +60,9 @@ hostNetwork: false
 
 priorityClassName: ""
 
+securityContext:
+  privileged: true
+
 resources: {}
 
 annotations: {}

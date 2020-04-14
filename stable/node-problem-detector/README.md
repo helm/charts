@@ -42,22 +42,23 @@ The following table lists the configurable parameters for this chart and their d
 | `image.pullPolicy`                    | Image pull policy                          | `IfNotPresent`                                               |
 | `image.repository`                    | Image                                      | `k8s.gcr.io/node-problem-detector`                           |
 | `image.tag`                           | Image tag                                  | `v0.6.3`                                                     |
-| `hostpath.logdir`                     | Log directory path on K8s host             | `/var/log`
+| `hostpath.logdir`                     | Log directory path on K8s host             | `/var/log`                                                   |
 | `nameOverride`                        | Override the name of the chart             | `nil`                                                        |
 | `rbac.create`                         | RBAC                                       | `true`                                                       |
 | `rbac.pspEnabled`                     | PodSecuritypolicy                          | `false`                                                      |
 | `hostNetwork`                         | Run pod on host network                    | `false`                                                      |
 | `priorityClassName`                   | Priority class name                        | `""`                                                         |
+| `securityContext`                     | Pod security context                       | `{privileged: true}`                                         |
 | `resources`                           | Pod resource requests and limits           | `{}`                                                         |
 | `settings.custom_monitor_definitions` | User-specified custom monitor definitions  | `{}`                                                         |
-| `settings.log_monitors`               | System log monitor config files            | `/config/kernel-monitor.json`, `/config/docker-monitor.json` |
+| `settings.log_monitors`               | System log monitor config files            | `[/config/kernel-monitor.json, /config/docker-monitor.json]` |
 | `settings.custom_plugin_monitors`     | Custom plugin monitor config files         | `[]`                                                         |
 | `settings.prometheus_address`         | Prometheus exporter address                | `0.0.0.0`                                                    |
 | `settings.prometheus_port`            | Prometheus exporter port                   | `20257`                                                      |
 | `settings.heartBeatPeriod`            | Syncing interval with API server           | `5m0s`                                                       |
 | `serviceAccount.create`               | Whether a ServiceAccount should be created | `true`                                                       |
 | `serviceAccount.name`                 | Name of the ServiceAccount to create       | Generated value from template                                |
-| `tolerations`                         | Optional daemonset tolerations             | `["effect: NoSchedule,operator: Exists"]`                    |
+| `tolerations`                         | Optional daemonset tolerations             | `[{effect: NoSchedule, operator: Exists}]`                   |
 | `nodeSelector`                        | Optional daemonset nodeSelector            | `{}`                                                         |
 | `env`                                 | Optional daemonset environment variables   | `[]`                                                         |
 | `labels`                              | Optional daemonset labels                  | `{}`                                                         |
