@@ -49,7 +49,8 @@ aws:
   secret_key: ""
   access_key: ""
   region: ""
-  custom_secret_name: ""
+
+existingSecret: ""
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/

@@ -70,7 +70,7 @@ Parameter | Description | Default
 `aws.secret_key` | The value to use for AWS_SECRET_ACCESS_KEY | `""`
 `aws.access_key` | The value to use for AWS_ACCESS_KEY_ID | `""`
 `aws.region` | The AWS region to use | `""`
-`aws.custom_secret_name` | Set the AWS credentials using a custom secret | `""`
+`existingSecret` | Set the AWS credentials using an existing secret | `""`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
