@@ -27,7 +27,6 @@ Fixed a bug with jenkinsHome variable in range block when master.additionalConfi
 
 Add `agent.podTemplates` option for declaring custom pod templates in the default configured kubernetes cloud.
 
-
 ## 1.10.1 Only copy JCasC files if there are any
 
 The chart always tried to copy Configuration as Code configs even if there are none. That resulted in an error which is resolved with this.
@@ -43,7 +42,6 @@ Update JCasC auto-reload docs and remove stale ssh key references from version "
 ## 1.9.23 Support jenkinsUriPrefix when JCasC is enabled
 
 Fixed a bug in the configuration as code reload url, where it wouldn't work with a jenkinsUriPrefix set.
-
 
 ## 1.9.22
 
