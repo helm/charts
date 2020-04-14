@@ -171,7 +171,7 @@ spec:
         imagePullPolicy: {{ .Values.vaultExporter.pullPolicy }}
         securityContext:
           readOnlyRootFilesystem: true
-          {{- if .Values.master.usePodSecurityContext }}
+          {{- if .Values.securityContext.usePodSecurityContext }}
           runAsUser: {{ .Values.securityContext.runAsUser }}
           {{- if and (.Values.securityContext.runAsUser) (.Values.securityContext.fsGroup) }}
           {{- if not (eq .Values.securityContext.runAsUser 0.0) }}
