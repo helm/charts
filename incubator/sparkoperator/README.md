@@ -57,7 +57,9 @@ The following table lists the configurable parameters of the Spark operator char
 | `metricsPort`             | Port for the metrics endpoint                                | 10254                                  |
 | `metricsEndpoint`         | Metrics endpoint                                             | "/metrics"                             |
 | `metricsPrefix`           | Prefix for the metrics                                       | ""                                     |
-| `podAnnotations`          | annotations to be added to pods                              | `{}`                                   |
+| `nodeSelector`            | Node labels for pod assignment                               | `{}`                                   |
+| `tolerations`             | Tolerations for the sparkoperator deployment                 | `[]`                                   |
+| `podAnnotations`          | Annotations to be added to pods                              | `{}`                                   |
 | `resyncInterval`          | Informer resync interval in seconds                          | 30                                     |
 | `webhookPort`             | Service port of the webhook server                           | 8080                                   |
 | `resources`               | Resources needed for the sparkoperator deployment            | {}                                     |

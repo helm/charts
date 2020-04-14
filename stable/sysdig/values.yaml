@@ -1,6 +1,12 @@
 # Default values for Sysdig Monitor and Secure Helm package.
 
 image:
+  # This is a hack to support RELATED_IMAGE_<identifier> feature in Helm based
+  # Operators
+  #
+  # As long as I don't want to people to use this, I will keep it undocumented
+  overrideValue:
+
   registry: docker.io
   repository: sysdig/agent
   tag: 9.8.0
@@ -120,6 +126,9 @@ auditLog:
   dynamicBackend:
     # true here configures an AuditSink who will receive the K8s audit logs
     enabled: false
+
+scc:
+  create: false
 
 customAppChecks: {}
   # Allow passing custom app checks for Sysdig Agent.
