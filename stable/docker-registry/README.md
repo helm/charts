@@ -66,6 +66,7 @@ their default values.
 | `swift.authurl`             | Swift authurl                                                                              | `nil`           |
 | `swift.container`           | Swift container                                                                            | `nil`           |
 | `nodeSelector`              | node labels for pod assignment                                                             | `{}`            |
+| `affinity`                  | affinity settings                                                                          | `{}`            |
 | `tolerations`               | pod tolerations                                                                            | `[]`            |
 | `ingress.enabled`           | If true, Ingress will be created                                                           | `false`         |
 | `ingress.annotations`       | Ingress annotations                                                                        | `{}`            |
@@ -73,6 +74,8 @@ their default values.
 | `ingress.path`              | Ingress service path                                                                       | `/`             |
 | `ingress.hosts`             | Ingress hostnames                                                                          | `[]`            |
 | `ingress.tls`               | Ingress TLS configuration (YAML)                                                           | `[]`            |
+| `extraVolumeMounts`         | Additional volumeMounts to the registry container                                          | `[]`            |
+| `extraVolumes`              | Additional volumes to the pod                                                              | `[]`            |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.

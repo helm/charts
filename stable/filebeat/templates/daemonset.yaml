@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ template "filebeat.fullname" . }}
@@ -49,6 +49,11 @@ spec:
           -E output.logstash.enabled=false
           -E output.file.enabled=false
           -E output.elasticsearch.hosts=[{{- range $index, $host := .Values.indexTemplateLoad }}{{ if $index }}, {{ end }}{{ $host | quote }}{{- end }}]
+        volumeMounts:
+        - name: filebeat-config
+          mountPath: /usr/share/filebeat/filebeat.yml
+          readOnly: true
+          subPath: filebeat.yml
 {{- end }}
 {{- if .Values.extraInitContainers }}
 {{ toYaml .Values.extraInitContainers | indent 6 }}

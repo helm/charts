@@ -1,0 +1,39 @@
+{{- if .Values.autolock.enabled }}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ template "kured.fullname" . }}-unlock
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "kured.name" . }}
+    chart: {{ template "kured.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  schedule: {{ .Values.autolock.scheduleUnlock | quote }}
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: {{ template "kured.name" . }}
+            chart: {{ template "kured.chart" . }}
+            release: {{ .Release.Name }}
+            heritage: {{ .Release.Service }}
+        spec:
+          serviceAccountName: {{ template "kured.serviceAccountName" . }}
+          containers:
+            - name: {{ template "kured.fullname" . }}-unlock
+              image: "{{ .Values.autolock.image.repository }}:{{ .Values.autolock.image.tag }}"
+              command:
+                - kubectl
+              args:
+                - -n 
+                - {{ .Release.Namespace }}
+                - annotate
+                - ds
+                - {{ template "kured.fullname" . }}
+                - weave.works/kured-node-lock-
+          restartPolicy: Never
+      backoffLimit: 1
+{{- end -}}

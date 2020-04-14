@@ -37,6 +37,13 @@ spec:
         {{ toYaml . | nindent 8 }}
       {{- end }}
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+      {{- with .Values.anchoreGlobal.imagePullSecretName }}
+      imagePullSecrets:
+      - name: {{ . }}
+      {{- end }}
       containers:
       {{- if .Values.cloudsql.enabled  }}
       - name: cloudsql-proxy
@@ -54,7 +61,11 @@ spec:
         {{- end }}
       {{- end }}
       - name: {{ .Chart.Name }}-{{ $component }}
+        {{- if .Values.anchoreEnterpriseGlobal.enabled }}
+        image: {{ .Values.anchoreEnterpriseGlobal.engineImage }}
+        {{- else }}
         image: {{ .Values.anchoreGlobal.image }}
+        {{- end }}
         imagePullPolicy: {{ .Values.anchoreGlobal.imagePullPolicy }}
         command: ["anchore-manager"]
         args: ["service", "start", "analyzer"]
@@ -62,7 +73,7 @@ spec:
         - secretRef:
             name: {{ default (include "anchore-engine.fullname" .) .Values.anchoreGlobal.existingSecret }}
         - configMapRef:
-            name: {{ template "anchore-engine.fullname" . }}
+            name: {{ template "anchore-engine.fullname" . }}-env
         env:
         {{- with .Values.anchoreGlobal.extraEnv }}
         {{- toYaml . | nindent 8 }}
@@ -91,6 +102,14 @@ spec:
         {{- end }}
         - name: {{ $component }}-scratch
           mountPath: {{ .Values.anchoreGlobal.scratchVolume.mountPath }}
+        {{- if .Values.anchoreGlobal.openShiftDeployment }}
+        - name: service-config-volume
+          mountPath: /anchore_service_config
+        - name: logs
+          mountPath: /var/log/anchore
+        - name: run
+          mountPath: /var/run/anchore
+        {{- end }}
         livenessProbe:
           httpGet:
             path: /health
@@ -120,6 +139,16 @@ spec:
         - name: config-volume
           configMap:
             name: {{ template "anchore-engine.fullname" .}}
+        - name: {{ $component }}-scratch
+          {{ toYaml .Values.anchoreGlobal.scratchVolume.details | nindent 10 }}
+        {{- if .Values.anchoreGlobal.openShiftDeployment }}
+        - name: service-config-volume
+          emptyDir: {}
+        - name: logs
+          emptyDir: {}
+        - name: run
+          emptyDir: {}
+        {{- end }}
         - name: analyzer-config-volume
           configMap:
             name: {{ template "anchore-engine.analyzer.fullname" . }}
@@ -128,8 +157,6 @@ spec:
           secret:
             secretName: {{ . }}
         {{- end }}
-        - name: {{ $component }}-scratch
-          {{ toYaml .Values.anchoreGlobal.scratchVolume.details | nindent 10 }}
         {{- if .Values.cloudsql.useExistingServiceAcc }}
         - name: {{ .Values.cloudsql.serviceAccSecretName }}
           secret:

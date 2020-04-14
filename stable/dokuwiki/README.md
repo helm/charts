@@ -2,10 +2,31 @@
 
 [DokuWiki](https://www.dokuwiki.org) is a standards-compliant, simple to use wiki optimized for creating documentation. It is targeted at developer teams, workgroups, and small companies. All data is stored in plain text files, so no database is required.
 
+## This Helm chart is deprecated
+
+Given the [`stable` deprecation timeline](https://github.com/helm/charts#deprecation-timeline), the Bitnami maintained DokuWiki Helm chart is now located at [bitnami/charts](https://github.com/bitnami/charts/).
+
+The Bitnami repository is already included in the Hubs and we will continue providing the same cadence of updates, support, etc that we've been keeping here these years. Installation instructions are very similar, just adding the _bitnami_ repo and using it during the installation (`bitnami/<chart>` instead of `stable/<chart>`)
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm install my-release bitnami/<chart>           # Helm 3
+$ helm install --name my-release bitnami/<chart>    # Helm 2
+```
+
+To update an exisiting _stable_ deployment with a chart hosted in the bitnami repository you can execute
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm upgrade my-release bitnami/<chart>
+```
+
+Issues and PRs related to the chart itself will be redirected to `bitnami/charts` GitHub repository. In the same way, we'll be happy to answer questions related to this migration process in [this issue](https://github.com/helm/charts/issues/20969) created as a common place for discussion.
+
 ## TL;DR;
 
 ```console
-$ helm install stable/dokuwiki
+$ helm install my-release stable/dokuwiki
 ```
 
 ## Introduction
@@ -16,18 +37,20 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.12+
+- Helm 2.11+ or Helm 3.0-beta3+
 - PV provisioner support in the underlying infrastructure
+- ReadWriteMany volumes for deployment scaling
 
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/dokuwiki
+$ helm install my-release stable/dokuwiki
 ```
 
-The command deploys DokuWiki on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys DokuWiki on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
@@ -41,7 +64,7 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
-## Configuration
+## Parameters
 
 The following table lists the configurable parameters of the DokuWiki chart and their default values.
 
@@ -114,7 +137,7 @@ The above parameters map to the env variables defined in [bitnami/dokuwiki](http
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install --name my-release \
+$ helm install my-release \
   --set dokuwikiUsername=admin,dokuwikiPassword=password \
     stable/dokuwiki
 ```
@@ -124,10 +147,12 @@ The above command sets the DokuWiki administrator account username and password 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml stable/dokuwiki
+$ helm install my-release -f values.yaml stable/dokuwiki
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Configuration and installation details
 
 ### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
 
@@ -141,9 +166,17 @@ The [Bitnami DokuWiki](https://github.com/bitnami/bitnami-docker-dokuwiki) image
 
 Persistent Volume Claims are used to keep the data across deployments. There is a [known issue](https://github.com/kubernetes/kubernetes/issues/39178) in Kubernetes Clusters with EBS in different availability zones. Ensure your cluster is configured properly to create Volumes in the same availability zone where the nodes are running. Kuberentes 1.12 solved this issue with the [Volume Binding Mode](https://kubernetes.io/docs/concepts/storage/storage-classes/#volume-binding-mode).
 
-See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+See the [Parameters](#parameters) section to configure the PVC or to disable persistence.
 
 ## Upgrading
+
+### To 6.0.0
+
+Helm performs a lookup for the object based on its group (apps), version (v1), and kind (Deployment). Also known as its GroupVersionKind, or GVK. Changing the GVK is considered a compatibility breaker from Kubernetes' point of view, so you cannot "upgrade" those objects to the new GVK in-place. Earlier versions of Helm 3 did not perform the lookup correctly which has since been fixed to match the spec.
+
+In https://github.com/helm/charts/pull/17294 the `apiVersion` of the deployment resources was updated to `apps/v1` in tune with the api's deprecated, resulting in compatibility breakage.
+
+This major version signifies this change.
 
 ### To 3.0.0
 

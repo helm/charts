@@ -117,6 +117,7 @@ Note that the default image `lightbend/spark-history-server` is built using this
 | image.tag |The tag of the image|2.4.0|
 | service.type |The type of history server service that exposes the UI|LoadBalancer|
 | service.port |The port on which the service UI can be accessed.|18080|
+| service.annotations | annotations for the service | {} |
 | pvc.enablePVC |Whether to use PVC storage|true|
 | pvc.existingClaimName |The pre-created PVC name|nfs-pvc|
 | pvc.eventsDir |The log directory when PVC is used|/|

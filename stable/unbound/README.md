@@ -64,6 +64,7 @@ unbound.serverPort: 53
 | ------------------------ | --------------------------- |
 | replicaCount             | 1                           |
 | externalIP               | ""                          |
+| clusterIP                | ""                          |
 | unbound.image.repository | markbnj/unbound-docker      |
 | unbound.image.tag        | 0.1.0                       |
 | unbound.image.pullPolicy | IfNotPresent                |
@@ -87,7 +88,7 @@ unbound.serverPort: 53
 
 ### Configuration changes
 
-The unbound deployment template includes the sha256 hash of the configmap as an annotation. This will cause the deployment to update if the configuration is changed. For more information on this and other useful stuff see [chart tips and tricks](https://github.com/kubernetes/helm/blob/master/docs/charts_tips_and_tricks.md).
+The unbound deployment template includes the sha256 hash of the configmap as an annotation. This will cause the deployment to update if the configuration is changed. For more information on this and other useful stuff see [chart tips and tricks](https://helm.sh/docs/howto/charts_tips_and_tricks/).
 
 ### Health checks
 

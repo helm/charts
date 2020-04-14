@@ -8,6 +8,7 @@
 {{- $repository := .Values.image.repository }}
 {{- $imageTag := .Values.image.tag }}
 {{- $pullPolicy := .Values.image.pullPolicy }}
+{{- $imagePullSecrets := .Values.image.pullSecrets }}
 
 {{ range .Values.deployments }}
 apiVersion: apps/v1
@@ -21,6 +22,8 @@ metadata:
     app.kubernetes.io/instance: {{ $relName }}
     app.kubernetes.io/managed-by: {{ $relService }}
 spec:
+  strategy:
+    type: Recreate
   replicas: {{ .replicaCount }}
   selector:
     matchLabels:
@@ -29,10 +32,17 @@ spec:
       app.kubernetes.io/instance: {{ $relName }}
   template:
     metadata:
+    {{- with .annotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
       labels:
         app.kubernetes.io/name: {{ $name }}
         cluster-overprovisioner-name: {{ .name }}
         app.kubernetes.io/instance: {{ $relName }}
+    {{- with .labels }}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
     spec:
       priorityClassName: {{ $priorityClassName }}
       containers:
@@ -41,6 +51,12 @@ spec:
           imagePullPolicy: {{ $pullPolicy }}
           resources:
             {{- toYaml .resources | nindent 12 }}
+    {{- if $imagePullSecrets }}
+      imagePullSecrets:
+      {{- range $imagePullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+    {{- end }}
     {{- with .nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

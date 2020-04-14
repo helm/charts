@@ -31,7 +31,7 @@ spec:
     component: "{{ .Release.Name }}-{{ .Values.Master.Component }}"
   type: {{ .Values.Master.ServiceType }}
 ---
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "master-fullname" . }}

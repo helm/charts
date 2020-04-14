@@ -1,18 +1,14 @@
 {{- $advertisedListenersOverride := first (pluck "advertised.listeners" .Values.configurationOverrides) }}
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "kafka.fullname" . }}
   labels:
-    app: {{ include "kafka.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+  {{- include "kafka.broker.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      app: {{ include "kafka.name" . }}
-      release: {{ .Release.Name }}
+    {{- include "kafka.broker.matchLabels" . | nindent 6 }}
   serviceName: {{ include "kafka.fullname" . }}-headless
   podManagementPolicy: {{ .Values.podManagementPolicy }}
   updateStrategy:
@@ -31,8 +27,7 @@ spec:
 {{- end }}
 {{- end }}
       labels:
-        app: {{ include "kafka.name" . }}
-        release: {{ .Release.Name }}
+      {{- include "kafka.broker.labels" . | nindent 8 }}
         {{- if .Values.podLabels }}
         ## Custom pod labels
 {{ toYaml .Values.podLabels | indent 8 }}
@@ -43,6 +38,9 @@ spec:
 {{- end }}
 {{- if .Values.serviceAccountName }}
       serviceAccountName: {{ .Values.serviceAccountName }}
+{{- end }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
 {{- end }}
 {{- if .Values.tolerations }}
       tolerations:
@@ -179,7 +177,7 @@ spec:
         {{- range $secret := .Values.secrets }}
           {{- if not $secret.mountPath }}
             {{- range $key := $secret.keys }}
-        - name: {{ (print $secret.name "_" $key) | upper }}
+        - name: {{ (print ($secret.name | replace "-" "_") "_" $key) | upper }}
           valueFrom:
             secretKeyRef:
               name: {{ $secret.name }}
@@ -207,7 +205,7 @@ spec:
           {{- if eq .Values.external.type "NodePort" }}
           export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_IP}:9092{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
           {{- else }}
-          export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_NAME}.{{ include "kafka.fullname" . }}-headless.${POD_NAMESPACE}:9092{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
+          export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_NAME}.{{ include "kafka.fullname" . }}-headless.${POD_NAMESPACE}.svc.cluster.local:9092{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
           {{- end }}
           exec /etc/confluent/docker/run
         volumeMounts:
@@ -248,9 +246,11 @@ spec:
 {{ toYaml .Values.securityContext | indent 8 }}
       {{- end }}
       {{- range .Values.secrets }}
+      {{- if .mountPath }}
       - name: {{ include "kafka.fullname" $ }}-{{ .name }}
         secret:
           secretName: {{ .name }}
+      {{- end }}
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
   {{- if .Values.persistence.enabled }}

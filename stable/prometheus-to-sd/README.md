@@ -47,6 +47,7 @@ The following table lists the configurable parameters and their default values.
 | `port`             | Profiler port                                                                             | `6060`                                                     |
 | `metricSources`    | Sources for metrics in the next format: component-name:http://host:port?whitelisted=a,b,c | `{"kube-state-metrics": "http://kube-state-metrics:8080"}` |
 | `nodeSelector`     | node labels for pod assignment                                                            | `{}`                                                       |
+| `tolerations`      | tolerations for node taints                                                               | `[]`                                                       |
 
 For more information please refer to the [prometheus-to-sd](https://github.com/GoogleCloudPlatform/k8s-stackdriver/tree/master/prometheus-to-sd) documentation.
 

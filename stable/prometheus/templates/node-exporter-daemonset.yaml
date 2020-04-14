@@ -1,5 +1,5 @@
 {{- if .Values.nodeExporter.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "prometheus.daemonset.apiVersion" . }}
 kind: DaemonSet
 metadata:
 {{- if .Values.nodeExporter.deploymentAnnotations }}
@@ -30,6 +30,10 @@ spec:
 {{- end }}
     spec:
       serviceAccountName: {{ template "prometheus.serviceAccountName.nodeExporter" . }}
+      {{- if .Values.nodeExporter.extraInitContainers }}
+      initContainers:
+{{ toYaml .Values.nodeExporter.extraInitContainers | indent 8 }}
+      {{- end }}
 {{- if .Values.nodeExporter.priorityClassName }}
       priorityClassName: "{{ .Values.nodeExporter.priorityClassName }}"
 {{- end }}

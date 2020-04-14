@@ -45,7 +45,4 @@ Create chart name and version as used by the chart label.
 {{/* Generate basic labels */}}
 {{- define "jaeger-operator.labels" }}
 app.kubernetes.io/name: {{ include "jaeger-operator.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
-helm.sh/chart: {{ include "jaeger-operator.chart" . }}
 {{- end }}

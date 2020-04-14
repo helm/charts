@@ -1,0 +1,12 @@
+datadog:
+  apiKey: "00000000000000000000000000000000"
+  appKey: "0000000000000000000000000000000000000000"
+
+clusterAgent:
+  enabled: true
+
+  metricsProvider:
+    enabled: true
+
+    service:
+      port: 4443

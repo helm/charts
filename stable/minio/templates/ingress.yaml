@@ -11,6 +11,10 @@ metadata:
     chart: {{ template "minio.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- with .Values.ingress.labels }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+
 {{- with .Values.ingress.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
@@ -28,12 +32,14 @@ spec:
 {{- end }}
   rules:
   {{- range .Values.ingress.hosts }}
-    - host: {{ . | quote }}
-      http:
+    - http:
         paths:
           - path: {{ $ingressPath }}
             backend:
               serviceName: {{ $fullName }}
               servicePort: {{ $servicePort }}
+      {{- if . }}
+      host: {{ . | quote }}
+      {{- end }}
   {{- end }}
 {{- end }}

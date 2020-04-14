@@ -26,6 +26,7 @@ spec:
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
     spec:
+{{- include "solr.imagePullSecrets" . | indent 6 }}
       {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
       {{- end }}
@@ -63,13 +64,20 @@ spec:
             - |
               COUNTER=0;
               while [  $COUNTER -lt 120 ]; do
-                for i in {{ $vals := . -}}{{ range $i, $e := until ( int .Values.zookeeper.replicaCount ) -}}
-                  "{{- include "solr.zookeeper-name" $vals }}-{{ $i }}.{{ include "solr.zookeeper-service-name" $vals }}" {{ end -}};
-                  do mode=$(echo srvr | nc $i 2181 | grep "Mode");
-                    if [ "$mode" == "Mode: leader" ] || [ "$mode" == "Mode: standalone" ]; then
+                addr=$(nslookup -type=a {{ include "solr.zookeeper-service-name" . }} | grep "Address:" | awk 'NR>1 {print $2}')
+                if [ ! -z "$addr" ]; then
+                  while read -r line; do
+                    echo $line;
+                    mode=$(echo srvr | nc $line 2181 | grep "Mode");
+                    echo $mode;
+                    if [ "$mode" = "Mode: leader" ] || [ "$mode" = "Mode: standalone" ]; then
+                      echo "Found a leader!";
                       exit 0;
                     fi;
-                  done;
+                  done <<EOF
+              $addr
+              EOF
+                fi;
                 let COUNTER=COUNTER+1;
                 sleep 2;
               done;
@@ -113,7 +121,7 @@ spec:
               done
               rm crt-*
 {{ end }}
-              /opt/solr/server/scripts/cloud-scripts/zkcli.sh -zkhost "{{ include "solr.zookeeper-name" . }}:2181" -cmd clusterprop -name urlScheme -val https
+              /opt/solr/server/scripts/cloud-scripts/zkcli.sh -zkhost "{{ include "solr.zookeeper-service-name" . }}:2181" -cmd clusterprop -name urlScheme -val https
           volumeMounts:
             - name: "keystore-volume"
               mountPath: "/tmp/keystore"
@@ -148,9 +156,9 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: "SOLR_HOST"
-              value: "$(POD_HOSTNAME).{{ include "solr.headless-service-name" . }}"
+              value: "$(POD_HOSTNAME).{{ include "solr.headless-service-name" . }}.{{ .Release.Namespace }}"
             - name: "ZK_HOST"
-              value: "{{ include "solr.zookeeper-name" . }}:2181"
+              value: "{{ include "solr.zookeeper-service-name" . }}:2181"
             - name: "SOLR_LOG_LEVEL"
               value: "{{ .Values.logLevel }}"
 {{- if .Values.extraEnvVars }}

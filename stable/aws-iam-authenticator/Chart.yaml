@@ -2,10 +2,12 @@ apiVersion: v1
 appVersion: "1.0"
 description: A Helm chart for aws-iam-authenticator
 name: aws-iam-authenticator
-version: 0.1.1
+version: 0.1.2
 home: https://github.com/kubernetes-sigs/aws-iam-authenticator
 maintainers:
   - name: plumdog
     email: plummer574@gmail.com
+  - name: nckturner
+    email: nic@amazon.com
 sources:
   - https://github.com/kubernetes-sigs/aws-iam-authenticator

@@ -17,6 +17,11 @@ image:
   tag: 1.13.7-1
   pullPolicy: IfNotPresent
 
+## Optional array of imagePullSecrets containing private registry credentials
+## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+imagePullSecrets: []
+# - name: secretName
+
 # URL of EC2 spot instance termination notice endpoint
 noticeUrl: http://169.254.169.254/latest/meta-data/spot/termination-time
 

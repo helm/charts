@@ -25,6 +25,9 @@ spec:
           args:
           - storeconfig
           - --configfile=/config/traefik.toml
+          {{- range .Values.startupArguments }}
+          - {{ . }}
+          {{- end }}
           volumeMounts:
           - mountPath: /config
             name: config
@@ -33,6 +36,10 @@ spec:
           {{- if .Values.env }}
           env:
 {{ toYaml .Values.env | indent 12 }}
+          {{- end }}
+          {{- if .Values.containerSecurityContext }}
+          securityContext:
+{{ toYaml .Values.containerSecurityContext | indent 10 }}
           {{- end }}
       volumes:
       - name: config

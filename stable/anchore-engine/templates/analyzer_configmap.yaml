@@ -1,5 +1,4 @@
 {{- $component := "analyzer" -}}
-
 kind: ConfigMap
 apiVersion: v1
 metadata:

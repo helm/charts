@@ -65,3 +65,75 @@ Create the image name depending on the "privileged" flag
 "{{ .Values.image.repository }}:{{ .Values.image.tag }}-unprivileged"
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return the licenseKey
+*/}}
+{{- define "newrelic.licenseKey" -}}
+{{- if .Values.global}}
+  {{- if .Values.global.licenseKey }}
+      {{- .Values.global.licenseKey -}}
+  {{- else -}}
+      {{- .Values.licenseKey | default "" -}}
+  {{- end -}}
+{{- else -}}
+    {{- .Values.licenseKey | default "" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the cluster
+*/}}
+{{- define "newrelic.cluster" -}}
+{{- if .Values.global -}}
+  {{- if .Values.global.cluster -}}
+      {{- .Values.global.cluster -}}
+  {{- else -}}
+      {{- .Values.cluster | default "" -}}
+  {{- end -}}
+{{- else -}}
+  {{- .Values.cluster | default "" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the customSecretName
+*/}}
+{{- define "newrelic.customSecretName" -}}
+{{- if .Values.global }}
+  {{- if .Values.global.customSecretName }}
+      {{- .Values.global.customSecretName -}}
+  {{- else -}}
+      {{- .Values.customSecretName | default "" -}}
+  {{- end -}}
+{{- else -}}
+    {{- .Values.customSecretName | default "" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the customSecretLicenseKey
+*/}}
+{{- define "newrelic.customSecretLicenseKey" -}}
+{{- if .Values.global }}
+  {{- if .Values.global.customSecretLicenseKey }}
+      {{- .Values.global.customSecretLicenseKey -}}
+  {{- else -}}
+      {{- .Values.customSecretLicenseKey | default "" -}}
+  {{- end -}}
+{{- else -}}
+    {{- .Values.customSecretLicenseKey | default "" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Returns if the template should render, it checks if the required values
+licenseKey and cluster are set.
+*/}}
+{{- define "newrelic.areValuesValid" -}}
+{{- $cluster := include "newrelic.cluster" . -}}
+{{- $licenseKey := include "newrelic.licenseKey" . -}}
+{{- $customSecretName := include "newrelic.customSecretName" . -}}
+{{- $customSecretLicenseKey := include "newrelic.customSecretLicenseKey" . -}}
+{{- and (or $licenseKey (and $customSecretName $customSecretLicenseKey)) $cluster}}
+{{- end -}}

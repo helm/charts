@@ -2,10 +2,31 @@
 
 [Phabricator](https://www.phacility.com) is a collection of open source web applications that help software companies build better software. Phabricator is built by developers for developers. Every feature is optimized around developer efficiency for however you like to work. Code Quality starts with an effective collaboration between team members.
 
+## This Helm chart is deprecated
+
+Given the [`stable` deprecation timeline](https://github.com/helm/charts#deprecation-timeline), the Bitnami maintained Phabricator Helm chart is now located at [bitnami/charts](https://github.com/bitnami/charts/).
+
+The Bitnami repository is already included in the Hubs and we will continue providing the same cadence of updates, support, etc that we've been keeping here these years. Installation instructions are very similar, just adding the _bitnami_ repo and using it during the installation (`bitnami/<chart>` instead of `stable/<chart>`)
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm install my-release bitnami/<chart>           # Helm 3
+$ helm install --name my-release bitnami/<chart>    # Helm 2
+```
+
+To update an exisiting _stable_ deployment with a chart hosted in the bitnami repository you can execute
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm upgrade my-release bitnami/<chart>
+```
+
+Issues and PRs related to the chart itself will be redirected to `bitnami/charts` GitHub repository. In the same way, we'll be happy to answer questions related to this migration process in [this issue](https://github.com/helm/charts/issues/20969) created as a common place for discussion.
+
 ## TL;DR;
 
 ```console
-$ helm install stable/phabricator
+$ helm install my-release stable/phabricator
 ```
 
 ## Introduction
@@ -18,18 +39,20 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.12+
+- Helm 2.11+ or Helm 3.0-beta3+
 - PV provisioner support in the underlying infrastructure
+- ReadWriteMany volumes for deployment scaling
 
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/phabricator
+$ helm install my-release stable/phabricator
 ```
 
-The command deploys Phabricator on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys Phabricator on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
@@ -43,7 +66,7 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
-## Configuration
+## Parameters
 
 The following table lists the configurable parameters of the Phabricator chart and their default values.
 
@@ -89,8 +112,9 @@ The following table lists the configurable parameters of the Phabricator chart a
 | `ingress.annotations`            | Ingress annotations                                                                                      | `[]`                                                         |
 | `ingress.hosts[0].name`          | Hostname to your Phabricator installation                                                                | `phabricator.local`                                          |
 | `ingress.hosts[0].path`          | Path within the url structure                                                                            | `/`                                                          |
-| `ingress.tls[0].hosts[0]`        | TLS hosts                                                                                                | `phabricator.local`                                          |
-| `ingress.tls[0].secretName`      | TLS Secret (certificates)                                                                                | `phabricator.local-tls`                                      |
+| `ingress.hosts[0].tls`              | Utilize TLS backend in ingress                                | `false`                                                  |
+| `ingress.hosts[0].tlsHosts`         | Array of TLS hosts for ingress record (defaults to `ingress.hosts[0].name` if `nil`)                               | `nil`                                                  |
+| `ingress.hosts[0].tlsSecret`        | TLS Secret (certificates)                                     | `phabricator.local-tls-secret`                                 |
 | `ingress.secrets[0].name`        | TLS Secret Name                                                                                          | `nil`                                                        |
 | `ingress.secrets[0].certificate` | TLS Secret Certificate                                                                                   | `nil`                                                        |
 | `ingress.secrets[0].key`         | TLS Secret Key                                                                                           | `nil`                                                        |
@@ -126,8 +150,9 @@ The above parameters map to the env variables defined in [bitnami/phabricator](h
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install stable/phabricator --name my-release \
+$ helm install my-release \
   --set phabricatorUsername=admin,phabricatorPassword=password,mariadb.mariadbRootPassword=secretpassword \
+  stable/phabricator
 ```
 
 The above command sets the Phabricator administrator account username and password to `admin` and `password` respectively. Additionally, it sets the MariaDB `root` user password to `secretpassword`.
@@ -135,10 +160,12 @@ The above command sets the Phabricator administrator account username and passwo
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml stable/phabricator
+$ helm install my-release -f values.yaml stable/phabricator
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Configuration and installation details
 
 ### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
 
@@ -146,35 +173,37 @@ It is strongly recommended to use immutable tags in a production environment. Th
 
 Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
 
+### Ingress with Reverse Proxy and cert-manager
+
+You can define a custom ingress rule for Phabricator with TLS certificates auto-generated by cert-manager using the following parameters:
+
+```console
+ingress.enabled=true
+ingress.certManager=true
+ingress.hosts[0].name=phabricator.example.com
+ingress.tls[0].hosts[0]=phabricator.example.com
+phabricatorHost=example.com
+```
+
+Everything looks great but requests over https will cause asset requests to fail. Assuming you want to use HTTPS/TLS you will need to set the base-uri to an https schema.
+
 ## Persistence
 
 The [Bitnami Phabricator](https://github.com/bitnami/bitnami-docker-phabricator) image stores the Phabricator data and configurations at the `/bitnami/phabricator` path of the container.
 
 Persistent Volume Claims are used to keep the data across deployments. There is a [known issue](https://github.com/kubernetes/kubernetes/issues/39178) in Kubernetes Clusters with EBS in different availability zones. Ensure your cluster is configured properly to create Volumes in the same availability zone where the nodes are running. Kuberentes 1.12 solved this issue with the [Volume Binding Mode](https://kubernetes.io/docs/concepts/storage/storage-classes/#volume-binding-mode).
 
-See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
-
-## Ingress with Reverse Proxy and cert-manager
-
-You can define a custom ingress rule for Phabricator with TLS certificates auto-generated by cert-manager as follows:
-
-```console
-$ helm install stable/phabricator --name my-release \
-  --set ingress.enabled=true \
-  --set ingress.certManager=true \
-  --set ingress.hosts[0].name=phabricator.example.com \
-  --set ingress.tls[0].hosts[0]=phabricator.example.com \
-  --set phabricatorHost=example.com
-```
-
-Everything looks great but requests over https will cause asset requests to fail. Assuming you want to use HTTPS/TLS you will need to set the base-uri to an https schema.
-
-```console
-$ export POD_NAME=$(kubectl get pods -l "app.kubernetes.io/name=phabricator,app.kubernetes.io/instance=my-release" -o jsonpath="{.items[0].metadata.name}")
-$ kubectl exec $POD_NAME /opt/bitnami/phabricator/bin/config set phabricator.base-uri https://phabricator.example.com
-```
+See the [Parameters](#parameters) section to configure the PVC or to disable persistence.
 
 ## Upgrading
+
+### To 9.0.0
+
+Helm performs a lookup for the object based on its group (apps), version (v1), and kind (Deployment). Also known as its GroupVersionKind, or GVK. Changing the GVK is considered a compatibility breaker from Kubernetes' point of view, so you cannot "upgrade" those objects to the new GVK in-place. Earlier versions of Helm 3 did not perform the lookup correctly which has since been fixed to match the spec.
+
+In https://github.com/helm/charts/pulls/17305 the `apiVersion` of the deployment resources was updated to `apps/v1` in tune with the api's deprecated, resulting in compatibility breakage.
+
+This major version signifies this change.
 
 ### To 7.0.0
 

@@ -15,7 +15,7 @@ webhooks:
     {{- end }}
     rules:
       - apiGroups:
-          - {{ .Values.prometheusOperator.crdApiGroup }}
+          - monitoring.coreos.com
         apiVersions:
           - "*"
         resources:
@@ -25,7 +25,7 @@ webhooks:
           - UPDATE
     clientConfig:
       service:
-        namespace: {{ .Release.Namespace }}
+        namespace: {{ $.Release.Namespace }}
         name: {{ template "prometheus-operator.operator.fullname" $ }}
         path: /admission-prometheusrules/mutate
 {{- end }}

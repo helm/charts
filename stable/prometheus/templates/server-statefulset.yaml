@@ -44,33 +44,39 @@ spec:
 {{- end }}
       serviceAccountName: {{ template "prometheus.serviceAccountName.server" . }}
       containers:
-        - name: {{ template "prometheus.name" . }}-{{ .Values.server.name }}-{{ .Values.configmapReload.name }}
-          image: "{{ .Values.configmapReload.image.repository }}:{{ .Values.configmapReload.image.tag }}"
-          imagePullPolicy: "{{ .Values.configmapReload.image.pullPolicy }}"
+        {{- if .Values.configmapReload.prometheus.enabled }}
+        - name: {{ template "prometheus.name" . }}-{{ .Values.server.name }}-{{ .Values.configmapReload.prometheus.name }}
+          image: "{{ .Values.configmapReload.prometheus.image.repository }}:{{ .Values.configmapReload.prometheus.image.tag }}"
+          imagePullPolicy: "{{ .Values.configmapReload.prometheus.image.pullPolicy }}"
           args:
             - --volume-dir=/etc/config
             - --webhook-url=http://127.0.0.1:9090{{ .Values.server.prefixURL }}/-/reload
-          {{- range $key, $value := .Values.configmapReload.extraArgs }}
+          {{- range $key, $value := .Values.configmapReload.prometheus.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}
-          {{- range .Values.configmapReload.extraVolumeDirs }}
+          {{- range .Values.configmapReload.prometheus.extraVolumeDirs }}
             - --volume-dir={{ . }}
           {{- end }}
           resources:
-{{ toYaml .Values.configmapReload.resources | indent 12 }}
+{{ toYaml .Values.configmapReload.prometheus.resources | indent 12 }}
           volumeMounts:
             - name: config-volume
               mountPath: /etc/config
               readOnly: true
-          {{- range .Values.configmapReload.extraConfigmapMounts }}
-            - name: {{ $.Values.configmapReload.name }}-{{ .name }}
+          {{- range .Values.configmapReload.prometheus.extraConfigmapMounts }}
+            - name: {{ $.Values.configmapReload.prometheus.name }}-{{ .name }}
               mountPath: {{ .mountPath }}
               subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
+        {{- end }}
         - name: {{ template "prometheus.name" . }}-{{ .Values.server.name }}
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
           imagePullPolicy: "{{ .Values.server.image.pullPolicy }}"
+          {{- if .Values.server.env }}
+          env:
+{{ toYaml .Values.server.env | indent 12}}
+          {{- end }}
           args:
           {{- if .Values.server.retention }}
             - --storage.tsdb.retention.time={{ .Values.server.retention }}
@@ -79,18 +85,14 @@ spec:
             - --storage.tsdb.path={{ .Values.server.persistentVolume.mountPath }}
             - --web.console.libraries=/etc/prometheus/console_libraries
             - --web.console.templates=/etc/prometheus/consoles
-            - --web.enable-lifecycle
+          {{- range .Values.server.extraFlags }}
+            - --{{ . }}
+          {{- end }}
           {{- range $key, $value := .Values.server.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}
           {{- if .Values.server.baseURL }}
             - --web.external-url={{ .Values.server.baseURL }}
-          {{- end }}
-          {{- if .Values.server.enableAdminApi }}
-            - --web.enable-admin-api
-          {{- end }}
-          {{- if .Values.server.skipTSDBLock }}
-            - --storage.tsdb.no-lockfile
           {{- end }}
           ports:
             - containerPort: 9090
@@ -98,14 +100,14 @@ spec:
             httpGet:
               path: {{ .Values.server.prefixURL }}/-/ready
               port: 9090
-            initialDelaySeconds: 30
-            timeoutSeconds: 30
+            initialDelaySeconds: {{ .Values.server.readinessProbeInitialDelay }}
+            timeoutSeconds: {{ .Values.server.readinessProbeTimeout }}
           livenessProbe:
             httpGet:
               path: {{ .Values.server.prefixURL }}/-/healthy
               port: 9090
-            initialDelaySeconds: 30
-            timeoutSeconds: 30
+            initialDelaySeconds: {{ .Values.server.livenessProbeInitialDelay }}
+            timeoutSeconds: {{ .Values.server.livenessProbeTimeout }}
           resources:
 {{ toYaml .Values.server.resources | indent 12 }}
           volumeMounts:
@@ -146,6 +148,10 @@ spec:
       nodeSelector:
 {{ toYaml .Values.server.nodeSelector | indent 8 }}
     {{- end }}
+    {{- if .Values.server.hostAliases }}
+      hostAliases:
+{{ toYaml .Values.server.hostAliases | indent 8 }}
+    {{- end }}
     {{- if .Values.server.securityContext }}
       securityContext:
 {{ toYaml .Values.server.securityContext | indent 8 }}
@@ -168,8 +174,8 @@ spec:
           hostPath:
             path: {{ .hostPath }}
       {{- end }}
-      {{- range .Values.configmapReload.extraConfigmapMounts }}
-        - name: {{ $.Values.configmapReload.name }}-{{ .name }}
+      {{- range .Values.configmapReload.prometheus.extraConfigmapMounts }}
+        - name: {{ $.Values.configmapReload.prometheus.name }}-{{ .name }}
           configMap:
             name: {{ .configMap }}
       {{- end }}
@@ -183,7 +189,7 @@ spec:
           secret:
             secretName: {{ .secretName }}
       {{- end }}
-      {{- range .Values.configmapReload.extraConfigmapMounts }}
+      {{- range .Values.configmapReload.prometheus.extraConfigmapMounts }}
         - name: {{ .name }}
           configMap:
             name: {{ .configMap }}

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "cpi.fullname" . }}
+  labels:
+    app: {{ template "cpi.name" . }}
+    vsphere-cpi-infra: common-configmap
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    component: cloud-controller
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+data:
+  api.binding: "{{ template "api.binding" . }}"

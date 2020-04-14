@@ -11,20 +11,12 @@ metadata:
     {{ toYaml . | nindent 4 }}
     {{- end }}
 data:
-  ANCHORE_DB_NAME: {{ index .Values "postgresql" "postgresDatabase" | quote }}
-  ANCHORE_DB_USER: {{ index .Values "postgresql" "postgresUser" | quote }}
-  {{- if and (index .Values "postgresql" "externalEndpoint") (not (index .Values "postgresql" "enabled")) }}
-  ANCHORE_DB_HOST: {{ index .Values "postgresql" "externalEndpoint" | quote }}
-  {{- else if and (index .Values "cloudsql" "enabled") (not (index .Values "postgresql" "enabled")) }}
-  ANCHORE_DB_HOST: "localhost:5432"
-  {{- else }}
-  ANCHORE_DB_HOST: "{{ template "postgres.fullname" . }}:5432"
-  {{- end }}
   config.yaml: |
     # Anchore Service Configuration File from ConfigMap
     service_dir: {{ .Values.anchoreGlobal.serviceDir }}
     tmp_dir: {{ .Values.anchoreGlobal.scratchVolume.mountPath }}
     log_level: {{ .Values.anchoreGlobal.logLevel }}
+    image_analyze_timeout_seconds: {{ .Values.anchoreGlobal.imageAnalyzeTimeoutSeconds }}
     cleanup_images: {{ .Values.anchoreGlobal.cleanupImages }}
     allow_awsecr_iam_auto: {{ .Values.anchoreGlobal.allowECRUseIAMRole }}
     host_id: "${ANCHORE_POD_NAME}"
@@ -32,6 +24,7 @@ data:
     auto_restart_services: false
     metrics:
       enabled: {{ .Values.anchoreGlobal.enableMetrics }}
+      auth_disabled: {{ .Values.anchoreGlobal.metricsAuthDisabled }}
     {{ if .Values.anchoreGlobal.webhooksEnabled }}
     webhooks:
       {{- toYaml .Values.anchoreGlobal.webhooks | nindent 6 }}
@@ -44,6 +37,9 @@ data:
         # If enabled only sync specific feeds instead of all that are found.
         enabled: true
         feeds:
+          {{- if not .Values.anchoreEnterpriseGlobal.enabled }}
+          github: {{ default "true" .Values.anchoreGlobal.syncGithub }}
+          {{- end }}
           # Vulnerabilities feed is the feed for distro cve sources (redhat, debian, ubuntu, oracle, alpine....)
           vulnerabilities: {{ default "true" .Values.anchoreGlobal.syncVulnerabilites }}
           # NVD Data is used for non-distro CVEs (jars, npm, etc) that are not packaged and released by distros as rpms, debs, etc
@@ -78,7 +74,7 @@ data:
       anonymous_user_password: pbiU2RYZ2XrmYQ
       {{- end }}
       connection_timeout_seconds: {{ default 3 .Values.anchoreGlobal.feedsConnectionTimeout }}
-      read_timeout_seconds: {{ default 60 .Values.anchoreGlobal.feedsReadTimeout }}
+      read_timeout_seconds: {{ default 180 .Values.anchoreGlobal.feedsReadTimeout }}
     default_admin_password: ${ANCHORE_ADMIN_PASSWORD}
     default_admin_email: {{ .Values.anchoreGlobal.defaultAdminEmail }}
 
@@ -123,6 +119,15 @@ data:
         endpoint_hostname: {{ template "anchore-engine.api.fullname" . }}
         listen: 0.0.0.0
         port: {{ .Values.anchoreApi.service.port }}
+        {{- if .Values.anchoreApi.external }}
+        {{- if .Values.anchoreApi.external.use_tls }}
+        external_tls: {{ .Values.anchoreApi.external.use_tls }}
+        {{- end }}
+        {{- if .Values.anchoreApi.external.hostname }}
+        external_hostname: {{ .Values.anchoreApi.external.hostname }}
+        {{- end }}
+        external_port: {{ .Values.anchoreApi.external.port | default "null" }}
+        {{- end }}
         {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseRbac.enabled }}
         authorization_handler: external
         authorization_handler_config:
@@ -163,7 +168,24 @@ data:
         port: {{ .Values.anchoreCatalog.service.port }}
         cycle_timer_seconds: 1
         cycle_timers:
-          {{- toYaml .Values.anchoreCatalog.cycleTimers | nindent 10 }}
+          # Interval to check for an update to a tag
+          image_watcher: {{ .Values.anchoreCatalog.cycleTimers.image_watcher }}
+          # Interval to run a policy evaluation on images with the policy_eval subscription activated.
+          policy_eval: {{ .Values.anchoreCatalog.cycleTimers.policy_eval }}
+          # Interval to run a vulnerability scan on images with the vuln_update subscription activated.
+          vulnerability_scan: {{ .Values.anchoreCatalog.cycleTimers.vulnerability_scan }}
+          # Interval at which the catalog looks for new work to put on the image analysis queue.
+          analyzer_queue: {{ .Values.anchoreCatalog.cycleTimers.analyzer_queue }}
+          # Interval notifications will be processed for state changes
+          {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseNotifications.enabled }}
+          notifications: 0
+          {{- else }}
+          notifications: {{ .Values.anchoreCatalog.cycleTimers.notifications }}
+          {{- end }}
+          # Intervals service state updates are polled for the system status
+          service_watcher: {{ .Values.anchoreCatalog.cycleTimers.service_watcher }}
+          # Interval between checks to repo for new tags
+          repo_watcher: {{ .Values.anchoreCatalog.cycleTimers.repo_watcher }}
         event_log:
           {{- toYaml .Values.anchoreCatalog.events | nindent 10 }}
         archive:

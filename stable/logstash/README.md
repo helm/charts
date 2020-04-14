@@ -100,6 +100,7 @@ The following table lists the configurable parameters of the chart and its defau
 | `podAnnotations`                | Pod annotations                                    | `{}`                                             |
 | `podLabels`                     | Pod labels                                         | `{}`                                             |
 | `extraEnv`                      | Extra pod environment variables                    | `[]`                                             |
+| `extraContainers`               | Add additional containers                          | `[]`                                             |
 | `extraInitContainers`           | Add additional initContainers                      | `[]`                                             |
 | `podManagementPolicy`           | podManagementPolicy of the StatefulSet             | `OrderedReady`                                   |
 | `livenessProbe`                 | Liveness probe settings for logstash container     | (see `values.yaml`)                              |
@@ -119,7 +120,7 @@ The following table lists the configurable parameters of the chart and its defau
 | `exporter.serviceMonitor.interval` | Interval at which metrics should be scraped | `10s`
 | `exporter.serviceMonitor.scrapeTimeout` | Timeout after which the scrape is ended | `10s`
 | `exporter.serviceMonitor.scheme` | Scheme to use for scraping | `http`
-| `elasticsearch.host`            | ElasticSearch hostname                             | `elasticsearch-client.default.svc.cluster.local` |
+| `elasticsearch.host`            | ElasticSearch hostname (passed through tpl)        | `elasticsearch-client.default.svc.cluster.local` |
 | `elasticsearch.port`            | ElasticSearch port                                 | `9200`                                           |
 | `config`                        | Logstash configuration key-values                  | (see `values.yaml`)                              |
 | `patterns`                      | Logstash patterns configuration                    | `nil`                                            |

@@ -11,13 +11,17 @@ metadata:
     helm.sh/chart: {{ include "gangway.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- with .Values.service.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.gangway.port }}
-      protocol: TCP
-      name: http
+  - port: {{ .Values.service.port }}
+    targetPort: {{ .Values.gangway.port }}
+    protocol: TCP
+    name: http
 {{- if and (eq "LoadBalancer" $.Values.service.type) (.Values.service.loadBalancerIP) }}
   loadBalancerIP: {{ .Values.service.loadBalancerIP }}
 {{- end}}

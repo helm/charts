@@ -14,7 +14,7 @@ This chart bootstraps a [redis_exporter](https://github.com/oliver006/redis_expo
 
 ## Prerequisites
 
-- Kubernetes 1.8+ with Beta APIs enabled
+- Kubernetes 1.10+ with Beta APIs enabled
 
 ## Installing the Chart
 
@@ -44,17 +44,19 @@ The following table lists the configurable parameters and their default values.
 | ---------------------- | --------------------------------------------------- | ------------------------- |
 | `replicaCount`         | desired number of prometheus-redis-exporter pods    | `1`                       |
 | `image.repository`     | prometheus-redis-exporter image repository          | `oliver006/redis_exporter`|
-| `image.tag`            | prometheus-redis-exporter image tag                 | `v1.0.4`                 |
+| `image.tag`            | prometheus-redis-exporter image tag                 | `v1.3.4`                 |
 | `image.pullPolicy`     | image pull policy                                   | `IfNotPresent`            |
 | `image.pullSecrets`    | image pull secrets                                  | {}                        |
 | `extraArgs`            | extra arguments for the binary; possible values [here](https://github.com/oliver006/redis_exporter#flags)| {}
 | `env`                  | additional environment variables in YAML format. Can be used to pass credentials as env variables (via secret) as per the image readme [here](https://github.com/oliver006/redis_exporter#environment-variables) | {} |
 | `resources`            | cpu/memory resource requests/limits                 | {}                        |
+| `tolerations`          | toleration labels for pod assignment                | {}                        |
+| `affinity`             | affinity settings for pod assignment                | {}                        |
 | `service.type`         | desired service type                                | `ClusterIP`               |
 | `service.port`         | service external port                               | `9121`                    |
 | `service.annotations`  | Custom annotations for service                      | `{}`                      |
 | `service.labels`       | Additional custom labels for the service            | `{}`                      |
-| `redisAddress`         | Address of the Redis instance to scrape      | `redis://myredis:6379`    |
+| `redisAddress`         | Address of the Redis instance to scrape. Use `rediss://` for SSL.      | `redis://myredis:6379`    |
 | `annotations`          | pod annotations for easier discovery                | {}                        |
 | `rbac.create`           | Specifies whether RBAC resources should be created.| `true` |
 | `rbac.pspEnabled`       | Specifies whether a PodSecurityPolicy should be created.| `true` |
@@ -66,8 +68,17 @@ The following table lists the configurable parameters and their default values.
 | `serviceMonitor.telemetryPath` | Path to redis-exporter telemtery-path                  |                            |
 | `serviceMonitor.labels`        | Labels for the servicemonitor passed to Prometheus Operator      |  `{}`            |
 | `serviceMonitor.timeout`       | Timeout after which the scrape is ended                |                            |
+| `serviceMonitor.targetLabels`  | Set of labels to transfer on the Kubernetes Service onto the target.  |             |
+| `prometheusRule.enabled`           | Set this to true to create prometheusRules for Prometheus operator | `false`     |
+| `prometheusRule.additionalLabels`  | Additional labels that can be used so prometheusRules will be discovered by Prometheus  | `{}`  |
+| `prometheusRule.namespace`         | namespace where prometheusRules resource should be created |      |
+| `prometheusRule.rules`             | [rules](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) to be created, check values for an example.                      | `[]`                                                    |
 | `script.configmap`     | Let you run a custom lua script from a configmap. The corresponding environment variable `REDIS_EXPORTER_SCRIPT` will be set automatically ||
 | `script.keyname`       | Name of the key inside configmap which contains your script ||
+| `auth.enabled`       | Specifies whether redis uses authentication | `false` |
+| `auth.secret.name`       | Name of existing redis secret (ignores redisPassword) ||
+| `auth.secret.key`       | Name of key containing password to be retrieved from the existing secret ||
+| `auth.redisPassword`       | Redis password (when not stored in a secret) ||
 
 For more information please refer to the [redis_exporter](https://github.com/oliver006/redis_exporter) documentation.
 

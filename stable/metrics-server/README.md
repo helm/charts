@@ -25,6 +25,7 @@ Parameter | Description | Default
 `extraVolumeMounts` | Ability to provide volume mounts to the pod | `[]`
 `extraVolumes` | Ability to provide volumes to the pod | `[]`
 `livenessProbe` | Container liveness probe | See values.yaml
+`podLabels` | Labels to be added to pods | `{}`
 `podAnnotations` | Annotations to be added to pods | `{}`
 `priorityClassName` | Pod priority class | `""`
 `readinessProbe` | Container readiness probe | See values.yaml
@@ -35,3 +36,4 @@ Parameter | Description | Default
 `podDisruptionBudget.enabled` | Create a PodDisruptionBudget | `false`
 `podDisruptionBudget.minAvailable` | Minimum available instances; ignored if there is no PodDisruptionBudget |
 `podDisruptionBudget.maxUnavailable` | Maximum unavailable instances; ignored if there is no PodDisruptionBudget |
+`extraContainers`   | Add additional containers  | `[]`

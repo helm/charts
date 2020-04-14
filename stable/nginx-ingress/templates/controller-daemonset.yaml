@@ -1,17 +1,26 @@
 {{- if or (eq .Values.controller.kind "DaemonSet") (eq .Values.controller.kind "Both") }}
 {{- $useHostPort := .Values.controller.daemonset.useHostPort -}}
 {{- $hostPorts := .Values.controller.daemonset.hostPorts -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "deployment.apiVersion" . }}
 kind: DaemonSet
 metadata:
   labels:
     app: {{ template "nginx-ingress.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.controller.name }}"
+    chart: {{ template "nginx-ingress.chart" . }}
     heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    release: {{ template "nginx-ingress.releaseLabel" . }}
+    app.kubernetes.io/component: controller
   name: {{ template "nginx-ingress.controller.fullname" . }}
+  annotations:    
+{{ toYaml .Values.controller.deploymentAnnotations | indent 4}}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "nginx-ingress.name" . }}
+      release: {{ template "nginx-ingress.releaseLabel" . }}
+    {{- if .Values.controller.useComponentLabel }}
+      app.kubernetes.io/component: controller
+    {{- end }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   updateStrategy:
 {{ toYaml .Values.controller.updateStrategy | indent 4 }}
@@ -26,12 +35,16 @@ spec:
       {{- end }}
       labels:
         app: {{ template "nginx-ingress.name" . }}
-        component: "{{ .Values.controller.name }}"
-        release: {{ .Release.Name }}
+        release: {{ template "nginx-ingress.releaseLabel" . }}
+        app.kubernetes.io/component: controller
         {{- if .Values.controller.podLabels }}
 {{ toYaml .Values.controller.podLabels | indent 8}}
         {{- end }}
     spec:
+{{- if .Values.controller.dnsConfig }}
+      dnsConfig:
+{{ toYaml .Values.controller.dnsConfig | indent 8 }}
+{{- end }}
       dnsPolicy: {{ .Values.controller.dnsPolicy }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -54,7 +67,15 @@ spec:
           {{- end }}
           args:
             - /nginx-ingress-controller
-            - --default-backend-service={{ if .Values.defaultBackend.enabled }}{{ .Release.Namespace }}/{{ template "nginx-ingress.defaultBackend.fullname" . }}{{ else }}{{ .Values.controller.defaultBackendService }}{{ end }}
+          {{- if .Values.defaultBackend.enabled }}
+            - --default-backend-service={{ .Release.Namespace }}/{{ template "nginx-ingress.defaultBackend.fullname" . }}
+          {{- else }}
+            {{- if (semverCompare "<0.21.0" .Values.controller.image.tag) }}
+            - --default-backend-service={{ required ".Values.controller.defaultBackendService is required if .Values.defaultBackend.enabled=false and .Values.controller.image.tag < 0.21.0" .Values.controller.defaultBackendService }}
+            {{- else if .Values.controller.defaultBackendService }}
+            - --default-backend-service={{ .Values.controller.defaultBackendService }}
+            {{- end }}
+          {{- end }}
           {{- if and (semverCompare ">=0.9.0-beta.1" .Values.controller.image.tag) .Values.controller.publishService.enabled }}
             - --publish-service={{ template "nginx-ingress.controller.publishServicePath" . }}
           {{- end }}
@@ -85,6 +106,9 @@ spec:
             - --validating-webhook=:{{ .Values.controller.admissionWebhooks.port }}
             - --validating-webhook-certificate=/usr/local/certificates/cert
             - --validating-webhook-key=/usr/local/certificates/key
+          {{- end }}
+          {{- if .Values.controller.maxmindLicenseKey }}
+            - --maxmind-license-key={{ .Values.controller.maxmindLicenseKey }}
           {{- end }}
           {{- range $key, $value := .Values.controller.extraArgs }}
             {{- if $value }}
@@ -133,10 +157,10 @@ spec:
               {{- if $useHostPort }}
               hostPort: {{ index $hostPorts $key | default $value }}
               {{- end }}
-          {{- end }}    
+          {{- end }}
           {{- if .Values.controller.metrics.enabled }}
             - name: metrics
-              containerPort: 10254
+              containerPort: {{ .Values.controller.metrics.port }}
               protocol: TCP
           {{- end }}
           {{- if .Values.controller.admissionWebhooks.enabled }}
@@ -210,7 +234,7 @@ spec:
     {{- end }}
       serviceAccountName: {{ template "nginx-ingress.serviceAccountName" . }}
       terminationGracePeriodSeconds: 60
-{{- if (or .Values.controller.customTemplate.configMapName .Values.controller.extraVolumeMounts .Values.controller.admissionWebhooks.enabled) }}
+{{- if (or .Values.controller.customTemplate.configMapName .Values.controller.extraVolumeMounts .Values.controller.admissionWebhooks.enabled .Values.controller.extraVolumes) }}
       volumes:
 {{- end }}
 {{- if .Values.controller.customTemplate.configMapName }}

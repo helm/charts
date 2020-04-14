@@ -1,7 +1,8 @@
+{{- if .Values.service.create }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "hazelcast.fullname" . }}
+  name: {{ template "hazelcast.serviceName" . }}
   labels:
     app.kubernetes.io/name: {{ template "hazelcast.name" . }}
     helm.sh/chart: {{ template "hazelcast.chart" . }}
@@ -21,3 +22,4 @@ spec:
     port: {{ .Values.service.port }}
     targetPort: hazelcast
     name: hzport
+{{- end -}}

@@ -1,18 +1,35 @@
 {{- if ne (printf "%s" .Values.minecraftServer.eula) "FALSE" }}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "minecraft.fullname" . }}
+  {{- if .Values.deploymentAnnotations }}
+  annotations:
+    {{- range $key, $value := .Values.deploymentAnnotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
   labels:
     app: {{ template "minecraft.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  strategy:
+    type: {{ .Values.strategyType }}
+  selector:
+    matchLabels:
+      app: {{ template "minecraft.fullname" . }}
   template:
     metadata:
       labels:
         app: {{ template "minecraft.fullname" . }}
+      {{- if .Values.podAnnotations }}
+      annotations:
+        {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      {{- end }}
     spec:
       securityContext:
         runAsUser: {{ .Values.securityContext.runAsUser }}
@@ -29,12 +46,18 @@ spec:
 {{ toYaml .Values.readinessProbe.command | indent 14 }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
         livenessProbe:
           exec:
             command:
 {{ toYaml .Values.livenessProbe.command | indent 14 }}
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
         env:
         - name: EULA
           value: {{ .Values.minecraftServer.eula | quote }}

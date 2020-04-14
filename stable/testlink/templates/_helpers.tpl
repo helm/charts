@@ -153,3 +153,27 @@ but Helm 2.9 and 2.10 does not support it, so we need to implement this if-else 
     {{- end -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return the appropriate apiVersion for deployment.
+*/}}
+{{- define "testlink.deployment.apiVersion" -}}
+{{- if semverCompare "<1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "extensions/v1beta1" -}}
+{{- else -}}
+{{- print "apps/v1" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Renders a value that contains template.
+Usage:
+{{ include "testlink.tplValue" ( dict "value" .Values.path.to.the.Value "context" $) }}
+*/}}
+{{- define "testlink.tplValue" -}}
+    {{- if typeIs "string" .value }}
+        {{- tpl .value .context }}
+    {{- else }}
+        {{- tpl (.value | toYaml) .context }}
+    {{- end }}
+{{- end -}}

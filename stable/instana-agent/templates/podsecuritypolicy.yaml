@@ -1,0 +1,55 @@
+{{- if .Values.rbac.create -}}
+{{- if (and .Values.podSecurityPolicy.enable (not .Values.podSecurityPolicy.name)) -}}
+kind: PodSecurityPolicy
+apiVersion: policy/v1beta1
+metadata:
+  name: {{ template "instana-agent.podSecurityPolicyName" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "instana-agent.commonLabels" . | nindent 4 }}
+spec:
+  privileged: true
+  allowPrivilegeEscalation: true
+  volumes:
+    - configMap
+    - downwardAPI
+    - emptyDir
+    - persistentVolumeClaim
+    - secret
+    - projected
+    - hostPath
+  allowedHostPaths:
+    - pathPrefix: "/dev"
+      readOnly: false
+    - pathPrefix:  "/run"
+      readOnly: false
+    - pathPrefix: "/var/run"
+      readOnly: false
+    - pathPrefix: "/sys"
+      readOnly: false
+    - pathPrefix: "/var/log"
+      readOnly: false
+    - pathPrefix: "/etc/machine-id"
+      readOnly: false
+    - pathPrefix: "/var/lib/containers/storage"
+      readOnly: false
+    {{- if .Values.agent.host.repository }}
+    - pathPrefix: {{ .Values.agent.host.repository }}
+      readOnly: false
+    {{- end }}
+  hostNetwork: true
+  hostPorts:
+    - min: 0
+      max: 65535
+  hostIPC: true
+  hostPID: true
+  runAsUser:
+    rule: "RunAsAny"
+  seLinux:
+    rule: "RunAsAny"
+  supplementalGroups:
+    rule: "RunAsAny"
+  fsGroup:
+    rule: "RunAsAny"
+{{- end -}}
+{{- end -}}

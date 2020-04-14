@@ -37,6 +37,13 @@ spec:
         {{ toYaml . | nindent 8 }}
       {{- end }}
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+      {{- with .Values.anchoreGlobal.imagePullSecretName }}
+      imagePullSecrets:
+      - name: {{ . }}
+      {{- end }}
       containers:
       {{- if .Values.cloudsql.enabled  }}
       - name: cloudsql-proxy
@@ -54,7 +61,11 @@ spec:
         {{- end }}
       {{- end }}
       - name: {{ .Chart.Name }}-{{ $component }}
+        {{- if .Values.anchoreEnterpriseGlobal.enabled }}
+        image: {{ .Values.anchoreEnterpriseGlobal.engineImage }}
+        {{- else }}
         image: {{ .Values.anchoreGlobal.image }}
+        {{- end }}
         imagePullPolicy: {{ .Values.anchoreGlobal.imagePullPolicy }}
         command: ["anchore-manager"]
         args: ["service", "start", "catalog"]
@@ -62,7 +73,7 @@ spec:
         - secretRef:
             name: {{ default (include "anchore-engine.fullname" .) .Values.anchoreGlobal.existingSecret }}
         - configMapRef:
-            name: {{ template "anchore-engine.fullname" . }}
+            name: {{ template "anchore-engine.fullname" . }}-env
         env:
         {{- with .Values.anchoreGlobal.extraEnv }}
         {{- toYaml . | nindent 8 }}
@@ -81,6 +92,14 @@ spec:
         - name: config-volume
           mountPath: /config/config.yaml
           subPath: config.yaml
+        {{- if .Values.anchoreGlobal.openShiftDeployment }}
+        - name: service-config-volume
+          mountPath: /anchore_service_config
+        - name: logs
+          mountPath: /var/log/anchore
+        - name: run
+          mountPath: /var/run/anchore
+        {{- end }}
         {{- if (.Values.anchoreGlobal.certStoreSecretName) }}
         - name: certs
           mountPath: /home/anchore/certs/
@@ -115,6 +134,14 @@ spec:
         - name: config-volume
           configMap:
             name: {{ template "anchore-engine.fullname" . }}
+        {{- if .Values.anchoreGlobal.openShiftDeployment }}
+        - name: service-config-volume
+          emptyDir: {}
+        - name: logs
+          emptyDir: {}
+        - name: run
+          emptyDir: {}
+        {{- end }}
         {{- with .Values.anchoreGlobal.certStoreSecretName }}
         - name: certs
           secret:
@@ -157,7 +184,7 @@ metadata:
     {{- end }}
   {{- with .Values.anchoreCatalog.service.annotations }}
   annotations:
-    {{ toYaml .Values.anchoreCatalog.service.annotations | nindent 4 }}
+    {{ toYaml . | nindent 4 }}
   {{- end }}
 spec:
   type: {{ .Values.anchoreCatalog.service.type }}

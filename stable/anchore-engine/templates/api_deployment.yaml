@@ -37,9 +37,15 @@ spec:
         {{ toYaml . | nindent 8 }}
       {{- end }}
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
       {{ if and .Values.anchoreEnterpriseGlobal.enabled (or .Values.anchoreEnterpriseRbac.enabled .Values.anchoreEnterpriseReports.enabled) }}
       imagePullSecrets:
       - name: {{ .Values.anchoreEnterpriseGlobal.imagePullSecretName }}
+      {{- with .Values.anchoreGlobal.imagePullSecretName }}
+      - name: {{ . }}
+      {{- end }}
       {{- end }}
       containers:
       {{- if .Values.cloudsql.enabled  }}
@@ -58,7 +64,11 @@ spec:
         {{- end }}
       {{- end }}
       - name: "{{ .Chart.Name }}-{{ $component }}"
+        {{- if .Values.anchoreEnterpriseGlobal.enabled }}
+        image: {{ .Values.anchoreEnterpriseGlobal.engineImage }}
+        {{- else }}
         image: {{ .Values.anchoreGlobal.image }}
+        {{- end }}
         imagePullPolicy: {{ .Values.anchoreGlobal.imagePullPolicy }}
         command: ["anchore-manager"]
         args: ["service", "start", "apiext"]
@@ -66,7 +76,7 @@ spec:
         - secretRef:
             name: {{ default (include "anchore-engine.fullname" .) .Values.anchoreGlobal.existingSecret }}
         - configMapRef:
-            name: {{ template "anchore-engine.fullname" . }}
+            name: {{ template "anchore-engine.fullname" . }}-env
         env:
         {{- with .Values.anchoreGlobal.extraEnv }}
         {{- toYaml . | nindent 8 }}
@@ -78,6 +88,11 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
+        - name: ANCHORE_CLI_PASS
+          valueFrom:
+            secretKeyRef:
+              name: {{ default (include "anchore-engine.fullname" .) .Values.anchoreGlobal.existingSecret }}
+              key: ANCHORE_ADMIN_PASSWORD
         ports:
         - containerPort: {{ .Values.anchoreApi.service.port }}
           name: external-api
@@ -85,6 +100,14 @@ spec:
         - name: config-volume
           mountPath: /config/config.yaml
           subPath: config.yaml
+        {{- if .Values.anchoreGlobal.openShiftDeployment }}
+        - name: service-config-volume
+          mountPath: /anchore_service_config
+        - name: logs
+          mountPath: /var/log/anchore
+        - name: run
+          mountPath: /var/run/anchore
+        {{- end }}
         {{- if (.Values.anchoreGlobal.certStoreSecretName) }}
         - name: certs
           mountPath: /home/anchore/certs/
@@ -125,7 +148,7 @@ spec:
         - secretRef:
             name: {{ default (include "anchore-engine.fullname" .) .Values.anchoreGlobal.existingSecret }}
         - configMapRef:
-            name: {{ template "anchore-engine.fullname" . }}
+            name: {{ template "anchore-engine.fullname" . }}-env
         env:
         {{- with .Values.anchoreGlobal.extraEnv }}
         {{- toYaml . | nindent 8 }}
@@ -151,6 +174,14 @@ spec:
         - name: certs
           mountPath: /home/anchore/certs/
           readOnly: true
+        {{- end }}
+        {{- if .Values.anchoreGlobal.openShiftDeployment }}
+        - name: service-config-volume
+          mountPath: /anchore_service_config
+        - name: logs
+          mountPath: /var/log/anchore
+        - name: run
+          mountPath: /var/run/anchore
         {{- end }}
         livenessProbe:
           httpGet:
@@ -186,7 +217,7 @@ spec:
         - secretRef:
             name: {{ default (include "anchore-engine.fullname" .) .Values.anchoreGlobal.existingSecret }}
         - configMapRef:
-            name: {{ template "anchore-engine.fullname" . }}
+            name: {{ template "anchore-engine.fullname" . }}-env
         env:
         {{- with .Values.anchoreGlobal.extraEnv }}
         {{- toYaml . | nindent 8 }}
@@ -212,6 +243,14 @@ spec:
         - name: certs
           mountPath: /home/anchore/certs/
           readOnly: true
+        {{- end }}
+        {{- if .Values.anchoreGlobal.openShiftDeployment }}
+        - name: service-config-volume
+          mountPath: /anchore_service_config
+        - name: logs
+          mountPath: /var/log/anchore
+        - name: run
+          mountPath: /var/run/anchore
         {{- end }}
         livenessProbe:
           exec:
@@ -250,7 +289,7 @@ spec:
         - secretRef:
             name: {{ template "anchore-engine.fullname" . }}
         - configMapRef:
-            name: {{ template "anchore-engine.fullname" . }}
+            name: {{ template "anchore-engine.fullname" . }}-env
         env:
         {{- with .Values.anchoreGlobal.extraEnv }}
         {{- toYaml . | nindent 8 }}
@@ -273,6 +312,14 @@ spec:
         - name: certs
           mountPath: /home/anchore/certs/
           readOnly: true
+        {{- end }}
+        {{- if .Values.anchoreGlobal.openShiftDeployment }}
+        - name: service-config-volume
+          mountPath: /anchore_service_config
+        - name: logs
+          mountPath: /var/log/anchore
+        - name: run
+          mountPath: /var/run/anchore
         {{- end }}
         livenessProbe:
           httpGet:
@@ -300,10 +347,89 @@ spec:
         resources:
           {{ toYaml .Values.anchoreEnterpriseReports.resources | nindent 10 }}
       {{- end }}
+      {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseNotifications.enabled }}
+      - name: "{{ .Chart.Name }}-notifications"
+        image: {{ .Values.anchoreEnterpriseGlobal.image }}
+        imagePullPolicy: {{ .Values.anchoreEnterpriseGlobal.imagePullPolicy }}
+        command: ["anchore-enterprise-manager"]
+        args: ["service", "start", "notifications"]
+        ports:
+        - containerPort: {{ .Values.anchoreEnterpriseNotifications.service.port }}
+          name: notifi-api
+        envFrom:
+        - secretRef:
+            name: {{ template "anchore-engine.fullname" . }}
+        - configMapRef:
+            name: {{ template "anchore-engine.fullname" . }}-env
+        env:
+        {{- with .Values.anchoreGlobal.extraEnv }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.anchoreEnterpriseNotifications.extraEnv }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        - name: ANCHORE_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        volumeMounts:
+        - name: enterprise-config-volume
+          mountPath: /config/config.yaml
+          subPath: config.yaml
+        - name: anchore-license
+          mountPath: /home/anchore/license.yaml
+          subPath: license.yaml
+        {{- if (.Values.anchoreGlobal.certStoreSecretName) }}
+        - name: certs
+          mountPath: /home/anchore/certs/
+          readOnly: true
+        {{- end }}
+        {{- if .Values.anchoreGlobal.openShiftDeployment }}
+        - name: service-config-volume
+          mountPath: /anchore_service_config
+        - name: logs
+          mountPath: /var/log/anchore
+        - name: run
+          mountPath: /var/run/anchore
+        {{- end }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: notifi-api
+            {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
+            scheme: HTTPS
+            {{- end }}
+          initialDelaySeconds: 120
+          timeoutSeconds: 10
+          periodSeconds: 10
+          failureThreshold: 6
+          successThreshold: 1
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: notifi-api
+            {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
+            scheme: HTTPS
+            {{- end }}
+          timeoutSeconds: 10
+          periodSeconds: 10
+          failureThreshold: 3
+          successThreshold: 1
+        resources:
+          {{ toYaml .Values.anchoreEnterpriseNotifications.resources | nindent 10 }}
+      {{- end }}
       volumes:
         - name: config-volume
           configMap:
             name: {{ template "anchore-engine.fullname" . }}
+        {{- if .Values.anchoreGlobal.openShiftDeployment }}
+        - name: service-config-volume
+          emptyDir: {}
+        - name: logs
+          emptyDir: {}
+        - name: run
+          emptyDir: {}
+        {{- end }}
         {{ if and .Values.anchoreEnterpriseGlobal.enabled (or .Values.anchoreEnterpriseRbac.enabled .Values.anchoreEnterpriseReports.enabled) }}
         - name: anchore-license
           secret:
@@ -373,6 +499,12 @@ spec:
     - name: reports-api
       port: {{ .Values.anchoreEnterpriseReports.service.port }}
       targetPort: {{ .Values.anchoreEnterpriseReports.service.port }}
+      protocol: TCP
+    {{- end }}
+    {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseNotifications.enabled }}
+    - name: notifi-api
+      port: {{ .Values.anchoreEnterpriseNotifications.service.port }}
+      targetPort: {{ .Values.anchoreEnterpriseNotifications.service.port }}
       protocol: TCP
     {{- end }}
   selector:

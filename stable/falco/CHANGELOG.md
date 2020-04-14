@@ -1,7 +1,88 @@
 # Change Log
 
-This file documents all notable changes to Sysdig Falco Helm Chart. The release
+This file documents all notable changes to Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
+
+## v1.1.6
+
+### Minor Changes
+
+* Upgrade to Falco 0.21.0
+* Upgrade rules to Falco 0.21.0
+
+## v1.1.5
+
+### Minor Changes
+
+* Add headless service for gRPC server
+* Allow gRPC certificates configuration by using `--set-file`
+
+## v1.1.4
+
+### Minor Changes
+
+* Make `/lib/modules` writable from the container
+
+## v1.1.3
+
+### Minor Changes
+
+* Allow configuration using values for `grpc` setting
+* Allow configuration using values for `grpc_output` setting
+
+## v1.1.2
+
+### Minor Changes
+
+* Upgrade to Falco 0.20.0
+* Upgrade rules to Falco 0.20.0
+
+## v1.1.1
+
+### Minor Changes
+
+* Upgrade to Falco 0.19.0
+* Upgrade rules to Falco 0.19.0
+* Remove Sysdig references, Falco is a project by its own name
+
+## v1.1.0
+
+### Minor Changes
+
+* Revamp auditLog feature
+* Upgrade to latest version (0.18.0)
+* Replace CRI references with containerD
+
+## v1.0.12
+
+### Minor Changes
+
+* Support multiple lines for `falco.programOutput.program`
+
+## v1.0.11
+
+### Minor Changes
+
+* Add affinity
+
+## v1.0.10
+
+### Minor Changes
+
+* Migrate API versions from deprecated, removed versions to support Kubernetes v1.16
+
+## v1.0.9
+
+### Minor Changes
+
+* Restrict the access to `/dev` on underlying host to read only
+
+## v1.0.8
+
+### Minor Changes
+
+* Upgrade to Falco 0.17.1
+* Upgrade rules to Falco 0.17.1
 
 ## v1.0.7
 

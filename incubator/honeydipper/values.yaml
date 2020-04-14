@@ -52,6 +52,9 @@ daemon:
   # tolerations is used in the daemon pod speicification
   affinity: {}
 
+  # annotations are the annotations for the daemon
+  annotations: {}
+
   # env is a list of environment variables for the daemon container
   env:
     - name: REPO
@@ -82,6 +85,9 @@ drivers:
       type: LoadBalancer
       port: 8080
       nodePort: 0
+
+      # annotations are the annotations for the service
+      annotations: {}
 
     # ingress controller settings
     ingress:

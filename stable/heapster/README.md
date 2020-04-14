@@ -1,3 +1,9 @@
+# Retired
+
+Heapster work has been stopped. All efforts have been moved to metrics-server.
+Metrics server helm chart is located at: https://github.com/helm/charts/tree/master/stable/metrics-server
+More info on: https://github.com/kubernetes-retired/heapster
+
 # Heapster
 
 [Heapster](https://github.com/kubernetes/heapster) enables Container Cluster Monitoring and Performance Analysis. It collects and interprets various signals like compute resource usage, lifecycle events, etc, and exports cluster metrics via REST endpoints.
