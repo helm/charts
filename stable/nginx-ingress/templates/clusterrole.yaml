@@ -1,4 +1,4 @@
-{{- if .Values.rbac.create -}}
+{{- if and (.Values.rbac.create) (not .Values.rbac.scope) -}}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -6,7 +6,7 @@ metadata:
     app: {{ template "nginx-ingress.name" . }}
     chart: {{ template "nginx-ingress.chart" . }}
     heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    release: {{ template "nginx-ingress.releaseLabel" . }}
   name: {{ template "nginx-ingress.fullname" . }}
 rules:
   - apiGroups:

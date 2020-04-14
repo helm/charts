@@ -84,6 +84,9 @@ spec:
                     {{ template "redis-ha.fullname" . }}: replica
                 topologyKey: failure-domain.beta.kubernetes.io/zone
     {{- end }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets: {{ toYaml .Values.imagePullSecrets | nindent 8 }}
+      {{- end }}
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
       serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}
@@ -160,8 +163,8 @@ spec:
         - redis-server
         args:
         - /data/conf/redis.conf
-        env:
         {{- if .Values.auth }}
+        env:
         - name: AUTH
           valueFrom:
             secretKeyRef:
@@ -311,5 +314,6 @@ spec:
           path: {{ tpl .Values.hostPath.path .}}
 {{- else }}
       - name: data
-        emptyDir: {}
+        emptyDir:
+{{ toYaml .Values.emptyDir | indent 10 }}
 {{- end }}

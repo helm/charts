@@ -56,6 +56,8 @@ spec:
          valueFrom:
             fieldRef:
               fieldPath: status.hostIP
+       - name: USER_ASSIGNED_IDENTITY_CLIENT_ID
+         value: ""
        {{- if .Values.omsagent.logsettings.logflushintervalsecs }}
        - name: FBIT_SERVICE_FLUSH_INTERVAL
          value: {{ .Values.omsagent.logsettings.logflushintervalsecs | quote }}
@@ -103,7 +105,7 @@ spec:
         periodSeconds: 60
    nodeSelector:
     beta.kubernetes.io/os: linux
-   {{- with .Values.omsagent.affinity }}
+   {{- with .Values.omsagent.daemonset.affinity }}
    affinity: {{- toYaml . | nindent 8 }}
    {{- end }}
    {{- with .Values.omsagent.tolerations }}

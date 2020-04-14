@@ -74,6 +74,10 @@ spec:
             - name: api
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+          {{- range .Values.service.additionalPorts }}
+            - name: {{ .name }}
+              containerPort: {{ .targetPort }}
+          {{- end }}
           {{- if .Values.probes.liveness.enabled }}
           livenessProbe:
             httpGet:
@@ -166,7 +170,7 @@ spec:
                   name: {{ template "home-assistant.fullname" . }}-configurator
                   key: hass-api-password
             {{- end }}
-            {{- if (.Values.configurator.username) and (.Values.configurator.password) }}
+            {{- if and (.Values.configurator.username) (.Values.configurator.password) }}
             - name: HC_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -223,10 +227,11 @@ spec:
           imagePullPolicy: {{ .Values.vscode.image.pullPolicy }}
           workingDir: {{ .Values.vscode.hassConfig }}
           args:
-            - --allow-http
             - --port={{ .Values.vscode.service.port }}
-            {{- if not (.Values.vscode.password) }}
-            - --no-auth
+            {{- if (.Values.vscode.password) }}
+            - --allow-http #Not supported without password
+            {{- else }}
+            - --auth=none
             {{- end }}
             {{- if .Values.vscode.vscodePath }}
             - --extensions-dir={{ .Values.vscode.vscodePath }}
@@ -264,6 +269,52 @@ spec:
           {{- end }}
           resources:
 {{ toYaml .Values.vscode.resources | indent 12 }}
+        {{- end }}
+        {{- if .Values.appdaemon.enabled }}
+        - name: appdaemon
+          image: "{{ .Values.appdaemon.image.repository }}:{{ .Values.appdaemon.image.tag }}"
+          imagePullPolicy: {{ .Values.appdaemon.image.pullPolicy }}
+          ports:
+            - name: appdaemon
+              containerPort: {{ .Values.appdaemon.service.port }}
+              protocol: TCP
+          env:
+            - name: HA_URL
+              value: "http://localhost:{{ .Values.service.port }}"
+            {{- if .Values.appdaemon.ingress.enabled }}
+            - name: DASH_URL
+              #value: http{{ if .Values.appdaemon.ingress.tls }}s{{ end }}://{{ index .Values.appdaemon.ingress.hosts 0 }}
+              value: http://0.0.0.0:{{ .Values.appdaemon.service.port }}
+            {{- end }}
+            {{- if .Values.appdaemon.haToken }}
+            - name: TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "home-assistant.fullname" . }}-appdaemon
+                  key: token
+            {{- end }}
+            {{- range $key, $value := .Values.vscode.extraEnv }}
+            - name: {{ $key }}
+              value: {{ $value }}
+            {{- end }}
+          volumeMounts:
+          - mountPath: /ha-conf
+            name: config
+          - mountPath: /conf
+            subPath: appdaemon
+            name: config
+          {{- if .Values.extraVolumeMounts }}{{ toYaml .Values.extraVolumeMounts | trim | nindent 10 }}{{ end }}
+          {{- if .Values.usePodSecurityContext }}
+          securityContext:
+            runAsUser: {{ default 0 .Values.runAsUser }}
+          {{- if and (.Values.runAsUser) (.Values.fsGroup) }}
+          {{- if not (eq .Values.runAsUser 0.0) }}
+            fsGroup: {{ .Values.fsGroup }}
+          {{- end }}
+          {{- end }}
+          {{- end }}
+          resources:
+{{ toYaml .Values.appdaemon.resources | indent 12 }}
         {{- end }}
       volumes:
       - name: config
