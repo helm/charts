@@ -10,6 +10,8 @@ logLevel: 4
 
 metricsRelistInterval: 1m
 
+listenPort: 6443
+
 nodeSelector: {}
 
 priorityClassName: ""
