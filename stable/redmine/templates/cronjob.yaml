@@ -7,6 +7,7 @@ metadata:
 spec:
   schedule: "{{ .Values.mailReceiver.schedule }}"
   suspend: {{ .Values.mailReceiver.suspend }}
+  concurrencyPolicy: Forbid
   jobTemplate:
     spec:
       template:
@@ -19,12 +20,10 @@ spec:
                 name: {{ template "redmine.fullname" . }}
                 defaultMode: 0744
           restartPolicy: Never
-          concurrencyPolicy: Forbid
-          imagePullPolicy: {{ .Values.mailReceiver.image.pullPolicy | quote }}
           containers:
             - name: {{ template "redmine.mailReceiver.fullname" . }}
               image: {{ template "redmine.mailReceiver.image" . }}
-              imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+              imagePullPolicy: {{ .Values.mailReceiver.image.pullPolicy | quote }}
               command:
                 - bash
               args:

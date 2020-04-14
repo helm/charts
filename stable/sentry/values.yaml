@@ -101,6 +101,7 @@ user:
   # Default is true as the initial installation.
   create: true
   email: admin@sentry.local
+  # password: admin-password
 
 # BYO Email server
 # TODO: Add exim4 template
@@ -310,6 +311,7 @@ metrics:
 hooks:
   affinity: {}
   dbInit:
+    enabled: true
     resources:
     # We setup 3000Mi for the memory limit because of a Sentry instance need at least 3Gb RAM to perform a migration process
     # reference: https://github.com/helm/charts/issues/15296
