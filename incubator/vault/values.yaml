@@ -286,3 +286,7 @@ vault:
 rbac:
    ## Enable RBAC
   create: true
+
+securityContext:
+  runAsUser: 0
+  fsGroup: 0
