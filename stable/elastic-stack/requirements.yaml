@@ -8,7 +8,7 @@ dependencies:
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: kibana.enabled
 - name: filebeat
-  version: ^1.7.0
+  version: ^3.1.1
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: filebeat.enabled
 - name: logstash

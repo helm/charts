@@ -7,7 +7,7 @@ dependencies:
   version: 3.2.4
 - name: filebeat
   repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 1.7.0
+  version: 3.1.1
 - name: logstash
   repository: https://kubernetes-charts.storage.googleapis.com/
   version: 2.3.0
@@ -29,5 +29,5 @@ dependencies:
 - name: elasticsearch-exporter
   repository: https://kubernetes-charts.storage.googleapis.com/
   version: 2.1.0
-digest: sha256:e3d77fb315df2d0b952cd0b310cef17db552108f081c2951c832538bbf7b77db
-generated: "2019-11-06T00:25:12.383848379-06:00"
+digest: sha256:cc74fbe9206f209f8f1b04584012fa601c9ef28e4cca367f2f2a836b4deceeee
+generated: "2020-03-26T14:40:14.407826+01:00"
