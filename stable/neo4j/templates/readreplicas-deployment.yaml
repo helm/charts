@@ -54,18 +54,17 @@ spec:
             # so if you advertise with a bare local hostname or something invalid, the read replica will be
             # unable to join the raft group.
             export HOST=$(hostname -i)
-            export NEO4J_causal__clustering_discovery__advertised__address=$HOST
-            export NEO4J_dbms_default__listen__address=$HOST
-            export NEO4J_dbms_default__advertised__address=$HOST
-            export NEO4J_dbms_connector_bolt_advertised__address=$HOST
-            export NEO4J_dbms_connector_http_advertised__address=$HOST
-            export NEO4J_dbms_connector_https_advertised__address=$HOST
-            export NEO4J_dbms_default__database={{ .Values.defaultDatabase }}
+            export NEO4J_causal__clustering_discovery__advertised__address=${NEO4J_causal__clustering_discovery__advertised__address:-$HOST}
+            export NEO4J_dbms_default__advertised__address=${NEO4J_dbms_default__advertised__address:-$HOST}
+            export NEO4J_dbms_connector_bolt_advertised__address=${NEO4J_dbms_connector_bolt_advertised__address:-$HOST}
+            export NEO4J_dbms_connector_http_advertised__address=${NEO4J_dbms_connector_http_advertised__address:-$HOST}
+            export NEO4J_dbms_connector_https_advertised__address=${NEO4J_dbms_connector_https_advertised__address:-$HOST}
+
+            # These settings are *not* overrideable, because they must match the addresses the
+            # core members see to avoid akka rejections.
             export NEO4J_causal__clustering_discovery__advertised__address=$HOST:5000
             export NEO4J_causal__clustering_transaction__advertised__address=$HOST:6000
             export NEO4J_causal__clustering_raft__advertised__address=$HOST:7000
-
-            export NEO4J_dbms_jvm_additional="-XX:+ExitOnOutOfMemoryError"
 
             if [ "${AUTH_ENABLED:-}" == "true" ]; then
               export NEO4J_AUTH="neo4j/${NEO4J_SECRETS_PASSWORD}"
