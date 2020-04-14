@@ -67,6 +67,10 @@ Parameter | Description | Default
 `updateStrategy` | Strategy for DaemonSet updates (requires Kubernetes 1.6+) | `OnDelete`
 `verbose` | Enable verbose output | `false`
 `tolerations` | List of node taints to tolerate (requires Kubernetes 1.6+) | `[]`
+`aws.secret_key` | The value to use for AWS_SECRET_ACCESS_KEY | `""`
+`aws.access_key` | The value to use for AWS_ACCESS_KEY_ID | `""`
+`aws.region` | The AWS region to use | `""`
+`existingSecret` | Set the AWS credentials using an existing secret | `""`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
