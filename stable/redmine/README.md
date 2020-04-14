@@ -2,6 +2,27 @@
 
 [Redmine](http://www.redmine.org) is a free and open source, web-based project management and issue tracking tool.
 
+## This Helm chart is deprecated
+
+Given the [`stable` deprecation timeline](https://github.com/helm/charts#deprecation-timeline), the Bitnami maintained Redmine Helm chart is now located at [bitnami/charts](https://github.com/bitnami/charts/).
+
+The Bitnami repository is already included in the Hubs and we will continue providing the same cadence of updates, support, etc that we've been keeping here these years. Installation instructions are very similar, just adding the _bitnami_ repo and using it during the installation (`bitnami/<chart>` instead of `stable/<chart>`)
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm install my-release bitnami/<chart>           # Helm 3
+$ helm install --name my-release bitnami/<chart>    # Helm 2
+```
+
+To update an exisiting _stable_ deployment with a chart hosted in the bitnami repository you can execute
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm upgrade my-release bitnami/<chart>
+```
+
+Issues and PRs related to the chart itself will be redirected to `bitnami/charts` GitHub repository. In the same way, we'll be happy to answer questions related to this migration process in [this issue](https://github.com/helm/charts/issues/20969) created as a common place for discussion.
+
 ## TL;DR;
 
 ```bash
@@ -144,7 +165,7 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `mailReceiver.suspend`               | Whether to create suspended CronJob                                                                                                                                                                                                                                                                                                                                                                  | `true`                                                  |
 | `mailReceiver.image.registry`        | Mail to Task image registry                                                                                                                                                                                                                                                                                                                                                                          | `docker.io`                                             |
 | `mailReceiver.image.repository`      | Mail to Task image repository                                                                                                                                                                                                                                                                                                                                                                        | `bitnami/redmine`                                       |
-| `mailReceiver.image.tag`             | Mail to Task image tag                                                                                                                                                                                                                                                                                                                                                                               | `4.0.5-debian-9-r28`                                    |
+| `mailReceiver.image.tag`             | Mail to Task image tag                                                                                                                                                                                                                                                                                                                                                                               | `{TAG_NAME}`                                            |
 | `mailReceiver.image.pullPolicy`      | Mail to Task image pull policy                                                                                                                                                                                                                                                                                                                                                                       | `IfNotPresent`                                          |
 | `mailReceiver.mailProtocol`          | Mail protocol to use for reading emails: `IMAP` or `POP3`                                                                                                                                                                                                                                                                                                                                            | `IMAP`                                                  |
 | `mailReceiver.host`                  | Server to receive emails from                                                                                                                                                                                                                                                                                                                                                                        | `""`                                                    |

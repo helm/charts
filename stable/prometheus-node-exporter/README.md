@@ -52,6 +52,7 @@ The following table lists the configurable parameters of the Node Exporter chart
 | `service.port`                        | The service port                                                                                                              | `9100`                                           |
 | `service.targetPort`                  | The target port of the container                                                                                              | `9100`                                           |
 | `service.nodePort`                    | The node port of the service                                                                                                  |                                                  |
+| `service.listenOnAllInterfaces`       | If true, listen on all interfaces using IP `0.0.0.0`. Else listen on the IP address pod has been assigned by Kubernetes.      | `true`                                           |
 | `service.annotations`                 | Kubernetes service annotations                                                                                                | `{prometheus.io/scrape: "true"}`                 |
 | `serviceAccount.create`               | Specifies whether a service account should be created.                                                                        | `true`                                           |
 | `serviceAccount.name`                 | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template |                                                  |
@@ -70,6 +71,8 @@ The following table lists the configurable parameters of the Node Exporter chart
 | `configmaps`                          | Allow mounting additional configmaps.                                                                                         | `[]`                                             |
 | `namespaceOverride`                   | Override the deployment namespace                                                                                             | `""` (`Release.Namespace`)                       |
 | `updateStrategy`                      | Configure a custom update strategy for the daemonset                                                                          | `Rolling update with 1 max unavailable`          |
+| `sidecars`               | Additional containers for export metrics to text file     | `[]`           |  |
+| `sidecarVolumeMount`               | Volume for sidecar containers     | `[]`           |  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

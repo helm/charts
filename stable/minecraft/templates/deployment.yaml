@@ -3,12 +3,20 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "minecraft.fullname" . }}
+  {{- if .Values.deploymentAnnotations }}
+  annotations:
+    {{- range $key, $value := .Values.deploymentAnnotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
   labels:
     app: {{ template "minecraft.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  strategy:
+    type: {{ .Values.strategyType }}
   selector:
     matchLabels:
       app: {{ template "minecraft.fullname" . }}

@@ -57,6 +57,8 @@ spec:
          valueFrom:
             fieldRef:
               fieldPath: status.hostIP
+       - name: USER_ASSIGNED_IDENTITY_CLIENT_ID
+         value: ""
        securityContext:
          privileged: true
        ports:
@@ -94,12 +96,12 @@ spec:
         periodSeconds: 60
    nodeSelector:
     beta.kubernetes.io/os: linux
-   {{- with .Values.omsagent.affinity }}
+   {{- with .Values.omsagent.deployment.affinity }}
    affinity: {{- toYaml . | nindent 8 }}
    {{- end }}
    {{- with .Values.omsagent.tolerations }}
    tolerations: {{- toYaml . | nindent 8 }}
-   {{- end }}         
+   {{- end }}
    volumes:
     - name: docker-sock
       hostPath:

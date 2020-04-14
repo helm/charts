@@ -55,6 +55,9 @@ spec:
       affinity:
 {{ toYaml . | indent 8 }}
     {{- end }}
+      {{- if .Values.securityContext }}
+      securityContext: {{ toYaml .Values.securityContext | nindent 8 }}
+      {{- end }}
       containers:
       - name: main
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
@@ -74,6 +77,11 @@ spec:
           containerPort: {{ .Values.ports.grpc.containerPort }}
           protocol: TCP
         {{- end }}
+        {{- if .Values.telemetry }}
+        - name: telemetry
+          containerPort: {{ .Values.ports.telemetry.containerPort }}
+          protocol: TCP
+        {{- end  }}
 {{- if and (not .Values.https) .Values.livenessProbe.enabled }}
         livenessProbe:
           httpGet:

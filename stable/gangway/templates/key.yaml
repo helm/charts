@@ -1,3 +1,4 @@
+{{- if not .Values.env.GANGWAY_SESSION_SECURITY_KEY -}}
 apiVersion: v1
 kind: Secret
 metadata:
@@ -10,3 +11,4 @@ metadata:
 type: Opaque
 data:
   sessionkey: {{ ( default ( randAlphaNum 32 ) .Values.gangway.sessionKey ) | b64enc | quote }}
+{{- end -}}
