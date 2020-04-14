@@ -219,6 +219,22 @@ redis:
 ```
 This approach has the additional advantage of keeping secrets outside of the Helm upgrade process.
 
+#### Database init options
+
+If you are using the default puckel/docker-airflow image, the airflow-web
+container runs `airflow initdb` [at startup
+time](https://github.com/puckel/docker-airflow/blob/master/script/entrypoint.sh#L112).
+
+If the value `airflow.initdb` is set to `true`, the airflow-scheduler container
+will run `airflow initdb` before starting the scheduler as part of its startup script.
+
+If the value `airflow.preinitdb` is set to `true`, the airflow-scheduler pod will
+run `airflow initdb` as an initContainer, before the git-clone initContainer if
+that is enabled.  This is rarely necessary but can be so under certain conditions
+if your synced DAGs include custom database hooks that prevent `initdb` from running
+successfully (e.g. if they have dependencies on variables that won't be present yet).
+The initdb initcontainer will retry up to 5 times before giving up.
+
 ### Additional environment variables
 
 It is possible to specify additional environment variables using the same format as in a pod's `.spec.containers.env` definition.
@@ -390,6 +406,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.extraVolumeMounts`              | additional volumeMounts to the main container in scheduler, worker & web pods | `[]`|
 | `airflow.extraVolumes`                   | additional volumes for the scheduler, worker & web pods | `[]`                      |
 | `airflow.initdb`                         | run `airflow initdb` when starting the scheduler        | `true`                    |
+| `airflow.preinitdb`                      | run `airflow initdb` as a preinit container before the scheduler        | `false`                    |
 | `flower.enabled`                         | enable flow                                             | `true`                    |
 | `flower.extraConfigmapMounts`            | Additional configMap volume mounts on the flower pod.   | `[]`                      |
 | `flower.urlPrefix`                       | path of the flower ui                                   | ""                        |

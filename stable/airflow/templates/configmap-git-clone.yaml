@@ -42,6 +42,7 @@ data:
     echo -e "HOST $REPO_HOST\n  IdentityFile ~/.ssh/$PRIVATE_KEY" > ~/.ssh/config
     {{- end }}
     {{- if eq .Values.dags.initContainer.enabled  false }}
+    rm -rf $DIR
     git clone $REPO -b $REF $DIR
     {{- end }}
     cd $DIR
@@ -50,5 +51,6 @@ data:
       git reset --hard origin/$REF;
       git clean -fd;
       date;
+      echo "*** sleeping ${SYNC_TIME} seconds"
       sleep $SYNC_TIME;
     done
