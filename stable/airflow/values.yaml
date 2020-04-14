@@ -135,7 +135,7 @@ airflow:
   ## This should be a json string with your pools in it
   ## Examples:
   ##   pools: '{ "example": { "description": "This is an example of a pool", "slots": 2 } }'
-  pools: {}
+  pools: '{}'
 
   ##
   ## Annotations for the Scheduler, Worker and Web pods
@@ -169,6 +169,11 @@ airflow:
   ## Additional volumes for the Scheduler, Worker and Web pods.
   # - name: synchronised-dags
   #   emptyDir: {}
+
+  ##
+  ## Run initdb as an initContainer step (potentially necessary if you have
+  ## custom database hooks configured that will be pulled in by git-sync)
+  preinitdb: false
 
   ##
   ## Run initdb when the scheduler starts.
@@ -569,7 +574,7 @@ dags:
         ## values: Always or IfNotPresent
         pullPolicy: IfNotPresent
       ## The amount of time in seconds to git pull dags
-      refreshTime:
+      refreshTime: 0
   initContainer:
     ## Fetch the source code when the pods starts
     enabled: false
