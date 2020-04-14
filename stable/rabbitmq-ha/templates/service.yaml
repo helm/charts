@@ -3,7 +3,7 @@ kind: Service
 metadata:
 {{- if .Values.service.annotations }}
   annotations:
-{{ toYaml .Values.service.annotations | indent 4 }}
+{{ tpl (toYaml .Values.service.annotations) . | indent 4 }}
 {{- end }}
   name: {{ template "rabbitmq-ha.fullname" . }}
   namespace: {{ .Release.Namespace }}
@@ -27,6 +27,9 @@ spec:
 {{- end }}
 {{- if .Values.service.loadBalancerIP }}
   loadBalancerIP: "{{ .Values.service.loadBalancerIP }}"
+{{- end }}
+{{- if .Values.service.externalTrafficPolicy }}
+  externalTrafficPolicy: "{{ .Values.service.externalTrafficPolicy }}"
 {{- end }}
 {{- if .Values.service.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:

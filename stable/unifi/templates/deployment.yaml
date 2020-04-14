@@ -2,6 +2,12 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "unifi.fullname" . }}
+  {{- if .Values.deploymentAnnotations }}
+  annotations:
+    {{- range $key, $value := .Values.deploymentAnnotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
   labels:
     app.kubernetes.io/name: {{ include "unifi.name" . }}
     helm.sh/chart: {{ include "unifi.chart" . }}
@@ -44,6 +50,14 @@ spec:
             - name: stun
               containerPort: 3478
               protocol: UDP
+              {{ if .Values.captivePortalService.enabled }}
+            - name: captive-http
+              containerPort: 8880
+              protocol: TCP
+            - name: captive-https
+              containerPort: 8843
+              protocol: TCP
+              {{ end }}
           {{- if not .Values.runAsRoot }}
           securityContext:
             capabilities:
@@ -103,6 +117,14 @@ spec:
             {{- if .Values.extraConfigFiles }}
             - name: extra-config
               mountPath: /configmap
+            {{- end }}
+            {{- if and .Values.customCert .Values.customCert.enabled }}
+            - name: CERT_IS_CHAIN
+              value: "{{ .Values.customCert.isChain }}"
+            - name: CERTNAME
+              value: "{{ .Values.customCert.certName }}"
+            - name: CERT_PRIVATE_NAME
+              value: "{{ .Values.customCert.keyName }}"
             {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}

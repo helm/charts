@@ -43,6 +43,9 @@ spec:
       {{ if and .Values.anchoreEnterpriseGlobal.enabled (or .Values.anchoreEnterpriseRbac.enabled .Values.anchoreEnterpriseReports.enabled) }}
       imagePullSecrets:
       - name: {{ .Values.anchoreEnterpriseGlobal.imagePullSecretName }}
+      {{- with .Values.anchoreGlobal.imagePullSecretName }}
+      - name: {{ . }}
+      {{- end }}
       {{- end }}
       containers:
       {{- if .Values.cloudsql.enabled  }}
@@ -61,7 +64,11 @@ spec:
         {{- end }}
       {{- end }}
       - name: "{{ .Chart.Name }}-{{ $component }}"
+        {{- if .Values.anchoreEnterpriseGlobal.enabled }}
+        image: {{ .Values.anchoreEnterpriseGlobal.engineImage }}
+        {{- else }}
         image: {{ .Values.anchoreGlobal.image }}
+        {{- end }}
         imagePullPolicy: {{ .Values.anchoreGlobal.imagePullPolicy }}
         command: ["anchore-manager"]
         args: ["service", "start", "apiext"]
@@ -81,6 +88,11 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
+        - name: ANCHORE_CLI_PASS
+          valueFrom:
+            secretKeyRef:
+              name: {{ default (include "anchore-engine.fullname" .) .Values.anchoreGlobal.existingSecret }}
+              key: ANCHORE_ADMIN_PASSWORD
         ports:
         - containerPort: {{ .Values.anchoreApi.service.port }}
           name: external-api

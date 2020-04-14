@@ -1,3 +1,4 @@
+{{- if (eq .Values.kind "Deployment") }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -28,6 +29,7 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
         {{- end }}
     spec:
+      serviceAccountName: {{ template "prometheus-blackbox-exporter.serviceAccountName" . }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -123,3 +125,4 @@ spec:
             secretName: {{ .secretName }}
             defaultMode: {{ .defaultMode }}
       {{- end }}
+{{- end }}

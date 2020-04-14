@@ -10,6 +10,7 @@ metadata:
 {{ toYaml .Values.extraLabels | indent 4 }}
 {{- end }}
   name: {{ template "mongodb-replicaset.fullname" . }}-mongodb
+  namespace: {{ template "mongodb-replicaset.namespace" . }}
 data:
   mongod.conf: |
 {{ toYaml .Values.configmap | indent 4 }}

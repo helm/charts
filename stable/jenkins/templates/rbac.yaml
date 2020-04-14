@@ -15,8 +15,11 @@ metadata:
     "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
 rules:
 - apiGroups: [""]
-  resources: ["pods", "pods/exec", "pods/log", "persistentvolumeclaims"]
-  verbs: ["*"]
+  resources: ["pods", "pods/exec", "pods/log", "persistentvolumeclaims", "events"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["pods", "pods/exec", "persistentvolumeclaims"]
+  verbs: ["create", "delete", "deletecollection", "patch", "update"]
 
 ---
 
