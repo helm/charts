@@ -40,7 +40,7 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
         - /adapter
-        - --secure-port=6443
+        - --secure-port={{ .Values.listenPort }}
         {{- if .Values.tls.enable }}
         - --tls-cert-file=/var/run/serving-cert/tls.crt
         - --tls-private-key-file=/var/run/serving-cert/tls.key
@@ -52,7 +52,7 @@ spec:
         - --v={{ .Values.logLevel }}
         - --config=/etc/adapter/config.yaml
         ports:
-        - containerPort: 6443
+        - containerPort: {{ .Values.listenPort }}
           name: https
         livenessProbe:
           httpGet:
