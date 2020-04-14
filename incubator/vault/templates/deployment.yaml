@@ -169,12 +169,14 @@ spec:
       - name: {{ .Chart.Name }}-exporter
         image: "{{ .Values.vaultExporter.repository }}:{{ .Values.vaultExporter.tag }}"
         imagePullPolicy: {{ .Values.vaultExporter.pullPolicy }}
+        {{- if .Values.master.usePodSecurityContext }}
         securityContext:
           readOnlyRootFilesystem: true
           runAsUser: {{ .Values.securityContext.runAsUser }}
           {{- if and (.Values.securityContext.runAsUser) (.Values.securityContext.fsGroup) }}
           {{- if not (eq .Values.securityContext.runAsUser 0.0) }}
           fsGroup: {{ .Values.securityContext.fsGroup }}
+          {{- end }}
           {{- end }}
           {{- end }}
         env:

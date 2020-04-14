@@ -288,5 +288,6 @@ rbac:
   create: true
 
 securityContext:
-  runAsUser: 0
-  fsGroup: 0
+  usePodSecurityContext: false
+  runAsUser: 1000
+  fsGroup: 1000
