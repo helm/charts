@@ -459,6 +459,11 @@ topics: []
   #     - user: all
   #       operations: [ All ]
 
+## Enable/disable the chart's tests.  Useful if using this chart as a dependency of
+## another chart and you don't want these tests running when trying to develop and
+## test your own chart.
+testsEnabled: true
+
 # ------------------------------------------------------------------------------
 # Zookeeper:
 # ------------------------------------------------------------------------------

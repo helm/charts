@@ -5,6 +5,14 @@ image:
   repository: redis
   tag: 5.0.6-alpine
   pullPolicy: IfNotPresent
+
+## Reference to one or more secrets to be used when pulling images
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+## This imagePullSecrets is only for redis images
+##
+imagePullSecrets: []
+# - name: "image-pull-secret"
+
 ## replicas number for each component
 replicas: 3
 
@@ -38,8 +46,16 @@ haproxy:
     repository: haproxy
     tag: 2.0.4
     pullPolicy: IfNotPresent
+
+  ## Reference to one or more secrets to be used when pulling images
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  imagePullSecrets: []
+  # - name: "image-pull-secret"
+
   annotations: {}
   resources: {}
+  emptyDir: {}
   ## Enable sticky sessions to Redis nodes via HAProxy
   ## Very useful for long-living connections as in case of Sentry for example
   stickyBalancing: false
@@ -342,3 +358,5 @@ hostPath:
   # change the owner of the hostPath folder to the user defined in the
   # security context
   chown: true
+
+emptyDir: {}

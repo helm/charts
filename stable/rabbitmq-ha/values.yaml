@@ -68,6 +68,14 @@ definitions:
 #     "write": ".*",
 #     "read": ".*"
 #   }
+  topicPermissions: |-
+#   {
+#     "user": "myUsername",
+#     "vhost": "/rabbit",
+#     "exchange": "myexchange",
+#     "write": ".*",
+#     "read": ".*"
+#   }
   queues: |-
 #    {
 #       "name":"myName",
@@ -323,6 +331,7 @@ service:
   externalIPs: []
 
   loadBalancerIP: ""
+  externalTrafficPolicy: ""
   loadBalancerSourceRanges: []
   type: ClusterIP
 
@@ -390,6 +399,8 @@ persistentVolume:
   ##   GKE, AWS & OpenStack)
   ##
   # storageClass: "-"
+  ## selector can be used to match an existing PersistentVolume
+  selector: {}
   name: data
   accessModes:
     - ReadWriteOnce
