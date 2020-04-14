@@ -70,7 +70,6 @@ spec:
           image: {{ .Values.busyboxImage.repository}}:{{ .Values.busyboxImage.tag}}
           imagePullPolicy: {{ .Values.busyboxImage.pullPolicy }}
           securityContext:
-            fsGroup: 0
             runAsGroup: 0
             runAsNonRoot: false
             runAsUser: 0
@@ -348,6 +347,10 @@ spec:
       {{- else }}
         storageClassName: "{{ .Values.persistentVolume.storageClass }}"
       {{- end }}
+      {{- end }}
+      {{- with .Values.persistentVolume.selector }}
+        selector:
+          {{- toYaml . | nindent 10 }}
       {{- end }}
 {{- else }}
         - name: {{ .Values.persistentVolume.name }}

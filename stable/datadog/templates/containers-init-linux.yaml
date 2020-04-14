@@ -1,0 +1,56 @@
+{{- define "containers-init-linux" -}}
+- name: init-volume
+  image: "{{ .Values.agents.image.repository }}:{{ .Values.agents.image.tag }}"
+  imagePullPolicy: {{ .Values.agents.image.pullPolicy }}
+  command: ["bash", "-c"]
+  args:
+    - cp -r /etc/datadog-agent /opt
+  volumeMounts:
+    - name: config
+      mountPath: /opt/datadog-agent
+  resources:
+{{ toYaml .Values.agents.containers.initContainers.resources | indent 4 }}
+- name: init-config
+  image: "{{ .Values.agents.image.repository }}:{{ .Values.agents.image.tag }}"
+  imagePullPolicy: {{ .Values.agents.image.pullPolicy }}
+  command: ["bash", "-c"]
+  args:
+    - for script in $(find /etc/cont-init.d/ -type f -name '*.sh' | sort) ; do bash $script ; done
+  volumeMounts:
+    - name: config
+      mountPath: /etc/datadog-agent
+    {{- if (or (.Values.datadog.confd) (.Values.datadog.autoconf)) }}
+    - name: confd
+      mountPath: /conf.d
+      readOnly: true
+    {{- end }}
+    {{- if .Values.datadog.checksd }}
+    - name: checksd
+      mountPath: /checks.d
+      readOnly: true
+    {{- end }}
+    - name: procdir
+      mountPath: /host/proc
+      readOnly: true
+    - name: runtimesocket
+      mountPath: {{ template "datadog.dockerOrCriSocketPath" . }}
+      readOnly: true
+  env:
+    {{- include "containers-common-env" . | nindent 4 }}
+    {{- if not .Values.clusterAgent.enabled }}
+    {{- if .Values.datadog.leaderElection }}
+    - name: DD_LEADER_ELECTION
+      value: {{ .Values.datadog.leaderElection | quote }}
+    {{- end }}
+    {{- end }}
+    {{- if .Values.datadog.dockerSocketPath }}
+    - name: DOCKER_HOST
+      value: unix://{{ .Values.datadog.dockerSocketPath }}
+    {{- end }}
+    {{- if .Values.datadog.criSocketPath }}
+    - name: DD_CRI_SOCKET_PATH
+      value: {{ .Values.datadog.criSocketPath }}
+    {{- end }}
+  resources:
+{{ toYaml .Values.agents.containers.initContainers.resources | indent 4 }}
+{{- end -}}

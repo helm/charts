@@ -5,6 +5,24 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.12.0 Support additional agents
+
+Add support for easy configuration of additional agents which inherit values from `agent`.
+
+## 1.11.3
+
+Update the kubernetes plugin from 1.24.1 to 1.25.1 and grant 'watch' permission to 'events' which is required since this plugin version.
+
+## 1.11.2 Configure agent.args in values.yaml
+
+## 1.11.1 Support for master.additionalConfig
+
+Fixed a bug with jenkinsHome variable in range block when master.additionalConfig is set - Helm cannot evaluate field Values in type interface {}.
+
+## 1.11.0 Add support for configuring custom pod templates
+
+Add `agent.podTemplates` option for declaring custom pod templates in the default configured kubernetes cloud.
+
 ## 1.10.1 Only copy JCasC files if there are any
 
 The chart always tried to copy Configuration as Code configs even if there are none. That resulted in an error which is resolved with this.
@@ -111,8 +129,8 @@ Google application credentials are kept in a file, which has to be mounted to a 
     jenkins-service-account:
       gcpcredentials: application_default_credentials.json
 ```
-      
-Helm template then creates the necessary volume mounts and `GOOGLE_APPLICATION_CREDENTIALS` environmental variable. 
+
+Helm template then creates the necessary volume mounts and `GOOGLE_APPLICATION_CREDENTIALS` environmental variable.
 
 ## 1.9.3 Fix `JAVA_OPTS` when config auto-reload is enabled
 

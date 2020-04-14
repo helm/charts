@@ -1,8 +1,8 @@
 apiVersion: v1
 name: orangehrm
-version: 7.0.9
+version: 7.0.10
 appVersion: 4.3.4-0
-# The redis chart is deprecated and no longer maintained. For details deprecation, see the PROCESSES.md file.
+# The orangehrm chart is deprecated and no longer maintained. For details deprecation, see the PROCESSES.md file.
 deprecated: true
 description: DEPRECATED OrangeHRM is a free HR management system that offers a wealth of modules
   to suit the needs of your business.
