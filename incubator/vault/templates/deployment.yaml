@@ -171,6 +171,14 @@ spec:
         imagePullPolicy: {{ .Values.vaultExporter.pullPolicy }}
         securityContext:
           readOnlyRootFilesystem: true
+          {{- if .Values.securityContext.usePodSecurityContext }}
+          runAsUser: {{ .Values.securityContext.runAsUser }}
+          {{- if and (.Values.securityContext.runAsUser) (.Values.securityContext.fsGroup) }}
+          {{- if not (eq .Values.securityContext.runAsUser 0.0) }}
+          fsGroup: {{ .Values.securityContext.fsGroup }}
+          {{- end }}
+          {{- end }}
+          {{- end }}
         env:
           - name: VAULT_ADDR
             {{- if .Values.vault.config.listener.tcp.tls_disable }}
