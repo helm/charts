@@ -115,6 +115,7 @@ The following table lists the configurable parameters of the Vault chart and the
 | `securityContext.usePodSecurityContext`         | Enable security context config                   | `false`                    |
 | `securityContext.runAsUser`         | Specifies that for any Containers in the Pod, all processes run with this user ID                  | `1000`                    |
 | `securityContext.fsGroup`         | specifies the primary group ID specified for all processes within any containers of the Pod. If this field is omitted, the primary group ID of the containers will be root(0). | `1000`                    |
+
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
 ## Optional Consul Agent
