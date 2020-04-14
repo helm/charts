@@ -36,6 +36,7 @@ spec:
       labels:
         app: {{ template "nginx-ingress.name" . }}
         release: {{ template "nginx-ingress.releaseLabel" . }}
+        component: "{{ .Values.controller.name }}"
         app.kubernetes.io/component: controller
         {{- if .Values.controller.podLabels }}
 {{ toYaml .Values.controller.podLabels | indent 8}}
