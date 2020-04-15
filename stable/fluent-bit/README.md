@@ -125,6 +125,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
 | `image.fluent_bit.tag`             | Image tag                                  | `1.3.7`                                           |
 | `image.pullPolicy`                 | Image pull policy                          | `Always`                                          |
+| `image.pullSecrets`                | Image pull secrets                         | `nil`                                             |
 | `nameOverride`                     | Override name of app                   | `nil`                                        |
 | `fullnameOverride`                 | Override full name of app              | `nil`                                        |
 | `image.pullSecrets`                | Specify image pull secrets                 | `nil`                                             |
@@ -165,6 +166,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `metrics.serviceMonitor.scrapeTimeout`    | Scrape timeout. If not set, the Prometheus default scrape timeout is used             | `nil`   |
 | `trackOffsets`                     | Specify whether to track the file offsets for tailing docker logs. This allows fluent-bit to pick up where it left after pod restarts but requires access to a `hostPath` | `false` |
 | `testFramework.image`              | `test-framework` image repository.         | `dduportal/bats`                                  |
+| `testFramework.pullSecrets`        | `test-framework` image pull secrets        | `nil`                                             |
 | `testFramework.tag`                | `test-framework` image tag.                | `0.4.0`                                           |
 
 
