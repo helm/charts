@@ -11,9 +11,9 @@ metadata:
   annotations:
     "helm.sh/hook": post-install,post-upgrade
     "helm.sh/hook-delete-policy": hook-succeeded
-    {{- with .Values.makeBucketJob.annotations }}
-    {{ toYaml . | indent 4 }}
-    {{- end }}
+{{- with .Values.makeBucketJob.annotations }}
+{{ toYaml . | indent 4 }}
+{{- end }}
 spec:
   template:
     metadata:
