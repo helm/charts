@@ -116,8 +116,10 @@ The following table lists the configurable parameters of the Prometheus Adapter 
 | `image.pullPolicy`              | Image pull policy                                                               | `IfNotPresent`                              |
 | `image.pullSecrets`             | Image pull secrets                                                              | `{}`                                        |
 | `logLevel`                      | Log level                                                                       | `4`                                         |
+| `listenPort`                    | Port that application would listen on in the container                          | `6443`                                      |
 | `metricsRelistInterval`         | Interval at which to re-list the set of all available metrics from Prometheus   | `1m`                                        |
 | `nodeSelector`                  | Node labels for pod assignment                                                  | `{}`                                        |
+| `podLabels`                     | Labels to add to the pod                                                        | `{}`                                        |
 | `podAnnotations`                | Annotations to add to the pod                                                   | `{}`                                        |
 | `priorityClassName`             | Pod priority                                                                    | ``                                          |
 | `prometheus.url`                | Url of where we can find the Prometheus service                                 | `http://prometheus.default.svc`             |

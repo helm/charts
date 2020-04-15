@@ -1,4 +1,4 @@
-{{- if (.Values.configurator.enabled) and (.Values.configurator.ingress.enabled) }}
+{{- if and (.Values.configurator.enabled) (.Values.configurator.ingress.enabled) }}
 {{- $fullName := include "home-assistant.fullname" . -}}
 {{- $servicePort := .Values.configurator.service.port -}}
 {{- $ingressPath := .Values.configurator.ingress.path -}}

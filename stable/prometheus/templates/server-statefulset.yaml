@@ -148,6 +148,10 @@ spec:
       nodeSelector:
 {{ toYaml .Values.server.nodeSelector | indent 8 }}
     {{- end }}
+    {{- if .Values.server.hostAliases }}
+      hostAliases:
+{{ toYaml .Values.server.hostAliases | indent 8 }}
+    {{- end }}
     {{- if .Values.server.securityContext }}
       securityContext:
 {{ toYaml .Values.server.securityContext | indent 8 }}

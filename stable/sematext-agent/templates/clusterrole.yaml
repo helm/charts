@@ -49,9 +49,11 @@ rules:
   - apps
   resources:
   - deployments
+  - replicasets
   verbs:
   - watch
   - list
+  - get
 - apiGroups:
   - extensions
   resources:

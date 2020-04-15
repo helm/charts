@@ -72,6 +72,9 @@ controller:
   ##
   ingressClass: nginx
 
+  # labels to add to the deployment metadata
+  deploymentLabels: {}
+
   # labels to add to the pod container metadata
   podLabels: {}
   #  key: value
@@ -491,6 +494,9 @@ defaultBackend:
   ##
   podSecurityContext: {}
 
+  # labels to add to the deployment metadata
+  deploymentLabels: {}
+
   # labels to add to the pod container metadata
   podLabels: {}
   #  key: value
@@ -533,6 +539,9 @@ defaultBackend:
     type: ClusterIP
 
   priorityClassName: ""
+
+# If provided, the value will be used as the `release` label instead of .Release.Name
+releaseLabelOverride: ""
 
 ## Enable RBAC as per https://github.com/kubernetes/ingress/tree/master/examples/rbac/nginx and https://github.com/kubernetes/ingress/issues/266
 rbac:

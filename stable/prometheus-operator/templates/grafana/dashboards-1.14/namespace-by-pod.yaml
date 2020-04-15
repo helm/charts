@@ -325,36 +325,36 @@ data:
             {
                 "columns": [
                     {
-                        "text": "",
-                        "value": ""
+                        "text": "Time",
+                        "value": "Time"
                     },
                     {
-                        "text": "",
-                        "value": ""
+                        "text": "Value #A",
+                        "value": "Value #A"
                     },
                     {
-                        "text": "",
-                        "value": ""
+                        "text": "Value #B",
+                        "value": "Value #B"
                     },
                     {
-                        "text": "",
-                        "value": ""
+                        "text": "Value #C",
+                        "value": "Value #C"
                     },
                     {
-                        "text": "",
-                        "value": ""
+                        "text": "Value #D",
+                        "value": "Value #D"
                     },
                     {
-                        "text": "",
-                        "value": ""
+                        "text": "Value #E",
+                        "value": "Value #E"
                     },
                     {
-                        "text": "",
-                        "value": ""
+                        "text": "Value #F",
+                        "value": "Value #F"
                     },
                     {
-                        "text": "",
-                        "value": ""
+                        "text": "pod",
+                        "value": "pod"
                     }
                 ],
                 "datasource": "$datasource",
@@ -582,8 +582,9 @@ data:
                         "step": 10
                     }
                 ],
+                "timeFrom": null,
+                "timeShift": null,
                 "title": "Current Status",
-                "transform": "table",
                 "type": "table"
             },
             {
@@ -661,7 +662,7 @@ data:
                         "expr": "sum(irate(container_network_receive_bytes_total{namespace=~\"$namespace\"}[$interval:$resolution])) by (pod)",
                         "format": "time_series",
                         "intervalFactor": 1,
-                        "legendFormat": "{{`{{pod}}`}}",
+                        "legendFormat": "{{`{{`}}pod{{`}}`}}",
                         "refId": "A",
                         "step": 10
                     }
@@ -760,7 +761,7 @@ data:
                         "expr": "sum(irate(container_network_transmit_bytes_total{namespace=~\"$namespace\"}[$interval:$resolution])) by (pod)",
                         "format": "time_series",
                         "intervalFactor": 1,
-                        "legendFormat": "{{`{{pod}}`}}",
+                        "legendFormat": "{{`{{`}}pod{{`}}`}}",
                         "refId": "A",
                         "step": 10
                     }
@@ -870,7 +871,7 @@ data:
                                 "expr": "sum(irate(container_network_receive_packets_total{namespace=~\"$namespace\"}[$interval:$resolution])) by (pod)",
                                 "format": "time_series",
                                 "intervalFactor": 1,
-                                "legendFormat": "{{`{{pod}}`}}",
+                                "legendFormat": "{{`{{`}}pod{{`}}`}}",
                                 "refId": "A",
                                 "step": 10
                             }
@@ -969,7 +970,7 @@ data:
                                 "expr": "sum(irate(container_network_transmit_packets_total{namespace=~\"$namespace\"}[$interval:$resolution])) by (pod)",
                                 "format": "time_series",
                                 "intervalFactor": 1,
-                                "legendFormat": "{{`{{pod}}`}}",
+                                "legendFormat": "{{`{{`}}pod{{`}}`}}",
                                 "refId": "A",
                                 "step": 10
                             }
@@ -1088,7 +1089,7 @@ data:
                                 "expr": "sum(irate(container_network_receive_packets_dropped_total{namespace=~\"$namespace\"}[$interval:$resolution])) by (pod)",
                                 "format": "time_series",
                                 "intervalFactor": 1,
-                                "legendFormat": "{{`{{pod}}`}}",
+                                "legendFormat": "{{`{{`}}pod{{`}}`}}",
                                 "refId": "A",
                                 "step": 10
                             }
@@ -1187,7 +1188,7 @@ data:
                                 "expr": "sum(irate(container_network_transmit_packets_dropped_total{namespace=~\"$namespace\"}[$interval:$resolution])) by (pod)",
                                 "format": "time_series",
                                 "intervalFactor": 1,
-                                "legendFormat": "{{`{{pod}}`}}",
+                                "legendFormat": "{{`{{`}}pod{{`}}`}}",
                                 "refId": "A",
                                 "step": 10
                             }
@@ -1242,7 +1243,7 @@ data:
                 "type": "row"
             }
         ],
-        "refresh": "30s",
+        "refresh": "10s",
         "rows": [
 
         ],
@@ -1255,13 +1256,15 @@ data:
             "list": [
                 {
                     "current": {
-                        "text": "Prometheus",
-                        "value": "Prometheus"
+                        "text": "default",
+                        "value": "default"
                     },
                     "hide": 0,
                     "label": null,
                     "name": "datasource",
-                    "options": [],
+                    "options": [
+
+                    ],
                     "query": "prometheus",
                     "refresh": 1,
                     "regex": "",
