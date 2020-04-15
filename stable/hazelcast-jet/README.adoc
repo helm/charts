@@ -18,7 +18,8 @@ ifeval::["{repo}"=="hazelcast/charts"]
 ----
 $ helm repo add hazelcast https://hazelcast.github.io/charts/
 $ helm repo update
-$ helm install hazelcast/hazelcast-jet
+$ helm install my-release hazelcast/hazelcast-jet        # Helm 3
+$ helm install --name my-release hazelcast/hazelcast-jet # Helm 2
 ----
 endif::[]
 
@@ -26,7 +27,8 @@ endif::[]
 ifeval::["{repo}"=="helm/charts"]
 [source,bash]
 ----
-$ helm install stable/hazelcast-jet
+$ helm install my-release stable/hazelcast-jet        # Helm 3
+$ helm install --name my-release stable/hazelcast-jet # Helm 2
 ----
 endif::[]
 
@@ -49,14 +51,16 @@ To install the chart with the release name `+my-release+`:
 ifeval::["{repo}"=="hazelcast/charts"]
 [source,bash]
 ----
-$ helm install --name my-release hazelcast/hazelcast-jet
+$ helm install my-release hazelcast/hazelcast-jet        # Helm 3
+$ helm install --name my-release hazelcast/hazelcast-jet # Helm 2
 ----
 endif::[]
 
 ifeval::["{repo}"=="helm/charts"]
 [source,bash]
 ----
-$ helm install --name my-release stable/hazelcast-jet
+$ helm install my-release stable/hazelcast-jet        # Helm 3
+$ helm install --name my-release stable/hazelcast-jet # Helm 2
 ----
 endif::[]
 
@@ -297,6 +301,12 @@ Specify each parameter using the `+--set key=value[,key=value]+` argument to
 ifeval::["{repo}"=="hazelcast/charts"]
 [source,bash]
 ----
+# Helm 3
+$ helm install my-release \
+  --set cluster.memberCount=3,serviceAccount.create=false \
+    hazelcast/hazelcast-jet
+
+# Helm 2
 $ helm install --name my-release \
   --set cluster.memberCount=3,serviceAccount.create=false \
     hazelcast/hazelcast-jet
@@ -306,6 +316,13 @@ endif::[]
 ifeval::["{repo}"=="helm/charts"]
 [source,bash]
 ----
+
+# Helm 3
+$ helm install my-release \
+  --set cluster.memberCount=3,serviceAccount.create=false \
+    stable/hazelcast-jet
+
+# Helm 2
 $ helm install --name my-release \
   --set cluster.memberCount=3,serviceAccount.create=false \
     stable/hazelcast-jet
@@ -321,14 +338,16 @@ provided while installing the chart. For example,
 ifeval::["{repo}"=="hazelcast/charts"]
 [source,bash]
 ----
-$ helm install --name my-release -f values.yaml hazelcast/hazelcast-jet
+$ helm install my-release -f values.yaml hazelcast/hazelcast-jet        # Helm 3
+$ helm install --name my-release -f values.yaml hazelcast/hazelcast-jet # Helm 2
 ----
 endif::[]
 
 ifeval::["{repo}"=="helm/charts"]
 [source,bash]
 ----
-$ helm install --name my-release -f values.yaml stable/hazelcast-jet
+$ helm install my-release -f values.yaml stable/hazelcast-jet        # Helm 3
+$ helm install --name my-release -f values.yaml stable/hazelcast-jet # Helm 2
 ----
 endif::[]
 
@@ -384,6 +403,12 @@ For example,
 ifeval::["{repo}"=="hazelcast/charts"]
 [source,bash]
 ----
+# Helm 3
+$ helm install my-jet-release \
+  --set jet.yaml.hazelcast-jet.instance.backup-count=2,jet.yaml.hazelcast.network.kubernetes.service-name=jet-service \
+    hazelcast/hazelcast-jet
+
+# Helm 2
 $ helm install --name my-jet-release \
   --set jet.yaml.hazelcast-jet.instance.backup-count=2,jet.yaml.hazelcast.network.kubernetes.service-name=jet-service \
     hazelcast/hazelcast-jet
@@ -393,6 +418,12 @@ endif::[]
 ifeval::["{repo}"=="helm/charts"]
 [source,bash]
 ----
+# Helm 3
+$ helm install my-jet-release \
+  --set jet.yaml.hazelcast-jet.instance.backup-count=2,jet.yaml.hazelcast.network.kubernetes.service-name=jet-service \
+    stable/hazelcast-jet
+
+# Helm 2
 $ helm install --name my-jet-release \
   --set jet.yaml.hazelcast-jet.instance.backup-count=2,jet.yaml.hazelcast.network.kubernetes.service-name=jet-service \
     stable/hazelcast-jet
