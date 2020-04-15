@@ -69,11 +69,18 @@ spec:
         #  value: "{{ .Values.provisioner.monitorVolumeKey }}"
         #- name: MAYA_PORTAL_URL
         #  value: "{{ .Values.provisioner.mayaPortalUrl }}"
+         # Process name used for matching is limited to the 15 characters
+         # present in the pgrep output.
+         # So fullname can't be used here with pgrep (>15 chars).A regular expression
+         # that matches the entire command name has to specified.
+         # Anchor `^` : matches any string that starts with `openebs-provis`
+         # `.*`: matches any string that has `openebs-provis` followed by zero or more char
         livenessProbe:
           exec:
             command:
-            - pgrep
-            - ".*openebs"
+            - sh
+            - -c
+            - test `pgrep -c "^openebs-provisi.*"` = 1
           initialDelaySeconds: {{ .Values.provisioner.healthCheck.initialDelaySeconds }}
           periodSeconds: {{ .Values.provisioner.healthCheck.periodSeconds }}
 {{- if .Values.provisioner.nodeSelector }}

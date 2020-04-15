@@ -60,11 +60,18 @@ spec:
         # This is supported for openebs snapshot controller version 0.6-RC1 onwards
         - name: OPENEBS_MAYA_SERVICE_NAME
           value: "{{ template "openebs.fullname" . }}-apiservice"
+         # Process name used for matching is limited to the 15 characters
+         # present in the pgrep output.
+         # So fullname can't be used here with pgrep (>15 chars).A regular expression
+         # that matches the entire command name has to specified.
+         # Anchor `^` : matches any string that starts with `snapshot-contro`
+         # `.*`: matches any string that has `snapshot-contro` followed by zero or more char
         livenessProbe:
           exec:
             command:
-            - pgrep
-            - ".*controller"
+            - sh
+            - -c
+            - test `pgrep -c "^snapshot-contro.*"` = 1
           initialDelaySeconds: {{ .Values.snapshotOperator.healthCheck.initialDelaySeconds }}
           periodSeconds: {{ .Values.snapshotOperator.healthCheck.periodSeconds }}
       - name: {{ template "openebs.name" . }}-snapshot-provisioner
@@ -95,11 +102,18 @@ spec:
         # This is supported for openebs snapshot provisioner version 0.6-RC1 onwards
         - name: OPENEBS_MAYA_SERVICE_NAME
           value: "{{ template "openebs.fullname" . }}-apiservice"
+         # Process name used for matching is limited to the 15 characters
+         # present in the pgrep output.
+         # So fullname can't be used here with pgrep (>15 chars).A regular expression
+         # that matches the entire command name has to specified.
+         # Anchor `^` : matches any string that starts with `snapshot-provis`
+         # `.*`: matches any string that has `snapshot-provis` followed by zero or more char
         livenessProbe:
           exec:
             command:
-            - pgrep
-            - ".*provisioner"
+            - sh
+            - -c
+            - test `pgrep -c "^snapshot-provis.*"` = 1
           initialDelaySeconds: {{ .Values.snapshotOperator.healthCheck.initialDelaySeconds }}
           periodSeconds: {{ .Values.snapshotOperator.healthCheck.periodSeconds }}
 {{- if .Values.snapshotOperator.nodeSelector }}
