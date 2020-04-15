@@ -11,7 +11,7 @@ replicaCount: 1
 
 image:
   repository: gogs/gogs
-  tag: 0.11.86
+  tag: 0.11.91
   pullPolicy: IfNotPresent
 
 service:
