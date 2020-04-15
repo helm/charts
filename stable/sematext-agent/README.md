@@ -1,6 +1,6 @@
 # Sematext Agent
 
-Sematext Agent collects logs and monitoring hosts (CPU, memory, disk, network, processes, ...), containers and orchestrator platforms and ships that to [Sematext Cloud](https://sematext.com/cloud). Sematext Cloud is available in the US and EU regions.
+Sematext Agent collects logs, metrics, events and more info for hosts (CPU, memory, disk, network, processes, ...), containers and orchestrator platforms and ships that to [Sematext Cloud](https://sematext.com/cloud). Sematext Cloud is available in the US and EU regions.
 
 ## Introduction
 
@@ -13,49 +13,52 @@ This chart installs the Sematext Agent to all nodes in your cluster via a `Daemo
 
 ## Installation
 
-To install the chart for logs run the following command:
+To install the chart to ship logs run the following command:
 
 ```bash
-$ helm install sematext-logagent  \
+$ helm install st-logagent  \
     --set logsToken=YOUR_LOGS_TOKEN \
+    --set region=US \
     stable/sematext-agent
 ```
 
 To install the chart for monitoring run the following command:
 
 ```bash
-$ helm install sematext-agent \
+$ helm install st-agent \
     --set containerToken=YOUR_CONTAINER_TOKEN \
     --set infraToken=YOUR_INFRA_TOKEN \
+    --set region=US \
     stable/sematext-agent
 ```
 
 To install the chart for both logs and monitoring run the following command:
 
 ```bash
-$ helm install sematext-agent \
+$ helm install st-agent \
     --set logsToken=YOUR_LOGS_TOKEN \
     --set containerToken=YOUR_CONTAINER_TOKEN \
     --set infraToken=YOUR_INFRA_TOKEN \
+    --set region=US \
     stable/sematext-agent
 ```
 
 After a few minutes, you should see logs, metrics, and events reported in Sematext web UI.
 
-**NOTE:** If you want to use Sematext in EU region set the region as well `--set region=EU`. Also, it is worth mentioning that the agent is running as a privileged container.
+**NOTE:** If you want to use Sematext hosted in the EU region set the region parameter to `--set region=EU`. Also, it is worth mentioning that the agent is running as a privileged container.
 
 ## Removal
 
 To uninstall the chart use:
 
 ```bash
-$ helm uninstall sematext-logagent
+$ helm uninstall st-logagent
 ```
 
 or
 
 ```bash
-$ helm uninstall sematext-agent
+$ helm uninstall st-agent
 ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
@@ -94,8 +97,10 @@ The following table lists the configuration parameters of the `sematext-agent` c
 Specify each parameter using the `--set key=value` argument to `helm install`. For example:
 
 ```bash
-$ helm install sematext-agent \
+$ helm install st-agent \
     --set containerToken=YOUR_CONTAINER_TOKEN \
+    --set infraToken=YOUR_INFRA_TOKEN \
+    --set region=US \
     --set agent.image.tag=0.18.3 \
     --set agent.image.pullPolicy=IfNotPresent \
     stable/sematext-agent
@@ -104,5 +109,5 @@ $ helm install sematext-agent \
 Alternatively, you can use a YAML file that specifies the values while installing the chart. For example:
 
 ```bash
-$ helm install sematext-agent -f custom_values.yaml stable/sematext-agent
+$ helm install st-agent -f custom_values.yaml stable/sematext-agent
 ```

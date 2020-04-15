@@ -12,15 +12,15 @@ helm install sematext-agent \
   --set sematext.infraToken=YOUR_INFRA_TOKEN \
   stable/sematext-agent
 
-Or start the app for logs with:
+Or start the app to ship logs with:
 
-helm install sematext-agent \
+helm install st-agent \
   --set logsToken=YOUR_LOGS_TOKEN \
   stable/sematext-agent
 
-Or start the app both with:
+Or start the app with both:
 
-helm install sematext-agent \
+helm install st-agent \
   --set containerToken=YOUR_CONTAINER_TOKEN \
   --set sematext.infraToken=YOUR_INFRA_TOKEN \
   --set logsToken=YOUR_LOGS_TOKEN \
