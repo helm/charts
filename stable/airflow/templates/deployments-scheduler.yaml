@@ -82,7 +82,7 @@ spec:
         - name: {{ .Chart.Name }}-preinitdb
           image: {{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}
           imagePullPolicy: {{ .Values.airflow.image.pullPolicy}}
-          command:
+          args:
             - "/bin/bash"
             - "-c"
             - "/usr/local/scripts/preinit-db.sh"
