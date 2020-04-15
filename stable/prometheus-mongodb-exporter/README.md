@@ -15,7 +15,8 @@ This command deploys the MongoDB Exporter with the default configuration. The [c
 
 ## Using the Chart
 
-To use the chart, ensure the `mongodb.uri` is populated with a valid [MongoDB URI](https://docs.mongodb.com/manual/reference/connection-string).
+To use the chart, ensure the `mongodb.uri` is populated with a valid [MongoDB URI](https://docs.mongodb.com/manual/reference/connection-string)
+or an existing secret (in the releases namespace) containing the key `mongodb-uri` with the URI is referred via `existingSecret.name`.
 If the MongoDB server requires authentication, credentials should be populated in the connection string as well. The MongoDB Exporter supports
 connecting to either a MongoDB replica set member, shard, or standalone instance.
 
@@ -35,13 +36,14 @@ podAnnotations:
 |-----------|-------------|---------|
 | `affinity` | Node/pod affinities | `{}` |
 | `annotations` | Annotations to be added to the pods | `{}` |
+| `existingSecret.name` | Refer to an existing secret instead of using `mongodb.uri` | `` |
 | `extraArgs` | The extra command line arguments to pass to the MongoDB Exporter  | See values.yaml |
 | `fullnameOverride` | Override the full chart name | `` |
 | `image.pullPolicy` | MongoDB Exporter image pull policy | `IfNotPresent` |
 | `image.repository` | MongoDB Exporter image name | `ssheehy/mongodb-exporter` |
 | `image.tag` | MongoDB Exporter image tag | `0.10.0` |
 | `imagePullSecrets` | List of container registry secrets | `[]` |
-| `mongodb.uri` | The required [URI](https://docs.mongodb.com/manual/reference/connection-string) to connect to MongoDB | `` |
+| `mongodb.uri` | The [URI](https://docs.mongodb.com/manual/reference/connection-string) to connect to MongoDB | `` |
 | `nameOverride` | Override the application name  | `` |
 | `nodeSelector` | Node labels for pod assignment | `{}` |
 | `podAnnotations` | Annotations to be added to all pods | `{}` |
@@ -62,8 +64,3 @@ podAnnotations:
 | `serviceMonitor.namespace` | The namespace where the Prometheus Operator is deployed | `` |
 | `serviceMonitor.additionalLabels` | Additional labels to add to the ServiceMonitor | `{}` |
 | `tolerations` | List of node taints to tolerate  | `[]` |
-
-## Limitations
-
-Connecting to MongoDB via TLS is currently not supported.
-

@@ -33,7 +33,7 @@ spec:
           - name: MONGODB_URI
             valueFrom:
               secretKeyRef:
-                name: {{ include "prometheus-mongodb-exporter.fullname" . }}
+                name: {{ include "prometheus-mongodb-exporter.secretName" . }}
                 key: mongodb-uri
         {{- if .Values.env }}
         {{- range $key, $value := .Values.env }}
