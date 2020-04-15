@@ -582,3 +582,10 @@ podDisruptionBudget: {}
   # minAvailable: 1
 
 lifecycle: {}
+
+networkPolicy:
+  enable: false
+  allowForClientLabel: true
+#   customConfig:
+#     - ipBlock:
+#         cidr: "0.0.0.0/0"

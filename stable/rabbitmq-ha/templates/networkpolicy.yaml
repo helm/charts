@@ -1,0 +1,69 @@
+{{- if .Values.networkPolicy.enable }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "rabbitmq-ha.fullname" . }}
+  labels:
+    app: {{ include "rabbitmq-ha.fullname" . }}
+    name: {{ include "rabbitmq-ha.name" . }}
+    fullname: {{ include "rabbitmq-ha.fullname" . }}
+    chart: {{ include "rabbitmq-ha.chart" . }}
+    app.kubernetes.io/name: {{ include "rabbitmq-ha.fullname" . }}
+    app.kubernetes.io/managed-by: helm
+    app.kubernetes.io/part-of: {{ include "rabbitmq-ha.chart" . }}
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ include "rabbitmq-ha.name" . }}
+      release: {{ .Release.Name }}
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    {{- if .Values.networkPolicy.allowClientLabel }}
+    - podSelector:
+        matchLabels:
+          rabbitmq-client: "true"
+    {{- end }}
+    {{- if .Values.networkPolicy.customConfig }}
+{{ toYaml .Values.networkPolicy.customConfig | indent 4 }}
+    {{- end }}
+    ports:
+    - protocol: TCP
+      port: 5672
+    - protocol: TCP
+      port: 4369
+    {{- if .Values.rabbitmqSTOMPPlugin.enabled }}
+    - protocol: TCP
+      port: 61613
+    - protocol: TCP
+      port: 61614
+    {{- end }}
+    {{- if .Values.rabbitmqWebSTOMPPlugin.enabled }}
+    - protocol: TCP
+      port: 15674
+    {{- end }}
+    {{- if .Values.rabbitmqMQTTPlugin.enabled }}
+    - protocol: TCP
+      port: 1883
+    - protocol: TCP
+      port: 8883
+    {{- end }}
+    {{- if .Values.rabbitmqWebMQTTPlugin.enabled }}
+    - protocol: TCP
+      port: 15675
+    {{- end }}
+    {{- if .Values.rabbitmqAmqpsSupport.enabled }}
+    - protocol: TCP
+      port: 5671
+    {{- end }}
+    {{- if .Values.rabbitmqPrometheusPlugin.enabled }}
+    - protocol: TCP
+      port: {{ .Values.rabbitmqPrometheusPlugin.port }}
+    {{- end }}
+  - from:
+    - podSelector:
+        matchLabels:
+          app: {{ include "rabbitmq-ha.name" . }}
+          release: {{ .Release.Name }}
+{{- end }}
