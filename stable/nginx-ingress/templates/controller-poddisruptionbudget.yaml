@@ -14,8 +14,6 @@ spec:
     matchLabels:
       app: {{ template "nginx-ingress.name" . }}
       release: {{ template "nginx-ingress.releaseLabel" . }}
-      {{- if .Values.controller.useComponentLabel }}
       app.kubernetes.io/component: controller
-      {{- end }}
   minAvailable: {{ .Values.controller.minAvailable }}
 {{- end }}
