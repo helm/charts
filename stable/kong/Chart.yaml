@@ -3,12 +3,9 @@ description: DEPRECATED The Cloud-Native Ingress and API-management
 engine: gotpl
 home: https://konghq.com/
 icon: https://s3.amazonaws.com/downloads.kong/universe/assets/icon-kong-inc-large.png
-maintainers:
-- name: shashiranjan84
-  email: shashi@konghq.com
-- name: hbagdi
-  email: harry@konghq.com
+deprecated: true
+maintainers: []
 name: kong
 sources:
-version: 0.36.6
+version: 0.36.7
 appVersion: 1.4
