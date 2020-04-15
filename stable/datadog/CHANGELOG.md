@@ -1,5 +1,9 @@
 # Datadog changelog
 
+## 2.3.10
+
+* Use two distinct health endpoints for liveness and readiness probes.
+
 ## 2.3.9
 * Add `clusterAgent.podLabels` variable to add labels to the Cluster Agent Pod(s)
 
