@@ -19,7 +19,7 @@ metadata:
     heritage: {{ .Release.Service }}
 rules:
 - apiGroups: [""]
-  resources: ["pods", "events", "nodes", "nodes/stats", "nodes/metrics", "nodes/spec", "namespaces", "services"]
+  resources: ["pods", "events", "nodes", "nodes/stats", "nodes/metrics", "nodes/spec", "nodes/proxy", "namespaces", "services"]
   verbs: ["list", "get", "watch"]
 - apiGroups: ["apps", "extensions"]
   resources: ["replicasets"]
