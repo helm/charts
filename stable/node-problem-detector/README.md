@@ -20,6 +20,12 @@ To install the chart with the release name `my-release` and default configuratio
 $ helm install my-release stable/node-problem-detector
 ```
 
+To install the chart with the release name `my-release` and custom configuration with yaml a file in the kube-system namespace:
+
+```console
+$ helm install my-release stable/node-problem-detector --values values.yaml --namespace kube-system
+```
+
 ## Uninstalling the Chart
 
 To delete the chart:
@@ -41,7 +47,7 @@ The following table lists the configurable parameters for this chart and their d
 | `fullnameOverride`                    | Override the fullname of the chart         | `nil`                                                        |
 | `image.pullPolicy`                    | Image pull policy                          | `IfNotPresent`                                               |
 | `image.repository`                    | Image                                      | `k8s.gcr.io/node-problem-detector`                           |
-| `image.tag`                           | Image tag                                  | `v0.6.3`                                                     |
+| `image.tag`                           | Image tag                                  | `v0.8.1`                                                     |
 | `hostpath.logdir`                     | Log directory path on K8s host             | `/var/log`                                                   |
 | `nameOverride`                        | Override the name of the chart             | `nil`                                                        |
 | `rbac.create`                         | RBAC                                       | `true`                                                       |
@@ -65,8 +71,5 @@ The following table lists the configurable parameters for this chart and their d
 | `extraVolumes`                        | Optional daemonset volumes to add          | `[]`                                                         |
 | `extraVolumeMounts`                   | Optional daemonset volumeMounts to add     | `[]`                                                         |
 
-Specify each parameter using the `--set key=value[,key=value]` argument to `helm install` or provide a YAML file containing the values for the above parameters:
+Specify each parameter using the `--set key=value[,key=value]` argument to `helm install` or provide a YAML file containing the values for the above parameters.
 
-```console
-$ helm install --name my-release stable/node-problem-detector --values values.yaml
-```
