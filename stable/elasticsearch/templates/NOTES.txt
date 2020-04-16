@@ -1,3 +1,7 @@
+This Helm chart is deprecated. Please use https://github.com/elastic/helm-charts/tree/master/elasticsearch instead.
+
+---
+
 The elasticsearch cluster has been installed.
 
 Elasticsearch can be accessed:
