@@ -16,9 +16,7 @@ spec:
   {{- if .Values.pushgateway.strategy }}
   strategy:
 {{ toYaml .Values.pushgateway.strategy | indent 4 }}
-  {{- if eq .Values.pushgateway.strategy.type "Recreate" }}
-  rollingUpdate: null
-  {{- end }}
+  {{- if eq .Values.pushgatway.strategy.type "Recreate" }}rollingUpdate: null{{- end }}
   {{- end }}
   template:
     metadata:
