@@ -1,3 +1,7 @@
+extraArgs:
+  #- --read-timeout 5
+  #- --write-timeout 5
+  #- --storage-timestamp-tolerance 1s
 replicaCount: 1
 strategy:
   type: RollingUpdate
