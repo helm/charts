@@ -43,6 +43,7 @@ To add the Helm Stable Charts for your local client, run `helm repo add`:
 $ helm repo add stable https://kubernetes-charts.storage.googleapis.com
 "stable" has been added to your repositories
 ```
+You can then run `helm search repo stable` to see the charts.
 
 ## How Do I Enable the Incubator Repository?
 
@@ -53,7 +54,7 @@ $ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis
 "incubator" has been added to your repositories
 ```
 
-You can then run `helm search incubator` to see the charts.
+You can then run `helm search repo incubator` to see the charts.
 
 ## Chart Format
 
