@@ -29,6 +29,8 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            runAsUser: {{ .Values.image.runAsUser }}
           env:
           {{- range $key, $value := .Values.envVarsFromSecret }}
           - name: {{ $key }}
@@ -41,10 +43,6 @@ spec:
             - configMapRef:
                 name: {{ template "kube-slack.fullname" . }}
           resources:
-      {{ if .Values.image.pullSecret }}
-      imagePullSecrets:
-        - name: {{ .Values.image.pullSecret }}
-      {{- end }}
 {{ toYaml .Values.resources | indent 12 }}
     {{- if .Values.rbac.create }}
       serviceAccountName: {{ template "kube-slack.fullname" . }}
