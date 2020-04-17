@@ -90,6 +90,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.hostAliases`              | Aliases for IPs in `/etc/hosts`      | `[]`                                      |
 | `master.serviceAnnotations`       | Service annotations                  | `{}`                                      |
 | `master.serviceType`              | k8s service type                     | `ClusterIP`                               |
+| `master.clusterIP`                | k8s service clusterIP                | Not set                                   |
 | `master.servicePort`              | k8s service port                     | `8080`                                    |
 | `master.targetPort`               | k8s target port                      | `8080`                                    |
 | `master.nodePort`                 | k8s node port                        | Not set                                   |
