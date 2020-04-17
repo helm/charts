@@ -31,7 +31,7 @@ A major chart version change (like v0.40.0 -> v1.0.0) indicates that there is an
 
 Configuration is done via [Jenkins Configuration as Code Plugin](https://github.com/jenkinsci/configuration-as-code-plugin) by default.
 That means that changes in values which result in a configuration change are always applied.
-In contrast the XML configuration was only be applied during the first start and never altered.
+In contrast the XML configuration was only applied during the first start and never altered.
 
 :exclamation::exclamation::exclamation: Attention: This also means if you manually altered configuration then this will most likely be reset to what was configured by default. :exclamation::exclamation::exclamation:
 
@@ -53,14 +53,14 @@ master:
 
 It's not recommended to run containers in Kubernetes as `root`.
 
-:exclamation: Attention: If you had not configured a different user before then you need to ensure that your image support the user and group id configured and also manually change permissions of all files so that Jenkins is still able to use them.
+:exclamation: Attention: If you had not configured a different user before then you need to ensure that your image supports the user and group id configured and also manually change permissions of all files so that Jenkins is still able to use them.
 
 #### Summary of updated values
 
-As version 2.0.0 only updates default values and nothing else it's still possible to migrate to that version and opt out of some or all new defaults.
-All you have to do is to esure that the old values are set in your installation.
+As version 2.0.0 only updates default values and nothing else it's still possible to migrate to this version and opt out of some or all new defaults.
+All you have to do is ensure the old values are set in your installation.
 
-Here we show which values have been changed and what has beend their default before:
+Here we show which values have changed and the previous default values:
 
 ```yaml
 master:
@@ -84,12 +84,12 @@ So think of the list below more as a general guideline of what should be done.
   That's the case for `jenkins/jenkins:lts` image, which the chart uses by default
 - Make a backup of your existing installation especially the persistent volume
 - Ensure that you have the configuration as code plugin installed
-- Export your current setting via the plugin:
+- Export your current settings via the plugin:
   `Manage Jenkins` -> `Configuration as Code` -> `Download Configuration`
 - prepare your values file for the update e.g. add additional configuration as code setting that you need.
   The export taken from above might be a good starting point for this.
   In addition the [demos](https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos) from the plugin itself are quite useful.
-- test drive those setting on a seperate installation
+- test drive those setting on a separate installation
 - Put Jenkins to Quiet Down mode so that it does not accept new jobs
   `<JENKINS_URL>/quietDown`
 - change permissions of all files and folders to the new user and group id
