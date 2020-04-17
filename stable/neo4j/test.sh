@@ -9,7 +9,7 @@ echo "Testing we can get the cluster role of each server in statefulset ${STATEF
 
 check_role() {
   name=$1
-  end="$((SECONDS+360))"
+  end="$((SECONDS+600))"
   while true; do
     echo "checking cluster role: ${name} for systemdb"
     # In Neo4j 4.0 members now only have a cluster role with respect to a particular database.

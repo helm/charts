@@ -38,6 +38,7 @@ authEnabled: true
 clusterDomain: "cluster.local"
 
 # Specs for the images used for running tests against the Helm package
+# https://github.com/mneedham/k8s-kubectl this is a general kubectl docker image
 testImage: "markhneedham/k8s-kubectl"
 testImageTag: "master"
 
