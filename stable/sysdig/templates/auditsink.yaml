@@ -4,10 +4,7 @@ kind: AuditSink
 metadata:
   name: {{ template "sysdig.fullname" . }}
   labels:
-    app: {{ template "sysdig.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+{{ include "sysdig.labels" . | indent 4 }}
 spec:
   policy:
     level: RequestResponse
