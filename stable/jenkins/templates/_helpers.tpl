@@ -178,8 +178,10 @@ Returns kubernetes pod template configuration as code
   showRawYaml: true
   serviceAccount: "{{ include "jenkins.serviceAccountAgentName" . }}"
   slaveConnectTimeoutStr: "{{ .Values.agent.slaveConnectTimeout }}"
+  {{- if .Values.agent.yamlTemplate }}
   yaml: |-
-    {{ tpl .Values.agent.yamlTemplate . | nindent 10 | trim }}
+  {{- tpl ( trim .Values.agent.yamlTemplate ) . | nindent 4 }}
+  {{- end }}
   yamlMergeStrategy: "override"
 {{- end -}}
 
