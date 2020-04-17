@@ -12,9 +12,9 @@ spec:
   replicas: {{ .Values.alertmanager.replicaCount }}
   {{- if .Values.alertmanager.strategy }}
   strategy:
-{{ toYaml .Values.alertmanager.strategy | indent 4 }}
-  {{- if eq .Values.alertmanager.strategy.type "Recreate" }}rollingUpdate: null{{- end }}
-  {{- end }}
+{{ toYaml .Values.alertmanager.strategy | trim | indent 4 }}
+    {{ if eq .Values.alertmanager.strategy.type "Recreate" }}rollingUpdate: null{{ end }}
+{{- end }}
   template:
     metadata:
     {{- if .Values.alertmanager.podAnnotations }}
