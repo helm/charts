@@ -15,9 +15,9 @@ spec:
   replicas: {{ .Values.pushgateway.replicaCount }}
   {{- if .Values.pushgateway.strategy }}
   strategy:
-{{ toYaml .Values.pushgateway.strategy | indent 4 }}
-  {{- if eq .Values.pushgatway.strategy.type "Recreate" }}rollingUpdate: null{{- end }}
-  {{- end }}
+{{ toYaml .Values.pushgateway.strategy | trim | indent 4 }}
+    {{ if eq .Values.pushgateway.strategy.type "Recreate" }}rollingUpdate: null{{ end }}
+{{- end }}
   template:
     metadata:
     {{- if .Values.pushgateway.podAnnotations }}
