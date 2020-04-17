@@ -1,4 +1,8 @@
 # Datadog changelog
+## 2.2.1
+
+* Fix indentation for `clusterAgent.volumes`.
+
 
 ## 2.2.1
 
