@@ -36,14 +36,15 @@ data:
       for id in $(seq 0 $((CORE_REPLICAS - 1))); do
         host="${STATEFULSET_NAME}-core-$id.${STATEFULSET_NAME}.${NAMESPACE}.svc.cluster.local"
         auth="neo4j:${NEO4J_SECRETS_PASSWORD}"
-        url="http://${auth}@${host}:7474/db/system/tx/"
+        url="http://${auth}@${host}:7474/db/system/tx/commit"
         attempts=10
         attempt=0
         while true; do
           attempt=$[$attempt + 1]
           echo "Try $attempt: Connecting to $url"
-          curl ${url} -d '{"statements":[{"statement" : "SHOW DATABASES"}]}' -H 'Content-Type: application/json' 2>&1
-          response=$(curl ${url} -d '{"statements":[{"statement" : "SHOW DATABASES"}]}' -H 'Content-Type: application/json' 2>&1)
+          wget --version
+          wget ${url} --post-data '{"statements":[{"statement":"SHOW DATABASES"}]}' --header 'Content-Type: application/json' -qO- 2>&1
+          response=$(wget ${url} --post-data '{"statements":[{"statement":"SHOW DATABASES"}]}' --header 'Content-Type: application/json' -qO- 2>&1)
           echo "SHOW DATABASES response:"
           echo $response
           [ "$?" = 0 ] && break
