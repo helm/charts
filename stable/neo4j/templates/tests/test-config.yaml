@@ -42,8 +42,10 @@ data:
         while true; do
           attempt=$[$attempt + 1]
           echo "Try $attempt: Connecting to $url"
-          response=$(wget ${url} --post-data='{"statements":[{"statement" : "SHOW DATABASES"}]}' --header 'Content-Type: application/json' -qO- 2>&1)
-          echo "SHOW DATABASES response:  $response"
+          wget ${url} --post-data='{"statements":[{"statement":"SHOW DATABASES"}]}' --header 'Content-Type: application/json' -qO- 2>&1
+          response=$(wget ${url} --post-data='{"statements":[{"statement":"SHOW DATABASES"}]}' --header 'Content-Type: application/json' -qO- 2>&1)
+          echo "SHOW DATABASES response:"
+          echo $response
           [ "$?" = 0 ] && break
           [ "${attempt}" -ge "${attempts}" ] && exit 1
           sleep 5
