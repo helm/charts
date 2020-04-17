@@ -182,7 +182,7 @@ spec:
 {{- end}}
 
 {{- if .Values.clusterAgent.volumes }}
-{{ toYaml .Values.clusterAgent.volumes | indent 10 }}
+{{ toYaml .Values.clusterAgent.volumes | indent 8 }}
 {{- end }}
       {{- if .Values.clusterAgent.tolerations }}
       tolerations:
