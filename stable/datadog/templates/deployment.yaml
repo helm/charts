@@ -36,6 +36,8 @@ spec:
         checksum/autoconf-config: {{ tpl (toYaml .Values.datadog.autoconf) . | sha256sum }}
         checksum/confd-config: {{ tpl (toYaml .Values.datadog.confd) . | sha256sum }}
         checksum/checksd-config: {{ tpl (toYaml .Values.datadog.checksd) . | sha256sum }}
+        checksum/config-secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        checksum/config-agent-secret: {{ include (print $.Template.BasePath "/agent-secret.yaml") . | sha256sum }}
     spec:
       {{- if .Values.datadog.securityContext }}
       securityContext:
