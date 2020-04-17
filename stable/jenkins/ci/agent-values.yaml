@@ -6,5 +6,4 @@ agent:
       tolerations:
       - key: "key"
         operator: "Equal"
-        value: {{ .Values.tolerations }}
-tolerations: 10
+        value: 10
