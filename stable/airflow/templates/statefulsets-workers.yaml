@@ -132,6 +132,8 @@ spec:
             - name: git-clone-secret
               mountPath: /keys
             {{- end }}
+          resources:
+{{ toYaml .Values.dags.git.gitSync.resources | indent 12 }}
         {{- end }}
         - name: {{ .Chart.Name }}-worker
           imagePullPolicy: {{ .Values.airflow.image.pullPolicy }}
