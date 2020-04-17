@@ -313,6 +313,18 @@ workers:
   ## Number of workers pod to launch
   replicas: 1
   ##
+  ## Autoscaling settings for workers
+  autoscaling:
+    enabled: false
+    maxReplicas: 2
+    metrics: {}
+#    - type: Resource
+#      resource:
+#        name: memory
+#        target:
+#          type: Utilization
+#          averageUtilization: 80
+  ##
   ## Gracefull termination period
   terminationPeriod: 30
   ##
@@ -575,6 +587,8 @@ dags:
         pullPolicy: IfNotPresent
       ## The amount of time in seconds to git pull dags
       refreshTime: 0
+      ## If using workers.autoscaling=true with git-sync, git-sync needs to have resources requested
+      resources: {}
   initContainer:
     ## Fetch the source code when the pods starts
     enabled: false
