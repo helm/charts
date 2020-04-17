@@ -11,16 +11,16 @@ data:
   run.sh: |-
     @test "Testing Neo4j cluster has quorum" {
       echo "checking if the cluster is up"
-      path="data"
+      # path="data"
       for id in $(seq 0 $((CORE_REPLICAS - 1))); do
         host="${STATEFULSET_NAME}-core-$id.${STATEFULSET_NAME}.${NAMESPACE}.svc.cluster.local"
         auth="neo4j:${NEO4J_SECRETS_PASSWORD}"
-        url="http://${auth}@${host}:7474/db/${path}"
+        url="http://${auth}@${host}:7474/"
         attempts=10
         attempt=0
         while true; do
           attempt=$[$attempt + 1]
-          echo "Try $attempt: Connecting to $host:7474/db/${path}"
+          echo "Try $attempt: Connecting to $host:7474/"
           run wget ${url} -qO- 2>&1
           echo "Exit code: $status"
           [ $status -eq 0 ] && break
@@ -36,14 +36,15 @@ data:
       for id in $(seq 0 $((CORE_REPLICAS - 1))); do
         host="${STATEFULSET_NAME}-core-$id.${STATEFULSET_NAME}.${NAMESPACE}.svc.cluster.local"
         auth="neo4j:${NEO4J_SECRETS_PASSWORD}"
-        url="http://${auth}@${host}:7474/db/${path}"
+        url="http://${auth}@${host}:7474/db/system/tx/"
         attempts=10
         attempt=0
         while true; do
           attempt=$[$attempt + 1]
-          echo "Try $attempt: Connecting to $host:7474/db/${path}"
-          response=$(wget ${url} -qO- 2>&1)
-          [ "$response" = "true" ] && break
+          echo "Try $attempt: Connecting to $url"
+          response=$(wget ${url} --post-data='{"statements":[{"statement" : "SHOW DATABASES"}]}' --header 'Content-Type: application/json' -qO- 2>&1)
+          echo "SHOW DATABASES response:  $response"
+          [ "$?" = 0 ] && break
           [ "${attempt}" -ge "${attempts}" ] && exit 1
           sleep 5
         done
