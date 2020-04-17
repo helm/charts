@@ -1,5 +1,4 @@
 agent:
-  # includes trailing whitespace to test trim
   yamlTemplate: |-
     apiVersion: v1
     kind: Pod
@@ -8,5 +7,4 @@ agent:
       - key: "key"
         operator: "Equal"
         value: {{ .Values.tolerations }}
-        
 tolerations: 10
