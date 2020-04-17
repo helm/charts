@@ -4,7 +4,7 @@
 {{- $authSecret := .Values.auth.customSecret | default ($fullName) -}}
 {{- $name := include "buzzfeed-sso.name" . -}}
 {{- $authDomain := .Values.auth.domain -}}
-apiVersion: apps/v1beta1
+apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ $fullName }}-auth
