@@ -87,7 +87,7 @@ Parameter | Description | Default
 `provider.google.secret` | the Google OAuth secrets | REQUIRED if `provider.google.customSecret` is not set
 `provider.google.customSecret` | the secret key to reuse instead of creating it via helm | REQUIRED if `provider.google.secret` is not set
 `image.repository` | container image repository | `buzzfeed/sso`
-`image.tag` | container image tag | `v1.2.0`
+`image.tag` | container image tag | `v2.1.0`
 `image.pullPolicy` | container image pull policy | `IfNotPresent`
 `ingress.enabled` | set to true to enable the ingress | `true`
 `ingress.annotations` | ingress load balancer annotations | `{}`

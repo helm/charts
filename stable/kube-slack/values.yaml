@@ -38,6 +38,8 @@ image:
   repository: willwill/kube-slack
   tag: v4.2.0
   pullPolicy: IfNotPresent
+  # If specified, use these secrets to access the image
+  # pullSecret: registry-secret
 
 resources: {}
   # limits:

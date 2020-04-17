@@ -177,7 +177,7 @@ spec:
           configMap:
             name: {{ template "haproxy-ingress.controller.fullname" . }}-template
 {{- end }}
-      terminationGracePeriodSeconds: 60
+      terminationGracePeriodSeconds: {{ .Values.controller.terminationGracePeriodSeconds }}
       dnsPolicy: {{ .Values.controller.dnsPolicy }}
       hostNetwork: {{ .Values.controller.hostNetwork }}
     {{- if .Values.controller.nodeSelector }}

@@ -71,31 +71,31 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
           securityContext:
             privileged: true
-          {{- if .Values.ebpf.enabled }}
           env:
+            {{- if .Values.ebpf.enabled }}
             - name: SYSDIG_BPF_PROBE
               value:
-          {{- end }}
-          {{- if .Values.proxy.httpProxy }}
+            {{- end }}
+            {{- if .Values.proxy.httpProxy }}
             - name: http_proxy
               value: {{ .Values.proxy.httpProxy }}
-          {{- end }}
-          {{- if .Values.proxy.httpsProxy }}
+            {{- end }}
+            {{- if .Values.proxy.httpsProxy }}
             - name: https_proxy
               value: {{ .Values.proxy.httpsProxy }}
-          {{- end }}
-          {{- if .Values.proxy.noProxy }}
+            {{- end }}
+            {{- if .Values.proxy.noProxy }}
             - name: no_proxy
               value: {{ .Values.proxy.noProxy }}
-          {{- end }}
-          {{- if .Values.timezone }}
+            {{- end }}
+            {{- if .Values.timezone }}
             - name: TZ
               value: {{ .Values.timezone }}
-          {{- end }}
-          {{- range $key, $value := .Values.daemonset.env }}
+            {{- end }}
+            {{- range $key, $value := .Values.daemonset.env }}
             - name: "{{ $key }}"
               value: "{{ $value }}"
-          {{- end }}
+            {{- end }}
           readinessProbe:
             exec:
               command: [ "test", "-e", "/opt/draios/logs/running" ]

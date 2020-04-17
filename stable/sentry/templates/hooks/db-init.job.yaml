@@ -1,4 +1,5 @@
 # https://docs.sentry.io/server/installation/docker/#running-migrations
+{{- if .Values.hooks.dbInit.enabled }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -63,7 +64,7 @@ spec:
           value: {{ template "sentry.postgresql.host" . }}
         - name: SENTRY_POSTGRES_PORT
           value: {{ template "sentry.postgresql.port" . }}
-        {{- if or (.Values.redis.enabled) (.Values.redis.password) }}
+        {{- if or (.Values.redis.enabled) (.Values.redis.password) (.Values.redis.existingSecret)  }}
         - name: SENTRY_REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -107,4 +108,4 @@ spec:
       - name: config
         configMap:
           name: {{ template "sentry.fullname" . }}
-
+{{- end -}}
