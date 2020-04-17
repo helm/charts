@@ -25,6 +25,8 @@ spec:
           command:
             - /monitor
             - --stackdriver-prefix=custom.googleapis.com
+            - --scrape-interval={{ .Values.scrapeInterval }}
+            - --export-interval={{ .Values.exportInterval }}
             {{- range $key, $value := .Values.metricsSources }}
             - --source={{ $key }}:{{ $value }}
             {{- end }}
