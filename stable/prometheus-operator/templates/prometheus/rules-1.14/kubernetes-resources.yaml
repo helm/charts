@@ -37,10 +37,10 @@ spec:
       for: 5m
       labels:
         severity: warning
-    - alert: KubeMemOvercommit
+    - alert: KubeMemoryOvercommit
       annotations:
         message: Cluster has overcommitted memory resource requests for Pods and cannot tolerate node failure.
-        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubememovercommit
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubememoryovercommit
       expr: |-
         sum(namespace:kube_pod_container_resource_requests_memory_bytes:sum{})
           /
@@ -52,10 +52,10 @@ spec:
       for: 5m
       labels:
         severity: warning
-    - alert: KubeCPUOvercommit
+    - alert: KubeCPUQuotaOvercommit
       annotations:
         message: Cluster has overcommitted CPU resource requests for Namespaces.
-        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubecpuovercommit
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubecpuquotaovercommit
       expr: |-
         sum(kube_resourcequota{job="kube-state-metrics", type="hard", resource="cpu"})
           /
@@ -64,10 +64,10 @@ spec:
       for: 5m
       labels:
         severity: warning
-    - alert: KubeMemOvercommit
+    - alert: KubeMemoryQuotaOvercommit
       annotations:
         message: Cluster has overcommitted memory resource requests for Namespaces.
-        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubememovercommit
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubememoryquotaovercommit
       expr: |-
         sum(kube_resourcequota{job="kube-state-metrics", type="hard", resource="memory"})
           /
