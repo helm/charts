@@ -105,7 +105,7 @@ extraEnvSecrets:
 ## All secrets will be mounted as environment variables, with each key/value mapping to a 
 ## corresponding environment variable.
 ##
-extraSecretNamesForEnvFrom: []
+extraSecretForEnvFrom: []
 # - home-assistant-secrets
 
 # Enable pod security context (must be `true` if runAsUser or fsGroup are set)

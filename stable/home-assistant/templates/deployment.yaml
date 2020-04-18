@@ -120,7 +120,7 @@ spec:
                   key: {{ $opts.key }}
             {{- end }}
           envFrom:
-          {{- range .Values.extraSecretNamesForEnvFrom }}
+          {{- range .Values.extraSecretForEnvFrom }}
             - secretRef:
                 name: {{ . }}
           {{- end }}
