@@ -168,6 +168,7 @@ Parameter                                            | Description              
 `filestore.gcs.bucketName`                           | The name of the GCS bucket                                                                                 | `nil`
 `filestore.s3.accessKey`                             | S3 access key                                                                                              | `nil`
 `filestore.s3.secretKey`                             | S3 secret key                                                                                              | `nil`
+`filestore.s3.existingSecret`                        | Name of existing secret to use for the S3 keys                                                             | `nil`
 `filestore.s3.bucketName`                            | The name of the S3 bucket                                                                                  | `nil`
 `filestore.s3.endpointUrl`                           | The endpoint url of the S3 (using for "MinIO S3 Backend")                                                  | `nil`
 `filestore.s3.signature_version`                     | S3 signature version (optional)                                                                            | `nil`
