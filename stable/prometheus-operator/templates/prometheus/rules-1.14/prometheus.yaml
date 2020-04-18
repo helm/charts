@@ -135,7 +135,7 @@ spec:
         severity: warning
     - alert: PrometheusRemoteStorageFailures
       annotations:
-        description: Prometheus {{`{{`}}$labels.namespace{{`}}`}}/{{`{{`}}$labels.pod{{`}}`}} failed to send {{`{{`}} printf "%.1f" $value {{`}}`}}% of the samples to {{`{{`}} if $labels.queue {{`}}`}}{{`{{`}} $labels.queue {{`}}`}}{{`{{`}} else {{`}}`}}{{`{{`}} $labels.url {{`}}`}}{{`{{`}} end {{`}}`}}.
+        description: Prometheus {{`{{`}}$labels.namespace{{`}}`}}/{{`{{`}}$labels.pod{{`}}`}} failed to send {{`{{`}} printf "%.1f" $value {{`}}`}}% of the samples to {{`{{`}} $labels.remote_name{{`}}`}}:{{`{{`}} $labels.url {{`}}`}}
         summary: Prometheus fails to send samples to remote storage.
       expr: |-
         (
@@ -154,7 +154,7 @@ spec:
         severity: critical
     - alert: PrometheusRemoteWriteBehind
       annotations:
-        description: Prometheus {{`{{`}}$labels.namespace{{`}}`}}/{{`{{`}}$labels.pod{{`}}`}} remote write is {{`{{`}} printf "%.1f" $value {{`}}`}}s behind for {{`{{`}} if $labels.queue {{`}}`}}{{`{{`}} $labels.queue {{`}}`}}{{`{{`}} else {{`}}`}}{{`{{`}} $labels.url {{`}}`}}{{`{{`}} end {{`}}`}}.
+        description: Prometheus {{`{{`}}$labels.namespace{{`}}`}}/{{`{{`}}$labels.pod{{`}}`}} remote write is {{`{{`}} printf "%.1f" $value {{`}}`}}s behind for {{`{{`}} $labels.remote_name{{`}}`}}:{{`{{`}} $labels.url {{`}}`}}.
         summary: Prometheus remote write is behind.
       expr: |-
         # Without max_over_time, failed scrapes could create false negatives, see
@@ -170,7 +170,7 @@ spec:
         severity: critical
     - alert: PrometheusRemoteWriteDesiredShards
       annotations:
-        description: Prometheus {{`{{`}}$labels.namespace{{`}}`}}/{{`{{`}}$labels.pod{{`}}`}} remote write desired shards calculation wants to run {{`{{`}} $value {{`}}`}} shards, which is more than the max of {{`{{`}} printf `prometheus_remote_storage_shards_max{instance="%s",job="{{ $prometheusJob }}",namespace="{{ $namespace }}"}` $labels.instance | query | first | value {{`}}`}}.
+        description: Prometheus {{`{{`}}$labels.namespace{{`}}`}}/{{`{{`}}$labels.pod{{`}}`}} remote write desired shards calculation wants to run {{`{{`}} $value {{`}}`}} shards for queue {{`{{`}} $labels.remote_name{{`}}`}}:{{`{{`}} $labels.url {{`}}`}}, which is more than the max of {{`{{`}} printf `prometheus_remote_storage_shards_max{instance="%s",job="{{ $prometheusJob }}",namespace="{{ $namespace }}"}` $labels.instance | query | first | value {{`}}`}}.
         summary: Prometheus remote write desired shards calculation wants to run more than configured max shards.
       expr: |-
         # Without max_over_time, failed scrapes could create false negatives, see
