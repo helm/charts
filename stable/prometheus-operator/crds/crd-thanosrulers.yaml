@@ -615,6 +615,11 @@ spec:
               items:
                 type: string
               type: array
+            alertQueryUrl:
+              description: The external Query URL the Thanos Ruler will set in the
+                'Source' field of all alerts. Maps to the '--alert.query-url' CLI
+                arg.
+              type: string
             alertmanagersConfig:
               description: Define configuration for connecting to alertmanager.  Only
                 available with thanos v0.10.0 and higher.  Maps to the `alertmanagers.config`
@@ -635,10 +640,13 @@ spec:
               - key
               type: object
             alertmanagersUrl:
-              description: Define URL to send alerts to alertmanager.  For Thanos
-                v0.10.0 and higher, AlertManagersConfig should be used instead. Maps
-                to the `alertmanagers.url` arg.
-              type: string
+              description: 'Define URLs to send alerts to Alertmanager.  For Thanos
+                v0.10.0 and higher, AlertManagersConfig should be used instead.  Note:
+                this field will be ignored if AlertManagersConfig is specified. Maps
+                to the `alertmanagers.url` arg.'
+              items:
+                type: string
+              type: array
             containers:
               description: 'Containers allows injecting additional containers or modifying
                 operator generated containers. This can be used to allow adding an
@@ -1695,6 +1703,126 @@ spec:
                 under. This is necessary to generate correct URLs. This is necessary
                 if Thanos Ruler is not served from root of a DNS name.
               type: string
+            grpcServerTlsConfig:
+              description: 'GRPCServerTLSConfig configures the gRPC server from which
+                Thanos Querier reads recorded rule data. Note: Currently only the
+                CAFile, CertFile, and KeyFile fields are supported. Maps to the ''--grpc-server-tls-*''
+                CLI args.'
+              properties:
+                ca:
+                  description: Stuct containing the CA cert to use for the targets.
+                  properties:
+                    configMap:
+                      description: ConfigMap containing data to use for the targets.
+                      properties:
+                        key:
+                          description: The key to select.
+                          type: string
+                        name:
+                          description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                            TODO: Add other useful fields. apiVersion, kind, uid?'
+                          type: string
+                        optional:
+                          description: Specify whether the ConfigMap or its key must
+                            be defined
+                          type: boolean
+                      required:
+                      - key
+                      type: object
+                    secret:
+                      description: Secret containing data to use for the targets.
+                      properties:
+                        key:
+                          description: The key of the secret to select from.  Must
+                            be a valid secret key.
+                          type: string
+                        name:
+                          description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                            TODO: Add other useful fields. apiVersion, kind, uid?'
+                          type: string
+                        optional:
+                          description: Specify whether the Secret or its key must
+                            be defined
+                          type: boolean
+                      required:
+                      - key
+                      type: object
+                  type: object
+                caFile:
+                  description: Path to the CA cert in the Prometheus container to
+                    use for the targets.
+                  type: string
+                cert:
+                  description: Struct containing the client cert file for the targets.
+                  properties:
+                    configMap:
+                      description: ConfigMap containing data to use for the targets.
+                      properties:
+                        key:
+                          description: The key to select.
+                          type: string
+                        name:
+                          description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                            TODO: Add other useful fields. apiVersion, kind, uid?'
+                          type: string
+                        optional:
+                          description: Specify whether the ConfigMap or its key must
+                            be defined
+                          type: boolean
+                      required:
+                      - key
+                      type: object
+                    secret:
+                      description: Secret containing data to use for the targets.
+                      properties:
+                        key:
+                          description: The key of the secret to select from.  Must
+                            be a valid secret key.
+                          type: string
+                        name:
+                          description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                            TODO: Add other useful fields. apiVersion, kind, uid?'
+                          type: string
+                        optional:
+                          description: Specify whether the Secret or its key must
+                            be defined
+                          type: boolean
+                      required:
+                      - key
+                      type: object
+                  type: object
+                certFile:
+                  description: Path to the client cert file in the Prometheus container
+                    for the targets.
+                  type: string
+                insecureSkipVerify:
+                  description: Disable target certificate validation.
+                  type: boolean
+                keyFile:
+                  description: Path to the client key file in the Prometheus container
+                    for the targets.
+                  type: string
+                keySecret:
+                  description: Secret containing the client key file for the targets.
+                  properties:
+                    key:
+                      description: The key of the secret to select from.  Must be
+                        a valid secret key.
+                      type: string
+                    name:
+                      description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                        TODO: Add other useful fields. apiVersion, kind, uid?'
+                      type: string
+                    optional:
+                      description: Specify whether the Secret or its key must be defined
+                      type: boolean
+                  required:
+                  - key
+                  type: object
+                serverName:
+                  description: Used to verify the hostname for the targets.
+                  type: string
+              type: object
             image:
               description: Thanos container image URL.
               type: string
@@ -2824,6 +2952,26 @@ spec:
             priorityClassName:
               description: Priority class assigned to the Pods
               type: string
+            queryConfig:
+              description: Define configuration for connecting to thanos query instances.
+                If this is defined, the QueryEndpoints field will be ignored. Maps
+                to the `query.config` CLI argument. Only available with thanos v0.11.0
+                and higher.
+              properties:
+                key:
+                  description: The key of the secret to select from.  Must be a valid
+                    secret key.
+                  type: string
+                name:
+                  description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                    TODO: Add other useful fields. apiVersion, kind, uid?'
+                  type: string
+                optional:
+                  description: Specify whether the Secret or its key must be defined
+                  type: boolean
+              required:
+              - key
+              type: object
             queryEndpoints:
               description: QueryEndpoints defines Thanos querier endpoints from which
                 to query metrics. Maps to the --query flag of thanos ruler.
@@ -4531,8 +4679,6 @@ spec:
                 - name
                 type: object
               type: array
-          required:
-          - queryEndpoints
           type: object
         status:
           description: 'Most recent observed status of the ThanosRuler cluster. Read-only.
