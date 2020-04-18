@@ -66,6 +66,7 @@ spec:
 {{ toYaml .Values.securityContext | indent 10 }}
       serviceAccountName: {{ template "rabbitmq-ha.serviceAccountName" . }}
       initContainers:
+{{- if .Values.initContainer.enabled }}
         - name: bootstrap
           image: {{ .Values.busyboxImage.repository}}:{{ .Values.busyboxImage.tag}}
           imagePullPolicy: {{ .Values.busyboxImage.pullPolicy }}
@@ -111,6 +112,7 @@ spec:
               mountPath: /etc/rabbitmq
             - name: {{ .Values.persistentVolume.name }}
               mountPath: /var/lib/rabbitmq
+{{- end}}
 {{- if .Values.extraInitContainers }}
 {{ tpl (toYaml .Values.extraInitContainers) . | indent 8 }}
 {{- end }}

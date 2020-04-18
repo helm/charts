@@ -370,6 +370,7 @@ resources: {}
   #   cpu: 100m
   #   memory: 1Gi
 initContainer:
+  enabled: true
   resources: {}
   #   limits:
   #     cpu: 100m
