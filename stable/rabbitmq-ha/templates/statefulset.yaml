@@ -71,9 +71,9 @@ spec:
           image: {{ .Values.busyboxImage.repository}}:{{ .Values.busyboxImage.tag}}
           imagePullPolicy: {{ .Values.busyboxImage.pullPolicy }}
           securityContext:
-            runAsGroup: 0
-            runAsNonRoot: false
-            runAsUser: 0
+            runAsGroup: {{ .Values.initContainer.runAsGroup }}
+            runAsNonRoot: {{ .Values.initContainer.runAsNonRoot }}
+            runAsUser: {{ .Values.initContainer.runAsUser }}
           command: ['sh']
           args:
           - "-c"
@@ -86,7 +86,7 @@ spec:
               touch "${RABBITMQ_MNESIA_DIR}/force_load"
             fi
             {{- end }}
-            {{- if and (.Values.securityContext.runAsUser) (.Values.securityContext.fsGroup) }}
+            {{- if and (.Values.securityContext.runAsUser) (.Values.securityContext.fsGroup) (not .Values.initContainer.skipChown) }}
             chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }} /var/lib/rabbitmq/
             chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }} /etc/rabbitmq
             {{- end }}
