@@ -12,8 +12,13 @@ sources:
   - https://github.com/coreos/kube-prometheus
   - https://github.com/coreos/prometheus-operator
   - https://coreos.com/operators/prometheus
+<<<<<<< HEAD
 version: 8.12.15
 appVersion: 0.38.0
+=======
+version: 8.12.14
+appVersion: 0.38.1
+>>>>>>> bdea64c99... [stable/prometheus-operator] Bump prometheus-operator to 0.38.1. Downgrading prometheus version to 2.16.0
 tillerVersion: ">=2.12.0"
 home: https://github.com/coreos/prometheus-operator
 keywords:
