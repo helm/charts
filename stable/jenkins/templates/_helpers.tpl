@@ -100,6 +100,9 @@ jenkins:
       namespace: "{{ template "jenkins.master.slaveKubernetesNamespace" . }}"
       serverUrl: "https://kubernetes.default"
       {{- if .Values.agent.enabled }}
+      podLabels:
+      - key: "jenkins/{{ .Release.Name }}-{{ .Values.agent.componentName }}"
+        value: "true"
       templates:
       {{- include "jenkins.casc.podTemplate" . | nindent 8 }}
     {{- if .Values.additionalAgents }}
@@ -175,8 +178,10 @@ Returns kubernetes pod template configuration as code
   showRawYaml: true
   serviceAccount: "{{ include "jenkins.serviceAccountAgentName" . }}"
   slaveConnectTimeoutStr: "{{ .Values.agent.slaveConnectTimeout }}"
+  {{- if .Values.agent.yamlTemplate }}
   yaml: |-
-    {{ tpl .Values.agent.yamlTemplate . | nindent 10 | trim }}
+  {{- tpl ( trim .Values.agent.yamlTemplate ) . | nindent 4 }}
+  {{- end }}
   yamlMergeStrategy: "override"
 {{- end -}}
 
@@ -189,7 +194,9 @@ Returns kubernetes pod template xml configuration
   <name>{{ .Values.agent.podName }}</name>
   <instanceCap>2147483647</instanceCap>
   <idleMinutes>{{ .Values.agent.idleMinutes }}</idleMinutes>
-  <label>{{ .Release.Name }}-{{ .Values.agent.componentName }} {{ .Values.agent.customJenkinsLabels  | join " " }}</label>
+  {{- $tmp := join " " .Values.agent.customJenkinsLabels }}
+  {{- $labels := printf "%s-%s %s" .Release.Name .Values.agent.componentName $tmp }}
+  <label>{{ $labels | trim  }}</label>
   <serviceAccount>{{ include "jenkins.serviceAccountAgentName" . }}</serviceAccount>
   <nodeSelector>
     {{- $local := dict "first" true }}

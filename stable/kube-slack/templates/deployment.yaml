@@ -41,6 +41,10 @@ spec:
             - configMapRef:
                 name: {{ template "kube-slack.fullname" . }}
           resources:
+      {{ if .Values.image.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.image.pullSecret }}
+      {{- end }}
 {{ toYaml .Values.resources | indent 12 }}
     {{- if .Values.rbac.create }}
       serviceAccountName: {{ template "kube-slack.fullname" . }}
