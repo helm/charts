@@ -298,7 +298,7 @@ data:
                         "tableColumn": "",
                         "targets": [
                             {
-                                "expr": "apiserver_request:availability7d{verb=\"read\"}",
+                                "expr": "apiserver_request:availability30d{verb=\"read\"}",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "",
@@ -669,7 +669,7 @@ data:
                         "tableColumn": "",
                         "targets": [
                             {
-                                "expr": "apiserver_request:availability7d{verb=\"write\"}",
+                                "expr": "apiserver_request:availability30d{verb=\"write\"}",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "",

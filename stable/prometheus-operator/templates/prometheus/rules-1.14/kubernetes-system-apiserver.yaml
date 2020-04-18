@@ -47,25 +47,6 @@ spec:
       for: 5m
       labels:
         severity: warning
-    - alert: KubeAPILatencyHigh
-      annotations:
-        message: The API server has a 99th percentile latency of {{`{{`}} $value {{`}}`}} seconds for {{`{{`}} $labels.verb {{`}}`}} {{`{{`}} $labels.resource {{`}}`}}.
-        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeapilatencyhigh
-      expr: cluster_quantile:apiserver_request_duration_seconds:histogram_quantile{job="apiserver",quantile="0.99"} > 4
-      for: 10m
-      labels:
-        severity: critical
-    - alert: KubeAPIErrorsHigh
-      annotations:
-        message: API server is returning errors for {{`{{`}} $value | humanizePercentage {{`}}`}} of requests for {{`{{`}} $labels.verb {{`}}`}} {{`{{`}} $labels.resource {{`}}`}} {{`{{`}} $labels.subresource {{`}}`}}.
-        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeapierrorshigh
-      expr: |-
-        sum(rate(apiserver_request_total{job="apiserver",code=~"5.."}[5m])) by (resource,subresource,verb)
-          /
-        sum(rate(apiserver_request_total{job="apiserver"}[5m])) by (resource,subresource,verb) > 0.10
-      for: 10m
-      labels:
-        severity: critical
     - alert: KubeAPIErrorsHigh
       annotations:
         message: API server is returning errors for {{`{{`}} $value | humanizePercentage {{`}}`}} of requests for {{`{{`}} $labels.verb {{`}}`}} {{`{{`}} $labels.resource {{`}}`}} {{`{{`}} $labels.subresource {{`}}`}}.
