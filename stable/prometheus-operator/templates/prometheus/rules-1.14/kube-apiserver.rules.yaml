@@ -345,11 +345,13 @@ spec:
       labels:
         verb: write
       record: apiserver_request:availability30d
-    - expr: sum by (code) (increase(apiserver_request_total{job="apiserver",verb=~"LIST|GET"}[30d]))
+    - expr: sum by (code, verb) (increase(apiserver_request_total{job="apiserver"}[30d]))
+      record: code_verb:apiserver_request_total:increase30d
+    - expr: sum by (code) (code_verb:apiserver_request_total:increase30d{verb=~"LIST|GET"})
       labels:
         verb: read
       record: code:apiserver_request_total:increase30d
-    - expr: sum by (code) (increase(apiserver_request_total{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[30d]))
+    - expr: sum by (code) (code_verb:apiserver_request_total:increase30d{verb=~"POST|PUT|PATCH|DELETE"})
       labels:
         verb: write
       record: code:apiserver_request_total:increase30d
