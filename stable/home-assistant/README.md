@@ -64,6 +64,7 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `service.loadBalancerIP`   | Loadbalancer IP for the home-assistant GUI | `` |
 | `service.loadBalancerSourceRanges`   | Loadbalancer client IP restriction range for the home-assistant GUI | `[]` |
 | `service.publishNotReadyAddresses`   | Set to true if the editors (vscode or configurator) should be reachable when home assistant does not run | `false` |
+| `service.externalTrafficPolicy`   | Loadbalancer externalTrafficPolicy | `` |
 | `hostNetwork`              | Enable hostNetwork - might be needed for discovery to work | `false` |
 | `service.nodePort`   | nodePort to listen on for the home-assistant GUI | `` |
 | `ingress.enabled`              | Enables Ingress | `false` |

@@ -198,6 +198,7 @@ configurator:
     externalIPs: []
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
+    # externalTrafficPolicy: Local
     # nodePort: 30000
 
 ## Add support for Prometheus
