@@ -151,7 +151,7 @@ spec:
         message: '{{`{{`}} $value {{`}}`}} Pods of DaemonSet {{`{{`}} $labels.namespace {{`}}`}}/{{`{{`}} $labels.daemonset {{`}}`}} are running where they are not supposed to run.'
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubedaemonsetmisscheduled
       expr: kube_daemonset_status_number_misscheduled{job="kube-state-metrics", namespace=~"{{ $targetNamespace }}"} > 0
-      for: 10m
+      for: 15m
       labels:
         severity: warning
     - alert: KubeCronJobRunning
