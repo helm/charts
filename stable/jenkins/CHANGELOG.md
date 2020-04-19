@@ -10,6 +10,14 @@ NOTE: The change log until version 1.5.7 is auto generated based on git commits.
 The README contains more details for this update.
 Please note that the updated values contain breaking changes.
 
+## 1.13.3
+
+Fix wrong indent in tolerations
+
+## 1.13.2
+
+Add support for custom ClusterIP
+
 ## 1.13.1
 
 Fix yaml template rendering in kubernetes pod template JCasC
