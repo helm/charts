@@ -55,6 +55,15 @@ graylog:
   ##
   env: {}
 
+  ## Additional environment variables in raw yaml format
+  ## - name: POD_IP
+  ##   valueFrom:
+  ##     fieldRef:
+  ##       fieldPath: status.podIP
+  ## - name: SERVICE_8000_NAME
+  ##   value: servicename
+  envRaw: {}
+
   ## Run as privileged container
   ##
   privileged: false
