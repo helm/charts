@@ -21,4 +21,4 @@ maintainers:
 name: instana-agent
 sources:
 - https://github.com/instana/instana-agent-docker
-version: 1.0.26
+version: 1.0.27

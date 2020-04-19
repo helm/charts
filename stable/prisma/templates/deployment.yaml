@@ -63,6 +63,12 @@ spec:
                   key: {{ template "prisma.databaseSecret.key" . }}
             - name: PRISMA_DB_MIGRATIONS
               value: {{ .Values.database.migrations | quote }}
+            - name: PRISMA_DB_NAME
+              value: {{ .Values.database.name | quote }}
+            - name: PRISMA_DB_SSL
+              value: {{ .Values.database.ssl | quote }}
+            - name: PRISMA_DB_CONNECTIONLIMIT
+              value: {{ .Values.database.connectionLimit | quote }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}

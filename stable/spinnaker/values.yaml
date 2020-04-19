@@ -1,8 +1,8 @@
 halyard:
-  spinnakerVersion: 1.16.7
+  spinnakerVersion: 1.19.4
   image:
     repository: gcr.io/spinnaker-marketplace/halyard
-    tag: 1.31.1
+    tag: 1.32.0
     pullSecrets: []
   # Set to false to disable persistence data volume for halyard
   persistence:
@@ -150,7 +150,7 @@ dockerRegistries:
 # - name: ecr
 #   address: <AWS-ACCOUNT-ID>.dkr.ecr.<REGION>.amazonaws.com
 #   username: AWS
-#   passwordCommand: "aws --region <REGION> ecr get-authorization-token --output text --query 'authorizationData[].authorizationToken' | base64 -d | sed 's/^AWS://'"
+#   passwordCommand: aws --region <REGION> ecr get-authorization-token --output text --query 'authorizationData[].authorizationToken' | base64 -d | sed 's/^AWS://'
 
 # If you don't want to put your passwords into a values file
 # you can use a pre-created secret instead of putting passwords

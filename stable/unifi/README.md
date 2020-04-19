@@ -100,6 +100,10 @@ The following tables lists the configurable parameters of the Unifi chart and th
 | `runAsRoot`                                     | `false`                      | Run the controller as UID0 (root user); if set to false, will give container SETFCAP instead                           |
 | `UID`                                           | `999`                        | Run the controller as user UID                                                                                         |
 | `GID`                                           | `999`                        | Run the controller as group GID                                                                                        |
+| `customCert.enabled`                            | `false`                      | Define whether you are using s custom certificate                                                                      |
+| `customCert.isChain`                            | `false`                      | If you are using a Let's Encrypt certificate which already includes the full chain set this to `true`                  |
+| `customCert.certName`                           | `cert.pem`                   | Name of the the certificate file in `<unifi-data>/cert`                                                                |
+| `customCert.keyName`                            | `privkey.pem`                | Name of the the private key file in `<unifi-data>/cert`                                                                |
 | `mongodb.enabled`                               | `false`                      | Use external MongoDB for data storage                                                                                  |
 | `mongodb.dbUri`                                 | `mongodb://mongo/unifi`      | external MongoDB URI                                                                                                   |
 | `mongodb.statDbUri`                             | `mongodb://mongo/unifi_stat` | external MongoDB statdb URI                                                                                            |

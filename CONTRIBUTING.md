@@ -4,7 +4,7 @@ The Kubernetes Charts project accepts contributions via GitHub pull requests. Th
 
 ## Sign Your Work
 
-The sign-off is a simple line at the end of the explanation for a commit. All 
+The sign-off is a simple line at the end of the explanation for a commit. All
 commits needs to be signed. Your signature certifies that you wrote the patch or
 otherwise have the right to contribute the material. The rules are pretty simple,
 if you can certify the below (from [developercertificate.org](http://developercertificate.org/)):
@@ -103,7 +103,7 @@ This repository is used by Chart developers for maintaining the official charts 
 * Allow customization of the application configuration
 * Provide a secure default configuration
 * Do not leverage alpha features of Kubernetes
-* Includes a [NOTES.txt](https://helm.sh/docs/chart_template_guide/notes_files/) explaining how to use the application after install
+* Includes a [NOTES.txt](https://helm.sh/docs/topics/charts/#chart-license-readme-and-notes) explaining how to use the application after install
 * Follows [best practices](https://helm.sh/docs/chart_best_practices/)
   (especially for [labels](https://helm.sh/docs/chart_best_practices/labels/)
   and [values](https://helm.sh/docs/chart_best_practices/values/))
