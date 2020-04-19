@@ -1,9 +1,0 @@
-agent:
-  yamlTemplate: |-
-    apiVersion: v1
-    kind: Pod
-    spec:
-      tolerations:
-      - key: "key"
-        operator: "Equal"
-        value: 10
