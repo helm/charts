@@ -3,6 +3,12 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.7.11
+
+### Minor changes
+
+* Use app.kubernetes.io labels instead of custom ones
+
 ## v1.7.10
 
 ### Minor changes
@@ -11,7 +17,7 @@ numbering uses [semantic versioning](http://semver.org).
 
 ## v1.7.9
 
-### Major changes
+### Minor changes
 
 * Add the SecurityContextConstraints if the security.openshift.io/v1 API is detected.
 
