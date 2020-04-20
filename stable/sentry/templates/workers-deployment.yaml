@@ -91,7 +91,7 @@ spec:
           value: {{ template "sentry.postgresql.host" . }}
         - name: SENTRY_POSTGRES_PORT
           value: {{ template "sentry.postgresql.port" . }}
-        {{- if or (.Values.redis.enabled) (.Values.redis.password) }}
+        {{- if or (.Values.redis.enabled) (.Values.redis.password) (.Values.redis.existingSecret)  }}
         - name: SENTRY_REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -129,6 +129,26 @@ spec:
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: /var/run/secrets/google/{{ .Values.filestore.gcs.credentialsFile }}
         {{ end }}
+        {{- if eq .Values.filestore.backend "s3" }}
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+            {{- if .Values.filestore.s3.existingSecret }}
+              name: {{ .Values.filestore.s3.existingSecret }}
+            {{- else }}
+              name: {{ template "sentry.fullname" . }}
+            {{- end }}
+              key: AWS_ACCESS_KEY_ID
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+            {{- if .Values.filestore.s3.existingSecret }}
+              name: {{ .Values.filestore.s3.existingSecret }}
+            {{- else }}
+              name: {{ template "sentry.fullname" . }}
+            {{- end }}
+              key: AWS_SECRET_ACCESS_KEY
+        {{- end }}
 {{- if .Values.worker.env }}
 {{ toYaml .Values.worker.env | indent 8 }}
 {{- end }}

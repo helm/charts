@@ -4,7 +4,7 @@ tillerVersion: ">=2.7.2"
 kubeVersion: ">=1.9.0-0"
 description: Hazelcast Jet is an application embeddable, distributed computing engine built on top of Hazelcast In-Memory Data Grid (IMDG). With Hazelcast IMDG providing storage functionality, Hazelcast Jet performs parallel execution to enable data-intensive applications to operate in near real-time.
 name: hazelcast-jet
-version: 1.5.0
+version: 1.5.1
 keywords:
   - hazelcast
   - jet
