@@ -1,5 +1,5 @@
 {{- if .Values.logdna.key -}}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ template "logdna.name" . }}
@@ -12,6 +12,11 @@ spec:
   updateStrategy:
 {{ toYaml .Values.daemonset.updateStrategy | indent 4 }}
   {{- end }}
+  selector:
+    matchLabels:
+      app: {{ template "logdna.name" . }}
+      chart: {{ template "logdna.chart" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
