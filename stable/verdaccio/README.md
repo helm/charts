@@ -1,5 +1,14 @@
 # Verdaccio
 
+----------------------------------------
+# Deprecation Warning
+*As part of the [deprecation timeline](https://github.com/helm/charts/#deprecation-timeline). We will move this to an official repository [here](https://github.com/verdaccio/charts)*
+
+Please make PRs / Issues here from now on
+
+No further updates should be added to this chart, but we will be notifying people to submit PRs here from now on instead. If you have any questions, feel free to get in touch with either of the maintainers. 
+----------------------------------------
+
 [Verdaccio](http://www.verdaccio.org) is a lightweight private
 [NPM](https://www.npmjs.com) proxy registry.
 

@@ -279,6 +279,15 @@ master:
         #   requests:
         #     cpu: 50m
         #     memory: 50Mi
+      # env:
+      #   - name: REQ_TIMEOUT
+      #     value: "30"
+      # SSH port value can be set to any unused TCP port.  The default, 1044, is a non-standard SSH port that has been chosen at random.
+      # Is only used to reload jcasc config from the sidecar container running in the Jenkins master pod.
+      # This TCP port will not be open in the pod (unless you specifically configure this), so Jenkins will not be
+      # accessible via SSH from outside of the pod.  Note if you use non-root pod privileges (runAsUser & fsGroup),
+      # this must be > 1024:
+      sshTcpPort: 1044
       # folder in the pod that should hold the collected dashboards:
       folder: "/var/jenkins_home/casc_configs"
       # If specified, the sidecar will search for JCasC config-maps inside this namespace.
