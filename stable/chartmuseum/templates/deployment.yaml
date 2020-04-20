@@ -110,6 +110,9 @@ spec:
 {{- if eq .Values.env.open.STORAGE "local" }}
         - --storage-local-rootdir={{ .Values.persistence.path }}
 {{- end }}
+{{- if .Values.extraArgs }}
+{{ toYaml .Values.extraArgs | indent 8 }}
+{{- end }}
         ports:
         - name: http
           containerPort: 8080
