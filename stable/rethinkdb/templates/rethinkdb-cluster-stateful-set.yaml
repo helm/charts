@@ -99,6 +99,13 @@ spec:
       {{- range .Values.cluster.persistentVolume.accessModes }}
         - {{ . | quote }}
       {{- end }}
+      {{- if .Values.cluster.persistentVolume.storageClass }}
+      {{- if (eq "-" .Values.cluster.persistentVolume.storageClass) }}
+      storageClassName: ""
+      {{- else }}
+      storageClassName: "{{ .Values.cluster.persistentVolume.storageClass }}"
+      {{- end }}
+      {{- end }}
       resources:
         requests:
           storage: {{ .Values.cluster.persistentVolume.size | quote }}
