@@ -54,9 +54,9 @@ hub:
   probePath: "/wd/hub/status"
 
   # Configure security context on the hub pod
-  securityContext:
-    fsGroup: 1000
-    runAsUser: 1000
+  # securityContext:
+  #   fsGroup: 1000
+  #   runAsUser: 1000
 
   ## Additional environment variables to set
   extraEnvs: []
@@ -174,9 +174,9 @@ chrome:
   podAnnotations: {}
 
   # Configure security context on the chrome pods
-  securityContext:
-    fsGroup: 1000
-    runAsUser: 1000
+  # securityContext:
+  #   fsGroup: 1000
+  #   runAsUser: 1000
 
   ## Additional environment variables to set
   extraEnvs: []
@@ -270,9 +270,9 @@ chromeDebug:
   podAnnotations: {}
 
   # Configure security context on the chrome debug pods
-  securityContext:
-    fsGroup: 1000
-    runAsUser: 1000
+  # securityContext:
+  #   fsGroup: 1000
+  #   runAsUser: 1000
 
   ## Additional environment variables to set
   extraEnvs: []
@@ -365,9 +365,9 @@ firefox:
   podAnnotations: {}
 
   # Configure security context on the firefox pods
-  securityContext:
-    fsGroup: 1000
-    runAsUser: 1000
+  # securityContext:
+  #   fsGroup: 1000
+  #   runAsUser: 1000
 
   ## Additional environment variables to set
   extraEnvs: []
@@ -447,9 +447,9 @@ firefoxDebug:
   podAnnotations: {}
 
   # Configure security context on the firefox debug pods
-  securityContext:
-    fsGroup: 1000
-    runAsUser: 1000
+  # securityContext:
+  #   fsGroup: 1000
+  #   runAsUser: 1000
 
   ## Additional environment variables to set
   extraEnvs: []
