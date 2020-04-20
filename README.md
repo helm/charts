@@ -49,7 +49,7 @@ $ helm repo add stable https://kubernetes-charts.storage.googleapis.com
 To add the Incubator charts for your local client, run `helm repo add`:
 
 ```
-$ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
+$ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com
 "incubator" has been added to your repositories
 ```
 
