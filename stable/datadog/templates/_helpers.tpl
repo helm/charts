@@ -76,13 +76,7 @@ Return the container runtime socket
 */}}
 {{- define "datadog.dockerOrCriSocketPath" -}}
 {{- if eq .Values.targetSystem "linux" -}}
-{{- if .Values.datadog.dockerSocketPath -}}
-{{- .Values.dockerSocketPath -}}
-{{- else if .Values.datadog.criSocketPath -}}
-{{- .Values.datadog.criSocketPath -}}
-{{- else -}}
-/var/run/docker.sock
-{{- end -}}
+{{- .Values.datadog.dockerSocketPath | default .Values.datadog.criSocketPath | default "/var/run/docker.sock" -}}
 {{- end -}}
 {{- if eq .Values.targetSystem "windows" -}}
 \\.\pipe\docker_engine
