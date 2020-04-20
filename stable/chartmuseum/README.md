@@ -152,6 +152,7 @@ their default values. See values.yaml for all available options.
 | `env.secret.BASIC_AUTH_USER`            | Username for basic HTTP authentication                                      | ``                                   |
 | `env.secret.BASIC_AUTH_PASS`            | Password for basic HTTP authentication                                      | ``                                   |
 | `env.secret.CACHE_REDIS_PASSWORD`       | Redis requirepass server configuration                                      | ``                                   |
+| `extraArgs`                             | Pass extra arguments to the chartmuseum binary                              | ``                                   |
 | `gcp.secret.enabled`                    | Flag for the GCP service account                                            | `false`                              |
 | `gcp.secret.name`                       | Secret name for the GCP json file                                           | ``                                   |
 | `gcp.secret.key`                        | Secret key for te GCP json file                                             | `credentials.json`                   |
