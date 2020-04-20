@@ -1,8 +1,20 @@
 # Datadog changelog
-## 2.2.1
+
+## 2.2.4
+
+* Move several EnvVars to `common-env-vars` to be accessible by the `trace-agent` #21991.
+* Fix discrepancies migration-guide and readme reporded in #21806 and #21920.
+* Fix EnvVars with integer value due to yaml. serialization, reported by #21853.
+* Fix .Values.datadog.tags encoding, reported by #21663.
+* Add Checksum to `xxx-cluster-agent-config` config map, reported by #21622 and contribution #21656.
+
+## 2.2.3
+
+* Fix `datadog.dockerOrCriSocketPath` helper #21992
+
+## 2.2.2
 
 * Fix indentation for `clusterAgent.volumes`.
-
 
 ## 2.2.1
 

@@ -18,7 +18,19 @@
 {{- end }}
 {{- if .Values.datadog.tags }}
 - name: DD_TAGS
-  value: {{ .Values.datadog.tags | quote }}
+  value: {{ .Values.datadog.tags | join " " | quote }}
+{{- end }}
+{{- if .Values.datadog.nodeLabelsAsTags }}
+- name: DD_KUBERNETES_NODE_LABELS_AS_TAGS
+  value: '{{ toJson .Values.datadog.nodeLabelsAsTags }}'
+{{- end }}
+{{- if .Values.datadog.podLabelsAsTags }}
+- name: DD_KUBERNETES_POD_LABELS_AS_TAGS
+  value: '{{ toJson .Values.datadog.podLabelsAsTags }}'
+{{- end }}
+{{- if .Values.datadog.podAnnotationsAsTags }}
+- name: DD_KUBERNETES_POD_ANNOTATIONS_AS_TAGS
+  value: '{{ toJson .Values.datadog.podAnnotationsAsTags }}'
 {{- end }}
 - name: KUBERNETES
   value: "yes"
@@ -30,7 +42,8 @@
 - name: DD_DD_URL
   value: {{ .Values.datadog.dd_url | quote }}
 {{- end }}
-{{- if .Values.datadog.env }}
-{{ toYaml .Values.datadog.env }}
+{{- range $value := .Values.datadog.env }}
+- name: {{ $value.name }}
+  value: {{ $value.value | quote }}
 {{- end }}
 {{- end -}}
