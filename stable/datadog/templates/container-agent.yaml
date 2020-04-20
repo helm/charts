@@ -69,18 +69,6 @@
           name: {{ template "clusterAgent.tokenSecretName" . }}
           key: token
     {{- end }}
-    {{- if .Values.datadog.nodeLabelsAsTags }}
-    - name: DD_KUBERNETES_NODE_LABELS_AS_TAGS
-      value: '{{ toJson .Values.datadog.nodeLabelsAsTags }}'
-    {{- end }}
-    {{- if .Values.datadog.podLabelsAsTags }}
-    - name: DD_KUBERNETES_POD_LABELS_AS_TAGS
-      value: '{{ toJson .Values.datadog.podLabelsAsTags }}'
-    {{- end }}
-    {{- if .Values.datadog.podAnnotationsAsTags }}
-    - name: DD_KUBERNETES_POD_ANNOTATIONS_AS_TAGS
-      value: '{{ toJson .Values.datadog.podAnnotationsAsTags }}'
-    {{- end }}
     - name: DD_APM_ENABLED
       value: "false"
     - name: DD_LOGS_ENABLED
@@ -114,9 +102,10 @@
     - name: DD_EXTRA_CONFIG_PROVIDERS
       value: "clusterchecks endpointschecks"
     {{- end }}
-{{- if .Values.agents.containers.agent.env }}
-{{ toYaml .Values.agents.containers.agent.env | indent 4 }}
-{{- end }}
+  {{- range $value := .Values.agents.containers.agent.env }}
+    - name: {{ $value.name }}
+      value: {{ $value.value | quote }}
+  {{- end }}
   volumeMounts:
     - name: config
       mountPath: {{ template "datadog.confPath" . }}

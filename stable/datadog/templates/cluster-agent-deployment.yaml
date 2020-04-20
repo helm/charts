@@ -29,6 +29,12 @@ spec:
         app: {{ template "datadog.fullname" . }}-cluster-agent
       name: {{ template "datadog.fullname" . }}-cluster-agent
       annotations:
+        {{- if .Values.clusterAgent.datadog_cluster_yaml }}
+        checksum/clusteragent-config: {{ tpl (toYaml .Values.clusterAgent.datadog_cluster_yaml) . | sha256sum }}
+        {{- end }}
+        {{- if .Values.clusterAgent.confd }}
+        checksum/confd-config: {{ tpl (toYaml .Values.clusterAgent.confd) . | sha256sum }}
+        {{- end }}
         ad.datadoghq.com/cluster-agent.check_names: '["prometheus"]'
         ad.datadoghq.com/cluster-agent.init_configs: '[{}]'
         ad.datadoghq.com/cluster-agent.instances: |
