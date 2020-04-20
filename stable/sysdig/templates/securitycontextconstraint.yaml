@@ -6,6 +6,8 @@ metadata:
     kubernetes.io/description: |
       This provides the minimum requirements to the Sysdig agent to run in the Openshift.
   name: {{ template "sysdig.fullname" . }}
+  labels:
+{{ include "sysdig.labels" . | indent 4 }}
 allowHostDirVolumePlugin: true
 allowHostIPC: false
 allowHostNetwork: true

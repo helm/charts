@@ -4,19 +4,17 @@ kind: DaemonSet
 metadata:
   name: {{ template "sysdig.fullname" . }}
   labels:
-    app: {{ template "sysdig.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+{{ include "sysdig.labels" . | indent 4 }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "sysdig.fullname" .}}
+      app.kubernetes.io/name: {{ include "sysdig.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       name: {{ template "sysdig.fullname" .}}
       labels:
-        app: {{ template "sysdig.fullname" .}}
+{{ include "sysdig.labels" . | indent 8 }}
     spec:
       serviceAccountName: {{ template "sysdig.serviceAccountName" .}}
 {{- if .Values.priorityClassName }}
