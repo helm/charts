@@ -147,7 +147,7 @@ spec:
               readOnly: true
             {{- end }}
             {{- if .Values.master.installPlugins }}
-            {{- if .Values.master.overridePluginsFromImage }}
+            {{- if .Values.master.overwritePluginsFromImage }}
             - mountPath: {{ .Values.master.jenkinsRef }}/plugins
               name: plugins
             {{- end }}
