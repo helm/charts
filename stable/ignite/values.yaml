@@ -26,11 +26,11 @@ env:
 peerClassLoadingEnabled: false
 
 ## envFrom can be used to pass configmaps or secrets as environment
-#envFrom:
-#  - configMapRef:
-#      name: env-configmap
-#  - secretRef:
-#      name: env-secrets
+# envFrom:
+#   - configMapRef:
+#       name: env-configmap
+#   - secretRef:
+#       name: env-secrets
 
 ## Additional init containers to run before the pods.
 ## for example, be used to run a sidecar that chown Logs storage .
