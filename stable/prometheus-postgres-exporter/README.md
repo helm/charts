@@ -55,6 +55,7 @@ The following table lists the configurable parameters of the postgres Exporter c
 | `serviceMonitor.timeout`          | Timeout after which the scrape is ended                                 |                             |
 | `resources`          |                                  |                    `{}`                                  |
 | `config.datasource`                 | Postgresql datasource configuration                      |  see [values.yaml](values.yaml)              |
+| `config.datasourceSecret`       | Postgresql datasource configuration from secret                  |  see [values.yaml](values.yaml)              |
 | `config.queries`                | SQL queries that the exporter will run | [postgres exporter defaults](https://github.com/wrouesnel/postgres_exporter/blob/master/queries.yaml) |
 | `config.disableDefaultMetrics`  | Specifies whether to use only metrics from `queries.yaml`| `false` |
 | `config.autoDiscoverDatabases`  | Specifies whether to autodiscover all databases | `false` |
