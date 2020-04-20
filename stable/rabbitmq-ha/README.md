@@ -36,12 +36,9 @@ that can be configured during installation.
 
 ## Upgrading the Chart
 
-To upgrade the chart, you need to make sure that you are using the same value
-of the `rabbitmqErlangCookie` amongst the releases. If you didn't define it at
-the first place, you can upgrade using the following command:
+The chart will not edit the secret. If you wish to rotate the secret you must specify it on the command line. Otherwise no action will be performed on the secret and it will stay the same.
 
 ```
-$ export ERLANGCOOKIE=$(kubectl get secrets -n <NAMESPACE> <HELM_RELEASE_NAME>-rabbitmq-ha -o jsonpath="{.data.rabbitmq-erlang-cookie}" | base64 --decode)
 $ helm upgrade \
     --set rabbitmqErlangCookie=$ERLANGCOOKIE \
     <HELM_RELEASE_NAME> stable/rabbitmq-ha
