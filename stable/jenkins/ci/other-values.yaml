@@ -1,3 +1,5 @@
+master:
+  overwritePluginsFromImage: false
 agent:
   resources:
     limits:

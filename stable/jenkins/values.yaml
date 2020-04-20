@@ -220,6 +220,10 @@ master:
 
   # Enable to always override the installed plugins with the values of 'master.installPlugins' on upgrade or redeployment.
   # overwritePlugins: true
+
+  # Configures if plugins bundled with `master.image` should be overwritten with the values of 'master.installPlugins' on upgrade or redeployment.
+  master.overwritePluginsFromImage: true
+
   # Enable HTML parsing using OWASP Markup Formatter Plugin (antisamy-markup-formatter), useful with ghprb plugin.
   # The plugin is not installed by default, please update master.installPlugins.
   enableRawHtmlMarkupFormatter: false
