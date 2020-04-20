@@ -228,7 +228,7 @@ datadog:
     enabled: false
 
     ## @param port - integer - optional - default: 8126
-    ## Override the trace Agent DogStatsD port.
+    ## Override the trace Agent port.
     ## Note: Make sure your client is sending to the same UDP port.
     #
     port: 8126

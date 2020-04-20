@@ -13,6 +13,8 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
+  annotations:
+    checksum/clusteragent-config: {{ tpl (toYaml .Values.clusterAgent.datadog_cluster_yaml) . | sha256sum }}
 data:
 {{tpl (toYaml .Values.clusterAgent.datadog_cluster_yaml) . | indent 2}}
 {{- end }}

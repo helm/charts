@@ -9,9 +9,10 @@
   env:
     - name: DD_LOG_LEVEL
       value: {{ .Values.agents.containers.systemProbe.logLevel | default .Values.datadog.logLevel | quote }}
-{{- if .Values.agents.containers.systemProbe.env }}
-{{ toYaml .Values.agents.containers.systemProbe.env | indent 4 }}
-{{- end }}
+  {{- range $value := .Values.agents.containers.systemProbe.env }}
+    - name: {{ $value.name }}
+      value: {{ $value.value | quote }}
+  {{- end }}
   resources:
 {{ toYaml .Values.agents.containers.systemProbe.resources | indent 4 }}
   volumeMounts:
