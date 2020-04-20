@@ -29,9 +29,9 @@ spec:
         heritage: {{.Release.Service | quote }}
         release: {{.Release.Name | quote }}
         chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+{{- if .Values.job.annotations }}
       annotations:
-{{- with .Values.job.annotations }}
-{{ toYaml . | indent 8 }}
+{{ toYaml .Values.job.annotations | indent 8 }}
 {{- end }}
     spec:
       restartPolicy: Never
