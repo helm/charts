@@ -100,6 +100,14 @@ extraEnvSecrets:
   #   secret: mqtt
   #   key: password
 
+## If you'd like to provide your own Kubernetes Secret object instead of passing your values
+## individually, pass in the name of a created + populated Secret.
+## All secrets will be mounted as environment variables, with each key/value mapping to a
+## corresponding environment variable.
+##
+extraSecretForEnvFrom: []
+# - home-assistant-secrets
+
 # Enable pod security context (must be `true` if runAsUser or fsGroup are set)
 usePodSecurityContext: true
 # Set runAsUser to 1000 to let home-assistant run as non-root user 'hass' which exists in 'runningman84/alpine-homeassistant' docker image.
@@ -120,6 +128,11 @@ git:
 
   ## Specify the command that runs in the git-sync container to pull in configuration.
   # command: []
+
+  # Committer settings
+  # user:
+  #   name: ""
+  #   email: ""
 
   # repo:
   secret: git-creds
@@ -190,6 +203,7 @@ configurator:
     externalIPs: []
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
+    # externalTrafficPolicy: Local
     # nodePort: 30000
 
 ## Add support for Prometheus

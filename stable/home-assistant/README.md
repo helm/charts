@@ -64,6 +64,7 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `service.loadBalancerIP`   | Loadbalancer IP for the home-assistant GUI | `` |
 | `service.loadBalancerSourceRanges`   | Loadbalancer client IP restriction range for the home-assistant GUI | `[]` |
 | `service.publishNotReadyAddresses`   | Set to true if the editors (vscode or configurator) should be reachable when home assistant does not run | `false` |
+| `service.externalTrafficPolicy`   | Loadbalancer externalTrafficPolicy | `` |
 | `hostNetwork`              | Enable hostNetwork - might be needed for discovery to work | `false` |
 | `service.nodePort`   | nodePort to listen on for the home-assistant GUI | `` |
 | `ingress.enabled`              | Enables Ingress | `false` |
@@ -81,6 +82,8 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `git.secret`                   | Git secret to use for git-sync | `git-creds` |
 | `git.syncPath`                 | Git sync path | `/config` |
 | `git.keyPath`                  | Git ssh key path | `/root/.ssh` |
+| `git.user.name`                | Human-readable name in the “committer” and “author” fields | `` |
+| `git.user.email`               | Email address for the “committer” and “author” fields | `` |
 | `zwave.enabled`                  | Enable zwave host device passthrough. Also enables privileged container mode. | `false` |
 | `zwave.device`                  | Device to passthrough to guest | `ttyACM0` |
 | `hostMounts`        | Array of host directories to mount; can be used for devices | [] |
