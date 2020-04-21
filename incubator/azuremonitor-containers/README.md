@@ -124,3 +124,7 @@ If you need help with this chart, please reach us out through [this](mailto:askc
 ## Custom resource
 
 Starting with chart version 2.0.0, chart will create a CRD (healthstates.azmon.container.insights) in kube-system namespace. This is used by the agent for cluster health monitoring.
+
+## Container Runtime(s)
+
+Starting with chart version 2.7.0, chart will support Container Runtime Interface(CRI) compatiable runtimes such as CRI-O and ContainerD etc. in addition to Docker/Moby.
