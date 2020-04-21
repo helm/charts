@@ -203,10 +203,14 @@ spec:
               value: "{{ .Values.configurator.enforceBasepath }}"
             {{- end }}
             {{- if and (.Values.git.enabled) (.Values.git.user.name) }}
+            - name: GIT_AUTHOR_NAME
+              value: {{ .Values.git.user.name }}
             - name: GIT_COMMITTER_NAME
               value: {{ .Values.git.user.name }}
             {{ end }}
             {{- if and (.Values.git.enabled) (.Values.git.user.email) }}
+            - name: GIT_AUTHOR_EMAIL
+              value: {{ .Values.git.user.email }}
             - name: GIT_COMMITTER_EMAIL
               value: {{ .Values.git.user.email }}
             {{ end }}
@@ -264,10 +268,14 @@ spec:
                   key: password
             {{- end }}
             {{- if and (.Values.git.enabled) (.Values.git.user.name) }}
+            - name: GIT_AUTHOR_NAME
+              value: {{ .Values.git.user.name }}
             - name: GIT_COMMITTER_NAME
               value: {{ .Values.git.user.name }}
             {{ end }}
             {{- if and (.Values.git.enabled) (.Values.git.user.email) }}
+            - name: GIT_AUTHOR_EMAIL
+              value: {{ .Values.git.user.email }}
             - name: GIT_COMMITTER_EMAIL
               value: {{ .Values.git.user.email }}
             {{ end }}
@@ -315,10 +323,14 @@ spec:
                   key: token
             {{- end }}
             {{- if and (.Values.git.enabled) (.Values.git.user.name) }}
+            - name: GIT_AUTHOR_NAME
+              value: {{ .Values.git.user.name }}
             - name: GIT_COMMITTER_NAME
               value: {{ .Values.git.user.name }}
             {{ end }}
             {{- if and (.Values.git.enabled) (.Values.git.user.email) }}
+            - name: GIT_AUTHOR_EMAIL
+              value: {{ .Values.git.user.email }}
             - name: GIT_COMMITTER_EMAIL
               value: {{ .Values.git.user.email }}
             {{ end }}
