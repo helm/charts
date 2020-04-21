@@ -60,10 +60,11 @@ rules:
   verbs:
   - get
   - update
-- apiGroups:  # To create the leader election token
+- apiGroups:  # To create the leader election token and hpa events
   - ""
   resources:
   - configmaps
+  - events
   verbs:
   - create
 - nonResourceURLs:
