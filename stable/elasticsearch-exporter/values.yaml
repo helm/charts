@@ -108,7 +108,7 @@ es:
 
 
   ssl:
-    ## If true, a secure connection to ES cluster is used (requires SSL certs below)
+    ## If true, a secure connection to ES cluster is used
     ##
     enabled: false
 
@@ -125,6 +125,9 @@ es:
       # Path of ca pem file which should match a secretMount path
       path: /ssl/ca.pem
     client:
+      ## if true, client SSL certificate is used for authentication
+      ##
+      enabled: true
 
       ## PEM that contains the client cert to connect to Elasticsearch.
       ##

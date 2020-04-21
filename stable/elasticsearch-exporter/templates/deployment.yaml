@@ -90,7 +90,7 @@ spec:
                     {{- end }}
                     {{- if .Values.es.ssl.enabled }}
                     "--es.ca={{.Values.es.ssl.ca.path }}",
-                    {{- if and .Values.es.ssl.client.pemPath .Values.es.ssl.client.keyPath }}
+                    {{- if and .Values.es.ssl.client.enabled }}
                     "--es.client-cert={{ .Values.es.ssl.client.pemPath }}",
                     "--es.client-private-key={{ .Values.es.ssl.client.keyPath }}",
                     {{- end }}
