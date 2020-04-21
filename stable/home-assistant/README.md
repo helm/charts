@@ -82,8 +82,8 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `git.secret`                   | Git secret to use for git-sync | `git-creds` |
 | `git.syncPath`                 | Git sync path | `/config` |
 | `git.keyPath`                  | Git ssh key path | `/root/.ssh` |
-| `git.user.name`                | Human-readable name in the “committer” field. | `` |
-| `git.user.email`               | Email address for the “committer” field | `` |
+| `git.user.name`                | Human-readable name in the “committer” and “author” fields | `` |
+| `git.user.email`               | Email address for the “committer” and “author” fields | `` |
 | `zwave.enabled`                  | Enable zwave host device passthrough. Also enables privileged container mode. | `false` |
 | `zwave.device`                  | Device to passthrough to guest | `ttyACM0` |
 | `hostMounts`        | Array of host directories to mount; can be used for devices | [] |
