@@ -102,7 +102,7 @@ extraEnvSecrets:
 
 ## If you'd like to provide your own Kubernetes Secret object instead of passing your values
 ## individually, pass in the name of a created + populated Secret.
-## All secrets will be mounted as environment variables, with each key/value mapping to a 
+## All secrets will be mounted as environment variables, with each key/value mapping to a
 ## corresponding environment variable.
 ##
 extraSecretForEnvFrom: []
