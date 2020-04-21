@@ -185,6 +185,7 @@ Returns kubernetes pod template configuration as code
      {{- else if (eq $volume.type "EmptyDir") }} emptyDirVolume:
      {{- else if (eq $volume.type "HostPath") }} hostPathVolume:
      {{- else if (eq $volume.type "Nfs") }} nfsVolume:
+     {{- else if (eq $volume.type "PVC") }} persistentVolumeClaim:
      {{- else if (eq $volume.type "Secret") }} secretVolume:
      {{- else }} {{ $volume.type }}:
      {{- end }}
@@ -225,11 +226,19 @@ Returns kubernetes pod template xml configuration
     <nodeUsageMode>NORMAL</nodeUsageMode>
   <volumes>
 {{- range $index, $volume := .Values.agent.volumes }}
+  {{- if (eq $volume.type "PVC") }}
+    <org.csanchez.jenkins.plugins.kubernetes.volumes.PersistentVolumeClaim>
+  {{- else }}
     <org.csanchez.jenkins.plugins.kubernetes.volumes.{{ $volume.type }}Volume>
-{{- range $key, $value := $volume }}{{- if not (eq $key "type") }}
+  {{- end }}
+  {{- range $key, $value := $volume }}{{- if not (eq $key "type") }}
       <{{ $key }}>{{ $value }}</{{ $key }}>
-{{- end }}{{- end }}
+  {{- end }}{{- end }}
+  {{- if (eq $volume.type "PVC") }}
+    </org.csanchez.jenkins.plugins.kubernetes.volumes.PersistentVolumeClaim>
+  {{- else }}
     </org.csanchez.jenkins.plugins.kubernetes.volumes.{{ $volume.type }}Volume>
+  {{- end }}
 {{- end }}
   </volumes>
   <containers>
