@@ -61,13 +61,13 @@ spec:
                 secretKeyRef:
                   name: {{ $proxySecret }}
                   key: proxy-cookie-secret
-            {{- if .Values.defaultAllowedEmailDomains }}
-            {{- if (eq "-" .Values.defaultAllowedEmailDomains) }}
+            {{- if .Values.proxy.defaultAllowedEmailDomains }}
+            {{- if (eq "-" .Values.proxy.defaultAllowedEmailDomains) }}
             - name: DEFAULT_ALLOWED_EMAIL_DOMAINS
               value: ""
             {{- else }}
             - name: DEFAULT_ALLOWED_EMAIL_DOMAINS
-              value: {{ .Values.defaultAllowedEmailDomains | quote }}
+              value: {{ .Values.proxy.defaultAllowedEmailDomains | quote }}
             {{- end }}
             {{- else }}
             - name: DEFAULT_ALLOWED_EMAIL_DOMAINS
