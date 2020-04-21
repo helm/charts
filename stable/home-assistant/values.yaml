@@ -129,9 +129,10 @@ git:
   ## Specify the command that runs in the git-sync container to pull in configuration.
   # command: []
 
-  # Author settings
-  authorName: ""
-  authorEmail: ""
+  # Committer settings
+  user:
+    name: ""
+    email: ""
 
   # repo:
   secret: git-creds

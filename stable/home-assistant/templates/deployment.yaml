@@ -202,13 +202,13 @@ spec:
             - name: HC_ENFORCE_BASEPATH
               value: "{{ .Values.configurator.enforceBasepath }}"
             {{- end }}
-            {{- if and (.Values.git.enabled) (.Values.git.authorName) }}
-            - name: GIT_AUTHOR_NAME
-              value: {{ .Values.git.authorName }}
+            {{- if and (.Values.git.enabled) (.Values.git.user.name) }}
+            - name: GIT_COMMITTER_NAME
+              value: {{ .Values.git.user.name }}
             {{ end }}
-            {{- if and (.Values.git.enabled) (.Values.git.authorEmail) }}
-            - name: GIT_AUTHOR_EMAIL
-              value: {{ .Values.git.authorEmail }}
+            {{- if and (.Values.git.enabled) (.Values.git.user.email) }}
+            - name: GIT_COMMITTER_EMAIL
+              value: {{ .Values.git.user.email }}
             {{ end }}
             {{- range $key, $value := .Values.configurator.extraEnv }}
             - name: {{ $key }}
@@ -263,13 +263,13 @@ spec:
                   name: {{ template "home-assistant.fullname" . }}-vscode
                   key: password
             {{- end }}
-            {{- if and (.Values.git.enabled) (.Values.git.authorName) }}
-            - name: GIT_AUTHOR_NAME
-              value: {{ .Values.git.authorName }}
+            {{- if and (.Values.git.enabled) (.Values.git.user.name) }}
+            - name: GIT_COMMITTER_NAME
+              value: {{ .Values.git.user.name }}
             {{ end }}
-            {{- if and (.Values.git.enabled) (.Values.git.authorEmail) }}
-            - name: GIT_AUTHOR_EMAIL
-              value: {{ .Values.git.authorEmail }}
+            {{- if and (.Values.git.enabled) (.Values.git.user.email) }}
+            - name: GIT_COMMITTER_EMAIL
+              value: {{ .Values.git.user.email }}
             {{ end }}
             {{- range $key, $value := .Values.vscode.extraEnv }}
             - name: {{ $key }}
@@ -314,13 +314,13 @@ spec:
                   name: {{ template "home-assistant.fullname" . }}-appdaemon
                   key: token
             {{- end }}
-            {{- if and (.Values.git.enabled) (.Values.git.authorName) }}
-            - name: GIT_AUTHOR_NAME
-              value: {{ .Values.git.authorName }}
+            {{- if and (.Values.git.enabled) (.Values.git.user.name) }}
+            - name: GIT_COMMITTER_NAME
+              value: {{ .Values.git.user.name }}
             {{ end }}
-            {{- if and (.Values.git.enabled) (.Values.git.authorEmail) }}
-            - name: GIT_AUTHOR_EMAIL
-              value: {{ .Values.git.authorEmail }}
+            {{- if and (.Values.git.enabled) (.Values.git.user.email) }}
+            - name: GIT_COMMITTER_EMAIL
+              value: {{ .Values.git.user.email }}
             {{ end }}
             {{- range $key, $value := .Values.vscode.extraEnv }}
             - name: {{ $key }}
