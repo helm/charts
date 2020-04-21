@@ -1,5 +1,11 @@
 # Default values for buzzfeed-sso.
 
+# not required by default. If you are using_allowed groups, DEFAULT_ALLOWED_EMAIL_DOMAINS needs to be en empty string
+# this is explained in this pr https://github.com/buzzfeed/sso/pull/280#issuecomment-584088825
+# to get an empty value, set the below to -, as per this issue https://github.com/helm/helm/issues/2600#issuecomment-310108850
+# otherwise populate it with your defauly allowed email domains
+defaultAllowedEmailDomains: ""
+
 emailDomain: "<your_email_domain>"  # Required. e.g "email.mydomain.foo"
 rootDomain: "<your_root_domain>"  # Required. e.g "mydomain.foo"
 # whitelistedEmails: "<whitelisted_addresses>" # Optional. e.g. "userA.nameA@mydomain.foo,userB.nameB@mydomain.foo"
@@ -78,7 +84,7 @@ provider:
 
 image:
   repository: buzzfeed/sso
-  tag: v2.1.0
+  tag: v2.0.0
   pullPolicy: IfNotPresent
 
 ingress:
