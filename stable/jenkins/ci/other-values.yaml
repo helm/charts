@@ -39,3 +39,7 @@ agent:
             resourceRequestMemory: "512Mi"
             resourceLimitCpu: "1"
             resourceLimitMemory: "1024Mi"
+  volumes:
+    - type: EmptyDir
+      mountPath: /var/myapp/myemptydir
+      memory: false

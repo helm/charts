@@ -439,17 +439,29 @@ agent:
   # Allowed types are: ConfigMap, EmptyDir, HostPath, Nfs, Pod, Secret
   # Configure the attributes as they appear in the corresponding Java class for that type
   # https://github.com/jenkinsci/kubernetes-plugin/tree/master/src/main/java/org/csanchez/jenkins/plugins/kubernetes/volumes
+  volumes: []
+  # - type: ConfigMap
+  #   configMapName: myconfigmap
+  #   mountPath: /var/myapp/myconfigmap
+  # - type: EmptyDir
+  #   mountPath: /var/myapp/myemptydir
+  #   memory: false
+  # - type: HostPath
+  #   hostPath: /var/lib/containers
+  #   mountPath: /var/myapp/myhostpath
+  # - type: Nfs
+  #   mountPath: /var/myapp/mynfs
+  #   readOnly: false
+  #   serverAddress: "192.0.2.0"
+  #   serverPath: /var/lib/containers
+  # - type: Secret
+  #   defaultMode: "600"
+  #   mountPath: /var/myapp/mysecret
+  #   secretName: mysecret
   # Pod-wide ennvironment, these vars are visible to any container in the agent pod
   envVars: []
   # - name: PATH
   #   value: /usr/local/bin
-  volumes: []
-  # - type: Secret
-  #   secretName: mysecret
-  #   mountPath: /var/myapp/mysecret
-  # - type: EmptyDir
-  #   mountPath: "/var/lib/containers"
-  #   memory: false
   nodeSelector: {}
   # Key Value selectors. Ex:
   # jenkins-agent: v1

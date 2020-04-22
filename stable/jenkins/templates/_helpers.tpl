@@ -178,6 +178,23 @@ Returns kubernetes pod template configuration as code
   showRawYaml: true
   serviceAccount: "{{ include "jenkins.serviceAccountAgentName" . }}"
   slaveConnectTimeoutStr: "{{ .Values.agent.slaveConnectTimeout }}"
+{{- if .Values.agent.volumes }}
+  volumes:
+  {{- range $index, $volume := .Values.agent.volumes }}
+    -{{- if (eq $volume.type "ConfigMap") }} configMapVolume:
+     {{- else if (eq $volume.type "EmptyDir") }} emptyDirVolume:
+     {{- else if (eq $volume.type "HostPath") }} hostPathVolume:
+     {{- else if (eq $volume.type "Nfs") }} nfsVolume:
+     {{- else if (eq $volume.type "Secret") }} secretVolume:
+     {{- else }} {{ $volume.type }}:
+     {{- end }}
+    {{- range $key, $value := $volume }}
+      {{- if not (eq $key "type") }}
+        {{ $key }}: {{ if kindIs "string" $value }}{{ tpl $value $ | quote }}{{ else }}{{ $value }}{{ end }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}
   {{- if .Values.agent.yamlTemplate }}
   yaml: |-
   {{- tpl ( trim .Values.agent.yamlTemplate ) . | nindent 4 }}
