@@ -60,6 +60,9 @@ hostNetwork: false
 
 priorityClassName: ""
 
+securityContext:
+  privileged: true
+
 resources: {}
 
 annotations: {}
@@ -93,3 +96,7 @@ env:
 #    valueFrom:
 #      fieldRef:
 #        fieldPath: metadata.name
+
+extraVolumes: []
+
+extraVolumeMounts: []

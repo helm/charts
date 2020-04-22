@@ -50,9 +50,12 @@ Parameter                        | Description                                  
 `database.connector`             | Database connector                           | `postgres`
 `database.host`                  | Host for the database endpoint               | `""`
 `database.port`                  | Port for the database endpoint               | `""`
+`database.name`                  | Database name for Prisma objects             | `prisma`
 `database.user`                  | Database user                                | `prisma`
 `database.password`              | Database password                            | `""`
 `database.migrations`            | Enable database migrations                   | `true`
+`database.ssl`                   | Enable SSL for DB connections                | `false`
+`database.connectionLimit`       | The maximum number of database connections   | `2`
 `auth.enabled`                   | Enable Prisma Management API authentication  | `false`
 `auth.secret`                    | Secret to use for authentication             | `nil`
 `service.type`                   | Type of Service                              | `ClusterIP`

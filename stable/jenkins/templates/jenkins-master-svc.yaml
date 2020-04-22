@@ -17,6 +17,9 @@ metadata:
 {{ toYaml .Values.master.serviceAnnotations | indent 4 }}
 {{- end }}
 spec:
+  {{if (and (eq .Values.master.serviceType "ClusterIP") (not (empty .Values.master.clusterIP)))}}
+  clusterIP: {{.Values.master.clusterIP}}
+  {{end}}
   ports:
     - port: {{.Values.master.servicePort}}
       name: http

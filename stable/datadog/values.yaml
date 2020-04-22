@@ -12,8 +12,13 @@
 #
 # fullnameOverride: ""
 
-datadog:
+## @param targetSystem - string - required
+## Set the target OS for this deployment
+## Possible values: linux, windows
+#
+targetSystem: "linux"
 
+datadog:
   ## @param apiKey - string - required
   ## Set this to your Datadog API key before the Agent runs.
   ## ref: https://app.datadoghq.com/account/settings#agent/kubernetes
@@ -205,17 +210,12 @@ datadog:
     #
     # containerCollectAll: false
 
-  ## @param logsEnabled - boolean - optional - default: false
-  ## Enables this to activate Datadog Agent log collection.
-  ## ref: https://docs.datadoghq.com/agent/basic_agent_usage/kubernetes/#log-collection-setup
-  #
-  # logsEnabled: false
-
-  ## @param logsConfigContainerCollectAll - boolean - optional - default: false
-  ## Enable this to allow log collection for all containers.
-  ## ref: https://docs.datadoghq.com/agent/basic_agent_usage/kubernetes/#log-collection-setup
-  #
-  # logsConfigContainerCollectAll: false
+    ## @param containerUseFiles - boolean - optional - default: true
+    ## Collect logs from files in /var/log/pods instead of using container runtime API.
+    ## It's usually the most efficient way of collecting logs.
+    ## ref: https://docs.datadoghq.com/agent/basic_agent_usage/kubernetes/#log-collection-setup
+    #
+    containerCollectUsingFiles: true
 
   ## @param apm - object - required
   ## Enable apm agent and provide custom configs
@@ -228,7 +228,7 @@ datadog:
     enabled: false
 
     ## @param port - integer - optional - default: 8126
-    ## Override the trace Agent DogStatsD port.
+    ## Override the trace Agent port.
     ## Note: Make sure your client is sending to the same UDP port.
     #
     port: 8126
@@ -278,7 +278,6 @@ datadog:
   ## This is supported starting from agent 6.6.0
   #
   # criSocketPath: /var/run/containerd/containerd.sock
-
 
   ## @param processAgent - object - required
   ## Enable process agent and provide custom configs
@@ -345,7 +344,6 @@ datadog:
 ## ref: https://docs.datadoghq.com/agent/kubernetes/cluster/
 #
 clusterAgent:
-
   ## @param enabled - boolean - required
   ## Set this to true to enable Datadog Cluster Agent
   #
@@ -355,7 +353,6 @@ clusterAgent:
   ## Define the Datadog Cluster-Agent image to work with.
   #
   image:
-
     ## @param repository - string - required
     ## Define the repository to use:
     #
@@ -394,7 +391,6 @@ clusterAgent:
   ## @param rbac - object - required
   ## Provide Cluster Agent Deployment pod(s) RBAC configuration
   rbac:
-
     ## @param created - boolean - required
     ## If true, create & use RBAC resources
     #
@@ -540,7 +536,6 @@ clusterAgent:
   createPodDisruptionBudget: false
 
 kubeStateMetrics:
-
   ## @param enabled - boolean - required
   ## If true, deploys the kube-state-metrics deployment.
   ## ref: https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics
@@ -562,7 +557,6 @@ agents:
   ## Define the Datadog image to work with.
   #
   image:
-
     ## @param repository - string - required
     ## Define the repository to use:
     ## use "datadog/agent" for Datadog Agent 7
@@ -603,7 +597,6 @@ agents:
     serviceAccountName: default
 
   containers:
-
     agent:
       ## @param env - list - required
       ## Additional environment variables for the agent container.
@@ -808,7 +801,8 @@ agents:
   # podLabels: {}
 
   ## @param useConfigMap - boolean - optional
-  #  Configures a configmap to provide the agent configuration
+  ## Configures a configmap to provide the agent configuration
+  ## Use this in combination with the `agent.customAgentConfig` parameter.
   #
   # useConfigMap: false
 
@@ -816,6 +810,7 @@ agents:
   ## Specify custom contents for the datadog agent config (datadog.yaml).
   ## ref: https://docs.datadoghq.com/agent/guide/agent-configuration-files/?tab=agentv6
   ## ref: https://github.com/DataDog/datadog-agent/blob/master/pkg/config/config_template.yaml
+  ## Note the `agent.useConfigMap` needs to be set to `true` for this parameter to be taken into account.
   #
   # customAgentConfig:
   #   # Autodiscovery for Kubernetes
@@ -843,7 +838,6 @@ agents:
   #   # jmx_use_container_support: true
 
 clusterChecksRunner:
-
   ## @param enabled - boolean - required
   ## If true, deploys agent dedicated for running the Cluster Checks instead of running in the Daemonset's agents.
   ## ref: https://docs.datadoghq.com/agent/autodiscovery/clusterchecks/
@@ -888,7 +882,6 @@ clusterChecksRunner:
   ## @param rbac - object - required
   ## Provide Cluster Checks Deployment pods RBAC configuration
   rbac:
-
     ## @param created - boolean - required
     ## If true, create & use RBAC resources
     #

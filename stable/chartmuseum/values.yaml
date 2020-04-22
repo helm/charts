@@ -1,3 +1,5 @@
+extraArgs:
+  # - --storage-timestamp-tolerance 1s
 replicaCount: 1
 strategy:
   type: RollingUpdate
@@ -183,6 +185,8 @@ serviceAccount:
 securityContext:
   enabled: true
   fsGroup: 1000
+
+priorityClassName: ""
 
 nodeSelector: {}
 

@@ -87,6 +87,10 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 | `serviceMonitor.targets.[].interval`      | See above in `serviceMonitor.defaults`                                           | `{{ serviceMonitor.defaults.interval }}`                                     |
 | `serviceMonitor.targets.[].scrapeTimeout` | See above in `serviceMonitor.defaults`                                           | `{{ serviceMonitor.defaults.scrateTimeout }}`                                |
 | `serviceMonitor.targets.[].module`        | See above in `serviceMonitor.defaults`                                           | `{{ serviceMonitor.defaults.module }}`                                       |
+| `prometheusRule.enabled`                  | Set this to true to create PrometheusRule for Prometheus operator | `false`     |
+| `prometheusRule.additionalLabels`         | Additional labels that can be passed to PrometheusRule | `{}`  |
+| `prometheusRule.namespace`                | Namespace where PrometheusRule resource should be created |      |
+| `prometheusRule.rules`                    | [PrometheusRule](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) to be created                      | `[]`                                                    |
 | `strategy`                                | strategy used to replace old Pods with new ones                                  | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

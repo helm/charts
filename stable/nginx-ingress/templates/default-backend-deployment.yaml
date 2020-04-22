@@ -8,6 +8,9 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ template "nginx-ingress.releaseLabel" . }}
     app.kubernetes.io/component: default-backend
+    {{- if .Values.defaultBackend.deploymentLabels }}
+{{ toYaml .Values.defaultBackend.deploymentLabels | indent 4 }}
+    {{- end }}
   name: {{ template "nginx-ingress.defaultBackend.fullname" . }}
 spec:
   selector:

@@ -30,3 +30,25 @@ Create chart name and version as used by the chart label.
 {{- define "buzzfeed-sso.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Return the apiVersion of deployment.
+*/}}
+{{- define "deployment.apiVersion" -}}
+{{- if .Capabilities.APIVersions.Has "apps/v1" -}}
+    {{- print "apps/v1" -}}
+{{- else -}}
+    {{- print "apps/v1beta1" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the apiVersion of ingress.
+*/}}
+{{- define "ingress.apiVersion" -}}
+{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" -}}
+    {{- print "networking.k8s.io/v1beta1" -}}
+{{- else -}}
+    {{- print "extensions/v1beta1" -}}
+{{- end -}}
+{{- end -}}

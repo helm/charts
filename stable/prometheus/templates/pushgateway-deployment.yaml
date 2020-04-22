@@ -15,11 +15,9 @@ spec:
   replicas: {{ .Values.pushgateway.replicaCount }}
   {{- if .Values.pushgateway.strategy }}
   strategy:
-{{ toYaml .Values.pushgateway.strategy | indent 4 }}
-  {{- if eq .Values.pushgateway.strategy.type "Recreate" }}
-  rollingUpdate: null
-  {{- end }}
-  {{- end }}
+{{ toYaml .Values.pushgateway.strategy | trim | indent 4 }}
+    {{ if eq .Values.pushgateway.strategy.type "Recreate" }}rollingUpdate: null{{ end }}
+{{- end }}
   template:
     metadata:
     {{- if .Values.pushgateway.podAnnotations }}
@@ -30,6 +28,10 @@ spec:
         {{- include "prometheus.pushgateway.labels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ template "prometheus.serviceAccountName.pushgateway" . }}
+      {{- if .Values.pushgateway.extraInitContainers }}
+      initContainers:
+{{ toYaml .Values.pushgateway.extraInitContainers | indent 8 }}
+      {{- end }}
 {{- if .Values.pushgateway.priorityClassName }}
       priorityClassName: "{{ .Values.pushgateway.priorityClassName }}"
 {{- end }}
