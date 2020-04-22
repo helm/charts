@@ -58,6 +58,16 @@ spec:
           value: "node-disk-operator"
         - name: CLEANUP_JOB_IMAGE
           value: "{{ .Values.helper.image }}:{{ .Values.helper.imageTag }}"
+        # Process name used for matching is limited to the 15 characters
+        # present in the pgrep output.
+        # So fullname can be used here with pgrep (cmd is < 15 chars).
+        livenessProbe:
+          exec:
+            command:
+            - pgrep
+            - "ndo"
+          initialDelaySeconds: {{ .Values.ndmOperator.healthCheck.initialDelaySeconds }}
+          periodSeconds: {{ .Values.ndmOperator.healthCheck.periodSeconds }}
 {{- if .Values.ndmOperator.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.ndmOperator.nodeSelector | indent 8 }}

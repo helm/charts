@@ -111,11 +111,12 @@ rbac:
   ## If true, create & use Pod Security Policy resources
   ## https://kubernetes.io/docs/concepts/policy/pod-security-policy/
   pspEnabled: false
-  ## if rbac.create is false or (if rbac.create is true and rbac.serviceAccount.create is false)
-  ## the service account rbac.serviceAccount.name will be used instead
   serviceAccount:
+    # Specifies whether a service account should be created
     create: true
-    name: default
+    # The name of the ServiceAccount to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: ""
   ## Annotations for the Service Account
   ##
   serviceAccountAnnotations: {}

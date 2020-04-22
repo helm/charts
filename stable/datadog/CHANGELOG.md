@@ -1,5 +1,36 @@
 # Datadog changelog
 
+## 2.2.4
+
+* Move several EnvVars to `common-env-vars` to be accessible by the `trace-agent` #21991.
+* Fix discrepancies migration-guide and readme reporded in #21806 and #21920.
+* Fix EnvVars with integer value due to yaml. serialization, reported by #21853.
+* Fix .Values.datadog.tags encoding, reported by #21663.
+* Add Checksum to `xxx-cluster-agent-config` config map, reported by #21622 and contribution #21656.
+
+## 2.2.3
+
+* Fix `datadog.dockerOrCriSocketPath` helper #21992
+
+## 2.2.2
+
+* Fix indentation for `clusterAgent.volumes`.
+
+## 2.2.1
+
+* Updating `agents.useConfigMap` and `agents.customAgentConfig` parameter descriptions in the chart and main readme.
+
+## 2.2.0
+
+* Add Windows support
+* Update documentation to reflect some changes that were made default
+* Enable endpoint checks by default in DCA/Agent
+
+## 2.1.2
+
+* Fixed a bug where `DD_LEADER_ELECTION` was not set in the config init container, leading to a failure to adapt
+config to this environment variable.
+
 ## 2.1.1
 
 * Add option to enable WPA in the Cluster Agent.
@@ -7,7 +38,6 @@
 ## 2.1.0
 
 * Changed the default for `processAgent.enabled` to `true`.
-
 
 ## 2.0.14
 
@@ -24,7 +54,7 @@
       Message:      failed to create containerd task: OCI runtime create failed: container_linux.go:349: starting container process caused "close exec fds: ensure /proc/self/fd is on procfs: operation not permitted": unknown
       Exit Code:    128
    ```
-   
+
 ## 2.0.11
 
 * Add missing syscalls in the `system-probe` seccomp profile

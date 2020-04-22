@@ -25,6 +25,14 @@ mcImage:
   tag: RELEASE.2020-03-14T01-23-37Z
   pullPolicy: IfNotPresent
 
+## Set default image, imageTag, and imagePullPolicy for the `jq` (the JSON
+## process used to create secret for prometheus ServiceMonitor).
+##
+helmKubectlJqImage:
+  repository: bskim45/helm-kubectl-jq
+  tag: 3.1.0
+  pullPolicy: IfNotPresent
+
 ## minio server mode, i.e. standalone or distributed.
 ## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
 ##
@@ -166,7 +174,7 @@ affinity: {}
 ## Add stateful containers to have security context, if enabled MinIO will run as this
 ## user and group NOTE: securityContext is only enabled if persistence.enabled=true
 securityContext:
-  enabled: false
+  enabled: true
   runAsUser: 1000
   runAsGroup: 1000
   fsGroup: 1000
@@ -224,6 +232,10 @@ buckets: []
 
 ## Additional Annotations for the Kubernetes Batch (make-bucket-job)
 makeBucketJob:
+  annotations:
+
+## Additional Annotations for the Kubernetes Batch (update-prometheus-secret)
+updatePrometheusJob:
   annotations:
 
 s3gateway:

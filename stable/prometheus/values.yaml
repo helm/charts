@@ -51,6 +51,10 @@ alertmanager:
   ##
   extraArgs: {}
 
+  ## Additional InitContainers to initialize the pod
+  ##
+  extraInitContainers: []
+
   ## The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug
   ## so that the various internal URLs are still able to access as they are in the default case.
   ## (Optional)
@@ -386,9 +390,13 @@ configmapReload:
 
 kubeStateMetrics:
   ## If false, kube-state-metrics sub-chart will not be installed
-  ## Please see https://github.com/helm/charts/tree/master/stable/kube-state-metrics for configurable values
   ##
   enabled: true
+
+## kube-state-metrics sub-chart configurable values
+## Please see https://github.com/helm/charts/tree/master/stable/kube-state-metrics
+##
+# kube-state-metrics:
 
 nodeExporter:
   ## If false, node-exporter will not be installed
@@ -440,6 +448,10 @@ nodeExporter:
   ## Additional node-exporter container arguments
   ##
   extraArgs: {}
+
+  ## Additional InitContainers to initialize the pod
+  ##
+  extraInitContainers: []
 
   ## Additional node-exporter hostPath mounts
   ##
@@ -686,6 +698,12 @@ server:
   # strategy:
   #   type: Recreate
 
+  ## hostAliases allows adding entries to /etc/hosts inside the containers
+  hostAliases: []
+  #   - ip: "127.0.0.1"
+  #     hostnames:
+  #       - "example.com"
+
   ## Node tolerations for server scheduling to nodes with taints
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   ##
@@ -924,6 +942,10 @@ pushgateway:
   ##
   ## for example: persistence.file: /data/pushgateway.data
   extraArgs: {}
+
+  ## Additional InitContainers to initialize the pod
+  ##
+  extraInitContainers: []
 
   ingress:
     ## If true, pushgateway Ingress will be created

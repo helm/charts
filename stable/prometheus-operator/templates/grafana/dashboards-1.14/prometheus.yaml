@@ -300,7 +300,7 @@ data:
                                 "expr": "sum(rate(prometheus_target_sync_length_seconds_sum{job=~\"$job\",instance=~\"$instance\"}[5m])) by (scrape_job) * 1e3",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{scrape_job}}`}}",
+                                "legendFormat": "{{`{{`}}scrape_job{{`}}`}}",
                                 "legendLink": null,
                                 "step": 10
                             }
@@ -484,7 +484,7 @@ data:
                                 "expr": "rate(prometheus_target_interval_length_seconds_sum{job=~\"$job\",instance=~\"$instance\"}[5m]) / rate(prometheus_target_interval_length_seconds_count{job=~\"$job\",instance=~\"$instance\"}[5m]) * 1e3",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{interval}}`}} configured",
+                                "legendFormat": "{{`{{`}}interval{{`}}`}} configured",
                                 "legendLink": null,
                                 "step": 10
                             }
@@ -570,7 +570,7 @@ data:
                                 "expr": "sum by (job) (rate(prometheus_target_scrapes_exceeded_sample_limit_total[1m]))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "exceeded sample limit: {{`{{job}}`}}",
+                                "legendFormat": "exceeded sample limit: {{`{{`}}job{{`}}`}}",
                                 "legendLink": null,
                                 "step": 10
                             },
@@ -578,7 +578,7 @@ data:
                                 "expr": "sum by (job) (rate(prometheus_target_scrapes_sample_duplicate_timestamp_total[1m]))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "duplicate timestamp: {{`{{job}}`}}",
+                                "legendFormat": "duplicate timestamp: {{`{{`}}job{{`}}`}}",
                                 "legendLink": null,
                                 "step": 10
                             },
@@ -586,7 +586,7 @@ data:
                                 "expr": "sum by (job) (rate(prometheus_target_scrapes_sample_out_of_bounds_total[1m]))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "out of bounds: {{`{{job}}`}}",
+                                "legendFormat": "out of bounds: {{`{{`}}job{{`}}`}}",
                                 "legendLink": null,
                                 "step": 10
                             },
@@ -594,7 +594,7 @@ data:
                                 "expr": "sum by (job) (rate(prometheus_target_scrapes_sample_out_of_order_total[1m]))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "out of order: {{`{{job}}`}}",
+                                "legendFormat": "out of order: {{`{{`}}job{{`}}`}}",
                                 "legendLink": null,
                                 "step": 10
                             }
@@ -680,7 +680,7 @@ data:
                                 "expr": "rate(prometheus_tsdb_head_samples_appended_total{job=~\"$job\",instance=~\"$instance\"}[5m])",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{job}}`}} {{`{{instance}}`}}",
+                                "legendFormat": "{{`{{`}}job{{`}}`}} {{`{{`}}instance{{`}}`}}",
                                 "legendLink": null,
                                 "step": 10
                             }
@@ -778,7 +778,7 @@ data:
                                 "expr": "prometheus_tsdb_head_series{job=~\"$job\",instance=~\"$instance\"}",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{job}}`}} {{`{{instance}}`}} head series",
+                                "legendFormat": "{{`{{`}}job{{`}}`}} {{`{{`}}instance{{`}}`}} head series",
                                 "legendLink": null,
                                 "step": 10
                             }
@@ -864,7 +864,7 @@ data:
                                 "expr": "prometheus_tsdb_head_chunks{job=~\"$job\",instance=~\"$instance\"}",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{job}}`}} {{`{{instance}}`}} head chunks",
+                                "legendFormat": "{{`{{`}}job{{`}}`}} {{`{{`}}instance{{`}}`}} head chunks",
                                 "legendLink": null,
                                 "step": 10
                             }
@@ -962,7 +962,7 @@ data:
                                 "expr": "rate(prometheus_engine_query_duration_seconds_count{job=~\"$job\",instance=~\"$instance\",slice=\"inner_eval\"}[5m])",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{job}}`}} {{`{{instance}}`}}",
+                                "legendFormat": "{{`{{`}}job{{`}}`}} {{`{{`}}instance{{`}}`}}",
                                 "legendLink": null,
                                 "step": 10
                             }
@@ -1048,7 +1048,7 @@ data:
                                 "expr": "max by (slice) (prometheus_engine_query_duration_seconds{quantile=\"0.9\",job=~\"$job\",instance=~\"$instance\"}) * 1e3",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{slice}}`}}",
+                                "legendFormat": "{{`{{`}}slice{{`}}`}}",
                                 "legendLink": null,
                                 "step": 10
                             }
@@ -1111,8 +1111,8 @@ data:
             "list": [
                 {
                     "current": {
-                        "text": "Prometheus",
-                        "value": "Prometheus"
+                        "text": "default",
+                        "value": "default"
                     },
                     "hide": 0,
                     "label": null,

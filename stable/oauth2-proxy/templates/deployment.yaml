@@ -149,7 +149,7 @@ spec:
 {{- if and .adminEmail (or .serviceAccountJson .existingSecret) }}
       - name: google-secret
         secret:
-          secretName: {{ if .existingSecret }}{{ .existingSecret }}{{ else }} {{ template "oauth2-proxy.secretName" . }}{{ end }}
+          secretName: {{ if .existingSecret }}{{ .existingSecret }}{{ else }} {{ template "oauth2-proxy.secretName" $ }}{{ end }}
 {{- end }}
 {{- end }}
 

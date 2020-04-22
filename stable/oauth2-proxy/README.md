@@ -76,7 +76,7 @@ Parameter | Description | Default
 `httpScheme` | `http` or `https`. `name` used for port on the deployment. `httpGet` port `name` and `scheme` used for `liveness`- and `readinessProbes`. `name` and `targetPort` used for the service. | `http`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.repository` | Image repository | `quay.io/pusher/oauth2_proxy`
-`image.tag` | Image tag | `v5.0.0`
+`image.tag` | Image tag | `v5.1.0`
 `imagePullSecrets` | Specify image pull secrets | `nil` (does not add image pull secrets to deployed pods)
 `ingress.enabled` | Enable Ingress | `false`
 `ingress.path` | Ingress accepted path | `/`

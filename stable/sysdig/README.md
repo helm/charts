@@ -41,7 +41,7 @@ The following table lists the configurable parameters of the Sysdig chart and th
 | ---                               | ---                                                                    | ---                                         |
 | `image.registry`                  | Sysdig Agent image registry                                            | `docker.io`                                 |
 | `image.repository`                | The image repository to pull from                                      | `sysdig/agent`                              |
-| `image.tag`                       | The image tag to pull                                                  | `9.7.0`                                     |
+| `image.tag`                       | The image tag to pull                                                  | `9.9.0`                                     |
 | `image.pullPolicy`                | The Image pull policy                                                  | `IfNotPresent`                              |
 | `image.pullSecrets`               | Image pull secrets                                                     | `nil`                                       |
 | `resources.requests.cpu`          | CPU requested for being run in a node                                  | `600m`                                      |
@@ -69,6 +69,7 @@ The following table lists the configurable parameters of the Sysdig chart and th
 | `auditLog.dynamicBackend.enabled` | Deploy the Audit Sink where Sysdig listens for K8s audit log events    | `false`                                     |
 | `customAppChecks`                 | The custom app checks deployed with your agent                         | `{}`                                        |
 | `tolerations`                     | The tolerations for scheduling                                         | `node-role.kubernetes.io/master:NoSchedule` |
+| `scc.create`                      | Create OpenShift's Security Context Constraint                         | `false`                                     |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

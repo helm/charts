@@ -53,6 +53,11 @@ hub:
   ## Path for checking readiness and liveness via HTTP Request
   probePath: "/wd/hub/status"
 
+  # Configure security context on the hub pod
+  # securityContext:
+  #   fsGroup: 1000
+  #   runAsUser: 1000
+
   ## Additional environment variables to set
   extraEnvs: []
   # extraEnvs:
@@ -109,16 +114,17 @@ hub:
   #   # internal AWS ELB
   #   service.beta.kubernetes.io/aws-load-balancer-internal: "0.0.0.0/0"
 
-  ## ref: https://seleniumhq.github.io/docs/grid.html#step_1_start_the_hub
+  ## ref: https://github.com/SeleniumHQ/selenium/wiki/Grid2#configuring-the-nodes
+  ## In milliseconds
   # gridNewSessionWaitTimeout: -1
   # gridJettyMaxThreads: -1
   ## In milliseconds
   # gridNodePolling: 5000
   ## In milliseconds
   # gridCleanUpCycle: 5000
-  ## In milliseconds
-  # gridTimeout: 30000
-  ## In milliseconds
+  ## In seconds
+  # gridTimeout: 30
+  ## In seconds
   # gridBrowserTimeout: 0
   # gridMaxSession: 5
   ## In milliseconds
@@ -166,6 +172,11 @@ chrome:
 
   ## Configure annotations on the chrome pods
   podAnnotations: {}
+
+  # Configure security context on the chrome pods
+  # securityContext:
+  #   fsGroup: 1000
+  #   runAsUser: 1000
 
   ## Additional environment variables to set
   extraEnvs: []
@@ -258,6 +269,11 @@ chromeDebug:
   ## Configure annotations on the chrome debug pods
   podAnnotations: {}
 
+  # Configure security context on the chrome debug pods
+  # securityContext:
+  #   fsGroup: 1000
+  #   runAsUser: 1000
+
   ## Additional environment variables to set
   extraEnvs: []
   # extraEnvs:
@@ -348,6 +364,11 @@ firefox:
   ## Configure annotations on the firefox pods
   podAnnotations: {}
 
+  # Configure security context on the firefox pods
+  # securityContext:
+  #   fsGroup: 1000
+  #   runAsUser: 1000
+
   ## Additional environment variables to set
   extraEnvs: []
   # extraEnvs:
@@ -424,6 +445,11 @@ firefoxDebug:
 
   ## Configure annotations on the firefox debug pods
   podAnnotations: {}
+
+  # Configure security context on the firefox debug pods
+  # securityContext:
+  #   fsGroup: 1000
+  #   runAsUser: 1000
 
   ## Additional environment variables to set
   extraEnvs: []

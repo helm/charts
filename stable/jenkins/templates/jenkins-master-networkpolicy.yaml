@@ -21,9 +21,28 @@ spec:
       - port: {{ .Values.master.targetPort }}
     # Allow inbound connections from slave
     - from:
+      {{- if .Values.networkPolicy.internalAgents.allowed }}
       - podSelector:
           matchLabels:
             "jenkins/{{ .Release.Name }}-{{ .Values.agent.componentName }}": "true"
+        {{- if .Values.networkPolicy.internalAgents.namespaceLabels }}
+        namespaceSelector:
+          matchLabels:
+            {{- range $k,$v:= .Values.networkPolicy.internalAgents.namespaceLabels }}
+            {{ $k }}: {{ $v }}
+            {{- end }}
+        {{- end }}    
+      {{- end }}
+      {{- if .Values.networkPolicy.externalAgents }}      
+      - ipBlock:
+          cidr: {{ required "ipCIDR is required if you wish to allow external agents to connect to Master." .Values.networkPolicy.externalAgents.ipCIDR }}
+          {{- if .Values.networkPolicy.externalAgents.except }}
+          except:
+          {{- range .Values.networkPolicy.externalAgents.except }}
+          - {{ . }} 
+          {{- end }}
+          {{- end }}
+      {{- end }}              
       ports:
       - port: {{ .Values.master.slaveListenerPort }}
 {{- if .Values.agent.enabled }}

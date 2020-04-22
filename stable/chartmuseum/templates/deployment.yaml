@@ -38,6 +38,9 @@ spec:
 {{ toYaml .Values.deployment.labels | indent 8 }}
 {{- end }}
     spec:
+      {{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+      {{- end }}
       {{- if .Values.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
@@ -106,6 +109,9 @@ spec:
         - --port=8080
 {{- if eq .Values.env.open.STORAGE "local" }}
         - --storage-local-rootdir={{ .Values.persistence.path }}
+{{- end }}
+{{- if .Values.extraArgs }}
+{{ toYaml .Values.extraArgs | indent 8 }}
 {{- end }}
         ports:
         - name: http

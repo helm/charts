@@ -205,12 +205,14 @@ Parameter | Description | Default
 `initChownData.image.pullPolicy` | init-chown-data container image pull policy | `IfNotPresent`
 `initChownData.resources` | init-chown-data pod resource requests & limits | `{}`
 `kubeStateMetrics.enabled` | If true, create kube-state-metrics sub-chart, see the [kube-state-metrics chart for configuration options](https://github.com/helm/charts/tree/master/stable/kube-state-metrics) | `true`
+`kube-state-metrics` | [kube-state-metrics configuration options](https://github.com/helm/charts/tree/master/stable/kube-state-metrics) | `Same as sub-chart's`
 `nodeExporter.enabled` | If true, create node-exporter | `true`
 `nodeExporter.name` | node-exporter container name | `node-exporter`
 `nodeExporter.image.repository` | node-exporter container image repository| `prom/node-exporter`
 `nodeExporter.image.tag` | node-exporter container image tag | `v0.18.1`
 `nodeExporter.image.pullPolicy` | node-exporter container image pull policy | `IfNotPresent`
 `nodeExporter.extraArgs` | Additional node-exporter container arguments | `{}`
+`nodeExporter.extraInitContainers` | Init containers to launch alongside the node-exporter | `[]`
 `nodeExporter.extraHostPathMounts` | Additional node-exporter hostPath mounts | `[]`
 `nodeExporter.extraConfigmapMounts` | Additional node-exporter configMap mounts | `[]`
 `nodeExporter.hostNetwork` | If true, node-exporter pods share the host network namespace | `true`
@@ -241,6 +243,7 @@ Parameter | Description | Default
 `pushgateway.image.tag` | pushgateway container image tag | `v1.0.1`
 `pushgateway.image.pullPolicy` | pushgateway container image pull policy | `IfNotPresent`
 `pushgateway.extraArgs` | Additional pushgateway container arguments | `{}`
+`pushgateway.extraInitContainers` | Init containers to launch alongside the pushgateway | `[]`
 `pushgateway.ingress.enabled` | If true, pushgateway Ingress will be created | `false`
 `pushgateway.ingress.annotations` | pushgateway Ingress annotations | `{}`
 `pushgateway.ingress.hosts` | pushgateway Ingress hostnames | `[]`
@@ -350,13 +353,12 @@ Parameter | Description | Default
 `server.service.gRPC.nodePort` | Port to be used as gRPC nodePort in the prometheus service | `0`
 `server.service.statefulsetReplica.enabled` | If true, send the traffic from the service to only one replica of the replicaset | `false`
 `server.service.statefulsetReplica.replica` | Which replica to send the traffice to | `0`
+`server.hostAliases` | /etc/hosts-entries in container(s) | []
 `server.sidecarContainers` | array of snippets with your sidecar containers for prometheus server | `""`
 `server.strategy` | Deployment strategy | `{ "type": "RollingUpdate" }`
 `serviceAccounts.alertmanager.create` | If true, create the alertmanager service account | `true`
 `serviceAccounts.alertmanager.name` | name of the alertmanager service account to use or create | `{{ prometheus.alertmanager.fullname }}`
 `serviceAccounts.alertmanager.annotations` | annotations for the alertmanager service account | `{}`
-`serviceAccounts.kubeStateMetrics.create` | If true, create the kubeStateMetrics service account | `true`
-`serviceAccounts.kubeStateMetrics.name` | name of the kubeStateMetrics service account to use or create | `{{ prometheus.kubeStateMetrics.fullname }}`
 `serviceAccounts.nodeExporter.create` | If true, create the nodeExporter service account | `true`
 `serviceAccounts.nodeExporter.name` | name of the nodeExporter service account to use or create | `{{ prometheus.nodeExporter.fullname }}`
 `serviceAccounts.nodeExporter.annotations` | annotations for the nodeExporter service account | `{}`
@@ -418,7 +420,7 @@ $ helm install stable/prometheus --name my-release -f values.yaml -f service1-al
 ```
 
 ### RBAC Configuration
-Roles and RoleBindings resources will be created automatically for `server` and `kubeStateMetrics` services.
+Roles and RoleBindings resources will be created automatically for `server` service.
 
 To manually setup RBAC you need to set the parameter `rbac.create=false` and specify the service account to be used for each service by setting the parameters: `serviceAccounts.{{ component }}.create` to `false` and `serviceAccounts.{{ component }}.name` to the name of a pre-existing service account.
 

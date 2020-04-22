@@ -81,13 +81,14 @@ Parameter | Description | Default
 `proxy.service.port` | port for the http proxy service | `80`
 `proxy.secret` | secrets to be generated randomly with `openssl rand -base64 32 | head -c 32 | base64`. | REQUIRED if `proxy.customSecret` is not set
 `proxy.customSecret` | the secret key to reuse (avoids secret creation via helm) | REQUIRED if `proxy.secret` is not set
+`proxy.defaultAllowedEmailDomains` | the default allowed domains for upstreams | ``
 `provider.google` | the Oauth provider to use (only Google support for now) | REQUIRED
 `provider.google.adminEmail` | the Google admin email | `undefined`
 `provider.google.slug` | the Google provider slug | `oauth2`
 `provider.google.secret` | the Google OAuth secrets | REQUIRED if `provider.google.customSecret` is not set
 `provider.google.customSecret` | the secret key to reuse instead of creating it via helm | REQUIRED if `provider.google.secret` is not set
 `image.repository` | container image repository | `buzzfeed/sso`
-`image.tag` | container image tag | `v1.2.0`
+`image.tag` | container image tag | `v2.1.0`
 `image.pullPolicy` | container image pull policy | `IfNotPresent`
 `ingress.enabled` | set to true to enable the ingress | `true`
 `ingress.annotations` | ingress load balancer annotations | `{}`

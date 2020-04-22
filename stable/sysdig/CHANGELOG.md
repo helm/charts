@@ -3,6 +3,37 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.7.11
+
+### Minor changes
+
+* Use app.kubernetes.io labels instead of custom ones
+
+## v1.7.10
+
+### Minor changes
+
+* Use the latest image from Agent (9.9.0) by default.
+
+## v1.7.9
+
+### Minor changes
+
+* Add the SecurityContextConstraints if the security.openshift.io/v1 API is detected.
+
+## v1.7.8
+
+### Minor changes
+
+* Add a image.overrideValue value which is a hack to support
+  RELATED_IMAGE_<identifier> feature in Helm based operators.
+
+## v1.7.7
+
+### Minor changes
+
+* Use the latest image from Agent (9.8.0) by default.
+
 ## v1.7.6
 
 ### Minor changes

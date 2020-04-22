@@ -132,6 +132,8 @@ spec:
             - name: git-clone-secret
               mountPath: /keys
             {{- end }}
+          resources:
+{{ toYaml .Values.dags.git.gitSync.resources | indent 12 }}
         {{- end }}
         - name: {{ .Chart.Name }}-worker
           imagePullPolicy: {{ .Values.airflow.image.pullPolicy }}
@@ -160,7 +162,7 @@ spec:
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
               subPath: {{ .Values.persistence.subPath | default "" }}
-          {{- else if .Values.dags.initContainer.enabled }}
+          {{- else if or (.Values.dags.initContainer.enabled) (.Values.dags.git.gitSync.enabled) }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
           {{- end }}
@@ -233,7 +235,7 @@ spec:
           persistentVolumeClaim:
             claimName: {{ .Values.logsPersistence.existingClaim | default (printf "%s-logs" (include "airflow.fullname" . | trunc 58 )) }}
         {{- end }}
-        {{- if .Values.dags.initContainer.enabled }}
+        {{- if or (.Values.dags.initContainer.enabled) (.Values.dags.git.gitSync.enabled) }}
         - name: git-clone
           configMap:
             name: {{ template "airflow.fullname" . }}-git-clone

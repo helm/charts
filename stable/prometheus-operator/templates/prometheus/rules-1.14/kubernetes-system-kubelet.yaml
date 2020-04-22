@@ -26,7 +26,7 @@ spec:
     rules:
     - alert: KubeNodeNotReady
       annotations:
-        message: '{{`{{ $labels.node }}`}} has been unready for more than 15 minutes.'
+        message: '{{`{{`}} $labels.node {{`}}`}} has been unready for more than 15 minutes.'
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubenodenotready
       expr: kube_node_status_condition{job="kube-state-metrics",condition="Ready",status="true"} == 0
       for: 15m
@@ -34,16 +34,41 @@ spec:
         severity: warning
     - alert: KubeNodeUnreachable
       annotations:
-        message: '{{`{{ $labels.node }}`}} is unreachable and some workloads may be rescheduled.'
+        message: '{{`{{`}} $labels.node {{`}}`}} is unreachable and some workloads may be rescheduled.'
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubenodeunreachable
       expr: kube_node_spec_taint{job="kube-state-metrics",key="node.kubernetes.io/unreachable",effect="NoSchedule"} == 1
+      for: 2m
       labels:
         severity: warning
     - alert: KubeletTooManyPods
       annotations:
-        message: Kubelet '{{`{{ $labels.node }}`}}' is running at {{`{{ $value | humanizePercentage }}`}} of its Pod capacity.
+        message: Kubelet '{{`{{`}} $labels.node {{`}}`}}' is running at {{`{{`}} $value | humanizePercentage {{`}}`}} of its Pod capacity.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubelettoomanypods
-      expr: max(max(kubelet_running_pod_count{job="kubelet", metrics_path="/metrics"}) by(instance) * on(instance) group_left(node) kubelet_node_name{job="kubelet", metrics_path="/metrics"}) by(node) / max(kube_node_status_capacity_pods{job="kube-state-metrics"}) by(node) > 0.95
+      expr: max(max(kubelet_running_pod_count{job="kubelet", metrics_path="/metrics"}) by(instance) * on(instance) group_left(node) kubelet_node_name{job="kubelet", metrics_path="/metrics"}) by(node) / max(kube_node_status_capacity_pods{job="kube-state-metrics"} != 1) by(node) > 0.95
+      for: 15m
+      labels:
+        severity: warning
+    - alert: KubeNodeReadinessFlapping
+      annotations:
+        message: The readiness status of node {{`{{`}} $labels.node {{`}}`}} has changed {{`{{`}} $value {{`}}`}} times in the last 15 minutes.
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubenodereadinessflapping
+      expr: sum(changes(kube_node_status_condition{status="true",condition="Ready"}[15m])) by (node) > 2
+      for: 15m
+      labels:
+        severity: warning
+    - alert: KubeletPlegDurationHigh
+      annotations:
+        message: The Kubelet Pod Lifecycle Event Generator has a 99th percentile duration of {{`{{`}} $value {{`}}`}} seconds on node {{`{{`}} $labels.node {{`}}`}}.
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeletplegdurationhigh
+      expr: node_quantile:kubelet_pleg_relist_duration_seconds:histogram_quantile{quantile="0.99"} >= 10
+      for: 5m
+      labels:
+        severity: warning
+    - alert: KubeletPodStartUpLatencyHigh
+      annotations:
+        message: Kubelet Pod startup 99th percentile latency is {{`{{`}} $value {{`}}`}} seconds on node {{`{{`}} $labels.node {{`}}`}}.
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeletpodstartuplatencyhigh
+      expr: histogram_quantile(0.99, sum(rate(kubelet_pod_worker_duration_seconds_bucket{job="kubelet", metrics_path="/metrics"}[5m])) by (instance, le)) * on(instance) group_left(node) kubelet_node_name{job="kubelet", metrics_path="/metrics"} > 60
       for: 15m
       labels:
         severity: warning

@@ -25,10 +25,10 @@ spec:
   groups:
   - name: kubernetes-storage
     rules:
-    - alert: KubePersistentVolumeUsageCritical
+    - alert: KubePersistentVolumeFillingUp
       annotations:
-        message: The PersistentVolume claimed by {{`{{ $labels.persistentvolumeclaim }}`}} in Namespace {{`{{ $labels.namespace }}`}} is only {{`{{ $value | humanizePercentage }}`}} free.
-        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubepersistentvolumeusagecritical
+        message: The PersistentVolume claimed by {{`{{`}} $labels.persistentvolumeclaim {{`}}`}} in Namespace {{`{{`}} $labels.namespace {{`}}`}} is only {{`{{`}} $value | humanizePercentage {{`}}`}} free.
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubepersistentvolumefillingup
       expr: |-
         kubelet_volume_stats_available_bytes{job="kubelet", namespace=~"{{ $targetNamespace }}", metrics_path="/metrics"}
           /
@@ -37,10 +37,10 @@ spec:
       for: 1m
       labels:
         severity: critical
-    - alert: KubePersistentVolumeFullInFourDays
+    - alert: KubePersistentVolumeFillingUp
       annotations:
-        message: Based on recent sampling, the PersistentVolume claimed by {{`{{ $labels.persistentvolumeclaim }}`}} in Namespace {{`{{ $labels.namespace }}`}} is expected to fill up within four days. Currently {{`{{ $value | humanizePercentage }}`}} is available.
-        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubepersistentvolumefullinfourdays
+        message: Based on recent sampling, the PersistentVolume claimed by {{`{{`}} $labels.persistentvolumeclaim {{`}}`}} in Namespace {{`{{`}} $labels.namespace {{`}}`}} is expected to fill up within four days. Currently {{`{{`}} $value | humanizePercentage {{`}}`}} is available.
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubepersistentvolumefillingup
       expr: |-
         (
           kubelet_volume_stats_available_bytes{job="kubelet", namespace=~"{{ $targetNamespace }}", metrics_path="/metrics"}
@@ -51,10 +51,10 @@ spec:
         predict_linear(kubelet_volume_stats_available_bytes{job="kubelet", namespace=~"{{ $targetNamespace }}", metrics_path="/metrics"}[6h], 4 * 24 * 3600) < 0
       for: 1h
       labels:
-        severity: critical
+        severity: warning
     - alert: KubePersistentVolumeErrors
       annotations:
-        message: The persistent volume {{`{{ $labels.persistentvolume }}`}} has status {{`{{ $labels.phase }}`}}.
+        message: The persistent volume {{`{{`}} $labels.persistentvolume {{`}}`}} has status {{`{{`}} $labels.phase {{`}}`}}.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubepersistentvolumeerrors
       expr: kube_persistentvolume_status_phase{phase=~"Failed|Pending",job="kube-state-metrics"} > 0
       for: 5m

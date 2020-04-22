@@ -135,7 +135,7 @@ airflow:
   ## This should be a json string with your pools in it
   ## Examples:
   ##   pools: '{ "example": { "description": "This is an example of a pool", "slots": 2 } }'
-  pools: {}
+  pools: '{}'
 
   ##
   ## Annotations for the Scheduler, Worker and Web pods
@@ -169,6 +169,11 @@ airflow:
   ## Additional volumes for the Scheduler, Worker and Web pods.
   # - name: synchronised-dags
   #   emptyDir: {}
+
+  ##
+  ## Run initdb as an initContainer step (potentially necessary if you have
+  ## custom database hooks configured that will be pulled in by git-sync)
+  preinitdb: false
 
   ##
   ## Run initdb when the scheduler starts.
@@ -307,6 +312,18 @@ workers:
   ##
   ## Number of workers pod to launch
   replicas: 1
+  ##
+  ## Autoscaling settings for workers
+  autoscaling:
+    enabled: false
+    maxReplicas: 2
+    metrics: {}
+#    - type: Resource
+#      resource:
+#        name: memory
+#        target:
+#          type: Utilization
+#          averageUtilization: 80
   ##
   ## Gracefull termination period
   terminationPeriod: 30
@@ -569,7 +586,9 @@ dags:
         ## values: Always or IfNotPresent
         pullPolicy: IfNotPresent
       ## The amount of time in seconds to git pull dags
-      refreshTime:
+      refreshTime: 0
+      ## If using workers.autoscaling=true with git-sync, git-sync needs to have resources requested
+      resources: {}
   initContainer:
     ## Fetch the source code when the pods starts
     enabled: false
@@ -631,9 +650,9 @@ postgresql:
   existingSecretKey: postgresql-password
 
   ##
-  ## If you are bringing your own PostgreSQL, you should set postgresHost and
+  ## If you are bringing your own PostgreSQL, you should set postgresqlHost and
   ## also probably service.port, postgresqlUsername, postgresqlPassword, and postgresqlDatabase
-  ## postgresHost:
+  ## postgresqlHost:
   ##
   ## PostgreSQL port
   service:
