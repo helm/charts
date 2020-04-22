@@ -1,5 +1,7 @@
 master:
   overwritePluginsFromImage: false
+  runAsUser: 0
+  fsGroup: 1000
 agent:
   resources:
     limits:
