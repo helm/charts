@@ -50,3 +50,4 @@ Parameter | Description | Default
 `hostNetwork` | controls whether the pod may use the node network namespace | `true`
 `podAnnotations` | annotations to be added to pods | `{}`
 `updateStrategy` | can be either `RollingUpdate` or `OnDelete` | `RollingUpdate`
+`securityContext` | pod security context | `{}`

@@ -86,3 +86,6 @@ podAnnotations: {}
 # Default value for Kubernetes v1.5 and before was "OnDelete".
 updateStrategy: RollingUpdate
 maxUnavailable: 1
+
+# SecurityContext to be set on the pod
+securityContext: {}
