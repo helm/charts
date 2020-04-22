@@ -104,6 +104,9 @@ Parameter | Description | Default
 `service.clusterIP` | cluster ip address | `nil`
 `service.loadBalancerIP` | ip of load balancer | `nil`
 `service.loadBalancerSourceRanges` | allowed source ranges in load balancer | `nil`
+`serviceAccount.create` | create a service account | `true`
+`serviceAccount.name` | the service account name | ``
+`serviceAccount.annotations` | (optional) annotations for the service account | `{}`
 `tolerations` | list of node taints to tolerate | `[]`
 `securityContext.enabled` | enable Kubernetes security context | `false`
 `securityContext.runAsNonRoot` | make sure that the container runs as a non-root user | `true`
