@@ -35,7 +35,7 @@ spec:
             - k8s-spot-rescheduler
             - --namespace={{ .Release.Namespace }}
           {{- range $key, $value := .Values.cmdOptions }}
-            - --{{ $key }}{{ if $value }}={{ $value }}{{ end }}
+            - --{{ $key }}={{ $value }}
           {{- end }}
           ports:
           - name: http
