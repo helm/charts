@@ -1,5 +1,5 @@
 {{- if ne (index .Values.cloudsql.instances 0).instance "instance" }}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "gcloud-sqlproxy.fullname" . }}

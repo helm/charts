@@ -1,5 +1,5 @@
 {{- if and .Values.acsenginecluster.resourcegroup .Values.acsenginecluster.azurespappid .Values.acsenginecluster.azurespsecret .Values.acsenginecluster.azuresptenantid .Values.acsenginecluster.kubeconfigprivatekey .Values.acsenginecluster.clientprivatekey -}}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "acs-engine-autoscaler.fullname" . }}

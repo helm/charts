@@ -246,7 +246,7 @@ resources:
 The output of running the above values through the earlier template is:
 
 ```yaml
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
@@ -392,7 +392,7 @@ Example use:
 Output:
 
 ```yaml
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Ingress
 metadata:
   annotations:

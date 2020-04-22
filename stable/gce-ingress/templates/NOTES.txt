@@ -2,7 +2,7 @@ GCE Ingress has been deployed.  You should be able to create Ingress resources.
 
 Example:
 ```yaml
-apiVersion: extensions/v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: example
@@ -37,7 +37,7 @@ spec:
   selector:
     run: example
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Ingress
 metadata:
   name: example

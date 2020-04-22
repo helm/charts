@@ -3,7 +3,7 @@
 {{- $serviceName := include "istio.name" . -}}
 apiVersion: v1
 kind: Deployment
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 metadata:
   name: {{ $serviceName }}-{{ .Values.ca.deployment.name }}
   labels:

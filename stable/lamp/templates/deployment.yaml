@@ -1,7 +1,7 @@
 {{- if semverCompare ">=1.16-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: apps/v1
 {{- else -}}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 {{- end }}
 kind: Deployment
 metadata:

@@ -1,7 +1,7 @@
 {{- if and .Values.istio.install (not .Release.IsInstall) -}}
 {{ if .Values.addons.zipkin.enabled }}
 {{- $serviceName := include "istio.name" . -}}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ $serviceName }}-{{ .Values.addons.zipkin.deployment.name }}
