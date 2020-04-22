@@ -53,6 +53,11 @@ hub:
   ## Path for checking readiness and liveness via HTTP Request
   probePath: "/wd/hub/status"
 
+  # Configure security context on the hub pod
+  # securityContext:
+  #   fsGroup: 1000
+  #   runAsUser: 1000
+
   ## Additional environment variables to set
   extraEnvs: []
   # extraEnvs:
@@ -168,6 +173,11 @@ chrome:
   ## Configure annotations on the chrome pods
   podAnnotations: {}
 
+  # Configure security context on the chrome pods
+  # securityContext:
+  #   fsGroup: 1000
+  #   runAsUser: 1000
+
   ## Additional environment variables to set
   extraEnvs: []
   # extraEnvs:
@@ -259,6 +269,11 @@ chromeDebug:
   ## Configure annotations on the chrome debug pods
   podAnnotations: {}
 
+  # Configure security context on the chrome debug pods
+  # securityContext:
+  #   fsGroup: 1000
+  #   runAsUser: 1000
+
   ## Additional environment variables to set
   extraEnvs: []
   # extraEnvs:
@@ -349,6 +364,11 @@ firefox:
   ## Configure annotations on the firefox pods
   podAnnotations: {}
 
+  # Configure security context on the firefox pods
+  # securityContext:
+  #   fsGroup: 1000
+  #   runAsUser: 1000
+
   ## Additional environment variables to set
   extraEnvs: []
   # extraEnvs:
@@ -425,6 +445,11 @@ firefoxDebug:
 
   ## Configure annotations on the firefox debug pods
   podAnnotations: {}
+
+  # Configure security context on the firefox debug pods
+  # securityContext:
+  #   fsGroup: 1000
+  #   runAsUser: 1000
 
   ## Additional environment variables to set
   extraEnvs: []
