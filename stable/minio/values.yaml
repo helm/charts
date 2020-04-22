@@ -174,7 +174,7 @@ affinity: {}
 ## Add stateful containers to have security context, if enabled MinIO will run as this
 ## user and group NOTE: securityContext is only enabled if persistence.enabled=true
 securityContext:
-  enabled: false
+  enabled: true
   runAsUser: 1000
   runAsGroup: 1000
   fsGroup: 1000
