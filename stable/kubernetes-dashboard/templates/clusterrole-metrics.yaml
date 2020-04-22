@@ -12,19 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-{{ if .Values.rbac.create -}}
+{{ if .Values.rbac.clusterRoleMetrics -}}
+kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
 metadata:
-  name: {{ template "kubernetes-dashboard.fullname" . }}
+  name: "{{ template "kubernetes-dashboard.fullname" . }}-metrics"
   labels:
 {{ include "kubernetes-dashboard.labels" . | indent 4 }}
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: {{ template "kubernetes-dashboard.fullname" . }}
-subjects:
-  - kind: ServiceAccount
-    name: {{ template "kubernetes-dashboard.serviceAccountName" . }}
-    namespace: {{ .Release.Namespace }}
-{{- end -}}
+rules:
+  # Allow Metrics Scraper to get metrics from the Metrics server
+  - apiGroups: ["metrics.k8s.io"]
+    resources: ["pods", "nodes"]
+    verbs: ["get", "list", "watch"]
+{{- end }}

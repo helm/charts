@@ -4,8 +4,8 @@
 # name: value
 
 image:
-  repository: k8s.gcr.io/kubernetes-dashboard-amd64
-  tag: v1.10.1
+  repository: kubernetesui/dashboard
+  tag: v2.0.0
   pullPolicy: IfNotPresent
   pullSecrets: []
 
@@ -14,16 +14,7 @@ replicaCount: 1
 ## Here annotations can be added to the kubernetes dashboard deployment
 annotations: {}
 ## Here labels can be added to the kubernetes dashboard deployment
-##
 labels: {}
-# kubernetes.io/name: "Kubernetes Dashboard"
-
-
-## Enable possibility to skip login
-enableSkipLogin: false
-
-## Serve application over HTTP without TLS
-enableInsecureLogin: false
 
 ## Additional container arguments
 ##
@@ -39,20 +30,8 @@ extraEnv: []
 #   value: 'some value'
 
 # Annotations to be added to kubernetes dashboard pods
-## Recommended value
-# podAnnotations:
-#   seccomp.security.alpha.kubernetes.io/pod: 'runtime/default'
-podAnnotations: {}
-
-## SecurityContext for the kubernetes dashboard container
-## Recommended values
-# dashboardContainerSecurityContext:
-#   allowPrivilegeEscalation: false
-#   readOnlyRootFilesystem: true
-## The two values below can be set here or at podLevel (using variable .securityContext)
-#   runAsUser: 1001
-#   runAsGroup: 2001
-dashboardContainerSecurityContext: {}
+podAnnotations:
+  seccomp.security.alpha.kubernetes.io/pod: 'runtime/default'
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -72,39 +51,32 @@ affinity: {}
 
 # priorityClassName: ""
 
+resources:
+  requests:
+    cpu: 100m
+    memory: 200Mi
+  limits:
+    cpu: 2
+    memory: 200Mi
+
+## Serve application over HTTP without TLS
+##
+## Note: If set to true, you may want to add --enable-insecure-login to extraArgs
+protocolHttp: false
+
 service:
   type: ClusterIP
   externalPort: 443
-
-  ## This allows an override of the heapster service name
-  ## Default: {{ .Chart.Name }}
-  ##
-  # nameOverride:
 
   # LoadBalancerSourcesRange is a list of allowed CIDR values, which are combined with ServicePort to
   # set allowed inbound rules on the security group assigned to the master load balancer
   # loadBalancerSourceRanges: []
 
-  ## Kubernetes Dashboard Service annotations
-  ##
-  ## For GCE ingress, the following annotation is required:
-  ## service.alpha.kubernetes.io/app-protocols: '{"https":"HTTPS"}' if enableInsecureLogin=false
-  ## or
-  ## service.alpha.kubernetes.io/app-protocols: '{"http":"HTTP"}' if enableInsecureLogin=true
+  ## Additional Kubernetes Dashboard Service annotations
   annotations: {}
 
   ## Here labels can be added to the Kubernetes Dashboard service
-  ##
   labels: {}
-  # kubernetes.io/name: "Kubernetes Dashboard"
-
-resources:
-  limits:
-    cpu: 100m
-    memory: 100Mi
-  requests:
-    cpu: 100m
-    memory: 100Mi
 
 ingress:
   ## If true, Kubernetes Dashboard Ingress will be created.
@@ -147,26 +119,50 @@ ingress:
   #     hosts:
   #       - kubernetes-dashboard.domain.com
 
+## Metrics Scraper
+## Container to scrape, store, and retrieve a window of time from the Metrics Server.
+## refs: https://github.com/kubernetes-sigs/dashboard-metrics-scraper
+metricsScraper:
+  enabled: false
+  revisionHistoryLimit: 10
+  image:
+    repository: kubernetesui/metrics-scraper
+    tag: v1.0.4
+  resources: {}
+
+## Optional Metrics Server sub-chart
+## Enable this is you don't already have metrics-server enabled on your cluster and
+## want to use it with dashboard metrics-scraper
+## refs:
+##  - https://hub.helm.sh/charts/stable/metrics-server
+##  - https://github.com/kubernetes-sigs/metrics-server
+metrics-server:
+  enabled: false
+  ## Example for additional args
+  # args:
+  #  - --kubelet-preferred-address-types=InternalIP
+  #  - --kubelet-insecure-tls
+
 rbac:
-  # Specifies whether RBAC resources should be created
+  # Specifies whether namespaced RBAC resources (Role, Rolebinding) should be created
   create: true
 
-  # Specifies whether cluster-admin ClusterRole will be used for dashboard
-  # ServiceAccount (NOT RECOMMENDED).
-  clusterAdminRole: false
+  # Specifies whether cluster-wide RBAC resources (ClusterRole, ClusterRolebinding) to access metrics should be created
+  # Independent from rbac.create parameter.
+  clusterRoleMetrics: true
 
   # Start in ReadOnly mode.
   # Only dashboard-related Secrets and ConfigMaps will still be available for writing.
   #
-  # Turn OFF clusterAdminRole to use clusterReadOnlyRole.
-  #
-  # The basic idea of the clusterReadOnlyRole comparing to the clusterAdminRole
+  # The basic idea of the clusterReadOnlyRole
   # is not to hide all the secrets and sensitive data but more
   # to avoid accidental changes in the cluster outside the standard CI/CD.
   #
-  # Same as for clusterAdminRole, it is NOT RECOMMENDED to use this version in production.
+  # It is NOT RECOMMENDED to use this version in production.
   # Instead you should review the role and remove all potentially sensitive parts such as
   # access to persistentvolumes, pods/log etc.
+  #
+  # Independent from rbac.create parameter.
   clusterReadOnlyRole: false
 
 serviceAccount:
@@ -182,18 +178,37 @@ livenessProbe:
   # Number of seconds to wait for probe response
   timeoutSeconds: 30
 
+readinessProbe:
+  # Number of seconds to wait before sending first probe
+  initialDelaySeconds: 30
+  # Number of seconds to wait for probe response
+  timeoutSeconds: 30
+
+## podDisruptionBudget
+## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
 podDisruptionBudget:
-  # https://kubernetes.io/docs/tasks/run-application/configure-pdb/
   enabled: false
   minAvailable:
   maxUnavailable:
 
-
 ## PodSecurityContext for pod level securityContext
-##
 # securityContext:
 #   runAsUser: 1001
 #   runAsGroup: 2001
-securityContext: {}
 
-networkPolicy: false
+## SecurityContext for the kubernetes dashboard container
+dashboardContainerSecurityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  runAsUser: 1001
+  runAsGroup: 2001
+
+## SecurityContext for the dashboard metrics scraper container
+metricsScraperContainerSecurityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  runAsUser: 1001
+  runAsGroup: 2001
+
+networkPolicy:
+  enabled: false
