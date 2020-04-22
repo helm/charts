@@ -245,9 +245,7 @@ spec:
           workingDir: {{ .Values.vscode.hassConfig }}
           args:
             - --port={{ .Values.vscode.service.port }}
-            {{- if (.Values.vscode.password) }}
-            - --allow-http #Not supported without password
-            {{- else }}
+            {{- if not (.Values.vscode.password) }}
             - --auth=none
             {{- end }}
             {{- if .Values.vscode.vscodePath }}
