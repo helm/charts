@@ -42,6 +42,15 @@ data:
         while true; do
           attempt=$[$attempt + 1]
           echo "Try $attempt: Connecting to $url"
+          
+          # Attempt post via netcat since old busybox doesn't support wget --post-data
+          POST_DATA='{"statements":[{"statement":"SHOW DATABASES"}]}'
+          POST_PATH=/db/system/tx/commit
+          HERE_HOST=$(hostname -f)
+          AUTH_TOK=$(echo -n $auth | base64)
+          BODY_LEN=$( echo -n "${POST_DATA}" | wc -c )
+          echo -ne "POST ${POST_PATH} HTTP/1.0\r\nHost: ${HERE_HOST}\r\nAuthorization: Basic $AUTH_TOK\r\nContent-Type: application/json\r\nContent-Length: ${BODY_LEN}\r\n\r\n${POST_DATA}" | \
+            nc -i 3 ${host} 7474
           wget --version
           wget ${url} --post-data '{"statements":[{"statement":"SHOW DATABASES"}]}' --header 'Content-Type: application/json' -qO- 2>&1
           response=$(wget ${url} --post-data '{"statements":[{"statement":"SHOW DATABASES"}]}' --header 'Content-Type: application/json' -qO- 2>&1)
