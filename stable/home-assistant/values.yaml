@@ -130,9 +130,9 @@ git:
   # command: []
 
   # Committer settings
-  # user:
-  #   name: ""
-  #   email: ""
+  user:
+    name: ""
+    email: ""
 
   # repo:
   secret: git-creds
