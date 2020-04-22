@@ -228,7 +228,7 @@ datadog:
     enabled: false
 
     ## @param port - integer - optional - default: 8126
-    ## Override the trace Agent DogStatsD port.
+    ## Override the trace Agent port.
     ## Note: Make sure your client is sending to the same UDP port.
     #
     port: 8126
@@ -801,7 +801,8 @@ agents:
   # podLabels: {}
 
   ## @param useConfigMap - boolean - optional
-  #  Configures a configmap to provide the agent configuration
+  ## Configures a configmap to provide the agent configuration
+  ## Use this in combination with the `agent.customAgentConfig` parameter.
   #
   # useConfigMap: false
 
@@ -809,6 +810,7 @@ agents:
   ## Specify custom contents for the datadog agent config (datadog.yaml).
   ## ref: https://docs.datadoghq.com/agent/guide/agent-configuration-files/?tab=agentv6
   ## ref: https://github.com/DataDog/datadog-agent/blob/master/pkg/config/config_template.yaml
+  ## Note the `agent.useConfigMap` needs to be set to `true` for this parameter to be taken into account.
   #
   # customAgentConfig:
   #   # Autodiscovery for Kubernetes

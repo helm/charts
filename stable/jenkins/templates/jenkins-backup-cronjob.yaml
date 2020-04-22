@@ -114,7 +114,7 @@ spec:
                       values:
                       - {{ .Release.Name }}
       {{- with .Values.tolerations }}
-        tolerations:
+          tolerations:
 {{ toYaml . | indent 10 }}
       {{- end }}
 {{- end }}

@@ -23,6 +23,10 @@ spec:
 {{ toYaml .Values.chromeDebug.podAnnotations | indent 8 }}
       {{- end}}
     spec:
+      {{- if .Values.chromeDebug.securityContext }}
+      securityContext:
+{{ toYaml .Values.chromeDebug.securityContext | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.chromeDebug.image }}:{{ .Values.chromeDebug.tag }}"
