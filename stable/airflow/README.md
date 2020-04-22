@@ -244,7 +244,7 @@ By default, insecure username/password combinations are used.
 For a real production deployment, it's a good idea to create secure credentials before installing the Helm chart.
 For example, from the command line, run:
 ```bash
-kubectl create secret generic airflow-postgres --from-literal=postgresql-password=$(openssl rand -base64 13)
+kubectl create secret generic airflow-postgresql --from-literal=postgresql-password=$(openssl rand -base64 13)
 kubectl create secret generic airflow-redis --from-literal=redis-password=$(openssl rand -base64 13)
 ```
 Next, you can use those secrets with the Helm chart:
@@ -252,7 +252,7 @@ Next, you can use those secrets with the Helm chart:
 # values.yaml
 
 postgresql:
-  existingSecret: airflow-postgres
+  existingSecret: airflow-postgresql
 
 redis:
   existingSecret: airflow-redis
@@ -557,7 +557,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `postgresql.existingSecret`              | The name of an existing secret with a key named `postgresql.existingSecretKey` to use as the password  | `nil` |
 | `postgresql.existingSecretKey`           | The name of the key containing the password in the secret named `postgresql.existingSecret`  | `postgresql-password` |
 | `postgresql.uri`                         | full URL to custom postgres setup                       | (undefined)               |
-| `postgresql.postgresHost`                | PostgreSQL Hostname                                     | (undefined)               |
+| `postgresql.postgresqlHost`              | PostgreSQL Hostname                                     | (undefined)               |
 | `postgresql.postgresqlUsername`                | PostgreSQL User                                         | `postgres`                |
 | `postgresql.postgresqlPassword`            | PostgreSQL Password                                     | `airflow`                 |
 | `postgresql.postgresqlDatabase`            | PostgreSQL Database name                                | `airflow`                 |
@@ -592,6 +592,7 @@ There are a few config key changes, in order to upgrade from a 5.x chart, modify
 
 | 5.x.x                                | 6.x.x                                 | Notes                                                     |
 |--------------------------------------|---------------------------------------|-----------------------------------------------------------|
+|`postgresql.postgresHost`             |`postgresql.postgresqlHost`            |                                                           |
 |`postgresql.postgresUser`             |`postgresql.postgresqlUsername`        |                                                           |
 |`postgresql.postgresPassword`         |`postgresql.postgresqlPassword`        |                                                           |
 |`postgresql.postgresDatabase`         |`postgresql.postgresqlDatabase`        |                                                           |
