@@ -5,6 +5,10 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.16.3
+
+Make changes from 1.16.1 to has backward compatibility with helm v2.
+
 ## 1.16.2
 
 Reverts 1.16.1 as it introduced an error #22047

@@ -73,7 +73,11 @@ spec:
       securityContext:
         runAsUser: {{ default 0 .Values.master.runAsUser }}
 {{- if and (.Values.master.runAsUser) (.Values.master.fsGroup) }}
-{{- if not (eq (int .Values.master.runAsUser) 0) }}
+{{- if kindIs "float64" .Values.master.runAsUser }}
+{{- if not (eq .Values.master.runAsUser 0.0) }}
+        fsGroup: {{ .Values.master.fsGroup }}
+{{- end }}
+{{- else if not (eq .Values.master.runAsUser 0) }}
         fsGroup: {{ .Values.master.fsGroup }}
 {{- end }}
 {{- end }}
