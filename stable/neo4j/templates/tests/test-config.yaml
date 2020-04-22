@@ -53,7 +53,7 @@ data:
             nc -i 3 ${host} 7474)
           echo "SHOW DATABASES response:"
           echo $SHOW_DATABASES_RESPONSE
-          didItWork=(echo "${SHOW_DATABASES_RESPONSE}" | grep -i online)
+          didItWork=$(echo "${SHOW_DATABASES_RESPONSE}" | grep -i online)
           [ "$?" = 0 ] && break
           [ "${attempt}" -ge "${attempts}" ] && exit 1
           sleep 5
