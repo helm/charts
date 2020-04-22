@@ -73,6 +73,7 @@ The following table lists the configurable parameters of the pushgateway chart a
 | `serviceMonitor.scrapeTimeout`    | How long to scrape metrics before timing out. (use by default, falling back to Prometheus' default)                           | `nil`                             |
 | `serviceMonitor.additionalLables` | Used to pass Labels that are required by the Installed Prometheus Operator                                                    | `{}`                              |
 | `serviceMonitor.honorLabels`      | if `true`, label conflicts are resolved by keeping label values from the scraped data                                         | `true`                            |
+| `serviceMonitor.relabelings`      | Array of RelabelConfigs to apply to samples before scraping                                                                   | `true`                            |
 | `podDisruptionBudget`             | If set, create a PodDisruptionBudget with the items in this map set in the spec                                               | ``                                |
 | `networkPolicy.allowAll`          | Allow connectivity from all pods in the cluster                                                                               | ``                                |
 | `networkPolicy.customSelectors`   | Allow connectivity from pods that match a list of podSelectors and namespaceSelectors                                         | ``                                |
