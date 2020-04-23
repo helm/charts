@@ -121,8 +121,8 @@ collectors:
   verticalpodautoscalers: true
   volumeattachments: true
 
-# Namespace to be enabled for collecting resources. By default all namespaces are collected.
-# namespace: ""
+# Comma-separated list of namespaces to be enabled. Defaults to "" (all namespaces)
+# namespaces: ""
 
 ## Override the deployment namespace
 ##
