@@ -15,7 +15,6 @@ spec:
   selector:
     matchLabels:
       app: {{ template "logdna.name" . }}
-      chart: {{ template "logdna.chart" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
