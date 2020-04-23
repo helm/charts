@@ -100,6 +100,10 @@ spec:
             exec:
               command: [ "test", "-e", "/opt/draios/logs/running" ]
             initialDelaySeconds: 10
+          livenessProbe:
+            exec:
+              command: [ "test", "-e", "/opt/draios/logs/running" ]
+            initialDelaySeconds: 10
           volumeMounts:
             {{- if not .Values.slim.enabled }}
             - mountPath: /etc/modprobe.d

@@ -9,6 +9,7 @@ numbering uses [semantic versioning](http://semver.org).
 
 * Use the latest image from Agent (9.9.1) by default.
 * Use kubernetes.io/arch label on daemonSet to schedule pods only on amd64 nodes.
+* Add a livenessProbe to daemonSet.
 
 ## v1.7.11
 
