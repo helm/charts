@@ -57,6 +57,7 @@ The following table lists the configurable parameters of the postgres Exporter c
 | `config.datasource`                 | Postgresql datasource configuration                      |  see [values.yaml](values.yaml)              |
 | `config.datasourceSecret`       | Postgresql datasource configuration from secret                  |  see [values.yaml](values.yaml)              |
 | `config.queries`                | SQL queries that the exporter will run | [postgres exporter defaults](https://github.com/wrouesnel/postgres_exporter/blob/master/queries.yaml) |
+| `config.extraQueries`                | Additional user-defined queries. Preferably put your own additional queries here so you don't have to overwrite `config.queries`. |  |
 | `config.disableDefaultMetrics`  | Specifies whether to use only metrics from `queries.yaml`| `false` |
 | `config.autoDiscoverDatabases`  | Specifies whether to autodiscover all databases | `false` |
 | `config.excludeDatabases`  | When autodiscover is enabled, list databases to exclude| `[]` |

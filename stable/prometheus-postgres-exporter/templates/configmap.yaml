@@ -10,3 +10,6 @@ metadata:
 data:
   config.yaml: |
 {{ printf .Values.config.queries | indent 4 }}
+{{- if .Values.config.extraQueries }}
+{{ .Values.config.extraQueries | indent 4 }}
+{{- end }}

@@ -294,6 +294,9 @@ config:
             usage: "COUNTER"
             description: "Total time the statement spent writing blocks, in milliseconds (if track_io_timing is enabled, otherwise zero)"
 
+  # Additional queries
+  extraQueries: |
+
 nodeSelector: {}
 
 tolerations: []
