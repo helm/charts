@@ -14,7 +14,7 @@ This chart deploys LogDNA collector agents to all nodes in your cluster. Logs wi
 
 ## Prerequisites
 
-- Kubernetes 1.2+
+- Kubernetes 1.9+
 
 ## Installing the Chart
 
