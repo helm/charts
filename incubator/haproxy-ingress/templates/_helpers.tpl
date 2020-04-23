@@ -10,14 +10,14 @@ Expand the name of the chart.
 Create the app label for controller
 */}}
 {{- define "haproxy-ingress.labels.app.controller" -}}
-{{ template "haproxy-ingress.name" . }}-controller
+{{ default "haproxy-ingress.name" }}-controller
 {{- end -}}
 
 {{/*
 Create the app label for default backend
 */}}
 {{- define "haproxy-ingress.labels.app.default-backend" -}}
-{{ template "haproxy-ingress.name" . }}-default-backend
+{{ default "haproxy-ingress.name" }}-default-backend
 {{- end -}}
 
 {{/*
