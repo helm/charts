@@ -18,4 +18,15 @@ rules:
       - list
       - watch
       - get
+{{- if .Values.podSecurityPolicy.enabled }}
+  - apiGroups:
+      - policy
+    resources:
+      - podsecuritypolicies
+    verbs:
+      - use
+    resourceNames:
+      - {{ template "kube2iam.fullname" . }}
+{{- end }}
+
 {{- end -}}
