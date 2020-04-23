@@ -1,16 +1,16 @@
 {{- if .Values.rbac.create -}}
 apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
+kind: ClusterRoleBinding
 metadata:
   name: {{ template "hazelcast.fullname" . }}
   labels:
-    app: {{ template "hazelcast.name" . }}
-    chart: {{ template "hazelcast.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ template "hazelcast.name" . }}
+    helm.sh/chart: {{ template "hazelcast.chart" . }}
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  kind: Role
+  kind: ClusterRole
   name: {{ template "hazelcast.fullname" . }}
 subjects:
 - kind: ServiceAccount

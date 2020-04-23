@@ -4,7 +4,7 @@ kind: Service
 metadata:
   name: {{ template "jaeger.query.name" . }}
   labels:
-    app.kubernetes.io/name: {{ template "jaeger.name" . }}
+    app.kubernetes.io/name: {{ include "jaeger.name" . }}
     helm.sh/chart: {{ include "jaeger.chart" . }}
     app.kubernetes.io/component: query
     app.kubernetes.io/managed-by: {{ .Release.Service }}
@@ -15,12 +15,12 @@ metadata:
 {{- end }}
 spec:
   ports:
-  - name: jaeger-query
-    port: {{ .Values.query.service.queryPort }}
+  - name: query
+    port: {{ .Values.query.service.port }}
     protocol: TCP
-    targetPort: {{ .Values.query.service.targetPort }}
+    targetPort: query
   selector:
-    app.kubernetes.io/name: {{ template "jaeger.name" . }}
+    app.kubernetes.io/name: {{ include "jaeger.name" . }}
     app.kubernetes.io/component: query
     app.kubernetes.io/instance: {{ .Release.Name }}
   type: {{ .Values.query.service.type }}

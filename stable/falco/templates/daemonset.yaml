@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ template "falco.fullname" . }}
@@ -8,18 +8,36 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "falco.fullname" .}}
+      role: security
   template:
     metadata:
       name: {{ template "falco.fullname" .}}
       labels:
         app: {{ template "falco.fullname" .}}
         role: security
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/rules: {{ include (print $.Template.BasePath "/configmap-rules.yaml") . | sha256sum }}
     spec:
       serviceAccountName: {{ template "falco.serviceAccountName" .}}
       {{- if (and .Values.ebpf.enabled .Values.ebpf.settings.hostNetwork) }}
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
+{{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       containers:
@@ -32,9 +50,9 @@ spec:
             privileged: true
           args:
             - /usr/bin/falco
-            {{- if (and .Values.cri.enabled .Values.cri.socket) }}
+            {{- if .Values.containerd.enabled }}
             - --cri
-            - /host/var/run/cri.sock
+            - /host/run/containerd/containerd.sock
             {{- end }}
             - -K
             - /var/run/secrets/kubernetes.io/serviceaccount/token
@@ -46,7 +64,7 @@ spec:
         {{- end }}
           env:
           {{- if .Values.ebpf.enabled }}
-            - name: SYSDIG_BPF_PROBE
+            - name: FALCO_BPF_PROBE
               value:
           {{- end }}
           {{- if .Values.proxy.httpProxy }}
@@ -61,17 +79,26 @@ spec:
             - name: no_proxy
               value: {{ .Values.proxy.noProxy }}
           {{- end }}
+          {{- if .Values.timezone }}
+            - name: TZ
+              value: {{ .Values.timezone }}
+          {{- end }}
+          {{- range $key, $value := .Values.daemonset.env }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+          {{- end }}
           volumeMounts:
-            {{- if (and .Values.docker.enabled .Values.docker.socket) }}
+            {{- if .Values.docker.enabled }}
             - mountPath: /host/var/run/docker.sock
               name: docker-socket
             {{- end}}
-            {{- if (and .Values.cri.enabled .Values.cri.socket) }}
-            - mountPath: /host/var/run/cri.sock
-              name: cri-socket
+            {{- if .Values.containerd.enabled }}
+            - mountPath: /host/run/containerd/containerd.sock
+              name: containerd-socket
             {{- end}}
             - mountPath: /host/dev
               name: dev-fs
+              readOnly: true
             - mountPath: /host/proc
               name: proc-fs
               readOnly: true
@@ -80,7 +107,6 @@ spec:
               readOnly: true
             - mountPath: /host/lib/modules
               name: lib-modules
-              readOnly: true
             - mountPath: /host/usr
               name: usr-fs
               readOnly: true
@@ -102,6 +128,11 @@ spec:
               name: shared-pipe
               readOnly: false
             {{- end }}
+            {{- if .Values.falco.grpc.enabled }}
+            - mountPath: /etc/falco/certs
+              name: certs-volume
+              readOnly: true
+            {{- end}}
       {{- if .Values.integrations.natsOutput.enabled }}
         - name: {{ .Chart.Name }}-nats
           image: sysdig/falco-nats:latest
@@ -170,15 +201,15 @@ spec:
         - name: dshm
           emptyDir:
             medium: Memory
-        {{- if (and .Values.docker.enabled .Values.docker.socket) }}
+        {{- if .Values.docker.enabled }}
         - name: docker-socket
           hostPath:
             path: {{ .Values.docker.socket }}
         {{- end}}
-        {{- if (and .Values.cri.enabled .Values.cri.socket) }}
-        - name: cri-socket
+        {{- if .Values.containerd.enabled }}
+        - name: containerd-socket
           hostPath:
-            path: {{ .Values.cri.socket }}
+            path: {{ .Values.containerd.socket }}
         {{- end}}
         - name: dev-fs
           hostPath:
@@ -210,6 +241,12 @@ spec:
                 path: falco_rules.yaml
               - key: falco_rules.local.yaml
                 path: falco_rules.local.yaml
+              - key: application_rules.yaml
+                path: rules.available/application_rules.yaml
+              {{- if .Values.auditLog.enabled }}
+              - key: k8s_audit_rules.yaml
+                path: k8s_audit_rules.yaml
+              {{- end }}
         {{- if .Values.customRules }}
         - name: rules-volume
           configMap:
@@ -218,6 +255,18 @@ spec:
         {{- if (or .Values.integrations.natsOutput.enabled .Values.integrations.snsOutput.enabled .Values.integrations.pubsubOutput.enabled) }}
         - name: shared-pipe
           emptyDir: {}
+        {{- end }}
+        {{- if .Values.falco.grpc.enabled }}
+        - name: certs-volume
+          secret:
+            secretName: {{ template "falco.fullname" . }}-certs
+            items:
+              - key: server.key
+                path: server.key
+              - key: server.crt
+                path: server.crt
+              - key: ca.crt
+                path: ca.crt
         {{- end }}
   updateStrategy:
 {{ toYaml .Values.daemonset.updateStrategy | indent 4 }}

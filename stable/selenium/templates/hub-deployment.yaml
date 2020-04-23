@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "selenium.hub.fullname" . }}
@@ -6,6 +6,10 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "selenium.hub.fullname" . }}
+      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
@@ -18,6 +22,10 @@ spec:
 {{ toYaml .Values.hub.podAnnotations | indent 8 }}
       {{- end}}
     spec:
+      {{- if .Values.hub.securityContext }}
+      securityContext:
+{{ toYaml .Values.hub.securityContext | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.hub.image }}:{{ .Values.hub.tag }}"
@@ -61,7 +69,7 @@ spec:
               value: {{ .Values.hub.gridNodePolling | quote }}
             {{- end }}
             {{- if .Values.hub.gridCleanUpCycle }}
-            - name: GRID_CLEANUP_CYCLE
+            - name: GRID_CLEAN_UP_CYCLE
               value: {{ .Values.hub.gridCleanUpCycle | quote }}
             {{- end }}
             {{- if .Values.hub.gridTimeout }}
@@ -94,7 +102,7 @@ spec:
           resources:
 {{ toYaml .Values.hub.resources | trim | indent 12 -}}
 {{- if or .Values.global.imagePullSecrets .Values.hub.imagePullSecrets }}
-      imagePullSecrets: 
+      imagePullSecrets:
       - name: {{ .Values.hub.imagePullSecrets | default .Values.global.imagePullSecrets | quote }}
 {{- end }}
       nodeSelector:

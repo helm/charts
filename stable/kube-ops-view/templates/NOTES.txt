@@ -8,4 +8,10 @@ To access the Kubernetes Operational View UI:
 
    http://localhost:8001/api/v1/proxy/namespaces/{{ .Release.Namespace }}/services/{{ template "kube-ops-view.fullname" . }}/
 
+{{ if .Values.ingress.enabled -}}
+From outside the cluster, the server URL is:
+
+  http{{ if .Values.ingress.tls }}s{{ end }}://{{ .Values.ingress.hostname }}{{ .Values.ingress.path }}
+
+{{ end -}}
 Please try reloading the page if you see "ServiceUnavailable / no endpoints available for service", pod creation might take a moment.

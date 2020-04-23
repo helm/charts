@@ -15,6 +15,18 @@ podDisruptionBudget: {}
   # minAvailable: 2
   # maxUnavailable: 1
 
+## Node labels for pod assignment
+## ref: https://kubernetes.io/docs/user-guide/node-selection/
+nodeSelector: {}
+
+## Tolerations for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
+
+## Affinity for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}
+
 # Use password authentication
 authEnabled: true
 
@@ -89,6 +101,19 @@ core:
 
 # Read Replicas
 readReplica:
+  resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 512Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 512Mi
+  autoscaling:
+    enabled: false
+    targetAverageUtilization: 70
+    minReplicas: 1
+    maxReplicas: 3
+
   numberOfServers: 0
   ## Pass extra environment variables to the Neo4j container.
   ##

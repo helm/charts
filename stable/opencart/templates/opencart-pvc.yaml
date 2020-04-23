@@ -5,7 +5,7 @@ metadata:
   name: {{ template "opencart.fullname" . }}-opencart
   labels:
     app: {{ template "opencart.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "opencart.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
@@ -14,11 +14,5 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistence.opencart.size | quote }}
-{{- if .Values.persistence.opencart.storageClass }}
-{{- if (eq "-" .Values.persistence.opencart.storageClass) }}
-  storageClassName: ""
-{{- else }}
-  storageClassName: "{{ .Values.persistence.opencart.storageClass }}"
-{{- end }}
-{{- end }}
+  {{ include "opencart.storageClass" . }}
 {{- end -}}

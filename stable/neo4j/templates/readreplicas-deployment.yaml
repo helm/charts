@@ -1,21 +1,28 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: "{{ template "neo4j.replica.fullname" . }}"
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    app: {{ template "neo4j.name" . }}
-    component: replica
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app.kubernetes.io/name: {{ template "neo4j.name" . }}
+    app.kubernetes.io/component: replica
 spec:
+{{- if not .Values.readReplica.autoscaling.enabled }}
   replicas: {{ .Values.readReplica.numberOfServers }}
+{{- end }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "neo4j.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      app.kubernetes.io/component: replica
   template:
     metadata:
       labels:
-        app: {{ template "neo4j.name" . }}
-        release: {{ .Release.Name | quote }}
-        component: replica
+        app.kubernetes.io/name: {{ template "neo4j.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        app.kubernetes.io/component: replica
     spec:
       containers:
       - name: neo4j
@@ -66,12 +73,26 @@ spec:
         volumeMounts:
         - name: plugins
           mountPath: /plugins
+        resources:
+{{ toYaml .Values.readReplica.resources | indent 10 }}
 {{- if .Values.core.sidecarContainers }}
 {{ toYaml .Values.core.sidecarContainers | indent 6 }}
 {{- end }}
 {{- if .Values.readReplica.initContainers }}
       initContainers:
 {{ toYaml .Values.readReplica.initContainers | indent 6 }}
+{{- end }}
+{{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
 {{- end }}
       volumes:
         - name: plugins

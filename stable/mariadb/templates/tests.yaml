@@ -1,3 +1,4 @@
+{{- if .Values.tests.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -7,3 +8,4 @@ data:
     @test "Testing MariaDB is accessible" {
       mysql -h {{ template "mariadb.fullname" . }} -uroot -p$MARIADB_ROOT_PASSWORD -e 'show databases;'
     }
+{{- end }}

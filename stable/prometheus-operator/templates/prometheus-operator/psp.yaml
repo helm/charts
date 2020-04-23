@@ -3,8 +3,13 @@ apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-operator
+  namespace: {{ $.Release.Namespace }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-operator
+{{- if .Values.global.rbac.pspAnnotations }}
+  annotations:
+{{ toYaml .Values.global.rbac.pspAnnotations | indent 4 }}
+{{- end }}
 {{ include "prometheus-operator.labels" . | indent 4 }}
 spec:
   privileged: false

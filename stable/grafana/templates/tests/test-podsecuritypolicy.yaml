@@ -1,13 +1,11 @@
-{{- if .Values.rbac.pspEnabled }}
-apiVersion: extensions/v1beta1
+{{- if and .Values.testFramework.enabled .Values.rbac.pspEnabled }}
+apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: {{ template "grafana.fullname" . }}-test
+  namespace: {{ template "grafana.namespace" . }}
   labels:
-    app: {{ template "grafana.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    {{- include "grafana.labels" . | nindent 4 }}
 spec:
   allowPrivilegeEscalation: true
   privileged: false

@@ -1,0 +1,15 @@
+{{- if .Values.auditLog.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "sysdig.fullname" . }}
+  labels:
+{{ include "sysdig.labels" . | indent 4 }}
+spec:
+  selector:
+    app.kubernetes.io/name: {{ include "sysdig.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  ports:
+  - protocol: TCP
+    port: {{ .Values.auditLog.auditServerPort }}
+{{- end }}

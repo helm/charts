@@ -1,0 +1,20 @@
+{{- if .Values.metrics.prometheus.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "traefik.fullname" . }}-prometheus
+  labels:
+    app: {{ template "traefik.name" . }}
+    chart: {{ template "traefik.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ template "traefik.name" . }}
+    release: {{ .Release.Name }}
+  ports:
+    - port: 9100
+      name: metrics
+      targetPort: metrics
+{{- end }}

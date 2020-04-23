@@ -100,7 +100,7 @@ spec:
       {{- if .Values.tiller.tls.enabled }}
       - name: tiller-certs
         secret:
-          defaultMode: 420
+          defaultMode: 0644
           secretName: {{ template "magic-namespace.tillerTlsSecret" . }}
       {{- end }}
     {{- with .Values.tiller.nodeSelector }}

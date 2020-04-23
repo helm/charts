@@ -52,3 +52,14 @@ Create default labels
 {{- $labels := dict "app" $labelApp "chart" $labelChart "release" .Release.Name "heritage" .Release.Service -}}
 {{ merge .extraLabels $labels | toYaml | indent 4 }}
 {{- end -}}
+
+{{/*
+Return the appropriate apiVersion for networkpolicy.
+*/}}
+{{- define "prometheus-pushgateway.networkPolicy.apiVersion" -}}
+{{- if semverCompare ">=1.4-0, <1.7-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "extensions/v1beta1" -}}
+{{- else if semverCompare "^1.7-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "networking.k8s.io/v1" -}}
+{{- end -}}
+{{- end -}}

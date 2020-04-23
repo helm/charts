@@ -61,3 +61,33 @@ Create the name for the key secret.
         {{- template "mongodb-replicaset.fullname" . -}}-keyfile
     {{- end -}}
 {{- end -}}
+
+{{- define "mongodb-replicaset.connection-string" -}}
+  {{- $string := "" -}}
+  {{- if .Values.auth.enabled }}
+   {{- $string = printf "mongodb://$METRICS_USER:$METRICS_PASSWORD@localhost:%s" (.Values.port|toString) -}}
+  {{- else -}}
+   {{- $string = printf "mongodb://localhost:%s" (.Values.port|toString) -}}
+  {{- end -}}
+
+  {{- if .Values.tls.enabled }}
+  {{- printf "%s/?ssl=true&tlsCertificateKeyFile=/work-dir/mongo.pem&tlsCAFile=/ca/tls.crt" $string | quote -}}
+  {{- else -}}
+  {{- printf $string | quote -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
+Allow the release namespace to be overridden for multi-namespace deployments in combined charts.
+*/}}
+{{- define "mongodb-replicaset.namespace" -}}
+  {{- if .Values.global -}}
+    {{- if .Values.global.namespaceOverride -}}
+      {{- .Values.global.namespaceOverride -}}
+    {{- else -}}
+      {{- .Release.Namespace -}}
+    {{- end -}}
+  {{- else -}}
+    {{- .Release.Namespace -}}
+  {{- end -}}    
+{{- end -}}

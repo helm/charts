@@ -1,12 +1,8 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "parse.fullname" . }}
-  labels:
-    app: {{ template "parse.name" . }}
-    chart: {{ template "parse.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+  name: {{ include "parse.fullname" . }}
+  labels: {{ include "parse.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   {{- if and (.Values.service.loadBalancerIP) (eq .Values.service.type "LoadBalancer") }}
@@ -16,15 +12,13 @@ spec:
   externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy | quote }}
   {{- end }}
   ports:
-  - name: server-http
-    port: {{ .Values.server.port }}
-    targetPort: server-http
-  - name: dashboard-http
-    port: {{ .Values.service.port }}
-    targetPort: dashboard-http
-    {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePorts.http)))}}
-    nodePort: {{ .Values.service.nodePorts.http }}
-    {{- end }}
-  selector:
-    app: {{ template "parse.name" . }}
-    release: "{{ .Release.Name }}"
+    - name: server-http
+      port: {{ .Values.server.port }}
+      targetPort: server-http
+    - name: dashboard-http
+      port: {{ .Values.service.port }}
+      targetPort: dashboard-http
+      {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePorts.http)))}}
+      nodePort: {{ .Values.service.nodePorts.http }}
+      {{- end }}
+  selector: {{ include "parse.matchLabels" . | nindent 4 }}

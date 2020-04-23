@@ -8,8 +8,8 @@ metadata:
     heritage: {{ .Release.Service }}
   name:  {{ template "burrow.fullname" . }}-grpc
 spec:
-  type: {{ .Values.RPC.GRPC.service.type }}
-{{- if .Values.RPC.GRPC.service.loadBalance }}
+  type: {{ .Values.grpc.service.type }}
+{{- if .Values.grpc.service.loadBalance }}
   sessionAffinity: ClientIP
   sessionAffinityConfig:
     clientIP:
@@ -23,6 +23,6 @@ spec:
   selector:
     app: {{ template "burrow.name" . }}
     release: {{ .Release.Name }}
-{{- if not .Values.RPC.GRPC.service.loadBalance }}
-    nodeNumber: {{ .Values.RPC.GRPC.service.node | quote }}
+{{- if not .Values.grpc.service.loadBalance }}
+    nodeNumber: {{ .Values.grpc.service.node | quote }}
 {{- end }}

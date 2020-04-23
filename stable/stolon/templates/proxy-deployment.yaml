@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "stolon.fullname" . }}-proxy
@@ -30,6 +30,10 @@ spec:
       priorityClassName: "{{ .Values.proxy.priorityClassName }}"
 {{- end }}
       serviceAccountName: {{ template "stolon.serviceAccountName" . }}
+{{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
+{{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -58,9 +62,12 @@ spec:
             - name: STPROXY_LISTEN_ADDRESS
               value: {{ default "0.0.0.0" .Values.proxy.listenAddress | quote }}
             - name: STPROXY_METRICS_LISTEN_ADDRESS
-              value: "0.0.0.0:8080"
+              value: "0.0.0.0:{{ .Values.ports.metrics.containerPort }}"
             - name: STPROXY_DEBUG
               value: {{ .Values.debug | quote}}
+{{- if .Values.proxy.extraEnv }}
+{{ toYaml .Values.proxy.extraEnv | indent 12 }}
+{{- end }}
           ports:
 {{- range $key, $value := .Values.ports }}
             - name: {{ $key }}

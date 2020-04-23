@@ -1,3 +1,4 @@
+{{- if .Values.service.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -7,9 +8,23 @@ metadata:
     helm.sh/chart: {{ include "telegraf.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+  {{- if .Values.service.annotations }}
+  annotations:
+{{ toYaml .Values.service.annotations | indent 4 }}
+  {{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:
+  {{- range $objectKey, $objectValue := .Values.config.outputs }}
+  {{- range $key, $value := . -}}
+  {{- $tp := typeOf $value -}}
+  {{- if eq $key "health" }}
+  - port: {{ trimPrefix "http://:" $value.service_address | int64 }}
+    targetPort: {{ trimPrefix "http://:" $value.service_address | int64 }}
+    name: "health"
+    {{- end }}
+  {{- end }}
+  {{- end }}
   {{- range $objectKey, $objectValue := .Values.config.inputs }}
   {{- range $key, $value := . -}}
     {{- $tp := typeOf $value -}}
@@ -42,6 +57,17 @@ spec:
     {{- end }}
   {{- end -}}
   {{- end }}
+  {{- range $objectKey, $objectValue := .Values.config.outputs }}
+  {{- range $key, $value := . -}}
+    {{- $tp := typeOf $value -}}
+    {{- if eq $key "prometheus_client" }}
+  - port: {{ trimPrefix ":" $value.listen | int64 }}
+    targetPort: {{ trimPrefix ":" $value.listen | int64 }}
+    name: "prometheus-client"
+    {{- end }}
+  {{- end -}}
+  {{- end }}
   selector:
     app.kubernetes.io/name: {{ include "telegraf.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end -}}

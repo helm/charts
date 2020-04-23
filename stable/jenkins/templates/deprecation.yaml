@@ -10,7 +10,7 @@
         {{- end }}
 
         {{- if .Values.Master.ImageTag }}
-           {{ fail "`Master.ImageTag` does no longer exist. It has been renamed to `master.imageTag`" }}
+           {{ fail "`Master.ImageTag` does no longer exist. It has been renamed to `master.tag`" }}
         {{- end }}
 
         {{- if .Values.Master.ImagePullPolicy }}
@@ -59,10 +59,6 @@
 
         {{- if .Values.Master.AdminPassword }}
            {{ fail "`Master.AdminPassword` does no longer exist. It has been renamed to `master.adminPassword`" }}
-        {{- end }}
-
-        {{- if .Values.Master.AdminSshKey }}
-           {{ fail "`Master.AdminSshKey` does no longer exist. It has been renamed to `master.adminSshKey`" }}
         {{- end }}
 
         {{- if .Values.Master.JenkinsAdminEmail }}

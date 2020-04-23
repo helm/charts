@@ -24,13 +24,13 @@ This chart will create a TensorFlow cluster, and distribute a computation graph 
   ```
 
 * To install with custom values via file:
-  
+
   ```
   $ helm install  --values values.yaml  --name mnist  incubator/distributed-tensorflow
   ```
-  
+
   Below is an example of the custom value file values.yaml with GPU support.
-  
+
   ```
   worker:
     number: 2
@@ -40,7 +40,7 @@ This chart will create a TensorFlow cluster, and distribute a computation graph 
       tag: 1.6.0-gpu
     port: 9090
     gpuCount: 1
-  
+
   ps:
     number: 2
     podManagementPolicy: Parallel
@@ -49,11 +49,12 @@ This chart will create a TensorFlow cluster, and distribute a computation graph 
       tag: 1.6.0
       pullPolicy: IfNotPresent
     port: 8080
-  
+
   # optimize for training
   hyperparams:
     batchsize: 20
     learningrate: 0.001
+    trainsteps: 10000
   ```
 
 > Notice: you can check the details of docker image from [Docker hub](https://hub.docker.com/r/cheyang/distributed-tf/)

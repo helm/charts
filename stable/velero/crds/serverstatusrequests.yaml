@@ -1,0 +1,16 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: serverstatusrequests.velero.io
+  labels:
+    app.kubernetes.io/name: "velero"
+  annotations:
+    "helm.sh/hook": crd-install
+    "helm.sh/hook-delete-policy": "before-hook-creation"
+spec:
+  group: velero.io
+  version: v1
+  scope: Namespaced
+  names:
+    plural: serverstatusrequests
+    kind: ServerStatusRequest

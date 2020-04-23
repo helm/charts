@@ -3,6 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "prometheus-snmp-exporter.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/name: {{ include "prometheus-snmp-exporter.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
@@ -10,5 +11,5 @@ metadata:
     helm.sh/chart: {{ include "prometheus-snmp-exporter.chart" . }}
 data:
   snmp.yaml: |
-{{ toYaml .Values.config | indent 4 }}
+{{ .Values.config | indent 4 }}
 {{- end }}

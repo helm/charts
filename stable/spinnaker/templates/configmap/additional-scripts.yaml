@@ -9,7 +9,7 @@ data:
 {{- if  and .Values.halyard.additionalScripts.create .Values.halyard.additionalScripts.data }}
 {{- range $index, $content := .Values.halyard.additionalScripts.data }}
   {{ $index }}: |-
-{{ $content | indent 4 }}
+{{ tpl $content $ | indent 4 }}
 {{- end }}
 {{- end }}
 {{- end }}

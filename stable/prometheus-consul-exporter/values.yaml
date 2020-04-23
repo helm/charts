@@ -29,6 +29,8 @@ consulServer: host:port
 
 # Flags - for a list visit https://github.com/prometheus/consul_exporter#flags
 options: {}
+  # no-consul.health-summary:
+  # kv.filter=foobar
 
 service:
   type: ClusterIP

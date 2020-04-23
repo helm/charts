@@ -3,6 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "mysql.fullname" . }}-configuration
+  namespace: {{ .Release.Namespace }}
 data:
 {{- range $key, $val := .Values.configurationFiles }}
   {{ $key }}: |-

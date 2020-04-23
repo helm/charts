@@ -12,7 +12,7 @@ To quickly build your first pipeline while learning key GoCD concepts, visit the
 
 ## Prerequisites
 
-- Kubernetes 1.8+ with Beta APIs enabled
+- Kubernetes 1.14+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
 - LoadBalancer support or Ingress Controller
 - Ensure that the service account used for starting tiller has enough permissions to create a role.
@@ -83,13 +83,13 @@ The following tables list the configurable parameters of the GoCD chart and thei
 | `server.initContainers`                    | GoCD server init containers                                                                                   | `[]`                |
 | `server.restartPolicy`                     | GoCD server restart policy                                                                                    | `Always`            |
 | `server.nodeSelector`                      | GoCD server nodeSelector for pod labels                                                                       | `{}`                |
-| `server.affinity`                         | GoCD server affinity                                                                                           | `{}`                |
-| `server.env.goServerSystemProperties`      | GoCD Server system properties                                                                                 | `nil`               |
+| `server.affinity`                          | GoCD server affinity                                                                                          | `{}`                |
+| `server.tolerations`                       | GoCD server tolerations                                                                                       | `{}`                |
+| `server.env.goServerJvmOpts`               | GoCD Server JVM arguments                                                                                     | `nil`               |
 | `server.env.extraEnvVars`                  | GoCD Server extra Environment variables                                                                       | `nil`               |
 | `server.service.type`                      | Type of GoCD server Kubernetes service                                                                        | `NodePort`          |
 | `server.service.loadBalancerSourceRanges`  | GoCD server service Load Balancer source IP ranges to whitelist                                               | `nil`               |
 | `server.service.httpPort`                  | GoCD server service HTTP port                                                                                 | `8153`              |
-| `server.service.httpsPort`                 | GoCD server service HTTPS port                                                                                | `8154`              |  
 | `server.service.nodeHttpPort`              | GoCD server service node HTTP port. **Note**: A random nodePort will get assigned if not specified            | `nil`               |  
 | `server.service.nodeHttpsPort`             | GoCD server service node HTTPS port. **Note**: A random nodePort will get assigned if not specified           | `nil`               |  
 | `server.ingress.enabled`                   | Enable/disable GoCD ingress. Allow traffic from outside the cluster via http. Do `kubectl describe ing` to get the public ip to access the gocd server.                                | `true`              |                                                                                     
@@ -102,6 +102,10 @@ The following tables list the configurable parameters of the GoCD chart and thei
 | `server.hostAliases`                       | Aliases for IPs in /etc/hosts                                                                                 | `[]`                |
 | `server.security.ssh.enabled`              | Enable the use of SSH keys for GoCD server                                                                    | `false`             |
 | `server.security.ssh.secretName`           | The name of the secret holding the SSH keys                                                                   | `gocd-server-ssh`   |
+| `server.securityContext.runAsUser`         | The container user for all the GoCD server pods.                                                              | `1000`              |
+| `server.securityContext.runAsGroup`        | The container group for all the GoCD server pods.                                                             | `0`                 |
+| `server.securityContext.fsGroup`           | The container supplementary group for all the GoCD server pods.                                               | `0`                 |
+| `server.sidecarContainers`                 | Sidecar containers to run alongside GoCD server.                                                              | `[]`                |
 
 #### Preconfiguring the GoCD Server
 
@@ -168,6 +172,7 @@ $ kubectl create secret generic gocd-server-ssh \
 | `agent.annotations.pod       `            | GoCD Agent Pod annotations.                                                                                                                                                      | `{}`                         |
 | `agent.replicaCount`                      | GoCD Agent replicas Count. By default, no agents are provided.                                                                                                                   | `0`                          |
 | `agent.preStop        `                   | Perform cleanup and backup before stopping the gocd server. Supported value is a list.                                                                                           | `nil`                        |
+| `agent.postStart`                         | Commands to run after agent startup.                                                                                                                                             | `nil`                        |
 | `agent.terminationGracePeriodSeconds`     | Optional duration in seconds the gocd agent pods need to terminate gracefully.                                                                                                   | `nil`                        |
 | `agent.deployStrategy`                    | GoCD Agent [deployment strategy](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy).                                                                | `{}`                         |
 | `agent.image.repository`                  | GoCD agent image                                                                                                                                                                 | `gocd/gocd-agent-alpine-3.6` |
@@ -178,6 +183,7 @@ $ kubectl create secret generic gocd-server-ssh \
 | `agent.restartPolicy`                     | GoCD agent restart policy                                                                                                                                                        | `Always`               |
 | `agent.nodeSelector`                      | GoCD agent nodeSelector for pod labels                                                                                                                                           | `{}`                |
 | `agent.affinity`                         | GoCD agent affinity                                                                                                                                                               | `{}`                |
+| `agent.tolerations`                       | GoCD agent tolerations                                                                                                                                                           | `{}`                |
 | `agent.env.goServerUrl`                   | GoCD Server Url. If nil, discovers the GoCD server service if its available on the Kubernetes cluster                                                                            | `nil`                        |
 | `agent.env.agentAutoRegisterKey`          | GoCD Agent autoregister key                                                                                                                                                      | `nil`                        |
 | `agent.env.agentAutoRegisterResources`    | Comma separated list of GoCD Agent resources                                                                                                                                     | `nil`                        |
@@ -185,6 +191,7 @@ $ kubectl create secret generic gocd-server-ssh \
 | `agent.env.agentAutoRegisterHostname`     | GoCD Agent hostname                                                                                                                                                              | `nil`                        |
 | `agent.env.goAgentBootstrapperArgs`       | GoCD Agent Bootstrapper Args. It can be used to [Configure end-to-end transport security](https://docs.gocd.org/current/installation/ssl_tls/end_to_end_transport_security.html) | `nil`                        |
 | `agent.env.goAgentBootstrapperJvmArgs`    | GoCD Agent Bootstrapper JVM Args.                                                                                                                                                | `nil`                        |
+| `agent.env.goAgentJvmOpts`                | GoCD Agent JVM arguments                                                                                     | `nil`               |
 | `agent.env.extraEnvVars`                  | GoCD Agent extra Environment variables                                                                       | `nil`               |
 | `agent.privileged`                        | Run container in privileged mode (needed for DinD, Docker-in-Docker agents)                                                                                                      | `false`                      |
 | `agent.healthCheck.enabled`               | Enable use of GoCD agent health checks.                                                                                                                                          | `false`                      |
@@ -194,6 +201,9 @@ $ kubectl create secret generic gocd-server-ssh \
 | `agent.hostAliases`                       | Aliases for IPs in /etc/hosts                                                                                 | `[]`                |
 | `agent.security.ssh.enabled`              | Enable the use of SSH keys for GoCD agent                                                                                                                                        | `false`                      |
 | `agent.security.ssh.secretName`           | The name of the secret holding the SSH keys                                                                                                                                      | `gocd-agent-ssh`             |
+| `agent.securityContext.runAsUser`         | The container user for all the GoCD agent pods.                                                                                                                                  | `1000`                       |
+| `agent.securityContext.runAsGroup`        | The container group for all the GoCD agent pods.                                                                                                                                 | `0`                          |
+| `agent.securityContext.fsGroup`           | The container supplementary group for all the GoCD agent pods.                                                                                                                   | `0`                          |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -413,6 +423,63 @@ Possible states:
 |reuseTopLevelServiceAccount = false and name = empty|The service account 'default' will be used.|
 |reuseTopLevelServiceAccount = false and name = 'agentSA'|The 'agentSA' service account will be used. The service account needs to exist and bound with the appropriate role. |
 |reuseTopLevelServiceAccount = true| The GoCD service account will be created and used for the agents in the specified namespace. The permissions associated with the GoCD SA are defined here - [Cluster role privileges](#cluster-role-privileges).  |
+
+# Adding plugins 
+
+- Add the .jar file link from the releases section in the plugin's repo to the env.extraEnvVars section as a new environment variable.
+The environment variable name must have GOCD_PLUGIN_INSTALL prefixed to it like the following section
+
+```
+env:
+  extraEnvVars:
+    - name: GOCD_PLUGIN_INSTALL_email-notifier
+      value: https://github.com/gocd-contrib/email-notifier/releases/download/v0.3-68-exp/email-notifier-0.3-68.jar
+```
+- Make sure to add the link of the release you want to use before applying the values.
+
+- If you are adding a plugin to an existing Go server, it will result in a new Go server pod being created that has the plugin installed and running.
+
+# Ingress
+
+On a Kubernetes cluster, ingress is responsible for accepting incoming requests and forwarding them to the appropriate service in the backend. 
+The ingress controller acts as a reverse proxy in front of the GoCD server. The GoCD agents within the cluster can bypass ingress and connect to the service directly.
+GoCD agents outside of the Kubernetes cluster may connect to the GoCD server via the Ingress or LoadBalancer.
+
+You can secure an Ingress by specifying a `secret` that contains a TLS private key and certificate [here](https://github.com/helm/charts/blob/master/stable/gocd/values.yaml#L157).
+Please refer to [Ingress documentation](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) about how to configure TLS. 
+Many ingress controllers make configuring TLS easy with the use of annotations. You can use ingress annotations to configure some of the TLS parameters like a managed SSL certificate, redirecting http to https, etc. 
+
+| Parameter                                   | Description                                                                                   |
+|---------------------------------------------|-----------------------------------------------------------------------------------------------| 
+| ingress.kubernetes.io/force-ssl-redirect	  | Redirect non-TLS requests to TLS even when TLS is not configured.                             |
+| kubernetes.io/ingress.allow-http            | Whether to accept non-TLS HTTP connections. Supported on GCE. Default: true                   |
+| alb.ingress.kubernetes.io/backend-protocol  | Specifies the protocol used when route traffic to pods on EKS.                                |
+| ingress.kubernetes.io/proxy-pass-params     | Parameters for proxy-pass directives.                                                         |
+| kubernetes.io/ingress.global-static-ip-name | Name of the static global IP address in GCP to use when provisioning the HTTPS load balancer. |
+| networking.gke.io/managed-certificates      | Name of the ManagedCertificate on GCP                                                         |
+| alb.ingress.kubernetes.io/certificate-arn   | Certificate arn on AWS Cert Manager                                                           |
+
+Popular managed Kubernetes offerings like GKE, EKS, AKS etc provide a default ingress controller which supports many more annotations.
+
+| Ingress Controller | Annotations                                                                                                                   |
+|--------------------|-------------------------------------------------------------------------------------------------------------------------------|
+| AWS ALB            | https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/ingress/annotation/                                        |
+| GCE                | https://cloud.google.com/kubernetes-engine/docs/how-to/load-balance-ingress                                                   |
+| AKS                | https://github.com/Azure/application-gateway-kubernetes-ingress/blob/master/docs/annotations.md#list-of-supported-annotations |
+| Traefik            | https://docs.traefik.io/v1.6/configuration/backends/kubernetes/#general-annotations                                           |
+| Nginx              | https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/                                        |
+
+For GoCD, annotations can be configured [here](https://github.com/helm/charts/blob/master/stable/gocd/values.yaml#L154)
+
+# TLS for GoCD
+
+As part of GoCD Release v20.2.0, GoCD changed how it handles SSL support. If you are upgrading to GoCD 20.2.0 or above, agents will have to be reconfigured to connect to the server. Know more about the GoCD SSL/TLS changes [here](https://github.com/gocd/gocd/issues/7872). 
+
+To set up TLS for GoCD, system admins will be required to front the GoCD server with a reverse proxy that supports TLS (like Apache, NGINX). Any existing agents that are using TLS, can connect to this reverse proxy. Reverse proxies have the advantage that they make it a lot easier and more convenient to setup and configure various TLS connection parameters. Refer the [GoCD documentation](https://docs.gocd.org/current/installation/configure-reverse-proxy.html) to setup a reverse proxy.
+
+The GoCD agents within the cluster can bypass ingress and connect to the service directly via the 8153 port.
+
+GoCD agents outside of the Kubernetes cluster may connect to the GoCD server via the http(s) port exposed by the ingress or, via the load balancer if the GoCD service type is `LoadBalancer`.
 
 # License
 

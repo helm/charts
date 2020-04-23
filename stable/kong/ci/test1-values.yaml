@@ -1,0 +1,28 @@
+# This tests the following unrealted aspects of Ingress Controller
+# - ingressController deploys without a database (default)
+ingressController:
+  enabled: true
+# - webhook is enabled and deploys
+  admissionWebhook:
+    enabled: true
+# - environment variables can be injected into ingress controller container
+  env:
+    kong_admin_header: "foo:bar"
+# - podSecurityPolicies are enabled
+podSecurityPolicy:
+  enabled: true
+# - ingress resources are created with hosts
+admin:
+  type: NodePort
+  ingress:
+    enabled: true
+    hosts: ["test.com", "test2.com"]
+    annotations: {}
+    path: /
+proxy:
+  type: NodePort
+  ingress:
+    enabled: true
+    hosts: ["test.com", "test2.com"]
+    annotations: {}
+    path: /

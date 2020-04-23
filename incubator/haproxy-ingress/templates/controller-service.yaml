@@ -40,19 +40,19 @@ spec:
   ports:
   {{- if .Values.controller.enableStaticPorts }}
   {{- range .Values.controller.service.httpPorts }}
-    - name: "{{ .port }}-http"
+    - name: "http-{{ .port }}"
       port: {{ .port }}
       protocol: TCP
-      targetPort: http
+      targetPort: {{ .targetPort }}
       {{- if (not (empty .nodePort)) }}
       nodePort: {{ .nodePort }}
       {{- end }}
   {{- end }}
   {{- range .Values.controller.service.httpsPorts }}
-    - name: "{{ .port }}-https"
+    - name: "https-{{ .port }}"
       port: {{ .port }}
       protocol: TCP
-      targetPort: https
+      targetPort: {{ .targetPort }}
       {{- if (not (empty .nodePort)) }}
       nodePort: {{ .nodePort }}
       {{- end }}

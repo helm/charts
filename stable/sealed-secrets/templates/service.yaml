@@ -1,3 +1,4 @@
+{{- if .Values.controller.create -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -11,5 +12,7 @@ metadata:
 spec:
   ports:
     - port: 8080
+      name: http
   selector:
     app.kubernetes.io/name: {{ template "sealed-secrets.name" . }}
+{{- end }}

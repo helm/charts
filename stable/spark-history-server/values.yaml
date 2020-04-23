@@ -17,6 +17,7 @@ image:
 service:
   type: LoadBalancer
   port: 18080
+  annotations: {}
 
 environment:
 # Note: do not configure Spark history events directory using SPARK_HISTORY_OPTS. It will be

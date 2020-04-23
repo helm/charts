@@ -1,5 +1,5 @@
 {{- if .Values.server.enabled }}
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "gocd.fullname" . }}-server
@@ -33,6 +33,10 @@ spec:
         {{ $key }}: {{ $value | quote }}
       {{- end }}
     spec:
+      securityContext:
+        runAsUser: {{ .Values.server.securityContext.runAsUser }}
+        runAsGroup: {{ .Values.server.securityContext.runAsGroup }}
+        fsGroup: {{ .Values.server.securityContext.fsGroup }}
       serviceAccountName: {{ template "gocd.serviceAccountName" . }}
       {{- if or .Values.server.shouldPreconfigure (or .Values.server.persistence.enabled (or .Values.server.security.ssh.enabled .Values.server.persistence.extraVolumes)) }}
       volumes:
@@ -60,6 +64,9 @@ spec:
 {{ toYaml .Values.server.initContainers | indent 8 }}
       {{- end }}
       containers:
+      {{- if .Values.server.sidecarContainers }}
+{{ toYaml .Values.server.sidecarContainers | indent 8 }}
+      {{- end }}
         - name: {{ template "gocd.name" . }}-server
           {{- if .Values.server.image.tag }}
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
@@ -68,16 +75,15 @@ spec:
           {{- end }}
           imagePullPolicy: {{ .Values.server.image.pullPolicy }}
           env:
-            {{- if .Values.server.env.goServerSystemProperties }}
-            - name: GO_SERVER_SYSTEM_PROPERTIES
-              value: {{ .Values.server.env.goServerSystemProperties }}
+            {{- if .Values.server.env.goServerJvmOpts }}
+            - name: GOCD_SERVER_JVM_OPTS
+              value: {{ .Values.server.env.goServerJvmOpts }}
             {{- end }}
             {{- if .Values.server.env.extraEnvVars }}
 {{ toYaml .Values.server.env.extraEnvVars | indent 12 }}
             {{- end }}
           ports:
             - containerPort: 8153
-            - containerPort: 8154
           livenessProbe:
             httpGet:
               path: /go/api/v1/health
@@ -147,6 +153,10 @@ spec:
     {{- if .Values.server.affinity }}
       affinity:
 {{ toYaml .Values.server.affinity | indent 8 }}
+    {{- end }}
+    {{- if .Values.server.tolerations }}
+      tolerations:
+{{ toYaml .Values.server.tolerations | indent 8 }}
     {{- end }}
     {{- if .Values.server.hostAliases }}
       hostAliases:

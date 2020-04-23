@@ -35,28 +35,22 @@ Create chart name and version as used by the chart label.
 Formulate the how the seeds feed is populated.
 */}}
 {{- define "burrow.seeds" -}}
-{{- if (and .Values.RPC.Peer.ingress.enabled (not (eq (len .Values.RPC.Peer.ingress.hosts) 0))) -}}
-{{- $host := index .Values.RPC.Peer.ingress.hosts 0 -}}
-{{- range (until (sub $.Values.chain.nodes 1 | int)) -}}
-{{- $addr := (index $.Values.validatorAddresses ( print "Validator_" . )).NodeAddress | lower -}}
-{{- $node := printf "%03d" . -}}
+{{- if (and .Values.peer.ingress.enabled (not (eq (len .Values.peer.ingress.hosts) 0))) -}}
+{{- $host := index .Values.peer.ingress.hosts 0 -}}
+{{- range $index, $val := $.Values.validators -}}
+{{- $addr := $val.nodeAddress | lower -}}
+{{- $node := printf "%03d" $index -}}
 tcp://{{ $addr }}@{{ $node }}.{{ $host }}:{{ $.Values.config.Tendermint.ListenPort }},
 {{- end -}}
-{{- $addr := (index $.Values.validatorAddresses ( print "Validator_" (sub .Values.chain.nodes 1))).NodeAddress | lower -}}
-{{- $node := sub .Values.chain.nodes 1 | printf "%03d" -}}
-tcp://{{ $addr }}@{{ $node }}.{{ $host }}:{{ $.Values.config.Tendermint.ListenPort }}
 {{- if not (eq (len .Values.chain.extraSeeds) 0) -}}
 {{- range .Values.chain.extraSeeds -}},{{ . }}{{- end -}}
 {{- end -}}
 {{- else -}}
-{{- range (until (sub $.Values.chain.nodes 1 | int)) -}}
-{{- $addr := (index $.Values.validatorAddresses ( print "Validator_" . )).NodeAddress | lower -}}
-{{- $node := printf "%03d" . -}}
+{{- range $index, $val := $.Values.validators -}}
+{{- $addr := $val.nodeAddress | lower -}}
+{{- $node := printf "%03d" $index -}}
 tcp://{{ $addr }}@{{ template "burrow.fullname" $ }}-peer-{{ $node }}:{{ $.Values.config.Tendermint.ListenPort }},
 {{- end -}}
-{{- $addr := (index $.Values.validatorAddresses ( print "Validator_" (sub .Values.chain.nodes 1))).NodeAddress | lower -}}
-{{- $node := sub .Values.chain.nodes 1 | printf "%03d" -}}
-tcp://{{ $addr }}@{{ template "burrow.fullname" $ }}-peer-{{ $node }}:{{ $.Values.config.Tendermint.ListenPort }}
 {{- if not (eq (len .Values.chain.extraSeeds) 0) -}}
 {{- range .Values.chain.extraSeeds -}},{{ . }}{{- end -}}
 {{- end -}}

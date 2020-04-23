@@ -1,0 +1,24 @@
+{{- if and .Values.auditLog.enabled .Values.auditLog.dynamicBackend.enabled }}
+apiVersion: auditregistration.k8s.io/v1alpha1
+kind: AuditSink
+metadata:
+  name: {{ template "sysdig.fullname" . }}
+  labels:
+{{ include "sysdig.labels" . | indent 4 }}
+spec:
+  policy:
+    level: RequestResponse
+    stages:
+      - ResponseComplete
+      - ResponseStarted
+  webhook:
+    throttle:
+      qps: 10
+      burst: 15
+    clientConfig:
+      service:
+        namespace: {{ .Release.Namespace }}
+        name: {{ template "sysdig.fullname" . }}
+        port: {{ .Values.auditLog.auditServerPort }}
+        path: /k8s_audit
+{{- end }}

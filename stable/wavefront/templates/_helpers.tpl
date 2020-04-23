@@ -58,10 +58,4 @@ Create the name of the service account to use
 {{- end -}}
 {{- end -}}
 
-{{/*
-Create template used as options for Wavefront sink in collector
-*/}}
-{{- define "wavefront.collector.sinkOptions" -}}
-{{- printf "&clusterName=%s&includeLabels=%t&includeContainers=%t&prefix=%s" .Values.clusterName (default .Values.collector.includeLabels true) (default .Values.collector.includeContainers true) (default .Values.collector.prefix "kubernetes.") -}}
-{{- end -}}
 

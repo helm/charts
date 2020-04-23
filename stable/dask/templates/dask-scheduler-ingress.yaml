@@ -1,0 +1,27 @@
+{{- if .Values.webUI.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "dask.fullname" . }}-scheduler
+  labels:
+    app: {{ template "dask.fullname" . }}-scheduler
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+{{ toYaml .Values.webUI.ingress.annotations | indent 4 }}
+spec:
+{{- if .Values.webUI.ingress.tls }}
+  tls:
+    - hosts:
+      - {{ .Values.webUI.ingress.hostname | quote }}
+      secretName: {{ .Values.webUI.ingress.secretName | default (printf "%s-scheduler-tls" (include "dask.fullname" .)) }}
+{{- end }}
+  rules:
+  - host: {{ .Values.webUI.ingress.hostname }}
+    http:
+      paths:
+      - backend:
+          serviceName: {{ template "dask.fullname" . }}-scheduler
+          servicePort: {{ .Values.webUI.servicePort }}
+{{- end -}}

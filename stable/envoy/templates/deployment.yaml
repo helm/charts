@@ -14,89 +14,109 @@ spec:
       app: {{ template "envoy.name" . }}
       release: {{ .Release.Name }}
   strategy:
-{{ .Values.strategy | indent 4 }}
+    {{ .Values.strategy | nindent 4 }}
   template:
     metadata:
       labels:
         app: {{ template "envoy.name" . }}
         release: {{ .Release.Name }}
         component: controller
-      {{- if .Values.podLabels }}
+        {{- if .Values.podLabels }}
         ## Custom pod labels
         {{- range $key, $value := .Values.podLabels }}
         {{ $key }}: {{ $value | quote }}
         {{- end }}
-      {{- end }}
+        {{- end }}
       annotations:
         checksum/config: {{ include (print .Template.BasePath "/configmap.yaml") . | sha256sum }}
-      {{- if .Values.podAnnotations }}
+        {{- if .Values.podAnnotations }}
         ## Custom pod annotations
         {{- range $key, $value := .Values.podAnnotations }}
         {{ $key }}: {{ $value | quote }}
         {{- end }}
-      {{- end }}
+        {{- end }}
     spec:
       securityContext:
-{{ toYaml .Values.securityContext | indent 8 }}
-{{- if .Values.priorityClassName }}
+        {{ toYaml .Values.securityContext | nindent 8 }}
+      {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
-{{- end }}
+      {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- if .Values.initContainersTemplate }}
+      initContainers:
+        {{ tpl .Values.initContainersTemplate $ | nindent 8 }}
+      {{- end }}
       containers:
 
         - name: envoy
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
-{{ toYaml .Values.command | indent 12 }}
+            {{ toYaml .Values.command | nindent 12 }}
           args:
-{{ toYaml .Values.args | indent 12 }}
+            {{- if $.Values.argsTemplate }}
+            {{ tpl $.Values.argsTemplate $ | nindent 12}}
+            {{- else }}
+            {{ toYaml .Values.args | nindent 12 }}
+            {{- end }}
           ports:
-{{- with .Values.ports }}
-  {{- range $key, $port := . }}
+            {{- with .Values.ports }}
+            {{- range $key, $port := . }}
             - name: {{ $key }}
-{{ toYaml $port | indent 14 }}
-  {{- end }}
-{{- end }}
+              {{ toYaml $port | nindent 14 }}
+            {{- end }}
+            {{- end }}
 
           livenessProbe:
-{{ toYaml .Values.livenessProbe | indent 12 }}
+            {{ toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:
-{{ toYaml .Values.readinessProbe | indent 12 }}
+            {{ toYaml .Values.readinessProbe | nindent 12 }}
           env:
           {{- range $key, $value := .Values.env }}
             - name: {{ $key | upper | replace "." "_" }}
               value: {{ $value | quote }}
           {{- end }}
           resources:
-{{ toYaml .Values.resources | indent 12 }}
+            {{ toYaml .Values.resources | nindent 12 }}
           volumeMounts:
             - name: config
               mountPath: /config
-          {{- range $key, $value := .Values.secretMounts }}
+            {{- if .Values.volumeMounts }}
+            {{ toYaml .Values.volumeMounts | nindent 12 }}
+            {{- end }}
+            {{- range $key, $value := .Values.secretMounts }}
             - name: {{ $key }}
               mountPath: {{ $value.mountPath }}
-          {{- end }}
+            {{- end }}
+          lifecycle:
+            {{ toYaml .Values.lifecyle | nindent 12 }}
 
-    {{- with .Values.nodeSelector }}
+        {{- if .Values.sidecarContainersTemplate }}
+        {{ tpl .Values.sidecarContainersTemplate $ | nindent 8 }}
+        {{- end }}
+
+      {{- with .Values.nodeSelector }}
       nodeSelector:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.affinity }}
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
       affinity:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.tolerations }}
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
       tolerations:
-{{ toYaml . | indent 8 }}
-    {{- end }}
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
       volumes:
         - name: config
           configMap:
             name: {{ template "envoy.fullname" . }}
-      {{- range $key, $value := .Values.secretMounts }}
+        {{- if .Values.volumes }}
+        {{ toYaml .Values.volumes | nindent 8 }}
+        {{- end }}
+        {{- range $key, $value := .Values.secretMounts }}
         - name: {{ $key }}
           secret:
             secretName: {{ $value.secretName }}
             defaultMode: {{ $value.defaultMode }}
-      {{- end }}
+        {{- end }}

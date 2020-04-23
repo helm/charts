@@ -1,12 +1,13 @@
 {{- if and .Values.alertmanager.enabled .Values.alertmanager.ingress.enabled }}
 {{- $serviceName := printf "%s-%s" (include "prometheus-operator.fullname" .) "alertmanager" }}
-{{- $servicePort := 9093 -}}
+{{- $servicePort := .Values.alertmanager.service.port -}}
 {{- $routePrefix := list .Values.alertmanager.alertmanagerSpec.routePrefix }}
 {{- $paths := .Values.alertmanager.ingress.paths | default $routePrefix -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ $serviceName }}
+  namespace: {{ $.Release.Namespace }}
 {{- if .Values.alertmanager.ingress.annotations }}
   annotations:
 {{ toYaml .Values.alertmanager.ingress.annotations | indent 4 }}

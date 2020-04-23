@@ -1,0 +1,9 @@
+rules:
+  external:
+  - seriesQuery: '{__name__=~"^some_metric_count$"}'
+    resources:
+      template: <<.Resource>>
+    name:
+      matches: ""
+      as: "my_custom_metric"
+    metricsQuery: sum(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)

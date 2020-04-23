@@ -1,6 +1,9 @@
 rbac:
   create: true
 
+podSecurityPolicy:
+  enabled: false
+
 imagePullSecrets:
 # - name: "image-pull-secret"
 
@@ -10,18 +13,19 @@ serviceAccounts:
   alertmanager:
     create: true
     name:
-  kubeStateMetrics:
-    create: true
-    name:
+    annotations: {}
   nodeExporter:
     create: true
     name:
+    annotations: {}
   pushgateway:
     create: true
     name:
+    annotations: {}
   server:
     create: true
     name:
+    annotations: {}
 
 alertmanager:
   ## If false, alertmanager will not be installed
@@ -36,7 +40,7 @@ alertmanager:
   ##
   image:
     repository: prom/alertmanager
-    tag: v0.15.3
+    tag: v0.20.0
     pullPolicy: IfNotPresent
 
   ## alertmanager priorityClassName
@@ -47,19 +51,31 @@ alertmanager:
   ##
   extraArgs: {}
 
+  ## Additional InitContainers to initialize the pod
+  ##
+  extraInitContainers: []
+
   ## The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug
   ## so that the various internal URLs are still able to access as they are in the default case.
   ## (Optional)
   prefixURL: ""
 
   ## External URL which can access alertmanager
-  ## Maybe same with Ingress host name
-  baseURL: "/"
+  baseURL: "http://localhost:9093"
 
   ## Additional alertmanager container environment variable
   ## For instance to add a http_proxy
   ##
   extraEnv: {}
+
+  ## Additional alertmanager Secret mounts
+  # Defines additional mounts with secrets. Secrets must be manually created in the namespace.
+  extraSecretMounts: []
+    # - name: secret-files
+    #   mountPath: /etc/secrets
+    #   subPath: ""
+    #   secretName: alertmanager-secret-files
+    #   readOnly: true
 
   ## ConfigMap override where fullname is {{.Release.Name}}-{{.Values.alertmanager.configMapOverrideName}}
   ## Defining configMapOverrideName will cause templates/alertmanager-configmap.yaml
@@ -100,6 +116,13 @@ alertmanager:
     #   - alertmanager.domain.com
     #   - domain.com/alertmanager
 
+    ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
+    extraPaths: []
+    # - path: /*
+    #   backend:
+    #     serviceName: ssl-redirect
+    #     servicePort: use-annotation
+
     ## alertmanager Ingress TLS configuration
     ## Secrets must be manually created in the namespace
     ##
@@ -129,6 +152,13 @@ alertmanager:
   ## Pod affinity
   ##
   affinity: {}
+
+  ## PodDisruptionBudget settings
+  ## ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+  ##
+  podDisruptionBudget:
+    enabled: false
+    maxUnavailable: 1
 
   ## Use an alternate scheduler, e.g. "stork".
   ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
@@ -174,6 +204,13 @@ alertmanager:
     ##
     # storageClass: "-"
 
+    ## alertmanager data Persistent Volume Binding Mode
+    ## If defined, volumeBindingMode: <volumeBindingMode>
+    ## If undefined (the default) or set to null, no volumeBindingMode spec is
+    ##   set, choosing the default mode.
+    ##
+    # volumeBindingMode: ""
+
     ## Subdirectory of alertmanager data Persistent Volume to mount
     ## Useful if the volume's root directory is not empty
     ##
@@ -182,6 +219,29 @@ alertmanager:
   ## Annotations to be added to alertmanager pods
   ##
   podAnnotations: {}
+    ## Tell prometheus to use a specific set of alertmanager pods
+    ## instead of all alertmanager pods found in the same namespace
+    ## Useful if you deploy multiple releases within the same namespace
+    ##
+    ## prometheus.io/probe: alertmanager-teamA
+
+  ## Labels to be added to Prometheus AlertManager pods
+  ##
+  podLabels: {}
+
+  ## Specify if a Pod Security Policy for node-exporter must be created
+  ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+  ##
+  podSecurityPolicy:
+    annotations: {}
+      ## Specify pod annotations
+      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#apparmor
+      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#seccomp
+      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#sysctl
+      ##
+      # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
+      # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
+      # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
 
   ## Use a StatefulSet if replicaCount needs to be greater than 1 (see below)
   ##
@@ -220,7 +280,11 @@ alertmanager:
 
   ## Security context to be added to alertmanager pods
   ##
-  securityContext: {}
+  securityContext:
+    runAsUser: 65534
+    runAsNonRoot: true
+    runAsGroup: 65534
+    fsGroup: 65534
 
   service:
     annotations: {}
@@ -240,148 +304,99 @@ alertmanager:
     loadBalancerSourceRanges: []
     servicePort: 80
     # nodePort: 30000
+    sessionAffinity: None
     type: ClusterIP
 
 ## Monitors ConfigMap changes and POSTs to a URL
 ## Ref: https://github.com/jimmidyson/configmap-reload
 ##
 configmapReload:
-  ## configmap-reload container name
-  ##
-  name: configmap-reload
+  prometheus:
+    ## If false, the configmap-reload container will not be deployed
+    ##
+    enabled: true
 
-  ## configmap-reload container image
-  ##
-  image:
-    repository: jimmidyson/configmap-reload
-    tag: v0.2.2
-    pullPolicy: IfNotPresent
+    ## configmap-reload container name
+    ##
+    name: configmap-reload
 
-  ## Additional configmap-reload container arguments
-  ##
-  extraArgs: {}
-  ## Additional configmap-reload volume directories
-  ##
-  extraVolumeDirs: []
+    ## configmap-reload container image
+    ##
+    image:
+      repository: jimmidyson/configmap-reload
+      tag: v0.3.0
+      pullPolicy: IfNotPresent
 
-
-  ## Additional configmap-reload mounts
-  ##
-  extraConfigmapMounts: []
-    # - name: prometheus-alerts
-    #   mountPath: /etc/alerts.d
-    #   subPath: ""
-    #   configMap: prometheus-alerts
-    #   readOnly: true
+    ## Additional configmap-reload container arguments
+    ##
+    extraArgs: {}
+    ## Additional configmap-reload volume directories
+    ##
+    extraVolumeDirs: []
 
 
-  ## configmap-reload resource requests and limits
-  ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
-  ##
-  resources: {}
+    ## Additional configmap-reload mounts
+    ##
+    extraConfigmapMounts: []
+      # - name: prometheus-alerts
+      #   mountPath: /etc/alerts.d
+      #   subPath: ""
+      #   configMap: prometheus-alerts
+      #   readOnly: true
 
-initChownData:
-  ## If false, data ownership will not be reset at startup
-  ## This allows the prometheus-server to be run with an arbitrary user
-  ##
-  enabled: true
 
-  ## initChownData container name
-  ##
-  name: init-chown-data
+    ## configmap-reload resource requests and limits
+    ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
+    ##
+    resources: {}
+  alertmanager:
+    ## If false, the configmap-reload container will not be deployed
+    ##
+    enabled: true
 
-  ## initChownData container image
-  ##
-  image:
-    repository: busybox
-    tag: latest
-    pullPolicy: IfNotPresent
+    ## configmap-reload container name
+    ##
+    name: configmap-reload
 
-  ## initChownData resource requests and limits
-  ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
-  ##
-  resources: {}
+    ## configmap-reload container image
+    ##
+    image:
+      repository: jimmidyson/configmap-reload
+      tag: v0.3.0
+      pullPolicy: IfNotPresent
+
+    ## Additional configmap-reload container arguments
+    ##
+    extraArgs: {}
+    ## Additional configmap-reload volume directories
+    ##
+    extraVolumeDirs: []
+
+
+    ## Additional configmap-reload mounts
+    ##
+    extraConfigmapMounts: []
+      # - name: prometheus-alerts
+      #   mountPath: /etc/alerts.d
+      #   subPath: ""
+      #   configMap: prometheus-alerts
+      #   readOnly: true
+
+
+    ## configmap-reload resource requests and limits
+    ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
+    ##
+    resources: {}
 
 kubeStateMetrics:
-  ## If false, kube-state-metrics will not be installed
+  ## If false, kube-state-metrics sub-chart will not be installed
   ##
   enabled: true
 
-  ## kube-state-metrics container name
-  ##
-  name: kube-state-metrics
-
-  ## kube-state-metrics container image
-  ##
-  image:
-    repository: quay.io/coreos/kube-state-metrics
-    tag: v1.6.0
-    pullPolicy: IfNotPresent
-
-  ## kube-state-metrics priorityClassName
-  ##
-  priorityClassName: ""
-
-  ## kube-state-metrics container arguments
-  ##
-  args: {}
-
-  ## Node tolerations for kube-state-metrics scheduling to nodes with taints
-  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-  ##
-  tolerations: []
-    # - key: "key"
-    #   operator: "Equal|Exists"
-    #   value: "value"
-    #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
-
-  ## Node labels for kube-state-metrics pod assignment
-  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
-  ##
-  nodeSelector: {}
-
-  ## Annotations to be added to kube-state-metrics pods
-  ##
-  podAnnotations: {}
-
-  pod:
-    labels: {}
-
-  replicaCount: 1
-
-  ## kube-state-metrics resource requests and limits
-  ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
-  ##
-  resources: {}
-    # limits:
-    #   cpu: 10m
-    #   memory: 16Mi
-    # requests:
-    #   cpu: 10m
-    #   memory: 16Mi
-
-  ## Security context to be added to kube-state-metrics pods
-  ##
-  securityContext: {}
-
-  service:
-    annotations:
-      prometheus.io/scrape: "true"
-    labels: {}
-
-    # Exposed as a headless service:
-    # https://kubernetes.io/docs/concepts/services-networking/service/#headless-services
-    clusterIP: None
-
-    ## List of IP addresses at which the kube-state-metrics service is available
-    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
-    ##
-    externalIPs: []
-
-    loadBalancerIP: ""
-    loadBalancerSourceRanges: []
-    servicePort: 80
-    type: ClusterIP
+## kube-state-metrics sub-chart configurable values
+## Please see https://github.com/helm/charts/tree/master/stable/kube-state-metrics
+##
+# kube-state-metrics:
 
 nodeExporter:
   ## If false, node-exporter will not be installed
@@ -404,14 +419,13 @@ nodeExporter:
   ##
   image:
     repository: prom/node-exporter
-    tag: v0.17.0
+    tag: v0.18.1
     pullPolicy: IfNotPresent
 
   ## Specify if a Pod Security Policy for node-exporter must be created
   ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
   ##
   podSecurityPolicy:
-    enabled: False
     annotations: {}
       ## Specify pod annotations
       ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#apparmor
@@ -435,6 +449,10 @@ nodeExporter:
   ##
   extraArgs: {}
 
+  ## Additional InitContainers to initialize the pod
+  ##
+  extraInitContainers: []
+
   ## Additional node-exporter hostPath mounts
   ##
   extraHostPathMounts: []
@@ -442,6 +460,7 @@ nodeExporter:
     #   mountPath: /srv/txt_collector
     #   hostPath: /var/lib/node-exporter
     #   readOnly: true
+    #   mountPropagation: HostToContainer
 
   extraConfigmapMounts: []
     # - name: certs-configmap
@@ -471,6 +490,13 @@ nodeExporter:
   ##
   pod:
     labels: {}
+
+  ## PodDisruptionBudget settings
+  ## ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+  ##
+  podDisruptionBudget:
+    enabled: false
+    maxUnavailable: 1
 
   ## node-exporter resource limits & requests
   ## Ref: https://kubernetes.io/docs/user-guide/compute-resources/
@@ -511,6 +537,7 @@ nodeExporter:
 server:
   ## Prometheus server container name
   ##
+  enabled: true
   name: server
   sidecarContainers:
 
@@ -518,7 +545,7 @@ server:
   ##
   image:
     repository: prom/prometheus
-    tag: v2.9.2
+    tag: v2.16.0
     pullPolicy: IfNotPresent
 
   ## prometheus server priorityClassName
@@ -549,14 +576,19 @@ server:
   ##     secretKeyRef:
   ##       name: mysecret
   ##       key: username
-  env: {}
+  env: []
 
-  ## This flag controls access to the administrative HTTP API which includes functionality such as deleting time
-  ## series. This is disabled by default.
-  enableAdminApi: false
-
-  ## This flag controls BD locking
-  skipTSDBLock: false
+  extraFlags:
+    - web.enable-lifecycle
+    ## web.enable-admin-api flag controls access to the administrative HTTP API which includes functionality such as
+    ## deleting time series. This is disabled by default.
+    # - web.enable-admin-api
+    ##
+    ## storage.tsdb.no-lockfile flag controls BD locking
+    # - storage.tsdb.no-lockfile
+    ##
+    ## storage.tsdb.wal-compression flag enables compression of the write-ahead log (WAL)
+    # - storage.tsdb.wal-compression
 
   ## Path to a configuration file on prometheus server container FS
   configPath: /etc/config/prometheus.yml
@@ -571,10 +603,20 @@ server:
     ## How frequently to evaluate rules
     ##
     evaluation_interval: 1m
+  ## https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write
+  ##
+  remoteWrite: {}
+  ## https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_read
+  ##
+  remoteRead: {}
 
   ## Additional Prometheus server container arguments
   ##
   extraArgs: {}
+
+  ## Additional InitContainers to initialize the pod
+  ##
+  extraInitContainers: []
 
   ## Additional Prometheus server Volume mounts
   ##
@@ -637,6 +679,13 @@ server:
     #   - prometheus.domain.com
     #   - domain.com/prometheus
 
+    ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
+    extraPaths: []
+    # - path: /*
+    #   backend:
+    #     serviceName: ssl-redirect
+    #     servicePort: use-annotation
+
     ## Prometheus server Ingress TLS configuration
     ## Secrets must be manually created in the namespace
     ##
@@ -648,6 +697,12 @@ server:
   ## Server Deployment Strategy type
   # strategy:
   #   type: Recreate
+
+  ## hostAliases allows adding entries to /etc/hosts inside the containers
+  hostAliases: []
+  #   - ip: "127.0.0.1"
+  #     hostnames:
+  #       - "example.com"
 
   ## Node tolerations for server scheduling to nodes with taints
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
@@ -666,6 +721,13 @@ server:
   ## Pod affinity
   ##
   affinity: {}
+
+  ## PodDisruptionBudget settings
+  ## ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+  ##
+  podDisruptionBudget:
+    enabled: false
+    maxUnavailable: 1
 
   ## Use an alternate scheduler, e.g. "stork".
   ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
@@ -711,6 +773,13 @@ server:
     ##
     # storageClass: "-"
 
+    ## Prometheus server data Persistent Volume Binding Mode
+    ## If defined, volumeBindingMode: <volumeBindingMode>
+    ## If undefined (the default) or set to null, no volumeBindingMode spec is
+    ##   set, choosing the default mode.
+    ##
+    # volumeBindingMode: ""
+
     ## Subdirectory of Prometheus server data Persistent Volume to mount
     ## Useful if the volume's root directory is not empty
     ##
@@ -724,6 +793,28 @@ server:
   podAnnotations: {}
     # iam.amazonaws.com/role: prometheus
 
+  ## Labels to be added to Prometheus server pods
+  ##
+  podLabels: {}
+
+  ## Prometheus AlertManager configuration
+  ##
+  alertmanagers: []
+
+  ## Specify if a Pod Security Policy for node-exporter must be created
+  ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+  ##
+  podSecurityPolicy:
+    annotations: {}
+      ## Specify pod annotations
+      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#apparmor
+      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#seccomp
+      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#sysctl
+      ##
+      # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
+      # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
+      # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
+
   ## Use a StatefulSet if replicaCount needs to be greater than 1 (see below)
   ##
   replicaCount: 1
@@ -735,6 +826,7 @@ server:
     enabled: false
 
     annotations: {}
+    labels: {}
     podManagementPolicy: OrderedReady
 
     ## Alertmanager headless service to use for the statefulset
@@ -743,6 +835,18 @@ server:
       annotations: {}
       labels: {}
       servicePort: 80
+
+  ## Prometheus server readiness and liveness probe initial delay and timeout
+  ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+  ##
+  readinessProbeInitialDelay: 30
+  readinessProbeTimeout: 30
+  readinessProbeFailureThreshold: 3
+  readinessProbeSuccessThreshold: 1
+  livenessProbeInitialDelay: 30
+  livenessProbeTimeout: 30
+  livenessProbeFailureThreshold: 3
+  livenessProbeSuccessThreshold: 1
 
   ## Prometheus server resource requests and limits
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -755,9 +859,22 @@ server:
     #   cpu: 500m
     #   memory: 512Mi
 
+  ## Vertical Pod Autoscaler config
+  ## Ref: https://github.com/kubernetes/autoscaler/tree/master/vertical-pod-autoscaler
+  verticalAutoscaler:
+    ## If true a VPA object will be created for the controller (either StatefulSet or Deployemnt, based on above configs)
+    enabled: false
+    # updateMode: "Auto"
+    # containerPolicies:
+    # - containerName: 'prometheus-server'
+
   ## Security context to be added to server pods
   ##
-  securityContext: {}
+  securityContext:
+    runAsUser: 65534
+    runAsNonRoot: true
+    runAsGroup: 65534
+    fsGroup: 65534
 
   service:
     annotations: {}
@@ -772,20 +889,39 @@ server:
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
     servicePort: 80
+    sessionAffinity: None
     type: ClusterIP
+
+    ## Enable gRPC port on service to allow auto discovery with thanos-querier
+    gRPC:
+      enabled: false
+      servicePort: 10901
+      # nodePort: 10901
+
+    ## If using a statefulSet (statefulSet.enabled=true), configure the
+    ## service to connect to a specific replica to have a consistent view
+    ## of the data.
+    statefulsetReplica:
+      enabled: false
+      replica: 0
 
   ## Prometheus server pod termination grace period
   ##
   terminationGracePeriodSeconds: 300
 
-  ## Prometheus data retention period (i.e 360h)
+  ## Prometheus data retention period (default if not specified is 15 days)
   ##
-  retention: ""
+  retention: "15d"
 
 pushgateway:
   ## If false, pushgateway will not be installed
   ##
   enabled: true
+
+  ## Use an alternate scheduler, e.g. "stork".
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  # schedulerName:
 
   ## pushgateway container name
   ##
@@ -795,7 +931,7 @@ pushgateway:
   ##
   image:
     repository: prom/pushgateway
-    tag: v0.6.0
+    tag: v1.0.1
     pullPolicy: IfNotPresent
 
   ## pushgateway priorityClassName
@@ -806,6 +942,10 @@ pushgateway:
   ##
   ## for example: persistence.file: /data/pushgateway.data
   extraArgs: {}
+
+  ## Additional InitContainers to initialize the pod
+  ##
+  extraInitContainers: []
 
   ingress:
     ## If true, pushgateway Ingress will be created
@@ -824,6 +964,13 @@ pushgateway:
     hosts: []
     #   - pushgateway.domain.com
     #   - domain.com/pushgateway
+
+    ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
+    extraPaths: []
+    # - path: /*
+    #   backend:
+    #     serviceName: ssl-redirect
+    #     servicePort: use-annotation
 
     ## pushgateway Ingress TLS configuration
     ## Secrets must be manually created in the namespace
@@ -851,7 +998,28 @@ pushgateway:
   ##
   podAnnotations: {}
 
+  ## Specify if a Pod Security Policy for node-exporter must be created
+  ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+  ##
+  podSecurityPolicy:
+    annotations: {}
+      ## Specify pod annotations
+      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#apparmor
+      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#seccomp
+      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#sysctl
+      ##
+      # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
+      # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
+      # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
+
   replicaCount: 1
+
+  ## PodDisruptionBudget settings
+  ## ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+  ##
+  podDisruptionBudget:
+    enabled: false
+    maxUnavailable: 1
 
   ## pushgateway resource requests and limits
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -866,7 +1034,9 @@ pushgateway:
 
   ## Security context to be added to push-gateway pods
   ##
-  securityContext: {}
+  securityContext:
+    runAsUser: 65534
+    runAsNonRoot: true
 
   service:
     annotations:
@@ -883,6 +1053,10 @@ pushgateway:
     loadBalancerSourceRanges: []
     servicePort: 9091
     type: ClusterIP
+
+  ## pushgateway Deployment Strategy type
+  # strategy:
+  #   type: Recreate
 
   persistentVolume:
     ## If true, pushgateway will create/use a Persistent Volume Claim
@@ -914,7 +1088,7 @@ pushgateway:
     ##
     size: 2Gi
 
-    ## alertmanager data Persistent Volume Storage Class
+    ## pushgateway data Persistent Volume Storage Class
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
     ## If undefined (the default) or set to null, no storageClassName spec is
@@ -923,7 +1097,14 @@ pushgateway:
     ##
     # storageClass: "-"
 
-    ## Subdirectory of alertmanager data Persistent Volume to mount
+    ## pushgateway data Persistent Volume Binding Mode
+    ## If defined, volumeBindingMode: <volumeBindingMode>
+    ## If undefined (the default) or set to null, no volumeBindingMode spec is
+    ##   set, choosing the default mode.
+    ##
+    # volumeBindingMode: ""
+
+    ## Subdirectory of pushgateway data Persistent Volume to mount
     ## Useful if the volume's root directory is not empty
     ##
     subPath: ""
@@ -954,7 +1135,7 @@ serverFiles:
 
   ## Alerts configuration
   ## Ref: https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/
-  alerts: {}
+  alerting_rules.yml: {}
   # groups:
   #   - name: Instances
   #     rules:
@@ -966,11 +1147,20 @@ serverFiles:
   #         annotations:
   #           description: '{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes.'
   #           summary: 'Instance {{ $labels.instance }} down'
+  ## DEPRECATED DEFAULT VALUE, unless explicitly naming your files, please use alerting_rules.yml
+  alerts: {}
 
+  ## Records configuration
+  ## Ref: https://prometheus.io/docs/prometheus/latest/configuration/recording_rules/
+  recording_rules.yml: {}
+  ## DEPRECATED DEFAULT VALUE, unless explicitly naming your files, please use recording_rules.yml
   rules: {}
 
   prometheus.yml:
     rule_files:
+      - /etc/config/recording_rules.yml
+      - /etc/config/alerting_rules.yml
+    ## Below two files are DEPRECATED will be removed from this default values file
       - /etc/config/rules
       - /etc/config/alerts
 
@@ -1151,6 +1341,55 @@ serverFiles:
             action: replace
             target_label: kubernetes_node
 
+      # Scrape config for slow service endpoints; same as above, but with a larger
+      # timeout and a larger interval
+      #
+      # The relabeling allows the actual service scrape endpoint to be configured
+      # via the following annotations:
+      #
+      # * `prometheus.io/scrape-slow`: Only scrape services that have a value of `true`
+      # * `prometheus.io/scheme`: If the metrics endpoint is secured then you will need
+      # to set this to `https` & most likely set the `tls_config` of the scrape config.
+      # * `prometheus.io/path`: If the metrics path is not `/metrics` override this.
+      # * `prometheus.io/port`: If the metrics are exposed on a different port to the
+      # service then set this appropriately.
+      - job_name: 'kubernetes-service-endpoints-slow'
+
+        scrape_interval: 5m
+        scrape_timeout: 30s
+
+        kubernetes_sd_configs:
+          - role: endpoints
+
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape_slow]
+            action: keep
+            regex: true
+          - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
+            action: replace
+            target_label: __scheme__
+            regex: (https?)
+          - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
+            action: replace
+            target_label: __metrics_path__
+            regex: (.+)
+          - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+            action: replace
+            target_label: __address__
+            regex: ([^:]+)(?::\d+)?;(\d+)
+            replacement: $1:$2
+          - action: labelmap
+            regex: __meta_kubernetes_service_label_(.+)
+          - source_labels: [__meta_kubernetes_namespace]
+            action: replace
+            target_label: kubernetes_namespace
+          - source_labels: [__meta_kubernetes_service_name]
+            action: replace
+            target_label: kubernetes_name
+          - source_labels: [__meta_kubernetes_pod_node_name]
+            action: replace
+            target_label: kubernetes_node
+
       - job_name: 'prometheus-pushgateway'
         honor_labels: true
 
@@ -1229,6 +1468,45 @@ serverFiles:
             action: replace
             target_label: kubernetes_pod_name
 
+      # Example Scrape config for pods which should be scraped slower. An useful example
+      # would be stackriver-exporter which querys an API on every scrape of the pod
+      #
+      # The relabeling allows the actual pod scrape endpoint to be configured via the
+      # following annotations:
+      #
+      # * `prometheus.io/scrape-slow`: Only scrape pods that have a value of `true`
+      # * `prometheus.io/path`: If the metrics path is not `/metrics` override this.
+      # * `prometheus.io/port`: Scrape the pod on the indicated port instead of the default of `9102`.
+      - job_name: 'kubernetes-pods-slow'
+
+        scrape_interval: 5m
+        scrape_timeout: 30s
+
+        kubernetes_sd_configs:
+          - role: pod
+
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape_slow]
+            action: keep
+            regex: true
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+            action: replace
+            target_label: __metrics_path__
+            regex: (.+)
+          - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+            action: replace
+            regex: ([^:]+)(?::\d+)?;(\d+)
+            replacement: $1:$2
+            target_label: __address__
+          - action: labelmap
+            regex: __meta_kubernetes_pod_label_(.+)
+          - source_labels: [__meta_kubernetes_namespace]
+            action: replace
+            target_label: kubernetes_namespace
+          - source_labels: [__meta_kubernetes_pod_name]
+            action: replace
+            target_label: kubernetes_pod_name
+
 # adds additional scrape configs to prometheus.yml
 # must be a string so you have to add a | after extraScrapeConfigs:
 # example adds prometheus-blackbox-exporter scrape config
@@ -1247,6 +1525,14 @@ extraScrapeConfigs:
   #       target_label: instance
   #     - target_label: __address__
   #       replacement: prometheus-blackbox-exporter:9115
+
+# Adds option to add alert_relabel_configs to avoid duplicate alerts in alertmanager
+# useful in H/A prometheus with different external labels but the same alerts
+alertRelabelConfigs:
+  # alert_relabel_configs:
+  # - source_labels: [dc]
+  #   regex: (.+)\d+
+  #   target_label: dc
 
 networkPolicy:
   ## Enable creation of NetworkPolicy resources.

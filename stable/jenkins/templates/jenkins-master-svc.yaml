@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{template "jenkins.fullname" . }}
+  namespace: {{ template "jenkins.namespace" . }}
   labels:
     "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
     "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -16,6 +17,9 @@ metadata:
 {{ toYaml .Values.master.serviceAnnotations | indent 4 }}
 {{- end }}
 spec:
+  {{if (and (eq .Values.master.serviceType "ClusterIP") (not (empty .Values.master.clusterIP)))}}
+  clusterIP: {{.Values.master.clusterIP}}
+  {{end}}
   ports:
     - port: {{.Values.master.servicePort}}
       name: http
@@ -23,6 +27,11 @@ spec:
       {{if (and (eq .Values.master.serviceType "NodePort") (not (empty .Values.master.nodePort)))}}
       nodePort: {{.Values.master.nodePort}}
       {{end}}
+{{- range $index, $port := .Values.master.extraPorts }}
+    - port: {{ $port.port }}
+      name: {{ $port.name }}
+      targetPort: {{ $port.port }}
+{{- end }}
   selector:
     "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
     "app.kubernetes.io/instance": "{{ .Release.Name }}"

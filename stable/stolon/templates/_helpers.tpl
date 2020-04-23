@@ -40,3 +40,11 @@ Create chart name and version as used by the chart label.
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{- define "stolon.clusterName" -}}
+{{- if .Values.clusterName -}}
+    {{- .Values.clusterName | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+    {{- template "stolon.fullname" . -}}
+{{- end -}}
+{{- end -}}

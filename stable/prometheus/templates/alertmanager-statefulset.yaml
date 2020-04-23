@@ -49,8 +49,8 @@ spec:
           args:
             - --config.file=/etc/config/alertmanager.yml
             - --storage.path={{ .Values.alertmanager.persistentVolume.mountPath }}
-            - --cluster.advertise-address=$(POD_IP):6783
           {{- if .Values.alertmanager.statefulSet.headless.enableMeshPeer }}
+            - --cluster.advertise-address=$(POD_IP):6783
             - --cluster.listen-address=0.0.0.0:6783
           {{- range $n := until (.Values.alertmanager.replicaCount | int) }}
             - --cluster.peer={{ template "prometheus.alertmanager.fullname" $ }}-{{ $n }}.{{ template "prometheus.alertmanager.fullname" $ }}-headless:6783
@@ -79,18 +79,26 @@ spec:
             - name: storage-volume
               mountPath: "{{ .Values.alertmanager.persistentVolume.mountPath }}"
               subPath: "{{ .Values.alertmanager.persistentVolume.subPath }}"
-        - name: {{ template "prometheus.name" . }}-{{ .Values.alertmanager.name }}-{{ .Values.configmapReload.name }}
-          image: "{{ .Values.configmapReload.image.repository }}:{{ .Values.configmapReload.image.tag }}"
-          imagePullPolicy: "{{ .Values.configmapReload.image.pullPolicy }}"
+          {{- range .Values.alertmanager.extraSecretMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              subPath: {{ .subPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
+        {{- if .Values.configmapReload.alertmanager.enabled }}
+        - name: {{ template "prometheus.name" . }}-{{ .Values.alertmanager.name }}-{{ .Values.configmapReload.alertmanager.name }}
+          image: "{{ .Values.configmapReload.alertmanager.image.repository }}:{{ .Values.configmapReload.alertmanager.image.tag }}"
+          imagePullPolicy: "{{ .Values.configmapReload.alertmanager.image.pullPolicy }}"
           args:
             - --volume-dir=/etc/config
             - --webhook-url=http://localhost:9093{{ .Values.alertmanager.prefixURL }}/-/reload
           resources:
-{{ toYaml .Values.configmapReload.resources | indent 12 }}
+{{ toYaml .Values.configmapReload.alertmanager.resources | indent 12 }}
           volumeMounts:
             - name: config-volume
               mountPath: /etc/config
               readOnly: true
+        {{- end }}
     {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
       {{ toYaml .Values.imagePullSecrets | indent 2 }}
@@ -111,6 +119,11 @@ spec:
         - name: config-volume
           configMap:
             name: {{ if .Values.alertmanager.configMapOverrideName }}{{ .Release.Name }}-{{ .Values.alertmanager.configMapOverrideName }}{{- else }}{{ template "prometheus.alertmanager.fullname" . }}{{- end }}
+      {{- range .Values.alertmanager.extraSecretMounts }}
+        - name: {{ .name }}
+          secret:
+            secretName: {{ .secretName }}
+      {{- end }}
 {{- if .Values.alertmanager.persistentVolume.enabled }}
   volumeClaimTemplates:
     - metadata:

@@ -52,7 +52,10 @@ Parameter | Description | Default
 `serviceMonitor.interval` | Interval at which metrics should be scraped | ``
 `serviceMonitor.namespace` | The namespace where the Prometheus Operator is deployed | ``
 `serviceMonitor.additionalLabels` | Additional labels to add to the ServiceMonitor | `{}`
-
+`ingress.enabled` | Set to true if using an ingress | `false`
+`ingress.annotations` | Ingress annotations | `{}`
+`ingress.path` | Ingress path | `/`
+`ingress.host` | Ingress hostname e.g example.com | ``
 ```console
 $ helm install stable/helm-exporter --name my-release
 ```
