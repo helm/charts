@@ -42,7 +42,9 @@ data:
     echo -e "HOST $REPO_HOST\n  IdentityFile ~/.ssh/$PRIVATE_KEY" > ~/.ssh/config
     {{- end }}
     {{- if eq .Values.dags.initContainer.enabled  false }}
-    rm -rf $DIR
+    if [ -d "$DIR" ]; then
+        rm -rf $( find $DIR -mindepth 1 )
+    fi
     git clone $REPO -b $REF $DIR
     {{- end }}
     cd $DIR
