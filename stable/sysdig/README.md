@@ -41,7 +41,7 @@ The following table lists the configurable parameters of the Sysdig chart and th
 | ---                               | ---                                                                    | ---                                         |
 | `image.registry`                  | Sysdig Agent image registry                                            | `docker.io`                                 |
 | `image.repository`                | The image repository to pull from                                      | `sysdig/agent`                              |
-| `image.tag`                       | The image tag to pull                                                  | `9.9.0`                                     |
+| `image.tag`                       | The image tag to pull                                                  | `9.9.1`                                     |
 | `image.pullPolicy`                | The Image pull policy                                                  | `IfNotPresent`                              |
 | `image.pullSecrets`               | Image pull secrets                                                     | `nil`                                       |
 | `resources.requests.cpu`          | CPU requested for being run in a node                                  | `600m`                                      |
@@ -53,6 +53,7 @@ The following table lists the configurable parameters of the Sysdig chart and th
 | `serviceAccount.name`             | Use this value as serviceAccountName                                   | ` `                                         |
 | `daemonset.updateStrategy.type`   | The updateStrategy for updating the daemonset                          | `RollingUpdate`                             |
 | `daemonset.affinity`              | Node affinities                                                        | `nil`                                       |
+| `daemonset.nodeSelector`          | Node selector                                                          | `kubernetes.io/arch:amd64`                  |
 | `slim.enabled`                    | Use the slim based Sysdig Agent image                                  | `false`                                     |
 | `slim.kmoduleImage.repository`    | The kernel module image builder repository to pull from                | `sysdig/agent-kmodule`                      |
 | `slim.resources.requests.cpu`     | CPU requested for building the kernel module                           | `1000m`                                     |
