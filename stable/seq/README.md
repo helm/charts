@@ -51,7 +51,17 @@ The following table lists the configurable parameters of the Seq chart and their
 | `acceptEULA`                         | Accept EULA                                                                                           | `Y`                                   |
 | `baseURI`                            | Base URL for ingress/AAD (see values.yaml)                                                            |                                       |
 | `service.type`                       | Kubernetes service type                                                                               | `ClusterIP`                           |
-| `service.port`                       | Kubernetes port where service is exposed                                                              | `5341`                                |
+| `ingress.annotations`                | Ingress annotations                                                                                   | `{}`                                  |
+| `ingress.labels`                     | Custom labels                                                                                         | `{}`                                  |
+| `ingress.tls`                        | Ingress TLS configuration                                                                             | `[]`                                  |
+| `ui.service.port`                    | Kubernetes port where the full API/UI is exposed                                                      | `80`                                  |
+| `ui.ingress.enabled`                 | Enable ingress on the full API/UI                                                                     | `false`                               |
+| `ui.ingress.path`                    | Ingress path                                                                                          | `/`                                   |
+| `ui.ingress.hosts`                   | Ingress accepted hostnames                                                                            | `[]`                                  |
+| `ingestion.service.port`             | Kubernetes port where the ingestion-only API is exposed                                               | `5341`                                |
+| `ingestion.ingress.enabled`          | Enable ingress on the ingestion-only API                                                              | `false`                               |
+| `ingestion.ingress.path`             | Ingress path                                                                                          | `/`                                   |
+| `ingestion.ingress.hosts`            | Ingress accepted hostnames                                                                            | `[]`                                  |
 | `persistence.enabled`                | Use persistent volume to store data                                                                   | `true`                                |
 | `persistence.size`                   | Size of persistent volume claim                                                                       | `8Gi`                                 |
 | `persistence.existingClaim`          | Use an existing PVC to persist data                                                                   | `nil`                                 |
@@ -66,11 +76,6 @@ The following table lists the configurable parameters of the Seq chart and their
 | `serviceAccount.name`                | The name of the ServiceAccount to create                                                              | Generated using the fullname template |
 | `rbac.create`                        | Specifies whether RBAC resources should be created                                                    | `false`                               |
 | `podSecurityPolicy.create`           | Specifies whether a PodSecurityPolicy should be created                                               | `false`                               |
-| `ingress.enabled`                    | Enables Ingress                                                                                       | `false`                               |
-| `ingress.annotations`                | Ingress annotations                                                                                   | `{}`                                  |
-| `ingress.labels`                     | Custom labels                                                                                         | `{}`                                  |
-| `ingress.hosts`                      | Ingress accepted hostnames                                                                            | `[]`                                  |
-| `ingress.tls`                        | Ingress TLS configuration                                                                             | `[]`                                  |
 | `livenessProbe.enabled`              | Enable/disable the Liveness probe                                                                     | `true`                                |
 | `livenessProbe.failureThreshold`     | Minimum consecutive failures for the liveness probe to be considered failed after having succeeded    | `3`                                   |
 | `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated                                                              | `0`                                   |
@@ -83,6 +88,9 @@ The following table lists the configurable parameters of the Seq chart and their
 | `readinessProbe.periodSeconds`       | How often to perform the readiness probe                                                              | `10`                                  |
 | `readinessProbe.successThreshold`    | Minimum consecutive successes for the readiness probe to be considered successful after having failed | `1`                                   |
 | `readinessProbe.timeoutSeconds`      | When the readiness probe times out                                                                    | `1`                                   |
+| `startupProbe.enabled`               | Enable/disable the Readiness probe                                                                    | `true`                                |
+| `startupProbe.failureThreshold`      | Minimum consecutive failures for the readiness probe to be considered failed after having succeeded   | `30`                                  |
+| `startupProbe.periodSeconds`         | How often to perform the readiness probe                                                              | `10`                                  |
 
 Some of the parameters above map to the env variables defined in the [Seq DockerHub image](https://hub.docker.com/r/datalust/seq/).
 
