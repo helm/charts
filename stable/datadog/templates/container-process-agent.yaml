@@ -22,9 +22,10 @@
     - name: DD_SYSTEM_PROBE_ENABLED
       value: {{ .Values.datadog.systemProbe.enabled | quote }}
     {{- end }}
-{{- if .Values.agents.containers.processAgent.env }}
-{{ toYaml .Values.agents.containers.processAgent.env | indent 4 }}
-{{- end }}
+  {{- range $value := .Values.agents.containers.processAgent.env }}
+    - name: {{ $value.name }}
+      value: {{ $value.value | quote }}
+  {{- end }}
   volumeMounts:
     - name: config
       mountPath: {{ template "datadog.confPath" . }}

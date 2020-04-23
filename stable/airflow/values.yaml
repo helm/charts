@@ -650,9 +650,9 @@ postgresql:
   existingSecretKey: postgresql-password
 
   ##
-  ## If you are bringing your own PostgreSQL, you should set postgresHost and
+  ## If you are bringing your own PostgreSQL, you should set postgresqlHost and
   ## also probably service.port, postgresqlUsername, postgresqlPassword, and postgresqlDatabase
-  ## postgresHost:
+  ## postgresqlHost:
   ##
   ## PostgreSQL port
   service:

@@ -5,6 +5,37 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.17.0
+
+Render `agent.volumes` in kubernetes pod template JCasC
+
+## 1.16.2
+
+Reverts 1.16.1 as it introduced an error #22047
+
+## 1.16.1
+
+Fixed a bug with master.runAsUser variable due to use wrong type for comparison.
+
+## 1.16.0
+
+Add `master.overwritePluginsFromImage` to allow support for jenkins plugins installed in the master image to persist.
+
+## 1.15.0 Update plugin versions & sidecar container
+
+| plugin                | old version | new version |
+| --------------------- | ----------- | ----------- |
+| kubernetes            | 1.25.1      | 1.25.3      |
+| workflow-job          | 2.36        | 2.38        |
+| git                   | 4.2.0       | 4.2.2       |
+| configuration-as-code | 1.36        | 1.39        |
+
+configAutoReload container updated from `kiwigrid/k8s-sidecar:0.1.20` to `kiwigrid/k8s-sidecar:0.1.132`
+
+## 1.14.0
+
+support auto-reload container environment variables configuration
+
 ## 1.13.3
 
 Fix wrong indent in tolerations
@@ -15,7 +46,7 @@ Add support for custom ClusterIP
 
 ## 1.13.1
 
-Fix yaml template rendering in kubernetes pod template JCasC
+Fix `agent.yamlTemplate` rendering in kubernetes pod template JCasC
 
 ## 1.13.0
 
