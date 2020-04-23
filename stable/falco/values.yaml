@@ -58,6 +58,9 @@ daemonset:
   ## Extra environment variables that will be pass onto deployment pods
   env: {}
 
+  ## Add aditional pod annotations on pods created by DaemonSet
+  podAnnotations: {}
+
 # If is behind a proxy you can set the proxy server
 proxy:
   httpProxy:
