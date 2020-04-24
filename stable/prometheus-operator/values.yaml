@@ -70,6 +70,15 @@ global:
   rbac:
     create: true
     pspEnabled: true
+    pspAnnotations: {}
+      ## Specify pod annotations
+      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#apparmor
+      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#seccomp
+      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#sysctl
+      ##
+      # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
+      # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
+      # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
 
   ## Reference to one or more secrets to be used when pulling images
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -189,6 +198,41 @@ alertmanager:
   secret:
     annotations: {}
 
+  ## Configuration for creating an Ingress that will map to each Alertmanager replica service
+  ## alertmanager.servicePerReplica must be enabled
+  ##
+  ingressPerReplica:
+    enabled: false
+    annotations: {}
+    labels: {}
+
+    ## Final form of the hostname for each per replica ingress is
+    ## {{ ingressPerReplica.hostPrefix }}-{{ $replicaNumber }}.{{ ingressPerReplica.hostDomain }}
+    ##
+    ## Prefix for the per replica ingress that will have `-$replicaNumber`
+    ## appended to the end
+    hostPrefix: ""
+    ## Domain that will be used for the per replica ingress
+    hostDomain: ""
+
+    ## Paths to use for ingress rules
+    ##
+    paths: []
+    # - /
+
+    ## Secret name containing the TLS certificate for alertmanager per replica ingress
+    ## Secret must be manually created in the namespace
+    tlsSecretName: ""
+
+    ## Separated secret for each per replica Ingress. Can be used together with cert-manager
+    ##
+    tlsSecretPerReplica:
+      enabled: false
+      ## Final form of the secret for each per replica ingress is
+      ## {{ tlsSecretPerReplica.prefix }}-{{ $replicaNumber }}
+      ##
+      prefix: "alertmanager"
+
   ## Configuration for Alertmanager service
   ##
   service:
@@ -211,6 +255,31 @@ alertmanager:
     ##
     externalIPs: []
     loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+    ## Service type
+    ##
+    type: ClusterIP
+
+  ## Configuration for creating a separate Service for each statefulset Alertmanager replica
+  ##
+  servicePerReplica:
+    enabled: false
+    annotations: {}
+
+    ## Port for Alertmanager Service per replica to listen on
+    ##
+    port: 9093
+
+    ## To be used with a proxy extraContainer port
+    targetPort: 9093
+
+    ## Port to expose on each node
+    ## Only used if servicePerReplica.type is 'NodePort'
+    ##
+    nodePort: 30904
+
+    ## Loadbalancer source IP ranges
+    ## Only used if servicePerReplica.type is "loadbalancer"
     loadBalancerSourceRanges: []
     ## Service type
     ##
@@ -565,6 +634,10 @@ kubelet:
     ## https://github.com/coreos/prometheus-operator/issues/926
     ##
     https: true
+
+    ## Enable scraping /metrics/cadvisor from kubelet's service
+    ##
+    cAdvisor: true
 
     ## Metric relabellings to apply to samples before ingestion
     ##
@@ -1018,7 +1091,7 @@ prometheusOperator:
       enabled: true
       image:
         repository: jettech/kube-webhook-certgen
-        tag: v1.0.0
+        tag: v1.2.0
         pullPolicy: IfNotPresent
       resources: {}
       ## Provide a priority class name to the webhook patching job
@@ -1187,7 +1260,7 @@ prometheusOperator:
   ##
   image:
     repository: quay.io/coreos/prometheus-operator
-    tag: v0.37.0
+    tag: v0.38.1
     pullPolicy: IfNotPresent
 
   ## Configmap-reload image to use for reloading configmaps
@@ -1200,7 +1273,7 @@ prometheusOperator:
   ##
   prometheusConfigReloaderImage:
     repository: quay.io/coreos/prometheus-config-reloader
-    tag: v0.37.0
+    tag: v0.38.1
 
   ## Set the prometheus config reloader side-car CPU limit
   ##
@@ -1354,6 +1427,15 @@ prometheus:
     ## Secret must be manually created in the namespace
     tlsSecretName: ""
 
+    ## Separated secret for each per replica Ingress. Can be used together with cert-manager
+    ##
+    tlsSecretPerReplica:
+      enabled: false
+      ## Final form of the secret for each per replica ingress is
+      ## {{ tlsSecretPerReplica.prefix }}-{{ $replicaNumber }}
+      ##
+      prefix: "prometheus"
+
   ## Configure additional options for default pod security policy for Prometheus
   ## ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
   podSecurityPolicy:
@@ -1425,7 +1507,7 @@ prometheus:
     ##
     image:
       repository: quay.io/prometheus/prometheus
-      tag: v2.15.2
+      tag: v2.16.0
 
     ## Tolerations for use with node taints
     ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
@@ -1762,6 +1844,10 @@ prometheus:
     ## Containers allows injecting additional containers. This is meant to allow adding an authentication proxy to a Prometheus pod.
     ##  if using proxy extraContainer  update targetPort with proxy container port
     containers: []
+
+    ## InitContainers allows injecting additional initContainers. This is meant to allow doing some changes
+    ## (permissions, dir tree) on mounted volumes before starting prometheus
+    initContainers: []
 
     ## Enable additional scrape configs that are managed externally to this chart. Note that the prometheus
     ## will fail to provision if the correct secret does not exist.

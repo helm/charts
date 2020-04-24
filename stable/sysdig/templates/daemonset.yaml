@@ -4,19 +4,17 @@ kind: DaemonSet
 metadata:
   name: {{ template "sysdig.fullname" . }}
   labels:
-    app: {{ template "sysdig.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+{{ include "sysdig.labels" . | indent 4 }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "sysdig.fullname" .}}
+      app.kubernetes.io/name: {{ include "sysdig.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       name: {{ template "sysdig.fullname" .}}
       labels:
-        app: {{ template "sysdig.fullname" .}}
+{{ include "sysdig.labels" . | indent 8 }}
     spec:
       serviceAccountName: {{ template "sysdig.serviceAccountName" .}}
 {{- if .Values.priorityClassName }}
@@ -36,6 +34,8 @@ spec:
       imagePullSecrets:
 {{ toYaml .Values.image.pullSecrets | indent 8 }}
       {{- end }}
+      nodeSelector:
+{{ toYaml .Values.daemonset.nodeSelector | indent 8 }}
       {{- if .Values.slim.enabled }}
       initContainers:
         - name: sysdig-agent-kmodule
@@ -97,6 +97,10 @@ spec:
               value: "{{ $value }}"
             {{- end }}
           readinessProbe:
+            exec:
+              command: [ "test", "-e", "/opt/draios/logs/running" ]
+            initialDelaySeconds: 10
+          livenessProbe:
             exec:
               command: [ "test", "-e", "/opt/draios/logs/running" ]
             initialDelaySeconds: 10

@@ -50,6 +50,8 @@ The following table lists the configurable parameters and their default values.
 | `extraArgs`            | extra arguments for the binary; possible values [here](https://github.com/oliver006/redis_exporter#flags)| {}
 | `env`                  | additional environment variables in YAML format. Can be used to pass credentials as env variables (via secret) as per the image readme [here](https://github.com/oliver006/redis_exporter#environment-variables) | {} |
 | `resources`            | cpu/memory resource requests/limits                 | {}                        |
+| `tolerations`          | toleration labels for pod assignment                | {}                        |
+| `affinity`             | affinity settings for pod assignment                | {}                        |
 | `service.type`         | desired service type                                | `ClusterIP`               |
 | `service.port`         | service external port                               | `9121`                    |
 | `service.annotations`  | Custom annotations for service                      | `{}`                      |

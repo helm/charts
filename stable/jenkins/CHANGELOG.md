@@ -5,6 +5,95 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.17.1
+
+Add support for Persistent Volume Claim (PVC) in `agent.volumes`
+
+## 1.17.0
+
+Render `agent.volumes` in kubernetes pod template JCasC
+
+## 1.16.2
+
+Reverts 1.16.1 as it introduced an error #22047
+
+## 1.16.1
+
+Fixed a bug with master.runAsUser variable due to use wrong type for comparison.
+
+## 1.16.0
+
+Add `master.overwritePluginsFromImage` to allow support for jenkins plugins installed in the master image to persist.
+
+## 1.15.0 Update plugin versions & sidecar container
+
+| plugin                | old version | new version |
+| --------------------- | ----------- | ----------- |
+| kubernetes            | 1.25.1      | 1.25.3      |
+| workflow-job          | 2.36        | 2.38        |
+| git                   | 4.2.0       | 4.2.2       |
+| configuration-as-code | 1.36        | 1.39        |
+
+configAutoReload container updated from `kiwigrid/k8s-sidecar:0.1.20` to `kiwigrid/k8s-sidecar:0.1.132`
+
+## 1.14.0
+
+support auto-reload container environment variables configuration
+
+## 1.13.3
+
+Fix wrong indent in tolerations
+
+## 1.13.2
+
+Add support for custom ClusterIP
+
+## 1.13.1
+
+Fix `agent.yamlTemplate` rendering in kubernetes pod template JCasC
+
+## 1.13.0
+
+Add `master.networkPolicy.internalAgents` and `master.networkPolicy.externalAgents` stanzas to fine grained controls over where internal/external agents can connect from. Internal ones are allowed based on pod labels and (optionally) namespaces, and external ones are allowed based on IP ranges.
+
+## 1.12.0 Support additional agents
+
+Add support for easy configuration of additional agents which inherit values from `agent`.
+
+## 1.11.3
+
+Update the kubernetes plugin from 1.24.1 to 1.25.1 and grant 'watch' permission to 'events' which is required since this plugin version.
+
+## 1.11.2 Configure agent.args in values.yaml
+
+## 1.11.1 Support for master.additionalConfig
+
+Fixed a bug with jenkinsHome variable in range block when master.additionalConfig is set - Helm cannot evaluate field Values in type interface {}.
+
+## 1.11.0 Add support for configuring custom pod templates
+
+Add `agent.podTemplates` option for declaring custom pod templates in the default configured kubernetes cloud.
+
+## 1.10.1 Only copy JCasC files if there are any
+
+The chart always tried to copy Configuration as Code configs even if there are none. That resulted in an error which is resolved with this.
+
+## 1.10.0 Remove configuration-as-code-support plugins
+
+In recent version of configuration-as-code-plugin this is no longer necessary.
+
+## 1.9.24
+
+Update JCasC auto-reload docs and remove stale ssh key references from version "1.8.0 JCasC auto reload works without ssh keys"
+
+## 1.9.23 Support jenkinsUriPrefix when JCasC is enabled
+
+Fixed a bug in the configuration as code reload url, where it wouldn't work with a jenkinsUriPrefix set.
+
+## 1.9.22
+
+Add `master.jenkinsHome` and `master.jenkinsRef` options to use docker images derivates from Jenkins
+
 ## 1.9.21
 
 Add `master.terminationGracePeriodSeconds` option
@@ -91,8 +180,8 @@ Google application credentials are kept in a file, which has to be mounted to a 
     jenkins-service-account:
       gcpcredentials: application_default_credentials.json
 ```
-      
-Helm template then creates the necessary volume mounts and `GOOGLE_APPLICATION_CREDENTIALS` environmental variable. 
+
+Helm template then creates the necessary volume mounts and `GOOGLE_APPLICATION_CREDENTIALS` environmental variable.
 
 ## 1.9.3 Fix `JAVA_OPTS` when config auto-reload is enabled
 

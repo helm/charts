@@ -159,6 +159,46 @@ requests the logs from each workers individually.
 This requires to expose a port (8793) and ensure the pod DNS is accessible to the web server pod,
 which is why StatefulSet is for.
 
+#### Worker autoscaler
+Celery workers can be scaled using the Horizontal Pod Autoscaler.
+To enable it you need to set `workers.autoscaling.enabled=true` and provide `workers.autoscaling.maxReplicas`.
+`workers.replicas` value will be used as a minimum amount. 
+Provide custom metrics for autoscaler in `workers.autoscaling.metrics`, for more information see the
+[Kubernetes documentation](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#support-for-metrics-apis).
+Also make sure you set requested resources for git-sync side car container in `dags.git.gitSync.resources` (if you use it for pulling DAGs),
+otherwise worker pods will not scale. 
+
+For example: you have a worker pod which is allowed to execute 10 tasks at once.
+```
+airflow:
+  config:
+    AIRFLOW__CELERY__WORKER_CONCURRENCY: 10
+```
+Every task a worker executes consumes approximately 200MB of worker's memory, so that makes memory a good metric for monitoring.
+Also do not forget to setup resources requested for the metric you monitor, both for a worker and git-sync (if used).
+For a git-sync 50MB should be enough. For a worker pod you can calculate it: WORKER_CONCURRENCY * 200MB. So if running 10 tasks 
+at the same time, a worker will consume ~2GB of memory.
+```
+workers:
+  replicas: 1
+  resources:
+    requests:
+      memory: "2Gi"
+  autoscaling:
+    enabled: true
+    maxReplicas: 30
+    metrics:
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
+```
+With this setup if a worker consumes 80% of 2GB (which will happen if it runs 9-10 tasks at the same time),
+an autoscaling will be triggered and a new worker will be added. If you have many tasks
+in a queue, Kubernetes will keep adding workers until maxReplicas reached.
+
 #### Worker secrets
 
 You can add kubernetes secrets which will be mounted as volumes on the worker nodes
@@ -204,7 +244,7 @@ By default, insecure username/password combinations are used.
 For a real production deployment, it's a good idea to create secure credentials before installing the Helm chart.
 For example, from the command line, run:
 ```bash
-kubectl create secret generic airflow-postgres --from-literal=postgres-password=$(openssl rand -base64 13)
+kubectl create secret generic airflow-postgresql --from-literal=postgresql-password=$(openssl rand -base64 13)
 kubectl create secret generic airflow-redis --from-literal=redis-password=$(openssl rand -base64 13)
 ```
 Next, you can use those secrets with the Helm chart:
@@ -212,12 +252,28 @@ Next, you can use those secrets with the Helm chart:
 # values.yaml
 
 postgresql:
-  existingSecret: airflow-postgres
+  existingSecret: airflow-postgresql
 
 redis:
   existingSecret: airflow-redis
 ```
 This approach has the additional advantage of keeping secrets outside of the Helm upgrade process.
+
+#### Database init options
+
+If you are using the default puckel/docker-airflow image, the airflow-web
+container runs `airflow initdb` [at startup
+time](https://github.com/puckel/docker-airflow/blob/master/script/entrypoint.sh#L112).
+
+If the value `airflow.initdb` is set to `true`, the airflow-scheduler container
+will run `airflow initdb` before starting the scheduler as part of its startup script.
+
+If the value `airflow.preinitdb` is set to `true`, the airflow-scheduler pod will
+run `airflow initdb` as an initContainer, before the git-clone initContainer if
+that is enabled.  This is rarely necessary but can be so under certain conditions
+if your synced DAGs include custom database hooks that prevent `initdb` from running
+successfully (e.g. if they have dependencies on variables that won't be present yet).
+The initdb initcontainer will retry up to 5 times before giving up.
 
 ### Additional environment variables
 
@@ -390,6 +446,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.extraVolumeMounts`              | additional volumeMounts to the main container in scheduler, worker & web pods | `[]`|
 | `airflow.extraVolumes`                   | additional volumes for the scheduler, worker & web pods | `[]`                      |
 | `airflow.initdb`                         | run `airflow initdb` when starting the scheduler        | `true`                    |
+| `airflow.preinitdb`                      | run `airflow initdb` as a preinit container before the scheduler        | `false`                    |
 | `flower.enabled`                         | enable flow                                             | `true`                    |
 | `flower.extraConfigmapMounts`            | Additional configMap volume mounts on the flower pod.   | `[]`                      |
 | `flower.urlPrefix`                       | path of the flower ui                                   | ""                        |
@@ -440,6 +497,9 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `workers.secretsDir`                     | directory in which to mount secrets on worker nodes     | /var/airflow/secrets      |
 | `workers.secrets`                        | secrets to mount as volumes on worker nodes             | []                        |
 | `workers.securityContext`                 | (optional) security context for the worker statefulSet  | `{}`                      |
+| `workers.autoscaling.enabled`            | enable workers autoscaling                              | `false`                   |
+| `workers.autoscaling.maxReplicas`        | max worker pods allowed after autoscaling               | `2`              |
+| `workers.autoscaling.metrics`            | Kubernetes metrics used for autoscaling rules           | `{}`                      |
 | `nodeSelector`                           | Node labels for pod assignment                          | `{}`                      |
 | `affinity`                               | Affinity labels for pod assignment                      | `{}`                      |
 | `tolerations`                            | Toleration labels for pod assignment                    | `[]`                      |
@@ -487,6 +547,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `dags.git.gitSync.image.repository`      | Image of the sidecar container that syncs dags          | `alpine/git`                  |
 | `dags.git.gitSync.image.tag`             | Image tag of sidecar container that syncs dags          | `1.0.4`                  |
 | `dags.git.gitSync.refreshTime`           | How often the sidecar container syncs dags up with repository(in seconds)         | nil                  |
+| `dags.git.gitSync.resources`             | custom resource configuration for the git-sync side car container    | `{}`                      |
 | `logs.path`                              | mount path for logs persistent volume                   | `/usr/local/airflow/logs` |
 | `rbac.create`                            | create RBAC resources                                   | `true`                    |
 | `serviceAccount.create`                  | create a service account                                | `true`                    |
@@ -494,9 +555,9 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `serviceAccount.annotations`             | (optional) annotations for the service account          | `{}`                      |
 | `postgresql.enabled`                     | create a postgres server                                | `true`                    |
 | `postgresql.existingSecret`              | The name of an existing secret with a key named `postgresql.existingSecretKey` to use as the password  | `nil` |
-| `postgresql.existingSecretKey`           | The name of the key containing the password in the secret named `postgresql.existingSecret`  | `postgres-password` |
+| `postgresql.existingSecretKey`           | The name of the key containing the password in the secret named `postgresql.existingSecret`  | `postgresql-password` |
 | `postgresql.uri`                         | full URL to custom postgres setup                       | (undefined)               |
-| `postgresql.postgresHost`                | PostgreSQL Hostname                                     | (undefined)               |
+| `postgresql.postgresqlHost`              | PostgreSQL Hostname                                     | (undefined)               |
 | `postgresql.postgresqlUsername`                | PostgreSQL User                                         | `postgres`                |
 | `postgresql.postgresqlPassword`            | PostgreSQL Password                                     | `airflow`                 |
 | `postgresql.postgresqlDatabase`            | PostgreSQL Database name                                | `airflow`                 |
@@ -531,6 +592,7 @@ There are a few config key changes, in order to upgrade from a 5.x chart, modify
 
 | 5.x.x                                | 6.x.x                                 | Notes                                                     |
 |--------------------------------------|---------------------------------------|-----------------------------------------------------------|
+|`postgresql.postgresHost`             |`postgresql.postgresqlHost`            |                                                           |
 |`postgresql.postgresUser`             |`postgresql.postgresqlUsername`        |                                                           |
 |`postgresql.postgresPassword`         |`postgresql.postgresqlPassword`        |                                                           |
 |`postgresql.postgresDatabase`         |`postgresql.postgresqlDatabase`        |                                                           |

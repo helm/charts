@@ -55,6 +55,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `hub.servicePort` | The port the hub Service listens on | `4444` |
 | `hub.nodePort` | The port the hub is exposed when Nodeport mode is selected | `nil` |
 | `hub.podAnnotations` | Annotations on the hub pod | `{}` |
+| `hub.securityContext` |	SecurityContext on the hub pod |	`{"runAsUser": 1000, "fsGroup": 1000}` |
 | `hub.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
 | `hub.javaOpts` | The java options for the selenium hub JVM, default sets the maximum heap size to 400 mb | `-Xmx400m` |
 | `hub.resources` | The resources for the hub container, defaults to minimum half a cpu and maximum 512 mb RAM | `{"limits":{"cpu":".5", "memory":"512Mi"}}` |
@@ -65,9 +66,9 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `hub.gridNewSessionWaitTimeout` | | `nil` |
 | `hub.gridJettyMaxThreads` | | `nil` |
 | `hub.gridNodePolling` | | `nil` |
-| `hub.gridCleanUpCycle` | | `nil` |
-| `hub.gridTimeout` | | `nil` |
-| `hub.gridBrowserTimeout` | | `nil` |
+| `hub.gridCleanUpCycle` | Specifies how often the hub will poll running proxies for timed-out (i.e. hung) threads **(in ms)**. Must also specify "timeout" option | `nil` |
+| `hub.gridTimeout` | Specifies the timeout before the server automatically kills a session that hasn't had any activity in the last X seconds.| `nil` |
+| `hub.gridBrowserTimeout` | Number of seconds a browser session is allowed to hang while a WebDriver command is running | `nil` |
 | `hub.gridMaxSession` | | `nil` |
 | `hub.gridUnregisterIfStillDownAfter` | | `nil` |
 | `hub.seOpts` | Command line arguments to pass to hub | `nil` |
@@ -90,6 +91,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `chrome.pullPolicy` | The pull policy for the node chrome image | `IfNotPresent` |
 | `chrome.replicas` | The number of selenium node chrome pods | `1` |
 | `chrome.podAnnotations` | Annotations on the chrome pods | `{}` |
+| `chrome.securityContext` |	SecurityContext on the chrome pods |	`{"runAsUser": 1000, "fsGroup": 1000}` |
 | `chrome.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
 | `chrome.javaOpts` | The java options for the selenium node chrome JVM, default sets the maximum heap size to 900 mb | `-Xmx900m` |
 | `chrome.volumeMounts` | Additional volumes to mount, the default provides a larger shared memory | `[{"mountPath":"/dev/shm", "name":"dshm"}]` |
@@ -116,6 +118,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `chromeDebug.pullPolicy` | The selenium node chrome debug pull policy | `IfNotPresent` |
 | `chromeDebug.replicas` | The number of selenium node chrome debug pods | `1` |
 | `chromeDebug.podAnnotations` | Annotations on the Chrome debug pod | `{}` |
+| `chromeDebug.securityContext` |	SecurityContext on the Chrome debug pods |	`{"runAsUser": 1000, "fsGroup": 1000}` |
 | `chromeDebug.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
 | `chromeDebug.javaOpts` | The java options for a selenium node chrome debug JVM, default sets the max heap size to 900 mb | `-Xmx900m` |
 | `chromeDebug.volumeMounts` | Additional volumes to mount, the default provides a larger shared | `[{"mountPath":"/dev/shm", "name":"dshm"}]` |
@@ -142,6 +145,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `firefox.pullPolicy` | The selenium node firefox pull policy | `IfNotPresent` |
 | `firefox.replicas` | The number of selenium node firefox pods | `1` |
 | `firefox.podAnnotations` | Annotations on the firefox pods | `{}` |
+| `firefox.securityContext` |	SecurityContext on the firefox pods |	`{"runAsUser": 1000, "fsGroup": 1000}` |
 | `firefox.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
 | `firefox.javaOpts` | The java options for a selenium node firefox JVM, default sets the max heap size to 900 mb | `-Xmx900m` |
 | `firefox.resources` | The resources for the hub container, defaults to minimum half a cpu and maximum 1,000 mb | `{"limits":{"cpu":".5", "memory":"1000Mi"}}` |
@@ -166,6 +170,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `firefoxDebug.pullPolicy` | The selenium node firefox debug pull policy | `IfNotPresent` |
 | `firefoxDebug.replicas` | The number of selenium node firefox debug pods | `1` |
 | `firefoxDebug.podAnnotations` | Annotations on the firefox debug pods | `{}` |
+| `firefoxDebug.securityContext` |	SecurityContext on the firefox debug pods |	`{"runAsUser": 1000, "fsGroup": 1000}` |
 | `firefoxDebug.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
 | `firefoxDebug.javaOpts` | The java options for a selenium node firefox debug JVM, default sets the max heap size to 900 mb | `-Xmx900m` |
 | `firefoxDebug.resources` | The resources for the selenium node firefox debug container, defaults to minimum half a cpu and maximum 1,000 mb | `{"limits":{"cpu":".5", "memory":"1000Mi"}}` |

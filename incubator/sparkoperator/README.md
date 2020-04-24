@@ -43,7 +43,7 @@ The following table lists the configurable parameters of the Spark operator char
 | Parameter                 | Description                                                  | Default                                |
 | ------------------------- | ------------------------------------------------------------ | -------------------------------------- |
 | `operatorImageName`       | The name of the operator image                               | `gcr.io/spark-operator/spark-operator` |
-| `operatorVersion`         | The version of the operator to install                       | `v1beta2-1.1.0-2.4.5`                  |
+| `operatorVersion`         | The version of the operator to install                       | `v1beta2-1.1.1-2.4.5`                  |
 | `imagePullPolicy`         | Docker image pull policy                                     | `IfNotPresent`                         |
 | `imagePullSecrets`        | Docker image pull secrets                                    |                                        |
 | `replicas`                | The number of replicas of the operator Deployment            | 1                                      |
@@ -57,7 +57,9 @@ The following table lists the configurable parameters of the Spark operator char
 | `metricsPort`             | Port for the metrics endpoint                                | 10254                                  |
 | `metricsEndpoint`         | Metrics endpoint                                             | "/metrics"                             |
 | `metricsPrefix`           | Prefix for the metrics                                       | ""                                     |
-| `podAnnotations`          | annotations to be added to pods                              | `{}`                                   |
+| `nodeSelector`            | Node labels for pod assignment                               | `{}`                                   |
+| `tolerations`             | Tolerations for the sparkoperator deployment                 | `[]`                                   |
+| `podAnnotations`          | Annotations to be added to pods                              | `{}`                                   |
 | `resyncInterval`          | Informer resync interval in seconds                          | 30                                     |
 | `webhookPort`             | Service port of the webhook server                           | 8080                                   |
 | `resources`               | Resources needed for the sparkoperator deployment            | {}                                     |
