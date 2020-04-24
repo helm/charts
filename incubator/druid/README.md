@@ -65,7 +65,7 @@ The following table lists the configurable parameters of the Druid chart and the
 | `image.repository`                       | Container image name                                    | `apache/druid`            |
 | `image.tag`                              | Container image tag                                     | `0.18.0`                  |
 | `image.pullPolicy`                       | Container pull policy                                   | `IfNotPresent`            |
-| `imagePullSecrets`                       | image pull secrest for private repositoty               | `{}`                      |
+| `image.pullSecrets`                      | image pull secrest for private repositoty               | `{}`                      |
 | `configVars`                              | Druid configuration variables for all components         | ``                        |
 | `historical.name`                        | historical component name                               | `historical`              |
 | `historical.replicaCount`                | historical node replicas (deployment)                   | `1`                       |

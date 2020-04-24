@@ -4,8 +4,7 @@ image:
   repository: apache/druid
   tag: 0.18.0
   pullPolicy: IfNotPresent
-
-imagePullSecrets: {}
+  pullSecrets: []
   
 configVars:
   DRUID_XMX: 1g

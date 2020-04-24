@@ -63,9 +63,9 @@ spec:
       tolerations:
 {{ toYaml .Values.middleManager.tolerations | indent 8 }}
 {{- end }}
-{{- if .Values.imagePullSecrets }}
+{{- if .Values.image.pullSecrets }}
       imagePullSecrets:
-{{ toYaml .Values.imagePullSecrets | indent 8 }}
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
 {{- end }}
       containers:
       - name: druid
