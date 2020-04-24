@@ -48,6 +48,10 @@ spec:
         {{- toYaml . | nindent 6 }}
 {{- end }}
       serviceAccountName: {{ template "drone.serviceAccountName" . }}
+{{- if .Values.images.server.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.images.server.pullSecret }}
+{{- end }}
       containers:
       - name: server
         image: "{{ .Values.images.server.repository }}:{{ .Values.images.server.tag }}"
@@ -84,6 +88,20 @@ spec:
             value: {{ template "drone.fullname" . }}.{{ .Release.Namespace }}:{{ .Values.service.httpPort }}
           - name: DRONE_SERVER_PROTO
             value: {{ .Values.server.protocol }}
+          - name: DRONE_DATABASE_DRIVER
+            value: {{ .Values.server.database.driver }}
+          - name: DRONE_DATABASE_DATASOURCE
+            value: {{ .Values.server.database.dataSource }}
+          - name: DRONE_LOGS_COLOR
+            value: {{ .Values.server.logs.color | quote }}
+          - name: DRONE_LOGS_DEBUG
+            value: {{ .Values.server.logs.debug | quote }}
+          - name: DRONE_LOGS_PRETTY
+            value: {{ .Values.server.logs.pretty | quote }}
+          - name: DRONE_LOGS_TRACE
+            value: {{ .Values.server.logs.trace | quote }} 
+          - name: DRONE_LOGS_TEXT
+            value: {{ .Values.server.logs.text | quote }} 
           {{- if .Values.server.adminUser }}
           - name: DRONE_USER_CREATE
             value: username:{{ .Values.server.adminUser }},machine:false,admin:true

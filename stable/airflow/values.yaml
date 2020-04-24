@@ -129,13 +129,13 @@ airflow:
   ## This should be a json string with your variables in it
   ## Examples:
   ##   variables: '{ "environment": "dev" }'
-  variables: {}
+  variables: '{}'
 
   ## Add airflow ppols
   ## This should be a json string with your pools in it
   ## Examples:
   ##   pools: '{ "example": { "description": "This is an example of a pool", "slots": 2 } }'
-  pools: {}
+  pools: '{}'
 
   ##
   ## Annotations for the Scheduler, Worker and Web pods
@@ -171,6 +171,11 @@ airflow:
   #   emptyDir: {}
 
   ##
+  ## Run initdb as an initContainer step (potentially necessary if you have
+  ## custom database hooks configured that will be pulled in by git-sync)
+  preinitdb: false
+
+  ##
   ## Run initdb when the scheduler starts.
   initdb: true
 
@@ -186,11 +191,15 @@ scheduler:
   ##
   ## Labels for the scheduler deployment
   labels: {}
-  ## Pod Annotations for the web deployment
-  podAnnotations: {}
+  ##
+  ## Pod Labels for the scheduler deployment
+  podLabels: {}
   ##
   ## Annotations for the scheduler deployment
   annotations: {}
+  ##
+  ## Pod Annotations for the scheduler deployment
+  podAnnotations: {}
 
   ## Support Node, affinity and tolerations for scheduler pod assignment
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
@@ -217,6 +226,9 @@ flower:
   ## Labels for the flower deployment
   labels: {}
   ##
+  ## Pod Labels for the flower deployment
+  podLabels: {}
+  ##
   ## Annotations for the flower deployment
   annotations: {}
   service:
@@ -231,6 +243,13 @@ flower:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+  extraConfigmapMounts: []
+  # Use-case example: adding a public certificate used for connection to a remote TLS endpoint
+  # - name: extra-cert
+  #   mountPath: /etc/ssl/certs/extra-cert.pem
+  #   configMap: extra-certificates
+  #   readOnly: true
+  #   subPath: extra-cert.pem
 
 web:
   ##
@@ -248,10 +267,15 @@ web:
   ## Labels for the web deployment
   labels: {}
   ##
+  ## Pod Labels for the web deployment
+  podLabels: {}
+  ##
   ## Annotations for the web deployment
   annotations: {}
+  ##
   ## Pod Annotations for the web deployment
   podAnnotations: {}
+  ##
   initialStartupDelay: "60"
   initialDelaySeconds: "360"
   minReadySeconds: 120
@@ -289,6 +313,18 @@ workers:
   ## Number of workers pod to launch
   replicas: 1
   ##
+  ## Autoscaling settings for workers
+  autoscaling:
+    enabled: false
+    maxReplicas: 2
+    metrics: {}
+#    - type: Resource
+#      resource:
+#        name: memory
+#        target:
+#          type: Utilization
+#          averageUtilization: 80
+  ##
   ## Gracefull termination period
   terminationPeriod: 30
   ##
@@ -303,6 +339,9 @@ workers:
   ##
   ## Labels for the Worker statefulSet
   labels: {}
+  ##
+  ## Pod Labels for the Worker statefulSet
+  podLabels: {}
   ##
   ## Annotations for the Worker statefulSet
   annotations: {}
@@ -547,7 +586,9 @@ dags:
         ## values: Always or IfNotPresent
         pullPolicy: IfNotPresent
       ## The amount of time in seconds to git pull dags
-      refreshTime:
+      refreshTime: 0
+      ## If using workers.autoscaling=true with git-sync, git-sync needs to have resources requested
+      resources: {}
   initContainer:
     ## Fetch the source code when the pods starts
     enabled: false
@@ -562,6 +603,11 @@ dags:
       pullPolicy: IfNotPresent
     ## install requirements.txt dependencies automatically
     installRequirements: true
+    ## Path to mount dags-data volume to
+    mountPath: "/dags"
+    ## Path to add to `mountPath` where we clone/sync git to. Include leading /
+    ## example: "/subdirWithDags"
+    syncSubPath: ""
 
 ##
 ## Configure logs
@@ -584,6 +630,7 @@ serviceAccount:
   ## The name of the ServiceAccount to use.
   ## If not set and create is true, a name is generated using the fullname template
   name:
+  annotations: {}
 
 
 ##
@@ -600,25 +647,25 @@ postgresql:
   existingSecret:
 
   ## Name of the key containing the secret.
-  existingSecretKey: postgres-password
+  existingSecretKey: postgresql-password
 
   ##
-  ## If you are bringing your own PostgreSQL, you should set postgresHost and
-  ## also probably service.port, postgresUser, postgresPassword, and postgresDatabase
-  ## postgresHost:
+  ## If you are bringing your own PostgreSQL, you should set postgresqlHost and
+  ## also probably service.port, postgresqlUsername, postgresqlPassword, and postgresqlDatabase
+  ## postgresqlHost:
   ##
   ## PostgreSQL port
   service:
     port: 5432
   ## PostgreSQL User to create.
-  postgresUser: postgres
+  postgresqlUsername: postgres
   ##
   ## PostgreSQL Password for the new user.
   ## If not set, a random 10 characters password will be used.
-  postgresPassword: airflow
+  postgresqlPassword: airflow
   ##
   ## PostgreSQL Database to create.
-  postgresDatabase: airflow
+  postgresqlDatabase: airflow
   ##
   ## Persistent Volume Storage configuration.
   ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
@@ -630,8 +677,9 @@ postgresql:
     ## Persistant class
     # storageClass: classname
     ##
-    ## Access mode:
-    accessMode: ReadWriteOnce
+    ## Access modes:
+    accessModes:
+      - ReadWriteOnce
 
 
 ## Configuration values for the Redis dependency.
@@ -676,7 +724,8 @@ redis:
       # storageClass: classname
       ##
       ## Access mode:
-      accessMode: ReadWriteOnce
+      accessModes:
+      - ReadWriteOnce
   ##
   ## Disable cluster management by default.
   cluster:

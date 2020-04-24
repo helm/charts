@@ -14,7 +14,7 @@ items:
       component: cloud-controller
       heritage: {{ .Release.Service }}
       release: {{ .Release.Name }}
-    namespace: kube-system
+    namespace: {{ .Release.Namespace }}
   roleRef:
     apiGroup: rbac.authorization.k8s.io
     kind: Role
@@ -23,7 +23,7 @@ items:
   - apiGroup: ""
     kind: ServiceAccount
     name: {{ .Values.serviceAccount.name }}
-    namespace: kube-system
+    namespace: {{ .Release.Namespace }}
   - apiGroup: ""
     kind: User
     name: {{ .Values.serviceAccount.name }}
@@ -45,7 +45,7 @@ items:
   subjects:
   - kind: ServiceAccount
     name: {{ .Values.serviceAccount.name }}
-    namespace: kube-system
+    namespace: {{ .Release.Namespace }}
   - kind: User
     name: {{ .Values.serviceAccount.name }}
 {{- end -}}

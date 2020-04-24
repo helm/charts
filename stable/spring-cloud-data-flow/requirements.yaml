@@ -1,25 +1,25 @@
 dependencies:
 - name:  mysql
-  version: 1.1.0
+  version: 1.6.2
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: mysql.enabled
 - name:  rabbitmq
-  version: 0.6.16
+  version: 6.16.6
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: rabbitmq.enabled
 - name:  rabbitmq-ha
-  version: 1.27.1
+  version: 1.38.2
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: rabbitmq-ha.enabled
 - name:  kafka
-  version: 0.13.11
+  version: 0.20.8
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
   condition: kafka.enabled
 - name: prometheus
-  version: 9.3.1
+  version: 10.4.0
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: features.monitoring.enabled
 - name: grafana
-  version: 4.0.2
+  version: 4.5.0
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: features.monitoring.enabled

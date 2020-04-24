@@ -48,7 +48,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.auth.secret.name }}
-                  key: {{ .Values.secret.key }}
+                  key: {{ .Values.auth.secret.key }}
             {{- else }}
               value: {{ .Values.auth.redisPassword }}
             {{- end }}
@@ -87,4 +87,12 @@ spec:
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
     {{- end }}

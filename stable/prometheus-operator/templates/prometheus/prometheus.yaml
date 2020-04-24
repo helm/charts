@@ -23,8 +23,13 @@ spec:
         {{- if .Values.alertmanager.alertmanagerSpec.routePrefix }}
         pathPrefix: "{{ .Values.alertmanager.alertmanagerSpec.routePrefix }}"
         {{- end }}
+        apiVersion: {{ .Values.alertmanager.apiVersion }}
 {{- else }}
       []
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.apiserverConfig }}
+  apiserverConfig:
+{{ toYaml .Values.prometheus.prometheusSpec.apiserverConfig | indent 4}}
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.image }}
   baseImage: {{ .Values.prometheus.prometheusSpec.image.repository }}
@@ -215,6 +220,10 @@ spec:
   containers:
 {{ toYaml .Values.prometheus.prometheusSpec.containers | indent 4 }}
 {{- end }}
+{{- if .Values.prometheus.prometheusSpec.initContainers }}
+  initContainers:
+{{ toYaml .Values.prometheus.prometheusSpec.initContainers | indent 4 }}
+{{- end }}
 {{- if .Values.prometheus.prometheusSpec.priorityClassName }}
   priorityClassName: {{ .Values.prometheus.prometheusSpec.priorityClassName }}
 {{- end }}
@@ -222,5 +231,11 @@ spec:
   thanos:
 {{ toYaml .Values.prometheus.prometheusSpec.thanos | indent 4 }}
 {{- end }}
+{{- if .Values.prometheus.prometheusSpec.disableCompaction }}
+  disableCompaction: {{ .Values.prometheus.prometheusSpec.disableCompaction }}
+{{- end }}
   portName: {{ .Values.prometheus.prometheusSpec.portName }}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.enforcedNamespaceLabel }}
+  enforcedNamespaceLabel: {{ .Values.prometheus.prometheusSpec.enforcedNamespaceLabel }}
 {{- end }}

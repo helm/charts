@@ -84,7 +84,6 @@ spec:
             {{- end }}
           ports:
             - containerPort: 8153
-            - containerPort: 8154
           livenessProbe:
             httpGet:
               path: /go/api/v1/health

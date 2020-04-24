@@ -450,7 +450,7 @@
     a shell configuration file has been modified (user=%user.name command=%proc.cmdline pcmdline=%proc.pcmdline file=%fd.name container_id=%container.id image=%container.image.repository)
   priority:
     WARNING
-  tag: [file, mitre_persistence]
+  tags: [file, mitre_persistence]
 
 # This rule is not enabled by default, as there are many legitimate
 # readers of shell config files. If you want to enable it, modify the
@@ -472,7 +472,7 @@
     a shell configuration file was read by a non-shell program (user=%user.name command=%proc.cmdline file=%fd.name container_id=%container.id image=%container.image.repository)
   priority:
     WARNING
-  tag: [file, mitre_discovery]
+  tags: [file, mitre_discovery]
 
 - macro: consider_all_cron_jobs
   condition: (never_true)
@@ -488,7 +488,7 @@
     file=%fd.name container_id=%container.id container_name=%container.name image=%container.image.repository:%container.image.tag)
   priority:
     NOTICE
-  tag: [file, mitre_persistence]
+  tags: [file, mitre_persistence]
 
 # Use this to test whether the event occurred within a container.
 
@@ -744,7 +744,7 @@
 
 - macro: ms_oms_writing_conf
   condition: >
-    ((proc.name in (omiagent,omsagent,in_heartbeat_r*,omsadmin.sh,PerformInventor)
+    ((proc.name in (omiagent,omsagent,in_heartbeat_r*,omsadmin.sh,PerformInventor,dsc_host)
        or proc.pname in (ms_oms_binaries)
        or proc.aname[2] in (ms_oms_binaries))
      and (fd.name startswith /etc/opt/omi or fd.name startswith /etc/opt/microsoft/omsagent))
@@ -1156,6 +1156,16 @@
 - macro: automount_using_mtab
   condition: (proc.pname = automount and fd.name startswith /etc/mtab)
 
+- macro: mcafee_writing_cma_d
+  condition: (proc.name=macompatsvc and fd.directory=/etc/cma.d)
+
+- macro: avinetworks_supervisor_writing_ssh
+  condition: >
+    (proc.cmdline="se_supervisor.p /opt/avi/scripts/se_supervisor.py -d" and
+      (fd.name startswith /etc/ssh/known_host_ or
+       fd.name startswith /etc/ssh/ssh_monitor_config_ or
+       fd.name startswith /etc/ssh/ssh_config_))
+
 # Add conditions to this macro (probably in a separate file,
 # overwriting this macro) to allow for specific combinations of
 # programs writing below specific directories below
@@ -1190,6 +1200,7 @@
                           qualys-cloud-ag, locales.postins, nomachine_binaries,
                           adclient, certutil, crlutil, pam-auth-update, parallels_insta,
                           openshift-launc, update-rc.d, puppet)
+    and not (container and proc.cmdline in ("cp /run/secrets/kubernetes.io/serviceaccount/ca.crt /etc/pki/ca-trust/source/anchors/openshift-ca.crt"))
     and not proc.pname in (sysdigcloud_binaries, mail_config_binaries, hddtemp.postins, sshkit_script_binaries, locales.postins, deb_binaries, dhcp_binaries)
     and not fd.name pmatch (safe_etc_dirs)
     and not fd.name in (/etc/container_environment.sh, /etc/container_environment.json, /etc/motd, /etc/motd.svc)
@@ -1273,6 +1284,8 @@
     and not etcd_manager_updating_dns
     and not user_known_write_below_etc_activities
     and not automount_using_mtab
+    and not mcafee_writing_cma_d
+    and not avinetworks_supervisor_writing_ssh
 
 - rule: Write below etc
   desc: an attempt to write to any file below /etc
@@ -1340,6 +1353,9 @@
 - macro: user_known_write_below_root_activities
   condition: (never_true)
 
+- macro: runc_writing_exec_fifo
+  condition: (proc.cmdline="runc:[1:CHILD] init" and fd.name=/exec.fifo)
+
 - rule: Write below root
   desc: an attempt to write to any file directly below / or /root
   condition: >
@@ -1359,6 +1375,7 @@
     and not galley_writing_state
     and not calico_writing_state
     and not rancher_writing_root
+    and not runc_writing_exec_fifo
     and not known_root_conditions
     and not user_known_write_root_conditions
     and not user_known_write_below_root_activities
@@ -1527,13 +1544,13 @@
     an attempt to change a program/thread\'s namespace (commonly done
     as a part of creating a container) by calling setns.
   condition: >
-    evt.type = setns
-    and not proc.name in (docker_binaries, k8s_binaries, lxd_binaries, sysdigcloud_binaries,
-                          sysdig, nsenter, calico, oci-umount, network_plugin_binaries)
+    evt.type=setns and evt.dir=<
+    and not (container.id=host and proc.name in (docker_binaries, k8s_binaries, lxd_binaries, nsenter))
+    and not proc.name in (sysdigcloud_binaries, sysdig, calico, oci-umount, cilium-cni, network_plugin_binaries)
     and not proc.name in (user_known_change_thread_namespace_binaries)
     and not proc.name startswith "runc"
     and not proc.cmdline startswith "containerd"
-    and not proc.pname in (sysdigcloud_binaries)
+    and not proc.pname in (sysdigcloud_binaries, hyperkube, kubelet)
     and not python_running_sdchecks
     and not java_running_sdjagent
     and not kubelet_running_loopback
@@ -1544,9 +1561,9 @@
     and not user_known_change_thread_namespace_activities
   output: >
     Namespace change (setns) by unexpected program (user=%user.name command=%proc.cmdline
-    parent=%proc.pname %container.info container_id=%container.id image=%container.image.repository)
+    parent=%proc.pname %container.info container_id=%container.id image=%container.image.repository:%container.image.tag)
   priority: NOTICE
-  tags: [process]
+  tags: [process, mitre_privilege_escalation, mitre_lateral_movement]
 
 # The binaries in this list and their descendents are *not* allowed
 # spawn shells. This includes the binaries spawning shells directly as
@@ -1668,7 +1685,8 @@
                            mesos_shell_binaries,
                            erl_child_setup, exechealthz,
                            PM2, PassengerWatchd, c_rehash, svlogd, logrotate, hhvm, serf,
-                           lb-controller, nvidia-installe, runsv, statsite, erlexec)
+                           lb-controller, nvidia-installe, runsv, statsite, erlexec, calico-node,
+                           "puma reactor")
     and not proc.cmdline in (known_shell_spawn_cmdlines)
     and not proc.aname in (unicorn_launche)
     and not consul_running_net_scripts
@@ -2462,7 +2480,7 @@
     Shell history had been deleted or renamed (user=%user.name type=%evt.type command=%proc.cmdline fd.name=%fd.name name=%evt.arg.name path=%evt.arg.path oldpath=%evt.arg.oldpath %container.info)
   priority:
     WARNING
-  tag: [process, mitre_defense_evation]
+  tags: [process, mitre_defense_evation]
 
 # This rule is deprecated and will/should never be triggered. Keep it here for backport compatibility.
 # Rule Delete or rename shell history is the preferred rule to use now.
@@ -2475,7 +2493,7 @@
     Shell history had been deleted or renamed (user=%user.name type=%evt.type command=%proc.cmdline fd.name=%fd.name name=%evt.arg.name path=%evt.arg.path oldpath=%evt.arg.oldpath %container.info)
   priority:
     WARNING
-  tag: [process, mitre_defense_evation]
+  tags: [process, mitre_defense_evation]
 
 - macro: consider_all_chmods
   condition: (always_true)
@@ -2497,7 +2515,7 @@
     command=%proc.cmdline container_id=%container.id container_name=%container.name image=%container.image.repository:%container.image.tag)
   priority:
     NOTICE
-  tag: [process, mitre_persistence]
+  tags: [process, mitre_persistence]
 
 - list: exclude_hidden_directories
   items: [/root/.cassandra]
@@ -2519,7 +2537,7 @@
     file=%fd.name newpath=%evt.arg.newpath container_id=%container.id container_name=%container.name image=%container.image.repository:%container.image.tag)
   priority:
     NOTICE
-  tag: [file, mitre_persistence]
+  tags: [file, mitre_persistence]
 
 - list: remote_file_copy_binaries
   items: [rsync, scp, sftp, dcp]
@@ -2627,11 +2645,14 @@
   condition: (fd.sport in (miner_ports) and fd.sip.name in (miner_domains))
 
 - macro: net_miner_pool
-  condition: (evt.type in (sendto, sendmsg) and evt.dir=< and ((minerpool_http) or (minerpool_https) or (minerpool_other)))
+  condition: (evt.type in (sendto, sendmsg) and evt.dir=< and (fd.net != "127.0.0.0/8" and not fd.snet in (rfc_1918_addresses)) and ((minerpool_http) or (minerpool_https) or (minerpool_other)))
 
+# The rule is disabled by default. 
+# Note: falco will send DNS request to resolve miner pool domain which may trigger alerts in your environment.
 - rule: Detect outbound connections to common miner pool ports
   desc: Miners typically connect to miner pools on common ports.
   condition: net_miner_pool
+  enabled: false
   output: Outbound connection to IP/Port flagged by cryptoioc.ch (command=%proc.cmdline port=%fd.rport ip=%fd.rip container=%container.info image=%container.image.repository)
   priority: CRITICAL
   tags: [network, mitre_execution]

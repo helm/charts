@@ -14,6 +14,10 @@ spec:
     {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 6 }}
     {{- end }}
+{{- if .Values.updateStrategy }}
+  strategy:
+    {{ toYaml .Values.updateStrategy | nindent 4 | trim }}
+{{- end }}
   template:
     metadata:
     {{- if .Values.podAnnotations }}
@@ -169,6 +173,10 @@ spec:
             - containerPort: 8085
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+          {{- if .Values.containerSecurityContext }}
+          securityContext:
+            {{ toYaml .Values.containerSecurityContext | nindent 12 | trim }}
+          {{- end }}
           {{- if eq .Values.cloudProvider "gce" }}
           volumeMounts:
             - name: cloudconfig
@@ -183,16 +191,20 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "cluster-autoscaler.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ template "cluster-autoscaler.serviceAccountName" . }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
+      {{- if .Values.securityContext }}
+      securityContext:
+        {{ toYaml .Values.securityContext | nindent 8 | trim }}
+      {{- end }}
       {{- if eq .Values.cloudProvider "gce" }}
       volumes:
         - name: cloudconfig
           hostPath:
             path: {{ .Values.cloudConfigPath }}
       {{- end }}
-    {{- if .Values.image.pullSecrets }}
+      {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range .Values.image.pullSecrets }}
         - name: {{ . }}

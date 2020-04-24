@@ -49,6 +49,7 @@ spec:
 {{ toYaml .Values.podLabels | indent 8 }}
 {{- end }}
       annotations:
+        rollme: {{ randAlphaNum 5 | quote }}
         checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
 {{- if .Values.podAnnotations }}
@@ -72,43 +73,36 @@ spec:
           {{- if .Values.s3gateway.enabled }}
           command: [ "/bin/sh",
           "-ce",
-          "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} gateway s3 {{ .Values.s3gateway.serviceEndpoint }}"
-          {{- template "minio.extraArgs" . }} ]
+          "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} gateway s3 {{ .Values.s3gateway.serviceEndpoint }} {{- template `minio.extraArgs` . }}" ]
           {{- else }}
           {{- if .Values.azuregateway.enabled }}
           command: [ "/bin/sh",
           "-ce",
-          "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} gateway azure"
-          {{- template "minio.extraArgs" . }} ]
+          "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} gateway azure {{- template `minio.extraArgs` . }}" ]
           {{- else }}
           {{- if .Values.gcsgateway.enabled }}
           command: [ "/bin/sh",
           "-ce",
-          "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} gateway gcs {{ .Values.gcsgateway.projectId }}"
-          {{- template "minio.extraArgs" . }} ]
+          "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} gateway gcs {{ .Values.gcsgateway.projectId }} {{- template `minio.extraArgs` . }}" ]
           {{- else }}
           {{- if .Values.ossgateway.enabled }}
           command: [ "/bin/sh",
           "-ce",
-          "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} gateway oss {{ .Values.ossgateway.endpointURL }}"
-          {{- template "minio.extraArgs" . }} ]
+          "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} gateway oss {{ .Values.ossgateway.endpointURL }} {{- template `minio.extraArgs` . }}" ]
           {{- else }}
           {{- if .Values.nasgateway.enabled }}
           command: [ "/bin/sh",
           "-ce",
-          "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} gateway nas {{ $bucketRoot }}"
-          {{- template "minio.extraArgs" . }} ]
+          "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} gateway nas {{ $bucketRoot }} {{- template `minio.extraArgs` . }}" ]
           {{- else }}
           {{- if .Values.b2gateway.enabled }}
           command: [ "/bin/sh",
           "-ce",
-          "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} gateway b2"
-          {{- template "minio.extraArgs" . }} ]
+          "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} gateway b2 {{- template `minio.extraArgs` . }}" ]
           {{- else }}
           command: [ "/bin/sh",
           "-ce",
-          "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} server {{ $bucketRoot }}"
-          {{- template "minio.extraArgs" . }} ]
+          "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} server {{ $bucketRoot }} {{- template `minio.extraArgs` . }}" ]
           {{- end }}
           {{- end }}
           {{- end }}
@@ -133,7 +127,11 @@ spec:
               mountPath: {{ .Values.certsPath }}
             {{ end }}
           ports:
-            - name: service
+            {{- if .Values.tls.enabled }}
+            - name: https
+            {{ else }}
+            - name: http
+            {{- end }}
               containerPort: 9000
           env:
             - name: MINIO_ACCESS_KEY
@@ -157,7 +155,11 @@ spec:
           livenessProbe:
             httpGet:
               path: /minio/health/live
-              port: service
+              {{- if .Values.tls.enabled }}
+              port: https
+              {{ else }}
+              port: http
+              {{- end }}
               {{- if .Values.tls.enabled }}
               scheme: HTTPS
               {{ else }}
@@ -174,7 +176,11 @@ spec:
               scheme: HTTPS
               {{- end }}
               path: /minio/health/ready
-              port: service
+              {{- if .Values.tls.enabled }}
+              port: https
+              {{ else }}
+              port: http
+              {{- end }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
@@ -195,7 +201,7 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
       volumes:
-        {{- if and ((not .Values.gcsgateway.enabled) (not .Values.azuregateway.enabled) (not .Values.s3gateway.enabled) (not .Values.b2gateway.enabled)) }}
+        {{- if and (not .Values.gcsgateway.enabled) (not .Values.azuregateway.enabled) (not .Values.s3gateway.enabled) (not .Values.b2gateway.enabled) }}
         - name: export
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:

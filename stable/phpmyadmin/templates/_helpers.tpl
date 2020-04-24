@@ -128,6 +128,18 @@ imagePullSecrets:
 {{- end -}}
 {{- end -}}
 
+{{/*
+Renders a value that contains template.
+Usage:
+{{ include "phpmyadmin.tplValue" ( dict "value" .Values.path.to.the.Value "context" $) }}
+*/}}
+{{- define "phpmyadmin.tplValue" -}}
+    {{- if typeIs "string" .value }}
+        {{- tpl .value .context }}
+    {{- else }}
+        {{- tpl (.value | toYaml) .context }}
+    {{- end }}
+{{- end -}}
 
 {{/*
 Compile all warnings into a single message, and call fail.

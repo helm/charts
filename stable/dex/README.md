@@ -87,6 +87,7 @@ Parameters introduced starting from v2
 | `crd.present` | Whether dex's CRDs are already present (if not cluster role and cluster role binding will be created to enable dex to create them). Depends on `rbac.create` | `false` |
 | `grpc` | Enable dex grpc endpoint | `true` |
 | `https` | Enable TLS termination for the dex http endpoint | `false` |
+| `podLabels` | Custom pod labels | `{}` |
 | `ports.grpc.containerPort` | grpc port listened by the dex | `5000` |
 | `ports.grpc.nodePort` | K8S Service node port for the dex grpc listener | `35000` |
 | `ports.grpc.servicePort` | K8S Service port for the dex grpc listener | `35000` |
@@ -94,6 +95,7 @@ Parameters introduced starting from v2
 | `ports.web.nodePort` | K8S Service node port for the dex http/https listener | `32000` |
 | `ports.web.servicePort` | K8S Service port for the dex http/https listener | `32000` |
 | `rbac.create` | If `true`, create & use RBAC resources | `true` |
+| `securityContext` | Allow setting the securityContext of the main dex deployment | `` |
 | `service.loadBalancerIP` | IP override for K8S LoadBalancer Service | `""` |
 | `livenessProbe.enabled` | k8s liveness probe enabled (cannot be enabled when `https = true`) | `false` |
 | `livenessProbe.path` |  k8s liveness probe http path | `"/healthz"`  |

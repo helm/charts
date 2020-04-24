@@ -5,7 +5,7 @@ image:
   # repository is the Hazelcast image name
   repository: "hazelcast/hazelcast"
   # tag is the Hazelcast image tag
-  tag: "3.12.5"
+  tag: "4.0"
   # pullPolicy is the Docker image pull policy
   # It's recommended to change this to 'Always' if the image tag is 'latest'
   # ref: http://kubernetes.io/docs/user-guide/images/#updating-images
@@ -29,7 +29,7 @@ hazelcast:
   # loggingLevel is the level of Hazelcast logs (SEVERE, WARNING, INFO, CONFIG, FINE, FINER, and FINEST)
   # Note that changing this value requires setting securityContext.runAsUser to 0 and securityContext.readOnlyRootFilesystem to false
   # loggingLevel:
-  # existingConfigMap defines a ConfigMap which contains Hazelcast configuration file(s) that are used instead hazelcast.yaml configuration below
+  # existingConfigMap defines a ConfigMap which contains Hazelcast configuration file(s) that are used instead of hazelcast.yaml configuration below
   # existingConfigMap:
   # yaml is the Hazelcast YAML configuration file
   yaml:
@@ -48,9 +48,6 @@ hazelcast:
           endpoint-groups:
             HEALTH_CHECK:
               enabled: true
-      management-center:
-        enabled: ${hazelcast.mancenter.enabled}
-        url: ${hazelcast.mancenter.url}
   # configurationFiles are any additional Hazelcast configuration files
   # configurationFiles:
 
@@ -171,6 +168,8 @@ securityContext:
   enabled: true
   # runAsUser is the user ID used to run the container
   runAsUser: 65534
+  # runAsGroup is the primary group ID used to run all processes within any container of the pod
+  runAsGroup: 65534
   # fsGroup is the group ID associated with the container
   fsGroup: 65534
   # readOnlyRootFilesystem is a flag to enable readOnlyRootFilesystem for the Hazelcast security context
@@ -185,6 +184,7 @@ metrics:
     annotations:
       prometheus.io/scrape: "true"
       prometheus.io/path: "/metrics"
+      prometheus.io/port: "8080"
 
 # customVolume is the configuration for any volume mounted as '/data/custom/' (e.g. to mount a volume with custom JARs)
 # customVolume:
@@ -200,7 +200,7 @@ mancenter:
     # repository is the Hazelcast Management Center image name
     repository: "hazelcast/management-center"
     # tag is the Hazelcast Management Center image tag
-    tag: "3.12.6"
+    tag: "4.0"
     # pullPolicy is the Docker image pull policy
     # It's recommended to change this to 'Always' if the image tag is 'latest'
     # ref: http://kubernetes.io/docs/user-guide/images/#updating-images
@@ -223,14 +223,29 @@ mancenter:
     #   hosts:
     #   - hazelcast-mancenter.cluster.domain
 
+  # ssl is a flag to enable SSL for Management Center
+  ssl: false
   # javaOpts are additional JAVA_OPTS properties for Hazelcast Management Center
   javaOpts:
+
+  # contextPath is the value for the MC_CONTEXT_PATH environment variable, thus overriding the default context path for Hazelcast Management Center
+  # ref: https://hub.docker.com/r/hazelcast/management-center/
+  contextPath:
 
   # licenseKey is the license key for Hazelcast Management Center
   # if not provided, it can be filled in the Management Center web interface
   licenseKey:
   # licenseKeySecretName is the name of the secret where the Hazelcast Management Center License Key is stored (can be used instead of licenseKey)
   # licenseKeySecretName:
+
+  # existingConfigMap defines a ConfigMap which contains Hazelcast Client configuration file(s) that are used instead of hazelcast-client.yaml configuration below
+  # existingConfigMap:
+  # yaml is the Hazelcast Client YAML configuration file
+  yaml:
+    hazelcast-client:
+      network:
+        cluster-members:
+          - ${serviceName}
 
   # affinity specifies the Management Center affinity/anti-affinity of different pods
   # affinity:
@@ -305,3 +320,6 @@ mancenter:
     successThreshold: 1
     # failureThreshold is the minimum consecutive failures for the probe to be considered failed after having succeeded
     failureThreshold: 3
+
+  # secretsMountName is the secret name that is mounted as '/data/secrets/' (e.g. with keystore/trustore files)
+  # secretsMountName:

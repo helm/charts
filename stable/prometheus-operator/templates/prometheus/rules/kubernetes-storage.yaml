@@ -1,6 +1,8 @@
-# Generated from 'kubernetes-storage' group from https://raw.githubusercontent.com/coreos/kube-prometheus/release-0.1/manifests/prometheus-rules.yaml
-# Do not change in-place! In order to change this file first read following link:
-# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
+{{- /*
+Generated from 'kubernetes-storage' group from https://raw.githubusercontent.com/coreos/kube-prometheus/release-0.1/manifests/prometheus-rules.yaml
+Do not change in-place! In order to change this file first read following link:
+https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
+*/ -}}
 {{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
 {{- if and (semverCompare ">=1.10.0-0" $kubeTargetVersion) (semverCompare "<1.14.0-0" $kubeTargetVersion) .Values.defaultRules.create .Values.defaultRules.rules.kubernetesStorage }}
 {{- $targetNamespace := .Values.defaultRules.appNamespacesTarget }}
@@ -25,7 +27,7 @@ spec:
     rules:
     - alert: KubePersistentVolumeUsageCritical
       annotations:
-        message: The PersistentVolume claimed by {{`{{ $labels.persistentvolumeclaim }}`}} in Namespace {{`{{ $labels.namespace }}`}} is only {{`{{ printf "%0.2f" $value }}`}}% free.
+        message: The PersistentVolume claimed by {{`{{`}} $labels.persistentvolumeclaim {{`}}`}} in Namespace {{`{{`}} $labels.namespace {{`}}`}} is only {{`{{`}} printf "%0.2f" $value {{`}}`}}% free.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubepersistentvolumeusagecritical
       expr: |-
         100 * kubelet_volume_stats_available_bytes{job="kubelet", namespace=~"{{ $targetNamespace }}"}
@@ -37,7 +39,7 @@ spec:
         severity: critical
     - alert: KubePersistentVolumeFullInFourDays
       annotations:
-        message: Based on recent sampling, the PersistentVolume claimed by {{`{{ $labels.persistentvolumeclaim }}`}} in Namespace {{`{{ $labels.namespace }}`}} is expected to fill up within four days. Currently {{`{{ printf "%0.2f" $value }}`}}% is available.
+        message: Based on recent sampling, the PersistentVolume claimed by {{`{{`}} $labels.persistentvolumeclaim {{`}}`}} in Namespace {{`{{`}} $labels.namespace {{`}}`}} is expected to fill up within four days. Currently {{`{{`}} printf "%0.2f" $value {{`}}`}}% is available.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubepersistentvolumefullinfourdays
       expr: |-
         100 * (
@@ -52,7 +54,7 @@ spec:
         severity: critical
     - alert: KubePersistentVolumeErrors
       annotations:
-        message: The persistent volume {{`{{ $labels.persistentvolume }}`}} has status {{`{{ $labels.phase }}`}}.
+        message: The persistent volume {{`{{`}} $labels.persistentvolume {{`}}`}} has status {{`{{`}} $labels.phase {{`}}`}}.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubepersistentvolumeerrors
       expr: kube_persistentvolume_status_phase{phase=~"Failed|Pending",job="kube-state-metrics"} > 0
       for: 5m

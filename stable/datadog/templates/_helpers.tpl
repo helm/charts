@@ -1,4 +1,5 @@
 {{/* vim: set filetype=mustache: */}}
+
 {{/*
 Expand the name of the chart.
 */}}
@@ -67,5 +68,29 @@ Return the appropriate apiVersion for RBAC APIs.
 "rbac.authorization.k8s.io/v1"
 {{- else -}}
 "rbac.authorization.k8s.io/v1beta1"
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the container runtime socket
+*/}}
+{{- define "datadog.dockerOrCriSocketPath" -}}
+{{- if eq .Values.targetSystem "linux" -}}
+{{- .Values.datadog.dockerSocketPath | default .Values.datadog.criSocketPath | default "/var/run/docker.sock" -}}
+{{- end -}}
+{{- if eq .Values.targetSystem "windows" -}}
+\\.\pipe\docker_engine
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return agent config path
+*/}}
+{{- define "datadog.confPath" -}}
+{{- if eq .Values.targetSystem "linux" -}}
+/etc/datadog-agent
+{{- end -}}
+{{- if eq .Values.targetSystem "windows" -}}
+C:/ProgramData/Datadog
 {{- end -}}
 {{- end -}}

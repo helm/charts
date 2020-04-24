@@ -164,7 +164,7 @@ spec:
         {{- end }}
       {{- with .Values.anchoreEnterpriseFeeds.nodeSelector }}
       nodeSelector:
-        {{ toYaml .Values.anchoreEnterpriseFeeds.nodeSelector | nindent 8 }}
+        {{ toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.anchoreEnterpriseFeeds.affinity }}
       affinity:

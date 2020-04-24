@@ -3,12 +3,14 @@ affinity: {}
 
 image:
   repository: directxman12/k8s-prometheus-adapter-amd64
-  tag: v0.5.0
+  tag: v0.6.0
   pullPolicy: IfNotPresent
 
 logLevel: 4
 
 metricsRelistInterval: 1m
+
+listenPort: 6443
 
 nodeSelector: {}
 
@@ -122,6 +124,9 @@ extraVolumeMounts: []
   #     readOnly: true
 
 tolerations: []
+
+# Labels added to the pod
+podLabels: {}
 
 # Annotations added to the pod
 podAnnotations: {}

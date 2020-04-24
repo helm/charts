@@ -42,7 +42,7 @@ spec:
             - --container
             - jenkins
             - --path
-            - /var/jenkins_home
+            - {{ .Values.master.jenkinsHome }}
             - --dst
             - {{ .Values.backup.destination }}
             {{- with .Values.backup.extraArgs }}
@@ -114,7 +114,7 @@ spec:
                       values:
                       - {{ .Release.Name }}
       {{- with .Values.tolerations }}
-        tolerations:
+          tolerations:
 {{ toYaml . | indent 10 }}
       {{- end }}
 {{- end }}

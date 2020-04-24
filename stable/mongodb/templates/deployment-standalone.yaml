@@ -16,7 +16,12 @@ metadata:
 {{ toYaml . | indent 4 }}
   {{- end }}
 spec:
+  {{- if .Values.useStatefulSet }}
+  serviceName: {{ template "mongodb.serviceName" . }}
+  updateStrategy:
+  {{- else }}
   strategy:
+  {{- end }}
     type: {{ .Values.updateStrategy.type }}
     {{- if (eq "Recreate" .Values.updateStrategy.type) }}
     rollingUpdate: null

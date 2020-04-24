@@ -1,9 +1,11 @@
-# Empty values file for testing default parameters.
+datadog:
+  apiKey: "00000000000000000000000000000000"
+  appKey: "0000000000000000000000000000000000000000"
+  clusterChecks:
+    enabled: true
+
 clusterAgent:
   enabled: true
 
-clusterChecks:
-  enabled: true
-
-clusterchecksDeployment:
+clusterChecksRunner:
   enabled: true

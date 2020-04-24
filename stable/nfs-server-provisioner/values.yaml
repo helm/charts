@@ -8,7 +8,7 @@ replicaCount: 1
 
 image:
   repository: quay.io/kubernetes_incubator/nfs-provisioner
-  tag: v2.2.2
+  tag: v2.3.0
   pullPolicy: IfNotPresent
 
 # For a list of available arguments
@@ -20,11 +20,17 @@ service:
   type: ClusterIP
 
   nfsPort: 2049
+  nlockmgrPort: 32803
   mountdPort: 20048
-  rpcbindPort: 51413
+  rquotadPort: 875
+  rpcbindPort: 111
+  statdPort: 662
   # nfsNodePort:
+  # nlockmgrNodePort:
   # mountdNodePort:
+  # rquotadNodePort:
   # rpcbindNodePort:
+  # statdNodePort:
 
   externalIPs: []
 
@@ -64,8 +70,7 @@ storageClass:
   parameters: {}
 
   mountOptions:
-    - vers=4.1
-    - noatime
+    - vers=3
 
   ## ReclaimPolicy field of the class, which can be either Delete or Retain
   reclaimPolicy: Delete

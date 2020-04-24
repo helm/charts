@@ -1,8 +1,8 @@
 halyard:
-  spinnakerVersion: 1.16.1
+  spinnakerVersion: 1.19.4
   image:
     repository: gcr.io/spinnaker-marketplace/halyard
-    tag: 1.23.2
+    tag: 1.32.0
     pullSecrets: []
   # Set to false to disable persistence data volume for halyard
   persistence:
@@ -150,7 +150,7 @@ dockerRegistries:
 # - name: ecr
 #   address: <AWS-ACCOUNT-ID>.dkr.ecr.<REGION>.amazonaws.com
 #   username: AWS
-#   passwordCommand: "aws --region <REGION> ecr get-authorization-token --output text --query 'authorizationData[].authorizationToken' | base64 -d | sed 's/^AWS://'"
+#   passwordCommand: aws --region <REGION> ecr get-authorization-token --output text --query 'authorizationData[].authorizationToken' | base64 -d | sed 's/^AWS://'
 
 # If you don't want to put your passwords into a values file
 # you can use a pre-created secret instead of putting passwords
@@ -256,11 +256,15 @@ redis:
 # Minio is not exposed publically
 minio:
   enabled: true
-  imageTag: RELEASE.2019-02-13T19-48-27Z
-  serviceType: ClusterIP
+  image:
+    tag: RELEASE.2020-01-03T19-12-21Z
+  service:
+    type: ClusterIP
   accessKey: spinnakeradmin
   secretKey: spinnakeradmin
-  bucket: "spinnaker"
+  defaultBucket:
+    enabled: true
+    name: "spinnaker"
   nodeSelector: {}
 # Uncomment if you don't want to create a PVC for minio
 #  persistence:

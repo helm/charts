@@ -22,6 +22,9 @@ spec:
         app: {{ template "etcd-backup-operator.fullname" . }}
         release: {{ .Release.Name }}
     spec:
+      {{- if .Values.backupOperator.priorityClassName }}
+      priorityClassName: {{ .Values.backupOperator.priorityClassName }}
+      {{- end }}
       serviceAccountName: {{ template "etcd-operator.serviceAccountName" . }}
       containers:
       - name: {{ .Values.backupOperator.name }}

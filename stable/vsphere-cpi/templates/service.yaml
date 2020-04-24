@@ -10,7 +10,7 @@ metadata:
     component: cloud-controller
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  namespace: kube-system
+  namespace: {{ .Release.Namespace }}
 {{- if .Values.service.annotations }}
   annotations:
 {{ toYaml .Values.service.annotations | indent 4 }}

@@ -44,7 +44,7 @@ The following table lists the configurable parameters of the pushgateway chart a
 | `extraArgs`                       | Optional flags for pushgateway                                                                                                | `[]`                              |
 | `extraVars`                       | Optional environment variables for pushgateway                                                                                | `[]`                              |
 | `image.repository`                | Image repository                                                                                                              | `prom/pushgateway`                |
-| `image.tag`                       | Image tag                                                                                                                     | `v1.0.1`                          |
+| `image.tag`                       | Image tag                                                                                                                     | `v1.2.0`                          |
 | `image.pullPolicy`                | Image pull policy                                                                                                             | `IfNotPresent`                    |
 | `ingress.enabled`                 | Enables Ingress for pushgateway                                                                                               | `false`                           |
 | `ingress.annotations`             | Ingress annotations                                                                                                           | `{}`                              |
@@ -52,10 +52,12 @@ The following table lists the configurable parameters of the pushgateway chart a
 | `ingress.tls`                     | Ingress TLS configuration                                                                                                     | `[]`                              |
 | `resources`                       | CPU/Memory resource requests/limits                                                                                           | `{}`                              |
 | `replicaCount`                    | Number of replicas                                                                                                            | `1`                               |
+| `strategy`                        | Deployment strategy                                                                                                           | `{ "type": "Recreate" }`          |
 | `service.type`                    | Service type                                                                                                                  | `ClusterIP`                       |
 | `service.port`                    | The service port                                                                                                              | `9091`                            |
 | `service.nodePort`                | The optional service node port when `service.type` is `NodePort`                                                              | ``                                |
 | `service.targetPort`              | The target port of the container                                                                                              | `9091`                            |
+| `serviceAnnotations`              | Annotations for the service                                                                                                   | `{}`                              |
 | `serviceLabels`                   | Labels for service                                                                                                            | `{}`                              |
 | `serviceAccount.create`           | Specifies whether a service account should be created.                                                                        | `true`                            |
 | `serviceAccount.name`             | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template |                                   |

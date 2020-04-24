@@ -146,11 +146,27 @@ logFormat: text
 # or more replicas.
 replicas: 1
 
-# To control how the OPA is scheduled on the cluster, set the tolerations and
-# nodeSelector values below. For example, to deploy OPA onto the master nodes:
+# To control how the OPA is scheduled on the cluster, set the affinity,
+# tolerations and nodeSelector values below. For example, to deploy OPA onto
+# the master nodes, 1 replica per node:
 #
-# tolerations: [{key: "node-role.kubernetes.io/master", effect: NoSchedule, operator: Exists}]
-# nodeSelector: {"kubernetes.io/role": "master"}
+# affinity:
+#   podAntiAffinity:
+#     requiredDuringSchedulingIgnoredDuringExecution:
+#     - labelSelector:
+#         matchExpressions:
+#         - key: "app"
+#           operator: In
+#           values:
+#           - opa
+#       topologyKey: "kubernetes.io/hostname"
+# tolerations:
+# - key: "node-role.kubernetes.io/master"
+#   effect: NoSchedule
+#   operator: Exists
+# nodeSelector:
+#   kubernetes.io/role: "master"
+affinity: {}
 tolerations: []
 nodeSelector: {}
 

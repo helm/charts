@@ -38,6 +38,8 @@ initContainers:
     imagePullPolicy: {{ .Values.downloadDashboardsImage.pullPolicy }}
     command: ["/bin/sh"]
     args: [ "-c", "mkdir -p /var/lib/grafana/dashboards/default && /bin/sh /etc/grafana/download_dashboards.sh" ]
+    resources:
+{{ toYaml .Values.downloadDashboards.resources | indent 6 }}
     env:
 {{- range $key, $value := .Values.downloadDashboards.env }}
       - name: "{{ $key }}"
@@ -100,6 +102,8 @@ containers:
     image: "{{ .Values.sidecar.image }}"
     imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
     env:
+      - name: METHOD
+        value: {{ .Values.sidecar.dashboards.watchMethod }}
       - name: LABEL
         value: "{{ .Values.sidecar.dashboards.label }}"
       - name: FOLDER
@@ -161,7 +165,7 @@ containers:
 {{- end }}
 {{- end -}}
 {{- if .Values.dashboardsConfigMaps }}
-{{- range keys .Values.dashboardsConfigMaps }}
+{{- range (keys .Values.dashboardsConfigMaps | sortAlpha) }}
       - name: dashboards-{{ . }}
         mountPath: "/var/lib/grafana/dashboards/{{ . }}"
 {{- end }}
@@ -300,7 +304,7 @@ volumes:
       name: {{ .configMap }}
 {{- end }}
   {{- if .Values.dashboards }}
-    {{- range keys .Values.dashboards }}
+    {{- range (keys .Values.dashboards | sortAlpha) }}
   - name: dashboards-{{ . }}
     configMap:
       name: {{ template "grafana.fullname" $ }}-dashboards-{{ . }}

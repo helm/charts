@@ -1,3 +1,24 @@
+This Helm chart is deprecated
+
+Given the `stable` deprecation timeline (https://github.com/helm/charts#deprecation-timeline), the Bitnami maintained Helm chart is now located at bitnami/charts (https://github.com/bitnami/charts/).
+
+The Bitnami repository is already included in the Hubs and we will continue providing the same cadence of updates, support, etc that we've been keeping here these years. Installation instructions are very similar, just adding the _bitnami_ repo and using it during the installation (`bitnami/<chart>` instead of `stable/<chart>`)
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm install my-release bitnami/<chart>           # Helm 3
+$ helm install --name my-release bitnami/<chart>    # Helm 2
+```
+
+To update an exisiting _stable_ deployment with a chart hosted in the bitnami repository you can execute
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm upgrade my-release bitnami/<chart>
+```
+
+Issues and PRs related to the chart itself will be redirected to `bitnami/charts` GitHub repository. In the same way, we'll be happy to answer questions related to this migration process in this issue (https://github.com/helm/charts/issues/20969) created as a common place for discussion.
+
 {{- if contains .Values.service.type "LoadBalancer" }}
 {{- if not .Values.mongodbRootPassword }}
 -------------------------------------------------------------------------------
@@ -40,7 +61,7 @@ To get the password for "{{ .Values.mongodbUsername }}" run:
 
 To connect to your database run the following command:
 
-    kubectl run --namespace {{ .Release.Namespace }} {{ template "mongodb.fullname" . }}-client --rm --tty -i --restart='Never' --image bitnami/mongodb --command -- mongo admin --host {{ template "mongodb.serviceName" . }} {{- if .Values.usePassword }} --authenticationDatabase admin -u root -p $MONGODB_ROOT_PASSWORD{{- end }}
+    kubectl run --namespace {{ .Release.Namespace }} {{ template "mongodb.fullname" . }}-client --rm --tty -i --restart='Never' --image {{ template "mongodb.image" . }} --command -- mongo admin --host {{ template "mongodb.serviceName" . }} {{- if .Values.usePassword }} --authenticationDatabase admin -u root -p $MONGODB_ROOT_PASSWORD{{- end }}
 
 To connect to your database from outside the cluster execute the following commands:
 
@@ -56,7 +77,7 @@ To connect to your database from outside the cluster execute the following comma
         Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "mongodb.serviceName" . }}'
 
     export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "mongodb.serviceName" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
-    mongo --host $SERVICE_IP --port {{ .Values.service.nodePort }} {{- if .Values.usePassword }} --authenticationDatabase admin -p $MONGODB_ROOT_PASSWORD{{- end }}
+    mongo --host $SERVICE_IP --port {{ .Values.service.port }} {{- if .Values.usePassword }} --authenticationDatabase admin -p $MONGODB_ROOT_PASSWORD{{- end }}
 
 {{- else if contains "ClusterIP" .Values.service.type }}
 

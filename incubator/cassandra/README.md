@@ -128,6 +128,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `persistence.size`                   | Size of data volume                             | `10Gi`                                                     |
 | `resources`                          | CPU/Memory resource requests/limits             | Memory: `4Gi`, CPU: `2`                                    |
 | `service.type`                       | k8s service type exposing ports, e.g. `NodePort`| `ClusterIP`                                                |
+| `service.annotations`                | Annotations to apply to cassandra service       | `""`                                                       |
 | `podManagementPolicy`                | podManagementPolicy of the StatefulSet          | `OrderedReady`                                             |
 | `podDisruptionBudget`                | Pod distruption budget                          | `{}`                                                       |
 | `podAnnotations`                     | pod annotations for the StatefulSet             | `{}`                                                       |
@@ -157,7 +158,8 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `backup.destination`                 | Destination to store backup artifacts           | `s3://bucket/cassandra`                                    |
 | `backup.google.serviceAccountSecret` | Secret containing credentials if GCS is used as destination |                                                |
 | `exporter.enabled`                   | Enable Cassandra exporter                       | `false`                                                    |
-| `exporter.servicemonitor`            | Enable ServiceMonitor for exporter              | `true`                                                    |
+| `exporter.servicemonitor.enabled`    | Enable ServiceMonitor for exporter              | `true`                                                    |
+| `exporter.servicemonitor.additionalLabels`| Additional labels for Service Monitor           | `{}`                                                       |
 | `exporter.image.repo`                | Exporter image repository                       | `criteord/cassandra_exporter`                              |
 | `exporter.image.tag`                 | Exporter image tag                              | `2.0.2`                                                    |
 | `exporter.port`                      | Exporter port                                   | `5556`                                                     |

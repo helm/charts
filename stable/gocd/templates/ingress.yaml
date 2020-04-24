@@ -1,6 +1,6 @@
 {{- if .Values.server.enabled }}
 {{- if .Values.server.ingress.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: {{ template "gocd.fullname" . }}-server
@@ -19,7 +19,7 @@ spec:
   {{ $dot := .}}
   rules:
     {{- range $host := .Values.server.ingress.hosts }}
-    - host: {{ $host }}
+    - host: {{ $host | quote }}
       http:
         paths:
         - backend:

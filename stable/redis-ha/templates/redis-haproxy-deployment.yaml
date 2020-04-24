@@ -102,6 +102,9 @@ spec:
           readOnly: true
         - name: data
           mountPath: /data
+      {{- if .Values.haproxy.imagePullSecrets }}
+      imagePullSecrets: {{ toYaml .Values.haproxy.imagePullSecrets | nindent 8 }}
+      {{- end }}
       securityContext:
 {{ toYaml .Values.haproxy.securityContext | indent 8 }}
       containers:
@@ -140,7 +143,9 @@ spec:
         configMap:
           name: {{ template "redis-ha.fullname" . }}-configmap
       - name: shared-socket
-        emptyDir: {}
+        emptyDir: 
+{{ toYaml .Values.haproxy.emptyDir | indent 10 }}
       - name: data
-        emptyDir: {}
+        emptyDir: 
+{{ toYaml .Values.haproxy.emptyDir | indent 10 }}
 {{- end }}
