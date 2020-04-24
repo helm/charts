@@ -9,8 +9,12 @@ metadata:
   namespace: {{ $.Release.Namespace }}
 items:
 {{ range $i, $e := until $count }}
-  - apiVersion: extensions/v1beta1
-    kind: Ingress
+  - kind: Ingress
+    {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
+    apiVersion: networking.k8s.io/v1beta1
+    {{ else }}
+    apiVersion: extensions/v1beta1
+    {{ end -}}
     metadata:
       name: {{ include "prometheus-operator.fullname" $ }}-alertmanager-{{ $i }}
       namespace: {{ $.Release.Namespace }}

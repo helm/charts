@@ -3,7 +3,11 @@
 {{- $servicePort := .Values.prometheus.service.port -}}
 {{- $routePrefix := list .Values.prometheus.prometheusSpec.routePrefix }}
 {{- $paths := .Values.prometheus.ingress.paths | default $routePrefix -}}
+{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
+apiVersion: networking.k8s.io/v1beta1
+{{ else }}
 apiVersion: extensions/v1beta1
+{{ end -}}
 kind: Ingress
 metadata:
 {{- if .Values.prometheus.ingress.annotations }}
