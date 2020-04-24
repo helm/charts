@@ -324,7 +324,7 @@ stringData:
 
 ## How to serve Grafana with a path prefix (/grafana)
 
-In order to serve Grafana with a prefix (e.g., http://example.com/grafana), add the following to your values.ini.
+In order to serve Grafana with a prefix (e.g., http://example.com/grafana), add the following to your values.yaml.
 
 ```yaml
 ingress:
