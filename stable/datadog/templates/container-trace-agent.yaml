@@ -37,6 +37,11 @@
       mountPath: {{ template "datadog.confPath" . }}/datadog.yaml
       subPath: datadog.yaml
     {{- end }}
+    - name: runtimesocket
+      mountPath: {{ template "datadog.dockerOrCriSocketPath" . }}
+      {{- if eq .Values.targetSystem "linux" }}
+      readOnly: true
+      {{- end }}
   livenessProbe:
 {{ toYaml .Values.agents.containers.traceAgent.livenessProbe | indent 4 }}
 {{- end -}}

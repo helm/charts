@@ -1,5 +1,15 @@
 # Datadog changelog
 
+## 2.2.6
+
+* Ensure the `trace-agent` computes the same hostname as the core `agent`.
+  by giving it access to all the elements that might be used to compute the hostname:
+  the `DD_CLUSTER_NAME` environment variable and the docker socket.
+
+## 2.2.5
+
+* Fix RBAC
+
 ## 2.2.4
 
 * Move several EnvVars to `common-env-vars` to be accessible by the `trace-agent` #21991.
