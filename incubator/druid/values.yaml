@@ -16,7 +16,7 @@ configVars:
   DRUID_USE_CONTAINER_IP: "true"
   druid_processing_numThreads: "3"
   druid_emitter_logging_logLevel: debug
-  druid_extensions_loadList: '["druid-histogram", "druid-datasketches", "druid-lookups-cached-global", "postgresql-metadata-storage", "druid-google-extensions"]'
+  druid_extensions_loadList: '["druid-histogram", "druid-datasketches", "druid-lookups-cached-global", "postgresql-metadata-storage"]'
   druid_metadata_storage_type: postgresql
   druid_metadata_storage_connector_connectURI: jdbc:postgresql://postgres:5432/druid
   druid_metadata_storage_connector_user: druid

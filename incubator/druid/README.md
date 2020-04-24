@@ -65,7 +65,7 @@ The following table lists the configurable parameters of the Druid chart and the
 | `image.repository`                       | Container image name                                    | `apache/druid`            |
 | `image.tag`                              | Container image tag                                     | `0.18.0`                  |
 | `image.pullPolicy`                       | Container pull policy                                   | `IfNotPresent`            |
-| `imagePullSecrets`                       | Container pull policy                                   | `IfNotPresent`            |
+| `imagePullSecrets`                       | image pull secrest for private repositoty               | `{}`                      |
 | `configVars`                              | Druid configuration variables for all components         | ``                        |
 | `historical.name`                        | historical component name                               | `historical`              |
 | `historical.replicaCount`                | historical node replicas (deployment)                   | `1`                       |
@@ -122,7 +122,7 @@ The following table lists the configurable parameters of the Druid chart and the
 | `broker.ingress.path`                    | path of the broker api                                  | `/`                       |
 | `broker.ingress.annotations`             | annotations for the broker api ingress                  | `{}`                      |
 | `broker.ingress.tls`                     | TLS configuration for the ingress                        | `[]`                      |
-| `overlord.enabled`                       | enable overlord                                         | `false`                |
+| `overlord.enabled`                       | enable overlord                                         | `false`                   |
 | `overlord.name`                          | overlord component name                                 | `overlord`                |
 | `overlord.replicaCount`                  | overlord node replicas (deployment)                     | `1`                       |
 | `overlord.port`                          | port of overlord component                              | `8081`                    |
