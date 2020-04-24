@@ -9,7 +9,12 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
   name: psp-{{ template "kube-state-metrics.fullname" . }}
 rules:
+{{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
+{{- if semverCompare "> 1.15.0-0" $kubeTargetVersion }}
+- apiGroups: ['policy']
+{{- else }}
 - apiGroups: ['extensions']
+{{- end }}
   resources: ['podsecuritypolicies']
   verbs:     ['use']
   resourceNames:
