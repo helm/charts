@@ -180,6 +180,13 @@ externalDatabase:
   ## Database name
   database: nextcloud
 
+  ## Use a existing secret
+  existingSecret:
+    enabled: false
+    # secretName: nameofsecret
+    # usernameKey: username
+    # passwordKey: password
+
 ##
 ## MariaDB chart configuration
 ##

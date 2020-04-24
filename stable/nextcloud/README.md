@@ -86,7 +86,7 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `nginx.image.repository`                                     | nginx Image name                                        | `nginx`                                                 |
 | `nginx.image.tag`                                            | nginx Image tag                                         | `alpine`                                                |
 | `nginx.image.pullPolicy`                                     | nginx Image pull policy                                 | `IfNotPresent`                                          |
-| `nginx.config.default`                                       | Whether to use nextclouds recomended nginx config       | `true`                                                  |
+| `nginx.config.default`                                       | Whether to use nextclouds recommended nginx config      | `true`                                                  |
 | `nginx.config.custom`                                        | Specify a custom config for nginx                       | `{}`                                                    |
 | `nginx.resources`                                            | nginx resources                                         | `{}`                                                    |
 | `lifecycle.postStartCommand`                                 | Specify deployment lifecycle hook postStartCommand      | `nil`                                                   |
@@ -99,6 +99,10 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `externalDatabase.database`                                  | Name of the existing database                           | `nextcloud`                                             |
 | `externalDatabase.user`                                      | Existing username in the external db                    | `nextcloud`                                             |
 | `externalDatabase.password`                                  | Password for the above username                         | `nil`                                                   |
+| `externalDatabase.existingSecret.enabled`                    | Whether to use a existing secret or not                 | `false`                                                 |
+| `externalDatabase.existingSecret.secretName`                 | Name of the existing secret                             | `nil`                                                   |
+| `externalDatabase.existingSecret.usernameKey`                | Name of the key that contains the username              | `nil`                                                   |
+| `externalDatabase.existingSecret.passwordKey`                | Name of the key that contains the password              | `nil`                                                   |
 | `mariadb.enabled`                                            | Whether to use the MariaDB chart                        | `false`                                                 |
 | `mariadb.db.name`                                            | Database name to create                                 | `nextcloud`                                             |
 | `mariadb.db.password`                                        | Password for the database                               | `changeme`                                              |
