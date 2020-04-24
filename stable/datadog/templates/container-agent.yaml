@@ -14,13 +14,6 @@
     protocol: UDP
   env:
     {{- include "containers-common-env" . | nindent 4 }}
-    {{- if .Values.datadog.clusterName }}
-    {{- if not (regexMatch "^([a-z]([a-z0-9\\-]{0,38}[a-z0-9])?\\.)*([a-z]([a-z0-9\\-]{0,38}[a-z0-9])?)$" .Values.datadog.clusterName) }}
-    {{- fail "Your `clusterName` isn’t valid. It must be dot-separated tokens where a token start with a lowercase letter followed by up to 39 lowercase letters, numbers, or hyphens and cannot end with a hyphen."}}
-    {{- end}}
-    - name: DD_CLUSTER_NAME
-      value: {{ .Values.datadog.clusterName | quote }}
-    {{- end }}
     {{- if .Values.datadog.logLevel }}
     - name: DD_LOG_LEVEL
       value: {{ .Values.agents.containers.agent.logLevel | default .Values.datadog.logLevel | quote }}
@@ -77,19 +70,6 @@
       value: {{  (default false (or .Values.datadog.logs.containerCollectAll .Values.datadog.logsConfigContainerCollectAll)) | quote}}
     - name: DD_LOGS_CONFIG_K8S_CONTAINER_USE_FILE
       value: {{ .Values.datadog.logs.containerCollectUsingFiles | quote }}
-    {{- if .Values.datadog.dockerSocketPath }}
-    - name: DOCKER_HOST
-    {{- if eq .Values.targetSystem "linux" }}
-      value: unix://{{ .Values.datadog.dockerSocketPath }}
-    {{- end }}
-    {{- if eq .Values.targetSystem "windows" }}
-      value: npipe://{{ .Values.datadog.dockerSocketPath | replace "\\" "/" }}
-    {{- end }}
-    {{- end }}
-    {{- if .Values.datadog.criSocketPath }}
-    - name: DD_CRI_SOCKET_PATH
-      value: {{ .Values.datadog.criSocketPath }}
-    {{- end }}
     {{- if not .Values.datadog.livenessProbe }}
     - name: DD_HEALTH_PORT
       value: "5555"
