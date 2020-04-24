@@ -1,10 +1,12 @@
 # Default values for druid.
 
 image:
-  repository: apache/incubator-druid
-  tag: 0.16.0-incubating
+  repository: apache/druid
+  tag: 0.18.0
   pullPolicy: IfNotPresent
 
+imagePullSecrets: {}
+  
 configVars:
   DRUID_XMX: 1g
   DRUID_XMS: 1g
@@ -101,7 +103,7 @@ overlord:
 
   name: overlord
 
-  port: 8090
+  port: 8081
   serviceType: ClusterIP
 
   javaOpts: "-Xms1G -Xmx1G"
