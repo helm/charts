@@ -137,7 +137,7 @@ historical:
   port: 8083
   serviceType: ClusterIP
 
-  javaOpts: "-Xms2G -Xmx2G -XX:MaxDirectMemorySize=10g"
+  javaOpts: "-Xms2G -Xmx2G -XX:MaxDirectMemorySize=8g"
 
   ingress:
     enabled: false
