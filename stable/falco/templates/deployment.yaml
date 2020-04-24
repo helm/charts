@@ -10,6 +10,9 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   replicas:  {{ .Values.fakeEventGenerator.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "falco.fullname" . }}-event-generator
   template:
     metadata:
       labels:
