@@ -7,6 +7,20 @@ Expand the name of the chart.
 {{- end -}}
 
 {{/*
+Create the app label for controller
+*/}}
+{{- define "haproxy-ingress.labels.app.controller" -}}
+{{ default "haproxy-ingress.name" }}-controller
+{{- end -}}
+
+{{/*
+Create the app label for default backend
+*/}}
+{{- define "haproxy-ingress.labels.app.default-backend" -}}
+{{ default "haproxy-ingress.name" }}-default-backend
+{{- end -}}
+
+{{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
