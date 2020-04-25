@@ -24,14 +24,9 @@ livenessProbe:
     port: metrics
   initialDelaySeconds: 10
 
-# [mongodb[+srv]://][user:pass@]host1[:port1][,host2[:port2],...][/database][?options]
+# [mongodb://][user:pass@]host1[:port1][,host2[:port2],...][/database][?options]
 mongodb:
-  uri: ""
-
-# Name of an externally managed secret (in the same namespace) containing the connection uri as key `mongodb-uri`.
-# If this is provided, the value mongodb.uri is ignored.
-existingSecret:
-  name: ""
+  uri:
 
 nameOverride: ""
 
