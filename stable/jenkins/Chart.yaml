@@ -1,7 +1,7 @@
 apiVersion: v1
 name: jenkins
 home: https://jenkins.io/
-version: 1.17.1
+version: 1.17.2
 appVersion: lts
 description: Open source continuous integration server. It supports multiple SCM tools
   including CVS, Subversion and Git. It can execute Apache Ant and Apache Maven-based
@@ -22,4 +22,6 @@ maintainers:
   email: mail@torstenwalter.de
 - name: mogaal
   email: garridomota@gmail.com
+- name: wmcdona89
+  email: wmcdona89@gmail.com
 icon: https://wiki.jenkins-ci.org/download/attachments/2916393/logo.png
