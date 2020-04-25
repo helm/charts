@@ -220,10 +220,10 @@ Returns kubernetes pod template configuration as code
     {{- end }}
   {{- end }}
 {{- end }}
-  {{- if .Values.agent.yamlTemplate }}
+{{- if .Values.agent.yamlTemplate }}
   yaml: |-
-  {{- tpl ( trim .Values.agent.yamlTemplate ) . | nindent 4 }}
-  {{- end }}
+    {{- tpl (trim .Values.agent.yamlTemplate) . | nindent 4 }}
+{{- end }}
   yamlMergeStrategy: "override"
 {{- end -}}
 
@@ -322,7 +322,9 @@ Returns kubernetes pod template xml configuration
 {{- end }}
   <nodeProperties/>
 {{- if .Values.agent.yamlTemplate }}
-  <yaml>{{ tpl .Values.agent.yamlTemplate . | html | indent 4 | trim }}</yaml>
+  <yaml>
+    {{- tpl (trim .Values.agent.yamlTemplate) . | html | nindent 4 }}
+  </yaml>
 {{- end }}
   <podRetention class="org.csanchez.jenkins.plugins.kubernetes.pod.retention.Default"/>
 </org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
