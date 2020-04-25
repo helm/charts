@@ -322,3 +322,23 @@ stringData:
 
 ```
 
+## How to serve Grafana with a path prefix (/grafana)
+
+In order to serve Grafana with a prefix (e.g., http://example.com/grafana), add the following to your values.yaml.
+
+```yaml
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/use-regex: "true"
+
+  path: /grafana/?(.*)
+  hosts:
+    - k8s.example.dev
+
+grafana.ini:
+  server:
+    root_url: http://localhost:3000/grafana # this host can be localhost
+```
