@@ -216,7 +216,7 @@ $ helm install --name my-release -f values.yaml stable/rabbitmq-ha
 When creating a new chart with this chart as a dependency, `existingConfigMap`
 can be used to override the default [configmap.yaml](templates/configmap.yaml)
 provided. It also allows for providing additional configuration files that will
-be mounted into `/etc/rabbitmq`. In the parent chart's values.yaml, set the
+be mounted into `/etc/definitions`. In the parent chart's values.yaml, set the
 value to true and provide the file [templates/configmap.yaml][] for your use
 case.
 
@@ -240,7 +240,7 @@ data:
     ].
   rabbitmq.conf: |
     # ....
-    management.load_definitions = /etc/rabbitmq/definitions.json
+    management.load_definitions = /etc/definitions/definitions.json
   definitions.json: |
     {
       "permissions": [],
