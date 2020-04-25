@@ -61,7 +61,7 @@ data:
     {{- /* restore .Values.agent */}}
     {{- $_ := set .Values "agent" $agent }}
   {{- end }}
-{{- end -}}
+{{- end }}
           </templates>
           <serverUrl>https://kubernetes.default</serverUrl>
           <skipTlsVerify>false</skipTlsVerify>
