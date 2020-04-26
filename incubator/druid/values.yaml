@@ -31,14 +31,26 @@ gCloudStorage:
   secretName: google-cloud-key
 
 broker:
-  replicaCount: 1
-
   name: broker
-
+  replicaCount: 1
   port: 8082
   serviceType: ClusterIP
 
   javaOpts: "-Xms2G -Xmx2G -XX:MaxDirectMemorySize=8g"
+  
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 5
+    metrics: 
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: 60
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: 60
 
   ingress:
     enabled: false
@@ -64,14 +76,26 @@ broker:
   podAnnotations: {}
 
 coordinator:
-  replicaCount: 1
-
   name: coordinator
-
+  replicaCount: 1
   port: 8081
   serviceType: ClusterIP
 
   javaOpts: "-Xms1G -Xmx1G"
+
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 5
+    metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: 60
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: 60
 
   ingress:
     enabled: false
@@ -98,14 +122,26 @@ coordinator:
 
 overlord:
   enabled: false
-  replicaCount: 1
-
   name: overlord
-
+  replicaCount: 1
   port: 8081
   serviceType: ClusterIP
 
   javaOpts: "-Xms1G -Xmx1G"
+
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 5
+    metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: 60
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: 60
 
   ingress:
     enabled: false
@@ -137,6 +173,20 @@ historical:
   serviceType: ClusterIP
 
   javaOpts: "-Xms2G -Xmx2G -XX:MaxDirectMemorySize=8g"
+
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 5
+    metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: 60
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: 60
 
   ingress:
     enabled: false
@@ -187,6 +237,20 @@ middleManager:
 
   javaOpts: "-Xms1G -Xmx1G"
 
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 5
+    metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: 60
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: 60
+
   ingress:
     enabled: false
     annotations: {}
@@ -230,14 +294,26 @@ middleManager:
 
 router:
   enabled: true
-  replicaCount: 1
-
   name: router
-
+  replicaCount: 1
   port: 8888
   serviceType: ClusterIP
 
   javaOpts: "-Xms1G -Xmx1G"
+
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 5
+    metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: 60
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: 60
 
   ingress:
     enabled: false

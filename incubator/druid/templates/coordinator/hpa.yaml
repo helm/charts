@@ -1,0 +1,21 @@
+{{- if .Values.coordinator.autoscaling.enabled }}
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "druid.coordinator.fullname" . }}
+  labels:
+    app: {{ include "druid.name" . }}
+    chart: {{ include "druid.chart" . }}
+    component: "{{ .Values.name }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "druid.coordinator.fullname" . }}
+  minReplicas: {{ .Values.coordinator.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.coordinator.autoscaling.maxReplicas }}
+  metrics:
+    {{- toYaml .Values.coordinator.autoscaling.metrics | indent 4 }}
+{{- end }}

@@ -65,7 +65,7 @@ The following table lists the configurable parameters of the Druid chart and the
 | `image.repository`                       | Container image name                                    | `apache/druid`            |
 | `image.tag`                              | Container image tag                                     | `0.18.0`                  |
 | `image.pullPolicy`                       | Container pull policy                                   | `IfNotPresent`            |
-| `image.pullSecrets`                      | image pull secrest for private repositoty               | `{}`                      |
+| `image.pullSecrets`                      | image pull secrest for private repositoty               | `[]`                      |
 | `configVars`                              | Druid configuration variables for all components         | ``                        |
 | `historical.name`                        | historical component name                               | `historical`              |
 | `historical.replicaCount`                | historical node replicas (deployment)                   | `1`                       |
@@ -82,6 +82,10 @@ The following table lists the configurable parameters of the Druid chart and the
 | `historical.persistence.accessMode`      | historical persistent Access Mode                       | `ReadWriteOnce`           |
 | `historical.antiAffinity`                 | historical anti-affinity policy                          | `soft`                    |
 | `historical.nodeAffinity`                 | historical node affinity policy                          | `{}`                      |
+| `historical.autoscaling.enabled`         | enable horizontal pod autoscaling                       | `false`                   |
+| `historical.autoscaling.minReplicas`     | historical autoscaling min replicas                     | `2`                       |
+| `historical.autoscaling.maxReplicas`     | historical autoscaling max replicas                     | `5`                       |
+| `historical.autoscaling.metrics`         | historical autoscaling metrics                          | `{}`                      |
 | `historical.ingress.enabled`             | enable ingress                                          | `false`                   |
 | `historical.ingress.hosts`               | hosts for the historical api                            | `[ "chart-example.local" ]` |
 | `historical.ingress.path`                | path of the historical api                              | `/`                       |
@@ -102,6 +106,10 @@ The following table lists the configurable parameters of the Druid chart and the
 | `middleManager.persistence.accessMode`   | middleManager persistent Access Mode                    | `ReadWriteOnce`           |
 | `middleManager.antiAffinity`              | middleManager anti-affinity policy                       | `soft`                    |
 | `middleManager.nodeAffinity`              | middleManager node affinity policy                       | `{}`                      |
+| `middleManager.autoscaling.enabled`      | enable horizontal pod autoscaling                       | `false`                   |
+| `middleManager.autoscaling.minReplicas`  | middleManager autoscaling min replicas                  | `2`                       |
+| `middleManager.autoscaling.maxReplicas`  | middleManager autoscaling max replicas                  | `5`                       |
+| `middleManager.autoscaling.metrics`      | middleManager autoscaling metrics                       | `{}`                      |
 | `middleManager.ingress.enabled`          | enable ingress                                          | `false`                   |
 | `middleManager.ingress.hosts`            | hosts for the middleManager api                         | `[ "chart-example.local" ]` |
 | `middleManager.ingress.path`             | path of the middleManager api                           | `/`                       |
@@ -117,6 +125,10 @@ The following table lists the configurable parameters of the Druid chart and the
 | `broker.tolerations`                     | broker tolerations                                      | `[]`                      |
 | `broker.javaOpts`                        | broker node java options                                | `-Xms2G -Xmx2G -XX:MaxDirectMemorySize=8g` |
 | `broker.nodeAffinity`                     | broker node affinity policy                              | `{}`                      |
+| `broker.autoscaling.enabled`             | enable horizontal pod autoscaling                       | `false`                   |
+| `broker.autoscaling.minReplicas`         | broker autoscaling min replicas                         | `2`                       |
+| `broker.autoscaling.maxReplicas`         | broker autoscaling max replicas                         | `5`                       |
+| `broker.autoscaling.metrics`             | broker autoscaling metrics                              | `{}`                      |
 | `broker.ingress.enabled`                 | enable ingress                                          | `false`                   |
 | `broker.ingress.hosts`                   | hosts for the broker api                                | `[ "chart-example.local" ]` |
 | `broker.ingress.path`                    | path of the broker api                                  | `/`                       |
@@ -133,6 +145,10 @@ The following table lists the configurable parameters of the Druid chart and the
 | `overlord.tolerations`                   | overlord tolerations                                    | `[]`                      |
 | `overlord.javaOpts`                      | overlord node java options                              | `--Xms1G -Xmx1G`          |
 | `overlord.nodeAffinity`                   | overlord node affinity policy                            | `{}`                      |
+| `overlord.autoscaling.enabled`           | enable horizontal pod autoscaling                       | `false`                   |
+| `overlord.autoscaling.minReplicas`       | overlord autoscaling min replicas                       | `2`                       |
+| `overlord.autoscaling.maxReplicas`       | overlord autoscaling max replicas                       | `5`                       |
+| `overlord.autoscaling.metrics`           | overlord autoscaling metrics                            | `{}`                      |
 | `overlord.ingress.enabled`               | enable ingress                                          | `false`                   |
 | `overlord.ingress.hosts`                 | hosts for the overlord api                              | `[ "chart-example.local" ]` |
 | `overlord.ingress.path`                  | path of the overlord api                                | `/`                       |
@@ -148,6 +164,10 @@ The following table lists the configurable parameters of the Druid chart and the
 | `coordinator.tolerations`                | coordinator tolerations                                 | `[]`                      |
 | `coordinator.javaOpts`                   | coordinator node java options                           | `--Xms1G -Xmx1G`          |
 | `coordinator.nodeAffinity`                | coordinator node affinity policy                         | `{}`                      |
+| `coordinator.autoscaling.enabled`        | enable horizontal pod autoscaling                       | `false`                   |
+| `coordinator.autoscaling.minReplicas`    | coordinator autoscaling min replicas                    | `2`                       |
+| `coordinator.autoscaling.maxReplicas`    | coordinator autoscaling max replicas                    | `5`                       |
+| `coordinator.autoscaling.metrics`        | coordinator autoscaling metrics                         | `{}`                      |
 | `coordinator.ingress.enabled`            | enable ingress                                          | `false`                   |
 | `coordinator.ingress.hosts`              | hosts for the coordinator api                           | `[ "chart-example.local" ]` |
 | `coordinator.ingress.path`               | path of the coordinator api                             | `/`                       |
