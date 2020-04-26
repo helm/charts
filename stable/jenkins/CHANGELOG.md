@@ -5,6 +5,11 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.18.0 Make installation of configuration-as-code plugin explicit
+
+Instead of configuring the configuration-as-code plugin version via
+`master.JCasC.pluginVersion` it is now installed via `master.installPlugins`
+
 ## 1.17.2
 
 Allow templating of `serviceAccount.annotations` and `serviceAccountAgent.annotations` by rendering them with the `tpl` function
