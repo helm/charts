@@ -128,7 +128,7 @@ The following table lists the configurable parameters of the Druid chart and the
 | `overlord.ingress.annotations`           | annotations for the overlord api ingress                | `{}`                                       |
 | `overlord.ingress.tls`                   | TLS configuration for the ingress                        | `[]`                                       |
 | `historical.name`                        | historical component name                               | `historical`                               |
-| `historical.replicaCount`                | historical node replicas (deployment)                   | `1`                                        |
+| `historical.replicaCount`                | historical node replicas (statefulset)                  | `1`                                        |
 | `historical.port`                        | port of historical component                            | `8083`                                     |
 | `historical.serviceType`                 | service type for service                                | `ClusterIP`                                |
 | `historical.resources`                   | historical node resources requests & limits             | `{}`                                       |
@@ -152,7 +152,7 @@ The following table lists the configurable parameters of the Druid chart and the
 | `historical.ingress.annotations`         | annotations for the historical api ingress              | `{}`                                       |
 | `historical.ingress.tls`                 | TLS configuration for the ingress                        | `[]`                                       |
 | `middleManager.name`                     | middleManager component name                            | `middleManager`                            |
-| `middleManager.replicaCount`             | middleManager node replicas (deployment)                | `1`                                        |
+| `middleManager.replicaCount`             | middleManager node replicas (statefulset)               | `1`                                        |
 | `middleManager.port`                     | port of middleManager component                         | `8091`                                     |
 | `middleManager.serviceType`              | service type for service                                | `ClusterIP`                                |
 | `middleManager.resources`                | middleManager node resources requests & limits          | `{}`                                       |
@@ -175,25 +175,25 @@ The following table lists the configurable parameters of the Druid chart and the
 | `middleManager.ingress.path`             | path of the middleManager api                           | `/`                                        |
 | `middleManager.ingress.annotations`      | annotations for the middleManager api ingress           | `{}`                                       |
 | `middleManager.ingress.tls`              | TLS configuration for the ingress                        | `[]`                                       |
-| `overlord.enabled`                       | enable overlord                                         | `false`                                    |
-| `overlord.name`                          | overlord component name                                 | `overlord`                                 |
-| `overlord.replicaCount`                  | overlord node replicas (deployment)                     | `1`                                        |
-| `overlord.port`                          | port of overlord component                              | `8081`                                     |
-| `overlord.serviceType`                   | service type for service                                | `ClusterIP`                                |
-| `overlord.resources`                     | overlord node resources requests & limits               | `{}`                                       |
-| `overlord.podAnnotations`                | overlord Deployment annotations                         | `{}`                                       |
-| `overlord.nodeSelector`                  | Node labels for overlord pod assignment                 | `{}`                                       |
-| `overlord.tolerations`                   | overlord tolerations                                    | `[]`                                       |
-| `overlord.javaOpts`                      | overlord node java options                              | `--Xms1G -Xmx1G`                           |
-| `overlord.nodeAffinity`                   | overlord node affinity policy                            | `{}`                                       |
-| `overlord.autoscaling.enabled`           | enable horizontal pod autoscaling                       | `false`                                    |
-| `overlord.autoscaling.minReplicas`       | overlord autoscaling min replicas                       | `2`                                        |
-| `overlord.autoscaling.maxReplicas`       | overlord autoscaling max replicas                       | `5`                                        |
-| `overlord.autoscaling.metrics`           | overlord autoscaling metrics                            | `{}`                                       |
-| `overlord.ingress.enabled`               | enable ingress                                          | `false`                                    |
-| `overlord.ingress.hosts`                 | hosts for the overlord api                              | `[ "chart-example.local" ]`                |
-| `overlord.ingress.path`                  | path of the overlord api                                | `/`                                        |
-| `overlord.ingress.annotations`           | annotations for the overlord api ingress                | `{}`                                       |
-| `overlord.ingress.tls`                   | TLS configuration for the ingress                        | `[]`                                       |
+| `router.enabled`                         | enable router                                           | `false`                                    |
+| `router.name`                            | router component name                                   | `router`                                   |
+| `router.replicaCount`                    | router node replicas (deployment)                       | `1`                                        |
+| `router.port`                            | port of router component                                | `8888`                                     |
+| `router.serviceType`                     | service type for service                                | `ClusterIP`                                |
+| `router.resources`                       | router node resources requests & limits                 | `{}`                                       |
+| `router.podAnnotations`                  | router Deployment annotations                           | `{}`                                       |
+| `router.nodeSelector`                    | Node labels for router pod assignment                   | `{}`                                       |
+| `router.tolerations`                     | router tolerations                                      | `[]`                                       |
+| `router.javaOpts`                        | router node java options                                | `--Xms1G -Xmx1G`                           |
+| `router.nodeAffinity`                     | router node affinity policy                              | `{}`                                       |
+| `router.autoscaling.enabled`             | enable horizontal pod autoscaling                       | `false`                                    |
+| `router.autoscaling.minReplicas`         | router autoscaling min replicas                         | `2`                                        |
+| `router.autoscaling.maxReplicas`         | router autoscaling max replicas                         | `5`                                        |
+| `router.autoscaling.metrics`             | router autoscaling metrics                              | `{}`                                       |
+| `router.ingress.enabled`                 | enable ingress                                          | `false`                                    |
+| `router.ingress.hosts`                   | hosts for the router api                                | `[ "chart-example.local" ]`                |
+| `router.ingress.path`                    | path of the router api                                  | `/`                                        |
+| `router.ingress.annotations`             | annotations for the router api ingress                  | `{}`                                       |
+| `router.ingress.tls`                     | TLS configuration for the ingress                        | `[]`                                       |
 
 Full and up-to-date documentation can be found in the comments of the `values.yaml` file.
