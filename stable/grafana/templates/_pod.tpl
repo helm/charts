@@ -202,6 +202,7 @@ containers:
       - name: {{ .name }}
         mountPath: {{ .mountPath }}
         readOnly: {{ .readOnly }}
+        subPath: {{ .subPath | default "" }}
     {{- end }}
     {{- range .Values.extraVolumeMounts }}
       - name: {{ .name }}
