@@ -1,4 +1,4 @@
-{{- if .Values.coordinator.autoscaling.enabled }}
+{{- if .Values.middleManager.autoscaling.enabled }}
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
