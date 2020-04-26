@@ -88,6 +88,7 @@ serviceMonitor:
 job:
   autoCreateCluster: true
   autoUpdateClusterSpec: true
+  annotations: {}
 
 clusterSpec: {}
   # sleepInterval: 1s
