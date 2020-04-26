@@ -17,5 +17,5 @@ spec:
   minReplicas: {{ .Values.overlord.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.overlord.autoscaling.maxReplicas }}
   metrics:
-    {{- toYaml .Values.overlord.autoscaling.metrics | indent 4 }}
+{{- toYaml .Values.overlord.autoscaling.metrics | indent 4 }}
 {{- end }}

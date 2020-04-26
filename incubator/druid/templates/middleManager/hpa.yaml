@@ -17,5 +17,5 @@ spec:
   minReplicas: {{ .Values.middleManager.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.middleManager.autoscaling.maxReplicas }}
   metrics:
-    {{- toYaml .Values.middleManager.autoscaling.metrics | indent 4 }}
+{{- toYaml .Values.middleManager.autoscaling.metrics | indent 4 }}
 {{- end }}

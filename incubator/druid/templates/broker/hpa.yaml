@@ -17,5 +17,5 @@ spec:
   minReplicas: {{ .Values.broker.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.broker.autoscaling.maxReplicas }}
   metrics:
-    {{- toYaml .Values.broker.autoscaling.metrics | indent 4 }}
+{{- toYaml .Values.broker.autoscaling.metrics | indent 4 }}
 {{- end }}

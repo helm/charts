@@ -17,5 +17,5 @@ spec:
   minReplicas: {{ .Values.router.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.router.autoscaling.maxReplicas }}
   metrics:
-    {{- toYaml .Values.router.autoscaling.metrics | indent 4 }}
+{{- toYaml .Values.router.autoscaling.metrics | indent 4 }}
 {{- end }}

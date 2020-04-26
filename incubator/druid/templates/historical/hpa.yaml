@@ -17,5 +17,5 @@ spec:
   minReplicas: {{ .Values.historical.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.historical.autoscaling.maxReplicas }}
   metrics:
-    {{- toYaml .Values.historical.autoscaling.metrics | indent 4 }}
+{{- toYaml .Values.historical.autoscaling.metrics | indent 4 }}
 {{- end }}

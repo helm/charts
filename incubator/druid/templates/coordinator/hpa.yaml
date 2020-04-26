@@ -17,5 +17,5 @@ spec:
   minReplicas: {{ .Values.coordinator.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.coordinator.autoscaling.maxReplicas }}
   metrics:
-    {{- toYaml .Values.coordinator.autoscaling.metrics | indent 4 }}
+{{- toYaml .Values.coordinator.autoscaling.metrics | indent 4 }}
 {{- end }}
