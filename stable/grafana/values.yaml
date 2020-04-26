@@ -50,7 +50,7 @@ livenessProbe:
 
 image:
   repository: grafana/grafana
-  tag: 6.7.1
+  tag: 6.7.3
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -129,6 +129,7 @@ extraExposePorts: []
 
 ingress:
   enabled: false
+  # Values can be templated
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
