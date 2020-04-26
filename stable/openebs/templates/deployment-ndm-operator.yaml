@@ -54,6 +54,10 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
+        - name: SERVICE_ACCOUNT
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.serviceAccountName
         - name: OPERATOR_NAME
           value: "node-disk-operator"
         - name: CLEANUP_JOB_IMAGE
