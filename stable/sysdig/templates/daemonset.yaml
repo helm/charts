@@ -34,8 +34,6 @@ spec:
       imagePullSecrets:
 {{ toYaml .Values.image.pullSecrets | indent 8 }}
       {{- end }}
-      nodeSelector:
-{{ toYaml .Values.daemonset.nodeSelector | indent 8 }}
       {{- if .Values.slim.enabled }}
       initContainers:
         - name: sysdig-agent-kmodule
