@@ -152,6 +152,9 @@ chrome:
   ## Enable the creation of a node-chrome pod
   enabled: false
 
+  ## DaemonSet instead of Deployment
+  runAsDaemonSet: false
+
   ## The repository and image
   ## ref: https://hub.docker.com/r/selenium/node-chrome/
   image: "selenium/node-chrome"
@@ -167,7 +170,7 @@ chrome:
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   pullPolicy: "IfNotPresent"
 
-  ## The number of pods in the deployment
+  ## The number of pods in the deployment. This is ignored if runAsDaemonSet is enabled.
   replicas: 1
 
   ## Configure annotations on the chrome pods
@@ -248,6 +251,9 @@ chromeDebug:
   ## Enable the creation of a node-chrome-debug pod
   enabled: false
 
+  ## DaemonSet instead of Deployment
+  runAsDaemonSet: false
+
   ## The repository and image
   ## ref: https://hub.docker.com/r/selenium/node-chrome-debug/
   image: "selenium/node-chrome-debug"
@@ -263,7 +269,7 @@ chromeDebug:
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   pullPolicy: "IfNotPresent"
 
-  ## The number of pods in the deployment
+  ## The number of pods in the deployment. This is ignored if runAsDaemonSet is enabled.
   replicas: 1
 
   ## Configure annotations on the chrome debug pods
@@ -343,6 +349,9 @@ firefox:
   ## Enable the creation of a node-firefox pod
   enabled: false
 
+  ## DaemonSet instead of Deployment
+  runAsDaemonSet: false
+
   ## The repository and image
   ## ref: https://hub.docker.com/r/selenium/node-firefox/
   image: "selenium/node-firefox"
@@ -358,7 +367,7 @@ firefox:
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   pullPolicy: "IfNotPresent"
 
-  ## The number of pods in the deployment
+  ## The number of pods in the deployment. This is ignored if runAsDaemonSet is enabled.
   replicas: 1
 
   ## Configure annotations on the firefox pods
@@ -425,6 +434,9 @@ firefoxDebug:
   ## Enable the creation of a node-firefox-debug pod
   enabled: false
 
+  ## DaemonSet instead of Deployment
+  runAsDaemonSet: false
+
   ## The repository and image
   ## ref: https://hub.docker.com/r/selenium/node-firefox-debug/
   image: "selenium/node-firefox-debug"
@@ -440,7 +452,7 @@ firefoxDebug:
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   pullPolicy: "IfNotPresent"
 
-  ## The number of pods in the deployment
+  ## The number of pods in the deployment. This is ignored if runAsDaemonSet is enabled.
   replicas: 1
 
   ## Configure annotations on the firefox debug pods

@@ -1,12 +1,11 @@
-{{- if and (eq true .Values.firefox.enabled) (eq false .Values.firefox.runAsDaemonSet) -}}
+{{- if and (eq true .Values.firefox.enabled) (eq true .Values.firefox.runAsDaemonSet) -}}
 apiVersion: {{ template "deployment.apiVersion" . }}
-kind: Deployment
+kind: DaemonSet
 metadata:
   name: {{ template "selenium.firefox.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
-  replicas: {{ .Values.firefox.replicas }}
   selector:
     matchLabels:
       app: {{ template "selenium.firefox.fullname" . }}
@@ -23,10 +22,6 @@ spec:
 {{ toYaml .Values.firefox.podAnnotations | indent 8 }}
       {{- end}}
     spec:
-      {{- if .Values.firefox.securityContext }}
-      securityContext:
-{{ toYaml .Values.firefox.securityContext | indent 8 }}
-      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.firefox.image }}:{{ .Values.firefox.tag }}"
