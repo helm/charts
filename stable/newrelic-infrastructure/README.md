@@ -41,6 +41,7 @@ This chart will deploy the New Relic Infrastructure agent as a Daemonset.
 | `apiServerEndpointUrl`         | Explicitly sets the api server componenturl.                                                                                                                                                                                                      |                           |
 | `schedulerEndpointUrl`         | Explicitly sets the scheduler component url.                                                                                                                                                                                                      |                           |
 | `controllerManagerEndpointUrl` | Explicitly sets the controller manager component url.                                                                                                                                                                                             |                           |
+| `eventQueueDepth`              | Iincreases the in-memory cache of the agent to accommodate for more samples at a time.
 
 ## Example
 
