@@ -204,8 +204,17 @@ spec:
       {{- if not .Values.ssl.upstream }}
       - name: ssl
         secret:
+          {{- if .Values.ssl.defaultCertSecret.enabled }}
+          secretName: {{ .Values.ssl.defaultCertSecret.name}}
+          items:
+            - key: {{ .Values.ssl.defaultCertSecret.secretKey.crt }}
+              path: tls.crt
+            - key: {{ .Values.ssl.defaultCertSecret.secretKey.key }}
+              path: tls.key
+          {{- else }}
           secretName: {{ template "traefik.fullname" . }}-default-cert
-      {{- end }}
+        {{- end }}
+        {{- end }}
       {{- if .Values.ssl.mtls }}
       {{- if .Values.ssl.mtls.enabled }}
       - name: mtls
