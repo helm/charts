@@ -85,7 +85,7 @@ spec:
 {{- include "mariadb.imagePullSecrets" . | indent 6 }}
       initContainers:
         {{- if .Values.master.extraInitContainers }}
-{{ tpl .Values.master.extraInitContainers . | indent 6}}
+{{ tpl .Values.master.extraInitContainers . | indent 8}}
         {{- end }}
         {{- if and .Values.volumePermissions.enabled .Values.slave.persistence.enabled }}
         - name: volume-permissions
