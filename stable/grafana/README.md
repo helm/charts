@@ -52,7 +52,7 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `securityContext`                         | Deployment securityContext                    | `{"runAsUser": 472, "fsGroup": 472}`                    |
 | `priorityClassName`                       | Name of Priority Class to assign pods         | `nil`                                                   |
 | `image.repository`                        | Image repository                              | `grafana/grafana`                                       |
-| `image.tag`                               | Image tag (`Must be >= 5.0.0`)                | `6.7.1`                                                 |
+| `image.tag`                               | Image tag (`Must be >= 5.0.0`)                | `6.7.3`                                                 |
 | `image.pullPolicy`                        | Image pull policy                             | `IfNotPresent`                                          |
 | `image.pullSecrets`                       | Image pull secrets                            | `{}`                                                    |
 | `service.type`                            | Kubernetes service type                       | `ClusterIP`                                             |
@@ -68,7 +68,7 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `serivce.externalIPs`                     | service external IP addresses                 | `[]`                                                    |
 | `extraExposePorts`                        | Additional service ports for sidecar containers| `[]`                                                   | 
 | `ingress.enabled`                         | Enables Ingress                               | `false`                                                 |
-| `ingress.annotations`                     | Ingress annotations                           | `{}`                                                    |
+| `ingress.annotations`                     | Ingress annotations (values are templated)    | `{}`                                                    |
 | `ingress.labels`                          | Custom labels                                 | `{}`                                                    |
 | `ingress.path`                            | Ingress accepted path                         | `/`                                                     |
 | `ingress.hosts`                           | Ingress accepted hostnames                    | `[]`                                                    |
@@ -322,3 +322,23 @@ stringData:
 
 ```
 
+## How to serve Grafana with a path prefix (/grafana)
+
+In order to serve Grafana with a prefix (e.g., http://example.com/grafana), add the following to your values.yaml.
+
+```yaml
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/use-regex: "true"
+
+  path: /grafana/?(.*)
+  hosts:
+    - k8s.example.dev
+
+grafana.ini:
+  server:
+    root_url: http://localhost:3000/grafana # this host can be localhost
+```
