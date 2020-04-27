@@ -85,11 +85,12 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `hub.livenessTimeout` | Timeout for hub liveness probe in seconds | `1` |
 | `hub.probePath` | Path for readiness and liveness probes to check | `/wd/hub/status` |
 | `chrome.enabled` | Schedule a chrome node pod | `false` |
+| `chrome.runAsDaemonSet` | Schedule chrome node pods as DaemonSet | `false` |
 | `chrome.image` | The selenium node chrome image | `selenium/node-chrome` |
 | `chrome.tag` | The selenium node chrome tag | `3.141.59` |
 | `chrome.imagePullSecrets` | The secret to use for pulling the image. Will override the global parameter if set | `nil` |
 | `chrome.pullPolicy` | The pull policy for the node chrome image | `IfNotPresent` |
-| `chrome.replicas` | The number of selenium node chrome pods | `1` |
+| `chrome.replicas` | The number of selenium node chrome pods. This is ignored if runAsDaemonSet is enabled. | `1` |
 | `chrome.podAnnotations` | Annotations on the chrome pods | `{}` |
 | `chrome.securityContext` |	SecurityContext on the chrome pods |	`{"runAsUser": 1000, "fsGroup": 1000}` |
 | `chrome.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
@@ -112,11 +113,12 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `chrome.affinity` | Deployemnt affinities to use for scheduling of the chrome if set this takes precedence over the global value | `nil` |
 | `chrome.tolerations` | Deployment tolerations to use for scheduling of the chrome if set this takes precedence over the global value | `nil` |
 | `chromeDebug.enabled` | Schedule a selenium node chrome debug pod | `false` |
+| `chromeDebug.runAsDaemonSet` | Schedule selenium node chrome debug pods as DaemonSet | `false` |
 | `chromeDebug.image` | The selenium node chrome debug image | `selenium/node-chrome-debug` |
 | `chromeDebug.tag` | The selenium node chrome debug tag | `3.141.59` |
 | `chromeDebug.imagePullSecrets` | The secret to use for pulling the image. Will override the global parameter if set | `nil` |
 | `chromeDebug.pullPolicy` | The selenium node chrome debug pull policy | `IfNotPresent` |
-| `chromeDebug.replicas` | The number of selenium node chrome debug pods | `1` |
+| `chromeDebug.replicas` | The number of selenium node chrome debug pods. This is ignored if runAsDaemonSet is enabled. | `1` |
 | `chromeDebug.podAnnotations` | Annotations on the Chrome debug pod | `{}` |
 | `chromeDebug.securityContext` |	SecurityContext on the Chrome debug pods |	`{"runAsUser": 1000, "fsGroup": 1000}` |
 | `chromeDebug.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
@@ -139,11 +141,12 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `chromeDebug.affinity` | Deployemnt affinities to use for scheduling of the chromeDebug if set this takes precedence over the global value | `nil` |
 | `chromeDebug.tolerations` | Deployment tolerations to use for scheduling of the chromeDebug if set this takes precedence over the global value | `nil` |
 | `firefox.enabled` | Schedule a selenium node firefox pod | `false` |
+| `firefox.runAsDaemonSet` | Schedule selenium node firefox pods as DaemonSet | `false` |
 | `firefox.image` | The selenium node firefox image | `selenium/node-firefox` |
 | `firefox.tag` | The selenium node firefox tag | `3.141.59` |
 | `firefox.imagePullSecrets` | The secret to use for pulling the image. Will override the global parameter if set | `nil` |
 | `firefox.pullPolicy` | The selenium node firefox pull policy | `IfNotPresent` |
-| `firefox.replicas` | The number of selenium node firefox pods | `1` |
+| `firefox.replicas` | The number of selenium node firefox pods. This is ignored if runAsDaemonSet is enabled. | `1` |
 | `firefox.podAnnotations` | Annotations on the firefox pods | `{}` |
 | `firefox.securityContext` |	SecurityContext on the firefox pods |	`{"runAsUser": 1000, "fsGroup": 1000}` |
 | `firefox.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
@@ -164,11 +167,12 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `firefox.affinity` | Deployemnt affinities to use for scheduling of the firefox if set this takes precedence over the global value | `nil` |
 | `firefox.tolerations` | Deployment tolerations to use for scheduling of the firefox if set this takes precedence over the global value | `nil` |
 | `firefoxDebug.enabled` | Schedule a selenium node firefox debug pod | `false` |
+| `firefoxDebug.runAsDaemonSet` | Schedule selenium node firefox debug pods as DaemonSet | `false` |
 | `firefoxDebug.image` | The selenium node firefox debug image | `selenium/node-firefox-debug` |
 | `firefoxDebug.tag` | The selenium node firefox debug tag | `3.141.59` |
 | `firefoxDebug.imagePullSecrets` | The secret to use for pulling the image. Will override the global parameter if set | `nil` |
 | `firefoxDebug.pullPolicy` | The selenium node firefox debug pull policy | `IfNotPresent` |
-| `firefoxDebug.replicas` | The number of selenium node firefox debug pods | `1` |
+| `firefoxDebug.replicas` | The number of selenium node firefox debug pods. This is ignored if runAsDaemonSet is enabled. | `1` |
 | `firefoxDebug.podAnnotations` | Annotations on the firefox debug pods | `{}` |
 | `firefoxDebug.securityContext` |	SecurityContext on the firefox debug pods |	`{"runAsUser": 1000, "fsGroup": 1000}` |
 | `firefoxDebug.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
