@@ -52,7 +52,7 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `securityContext`                         | Deployment securityContext                    | `{"runAsUser": 472, "fsGroup": 472}`                    |
 | `priorityClassName`                       | Name of Priority Class to assign pods         | `nil`                                                   |
 | `image.repository`                        | Image repository                              | `grafana/grafana`                                       |
-| `image.tag`                               | Image tag (`Must be >= 5.0.0`)                | `6.7.1`                                                 |
+| `image.tag`                               | Image tag (`Must be >= 5.0.0`)                | `6.7.3`                                                 |
 | `image.pullPolicy`                        | Image pull policy                             | `IfNotPresent`                                          |
 | `image.pullSecrets`                       | Image pull secrets                            | `{}`                                                    |
 | `service.type`                            | Kubernetes service type                       | `ClusterIP`                                             |
@@ -68,7 +68,7 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `serivce.externalIPs`                     | service external IP addresses                 | `[]`                                                    |
 | `extraExposePorts`                        | Additional service ports for sidecar containers| `[]`                                                   | 
 | `ingress.enabled`                         | Enables Ingress                               | `false`                                                 |
-| `ingress.annotations`                     | Ingress annotations                           | `{}`                                                    |
+| `ingress.annotations`                     | Ingress annotations (values are templated)    | `{}`                                                    |
 | `ingress.labels`                          | Custom labels                                 | `{}`                                                    |
 | `ingress.path`                            | Ingress accepted path                         | `/`                                                     |
 | `ingress.hosts`                           | Ingress accepted hostnames                    | `[]`                                                    |
@@ -98,7 +98,7 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `schedulerName`                           | Alternate scheduler name                      | `nil`                                                   |
 | `env`                                     | Extra environment variables passed to pods    | `{}`                                                    |
 | `envValueFrom`                            | Environment variables from alternate sources. See the API docs on [EnvVarSource](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#envvarsource-v1-core) for format details.  | `{}` |
-| `envFromSecret`                           | Name of a Kubernetes secret (must be manually created in the same namespace) containing values to be added to the environment | `""` |
+| `envFromSecret`                           | Name of a Kubernetes secret (must be manually created in the same namespace) containing values to be added to the environment. Can be templated | `""` |
 | `envRenderSecret`                         | Sensible environment variables passed to pods and stored as secret | `{}`                               |
 | `extraSecretMounts`                       | Additional grafana server secret mounts       | `[]`                                                    |
 | `extraVolumeMounts`                       | Additional grafana server volume mounts       | `[]`                                                    |
