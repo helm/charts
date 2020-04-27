@@ -46,11 +46,15 @@ broker:
     - type: Resource
       resource:
         name: cpu
-        targetAverageUtilization: 60
+        target: 
+          type: Utilization
+          averageUtilization: 60
     - type: Resource
       resource:
         name: memory
-        targetAverageUtilization: 60
+        target: 
+          type: Utilization
+          averageUtilization: 60
 
   ingress:
     enabled: false
@@ -91,11 +95,15 @@ coordinator:
     - type: Resource
       resource:
         name: cpu
-        targetAverageUtilization: 60
+        target: 
+          type: Utilization
+          averageUtilization: 60
     - type: Resource
       resource:
         name: memory
-        targetAverageUtilization: 60
+        target: 
+          type: Utilization
+          averageUtilization: 60
 
   ingress:
     enabled: false
@@ -137,11 +145,15 @@ overlord:
     - type: Resource
       resource:
         name: cpu
-        targetAverageUtilization: 60
+        target: 
+          type: Utilization
+          averageUtilization: 60
     - type: Resource
       resource:
         name: memory
-        targetAverageUtilization: 60
+        target: 
+          type: Utilization
+          averageUtilization: 60
 
   ingress:
     enabled: false
@@ -182,11 +194,15 @@ historical:
     - type: Resource
       resource:
         name: cpu
-        targetAverageUtilization: 60
+        target: 
+          type: Utilization
+          averageUtilization: 60
     - type: Resource
       resource:
         name: memory
-        targetAverageUtilization: 60
+        target: 
+          type: Utilization
+          averageUtilization: 60
 
   ingress:
     enabled: false
@@ -245,11 +261,15 @@ middleManager:
     - type: Resource
       resource:
         name: cpu
-        targetAverageUtilization: 60
+        target: 
+          type: Utilization
+          averageUtilization: 60
     - type: Resource
       resource:
         name: memory
-        targetAverageUtilization: 60
+        target: 
+          type: Utilization
+          averageUtilization: 60
 
   ingress:
     enabled: false
@@ -309,11 +329,15 @@ router:
     - type: Resource
       resource:
         name: cpu
-        targetAverageUtilization: 60
+        target: 
+          type: Utilization
+          averageUtilization: 60
     - type: Resource
       resource:
         name: memory
-        targetAverageUtilization: 60
+        target: 
+          type: Utilization
+          averageUtilization: 60
 
   ingress:
     enabled: false
