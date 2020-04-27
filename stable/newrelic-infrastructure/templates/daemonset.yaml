@@ -108,6 +108,10 @@ spec:
             - name: "CONTROLLER_MANAGER_ENDPOINT_URL"
               value: {{ .Values.controllerManagerEndpointUrl | quote }}
             {{- end }}
+            {{- if .Values.eventQueueDepth }}
+            - name: "NRIA_EVENT_QUEUE_DEPTH"
+              value: {{ .Values.eventQueueDepth | quote }}
+            {{- end }}
             - name: "NRIA_DISPLAY_NAME"
               valueFrom:
                 fieldRef:
