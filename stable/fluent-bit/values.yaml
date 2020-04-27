@@ -7,10 +7,16 @@ image:
     repository: fluent/fluent-bit
     tag: 1.3.7
   pullPolicy: Always
+  # If specified, use these secrets to access the image
+  # pullSecrets:
+  #   - name: registry-secret
 
 testFramework:
   image: "dduportal/bats"
   tag: "0.4.0"
+  # If specified, use these secrets to access the image
+  # pullSecrets:
+  #   - name: registry-secret
 
 nameOverride: ""
 fullnameOverride: ""
