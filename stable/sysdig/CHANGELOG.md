@@ -8,6 +8,7 @@ numbering uses [semantic versioning](http://semver.org).
 ### Minor changes
 
 * Implement scheduling with affinity and not with nodeSelector on amd64 & linux nodes.
+* Add support for custom annotations on daemonSet.
 
 ## v1.7.12
 

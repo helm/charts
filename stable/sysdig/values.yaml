@@ -66,6 +66,8 @@ daemonset:
             operator: In
             values:
               - linux
+  # Allow the DaemonSet to set annotations
+  annotations: {}
 
 # If is behind a proxy you can set the proxy server
 proxy:
