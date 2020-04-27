@@ -18,7 +18,7 @@ kubectl run -it --rm cypher-shell \
     --image=neo4j:3.2.3-enterprise \
     --restart=Never \
     --namespace {{ .Release.Namespace }} \
-    --command -- ./bin/cypher-shell -u neo4j -p <password> --a {{ printf "%s-%s" .Release.Name .Values.name | trunc 56 }}.{{ printf "%s" .Release.Namespace }}.svc.cluster.local "call dbms.cluster.overview()"
+    --command -- ./bin/cypher-shell -u neo4j -p <password> -a {{ printf "%s-%s" .Release.Name .Values.name | trunc 56 }}.{{ printf "%s" .Release.Namespace }}.svc.cluster.local "call dbms.cluster.overview()"
 
 This will print out the addresses of the members of the cluster.
 
