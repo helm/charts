@@ -39,6 +39,9 @@ spec:
 {{- end }}
       - name: ignite
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        {{- if .Values.image.pullPolicy }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        {{ end -}}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
 {{- if .Values.envVars }}
