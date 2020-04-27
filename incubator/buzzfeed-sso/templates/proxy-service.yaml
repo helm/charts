@@ -9,6 +9,10 @@ metadata:
     component: {{ $name }}-proxy
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- if and .Values.ingress.enabled .Values.ingress.gcpBackendConfig }}
+  annotations:
+    beta.cloud.google.com/backend-config: '{"ports": {"http":"{{ template "buzzfeed-sso.fullname" . }}"}}'
+{{- end }}
 spec:
   type: {{ .Values.proxy.service.type }}
   ports:
