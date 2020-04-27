@@ -162,6 +162,8 @@ The following table lists the configurable parameters of the MinIO chart and the
 | `s3gateway.enabled`                       | Use MinIO as a [s3 gateway](https://github.com/minio/minio/blob/master/docs/gateway/s3.md)                                              | `false`                                    |
 | `s3gateway.replicas`                      | Number of s3 gateway instances to run in parallel                                                                                       | `4`                                        |
 | `s3gateway.serviceEndpoint`               | Endpoint to the S3 compatible service                                                                                                   | `""`                                       |
+| `s3gateway.accessKey`                     | Access key of S3 compatible service                                                                                                     | `""`                                       |
+| `s3gateway.secretKey`                     | Secret key of S3 compatible service                                                                                                     | `""`                                       |
 | `azuregateway.enabled`                    | Use MinIO as an [azure gateway](https://docs.minio.io/docs/minio-gateway-for-azure)                                                     | `false`                                    |
 | `azuregateway.replicas`                   | Number of azure gateway instances to run in parallel                                                                                    | `4`                                        |
 | `gcsgateway.enabled`                      | Use MinIO as a [Google Cloud Storage gateway](https://docs.minio.io/docs/minio-gateway-for-gcs)                                         | `false`                                    |
@@ -180,6 +182,11 @@ The following table lists the configurable parameters of the MinIO chart and the
 | `metrics.serviceMonitor.namespace`        | Optional namespace in which to create ServiceMonitor                                                                                    | `nil`                                      |
 | `metrics.serviceMonitor.interval`         | Scrape interval. If not set, the Prometheus default scrape interval is used                                                             | `nil`                                      |
 | `metrics.serviceMonitor.scrapeTimeout`    | Scrape timeout. If not set, the Prometheus default scrape timeout is used                                                               | `nil`                                      |
+| `etcd.endpoints`                          | Enpoints of etcd                                                                                                                        | `[]`                                       |
+| `etcd.pathPrefix`                         | Prefix for all etcd keys                                                                                                                | `""`                                       |
+| `etcd.corednsPathPrefix`                  | Prefix for all CoreDNS etcd keys                                                                                                        | `""`                                       |
+| `etcd.clientCert`                         | Certificate used for SSL/TLS connections to etcd [(etcd Security)](https://etcd.io/docs/latest/op-guide/security/)                      | `""`                                       |
+| `etcd.clientCertKey`                      | Key for the certificate [(etcd Security)](https://etcd.io/docs/latest/op-guide/security/)                                               | `""`                                       |
 
 Some of the parameters above map to the env variables defined in the [MinIO DockerHub image](https://hub.docker.com/r/minio/minio/).
 
