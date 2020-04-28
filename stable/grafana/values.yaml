@@ -281,6 +281,7 @@ extraSecretMounts: []
   #   mountPath: /etc/secrets
   #   secretName: grafana-secret-files
   #   readOnly: true
+  #   subPath: ""
 
 ## Additional grafana server volume mounts
 # Defines additional volume mounts.
