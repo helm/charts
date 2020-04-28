@@ -15,6 +15,10 @@ spec:
       name: {{ template "sysdig.fullname" .}}
       labels:
 {{ include "sysdig.labels" . | indent 8 }}
+      {{- if .Values.daemonset.annotations }}
+      annotations:
+{{ toYaml .Values.daemonset.annotations | indent 8 }}
+      {{- end }}
     spec:
       serviceAccountName: {{ template "sysdig.serviceAccountName" .}}
 {{- if .Values.priorityClassName }}
@@ -34,8 +38,6 @@ spec:
       imagePullSecrets:
 {{ toYaml .Values.image.pullSecrets | indent 8 }}
       {{- end }}
-      nodeSelector:
-{{ toYaml .Values.daemonset.nodeSelector | indent 8 }}
       {{- if .Values.slim.enabled }}
       initContainers:
         - name: sysdig-agent-kmodule

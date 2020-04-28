@@ -52,8 +52,8 @@ The following table lists the configurable parameters of the Sysdig chart and th
 | `serviceAccount.create`           | Create serviceAccount                                                  | `true`                                      |
 | `serviceAccount.name`             | Use this value as serviceAccountName                                   | ` `                                         |
 | `daemonset.updateStrategy.type`   | The updateStrategy for updating the daemonset                          | `RollingUpdate`                             |
-| `daemonset.affinity`              | Node affinities                                                        | `nil`                                       |
-| `daemonset.nodeSelector`          | Node selector                                                          | `kubernetes.io/arch:amd64`                  |
+| `daemonset.affinity`              | Node affinities                                                        | `schedule on amd64 and linux`               |
+| `daemonset.annotations`           | Custom annotations for daemonset                                       | `{}`                                        |
 | `slim.enabled`                    | Use the slim based Sysdig Agent image                                  | `false`                                     |
 | `slim.kmoduleImage.repository`    | The kernel module image builder repository to pull from                | `sysdig/agent-kmodule`                      |
 | `slim.resources.requests.cpu`     | CPU requested for building the kernel module                           | `1000m`                                     |

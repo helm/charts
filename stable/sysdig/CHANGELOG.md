@@ -3,6 +3,13 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.7.13
+
+### Minor changes
+
+* Implement scheduling with affinity and not with nodeSelector on amd64 & linux nodes.
+* Add support for custom annotations on daemonSet.
+
 ## v1.7.12
 
 ### Minor changes
