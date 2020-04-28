@@ -1,8 +1,4 @@
-{{- $lr := .Values.hyperparams.learningrate -}}
-{{- $batchsize := .Values.hyperparams.batchsize -}}
-{{- $trainsteps := .Values.hyperparams.trainsteps -}}
-
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ .Release.Name }}-worker
@@ -45,12 +41,30 @@ spec:
         - --num_gpus
         - "{{ .Values.worker.gpuCount }}"
 {{- end }}
+{{- if .Values.hyperparams.learningrate }}
         - --learning_rate
-        - {{ $lr | quote }}
+        - "{{ .Values.hyperparams.learningrate }}"
+{{- end }}
+{{- if .Values.hyperparams.batchsize }}
         - --batch_size
-        - {{ $batchsize | quote }}
+        - "{{ .Values.hyperparams.batchsize }}"
+{{- end }}
+{{- if .Values.hyperparams.trainsteps }}
         - --train_steps
-        - {{ $trainsteps | quote }}
+        - "{{ .Values.hyperparams.trainsteps }}"
+{{- end }}
+{{- if .Values.hyperparams.datadir }}
+        - --data_dir
+        - "{{ .Values.hyperparams.datadir }}"
+{{- end }}
+{{- if .Values.hyperparams.logdir }}
+        - --log_dir
+        - "{{ .Values.hyperparams.logdir }}"
+{{- end }}
+{{- if .Values.hyperparams.hiddenunits }}
+        - --hidden_units
+        - "{{ .Values.hyperparams.hiddenunits }}"
+{{- end }}
         env:
         - name: WORKER_HOSTS
           valueFrom:
@@ -78,7 +92,7 @@ spec:
         - containerPort: {{ .Values.worker.port }}
 {{- if .Values.volumeMounts }}
         volumeMounts:
-{{ toYaml .Values.volumeMounts | indent 8 }}
+{{ toYaml .Values.volumeMounts | indent 10 }}
 {{- end }}
 {{- if gt (int .Values.worker.gpuCount) 0 }}
         resources:
