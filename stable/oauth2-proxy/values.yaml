@@ -70,6 +70,15 @@ service:
   annotations: {}
   # foo.io/bar: "true"
 
+## Create or use ServiceAccount
+serviceAccount:
+  ## Specifies whether a ServiceAccount should be created
+  enabled: true
+  ## The name of the ServiceAccount to use.
+  ## If not set and create is true, a name is generated using the fullname template
+  name:
+  annotations: {}
+
 ingress:
   enabled: false
   path: /

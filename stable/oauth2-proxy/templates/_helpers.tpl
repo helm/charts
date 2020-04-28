@@ -41,3 +41,14 @@ Get the secret name.
 {{- printf "%s" (include "oauth2-proxy.fullname" .) -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "oauth2-proxy.serviceAccountName" -}}
+{{- if .Values.serviceAccount.enabled -}}
+    {{ default (include "oauth2-proxy.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
