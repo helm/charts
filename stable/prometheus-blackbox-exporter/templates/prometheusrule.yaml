@@ -12,7 +12,7 @@ metadata:
     app.kubernetes.io/managed-by: {{ $.Release.Service }}
     helm.sh/chart: {{ include "prometheus-blackbox-exporter.chart" $ }}
     {{- with .Values.prometheusRule.additionalLabels }}
-    {{- toYaml . | indent 4 }}
+{{- toYaml . | indent 4 }}
     {{- end }}
 spec:
   {{- with .Values.prometheusRule.rules }}
