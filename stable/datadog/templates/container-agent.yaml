@@ -104,6 +104,11 @@
     - name: dsdsocket
       mountPath: "/var/run/datadog"
     {{- end }}
+    {{- if .Values.datadog.systemProbe.enabled }}
+    - name: sysprobe-socket-dir
+      mountPath: /opt/datadog-agent/run
+      readOnly: true
+    {{- end }}
     - name: procdir
       mountPath: /host/proc
       readOnly: true
