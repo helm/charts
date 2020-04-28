@@ -53,9 +53,21 @@ daemonset:
   env: {}
   # Allow the DaemonSet to schedule using affinity rules
   # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-  affinity: {}
-  nodeSelector:
-    kubernetes.io/arch: amd64
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/arch
+            operator: In
+            values:
+              - amd64
+          - key: kubernetes.io/os
+            operator: In
+            values:
+              - linux
+  # Allow the DaemonSet to set annotations
+  annotations: {}
 
 # If is behind a proxy you can set the proxy server
 proxy:
