@@ -96,7 +96,7 @@ spec:
               value: {{ .Values.agent.redactKubernetesSecrets | quote }}
             {{- end }}
             - name: JAVA_OPTS
-              # Approximately 1/3 of container memory limits to allow for direct-buffer memory usage and JVM overhead
+              # Approximately 1/3 of container memory requests to allow for direct-buffer memory usage and JVM overhead
               value: "-Xmx{{ div (default 512 .Values.agent.pod.requests.memory) 3 }}M -XX:+ExitOnOutOfMemoryError"
             - name: INSTANA_AGENT_POD_NAME
               valueFrom:
