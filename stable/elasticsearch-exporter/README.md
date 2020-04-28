@@ -72,6 +72,7 @@ Parameter | Description | Default
 `service.annotations` | Annotations on the http service | `{}`
 `service.labels` | Additional labels for the service definition | `{}`
 `env` | Extra environment variables passed to pod | `{}`
+`extraEnvSecrets` | Extra environment variables passed to the pod from k8s secrets - see `values.yaml` for an example | `{}` |
 `envFromSecret` | The name of an existing secret in the same kubernetes namespace which contains values to be added to the environment | `nil`
 `secretMounts` |  list of secrets and their paths to mount inside the pod | `[]`
 `affinity` | Affinity rules | `{}`
