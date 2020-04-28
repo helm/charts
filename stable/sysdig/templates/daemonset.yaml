@@ -48,7 +48,14 @@ spec:
 {{ toYaml .Values.image.pullSecrets | indent 12 }}
           {{- end }}
           securityContext:
+            capabilities:
+              drop:
+                - ALL
             privileged: true
+            runAsNonRoot: false
+            runAsUser: 0
+            readOnlyRootFilesystem: false
+            allowPrivilegeEscalation: true
           resources:
 {{ toYaml .Values.slim.resources | indent 12 }}
           volumeMounts:
@@ -72,7 +79,14 @@ spec:
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           securityContext:
+            capabilities:
+              drop:
+                - ALL
             privileged: true
+            runAsNonRoot: false
+            runAsUser: 0
+            readOnlyRootFilesystem: false
+            allowPrivilegeEscalation: true
           env:
             {{- if .Values.ebpf.enabled }}
             - name: SYSDIG_BPF_PROBE
