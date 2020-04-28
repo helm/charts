@@ -76,3 +76,4 @@ spec:
 {{- with .Values.worker.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
+{{- end }}
