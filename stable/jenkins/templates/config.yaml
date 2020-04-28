@@ -61,7 +61,7 @@ data:
     {{- /* restore .Values.agent */}}
     {{- $_ := set .Values "agent" $agent }}
   {{- end }}
-{{- end -}}
+{{- end }}
           </templates>
           <serverUrl>https://kubernetes.default</serverUrl>
           <skipTlsVerify>false</skipTlsVerify>
@@ -249,11 +249,6 @@ data:
 {{- if .Values.master.installPlugins }}
 {{- range $index, $val := .Values.master.installPlugins }}
 {{ $val | indent 4 }}
-{{- end }}
-{{- if .Values.master.JCasC.enabled }}
-  {{- if not (contains "configuration-as-code" (quote .Values.master.installPlugins)) }}
-    configuration-as-code:{{ .Values.master.JCasC.pluginVersion }}
-  {{- end }}
 {{- end }}
 {{- end }}
 {{ else }}

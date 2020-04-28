@@ -100,6 +100,9 @@ jenkins:
       namespace: "{{ template "jenkins.master.slaveKubernetesNamespace" . }}"
       serverUrl: "https://kubernetes.default"
       {{- if .Values.agent.enabled }}
+      podLabels:
+      - key: "jenkins/{{ .Release.Name }}-{{ .Values.agent.componentName }}"
+        value: "true"
       templates:
       {{- include "jenkins.casc.podTemplate" . | nindent 8 }}
     {{- if .Values.additionalAgents }}
@@ -175,8 +178,28 @@ Returns kubernetes pod template configuration as code
   showRawYaml: true
   serviceAccount: "{{ include "jenkins.serviceAccountAgentName" . }}"
   slaveConnectTimeoutStr: "{{ .Values.agent.slaveConnectTimeout }}"
+{{- if .Values.agent.volumes }}
+  volumes:
+  {{- range $index, $volume := .Values.agent.volumes }}
+    -{{- if (eq $volume.type "ConfigMap") }} configMapVolume:
+     {{- else if (eq $volume.type "EmptyDir") }} emptyDirVolume:
+     {{- else if (eq $volume.type "HostPath") }} hostPathVolume:
+     {{- else if (eq $volume.type "Nfs") }} nfsVolume:
+     {{- else if (eq $volume.type "PVC") }} persistentVolumeClaim:
+     {{- else if (eq $volume.type "Secret") }} secretVolume:
+     {{- else }} {{ $volume.type }}:
+     {{- end }}
+    {{- range $key, $value := $volume }}
+      {{- if not (eq $key "type") }}
+        {{ $key }}: {{ if kindIs "string" $value }}{{ tpl $value $ | quote }}{{ else }}{{ $value }}{{ end }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+  {{- if .Values.agent.yamlTemplate }}
   yaml: |-
-    {{ tpl .Values.agent.yamlTemplate . | nindent 10 | trim }}
+  {{- tpl ( trim .Values.agent.yamlTemplate ) . | nindent 4 }}
+  {{- end }}
   yamlMergeStrategy: "override"
 {{- end -}}
 
@@ -189,7 +212,9 @@ Returns kubernetes pod template xml configuration
   <name>{{ .Values.agent.podName }}</name>
   <instanceCap>2147483647</instanceCap>
   <idleMinutes>{{ .Values.agent.idleMinutes }}</idleMinutes>
-  <label>{{ .Release.Name }}-{{ .Values.agent.componentName }} {{ .Values.agent.customJenkinsLabels  | join " " }}</label>
+  {{- $tmp := join " " .Values.agent.customJenkinsLabels }}
+  {{- $labels := printf "%s-%s %s" .Release.Name .Values.agent.componentName $tmp }}
+  <label>{{ $labels | trim  }}</label>
   <serviceAccount>{{ include "jenkins.serviceAccountAgentName" . }}</serviceAccount>
   <nodeSelector>
     {{- $local := dict "first" true }}
@@ -201,11 +226,19 @@ Returns kubernetes pod template xml configuration
     <nodeUsageMode>NORMAL</nodeUsageMode>
   <volumes>
 {{- range $index, $volume := .Values.agent.volumes }}
+  {{- if (eq $volume.type "PVC") }}
+    <org.csanchez.jenkins.plugins.kubernetes.volumes.PersistentVolumeClaim>
+  {{- else }}
     <org.csanchez.jenkins.plugins.kubernetes.volumes.{{ $volume.type }}Volume>
-{{- range $key, $value := $volume }}{{- if not (eq $key "type") }}
+  {{- end }}
+  {{- range $key, $value := $volume }}{{- if not (eq $key "type") }}
       <{{ $key }}>{{ $value }}</{{ $key }}>
-{{- end }}{{- end }}
+  {{- end }}{{- end }}
+  {{- if (eq $volume.type "PVC") }}
+    </org.csanchez.jenkins.plugins.kubernetes.volumes.PersistentVolumeClaim>
+  {{- else }}
     </org.csanchez.jenkins.plugins.kubernetes.volumes.{{ $volume.type }}Volume>
+  {{- end }}
 {{- end }}
   </volumes>
   <containers>

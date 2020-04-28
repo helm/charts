@@ -76,8 +76,28 @@ spec:
 {{ toYaml .Values.scheduler.securityContext | indent 8 }}
       {{- end }}
       serviceAccountName: {{ template "airflow.serviceAccountName" . }}
-      {{- if .Values.dags.initContainer.enabled }}
+      {{- if or (.Values.dags.initContainer.enabled) (.Values.airflow.preinitdb) }}
       initContainers:
+      {{- if .Values.airflow.preinitdb }}
+        - name: {{ .Chart.Name }}-preinitdb
+          image: {{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}
+          imagePullPolicy: {{ .Values.airflow.image.pullPolicy}}
+          args:
+            - "/bin/bash"
+            - "-c"
+            - "/usr/local/scripts/preinit-db.sh"
+          envFrom:
+          - configMapRef:
+              name: "{{ template "airflow.fullname" . }}-env"
+          env:
+          {{- include "airflow.mapenvsecrets" . | indent 10 }}
+          resources:
+{{ toYaml .Values.scheduler.resources | indent 12 }}
+          volumeMounts:
+            - name: scripts
+              mountPath: /usr/local/scripts
+      {{- end }}
+      {{- if .Values.dags.initContainer.enabled }}
         - name: git-clone
           image: {{ .Values.dags.initContainer.image.repository }}:{{ .Values.dags.initContainer.image.tag }} # Any image with git will do
           imagePullPolicy: {{ .Values.dags.initContainer.image.pullPolicy }}
@@ -103,6 +123,7 @@ spec:
             - name: git-clone-secret
               mountPath: /keys
             {{- end }}
+      {{- end }}
       {{- end }}
 {{- if and ( .Values.airflow.extraInitContainers ) ( .Values.dags.initContainer.enabled ) }}
 {{ toYaml .Values.airflow.extraInitContainers | indent 8 }}
@@ -138,6 +159,8 @@ spec:
             - name: git-clone-secret
               mountPath: /keys
             {{- end }}
+          resources:
+{{ toYaml .Values.dags.git.gitSync.resources | indent 12 }}
         {{- end }}
         - name: {{ .Chart.Name }}-scheduler
           image: {{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}
@@ -156,7 +179,7 @@ spec:
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
               subPath: {{ .Values.persistence.subPath | default "" }}
-          {{- else if .Values.dags.initContainer.enabled }}
+          {{- else if or (.Values.dags.initContainer.enabled) (.Values.dags.git.gitSync.enabled) }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
           {{- end }}
@@ -258,7 +281,7 @@ spec:
           persistentVolumeClaim:
             claimName: {{ .Values.logsPersistence.existingClaim | default (printf "%s-logs" (include "airflow.fullname" . | trunc 58 )) }}
         {{- end }}
-        {{- if .Values.dags.initContainer.enabled }}
+        {{- if or (.Values.dags.initContainer.enabled) (.Values.dags.git.gitSync.enabled) }}
         - name: git-clone
           configMap:
             name: {{ template "airflow.fullname" . }}-git-clone

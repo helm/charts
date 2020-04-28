@@ -57,6 +57,15 @@ env: {}
 ## This can be useful for auth tokens, etc
 envFromSecret: ""
 
+## A list of environment variables from secret refs that will be passed into the exporter pod
+## example:
+## This will set ${ES_PASSWORD} to the 'password' key from the 'my-secret' secret
+## extraEnvSecrets:
+##   ES_PASSWORD:
+##     secret: my-secret
+##     key: password
+extraEnvSecrets: {}
+
 # A list of secrets and their paths to mount inside the pod
 # This is useful for mounting certificates for security
 secretMounts: []

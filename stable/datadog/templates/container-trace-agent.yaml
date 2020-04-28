@@ -25,9 +25,10 @@
       value: "true"
     - name: DD_APM_RECEIVER_PORT
       value: {{ .Values.datadog.apm.port | quote }}
-{{- if .Values.agents.containers.traceAgent.env }}
-{{ toYaml .Values.agents.containers.traceAgent.env | indent 4 }}
-{{- end }}
+  {{- range $value := .Values.agents.containers.traceAgent.env }}
+    - name: {{ $value.name }}
+      value: {{ $value.value | quote }}
+  {{- end }}
   volumeMounts:
     - name: config
       mountPath: {{ template "datadog.confPath" . }}
@@ -36,6 +37,11 @@
       mountPath: {{ template "datadog.confPath" . }}/datadog.yaml
       subPath: datadog.yaml
     {{- end }}
+    - name: runtimesocket
+      mountPath: {{ template "datadog.dockerOrCriSocketPath" . }}
+      {{- if eq .Values.targetSystem "linux" }}
+      readOnly: true
+      {{- end }}
   livenessProbe:
 {{ toYaml .Values.agents.containers.traceAgent.livenessProbe | indent 4 }}
 {{- end -}}

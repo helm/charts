@@ -138,6 +138,7 @@ Parameter                                            | Description              
 `service.loadBalancerSourceRanges`                   | Allow list for the load balancer                                                                           | `nil`
 `ingress.enabled`                                    | Enable ingress controller resource                                                                         | `false`
 `ingress.annotations`                                | Ingress annotations                                                                                        | `{}`
+`ingress.labels`                                     | Ingress labels                                                                                             | `{}`
 `ingress.hostname`                                   | URL to address your Sentry installation                                                                    | `sentry.local`
 `ingress.path`                                       | path to address your Sentry installation                                                                   | `/`
 `ingress.tls`                                        | Ingress TLS configuration                                                                                  | `[]`
@@ -168,6 +169,7 @@ Parameter                                            | Description              
 `filestore.gcs.bucketName`                           | The name of the GCS bucket                                                                                 | `nil`
 `filestore.s3.accessKey`                             | S3 access key                                                                                              | `nil`
 `filestore.s3.secretKey`                             | S3 secret key                                                                                              | `nil`
+`filestore.s3.existingSecret`                        | Name of existing secret to use for the S3 keys                                                             | `nil`
 `filestore.s3.bucketName`                            | The name of the S3 bucket                                                                                  | `nil`
 `filestore.s3.endpointUrl`                           | The endpoint url of the S3 (using for "MinIO S3 Backend")                                                  | `nil`
 `filestore.s3.signature_version`                     | S3 signature version (optional)                                                                            | `nil`

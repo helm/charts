@@ -2,6 +2,7 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
+  namespace: {{ .Release.Namespace }}
   labels: {{ include "newrelic.labels" . | indent 4 }}
   name: {{ template "newrelic.fullname" . }}
 spec:
@@ -106,6 +107,10 @@ spec:
             {{- if .Values.controllerManagerEndpointUrl }}
             - name: "CONTROLLER_MANAGER_ENDPOINT_URL"
               value: {{ .Values.controllerManagerEndpointUrl | quote }}
+            {{- end }}
+            {{- if .Values.eventQueueDepth }}
+            - name: "NRIA_EVENT_QUEUE_DEPTH"
+              value: {{ .Values.eventQueueDepth | quote }}
             {{- end }}
             - name: "NRIA_DISPLAY_NAME"
               valueFrom:
