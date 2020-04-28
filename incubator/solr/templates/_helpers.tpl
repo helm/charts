@@ -81,6 +81,13 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/*
+  Define the name of the custom script configmap
+*/}}
+{{- define "solr.custom-script.configmap-name" -}}
+{{- printf "%s-%s" (include "solr.fullname" .) "custom-script-config-map" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
   Define the labels that should be applied to all resources in the chart
 */}}
 {{- define "solr.common.labels" -}}
