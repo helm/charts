@@ -359,7 +359,7 @@ acme:
     # existingClaim:
 dashboard:
   enabled: false
-  domain: traefik.example.com
+  domain: ""
   # serviceType: ClusterIP
   service: {}
     # annotations:
