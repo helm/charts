@@ -19,6 +19,7 @@ data:
     mkdir -p ~/.ssh/
     cp -rL /keys/* ~/.ssh/
     chmod 600 ~/.ssh/*
+    ssh-keyscan -H $REPO_HOST >> ~/.ssh/known_hosts
     echo -e "HOST $REPO_HOST\n  IdentityFile ~/.ssh/$PRIVATE_KEY" > ~/.ssh/config
     {{- end }}
     # Init Containers will re-run on Pod restart. Remove the directory's contents
@@ -39,6 +40,7 @@ data:
     mkdir -p ~/.ssh/
     cp -rL /keys/* ~/.ssh/
     chmod 600 ~/.ssh/*
+    ssh-keyscan -H $REPO_HOST >> ~/.ssh/known_hosts
     echo -e "HOST $REPO_HOST\n  IdentityFile ~/.ssh/$PRIVATE_KEY" > ~/.ssh/config
     {{- end }}
     {{- if eq .Values.dags.initContainer.enabled  false }}
