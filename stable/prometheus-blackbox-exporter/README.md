@@ -54,6 +54,7 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 | `ingress.annotations`                     | Ingress annotations                                                              | None                                                                         |
 | `ingress.enabled`                         | Enables Ingress                                                                  | `false`                                                                      |
 | `ingress.hosts`                           | Ingress accepted hostnames                                                       | None                                                                         |
+| `ingress.path`                            | Ingress accepted path                                                            | `/`                                                                         |
 | `ingress.tls`                             | Ingress TLS configuration                                                        | None                                                                         |
 | `nodeSelector`                            | node labels for pod assignment                                                   | `{}`                                                                         |
 | `runAsUser`                               | User to run blackbox-exporter container as                                       | `1000`                                                                       |
