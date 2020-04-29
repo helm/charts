@@ -20,6 +20,10 @@
       value: "true"
     - name: DD_APM_RECEIVER_PORT
       value: {{ .Values.datadog.apm.port | quote }}
+    - name: DD_APM_MAX_MEMORY
+      value: 0
+    - name: DD_APM_MAX_CPU_PERCENT
+      value: 0
 {{- if .Values.agents.containers.traceAgent.env }}
 {{ toYaml .Values.agents.containers.traceAgent.env | indent 4 }}
 {{- end }}
