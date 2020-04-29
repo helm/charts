@@ -424,6 +424,8 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.service.type`                   | service type for Airflow UI                             | `ClusterIP`               |
 | `airflow.service.annotations`            | (optional) service annotations for Airflow UI           | `{}`                      |
 | `airflow.service.externalPort`           | (optional) external port for Airflow UI                 | `8080`                    |
+| `airflow.service.loadBalancerIP`         | (optional) for service.type == LoadBalancer, the loadBalancerIP | `` |
+| `airflow.service.loadBalancerSourceRanges` | (optional) for service.type == LoadBalancer, the loadBalancerSourceRanges | `[]` |
 | `airflow.service.nodePort.http`          | (optional) when using service.type == NodePort, an optional NodePort to request | ``|
 | `airflow.service.sessionAffinity`        | The session affinity for the airflow UI                 | `None`                    |
 | `airflow.service.sessionAffinityConfig`  | The session affinity config for the airflow UI          | `None`                    |
@@ -457,6 +459,8 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `flower.service.type`                    | service type for Flower UI                              | `ClusterIP`               |
 | `flower.service.annotations`             | (optional) service annotations for Flower UI            | `{}`                      |
 | `flower.service.externalPort`            | (optional) external port for Flower UI                  | `5555`                    |
+| `flower.service.loadBalancerIP`          | (optional) for service.type == LoadBalancer, the loadBalancerIP | `` |
+| `flower.service.loadBalancerSourceRanges` | (optional) for service.type == LoadBalancer, the loadBalancerSourceRanges | `[]` |
 | `flower.securityContext`                 | (optional) security context for the flower deployment   | `{}`                      |
 | `web.baseUrl`                            | webserver UI URL                                        | `http://localhost:8080`   |
 | `web.resources`                          | custom resource configuration for web pod               | `{}`                      |

@@ -24,4 +24,13 @@ spec:
       protocol: TCP
       port: {{ .Values.flower.service.externalPort | default 5555 }}
       targetPort: 5555
+{{- if eq .Values.flower.service.type "LoadBalancer" }}
+{{- if .Values.flower.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.flower.service.loadBalancerIP | quote }}
+{{- end }}
+{{- if .Values.flower.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{ toYaml .Values.flower.service.loadBalancerSourceRanges | indent 4 }}
+{{- end }}
+{{- end }}
 {{- end }}

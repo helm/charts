@@ -44,6 +44,8 @@ airflow:
     sessionAffinityConfig: {}
     type: ClusterIP
     externalPort: 8080
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
     nodePort:
       http:
   ##
@@ -235,6 +237,8 @@ flower:
     annotations: {}
     type: ClusterIP
     externalPort: 5555
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
 
   ## Support Node, affinity and tolerations for flower pod assignment
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
