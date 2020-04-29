@@ -48,7 +48,7 @@ spec:
         env:
 {{ toYaml .Values.envVars | indent 10 }}
 {{- else }}
-{{- if .Values.envVars }}
+{{- if .Values.env }}
         env:
 {{- range $name, $value := .Values.env }}
         - name: "{{ $name }}"
