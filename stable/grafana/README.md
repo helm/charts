@@ -168,6 +168,22 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `downloadDashboardsImage.pullPolicy`      | Curl docker image pull policy                 | `IfNotPresent`                                          |
 | `namespaceOverride`                       | Override the deployment namespace             | `""` (`Release.Namespace`)                              |
 
+### Example ingress with path
+
+With grafana 6.3 and above
+```yaml
+grafana.ini:
+  server:
+    domain: monitoring.example.com
+    root_url: "%(protocol)s://%(domain)s/grafana"
+    serve_from_sub_path: true
+ingress:
+  enabled: true
+  hosts:
+    - "monitoring.example.com"
+  path: "/grafana"
+```
+
 ### Example of extraVolumeMounts
 
 ```yaml
