@@ -58,6 +58,7 @@ The following table lists the configurable parameters of the postgres Exporter c
 | `config.metrics.routez`           | NATS routez metrics                                     | `true`                                           |
 | `config.metrics.serverz`          | NATS serverz metrics                                    | `true`                                           |
 | `config.metrics.subz`             | NATS subz metrics                                       | `true`                                           |
+| `config.metrics.gatewayz          | NATS gatewayz metrics                                   | `true`                                           |
 | `tolerations`                     | Add tolerations                                         | `[]`                                             |
 | `nodeSelector`                    | node labels for pod assignment                          | `{}`                                             |
 | `affinity`                        | node/pod affinities                                     | `{}`                                             |
