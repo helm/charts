@@ -46,6 +46,7 @@ helm install -n locust-nymph --set master.config.target-host=http://site.example
 | `worker.replicaCount`        | Number of workers to run                | `2`                                                   |
 | `worker.nodeSelector`        | k8s nodeselector                        | `{}`                                                  |
 | `worker.tolerations`         | k8s tolerance                           | `{}`                                                  |
+| `worker.affinities`          | k8s affinities                          | `{}`                                                  |
 
 Specify parameters using `--set key=value[,key=value]` argument to `helm install`
 

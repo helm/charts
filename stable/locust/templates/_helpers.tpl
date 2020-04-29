@@ -29,3 +29,23 @@ Create fully qualified configmap name.
 {{- printf "%s-%s" .Release.Name "worker" -}}
 {{ end }}
 {{- end -}}
+
+{{/*
+Common labels
+*/}}
+{{- define "locust.labels" -}}
+helm.sh/chart: {{ include "locust.chart" . }}
+{{ include "locust.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end -}}
+
+{{/*
+Selector labels
+*/}}
+{{- define "locust.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "locust.fullname" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end -}}
