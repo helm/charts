@@ -22,6 +22,14 @@ data:
     host_id: "${ANCHORE_POD_NAME}"
     internal_ssl_verify: {{ .Values.anchoreGlobal.internalServicesSsl.verifyCerts }}
     auto_restart_services: false
+
+    {{- if .Values.anchoreEnterpriseGlobal.enabled }}
+    license_file: /home/anchore/license.yaml
+    {{- end }}
+
+    global_client_connect_timeout: {{ default 0 .Values.anchoreGlobal.clientConnectTimeout }}
+    global_client_read_timeout: {{ default 0 .Values.anchoreGlobal.clientReadTimeout }}
+
     metrics:
       enabled: {{ .Values.anchoreGlobal.enableMetrics }}
       auth_disabled: {{ .Values.anchoreGlobal.metricsAuthDisabled }}
@@ -55,9 +63,15 @@ data:
           # anchore support for finding out more about this service
           {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseFeeds.enabled }}
           vulndb: {{ default "true" .Values.anchoreEnterpriseFeeds.vulndbDriverEnabled }}
+          # Enabling microsoft syncs MSRC data from an on-premise anchore enterprise feeds service. Please contact
+          # anchore support for finding out more about this service
+          microsoft: {{ .Values.anchoreEnterpriseFeeds.microsoftDriverEnabled }}
           {{- else }}
           vulndb: false
+          microsoft: false
           {{- end }}
+          # Sync github data if available for GHSA matches
+          github: {{ default "true" .Values.anchoreGlobal.syncGithub }}
       {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseFeeds.enabled }}
       {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
       url: "https://{{- template "anchore-engine.enterprise-feeds.fullname" . }}:{{- .Values.anchoreEnterpriseFeeds.service.port }}/v1/feeds"

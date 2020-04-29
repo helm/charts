@@ -21,6 +21,8 @@ spec:
       app: {{ template "anchore-engine.fullname" . }}
       component: {{ $component }}
   replicas: {{ .Values.anchoreApi.replicaCount }}
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -40,13 +42,15 @@ spec:
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
-      {{ if and .Values.anchoreEnterpriseGlobal.enabled (or .Values.anchoreEnterpriseRbac.enabled .Values.anchoreEnterpriseReports.enabled) }}
+    {{- if .Values.anchoreEnterpriseGlobal.enabled }}
       imagePullSecrets:
       - name: {{ .Values.anchoreEnterpriseGlobal.imagePullSecretName }}
+    {{- else }}
       {{- with .Values.anchoreGlobal.imagePullSecretName }}
+      imagePullSecrets:
       - name: {{ . }}
       {{- end }}
-      {{- end }}
+    {{- end }}
       containers:
       {{- if .Values.cloudsql.enabled  }}
       - name: cloudsql-proxy
@@ -65,13 +69,18 @@ spec:
       {{- end }}
       - name: "{{ .Chart.Name }}-{{ $component }}"
         {{- if .Values.anchoreEnterpriseGlobal.enabled }}
-        image: {{ .Values.anchoreEnterpriseGlobal.engineImage }}
+        image: {{ .Values.anchoreEnterpriseGlobal.image }}
+        imagePullPolicy: {{ .Values.anchoreEnterpriseGlobal.imagePullPolicy }}
         {{- else }}
         image: {{ .Values.anchoreGlobal.image }}
-        {{- end }}
         imagePullPolicy: {{ .Values.anchoreGlobal.imagePullPolicy }}
+        {{- end }}
+        {{- if .Values.anchoreEnterpriseGlobal.enabled }}
+        command: ["anchore-enterprise-manager"]
+        {{- else }}
         command: ["anchore-manager"]
-        args: ["service", "start", "apiext"]
+        {{- end }}
+        args: ["service", "start", "--no-auto-upgrade", "apiext"]
         envFrom:
         - secretRef:
             name: {{ default (include "anchore-engine.fullname" .) .Values.anchoreGlobal.existingSecret }}
@@ -97,6 +106,11 @@ spec:
         - containerPort: {{ .Values.anchoreApi.service.port }}
           name: external-api
         volumeMounts:
+        {{- if .Values.anchoreEnterpriseGlobal.enabled }}
+        - name: anchore-license
+          mountPath: /home/anchore/license.yaml
+          subPath: license.yaml
+        {{- end }}
         - name: config-volume
           mountPath: /config/config.yaml
           subPath: config.yaml
@@ -143,7 +157,7 @@ spec:
         image: {{ .Values.anchoreEnterpriseGlobal.image }}
         imagePullPolicy: {{ .Values.anchoreEnterpriseGlobal.imagePullPolicy }}
         command: ["anchore-enterprise-manager"]
-        args: ["service", "start", "rbac_manager"]
+        args: ["service", "start", "--no-auto-upgrade", "rbac_manager"]
         envFrom:
         - secretRef:
             name: {{ default (include "anchore-engine.fullname" .) .Values.anchoreGlobal.existingSecret }}
@@ -212,7 +226,7 @@ spec:
         image: {{ .Values.anchoreEnterpriseGlobal.image }}
         imagePullPolicy: {{ .Values.anchoreEnterpriseGlobal.imagePullPolicy }}
         command: ["anchore-enterprise-manager"]
-        args: ["service", "start", "rbac_authorizer"]
+        args: ["service", "start", "--no-auto-upgrade", "rbac_authorizer"]
         envFrom:
         - secretRef:
             name: {{ default (include "anchore-engine.fullname" .) .Values.anchoreGlobal.existingSecret }}
@@ -281,7 +295,7 @@ spec:
         image: {{ .Values.anchoreEnterpriseGlobal.image }}
         imagePullPolicy: {{ .Values.anchoreEnterpriseGlobal.imagePullPolicy }}
         command: ["anchore-enterprise-manager"]
-        args: ["service", "start", "reports"]
+        args: ["service", "start", "--no-auto-upgrade", "reports"]
         ports:
         - containerPort: {{ .Values.anchoreEnterpriseReports.service.port }}
           name: reports-api
@@ -352,7 +366,7 @@ spec:
         image: {{ .Values.anchoreEnterpriseGlobal.image }}
         imagePullPolicy: {{ .Values.anchoreEnterpriseGlobal.imagePullPolicy }}
         command: ["anchore-enterprise-manager"]
-        args: ["service", "start", "notifications"]
+        args: ["service", "start", "--no-auto-upgrade", "notifications"]
         ports:
         - containerPort: {{ .Values.anchoreEnterpriseNotifications.service.port }}
           name: notifi-api

@@ -97,12 +97,16 @@ data:
             # To enable gem driver comment the enabled property and uncomment the db_connect property.
             enabled: {{ default "false" .Values.anchoreEnterpriseFeeds.gemDriverEnabled }}
             db_connect: {{ default "'postgresql://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@${ANCHORE_DB_HOST}/gems'" .Values.anchoreEnterpriseFeeds.gemDbEndpoint }}
+          amzn:
+            enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.amazonDriverEnabled }}
           centos:
             enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.centosDriverEnabled }}
           debian:
             enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.debianDriverEnabled }}
           ubuntu:
             enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.ubuntuDriverEnabled }}
+          rhel:
+            enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.rhelDriverEnabled }}
           ol:
             enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.olDriverEnabled }}
           alpine:
@@ -115,6 +119,16 @@ data:
             enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.nvdv2DriverEnabled }}
           vulndb:
             enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.vulndbDriverEnabled }}
+          msrc:
+            enabled: {{ .Values.anchoreEnterpriseFeeds.msrcDriverEnabled }}
+            api_key: {{ .Values.anchoreEnterpriseFeeds.msrcApiKey }}
+            {{- with .Values.anchoreEnterpriseFeeds.msrcWhitelist }}
+            whitelist:
+              - {{ . }}
+            {{- end }}
+          github:
+            enabled: {{ .Values.anchoreEnterpriseFeeds.githubDriverEnabled }}
+            token: {{ .Values.anchoreEnterpriseFeeds.githubDriverToken }}
         {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
         ssl_enable: {{ .Values.anchoreGlobal.internalServicesSsl.enabled }}
         ssl_cert: "/home/anchore/certs/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}"

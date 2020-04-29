@@ -22,6 +22,8 @@ spec:
       app: {{ template "anchore-engine.fullname" . }}
       component: {{ $component }}
   replicas: 1
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -63,7 +65,7 @@ spec:
         image: {{ .Values.anchoreEnterpriseGlobal.image }}
         imagePullPolicy: {{ .Values.anchoreEnterpriseGlobal.imagePullPolicy }}
         command: ["anchore-enterprise-manager"]
-        args: ["service", "start", "feeds"]
+        args: ["service", "start", "--no-auto-upgrade", "feeds"]
         ports:
         - containerPort: {{ .Values.anchoreEnterpriseFeeds.service.port }}
           name: feeds-api
