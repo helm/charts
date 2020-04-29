@@ -125,7 +125,7 @@ data:
           timeout: {{ .Values.anchoreGlobal.dbConfig.timeout }}
           ssl: false
         db_pool_size: {{ .Values.anchoreGlobal.dbConfig.connectionPoolSize }}
-        db_pool_max_overflow: {{ .Values.anchoreGlobal.dbConfig.connectionPoolSize }}
+        db_pool_max_overflow: {{ .Values.anchoreGlobal.dbConfig.connectionPoolMaxOverflow }}
     services:
       apiext:
         enabled: true
