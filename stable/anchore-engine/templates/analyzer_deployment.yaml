@@ -21,6 +21,8 @@ spec:
       app: {{ template "anchore-engine.fullname" . }}
       component: {{ $component }}
   replicas: {{ .Values.anchoreAnalyzer.replicaCount }}
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -40,10 +42,15 @@ spec:
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
+    {{- if .Values.anchoreEnterpriseGlobal.enabled }}
+      imagePullSecrets:
+      - name: {{ .Values.anchoreEnterpriseGlobal.imagePullSecretName }}
+    {{- else }}
       {{- with .Values.anchoreGlobal.imagePullSecretName }}
       imagePullSecrets:
       - name: {{ . }}
       {{- end }}
+    {{- end }}
       containers:
       {{- if .Values.cloudsql.enabled  }}
       - name: cloudsql-proxy
@@ -62,13 +69,18 @@ spec:
       {{- end }}
       - name: {{ .Chart.Name }}-{{ $component }}
         {{- if .Values.anchoreEnterpriseGlobal.enabled }}
-        image: {{ .Values.anchoreEnterpriseGlobal.engineImage }}
+        image: {{ .Values.anchoreEnterpriseGlobal.image }}
+        imagePullPolicy: {{ .Values.anchoreEnterpriseGlobal.imagePullPolicy }}
         {{- else }}
         image: {{ .Values.anchoreGlobal.image }}
-        {{- end }}
         imagePullPolicy: {{ .Values.anchoreGlobal.imagePullPolicy }}
+        {{- end }}
+        {{- if .Values.anchoreEnterpriseGlobal.enabled }}
+        command: ["anchore-enterprise-manager"]
+        {{- else }}
         command: ["anchore-manager"]
-        args: ["service", "start", "analyzer"]
+        {{- end }}
+        args: ["service", "start", "--no-auto-upgrade", "analyzer"]
         envFrom:
         - secretRef:
             name: {{ default (include "anchore-engine.fullname" .) .Values.anchoreGlobal.existingSecret }}
@@ -89,6 +101,11 @@ spec:
         - name: analyzer-api
           containerPort: {{ .Values.anchoreAnalyzer.containerPort }}
         volumeMounts:
+        {{- if .Values.anchoreEnterpriseGlobal.enabled }}
+        - name: anchore-license
+          mountPath: /home/anchore/license.yaml
+          subPath: license.yaml
+        {{- end }}
         - name: analyzer-config-volume
           mountPath: /anchore_service/analyzer_config.yaml
           subPath: analyzer_config.yaml
@@ -136,6 +153,11 @@ spec:
         resources:
           {{ toYaml .Values.anchoreAnalyzer.resources | nindent 10 }}
       volumes:
+        {{- if .Values.anchoreEnterpriseGlobal.enabled }}
+        - name: anchore-license
+          secret:
+            secretName: {{ .Values.anchoreEnterpriseGlobal.licenseSecretName }}
+        {{- end }}
         - name: config-volume
           configMap:
             name: {{ template "anchore-engine.fullname" .}}

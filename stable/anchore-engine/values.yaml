@@ -19,7 +19,7 @@ postgresql:
     resourcePolicy: nil
     size: 20Gi
 
-  # If running operator on OpenShift - uncomment the image, imageTag & extraEnv values below.
+  # If running on OpenShift - uncomment the image, imageTag & extraEnv values below.
   # image: registry.access.redhat.com/rhscl/postgresql-96-rhel7
   # imageTag: latest
   # extraEnv:
@@ -90,7 +90,7 @@ ingress:
 # Global configuration shared by all anchore-engine services.
 anchoreGlobal:
   # Image used for all anchore engine deployments (excluding enterprise components).
-  image: docker.io/anchore/anchore-engine:v0.7.0
+  image: docker.io/anchore/anchore-engine:v0.7.1
   imagePullPolicy: IfNotPresent
   # Set image pull secret name if using an anchore-engine image from a private registry
   imagePullSecretName:
@@ -257,11 +257,11 @@ anchoreAnalyzer:
 
   # resources:
   #  limits:
-  #    cpu: 100m
-  #    memory: 8Gi
+  #    cpu: 1
+  #    memory: 4G
   #  requests:
-  #    cpu: 100m
-  #    memory: 3Gi
+  #    cpu: 1
+  #    memory: 1G
 
   labels: {}
   annotations: {}
@@ -294,11 +294,11 @@ anchoreApi:
 
   # resources:
   #  limits:
-  #    cpu: 100m
-  #    memory: 6Gi
+  #    cpu: 1
+  #    memory: 4G
   #  requests:
   #    cpu: 100m
-  #    memory: 4Gi
+  #    memory: 1G
 
   labels: {}
   annotations: {}
@@ -397,11 +397,11 @@ anchoreCatalog:
 
   # resources:
   #  limits:
-  #    cpu: 100m
-  #    memory: 8Gi
+  #    cpu: 1
+  #    memory: 2G
   #  requests:
   #    cpu: 100m
-  #    memory: 3Gi
+  #    memory: 500M
 
   labels: {}
   annotations: {}
@@ -434,11 +434,11 @@ anchorePolicyEngine:
 
   # resources:
   #  limits:
-  #    cpu: 100m
-  #    memory: 8Gi
+  #    cpu: 1
+  #    memory: 4G
   #  requests:
   #    cpu: 100m
-  #    memory: 3Gi
+  #    memory: 1G
 
   labels: {}
   annotations: {}
@@ -464,11 +464,11 @@ anchoreSimpleQueue:
 
   # resources:
   #  limits:
-  #    cpu: 100m
-  #    memory: 3Gi
+  #    cpu: 1
+  #    memory: 1G
   #  requests:
   #    cpu: 100m
-  #    memory: 2Gi
+  #    memory: 256M
 
   labels: {}
   annotations: {}
@@ -483,14 +483,11 @@ anchoreEnterpriseGlobal:
   # Create this secret with the following command - kubectl create secret generic anchore-license --from-file=license.yaml=<PATH TO LICENSE.YAML>
   licenseSecretName: anchore-enterprise-license
 
-  image: docker.io/anchore/enterprise:v0.6.2
+  image: docker.io/anchore/enterprise:v2.3.0
   imagePullPolicy: IfNotPresent
   # Name of the kubernetes secret containing your dockerhub creds with access to the anchore enterprise images.
   # Create this secret with the following command - kubectl create secret docker-registry anchore-dockerhub-creds --docker-server=docker.io --docker-username=<USERNAME> --docker-password=<PASSWORD> --docker-email=<EMAIL_ADDRESS>
   imagePullSecretName: anchore-enterprise-pullcreds
-
-  # Starting with chart v1.5.0 enterprise deployments use a different anchore-engine image then the OSS version.
-  engineImage: docker.io/anchore/anchore-engine:v0.6.1
 
 # Configure the second postgres database instance for the enterprise feeds service.
 # Only utilized if anchoreEnterpriseGlobal.enabled: true
@@ -512,7 +509,7 @@ anchore-feeds-db:
     resourcePolicy: nil
     size: 20Gi
 
-  # If running operator on OpenShift - uncomment the image, imageTag & extraEnv values below.
+  # If running on OpenShift - uncomment the image, imageTag & extraEnv values below.
   # image: registry.access.redhat.com/rhscl/postgresql-96-rhel7
   # imageTag: latest
   # extraEnv:
@@ -533,6 +530,18 @@ anchore-feeds-db:
 anchoreEnterpriseFeeds:
   # If enabled is set to false, set anchore-feeds-db.enabled to false to ensure that helm doesn't stand up a unneccessary postgres instance.
   enabled: true
+
+  # Enable github advisory feeds
+  githubDriverEnabled: false
+  # GitHub advisory feeds require a github developer personal access token with no permission scopes selected.
+  githubDriverToken: null
+
+  # Enable microsoft feeds
+  msrcDriverEnabled: false
+  msrcApiKey: null
+  # Uncomment to add MSRC product IDs for generating their feed data, this extends the pre-defined list of product IDs
+  # msrcWhitelist:
+  # - 12345
 
   # Set extra environment variables. These will be set on all feeds containers.
   extraEnv: []
@@ -563,11 +572,11 @@ anchoreEnterpriseFeeds:
 
   # resources:
   #  limits:
-  #    cpu: 100m
-  #    memory: 8Gi
+  #    cpu: 1
+  #    memory: 4G
   #  requests:
-  #    cpu: 100m
-  #    memory: 3Gi
+  #    cpu: 1
+  #    memory: 2G
 
   labels: {}
   annotations: {}
@@ -593,19 +602,19 @@ anchoreEnterpriseRbac:
 
   # authResources:
   #  limits:
-  #    cpu: 100m
-  #    memory: 8Gi
+  #    cpu: 1
+  #    memory: 1G
   #  requests:
   #    cpu: 100m
-  #    memory: 3Gi
+  #    memory: 256M
 
   # managerResources:
   #  limits:
-  #    cpu: 100m
-  #    memory: 8Gi
+  #    cpu: 1
+  #    memory: 1G
   #  requests:
   #    cpu: 100m
-  #    memory: 3Gi
+  #    memory: 256M
 
 # Configure the Anchore Enterprise reporting component.
 anchoreEnterpriseReports:
@@ -637,11 +646,11 @@ anchoreEnterpriseReports:
 
   # resources:
   #  limits:
-  #    cpu: 100m
-  #    memory: 8Gi
+  #    cpu: 1
+  #    memory: 1G
   #  requests:
   #    cpu: 100m
-  #    memory: 3Gi
+  #    memory: 256M
 
   labels: {}
   annotations: {}
@@ -668,11 +677,11 @@ anchoreEnterpriseNotifications:
 
   # resources:
   #  limits:
-  #    cpu: 100m
-  #    memory: 8Gi
+  #    cpu: 1
+  #    memory: 1G
   #  requests:
   #    cpu: 100m
-  #    memory: 3Gi
+  #    memory: 256M
 
   labels: {}
   annotations: {}
@@ -732,11 +741,11 @@ anchoreEnterpriseUi:
 
   # resources:
   #  limits:
-  #    cpu: 100m
-  #    memory: 8Gi
+  #    cpu: 1
+  #    memory: 1G
   #  requests:
   #    cpu: 100m
-  #    memory: 3Gi
+  #    memory: 256M
 
   labels: {}
   annotations: {}
