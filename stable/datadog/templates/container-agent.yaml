@@ -82,6 +82,10 @@
     - name: DD_EXTRA_CONFIG_PROVIDERS
       value: "clusterchecks endpointschecks"
     {{- end }}
+    {{- if .Values.datadog.systemProbe.enabled }}
+    - name: SYSTEM_PROBE_CONFIG_SYSPROBE_SOCKET
+      value: /sysprobe/var/run
+    {{- end }}
   {{- range $value := .Values.agents.containers.agent.env }}
     - name: {{ $value.name }}
       value: {{ $value.value | quote }}
@@ -106,7 +110,7 @@
     {{- end }}
     {{- if .Values.datadog.systemProbe.enabled }}
     - name: sysprobe-socket-dir
-      mountPath: /opt/datadog-agent/run
+      mountPath: /sysprobe/var/run
       readOnly: true
     {{- end }}
     - name: procdir
