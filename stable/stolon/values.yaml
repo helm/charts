@@ -1,7 +1,7 @@
 # clusterName:
 image:
   repository: sorintlab/stolon
-  tag: v0.13.0-pg10
+  tag: v0.16.0-pg10
   pullPolicy: IfNotPresent
   ## Add secrets manually via kubectl on kubernetes cluster and reference here
   # pullSecrets:
