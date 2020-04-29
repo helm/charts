@@ -216,6 +216,9 @@ service |`+8080+`
 
 |`+metrics.service.annotations+` |Annotations for the Prometheus discovery |
 
+|`+customVolume+` |Configuration for a volume which will 
+be mounted as `/data/custom' (e.g. to mount a volume with custom JARs) |`+nil+`
+
 |`+managementcenter.enabled+` |Turn on and off Hazelcast Jet Management Center
 application |`+true+`
 
@@ -429,6 +432,60 @@ $ helm install --name my-jet-release \
     stable/hazelcast-jet
 ----
 endif::[]
+
+=== Adding custom JAR files to the classpath
+
+You can mount any volume which contains your JAR files
+to the pods created by helm chart using `customVolume` configuration.
+
+When the `customVolume` set, it will mount provided volume to the pod 
+on `/data/custom` path.
+This path also appended to the classpath of running Java process.
+
+For example, if you have existing host path Persistent Volume and
+Persistent Volume Claims like below;
+
+[source,yaml]
+----
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: jet-hostpathpv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/path/to/my/jars"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jet-pv-claim
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+----
+
+You can configure your Helm chart to use it like below in your `values.yaml`
+file. 
+[source,yaml]
+----
+customVolume:
+  persistentVolumeClaim:
+    claimName: jet-pv-claim
+----
+
+See https://kubernetes.io/docs/concepts/storage/[Volumes] section on the
+Kubernetes documentation for other available options.
 
 == Notable changes
 
