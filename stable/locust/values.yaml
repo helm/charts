@@ -78,3 +78,12 @@ worker:
   #   operator: "Equal"
   #   value: "api"
   #   effect: "NoSchedule"
+  #
+  #
+  affinity: {}
+  #  podAntiAffinity:
+  #    requiredDuringSchedulingIgnoredDuringExecution:
+  #    - topologyKey: kubernetes.io/hostname
+  #      labelSelector:
+  #        matchLabels:
+  #          component: worker
