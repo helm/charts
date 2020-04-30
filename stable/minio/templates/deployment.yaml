@@ -117,7 +117,7 @@ spec:
               subPath: "{{ .Values.persistence.subPath }}"
               {{- end }}
             {{- end }}
-            {{- if .Values.gcsgateway.enabled }}
+            {{- if or .Values.gcsgateway.enabled .Values.etcd.clientCert .Values.etcd.clientCertKey }}
             - name: minio-user
               mountPath: "/etc/credentials"
               readOnly: true
@@ -147,6 +147,42 @@ spec:
             {{- if .Values.gcsgateway.enabled }}
             - name: GOOGLE_APPLICATION_CREDENTIALS
               value: "/etc/credentials/gcs_key.json"
+            {{- end }}
+            {{- if .Values.etcd.endpoints }}
+            - name: MINIO_ETCD_ENDPOINTS
+              value: {{ join "," .Values.etcd.endpoints | quote }}
+            {{- end }}
+            {{- if .Values.etcd.clientCert }}
+            - name: MINIO_ETCD_CLIENT_CERT
+              value: "/etc/credentials/etcd_client_cert.pem"
+            {{- end }}
+            {{- if .Values.etcd.clientCertKey }}
+            - name: MINIO_ETCD_CLIENT_CERT_KEY
+              value: "/etc/credentials/etcd_client_cert_key.pem"
+            {{- end }}
+            {{- if .Values.etcd.pathPrefix }}
+            - name: MINIO_ETCD_PATH_PREFIX
+              value: {{ .Values.etcd.pathPrefix }}
+            {{- end }}
+            {{- if .Values.etcd.corednsPathPrefix }}
+            - name: MINIO_ETCD_COREDNS_PATH
+              value: {{ .Values.etcd.corednsPathPrefix }}
+            {{- end }}
+            {{- if .Values.s3gateway.enabled -}}
+            {{- if .Values.s3gateway.accessKey }}
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ template "minio.fullname" . }}{{ end }}
+                  key: awsAccessKeyId
+            {{- end }}
+            {{- if .Values.s3gateway.secretKey }}
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ template "minio.fullname" . }}{{ end }}
+                  key: awsSecretAccessKey
+            {{- end }}
             {{- end }}
             {{- range $key, $val := .Values.environment }}
             - name: {{ $key }}

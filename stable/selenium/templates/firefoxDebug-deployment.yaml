@@ -1,4 +1,4 @@
-{{- if eq true .Values.firefoxDebug.enabled -}}
+{{- if and (eq true .Values.firefoxDebug.enabled) (eq false .Values.firefoxDebug.runAsDaemonSet) -}}
 apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:
@@ -23,6 +23,10 @@ spec:
 {{ toYaml .Values.firefoxDebug.podAnnotations | indent 8 }}
       {{- end}}
     spec:
+      {{- if .Values.firefoxDebug.securityContext }}
+      securityContext:
+{{ toYaml .Values.firefoxDebug.securityContext | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.firefoxDebug.image }}:{{ .Values.firefoxDebug.tag }}"
