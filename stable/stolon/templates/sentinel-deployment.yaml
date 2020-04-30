@@ -50,7 +50,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: STSENTINEL_CLUSTER_NAME
-              value: {{ template "stolon.fullname" . }}
+              value: {{ template "stolon.clusterName" . }}
             - name: STSENTINEL_STORE_BACKEND
               value: {{ .Values.store.backend | quote}}
             {{- if eq .Values.store.backend "kubernetes" }}
