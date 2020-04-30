@@ -65,7 +65,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: STKEEPER_CLUSTER_NAME
-              value: {{ template "stolon.fullname" . }}
+              value: {{ template "stolon.clusterName" . }}
             - name: STKEEPER_STORE_BACKEND
               value: {{ .Values.store.backend | quote }}
             {{- if eq .Values.store.backend "kubernetes" }}
