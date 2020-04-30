@@ -121,15 +121,15 @@ spec:
           livenessProbe:
             tcpSocket:
               port: ldap-port
-            initialDelaySeconds: 20
-            periodSeconds: 10
-            failureThreshold: 10
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           readinessProbe:
             tcpSocket:
               port: ldap-port
-            initialDelaySeconds: 20
-            periodSeconds: 10
-            failureThreshold: 10
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}

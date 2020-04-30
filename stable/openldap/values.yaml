@@ -103,6 +103,16 @@ initResources: {}
  #   cpu: "100m"
  #   memory: "128Mi"
 
+livenessProbe:
+  initialDelaySeconds: 20
+  periodSeconds: 10
+  failureThreshold: 10
+
+readinessProbe:
+  initialDelaySeconds: 20
+  periodSeconds: 10
+  failureThreshold: 10
+
 nodeSelector: {}
 
 tolerations: []
