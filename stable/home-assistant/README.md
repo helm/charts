@@ -182,7 +182,8 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `monitoring.serviceMonitor.labels`            | Set labels for the ServiceMonitor, use this to define your scrape label for Prometheus Operator | `{}` |
 | `monitoring.serviceMonitor.bearerTokenFile`   | Set bearerTokenFile for home-assistant auth (use long lived access tokens) | `nil` |
 | `monitoring.serviceMonitor.bearerTokenSecret` | Set bearerTokenSecret for home-assistant auth (use long lived access tokens) | `nil` |
-
+| `mergeConfiguration`      | Add values to `configuration.yaml` (see the `configmap.yaml` template for details) | `true` |
+| `esphome.enabled`         | Deploy ESPHome | `false` |
 
 
 
@@ -217,6 +218,16 @@ Much of the home assistant configuration occurs inside the various files persist
 ### AppDaemon
 [AppDaemon](https://www.home-assistant.io/docs/ecosystem/appdaemon/) is added as an optional sidecar container to Home Assistant with access to the home assistant configuration `/config/appdaemon`. This allows downloading apps with [HACS](https://github.com/hacs/integration)
 [Home Assistant Configurator UI](https://github.com/danielperna84/hass-configurator) is added as an optional sidecar container to Home Assistant with access to the home assistant configuration for easy in-browser editing and manipulation of Home Assistant.
+
+### ESPHome
+
+This chart will deploy [ESPHome](https://esphome.io/index.html) if `esphome.enabled==true`. Most of the base level configurations for the home-assistant app can also be defined under the `esphome` block as well (see `values.yaml` for specifics).
+
+**NOTE**: this integration sets up the following configurations:
+
+ - stores ESPHome's configuration at `./esphome` under home-assistant's config directory
+ - shares a single `secrets.yaml` between both home-assistant and ESPHome
+ - adds a menu entry in the home-assistant sidebar (if `mergeConfiguration==true`)
 
 ## Git sync secret
 

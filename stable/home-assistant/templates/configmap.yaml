@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "home-assistant.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "home-assistant.name" . }}
+    helm.sh/chart: {{ include "home-assistant.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  snippet.yaml: |
+    # Configure a default setup of Home Assistant (frontend, api, etc)
+    default_config:
+
+    http:
+      {{- if .Values.ingress.enabled }}
+      base_url: {{ print "https://" (first .Values.ingress.hosts) | quote }}
+      {{- else }}
+      base_url: {{ print "http://" (first .Values.ingress.hosts) | quote }}
+      {{- end }}
+
+    # Text to speech
+    tts:
+    - platform: google_translate
+
+    group: !include groups.yaml
+    automation: !include automations.yaml
+    script: !include scripts.yaml
+    scene: !include scenes.yaml
+
+    {{- if .Values.esphome.enabled }}
+    panel_iframe:
+      esphome:
+        title: "ESPHome"
+        {{- if .Values.esphome.ingress.enabled }}
+        url: {{ print "https://" (first .Values.esphome.ingress.hosts) | quote }}
+        {{- else }}
+        url: {{ print "http://" (first .Values.esphome.ingress.hosts) | quote }}
+        {{- end }}
+        icon: mdi:memory
+     {{- end }}

@@ -66,6 +66,28 @@ spec:
         {{- end }}
         {{- end }}
       {{- end }}
+      {{- if .Values.mergeConfiguration }}
+        - name: {{ .Chart.Name }}-config
+          image: mikefarah/yq:3.3.0
+          command:
+          - sh
+          - -c
+          args:
+          - |
+            # if the config already exists, merge it with ours
+            # otherwise, use ours as the default
+            if [ -f config/configuration.yaml ]; then
+              yq m -i config/configuration.yaml snippet.yaml
+            else
+              cp snippet.yaml config/configuration.yaml
+            fi
+          volumeMounts:
+          - mountPath: /workdir/snippet.yaml
+            subPath: snippet.yaml
+            name: snippets
+          - mountPath: /workdir/config
+            name: config
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -392,6 +414,11 @@ spec:
           defaultMode: 256
           secretName: {{ .Values.git.secret }}
       {{ end }}
+      {{- if .Values.mergeConfiguration }}
+      - name: snippets
+        configMap:
+          name: {{ template "home-assistant.fullname" . }}
+      {{- end }}
       {{- if .Values.extraVolumes  }}{{ toYaml .Values.extraVolumes | trim | nindent 6 }}{{ end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:

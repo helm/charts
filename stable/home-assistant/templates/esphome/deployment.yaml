@@ -1,0 +1,148 @@
+{{- if .Values.esphome.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "home-assistant.fullname" . }}-esphome
+  labels:
+    app.kubernetes.io/name: {{ include "home-assistant.name" . }}
+    helm.sh/chart: {{ include "home-assistant.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: esphome
+spec:
+  replicas: 1
+  strategy:
+    type: {{ .Values.esphome.strategyType }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "home-assistant.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: esphome
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "home-assistant.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: esphome
+      {{- if .Values.esphome.podAnnotations }}
+      annotations:
+        {{- range $key, $value := .Values.esphome.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      {{- end }}
+    spec:
+      {{- with .Values.esphome.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range . }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.esphome.hostNetwork }}
+      hostNetwork: {{ .Values.esphome.hostNetwork }}
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
+      initContainers:
+        - name: {{ .Chart.Name }}-esphome-config
+          image: busybox
+          command:
+            - sh
+            - -c
+          args:
+            - |
+              # if a file doesn't exist, k8s creates a directory
+              if [ ! -f /config/secrets.yaml ]; then
+                touch /config/secrets.yaml
+              fi
+          volumeMounts:
+            - mountPath: /config
+              name: config
+      containers:
+        - name: {{ .Chart.Name }}-esphome
+          image: "{{ .Values.esphome.image.repository }}:{{ .Values.esphome.image.tag }}"
+          imagePullPolicy: {{ .Values.esphome.image.pullPolicy }}
+          ports:
+            - name: dashboard
+              containerPort: {{ .Values.esphome.service.port }}
+              protocol: TCP
+          {{- if .Values.esphome.probes.liveness.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: dashboard
+              scheme: {{ .Values.esphome.probes.liveness.scheme }}
+            initialDelaySeconds: {{ .Values.esphome.probes.liveness.initialDelaySeconds }}
+            failureThreshold: {{ .Values.esphome.probes.liveness.failureThreshold }}
+            timeoutSeconds: {{ .Values.esphome.probes.liveness.timeoutSeconds }}
+          {{- end }}
+          {{- if .Values.esphome.probes.readiness.enabled }}
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: dashboard
+              scheme: {{ .Values.esphome.probes.readiness.scheme }}
+            initialDelaySeconds: {{ .Values.esphome.probes.readiness.initialDelaySeconds }}
+            failureThreshold: {{ .Values.esphome.probes.readiness.failureThreshold }}
+            timeoutSeconds: {{ .Values.esphome.probes.readiness.timeoutSeconds }}
+          {{- end }}
+          env:
+            {{- range $key, $value := .Values.esphome.extraEnv }}
+            - name: {{ $key }}
+              value: {{ $value }}
+            {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ template "home-assistant.fullname" . }}-esphome
+          volumeMounts:
+          - mountPath: /config
+            subPath: esphome
+            name: config
+          - mountPath: /config/secrets.yaml
+            subPath: secrets.yaml
+            name: config
+          {{- range .Values.esphome.hostMounts }}
+          {{- if .mountPath }}
+          - mountPath: {{ .mountPath }}
+          {{- else }}
+          - mountPath: {{ .hostPath }}
+          {{- end }}
+            name: {{ .name }}
+          {{- end }}
+          {{- if .Values.esphome.extraVolumeMounts }}{{ toYaml .Values.esphome.extraVolumeMounts | trim | nindent 10 }}{{ end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+      volumes:
+      - name: config
+      {{- if .Values.persistence.enabled }}
+        {{- if .Values.persistence.hostPath }}
+        hostPath:
+          path: {{.Values.persistence.hostPath}}
+          type: Directory
+        {{- else }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "home-assistant.fullname" . }}{{- end }}
+        {{- end }}
+      {{- else }}
+        emptyDir: {}
+      {{ end }}
+      {{- range .Values.esphome.hostMounts }}
+      - name: {{ .name }}
+        hostPath:
+          path: {{.hostPath}}
+          {{- if .type }}
+          type: {{ .type }}
+          {{- end }}
+      {{- end }}
+      {{- if .Values.esphome.extraVolumes  }}{{ toYaml .Values.esphome.extraVolumes | trim | nindent 6 }}{{ end }}
+    {{- with .Values.esphome.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.esphome.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.esphome.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+{{- end }}
