@@ -17,10 +17,14 @@ initFile: |-
     /usr/local/bin/superset-init --username admin --firstname admin --lastname user --email admin@fab.org --password admin
     superset run
   elif [ "$1" == "production-mode" ]; then
-    gunicorn -b 0.0.0.0:8088 \
-      --limit-request-line 0 \
-      --limit-request-field_size 0 \
-      --timeout 300 superset:app
+    gunicorn \
+        -w 10 \
+        -k gevent \
+        --timeout 300 \
+        -b  0.0.0.0:8088 \
+        --limit-request-line 0 \
+        --limit-request-field_size 0 \
+        "superset.app:create_app()"
   else
     echo "You need to specify which mode to start in by setting production-mode"
     echo "or development-mode in extraArguments."
