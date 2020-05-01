@@ -38,6 +38,7 @@ extraLabels: {}
 podAnnotations: {}
 service:
   annotations: {}
+  omitClusterIP: false
   clusterIP: ""
 
   ldapPort: 389

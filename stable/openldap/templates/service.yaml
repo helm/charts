@@ -15,7 +15,11 @@ metadata:
 {{ toYaml .Values.extraLabels | indent 4 }}
 {{- end }}
 spec:
+{{- if not .Values.service.omitClusterIP }}
+  {{- with .Values.service.clusterIP }}
   clusterIP: {{ .Values.service.clusterIP | quote }}
+  {{- end }}
+{{- end }}
 {{- if .Values.service.externalIPs }}
   externalIPs:
 {{ toYaml .Values.service.externalIPs | indent 4 }}
