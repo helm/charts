@@ -113,6 +113,7 @@ spec:
             - "{{ .Values.dags.git.ref }}"
             - "{{ .Values.dags.initContainer.mountPath }}{{ .Values.dags.initContainer.syncSubPath | default "" }}"
             - "{{ .Values.dags.git.repoHost}}"
+            - "{{ .Values.dags.git.repoPort}}"
             - "{{ .Values.dags.git.privateKeyName }}"
           volumeMounts:
             - name: git-clone
@@ -148,6 +149,7 @@ spec:
             - "{{ .Values.dags.git.ref }}"
             - "{{ .Values.dags.initContainer.mountPath }}"
             - "{{ .Values.dags.git.repoHost}}"
+            - "{{ .Values.dags.git.repoPort}}"
             - "{{ .Values.dags.git.privateKeyName }}"
             - "{{ .Values.dags.git.gitSync.refreshTime }}"
           volumeMounts:

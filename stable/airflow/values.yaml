@@ -571,12 +571,20 @@ dags:
     ##
     ## branch name, tag or sha1 to reset to
     ref: master
-    ## pre-created secret with key, key.pub and known_hosts file for private repos
+    ## The name of a pre-created secret containing files for ~/.ssh/ (only needed for PRIVATE ssh repos)
+    ## Note commonly includes id_rsa, id_rsa.pub and known_hosts files
+    ## Note known_hosts is not needed if git.sshKeyscan is true
     secret: ""
-    ## The host of the repo so for example if a github repo put github.com (Only need if using ssh not https git sync)
+    ## Implicitly trust [git.repoHost]:git.repoPort, by auto populating ~/.ssh/known_hosts (only needed for ssh repos)
+    ## Note this is not needed if known_hosts is provided in git.secret
+    ## Note git.repoHost and git.repoPort are required for this to work
+    sshKeyscan: false
+    ## The host of the repo so for example if a github repo put github.com (only needed for ssh repos)
     repoHost: ""
-    ## The name of the private key in your git sync secret (Only need if using ssh not https git sync)
-    privateKeyName: ""
+    ## The port of the repo (only needed for ssh repos)
+    repoPort: 22
+    ## The name of the private key file in your git.secret (only needed for ssh repos)
+    privateKeyName: id_rsa
     gitSync:
       ## Turns on the side car container
       enabled: false
@@ -585,12 +593,12 @@ dags:
         ## docker-airflow image
         repository: alpine/git
         ## image tag
-        tag: 1.0.7
+        tag: 1.0.12
         ## Image pull policy
         ## values: Always or IfNotPresent
         pullPolicy: IfNotPresent
       ## The amount of time in seconds to git pull dags
-      refreshTime: 0
+      refreshTime: 60
       ## If using workers.autoscaling=true with git-sync, git-sync needs to have resources requested
       resources: {}
   initContainer:
@@ -601,7 +609,7 @@ dags:
       ## docker-airflow image
       repository: alpine/git
       ## image tag
-      tag: 1.0.7
+      tag: 1.0.12
       ## Image pull policy
       ## values: Always or IfNotPresent
       pullPolicy: IfNotPresent
