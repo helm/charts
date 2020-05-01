@@ -121,6 +121,7 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `cronjob.affinity`                                           | Cronjob affinity                                        | `nil`                                                   |
 | `service.type`                                               | Kubernetes Service type                                 | `ClusterIp`                                             |
 | `service.loadBalancerIP`                                     | LoadBalancerIp for service type LoadBalancer            | `nil`                                                   |
+| `service.nodePort`                                           | NodePort for service type NodePort                      | `nil`                                                   |
 | `persistence.enabled`                                        | Enable persistence using PVC                            | `false`                                                 |
 | `persistence.annotations`                                    | PVC annotations                                         | `{}`                                                    |
 | `persistence.storageClass`                                   | PVC Storage Class for nextcloud volume                  | `nil` (uses alpha storage class annotation)             |
