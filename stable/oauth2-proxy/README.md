@@ -65,6 +65,7 @@ Parameter | Description | Default
 `config.clientSecret` | oauth client secret | `""`
 `config.cookieSecret` | server specific cookie for the secret; create a new one with `openssl rand -base64 32 | head -c 32 | base64` | `""`
 `config.existingSecret` | existing Kubernetes secret to use for OAuth2 credentials. See [secret template](https://github.com/helm/charts/blob/master/stable/oauth2-proxy/templates/secret.yaml) for the required values | `nil`
+`config.secretConfig` | specific secret config. See Advanced Secret Config below for details | `nil`
 `config.configFile` | custom [oauth2_proxy.cfg](https://github.com/pusher/oauth2_proxy/blob/master/contrib/oauth2_proxy.cfg.example) contents for settings not overridable via environment nor command line | `""`
 `config.existingConfig` | existing Kubernetes configmap to use for the configuration file. See [config template](https://github.com/helm/charts/blob/master/stable/oauth2-proxy/templates/configmap.yaml) for the required values | `nil`
 `config.google.adminEmail` | user impersonated by the google service account | `""`
@@ -116,7 +117,6 @@ Parameter | Description | Default
 `securityContext.runAsNonRoot` | make sure that the container runs as a non-root user | `true`
 `proxyVarsAsSecrets` | choose between environment values or secrets for setting up OAUTH2_PROXY variables. When set to false, remember to add the variables OAUTH2_PROXY_CLIENT_ID, OAUTH2_PROXY_CLIENT_SECRET, OAUTH2_PROXY_COOKIE_SECRET in extraEnv | `true`
 
-
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
@@ -131,6 +131,41 @@ $ helm install stable/oauth2-proxy --name my-release -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Advanced Secret Configuration
+
+If existingSecret is set, all three values are expected to be in
+the specified existingSecret. .secretConfig.clientID.keyName,
+.secretConfig.clientSecret.keyName and .secretConfig.cookieSecret.keyName will
+be respected. All other values in secretConfig are ignored.
+
+If existingSecret not set:
+If .secretConfig.clientID.write == true, clientID will be written to secret
+.secretConfig.clientID.secretName in the key .secretConfig.clientID.keyName.
+If .secretConfig.clientSecret.write == true, clientSecret will be written to secret
+.secretConfig.clientSecret.secretName in the key .secretConfig.clientSecret.keyName.
+If .secretConfig.cookieSecret.write == true, cookieSecret will be written to secret
+.secretConfig.cookieSecret.secretName in the key .secretConfig.cookieSecret.keyName.
+Then no matter what the state of the write values:
+* clientID will be read out of the secret named .secretConfig.clientID.secretName
+  from the value associated with .secretConfig.clientID.keyName
+* clientSecret will be read out of the secret named .secretConfig.clientSecret.secretName
+  from the value associated with .secretConfig.clientSecret.keyName
+* cookieSecret will be read out of the secret named .secretConfig.cookieSecret.secretName
+  from the value associated with .secretConfig.clientSecret.keyName
+
+This can be used for example with the keycloak-operator to automatically read clientID
+and clientSecret from the secret managed by a kind=KeycloakClient object like so:
+cookieSecret: <changeme>
+secretConfig:
+  clientID:
+    secretName: keycloak-client-secret-<clientid>
+    keyName: CLIENT_ID
+    write: false
+  clientSecret:
+    secretName: keycloak-client-secret-<clientid>
+    keyName: CLIENT_SECRET
+    write: false
 
 ## SSL Configuration
 

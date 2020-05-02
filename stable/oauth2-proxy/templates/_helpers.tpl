@@ -52,3 +52,55 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Secret name to use for clientID
+*/}}
+{{- define "oauth2-proxy.clientIDSecretName" -}}
+{{- if .Values.config.secretConfig.clientID.secretName -}}
+{{- printf "%s" .Values.config.secretConfig.clientID.secretName -}}
+{{- else -}}
+{{- printf "%s" (include "oauth2-proxy.fullname" . ) }}
+{{- end }}
+{{- end }}
+
+{{/*
+Secret name to use for clientSecret
+*/}}
+{{- define "oauth2-proxy.clientSecretSecretName" -}}
+{{- if .Values.config.secretConfig.clientSecret.secretName -}}
+{{- printf "%s" .Values.config.secretConfig.clientSecret.secretName -}}
+{{- else -}}
+{{- printf "%s" (include "oauth2-proxy.fullname" . ) }}
+{{- end }}
+{{- end }}
+
+{{/*
+Secret name to use for clientID
+*/}}
+{{- define "oauth2-proxy.cookieSecretSecretName" -}}
+{{- if .Values.config.secretConfig.cookieSecret.secretName -}}
+{{- printf "%s" .Values.config.secretConfig.cookieSecret.secretName -}}
+{{- else -}}
+{{- printf "%s" (include "oauth2-proxy.fullname" . ) }}
+{{- end }}
+{{- end }}
+
+{{/*
+Check to see if any entries in secret.
+Expects an array with:
+index 0 as the secret name
+index 1 as .
+*/}}
+{{- define "oauth2-proxy.entriesInSecret" -}}
+{{- $name := (index . 0) }}
+{{- with (index . 1) }}
+{{- if and .Values.config.secretConfig.cookieSecret.write (eq $name (include "oauth2-proxy.cookieSecretSecretName" .)) }}
+t
+{{- else if and .Values.config.secretConfig.clientSecret.write (eq $name (include "oauth2-proxy.clientSecretSecretName" .)) }}
+t
+{{- else if and .Values.config.secretConfig.clientID.write (eq $name (include "oauth2-proxy.clientIDSecretName" .)) }}
+t
+{{- end }}
+{{- end }}
+{{- end }}
