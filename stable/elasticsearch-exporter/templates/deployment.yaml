@@ -94,9 +94,11 @@ spec:
                     "--es.ssl-skip-verify",
                     {{- end }}
                     {{- if .Values.es.ssl.enabled }}
-                    "--es.ca={{.Values.es.ssl.ca.path | default "/ssl/ca.pem" }}",
-                    "--es.client-cert={{.Values.es.ssl.client.pemPath | default "/ssl/client.pem" }}",
-                    "--es.client-private-key={{.Values.es.ssl.client.keyPath | default "/ssl/client.key" }}",
+                    "--es.ca={{.Values.es.ssl.ca.path }}",
+                    {{- if .Values.es.ssl.client.enabled }}
+                    "--es.client-cert={{ .Values.es.ssl.client.pemPath }}",
+                    "--es.client-private-key={{ .Values.es.ssl.client.keyPath }}",
+                    {{- end }}
                     {{- end }}
                     "--web.listen-address=:{{ .Values.service.httpPort }}",
                     "--web.telemetry-path={{ .Values.web.path }}"]
