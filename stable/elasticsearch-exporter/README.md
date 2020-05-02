@@ -88,6 +88,7 @@ Parameter | Description | Default
 `es.ssl.useExistingSecrets` | If true, certs from secretMounts will be used | `false`
 `es.ssl.ca.pem` | PEM that contains trusted CAs used for setting up secure Elasticsearch connection |
 `es.ssl.ca.path` | Path of ca pem file which should match a secretMount path |
+`es.ssl.client.enabled` | If true, use SSL client certificates for authentication | `true`
 `es.ssl.client.pem` | PEM that contains the client cert to connect to Elasticsearch |
 `es.ssl.client.pemPath` | Path of client pem file which should match a secretMount path |
 `es.ssl.client.key` | Private key for client auth when connecting to Elasticsearch |
