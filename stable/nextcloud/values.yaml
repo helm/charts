@@ -41,11 +41,6 @@ ingress:
   #      log_not_found off;
   #      access_log off;
   #    }
-  #    location ~ \.(?:png|html|ttf|ico|jpg|jpeg)$ {
-  #      try_files $uri /index.php$request_uri;
-  #      # Optional: Don't log access to other assets
-  #      access_log off;
-  #    }
   #    location ~ ^/(?:build|tests|config|lib|3rdparty|templates|data)/ {
   #      deny all;
   #    }
