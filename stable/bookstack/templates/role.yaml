@@ -12,10 +12,4 @@ rules:
 - apiGroups: [""]
   resources: ["endpoints"]
   verbs: ["get"]
-{{- if .Values.podSecurityPolicy.enabled }}
-- apiGroups:      ['extensions']
-  resources:      ['podsecuritypolicies']
-  verbs:          ['use']
-  resourceNames:  [{{ template "bookstack.fullname" . }}]
-{{- end }}
 {{- end }}

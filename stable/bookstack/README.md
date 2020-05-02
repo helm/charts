@@ -50,7 +50,7 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `env`                             | additional env variables                 | `{}`                                                     |
 | `replicaCount`                    | Number of replicas to start              | `1`                                                     |
 | `image.repository`                | Bookstack image name                     | `solidnerd/bookstack`                                   |
-| `image.tag`                       | Bookstack image tag                      | `0.27.5`                                                |
+| `image.tag`                       | Bookstack image tag                      | `0.29.1`                                                |
 | `image.pullPolicy`                | Bookstack image pull policy              | `IfNotPresent`                                          |
 | `externalDatabase.host`           | Host of the external database            | `nil`                                                   |
 | `externalDatabase.port`           | Port of the external database            | `3306`                                                  |
@@ -68,7 +68,6 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `mariadb.master.persistence.size`           | PVC Storage Request for MariaDB volume   | `8Gi`                                                   |
 | `service.type`                    | Desired service type                                | `ClusterIP`               |
 | `service.port`                    | Service exposed port                               | `80`                    |
-| `podSecurityPolicy.enabled`	    | Create & use Pod Security Policy resources  | `false`						      |
 | `rbac.create` 		            | Use Role-based Access Control		  | `true`						      |
 | `serviceAccount.create`	         | Should we create a ServiceAccount	          | `true`						      |
 | `serviceAccount.name`		         | Name of the ServiceAccount to use           | `null`					      |
@@ -102,11 +101,11 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm upgrade --install my-release \
-  --set podSecurityPolicy.enabled=true \
+  --set replicaCount=2 \
     stable/bookstack
 ```
 
-The above command enables podSecurityPolicy.
+The above command changes the amount of pods running Bookstack to 2.
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 

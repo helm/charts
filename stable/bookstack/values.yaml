@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: solidnerd/bookstack
-  tag: 0.27.5
+  tag: 0.29.1
   pullPolicy: IfNotPresent
 
 app:
@@ -81,11 +81,6 @@ mariadb:
 service:
   type: ClusterIP
   port: 80
-
-# If true, create & use Pod Security Policy resources
-# https://kubernetes.io/docs/concepts/policy/pod-security-policy/
-podSecurityPolicy:
-  enabled: false
 
 ## For RBAC support:
 rbac:
