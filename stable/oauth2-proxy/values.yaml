@@ -10,6 +10,55 @@ config:
   # Example:
   # existingSecret: secret
   cookieSecret: "XXXXXXXXXX"
+  secretConfig:
+    # If existingSecret is set, all three values are expected to be in
+    # the specified existingSecret. .secretConfig.clientID.keyName,
+    # .secretConfig.clientSecret.keyName and .secretConfig.cookieSecret.keyName will
+    # be respected. All other values in secretConfig are ignored.
+    #
+    # If existingSecret not set:
+    # If .secretConfig.clientID.write == true, clientID will be written to secret
+    # .secretConfig.clientID.secretName in the key .secretConfig.clientID.keyName.
+    # If .secretConfig.clientSecret.write == true, clientSecret will be written to secret
+    # .secretConfig.clientSecret.secretName in the key .secretConfig.clientSecret.keyName.
+    # If .secretConfig.cookieSecret.write == true, cookieSecret will be written to secret
+    # .secretConfig.cookieSecret.secretName in the key .secretConfig.cookieSecret.keyName.
+    # Then no matter what the state of the write values:
+    # * clientID will be read out of the secret named .secretConfig.clientID.secretName
+    #   from the value associated with .secretConfig.clientID.keyName
+    # * clientSecret will be read out of the secret named .secretConfig.clientSecret.secretName
+    #   from the value associated with .secretConfig.clientSecret.keyName
+    # * cookieSecret will be read out of the secret named .secretConfig.cookieSecret.secretName
+    #   from the value associated with .secretConfig.clientSecret.keyName
+    #
+    # This can be used for example with the keycloak-operator to automatically read clientID
+    # and clientSecret from the secret managed by a kind=KeycloakClient object like so:
+    # cookieSecret: <changeme>
+    # secretConfig:
+    #   clientID:
+    #     secretName: keycloak-client-secret-<clientid>
+    #     keyName: CLIENT_ID
+    #     write: false
+    #   clientSecret:
+    #     secretName: keycloak-client-secret-<clientid>
+    #     keyName: CLIENT_SECRET
+    #     write: false
+    clientID:
+      # If not set, the chart will manage the secret name
+      # secretName: ""
+      keyName: client-id
+      write: true
+    clientSecret:
+      # If not set, the chart will manage the secret name
+      # secretName: ""
+      keyName: client-secret
+      write: true
+    cookieSecret:
+      # If not set, the chart will manage the secret name
+      # secretName: ""
+      keyName: cookie-secret
+      write: true
+
   google: {}
     # adminEmail: xxxx
     # serviceAccountJson: xxxx
