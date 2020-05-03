@@ -1,4 +1,4 @@
-{{- if eq true .Values.firefox.enabled -}}
+{{- if and (eq true .Values.firefox.enabled) (eq false .Values.firefox.runAsDaemonSet) -}}
 apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:

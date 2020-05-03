@@ -1,5 +1,18 @@
 # Datadog changelog
 
+## 2.2.9
+
+* Fixing variables description in README and Migration documentation (#22031)
+* Avoid volumes mount conflict between `system-probe` and `logs` volumes in the `agent`.
+
+## 2.2.8
+
+* Mount `system-probe` socket in `agent` container when system-probe is enabled
+
+## 2.2.7
+
+* Add "Cluster-Agent" `Event` `create` RBAC permission
+
 ## 2.2.6
 
 * Ensure the `trace-agent` computes the same hostname as the core `agent`.
