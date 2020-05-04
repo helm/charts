@@ -231,3 +231,4 @@ The following tables list the configurable parameters and their default values.
 | prometheus.kubeStateMetrics                  | Enable or disable kube state metrics               | false
 | prometheus.nodeExporter                      | Enable or disable node exporter                    | false
 | prometheus.pushgateway                       | Enable or disable push gateway                     | false
+| prometheus.proxy.service.type                | Service type to use                                | LoadBalancer

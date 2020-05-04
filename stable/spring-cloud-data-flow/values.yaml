@@ -206,3 +206,6 @@ prometheus:
         - source_labels: [__meta_kubernetes_pod_name]
           action: replace
           target_label: kubernetes_pod_name
+  proxy:
+    service:
+      type: LoadBalancer
