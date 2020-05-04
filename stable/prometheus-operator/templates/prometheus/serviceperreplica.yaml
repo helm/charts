@@ -37,6 +37,13 @@ items:
           {{- end }}
           port: {{ $serviceValues.port }}
           targetPort: {{ $serviceValues.targetPort }}
+        {{- if .Values.prometheus.prometheusSpec.thanos }}
+        - name: grpc
+          port: 10901
+          protocol: TCP
+          targetPort: 10901
+        {{- end }}
+
       selector:
         app: prometheus
         prometheus: {{ include "prometheus-operator.fullname" $ }}-prometheus

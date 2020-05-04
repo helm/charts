@@ -40,12 +40,12 @@ spec:
     port: {{ .Values.prometheus.service.port }}
     targetPort: {{ .Values.prometheus.service.targetPort }}
 
-{{- if .Values.prometheus.prometheusSpec.thanos }}
+  {{- if .Values.prometheus.prometheusSpec.thanos }}
   - name: grpc
     port: 10901
     protocol: TCP
     targetPort: 10901
-{{- end }}
+  {{- end }}
 
 {{- if .Values.prometheus.service.additionalPorts }}
 {{ toYaml .Values.prometheus.service.additionalPorts | indent 2 }}
