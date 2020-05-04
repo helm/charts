@@ -206,6 +206,7 @@ spec:
           {{- end }}
           livenessProbe:
             httpGet:
+              scheme: {{ .Values.web.livenessProbe.scheme }}
               {{- if .Values.ingress.web.livenessPath }}
               path: "{{ .Values.ingress.web.livenessPath }}"
               {{- else }}
@@ -221,6 +222,7 @@ spec:
 
           readinessProbe:
             httpGet:
+              scheme: {{ .Values.web.readinessProbe.scheme }}
               path: "{{ .Values.ingress.web.path }}/health"
               port: web
             initialDelaySeconds: {{ .Values.web.initialDelaySeconds }}
