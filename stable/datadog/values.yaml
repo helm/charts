@@ -535,13 +535,6 @@ clusterAgent:
   #
   createPodDisruptionBudget: false
 
-kubeStateMetrics:
-  ## @param enabled - boolean - required
-  ## If true, deploys the kube-state-metrics deployment.
-  ## ref: https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics
-  #
-  enabled: true
-
 agents:
   ## @param enabled - boolean - required
   ## You should keep Datadog DaemonSet enabled!

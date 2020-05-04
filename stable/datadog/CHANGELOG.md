@@ -1,5 +1,9 @@
 # Datadog changelog
 
+## 2.2.10
+
+* Remove `kubeStateMetrics` section from `values.yaml` as not used anymore
+
 ## 2.2.9
 
 * Fixing variables description in README and Migration documentation (#22031)
