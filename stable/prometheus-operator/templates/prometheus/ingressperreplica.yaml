@@ -10,7 +10,7 @@ metadata:
 items:
 {{ range $i, $e := until $count }}
   - kind: Ingress
-    {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
+    {{- if $.Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
     apiVersion: networking.k8s.io/v1beta1
     {{ else }}
     apiVersion: extensions/v1beta1
