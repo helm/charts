@@ -125,6 +125,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
 | `image.fluent_bit.tag`             | Image tag                                  | `1.3.7`                                           |
 | `image.pullPolicy`                 | Image pull policy                          | `Always`                                          |
+| `image.pullSecrets`                | Image pull secrets                         | `nil`                                             |
 | `nameOverride`                     | Override name of app                   | `nil`                                        |
 | `fullnameOverride`                 | Override full name of app              | `nil`                                        |
 | `image.pullSecrets`                | Specify image pull secrets                 | `nil`                                             |
@@ -142,6 +143,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `rbac.pspEnabled`                  | Specifies whether a PodSecurityPolicy should be created. | `false`                             |
 | `serviceAccount.create`            | Specifies whether a ServiceAccount should be created. | `true`                                 |
 | `serviceAccount.name`              | The name of the ServiceAccount to use.     | `NULL`                                            |
+| `serviceAccount.annotations`       | Annotations to add to the service account. | `{}`                                              |
 | `rawConfig`                        | Raw contents of fluent-bit.conf            | `@INCLUDE fluent-bit-service.conf`<br>`@INCLUDE fluent-bit-input.conf`<br>`@INCLUDE fluent-bit-filter.conf`<br>` @INCLUDE fluent-bit-output.conf`                                                                         |
 | `resources`                        | Pod resource requests & limits                                 | `{}`                          |
 | `securityContext`                  | [Security settings for a container](https://kubernetes.io/docs/concepts/policy/security-context) | `{}` |
@@ -164,6 +166,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `metrics.serviceMonitor.scrapeTimeout`    | Scrape timeout. If not set, the Prometheus default scrape timeout is used             | `nil`   |
 | `trackOffsets`                     | Specify whether to track the file offsets for tailing docker logs. This allows fluent-bit to pick up where it left after pod restarts but requires access to a `hostPath` | `false` |
 | `testFramework.image`              | `test-framework` image repository.         | `dduportal/bats`                                  |
+| `testFramework.pullSecrets`        | `test-framework` image pull secrets        | `nil`                                             |
 | `testFramework.tag`                | `test-framework` image tag.                | `0.4.0`                                           |
 
 

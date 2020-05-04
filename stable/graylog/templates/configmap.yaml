@@ -176,7 +176,7 @@ data:
   {{- end }}
   {{- if .Values.graylog.geoip.enabled }}
     echo "Downloading Maxmind GeoLite2 ..."
-    curl -s --location --retry 3 -o /tmp/GeoLite2-City.tar.gz "https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz"
+    curl -s --location --retry 3 -o /tmp/GeoLite2-City.tar.gz "{{ .Values.graylog.geoip.mmdbUri }}"
     curlreturn=$?
     if [[ $curlreturn -eq 0 ]]; then
       mkdir -p ${GRAYLOG_HOME}/geoip && cd ${GRAYLOG_HOME}/geoip && tar xvzf /tmp/GeoLite2-City.tar.gz --wildcards "*.mmdb" --strip-components=1 -C ${GRAYLOG_HOME}/geoip && chown -R graylog:graylog ${GRAYLOG_HOME}/geoip

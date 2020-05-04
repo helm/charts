@@ -37,6 +37,9 @@ spec:
         app: {{ template "airflow.name" . }}
         component: flower
         release: {{ .Release.Name }}
+{{- if .Values.flower.podLabels }}
+{{ toYaml .Values.flower.podLabels | indent 8 }}
+{{- end }}
     spec:
       {{- if .Values.airflow.image.pullSecret }}
       imagePullSecrets:
@@ -54,6 +57,11 @@ spec:
       {{- if .Values.flower.tolerations }}
       tolerations:
 {{ toYaml .Values.flower.tolerations | indent 8 }}
+      {{- end }}
+      serviceAccountName: {{ template "airflow.serviceAccountName" . }}
+      {{- if .Values.flower.securityContext }}
+      securityContext:
+{{ toYaml .Values.flower.securityContext | indent 8 }}
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}-flower

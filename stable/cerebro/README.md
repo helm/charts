@@ -49,6 +49,11 @@ The following table lists the configurable parameters of the cerebro chart and t
 | `init.image.tag`                    | The image tag to pull               | `musl`                                    |
 | `init.image.pullPolicy`             | Image pull policy                   | `IfNotPresent`                            |
 | `deployment.annotations`            | Annotations for deployment          | `{}`                                      |
+| `deployment.podAnnotations`         | Additional pod annotations          | `{}`                                      |
+| `deployment.labels`                 | Additional labels for deployment    | `{}`                                      |
+| `deployment.podLabels`              | Additional pod labels               | `{}`                                      |
+| `deployment.livenessProbe.enabled`  | Enable livenessProbe                | `true`                                    |
+| `deployment.readinessProbe.enabled` | Enable readinessProbe               | `true`                                    |
 | `service.type`                      | Type of Service                     | `ClusterIP`                               |
 | `service.port`                      | Port for kubernetes service         | `80`                                      |
 | `service.annotations`               | Annotations to add to the service   | `{}`                                      |
@@ -68,6 +73,7 @@ The following table lists the configurable parameters of the cerebro chart and t
 | `config.restHistorySize`            | Rest request history size per user  | `50`                                      |
 | `config.hosts`                      | A list of known hosts               | `[]`                                      |
 | `config.secret`                     | Secret used to sign session cookies | `(random alphanumeric 64 length string)`  |
+| `config.tlsVerify`                  | Validate Elasticsearch cert         | `true`                                    |
 | `securityContext`                   | Security context for pod            | `See values.yaml`                         |
 
 

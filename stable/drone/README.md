@@ -1,5 +1,7 @@
 # Drone.io
 
+> This chart is deprecated in favor of the [official Drone chart](https://github.com/drone/charts).
+
 [Drone](http://readme.drone.io/) v1 is a Continuous Integration platform built on container technology with native Kubernetes support.
 
 > It is not recommended to upgrade from earlier (0.8.x) versions of Drone due to the large amount of breaking changes both in the product and in the helm charts.

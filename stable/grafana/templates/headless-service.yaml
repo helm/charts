@@ -13,7 +13,6 @@ metadata:
 spec:
   clusterIP: None
   selector:
-    app: {{ template "grafana.name" . }}
-    release: {{ .Release.Name }}
+    {{- include "grafana.selectorLabels" . | nindent 4 }}
   type: ClusterIP
 {{- end }}

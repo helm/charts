@@ -1,9 +1,31 @@
+### 1.26.1
+* [7a9cd1bb4](https://github.com/kubernetes/charts/commit/7a9cd1bb4): Updated permissions of files in ~/.ssh directory
+
+### 1.26.0
+* [ec6b96f](https://github.com/kubernetes/charts/commit/ec6b96f): Bump up GoCD Version to 20.3.0
+### 1.25.1
+
+* [b70dd76](https://github.com/kubernetes/charts/commit/b70dd76): Update k8s supported versions to 1.14+.
+
+### 1.25.0
+
+* [21277f47](https://github.com/kubernetes/charts/commit/21277f47): Add docs for ingress
+
+### 1.24.0
+
+* [5b3b6e173](https://github.com/kubernetes/charts/commit/5b3b6e173): Update docs to mention about TLS changes
+* [c10bb1088](https://github.com/kubernetes/charts/commit/c10bb1088): Remove usages of 8154 https port
+
+### 1.23.0
+* [efc2c8c](https://github.com/kubernetes/charts/commit/efc2c8c): Bump up GoCD Version to 20.2.0
+
 ### 1.22.1
 * [b856007](https://github.com/kubernetes/charts/commit/b856007): Ingress version api change
 * [e2f27a9](https://github.com/kubernetes/charts/commit/e2f27a9): Quote ingress host
 
 ### 1.22.0
 * [bcd9825](https://github.com/kubernetes/charts/commit/bcd9825): Bump up GoCD Version to 20.1.0
+
 ### 1.21.0
 * [e4ffdda](https://github.com/kubernetes/charts/commit/e4ffdda): Bump up GoCD Version to 19.12.0
 ### 1.20.1
@@ -247,7 +269,7 @@
 
 ### 1.4.0
 
-* [f5249551](https://github.com/kubernetes/charts/commit/f5249551):  
+* [f5249551](https://github.com/kubernetes/charts/commit/f5249551):
   - Bump up GoCD app version to 18.8.0
   - Updated kubernetes elastic agent plugin version to 1.0.2
   - Updated post install script

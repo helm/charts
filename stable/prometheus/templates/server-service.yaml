@@ -37,9 +37,18 @@ spec:
     {{- if .Values.server.service.nodePort }}
       nodePort: {{ .Values.server.service.nodePort }}
     {{- end }}
+    {{- if .Values.server.service.gRPC.enabled }}
+    - name: grpc
+      port: {{ .Values.server.service.gRPC.servicePort }}
+      protocol: TCP
+      targetPort: 10901
+    {{- if .Values.server.service.gRPC.nodePort }}
+      nodePort: {{ .Values.server.service.gRPC.nodePort }}
+    {{- end }}
+    {{- end }}
   selector:
   {{- if and .Values.server.statefulSet.enabled .Values.server.service.statefulsetReplica.enabled }}
-    statefulset.kubernetes.io/pod-name: {{ .Release.Name }}-{{ .Values.server.name }}-{{ .Values.server.service.statefulsetReplica.replica }}
+    statefulset.kubernetes.io/pod-name: {{ template "prometheus.server.fullname" . }}-{{ .Values.server.service.statefulsetReplica.replica }}
   {{- else -}}
     {{- include "prometheus.server.matchLabels" . | nindent 4 }}
 {{- if .Values.server.service.sessionAffinity }}

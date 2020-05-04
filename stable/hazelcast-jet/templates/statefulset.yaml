@@ -39,6 +39,24 @@ spec:
       {{- if .Values.gracefulShutdown.enabled }}
       terminationGracePeriodSeconds: {{ .Values.gracefulShutdown.maxWaitSeconds }}
       {{- end }}
+      hostNetwork: false
+      hostPID: false
+      hostIPC: false
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        runAsNonRoot: {{ if eq (int .Values.securityContext.runAsUser) 0 }}false{{ else }}true{{ end }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+        runAsGroup: {{ .Values.securityContext.runAsGroup }}
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
       containers:
       - name: {{ template "hazelcast-jet.fullname" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -47,7 +65,8 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         ports:
         - name: hazelcast-jet
-          containerPort: 5701
+          containerPort: {{ if .Values.hostPort }}{{ .Values.hostPort }}{{ else }}5701{{ end }}
+          hostPort: {{ .Values.hostPort }}
         {{- if .Values.metrics.enabled }}
         - name: metrics
           containerPort: {{ .Values.metrics.service.port }}
@@ -55,8 +74,9 @@ spec:
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
-            path: /hazelcast/health/node-state
-            port: 5701
+            path: {{ .Values.livenessProbe.path }}
+            port: {{ if .Values.livenessProbe.port }}{{ .Values.livenessProbe.port }}{{ else if .Values.hostPort }}{{ .Values.hostPort }}{{ else }}5701{{ end }}
+            scheme: {{ .Values.livenessProbe.scheme }}
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -66,8 +86,9 @@ spec:
         {{- if .Values.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
-            path: /hazelcast/health/node-state
-            port: 5701
+            path: {{ .Values.readinessProbe.path }}
+            port: {{ if .Values.readinessProbe.port }}{{ .Values.readinessProbe.port }}{{ else if .Values.hostPort }}{{ .Values.hostPort }}{{ else }}5701{{ end }}
+            scheme: {{ .Values.readinessProbe.scheme }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
@@ -77,20 +98,43 @@ spec:
         volumeMounts:
         - name: hazelcast-jet-storage
           mountPath: /data/hazelcast-jet
+        {{- if .Values.customVolume }}
+        - name: hazelcast-jet-custom-volume
+          mountPath: /data/custom
+        {{- end }}
         env:
+        {{- if .Values.customVolume }}
+        - name: CLASSPATH
+          value: "/data/custom:/data/custom/*"
+        {{- end }}
         {{- if .Values.metrics.enabled }}
         - name: PROMETHEUS_PORT
           value: "{{ .Values.metrics.service.port }}"
         {{- end }}
         - name: JAVA_OPTS
-          value: "-Dhazelcast.rest.enabled={{ .Values.jet.rest }} -Dhazelcast.config=/data/hazelcast-jet/hazelcast.yaml -Dhazelcast.jet.config=/data/hazelcast-jet/hazelcast-jet.yaml -DserviceName={{ template "hazelcast-jet.fullname" . }} -Dnamespace={{ .Release.Namespace }}  {{ if .Values.gracefulShutdown.enabled }}-Dhazelcast.shutdownhook.policy=GRACEFUL -Dhazelcast.shutdownhook.enabled=true -Dhazelcast.graceful.shutdown.max.wait={{ .Values.gracefulShutdown.maxWaitSeconds }} {{ end }}  {{ if .Values.metrics.enabled }}-Dhazelcast.jmx=true{{ end }} {{ .Values.jet.javaOpts }}"
+          value: "-Dhazelcast.config=/data/hazelcast-jet/hazelcast.yaml -Dhazelcast.jet.config=/data/hazelcast-jet/hazelcast-jet.yaml -DserviceName={{ template "hazelcast-jet.fullname" . }} -Dnamespace={{ .Release.Namespace }}  {{ if .Values.gracefulShutdown.enabled }}-Dhazelcast.shutdownhook.policy=GRACEFUL -Dhazelcast.shutdownhook.enabled=true -Dhazelcast.graceful.shutdown.max.wait={{ .Values.gracefulShutdown.maxWaitSeconds }} {{ end }}  {{ if .Values.metrics.enabled }}-Dhazelcast.jmx=true{{ end }} {{ .Values.jet.javaOpts }}"
+        {{- if .Values.jet.loggingLevel }}
+        - name: LOGGING_LEVEL
+          value: {{ .Values.jet.loggingLevel }}
+        {{- end }}
+        {{- if .Values.securityContext.enabled }}
+        securityContext:
+          runAsNonRoot: {{ if eq (int .Values.securityContext.runAsUser) 0 }}false{{ else }}true{{ end }}
+          runAsUser: {{ .Values.securityContext.runAsUser }}
+          runAsGroup: {{ .Values.securityContext.runAsGroup }}
+          privileged: false
+          readOnlyRootFilesystem: {{ .Values.securityContext.readOnlyRootFilesystem }}
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        {{- end }}
       serviceAccountName: {{ template "hazelcast-jet.serviceAccountName" . }}
-      {{- if .Values.securityContext.enabled }}
-      securityContext:
-        runAsUser: {{ .Values.securityContext.runAsUser }}
-        fsGroup: {{ .Values.securityContext.fsGroup }}
-      {{- end }}
       volumes:
       - name: hazelcast-jet-storage
         configMap:
           name: {{ template "hazelcast-jet.fullname" . }}-configuration
+      {{- if .Values.customVolume }}
+      - name: hazelcast-jet-custom-volume
+{{ toYaml .Values.customVolume | indent 8 }}
+      {{- end }}

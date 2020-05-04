@@ -7,7 +7,7 @@ podAnnotations: {}
 podLabels: {}
 image:
   repository: metabase/metabase
-  tag: v0.34.0
+  tag: v0.34.3
   pullPolicy: IfNotPresent
 
 ## String to fully override metabase.fullname template
@@ -78,6 +78,8 @@ service:
   type: ClusterIP
   externalPort: 80
   internalPort: 3000
+  # Used to fix NodePort when service.type: NodePort.
+  nodePort:
   annotations: {}
     # Used to add custom annotations to the Service.
     # service.beta.kubernetes.io/aws-load-balancer-internal: "0.0.0.0/0"

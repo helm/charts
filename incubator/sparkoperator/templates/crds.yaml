@@ -1,5 +1,6 @@
-apiVersion: apiextensions.k8s.io/v1beta1
+{{ if .Values.installCrds }}
 kind: CustomResourceDefinition
+apiVersion: apiextensions.k8s.io/v1beta1
 metadata:
   name: sparkapplications.sparkoperator.k8s.io
   labels:
@@ -1965,7 +1966,6 @@ spec:
       required:
       - metadata
       - spec
-      type: object
   version: v1beta2
   versions:
   - name: v1beta2
@@ -3963,7 +3963,6 @@ spec:
       required:
       - metadata
       - spec
-      type: object
   version: v1beta2
   versions:
   - name: v1beta2
@@ -3975,3 +3974,4 @@ status:
     plural: ""
   conditions: []
   storedVersions: []
+{{ end }}

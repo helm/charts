@@ -166,9 +166,9 @@ rules:
   verbs: ["list", "watch"]
 {{ end -}}
 {{ if .Values.collectors.volumeattachments }}
-- apiGroups: ["storageclasses.k8s.io"]
+- apiGroups: ["storage.k8s.io"]
   resources:
-    - storageclasses
+    - volumeattachments
   verbs: ["list", "watch"]
 {{ end -}}
 {{ if .Values.collectors.verticalpodautoscalers }}

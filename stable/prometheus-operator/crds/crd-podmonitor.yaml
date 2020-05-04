@@ -1,4 +1,4 @@
-# https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.35/example/prometheus-operator-crd/monitoring.coreos.com_podmonitors.yaml
+# https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.38/example/prometheus-operator-crd/monitoring.coreos.com_podmonitors.yaml
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
@@ -126,7 +126,7 @@ spec:
                     description: HTTP path to scrape for metrics.
                     type: string
                   port:
-                    description: Name of the port this endpoint refers to. Mutually
+                    description: Name of the pod port this endpoint refers to. Mutually
                       exclusive with targetPort.
                     type: string
                   proxyUrl:
@@ -189,8 +189,7 @@ spec:
                     anyOf:
                     - type: integer
                     - type: string
-                    description: Name or number of the target port of the endpoint.
-                      Mutually exclusive with port.
+                    description: 'Deprecated: Use ''port'' instead.'
                     x-kubernetes-int-or-string: true
                 type: object
               type: array
@@ -260,9 +259,3 @@ spec:
   - name: v1
     served: true
     storage: true
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: []
-  storedVersions: []

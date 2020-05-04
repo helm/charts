@@ -4,7 +4,7 @@
 
 image:
   repository: coredns/coredns
-  tag: "1.6.7"
+  tag: "1.6.9"
   pullPolicy: IfNotPresent
 
 replicaCount: 1
@@ -127,6 +127,9 @@ nodeSelector: {}
 #     value: master
 #     effect: NoSchedule
 tolerations: []
+
+# https://kubernetes.io/docs/tasks/run-application/configure-pdb/#specifying-a-poddisruptionbudget
+podDisruptionBudget: {}
 
 # configure custom zone files as per https://coredns.io/2017/05/08/custom-dns-entries-for-kubernetes/
 zoneFiles: []

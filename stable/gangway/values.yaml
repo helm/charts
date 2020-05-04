@@ -19,6 +19,12 @@ fullnameOverride: ""
 #  ...
 #  -----END CERTIFICATE-----
 
+# Add Env Variables to pod
+env: {}
+
+# Add annotations to the pod
+podAnnotations: {}
+
 gangway:
   # The address to listen on. Defaults to 0.0.0.0 to listen on all interfaces.
   # Env var: GANGWAY_HOST

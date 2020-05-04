@@ -10,10 +10,11 @@ spec:
     matchLabels:
       {{- include "prometheus.alertmanager.matchLabels" . | nindent 6 }}
   replicas: {{ .Values.alertmanager.replicaCount }}
-  {{- if .Values.server.strategy }}
+  {{- if .Values.alertmanager.strategy }}
   strategy:
-{{ toYaml .Values.server.strategy | indent 4 }}
-  {{- end }}
+{{ toYaml .Values.alertmanager.strategy | trim | indent 4 }}
+    {{ if eq .Values.alertmanager.strategy.type "Recreate" }}rollingUpdate: null{{ end }}
+{{- end }}
   template:
     metadata:
     {{- if .Values.alertmanager.podAnnotations }}
@@ -30,6 +31,10 @@ spec:
       schedulerName: "{{ .Values.alertmanager.schedulerName }}"
 {{- end }}
       serviceAccountName: {{ template "prometheus.serviceAccountName.alertmanager" . }}
+      {{- if .Values.alertmanager.extraInitContainers }}
+      initContainers:
+{{ toYaml .Values.alertmanager.extraInitContainers | indent 8 }}
+      {{- end }}
 {{- if .Values.alertmanager.priorityClassName }}
       priorityClassName: "{{ .Values.alertmanager.priorityClassName }}"
 {{- end }}
@@ -81,18 +86,20 @@ spec:
               readOnly: {{ .readOnly }}
           {{- end }}
 
-        - name: {{ template "prometheus.name" . }}-{{ .Values.alertmanager.name }}-{{ .Values.configmapReload.name }}
-          image: "{{ .Values.configmapReload.image.repository }}:{{ .Values.configmapReload.image.tag }}"
-          imagePullPolicy: "{{ .Values.configmapReload.image.pullPolicy }}"
+        {{- if .Values.configmapReload.alertmanager.enabled }}
+        - name: {{ template "prometheus.name" . }}-{{ .Values.alertmanager.name }}-{{ .Values.configmapReload.alertmanager.name }}
+          image: "{{ .Values.configmapReload.alertmanager.image.repository }}:{{ .Values.configmapReload.alertmanager.image.tag }}"
+          imagePullPolicy: "{{ .Values.configmapReload.alertmanager.image.pullPolicy }}"
           args:
             - --volume-dir=/etc/config
             - --webhook-url=http://127.0.0.1:9093{{ .Values.alertmanager.prefixURL }}/-/reload
           resources:
-{{ toYaml .Values.configmapReload.resources | indent 12 }}
+{{ toYaml .Values.configmapReload.alertmanager.resources | indent 12 }}
           volumeMounts:
             - name: config-volume
               mountPath: /etc/config
               readOnly: true
+        {{- end }}
     {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
       {{ toYaml .Values.imagePullSecrets | indent 2 }}
