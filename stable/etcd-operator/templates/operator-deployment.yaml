@@ -36,7 +36,7 @@ spec:
 {{- range $key, $value := .Values.etcdOperator.commandArgs }}
         - "--{{ $key }}={{ $value }}"
 {{- end }}
-{{- if .Values.options.clusterWide }}
+{{- if .Values.etcdOperator.clusterWide }}
         args:
         - -cluster-wide
 {{- end }}

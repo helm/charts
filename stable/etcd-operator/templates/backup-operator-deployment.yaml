@@ -35,10 +35,6 @@ spec:
 {{- range $key, $value := .Values.backupOperator.commandArgs }}
         - "--{{ $key }}={{ $value }}"
 {{- end }}
-{{- if .Values.options.clusterWide }}
-        args:
-        - -cluster-wide
-{{- end }}
         env:
         - name: MY_POD_NAMESPACE
           valueFrom:

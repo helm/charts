@@ -69,7 +69,6 @@ The following table lists the configurable parameters of the etcd-operator chart
 | `customResources.createEtcdClusterCRD`            | Create a custom resource: EtcdCluster                                | `false`                                        |
 | `customResources.createBackupCRD`                 | Create an a custom resource: EtcdBackup                              | `false`                                        |
 | `customResources.createRestoreCRD`                | Create an a custom resource: EtcdRestore                             | `false`                                        |
-| `options.clusteWide`                              | Make Operators work clusterwide                                      | `false`                                        |
 | `etcdOperator.name`                               | Etcd Operator name                                                   | `etcd-operator`                                |
 | `etcdOperator.replicaCount`                       | Number of operator replicas to create (only 1 is supported)          | `1`                                            |
 | `etcdOperator.image.repository`                   | etcd-operator container image                                        | `quay.io/coreos/etcd-operator`                 |
@@ -82,6 +81,7 @@ The following table lists the configurable parameters of the etcd-operator chart
 | `etcdOperator.podAnnotations`                     | Annotations for the etcd operator pod                                | `{}`                                           |
 | `etcdOperator.commandArgs`                        | Additional command arguments                                         | `{}`                                           |
 | `etcdOperator.priorityClassName`                  | Priority class for the etcd-operator pod(s)                          | `""`                                           |
+| `etcdOperator.clusteWide`                         | Make etcd-operator works clusterwide                                 | `false`                                        |
 | `backupOperator.name`                             | Backup operator name                                                 | `etcd-backup-operator`                         |
 | `backupOperator.replicaCount`                     | Number of operator replicas to create (only 1 is supported)          | `1`                                            |
 | `backupOperator.image.repository`                 | Operator container image                                             | `quay.io/coreos/etcd-operator`                 |

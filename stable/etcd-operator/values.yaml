@@ -36,12 +36,9 @@ customResources:
   createBackupCRD: false
   createRestoreCRD: false
 
-# options
-options:
-  clusterWide: true
-
 # etcdOperator
 etcdOperator:
+  clusterWide: false
   priorityClassName: ""
   name: etcd-operator
   replicaCount: 1
@@ -164,3 +161,4 @@ etcdCluster:
     ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
     nodeSelector: {}
     securityContext: {}
+    tolerations: []
