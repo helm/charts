@@ -83,9 +83,16 @@ spec:
       volumes:
       - name: config
         emptyDir: {}
+      {{- if eq .Values.targetSystem "linux" }}
       - hostPath:
           path: {{ dir (include "datadog.dockerOrCriSocketPath" .) }}
         name: runtimesocketdir
+      {{- end }}
+      {{- if eq .Values.targetSystem "windows" }}
+      - hostPath:
+          path: {{ template "datadog.dockerOrCriSocketPath" . }}
+        name: runtimesocket
+      {{- end }}
       {{- if .Values.datadog.checksd }}
       - name: checksd
         configMap:

@@ -29,8 +29,8 @@
       mountPath: C:/checks.d
       readOnly: true
     {{- end }}
-    - name: runtimesocketdir
-      mountPath: {{ print "/host/" (dir (include "datadog.dockerOrCriSocketPath" .)) | clean }}
+    - name: runtimesocket
+      mountPath: {{ template "datadog.dockerOrCriSocketPath" . }}
   env:
     {{- include "containers-common-env" . | nindent 4 }}
   resources:

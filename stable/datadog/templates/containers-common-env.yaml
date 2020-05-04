@@ -62,7 +62,7 @@
   value: unix://{{ print "/host/" (include "datadog.dockerOrCriSocketPath" .) | clean }}
 {{- end }}
 {{- if eq .Values.targetSystem "windows" }}
-  value: npipe://{{ print "/host/" (include "datadog.dockerOrCriSocketPath" .) | clean | replace "\\" "/" }}
+  value: npipe://{{ (include "datadog.dockerOrCriSocketPath" .) | replace "\\" "/" }}
 {{- end }}
 {{- end }}
 {{- end -}}
