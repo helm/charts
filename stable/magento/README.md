@@ -2,6 +2,16 @@
 
 [Magento](https://magento.org/) is a feature-rich flexible e-commerce solution. It includes transaction options, multi-store functionality, loyalty programs, product categorization and shopper filtering, promotion rules, and more.
 
+## This Helm chart is deprecated
+
+The Bitnami maintained Magento Helm chart is now located at [bitnami/charts](https://github.com/bitnami/charts/), as it now requires Elasticsearch.
+
+In order to ensure that Bitnami maintained charts follow a series of conventions and meet our requirements, all the dependencies must be maintained by Bitnami.
+
+This requirement conflicts with one of the technical requirements of Helm:
+
+> All Chart dependencies should also be submitted independently
+
 ## TL;DR;
 
 ```console
@@ -177,6 +187,14 @@ The [Bitnami Magento](https://github.com/bitnami/bitnami-docker-magento) image s
  Persistent Volume Claims are used to keep the data across deployments. There is a [known issue](https://github.com/kubernetes/kubernetes/issues/39178) in Kubernetes Clusters with EBS in different availability zones. Ensure your cluster is configured properly to create Volumes in the same availability zone where the nodes are running. Kuberentes 1.12 solved this issue with the [Volume Binding Mode](https://kubernetes.io/docs/concepts/storage/storage-classes/#volume-binding-mode).
 
 ## Upgrading
+
+### To 6.0.0
+
+Helm performs a lookup for the object based on its group (apps), version (v1), and kind (Deployment). Also known as its GroupVersionKind, or GVK. Changing the GVK is considered a compatibility breaker from Kubernetes' point of view, so you cannot "upgrade" those objects to the new GVK in-place. Earlier versions of Helm 3 did not perform the lookup correctly which has since been fixed to match the spec.
+
+This version updates the `apiVersion` of the deployment resources was updated to `apps/v1` in tune with the api's deprecated, resulting in compatibility breakage.
+
+This major version signifies this change.
 
 ### To 5.0.0
 

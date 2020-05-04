@@ -2,10 +2,12 @@
 ## Please, note that this will override the image parameters, including dependencies, configured to use the global value
 ## Current available global Docker image parameters: imageRegistry and imagePullSecrets
 ##
-# global:
+global:
 #   imageRegistry: myRegistryName
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
+#   storageClass: myStorageClass
+  redis: {}
 
 ## Bitnami Redis image version
 ## ref: https://hub.docker.com/r/bitnami/redis/tags/
@@ -16,18 +18,26 @@ image:
   ## Bitnami Redis image tag
   ## ref: https://github.com/bitnami/bitnami-docker-redis#supported-tags-and-respective-dockerfile-links
   ##
-  tag: 5.0.5-debian-9-r14
+  tag: 5.0.7-debian-10-r32
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   ##
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
   # pullSecrets:
   #   - myRegistryKeySecretName
+
+## String to partially override redis.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override redis.fullname template
+##
+# fullnameOverride:
 
 ## Cluster settings
 cluster:
@@ -38,6 +48,9 @@ cluster:
 ## create one redis service with ports to the sentinel and the redis instances
 sentinel:
   enabled: false
+  ## Require password authentication on the sentinel itself
+  ## ref: https://redis.io/topics/sentinel
+  usePassword: true
   ## Bitnami Redis Sentintel image version
   ## ref: https://hub.docker.com/r/bitnami/redis-sentinel/tags/
   ##
@@ -47,12 +60,12 @@ sentinel:
     ## Bitnami Redis image tag
     ## ref: https://github.com/bitnami/bitnami-docker-redis-sentinel#supported-tags-and-respective-dockerfile-links
     ##
-    tag: 5.0.5-debian-9-r14
+    tag: 5.0.7-debian-10-r27
     ## Specify a imagePullPolicy
     ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
     ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
     ##
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -66,6 +79,15 @@ sentinel:
   failoverTimeout: 18000
   parallelSyncs: 1
   port: 26379
+  ## Additional Redis configuration for the sentinel nodes
+  ## ref: https://redis.io/topics/config
+  ##
+  configmap:
+  ## Enable or disable static sentinel IDs for each replicas
+  ## If disabled each sentinel will generate a random id at startup
+  ## If enabled, each replicas will have a constant ID on each start-up
+  ##
+  staticID: false
   ## Configure extra options for Redis Sentinel liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
   ##
@@ -107,6 +129,7 @@ sentinel:
     ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
     ##
     annotations: {}
+    labels: {}
     loadBalancerIP:
 
 ## Specifies the Kubernetes Cluster's Domain Name.
@@ -124,6 +147,11 @@ networkPolicy:
   ## (with the correct destination port).
   ##
   # allowExternal: true
+
+  ## Allow connections from other namespacess. Just set label for namespace and set label for pods (optional).
+  ##
+  ingressNSMatchLabels: {}
+  ingressNSPodMatchLabels: {}
 
 serviceAccount:
   ## Specifies whether a ServiceAccount should be created
@@ -156,6 +184,13 @@ securityContext:
   enabled: true
   fsGroup: 1001
   runAsUser: 1001
+  ## sysctl settings for master and slave pods
+  ##
+  ## Uncomment the setting below to increase the net.core.somaxconn value
+  ##
+  # sysctls:
+  # - name: net.core.somaxconn
+  #   value: "10000"
 
 ## Use password authentication
 usePassword: true
@@ -163,9 +198,12 @@ usePassword: true
 ## Defaults to a random 10-character alphanumeric string if not set and usePassword is true
 ## ref: https://github.com/bitnami/bitnami-docker-redis#setting-the-server-password-on-first-run
 ##
-password:
+password: ""
 ## Use existing secret (ignores previous password)
 # existingSecret:
+## Password key to be retrieved from Redis secret
+##
+# existingSecretPasswordKey:
 
 ## Mount secrets as files instead of environment variables
 usePasswordFile: false
@@ -189,6 +227,10 @@ master:
   ## Can be used to specify command line arguments, for example:
   ##
   command: "/run.sh"
+  ## Additional Redis configuration for the master nodes
+  ## ref: https://redis.io/topics/config
+  ##
+  configmap:
   ## Redis additional command line flags
   ##
   ## Can be used to specify command line flags, for example:
@@ -267,7 +309,9 @@ master:
     ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
     ##
     annotations: {}
+    labels: {}
     loadBalancerIP:
+    # loadBalancerSourceRanges: ["10.0.0.0/8"]
 
   ## Enable persistence using Persistent Volume Claims
   ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
@@ -291,6 +335,10 @@ master:
     accessModes:
     - ReadWriteOnce
     size: 8Gi
+    ## Persistent Volume selectors
+    ## https://kubernetes.io/docs/concepts/storage/persistent-volumes/#selector
+    matchLabels: {}
+    matchExpressions: {}
 
   ## Update strategy, can be set to RollingUpdate or onDelete by default.
   ## https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#updating-statefulsets
@@ -302,7 +350,6 @@ master:
 
   ## Redis Master pod priorityClassName
   # priorityClassName: {}
-
 
 ##
 ## Redis Slave properties
@@ -326,13 +373,19 @@ slave:
     ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
     ##
     annotations: {}
+    labels: {}
     loadBalancerIP:
+    # loadBalancerSourceRanges: ["10.0.0.0/8"]
 
   ## Redis slave port
   port: 6379
   ## Can be used to specify command line arguments, for example:
   ##
   command: "/run.sh"
+  ## Additional Redis configuration for the slave nodes
+  ## ref: https://redis.io/topics/config
+  ##
+  configmap:
   ## Redis extra flags
   extraFlags: []
   ## List of Redis commands to disable
@@ -406,6 +459,10 @@ slave:
     accessModes:
     - ReadWriteOnce
     size: 8Gi
+    ## Persistent Volume selectors
+    ## https://kubernetes.io/docs/concepts/storage/persistent-volumes/#selector
+    matchLabels: {}
+    matchExpressions: {}
 
   ## Update strategy, can be set to RollingUpdate or onDelete by default.
   ## https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#updating-statefulsets
@@ -422,8 +479,8 @@ metrics:
 
   image:
     registry: docker.io
-    repository: oliver006/redis_exporter
-    tag: v0.31.0
+    repository: bitnami/redis-exporter
+    tag: 1.4.0-debian-10-r3
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -431,15 +488,6 @@ metrics:
     ##
     # pullSecrets:
     #   - myRegistryKeySecretName
-
-  service:
-    type: ClusterIP
-    ## Use serviceLoadBalancerIP to request a specific static IP,
-    ## otherwise leave blank
-    # loadBalancerIP:
-    annotations:
-      prometheus.io/scrape: "true"
-      prometheus.io/port: "9121"
 
   ## Metrics exporter resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -451,12 +499,10 @@ metrics:
   ##   check-keys: myKey,myOtherKey
   # extraArgs: {}
 
-  ## Metrics exporter labels and tolerations for pod assignment
-  # nodeSelector: {"beta.kubernetes.io/arch": "amd64"}
-  # tolerations: []
-
   ## Metrics exporter pod Annotation and Labels
-  # podAnnotations: {}
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9121"
   # podLabels: {}
 
   # Enable this if you're using https://github.com/coreos/prometheus-operator
@@ -472,8 +518,55 @@ metrics:
     selector:
       prometheus: kube-prometheus
 
+  ## Custom PrometheusRule to be defined
+  ## The value is evaluated as a template, so, for example, the value can depend on .Release or .Chart
+  ## ref: https://github.com/coreos/prometheus-operator#customresourcedefinitions
+  prometheusRule:
+    enabled: false
+    additionalLabels: {}
+    namespace: ""
+    rules: []
+      ## These are just examples rules, please adapt them to your needs.
+      ## Make sure to constraint the rules to the current postgresql service.
+      #  - alert: RedisDown
+      #    expr: redis_up{service="{{ template "redis.fullname" . }}-metrics"} == 0
+      #    for: 2m
+      #    labels:
+      #      severity: error
+      #    annotations:
+      #      summary: Redis instance {{ "{{ $instance }}" }} down
+      #      description: Redis instance {{ "{{ $instance }}" }} is down.
+      #  - alert: RedisMemoryHigh
+      #    expr: >
+      #       redis_memory_used_bytes{service="{{ template "redis.fullname" . }}-metrics"} * 100
+      #       /
+      #       redis_memory_max_bytes{service="{{ template "redis.fullname" . }}-metrics"}
+      #       > 90 =< 100
+      #    for: 2m
+      #    labels:
+      #      severity: error
+      #    annotations:
+      #      summary: Redis instance {{ "{{ $instance }}" }} is using too much memory
+      #      description: Redis instance {{ "{{ $instance }}" }} is using {{ "{{ $value }}" }}% of its available memory.
+      #  - alert: RedisKeyEviction
+      #    expr: increase(redis_evicted_keys_total{service="{{ template "redis.fullname" . }}-metrics"}[5m]) > 0
+      #    for: 1s
+      #    labels:
+      #      severity: error
+      #    annotations:
+      #      summary: Redis instance {{ "{{ $instance }}" }} has evicted keys
+      #      description: Redis instance {{ "{{ $instance }}" }} has evicted {{ "{{ $value }}" }} keys in the last 5 minutes.
+
+
   ## Metrics exporter pod priorityClassName
   # priorityClassName: {}
+  service:
+    type: ClusterIP
+    ## Use serviceLoadBalancerIP to request a specific static IP,
+    ## otherwise leave blank
+    # loadBalancerIP:
+    annotations: {}
+    labels: {}
 
 ##
 ## Init containers parameters:
@@ -484,8 +577,8 @@ volumePermissions:
   image:
     registry: docker.io
     repository: bitnami/minideb
-    tag: latest
-    pullPolicy: IfNotPresent
+    tag: buster
+    pullPolicy: Always
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -514,7 +607,7 @@ sysctlImage:
   command: []
   registry: docker.io
   repository: bitnami/minideb
-  tag: latest
+  tag: buster
   pullPolicy: Always
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -528,3 +621,11 @@ sysctlImage:
   #   requests:
   #     memory: 128Mi
   #     cpu: 100m
+
+## PodSecurityPolicy configuration
+## ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+##
+podSecurityPolicy:
+  ## Specifies whether a PodSecurityPolicy should be created
+  ##
+  create: false

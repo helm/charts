@@ -10,7 +10,7 @@ Docker image was taken from [Bitcoind for Docker](https://github.com/kylemanna/d
 
 ## Prerequisites
 
-- Kubernetes 1.8+
+- Kubernetes 1.10+
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart

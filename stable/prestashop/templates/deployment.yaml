@@ -1,5 +1,5 @@
 {{- if include "prestashop.host" . -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "prestashop.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "prestashop.fullname" . }}
@@ -190,5 +190,9 @@ spec:
           claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "prestashop.fullname" . }}-prestashop{{- end }}
       {{- else }}
         emptyDir: {}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
       {{- end }}
 {{- end -}}

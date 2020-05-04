@@ -10,6 +10,15 @@ resources:
     memory: 512Mi
     cpu: 500m
 
+# upgrade strategy type (e.g. Recreate or RollingUpdate)
+strategyType: Recreate
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
 securityContext:
   # Security context settings
   runAsUser: 1000
@@ -23,6 +32,9 @@ livenessProbe:
     - status
   initialDelaySeconds: 30
   periodSeconds: 5
+  failureThreshold: 10
+  successThreshold: 1
+  timeoutSeconds: 1
 readinessProbe:
   command:
     - mcstatus
@@ -30,13 +42,16 @@ readinessProbe:
     - status
   initialDelaySeconds: 30
   periodSeconds: 5
+  failureThreshold: 10
+  successThreshold: 1
+  timeoutSeconds: 1
 minecraftServer:
   # This must be overridden, since we can't accept this for the user.
   eula: "FALSE"
   # One of: LATEST, SNAPSHOT, or a specific version (ie: "1.7.9").
-  version: "1.13.1"
-  # This can be one of empty string, "FORGE", "SPIGOT", "BUKKIT", "PAPER", "FTB", "SPONGEVANILLA"; empty string will produce a vanilla server
-  type: ""
+  version: "1.14.4"
+  # This can be one of "VANILLA", "FORGE", "SPIGOT", "BUKKIT", "PAPER", "FTB", "SPONGEVANILLA"
+  type: "VANILLA"
   # If type is set to FORGE, this sets the version; this is ignored if forgeInstallerUrl is set
   forgeVersion:
   # If type is set to SPONGEVANILLA, this sets the version
@@ -49,7 +64,7 @@ minecraftServer:
   spigotDownloadUrl:
   # If type is set to PAPER, this sets the URL to download the PaperSpigot package
   paperDownloadUrl:
-  # If type is set to FTB, this sets the server mod to run
+  # If type is set to FTB, this sets the server mod to run. You can also provide the URL to download the FTB package
   ftbServerMod:
   # Set to true if running Feed The Beast and get an error like "unable to launch forgemodloader"
   ftbLegacyJavaFixer: false
@@ -105,6 +120,8 @@ minecraftServer:
   worldSaveName: world
   # If set, this URL will be downloaded at startup and used as a starting point
   downloadWorldUrl:
+  # force re-download of server file
+  forceReDownload: false
   # If set, the modpack at this URL will be downloaded at startup
   downloadModpackUrl:
   # If true, old versions of downloaded mods will be replaced with new ones from downloadModpackUrl
@@ -112,19 +129,37 @@ minecraftServer:
   # Check accounts against Minecraft account service.
   onlineMode: true
   # If you adjust this, you may need to adjust resources.requests above to match.
-  jvmOpts: "-Xmx512M -Xms512M"
+  memory: 512M
+  # General JVM options to be passed to the Minecraft server invocation
+  jvmOpts: ""
+  # Options like -X that need to proceed general JVM options
+  jvmXXOpts: ""
   serviceType: LoadBalancer
+  loadBalancerIP:
+  # loadBalancerSourceRanges: []
+  ## Set the externalTrafficPolicy in the Service to either Cluster or Local
+  # externalTrafficPolicy: Cluster
+
   rcon:
     # If you enable this, make SURE to change your password below.
     enabled: false
     port: 25575
     password: "CHANGEME!"
     serviceType: LoadBalancer
+    loadBalancerIP:
+    # loadBalancerSourceRanges: []
+    ## Set the externalTrafficPolicy in the Service to either Cluster or Local
+    # externalTrafficPolicy: Cluster
+
 
   query:
     # If you enable this, your server will be "published" to Gamespy
     enabled: false
     port: 25565
+
+## Additional minecraft container environment variables
+##
+extraEnv: {}
 
 persistence:
   ## minecraft data Persistent Volume Storage Class
@@ -139,3 +174,7 @@ persistence:
     # Set this to false if you don't care to persist state between restarts.
     enabled: true
     Size: 1Gi
+
+podAnnotations: {}
+
+deploymentAnnotations: {}

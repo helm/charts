@@ -6,6 +6,7 @@ Cerebro is an open source (MIT License) elasticsearch web admin tool built using
 
 This chart deploys Cerebro to your cluster via a Deployment and Service.
 Optionally you can also enable ingress.
+Optionally you can use cerebro provided auth by uploading a Secret with the needed env vars (don't forget to set `AUTH_TYPE`).
 
 # Prerequisites
 
@@ -41,13 +42,18 @@ The following table lists the configurable parameters of the cerebro chart and t
 |-------------------------------------|-------------------------------------|-------------------------------------------|
 | `replicaCount`                      | Number of replicas                  | `1`                                       |
 | `image.repository`                  | The image to run                    | `lmenezes/cerebro`                        |
-| `image.tag`                         | The image tag to pull               | `0.8.3`                                   |
+| `image.tag`                         | The image tag to pull               | `0.8.5`                                   |
 | `image.pullPolicy`                  | Image pull policy                   | `IfNotPresent`                            |
 | `image.pullSecrets`                 | Specify image pull secrets          | `nil` (does not add image pull secrets to deployed pods) |
 | `init.image.repository`             | The image to run                    | `docker.io/busybox`                       |
 | `init.image.tag`                    | The image tag to pull               | `musl`                                    |
 | `init.image.pullPolicy`             | Image pull policy                   | `IfNotPresent`                            |
 | `deployment.annotations`            | Annotations for deployment          | `{}`                                      |
+| `deployment.podAnnotations`         | Additional pod annotations          | `{}`                                      |
+| `deployment.labels`                 | Additional labels for deployment    | `{}`                                      |
+| `deployment.podLabels`              | Additional pod labels               | `{}`                                      |
+| `deployment.livenessProbe.enabled`  | Enable livenessProbe                | `true`                                    |
+| `deployment.readinessProbe.enabled` | Enable readinessProbe               | `true`                                    |
 | `service.type`                      | Type of Service                     | `ClusterIP`                               |
 | `service.port`                      | Port for kubernetes service         | `80`                                      |
 | `service.annotations`               | Annotations to add to the service   | `{}`                                      |
@@ -61,10 +67,14 @@ The following table lists the configurable parameters of the cerebro chart and t
 | `nodeSelector`                      | Settings for nodeselector           | `{}`                                      |
 | `tolerations`                       | Settings for toleration             | `{}`                                      |
 | `affinity`                          | Settings for affinity               | `{}`                                      |
+| `env`                               | Map of env vars (key/value   )      | `{}`                                      |
+| `envFromSecretRef`                  | Reference to Secret with env vars   |                                           |
 | `config.basePath`                   | Application base path               | `/`                                       |
 | `config.restHistorySize`            | Rest request history size per user  | `50`                                      |
 | `config.hosts`                      | A list of known hosts               | `[]`                                      |
 | `config.secret`                     | Secret used to sign session cookies | `(random alphanumeric 64 length string)`  |
+| `config.tlsVerify`                  | Validate Elasticsearch cert         | `true`                                    |
+| `securityContext`                   | Security context for pod            | `See values.yaml`                         |
 
 
 

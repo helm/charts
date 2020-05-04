@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 image:
   repository: quay.io/prometheus/node-exporter
-  tag: v0.18.0
+  tag: v0.18.1
   pullPolicy: IfNotPresent
 
 service:
@@ -11,6 +11,7 @@ service:
   port: 9100
   targetPort: 9100
   nodePort:
+  listenOnAllInterfaces: true
   annotations:
     prometheus.io/scrape: "true"
 
@@ -20,6 +21,14 @@ prometheus:
     additionalLabels: {}
     namespace: ""
 
+    scrapeTimeout: 10s
+
+## Customize the updateStrategy if set
+updateStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 1
+
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -27,7 +36,7 @@ resources: {}
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   # limits:
   #   cpu: 200m
-  #    memory: 50Mi
+  #   memory: 50Mi
   # requests:
   #   cpu: 100m
   #   memory: 30Mi
@@ -71,6 +80,12 @@ affinity: {}
 #               values:
 #                 - target-host-name
 
+# Annotations to be added to node exporter pods
+podAnnotations: {}
+
+# Extra labels to be added to node exporter pods
+podLabels: {}
+
 ## Assign a nodeSelector if operating a hybrid cluster
 ##
 nodeSelector: {}
@@ -86,14 +101,38 @@ tolerations:
 
 ## Additional container arguments
 ##
-extraArgs: {}
+extraArgs: []
 #   - --collector.diskstats.ignored-devices=^(ram|loop|fd|(h|s|v)d[a-z]|nvme\\d+n\\d+p)\\d+$
+#   - --collector.textfile.directory=/run/prometheus
 
 ## Additional mounts from the host
 ##
-extraHostVolumeMounts: {}
+extraHostVolumeMounts: []
 #  - name: <mountName>
 #    hostPath: <hostPath>
 #    mountPath: <mountPath>
 #    readOnly: true|false
 #    mountPropagation: None|HostToContainer|Bidirectional
+
+## Additional configmaps to be mounted.
+##
+configmaps: []
+# - name: <configMapName>
+#   mountPath: <mountPath>
+
+## Override the deployment namespace
+##
+namespaceOverride: ""
+
+## Additional containers for export metrics to text file
+##
+sidecars: []
+##  - name: nvidia-dcgm-exporter
+##    image: nvidia/dcgm-exporter:1.4.3
+
+## Volume for sidecar containers
+##
+sidecarVolumeMount: []
+##  - name: collector-textfiles
+##    mountPath: /run/prometheus
+##    readOnly: false

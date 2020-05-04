@@ -1,16 +1,22 @@
-  # Minikube stores its logs in a separate directory.
-# enable if started in minikube.
+# Minikube stores its logs in a separate directory.
+# Enable if you install the chart in minikube.
 on_minikube: false
 
 image:
   fluent_bit:
     repository: fluent/fluent-bit
-    tag: 1.1.2
+    tag: 1.3.7
   pullPolicy: Always
+  # If specified, use these secrets to access the image
+  # pullSecrets:
+  #   - name: registry-secret
 
 testFramework:
   image: "dduportal/bats"
   tag: "0.4.0"
+  # If specified, use these secrets to access the image
+  # pullSecrets:
+  #   - name: registry-secret
 
 nameOverride: ""
 fullnameOverride: ""
@@ -28,6 +34,12 @@ metrics:
     # prometheus.io/scrape: "true"
     port: 2020
     type: ClusterIP
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}
+    # namespace: monitoring
+    # interval: 30s
+    # scrapeTimeout: 10s
 
 # When enabled, fluent-bit will keep track of tailing offsets across pod restarts.
 trackOffsets: false
@@ -53,6 +65,8 @@ backend:
     type: flb_type
     logstash_prefix: kubernetes_cluster
     replace_dots: "On"
+    logstash_format: "On"
+    retry_limit: "False"
     time_key: "@timestamp"
     # Optional username credential for Elastic X-Pack access
     http_user:
@@ -74,6 +88,7 @@ backend:
     tls_verify: "off"
     tls_debug: 1
     message_key: "kubernetes"
+  stackdriver: {}
 
   ##
   ## Ref: http://fluentbit.io/documentation/current/output/http.html
@@ -90,13 +105,16 @@ backend:
     ## Specify the data format to be used in the HTTP request body
     ## Can be either 'msgpack' or 'json'
     format: msgpack
+    # json_date_format: double or iso8601
+    headers: []
 
 parsers:
   enabled: false
   ## List the respective parsers in key: value format per entry
-  ## Regex required fields are name and regex. JSON required field
+  ## Regex required fields are name and regex. JSON and Logfmt required field
   ## is name.
   regex: []
+  logfmt: []
   ##  json parser config can be defined by providing an extraEntries field.
   ##  The following entry:
   ## json:
@@ -151,6 +169,8 @@ rawConfig: |-
 #
 extraEntries:
   input: |-
+#     # >=1 additional Key/Value entrie(s) for existing Input section
+  audit: |-
 #     # >=1 additional Key/Value entrie(s) for existing Input section
   filter: |-
 #     # >=1 additional Key/Value entrie(s) for existing Filter section
@@ -212,6 +232,7 @@ input:
     memBufLimit: 5MB
     parser: docker
     path: /var/log/containers/*.log
+    ignore_older: ""
   systemd:
     enabled: false
     filters:
@@ -221,7 +242,20 @@ input:
         - node-problem-detector.service
     maxEntries: 1000
     readFromTail: true
+    stripUnderscores: false
     tag: host.*
+
+audit:
+  enable: false
+  input:
+    memBufLimit: 35MB
+    parser: docker
+    tag: audit.*
+    path: /var/log/kube-apiserver-audit.log
+    bufferChunkSize: 2MB
+    bufferMaxSize: 10MB
+    skipLongLines: On
+    key: kubernetes-audit
 
 filter:
   kubeURL: https://kubernetes.default.svc:443
@@ -234,6 +268,10 @@ filter:
 # it append the map fields as part of the log structure.
   mergeJSONLog: true
 
+# If set, all unpacked keys from mergeJSONLog (Merge_Log) will be packed under
+# the key name specified on mergeLogKey (Merge_Log_Key)
+  mergeLogKey: ""
+
 # If true, enable the use of monitoring for a pod annotation of
 # fluentbit.io/parser: parser_name. parser_name must be the name
 # of a parser contained within parsers.conf
@@ -243,9 +281,14 @@ filter:
 # fluentbit.io/exclude: true. If present, discard logs from that pod.
   enableExclude: true
 
+# If true, the filter reads logs coming in Journald format.
+  useJournal: false
+
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
+  # Specifies whether a PodSecurityPolicy should be created
+  pspEnabled: false
 
 taildb:
   directory: /var/lib/fluent-bit
@@ -253,6 +296,20 @@ taildb:
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
   create: true
+  # Annotations to add to the service account
+  annotations: {}
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
+
+## Specifies security settings for a container
+## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+securityContext: {}
+  # securityContext:
+  #   privileged: true
+
+## Specifies security settings for a pod
+## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+podSecurityContext: {}
+  # podSecurityContext:
+  #   runAsUser: 1000

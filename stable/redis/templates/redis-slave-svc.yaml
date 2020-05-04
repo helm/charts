@@ -6,18 +6,26 @@ metadata:
   labels:
     app: {{ template "redis.name" . }}
     chart: {{ template "redis.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    {{- if .Values.slave.service.labels -}}
+    {{ toYaml .Values.slave.service.labels | nindent 4 }}
+    {{- end -}}
 {{- if .Values.slave.service.annotations }}
   annotations:
 {{ toYaml .Values.slave.service.annotations | indent 4 }}
 {{- end }}
 spec:
   type: {{ .Values.slave.service.type }}
-  {{ if eq .Values.slave.service.type "LoadBalancer" -}} {{ if .Values.slave.service.loadBalancerIP -}}
+  {{- if and (eq .Values.slave.service.type "LoadBalancer") .Values.slave.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.slave.service.loadBalancerIP }}
-  {{ end -}}
-  {{- end -}}
+  {{- end }}
+  {{- if and (eq .Values.slave.service.type "LoadBalancer") .Values.slave.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- with .Values.slave.service.loadBalancerSourceRanges }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+  {{- end }}
   ports:
   - name: redis
     port: {{ .Values.slave.service.port }}
@@ -27,6 +35,6 @@ spec:
     {{- end }}
   selector:
     app: {{ template "redis.name" . }}
-    release: "{{ .Release.Name }}"
+    release: {{ .Release.Name }}
     role: slave
 {{- end }}

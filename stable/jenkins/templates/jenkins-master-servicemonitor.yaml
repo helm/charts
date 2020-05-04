@@ -4,6 +4,11 @@ kind: ServiceMonitor
 
 metadata:
   name: {{ template "jenkins.fullname" . }}
+{{- if .Values.master.prometheus.serviceMonitorNamespace }}
+  namespace: {{ .Values.master.prometheus.serviceMonitorNamespace }}
+{{- else }}
+  namespace: {{ template "jenkins.namespace" . }}
+{{- end }}
   labels:
     "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
     "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -18,11 +23,11 @@ spec:
   endpoints:
   - interval: {{ .Values.master.prometheus.scrapeInterval }}
     port: http
-    path: {{ .Values.master.prometheus.scrapeEndpoint }}
+    path: {{ .Values.master.jenkinsUriPrefix }}{{ .Values.master.prometheus.scrapeEndpoint }}
   jobLabel: {{ template "jenkins.fullname" . }}
   namespaceSelector:
     matchNames:
-    - "{{ $.Release.Namespace }}"
+    - "{{ template "jenkins.namespace" $ }}"
   selector:
     matchLabels:
       "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'

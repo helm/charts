@@ -1,3 +1,4 @@
+{{- if .Values.snapshotsEnabled }}
 apiVersion: velero.io/v1
 kind: VolumeSnapshotLocation
 metadata:
@@ -28,6 +29,7 @@ spec:
   {{- with .project }}
     project: {{ . }}
   {{- end}}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

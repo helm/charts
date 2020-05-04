@@ -18,18 +18,22 @@ spec:
   template:
     metadata:
       annotations:
-        {{- toYaml .Values.podAnnotations | nindent 8 }}
+        checksum/config: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        {{- if .Values.podAnnotations }}
+          {{- toYaml .Values.podAnnotations | nindent 8 }}
+        {{- end }}
       labels:
         app.kubernetes.io/name: {{ include "prometheus-mongodb-exporter.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ template "prometheus-mongodb-exporter.serviceAccountName" . }}
       containers:
       - name: mongodb-exporter
         env:
           - name: MONGODB_URI
             valueFrom:
               secretKeyRef:
-                name: {{ include "prometheus-mongodb-exporter.fullname" . }}
+                name: {{ include "prometheus-mongodb-exporter.secretName" . }}
                 key: mongodb-uri
         {{- if .Values.env }}
         {{- range $key, $value := .Values.env }}

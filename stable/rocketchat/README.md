@@ -2,7 +2,7 @@
 
 [Rocket.Chat](https://rocket.chat/) is free, unlimited and open source. Replace email, HipChat & Slack with the ultimate team chat software solution.
 
-> **WARNING**: Upgrading to chart version 1.1.0 (Rocket.Chat 1.0.3) might require extra steps to retain the MongoDB data. See [Upgrading to 1.1.0](###-To-1.1.0) for more details.
+> **WARNING**: Upgrading to chart version 1.1.x or higher (Rocket.Chat 1.0+) might require extra steps to retain the MongoDB data. See [Upgrading to 1.1.0](###-To-1.1.0) for more details.
 
 ## TL;DR;
 
@@ -13,7 +13,8 @@ $ helm install stable/rocketchat --set mongodb.mongodbPassword=$(echo -n $(opens
 ## Introduction
 
 This chart bootstraps a [Rocket.Chat](https://rocket.chat/) Deployment on a [Kubernetes](https://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager. It provisions a fully featured Rocket.Chat installation.
-For more information on Rocket.Chat and its capabilities, see its [documentation](https://rocket.chat/docs/).
+
+In addition, this chart supports scaling of Rocket.Chat for increased server capacity and high availability.  For more information on Rocket.Chat and its capabilities, see its [documentation](https://rocket.chat/docs/).
 
 ## Prerequisites Details
 
@@ -42,8 +43,8 @@ The following table lists the configurable parameters of the Rocket.Chat chart a
 
 Parameter | Description | Default
 --- | --- | ---
-`image.repository` | Image repository | `rocketchat/rocket.chat`
-`image.tag` | Image tag | `1.0.3`
+`image.repository` | Image repository | `docker.io/rocketchat/rocket.chat`
+`image.tag` | Image tag | `2.4.9`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `host` | Hostname for Rocket.Chat. Also used for ingress (if enabled) | `""`
 `replicaCount` | Number of replicas to run | `1`
@@ -74,11 +75,25 @@ Parameter | Description | Default
 `ingress.annotations` | Annotations for the ingress | `{}`
 `ingress.path` | Path of the ingress | `/`
 `ingress.tls` | A list of [IngressTLS](https://kubernetes.io/docs/reference/federation/extensions/v1beta1/definitions/#_v1beta1_ingresstls) items | `[]`
+`livenessProbe.enabled` | Turn on and off liveness probe | `true`
+`livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated | `60`
+`livenessProbe.periodSeconds` | How often to perform the probe | `15`
+`livenessProbe.timeoutSeconds` | When the probe times out | `5`
+`livenessProbe.failureThreshold` | Minimum consecutive failures for the probe | `3`
+`livenessProbe.successThreshold` | Minimum consecutive successes for the probe | `1`
+`readinessProbe.enabled` | Turn on and off readiness probe | `true`
+`readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated | `10`
+`readinessProbe.periodSeconds` | How often to perform the probe | `15`
+`readinessProbe.timeoutSeconds` | When the probe times out | `5`
+`readinessProbe.failureThreshold` | Minimum consecutive failures for the probe | `3`
+`readinessProbe.successThreshold` | Minimum consecutive successes for the probe | `1`
 `service.annotations` | Annotations for the Rocket.Chat service | `{}`
 `service.labels` | Additional labels for the Rocket.Chat service | `{}`
 `service.type` | The service type to use | `ClusterIP`
 `service.port` | The service port | `80`
 `service.nodePort` | The node port used if the service is of type `NodePort` | `""`
+`podLabels` | Additional pod labels for the Rocket.Chat pods | `{}`
+`podAnnotations` | Additional pod annotations for the Rocket.Chat pods | `{}`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -88,16 +103,12 @@ Alternatively, a YAML file that specifies the values for the parameters can be p
 $ helm install --name rocketchat -f values.yaml stable/rocketchat
 ```
 
-### HA Setup
-
-To run Rocket.Chat with multiple replicas, you need a MongoDB replicaset. Additionally to setting `replicaCount` > 1, you also need to define the `MONGO_OPLOG_URL` env var via the `extraEnvs` parameter. See the [documentation](https://rocket.chat/docs/installation/docker-containers/high-availability-install/#guide-to-install-rocketchat-as-ha-with-mongodb-replicaset-as-backend) for more details.
-
 ### Database Setup
 
 Rocket.Chat uses a MongoDB instance to presist its data.
-By default, the [MongoDB](https://github.com/kubernetes/charts/tree/master/stable/mongodb) chart is deployed and configured as database.
+By default, the [MongoDB](https://github.com/kubernetes/charts/tree/master/stable/mongodb) chart is deployed and a single MongoDB instance is created as the primary in a replicaset.  
 Please refer to this chart for additional MongoDB configuration options.
-Make sure to set at least the `mongodb.mongodbRootPassword`, `mongodb.mongodbUsername` and `mongodb.mongodbPassword` values. Enabling MongoDB ReplicaSet is required for Rocket.Chat version 1.x.
+If you are using chart defaults, make sure to set at least the `mongodb.mongodbRootPassword`, `mongodb.mongodbUsername` and `mongodb.mongodbPassword` values. 
 > **WARNING**: The root credentials are used to connect to the MongoDB OpLog
 
 #### Using an External Database
@@ -111,6 +122,19 @@ extraEnv: |
   - name: MONGO_OPTIONS
     value: '{"ssl": "true"}'
 ```
+
+### Increasing Server Capacity and HA Setup
+
+To increase the capacity of the server, you can scale up the number of Rocket.Chat server instances across available computing resources in your cluster, for example,
+
+```bash
+$ kubectl scale --replicas=3 deployment/rocketchat
+```
+
+By default, this chart creates one MongoDB instance as a Primary in a replicaset.  This is the minimum requirement to run Rocket.Chat 1.x+.    You can also scale up the capacity and availability of the MongoDB cluster independently.  Please see the [MongoDB chart](https://github.com/kubernetes/charts/tree/master/stable/mongodb) for configuration information.
+
+For information on running Rocket.Chat in scaled configurations, see the [documentation](https://rocket.chat/docs/installation/docker-containers/high-availability-install/#guide-to-install-rocketchat-as-ha-with-mongodb-replicaset-as-backend) for more details.
+
 ## Upgrading
 
 ### To 1.1.0

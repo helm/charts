@@ -3,24 +3,17 @@ kind: Deployment
 metadata:
   name: {{ include "jaeger-operator.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ include "jaeger-operator.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    helm.sh/chart: {{ include "jaeger-operator.chart" . }}
+{{ include "jaeger-operator.labels" . | indent 4 }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "jaeger-operator.name" . }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
+{{ include "jaeger-operator.labels" . | indent 6 }}
   template:
     metadata:
       name: {{ include "jaeger-operator.fullname" . }}
       labels:
-        app.kubernetes.io/name: {{ include "jaeger-operator.name" . }}
-        app.kubernetes.io/instance: {{ .Release.Name }}
-        app.kubernetes.io/managed-by: {{ .Release.Service }}
-        helm.sh/chart: {{ include "jaeger-operator.chart" . }}
+{{ include "jaeger-operator.labels" . | indent 8 }}
     spec:
       {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ include "jaeger-operator.serviceAccountName" . }}
@@ -39,13 +32,21 @@ spec:
           args: ["start"]
           env:
             - name: WATCH_NAMESPACE
+              {{- if .Values.rbac.clusterRole }}
+              value: ""
+              {{- else }}
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+              {{- end }}
             - name: POD_NAME
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
             - name: OPERATOR_NAME
               value: {{ include "jaeger-operator.fullname" . | quote }}
           resources:

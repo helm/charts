@@ -1,0 +1,22 @@
+{{- if (and .Values.auditLog.enabled .Values.auditLog.dynamicBackend.enabled) }}
+apiVersion: auditregistration.k8s.io/v1alpha1
+kind: AuditSink
+metadata:
+  name: {{ template "falco.fullname" .}}
+spec:
+  policy:
+    level: RequestResponse
+    stages:
+      - ResponseComplete
+      - ResponseStarted
+  webhook:
+    throttle:
+      qps: 10
+      burst: 15
+    clientConfig:
+      service:
+        namespace: {{ .Release.Namespace }}
+        name: {{ template "falco.fullname" . }}
+        port: {{ .Values.falco.webserver.listenPort }}
+        path: {{ .Values.falco.webserver.k8sAuditEndpoint }}
+{{- end }}

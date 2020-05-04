@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "locust.worker" . }}
@@ -10,6 +10,10 @@ metadata:
     component: worker
 spec:
   replicas: {{ default 2 .Values.worker.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "locust.selectorLabels" . | nindent 6 }}
+      component: worker
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -18,7 +22,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "locust.fullname" . }}
+        {{- include "locust.selectorLabels" . | nindent 8 }}
         component: worker
     spec:
     {{- if .Values.image.pullSecrets }}
@@ -32,6 +36,9 @@ spec:
         volumeMounts:
           - name: locust-tasks
             mountPath: /locust-tasks/
+{{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 10 }}
+{{- end }}
         env:
         {{- range $key, $value :=  .Values.worker.config }}
         - name: {{ $key | upper | replace "-" "_" }}
@@ -45,6 +52,9 @@ spec:
           value: "{{ .Values.service.internalPort }}"
         - name: TARGET_HOST
           value: {{ index .Values.master.config "target-host" | quote }}
+{{- if .Values.extraEnvs }}
+{{ toYaml .Values.extraEnvs | indent 8 }}
+{{- end }}
         resources:
 {{ toYaml .Values.worker.resources | indent 10 }}
       restartPolicy: Always
@@ -52,3 +62,18 @@ spec:
         - name: "locust-tasks"
           configMap:
             name: {{ template "locust.worker-configmap" . }}
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 8 }}
+{{- end }}
+{{- with .Values.worker.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.worker.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.worker.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}

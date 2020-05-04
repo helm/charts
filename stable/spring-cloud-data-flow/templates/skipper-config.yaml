@@ -1,3 +1,5 @@
+{{- if .Values.features.streaming.enabled }}
+{{- if not .Values.skipper.configMap }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -29,9 +31,11 @@ data:
                     readinessProbeDelay: {{ .Values.deployer.readinessProbe.initialDelaySeconds }}
                     livenessProbeDelay: {{ .Values.deployer.livenessProbe.initialDelaySeconds }}
       datasource:
-        url: 'jdbc:mysql://{{ template "scdf.database.host" . }}:{{ template "scdf.database.port" . }}/{{ template "scdf.database.skipper" . }}'
+        url: 'jdbc:{{ template "scdf.database.scheme" . }}://{{ template "scdf.database.host" . }}:{{ template "scdf.database.port" . }}/{{ template "scdf.database.skipper" . }}'
         driverClassName: {{ template "scdf.database.driver" . }}
         username: {{ template "scdf.database.user" . }}
         password: {{ template "scdf.database.password" . }}
         testOnBorrow: true
         validationQuery: "SELECT 1"
+{{- end }}
+{{- end }}

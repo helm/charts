@@ -28,14 +28,24 @@ The following table lists the configurable parameters of the envoy chart and the
 
 Parameter | Description | Default
 --- | --- | ---
+`args` | Command-line args passed to Envoy | `["-l", "$loglevel", "-c", "/config/envoy.yaml"]`
+`argsTemplate` | Golang template of command-line args passed to Envoy. Must be a string containing a template snippet rather than YAML array. Prefered over `args` if both are set | ``
 `files.envoy\.yaml` | content of a full envoy configuration file as documented in https://www.envoyproxy.io/docs/envoy/latest/configuration/configuration | See [values.yaml](values.yaml)
 `templates.envoy\.yaml` | golang template of a full configuration file. Use the `{{ .Values.foo.bar }}` syntax to embed chart values | See [values.yaml](values.yaml)
 `serviceMonitor.enabled` | if `true`, creates a Prometheus Operator ServiceMonitor | `false`
 `serviceMonitor.interval` | Interval that Prometheus scrapes Envoy metrics | `15s`
 `serviceMonitor.namespace` | Namespace which the operated Prometheus is running in | ``
 `serviceMonitor.additionalLabels` | Labels used by Prometheus Operator to discover your Service Monitor. Set according to your Prometheus setup | `{}`
-| `prometheusRule.enabled` | If `true`, creates a Prometheus Operator PrometheusRule | `false``
-| `prometheusRule.groups` | Prometheus alerting rules | `{}`
-| `prometheusRule.additionalLabels` | Labels used by Prometheus Operator to discover your Prometheus Rule | `{}`
+`serviceMonitor.targetLabels` |  Labels to transfer from service onto the target | `[]`    
+`serviceMonitor.podTargetLabels`       | Labels to transfor from pod onto the target         | `[]`
+`prometheusRule.enabled` | If `true`, creates a Prometheus Operator PrometheusRule | `false`
+`prometheusRule.groups` | Prometheus alerting rules | `{}`
+`prometheusRule.additionalLabels` | Labels used by Prometheus Operator to discover your Prometheus Rule | `{}`| `volumes` | Additional volumes to be added to Envoy pods
+`volumeMounts` | Additional volume mounts to be added to Envoy containers(Primary containers of Envoy pods) | ``
+`initContainerTemplate` | Golang template of the init container added to Envoy pods| ``
+`sidecarContainersTemplate` | Golang template of additional containers added after the primary container of Envoy pods | ``
 
 All other user-configurable settings, default values and some commentary about them can be found in [values.yaml](values.yaml).
+
+| `serviceMonitor.targetLabels`          | Labels to transfer from service onto the target     | `[]`                               |
+| `serviceMonitor.podTargetLabels`       | Labels to transfor from pod onto the target         | `[]`                               |

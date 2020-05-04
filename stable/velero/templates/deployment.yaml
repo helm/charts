@@ -34,6 +34,9 @@ spec:
     spec:
       restartPolicy: Always
       serviceAccountName: {{ include "velero.serverServiceAccount" . }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ include "velero.priorityClassName" . }}
+      {{- end }}
       containers:
         - name: velero
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -60,6 +63,12 @@ spec:
             {{- with .restoreResourcePriorities }}
             - --restore-resource-priorities={{ . }}
             {{- end }}
+            {{- with .logLevel }}
+            - --log-level={{ . }}
+            {{- end }}
+            {{- with .logFormat }}
+            - --log-format={{ . }}
+            {{- end }}
           {{- end }}
           {{- if eq $provider "azure" }}
           envFrom:
@@ -73,24 +82,32 @@ spec:
           volumeMounts:
             - name: plugins
               mountPath: /plugins
-        {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
+        {{- if .Values.credentials.useSecret }}
             - name: cloud-credentials
               mountPath: /credentials
             - name: scratch
               mountPath: /scratch
         {{- end }}
-          {{- if (or (and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp"))) .Values.configuration.extraEnvVars) }}
-          env:
-          {{- end }}
-          {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
-            {{- if eq $provider "aws" }}
-            - name: AWS_SHARED_CREDENTIALS_FILE
-            {{- else }}
-            - name: GOOGLE_APPLICATION_CREDENTIALS
+            {{- if .Values.extraVolumeMounts }}
+            {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
             {{- end }}
-              value: /credentials/cloud
+          env:
             - name: VELERO_SCRATCH_DIR
               value: /scratch
+            - name: VELERO_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+          {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (or (eq $provider "gcp") (eq $provider "azure"))) }}
+            {{- if eq $provider "aws" }}
+            - name: AWS_SHARED_CREDENTIALS_FILE
+            {{- else if eq $provider "gcp"}}
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+            {{- else }}
+            - name: AZURE_CREDENTIALS_FILE
+            {{- end }}
+              value: /credentials/cloud
           {{- end }}
           {{- with .Values.configuration.extraEnvVars }}
           {{- range $key, $value := . }}
@@ -103,7 +120,7 @@ spec:
         {{- toYaml .Values.initContainers | nindent 8 }}
 {{- end }}
       volumes:
-        {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
+        {{- if .Values.credentials.useSecret }}
         - name: cloud-credentials
           secret:
             secretName: {{ include "velero.secretName" . }}
@@ -112,6 +129,9 @@ spec:
           emptyDir: {}
         - name: scratch
           emptyDir: {}
+        {{- if .Values.extraVolumes }}
+        {{- toYaml .Values.extraVolumes | nindent 8 }}
+        {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -1,16 +1,18 @@
-{{- if .Values.hazelcast.configurationFiles }}
+{{- if and (or .Values.hazelcast.configurationFiles .Values.hazelcast.yaml) (not .Values.hazelcast.existingConfigMap) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "hazelcast.fullname" . }}-configuration
   labels:
-    app: {{ template "hazelcast.name" . }}
-    chart: {{ template "hazelcast.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ template "hazelcast.name" . }}
+    helm.sh/chart: {{ template "hazelcast.chart" . }}
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
 data:
 {{- range $key, $val := .Values.hazelcast.configurationFiles }}
   {{ $key }}: |-
 {{ $val | indent 4}}
 {{- end }}
+  hazelcast.yaml: |-
+{{ toYaml .Values.hazelcast.yaml | indent 4 }}
 {{- end -}}

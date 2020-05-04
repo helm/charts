@@ -33,12 +33,18 @@ settings:
     # - /custom-config/docker-monitor-filelog.json
   custom_plugin_monitors: []
 
+  prometheus_address: 0.0.0.0
+  prometheus_port: 20257
+
+  # The period at which k8s-exporter does forcibly sync with apiserver
+  heartBeatPeriod: 5m0s
+
 hostpath:
   logdir: /var/log/
 
 image:
   repository: k8s.gcr.io/node-problem-detector
-  tag: v0.6.3
+  tag: v0.8.1
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -46,6 +52,7 @@ fullnameOverride: ""
 
 rbac:
   create: true
+  pspEnabled: false
 
 # Flag to run Node Problem Detector on the host's network. This is typically
 # not recommended, but may be useful for certain use cases.
@@ -53,11 +60,18 @@ hostNetwork: false
 
 priorityClassName: ""
 
+securityContext:
+  privileged: true
+
 resources: {}
 
 annotations: {}
 
-tolerations: []
+labels: {}
+
+tolerations:
+  - effect: NoSchedule
+    operator: Exists
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
@@ -67,3 +81,22 @@ serviceAccount:
   name:
 
 affinity: {}
+
+nodeSelector: {}
+
+metrics:
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}
+
+env:
+#  - name: FOO
+#    value: BAR
+#  - name: POD_NAME
+#    valueFrom:
+#      fieldRef:
+#        fieldPath: metadata.name
+
+extraVolumes: []
+
+extraVolumeMounts: []

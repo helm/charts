@@ -1,12 +1,17 @@
 {{- if and .Values.alertmanager.enabled .Values.alertmanager.ingress.enabled }}
 {{- $serviceName := printf "%s-%s" (include "prometheus-operator.fullname" .) "alertmanager" }}
-{{- $servicePort := 9093 -}}
+{{- $servicePort := .Values.alertmanager.service.port -}}
 {{- $routePrefix := list .Values.alertmanager.alertmanagerSpec.routePrefix }}
 {{- $paths := .Values.alertmanager.ingress.paths | default $routePrefix -}}
+{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
+apiVersion: networking.k8s.io/v1beta1
+{{ else }}
 apiVersion: extensions/v1beta1
+{{ end -}}
 kind: Ingress
 metadata:
   name: {{ $serviceName }}
+  namespace: {{ $.Release.Namespace }}
 {{- if .Values.alertmanager.ingress.annotations }}
   annotations:
 {{ toYaml .Values.alertmanager.ingress.annotations | indent 4 }}

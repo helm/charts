@@ -7,10 +7,7 @@ metadata:
       {{ $key }}: {{ $value | quote }}
     {{- end }}
   labels:
-    app: {{ template "kong.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "kong.metaLabels" . | nindent 4 }}
 spec:
   type: {{ .Values.proxy.type }}
   {{- if eq .Values.proxy.type "LoadBalancer" }}
@@ -41,7 +38,7 @@ spec:
   {{- if or .Values.proxy.tls.enabled }}
   - name: kong-proxy-tls
     port: {{ .Values.proxy.tls.servicePort }}
-    targetPort: {{ .Values.proxy.tls.containerPort }}
+    targetPort: {{ .Values.proxy.tls.overrideServiceTargetPort | default .Values.proxy.tls.containerPort }}
   {{- if (and (eq .Values.proxy.type "NodePort") (not (empty .Values.proxy.tls.nodePort))) }}
     nodePort: {{ .Values.proxy.tls.nodePort }}
   {{- end }}
@@ -50,8 +47,8 @@ spec:
   {{- if .Values.proxy.externalTrafficPolicy }}
   externalTrafficPolicy: {{ .Values.proxy.externalTrafficPolicy }}
   {{- end }}
-
+  {{- if .Values.proxy.clusterIP }}
+  clusterIP: {{ .Values.proxy.clusterIP }}
+  {{- end }}
   selector:
-    app: {{ template "kong.name" . }}
-    release: {{ .Release.Name }}
-    component: app
+    {{- include "kong.selectorLabels" . | nindent 4 }}

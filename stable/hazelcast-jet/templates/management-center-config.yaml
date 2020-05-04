@@ -1,0 +1,18 @@
+{{- if or .Values.managementcenter.configurationFiles .Values.managementcenter.yaml}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "hazelcast-jet-management-center.fullname" . }}-configuration
+  labels:
+    app.kubernetes.io/name: {{ template "hazelcast-jet.name" . }}
+    helm.sh/chart: {{ template "hazelcast-jet.chart" . }}
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+data:
+{{- range $key, $val := .Values.managementcenter.configurationFiles }}
+  {{ $key }}: |-
+{{ $val | indent 4}}
+{{- end }}
+  hazelcast-client.yaml: |-
+{{ toYaml .Values.managementcenter.yaml | indent 4 }}
+{{- end -}}

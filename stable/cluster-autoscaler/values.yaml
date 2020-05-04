@@ -2,6 +2,10 @@ autoDiscovery:
 # Only cloudProvider `aws` and `gce` are supported by auto-discovery at this time
 # AWS: Set tags as described in https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md#auto-discovery-setup
   clusterName:  # cluster.local
+  tags:
+  - k8s.io/cluster-autoscaler/enabled
+  - k8s.io/cluster-autoscaler/{{ .Values.autoDiscovery.clusterName }}
+  # - kubernetes.io/cluster/{{ .Values.autoDiscovery.clusterName }}
 
 autoscalingGroups: []
 # At least one element is required if not using autoDiscovery
@@ -44,18 +48,25 @@ azureUseManagedIdentityExtension: false
 # Currently only `gce`, `aws`, `azure` & `spotinst` are supported
 cloudProvider: aws
 
-sslCertPath: /etc/ssl/certs/ca-certificates.crt
-sslCertHostPath: /etc/ssl/certs/ca-certificates.crt
-
 # Configuration file for cloud provider
 cloudConfigPath: /etc/gce.conf
 
 image:
   repository: k8s.gcr.io/cluster-autoscaler
-  tag: v1.13.1
+  tag: v1.17.1
   pullPolicy: IfNotPresent
 
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistrKeySecretName
+
 tolerations: []
+
+## Extra ENV passed to the container
+extraEnv: {}
 
 extraArgs:
   v: 4
@@ -93,9 +104,6 @@ podAnnotations: {}
 podLabels: {}
 replicaCount: 1
 
-deployment:
-  apiVersion: "extensions/v1beta1"
-
 rbac:
   ## If true, create & use RBAC resources
   ##
@@ -103,9 +111,15 @@ rbac:
   ## If true, create & use Pod Security Policy resources
   ## https://kubernetes.io/docs/concepts/policy/pod-security-policy/
   pspEnabled: false
-  ## Ignored if rbac.create is true
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # The name of the ServiceAccount to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: ""
+  ## Annotations for the Service Account
   ##
-  serviceAccountName: default
+  serviceAccountAnnotations: {}
 
 resources: {}
   # limits:
@@ -122,9 +136,30 @@ priorityClassName: ""
 # autoscaler does not depend on cluster DNS, recommended to set this to "Default"
 # dnsPolicy: "Default"
 
+## Security context for pod
+## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+# securityContext:
+#   runAsNonRoot: true
+#   runAsUser: 1001
+#   runAsGroup: 1001
+
+## Security context for container
+## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+# containerSecurityContext:
+#   capabilities:
+#     drop:
+#       - all
+
+## Deployment update strategy
+## Ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+# updateStrategy:
+#   rollingUpdate:
+#     maxSurge: 1
+#     maxUnavailable: 0
+#   type: RollingUpdate
+
 service:
   annotations: {}
-  clusterIP: ""
 
   ## List of IP addresses at which the service is available
   ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
@@ -156,3 +191,14 @@ serviceMonitor:
    ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
   selector:
     prometheus: kube-prometheus
+  # The metrics path to scrape - autoscaler exposes /metrics (standard)
+  path: /metrics
+
+## String to partially override cluster-autoscaler.fullname template (will maintain the release name)
+nameOverride: ""
+
+## String to fully override cluster-autoscaler.fullname template
+fullnameOverride: ""
+
+# Allow overridding the .Capabilities.KubeVersion.GitVersion (useful for "helm template" command)
+kubeTargetVersionOverride: ""

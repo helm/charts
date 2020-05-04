@@ -2,7 +2,7 @@
 ## ref: https://hub.docker.com/r/library/cassandra/
 image:
   repo: cassandra
-  tag: 3.11.3
+  tag: 3.11.6
   pullPolicy: IfNotPresent
   ## Specify ImagePullSecrets for Pods
   ## ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
@@ -12,6 +12,7 @@ image:
 ## ref: http://kubernetes.io/docs/user-guide/services/
 service:
   type: ClusterIP
+  annotations: ""
 
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
@@ -99,6 +100,7 @@ readinessProbe:
   timeoutSeconds: 5
   successThreshold: 1
   failureThreshold: 3
+  address: "${POD_IP}"
 
 ## Configure node selector. Edit code below for adding selector to pods
 ## ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -211,6 +213,10 @@ backup:
 ## ref: https://github.com/criteo/cassandra_exporter
 exporter:
   enabled: false
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}
+      # prometheus: default
   image:
     repo: criteord/cassandra_exporter
     tag: 2.0.2

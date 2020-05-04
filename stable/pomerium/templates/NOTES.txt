@@ -1,8 +1,8 @@
 {{- if eq (include "pomerium.providerOK" .) "true" }}
 {{- if .Values.ingress.enabled }}
 From outside the cluster, the server URL(s) are:
-{{- range .Values.ingress.hosts }}
-     {{ $.Values.server.protocol }}://{{ . }}
+{{- range .Values.config.policy }}
+    {{ .from | quote}}
 {{- end }}
 
 {{- else if contains "NodePort" .Values.service.type }}
@@ -65,3 +65,12 @@ the official documentation:
 
     https://www.pomerium.io/docs/identity-providers.html
 {{- end }}
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!                                            !!!
+!!!                  WARNING                   !!!
+!!!          This chart is deprecated.         !!!
+!!!     Please use the chart maintained at     !!!
+!!!          https://helm.pomerium.io          !!! 
+!!!                                            !!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

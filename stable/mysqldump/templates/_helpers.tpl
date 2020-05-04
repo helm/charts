@@ -44,3 +44,16 @@ Generate gcp service account name
 {{- define "mysqldump.serviceAccountName" -}}
 {{ default (include "mysqldump.fullname" .) .Values.upload.googlestoragebucket.serviceAccountName }}
 {{- end -}}
+
+{{/*
+Common labels
+*/}}
+{{- define "mysqldump.labels" -}}
+app.kubernetes.io/name: {{ include "mysqldump.name" . }}
+helm.sh/chart: {{ include "mysqldump.chart" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end -}}

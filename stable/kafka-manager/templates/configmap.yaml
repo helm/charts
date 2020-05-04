@@ -17,7 +17,7 @@ data:
     {{ printf "curl http://%s:%v/clusters -X POST -f " (include "kafka-manager.fullname" $) $.Values.service.port -}}
     {{- printf "-d name=%v " (default "default" $cluster.name) -}}
     {{- printf "-d zkHosts=%v " (default (include "kafka-manager.zkHosts" $) $cluster.zkHosts) -}}
-    {{- printf "-d kafkaVersion=%v " (default "1.0.0" $cluster.kafkaVersion) -}}
+    {{- printf "-d kafkaVersion=%v " (default "2.0.0" $cluster.kafkaVersion) -}}
     {{- printf "-d jmxEnabled=%v " (default "false" $cluster.jmxEnabled) -}}
     {{- printf "-d jmxUser=%v " (default "" $cluster.jmxUser) -}}
     {{- printf "-d jmxPass=%v " (default "" $cluster.jmxPass) -}}

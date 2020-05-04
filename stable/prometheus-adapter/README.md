@@ -4,7 +4,7 @@ Installs the [Prometheus Adapter](https://github.com/DirectXMan12/k8s-prometheus
 
 ## Prerequisites
 
-Kubernetes 1.11+
+Kubernetes 1.14+
 
 ## Installing the Chart
 
@@ -18,12 +18,18 @@ This command deploys the prometheus adapter with the default configuration. The 
 
 ## Using the Chart
 
-To use the chart, ensure the `prometheus.url` and `prometheus.port` are configured with the correct Prometheus service endpoint. Additionally, the chart comes with a set of default rules out of the box but they may pull in too many metrics or not map them correctly for your needs. Therefore, it is recommended to populate `rules.custom` with a list of rules (see the [config document](https://github.com/DirectXMan12/k8s-prometheus-adapter/blob/master/docs/config.md) for the proper format). Finally, to configure your Horizontal Pod Autoscaler to use the custom metric, see the custom metrics section of the [HPA walkthrough](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/#autoscaling-on-multiple-metrics-and-custom-metrics).
+To use the chart, ensure the `prometheus.url` and `prometheus.port` are configured with the correct Prometheus service endpoint. If Prometheus is exposed under HTTPS the host's CA Bundle must be exposed to the container using `extraVolumes` and `extraVolumeMounts`.
+
+Additionally, the chart comes with a set of default rules out of the box but they may pull in too many metrics or not map them correctly for your needs. Therefore, it is recommended to populate `rules.custom` with a list of rules (see the [config document](https://github.com/DirectXMan12/k8s-prometheus-adapter/blob/master/docs/config.md) for the proper format).
+
+Finally, to configure your Horizontal Pod Autoscaler to use the custom metric, see the custom metrics section of the [HPA walkthrough](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/#autoscaling-on-multiple-metrics-and-custom-metrics).
 
 The Prometheus Adapter can serve three different [metrics APIs](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#support-for-metrics-apis):
 
-* `/apis/custom.metrics.k8s.io/v1beta1`  
-Can be enabled using values file as such:
+### Custom Metrics
+
+Enabling this option will cause custom metrics to be served at `/apis/custom.metrics.k8s.io/v1beta1`. Enabled by default when `rules.default` is true, but can be customized by populating `rules.custom`:
+
 ```
 rules:
   custom:
@@ -36,8 +42,10 @@ rules:
     metricsQuery: sum(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)
 ```
 
-* `/apis/external.metrics.k8s.io/v1beta1`  
-Can be enabled using values file as such:
+### External Metrics
+
+Enabling this option will cause external metrics to be served at `/apis/external.metrics.k8s.io/v1beta1`. Can be enabled by populating `rules.external`:
+
 ```
 rules:
   external:
@@ -50,8 +58,10 @@ rules:
     metricsQuery: sum(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)
 ```
 
-* `/apis/metrics.k8s.io/v1beta1`  
-Can be enabled using values file as such, using the configuration below will allow you to use pod CPU and Memory utilization for [Horizontal Pod Autoscalers](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/), as well as the `kubectl top` command:
+### Resource Metrics
+
+Enabling this option will cause resource metrics to be served at `/apis/metrics.k8s.io/v1beta1`. Resource metrics will allow pod CPU and Memory metrics to be used in [Horizontal Pod Autoscalers](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/) as well as the `kubectl top` command. Can be enabled by populating `rules.resource`:
+
 ```
 rules:
   resource:
@@ -64,9 +74,9 @@ rules:
             resource: node
           namespace:
             resource: namespace
-          pod_name:
+          pod:
             resource: pod
-      containerLabel: container_name
+      containerLabel: container
     memory:
       containerQuery: sum(container_memory_working_set_bytes{<<.LabelMatchers>>}) by (<<.GroupBy>>)
       nodeQuery: sum(container_memory_working_set_bytes{<<.LabelMatchers>>,id='/'}) by (<<.GroupBy>>)
@@ -76,13 +86,13 @@ rules:
             resource: node
           namespace:
             resource: namespace
-          pod_name:
+          pod:
             resource: pod
-      containerLabel: container_name
+      containerLabel: container
     window: 3m
 ```
 
-**NOTE:** setting a value for `resource:` will also deploy the `v1beta1.metrics.k8s.io` `APIService`, providing the same functionality as the [metrics-server](https://github.com/helm/charts/tree/master/stable/metrics-server), and as such it is not possible to deploy both in the same cluster.  
+**NOTE:** Setting a value for `rules.resource` will also deploy the resource metrics API service, providing the same functionality as [metrics-server](https://github.com/helm/charts/tree/master/stable/metrics-server). As such it is not possible to deploy them both in the same cluster.
 
 ## Uninstalling the Chart
 
@@ -102,12 +112,16 @@ The following table lists the configurable parameters of the Prometheus Adapter 
 | ------------------------------- | ------------------------------------------------------------------------------- | --------------------------------------------|
 | `affinity`                      | Node affinity                                                                   | `{}`                                        |
 | `image.repository`              | Image repository                                                                | `directxman12/k8s-prometheus-adapter-amd64` |
-| `image.tag`                     | Image tag                                                                       | `v0.5.0`                                    |
+| `image.tag`                     | Image tag                                                                       | `v0.6.0`                                    |
 | `image.pullPolicy`              | Image pull policy                                                               | `IfNotPresent`                              |
 | `image.pullSecrets`             | Image pull secrets                                                              | `{}`                                        |
 | `logLevel`                      | Log level                                                                       | `4`                                         |
+| `listenPort`                    | Port that application would listen on in the container                          | `6443`                                      |
 | `metricsRelistInterval`         | Interval at which to re-list the set of all available metrics from Prometheus   | `1m`                                        |
 | `nodeSelector`                  | Node labels for pod assignment                                                  | `{}`                                        |
+| `podLabels`                     | Labels to add to the pod                                                        | `{}`                                        |
+| `podAnnotations`                | Annotations to add to the pod                                                   | `{}`                                        |
+| `priorityClassName`             | Pod priority                                                                    | ``                                          |
 | `prometheus.url`                | Url of where we can find the Prometheus service                                 | `http://prometheus.default.svc`             |
 | `prometheus.port`               | Port of where we can find the Prometheus service, zero to omit this option      | `9090`                                      |
 | `rbac.create`                   | If true, create & use RBAC resources                                            | `true`                                      |
@@ -126,6 +140,8 @@ The following table lists the configurable parameters of the Prometheus Adapter 
 | `tls.ca`                        | Public CA file that signed the APIService (ignored if tls.enable=false)         | ``                                          |
 | `tls.key`                       | Private key of the APIService (ignored if tls.enable=false)                     | ``                                          |
 | `tls.certificate`               | Public key of the APIService (ignored if tls.enable=false)                      | ``                                          |
+| `extraVolumeMounts`             | Any extra volumes mounts                                                        | `[]`                                        |
+| `extraVolumes`                  | Any extra volumes                                                               | `[]`                                        |
 | `tolerations`                   | List of node taints to tolerate                                                 | `[]`                                        |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

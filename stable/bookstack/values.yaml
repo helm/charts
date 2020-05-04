@@ -6,12 +6,14 @@ replicaCount: 1
 
 image:
   repository: solidnerd/bookstack
-  tag: 0.25.2
+  tag: 0.27.5
   pullPolicy: IfNotPresent
 
 app:
   # Laravel APP_KEY. Generate one with `php artisan key:generate` and put here if you want a static key.
   key:
+
+env: {}
 
 ##
 ## External database configuration

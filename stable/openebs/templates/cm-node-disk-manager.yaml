@@ -1,3 +1,4 @@
+{{- if .Values.ndm.enabled }}
 # This is the node-disk-manager related config.
 # It can be used to customize the disks probes and filters
 apiVersion: v1
@@ -10,9 +11,10 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: ndm-config
+    openebs.io/component-name: ndm-config
 data:
   # udev-probe is default or primary probe which should be enabled to run ndm
-  # filterconfigs contails configs of filters - in ther form fo include
+  # filterconfigs contains configs of filters - in the form of include
   # and exclude comma separated strings
   node-disk-manager.config: |
     probeconfigs:
@@ -21,7 +23,7 @@ data:
         state: true
       - key: seachest-probe
         name: seachest probe
-        state: true
+        state: {{ .Values.ndm.probes.enableSeachest }}
       - key: smart-probe
         name: smart probe
         state: true
@@ -41,3 +43,4 @@ data:
         include: "{{ .Values.ndm.filters.includePaths }}"
         exclude: "{{ .Values.ndm.filters.excludePaths }}"
 ---
+{{- end }}

@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "locust.master" . }}
@@ -10,6 +10,10 @@ metadata:
     component: master
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      {{- include "locust.selectorLabels" . | nindent 6 }}
+      component: "master"
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -18,8 +22,7 @@ spec:
   template:
     metadata:
       labels:
-        release: {{ .Release.Name | quote }}
-        app: {{ template "locust.fullname" . }}
+        {{- include "locust.selectorLabels" . | nindent 8 }}
         component: "master"
     spec:
     {{- if .Values.image.pullSecrets }}
@@ -31,7 +34,7 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         resources:
-{{ toYaml .Values.worker.resources | indent 10 }}
+{{ toYaml .Values.master.resources | indent 10 }}
         env:
         {{- range $key, $value :=  .Values.master.config }}
         - name: {{ $key | upper | replace "-" "_" }}
@@ -41,6 +44,9 @@ spec:
           value: "master"
         - name: LOCUST_SCRIPT
           value: {{ index .Values.worker.config "locust-script" | quote }}
+{{- if .Values.extraEnvs }}
+{{ toYaml .Values.extraEnvs | indent 8 }}
+{{- end }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
           name: loc-master-web
@@ -54,6 +60,9 @@ spec:
         volumeMounts:
           - name: locust-tasks
             mountPath: /locust-tasks/
+{{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 10 }}
+{{- end }}
         livenessProbe:
           periodSeconds: 30
           httpGet:
@@ -68,4 +77,15 @@ spec:
       - name: "locust-tasks"
         configMap:
           name: {{ template "locust.worker-configmap" . }}
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+{{- end }}
       restartPolicy: Always
+{{- with .Values.master.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.master.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}

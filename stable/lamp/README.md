@@ -199,6 +199,7 @@ SFTP is an instance of the atmoz/sftp container, through which you can access th
 | `sftp.repository` | default sftp image | atmoz/sftp |
 | `sftp.tag` | default sftp image tag | alpine |
 | `sftp.enabled` | Enables sftp service | false |
+| `sftp.serviceType` | Type of sftp service in Ingress mode | NodePort |
 | `sftp.port` | Port to advertise service in LoadBalancer mode | 22 |
 | `sftp.nodePort` |  Port to advertise service in Ingress mode| _empty_ |
 | `sftp.user` | SFTP User | _empty_ |

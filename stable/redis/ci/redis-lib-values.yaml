@@ -4,7 +4,7 @@
 image:
   registry: docker.io
   repository: redis
-  tag: '4.0.11'
+  tag: '5.0.5'
 
 master:
   command: "redis-server"

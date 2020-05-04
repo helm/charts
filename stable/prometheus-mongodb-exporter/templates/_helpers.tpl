@@ -30,3 +30,25 @@ Create chart name and version as used by the chart label.
 {{- define "prometheus-mongodb-exporter.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "prometheus-mongodb-exporter.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "prometheus-mongodb-exporter.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Determine secret name, can either be the self-created of an existing one
+*/}}
+{{- define "prometheus-mongodb-exporter.secretName" -}}
+{{- if .Values.existingSecret.name -}}
+    {{- .Values.existingSecret.name -}}
+{{- else -}}
+    {{ include "prometheus-mongodb-exporter.fullname" . }}
+{{- end -}}
+{{- end -}}

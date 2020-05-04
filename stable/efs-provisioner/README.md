@@ -60,8 +60,11 @@ replicaCount: 1
 revisionHistoryLimit: 10
 image:
   repository: quay.io/external_storage/efs-provisioner
-  tag: v2.2.0-k8s1.12
+  tag: v2.4.0
   pullPolicy: IfNotPresent
+  # If specified, use these secrets to access the images
+  # pullSecrets:
+  #   - registry-secret
 
 busyboxImage:
   repository: gcr.io/google_containers/busybox
@@ -128,4 +131,10 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+
+# Configure podsecuritypolicy
+# Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+podSecurityPolicy:
+  enabled: true
+  annotations: {}
 ```

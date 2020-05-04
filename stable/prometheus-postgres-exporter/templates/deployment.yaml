@@ -1,7 +1,7 @@
 {{- if and .Values.config.datasource.passwordSecret .Values.config.datasource.password -}}
 {{ fail (printf "ERROR: only one of .Values.config.datasource.passwordSecret and .Values.config.datasource.password must be defined") }}
 {{- end -}}
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "prometheus-postgres-exporter.fullname" . }}
@@ -28,7 +28,7 @@ spec:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
 {{- if .Values.annotations }}
 {{ toYaml .Values.annotations | indent 8 }}
-{{- end}}
+{{- end }}
     spec:
       serviceAccountName: {{ template "prometheus-postgres-exporter.serviceAccountName" . }}
       containers:
@@ -38,7 +38,24 @@ spec:
           {{- if .Values.config.disableDefaultMetrics }}
           - "--disable-default-metrics"
           {{- end }}
+          {{- if .Values.config.disableSettingsMetrics }}
+          - "--disable-settings-metrics"
+          {{- end }}
+          {{- if .Values.config.autoDiscoverDatabases }}
+          - "--auto-discover-databases"
+          {{- if .Values.config.excludeDatabases }}
+          - "--exclude-databases"
+          - {{ .Values.config.excludeDatabases | join "," }}
+          {{- end }}
+          {{- end }}
           env:
+          {{- if .Values.config.datasourceSecret }}
+          - name: DATA_SOURCE_NAME
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.config.datasourceSecret.name }}
+                key: {{ .Values.config.datasourceSecret.key }}
+          {{- else }}
           - name: DATA_SOURCE_URI
             value: {{ template "prometheus-postgres-exporter.data_source_uri" . }}
           - name: DATA_SOURCE_USER
@@ -52,6 +69,7 @@ spec:
           {{- else }}
                 name: {{ template "prometheus-postgres-exporter.fullname" . }}
                 key: data_source_password
+          {{- end }}
           {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -76,6 +94,8 @@ spec:
 {{- with .Values.extraContainers }}
 {{ tpl . $ | indent 8 }}
 {{- end }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
      {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

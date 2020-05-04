@@ -15,6 +15,7 @@ rules:
       - pods
       - nodes
       - nodes/stats
+      - namespaces
     verbs:
       - get
       - list
@@ -22,6 +23,7 @@ rules:
   {{- if .Values.rbac.pspEnabled }}
   - apiGroups:
     - extensions
+    - policy
     resources:
     - podsecuritypolicies
     resourceNames:

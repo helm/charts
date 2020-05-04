@@ -7,6 +7,10 @@ rbac:
   ##
   create: true
 
+  resources:
+    - pods
+    - secrets
+
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
   ##
@@ -22,6 +26,16 @@ tags:
   # If true, this chart will install MongoDB replicaset from requirement dependencies
   install-mongodb: true
 
+## Enable only if your current release was migrated from helm2 (using 2to3 plugin).
+##
+## Because Kubernetes considers some StatefulSets fields/labels immutable,
+## this flag preserves the values rendered by helm2. This allows helm3
+## to upgrade the current release without a complete purge/reinstall.
+##
+## Further details: https://github.com/helm/charts/issues/20306
+##
+# helm2Compatibility: true
+
 graylog:
   ## Graylog image version
   ## Ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -30,8 +44,7 @@ graylog:
   ## Make sure you strict with the `x` version of Graylog where `x` is ${version}-${x}
   ##
   image:
-    # repository: "graylog/graylog:2.5.1-3"
-    repository: "graylog/graylog:3.0.1-1"
+    repository: "graylog/graylog:3.1"
     pullPolicy: "IfNotPresent"
 
   ## Number of Graylog instance
@@ -41,6 +54,10 @@ graylog:
   ## Additional environment variables to be added to Graylog pods
   ##
   env: {}
+
+  ## Run as privileged container
+  ##
+  privileged: false
 
   ## Pod affinity
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
@@ -90,20 +107,47 @@ graylog:
   ## Additional plugins you need to install on Graylog.
   ##
   plugins: []
-    # - name: graylog-plugin-slack-2.7.1.jar
-    #   url: https://github.com/omise/graylog-plugin-slack/releases/download/2.7.1/graylog-plugin-slack-2.7.1.jar
+    # - name: graylog-plugin-slack-notification-3.1.0.jar
+    #   url: https://github.com/omise/graylog-plugin-slack-notification/releases/download/v3.1.0/graylog-plugin-slack-notification-3.1.0.jar
     # - name: graylog-plugin-function-check-diff-1.0.0.jar
     #   url: https://github.com/omise/graylog-plugin-function-check-diff/releases/download/1.0.0/graylog-plugin-function-check-diff-1.0.0.jar
-    # - name: graylog-plugin-custom-alert-condition-1.0.0.jar
-    #   url: https://github.com/omise/graylog-plugin-custom-alert-condition/releases/download/v1.0.0/graylog-plugin-custom-alert-condition-1.0.0.jar
+    # - name: graylog-plugin-auth-sso-3.0.0.jar
+    #   url: https://github.com/Graylog2/graylog-plugin-auth-sso/releases/download/3.0.0/graylog-plugin-auth-sso-3.0.0.jar
+
+  ## Sidecar containers
+  ##
+  sidecarContainers: []
+
+  ## Additional init containers
+  ##
+  extraInitContainers: []
+
+  ## Additional volume mounts
+  ##
+  extraVolumeMounts: []
+
+  ## Additional volumes
+  ##
+  extraVolumes: []
 
   ## A service for Graylog web interface
   ##
   service:
     type: ClusterIP
     port: 9000
+    ## Add additional ports for the service/statefulset to expose
+    ##
+    ports: []
+
+    headless:
+      ## Add suffix to headless service name
+      ##
+      suffix: ""
 
     master:
+      ## Enable Graylog master service
+      ##
+      enabled: true
       ## Graylog master service Ingress annotations
       ##
       annotations: {}
@@ -130,6 +174,21 @@ graylog:
     #     - name: syslog
     #       port: 12222
 
+  tls:
+    ## If true, Graylog server will run with TLS enabled
+    ##
+    enabled: false
+    ## TLS certificate key file
+    ##
+    keyFile: /etc/graylog/server/server.key
+    ## TLS certificate file
+    ##
+    certFile: /etc/graylog/server/server.cert
+
+  ## External URL to access Graylog at
+  ##
+  externalUri: ""
+
   ingress:
     ## If true, Graylog server Ingress will be created
     ##
@@ -143,6 +202,13 @@ graylog:
     ##
     hosts: []
     #   - graylog.yourdomain.com
+
+    ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
+    extraPaths: []
+    # - path: /*
+    #   backend:
+    #     serviceName: ssl-redirect
+    #     servicePort: use-annotation
 
     ## Graylog server Ingress TLS configuration
     ## Secrets must be manually created in the namespace
@@ -169,9 +235,9 @@ graylog:
   # heapSize: "1024g"
 
   ## RollingUpdate update strategy
-  ## ref: https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#updating-statefulsets
+  ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
   ##
-  updateStrategy: OnDelete
+  updateStrategy: RollingUpdate
   ## Graylog server pod termination grace period
   ##
   terminationGracePeriodSeconds: 120
@@ -185,13 +251,16 @@ graylog:
     ## If true, Maxmind GeoLite2 will be installed to ${GRAYLOG_HOME}/geoip location
     ##
     enabled: false
+    ## If true, mmdbUri points to the URI where to find the DB
+    # https://blog.maxmind.com/2019/12/18/significant-changes-to-accessing-and-using-geolite2-databases/
+    mmdbUri: ""
 
   ## Graylog root user name
   ##
   rootUsername: "admin"
 
   ## Graylog root password
-  ## Defaults to a random 10-character alphanumeric string if not set
+  ## Defaults to a random 16-character alphanumeric string if not set
   ##
   # rootPassword: ""
 
@@ -203,6 +272,10 @@ graylog:
   ##
   rootTimezone: "UTC"
 
+  ## Grayog existing root secret
+  ##
+  existingRootSecret: ""
+
   elasticsearch:
     ## List of Elasticsearch hosts Graylog should connect to.
     ## Need to be specified as a comma-separated list of valid URIs for the http ports of your elasticsearch nodes.
@@ -211,12 +284,21 @@ graylog:
     ##
     # hosts: http://elasticsearch-client.graylog.svc.cluster.local:9200
     hosts: ""
+    # Allow elasticsearch hosts to be fetched from a k8s secret
+    # {{ graylog.fullname }}-es will be used as uriSecretName if left empty
+    uriSecretName: ""
+    uriSecretKey: ""
+    uriSSL: false
 
   mongodb:
     ## MongoDB connection string
     ## See https://docs.mongodb.com/manual/reference/connection-string/ for details
     # uri: mongodb://user:pass@host1:27017,host2:27017,host3:27017/graylog?replicaSet=rs01
     uri: ""
+    # Allow mongodb uri to be fetched from a k8s secret
+    # {{ graylog.fullname }}-mongodb will be used as uriSecretName if left empty
+    uriSecretName: ""
+    uriSecretKey: ""
 
     ## Increase this value according to the maximum connections your MongoDB server can handle from a single client
     ## if you encounter MongoDB connection problems.
@@ -255,12 +337,40 @@ graylog:
     ##
     deleteBeforeStart: false
 
+  init:
+    # Additional environment variables to be added to Graylog initContainer
+    env: {}
+
+    # Configure resource requests and limits for the Graylog StatefulSet initContainer
+    resources: {}
+
   ## Additional server files will be deployed to /etc/graylog/server
   ## For example, you can put server certificates or authorized clients certificates here
   ##
   serverFiles: {}
-    # graylog-server.key: |
-    # graylog-server.cert: |
+    # server.key: |
+    # server.cert: |
+
+  ## Specify a Bash script to run as Kubernetes Job (running on Alpine with curl and bash packages already installed).
+  ## Useful for calling the API to pre-configure some aspect of Graylog, as in the example.
+  ##
+  provisioner:
+    enabled: false
+    useGraylogServiceAccount: false
+    # script: |
+    #  json='{
+    #    "username_header": "X-Auth-Request-User",
+    #    "fullname_header": "X-Auth-Request-User",
+    #    "email_header": "X-Auth-Request-Email",
+    #    "default_group": "Admin",
+    #    "auto_create_user": true,
+    #    "require_trusted_proxies": true,
+    #    "trusted_proxies": "0.0.0.0/0",
+    #    "default_email_domain": "mydomain.com",
+    #    "sync_roles": false,
+    #    "roles_header": "Roles"
+    #  }'
+    #  curl -v -u "admin:$GRAYLOG_PASSWORD_SECRET" -X PUT --header 'Content-Type: application/json' --header 'X-Requested-By: localhost' --data-binary "${json}" http://graylog-master:9000/api/plugins/org.graylog.plugins.auth.sso/config
 
 ## Specify Elasticsearch version from requirement dependencies. Ignore this seection if you install Elasticsearch manually.
 ## Note: Graylog 2.4 requires Elasticsearch version <= 5.6

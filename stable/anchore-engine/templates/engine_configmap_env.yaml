@@ -1,0 +1,22 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ template "anchore-engine.fullname" . }}-env
+  labels:
+    app: {{ template "anchore-engine.fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    {{- with .Values.anchoreGlobal.labels }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
+data:
+  ANCHORE_DB_NAME: {{ index .Values "postgresql" "postgresDatabase" | quote }}
+  ANCHORE_DB_USER: {{ index .Values "postgresql" "postgresUser" | quote }}
+  {{- if and (index .Values "postgresql" "externalEndpoint") (not (index .Values "postgresql" "enabled")) }}
+  ANCHORE_DB_HOST: {{ index .Values "postgresql" "externalEndpoint" | quote }}
+  {{- else if and (index .Values "cloudsql" "enabled") (not (index .Values "postgresql" "enabled")) }}
+  ANCHORE_DB_HOST: "localhost:5432"
+  {{- else }}
+  ANCHORE_DB_HOST: "{{ template "postgres.fullname" . }}:5432"
+  {{- end }}

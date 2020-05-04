@@ -1,3 +1,4 @@
+{{- if .Values.controller.service.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -12,14 +13,16 @@ metadata:
 {{ toYaml .Values.controller.service.labels | indent 4 }}
 {{- end }}
     app: {{ template "nginx-ingress.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "nginx-ingress.chart" . }}
     component: "{{ .Values.controller.name }}"
     heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    release: {{ template "nginx-ingress.releaseLabel" . }}
   name: {{ template "nginx-ingress.controller.fullname" . }}
 spec:
 {{- if not .Values.controller.service.omitClusterIP }}
-  clusterIP: "{{ .Values.controller.service.clusterIP }}"
+  {{- with .Values.controller.service.clusterIP }}
+  clusterIP: {{ if eq "-" . }}""{{ else }}{{ . | quote }}{{ end }}
+  {{- end }}
 {{- end }}
 {{- if .Values.controller.service.externalIPs }}
   externalIPs:
@@ -35,6 +38,9 @@ spec:
 {{- if and (semverCompare ">=1.7-0" .Capabilities.KubeVersion.GitVersion) (.Values.controller.service.externalTrafficPolicy) }}
   externalTrafficPolicy: "{{ .Values.controller.service.externalTrafficPolicy }}"
 {{- end }}
+{{- if .Values.controller.service.sessionAffinity }}
+  sessionAffinity: "{{ .Values.controller.service.sessionAffinity }}"
+{{- end }}
 {{- if and (semverCompare ">=1.7-0" .Capabilities.KubeVersion.GitVersion) (.Values.controller.service.healthCheckNodePort) }}
   healthCheckNodePort: {{ .Values.controller.service.healthCheckNodePort }}
 {{- end }}
@@ -42,7 +48,7 @@ spec:
     {{- $setNodePorts := (or (eq .Values.controller.service.type "NodePort") (eq .Values.controller.service.type "LoadBalancer")) }}
     {{- if .Values.controller.service.enableHttp }}
     - name: http
-      port: 80
+      port: {{ .Values.controller.service.ports.http }}
       protocol: TCP
       targetPort: {{ .Values.controller.service.targetPorts.http }}
       {{- if (and $setNodePorts (not (empty .Values.controller.service.nodePorts.http))) }}
@@ -51,7 +57,7 @@ spec:
     {{- end }}
     {{- if .Values.controller.service.enableHttps }}
     - name: https
-      port: 443
+      port: {{ .Values.controller.service.ports.https }}
       protocol: TCP
       targetPort: {{ .Values.controller.service.targetPorts.https }}
       {{- if (and $setNodePorts (not (empty .Values.controller.service.nodePorts.https))) }}
@@ -63,15 +69,26 @@ spec:
       port: {{ $key }}
       protocol: TCP
       targetPort: "{{ $key }}-tcp"
+     {{- if $.Values.controller.service.nodePorts.tcp }}
+      {{- if index $.Values.controller.service.nodePorts.tcp $key }}
+      nodePort: {{ index $.Values.controller.service.nodePorts.tcp $key }}
+      {{- end }}
+     {{- end }}
   {{- end }}
   {{- range $key, $value := .Values.udp }}
     - name: "{{ $key }}-udp"
       port: {{ $key }}
       protocol: UDP
       targetPort: "{{ $key }}-udp"
+     {{- if $.Values.controller.service.nodePorts.udp }}
+      {{- if index $.Values.controller.service.nodePorts.udp $key }}
+      nodePort: {{ index $.Values.controller.service.nodePorts.udp $key }}
+      {{- end }}
+     {{- end }}
   {{- end }}
   selector:
     app: {{ template "nginx-ingress.name" . }}
-    component: "{{ .Values.controller.name }}"
-    release: {{ .Release.Name }}
+    release: {{ template "nginx-ingress.releaseLabel" . }}
+    app.kubernetes.io/component: controller
   type: "{{ .Values.controller.service.type }}"
+{{- end }}

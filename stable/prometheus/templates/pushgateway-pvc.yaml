@@ -20,6 +20,9 @@ spec:
   storageClassName: "{{ .Values.pushgateway.persistentVolume.storageClass }}"
 {{- end }}
 {{- end }}
+{{- if .Values.pushgateway.persistentVolume.volumeBindingMode }}
+  volumeBindingModeName: "{{ .Values.pushgateway.persistentVolume.volumeBindingMode }}"
+{{- end }}
   resources:
     requests:
       storage: "{{ .Values.pushgateway.persistentVolume.size }}"

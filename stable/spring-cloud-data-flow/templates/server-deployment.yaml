@@ -60,18 +60,32 @@ spec:
           value: 'false'
         - name: SPRING_CLOUD_KUBERNETES_SECRETS_ENABLE_API
           value: 'true'
-        - name: SPRING_CLOUD_DATAFLOW_FEATURES_SCHEDULES_ENABLED
-          value: 'true'
         - name: SPRING_CLOUD_KUBERNETES_SECRETS_PATHS
           value: /etc/secrets
         - name: SPRING_CLOUD_KUBERNETES_CONFIG_NAME
+          {{- if .Values.server.configMap }}
+          value: {{ .Values.server.configMap | quote }}
+          {{- else }}
           value: {{ template "scdf.fullname" . }}-server
+          {{- end }}
+          {{- if .Values.features.streaming.enabled }}
         - name: SPRING_CLOUD_SKIPPER_CLIENT_SERVER_URI
           value: 'http://${{ printf "{" }}{{ template "scdf.envname" . }}_SKIPPER_SERVICE_HOST}/api'
+          {{- end }}
         - name: SPRING_CLOUD_DATAFLOW_SERVER_URI
           value: 'http://${{ printf "{" }}{{ template "scdf.envname" . }}_SERVER_SERVICE_HOST}:${{ printf "{" }}{{ template "scdf.envname" . }}_SERVER_SERVICE_PORT}'
         - name: SPRING_APPLICATION_JSON
           value: "{ \"maven\": { \"local-repository\": null, \"remote-repositories\": { \"repo1\": { \"url\": \"https://repo.spring.io/libs-snapshot\"} } } }"
+        - name: KUBERNETES_TRUST_CERTIFICATES
+          value: {{ .Values.server.trustCerts | quote }}
+        - name: SPRING_CLOUD_DATAFLOW_FEATURES_STREAMS_ENABLED
+          value: {{ .Values.features.streaming.enabled | quote }}
+        - name: SPRING_CLOUD_DATAFLOW_FEATURES_TASKS_ENABLED
+          value: {{ .Values.features.batch.enabled | quote }}
+        - name: SPRING_CLOUD_DATAFLOW_FEATURES_SCHEDULES_ENABLED
+          value: {{ .Values.features.batch.enabled | quote }}
+        - name: SPRING_CLOUD_DATAFLOW_TASK_SCHEDULER_TASK_LAUNCHER_URL
+          value: 'docker://springcloud/spring-cloud-dataflow-scheduler-task-launcher:{{ .Values.server.version }}'
       volumes:
         - name: database
           secret:

@@ -31,6 +31,7 @@ The following table lists the configurable parameters of the openldap chart and 
 | `image.tag`                        | Container image tag                                                                                                                       | `1.1.10`            |
 | `image.pullPolicy`                 | Container pull policy                                                                                                                     | `IfNotPresent`      |
 | `extraLabels`                      | Labels to add to the Resources                                                                                                            | `{}`                |
+| `podAnnotations`                   | Annotations to add to the pod                                                                                                             | `{}`                |
 | `existingSecret`                   | Use an existing secret for admin and config user passwords                                                                                | `""`                |
 | `service.annotations`              | Annotations to add to the service                                                                                                         | `{}`                |
 | `service.clusterIP`                | IP address to assign to the service                                                                                                       | `""`                |
@@ -52,7 +53,9 @@ The following table lists the configurable parameters of the openldap chart and 
 | `persistence.storageClass`         | Storage class for PersistentVolumes.                                                                                                      | `<unset>`           |
 | `persistence.accessMode`           | Access mode for PersistentVolumes                                                                                                         | `ReadWriteOnce`     |
 | `persistence.size`                 | PersistentVolumeClaim storage size                                                                                                        | `8Gi`               |
+| `persistence.existingClaim`        | An Existing PVC name for openLDAPA volume                                                                                                 | None                |
 | `resources`                        | Container resource requests and limits in yaml                                                                                            | `{}`                |
+| `initResources`                    | initContainer resource requests and limits in yaml                                                                                        | `{}`                |
 | `test.enabled`                     | Conditionally provision test resources                                                                                                    | `false`             |
 | `test.image.repository`            | Test container image requires bats framework                                                                                              | `dduportal/bats`    |
 | `test.image.tag`                   | Test container tag                                                                                                                        | `0.4.0`             |

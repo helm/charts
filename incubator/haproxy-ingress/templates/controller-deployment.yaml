@@ -1,23 +1,27 @@
 {{ if eq .Values.controller.kind "Deployment" -}}
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: {{ template "haproxy-ingress.name" . }}
+    app: {{ template "haproxy-ingress.labels.app.controller" . }}
     chart: {{ template "haproxy-ingress.chart" . }}
     component: "{{ .Values.controller.name }}"
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   name: {{ template "haproxy-ingress.controller.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
+{{- if not .Values.controller.autoscaling.enabled }}
   replicas: {{ .Values.controller.replicaCount }}
+{{- end }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   strategy:
 {{ toYaml .Values.controller.updateStrategy | indent 4 }}
   minReadySeconds: {{ .Values.controller.minReadySeconds }}
   selector:
     matchLabels:
-      app: {{ template "haproxy-ingress.name" . }}
+      app: {{ template "haproxy-ingress.labels.app.controller" . }}
+      component: "{{ .Values.controller.name }}"
       release: {{ .Release.Name }}
   template:
     metadata:
@@ -29,7 +33,7 @@ spec:
 {{ toYaml .Values.controller.podAnnotations | indent 8}}
       {{- end }}
       labels:
-        app: {{ template "haproxy-ingress.name" . }}
+        app: {{ template "haproxy-ingress.labels.app.controller" . }}
         component: "{{ .Values.controller.name }}"
         release: {{ .Release.Name }}
         {{- if .Values.controller.podLabels }}
@@ -157,13 +161,17 @@ spec:
           resources:
 {{ toYaml .Values.controller.metrics.resources | indent 12 }}
       {{- end }}
+{{- if .Values.controller.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.controller.imagePullSecrets | indent 8 }}
+{{- end }}
 {{- if .Values.controller.template }}
       volumes:
         - name: haproxy-template
           configMap:
             name: {{ template "haproxy-ingress.controller.fullname" . }}-template
 {{- end }}
-      terminationGracePeriodSeconds: 60
+      terminationGracePeriodSeconds: {{ .Values.controller.terminationGracePeriodSeconds }}
       dnsPolicy: {{ .Values.controller.dnsPolicy }}
       hostNetwork: {{ .Values.controller.hostNetwork }}
     {{- if .Values.controller.nodeSelector }}

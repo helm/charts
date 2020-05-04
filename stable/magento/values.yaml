@@ -13,7 +13,7 @@
 image:
   registry: docker.io
   repository: bitnami/magento
-  tag: 2.3.1-debian-9-r44
+  tag: 2.3.1-debian-9-r56
   ## Set to true if you would like to see extra information on logs
   ## It turns BASH and NAMI debugging in minideb
   ## ref:  https://github.com/bitnami/minideb-extras/#turn-on-bash-debugging

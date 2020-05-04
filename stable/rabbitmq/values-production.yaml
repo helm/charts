@@ -6,6 +6,7 @@
 #   imageRegistry: myRegistryName
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
+#   storageClass: myStorageClass
 
 ## Bitnami RabbitMQ image version
 ## ref: https://hub.docker.com/r/bitnami/rabbitmq/tags/
@@ -13,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/rabbitmq
-  tag: 3.7.15-debian-9-r18
+  tag: 3.8.2-debian-10-r30
 
   ## set to true if you would like to see extra information on logs
   ## it turns BASH and NAMI debugging in minideb
@@ -32,6 +33,14 @@ image:
   # pullSecrets:
   #   - myRegistryKeySecretName
 
+## String to partially override rabbitmq.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override rabbitmq.fullname template
+##
+# fullnameOverride:
+
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
 ##
@@ -39,7 +48,6 @@ image:
 
 ## does your cluster have rbac enabled? assume yes by default
 rbacEnabled: true
-
 
 ## RabbitMQ should be initialized one by one when building cluster for the first time.
 ## Therefore, the default value of podManagementPolicy is 'OrderedReady'
@@ -100,19 +108,26 @@ rabbitmq:
 
   ## Extra plugins to enable
   ## Use this instead of `plugins` to add new plugins
-  # extraPlugins: ""
+  extraPlugins: "rabbitmq_auth_backend_ldap"
 
   ## Clustering settings
   clustering:
     address_type: hostname
     k8s_domain: cluster.local
+    ## Rebalance master for queues in cluster when new replica is created
+    ## ref: https://www.rabbitmq.com/rabbitmq-queues.8.html#rebalance
+    rebalance: false
 
   loadDefinition:
     enabled: false
     secretName: load-definition
 
+  ## environment variables to configure rabbitmq
+  ## ref: https://www.rabbitmq.com/configure.html#customise-environment
+  env: {}
+
   ## Configuration file content: required cluster configuration
-  ## Do not override unless you know what you are doing. To add more configuration, use `extraConfiguration` instead
+  ## Do not override unless you know what you are doing. To add more configuration, use `extraConfiguration` of `advancedConfiguration` instead
   configuration: |-
     ## Clustering
     cluster_formation.peer_discovery_backend  = rabbit_peer_discovery_k8s
@@ -131,6 +146,48 @@ rabbitmq:
     #disk_free_limit.absolute = 50MB
     #management.load_definitions = /app/load_definition.json
 
+  ## Configuration file content: advanced configuration
+  ## Use this as additional configuraton in classic config format (Erlang term configuration format)
+  ## If you set LDAP with TLS/SSL enabled and you are using self-signed certificates, uncomment these lines.
+  ## advancedConfiguration: |-
+  ##   [{
+  ##     rabbitmq_auth_backend_ldap,
+  ##     [{
+  ##         ssl_options,
+  ##         [{
+  ##             verify, verify_none
+  ##         }, {
+  ##             fail_if_no_peer_cert,
+  ##             false
+  ##         }]
+  ##     ]}
+  ##   }].
+  ##
+  advancedConfiguration: |-
+
+  ## Enable encryption to rabbitmq
+  ## ref: https://www.rabbitmq.com/ssl.html
+  ##
+  tls:
+    enabled: false
+    failIfNoPeerCert: true
+    sslOptionsVerify: verify_peer
+    caCertificate: |-
+    serverCertificate: |-
+    serverKey: |-
+    # existingSecret: name-of-existing-secret-to-rabbitmq
+
+## LDAP configuration
+##
+ldap:
+  enabled: false
+  server: ""
+  port: "389"
+  user_dn_pattern: cn=${username},dc=example,dc=org
+  tls:
+    # If you enabled TLS/SSL you can set advaced options using the advancedConfiguration parameter.
+    enabled: false
+
 ## Kubernetes service type
 service:
   type: ClusterIP
@@ -139,10 +196,22 @@ service:
   ##
   # nodePort: 30672
 
+  ## Set the LoadBalancerIP
+  ##
+  # loadBalancerIP:
+
+  ## Node port Tls
+  ##
+  # nodeTlsPort: 30671
+
   ## Amqp port
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ##
   port: 5672
+
+  ## Amqp Tls port
+  ##
+  tlsPort: 5671
 
   ## Dist port
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
@@ -155,7 +224,7 @@ service:
   managerPort: 15672
 
   ## Service annotations
-  annotations:
+  annotations: {}
     # service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
 
   ## Load Balancer sources
@@ -163,6 +232,12 @@ service:
   ##
   # loadBalancerSourceRanges:
   # - 10.10.10.0/24
+
+  ## Extra ports to expose
+  # extraPorts:
+
+  ## Extra ports to be included in container spec, primarily informational
+  # extraContainerPorts:
 
 # Additional pod labels to apply
 podLabels: {}
@@ -174,6 +249,7 @@ securityContext:
   enabled: true
   fsGroup: 1001
   runAsUser: 1001
+  extra: {}
 
 persistence:
   ## this enables PVC templates that will create one per pod
@@ -208,6 +284,30 @@ resources:
     memory: 256Mi
     cpu: 100m
 
+networkPolicy:
+  ## Enable creation of NetworkPolicy resources. Only Ingress traffic is filtered for now.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/network-policies/
+  ##
+  enabled: false
+
+  ## The Policy model to apply. When set to false, only pods with the correct
+  ## client label will have network access to the port RabbitMQ is listening
+  ## on. When true, RabbitMQ will accept connections from any source
+  ## (with the correct destination port).
+  ##
+  allowExternal: true
+
+  ## Additional NetworkPolicy Ingress "from" rules to set. Note that all rules are OR-ed.
+  ##
+  # additionalRules:
+  #  - matchLabels:
+  #    - role: frontend
+  #  - matchExpressions:
+  #    - key: role
+  #      operator: In
+  #      values:
+  #        - frontend
+
 ## Replica count, set to 3 to provide a default available cluster
 replicas: 3
 
@@ -228,8 +328,30 @@ nodeSelector:
 tolerations: []
 affinity: {}
 
+## affinity: |
+##   podAntiAffinity:
+##     requiredDuringSchedulingIgnoredDuringExecution:
+##       - labelSelector:
+##           matchLabels:
+##             app: {{ template "rabbitmq.name" . }}
+##             release: {{ .Release.Name | quote }}
+##         topologyKey: kubernetes.io/hostname
+##     preferredDuringSchedulingIgnoredDuringExecution:
+##       - weight: 100
+##         podAffinityTerm:
+##           labelSelector:
+##             matchLabels:
+##               app:  {{ template "rabbitmq.name" . }}
+##               release: {{ .Release.Name | quote }}
+##           topologyKey: failure-domain.beta.kubernetes.io/zone
+
 ## annotations for rabbitmq pods
 podAnnotations: {}
+
+## Configure the podDisruptionBudget
+podDisruptionBudget: {}
+# maxUnavailable: 1
+# minAvailable: 1
 
 ## Configure the ingress resource that allows you to access the
 ## Wordpress installation. Set up the URL
@@ -256,10 +378,10 @@ ingress:
   ## kubernetes.io/tls-acme: true
   ##
   ## For a full list of possible ingress annotations, please see
-  ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/annotations.md
+  ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/annotations.md
   ##
   ## If tls is set to true, annotation ingress.kubernetes.io/secure-backends: "true" will automatically be set
-  annotations:
+  annotations: {}
   #  kubernetes.io/ingress.class: nginx
   #  kubernetes.io/tls-acme: true
 
@@ -284,8 +406,8 @@ metrics:
   enabled: true
   image:
     registry: docker.io
-    repository: kbudde/rabbitmq-exporter
-    tag: v0.29.0
+    repository: bitnami/rabbitmq-exporter
+    tag: 0.29.0-debian-10-r28
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -296,13 +418,124 @@ metrics:
   ## environment variables to configure rabbitmq_exporter
   ## ref: https://github.com/kbudde/rabbitmq_exporter#configuration
   env: {}
+  ## Metrics exporter port
+  port: 9419
   ## Comma-separated list of extended scraping capabilities supported by the target RabbitMQ server
   ## ref: https://github.com/kbudde/rabbitmq_exporter#extended-rabbitmq-capabilities
   capabilities: "bert,no_sort"
   resources: {}
   annotations:
     prometheus.io/scrape: "true"
-    prometheus.io/port: "9090"
+    prometheus.io/port: "9419"
+
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 15
+    timeoutSeconds: 5
+    periodSeconds: 30
+    failureThreshold: 6
+    successThreshold: 1
+
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 5
+    timeoutSeconds: 5
+    periodSeconds: 30
+    failureThreshold: 3
+    successThreshold: 1
+
+  ## Prometheus Service Monitor
+  ## ref: https://github.com/coreos/prometheus-operator
+  ##      https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#endpoint
+  serviceMonitor:
+    ## If the operator is installed in your cluster, set to true to create a Service Monitor Entry
+    enabled: false
+    ## Specify the namespace in which the serviceMonitor resource will be created
+    # namespace: ""
+    ## Specify the interval at which metrics should be scraped
+    interval: 30s
+    ## Specify the timeout after which the scrape is ended
+    # scrapeTimeout: 30s
+    ## Specify Metric Relabellings to add to the scrape endpoint
+    # relabellings:
+    ## Specify honorLabels parameter to add the scrape endpoint
+    honorLabels: false
+    ## Specify the release for ServiceMonitor. Sometimes it should be custom for prometheus operator to work
+    # release: ""
+    ## Used to pass Labels that are used by the Prometheus installed in your cluster to select Service Monitors to work with
+    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
+    additionalLabels: {}
+
+  ## Custom PrometheusRule to be defined
+  ## The value is evaluated as a template, so, for example, the value can depend on .Release or .Chart
+  ## ref: https://github.com/coreos/prometheus-operator#customresourcedefinitions
+  prometheusRule:
+    enabled: false
+    additionalLabels: {}
+    namespace: ""
+    rules: []
+      ## List of reules, used as template by Helm.
+      ## These are just examples rules inspired from https://awesome-prometheus-alerts.grep.to/rules.html
+      ## Please adapt them to your needs.
+      ## Make sure to constraint the rules to the current rabbitmq service.
+      ## Also make sure to escape what looks like helm template.
+      # - alert: RabbitmqDown
+      #   expr: rabbitmq_up{service="{{ template "rabbitmq.fullname" . }}"} == 0
+      #   for: 5m
+      #   labels:
+      #     severity: error
+      #   annotations:
+      #     summary: Rabbitmq down (instance {{ "{{ $labels.instance }}" }})
+      #     description: RabbitMQ node down
+
+      # - alert: ClusterDown
+      #   expr: |
+      #     sum(rabbitmq_running{service="{{ template "rabbitmq.fullname" . }}"})
+      #     < {{ .Values.replicas }}
+      #   for: 5m
+      #   labels:
+      #     severity: error
+      #   annotations:
+      #     summary: Cluster down (instance {{ "{{ $labels.instance }}" }})
+      #     description: |
+      #         Less than {{ .Values.replicas }} nodes running in RabbitMQ cluster
+      #         VALUE = {{ "{{ $value }}" }}
+
+      # - alert: ClusterPartition
+      #   expr: rabbitmq_partitions{service="{{ template "rabbitmq.fullname" . }}"} > 0
+      #   for: 5m
+      #   labels:
+      #     severity: error
+      #   annotations:
+      #     summary: Cluster partition (instance {{ "{{ $labels.instance }}" }})
+      #     description: |
+      #         Cluster partition
+      #         VALUE = {{ "{{ $value }}" }}
+
+      # - alert: OutOfMemory
+      #   expr: |
+      #     rabbitmq_node_mem_used{service="{{ template "rabbitmq.fullname" . }}"}
+      #     / rabbitmq_node_mem_limit{service="{{ template "rabbitmq.fullname" . }}"}
+      #     * 100 > 90
+      #   for: 5m
+      #   labels:
+      #     severity: warning
+      #   annotations:
+      #     summary: Out of memory (instance {{ "{{ $labels.instance }}" }})
+      #     description: |
+      #         Memory available for RabbmitMQ is low (< 10%)\n  VALUE = {{ "{{ $value }}" }}
+      #         LABELS: {{ "{{ $labels }}" }}
+
+      # - alert: TooManyConnections
+      #   expr: rabbitmq_connectionsTotal{service="{{ template "rabbitmq.fullname" . }}"} > 1000
+      #   for: 5m
+      #   labels:
+      #     severity: warning
+      #   annotations:
+      #     summary: Too many connections (instance {{ "{{ $labels.instance }}" }})
+      #     description: |
+      #         RabbitMQ instance has too many connections (> 1000)
+      #         VALUE = {{ "{{ $value }}" }}\n  LABELS: {{ "{{ $labels }}" }}
 
 ##
 ## Init containers parameters:
@@ -313,8 +546,8 @@ volumePermissions:
   image:
     registry: docker.io
     repository: bitnami/minideb
-    tag: latest
-    pullPolicy: IfNotPresent
+    tag: buster
+    pullPolicy: Always
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -329,3 +562,13 @@ volumePermissions:
 ##
 forceBoot:
   enabled: false
+
+## Optionally specify extra secrets to be created by the chart.
+## This can be useful when combined with load_definitions to automatically create the secret containing the definitions to be loaded.
+##
+extraSecrets: {}
+  # load-definition:
+  #   load_definition.json: |
+  #     {
+  #       ...
+  #     }

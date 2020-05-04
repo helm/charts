@@ -42,12 +42,20 @@ spec:
           livenessProbe:
             initialDelaySeconds: 180
             httpGet:
+              {{- if .Values.service.gogs.serviceRequireSignInView }}
+              path: /user/login
+              {{- else }}
               path: /
+              {{- end }}
               port: 3000
           readinessProbe:
             initialDelaySeconds: 180
             httpGet:
+              {{- if .Values.service.gogs.serviceRequireSignInView }}
+              path: /user/login
+              {{- else }}
               path: /
+              {{- end }}
               port: 3000
           env:
             # https://github.com/gogits/gogs/tree/master/docker#container-options

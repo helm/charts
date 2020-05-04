@@ -49,6 +49,14 @@ Create the name of the service account to use
   {{- end -}}
 {{- end -}}
 
+{{- define "scdf.database.scheme" -}}
+  {{- if .Values.mysql.enabled -}}
+    {{- printf "mysql" -}}
+  {{- else -}}
+    {{- .Values.database.scheme -}}
+  {{- end -}}
+{{- end -}}
+
 {{- define "scdf.database.host" -}}
   {{- if .Values.mysql.enabled -}}
     {{- printf "${%s_MYSQL_SERVICE_HOST}" (include "scdf.envrelease" . ) -}}
@@ -117,6 +125,6 @@ Create the name of the service account to use
   {{- if index .Values "rabbitmq-ha" "enabled" -}}
     {{ index .Values "rabbitmq-ha" "rabbitmqUsername" }}
   {{- else if .Values.rabbitmq.enabled -}}
-    {{ .Values.rabbitmq.rabbitmqUsername }}
+    {{ .Values.rabbitmq.rabbitmq.username }}
   {{- end -}}
 {{- end -}}

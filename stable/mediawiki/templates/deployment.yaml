@@ -1,5 +1,5 @@
-{{- if or .Values.mariadb.enabled .Values.externalDatabase.host -}}
-apiVersion: extensions/v1beta1
+{{- if and (include "mediawiki.host" .) (or .Values.mariadb.enabled .Values.externalDatabase.host) -}}
+apiVersion: {{ template "mediawiki.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "mediawiki.fullname" . }}
@@ -76,6 +76,9 @@ spec:
               name: {{ printf "%s-%s" .Release.Name "externaldb" }}
               key: db-password
             {{- end }}
+        {{- $port:=.Values.service.port | toString }}
+        - name: MEDIAWIKI_HOST
+          value: "{{ include "mediawiki.host" . }}{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}"
         - name: MEDIAWIKI_USERNAME
           value: {{ .Values.mediawikiUser | quote }}
         - name: MEDIAWIKI_PASSWORD
@@ -113,13 +116,18 @@ spec:
         ports:
         - name: http
           containerPort: 80
+        {{- if .Values.service.httpsPort }}
         - name: https
           containerPort: 443
+        {{ end }}
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
-            path: /index.php
+            path: /api.php
             port: http
+            httpHeaders:
+            - name: Host
+              value: {{ include "mediawiki.host" . | quote }}
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -129,8 +137,11 @@ spec:
         {{- if .Values.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
-            path: /index.php
+            path: /api.php
             port: http
+            httpHeaders:
+            - name: Host
+              value: {{ include "mediawiki.host" . | quote }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
@@ -173,5 +184,9 @@ spec:
           claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "mediawiki.fullname" . }}-mediawiki{{- end }}
       {{- else }}
         emptyDir: {}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
       {{- end }}
 {{- end }}

@@ -14,7 +14,7 @@ Note - By Default the Express Edition is installed as part of this Chart.
 
 Gain access to your SQL Server:
 1. Get SA Password
-$ printf $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mssql.fullname" . }}-secret -o jsonpath="{.data.sapassword}" | base64 --decode);echo
+$ printf $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mssql.secret" . }} -o jsonpath="{.data.{{ template "mssql.passwordKey" . }}}" | base64 --decode);echo
 2. You can test that SQL Server is available by the service port with with the following set of command:
 (Note: You will be prompted for the SA password, use the password generated in Step 1)
 $ kubectl run mssqlcli --image=microsoft/mssql-tools -ti --restart=Never --rm=true -- /bin/bash

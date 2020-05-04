@@ -23,16 +23,28 @@ spec:
       {{- if .Values.annotations }}
       annotations:
 {{ toYaml .Values.annotations | indent 4 }}
-      {{- end }} 
+      {{- end }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          {{- range $key, $value := .Values.envVarsFromSecret }}
+          - name: {{ $key }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $value.secretKeyRef | quote }}
+                key: {{ $value.key | quote }}
+          {{- end }}
           envFrom:
             - configMapRef:
                 name: {{ template "kube-slack.fullname" . }}
           resources:
+      {{ if .Values.image.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.image.pullSecret }}
+      {{- end }}
 {{ toYaml .Values.resources | indent 12 }}
     {{- if .Values.rbac.create }}
       serviceAccountName: {{ template "kube-slack.fullname" . }}
