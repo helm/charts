@@ -605,10 +605,10 @@ server:
     evaluation_interval: 1m
   ## https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write
   ##
-  remoteWrite: {}
+  remoteWrite: []
   ## https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_read
   ##
-  remoteRead: {}
+  remoteRead: []
 
   ## Additional Prometheus server container arguments
   ##

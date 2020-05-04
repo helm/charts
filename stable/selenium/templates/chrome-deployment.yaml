@@ -1,4 +1,4 @@
-{{- if eq true .Values.chrome.enabled -}}
+{{- if and (eq true .Values.chrome.enabled) (eq false .Values.chrome.runAsDaemonSet) -}}
 apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:

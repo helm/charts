@@ -3,9 +3,6 @@
 schedulerName: "{{ .Values.schedulerName }}"
 {{- end }}
 serviceAccountName: {{ template "grafana.serviceAccountName" . }}
-{{- if .Values.schedulerName }}
-schedulerName: "{{ .Values.schedulerName }}"
-{{- end }}
 {{- if .Values.securityContext }}
 securityContext:
 {{ toYaml .Values.securityContext | indent 2 }}
@@ -202,6 +199,7 @@ containers:
       - name: {{ .name }}
         mountPath: {{ .mountPath }}
         readOnly: {{ .readOnly }}
+        subPath: {{ .subPath | default "" }}
     {{- end }}
     {{- range .Values.extraVolumeMounts }}
       - name: {{ .name }}
@@ -266,7 +264,7 @@ containers:
     {{- if .Values.envFromSecret }}
     envFrom:
       - secretRef:
-          name: {{ .Values.envFromSecret }}
+          name: {{ tpl .Values.envFromSecret . }}
     {{- end }}
     {{- if .Values.envRenderSecret }}
     envFrom:

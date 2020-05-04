@@ -43,3 +43,10 @@ agent:
     - type: EmptyDir
       mountPath: /var/myapp/myemptydir
       memory: false
+serviceAccount:
+  annotations:
+    description: "Used by release {{ .Release.Name }} for role-based access control"
+serviceAccountAgent:
+  create: true
+  annotations:
+    description: "Used by release {{ .Release.Name }} for role-based access control"
