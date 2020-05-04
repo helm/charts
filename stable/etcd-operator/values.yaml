@@ -71,7 +71,6 @@ etcdOperator:
     timeoutSeconds: 1
     successThreshold: 1
     failureThreshold: 3
-  
 
 # backup spec
 backupOperator:
