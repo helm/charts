@@ -179,7 +179,7 @@ prometheus:
         - role: pod
           namespaces:
             names:
-              - default
+              - {{ .Release.Namespace }}
       relabel_configs:
         - source_labels: [__meta_kubernetes_pod_label_app]
           action: keep
@@ -193,7 +193,7 @@ prometheus:
         - role: pod
           namespaces:
             names:
-              - default
+              - {{ .Release.Namespace }}
       relabel_configs:
         - source_labels: [__meta_kubernetes_pod_label_app]
           action: keep
