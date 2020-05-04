@@ -6,6 +6,10 @@ metadata:
 {{ template "prometheus-pushgateway.defaultLabels" merge (dict "extraLabels" .Values.podLabels) .  }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  {{- if .Values.strategy }}
+  strategy:
+{{ toYaml .Values.strategy | indent 4 }}
+  {{- end }}
   selector:
     matchLabels:
       app: {{ template "prometheus-pushgateway.name" . }}

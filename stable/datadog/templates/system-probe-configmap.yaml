@@ -78,6 +78,7 @@ data:
             "fcntl64",
             "fstat",
             "fstat64",
+            "fstatfs",
             "fsync",
             "futex",
             "getcwd",

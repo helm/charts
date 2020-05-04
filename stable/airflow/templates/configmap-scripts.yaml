@@ -30,3 +30,21 @@ data:
     while (( $(celery -b $AIRFLOW__CELERY__BROKER_URL inspect active --json | python -c "import sys, json; print(len(json.load(sys.stdin)['celery@$HOSTNAME']))") > 0 )); do
     sleep 60
     done
+  preinit-db.sh: |
+    #!/bin/bash -e
+    COUNT=0
+    echo "*** Waiting 10s for postgres"
+    sleep 10
+    while [ "${COUNT}" -lt 5 ]; do
+      echo "*** Initializing airflow db"
+      if airflow initdb; then
+        echo "*** Initdb succeeded"
+        exit 0
+      else
+        ((COUNT++))
+        echo "*** Initdb failed: waiting 5s before retry #${COUNT}"
+        sleep 5
+      fi
+    done
+    echo "*** Initdb failed after ${COUNT} retries; failed."
+    exit 1

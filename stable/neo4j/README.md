@@ -63,6 +63,7 @@ their default values.
 | `imagePullPolicy`                     | Image pull policy                                                                                                                       | `IfNotPresent`                                  |
 | `podDisruptionBudget`                 | Pod disruption budget                                                                                                                   | `{}`                                            |
 | `authEnabled`                         | Is login/password required?                                                                                                             | `true`                                          |
+| `neo4jPassword`                       | Password to log in the Neo4J database if password is required                                                                           | (random string of 10 characters)                |
 | `core.numberOfServers`                | Number of machines in CORE mode                                                                                                         | `3`                                             |
 | `core.sideCarContainers`              | Sidecar containers to add to the core pod. Example use case is a sidecar which identifies and labels the leader when using the http API | `{}`                                            |
 | `core.initContainers`                 | Init containers to add to the core pod. Example use case is a script that installs the APOC library                                     | `{}`                                            |
@@ -104,3 +105,15 @@ $ helm install --name neo4j-helm -f values.yaml stable/neo4j
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
 Once you have all 3 pods in running, you can run the "test.sh" script in this directory, which will verify the role attached to each pod and also test recovery of a failed/deleted pod. This script requires that the $RELEASE_NAME environment variable be set, in order to access the pods, if you have specified a custom `namespace` or `replicas` value when installing you can set those via `RELEASE_NAMESPACE` and `CORE_REPLICAS` environment variables for this script.
+
+## Upgrading
+
+### To 2.0.0
+
+Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+Use the workaround below to upgrade from versions previous to 2.0.0. The following example assumes that the release name is neo4j:
+
+```console
+$ kubectl delete statefulset.apps neo4j-neo4j-core --cascade=false
+$ kubectl delete deployments.apps neo4j-neo4j-replica --cascade=false
+```

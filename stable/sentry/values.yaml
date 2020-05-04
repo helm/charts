@@ -204,6 +204,11 @@ ingress:
   #   kubernetes.io/ingress.class: nginx
   #   kubernetes.io/tls-acme: 'true'
 
+  ## Ingress labels
+  #
+  labels: {}
+  #   env: dev
+
   ## Ingress TLS configuration
   ## Secrets must be manually created in the namespace
   ##
@@ -311,6 +316,7 @@ metrics:
 hooks:
   affinity: {}
   dbInit:
+    enabled: true
     resources:
     # We setup 3000Mi for the memory limit because of a Sentry instance need at least 3Gb RAM to perform a migration process
     # reference: https://github.com/helm/charts/issues/15296

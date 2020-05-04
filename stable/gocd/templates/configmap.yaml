@@ -47,7 +47,7 @@ data:
         "properties": [
               {
                 "key": "go_server_url",
-                "value": "https://{{ template "gocd.fullname" . }}-server:{{ .Values.server.service.httpsPort }}/go"
+                "value": "http://{{ template "gocd.fullname" . }}-server:{{ .Values.server.service.httpPort }}/go"
             },
             {
                 "key": "kubernetes_cluster_url",

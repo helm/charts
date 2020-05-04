@@ -118,6 +118,14 @@ spec:
             - name: extra-config
               mountPath: /configmap
             {{- end }}
+            {{- if and .Values.customCert .Values.customCert.enabled }}
+            - name: CERT_IS_CHAIN
+              value: "{{ .Values.customCert.isChain }}"
+            - name: CERTNAME
+              value: "{{ .Values.customCert.certName }}"
+            - name: CERT_PRIVATE_NAME
+              value: "{{ .Values.customCert.keyName }}"
+            {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
       volumes:

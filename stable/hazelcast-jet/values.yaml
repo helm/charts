@@ -5,7 +5,7 @@ image:
   # repository is the Hazelcast Jet image name
   repository: "hazelcast/hazelcast-jet"
   # tag is the Hazelcast Jet image tag
-  tag: "4.0"
+  tag: "4.1"
   # pullPolicy is the Docker image pull policy
   # It's recommended to change this to 'Always' if the image tag is 'latest'
   # ref: http://kubernetes.io/docs/user-guide/images/#updating-images
@@ -35,6 +35,7 @@ jet:
   # Jet and Hazelcast IMDG YAML configuration files
   yaml:
     hazelcast:
+      cluster-name: jet
       network:
         join:
           multicast:
@@ -182,7 +183,6 @@ service:
   # It is required if DNS Lookup is used (https://github.com/hazelcast/hazelcast-kubernetes#dns-lookup)
   clusterIP: "None"
 
-
 # Role-based Access Control
 rbac:
   # Specifies whether RBAC resources should be created
@@ -220,6 +220,9 @@ metrics:
       prometheus.io/path: "/metrics"
       prometheus.io/port: "8080"
 
+# customVolume is the configuration for a volume will be mounted as '/data/custom/' (e.g. to mount a volume with custom JARs)
+# customVolume:
+
 # Hazelcast Jet Management Center application properties
 managementcenter:
   # enabled is a flag to enable Hazelcast Jet Management Center application
@@ -231,7 +234,7 @@ managementcenter:
     # repository is the Hazelcast Jet Management Center image name
     repository: "hazelcast/hazelcast-jet-management-center"
     # tag is the Hazelcast Jet Management Center image tag
-    tag: "4.0"
+    tag: "4.1"
     # pullPolicy is the Docker image pull policy
     # It's recommended to change this to 'Always' if the image tag is 'latest'
     # ref: http://kubernetes.io/docs/user-guide/images/#updating-images
@@ -265,6 +268,7 @@ managementcenter:
   # Jet Client configuration YAML file which will be used by Hazelcast Jet Management Center
   yaml:
     hazelcast-client:
+      cluster-name: jet
       network:
         kubernetes:
           enabled: true

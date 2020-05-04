@@ -40,8 +40,9 @@ spec:
                 name: {{ template "datadog.apiSecretName" . }}
                 key: api-key
           - name: DD_EXTRA_CONFIG_PROVIDERS
-            value: "clusterchecks"
-          - {name: DD_HEALTH_PORT, value: "5555"}
+            value: "clusterchecks endpointschecks"
+          - name: DD_HEALTH_PORT
+            value: "5555"
           # Cluster checks
           - name: DD_CLUSTER_AGENT_KUBERNETES_SERVICE_NAME
             value: {{ template "datadog.fullname" . }}-cluster-agent
@@ -52,19 +53,22 @@ spec:
                 key: token
           - name: DD_CLUSTER_AGENT_ENABLED
             value: {{ .Values.clusterAgent.enabled | quote }}
-          - {name: DD_EXTRA_CONFIG_PROVIDERS, value: "clusterchecks"}
           # Remove unused features
-          - {name: DD_PROCESS_AGENT_ENABLED, value: "false"}
-          - {name: DD_LOGS_ENABLED, value: "false"}
+          - name: DD_PROCESS_AGENT_ENABLED
+            value: "false"
+          - name: DD_LOGS_ENABLED
+            value: "false"
           # Safely run alongside the daemonset
-          - {name: DD_ENABLE_METADATA_COLLECTION, value: "false"}
+          - name: DD_ENABLE_METADATA_COLLECTION
+            value: "false"
           - name: DD_HOSTNAME
             valueFrom:
               fieldRef:
                 fieldPath: spec.nodeName
-{{- if .Values.clusterChecksRunner.env }}
-{{ toYaml .Values.clusterChecksRunner.env | indent 10 }}
-{{- end }}
+        {{- range $value := .Values.clusterChecksRunner.env }}
+          - name: {{ $value.name }}
+            value: {{ $value.value | quote }}
+        {{- end }}
         resources:
 {{ toYaml .Values.clusterChecksRunner.resources | indent 10 }}
         volumeMounts:

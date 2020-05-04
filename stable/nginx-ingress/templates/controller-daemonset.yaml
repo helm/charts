@@ -8,7 +8,7 @@ metadata:
     app: {{ template "nginx-ingress.name" . }}
     chart: {{ template "nginx-ingress.chart" . }}
     heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    release: {{ template "nginx-ingress.releaseLabel" . }}
     app.kubernetes.io/component: controller
   name: {{ template "nginx-ingress.controller.fullname" . }}
   annotations:    
@@ -17,7 +17,7 @@ spec:
   selector:
     matchLabels:
       app: {{ template "nginx-ingress.name" . }}
-      release: {{ .Release.Name }}
+      release: {{ template "nginx-ingress.releaseLabel" . }}
     {{- if .Values.controller.useComponentLabel }}
       app.kubernetes.io/component: controller
     {{- end }}
@@ -35,7 +35,8 @@ spec:
       {{- end }}
       labels:
         app: {{ template "nginx-ingress.name" . }}
-        release: {{ .Release.Name }}
+        release: {{ template "nginx-ingress.releaseLabel" . }}
+        component: "{{ .Values.controller.name }}"
         app.kubernetes.io/component: controller
         {{- if .Values.controller.podLabels }}
 {{ toYaml .Values.controller.podLabels | indent 8}}

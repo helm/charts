@@ -48,13 +48,18 @@ spec:
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          {{- if .Values.env }}
           env:
-          {{- range $key, $value := .Values.env }}
-          - name: {{ $key }}
-            value: "{{ $value }}"
-          {{- end }}
-          {{- end }}
+            {{- range $key, $value := .Values.env }}
+            - name: {{ $key }}
+              value: "{{ $value }}"
+            {{- end }}
+            {{- range $key, $value := .Values.extraEnvSecrets }}
+            - name: {{ $key }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ required "Must specify secret!" $value.secret }}
+                  key: {{ required "Must specify key!" $value.key }}
+            {{- end }}
           {{- if .Values.envFromSecret }}
           envFrom:
           - secretRef:
@@ -63,7 +68,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["elasticsearch_exporter",
-                    {{- if .Values.es.uri }}                    
+                    {{- if .Values.es.uri }}
                     "--es.uri={{ .Values.es.uri }}",
                     {{- end }}
                     {{- if .Values.es.all }}
@@ -89,9 +94,11 @@ spec:
                     "--es.ssl-skip-verify",
                     {{- end }}
                     {{- if .Values.es.ssl.enabled }}
-                    "--es.ca={{.Values.es.ssl.ca.path | default "/ssl/ca.pem" }}",
-                    "--es.client-cert={{.Values.es.ssl.client.pemPath | default "/ssl/client.pem" }}",
-                    "--es.client-private-key={{.Values.es.ssl.client.keyPath | default "/ssl/client.key" }}",
+                    "--es.ca={{.Values.es.ssl.ca.path }}",
+                    {{- if .Values.es.ssl.client.enabled }}
+                    "--es.client-cert={{ .Values.es.ssl.client.pemPath }}",
+                    "--es.client-private-key={{ .Values.es.ssl.client.keyPath }}",
+                    {{- end }}
                     {{- end }}
                     "--web.listen-address=:{{ .Values.service.httpPort }}",
                     "--web.telemetry-path={{ .Values.web.path }}"]

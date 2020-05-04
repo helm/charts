@@ -3,7 +3,7 @@
 Expand the name of the chart.
 */}}
 {{- define "airflow.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- .Values.nameOverride | default .Chart.Name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
@@ -26,21 +26,21 @@ Create the name of the service account to use
 */}}
 {{- define "airflow.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}
-    {{ default (include "airflow.fullname" .) .Values.serviceAccount.name }}
+    {{ .Values.serviceAccount.name | default (include "airflow.fullname" .) }}
 {{- else -}}
-    {{ default "default" .Values.serviceAccount.name }}
+    {{ .Values.serviceAccount.name | default "default" }}
 {{- end -}}
 {{- end -}}
 
 {{/*
-Create a default fully qualified postgresql name or use the `postgresHost` value if defined.
+Create a default fully qualified postgresql name or use the `postgresqlHost` value if defined.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 {{- define "airflow.postgresql.fullname" -}}
-{{- if .Values.postgresql.postgresHost }}
-    {{- .Values.postgresql.postgresHost -}}
+{{- if .Values.postgresql.postgresqlHost }}
+    {{- .Values.postgresql.postgresqlHost -}}
 {{- else }}
-    {{- $name := default "postgresql" .Values.postgresql.nameOverride -}}
+    {{- $name :=  .Values.postgresql.nameOverride | default "postgresql" -}}
     {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 {{- end -}}
@@ -98,19 +98,19 @@ The key names for postgres and redis are fixed, which is consistent with the sub
 */}}
 {{- define "airflow.mapenvsecrets" }}
   - name: POSTGRES_USER
-    value: {{ default "postgres" .Values.postgresql.postgresUser | quote }}
+    value: {{ .Values.postgresql.postgresqlUsername | default "postgres" | quote }}
   {{- if or .Values.postgresql.existingSecret .Values.postgresql.enabled }}
   - name: POSTGRES_PASSWORD
     valueFrom:
       secretKeyRef:
-        name: {{ default (include "airflow.postgresql.fullname" .) .Values.postgresql.existingSecret }}
+        name: {{ .Values.postgresql.existingSecret | default (include "airflow.postgresql.fullname" .) }}
         key: {{ .Values.postgresql.existingSecretKey }}
   {{- end }}
   {{- if or .Values.redis.existingSecret .Values.redis.enabled }}
   - name: REDIS_PASSWORD
     valueFrom:
       secretKeyRef:
-        name: {{ default (include "airflow.redis.fullname" .) .Values.redis.existingSecret }}
+        name: {{ .Values.redis.existingSecret | default (include "airflow.redis.fullname" .) }}
         key: {{ .Values.redis.existingSecretKey }}
   {{- end }}
   {{- if .Values.airflow.extraEnv }}

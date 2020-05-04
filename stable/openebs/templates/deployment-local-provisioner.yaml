@@ -70,11 +70,18 @@ spec:
           value: "{{ .Values.helper.image }}:{{ .Values.helper.imageTag }}"
         - name: OPENEBS_IO_INSTALLER_TYPE
           value: "charts-helm"
+        # Process name used for matching is limited to the 15 characters
+        # present in the pgrep output.
+        # So fullname can't be used here with pgrep (>15 chars).A regular expression
+        # that matches the entire command name has to specified.
+        # Anchor `^` : matches any string that starts with `provisioner-loc`
+        # `.*`: matches any string that has `provisioner-loc` followed by zero or more char
         livenessProbe:
           exec:
             command:
-            - pgrep
-            - ".*localpv"
+            - sh
+            - -c
+            - test `pgrep -c "^provisioner-loc.*"` = 1
           initialDelaySeconds: {{ .Values.localprovisioner.healthCheck.initialDelaySeconds }}
           periodSeconds: {{ .Values.localprovisioner.healthCheck.periodSeconds }}
 {{- if .Values.localprovisioner.nodeSelector }}

@@ -29,7 +29,7 @@ hazelcast:
   # loggingLevel is the level of Hazelcast logs (SEVERE, WARNING, INFO, CONFIG, FINE, FINER, and FINEST)
   # Note that changing this value requires setting securityContext.runAsUser to 0 and securityContext.readOnlyRootFilesystem to false
   # loggingLevel:
-  # existingConfigMap defines a ConfigMap which contains Hazelcast configuration file(s) that are used instead hazelcast.yaml configuration below
+  # existingConfigMap defines a ConfigMap which contains Hazelcast configuration file(s) that are used instead of hazelcast.yaml configuration below
   # existingConfigMap:
   # yaml is the Hazelcast YAML configuration file
   yaml:
@@ -223,6 +223,8 @@ mancenter:
     #   hosts:
     #   - hazelcast-mancenter.cluster.domain
 
+  # ssl is a flag to enable SSL for Management Center
+  ssl: false
   # javaOpts are additional JAVA_OPTS properties for Hazelcast Management Center
   javaOpts:
 
@@ -235,6 +237,15 @@ mancenter:
   licenseKey:
   # licenseKeySecretName is the name of the secret where the Hazelcast Management Center License Key is stored (can be used instead of licenseKey)
   # licenseKeySecretName:
+
+  # existingConfigMap defines a ConfigMap which contains Hazelcast Client configuration file(s) that are used instead of hazelcast-client.yaml configuration below
+  # existingConfigMap:
+  # yaml is the Hazelcast Client YAML configuration file
+  yaml:
+    hazelcast-client:
+      network:
+        cluster-members:
+          - ${serviceName}
 
   # affinity specifies the Management Center affinity/anti-affinity of different pods
   # affinity:
@@ -309,3 +320,6 @@ mancenter:
     successThreshold: 1
     # failureThreshold is the minimum consecutive failures for the probe to be considered failed after having succeeded
     failureThreshold: 3
+
+  # secretsMountName is the secret name that is mounted as '/data/secrets/' (e.g. with keystore/trustore files)
+  # secretsMountName:
