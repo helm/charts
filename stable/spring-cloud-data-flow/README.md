@@ -196,6 +196,15 @@ The following tables list the configurable parameters and their default values.
 | features.batch.enabled       | Enables or disables tasks and schedules | true
 | features.monitoring.enabled  | Enables or disables monitoring          | false
 
+### Ingress
+
+| Parameter            | Description                              | Default                   |
+| -------------------- | ---------------------------------------- | ------------------------- |
+| ingress.enabled      | Enables or disables ingress support      | true
+| ingress.protocol     | Sets the protocol used by ingress server | https
+| ingress.server.host  | Sets the host used for server            | data-flow.local
+| ingress.server.host  | Sets the host used for grafana           | grafana.local
+
 ### Grafana
 
 | Parameter                            | Description                                                  | Default                    |

@@ -6,7 +6,7 @@ metadata:
 spec:
   rules:
   - host: {{ .Values.ingress.server.host }}
-    http:
+    {{ .Values.ingress.protocol }}:
       paths:
       - backend:
           serviceName: {{ template "scdf.fullname" . }}-server
@@ -14,7 +14,7 @@ spec:
         path: /
   {{- if .Values.features.monitoring.enabled }}
   - host: {{ .Values.ingress.grafana.host }}
-    http:
+    {{ .Values.ingress.protocol }}:
       paths:
       - backend:
           serviceName: {{ template "scdf.fullname" . }}-grafana
