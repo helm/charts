@@ -100,6 +100,7 @@ Parameter | Description | Default
 `serviceMonitor.interval` | Interval at which metrics should be scraped | `10s`
 `serviceMonitor.scrapeTimeout` | Timeout after which the scrape is ended | `10s`
 `serviceMonitor.scheme` | Scheme to use for scraping | `http`
+`serviceMonitor.relabelings` | Relabel configuration for the metrics | `[]`
 `prometheusRule.enabled` | If true, a PrometheusRule CRD is created for a prometheus operator | `false`
 `prometheusRule.namespace` | If set, the PrometheusRule will be installed in a different namespace  | `""`
 `prometheusRule.labels` | Labels for prometheus operator | `{}`
