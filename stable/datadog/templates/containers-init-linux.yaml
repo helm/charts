@@ -1,4 +1,4 @@
-{{- define "containers-init" -}}
+{{- define "containers-init-linux" -}}
 - name: init-volume
   image: "{{ .Values.agents.image.repository }}:{{ .Values.agents.image.tag }}"
   imagePullPolicy: {{ .Values.agents.image.pullPolicy }}
@@ -37,16 +37,11 @@
       readOnly: true
   env:
     {{- include "containers-common-env" . | nindent 4 }}
-    {{- if .Values.datadog.env }}
-      {{ toYaml .Values.datadog.env | nindent 4 }}
+    {{- if not .Values.clusterAgent.enabled }}
+    {{- if .Values.datadog.leaderElection }}
+    - name: DD_LEADER_ELECTION
+      value: {{ .Values.datadog.leaderElection | quote }}
     {{- end }}
-    {{- if .Values.datadog.dockerSocketPath }}
-    - name: DOCKER_HOST
-      value: unix://{{ .Values.datadog.dockerSocketPath }}
-    {{- end }}
-    {{- if .Values.datadog.criSocketPath }}
-    - name: DD_CRI_SOCKET_PATH
-      value: {{ .Values.datadog.criSocketPath }}
     {{- end }}
   resources:
 {{ toYaml .Values.agents.containers.initContainers.resources | indent 4 }}

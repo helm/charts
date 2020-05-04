@@ -13,8 +13,19 @@ image:
   pullSecrets: []
 
 initFile: |-
-  /usr/local/bin/superset-init --username admin --firstname admin --lastname user --email admin@fab.org --password admin
-  superset run
+  if [ "$1" == "development-mode" ]; then
+    /usr/local/bin/superset-init --username admin --firstname admin --lastname user --email admin@fab.org --password admin
+    superset run
+  elif [ "$1" == "production-mode" ]; then
+    gunicorn -b 0.0.0.0:8088 \
+      --limit-request-line 0 \
+      --limit-request-field_size 0 \
+      --timeout 300 superset:app
+  else
+    echo "You need to specify which mode to start in by setting production-mode"
+    echo "or development-mode in extraArguments."
+    exit 1
+  fi
 
 configFile: |-
   #---------------------------------------------------------
@@ -57,6 +68,11 @@ extraConfigFiles: {}
 ## Extra environment variables that will be passed onto deployment pod
 ##
 extraEnv: {}
+
+## Extra arguments that will be passed to init_superset.sh
+## For the sample initFile this is development-mode or production-mode
+extraArguments:
+- production-mode
 
 ## The name of a secret in the same kubernetes namespace which contain values to be added to the environment
 ## This can be useful for secret keys, etc

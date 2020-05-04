@@ -4,7 +4,7 @@
 # name: value
 
 image: quay.io/dexidp/dex
-imageTag: "v2.21.0"
+imageTag: "v2.23.0"
 imagePullPolicy: "IfNotPresent"
 
 inMiniKube: false
@@ -53,6 +53,9 @@ grpc: true
 # https termination by dex itself
 https: false
 
+# expose prometheus metrics ?
+telemetry: false
+
 ports:
   web:
     containerPort: 5556
@@ -65,6 +68,11 @@ ports:
     # for service.type: NodePort
     nodePort: 35000
     servicePort: 35000
+  telemetry:
+    containerPort: 5558
+    # for service.type: NodePort
+    nodePort: 37000
+    servicePort: 37000
 
 livenessProbe:
   enabled: true

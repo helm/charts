@@ -18,6 +18,7 @@ data:
       tag oms.containerinsights.KubePodInventory
       run_interval 60
       log_level debug
+      custom_metrics_azure_regions eastus,southcentralus,westcentralus,westus2,southeastasia,northeurope,westeurope,southafricanorth,centralus,northcentralus,eastus2,koreacentral,eastasia,centralindia,uksouth,canadacentral,francecentral,japaneast,australiaeast
      </source>
 
      #Kubernetes events
@@ -26,7 +27,7 @@ data:
       tag oms.containerinsights.KubeEvents
       run_interval 60
       log_level debug
-      </source>  
+      </source>
 
      #Kubernetes Nodes
      <source>
@@ -34,7 +35,7 @@ data:
       tag oms.containerinsights.KubeNodeInventory
       run_interval 60
       log_level debug
-     </source>  
+     </source>
 
      #Kubernetes health
      <source>
@@ -82,7 +83,7 @@ data:
       buffer_queue_full_action drop_oldest_chunk
       flush_interval 20s
       retry_limit 10
-      retry_wait 5s      
+      retry_wait 5s
       max_retry_wait 5m
      </match>
 
@@ -99,7 +100,7 @@ data:
       retry_limit 10
       retry_wait 5s
       max_retry_wait 5m
-     </match>   
+     </match>
 
      <match oms.containerinsights.KubeServices**>
       type out_oms
@@ -173,7 +174,7 @@ data:
       retry_limit 10
       retry_wait 30s
       max_retry_wait 9m
-      retry_mdm_post_wait_minutes 60
+      retry_mdm_post_wait_minutes 30
      </match>
 
      <match oms.api.wincadvisorperf**>
@@ -204,7 +205,7 @@ data:
       retry_limit 10
       retry_wait 5s
       max_retry_wait 5m
-      retry_mdm_post_wait_minutes 60
+      retry_mdm_post_wait_minutes 30
      </match>
 
      <match kubehealth.Signals**>
@@ -221,6 +222,21 @@ data:
       retry_wait 5s
       max_retry_wait 5m
      </match>
+
+     <match oms.api.InsightsMetrics**>
+      type out_oms
+      log_level debug
+      num_threads 5
+      buffer_chunk_limit 4m
+      buffer_type file
+      buffer_path %STATE_DIR_WS%/out_oms_insightsmetrics*.buffer
+      buffer_queue_limit 20
+      buffer_queue_full_action drop_oldest_chunk
+      flush_interval 20s
+      retry_limit 10
+      retry_wait 5s
+      max_retry_wait 5m
+    </match>
 metadata:
   name: omsagent-rs-config
   namespace: kube-system

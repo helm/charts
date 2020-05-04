@@ -44,6 +44,8 @@ airflow:
     sessionAffinityConfig: {}
     type: ClusterIP
     externalPort: 8080
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
     nodePort:
       http:
   ##
@@ -135,7 +137,7 @@ airflow:
   ## This should be a json string with your pools in it
   ## Examples:
   ##   pools: '{ "example": { "description": "This is an example of a pool", "slots": 2 } }'
-  pools: {}
+  pools: '{}'
 
   ##
   ## Annotations for the Scheduler, Worker and Web pods
@@ -169,6 +171,11 @@ airflow:
   ## Additional volumes for the Scheduler, Worker and Web pods.
   # - name: synchronised-dags
   #   emptyDir: {}
+
+  ##
+  ## Run initdb as an initContainer step (potentially necessary if you have
+  ## custom database hooks configured that will be pulled in by git-sync)
+  preinitdb: false
 
   ##
   ## Run initdb when the scheduler starts.
@@ -230,6 +237,8 @@ flower:
     annotations: {}
     type: ClusterIP
     externalPort: 5555
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
 
   ## Support Node, affinity and tolerations for flower pod assignment
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
@@ -307,6 +316,18 @@ workers:
   ##
   ## Number of workers pod to launch
   replicas: 1
+  ##
+  ## Autoscaling settings for workers
+  autoscaling:
+    enabled: false
+    maxReplicas: 2
+    metrics: {}
+#    - type: Resource
+#      resource:
+#        name: memory
+#        target:
+#          type: Utilization
+#          averageUtilization: 80
   ##
   ## Gracefull termination period
   terminationPeriod: 30
@@ -550,12 +571,20 @@ dags:
     ##
     ## branch name, tag or sha1 to reset to
     ref: master
-    ## pre-created secret with key, key.pub and known_hosts file for private repos
+    ## The name of a pre-created secret containing files for ~/.ssh/ (only needed for PRIVATE ssh repos)
+    ## Note commonly includes id_rsa, id_rsa.pub and known_hosts files
+    ## Note known_hosts is not needed if git.sshKeyscan is true
     secret: ""
-    ## The host of the repo so for example if a github repo put github.com (Only need if using ssh not https git sync)
+    ## Implicitly trust [git.repoHost]:git.repoPort, by auto populating ~/.ssh/known_hosts (only needed for ssh repos)
+    ## Note this is not needed if known_hosts is provided in git.secret
+    ## Note git.repoHost and git.repoPort are required for this to work
+    sshKeyscan: false
+    ## The host of the repo so for example if a github repo put github.com (only needed for ssh repos)
     repoHost: ""
-    ## The name of the private key in your git sync secret (Only need if using ssh not https git sync)
-    privateKeyName: ""
+    ## The port of the repo (only needed for ssh repos)
+    repoPort: 22
+    ## The name of the private key file in your git.secret (only needed for ssh repos)
+    privateKeyName: id_rsa
     gitSync:
       ## Turns on the side car container
       enabled: false
@@ -564,12 +593,14 @@ dags:
         ## docker-airflow image
         repository: alpine/git
         ## image tag
-        tag: 1.0.7
+        tag: 1.0.12
         ## Image pull policy
         ## values: Always or IfNotPresent
         pullPolicy: IfNotPresent
       ## The amount of time in seconds to git pull dags
-      refreshTime:
+      refreshTime: 60
+      ## If using workers.autoscaling=true with git-sync, git-sync needs to have resources requested
+      resources: {}
   initContainer:
     ## Fetch the source code when the pods starts
     enabled: false
@@ -578,7 +609,7 @@ dags:
       ## docker-airflow image
       repository: alpine/git
       ## image tag
-      tag: 1.0.7
+      tag: 1.0.12
       ## Image pull policy
       ## values: Always or IfNotPresent
       pullPolicy: IfNotPresent
@@ -631,9 +662,9 @@ postgresql:
   existingSecretKey: postgresql-password
 
   ##
-  ## If you are bringing your own PostgreSQL, you should set postgresHost and
+  ## If you are bringing your own PostgreSQL, you should set postgresqlHost and
   ## also probably service.port, postgresqlUsername, postgresqlPassword, and postgresqlDatabase
-  ## postgresHost:
+  ## postgresqlHost:
   ##
   ## PostgreSQL port
   service:

@@ -11,7 +11,7 @@ metadata:
     chart: {{ template "nginx-ingress.chart" . }}
     component: "{{ .Values.controller.name }}"
     heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    release: {{ template "nginx-ingress.releaseLabel" . }}
     {{- if .Values.controller.metrics.prometheusRule.additionalLabels }}
 {{ toYaml .Values.controller.metrics.prometheusRule.additionalLabels | indent 4 }}
     {{- end }}
