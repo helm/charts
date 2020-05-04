@@ -110,6 +110,16 @@ features:
   monitoring:
     enabled: false
 
+## If you are using an ingress server then you can override the following
+## default values to create an Ingress resource
+ingress:
+  enabled: false
+  server:
+    host: data-flow.local
+  grafana:
+    host: grafana.local
+  protocol: https
+
 grafana:
   service:
     type: LoadBalancer
