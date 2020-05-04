@@ -19,7 +19,7 @@ initContainers:
     imagePullPolicy: {{ .Values.initChownData.image.pullPolicy }}
     securityContext:
       runAsUser: 0
-    command: ["chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsUser }}", "/var/lib/grafana"]
+    command: ["chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsGroup }}", "/var/lib/grafana"]
     resources:
 {{ toYaml .Values.initChownData.resources | indent 6 }}
     volumeMounts:
