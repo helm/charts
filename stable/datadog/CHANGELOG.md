@@ -1,6 +1,6 @@
 # Datadog changelog
 
-## 2.2.10
+## 2.2.11
 
 * Mount the directory containing the CRI socket instead of the socket itself
   This is to handle the cases where the docker daemon is restarted.
@@ -9,6 +9,10 @@
   still have access to the old socket instead of the one of the new docker
   daemon.
   ⚠ This version of the chart requires an agent image 7.19.0 or more recent
+
+## 2.2.10
+
+* Remove `kubeStateMetrics` section from `values.yaml` as not used anymore
 
 ## 2.2.9
 
