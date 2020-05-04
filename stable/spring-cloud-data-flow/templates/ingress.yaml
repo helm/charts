@@ -17,7 +17,7 @@ spec:
     {{ .Values.ingress.protocol }}:
       paths:
       - backend:
-          serviceName: {{ template "scdf.fullname" . }}-grafana
+          serviceName: {{ .Release.Name }}-grafana
           servicePort: {{ .Values.grafana.service.port }}
         path: /
   {{- end }}
