@@ -9,6 +9,9 @@
 {{- if and (eq $length 1) (eq $version "7") -}}
 {{- $version = "7.19.0" -}}
 {{- end -}}
+{{- if and (eq $length 1) (eq $version "latest") -}}
+{{- $version = "7.19.0" -}}
+{{- end -}}
 {{- if not (semverCompare "^6.19.0 || ^7.19.0" $version) -}}
 {{- fail "This version of the chart requires an agent image 7.19.0 or greater" -}}
 {{- end -}}
