@@ -1,5 +1,19 @@
 {{/* vim: set filetype=mustache: */}}
 
+{{- define "check-version" -}}
+{{- $version := .Values.agents.image.tag | toString | trimSuffix "-jmx" -}}
+{{- $length := len (split "." $version) -}}
+{{- if and (eq $length 1) (eq $version "6") -}}
+{{- $version = "6.19.0" -}}
+{{- end -}}
+{{- if and (eq $length 1) (eq $version "7") -}}
+{{- $version = "7.19.0" -}}
+{{- end -}}
+{{- if not (semverCompare "^6.19.0 || ^7.19.0" $version) -}}
+{{- fail "This version of the chart requires an agent image 7.19.0 or greater" -}}
+{{- end -}}
+{{- end -}}
+
 {{/*
 Expand the name of the chart.
 */}}

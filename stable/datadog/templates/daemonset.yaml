@@ -1,3 +1,4 @@
+{{- template "check-version" . }}
 {{- if .Values.agents.enabled }}
 {{- if (or (.Values.datadog.apiKeyExistingSecret) (.Values.datadog.apiKey)) }}
 apiVersion: apps/v1
