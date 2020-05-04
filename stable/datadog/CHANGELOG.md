@@ -1,6 +1,6 @@
 # Datadog changelog
 
-## 2.2.11
+## 2.3.0
 
 * Mount the directory containing the CRI socket instead of the socket itself
   This is to handle the cases where the docker daemon is restarted.
