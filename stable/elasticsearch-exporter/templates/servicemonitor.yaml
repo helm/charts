@@ -25,6 +25,10 @@ spec:
     port: {{ .Values.service.metricsPort.name }}
     path: {{ .Values.web.path }}
     scheme: {{ .Values.serviceMonitor.scheme }}
+    {{- if .Values.serviceMonitor.relabelings }}
+    relabelings:
+    {{- toYaml .Values.serviceMonitor.relabelings | nindent 4 }}
+    {{- end }}
   jobLabel: "{{ .Release.Name }}"
   selector:
     matchLabels:
