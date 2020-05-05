@@ -1,5 +1,12 @@
 # Datadog changelog
 
+## 2.2.11
+
+* Add documentations around secret management in the datadog helm chart. It is to upstream
+  requested changes in the IBM charts repository: https://github.com/IBM/charts/pull/690#discussion_r411702458
+* update `kube-state-metrics` dependency
+* uncomment every values.yaml parameters for IBM chart compliancy
+
 ## 2.2.10
 
 * Remove `kubeStateMetrics` section from `values.yaml` as not used anymore
