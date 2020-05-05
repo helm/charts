@@ -563,6 +563,15 @@ agents:
     #
     tag: "7"
 
+    ## @param doNotCheckTag - boolean - optional
+    ## By default, the version passed in agents.image.tag is checked
+    ## for compatibility with the version of the chart.
+    ## This boolean permits to completely skip this check.
+    ## This is useful, for example, for custom tags that are not
+    ## respecting semantic versioning
+    #
+    # doNotCheckTag: false
+
     ## @param pullPolicy - string - required
     ## The Kubernetes pull policy.
     #
