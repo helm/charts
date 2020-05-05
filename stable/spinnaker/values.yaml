@@ -109,6 +109,12 @@ halyard:
   # annotations:
   #   iam.amazonaws.com/role: <role_arn>
 
+  ## Uncomment if you want to add nodeSelector on halyard
+  # nodeSelector: {}
+
+  ## Uncomment if you want to add tolerations on halyard
+  # tolerations: {}
+
   ## Uncomment the following resources definitions to control the cpu and memory
   # resources allocated for the halyard pod
   resources: {}
@@ -233,6 +239,7 @@ spinnakerFeatureFlags:
 # Ref: https://kubernetes.io/docs/user-guide/node-selection/
 # nodeSelector to provide to each of the Spinnaker components
 nodeSelector: {}
+
 
 # Redis password to use for the in-cluster redis service
 # Enable redis to use in-cluster redis

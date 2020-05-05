@@ -22,6 +22,10 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
       {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
       restartPolicy: OnFailure
       volumes:
       {{- if .Values.kubeConfig.enabled }}

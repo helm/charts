@@ -29,6 +29,14 @@ spec:
       securityContext:
         runAsUser: {{ .Values.securityContext.runAsUser }}
         fsGroup: {{ .Values.securityContext.fsGroup }}
+      {{- if .Values.halyard.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.halyard.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.halyard.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
       initContainers:
       - name: "create-halyard-local"
         image: {{ .Values.halyard.image.repository }}:{{ .Values.halyard.image.tag }}
