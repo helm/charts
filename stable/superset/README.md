@@ -67,6 +67,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `readinessProbe`           | Parameter for readiness probe                   | See [values.yaml](./values.yaml)                             |
 | `ingress.enabled`          | Create an ingress resource when true            | `false`                                                      |
 | `ingress.annotations`      | ingress annotations                             | `{}`                                                         |
+| `ingress.labels`           | ingress labels                                  | `{}`                                                         |
 | `ingress.hosts`            | ingress hosts                                   | `[superset.domain.com]`                                      |
 | `ingress.path`             | ingress path                                    | `\`                                                          |
 | `ingress.tls`              | ingress tls                                     | `[]`                                                         |

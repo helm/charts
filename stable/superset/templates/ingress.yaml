@@ -10,6 +10,9 @@ metadata:
     chart: {{ include "superset.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+  {{- with .Values.ingress.labels }}
+    {{- . | toYaml | nindent 4}}
+  {{- end }}
   {{- with .Values.ingress.annotations }}
   annotations:
     {{- . | toYaml | nindent 4 }}

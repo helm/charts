@@ -143,6 +143,9 @@ ingress:
   # kubernetes.io/ingress.class: nginx
   # kubernetes.io/tls-acme: 'true'
 
+  ## superset Ingress labels
+  labels: {}
+
   ## superset Ingress hostnames
   ## Must be provided if Ingress is enabled
   ##
