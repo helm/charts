@@ -147,8 +147,8 @@ their default values. See values.yaml for all available options.
 | `env.open.AUTH_SERVICE`                 | Service used for bearer authentication                                      | ``                                   |
 | `env.field`                             | Expose pod information to containers through environment variables          | ``                                   |
 | `env.existingSecret`                    | Name of the existing secret use values                                      | ``                                   |
-| `env.existingSecret.BASIC_AUTH_USER`    | Key name in the secret for the Username                                     | ``                                   |
-| `env.existingSecret.BASIC_AUTH_PASS`    | Key name in the secret for the Password                                     | ``                                   |
+| `env.existingSecretMappings.BASIC_AUTH_USER`    | Key name in the secret for the Username                                     | ``                                   |
+| `env.existingSecretMappings.BASIC_AUTH_PASS`    | Key name in the secret for the Password                                     | ``                                   |
 | `env.secret.BASIC_AUTH_USER`            | Username for basic HTTP authentication                                      | ``                                   |
 | `env.secret.BASIC_AUTH_PASS`            | Password for basic HTTP authentication                                      | ``                                   |
 | `env.secret.CACHE_REDIS_PASSWORD`       | Redis requirepass server configuration                                      | ``                                   |
