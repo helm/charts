@@ -366,7 +366,7 @@ volumes:
   - name: {{ .name }}
     emptyDir: {}
 {{- end -}}
-{{- if .Values.extraInitContainerVolumes }}
-{{ toYaml .Values.extraInitContainerVolumes | indent 2 }}
+{{- if .Values.extraContainerVolumes }}
+{{ toYaml .Values.extraContainerVolumes | indent 2 }}
 {{- end }}
 {{- end }}
