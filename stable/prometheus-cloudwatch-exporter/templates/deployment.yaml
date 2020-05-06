@@ -107,8 +107,8 @@ spec:
 {{ toYaml . | indent 8 }}
     {{- end }}
     {{- if .Values.serviceAccount.create }}
-      serviceAccount: {{ template "prometheus-cloudwatch-exporter.fullname" . }}
-      serviceAccountName: {{ template "prometheus-cloudwatch-exporter.fullname" . }}
+      serviceAccount: {{ template "prometheus-cloudwatch-exporter.serviceAccountName" . }}
+      serviceAccountName: {{ template "prometheus-cloudwatch-exporter.serviceAccountName" . }}
     {{- end }}
       volumes:
       - configMap:
