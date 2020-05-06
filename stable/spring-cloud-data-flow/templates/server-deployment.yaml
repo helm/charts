@@ -44,7 +44,7 @@ spec:
           timeoutSeconds: 5
         readinessProbe:
           httpGet:
-            path: /management/health
+            path: /management/info
             port: http
           initialDelaySeconds: 60
           periodSeconds: 15

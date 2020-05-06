@@ -15,5 +15,5 @@ spec:
     - name: rsocket
       port: 7001
       targetPort: 7001
-  type: LoadBalancer
+  type: {{ .Values.prometheus.proxy.service.type }}
 {{- end }}
