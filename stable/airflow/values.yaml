@@ -284,11 +284,13 @@ web:
   initialDelaySeconds: "360"
   minReadySeconds: 120
   readinessProbe:
+    scheme: HTTP
     periodSeconds: 60
     timeoutSeconds: 1
     successThreshold: 1
     failureThreshold: 5
   livenessProbe:
+    scheme: HTTP
     periodSeconds: 60
     timeoutSeconds: 1
     successThreshold: 1

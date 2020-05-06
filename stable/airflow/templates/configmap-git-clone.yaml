@@ -49,7 +49,7 @@ data:
     chmod 600 ~/.ssh/*
     echo -e "Host $REPO_HOST\n  Port $REPO_PORT\n  IdentityFile ~/.ssh/$PRIVATE_KEY" > ~/.ssh/config
     {{- end }}
-    {{- if eq .Values.dags.initContainer.enabled  false }}
+    {{- if and ( .Values.dags.git.gitSync.enabled ) (not .Values.dags.initContainer.enabled ) }}
     if [ -d "$DIR" ]; then
         rm -rf $( find $DIR -mindepth 1 )
     fi
