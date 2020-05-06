@@ -1,8 +1,4 @@
-{{- $lr := .Values.hyperparams.learningrate -}}
-{{- $batchsize := .Values.hyperparams.batchsize -}}
-{{- $trainsteps := .Values.hyperparams.trainsteps -}}
-
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ .Release.Name }}-ps
@@ -41,12 +37,30 @@ spec:
         command:
         - "python"
         - "train_distributed.py"
+{{- if .Values.hyperparams.learningrate }}
         - --learning_rate
-        - {{ $lr | quote }}
+        - "{{ .Values.hyperparams.learningrate }}"
+{{- end }}
+{{- if .Values.hyperparams.batchsize }}
         - --batch_size
-        - {{ $batchsize | quote }}
+        - "{{ .Values.hyperparams.batchsize }}"
+{{- end }}
+{{- if .Values.hyperparams.trainsteps }}
         - --train_steps
-        - {{ $trainsteps | quote }}
+        - "{{ .Values.hyperparams.trainsteps }}"
+{{- end }}
+{{- if .Values.hyperparams.datadir }}
+        - --data_dir
+        - "{{ .Values.hyperparams.datadir }}"
+{{- end }}
+{{- if .Values.hyperparams.logdir }}
+        - --log_dir
+        - "{{ .Values.hyperparams.logdir }}"
+{{- end }}
+{{- if .Values.hyperparams.hiddenunits }}
+        - --hidden_units
+        - "{{ .Values.hyperparams.hiddenunits }}"
+{{- end }}
         env:
         - name: WORKER_HOSTS
           valueFrom:

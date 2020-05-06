@@ -1,6 +1,6 @@
 {{- /* Added manually, can be changed in-place. */ -}}
 {{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
-{{- if and (semverCompare ">=1.14.0" $kubeTargetVersion) (semverCompare "<9.9.9-9" $kubeTargetVersion) .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled .Values.coreDns.enabled }}
+{{- if and (semverCompare ">=1.14.0-0" $kubeTargetVersion) (semverCompare "<9.9.9-9" $kubeTargetVersion) .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled .Values.coreDns.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -15,33 +15,32 @@ metadata:
 data:
   k8s-coredns.json: |-
     {
+        "__inputs": [
+
+        ],
+        "__requires": [
+
+        ],
         "annotations": {
             "list": [
-                {
-                    "builtIn": 1,
-                    "datasource": "-- Grafana --",
-                    "enable": true,
-                    "hide": true,
-                    "iconColor": "rgba(0, 211, 255, 1)",
-                    "name": "Annotations & Alerts",
-                    "type": "dashboard"
-                }
+
             ]
         },
-        "description": "A dashboard for the CoreDNS DNS server.",
-        "editable": true,
-        "gnetId": 5926,
+        "editable": false,
+        "gnetId": null,
         "graphTooltip": 0,
-        "id": 9,
-        "iteration": 1539947521873,
-        "links": [],
+        "hideControls": false,
+        "id": null,
+        "links": [
+
+        ],
         "panels": [
             {
                 "aliasColors": {},
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "Prometheus",
+                "datasource": "$datasource",
                 "editable": true,
                 "error": false,
                 "fill": 1,
@@ -140,7 +139,7 @@ data:
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "Prometheus",
+                "datasource": "$datasource",
                 "editable": true,
                 "error": false,
                 "fill": 1,
@@ -234,7 +233,7 @@ data:
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "Prometheus",
+                "datasource": "$datasource",
                 "editable": true,
                 "error": false,
                 "fill": 1,
@@ -331,7 +330,7 @@ data:
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "Prometheus",
+                "datasource": "$datasource",
                 "editable": true,
                 "error": false,
                 "fill": 1,
@@ -428,7 +427,7 @@ data:
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "Prometheus",
+                "datasource": "$datasource",
                 "editable": true,
                 "error": false,
                 "fill": 1,
@@ -540,7 +539,7 @@ data:
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "Prometheus",
+                "datasource": "$datasource",
                 "editable": true,
                 "error": false,
                 "fill": 1,
@@ -652,7 +651,7 @@ data:
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "Prometheus",
+                "datasource": "$datasource",
                 "editable": true,
                 "error": false,
                 "fill": 1,
@@ -737,7 +736,7 @@ data:
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "Prometheus",
+                "datasource": "$datasource",
                 "editable": true,
                 "error": false,
                 "fill": 1,
@@ -839,7 +838,7 @@ data:
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "Prometheus",
+                "datasource": "$datasource",
                 "editable": true,
                 "error": false,
                 "fill": 1,
@@ -956,7 +955,7 @@ data:
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "Prometheus",
+                "datasource": "$datasource",
                 "editable": true,
                 "error": false,
                 "fill": 1,
@@ -1076,7 +1075,7 @@ data:
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "Prometheus",
+                "datasource": "$datasource",
                 "editable": true,
                 "error": false,
                 "fill": 1,
@@ -1161,7 +1160,7 @@ data:
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "Prometheus",
+                "datasource": "$datasource",
                 "editable": true,
                 "error": false,
                 "fill": 1,
@@ -1260,6 +1259,22 @@ data:
         "templating": {
             "list": [
                 {
+                    "current": {
+                        "text": "default",
+                        "value": "default"
+                    },
+                    "hide": 0,
+                    "label": null,
+                    "name": "datasource",
+                    "options": [
+
+                    ],
+                    "query": "prometheus",
+                    "refresh": 1,
+                    "regex": "",
+                    "type": "datasource"
+                },
+                {
                     "allValue": ".*",
                     "current": {
                         "selected": true,
@@ -1267,7 +1282,7 @@ data:
                         "text": "172.16.1.8:9153",
                         "value": "172.16.1.8:9153"
                     },
-                    "datasource": "Prometheus",
+                    "datasource": "$datasource",
                     "hide": 0,
                     "includeAll": true,
                     "label": "Instance",

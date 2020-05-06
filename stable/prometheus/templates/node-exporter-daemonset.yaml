@@ -30,6 +30,10 @@ spec:
 {{- end }}
     spec:
       serviceAccountName: {{ template "prometheus.serviceAccountName.nodeExporter" . }}
+      {{- if .Values.nodeExporter.extraInitContainers }}
+      initContainers:
+{{ toYaml .Values.nodeExporter.extraInitContainers | indent 8 }}
+      {{- end }}
 {{- if .Values.nodeExporter.priorityClassName }}
       priorityClassName: "{{ .Values.nodeExporter.priorityClassName }}"
 {{- end }}

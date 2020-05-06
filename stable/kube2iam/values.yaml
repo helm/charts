@@ -50,6 +50,8 @@ aws:
   access_key: ""
   region: ""
 
+existingSecret: ""
+
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
 ##
@@ -95,3 +97,10 @@ updateStrategy: OnDelete
 verbose: false
 
 tolerations: []
+
+podSecurityPolicy:
+  ## if true, a podSecurityPolicy object will be created. rbac.create has to be set to true to also create RBAC roles and bindings for the podSecurityPolicy.
+  enabled: false
+
+  ## annotations to add to the podSecurityPolicy object
+  annotations: {}

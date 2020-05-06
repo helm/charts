@@ -2,7 +2,12 @@
 - name: process-agent
   image: "{{ .Values.agents.image.repository }}:{{ .Values.agents.image.tag }}"
   imagePullPolicy: {{ .Values.agents.image.pullPolicy }}
-  command: ["process-agent", "-config=/etc/datadog-agent/datadog.yaml"]
+  {{- if eq .Values.targetSystem "linux" }}
+  command: ["process-agent", "-config={{ template "datadog.confPath" . }}/datadog.yaml"]
+  {{- end }}
+  {{- if eq .Values.targetSystem "windows" }}
+  command: ["process-agent", "-foreground", "-config={{ template "datadog.confPath" . }}/datadog.yaml"]
+  {{- end }}
   resources:
 {{ toYaml .Values.agents.containers.processAgent.resources | indent 4 }}
   env:
@@ -17,31 +22,36 @@
     - name: DD_SYSTEM_PROBE_ENABLED
       value: {{ .Values.datadog.systemProbe.enabled | quote }}
     {{- end }}
-{{- if .Values.agents.containers.processAgent.env }}
-{{ toYaml .Values.agents.containers.processAgent.env | indent 4 }}
-{{- end }}
+  {{- range $value := .Values.agents.containers.processAgent.env }}
+    - name: {{ $value.name }}
+      value: {{ $value.value | quote }}
+  {{- end }}
   volumeMounts:
+    - name: config
+      mountPath: {{ template "datadog.confPath" . }}
+    - name: runtimesocket
+      mountPath: {{ template "datadog.dockerOrCriSocketPath" . }}
+    {{- if eq .Values.targetSystem "linux" }}
+      readOnly: true
+    {{- end }}
     {{- if .Values.agents.useConfigMap }}
     - name: {{ template "datadog.fullname" . }}-datadog-yaml
-      mountPath: /etc/datadog-agent/datadog.yaml
+      mountPath: {{ template "datadog.confPath" . }}/datadog.yaml
       subPath: datadog.yaml
     {{- end }}
+    {{- if eq .Values.targetSystem "linux" }}
     - name: cgroups
       mountPath: /host/sys/fs/cgroup
       readOnly: true
-    - name: config
-      mountPath: /etc/datadog-agent
     - name: passwd
       mountPath: /etc/passwd
     - name: procdir
       mountPath: /host/proc
       readOnly: true
-    - name: runtimesocket
-      mountPath: {{ template "datadog.dockerOrCriSocketPath" . }}
-      readOnly: true
     {{- if .Values.datadog.systemProbe.enabled }}
     - name: sysprobe-socket-dir
       mountPath: /opt/datadog-agent/run
       readOnly: true
+    {{- end }}
     {{- end }}
 {{- end -}}

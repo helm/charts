@@ -42,6 +42,12 @@ rules:
   resources: ["podgroups"]
   verbs: ["*"]
   {{- end }}
+  {{ if .Values.enableWebhook }}
+  # This permission is granted only if the webhook is enabled
+- apiGroups: ["batch"]
+  resources: ["jobs"]
+  verbs: ["delete"]
+  {{- end }}
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1

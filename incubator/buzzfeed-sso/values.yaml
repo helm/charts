@@ -62,6 +62,12 @@ proxy:
   # # Or if you do not want to create the secret via helm
   # customSecret: my-sso-proxy-secret
 
+  # If you are using_allowed groups in upstreams, DEFAULT_ALLOWED_EMAIL_DOMAINS needs to be an empty string
+  # this is explained in this pr https://github.com/buzzfeed/sso/pull/280#issuecomment-584088825
+  # to get an empty value, set the string below to -, as per this issue https://github.com/helm/helm/issues/2600#issuecomment-310108850
+  # otherwise populate it with your default allowed email domains
+  defaultAllowedEmailDomains: ""
+
 provider:
   google: {}  # Required.
   # google:
@@ -78,7 +84,7 @@ provider:
 
 image:
   repository: buzzfeed/sso
-  tag: v2.0.0
+  tag: v2.1.0
   pullPolicy: IfNotPresent
 
 ingress:

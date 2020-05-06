@@ -15,14 +15,16 @@ ifeval::["{repo}"=="hazelcast/charts"]
 ----
 $ helm repo add hazelcast https://hazelcast.github.io/charts/
 $ helm repo update
-$ helm install hazelcast/hazelcast
+$ helm install my-release hazelcast/hazelcast        # Helm 3
+$ helm install --name my-release hazelcast/hazelcast # Helm 2
 ----
 endif::[]
 
 ifeval::["{repo}"=="helm/charts"]
 [source,bash]
 ----
-$ helm install stable/hazelcast
+$ helm install my-release stable/hazelcast        # Helm 3
+$ helm install --name my-release stable/hazelcast # Helm 2
 ----
 endif::[]
 
@@ -45,14 +47,16 @@ To install the chart with the release name `+my-release+`:
 ifeval::["{repo}"=="hazelcast/charts"]
 [source,bash]
 ----
-$ helm install --name my-release hazelcast/hazelcast
+$ helm install my-release hazelcast/hazelcast        # Helm 3
+$ helm install --name my-release hazelcast/hazelcast # Helm 2
 ----
 endif::[]
 
 ifeval::["{repo}"=="helm/charts"]
 [source,bash]
 ----
-$ helm install --name my-release stable/hazelcast
+$ helm install my-release stable/hazelcast        # Helm 3
+$ helm install --name my-release stable/hazelcast # Helm 2
 ----
 endif::[]
 
@@ -84,7 +88,7 @@ their default values.
 [width="100%",cols="22%,53%,25%",options="header",]
 |===
 |Parameter |Description |Default
-|`+image.repository+` |Hazelcast Image name |`+hazelcast/hazelcast-kubernetes+`
+|`+image.repository+` |Hazelcast Image name |`+hazelcast/hazelcast+`
 
 |`+image.tag+` |Hazelcast Image tag |`+{VERSION}+`
 
@@ -329,6 +333,12 @@ Specify each parameter using the `+--set key=value[,key=value]+` argument to
 ifeval::["{repo}"=="hazelcast/charts"]
 [source,bash]
 ----
+# Helm 3
+$ helm install my-release \
+  --set cluster.memberCount=3 \
+    hazelcast/hazelcast
+
+# Helm 2
 $ helm install --name my-release \
   --set cluster.memberCount=3 \
     hazelcast/hazelcast
@@ -338,6 +348,12 @@ endif::[]
 ifeval::["{repo}"=="helm/charts"]
 [source,bash]
 ----
+# Helm 3
+$ helm install my-release \
+  --set cluster.memberCount=3 \
+    stable/hazelcast
+
+# Helm 2
 $ helm install --name my-release \
   --set cluster.memberCount=3 \
     stable/hazelcast
@@ -352,7 +368,8 @@ provided while installing the chart. For example,
 ifeval::["{repo}"=="hazelcast/charts"]
 [source,bash]
 ----
-$ helm install --name my-release -f values.yaml hazelcast/hazelcast
+$ helm install my-release -f values.yaml hazelcast/hazelcast        # Helm 3
+$ helm install --name my-release -f values.yaml hazelcast/hazelcast # Helm 2
 ----
 endif::[]
 
@@ -360,7 +377,8 @@ endif::[]
 ifeval::["{repo}"=="helm/charts"]
 [source,bash]
 ----
-$ helm install --name my-release -f values.yaml stable/hazelcast
+$ helm install my-release -f values.yaml stable/hazelcast        # Helm 3
+$ helm install --name my-release -f values.yaml stable/hazelcast # Helm 2
 ----
 endif::[]
 

@@ -26,7 +26,7 @@ spec:
     rules:
     - alert: KubeAPILatencyHigh
       annotations:
-        message: The API server has an abnormal latency of {{`{{ $value }}`}} seconds for {{`{{ $labels.verb }}`}} {{`{{ $labels.resource }}`}}.
+        message: The API server has an abnormal latency of {{`{{`}} $value {{`}}`}} seconds for {{`{{`}} $labels.verb {{`}}`}} {{`{{`}} $labels.resource {{`}}`}}.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeapilatencyhigh
       expr: |-
         (
@@ -47,50 +47,9 @@ spec:
       for: 5m
       labels:
         severity: warning
-    - alert: KubeAPILatencyHigh
-      annotations:
-        message: The API server has a 99th percentile latency of {{`{{ $value }}`}} seconds for {{`{{ $labels.verb }}`}} {{`{{ $labels.resource }}`}}.
-        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeapilatencyhigh
-      expr: cluster_quantile:apiserver_request_duration_seconds:histogram_quantile{job="apiserver",quantile="0.99"} > 4
-      for: 10m
-      labels:
-        severity: critical
     - alert: KubeAPIErrorsHigh
       annotations:
-        message: API server is returning errors for {{`{{ $value | humanizePercentage }}`}} of requests.
-        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeapierrorshigh
-      expr: |-
-        sum(rate(apiserver_request_total{job="apiserver",code=~"5.."}[5m]))
-          /
-        sum(rate(apiserver_request_total{job="apiserver"}[5m])) > 0.03
-      for: 10m
-      labels:
-        severity: critical
-    - alert: KubeAPIErrorsHigh
-      annotations:
-        message: API server is returning errors for {{`{{ $value | humanizePercentage }}`}} of requests.
-        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeapierrorshigh
-      expr: |-
-        sum(rate(apiserver_request_total{job="apiserver",code=~"5.."}[5m]))
-          /
-        sum(rate(apiserver_request_total{job="apiserver"}[5m])) > 0.01
-      for: 10m
-      labels:
-        severity: warning
-    - alert: KubeAPIErrorsHigh
-      annotations:
-        message: API server is returning errors for {{`{{ $value | humanizePercentage }}`}} of requests for {{`{{ $labels.verb }}`}} {{`{{ $labels.resource }}`}} {{`{{ $labels.subresource }}`}}.
-        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeapierrorshigh
-      expr: |-
-        sum(rate(apiserver_request_total{job="apiserver",code=~"5.."}[5m])) by (resource,subresource,verb)
-          /
-        sum(rate(apiserver_request_total{job="apiserver"}[5m])) by (resource,subresource,verb) > 0.10
-      for: 10m
-      labels:
-        severity: critical
-    - alert: KubeAPIErrorsHigh
-      annotations:
-        message: API server is returning errors for {{`{{ $value | humanizePercentage }}`}} of requests for {{`{{ $labels.verb }}`}} {{`{{ $labels.resource }}`}} {{`{{ $labels.subresource }}`}}.
+        message: API server is returning errors for {{`{{`}} $value | humanizePercentage {{`}}`}} of requests for {{`{{`}} $labels.verb {{`}}`}} {{`{{`}} $labels.resource {{`}}`}} {{`{{`}} $labels.subresource {{`}}`}}.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeapierrorshigh
       expr: |-
         sum(rate(apiserver_request_total{job="apiserver",code=~"5.."}[5m])) by (resource,subresource,verb)
@@ -103,16 +62,31 @@ spec:
       annotations:
         message: A client certificate used to authenticate to the apiserver is expiring in less than 7.0 days.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeclientcertificateexpiration
-      expr: apiserver_client_certificate_expiration_seconds_count{job="apiserver"} > 0 and histogram_quantile(0.01, sum by (job, le) (rate(apiserver_client_certificate_expiration_seconds_bucket{job="apiserver"}[5m]))) < 604800
+      expr: apiserver_client_certificate_expiration_seconds_count{job="apiserver"} > 0 and on(job) histogram_quantile(0.01, sum by (job, le) (rate(apiserver_client_certificate_expiration_seconds_bucket{job="apiserver"}[5m]))) < 604800
       labels:
         severity: warning
     - alert: KubeClientCertificateExpiration
       annotations:
         message: A client certificate used to authenticate to the apiserver is expiring in less than 24.0 hours.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubeclientcertificateexpiration
-      expr: apiserver_client_certificate_expiration_seconds_count{job="apiserver"} > 0 and histogram_quantile(0.01, sum by (job, le) (rate(apiserver_client_certificate_expiration_seconds_bucket{job="apiserver"}[5m]))) < 86400
+      expr: apiserver_client_certificate_expiration_seconds_count{job="apiserver"} > 0 and on(job) histogram_quantile(0.01, sum by (job, le) (rate(apiserver_client_certificate_expiration_seconds_bucket{job="apiserver"}[5m]))) < 86400
       labels:
         severity: critical
+    - alert: AggregatedAPIErrors
+      annotations:
+        message: An aggregated API {{`{{`}} $labels.name {{`}}`}}/{{`{{`}} $labels.namespace {{`}}`}} has reported errors. The number of errors have increased for it in the past five minutes. High values indicate that the availability of the service changes too often.
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-aggregatedapierrors
+      expr: sum by(name, namespace)(increase(aggregator_unavailable_apiservice_count[5m])) > 2
+      labels:
+        severity: warning
+    - alert: AggregatedAPIDown
+      annotations:
+        message: An aggregated API {{`{{`}} $labels.name {{`}}`}}/{{`{{`}} $labels.namespace {{`}}`}} is down. It has not been available at least for the past five minutes.
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-aggregatedapidown
+      expr: sum by(name, namespace)(sum_over_time(aggregator_unavailable_apiservice[5m])) > 0
+      for: 5m
+      labels:
+        severity: warning
 {{- if .Values.kubeApiServer.enabled }}
     - alert: KubeAPIDown
       annotations:

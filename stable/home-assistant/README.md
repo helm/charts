@@ -36,7 +36,7 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | Parameter                  | Description                         | Default                                                 |
 |----------------------------|-------------------------------------|---------------------------------------------------------|
 | `image.repository`         | Image repository | `homeassistant/home-assistant` |
-| `image.tag`                | Image tag. Possible values listed [here](https://hub.docker.com/r/homeassistant/home-assistant/tags/).| `0.106.6`|
+| `image.tag`                | Image tag. Possible values listed [here](https://hub.docker.com/r/homeassistant/home-assistant/tags/).| `0.108.7`|
 | `image.pullPolicy`         | Image pull policy | `IfNotPresent` |
 | `image.pullSecrets`        | Secrets to use when pulling the image | `[]` |
 | `strategyType`             | Specifies the strategy used to replace old Pods by new ones | `Recreate` |
@@ -64,6 +64,7 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `service.loadBalancerIP`   | Loadbalancer IP for the home-assistant GUI | `` |
 | `service.loadBalancerSourceRanges`   | Loadbalancer client IP restriction range for the home-assistant GUI | `[]` |
 | `service.publishNotReadyAddresses`   | Set to true if the editors (vscode or configurator) should be reachable when home assistant does not run | `false` |
+| `service.externalTrafficPolicy`   | Loadbalancer externalTrafficPolicy | `` |
 | `hostNetwork`              | Enable hostNetwork - might be needed for discovery to work | `false` |
 | `service.nodePort`   | nodePort to listen on for the home-assistant GUI | `` |
 | `ingress.enabled`              | Enables Ingress | `false` |
@@ -81,6 +82,8 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `git.secret`                   | Git secret to use for git-sync | `git-creds` |
 | `git.syncPath`                 | Git sync path | `/config` |
 | `git.keyPath`                  | Git ssh key path | `/root/.ssh` |
+| `git.user.name`                | Human-readable name in the “committer” and “author” fields | `` |
+| `git.user.email`               | Email address for the “committer” and “author” fields | `` |
 | `zwave.enabled`                  | Enable zwave host device passthrough. Also enables privileged container mode. | `false` |
 | `zwave.device`                  | Device to passthrough to guest | `ttyACM0` |
 | `hostMounts`        | Array of host directories to mount; can be used for devices | [] |
@@ -123,7 +126,7 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `configurator.service.loadBalancerSourceRanges`   | Loadbalancer client IP restriction range for the configurator UI | `[]` |
 | `vscode.enabled`                  | Enable the optional [VS Code Server Sidecar](https://github.com/cdr/code-server) | `false` |
 | `vscode.image.repository`         | Image repository | `codercom/code-server` |
-| `vscode.image.tag`                | Image tag | `2.1665-vsc1.39.2`|
+| `vscode.image.tag`                | Image tag | `3.1.1`|
 | `vscode.image.pullPolicy`         | Image pull policy | `IfNotPresent` |
 | `vscode.hassConfig`               | Base path of the home assistant configuration files | `/config` |
 | `vscode.vscodePath`               | Base path of the VS Code configuration files | `/config/.vscode` |
@@ -144,6 +147,27 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `vscode.service.externalIPs`      | External IPs for the VS Code UI | `[]` |
 | `vscode.service.loadBalancerIP`   | Loadbalancer IP for the VS Code UI | `` |
 | `vscode.service.loadBalancerSourceRanges`   | Loadbalancer client IP restriction range for the VS Code UI | `[]` |
+| `appdaemon.enabled`                  | Enable the optional [Appdaemon Sidecar](https://appdaemon.readthedocs.io/en/latest/) | `false` |
+| `appdaemon.image.repository`         | Image repository | `acockburn/appdaemon` |
+| `appdaemon.image.tag`                | Image tag | `3.0.5`|
+| `appdaemon.image.pullPolicy`         | Image pull policy | `IfNotPresent` |
+| `appdaemon.haToken`                  | Home Assistant API token - you need to generate it in your Home Assistant profile and then copy here | `` |
+| `appdaemon.extraEnv`                 | Extra ENV vars to pass to the AppDaemon container | `{}` |
+| `appdaemon.ingress.enabled`          | Enables Ingress for the AppDaemon UI | `false` |
+| `appdaemon.ingress.annotations`      | Ingress annotations for the AppDaemon UI | `{}` |
+| `appdaemon.ingress.hosts`            | Ingress accepted hostnames for the AppDaemonUI | `appdaemon.local` |
+| `appdaemon.ingress.tls`              | Ingress TLS configuration for the AppDaemon UI | `[]` |
+| `appdaemon.resources`                | CPU/Memory resource requests/limits for the AppDaemon | `{}` |
+| `appdaemon.securityContext`          | Security context to be added to hass-appdaemon container | `{}` |
+| `appdaemon.service.type`             | Kubernetes service type for the AppDaemon UI | `ClusterIP` |
+| `appdaemon.service.port`             | Kubernetes port where the AppDaemon UI is exposed| `5050` |
+| `appdaemon.service.nodePort`         | nodePort to listen on for the AppDaemon UI | `` |
+| `appdaemon.service.annotations`      | Service annotations for the AppDaemon UI | `{}` |
+| `appdaemon.service.labels`           | Service labels to use for the AppDaemon UI | `{}` |
+| `appdaemon.service.clusterIP`        | Cluster IP for the AppDaemon UI | `` |
+| `appdaemon.service.externalIPs`      | External IPs for the AppDaemon UI | `[]` |
+| `appdaemon.service.loadBalancerIP`   | Loadbalancer IP for the AppDaemon UI | `` |
+| `appdaemon.service.loadBalancerSourceRanges`   | Loadbalancer client IP restriction range for the VS Code UI | `[]` |
 | `resources`                | CPU/Memory resource requests/limits or the home-assistant GUI | `{}` |
 | `nodeSelector`             | Node labels for pod assignment or the home-assistant GUI | `{}` |
 | `tolerations`              | Toleration labels for pod assignment or the home-assistant GUI | `[]` |
@@ -151,6 +175,15 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `podAnnotations`            | Key-value pairs to add as pod annotations  | `{}` |
 | `extraVolumes`            | Any extra volumes to define for the pod  | `{}` |
 | `extraVolumeMounts`       | Any extra volumes mounts to define for each container of the pod  | `{}` |
+| `monitoring.enabled`                          | Enables Monitoring support | `false` |
+| `monitoring.serviceMonitor.enabled`           | Setup a ServiceMonitor to configure scraping | `false` |
+| `monitoring.serviceMonitor.namespace`         | Set the namespace the ServiceMonitor should be deployed | `false` |
+| `monitoring.serviceMonitor.interval`          | Set how frequently Prometheus should scrape | `30` |
+| `monitoring.serviceMonitor.labels`            | Set labels for the ServiceMonitor, use this to define your scrape label for Prometheus Operator | `{}` |
+| `monitoring.serviceMonitor.bearerTokenFile`   | Set bearerTokenFile for home-assistant auth (use long lived access tokens) | `nil` |
+| `monitoring.serviceMonitor.bearerTokenSecret` | Set bearerTokenSecret for home-assistant auth (use long lived access tokens) | `nil` |
+
+
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
@@ -180,6 +213,10 @@ Much of the home assistant configuration occurs inside the various files persist
 ### VS Code Server
 
 [VS Code Server](https://github.com/cdr/code-server) is added as an optional sidecar container to Home Assistant with access to the home assistant configuration for easy in-browser editing and manipulation of Home Assistant.  If using this, it is possible to manually install the [Home Assistant Config Helper Extension](https://github.com/keesschollaart81/vscode-home-assistant) in order to have a deeper integration with Home Assistant within VS Code while editing the configuration files.
+
+### AppDaemon
+[AppDaemon](https://www.home-assistant.io/docs/ecosystem/appdaemon/) is added as an optional sidecar container to Home Assistant with access to the home assistant configuration `/config/appdaemon`. This allows downloading apps with [HACS](https://github.com/hacs/integration)
+[Home Assistant Configurator UI](https://github.com/danielperna84/hass-configurator) is added as an optional sidecar container to Home Assistant with access to the home assistant configuration for easy in-browser editing and manipulation of Home Assistant.
 
 ## Git sync secret
 

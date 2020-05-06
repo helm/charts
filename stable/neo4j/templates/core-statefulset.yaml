@@ -1,4 +1,4 @@
-apiVersion: "apps/v1beta2"
+apiVersion: "apps/v1"
 kind: StatefulSet
 metadata:
   name: "{{ template "neo4j.core.fullname" . }}"
@@ -7,17 +7,17 @@ spec:
   replicas: {{ .Values.core.numberOfServers }}
   selector:
     matchLabels:
-      release: {{ .Release.Name | quote }}
-      app: {{ template "neo4j.name" . }}
-      component: core
+      app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      app.kubernetes.io/name: {{ template "neo4j.name" . }}
+      app.kubernetes.io/component: core
   template:
     metadata:
       labels:
-        heritage: {{ .Release.Service | quote }}
-        release: {{ .Release.Name | quote }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        app: {{ template "neo4j.name" . }}
-        component: core
+        app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        app.kubernetes.io/name: {{ template "neo4j.name" . }}
+        app.kubernetes.io/component: core
     spec:
       containers:
       - name: {{ template "neo4j.fullname" . }}
