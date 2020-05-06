@@ -11,10 +11,10 @@ metadata:
 data:
 {{- if or .Values.airflow.variables }}
     variables.json: |
-        {{ .Values.airflow.variables }}
+{{ .Values.airflow.variables | indent 8 }}
 {{- end }}
 {{- if or .Values.airflow.pools }}
     pools.json: |
-        {{ .Values.airflow.pools }}
+{{ .Values.airflow.pools | indent 8 }}
 {{- end }}
 {{- end }}
