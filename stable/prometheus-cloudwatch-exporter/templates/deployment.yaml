@@ -106,10 +106,8 @@ spec:
       securityContext:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- if .Values.serviceAccount.create }}
       serviceAccount: {{ template "prometheus-cloudwatch-exporter.serviceAccountName" . }}
       serviceAccountName: {{ template "prometheus-cloudwatch-exporter.serviceAccountName" . }}
-    {{- end }}
       volumes:
       - configMap:
           defaultMode: 420
