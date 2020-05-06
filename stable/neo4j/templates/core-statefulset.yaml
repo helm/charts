@@ -64,6 +64,17 @@ spec:
             fi
 
             exec /docker-entrypoint.sh "neo4j"
+        livenessProbe:
+          exec:
+            command:
+              - /bin/sh
+              - -c
+              - wget --auth-no-challenge --user=neo4j --password=${NEO4J_SECRETS_PASSWORD} --server-response --spider --timeout 10 --tries 1 http://127.0.0.1:7474/db/manage/server/core/available 2>&1 | grep -c -e '200 OK'
+          initialDelaySeconds: 120
+          periodSeconds: 15
+          timeoutSeconds: 11 # 1 more than in the wget command
+          successThreshold: 1 # default
+          failureThreshold: 3 # reboot pod after 3 unsuccesful queries, so after 3*(15+11) seconds
         ports:
         - containerPort: 5000
           name: discovery
