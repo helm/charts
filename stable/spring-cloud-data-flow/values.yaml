@@ -110,6 +110,16 @@ features:
   monitoring:
     enabled: false
 
+## If you are using an ingress server then you can override the following
+## default values to create an Ingress resource
+ingress:
+  enabled: false
+  server:
+    host: data-flow.local
+  grafana:
+    host: grafana.local
+  protocol: https
+
 grafana:
   service:
     type: LoadBalancer
@@ -169,7 +179,7 @@ prometheus:
         - role: pod
           namespaces:
             names:
-              - default
+              - {{ .Release.Namespace }}
       relabel_configs:
         - source_labels: [__meta_kubernetes_pod_label_app]
           action: keep
@@ -183,7 +193,7 @@ prometheus:
         - role: pod
           namespaces:
             names:
-              - default
+              - {{ .Release.Namespace }}
       relabel_configs:
         - source_labels: [__meta_kubernetes_pod_label_app]
           action: keep
@@ -196,3 +206,6 @@ prometheus:
         - source_labels: [__meta_kubernetes_pod_name]
           action: replace
           target_label: kubernetes_pod_name
+  proxy:
+    service:
+      type: LoadBalancer
