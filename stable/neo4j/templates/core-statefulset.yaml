@@ -36,6 +36,8 @@ spec:
             value: DNS
           - name: NEO4J_causal__clustering_initial__discovery__members
             value: "{{ template "neo4j.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}:5000"
+          - name: JAVA_TOOL_OPTIONS
+            value: "-XX:+ExitOnOutOfMemoryError"
           {{- if .Values.authEnabled }}
           - name: NEO4J_SECRETS_PASSWORD
             valueFrom:
