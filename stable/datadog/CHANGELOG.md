@@ -10,6 +10,10 @@
   daemon.
   ⚠ This version of the chart requires an agent image 7.19.0 or more recent
 
+## 2.2.12
+
+* Adding resources for `system-probe` init container
+
 ## 2.2.11
 
 * Add documentations around secret management in the datadog helm chart. It is to upstream
