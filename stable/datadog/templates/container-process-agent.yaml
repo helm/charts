@@ -29,10 +29,14 @@
   volumeMounts:
     - name: config
       mountPath: {{ template "datadog.confPath" . }}
+    {{- if eq .Values.targetSystem "linux" }}
+    - name: runtimesocketdir
+      mountPath: {{ print "/host/" (dir (include "datadog.dockerOrCriSocketPath" .)) | clean }}
+      readOnly: true
+    {{- end }}
+    {{- if eq .Values.targetSystem "windows" }}
     - name: runtimesocket
       mountPath: {{ template "datadog.dockerOrCriSocketPath" . }}
-    {{- if eq .Values.targetSystem "linux" }}
-      readOnly: true
     {{- end }}
     {{- if .Values.agents.useConfigMap }}
     - name: {{ template "datadog.fullname" . }}-datadog-yaml

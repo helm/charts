@@ -561,7 +561,16 @@ agents:
     ## Define the Agent version to use.
     ## Use 7-jmx to enable jmx fetch collection
     #
-    tag: "7"
+    tag: 7.19.0
+
+    ## @param doNotCheckTag - boolean - optional
+    ## By default, the version passed in agents.image.tag is checked
+    ## for compatibility with the version of the chart.
+    ## This boolean permits to completely skip this check.
+    ## This is useful, for example, for custom tags that are not
+    ## respecting semantic versioning
+    #
+    doNotCheckTag:  # false
 
     ## @param pullPolicy - string - required
     ## The Kubernetes pull policy.
@@ -853,7 +862,7 @@ clusterChecksRunner:
     ## Define the Agent version to use.
     ## Use 7-jmx to enable jmx fetch collection
     #
-    tag: "7"
+    tag: 7.19.0
 
     ## @param pullPolicy - string - required
     ## The Kubernetes pull policy.
