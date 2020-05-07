@@ -7,7 +7,7 @@ items:
     kind: ServiceMonitor
     metadata:
       name: {{ .name }}
-      namespace: {{ $.Release.Namespace }}
+      namespace: {{ template "prometheus-operator.namespace" . }}
       labels:
         app: {{ template "prometheus-operator.name" $ }}-prometheus
 {{ include "prometheus-operator.labels" $ | indent 8 }}
