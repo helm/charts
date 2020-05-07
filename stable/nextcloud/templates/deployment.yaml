@@ -241,6 +241,9 @@ spec:
           mountPath: /usr/local/etc/php/conf.d/{{ $key }}
           subPath: {{ $key }}
         {{- end }}
+        {{- if .Values.nextcloud.extraVolumeMounts }}
+{{ toYaml .Values.nextcloud.extraVolumeMounts | indent 8 }}
+        {{- end }}
         {{- if .Values.nginx.enabled }}
       - name: {{ .Chart.Name }}-nginx
         image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
@@ -339,6 +342,9 @@ spec:
       - name: nextcloud-nginx-config
         configMap:
           name: {{ template "nextcloud.fullname" . }}-nginxconfig
+      {{- end }}
+      {{- if .Values.nextcloud.extraVolumes }}
+{{ toYaml .Values.nextcloud.extraVolumes | indent 6 }}
       {{- end }}
       {{- if .Values.nginx.enabled }}
       # Will mount configuration files as www-data (id: 82) for nextcloud
