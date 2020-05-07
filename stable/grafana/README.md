@@ -80,6 +80,7 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `affinity`                                | Affinity settings for pod assignment          | `{}`                                                    |
 | `extraInitContainers`                     | Init containers to add to the grafana pod     | `{}`                                                    |
 | `extraContainers`                         | Sidecar containers to add to the grafana pod  | `{}`                                                    |
+| `extraContainerVolumes`                   | Volumes that can be mounted in sidecar containers | `[]`                                                |
 | `schedulerName`                           | Name of the k8s scheduler (other than default) | `nil`                                                  |
 | `persistence.enabled`                     | Use persistent volume to store data           | `false`                                                 |
 | `persistence.type`                        | Type of persistence (`pvc` or `statefulset`)  | `pvc`                                                   |
