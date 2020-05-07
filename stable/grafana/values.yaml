@@ -191,6 +191,14 @@ extraContainers: |
 #     - name: proxy-web
 #       containerPort: 4181
 
+## Volumes that can be used in init containers that will not be mounted to deployment pods
+extraContainerVolumes: []
+#  - name: volume-from-secret
+#    secret:
+#      secretName: secret-to-mount
+#  - name: empty-dir-volume
+#    emptyDir: {}
+
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
