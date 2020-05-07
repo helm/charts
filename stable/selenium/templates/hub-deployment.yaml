@@ -22,6 +22,10 @@ spec:
 {{ toYaml .Values.hub.podAnnotations | indent 8 }}
       {{- end}}
     spec:
+      {{- if .Values.hub.securityContext }}
+      securityContext:
+{{ toYaml .Values.hub.securityContext | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.hub.image }}:{{ .Values.hub.tag }}"

@@ -36,7 +36,7 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | Parameter                  | Description                         | Default                                                 |
 |----------------------------|-------------------------------------|---------------------------------------------------------|
 | `image.repository`         | Image repository | `homeassistant/home-assistant` |
-| `image.tag`                | Image tag. Possible values listed [here](https://hub.docker.com/r/homeassistant/home-assistant/tags/).| `0.106.6`|
+| `image.tag`                | Image tag. Possible values listed [here](https://hub.docker.com/r/homeassistant/home-assistant/tags/).| `0.108.7`|
 | `image.pullPolicy`         | Image pull policy | `IfNotPresent` |
 | `image.pullSecrets`        | Secrets to use when pulling the image | `[]` |
 | `strategyType`             | Specifies the strategy used to replace old Pods by new ones | `Recreate` |
@@ -64,6 +64,7 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `service.loadBalancerIP`   | Loadbalancer IP for the home-assistant GUI | `` |
 | `service.loadBalancerSourceRanges`   | Loadbalancer client IP restriction range for the home-assistant GUI | `[]` |
 | `service.publishNotReadyAddresses`   | Set to true if the editors (vscode or configurator) should be reachable when home assistant does not run | `false` |
+| `service.externalTrafficPolicy`   | Loadbalancer externalTrafficPolicy | `` |
 | `hostNetwork`              | Enable hostNetwork - might be needed for discovery to work | `false` |
 | `service.nodePort`   | nodePort to listen on for the home-assistant GUI | `` |
 | `ingress.enabled`              | Enables Ingress | `false` |
@@ -81,6 +82,8 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `git.secret`                   | Git secret to use for git-sync | `git-creds` |
 | `git.syncPath`                 | Git sync path | `/config` |
 | `git.keyPath`                  | Git ssh key path | `/root/.ssh` |
+| `git.user.name`                | Human-readable name in the “committer” and “author” fields | `` |
+| `git.user.email`               | Email address for the “committer” and “author” fields | `` |
 | `zwave.enabled`                  | Enable zwave host device passthrough. Also enables privileged container mode. | `false` |
 | `zwave.device`                  | Device to passthrough to guest | `ttyACM0` |
 | `hostMounts`        | Array of host directories to mount; can be used for devices | [] |
@@ -123,7 +126,7 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `configurator.service.loadBalancerSourceRanges`   | Loadbalancer client IP restriction range for the configurator UI | `[]` |
 | `vscode.enabled`                  | Enable the optional [VS Code Server Sidecar](https://github.com/cdr/code-server) | `false` |
 | `vscode.image.repository`         | Image repository | `codercom/code-server` |
-| `vscode.image.tag`                | Image tag | `2.1665-vsc1.39.2`|
+| `vscode.image.tag`                | Image tag | `3.1.1`|
 | `vscode.image.pullPolicy`         | Image pull policy | `IfNotPresent` |
 | `vscode.hassConfig`               | Base path of the home assistant configuration files | `/config` |
 | `vscode.vscodePath`               | Base path of the VS Code configuration files | `/config/.vscode` |

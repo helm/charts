@@ -1,5 +1,43 @@
 # Datadog changelog
 
+## 2.2.12
+
+* Adding resources for `system-probe` init container
+
+## 2.2.11
+
+* Add documentations around secret management in the datadog helm chart. It is to upstream
+  requested changes in the IBM charts repository: https://github.com/IBM/charts/pull/690#discussion_r411702458
+* update `kube-state-metrics` dependency
+* uncomment every values.yaml parameters for IBM chart compliancy
+
+## 2.2.10
+
+* Remove `kubeStateMetrics` section from `values.yaml` as not used anymore
+
+## 2.2.9
+
+* Fixing variables description in README and Migration documentation (#22031)
+* Avoid volumes mount conflict between `system-probe` and `logs` volumes in the `agent`.
+
+## 2.2.8
+
+* Mount `system-probe` socket in `agent` container when system-probe is enabled
+
+## 2.2.7
+
+* Add "Cluster-Agent" `Event` `create` RBAC permission
+
+## 2.2.6
+
+* Ensure the `trace-agent` computes the same hostname as the core `agent`.
+  by giving it access to all the elements that might be used to compute the hostname:
+  the `DD_CLUSTER_NAME` environment variable and the docker socket.
+
+## 2.2.5
+
+* Fix RBAC
+
 ## 2.2.4
 
 * Move several EnvVars to `common-env-vars` to be accessible by the `trace-agent` #21991.

@@ -4,7 +4,7 @@ This is the Helm chart for the [Kubernetes Operator for Apache Spark](https://gi
 
 #### Prerequisites
 
-The Operator requires Kubernetes version 1.8 and above because it relies on garbage collection of custom resources. If customization of driver and executor pods (through mounting custom ConfigMaps and volumes) is desired, then the [Mutating Admission Webhook](https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/docs/quick-start-guide.md#using-the-mutating-admission-webhook) needs to be enabled and it only became beta in Kubernetes 1.9.
+The Operator requires Kubernetes version 1.13 or above to use the subresource support for CustomResourceDefinitions, which became beta in 1.13 and is enabled by default in 1.13 and higher.
 
 #### Installing the chart
 

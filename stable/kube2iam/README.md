@@ -71,6 +71,8 @@ Parameter | Description | Default
 `aws.access_key` | The value to use for AWS_ACCESS_KEY_ID | `""`
 `aws.region` | The AWS region to use | `""`
 `existingSecret` | Set the AWS credentials using an existing secret | `""`
+`podSecurityPolicy.enabled` | If true, create a podSecurityPolicy object. For the pods to use the psp, rbac.create should also be set to true | `false`
+`podSecurityPolicy.annotations` | The annotations to add to the podSecurityPolicy object | `{}`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

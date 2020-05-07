@@ -47,6 +47,10 @@ Version 2.0.0 of this chart introduces support for Kubernetes v1.16.x by way of 
 
 Due to [this issue](https://github.com/helm/helm/issues/6583) there may be errors performing a `helm upgrade`of this chart from versions earlier than 2.0.0.
 
+### To 3.0.0
+
+Version 3.0.0 introduces support for [EKS IAM roles for service accounts](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html) by adding a managed service account to the chart.  This is a breaking change since the service account is enabled by default.  To disable this behaviour set `serviceAccount.enabled` to `false`
+
 ## Configuration
 
 The following table lists the configurable parameters of the oauth2-proxy chart and their default values.
@@ -104,6 +108,9 @@ Parameter | Description | Default
 `service.clusterIP` | cluster ip address | `nil`
 `service.loadBalancerIP` | ip of load balancer | `nil`
 `service.loadBalancerSourceRanges` | allowed source ranges in load balancer | `nil`
+`serviceAccount.enabled` | create a service account | `true`
+`serviceAccount.name` | the service account name | ``
+`serviceAccount.annotations` | (optional) annotations for the service account | `{}`
 `tolerations` | list of node taints to tolerate | `[]`
 `securityContext.enabled` | enable Kubernetes security context | `false`
 `securityContext.runAsNonRoot` | make sure that the container runs as a non-root user | `true`

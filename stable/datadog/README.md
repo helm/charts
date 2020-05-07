@@ -31,6 +31,26 @@ helm install --name <RELEASE_NAME> \
 By default, this Chart creates a Secret and puts an API key in that Secret.
 However, you can use manually created secret by setting the `datadog.apiKeyExistingSecret` value. After a few minutes, you should see hosts and metrics being reported in Datadog.
 
+#### Create and provide a secret that contains your Datadog API Key
+
+To create a secret that contains your Datadog API key, replace the <DATADOG_API_KEY> below with the API key for your organization. This secret is used in the manifest to deploy the Datadog Agent.
+
+```bash
+DATADOG_SECRET_NAME=datadog-secret
+kubectl create secret generic $DATADOG_SECRET_NAME --from-literal api-key="<DATADOG_API_KEY>" --namespace="default"
+```
+
+**Note**: This creates a secret in the default namespace. If you are in a custom namespace, update the namespace parameter of the command before running it.
+
+Now, the installation command contains the reference to the secret.
+
+```bash
+helm install --name <RELEASE_NAME> \
+  --set datadog.apiKeyExistingSecret=$DATADOG_SECRET_NAME stable/datadog
+```
+
+**Note**: Provide a secret for the application key (AppKey) using the `datadog.appKeyExistingSecret` chart variable.
+
 ### Enabling the Datadog Cluster Agent
 
 Read about the Datadog Cluster Agent in the [official documentation](https://docs.datadoghq.com/agent/kubernetes/cluster/).
@@ -256,10 +276,10 @@ helm install --name <RELEASE_NAME> \
 | `datadog.apiKeyExistingSecret`                               | If set, use the secret with a provided name instead of creating a new one                                                                                                           | `nil`                                           |
 | `datadog.appKey`                                             | Datadog APP key required to use metricsProvider                                                                                                                                     | `nil` You must provide your own key             |
 | `datadog.appKeyExistingSecret`                               | If set, use the secret with a provided name instead of creating a new one                                                                                                           | `nil`                                           |
-| `image.repository`                                           | The image repository to pull from                                                                                                                                                   | `datadog/agent`                                 |
-| `image.tag`                                                  | The image tag to pull                                                                                                                                                               | `6.14.0`                                        |
-| `image.pullPolicy`                                           | Image pull policy                                                                                                                                                                   | `IfNotPresent`                                  |
-| `image.pullSecrets`                                          | Image pull secrets                                                                                                                                                                  | `nil`                                           |
+| `agents.image.repository`                                           | The image repository to pull from                                                                                                                                                   | `datadog/agent`                                 |
+| `agents.image.tag`                                                  | The image tag to pull                                                                                                                                                               | `7.18.1`                                        |
+| `agents.image.pullPolicy`                                           | Image pull policy                                                                                                                                                                   | `IfNotPresent`                                  |
+| `agents.image.pullSecrets`                                          | Image pull secrets                                                                                                                                                                  | `nil`                                           |
 | `nameOverride`                                               | Override name of app                                                                                                                                                                | `""`                                            |
 | `fullnameOverride`                                           | Override full name of app                                                                                                                                                           | `""`                                            |
 | `agents.rbac.create`                                         | If true, create & use RBAC resources                                                                                                                                                | `true`                                          |

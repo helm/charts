@@ -1,3 +1,5 @@
+extraArgs:
+  # - --storage-timestamp-tolerance 1s
 replicaCount: 1
 strategy:
   type: RollingUpdate

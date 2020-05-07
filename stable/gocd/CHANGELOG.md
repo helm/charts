@@ -1,3 +1,8 @@
+### 1.26.1
+* [7a9cd1bb4](https://github.com/kubernetes/charts/commit/7a9cd1bb4): Updated permissions of files in ~/.ssh directory
+
+### 1.26.0
+* [ec6b96f](https://github.com/kubernetes/charts/commit/ec6b96f): Bump up GoCD Version to 20.3.0
 ### 1.25.1
 
 * [b70dd76](https://github.com/kubernetes/charts/commit/b70dd76): Update k8s supported versions to 1.14+.
@@ -264,7 +269,7 @@
 
 ### 1.4.0
 
-* [f5249551](https://github.com/kubernetes/charts/commit/f5249551):  
+* [f5249551](https://github.com/kubernetes/charts/commit/f5249551):
   - Bump up GoCD app version to 18.8.0
   - Updated kubernetes elastic agent plugin version to 1.0.2
   - Updated post install script
