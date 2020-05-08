@@ -622,6 +622,8 @@ dags:
     ## Path to add to `mountPath` where we clone/sync git to. Include leading /
     ## example: "/subdirWithDags"
     syncSubPath: ""
+    ## Custom resource configuration
+    resources: {}
 
 ##
 ## Configure logs
