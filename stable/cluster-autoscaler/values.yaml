@@ -202,3 +202,8 @@ fullnameOverride: ""
 
 # Allow overridding the .Capabilities.KubeVersion.GitVersion (useful for "helm template" command)
 kubeTargetVersionOverride: ""
+
+## Priorities Expander
+## If extraArgs.expander is set to priority, then expanderPriorities is used to define cluster-autoscaler-priority-expander priorities
+## https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/expander/priority/readme.md
+expanderPriorities: {}
