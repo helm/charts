@@ -51,6 +51,10 @@ Due to [this issue](https://github.com/helm/helm/issues/6583) there may be error
 
 Version 3.0.0 introduces support for [EKS IAM roles for service accounts](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html) by adding a managed service account to the chart.  This is a breaking change since the service account is enabled by default.  To disable this behaviour set `serviceAccount.enabled` to `false`
 
+### To 3.0.1
+
+Version 3.0.1 of this chart integrate upstream security fix and support for upstream organisation and name changes (git repository and docker registry path from pusher to oauth2-proxy)
+
 ## Configuration
 
 The following table lists the configurable parameters of the oauth2-proxy chart and their default values.
