@@ -88,12 +88,25 @@ jenkins:
   clouds:
   - kubernetes:
       containerCapStr: "{{ .Values.agent.containerCap }}"
+      defaultsProviderTemplate: "{{ default "" .Values.slaveDefaultsProviderTemplate }}"
+      {{- if .Values.master.slaveJenkinsUrl }}
+      jenkinsUrl: "{{ .Values.master.slaveJenkinsUrl }}"
+      {{- else }}
       {{- if .Values.master.slaveKubernetesNamespace }}
-      jenkinsTunnel: "{{ template "jenkins.fullname" . }}-agent.{{ template "jenkins.namespace" . }}:{{ .Values.master.slaveListenerPort }}"
       jenkinsUrl: "http://{{ template "jenkins.fullname" . }}.{{ template "jenkins.namespace" . }}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}"
       {{- else }}
-      jenkinsTunnel: "{{ template "jenkins.fullname" . }}-agent:{{ .Values.master.slaveListenerPort }}"
       jenkinsUrl: "http://{{ template "jenkins.fullname" . }}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}"
+      {{- end }}
+      {{- end }}
+
+      {{- if .Values.master.slaveJenkinsTunnel }}
+      jenkinsTunnel: "{{ .Values.master.slaveJenkinsTunnel }}"
+      {{- else }}
+      {{- if .Values.master.slaveKubernetesNamespace }}
+      jenkinsTunnel: "{{ template "jenkins.fullname" . }}-agent.{{ template "jenkins.namespace" . }}:{{ .Values.master.slaveListenerPort }}"
+      {{- else }}
+      jenkinsTunnel: "{{ template "jenkins.fullname" . }}-agent:{{ .Values.master.slaveListenerPort }}"
+      {{- end }}
       {{- end }}
       maxRequestsPerHostStr: "32"
       name: "kubernetes"

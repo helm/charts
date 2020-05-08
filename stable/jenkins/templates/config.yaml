@@ -45,7 +45,7 @@ data:
       <clouds>
         <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@{{ template "jenkins.kubernetes-version" . }}">
           <name>kubernetes</name>
-          <defaultsProviderTemplate>{{ default "" .Values.slaveDefaultsProviderTemplate }}</defaultsProviderTemplate>
+          <defaultsProviderTemplate>{{ default "" .Values.master.slaveDefaultsProviderTemplate }}</defaultsProviderTemplate>
           <templates>
 {{- if .Values.agent.enabled }}
   {{- include "jenkins.xml.podTemplate" . | nindent 12 }}
