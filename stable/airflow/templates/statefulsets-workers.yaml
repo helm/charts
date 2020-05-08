@@ -87,7 +87,7 @@ spec:
           env:
           {{- include "airflow.mapenvsecrets" . | indent 10 }}
           resources:
-{{ toYaml .Values.workers.resources | indent 12 }}
+{{ toYaml .Values.dags.initContainer.resources | indent 12 }}
           command:
           - /usr/local/git/git-clone.sh
           args:
