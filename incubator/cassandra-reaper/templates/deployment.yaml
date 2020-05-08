@@ -15,6 +15,10 @@ spec:
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
+      {{- if .Values.podAnnotations }}
+      annotations:
+        {{ toYaml .Values.podAnnotations | trim | indent 8 }}
+      {{- end }}
       labels:
         app.kubernetes.io/name: {{ include "cassandra-reaper.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}

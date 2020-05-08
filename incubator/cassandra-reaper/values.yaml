@@ -33,6 +33,7 @@ ingress:
     # base64 encoded version of the basic auth file
     secret: ~
 
+podAnnotations: {}
 env: {}
 resources: {}
 nodeSelector: {}

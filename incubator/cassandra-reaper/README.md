@@ -46,6 +46,7 @@ cat ./auth | base64
 | `ingress.basicAuth.enabled`| Creates basic auth secret if true                      | `false`                                                    |
 | `ingress.basicAuth.name`   | Name of the basic auth secret resource                 | `basic-auth`                                               |
 | `ingress.basicAuth.secret` | Base64 encoded contents of the basic auth file         | MUST be provided if basic auth is enabled                  |
+| `podAnnotations`           | Pod annotations	                                      | `{}`                                                       |
 | `env`                      | Environment variables                                  | `{}`                                                       |
 | `resources`                | Resource requests/limits                               | `{}`                                                       |
 | `nodeSelector`             | Kubernetes node selector                               | `{}`                                                       |
