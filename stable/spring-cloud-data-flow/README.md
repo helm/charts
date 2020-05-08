@@ -150,19 +150,21 @@ The following tables list the configurable parameters and their default values.
 
 ### Data Flow Server Configuration
 
-| Parameter                               | Description                                                        | Default          |
-| --------------------------------------- | ------------------------------------------------------------------ | ---------------- |
-| server.version                          | The version/tag of the Data Flow server                            | 2.5.0.RELEASE
-| server.imagePullPolicy                  | The imagePullPolicy of the Data Flow server                        | IfNotPresent
-| server.service.type                     | The service type for the Data Flow server                          | LoadBalancer
-| server.service.annotations              | Extra annotations for service resource                             | {}
-| server.service.externalPort             | The external port for the Data Flow server                         | 80
-| server.service.labels                   | Extra labels for the service resource                              | {}
-| server.service.loadBalancerSourceRanges | A list of IP address ranges to allow through the load balancer     | no restriction
-| server.platformName                     | The name of the configured platform account                        | default
-| server.configMap                        | Custom ConfigMap name for Data Flow server configuration           |
-| server.trustCerts                       | Trust self signed certs                                            | false
-| server.extraEnv                         | Extra environment variables to add to the server container         | {}
+| Parameter                                                                                 | Description                                                                  | Default          |
+| ----------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------- |
+| server.version                                                                            | The version/tag of the Data Flow server                                      | 2.5.0.RELEASE
+| server.imagePullPolicy                                                                    | The imagePullPolicy of the Data Flow server                                  | IfNotPresent
+| server.service.type                                                                       | The service type for the Data Flow server                                    | LoadBalancer
+| server.service.annotations                                                                | Extra annotations for service resource                                       | {}
+| server.service.externalPort                                                               | The external port for the Data Flow server                                   | 80
+| server.service.labels                                                                     | Extra labels for the service resource                                        | {}
+| server.service.loadBalancerSourceRanges                                                   | A list of IP address ranges to allow through the load balancer               | no restriction
+| server.platformName                                                                       | The name of the configured platform account                                  | default
+| server.configMap                                                                          | Custom ConfigMap name for Data Flow server configuration                     |
+| server.trustCerts                                                                         | Trust self signed certs                                                      | false
+| server.extraEnv                                                                           | Extra environment variables to add to the server container                   | {}
+| server.containerConfiguration.container.registry-configurations.<NAME>.registry-host      | The registry host to use for the profile represented by <NAME>               |
+| server.containerConfiguration.container.registry-configurations.<NAME>.authorization-type | The registry authorization type to use for the profile represented by <NAME> |
 
 ### Skipper Server Configuration
 
