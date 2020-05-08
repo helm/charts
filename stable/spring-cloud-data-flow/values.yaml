@@ -36,6 +36,7 @@ server:
   #  requests:
   #    cpu: 0.5
   #    memory: 640Mi
+  extraEnv: {}
 
 skipper:
   enabled: true
@@ -56,6 +57,7 @@ skipper:
   #  requests:
   #    cpu: 0.5
   #    memory: 640Mi
+  extraEnv: {}
 
 deployer:
   resourceLimits:

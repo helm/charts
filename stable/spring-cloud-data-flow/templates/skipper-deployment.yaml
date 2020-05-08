@@ -85,6 +85,10 @@ spec:
         {{- end }}
         - name: KUBERNETES_TRUST_CERTIFICATES
           value: {{ .Values.skipper.trustCerts | quote }}
+        {{- range $key, $value := .Values.skipper.extraEnv }}
+        - name: {{ $key }}
+          value: "{{ $value }}"
+        {{- end }}
       volumes:
         {{- if or .Values.rabbitmq.enabled (index .Values "rabbitmq-ha" "enabled") }}
         - name: rabbitmq
