@@ -43,18 +43,14 @@ spec:
 {{ toYaml .Values.skipper.resources | indent 10 }}
         livenessProbe:
           httpGet:
-            path: /api/about
+            path: /actuator/health
             port: http
-          initialDelaySeconds: 90
-          periodSeconds: 15
-          timeoutSeconds: 5
+          initialDelaySeconds: 45
         readinessProbe:
           httpGet:
-            path: /api/about
+            path: /actuator/info
             port: http
-          initialDelaySeconds: 30
-          periodSeconds: 15
-          timeoutSeconds: 5
+          initialDelaySeconds: 45
         env:
         - name: KUBERNETES_NAMESPACE
           valueFrom:
