@@ -544,6 +544,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `dags.initContainer.installRequirements` | auto install requirements.txt deps                      | `true`                    |
 | `dags.initContainer.mountPath`           | Mountpath inside init container for dags                | `/dags`                   |
 | `dags.initContainer.syncSubPath`         | Path inside init container used to sync/clone git repo to; appended to `dags.initContainer.mountPath` | ``                      |
+| `dags.initContainer.resources`             | custom resource configuration for the git-clone initContainer    | `{}`                      |
 | `dags.git.url`                           | url to clone the git repository                         | nil                       |
 | `dags.git.ref`                           | branch name, tag or sha1 to reset to                    | `master`                  |
 | `dags.git.secret`                        | name of a secret containing an ssh deploy key           | nil                       |
