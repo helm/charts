@@ -23,6 +23,9 @@ data:
                     limits:
                       memory: {{ .Values.deployer.resourceLimits.memory }}
                       cpu: {{ .Values.deployer.resourceLimits.cpu }}
+{{- if .Values.server.containerConfiguration }}
+{{ toYaml .Values.server.containerConfiguration | indent 10 }}
+{{- end }}
       {{- end }}
           {{- if .Values.features.monitoring.enabled }}
           applicationProperties:
