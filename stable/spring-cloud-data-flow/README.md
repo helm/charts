@@ -162,6 +162,7 @@ The following tables list the configurable parameters and their default values.
 | server.platformName                     | The name of the configured platform account                        | default
 | server.configMap                        | Custom ConfigMap name for Data Flow server configuration           |
 | server.trustCerts                       | Trust self signed certs                                            | false
+| server.extraEnv                         | Extra environment variables to add to the server container         | {}
 
 ### Skipper Server Configuration
 
@@ -175,6 +176,7 @@ The following tables list the configurable parameters and their default values.
 | skipper.service.labels            | Extra labels for the service resource                            | {}
 | skipper.configMap                 | Custom ConfigMap name for Skipper server configuration           |
 | skipper.trustCerts                | Trust self signed certs                                          | false
+| skipper.extraEnv                  | Extra environment variables to add to the skipper container      | {}
 
 ### Spring Cloud Deployer for Kubernetes Configuration
 
