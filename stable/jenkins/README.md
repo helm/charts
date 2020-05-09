@@ -68,7 +68,10 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.tag`                      | Master image tag                     | `lts`                                     |
 | `master.imagePullPolicy`          | Master image pull policy             | `Always`                                  |
 | `master.imagePullSecretName`      | Master image pull secret             | Not set                                   |
+| `master.disableRememberMe`        | Diable use of remember me            | `false`                                   |
+| `master.mode`                     | Jenkins mode (NORMAL or EXCLUSIVE)   | `NORMAL`                                  |
 | `master.numExecutors`             | Set Number of executors              | 0                                         |
+| `master.defaultMarkupFormatter`   | Use default markupFormatter          | `true`                                    |
 | `master.customJenkinsLabels`      | Append Jenkins labels to the master  | `{}`                                      |
 | `master.useSecurity`              | Use basic security                   | `true`                                    |
 | `master.securityRealm`            | Custom Security Realm                | Not set                                   |

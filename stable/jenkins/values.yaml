@@ -76,7 +76,10 @@ master:
   #      command:
   #      - "uname"
   #      - "-a"
+  disableRememberMe: false
+  mode: NORMAL
   numExecutors: 0
+  defaultMarkupFormatter: true
   customJenkinsLabels: []
   # configAutoReload requires UseSecurity is set to true:
   useSecurity: true
@@ -227,6 +230,7 @@ master:
 
   # Enable HTML parsing using OWASP Markup Formatter Plugin (antisamy-markup-formatter), useful with ghprb plugin.
   # The plugin is not installed by default, please update master.installPlugins.
+  # Requires defaultMarkupFormatter be set to true
   enableRawHtmlMarkupFormatter: false
   # Used to approve a list of groovy functions in pipelines used the script-security plugin. Can be viewed under /scriptApproval
   scriptApproval: []

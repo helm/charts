@@ -72,12 +72,13 @@ Returns configuration as code default config
 */}}
 {{- define "jenkins.casc.defaults" -}}
 jenkins:
-  disableRememberMe: false
+  disableRememberMe: {{ .Values.master.disableRememberMe }}
   remotingSecurity:
     enabled: true
-  mode: NORMAL
+  mode: {{ .Values.master.mode }}
   numExecutors: {{ .Values.master.numExecutors }}
   projectNamingStrategy: "standard"
+  {{- if .Values.master.defaultMarkupFormatter }}
   markupFormatter:
     {{- if .Values.master.enableRawHtmlMarkupFormatter }}
     rawHtml:
@@ -85,6 +86,7 @@ jenkins:
     {{- else }}
       "plainText"
     {{- end }}
+  {{- end }}
   clouds:
   - kubernetes:
       containerCapStr: "{{ .Values.agent.containerCap }}"
