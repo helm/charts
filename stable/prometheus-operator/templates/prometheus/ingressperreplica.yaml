@@ -1,6 +1,6 @@
 {{- if and .Values.prometheus.enabled .Values.prometheus.servicePerReplica.enabled .Values.prometheus.ingressPerReplica.enabled }}
 {{- $count := .Values.prometheus.prometheusSpec.replicas | int -}}
-{{- $servicePort := .Values.prometheus.service.port -}}
+{{- $servicePort := .Values.prometheus.servicePerReplica.port -}}
 {{- $ingressValues := .Values.prometheus.ingressPerReplica -}}
 apiVersion: v1
 kind: List
@@ -9,8 +9,12 @@ metadata:
   namespace: {{ $.Release.Namespace }}
 items:
 {{ range $i, $e := until $count }}
-  - apiVersion: extensions/v1beta1
-    kind: Ingress
+  - kind: Ingress
+    {{- if $.Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
+    apiVersion: networking.k8s.io/v1beta1
+    {{ else }}
+    apiVersion: extensions/v1beta1
+    {{ end -}}
     metadata:
       name: {{ include "prometheus-operator.fullname" $ }}-prometheus-{{ $i }}
       namespace: {{ $.Release.Namespace }}

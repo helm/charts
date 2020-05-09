@@ -14,13 +14,6 @@
     protocol: UDP
   env:
     {{- include "containers-common-env" . | nindent 4 }}
-    {{- if .Values.datadog.clusterName }}
-    {{- if not (regexMatch "^([a-z]([a-z0-9\\-]{0,38}[a-z0-9])?\\.)*([a-z]([a-z0-9\\-]{0,38}[a-z0-9])?)$" .Values.datadog.clusterName) }}
-    {{- fail "Your `clusterName` isn’t valid. It must be dot-separated tokens where a token start with a lowercase letter followed by up to 39 lowercase letters, numbers, or hyphens and cannot end with a hyphen."}}
-    {{- end}}
-    - name: DD_CLUSTER_NAME
-      value: {{ .Values.datadog.clusterName | quote }}
-    {{- end }}
     {{- if .Values.datadog.logLevel }}
     - name: DD_LOG_LEVEL
       value: {{ .Values.agents.containers.agent.logLevel | default .Values.datadog.logLevel | quote }}
@@ -69,18 +62,6 @@
           name: {{ template "clusterAgent.tokenSecretName" . }}
           key: token
     {{- end }}
-    {{- if .Values.datadog.nodeLabelsAsTags }}
-    - name: DD_KUBERNETES_NODE_LABELS_AS_TAGS
-      value: '{{ toJson .Values.datadog.nodeLabelsAsTags }}'
-    {{- end }}
-    {{- if .Values.datadog.podLabelsAsTags }}
-    - name: DD_KUBERNETES_POD_LABELS_AS_TAGS
-      value: '{{ toJson .Values.datadog.podLabelsAsTags }}'
-    {{- end }}
-    {{- if .Values.datadog.podAnnotationsAsTags }}
-    - name: DD_KUBERNETES_POD_ANNOTATIONS_AS_TAGS
-      value: '{{ toJson .Values.datadog.podAnnotationsAsTags }}'
-    {{- end }}
     - name: DD_APM_ENABLED
       value: "false"
     - name: DD_LOGS_ENABLED
@@ -89,19 +70,6 @@
       value: {{  (default false (or .Values.datadog.logs.containerCollectAll .Values.datadog.logsConfigContainerCollectAll)) | quote}}
     - name: DD_LOGS_CONFIG_K8S_CONTAINER_USE_FILE
       value: {{ .Values.datadog.logs.containerCollectUsingFiles | quote }}
-    {{- if .Values.datadog.dockerSocketPath }}
-    - name: DOCKER_HOST
-    {{- if eq .Values.targetSystem "linux" }}
-      value: unix://{{ .Values.datadog.dockerSocketPath }}
-    {{- end }}
-    {{- if eq .Values.targetSystem "windows" }}
-      value: npipe://{{ .Values.datadog.dockerSocketPath | replace "\\" "/" }}
-    {{- end }}
-    {{- end }}
-    {{- if .Values.datadog.criSocketPath }}
-    - name: DD_CRI_SOCKET_PATH
-      value: {{ .Values.datadog.criSocketPath }}
-    {{- end }}
     {{- if not .Values.datadog.livenessProbe }}
     - name: DD_HEALTH_PORT
       value: "5555"
@@ -114,17 +82,26 @@
     - name: DD_EXTRA_CONFIG_PROVIDERS
       value: "clusterchecks endpointschecks"
     {{- end }}
-{{- if .Values.agents.containers.agent.env }}
-{{ toYaml .Values.agents.containers.agent.env | indent 4 }}
-{{- end }}
+    {{- if .Values.datadog.systemProbe.enabled }}
+    - name: SYSTEM_PROBE_CONFIG_SYSPROBE_SOCKET
+      value: /sysprobe/var/run
+    {{- end }}
+  {{- range $value := .Values.agents.containers.agent.env }}
+    - name: {{ $value.name }}
+      value: {{ $value.value | quote }}
+  {{- end }}
   volumeMounts:
     - name: config
       mountPath: {{ template "datadog.confPath" . }}
+    {{- if eq .Values.targetSystem "linux" }}
+    - name: runtimesocketdir
+      mountPath: {{ print "/host/" (dir (include "datadog.dockerOrCriSocketPath" .)) | clean }}
+      readOnly: true
+    {{- end }}
+    {{- if eq .Values.targetSystem "windows" }}
     - name: runtimesocket
       mountPath: {{ template "datadog.dockerOrCriSocketPath" . }}
-      {{- if eq .Values.targetSystem "linux" }}
-      readOnly: true
-      {{- end }}
+    {{- end }}
     {{- if .Values.agents.useConfigMap }}
     - name: {{ template "datadog.fullname" . }}-datadog-yaml
       mountPath: {{ template "datadog.confPath" . }}/datadog.yaml
@@ -134,6 +111,11 @@
     {{- if .Values.datadog.dogstatsd.useSocketVolume }}
     - name: dsdsocket
       mountPath: "/var/run/datadog"
+    {{- end }}
+    {{- if .Values.datadog.systemProbe.enabled }}
+    - name: sysprobe-socket-dir
+      mountPath: /sysprobe/var/run
+      readOnly: true
     {{- end }}
     - name: procdir
       mountPath: /host/proc

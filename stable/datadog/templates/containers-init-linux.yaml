@@ -32,24 +32,14 @@
     - name: procdir
       mountPath: /host/proc
       readOnly: true
-    - name: runtimesocket
-      mountPath: {{ template "datadog.dockerOrCriSocketPath" . }}
+    - name: runtimesocketdir
+      mountPath: {{ print "/host/" (dir (include "datadog.dockerOrCriSocketPath" .)) | clean }}
       readOnly: true
   env:
     {{- include "containers-common-env" . | nindent 4 }}
-    {{- if not .Values.clusterAgent.enabled }}
-    {{- if .Values.datadog.leaderElection }}
+    {{- if and (not .Values.clusterAgent.enabled) .Values.datadog.leaderElection }}
     - name: DD_LEADER_ELECTION
       value: {{ .Values.datadog.leaderElection | quote }}
-    {{- end }}
-    {{- end }}
-    {{- if .Values.datadog.dockerSocketPath }}
-    - name: DOCKER_HOST
-      value: unix://{{ .Values.datadog.dockerSocketPath }}
-    {{- end }}
-    {{- if .Values.datadog.criSocketPath }}
-    - name: DD_CRI_SOCKET_PATH
-      value: {{ .Values.datadog.criSocketPath }}
     {{- end }}
   resources:
 {{ toYaml .Values.agents.containers.initContainers.resources | indent 4 }}

@@ -3,9 +3,6 @@
 schedulerName: "{{ .Values.schedulerName }}"
 {{- end }}
 serviceAccountName: {{ template "grafana.serviceAccountName" . }}
-{{- if .Values.schedulerName }}
-schedulerName: "{{ .Values.schedulerName }}"
-{{- end }}
 {{- if .Values.securityContext }}
 securityContext:
 {{ toYaml .Values.securityContext | indent 2 }}
@@ -22,7 +19,7 @@ initContainers:
     imagePullPolicy: {{ .Values.initChownData.image.pullPolicy }}
     securityContext:
       runAsUser: 0
-    command: ["chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsUser }}", "/var/lib/grafana"]
+    command: ["chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsGroup }}", "/var/lib/grafana"]
     resources:
 {{ toYaml .Values.initChownData.resources | indent 6 }}
     volumeMounts:
@@ -202,6 +199,7 @@ containers:
       - name: {{ .name }}
         mountPath: {{ .mountPath }}
         readOnly: {{ .readOnly }}
+        subPath: {{ .subPath | default "" }}
     {{- end }}
     {{- range .Values.extraVolumeMounts }}
       - name: {{ .name }}
@@ -266,7 +264,7 @@ containers:
     {{- if .Values.envFromSecret }}
     envFrom:
       - secretRef:
-          name: {{ .Values.envFromSecret }}
+          name: {{ tpl .Values.envFromSecret . }}
     {{- end }}
     {{- if .Values.envRenderSecret }}
     envFrom:
@@ -368,4 +366,7 @@ volumes:
   - name: {{ .name }}
     emptyDir: {}
 {{- end -}}
+{{- if .Values.extraContainerVolumes }}
+{{ toYaml .Values.extraContainerVolumes | indent 2 }}
+{{- end }}
 {{- end }}
