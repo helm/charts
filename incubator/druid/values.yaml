@@ -52,6 +52,12 @@ broker:
     #      - chart-example.local
 
   resources: {}
+    # limits:
+    #   cpu: 1
+    #   memory: 8Gi
+    # requests:
+    #   cpu: 250m
+    #   memory: 4Gi
 
   nodeSelector: {}
 
@@ -83,6 +89,12 @@ coordinator:
     #      - chart-example.local
 
   resources: {}
+    # limits:
+    #   cpu: 500m
+    #   memory: 2Gi
+    # requests:
+    #   cpu: 250m
+    #   memory: 512Mi
 
   nodeSelector: {}
 
@@ -160,7 +172,13 @@ historical:
   tolerations: []
 
   resources: {}
-
+    # limits:
+    #   cpu: 1
+    #   memory: 8Gi
+    # requests:
+    #   cpu: 250m
+    #   memory: 4Gi
+    
   ## (dict) If specified, apply these annotations to each master Pod
   podAnnotations: {}
   #   example: master-foo
@@ -227,6 +245,12 @@ middleManager:
   tolerations: []
 
   resources: {}
+    # limits:
+    #   cpu: 500m
+    #   memory: 2Gi
+    # requests:
+    #   cpu: 250m
+    #   memory: 512Mi
 
   ## (dict) If specified, apply these annotations to each master Pod
   podAnnotations: {}
@@ -263,6 +287,12 @@ router:
     #      - chart-example.local
 
   resources: {}
+    # limits:
+    #   cpu: 500m
+    #   memory: 2Gi
+    # requests:
+    #   cpu: 250m
+    #   memory: 512Mi
 
   nodeSelector: {}
 
