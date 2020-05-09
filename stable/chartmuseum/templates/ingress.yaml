@@ -3,7 +3,7 @@
 {{- $serviceName := include "chartmuseum.fullname" . -}}
 {{- $ingressExtraPaths := .Values.ingress.extraPaths -}}
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: {{ include "chartmuseum.fullname" . }}
