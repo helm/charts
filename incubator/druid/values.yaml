@@ -37,24 +37,6 @@ broker:
   serviceType: ClusterIP
 
   javaOpts: "-Xms2G -Xmx2G -XX:MaxDirectMemorySize=8g"
-  
-  autoscaling:
-    enabled: false
-    minReplicas: 2
-    maxReplicas: 5
-    metrics: 
-    - type: Resource
-      resource:
-        name: cpu
-        target: 
-          type: Utilization
-          averageUtilization: 60
-    - type: Resource
-      resource:
-        name: memory
-        target: 
-          type: Utilization
-          averageUtilization: 60
 
   ingress:
     enabled: false
@@ -86,24 +68,6 @@ coordinator:
   serviceType: ClusterIP
 
   javaOpts: "-Xms1G -Xmx1G"
-
-  autoscaling:
-    enabled: false
-    minReplicas: 2
-    maxReplicas: 5
-    metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target: 
-          type: Utilization
-          averageUtilization: 60
-    - type: Resource
-      resource:
-        name: memory
-        target: 
-          type: Utilization
-          averageUtilization: 60
 
   ingress:
     enabled: false
@@ -137,24 +101,6 @@ overlord:
 
   javaOpts: "-Xms1G -Xmx1G"
 
-  autoscaling:
-    enabled: false
-    minReplicas: 2
-    maxReplicas: 5
-    metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target: 
-          type: Utilization
-          averageUtilization: 60
-    - type: Resource
-      resource:
-        name: memory
-        target: 
-          type: Utilization
-          averageUtilization: 60
-
   ingress:
     enabled: false
     annotations: {}
@@ -185,24 +131,6 @@ historical:
   serviceType: ClusterIP
 
   javaOpts: "-Xms2G -Xmx2G -XX:MaxDirectMemorySize=8g"
-
-  autoscaling:
-    enabled: false
-    minReplicas: 2
-    maxReplicas: 5
-    metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target: 
-          type: Utilization
-          averageUtilization: 60
-    - type: Resource
-      resource:
-        name: memory
-        target: 
-          type: Utilization
-          averageUtilization: 60
 
   ingress:
     enabled: false
@@ -320,24 +248,6 @@ router:
   serviceType: ClusterIP
 
   javaOpts: "-Xms1G -Xmx1G"
-
-  autoscaling:
-    enabled: false
-    minReplicas: 2
-    maxReplicas: 5
-    metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target: 
-          type: Utilization
-          averageUtilization: 60
-    - type: Resource
-      resource:
-        name: memory
-        target: 
-          type: Utilization
-          averageUtilization: 60
 
   ingress:
     enabled: false
