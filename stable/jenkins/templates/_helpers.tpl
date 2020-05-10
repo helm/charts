@@ -75,7 +75,7 @@ jenkins:
   disableRememberMe: {{ .Values.master.disableRememberMe }}
   remotingSecurity:
     enabled: true
-  mode: NORMAL
+  mode: {{ .Values.master.executorMode }}
   numExecutors: {{ .Values.master.numExecutors }}
   projectNamingStrategy: "standard"
   {{- if .Values.master.defaultMarkupFormatter }}
