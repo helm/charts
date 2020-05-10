@@ -77,7 +77,6 @@ master:
   #      - "uname"
   #      - "-a"
   disableRememberMe: false
-  mode: NORMAL
   numExecutors: 0
   defaultMarkupFormatter: true
   customJenkinsLabels: []
