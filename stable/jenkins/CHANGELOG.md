@@ -5,6 +5,10 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.18.1
+
+Add support for executor mode configuraton with `master.executorMode`.
+
 ## 1.18.0 Make installation of configuration-as-code plugin explicit
 
 Instead of configuring the configuration-as-code plugin version via

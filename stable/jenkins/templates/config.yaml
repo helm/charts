@@ -24,7 +24,7 @@ data:
       <version>{{ .Values.master.tag }}</version>
 {{- end }}
       <numExecutors>{{ .Values.master.numExecutors }}</numExecutors>
-      <mode>NORMAL</mode>
+      <mode>{{ .Values.master.executorMode }}</mode>
       <useSecurity>{{ .Values.master.useSecurity }}</useSecurity>
 {{ .Values.master.authorizationStrategy | indent 6 }}
 {{ .Values.master.securityRealm | indent 6 }}
