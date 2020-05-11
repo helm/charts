@@ -469,11 +469,13 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `web.annotations`                        | annotations for the web deployment                      | `{}`                      |
 | `web.podAnnotations`                     | pod-annotations for the web deployment                  | `{}`                      |
 | `web.initialStartupDelay`                | amount of time webserver pod should sleep before initializing webserver             | `60`  |
-| `web.minReadySeconds`                    | minReadySeconds in the web deployment                   | `120`
+| `web.minReadySeconds`                    | minReadySeconds in the web deployment                   | `120` |
+| `web.livenessProbe.scheme`               | scheme to use for connecting to the host (HTTP or HTTPS) | `HTTP` |
 | `web.livenessProbe.periodSeconds`        | interval between probes                         | `60`  |
 | `web.livenessProbe.timeoutSeconds`       | time allowed for a result to return             | `1`  |
 | `web.livenessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful             | `1`  |
 | `web.livenessProbe.failureThreshold`     | Minimum consecutive successes for the probe to be considered failed                 | `5`  |
+| `web.readinessProbe.scheme`              | scheme to use for connecting to the host (HTTP or HTTPS) | `HTTP` |
 | `web.readinessProbe.periodSeconds`       | interval between probes                         | `60`  |
 | `web.readinessProbe.timeoutSeconds`      | time allowed for a result to return             | `1`  |
 | `web.readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful             | `1`  |
@@ -542,6 +544,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `dags.initContainer.installRequirements` | auto install requirements.txt deps                      | `true`                    |
 | `dags.initContainer.mountPath`           | Mountpath inside init container for dags                | `/dags`                   |
 | `dags.initContainer.syncSubPath`         | Path inside init container used to sync/clone git repo to; appended to `dags.initContainer.mountPath` | ``                      |
+| `dags.initContainer.resources`             | custom resource configuration for the git-clone initContainer    | `{}`                      |
 | `dags.git.url`                           | url to clone the git repository                         | nil                       |
 | `dags.git.ref`                           | branch name, tag or sha1 to reset to                    | `master`                  |
 | `dags.git.secret`                        | name of a secret containing an ssh deploy key           | nil                       |

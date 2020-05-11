@@ -11,16 +11,16 @@ data:
   run.sh: |-
     @test "Testing Neo4j cluster has quorum" {
       echo "checking if the cluster is up"
-      path="data"
+      # path="data"
       for id in $(seq 0 $((CORE_REPLICAS - 1))); do
         host="${STATEFULSET_NAME}-core-$id.${STATEFULSET_NAME}.${NAMESPACE}.svc.cluster.local"
         auth="neo4j:${NEO4J_SECRETS_PASSWORD}"
-        url="http://${auth}@${host}:7474/db/${path}"
+        url="http://${auth}@${host}:7474/"
         attempts=10
         attempt=0
         while true; do
           attempt=$[$attempt + 1]
-          echo "Try $attempt: Connecting to $host:7474/db/${path}"
+          echo "Try $attempt: Connecting to $host:7474/"
           run wget ${url} -qO- 2>&1
           echo "Exit code: $status"
           [ $status -eq 0 ] && break
@@ -36,14 +36,25 @@ data:
       for id in $(seq 0 $((CORE_REPLICAS - 1))); do
         host="${STATEFULSET_NAME}-core-$id.${STATEFULSET_NAME}.${NAMESPACE}.svc.cluster.local"
         auth="neo4j:${NEO4J_SECRETS_PASSWORD}"
-        url="http://${auth}@${host}:7474/db/${path}"
+        url="http://${auth}@${host}:7474/db/system/tx/commit"
         attempts=10
         attempt=0
         while true; do
           attempt=$[$attempt + 1]
-          echo "Try $attempt: Connecting to $host:7474/db/${path}"
-          response=$(wget ${url} -qO- 2>&1)
-          [ "$response" = "true" ] && break
+          echo "Try $attempt: Connecting to $url"
+          
+          # Attempt post via netcat since old busybox doesn't support wget --post-data
+          POST_DATA='{"statements":[{"statement":"SHOW DATABASES"}]}'
+          POST_PATH=/db/system/tx/commit
+          HERE_HOST=$(hostname -f)
+          AUTH_TOK=$(echo -n $auth | base64)
+          BODY_LEN=$( echo -n "${POST_DATA}" | wc -c )
+          SHOW_DATABASES_RESPONSE=$(echo -ne "POST ${POST_PATH} HTTP/1.0\r\nHost: ${HERE_HOST}\r\nAuthorization: Basic $AUTH_TOK\r\nContent-Type: application/json\r\nContent-Length: ${BODY_LEN}\r\n\r\n${POST_DATA}" | \
+            nc -i 3 ${host} 7474)
+          echo "SHOW DATABASES response:"
+          echo $SHOW_DATABASES_RESPONSE
+          didItWork=$(echo "${SHOW_DATABASES_RESPONSE}" | grep -i online)
+          [ "$?" = 0 ] && break
           [ "${attempt}" -ge "${attempts}" ] && exit 1
           sleep 5
         done
