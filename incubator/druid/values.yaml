@@ -14,7 +14,6 @@ configVars:
   DRUID_MAXDIRECTMEMORYSIZE: 10000m
   DRUID_USE_CONTAINER_IP: "true"
   druid_processing_numThreads: "3"
-  druid_emitter_logging_logLevel: debug
   druid_extensions_loadList: '["druid-histogram", "druid-datasketches", "druid-lookups-cached-global", "postgresql-metadata-storage"]'
   druid_metadata_storage_type: postgresql
   druid_metadata_storage_connector_connectURI: jdbc:postgresql://postgres:5432/druid
@@ -24,6 +23,10 @@ configVars:
   druid_indexer_runner_javaOptsArray: '["-server", "-Xmx1g", "-Xms1g", "-XX:MaxDirectMemorySize=3g", "-Duser.timezone=UTC", "-Dfile.encoding=UTF-8", "-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager"]'
   druid_indexer_fork_property_druid_processing_buffer_sizeBytes: '268435456'
   druid_storage_type: local
+  druid_monitoring_monitors: []
+  druid_emitter_composing_emitters: []
+  druid_emitter_logging_logLevel: debug
+  druid_emitter_http_recipientBaseUrl: http://druid_exporter_url:druid_exporter_port/druid
   DRUID_LOG4J: <?xml version="1.0" encoding="UTF-8" ?><Configuration status="WARN"><Appenders><Console name="Console" target="SYSTEM_OUT"><PatternLayout pattern="%d{ISO8601} %p [%t] %c - %m%n"/></Console></Appenders><Loggers><Root level="info"><AppenderRef ref="Console"/></Root><Logger name="org.apache.druid.jetty.RequestLog" additivity="false" level="DEBUG"><AppenderRef ref="Console"/></Logger></Loggers></Configuration>
 
 gCloudStorage:
@@ -178,7 +181,7 @@ historical:
     # requests:
     #   cpu: 250m
     #   memory: 4Gi
-    
+
   ## (dict) If specified, apply these annotations to each master Pod
   podAnnotations: {}
   #   example: master-foo
