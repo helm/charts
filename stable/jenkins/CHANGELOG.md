@@ -14,6 +14,10 @@ Add support for using a different markup formatter via `master.markupFormatter`
 
 Add support for executor mode configuraton with `master.executorMode`.
 
+## 1.18.1
+
+Add support for executor mode configuraton with `master.executorMode`.
+
 ## 1.18.0 Make installation of configuration-as-code plugin explicit
 
 Instead of configuring the configuration-as-code plugin version via
