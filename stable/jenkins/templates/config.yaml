@@ -45,7 +45,7 @@ data:
       <clouds>
         <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@{{ template "jenkins.kubernetes-version" . }}">
           <name>kubernetes</name>
-          <defaultsProviderTemplate>{{ default "" .Values.master.slaveDefaultsProviderTemplate }}</defaultsProviderTemplate>
+          <defaultsProviderTemplate>{{ .Values.master.slaveDefaultsProviderTemplate }}</defaultsProviderTemplate>
           <templates>
 {{- if .Values.agent.enabled }}
   {{- include "jenkins.xml.podTemplate" . | nindent 12 }}
@@ -69,22 +69,18 @@ data:
           <namespace>{{ template "jenkins.master.slaveKubernetesNamespace" . }}</namespace>
 {{- if .Values.master.slaveJenkinsUrl }}
           <jenkinsUrl>{{ .Values.master.slaveJenkinsUrl }}</jenkinsUrl>
-{{- else }}
-  {{- if .Values.master.slaveKubernetesNamespace }}
+{{- else if .Values.master.slaveKubernetesNamespace }}
           <jenkinsUrl>http://{{ template "jenkins.fullname" . }}.{{ template "jenkins.namespace" . }}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</jenkinsUrl>
-  {{- else }}
+{{- else }}
           <jenkinsUrl>http://{{ template "jenkins.fullname" . }}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</jenkinsUrl>
-  {{- end }}
 {{- end }}
 
 {{- if .Values.master.slaveJenkinsTunnel }}
           <jenkinsTunnel>{{ .Values.master.slaveJenkinsTunnel }}</jenkinsTunnel>
-{{- else }}
-  {{- if .Values.master.slaveKubernetesNamespace }}
+{{- else if .Values.master.slaveKubernetesNamespace }}
           <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent.{{ template "jenkins.namespace" . }}:{{ .Values.master.slaveListenerPort }}</jenkinsTunnel>
-  {{- else }}
+{{- else }}
           <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent:{{ .Values.master.slaveListenerPort }}</jenkinsTunnel>
-  {{- end }}
 {{- end }}
           <containerCap>{{ .Values.agent.containerCap }}</containerCap>
           <retentionTimeout>5</retentionTimeout>
