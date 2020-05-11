@@ -256,6 +256,7 @@ flower:
   #   subPath: extra-cert.pem
 
 web:
+  serializeDAGs: false
   ##
   ## Set AIRFLOW__WEBSERVER__BASE_URL
   ## Path should match Ingress configuration
