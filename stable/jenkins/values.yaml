@@ -77,6 +77,8 @@ master:
   #      - "uname"
   #      - "-a"
   numExecutors: 0
+  # configures the executor mode of the Jenkins node. Possible values are: NORMAL or EXCLUSIVE
+  executorMode: "NORMAL"
   customJenkinsLabels: []
   # configAutoReload requires UseSecurity is set to true:
   useSecurity: true

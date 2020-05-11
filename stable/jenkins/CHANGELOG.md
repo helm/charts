@@ -7,7 +7,7 @@ NOTE: The change log until version 1.5.7 is auto generated based on git commits.
 
 ## 1.18.1
 
-Add parameters for configuring the Kubernetes plugin
+Add support for executor mode configuraton with `master.executorMode`.
 
 ## 1.18.0 Make installation of configuration-as-code plugin explicit
 
