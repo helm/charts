@@ -151,7 +151,7 @@ fullConfigMap: false
 ##
 existingConfigMap: ""
 
-extraLuaScripts: {} 
+extraLuaScripts: {}
 
 # NOTE If you want to add extra sections, add them here, inbetween the includes,
 # wherever they need to go. Sections order matters.
@@ -265,7 +265,7 @@ filter:
   kubeTag: kube
   kubeTagPrefix: kube.var.log.containers.
 
-# If true, use a lua function to replace dots with underscores in kubernetes labels' and annotations' names 
+# If true, use a lua function to replace dots with underscores in kubernetes labels' and annotations' names
 # See https://github.com/fluent/fluent-bit/issues/1134 for details
   enableDedotKeys: true
 
