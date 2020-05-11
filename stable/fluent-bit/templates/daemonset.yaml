@@ -108,7 +108,16 @@ spec:
         - name: config
           mountPath: /fluent-bit/etc/fluent-bit-output.conf
           subPath: fluent-bit-output.conf
-
+{{- if .Values.filter.enableDedotKeys }}
+        - name: config
+          mountPath: /fluent-bit/scripts/kubernetes_dedot.lua
+          subPath: kubernetes_dedot.lua
+{{- end }}
+{{- range $key, $value := .Values.extraLuaScripts }}
+        - name: config
+          mountPath: /fluent-bit/scripts/{{ $key }}
+          subPath: script-{{ $key }}
+{{- end }}
 {{- if .Values.parsers.enabled }}
         - name: config
           mountPath: /fluent-bit/etc/parsers_custom.conf

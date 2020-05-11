@@ -151,6 +151,7 @@ fullConfigMap: false
 ##
 existingConfigMap: ""
 
+extraLuaScripts: {} 
 
 # NOTE If you want to add extra sections, add them here, inbetween the includes,
 # wherever they need to go. Sections order matters.
@@ -263,6 +264,7 @@ filter:
   kubeTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
   kubeTag: kube
   kubeTagPrefix: kube.var.log.containers.
+  enableDedotKeys: true
 
 # If true, check to see if the log field content is a JSON string map, if so,
 # it append the map fields as part of the log structure.
