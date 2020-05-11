@@ -119,6 +119,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `filter.kubeTokenFile`             | Optional custom configmaps       | `/var/run/secrets/kubernetes.io/serviceaccount/token`     |
 | `filter.kubeTag`                   | Optional top-level tag for matching in filter         | `kube`                                 |
 | `filter.kubeTagPrefix`             | Optional tag prefix used by Tail   | `kube.var.log.containers.`                                |
+| `filter.enableDedotKeys`           | If true, use a lua function to replace dots with underscores in kubernetes labels' and annotations' names   | `true`                                |
 | `filter.mergeJSONLog`              | If the log field content is a JSON string map, append the map fields as part of the log structure         | `true`                                 |
 | `filter.mergeLogKey`               | If set, append the processed log keys under a new root key specified by this variable. | `nil` |
 | `filter.useJournal`                | If true, the filter reads logs coming in Journald format.  | `false` |

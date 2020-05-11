@@ -264,6 +264,9 @@ filter:
   kubeTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
   kubeTag: kube
   kubeTagPrefix: kube.var.log.containers.
+
+# If true, use a lua function to replace dots with underscores in kubernetes labels' and annotations' names 
+# See https://github.com/fluent/fluent-bit/issues/1134 for details
   enableDedotKeys: true
 
 # If true, check to see if the log field content is a JSON string map, if so,
