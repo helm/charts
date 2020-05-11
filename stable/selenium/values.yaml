@@ -173,6 +173,12 @@ chrome:
   ## The number of pods in the deployment. This is ignored if runAsDaemonSet is enabled.
   replicas: 1
 
+  ## When true will add a liveness check to the pod
+  enableLivenessProbe: false
+
+  ## When true will wait for current running sessions to finish before terminating the pod
+  waitForRunningSessions: false
+
   ## Configure annotations on the chrome pods
   podAnnotations: {}
 
@@ -272,6 +278,12 @@ chromeDebug:
   ## The number of pods in the deployment. This is ignored if runAsDaemonSet is enabled.
   replicas: 1
 
+  ## When true will add a liveness check to the pod
+  enableLivenessProbe: false
+
+  ## When true will wait for current running sessions to finish before terminating the pod
+  waitForRunningSessions: false
+
   ## Configure annotations on the chrome debug pods
   podAnnotations: {}
 
@@ -370,6 +382,12 @@ firefox:
   ## The number of pods in the deployment. This is ignored if runAsDaemonSet is enabled.
   replicas: 1
 
+  ## When true will add a liveness check to the pod
+  enableLivenessProbe: false
+
+  ## When true will wait for current running sessions to finish before terminating the pod
+  waitForRunningSessions: false
+
   ## Configure annotations on the firefox pods
   podAnnotations: {}
 
@@ -454,6 +472,12 @@ firefoxDebug:
 
   ## The number of pods in the deployment. This is ignored if runAsDaemonSet is enabled.
   replicas: 1
+
+  ## When true will add a liveness check to the pod
+  enableLivenessProbe: false
+
+  ## When true will wait for current running sessions to finish before terminating the pod
+  waitForRunningSessions: false
 
   ## Configure annotations on the firefox debug pods
   podAnnotations: {}
