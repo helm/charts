@@ -91,6 +91,8 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `chrome.imagePullSecrets` | The secret to use for pulling the image. Will override the global parameter if set | `nil` |
 | `chrome.pullPolicy` | The pull policy for the node chrome image | `IfNotPresent` |
 | `chrome.replicas` | The number of selenium node chrome pods. This is ignored if runAsDaemonSet is enabled. | `1` |
+| `chrome.enableLivenessProbe` | When true will add a liveness check to the pod | `false` |
+| `chrome.waitForRunningSessions` | When true will wait for current running sessions to finish before terminating the pod | `false` |
 | `chrome.podAnnotations` | Annotations on the chrome pods | `{}` |
 | `chrome.securityContext` |	SecurityContext on the chrome pods |	`{"runAsUser": 1000, "fsGroup": 1000}` |
 | `chrome.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
@@ -119,6 +121,8 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `chromeDebug.imagePullSecrets` | The secret to use for pulling the image. Will override the global parameter if set | `nil` |
 | `chromeDebug.pullPolicy` | The selenium node chrome debug pull policy | `IfNotPresent` |
 | `chromeDebug.replicas` | The number of selenium node chrome debug pods. This is ignored if runAsDaemonSet is enabled. | `1` |
+| `chromeDebug.enableLivenessProbe` | When true will add a liveness check to the pod | `false` |
+| `chromeDebug.waitForRunningSessions` | When true will wait for current running sessions to finish before terminating the pod | `false` |
 | `chromeDebug.podAnnotations` | Annotations on the Chrome debug pod | `{}` |
 | `chromeDebug.securityContext` |	SecurityContext on the Chrome debug pods |	`{"runAsUser": 1000, "fsGroup": 1000}` |
 | `chromeDebug.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
@@ -147,6 +151,8 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `firefox.imagePullSecrets` | The secret to use for pulling the image. Will override the global parameter if set | `nil` |
 | `firefox.pullPolicy` | The selenium node firefox pull policy | `IfNotPresent` |
 | `firefox.replicas` | The number of selenium node firefox pods. This is ignored if runAsDaemonSet is enabled. | `1` |
+| `firefox.enableLivenessProbe` | When true will add a liveness check to the pod | `false` |
+| `firefox.waitForRunningSessions` | When true will wait for current running sessions to finish before terminating the pod | `false` |
 | `firefox.podAnnotations` | Annotations on the firefox pods | `{}` |
 | `firefox.securityContext` |	SecurityContext on the firefox pods |	`{"runAsUser": 1000, "fsGroup": 1000}` |
 | `firefox.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
@@ -173,6 +179,8 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `firefoxDebug.imagePullSecrets` | The secret to use for pulling the image. Will override the global parameter if set | `nil` |
 | `firefoxDebug.pullPolicy` | The selenium node firefox debug pull policy | `IfNotPresent` |
 | `firefoxDebug.replicas` | The number of selenium node firefox debug pods. This is ignored if runAsDaemonSet is enabled. | `1` |
+| `firefoxDebug.enableLivenessProbe` | When true will add a liveness check to the pod | `false` |
+| `firefoxDebug.waitForRunningSessions` | When true will wait for current running sessions to finish before terminating the pod | `false` |
 | `firefoxDebug.podAnnotations` | Annotations on the firefox debug pods | `{}` |
 | `firefoxDebug.securityContext` |	SecurityContext on the firefox debug pods |	`{"runAsUser": 1000, "fsGroup": 1000}` |
 | `firefoxDebug.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
