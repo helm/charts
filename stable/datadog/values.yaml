@@ -217,6 +217,13 @@ datadog:
     #
     containerCollectUsingFiles: true
 
+    ## @param openFilesLimit - integer - optional - default: 100
+    ## Set the maximum number of logs files that the Datadog Agent will tail up to.
+    ## Increasing this limit can increase resource consumption of the Agent.
+    ## ref: https://docs.datadoghq.com/agent/basic_agent_usage/kubernetes/#log-collection-setup
+    #
+    openFilesLimit:  # 100
+
   ## @param apm - object - required
   ## Enable apm agent and provide custom configs
   #

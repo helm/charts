@@ -70,6 +70,10 @@
       value: {{  (default false (or .Values.datadog.logs.containerCollectAll .Values.datadog.logsConfigContainerCollectAll)) | quote}}
     - name: DD_LOGS_CONFIG_K8S_CONTAINER_USE_FILE
       value: {{ .Values.datadog.logs.containerCollectUsingFiles | quote }}
+    {{- if .Values.datadog.logs.openFilesLimit }}
+    - name: DD_LOGS_CONFIG_OPEN_FILES_LIMIT
+      value: {{ .Values.datadog.logs.openFilesLimit | quote }}
+    {{- end}}
     {{- if not .Values.datadog.livenessProbe }}
     - name: DD_HEALTH_PORT
       value: "5555"
