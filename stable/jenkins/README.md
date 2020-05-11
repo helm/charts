@@ -112,8 +112,8 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.slaveDefaultsProviderTemplate` | The name of the pod template to use for providing default values | Not set  |
 | `master.slaveJenkinsUrl`          | Overrides the Kubernetes Jenkins URL    | Not set                                |
 | `master.slaveJenkinsTunnel`       | Overrides the Kubernetes Jenkins tunnel | Not set                                |
-| `master.slaveConnectTimeout`      | The connection timeout in seconds for connections to Kubernetes API. Minimum value is 5. | 5 |
-| `master.slaveReadTimeout`         | The read timeout in seconds for connections to Kubernetes API. Minimum value is 15. | 15 |
+| `master.slaveConnectTimeout`      | The connection timeout in seconds for connections to Kubernetes API. Minimum value is 5. | 0 |
+| `master.slaveReadTimeout`         | The read timeout in seconds for connections to Kubernetes API. Minimum value is 15. | 0 |
 | `master.disabledAgentProtocols`   | Disabled agent protocols             | `JNLP-connect JNLP2-connect`              |
 | `master.csrf.defaultCrumbIssuer.enabled` | Enable the default CSRF Crumb issuer | `true`                             |
 | `master.csrf.defaultCrumbIssuer.proxyCompatability` | Enable proxy compatibility | `true`                            |
@@ -231,7 +231,6 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.idleMinutes`        | Allows the Pod to remain active for reuse       | 0                      |
 | `agent.yamlTemplate`       | The raw yaml of a Pod API Object to merge into the agent spec | Not set  |
 | `agent.slaveConnectTimeout`| Timeout in seconds for an agent to be online    | 100                    |
-| `agent.jenkinsUrl`         | Overrides the value of the JENKINS_URL env      | Not set                |
 | `agent.podTemplates`       | Configures extra pod templates for the default kubernetes cloud | `{}`   |
 | `additionalAgents`         | Configure additional agents which inherit values from `agent` | `{}` |
 
