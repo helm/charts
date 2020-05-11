@@ -54,6 +54,10 @@ spec:
             export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS \
               -Dspark.history.fs.logDirectory=$logDirectory \
               -Dspark.hadoop.fs.s3a.impl=org.apache.hadoop.fs.s3a.S3AFileSystem";
+            if [ -n "$endpoint" ] && [ "$endpoint" != "default" ]; then
+              export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS \
+              -Dspark.hadoop.fs.s3a.endpoint=$endpoint";
+            fi;
             if [ "$enableIAM" == "false" ]; then
               export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS \
               -Dspark.hadoop.fs.s3a.access.key=$(cat /etc/secrets/${accessKeyName}) \
