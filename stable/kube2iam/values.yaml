@@ -35,7 +35,7 @@ prometheus:
 
 image:
   repository: jtblin/kube2iam
-  tag: 0.10.7
+  tag: 0.10.9
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
