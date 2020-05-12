@@ -38,6 +38,9 @@ data:
   AIRFLOW__WEBSERVER__BASE_URL: "{{ .Values.web.baseUrl }}"
   # Disabling XCom pickling for forward compatibility
   AIRFLOW__CORE__ENABLE_XCOM_PICKLING: "false"
+  {{- if .Values.web.serializeDAGs }}
+  AIRFLOW__CORE__STORE_SERIALIZED_DAGS: "true"
+  {{- end }}
   # Note: changing `Values.airflow.config` won't change the configmap checksum and so won't make
   # the pods to restart
   {{- range $setting, $option := .Values.airflow.config }}
