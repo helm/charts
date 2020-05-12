@@ -206,7 +206,6 @@ middleManager:
 
   config:
     JAVA_OPTS: "-Xms1G -Xmx1G"
-    # druid_monitoring_monitors: '["org.apache.druid.segment.realtime.RealtimeMetricsMonitor"]'
 
   autoscaling:
     enabled: false
