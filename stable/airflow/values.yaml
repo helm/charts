@@ -256,7 +256,7 @@ flower:
   #   subPath: extra-cert.pem
 
 web:
-  ## Enable DAG serialization and do not add git-sync containers to web pods
+  ## Enable DAG serialization and do not add git-sync containers to web pods. Completely supported in Airflow >= 1.10.10
   serializeDAGs: false
   ##
   ## Set AIRFLOW__WEBSERVER__BASE_URL
