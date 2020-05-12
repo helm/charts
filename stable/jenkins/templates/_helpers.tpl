@@ -284,8 +284,8 @@ Returns kubernetes pod template xml configuration
       <envVars>
         <org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
           <key>JENKINS_URL</key>
-{{- if .Values.agent.jenkinsUrl }}
-          <value>{{ .Values.agent.jenkinsUrl }}</value>
+{{- if .Values.master.slaveJenkinsUrl }}
+          <value>{{ .Values.master.slaveJenkinsUrl }}</value>
 {{- else }}
           <value>http://{{ template "jenkins.fullname" . }}.{{ template "jenkins.namespace" . }}.svc.{{.Values.clusterZone}}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</value>
 {{- end }}
