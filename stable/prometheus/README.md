@@ -280,7 +280,7 @@ Parameter | Description | Default
 `server.enabled` | If false, Prometheus server will not be created | `true`
 `server.name` | Prometheus server container name | `server`
 `server.image.repository` | Prometheus server container image repository | `prom/prometheus`
-`server.image.tag` | Prometheus server container image tag | `v2.16.0`
+`server.image.tag` | Prometheus server container image tag | `v2.18.1`
 `server.image.pullPolicy` | Prometheus server container image pull policy | `IfNotPresent`
 `server.configPath` |  Path to a prometheus server config file on the container FS  | `/etc/config/prometheus.yml`
 `server.global.scrape_interval` | How frequently to scrape targets by default | `1m`
