@@ -84,7 +84,10 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         ports:
-{{ include "coredns.containerPorts" . | indent 8 }}
+{{ include "coredns.containerPorts" . | indent 8 -}}
+        - containerPort: 9153
+          name: metrics
+          protocol: TCP
         livenessProbe:
           httpGet:
             path: /health
