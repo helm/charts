@@ -464,6 +464,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `flower.securityContext`                 | (optional) security context for the flower deployment   | `{}`                      |
 | `web.baseUrl`                            | webserver UI URL                                        | `http://localhost:8080`   |
 | `web.resources`                          | custom resource configuration for web pod               | `{}`                      |
+| `web.serializeDAGs`                      | if web will use DAG serialization (https://airflow.apache.org/docs/stable/dag-serialization.html). If enabled, git-sync containers will not be added to web pods. Completely supported in Airflow >= 1.10.10               | `false`                   |
 | `web.labels`                             | labels for the web deployment                           | `{}`                      |
 | `web.podLabels`                          | podLabels for the web deployment                        | `{}`                      |
 | `web.annotations`                        | annotations for the web deployment                      | `{}`                      |
