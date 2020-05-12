@@ -34,7 +34,7 @@ spec:
           env:
           {{- range $key, $val := .Values.coordinator.config }}
           - name: {{ $key }}
-            value: {{ $val ｜ quote }}
+            value: {{ $val | quote }}
           {{- end}}
           envFrom:
             - configMapRef:

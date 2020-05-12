@@ -35,7 +35,7 @@ spec:
           env:
           {{- range $key, $val := .Values.router.config }}
           - name: {{ $key }}
-            value: {{ $val ｜ quote }}
+            value: {{ $val | quote }}
           {{- end}}
           envFrom:
             - configMapRef:
