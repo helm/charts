@@ -33,8 +33,10 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args: [ "router" ]
           env:
-          - name: JAVA_OPTS
-            value: {{ .Values.router.javaOpts }}
+          {{- range $key, $val := .Values.router.config }}
+          - name: {{ $key }}
+            value: {{ $val }}
+          {{- end}}
           envFrom:
             - configMapRef:
                 name: {{ template "druid.name" . }} 

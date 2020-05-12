@@ -23,7 +23,6 @@ configVars:
   druid_indexer_runner_javaOptsArray: '["-server", "-Xmx1g", "-Xms1g", "-XX:MaxDirectMemorySize=3g", "-Duser.timezone=UTC", "-Dfile.encoding=UTF-8", "-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager"]'
   druid_indexer_fork_property_druid_processing_buffer_sizeBytes: '268435456'
   druid_storage_type: local
-  druid_monitoring_monitors: '["org.apache.druid.server.emitter.HttpEmittingMonitor"]'
   druid_emitter_composing_emitters: '[]'
   druid_emitter_logging_logLevel: debug
   druid_emitter_http_recipientBaseUrl: http://druid_exporter_url:druid_exporter_port/druid
@@ -39,7 +38,9 @@ broker:
   port: 8082
   serviceType: ClusterIP
 
-  javaOpts: "-Xms2G -Xmx2G -XX:MaxDirectMemorySize=8g"
+  config:
+    JAVA_OPTS: "-Xms2G -Xmx2G -XX:MaxDirectMemorySize=8g"
+    # druid_monitoring_monitors: '["org.apache.druid.client.cache.CacheMonitor", "org.apache.druid.server.metrics.QueryCountStatsMonitor"]'
 
   ingress:
     enabled: false
@@ -76,7 +77,8 @@ coordinator:
   port: 8081
   serviceType: ClusterIP
 
-  javaOpts: "-Xms1G -Xmx1G"
+  config:
+    JAVA_OPTS: "-Xms1G -Xmx1G"
 
   ingress:
     enabled: false
@@ -145,7 +147,9 @@ historical:
   port: 8083
   serviceType: ClusterIP
 
-  javaOpts: "-Xms2G -Xmx2G -XX:MaxDirectMemorySize=8g"
+  config:
+    JAVA_OPTS: "-Xms2G -Xmx2G -XX:MaxDirectMemorySize=8g"
+    # druid_monitoring_monitors: '["org.apache.druid.client.cache.CacheMonitor", "org.apache.druid.server.metrics.HistoricalMetricsMonitor", "org.apache.druid.server.metrics.QueryCountStatsMonitor"]'
 
   ingress:
     enabled: false
@@ -200,7 +204,9 @@ middleManager:
   port: 8091
   serviceType: ClusterIP
 
-  javaOpts: "-Xms1G -Xmx1G"
+  config:
+    JAVA_OPTS: "-Xms1G -Xmx1G"
+    # druid_monitoring_monitors: '["org.apache.druid.segment.realtime.RealtimeMetricsMonitor"]'
 
   autoscaling:
     enabled: false
@@ -274,7 +280,8 @@ router:
   port: 8888
   serviceType: ClusterIP
 
-  javaOpts: "-Xms1G -Xmx1G"
+  config:
+    JAVA_OPTS: "-Xms1G -Xmx1G"
 
   ingress:
     enabled: false

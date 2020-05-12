@@ -33,8 +33,10 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args: [ "overlord" ]
           env:
-          - name: JAVA_OPTS
-            value: {{ .Values.overlord.javaOpts }}
+          {{- range $key, $val := .Values.overlord.config }}
+          - name: {{ $key }}
+            value: {{ $val }}
+          {{- end}}
           envFrom:
             - configMapRef:
                 name: {{ template "druid.name" . }} 

@@ -71,8 +71,10 @@ spec:
       - name: druid
         args: [ "historical" ]
         env:
-        - name: JAVA_OPTS
-          value: {{ .Values.historical.javaOpts }}
+        {{- range $key, $val := .Values.historical.config }}
+        - name: {{ $key }}
+          value: {{ $val }}
+        {{- end}}
         envFrom:
           - configMapRef:
               name: {{ template "druid.name" . }}

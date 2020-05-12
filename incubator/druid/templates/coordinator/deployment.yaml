@@ -32,8 +32,10 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args: [ "coordinator" ]
           env:
-          - name: JAVA_OPTS
-            value: {{ .Values.coordinator.javaOpts }}
+          {{- range $key, $val := .Values.coordinator.config }}
+          - name: {{ $key }}
+            value: {{ $val }}
+          {{- end}}
           envFrom:
             - configMapRef:
                 name: {{ template "druid.name" . }}

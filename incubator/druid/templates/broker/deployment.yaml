@@ -32,8 +32,10 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args: [ "broker" ]
           env:
-          - name: JAVA_OPTS
-            value: {{ .Values.broker.javaOpts }}
+          {{- range $key, $val := .Values.broker.config }}
+          - name: {{ $key }}
+            value: {{ $val }}
+          {{- end}}
           envFrom:
             - configMapRef:
                 name: {{ template "druid.name" . }}
