@@ -74,7 +74,7 @@ spec:
       securityContext:
 {{ toYaml .Values.web.securityContext | indent 8 }}
       {{- end }}
-      {{- if .Values.dags.initContainer.enabled }}
+      {{- if and ( .Values.dags.initContainer.enabled ) ( not .Values.web.serializeDAGs ) }}
       initContainers:
         - name: git-clone
           image: {{ .Values.dags.initContainer.image.repository }}:{{ .Values.dags.initContainer.image.tag }} # Any image with git will do
@@ -106,7 +106,7 @@ spec:
             {{- end }}
       {{- end }}
       containers:
-        {{- if .Values.dags.git.gitSync.enabled }}
+        {{- if and ( .Values.dags.git.gitSync.enabled ) ( not .Values.web.serializeDAGs ) }}
         - name: git-sync
           image: {{ .Values.dags.git.gitSync.image.repository }}:{{ .Values.dags.git.gitSync.image.tag }} # Any image with git will do
           imagePullPolicy: {{ .Values.dags.git.gitSync.image.pullPolicy }}
@@ -164,9 +164,11 @@ spec:
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
               subPath: {{ .Values.persistence.subPath | default "" }}
-          {{- else if or (.Values.dags.initContainer.enabled) (.Values.dags.git.gitSync.enabled) }}
+          {{- else if not .Values.web.serializeDAGs }}
+          {{- if or (.Values.dags.initContainer.enabled) (.Values.dags.git.gitSync.enabled) }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
+          {{- end }}
           {{- end }}
           {{- if .Values.logsPersistence.enabled }}
             - name: logs-data
@@ -257,6 +259,7 @@ spec:
           persistentVolumeClaim:
             claimName: {{ .Values.logsPersistence.existingClaim | default (printf "%s-logs" (include "airflow.fullname" . | trunc 58 )) }}
         {{- end }}
+        {{- if not .Values.web.serializeDAGs }}
         {{- if or (.Values.dags.initContainer.enabled) (.Values.dags.git.gitSync.enabled) }}
         - name: git-clone
           configMap:
@@ -267,6 +270,7 @@ spec:
           secret:
             secretName: {{ .Values.dags.git.secret }}
             defaultMode: 0700
+        {{- end }}
         {{- end }}
         {{- end }}
         {{- range .Values.airflow.extraConfigmapMounts }}
