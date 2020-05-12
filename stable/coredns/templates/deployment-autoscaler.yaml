@@ -74,4 +74,8 @@ spec:
           - --target=Deployment/{{ template "coredns.fullname" . }}
           - --logtostderr=true
           - --v=2
+        {{- if .Values.autoscaler.securityContext }}
+        securityContext:
+{{ toYaml .Values.autoscaler.securityContext | indent 10 }}
+        {{- end }}
 {{- end }}

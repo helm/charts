@@ -103,6 +103,10 @@ spec:
           timeoutSeconds: 5
           successThreshold: 1
           failureThreshold: 5
+        {{- if .Values.securityContext }}
+        securityContext:
+{{ toYaml .Values.securityContext | indent 10 }}
+        {{- end }}
       volumes:
         - name: config-volume
           configMap:

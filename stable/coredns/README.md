@@ -72,6 +72,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `affinity`                              | Affinity settings for pod assignment                                                  | {}                                                          |
 | `nodeSelector`                          | Node labels for pod assignment                                                        | {}                                                          |
 | `tolerations`                           | Tolerations for pod assignment                                                        | []                                                          |
+| `securityContext`                       | Security context for the container                                                    | {}                                                          |
 | `zoneFiles`                             | Configure custom Zone files                                                           | []                                                          |
 | `extraSecrets`                          | Optional array of secrets to mount inside the CoreDNS container                       | []                                                          |
 | `customLabels`                          | Optional labels for Deployment(s), Pod, Service, ServiceMonitor objects               | {}                                                          |
@@ -86,6 +87,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `autoscaler.affinity`                   | Affinity settings for pod assignment for autoscaler                                   | {}                                                          |
 | `autoscaler.nodeSelector`               | Node labels for pod assignment for autoscaler                                         | {}                                                          |
 | `autoscaler.tolerations`                | Tolerations for pod assignment for autoscaler                                         | []                                                          |
+| `autoscaler.securityContext`            | Security context for the autoscaler container                                         | {}                                                          |
 | `autoscaler.resources.limits.cpu`       | Container maximum CPU for cluster-proportional-autoscaler                             | `20m`                                                       |
 | `autoscaler.resources.limits.memory`    | Container maximum memory for cluster-proportional-autoscaler                          | `10Mi`                                                      |
 | `autoscaler.resources.requests.cpu`     | Container requested CPU for cluster-proportional-autoscaler                           | `20m`                                                       |

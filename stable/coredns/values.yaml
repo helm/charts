@@ -128,6 +128,18 @@ nodeSelector: {}
 #     effect: NoSchedule
 tolerations: []
 
+# expects input structure as per specification https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#securitycontext-v1-core
+# for example:
+# securityContext:
+#   allowPrivilegeEscalation: false
+#   capabilities:
+#     add:
+#     - NET_BIND_SERVICE
+#     drop:
+#     - all
+#   readOnlyRootFilesystem: true
+securityContext: {}
+
 # https://kubernetes.io/docs/tasks/run-application/configure-pdb/#specifying-a-poddisruptionbudget
 podDisruptionBudget: {}
 
@@ -181,6 +193,9 @@ autoscaler:
 
   # expects input structure as per specification https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#toleration-v1-core
   tolerations: []
+
+  # expects input structure as per specification https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#securitycontext-v1-core
+  securityContext: {}
 
   # resources for autoscaler pod
   resources:
