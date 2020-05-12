@@ -171,10 +171,10 @@ kubectl get pods \
 -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.spec.containers[0].image}{"\n"}'
 ```
 ```
-my-release-cockroachdb-0    cockroachdb/cockroach:v19.2.5
-my-release-cockroachdb-1    cockroachdb/cockroach:v19.2.5
-my-release-cockroachdb-2    cockroachdb/cockroach:v19.2.5
-my-release-cockroachdb-3    cockroachdb/cockroach:v19.2.5
+my-release-cockroachdb-0    cockroachdb/cockroach:v20.1.0
+my-release-cockroachdb-1    cockroachdb/cockroach:v20.1.0
+my-release-cockroachdb-2    cockroachdb/cockroach:v20.1.0
+my-release-cockroachdb-3    cockroachdb/cockroach:v20.1.0
 ```
 
 Resume normal operations. Once you are comfortable that the stability and performance of the cluster is what you'd expect post-upgrade, finalize the upgrade:
@@ -244,12 +244,12 @@ For details see the [`values.yaml`](values.yaml) file.
 | `conf.port`                              | CockroachDB primary serving port in Pods                        | `26257`                                          |
 | `conf.http-port`                         | CockroachDB HTTP port in Pods                                   | `8080`                                           |
 | `image.repository`                       | Container image name                                            | `cockroachdb/cockroach`                          |
-| `image.tag`                              | Container image tag                                             | `v19.2.5`                                        |
+| `image.tag`                              | Container image tag                                             | `v20.1.0`                                        |
 | `image.pullPolicy`                       | Container pull policy                                           | `IfNotPresent`                                   |
 | `image.credentials`                      | `registry`, `user` and `pass` credentials to pull private image | `{}`                                             |
 | `statefulset.replicas`                   | StatefulSet replicas number                                     | `3`                                              |
 | `statefulset.updateStrategy`             | Update strategy for StatefulSet Pods                            | `{"type": "RollingUpdate"}`                      |
-| `statefulset.podManagementPolicy`        | `OrderedReady`/`Parallel` Pods creation/deletion order          | `Parallel`                                       |
+| `statefulset.podManagementPolicy`        | `OrderedReady`/`Parallel` Pods creation/deletion order          | `OrderedReady`                                   |
 | `statefulset.budget.maxUnavailable`      | k8s PodDisruptionBudget parameter                               | `1`                                              |
 | `statefulset.args`                       | Extra command-line arguments                                    | `[]`                                             |
 | `statefulset.env`                        | Extra env vars                                                  | `[]`                                             |
