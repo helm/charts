@@ -19,7 +19,7 @@ helm status "druid"
 If you want to delete your Chart, use this command:
 
 ```bash
-helm delete  --purge "druid"
+helm delete --purge "druid"
 ```
 
 ### Helm ingresses
@@ -77,7 +77,7 @@ The following table lists the configurable parameters of the Druid chart and the
 | `broker.podAnnotations`                  | broker Deployment annotations                           | `{}`                                       |
 | `broker.nodeSelector`                    | Node labels for broker pod assignment                   | `{}`                                       |
 | `broker.tolerations`                     | broker tolerations                                      | `[]`                                       |
-| `broker.javaOpts`                        | broker node java options                                | `-Xms2G -Xmx2G -XX:MaxDirectMemorySize=8g` |
+| `broker.config`                           | broker private config such as `JAVA_OPTS`                |                                            |
 | `broker.nodeAffinity`                     | broker node affinity policy                              | `{}`                                       |
 | `broker.ingress.enabled`                 | enable ingress                                          | `false`                                    |
 | `broker.ingress.hosts`                   | hosts for the broker api                                | `[ "chart-example.local" ]`                |
@@ -92,7 +92,7 @@ The following table lists the configurable parameters of the Druid chart and the
 | `coordinator.podAnnotations`             | coordinator Deployment annotations                      | `{}`                                       |
 | `coordinator.nodeSelector`               | Node labels for coordinator pod assignment              | `{}`                                       |
 | `coordinator.tolerations`                | coordinator tolerations                                 | `[]`                                       |
-| `coordinator.javaOpts`                   | coordinator node java options                           | `--Xms1G -Xmx1G`                           |
+| `coordinator.config`                      | coordinator private config such as `JAVA_OPTS`           |                                            |
 | `coordinator.nodeAffinity`                | coordinator node affinity policy                         | `{}`                                       |
 | `coordinator.ingress.enabled`            | enable ingress                                          | `false`                                    |
 | `coordinator.ingress.hosts`              | hosts for the coordinator api                           | `[ "chart-example.local" ]`                |
@@ -108,7 +108,7 @@ The following table lists the configurable parameters of the Druid chart and the
 | `overlord.podAnnotations`                | overlord Deployment annotations                         | `{}`                                       |
 | `overlord.nodeSelector`                  | Node labels for overlord pod assignment                 | `{}`                                       |
 | `overlord.tolerations`                   | overlord tolerations                                    | `[]`                                       |
-| `overlord.javaOpts`                      | overlord node java options                              | `--Xms1G -Xmx1G`                           |
+| `overlord.config`                         | overlord private config such as `JAVA_OPTS`              |                                            |
 | `overlord.nodeAffinity`                   | overlord node affinity policy                            | `{}`                                       |
 | `overlord.ingress.enabled`               | enable ingress                                          | `false`                                    |
 | `overlord.ingress.hosts`                 | hosts for the overlord api                              | `[ "chart-example.local" ]`                |
@@ -123,7 +123,7 @@ The following table lists the configurable parameters of the Druid chart and the
 | `historical.podAnnotations`              | historical Deployment annotations                       | `{}`                                       |
 | `historical.nodeSelector`                | Node labels for historical pod assignment               | `{}`                                       |
 | `historical.tolerations`                 | historical tolerations                                  | `[]`                                       |
-| `historical.javaOpts`                    | historical node java options                            | `-Xms2G -Xmx2G -XX:MaxDirectMemorySize=8g` |
+| `historical.config`                       | historical node private config such as `JAVA_OPTS`       |                                            |
 | `historical.persistence.enabled`         | historical persistent enabled/disabled                  | `true`                                     |
 | `historical.persistence.size`            | historical persistent volume size                       | `4Gi`                                      |
 | `historical.persistence.storageClass`    | historical persistent volume Class                      | `nil`                                      |
@@ -143,7 +143,7 @@ The following table lists the configurable parameters of the Druid chart and the
 | `middleManager.podAnnotations`           | middleManager Deployment annotations                    | `{}`                                       |
 | `middleManager.nodeSelector`             | Node labels for middleManager pod assignment            | `{}`                                       |
 | `middleManager.tolerations`              | middleManager tolerations                               | `[]`                                       |
-| `middleManager.javaOpts`                 | middleManager node java options                         | `-Xms1G -Xmx1G"`                           |
+| `middleManager.config`                    | middleManager private config such as `JAVA_OPTS`         |                                            |
 | `middleManager.persistence.enabled`      | middleManager persistent enabled/disabled               | `true`                                     |
 | `middleManager.persistence.size`         | middleManager persistent volume size                    | `4Gi`                                      |
 | `middleManager.persistence.storageClass` | middleManager persistent volume Class                   | `nil`                                      |
@@ -168,7 +168,7 @@ The following table lists the configurable parameters of the Druid chart and the
 | `router.podAnnotations`                  | router Deployment annotations                           | `{}`                                       |
 | `router.nodeSelector`                    | Node labels for router pod assignment                   | `{}`                                       |
 | `router.tolerations`                     | router tolerations                                      | `[]`                                       |
-| `router.javaOpts`                        | router node java options                                | `--Xms1G -Xmx1G`                           |
+| `router.config`                           | router private config such as `JAVA_OPTS`                |                                            |
 | `router.nodeAffinity`                     | router node affinity policy                              | `{}`                                       |
 | `router.ingress.enabled`                 | enable ingress                                          | `false`                                    |
 | `router.ingress.hosts`                   | hosts for the router api                                | `[ "chart-example.local" ]`                |
