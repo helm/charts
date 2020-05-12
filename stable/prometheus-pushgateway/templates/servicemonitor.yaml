@@ -25,9 +25,9 @@ spec:
     {{- end }}
     path: /metrics
     honorLabels: {{ .Values.serviceMonitor.honorLabels }}
-    {{- if .Values.serviceMonitor.relabelConfig }}
+    {{- if .Values.serviceMonitor.relabelings }}
     relabelings:
-{{ toYaml .Values.serviceMonitor.relabelConfig | indent 6 }}
+{{ toYaml .Values.serviceMonitor.relabelings | indent 6 }}
     {{- end }}
   namespaceSelector:
     matchNames:
