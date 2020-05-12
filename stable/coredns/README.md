@@ -58,6 +58,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `prometheus.monitor.enabled`            | Set this to `true` to create ServiceMonitor for Prometheus operator                   | `false`                                                     |
 | `prometheus.monitor.additionalLabels`   | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | {}                                                          |
 | `prometheus.monitor.namespace`          | Selector to select which namespaces the Endpoints objects are discovered from.        | `""`                                                        |
+| `service.name`                          | If not set & create is true, use template fullname                                    |                                                             |
 | `service.clusterIP`                     | IP address to assign to service                                                       | `""`                                                        |
 | `service.loadBalancerIP`                | IP address to assign to load balancer (if supported)                                  | `""`                                                        |
 | `service.externalTrafficPolicy`         | Enable client source IP preservation                                                  | `[]`                                                        |

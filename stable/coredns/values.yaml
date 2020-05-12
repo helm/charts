@@ -26,6 +26,7 @@ prometheus:
     namespace: ""
 
 service:
+# name: ""
 # clusterIP: ""
 # loadBalancerIP: ""
 # externalTrafficPolicy: ""
