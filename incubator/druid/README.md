@@ -62,23 +62,23 @@ The following table lists the configurable parameters of the Druid chart and the
 
 | Parameter                                | Description                                             | Default                                    |
 |------------------------------------------|---------------------------------------------------------|--------------------------------------------|
-| `image.repository`                       | Container image name                                    | `apache/druid`                             |
-| `image.tag`                              | Container image tag                                     | `0.18.0`                                   |
-| `image.pullPolicy`                       | Container pull policy                                   | `IfNotPresent`                             |
+| `image.repository`                       | container image name                                    | `apache/druid`                             |
+| `image.tag`                              | container image tag                                     | `0.18.0`                                   |
+| `image.pullPolicy`                       | container pull policy                                   | `IfNotPresent`                             |
 | `image.pullSecrets`                      | image pull secrest for private repositoty               | `[]`                                       |
-| `configVars`                              | Druid configuration variables for all components         | ``                                         |
-| `gCloudStorage.enabled`                  | Look for secret to set google cloud credentials         | `false`                                    |
+| `configVars`                              | druid configuration variables for all components         | ``                                         |
+| `gCloudStorage.enabled`                  | look for secret to set google cloud credentials         | `false`                                    |
 | `gCloudStorage.secretName`               | secretName to be mounted as google cloud credentials    | `false`                                    |
 | `broker.name`                            | broker component name                                   | `broker`                                   |
 | `broker.replicaCount`                    | broker node replicas (deployment)                       | `1`                                        |
 | `broker.port`                            | port of broker component                                | `8082`                                     |
 | `broker.serviceType`                     | service type for service                                | `ClusterIP`                                |
 | `broker.resources`                       | broker node resources requests & limits                 | `{}`                                       |
-| `broker.podAnnotations`                  | broker Deployment annotations                           | `{}`                                       |
+| `broker.podAnnotations`                  | broker deployment annotations                           | `{}`                                       |
 | `broker.nodeSelector`                    | Node labels for broker pod assignment                   | `{}`                                       |
 | `broker.tolerations`                     | broker tolerations                                      | `[]`                                       |
 | `broker.config`                           | broker private config such as `JAVA_OPTS`                |                                            |
-| `broker.nodeAffinity`                     | broker node affinity policy                              | `{}`                                       |
+| `broker.affinity`                         | broker affinity policy                                   | `{}`                                       |
 | `broker.ingress.enabled`                 | enable ingress                                          | `false`                                    |
 | `broker.ingress.hosts`                   | hosts for the broker api                                | `[ "chart-example.local" ]`                |
 | `broker.ingress.path`                    | path of the broker api                                  | `/`                                        |
@@ -90,10 +90,10 @@ The following table lists the configurable parameters of the Druid chart and the
 | `coordinator.serviceType`                | service type for service                                | `ClusterIP`                                |
 | `coordinator.resources`                  | coordinator node resources requests & limits            | `{}`                                       |
 | `coordinator.podAnnotations`             | coordinator Deployment annotations                      | `{}`                                       |
-| `coordinator.nodeSelector`               | Node labels for coordinator pod assignment              | `{}`                                       |
+| `coordinator.nodeSelector`               | node labels for coordinator pod assignment              | `{}`                                       |
 | `coordinator.tolerations`                | coordinator tolerations                                 | `[]`                                       |
 | `coordinator.config`                      | coordinator private config such as `JAVA_OPTS`           |                                            |
-| `coordinator.nodeAffinity`                | coordinator node affinity policy                         | `{}`                                       |
+| `coordinator.affinity`                    | coordinator affinity policy                              | `{}`                                       |
 | `coordinator.ingress.enabled`            | enable ingress                                          | `false`                                    |
 | `coordinator.ingress.hosts`              | hosts for the coordinator api                           | `[ "chart-example.local" ]`                |
 | `coordinator.ingress.path`               | path of the coordinator api                             | `/`                                        |
@@ -106,10 +106,10 @@ The following table lists the configurable parameters of the Druid chart and the
 | `overlord.serviceType`                   | service type for service                                | `ClusterIP`                                |
 | `overlord.resources`                     | overlord node resources requests & limits               | `{}`                                       |
 | `overlord.podAnnotations`                | overlord Deployment annotations                         | `{}`                                       |
-| `overlord.nodeSelector`                  | Node labels for overlord pod assignment                 | `{}`                                       |
+| `overlord.nodeSelector`                  | node labels for overlord pod assignment                 | `{}`                                       |
 | `overlord.tolerations`                   | overlord tolerations                                    | `[]`                                       |
 | `overlord.config`                         | overlord private config such as `JAVA_OPTS`              |                                            |
-| `overlord.nodeAffinity`                   | overlord node affinity policy                            | `{}`                                       |
+| `overlord.affinity`                       | overlord affinity policy                                 | `{}`                                       |
 | `overlord.ingress.enabled`               | enable ingress                                          | `false`                                    |
 | `overlord.ingress.hosts`                 | hosts for the overlord api                              | `[ "chart-example.local" ]`                |
 | `overlord.ingress.path`                  | path of the overlord api                                | `/`                                        |
@@ -121,7 +121,7 @@ The following table lists the configurable parameters of the Druid chart and the
 | `historical.serviceType`                 | service type for service                                | `ClusterIP`                                |
 | `historical.resources`                   | historical node resources requests & limits             | `{}`                                       |
 | `historical.podAnnotations`              | historical Deployment annotations                       | `{}`                                       |
-| `historical.nodeSelector`                | Node labels for historical pod assignment               | `{}`                                       |
+| `historical.nodeSelector`                | node labels for historical pod assignment               | `{}`                                       |
 | `historical.tolerations`                 | historical tolerations                                  | `[]`                                       |
 | `historical.config`                       | historical node private config such as `JAVA_OPTS`       |                                            |
 | `historical.persistence.enabled`         | historical persistent enabled/disabled                  | `true`                                     |
@@ -166,10 +166,10 @@ The following table lists the configurable parameters of the Druid chart and the
 | `router.serviceType`                     | service type for service                                | `ClusterIP`                                |
 | `router.resources`                       | router node resources requests & limits                 | `{}`                                       |
 | `router.podAnnotations`                  | router Deployment annotations                           | `{}`                                       |
-| `router.nodeSelector`                    | Node labels for router pod assignment                   | `{}`                                       |
+| `router.nodeSelector`                    | node labels for router pod assignment                   | `{}`                                       |
 | `router.tolerations`                     | router tolerations                                      | `[]`                                       |
 | `router.config`                           | router private config such as `JAVA_OPTS`                |                                            |
-| `router.nodeAffinity`                     | router node affinity policy                              | `{}`                                       |
+| `router.affinity`                         | router affinity policy                                   | `{}`                                       |
 | `router.ingress.enabled`                 | enable ingress                                          | `false`                                    |
 | `router.ingress.hosts`                   | hosts for the router api                                | `[ "chart-example.local" ]`                |
 | `router.ingress.path`                    | path of the router api                                  | `/`                                        |
