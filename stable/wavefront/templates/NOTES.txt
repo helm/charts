@@ -53,3 +53,7 @@ You can visit this dashboard in Wavefront to see your Kubernetes metrics:
 
 {{ .Values.wavefront.url }}/dashboard/integration-kubernetes-main
 
+##### DEPRECATED:
+This chart has been deprecated. Use the chart now maintained on the Wavefront Helm
+repository at: https://github.com/wavefrontHQ/helm
+#####

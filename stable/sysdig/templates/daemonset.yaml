@@ -4,19 +4,21 @@ kind: DaemonSet
 metadata:
   name: {{ template "sysdig.fullname" . }}
   labels:
-    app: {{ template "sysdig.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+{{ include "sysdig.labels" . | indent 4 }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "sysdig.fullname" .}}
+      app.kubernetes.io/name: {{ include "sysdig.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       name: {{ template "sysdig.fullname" .}}
       labels:
-        app: {{ template "sysdig.fullname" .}}
+{{ include "sysdig.labels" . | indent 8 }}
+      {{- if .Values.daemonset.annotations }}
+      annotations:
+{{ toYaml .Values.daemonset.annotations | indent 8 }}
+      {{- end }}
     spec:
       serviceAccountName: {{ template "sysdig.serviceAccountName" .}}
 {{- if .Values.priorityClassName }}
@@ -46,7 +48,14 @@ spec:
 {{ toYaml .Values.image.pullSecrets | indent 12 }}
           {{- end }}
           securityContext:
+            capabilities:
+              drop:
+                - ALL
             privileged: true
+            runAsNonRoot: false
+            runAsUser: 0
+            readOnlyRootFilesystem: false
+            allowPrivilegeEscalation: true
           resources:
 {{ toYaml .Values.slim.resources | indent 12 }}
           volumeMounts:
@@ -70,33 +79,44 @@ spec:
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           securityContext:
+            capabilities:
+              drop:
+                - ALL
             privileged: true
-          {{- if .Values.ebpf.enabled }}
+            runAsNonRoot: false
+            runAsUser: 0
+            readOnlyRootFilesystem: false
+            allowPrivilegeEscalation: true
           env:
+            {{- if .Values.ebpf.enabled }}
             - name: SYSDIG_BPF_PROBE
               value:
-          {{- end }}
-          {{- if .Values.proxy.httpProxy }}
+            {{- end }}
+            {{- if .Values.proxy.httpProxy }}
             - name: http_proxy
               value: {{ .Values.proxy.httpProxy }}
-          {{- end }}
-          {{- if .Values.proxy.httpsProxy }}
+            {{- end }}
+            {{- if .Values.proxy.httpsProxy }}
             - name: https_proxy
               value: {{ .Values.proxy.httpsProxy }}
-          {{- end }}
-          {{- if .Values.proxy.noProxy }}
+            {{- end }}
+            {{- if .Values.proxy.noProxy }}
             - name: no_proxy
               value: {{ .Values.proxy.noProxy }}
-          {{- end }}
-          {{- if .Values.timezone }}
+            {{- end }}
+            {{- if .Values.timezone }}
             - name: TZ
               value: {{ .Values.timezone }}
-          {{- end }}
-          {{- range $key, $value := .Values.daemonset.env }}
+            {{- end }}
+            {{- range $key, $value := .Values.daemonset.env }}
             - name: "{{ $key }}"
               value: "{{ $value }}"
-          {{- end }}
+            {{- end }}
           readinessProbe:
+            exec:
+              command: [ "test", "-e", "/opt/draios/logs/running" ]
+            initialDelaySeconds: 10
+          livenessProbe:
             exec:
               command: [ "test", "-e", "/opt/draios/logs/running" ]
             initialDelaySeconds: 10

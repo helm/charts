@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "sparkoperator.fullname" . }}-init
+  name: {{ include "sparkoperator.fullname" . }}-webhook-init
   namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/name: {{ include "sparkoperator.name" . }}
@@ -20,5 +20,11 @@ spec:
       - name: main
         image: {{ .Values.operatorImageName }}:{{ .Values.operatorVersion }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
+        {{- if .Values.securityContext }}
+        securityContext:
+          {{- range $securityPolicy, $value := .Values.securityContext }}
+            {{ $securityPolicy }}: {{ $value }}
+            {{- end }}
+        {{- end }}
         command: ["/usr/bin/gencerts.sh", "-n", "{{ .Release.Namespace }}", "-s", "{{ .Release.Name }}-webhook", "-p"]
 {{ end }}

@@ -6,15 +6,18 @@ kind: Deployment
 {{- end }}
 metadata:
   name: {{ include "ambassador.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/name: {{ include "ambassador.name" . }}
     app.kubernetes.io/part-of: {{ .Release.Name }}
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- if .Values.deploymentTool }}
+    app.kubernetes.io/managed-by: {{ .Values.deploymentTool }}
+    {{- else }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-    {{- if .Values.extraLabels }}
-      {{- toYaml .Values.extraLabels | nindent 4 }}
     {{- end }}
+    product: aes
     {{- if .Values.deploymentAnnotations }}
   annotations:
       {{- toYaml .Values.deploymentAnnotations | nindent 4 }}
@@ -27,17 +30,26 @@ spec:
     matchLabels:
       app.kubernetes.io/name: {{ include "ambassador.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
+  {{- if .Values.daemonSet }}
+  updateStrategy:
+  {{- else }}
+  strategy:
+  {{- end }}
+    {{- toYaml .Values.deploymentStrategy | nindent 4}}
   template:
     metadata:
       labels:
         app.kubernetes.io/name: {{ include "ambassador.name" . }}
         app.kubernetes.io/part-of: {{ .Release.Name }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- if .Values.deploymentTool }}
+        app.kubernetes.io/managed-by: {{ .Values.deploymentTool }}
+        {{- else }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        {{- end }}
+        product: aes
       {{- if .Values.podLabels }}
         {{- toYaml .Values.podLabels | nindent 8 }}
-      {{- end }}
-      {{- if .Values.extraLabels }}
-        {{- toYaml .Values.extraLabels | nindent 8 }}
       {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
@@ -48,6 +60,9 @@ spec:
       {{- with .Values.securityContext }}
       securityContext:
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.restartPolicy }}
+      restartPolicy: {{ .Values.restartPolicy }}
       {{- end }}
       serviceAccountName: {{ include "ambassador.serviceAccountName" . }}
       {{- if .Values.priorityClassName }}
@@ -75,6 +90,15 @@ spec:
             items:
             - key: ambassadorConfig
               path: ambassador-config.yaml
+        {{- end }}
+        {{- if .Values.enableAES}}
+        - name: {{ include "ambassador.fullname" . }}-edge-stack-secrets
+          secret:
+            {{- if .Values.licenseKey.secretName }}
+            secretName: {{ .Values.licenseKey.secretName }}
+            {{- else }}
+            secretName: {{ include "ambassador.fullname" . }}-edge-stack
+            {{- end }}
         {{- end }}
       {{- with .Values.volumes }}
         {{- toYaml . | nindent 8 }}
@@ -105,16 +129,12 @@ spec:
             {{- toYaml .Values.prometheusExporter.resources | nindent 12 }}
         {{- end }}
         - name: {{ .Chart.Name }}
-          {{- if and .Values.pro.enabled (semverCompare ">0.6.0" .Values.pro.image.tag) }}
-          image: "{{ .Values.pro.image.repository }}:amb-core-{{ .Values.pro.image.tag }}"
-          {{ else }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             {{- range .Values.service.ports }}
             - name: {{ .name }}
-              containerPort: {{ .targetPort }}
+              containerPort: {{ int .targetPort }}
               {{- if .protocol }}
               protocol: {{ .protocol }}
               {{- end }}
@@ -126,16 +146,17 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.hostIP
-            {{- if and .Values.pro.enabled (semverCompare ">0.6.0" .Values.pro.image.tag) }}
-            - name: AMBASSADOR_LICENSE_KEY
-            {{- if .Values.pro.licenseKey.secret.enabled }}
-              valueFrom:
-                secretKeyRef:
-                  name: ambassador-pro-license-key
-                  key: key
-            {{ else }}
-              value: {{ .Values.pro.licenseKey.value }}
+            {{- if and (or .Values.redis.create .Values.redisURL) (.Values.enableAES) }}
+            - name: REDIS_URL
+              {{- if .Values.redisURL }}
+              value: {{ .Values.redisURL }}
+              {{- else }}
+              value: {{ include "ambassador.fullname" . }}-redis:6379
+              {{- end }}
             {{- end }}
+            {{- if and .Values.licenseKey.secretName .Values.enableAES}}
+            - name: AMBASSADOR_AES_SECRET_NAME
+              value: {{ .Values.licenseKey.secretName }}
             {{- end }}
             {{- if .Values.prometheusExporter.enabled }}
             - name: STATSD_ENABLED
@@ -184,65 +205,16 @@ spec:
               mountPath: /ambassador/ambassador-config/ambassador-config.yaml
               subPath: ambassador-config.yaml
           {{- end }}
+          {{- if .Values.enableAES }}
+            - name: {{ include "ambassador.fullname" . }}-edge-stack-secrets
+              mountPath: /.config/ambassador
+              readOnly: true
+          {{- end }}
           {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-        {{- if .Values.pro.enabled }}
-        - name: ambassador-pro
-          {{ if .Values.pro.image.customBuildTag }}
-          image: "{{ .Values.pro.image.repository }}:{{ .Values.pro.image.customBuildTag }}"
-          {{ else }}
-          image: "{{ .Values.pro.image.repository }}:amb-sidecar-{{ .Values.pro.image.tag }}"
-          {{ end }}
-          ports:
-          - name: grpc-auth
-            containerPort: {{ .Values.pro.ports.auth }}
-          - name: grpc-ratelimit
-            containerPort: {{ .Values.pro.ports.ratelimit }}
-          env:
-          - name: REDIS_SOCKET_TYPE
-            value: tcp
-          - name: REDIS_URL
-            value: {{ include "ambassador.fullname" . }}-pro-redis:6379
-          - name: APRO_HTTP_PORT
-            value: "{{ .Values.pro.ports.auth }}"
-          - name: APP_LOG_LEVEL
-            value: "{{ .Values.pro.logLevel  }}"
-          - name: AMBASSADOR_NAMESPACE
-          {{- if .Values.namespace }}
-            value: {{ .Values.namespace.name | quote }}
-          {{ else }}
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.namespace
-          {{- end }}
-          {{- if hasKey .Values.env "AMBASSADOR_ID" }}
-          - name: "AMBASSADOR_ID"
-            value: {{ .Values.env.AMBASSADOR_ID | quote }}
-          {{- end }}
-          - name: AMBASSADOR_LICENSE_KEY
-          {{- if .Values.pro.licenseKey.secret.enabled }}
-            valueFrom:
-              secretKeyRef:
-                name: ambassador-pro-license-key
-                key: key
-          {{ else }}
-            value: {{ .Values.pro.licenseKey.value }}
-          {{- end }}
-          {{- if .Values.pro.env }}
-          {{- range $key, $value := .Values.pro.env }}
-          {{- if eq $key "AMBASSADOR_ID" }}
-          {{- else}}
-          - name: {{ $key | upper | quote }}
-            value: {{ $value | quote }}
-          {{- end }}
-          {{- end }}
-          {{- end }}
-          resources:
-            {{- toYaml .Values.pro.resources | nindent 12 }}
-        {{- end }}
       {{- with .Values.sidecarContainers }}
         {{- toYaml . | nindent 8 }}
       {{- end }}

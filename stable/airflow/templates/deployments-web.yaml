@@ -48,6 +48,9 @@ spec:
         app: {{ template "airflow.name" . }}
         component: web
         release: {{ .Release.Name }}
+{{- if .Values.web.podLabels }}
+{{ toYaml .Values.web.podLabels | indent 8 }}
+{{- end }}
     spec:
       {{- if .Values.airflow.image.pullSecret }}
       imagePullSecrets:
@@ -66,7 +69,12 @@ spec:
       tolerations:
 {{ toYaml .Values.web.tolerations | indent 8 }}
       {{- end }}
-      {{- if .Values.dags.initContainer.enabled }}
+      serviceAccountName: {{ template "airflow.serviceAccountName" . }}
+      {{- if .Values.web.securityContext }}
+      securityContext:
+{{ toYaml .Values.web.securityContext | indent 8 }}
+      {{- end }}
+      {{- if and ( .Values.dags.initContainer.enabled ) ( not .Values.web.serializeDAGs ) }}
       initContainers:
         - name: git-clone
           image: {{ .Values.dags.initContainer.image.repository }}:{{ .Values.dags.initContainer.image.tag }} # Any image with git will do
@@ -76,26 +84,29 @@ spec:
               name: "{{ template "airflow.fullname" . }}-env"
           env:
           {{- include "airflow.mapenvsecrets" . | indent 10 }}
+          resources:
+{{ toYaml .Values.dags.initContainer.resources | indent 12 }}
           command:
             - /usr/local/git/git-clone.sh
           args:
             - "{{ .Values.dags.git.url }}"
             - "{{ .Values.dags.git.ref }}"
-            - "/dags"
+            - "{{ .Values.dags.initContainer.mountPath }}{{ .Values.dags.initContainer.syncSubPath | default "" }}"
             - "{{ .Values.dags.git.repoHost}}"
+            - "{{ .Values.dags.git.repoPort}}"
             - "{{ .Values.dags.git.privateKeyName }}"
           volumeMounts:
             - name: git-clone
               mountPath: /usr/local/git
             - name: dags-data
-              mountPath: /dags
+              mountPath: "{{ .Values.dags.initContainer.mountPath }}"
             {{- if .Values.dags.git.secret }}
             - name: git-clone-secret
               mountPath: /keys
             {{- end }}
       {{- end }}
       containers:
-        {{- if .Values.dags.git.gitSync.enabled }}
+        {{- if and ( .Values.dags.git.gitSync.enabled ) ( not .Values.web.serializeDAGs ) }}
         - name: git-sync
           image: {{ .Values.dags.git.gitSync.image.repository }}:{{ .Values.dags.git.gitSync.image.tag }} # Any image with git will do
           imagePullPolicy: {{ .Values.dags.git.gitSync.image.pullPolicy }}
@@ -109,19 +120,22 @@ spec:
           args:
             - "{{ .Values.dags.git.url }}"
             - "{{ .Values.dags.git.ref }}"
-            - "/dags"
+            - "{{ .Values.dags.initContainer.mountPath }}{{ .Values.dags.initContainer.syncSubPath | default "" }}"
             - "{{ .Values.dags.git.repoHost}}"
+            - "{{ .Values.dags.git.repoPort}}"
             - "{{ .Values.dags.git.privateKeyName }}"
             - "{{ .Values.dags.git.gitSync.refreshTime }}"
           volumeMounts:
             - name: git-clone
               mountPath: /usr/local/git
             - name: dags-data
-              mountPath: /dags
+              mountPath: "{{ .Values.dags.initContainer.mountPath }}"
             {{- if .Values.dags.git.secret }}
             - name: git-clone-secret
               mountPath: /keys
             {{- end }}
+          resources:
+{{ toYaml .Values.dags.git.gitSync.resources | indent 12 }}
         {{- end }}
         - name: {{ .Chart.Name }}-web
           image: {{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}
@@ -150,9 +164,11 @@ spec:
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
               subPath: {{ .Values.persistence.subPath | default "" }}
-          {{- else if .Values.dags.initContainer.enabled }}
+          {{- else if not .Values.web.serializeDAGs }}
+          {{- if or (.Values.dags.initContainer.enabled) (.Values.dags.git.gitSync.enabled) }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
+          {{- end }}
           {{- end }}
           {{- if .Values.logsPersistence.enabled }}
             - name: logs-data
@@ -194,6 +210,7 @@ spec:
           {{- end }}
           livenessProbe:
             httpGet:
+              scheme: {{ .Values.web.livenessProbe.scheme }}
               {{- if .Values.ingress.web.livenessPath }}
               path: "{{ .Values.ingress.web.livenessPath }}"
               {{- else }}
@@ -209,6 +226,7 @@ spec:
 
           readinessProbe:
             httpGet:
+              scheme: {{ .Values.web.readinessProbe.scheme }}
               path: "{{ .Values.ingress.web.path }}/health"
               port: web
             initialDelaySeconds: {{ .Values.web.initialDelaySeconds }}
@@ -241,7 +259,8 @@ spec:
           persistentVolumeClaim:
             claimName: {{ .Values.logsPersistence.existingClaim | default (printf "%s-logs" (include "airflow.fullname" . | trunc 58 )) }}
         {{- end }}
-        {{- if .Values.dags.initContainer.enabled }}
+        {{- if not .Values.web.serializeDAGs }}
+        {{- if or (.Values.dags.initContainer.enabled) (.Values.dags.git.gitSync.enabled) }}
         - name: git-clone
           configMap:
             name: {{ template "airflow.fullname" . }}-git-clone
@@ -251,6 +270,7 @@ spec:
           secret:
             secretName: {{ .Values.dags.git.secret }}
             defaultMode: 0700
+        {{- end }}
         {{- end }}
         {{- end }}
         {{- range .Values.airflow.extraConfigmapMounts }}

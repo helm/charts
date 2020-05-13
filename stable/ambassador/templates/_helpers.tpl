@@ -43,6 +43,13 @@ Create the name of the service account to use
 {{- end -}}
 
 {{/*
+Create the name of the RBAC to use
+*/}}
+{{- define "ambassador.rbacName" -}}
+{{ default (include "ambassador.fullname" .) .Values.rbac.nameOverride }}
+{{- end -}}
+
+{{/*
 Define the http port of the Ambassador service
 */}}
 {{- define "ambassador.servicePort" -}}

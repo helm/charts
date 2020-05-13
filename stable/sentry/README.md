@@ -77,8 +77,21 @@ Parameter                                            | Description              
 `web.affinity`                                       | Affinity settings for web pod assignment                                                                   | `{}`
 `web.schedulerName`                                  | Name of an alternate scheduler for web pod                                                                 | `nil`
 `web.tolerations`                                    | Toleration labels for web pod assignment                                                                   | `[]`
-`web.probeInitialDelaySeconds`                       | The number of seconds before the probe doing healthcheck                                                   | `50`
+`web.livenessProbe.failureThreshold`                 | The liveness probe failure threshold                                                                       | `5`
+`web.livenessProbe.initialDelaySeconds`              | The liveness probe initial delay seconds                                                                   | `50`
+`web.livenessProbe.periodSeconds`                    | The liveness probe period seconds                                                                          | `10`
+`web.livenessProbe.successThreshold`                 | The liveness probe success threshold                                                                       | `1`
+`web.livenessProbe.timeoutSeconds`                   | The liveness probe timeout seconds                                                                         | `2`
+`web.readinessProbe.failureThreshold`                | The readiness probe failure threshold                                                                      | `10`
+`web.readinessProbe.initialDelaySeconds`             | The readiness probe initial delay seconds                                                                  | `50`
+`web.readinessProbe.periodSeconds`                   | The readiness probe period seconds                                                                         | `10`
+`web.readinessProbe.successThreshold`                | The readiness probe success threshold                                                                      | `1`
+`web.readinessProbe.timeoutSeconds`                  | The readiness probe timeout seconds                                                                        | `2`
 `web.priorityClassName`                              | The priorityClassName on web deployment                                                                    | `nil`
+`web.hpa.enabled`                                    | Boolean to create a HorizontalPodAutoscaler for web deployment                                             | `false`
+`web.hpa.cputhreshold`                               | CPU threshold percent for the web HorizontalPodAutoscaler                                                  | `60`
+`web.hpa.minpods`                                    | Min pods for the web HorizontalPodAutoscaler                                                               | `1`
+`web.hpa.maxpods`                                    | Max pods for the web HorizontalPodAutoscaler                                                               | `10`
 `cron.podAnnotations`                                | Cron pod annotations                                                                                       | `{}`
 `cron.podLabels`                                     | Worker pod extra labels                                                                                    | `{}`
 `cron.replicacount`                                  | Amount of cron pods to run                                                                                 | `1`
@@ -100,8 +113,13 @@ Parameter                                            | Description              
 `worker.tolerations`                                 | Toleration labels for worker pod assignment                                                                | `[]`
 `worker.concurrency`                                 | Celery worker concurrency                                                                                  | `nil`
 `worker.priorityClassName`                           | The priorityClassName on workers deployment                                                                | `nil`
+`worker.hpa.enabled`                                 | Boolean to create a HorizontalPodAutoscaler for worker deployment                                          | `false`
+`worker.hpa.cputhreshold`                            | CPU threshold percent for the worker HorizontalPodAutoscaler                                               | `60`
+`worker.hpa.minpods`                                 | Min pods for the worker HorizontalPodAutoscaler                                                            | `1`
+`worker.hpa.maxpods`                                 | Max pods for the worker HorizontalPodAutoscaler                                                            | `10`
 `user.create`                                        | Create the default admin                                                                                   | `true`
 `user.email`                                         | Username for default admin                                                                                 | `admin@sentry.local`
+`user.password`                                      | Password for default admin                                                                                 | Randomly generated
 `email.from_address`                                 | Email notifications are from                                                                               | `smtp`
 `email.host`                                         | SMTP host for sending email                                                                                | `smtp`
 `email.port`                                         | SMTP port                                                                                                  | `25`
@@ -120,6 +138,7 @@ Parameter                                            | Description              
 `service.loadBalancerSourceRanges`                   | Allow list for the load balancer                                                                           | `nil`
 `ingress.enabled`                                    | Enable ingress controller resource                                                                         | `false`
 `ingress.annotations`                                | Ingress annotations                                                                                        | `{}`
+`ingress.labels`                                     | Ingress labels                                                                                             | `{}`
 `ingress.hostname`                                   | URL to address your Sentry installation                                                                    | `sentry.local`
 `ingress.path`                                       | path to address your Sentry installation                                                                   | `/`
 `ingress.tls`                                        | Ingress TLS configuration                                                                                  | `[]`
@@ -150,6 +169,7 @@ Parameter                                            | Description              
 `filestore.gcs.bucketName`                           | The name of the GCS bucket                                                                                 | `nil`
 `filestore.s3.accessKey`                             | S3 access key                                                                                              | `nil`
 `filestore.s3.secretKey`                             | S3 secret key                                                                                              | `nil`
+`filestore.s3.existingSecret`                        | Name of existing secret to use for the S3 keys                                                             | `nil`
 `filestore.s3.bucketName`                            | The name of the S3 bucket                                                                                  | `nil`
 `filestore.s3.endpointUrl`                           | The endpoint url of the S3 (using for "MinIO S3 Backend")                                                  | `nil`
 `filestore.s3.signature_version`                     | S3 signature version (optional)                                                                            | `nil`
@@ -174,6 +194,7 @@ Parameter                                            | Description              
 `metrics.serviceMonitor.interval`                    | How frequently to scrape metrics (use by default, falling back to Prometheus' default)                     | `nil`
 `metrics.serviceMonitor.selector`                    | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install | `{ prometheus: kube-prometheus }`
 `hooks.affinity`                                     | Affinity settings for hooks pods                                                                           | `{}`
+`hooks.dbInit.enabled`                               | Boolean to enable the dbInit job using a hook                                                              | `true`
 `hooks.dbInit.resources.limits`                      | Hook job resource limits                                                                                   | `{memory: 3200Mi}`
 `hooks.dbInit.resources.requests`                    | Hook job resource requests                                                                                 | `{memory: 3000Mi}`
 `serviceAccount.name`                                | name of the ServiceAccount to be used by access-controlled resources | autogenerated

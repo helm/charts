@@ -11,6 +11,7 @@ service:
   port: 9100
   targetPort: 9100
   nodePort:
+  listenOnAllInterfaces: true
   annotations:
     prometheus.io/scrape: "true"
 
@@ -21,6 +22,12 @@ prometheus:
     namespace: ""
 
     scrapeTimeout: 10s
+
+## Customize the updateStrategy if set
+updateStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 1
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -96,6 +103,7 @@ tolerations:
 ##
 extraArgs: []
 #   - --collector.diskstats.ignored-devices=^(ram|loop|fd|(h|s|v)d[a-z]|nvme\\d+n\\d+p)\\d+$
+#   - --collector.textfile.directory=/run/prometheus
 
 ## Additional mounts from the host
 ##
@@ -115,3 +123,16 @@ configmaps: []
 ## Override the deployment namespace
 ##
 namespaceOverride: ""
+
+## Additional containers for export metrics to text file
+##
+sidecars: []
+##  - name: nvidia-dcgm-exporter
+##    image: nvidia/dcgm-exporter:1.4.3
+
+## Volume for sidecar containers
+##
+sidecarVolumeMount: []
+##  - name: collector-textfiles
+##    mountPath: /run/prometheus
+##    readOnly: false

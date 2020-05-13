@@ -1,6 +1,6 @@
 {{- define "system-probe-init" -}}
 - name: seccomp-setup
-  image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+  image: "{{ .Values.agents.image.repository }}:{{ .Values.agents.image.tag }}"
   command:
   - cp
   - /etc/config/system-probe-seccomp.json
@@ -10,4 +10,6 @@
     mountPath: /etc/config
   - name: seccomp-root
     mountPath: /host/var/lib/kubelet/seccomp
+  resources:
+{{ toYaml .Values.agents.containers.initContainers.resources | indent 4 }}
 {{- end -}}

@@ -12,10 +12,21 @@ metadata:
 {{- end }}
 spec:
   endpoints:
-  - targetPort: api
+  - targetPort: {{ .Values.service.portName }}
     path: /api/prometheus
 {{- if .Values.monitoring.serviceMonitor.interval }}
     interval: {{ .Values.monitoring.serviceMonitor.interval }}
+{{- end }}
+{{- if .Values.monitoring.serviceMonitor.bearerTokenFile }}
+    bearerTokenFile: {{ .Values.monitoring.serviceMonitor.bearerTokenFile }}
+{{- end }}
+{{- if .Values.monitoring.serviceMonitor.bearerTokenSecret }}
+    bearerTokenSecret:
+      name: {{ .Values.monitoring.serviceMonitor.bearerTokenSecret.name }}
+      key: {{ .Values.monitoring.serviceMonitor.bearerTokenSecret.key }}
+      {{- if .Values.monitoring.serviceMonitor.bearerTokenSecret.optional }}
+      optional: {{ .Values.monitoring.serviceMonitor.bearerTokenSecret.optional }}
+      {{- end }}
 {{- end }}
   jobLabel: {{ template "home-assistant.fullname" . }}-prometheus-exporter
   namespaceSelector:

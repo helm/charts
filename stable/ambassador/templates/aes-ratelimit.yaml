@@ -1,0 +1,26 @@
+{{ if and .Values.rateLimit.create .Values.enableAES }}
+---
+apiVersion: getambassador.io/v2
+kind: RateLimitService
+metadata:
+  name: {{ include "ambassador.fullname" . }}-ratelimit
+  labels:
+    app.kubernetes.io/name: {{ include "ambassador.name" . }}
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+    helm.sh/chart: {{ include "ambassador.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- if .Values.deploymentTool }}
+    app.kubernetes.io/managed-by: {{ .Values.deploymentTool }}
+    {{- else }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- end }}
+    app.kubernetes.io/component: {{ include "ambassador.name" . }}-ratelimit
+    product: aes
+spec:
+  {{- if .Values.env }}
+  {{- if hasKey .Values.env "AMBASSADOR_ID" }}
+  ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
+  {{- end }}
+  {{- end }}
+  service: 127.0.0.1:8500
+{{ end }}

@@ -3,6 +3,13 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# Manually set metadata for the Release.
+#
+# Defaults to .Chart.Name
+nameOverride: ""
+# Defaults to .Release.Name-.Chart.Name unless .Release.Name contains "ambassador"
+fullnameOverride: ""
+
 replicaCount: 3
 daemonSet: false
 
@@ -13,14 +20,18 @@ autoscaling:
   minReplicas: 2
   maxReplicas: 5
   metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        targetAverageUtilization: 60
-    - type: Resource
-      resource:
-        name: memory
-        targetAverageUtilization: 60
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 60
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 60
 
 podDisruptionBudget: {}
 
@@ -28,8 +39,8 @@ podDisruptionBudget: {}
   # name: default
 
 # Additional container environment variable
-env:
-  {}
+# Uncomment or add additional environment variables for the container here.
+env: {}
   # Exposing statistics via StatsD
   # STATSD_ENABLED: true
   # STATSD_HOST: statsd-sink
@@ -48,12 +59,10 @@ securityContext:
   runAsUser: 8888
 
 image:
-  repository: quay.io/datawire/ambassador
-  tag: 0.86.1
+  repository: quay.io/datawire/aes
+  tag: 1.4.2
   pullPolicy: IfNotPresent
 
-nameOverride: ""
-fullnameOverride: ""
 dnsPolicy: "ClusterFirst"
 hostNetwork: false
 
@@ -79,7 +88,9 @@ service:
       # protocol: TCP
       # nodePort: 30222
 
-  annotations:
+  externalTrafficPolicy:
+
+  annotations: {}
   #############################################################################
   ## Ambassador should be configured using CRD definition. If you want
   ## to use annotations, the following is an example of annotating the
@@ -141,8 +152,11 @@ adminService:
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
-  podSecurityPolicies:
-    {}
+  podSecurityPolicies: []
+  # Name of the RBAC resources defaults to the name of the release.
+  # Set nameOverride when installing Ambassador with cluster-wide scope in
+  # different namespaces with the same release name to avoid conflicts.
+  nameOverride:
 
 scope:
   # tells Ambassador to only use resources in the namespace or namespace set by namespace.name
@@ -154,6 +168,11 @@ serviceAccount:
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
+
+deploymentStrategy:
+  type: RollingUpdate
+
+restartPolicy:
 
 initContainers: []
 
@@ -212,33 +231,39 @@ crds:
   create: true
   keep: true
 
-pro:
-  enabled: false
-  image:
-    repository: quay.io/datawire/ambassador_pro
-    tag: 0.11.0
-    # The tag for the image of your custom Ambassador Pro container.
-    # Leave unset if not using a custom build of Ambassador Pro.
-    # See https://www.getambassador.io/docs/guides/filter-dev-guide/
-    customBuildTag:
-  # As of Ambassador Pro 0.6.0, both the RateLimitService and AuthService use the same port
-  ports:
-    auth: 8500
-    ratelimit: 8500
-  logLevel: info
-  # A license key is required to use Ambassador Pro.
-  # Get a license key by signing up for a free trial here: https://www.getambassador.io/pro/free-trial
-  licenseKey:
-    value: "{{INSERT LICENSE KEY HERE}}"
-    # The license key will be stored and read from a Kubernetes secret named ambassador-pro-license-key
-    # Set create: true for the first install and create: false for all subsequent installs
-    secret:
-      enabled: true
-      create: true
-  # Ambassador Pro environment variables can be found at https://www.getambassador.io/reference/pro/environment
-  # For consistency, AMBASSADOR_ID is copied over from the Ambassador env above and will be ignored if set here.
-  env:
-    {}
+# The Ambassador Edge Stack is free for limited use without a license key.
+# Go to https://{ambassador-host}/edge_stack/admin/#dashboard to register
+# for a community license key.
+
+enableAES: true
+
+# Set createSecret: false is installing multiple releases of The Ambassador
+# Edge Stack in the same namespace.
+licenseKey:
+  value:
+  createSecret: true
+  secretName:
+
+# The DevPortal is exposed at /docs/ endpoint in the AES container. 
+# Setting this to true will automatically create routes for the DevPortal.
+createDevPortalMappings: true
+
+# The Ambassador Edge Stack uses a redis instance for managing authentication,
+# rate limiting, and sharing minor configuration details between pods for
+# centralized management. These values configure the redis instance that ships
+# by default with The Ambassador Edge Stack.
+#
+# URL of your redis instance. Defaults to redis instance created below.
+redisURL:
+# Ambassador ships with a basic redis instance. Configure the deployment with the options below.
+redis:
+  create: true
+  # Annotations for Ambassador Pro's redis instance.
+  annotations:
+    deployment:
+      {}
+    service:
+      {}
   resources: {}
   # If you want to specify resources, uncomment the following
   # lines and remove the curly braces after 'resources:'.
@@ -249,44 +274,37 @@ pro:
   #   requests:
   #     cpu: 50m
   #     memory: 128Mi
+  nodeSelector: {}
 
-  authService:
-    enabled: true
-    # Set additional configuration options. See https://www.getambassador.io/reference/services/auth-service for more information
-    optional_configurations:
-      # include_body:
-      #   max_bytes: 4096
-      #   allow_partial: true
-      # status_on_error:
-      #   code: 403
-      # failure_mode_allow: false
-      # retry_policy:
-      #   retry_on: "5xx"
-      #   num_retries: 2
-      # add_linkerd_headers: true
-      # timeout_ms: 30000
 
-  rateLimit:
-    enabled: true
-    redis:
-      # Annotations for Ambassador Pro's redis instance.
-      annotations:
-        deployment:
-          {}
-        service:
-          {}
-      resources: {}
-      # If you want to specify resources, uncomment the following
-      # lines and remove the curly braces after 'resources:'.
-      # These are placeholder values and must be tuned.
-      #   limits:
-      #     cpu: 100m
-      #     memory: 256Mi
-      #   requests:
-      #     cpu: 50m
-      #     memory: 128Mi
-  devPortal:
-    enabled: false
+# Configures the AuthService that ships with the Ambassador Edge Stack.
+# Setting authService.create: false will not install the AES AuthService and
+# allow you to define your own.
+#
+# Typically when using the AES, you will want to keep this set to true and use 
+# the External Filter to communicate with a custom authentication service.
+# https://www.getambassador.io/reference/filter-reference/#filter-type-external
+authService:
+  create: true
+  # Set additional configuration options. See https://www.getambassador.io/reference/services/auth-service for more information
+  optional_configurations:
+    # include_body:
+    #   max_bytes: 4096
+    #   allow_partial: true
+    # status_on_error:
+    #   code: 403
+    # failure_mode_allow: false
+    # retry_policy:
+    #   retry_on: "5xx"
+    #   num_retries: 2
+    # add_linkerd_headers: true
+    # timeout_ms: 30000
+
+
+# Configures the RateLimitService in the Ambassador Edge Stack. 
+# Keep this enabled to configure RateLimits in AES.
+rateLimit:
+  create: true
 
 # DEPRECATED: Ambassador now exposes the /metrics endpoint in Envoy.
 # DEPRECATED: See https://www.getambassador.io/user-guide/monitoring#deployment for more information on how to use the /metrics endpoint
@@ -317,3 +335,12 @@ prometheusExporter:
   #     timer_type: 'histogram'
   #     labels:
   #       cluster_name: "$1"
+
+# Prometheus Operator ServiceMonitor configuration
+# See documentation: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#servicemonitor
+metrics:
+  serviceMonitor:
+    enabled: false
+    # interval: 30s
+    # scrapeTimeout: 30s
+    # selector: {}

@@ -5,12 +5,18 @@ on_minikube: false
 image:
   fluent_bit:
     repository: fluent/fluent-bit
-    tag: 1.3.5
+    tag: 1.3.7
   pullPolicy: Always
+  # If specified, use these secrets to access the image
+  # pullSecrets:
+  #   - name: registry-secret
 
 testFramework:
   image: "dduportal/bats"
   tag: "0.4.0"
+  # If specified, use these secrets to access the image
+  # pullSecrets:
+  #   - name: registry-secret
 
 nameOverride: ""
 fullnameOverride: ""
@@ -99,6 +105,7 @@ backend:
     ## Specify the data format to be used in the HTTP request body
     ## Can be either 'msgpack' or 'json'
     format: msgpack
+    # json_date_format: double or iso8601
     headers: []
 
 parsers:
@@ -243,6 +250,7 @@ audit:
   input:
     memBufLimit: 35MB
     parser: docker
+    tag: audit.*
     path: /var/log/kube-apiserver-audit.log
     bufferChunkSize: 2MB
     bufferMaxSize: 10MB
@@ -288,6 +296,8 @@ taildb:
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
   create: true
+  # Annotations to add to the service account
+  annotations: {}
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:

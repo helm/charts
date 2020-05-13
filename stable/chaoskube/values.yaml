@@ -115,3 +115,9 @@ podAnnotations: {}
   #  podAnnotations:
   #    prometheus.io/scrape: "true"
   #    prometheus.io/port: "8080"
+
+podLabels: {}
+  ## Labels for the chaoskube pod.
+  #  podLabels:
+  #    my.first.label: "value"
+  #    my.other.label: "other-value"

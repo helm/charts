@@ -1,0 +1,30 @@
+{{ if and .Values.authService.create .Values.enableAES }}
+---
+apiVersion: getambassador.io/v2
+kind: AuthService
+metadata:
+  name: {{ include "ambassador.fullname" . }}-auth
+  labels:
+    app.kubernetes.io/name: {{ include "ambassador.name" . }}
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+    helm.sh/chart: {{ include "ambassador.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- if .Values.deploymentTool }}
+    app.kubernetes.io/managed-by: {{ .Values.deploymentTool }}
+    {{- else }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- end }}
+    app.kubernetes.io/component: {{ include "ambassador.name" . }}-auth
+    product: aes
+spec:
+  proto: grpc
+  {{- if .Values.env }}
+  {{- if hasKey .Values.env "AMBASSADOR_ID" }}
+  ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
+  {{- end }}
+  {{- end }}
+  auth_service: 127.0.0.1:8500
+  {{- if .Values.authService.optional_configurations }}
+  {{- toYaml .Values.authService.optional_configurations | nindent 2}}
+  {{- end }}
+{{ end }}

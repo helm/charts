@@ -20,7 +20,7 @@ spec:
         - path: /
           backend:
             serviceName: "{{ template "redmine.fullname" . }}"
-            servicePort: http
+            servicePort: http-redmine
     {{- end }}
     {{- range .Values.ingress.extraHosts }}
     - host: {{ .name }}
@@ -29,7 +29,7 @@ spec:
         - path: {{ default "/" .path }}
           backend:
             serviceName: "{{ template "redmine.fullname" $ }}"
-            servicePort: http
+            servicePort: http-redmine
     {{- end }}
   {{- if or .Values.ingress.tls .Values.ingress.extraTls .Values.ingress.hosts }}
   tls:

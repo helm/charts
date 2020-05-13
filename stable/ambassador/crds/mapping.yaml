@@ -3,18 +3,38 @@ kind: CustomResourceDefinition
 metadata:
   name: mappings.getambassador.io
   labels:
+    product: aes
     app.kubernetes.io/name: ambassador
   annotations:
     "helm.sh/hook": crd-install
 spec:
+  additionalPrinterColumns:
+  - JSONPath: .spec.prefix
+    name: Prefix
+    type: string
+  - JSONPath: .spec.service
+    name: Service
+    type: string
+  - JSONPath: .status.state
+    name: State
+    type: string
+  - JSONPath: .status.reason
+    name: Reason
+    type: string
   group: getambassador.io
-  version: v1
+  names:
+    categories:
+    - ambassador-crds
+    kind: Mapping
+    plural: mappings
+    singular: mapping
+  scope: Namespaced
+  subresources:
+    status: {}
   versions:
   - name: v1
     served: true
+    storage: false
+  - name: v2
+    served: true
     storage: true
-  scope: Namespaced
-  names:
-    plural: mappings
-    singular: mapping
-    kind: Mapping

@@ -167,6 +167,16 @@ spec:
           failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           successThreshold: {{ .Values.readinessProbe.successThreshold }}
         {{- end }}
+        {{- if and (gt (.Values.replicas | int) 1) ( eq .Values.rabbitmq.clustering.rebalance true) }}
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - until rabbitmqctl cluster_status >/dev/null; do echo Waiting for
+                cluster readiness...; sleep 5 ; done; rabbitmq-queues rebalance "all"
+        {{- end }}
         env:
           - name: BITNAMI_DEBUG
             value: {{ ternary "true" "false" .Values.image.debug | quote }}
@@ -301,11 +311,11 @@ spec:
           secret:
             secretName: {{ if .Values.rabbitmq.tls.existingSecret }}{{ .Values.rabbitmq.tls.existingSecret }}{{- else }}{{ template "rabbitmq.fullname" . }}-certs{{- end }}
             items:
-            - key: ca_certificate.pem
+            - key: ca.crt
               path: ca_certificate.pem
-            - key: server_certificate.pem
+            - key: tls.crt
               path: server_certificate.pem
-            - key: server_key.pem
+            - key: tls.key
               path: server_key.pem
         {{- end }}
         - name: config-volume

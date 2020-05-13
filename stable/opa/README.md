@@ -75,6 +75,7 @@ Reference](https://www.openpolicyagent.org/docs/configuration.html).
 | `logLevel` | Log level that OPA outputs at, (`debug`, `info` or `error`) | `info` |
 | `logFormat` | Log format that OPA produces (`text` or `json`) | `text` |
 | `replicas` | Number of admission controller replicas to deploy. | `1` |
+| `affinity` | Pod/Node affinity and anti-affinity | `{}` |
 | `tolerations` | List of node taint tolerations. | `[]` |
 | `nodeSelector` | Node labels for pod assignment. | `{}` |
 | `resources` | CPU and memory limits for OPA container. | `{}` |

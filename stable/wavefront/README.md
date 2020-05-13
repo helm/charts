@@ -3,6 +3,10 @@
 [Wavefront](https://wavefront.com) is a cloud-native monitoring and analytics platform that provides 
 three dimensional microservices observability with metrics, histograms and OpenTracing-compatible distributed tracing.
 
+## DEPRECATED
+
+This chart has been deprecated. Use the chart now maintained on the [Wavefront Helm repository](https://github.com/wavefrontHQ/helm)
+
 ## Introduction
 
 This chart will deploy the Wavefront Collector for Kubernetes and Wavefront Proxy to your

@@ -24,6 +24,9 @@ spec:
 {{ toYaml . | indent 4 }}
 {{- end }}
 {{- end }}
+  {{- if (and (eq .Values.service.type "LoadBalancer") (not (empty .Values.service.loadBalancerIP))) }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+  {{- end }}
   ports:
   - name: epmd
     port: 4369

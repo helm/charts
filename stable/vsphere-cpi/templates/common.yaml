@@ -9,6 +9,6 @@ metadata:
     component: cloud-controller
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  namespace: kube-system
+  namespace: {{ .Release.Namespace }}
 data:
   api.binding: "{{ template "api.binding" . }}"

@@ -4,15 +4,17 @@
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
-  name: {{ include "ambassador.fullname" . }}-crds
+  name: {{ include "ambassador.rbacName" . }}-crds
   labels:
     app.kubernetes.io/name: {{ include "ambassador.name" . }}
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- if .Values.deploymentTool }}
+    app.kubernetes.io/managed-by: {{ .Values.deploymentTool }}
+    {{- else }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-  {{- if .Values.extraLabels }}
-    {{- toYaml .Values.extraLabels | nindent 4 }}
-  {{- end }}
+    {{- end }}
+    product: aes
 rules:
   - apiGroups: [ "apiextensions.k8s.io" ]
     resources:
@@ -28,30 +30,30 @@ rules:
     - kubernetesendpointresolvers.getambassador.io
     - kubernetesserviceresolvers.getambassador.io
     - consulresolvers.getambassador.io
-    - logservices.getambassador.io
-    {{- if .Values.pro.enabled }}
     - filters.getambassador.io
     - filterpolicies.getambassador.io
     - ratelimits.getambassador.io
-    {{- end }}
+    - hosts.getambassador.io
+    - logservices.getambassador.io
     verbs: ["get", "list", "watch", "delete"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ include "ambassador.fullname" . }}-crds
+  name: {{ include "ambassador.rbacName" . }}-crds
   labels:
     app.kubernetes.io/name: {{ include "ambassador.name" . }}
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- if .Values.deploymentTool }}
+    app.kubernetes.io/managed-by: {{ .Values.deploymentTool }}
+    {{- else }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-  {{- if .Values.extraLabels }}
-    {{- toYaml .Values.extraLabels | nindent 4 }}
-  {{- end }}
+    {{- end }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ include "ambassador.fullname" . }}-crds
+  name: {{ include "ambassador.rbacName" . }}-crds
 subjects:
   - name: {{ include "ambassador.serviceAccountName" . }}
     namespace: {{ .Release.Namespace | quote }}

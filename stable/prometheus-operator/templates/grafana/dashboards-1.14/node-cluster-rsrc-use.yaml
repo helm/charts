@@ -1,11 +1,14 @@
-# Generated from 'node-cluster-rsrc-use' from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/grafana-dashboardDefinitions.yaml
-# Do not change in-place! In order to change this file first read following link:
-# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
+{{- /*
+Generated from 'node-cluster-rsrc-use' from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/grafana-dashboardDefinitions.yaml
+Do not change in-place! In order to change this file first read following link:
+https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
+*/ -}}
 {{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
 {{- if and (semverCompare ">=1.14.0-0" $kubeTargetVersion) (semverCompare "<9.9.9-9" $kubeTargetVersion) .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled .Values.nodeExporter.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  namespace: {{ $.Release.Namespace }}
   name: {{ printf "%s-%s" (include "prometheus-operator.fullname" $) "node-cluster-rsrc-use" | trunc 63 | trimSuffix "-" }}
   labels:
     {{- if $.Values.grafana.sidecar.dashboards.label }}
@@ -72,10 +75,10 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "(\n  instance:node_cpu_utilisation:rate1m{job=\"node-exporter\"}\n*\n  instance:node_num_cpu:sum{job=\"node-exporter\"}\n/ ignoring (instance) group_left\n  sum without (instance) (instance:node_num_cpu:sum{job=\"node-exporter\"})\n)\n",
+                                "expr": "(\n  instance:node_cpu_utilisation:rate1m{job=\"node-exporter\"}\n*\n  instance:node_num_cpu:sum{job=\"node-exporter\"}\n)\n/ scalar(sum(instance:node_num_cpu:sum{job=\"node-exporter\"}))\n",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}}",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}}",
                                 "legendLink": "/dashboard/file/node-rsrc-use.json",
                                 "step": 10
                             }
@@ -158,10 +161,10 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "(\n  instance:node_load1_per_cpu:ratio{job=\"node-exporter\"}\n/ ignoring (instance) group_left\n  count without (instance) (instance:node_load1_per_cpu:ratio{job=\"node-exporter\"})\n)\n",
+                                "expr": "instance:node_load1_per_cpu:ratio{job=\"node-exporter\"}\n/ scalar(count(instance:node_load1_per_cpu:ratio{job=\"node-exporter\"}))\n",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}}",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}}",
                                 "legendLink": "/dashboard/file/node-rsrc-use.json",
                                 "step": 10
                             }
@@ -256,10 +259,10 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "(\n  instance:node_memory_utilisation:ratio{job=\"node-exporter\"}\n/ ignoring (instance) group_left\n  count without (instance) (instance:node_memory_utilisation:ratio{job=\"node-exporter\"})\n)\n",
+                                "expr": "instance:node_memory_utilisation:ratio{job=\"node-exporter\"}\n/ scalar(count(instance:node_memory_utilisation:ratio{job=\"node-exporter\"}))\n",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}}",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}}",
                                 "legendLink": "/dashboard/file/node-rsrc-use.json",
                                 "step": 10
                             }
@@ -345,7 +348,7 @@ data:
                                 "expr": "instance:node_vmstat_pgmajfault:rate1m{job=\"node-exporter\"}",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}}",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}}",
                                 "legendLink": "/dashboard/file/node-rsrc-use.json",
                                 "step": 10
                             }
@@ -451,7 +454,7 @@ data:
                                 "expr": "instance:node_network_receive_bytes_excluding_lo:rate1m{job=\"node-exporter\"}",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}} Receive",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}} Receive",
                                 "legendLink": "/dashboard/file/node-rsrc-use.json",
                                 "step": 10
                             },
@@ -459,7 +462,7 @@ data:
                                 "expr": "instance:node_network_transmit_bytes_excluding_lo:rate1m{job=\"node-exporter\"}",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}} Transmit",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}} Transmit",
                                 "legendLink": "/dashboard/file/node-rsrc-use.json",
                                 "step": 10
                             }
@@ -553,7 +556,7 @@ data:
                                 "expr": "instance:node_network_receive_drop_excluding_lo:rate1m{job=\"node-exporter\"}",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}} Receive",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}} Receive",
                                 "legendLink": "/dashboard/file/node-rsrc-use.json",
                                 "step": 10
                             },
@@ -561,7 +564,7 @@ data:
                                 "expr": "instance:node_network_transmit_drop_excluding_lo:rate1m{job=\"node-exporter\"}",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}} Transmit",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}} Transmit",
                                 "legendLink": "/dashboard/file/node-rsrc-use.json",
                                 "step": 10
                             }
@@ -656,10 +659,10 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "(\n  instance_device:node_disk_io_time_seconds:rate1m{job=\"node-exporter\"}\n/ ignoring (instance, device) group_left\n  count without (instance, device) (instance_device:node_disk_io_time_seconds:rate1m{job=\"node-exporter\"})\n)\n",
+                                "expr": "instance_device:node_disk_io_time_seconds:rate1m{job=\"node-exporter\"}\n/ scalar(count(instance_device:node_disk_io_time_seconds:rate1m{job=\"node-exporter\"}))\n",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}} {{`{{device}}`}}",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}} {{`{{`}}device{{`}}`}}",
                                 "legendLink": "/dashboard/file/node-rsrc-use.json",
                                 "step": 10
                             }
@@ -742,10 +745,10 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "(\n  instance_device:node_disk_io_time_weighted_seconds:rate1m{job=\"node-exporter\"}\n/ ignoring (instance, device) group_left\n  count without (instance, device) (instance_device:node_disk_io_time_weighted_seconds:rate1m{job=\"node-exporter\"})\n)\n",
+                                "expr": "instance_device:node_disk_io_time_weighted_seconds:rate1m{job=\"node-exporter\"}\n/ scalar(count(instance_device:node_disk_io_time_weighted_seconds:rate1m{job=\"node-exporter\"}))\n",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}} {{`{{device}}`}}",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}} {{`{{`}}device{{`}}`}}",
                                 "legendLink": "/dashboard/file/node-rsrc-use.json",
                                 "step": 10
                             }
@@ -840,10 +843,10 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "(\n  sum without (device) (\n    max without (fstype, mountpoint) (\n      node_filesystem_size_bytes{job=\"node-exporter\", fstype!=\"\"} - node_filesystem_avail_bytes{job=\"node-exporter\", fstype!=\"\"}\n    )\n  ) \n/ ignoring (instance) group_left\n  sum without (instance, device) (\n    max without (fstype, mountpoint) (\n      node_filesystem_size_bytes{job=\"node-exporter\", fstype!=\"\"}\n    )\n  )\n)  \n",
+                                "expr": "sum without (device) (\n  max without (fstype, mountpoint) (\n    node_filesystem_size_bytes{job=\"node-exporter\", fstype!=\"\"} - node_filesystem_avail_bytes{job=\"node-exporter\", fstype!=\"\"}\n  )\n) \n/ scalar(sum(max without (fstype, mountpoint) (node_filesystem_size_bytes{job=\"node-exporter\", fstype!=\"\"})))\n",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}}",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}}",
                                 "legendLink": "/dashboard/file/node-rsrc-use.json",
                                 "step": 10
                             }
@@ -906,8 +909,8 @@ data:
             "list": [
                 {
                     "current": {
-                        "text": "Prometheus",
-                        "value": "Prometheus"
+                        "text": "default",
+                        "value": "default"
                     },
                     "hide": 0,
                     "label": null,

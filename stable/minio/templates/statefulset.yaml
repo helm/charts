@@ -26,7 +26,11 @@ spec:
   publishNotReadyAddresses: true
   clusterIP: None
   ports:
-    - name: service
+    {{- if .Values.tls.enabled }}
+    - name: https
+    {{ else }}
+    - name: http
+    {{- end }}
       port: {{ .Values.service.port }}
       protocol: TCP
   selector:
@@ -62,6 +66,7 @@ spec:
 {{ toYaml .Values.podLabels | indent 8 }}
 {{- end }}
       annotations:
+        rollme: {{ randAlphaNum 5 | quote }}
         checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
 {{- if .Values.podAnnotations }}
@@ -85,8 +90,7 @@ spec:
 
           command: [ "/bin/sh",
             "-ce",
-            "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} server {{- range $i := until $zoneCount }}{{ $factor := mul $i $nodeCount }}{{ $endIndex := add $factor $nodeCount }}{{ $beginIndex := mul $i $nodeCount }}  {{ $scheme }}://{{ template `minio.fullname` $ }}-{{ `{` }}{{ $beginIndex }}...{{ sub $endIndex 1 }}{{ `}`}}.{{ template `minio.fullname` $ }}-svc.{{ $.Release.Namespace }}.svc.{{ $.Values.clusterDomain }}{{if (gt $drivesPerNode 1)}}{{ $bucketRoot }}-{{ `{` }}0...{{ sub $drivesPerNode 1 }}{{ `}` }}{{else}}{{ $bucketRoot }}{{end}}{{- end}}"
-          {{- template "minio.extraArgs" . }} ]
+            "/usr/bin/docker-entrypoint.sh minio -S {{ .Values.certsPath }} server {{- range $i := until $zoneCount }}{{ $factor := mul $i $nodeCount }}{{ $endIndex := add $factor $nodeCount }}{{ $beginIndex := mul $i $nodeCount }}  {{ $scheme }}://{{ template `minio.fullname` $ }}-{{ `{` }}{{ $beginIndex }}...{{ sub $endIndex 1 }}{{ `}`}}.{{ template `minio.fullname` $ }}-svc.{{ $.Release.Namespace }}.svc.{{ $.Values.clusterDomain }}{{if (gt $drivesPerNode 1)}}{{ $bucketRoot }}-{{ `{` }}0...{{ sub $drivesPerNode 1 }}{{ `}` }}{{else}}{{ $bucketRoot }}{{end}}{{- end}}{{- template `minio.extraArgs` . }}" ]
           volumeMounts:
             {{- if $penabled }}
             {{- if (gt $drivesPerNode 1) }}
@@ -110,7 +114,11 @@ spec:
               mountPath: {{ .Values.certsPath }}
             {{ end }}
           ports:
-            - name: service
+            {{- if .Values.tls.enabled }}
+            - name: https
+            {{ else }}
+            - name: http
+            {{- end }}
               containerPort: 9000
           env:
             - name: MINIO_ACCESS_KEY
@@ -130,7 +138,11 @@ spec:
           livenessProbe:
             httpGet:
               path: /minio/health/live
-              port: service
+              {{- if .Values.tls.enabled }}
+              port: https
+              {{ else }}
+              port: http
+              {{- end }}
               {{- if .Values.tls.enabled }}
               scheme: HTTPS
               {{ else }}
@@ -144,7 +156,11 @@ spec:
           readinessProbe:
             httpGet:
               path: /minio/health/ready
-              port: service
+              {{- if .Values.tls.enabled }}
+              port: https
+              {{ else }}
+              port: http
+              {{- end }}
               {{- if .Values.tls.enabled }}
               scheme: HTTPS
               {{ else }}

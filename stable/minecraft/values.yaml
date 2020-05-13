@@ -10,6 +10,9 @@ resources:
     memory: 512Mi
     cpu: 500m
 
+# upgrade strategy type (e.g. Recreate or RollingUpdate)
+strategyType: Recreate
+
 nodeSelector: {}
 
 tolerations: []
@@ -29,6 +32,9 @@ livenessProbe:
     - status
   initialDelaySeconds: 30
   periodSeconds: 5
+  failureThreshold: 10
+  successThreshold: 1
+  timeoutSeconds: 1
 readinessProbe:
   command:
     - mcstatus
@@ -36,6 +42,9 @@ readinessProbe:
     - status
   initialDelaySeconds: 30
   periodSeconds: 5
+  failureThreshold: 10
+  successThreshold: 1
+  timeoutSeconds: 1
 minecraftServer:
   # This must be overridden, since we can't accept this for the user.
   eula: "FALSE"
@@ -55,7 +64,7 @@ minecraftServer:
   spigotDownloadUrl:
   # If type is set to PAPER, this sets the URL to download the PaperSpigot package
   paperDownloadUrl:
-  # If type is set to FTB, this sets the server mod to run
+  # If type is set to FTB, this sets the server mod to run. You can also provide the URL to download the FTB package
   ftbServerMod:
   # Set to true if running Feed The Beast and get an error like "unable to launch forgemodloader"
   ftbLegacyJavaFixer: false
@@ -167,3 +176,5 @@ persistence:
     Size: 1Gi
 
 podAnnotations: {}
+
+deploymentAnnotations: {}

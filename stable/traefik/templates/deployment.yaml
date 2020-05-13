@@ -49,9 +49,9 @@ spec:
 {{ toYaml .Values.deployment.podLabels | indent 8 }}
         {{- end }}
     spec:
-      {{- if .Values.securityContext }}
+      {{- if .Values.podSecurityContext }}
       securityContext:
-{{ toYaml .Values.securityContext | indent 8 }}
+{{ toYaml .Values.podSecurityContext | indent 8 }}
       {{- end }}
       {{- if .Values.rbac.enabled }}
       serviceAccountName: {{ template "traefik.fullname" . }}
@@ -78,6 +78,7 @@ spec:
       {{- end }}
       containers:
       - image: {{ .Values.image }}:{{ .Values.imageTag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
         name: {{ template "traefik.fullname" . }}
         resources:
         {{- if or .Values.cpuRequest .Values.memoryRequest .Values.cpuLimit .Values.memoryLimit }}
@@ -188,6 +189,10 @@ spec:
         - --configfile=/config/traefik.toml
         {{- range .Values.startupArguments }}
         - {{ . }}
+        {{- end }}
+        {{- if .Values.containerSecurityContext }}
+        securityContext:
+{{ toYaml .Values.containerSecurityContext | indent 10 }}
         {{- end }}
 
       volumes:
