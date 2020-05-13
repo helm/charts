@@ -112,8 +112,8 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.slaveDefaultsProviderTemplate` | The name of the pod template to use for providing default values | Not set  |
 | `master.slaveJenkinsUrl`          | Overrides the Kubernetes Jenkins URL    | Not set                                |
 | `master.slaveJenkinsTunnel`       | Overrides the Kubernetes Jenkins tunnel | Not set                                |
-| `master.slaveConnectTimeout`      | The connection timeout in seconds for connections to Kubernetes API. Minimum value is 5. | 0 |
-| `master.slaveReadTimeout`         | The read timeout in seconds for connections to Kubernetes API. Minimum value is 15. | 0 |
+| `master.slaveConnectTimeout`      | The connection timeout in seconds for connections to Kubernetes API. Minimum value is 5. | 5 |
+| `master.slaveReadTimeout`         | The read timeout in seconds for connections to Kubernetes API. Minimum value is 15. | 15 |
 | `master.disabledAgentProtocols`   | Disabled agent protocols             | `JNLP-connect JNLP2-connect`              |
 | `master.csrf.defaultCrumbIssuer.enabled` | Enable the default CSRF Crumb issuer | `true`                             |
 | `master.csrf.defaultCrumbIssuer.proxyCompatability` | Enable proxy compatibility | `true`                            |
