@@ -76,9 +76,12 @@ master:
   #      command:
   #      - "uname"
   #      - "-a"
+  disableRememberMe: false
   numExecutors: 0
   # configures the executor mode of the Jenkins node. Possible values are: NORMAL or EXCLUSIVE
   executorMode: "NORMAL"
+  # This is ignored if enableRawHtmlMarkupFormatter is true
+  markupFormatter: plainText
   customJenkinsLabels: []
   # configAutoReload requires UseSecurity is set to true:
   useSecurity: true
