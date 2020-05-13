@@ -3,76 +3,80 @@
 This file documents all notable changes to Ambassador Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
-## v6.3.4
+## v6.3.5
+ 
+- Revived the chart at [helm/charts](https://github.com/helm/charts/tree/master/stable/ambassador)
+
+## v6.3.4 (Only available at [datawire/ambassador-chart](https://github.com/datawire/ambassador-chart))
 
 - Minor bug fixes
 
-## v6.3.3
+## v6.3.3 (Only available at [datawire/ambassador-chart](https://github.com/datawire/ambassador-chart))      
 
 - Add extra labels to ServiceMonitor: [CHANGELOG}](https://github.com/datawire/ambassador/blob/master/CHANGELOG.md)
 
-## v6.3.2
+## v6.3.2 (Only available at [datawire/ambassador-chart](https://github.com/datawire/ambassador-chart))
 
 - Upgrade Ambassador to version 1.4.2: [CHANGELOG}](https://github.com/datawire/ambassador/blob/master/CHANGELOG.md)
 
-## v6.3.1
+## v6.3.1 (Only available at [datawire/ambassador-chart](https://github.com/datawire/ambassador-chart))
 
 - Upgrade Ambassador to version 1.4.1: [CHANGELOG}](https://github.com/datawire/ambassador/blob/master/CHANGELOG.md)
 
-## v6.3.0
+## v6.3.0 (Only available at [datawire/ambassador-chart](https://github.com/datawire/ambassador-chart))
 
 - Adds: Option to create a ServiceMonitor for scraping via Prometheus Operator
 
-## v6.2.5
+## v6.2.5 (Only available at [datawire/ambassador-chart](https://github.com/datawire/ambassador-chart))
 
 - Upgrade Ambassador to version 1.4.0: [CHANGELOG}](https://github.com/datawire/ambassador/blob/master/CHANGELOG.md)
 
-## v6.2.4
+## v6.2.4 (Only available at [datawire/ambassador-chart](https://github.com/datawire/ambassador-chart))
 
 - Fix typing so that Helm3 doesn't complain (thanks, [Fabrice Rabaute](https://github.com/jfrabaute)!)
 
-## v6.2.3
+## v6.2.3 (Only available at [datawire/ambassador-chart](https://github.com/datawire/ambassador-chart))
 
 - Upgrade Ambassador to version 1.3.2.
 - Use explicit types for things like ports, so that things like `helm .. --set service.ports[0].port=80` will be integers instead of ending up as strings
 
-## v6.2.2
+## v6.2.2 (Only available at [datawire/ambassador-chart](https://github.com/datawire/ambassador-chart))
 
 - Upgrade Ambassador to version 1.3.1.
 - Remove unnecessary `version` field from CRDs.
 - Add static label to AES resources, to better support `edgectl install`
 
-## v6.2.1
+## v6.2.1 (Only available at [datawire/ambassador-chart](https://github.com/datawire/ambassador-chart))
 
 - Upgrade Ambassador to version 1.3.0.
 
-## v6.2.0
+## v6.2.0 (Only available at [datawire/ambassador-chart](https://github.com/datawire/ambassador-chart))
 
 - Add option to not create DevPortal routes
 
-## v6.1.5
+## v6.1.5 (Only available at [datawire/ambassador-chart](https://github.com/datawire/ambassador-chart))
 
 - Upgrade Ambassador to version 1.2.2.
 
-## v6.1.4
+## v6.1.4 (Only available at [datawire/ambassador-chart](https://github.com/datawire/ambassador-chart))
 
 - Upgrade from Ambassador 1.2.0 to 1.2.1.
 
-## v6.1.3
+## v6.1.3 (Only available at [datawire/ambassador-chart](https://github.com/datawire/ambassador-chart))
 
 - Upgrade from Ambassador 1.1.1 to 1.2.0.
 
-## v6.1.2
+## v6.1.2 (Only available at [datawire/ambassador-chart](https://github.com/datawire/ambassador-chart))
 
 - Upgrade from Ambassador 1.1.0 to 1.1.1.
 
-## v6.1.1
+## v6.1.1 (Only available at [datawire/ambassador-chart](https://github.com/datawire/ambassador-chart))
 
 Minor Improvements:
 
 - Adds: Option to override the name of the RBAC resources
 
-## v6.1.0
+## v6.1.0 (Only available at [datawire/ambassador-chart](https://github.com/datawire/ambassador-chart))
 
 Minor improvements including:
 
@@ -81,7 +85,7 @@ Minor improvements including:
 - Fixes: Assumption that the AES will be installed only from the `datawire/aes` repository. The `enableAES` flag now configures whether the AES is installed.
 - Clarification on how to install OSS
 
-## v6.0.0
+## v6.0.0 (Only available at [datawire/ambassador-chart](https://github.com/datawire/ambassador-chart))
 
 Introduces Ambassador Edge Stack being installed by default.
 
