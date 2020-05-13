@@ -55,7 +55,7 @@ spec:
           {{- end }}
         {{- end }}
         {{- if or .Values.config.existingConfig .Values.config.configFile }}
-          - --config=/etc/oauth2_proxy/oauth2_proxy.cfg
+          - --config=/etc/oauth2-proxy/oauth2-proxy.cfg
         {{- end }}
         {{- if .Values.authenticatedEmailsFile.enabled }}
         {{- if .Values.authenticatedEmailsFile.template }}
@@ -71,7 +71,7 @@ spec:
         {{- end }}
         {{- end }}
         {{- if .Values.htpasswdFile.enabled }}
-          - --htpasswd-file=/etc/oauth2_proxy/htpasswd/users.txt
+          - --htpasswd-file=/etc/oauth2-proxy/htpasswd/users.txt
         {{- end }}
         {{- if .Values.proxyVarsAsSecrets }}
         env:
@@ -129,7 +129,7 @@ spec:
 {{- end }}
 {{- end }}
 {{- if or .Values.config.existingConfig .Values.config.configFile }}
-        - mountPath: /etc/oauth2_proxy
+        - mountPath: /etc/oauth2-proxy
           name: configmain
 {{- end }}
 {{- if .Values.authenticatedEmailsFile.enabled }}
@@ -138,7 +138,7 @@ spec:
           readOnly: true
 {{- end }}
 {{- if .Values.htpasswdFile.enabled }}
-        - mountPath: /etc/oauth2_proxy/htpasswd
+        - mountPath: /etc/oauth2-proxy/htpasswd
           name: {{ template "oauth2-proxy.fullname" . }}-htpasswd-file
           readOnly: true
 {{- end }}

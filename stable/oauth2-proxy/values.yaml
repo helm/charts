@@ -20,7 +20,7 @@ config:
   configFile: |-
     email_domains = [ "*" ]
     upstreams = [ "file:///dev/null" ]
-  # Custom configuration file: oauth2_proxy.cfg
+  # Custom configuration file: oauth2-proxy.cfg
   # configFile: |-
   #   pass_basic_auth = false
   #   pass_access_token = true
@@ -29,8 +29,8 @@ config:
   # existingConfig: config
 
 image:
-  repository: "quay.io/pusher/oauth2_proxy"
-  tag: "v5.1.0"
+  repository: "quay.io/oauth2-proxy/oauth2-proxy"
+  tag: "v5.1.1"
   pullPolicy: "IfNotPresent"
 
 # Optionally specify an array of imagePullSecrets.
