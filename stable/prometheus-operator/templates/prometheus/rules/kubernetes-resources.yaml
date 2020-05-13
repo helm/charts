@@ -78,7 +78,7 @@ spec:
         severity: warning
     - alert: KubeQuotaExceeded
       annotations:
-        message: Namespace {{`{{ $labels.namespace }}`}} is using {{`{{ printf "%0.0f" $value }}`}}% of its {{`{{ $labels.resource }}`}} quota.
+        message: Namespace {{`{{`}} $labels.namespace {{`}}`}} is using {{`{{`}} printf "%0.0f" $value {{`}}`}}% of its {{`{{`}} $labels.resource {{`}}`}} quota.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubequotaexceeded
       expr: |-
         100 * kube_resourcequota{job="kube-state-metrics", type="used"}
@@ -90,7 +90,7 @@ spec:
         severity: warning
     - alert: CPUThrottlingHigh
       annotations:
-        message: '{{`{{ printf "%0.0f" $value }}`}}% throttling of CPU in namespace {{`{{ $labels.namespace }}`}} for container {{`{{ $labels.container_name }}`}} in pod {{`{{ $labels.pod_name }}`}}.'
+        message: '{{`{{`}} printf "%0.0f" $value {{`}}`}}% throttling of CPU in namespace {{`{{`}} $labels.namespace {{`}}`}} for container {{`{{`}} $labels.container_name {{`}}`}} in pod {{`{{`}} $labels.pod_name {{`}}`}}.'
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-cputhrottlinghigh
       expr: |-
         100 * sum(increase(container_cpu_cfs_throttled_periods_total{container_name!="", }[5m])) by (container_name, pod_name, namespace)

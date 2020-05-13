@@ -38,7 +38,7 @@ data:
         "links": [
 
         ],
-        "refresh": "",
+        "refresh": "10s",
         "rows": [
             {
                 "collapse": false,
@@ -142,15 +142,15 @@ data:
                         },
                         "id": 3,
                         "legend": {
-                            "alignAsTable": "true",
+                            "alignAsTable": true,
                             "avg": false,
-                            "current": "true",
+                            "current": true,
                             "max": false,
                             "min": false,
-                            "rightSide": "true",
-                            "show": "true",
+                            "rightSide": true,
+                            "show": true,
                             "total": false,
-                            "values": "true"
+                            "values": true
                         },
                         "lines": true,
                         "linewidth": 1,
@@ -175,28 +175,28 @@ data:
                                 "expr": "sum(rate(scheduler_e2e_scheduling_duration_seconds_count{job=\"kube-scheduler\", instance=~\"$instance\"}[5m])) by (instance)",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}} e2e",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}} e2e",
                                 "refId": "A"
                             },
                             {
                                 "expr": "sum(rate(scheduler_binding_duration_seconds_count{job=\"kube-scheduler\", instance=~\"$instance\"}[5m])) by (instance)",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}} binding",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}} binding",
                                 "refId": "B"
                             },
                             {
                                 "expr": "sum(rate(scheduler_scheduling_algorithm_duration_seconds_count{job=\"kube-scheduler\", instance=~\"$instance\"}[5m])) by (instance)",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}} scheduling algorithm",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}} scheduling algorithm",
                                 "refId": "C"
                             },
                             {
                                 "expr": "sum(rate(scheduler_volume_scheduling_duration_seconds_count{job=\"kube-scheduler\", instance=~\"$instance\"}[5m])) by (instance)",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}} volume",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}} volume",
                                 "refId": "D"
                             }
                         ],
@@ -254,15 +254,15 @@ data:
                         },
                         "id": 4,
                         "legend": {
-                            "alignAsTable": "true",
+                            "alignAsTable": true,
                             "avg": false,
-                            "current": "true",
+                            "current": true,
                             "max": false,
                             "min": false,
-                            "rightSide": "true",
-                            "show": "true",
+                            "rightSide": true,
+                            "show": true,
                             "total": false,
-                            "values": "true"
+                            "values": true
                         },
                         "lines": true,
                         "linewidth": 1,
@@ -287,28 +287,28 @@ data:
                                 "expr": "histogram_quantile(0.99, sum(rate(scheduler_e2e_scheduling_duration_seconds_bucket{job=\"kube-scheduler\",instance=~\"$instance\"}[5m])) by (instance, le))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}} e2e",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}} e2e",
                                 "refId": "A"
                             },
                             {
                                 "expr": "histogram_quantile(0.99, sum(rate(scheduler_binding_duration_seconds_bucket{job=\"kube-scheduler\",instance=~\"$instance\"}[5m])) by (instance, le))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}} binding",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}} binding",
                                 "refId": "B"
                             },
                             {
                                 "expr": "histogram_quantile(0.99, sum(rate(scheduler_scheduling_algorithm_duration_seconds_bucket{job=\"kube-scheduler\",instance=~\"$instance\"}[5m])) by (instance, le))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}} scheduling algorithm",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}} scheduling algorithm",
                                 "refId": "C"
                             },
                             {
                                 "expr": "histogram_quantile(0.99, sum(rate(scheduler_volume_scheduling_duration_seconds_bucket{job=\"kube-scheduler\",instance=~\"$instance\"}[5m])) by (instance, le))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}} volume",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}} volume",
                                 "refId": "D"
                             }
                         ],
@@ -524,7 +524,7 @@ data:
                                 "expr": "histogram_quantile(0.99, sum(rate(rest_client_request_latency_seconds_bucket{job=\"kube-scheduler\", instance=~\"$instance\", verb=\"POST\"}[5m])) by (verb, url, le))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{verb}}`}} {{`{{url}}`}}",
+                                "legendFormat": "{{`{{`}}verb{{`}}`}} {{`{{`}}url{{`}}`}}",
                                 "refId": "A"
                             }
                         ],
@@ -595,15 +595,15 @@ data:
                         },
                         "id": 7,
                         "legend": {
-                            "alignAsTable": "true",
+                            "alignAsTable": true,
                             "avg": false,
-                            "current": "true",
+                            "current": true,
                             "max": false,
                             "min": false,
-                            "rightSide": "true",
-                            "show": "true",
+                            "rightSide": true,
+                            "show": true,
                             "total": false,
-                            "values": "true"
+                            "values": true
                         },
                         "lines": true,
                         "linewidth": 1,
@@ -628,7 +628,7 @@ data:
                                 "expr": "histogram_quantile(0.99, sum(rate(rest_client_request_latency_seconds_bucket{job=\"kube-scheduler\", instance=~\"$instance\", verb=\"GET\"}[5m])) by (verb, url, le))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{verb}}`}} {{`{{url}}`}}",
+                                "legendFormat": "{{`{{`}}verb{{`}}`}} {{`{{`}}url{{`}}`}}",
                                 "refId": "A"
                             }
                         ],
@@ -732,7 +732,7 @@ data:
                                 "expr": "process_resident_memory_bytes{job=\"kube-scheduler\", instance=~\"$instance\"}",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}}",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}}",
                                 "refId": "A"
                             }
                         ],
@@ -823,7 +823,7 @@ data:
                                 "expr": "rate(process_cpu_seconds_total{job=\"kube-scheduler\", instance=~\"$instance\"}[5m])",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}}",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}}",
                                 "refId": "A"
                             }
                         ],
@@ -914,7 +914,7 @@ data:
                                 "expr": "go_goroutines{job=\"kube-scheduler\",instance=~\"$instance\"}",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}}",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}}",
                                 "refId": "A"
                             }
                         ],
@@ -977,8 +977,8 @@ data:
             "list": [
                 {
                     "current": {
-                        "text": "Prometheus",
-                        "value": "Prometheus"
+                        "text": "default",
+                        "value": "default"
                     },
                     "hide": 0,
                     "label": null,

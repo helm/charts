@@ -424,6 +424,10 @@ spec:
           mountPath: /transip
           readOnly: true
         {{- end }}
+        # Extra volume mount(s)
+        {{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 8 }}
+        {{- end }}
       volumes:
       # AWS volume(s)
       {{- if and (eq .Values.provider "aws") (or (and .Values.aws.credentials.secretKey .Values.aws.credentials.accessKey) .Values.aws.credentials.secretName) }}
@@ -481,4 +485,8 @@ spec:
       - name: transip-api-key
         secret:
           name: {{ template "external-dns.fullname" . }}
+      {{- end }}
+      # Extra volume(s)
+      {{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
       {{- end }}

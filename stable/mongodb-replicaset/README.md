@@ -38,6 +38,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `replicaSetName`                    | The name of the replica set                                               | `rs0`                                               |
 | `skipInitialization`                    | If `true` skip replica set initialization during bootstrapping                                              | `false`      
 | `podDisruptionBudget`               | Pod disruption budget                                                     | `{}`                                                |
+| `updateStrategy`                    | Update strategy                                                   | `nil`                                               |
 | `port`                              | MongoDB port                                                              | `27017`                                             |
 | `imagePullSecrets`                  | Image pull secrets                                                        | `[]`                                                |
 | `installImage.repository`           | Image name for the install container                                      | `unguiculus/mongodb-install`                        |
@@ -90,6 +91,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `auth.metricsPassword`              | MongoDB clusterMonitor password                                           | ``                                                  |
 | `auth.existingMetricsSecret`        | If set, and existing secret with this name is used for the metrics user   | ``                                                  |
 | `auth.existingAdminSecret`          | If set, and existing secret with this name is used for the admin user     | ``                                                  |
+| `secretAnnotations`                 | Annotations to be added to the secret if auth is enabled                  | `{}`                                                |
 | `serviceAnnotations`                | Annotations to be added to the service                                    | `{}`                                                |
 | `configmap`                         | Content of the MongoDB config file                                        | ``                                                  |
 | `initMongodStandalone`              | If set, initContainer executes script in standalone mode                  | ``                                                  |
@@ -406,7 +408,7 @@ metadata:
 spec:
   type: ExternalName
   externalName: mongodb01.mydomain.com
-``` 
+```
 
 If you also put each StatefulSet member behind a loadbalancer the ReplicaSet members outside of the cluster will also be able to reach the pods inside the cluster.
 

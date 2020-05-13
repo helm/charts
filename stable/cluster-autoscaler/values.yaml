@@ -53,7 +53,7 @@ cloudConfigPath: /etc/gce.conf
 
 image:
   repository: k8s.gcr.io/cluster-autoscaler
-  tag: v1.14.6
+  tag: v1.17.1
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -111,11 +111,12 @@ rbac:
   ## If true, create & use Pod Security Policy resources
   ## https://kubernetes.io/docs/concepts/policy/pod-security-policy/
   pspEnabled: false
-  ## if rbac.create is false or (if rbac.create is true and rbac.serviceAccount.create is false)
-  ## the service account rbac.serviceAccount.name will be used instead
   serviceAccount:
+    # Specifies whether a service account should be created
     create: true
-    name: default
+    # The name of the ServiceAccount to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: ""
   ## Annotations for the Service Account
   ##
   serviceAccountAnnotations: {}
@@ -201,3 +202,8 @@ fullnameOverride: ""
 
 # Allow overridding the .Capabilities.KubeVersion.GitVersion (useful for "helm template" command)
 kubeTargetVersionOverride: ""
+
+## Priorities Expander
+## If extraArgs.expander is set to priority, then expanderPriorities is used to define cluster-autoscaler-priority-expander priorities
+## https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/expander/priority/readme.md
+expanderPriorities: {}

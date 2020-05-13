@@ -11,6 +11,11 @@ controller:
     runAsUser: 101
     allowPrivilegeEscalation: true
 
+  # This will fix the issue of HPA not being able to read the metrics.
+  # Note that if you enable it for existing deployments, it won't work as the labels are immutable.
+  # We recommend setting this to true for new deployments.
+  useComponentLabel: false
+
   # Configures the ports the nginx-controller listens on
   containerPort:
     http: 80
@@ -66,6 +71,9 @@ controller:
   ## Name of the ingress class to route through this controller
   ##
   ingressClass: nginx
+
+  # labels to add to the deployment metadata
+  deploymentLabels: {}
 
   # labels to add to the pod container metadata
   podLabels: {}
@@ -438,6 +446,11 @@ defaultBackend:
     # nobody user -> uid 65534
     runAsUser: 65534
 
+  # This will fix the issue of HPA not being able to read the metrics.
+  # Note that if you enable it for existing deployments, it won't work as the labels are immutable.
+  # We recommend setting this to true for new deployments.
+  useComponentLabel: false
+
   extraArgs: {}
 
   serviceAccount:
@@ -481,6 +494,9 @@ defaultBackend:
   ##
   podSecurityContext: {}
 
+  # labels to add to the deployment metadata
+  deploymentLabels: {}
+
   # labels to add to the pod container metadata
   podLabels: {}
   #  key: value
@@ -523,6 +539,9 @@ defaultBackend:
     type: ClusterIP
 
   priorityClassName: ""
+
+# If provided, the value will be used as the `release` label instead of .Release.Name
+releaseLabelOverride: ""
 
 ## Enable RBAC as per https://github.com/kubernetes/ingress/tree/master/examples/rbac/nginx and https://github.com/kubernetes/ingress/issues/266
 rbac:

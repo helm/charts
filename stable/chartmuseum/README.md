@@ -73,7 +73,7 @@ their default values. See values.yaml for all available options.
 |-----------------------------------------|-----------------------------------------------------------------------------|--------------------------------------|
 | `image.pullPolicy`                      | Container pull policy                                                       | `IfNotPresent`                       |
 | `image.repository`                      | Container image to use                                                      | `chartmuseum/chartmuseum`            |
-| `image.tag`                             | Container image tag to deploy                                               | `v0.8.0`                             |
+| `image.tag`                             | Container image tag to deploy                                               | `v0.12.0`                             |
 | `persistence.accessMode`                | Access mode to use for PVC                                                  | `ReadWriteOnce`                      |
 | `persistence.enabled`                   | Whether to use a PVC for persistent storage                                 | `false`                              |
 | `persistence.path`                      | PV mount path                                                               | `/storage`                              |
@@ -101,6 +101,7 @@ their default values. See values.yaml for all available options.
 | `serviceAccount.annotations`            | Additional Service Account annotations                                      | `{}`                                 |
 | `securityContext.enabled`               | Enable securityContext                                                      | `true`                               |
 | `securityContext.fsGroup`               | Group ID for the container                                                  | `1000`                               |
+| `priorityClassName      `               | priorityClassName                                                           | `""`                                 |
 | `nodeSelector`                          | Map of node labels for pod assignment                                       | `{}`                                 |
 | `tolerations`                           | List of node taints to tolerate                                             | `[]`                                 |
 | `affinity`                              | Map of node/pod affinities                                                  | `{}`                                 |
@@ -151,6 +152,7 @@ their default values. See values.yaml for all available options.
 | `env.secret.BASIC_AUTH_USER`            | Username for basic HTTP authentication                                      | ``                                   |
 | `env.secret.BASIC_AUTH_PASS`            | Password for basic HTTP authentication                                      | ``                                   |
 | `env.secret.CACHE_REDIS_PASSWORD`       | Redis requirepass server configuration                                      | ``                                   |
+| `extraArgs`                             | Pass extra arguments to the chartmuseum binary                              | ``                                   |
 | `gcp.secret.enabled`                    | Flag for the GCP service account                                            | `false`                              |
 | `gcp.secret.name`                       | Secret name for the GCP json file                                           | ``                                   |
 | `gcp.secret.key`                        | Secret key for te GCP json file                                             | `credentials.json`                   |
@@ -166,6 +168,12 @@ their default values. See values.yaml for all available options.
 | `service.loadBalancerSourceRanges`      | Restricts access for LoadBalancer (only for Service type LoadBalancer)      | `[]`                                 |
 | `service.servicename`                   | Custom name for service                                                     | ``                                   |
 | `service.labels`                        | Additional labels for service                                               | `{}`                                 |
+| `serviceMonitor.enabled`                | Enable the ServiceMontor resource to be deployed                            | `false`                              |
+| `serviceMonitor.labels`                 | Labels for the servicemonitor used by the Prometheus Operator               | `{}`                                 |
+| `serviceMonitor.namespace`              | Namespace of the ServiceMonitor resource                                    | `{{ .Release.Namespace }}`           |
+| `serviceMonitor.metricsPath`            | Path to the Chartmuseum metrics path                                        | `/metrics`                           |
+| `serviceMonitor.interval`               | Scrape interval, If not set, the Prometheus default scrape interval is used | `nil`                                |
+| `serviceMonitor.timeout`                | Scrape request timeout. If not set, the Prometheus default timeout is used  | `nil`                                |
 | `deployment.labels`                     | Additional labels for deployment                                            | `{}`                                 |
 | `deployment.matchlabes`                 | Match labels for deployment selector                                        | `{}`                                 |
 | `ingress.enabled`                       | Enable ingress controller resource                                          | `false`                              |

@@ -54,6 +54,7 @@ spec:
         - name: ssh-secrets
           secret:
             secretName: {{ .Values.agent.security.ssh.secretName }}
+            defaultMode: {{ .Values.agent.security.ssh.defaultMode | default 256 }}
       {{- end }}
       {{- if .Values.agent.initContainers }}
       initContainers:
@@ -74,7 +75,7 @@ spec:
             {{- if .Values.agent.env.goServerUrl }}
               value: {{ .Values.agent.env.goServerUrl }}
             {{- else }}
-              value: "https://{{ template "gocd.fullname" . }}-server:{{ .Values.server.service.httpsPort }}/go"
+              value: "http://{{ template "gocd.fullname" . }}-server:{{ .Values.server.service.httpPort }}/go"
             {{- end }}
 
             {{- if .Values.agent.env.agentAutoRegisterKey }}

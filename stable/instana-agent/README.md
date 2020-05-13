@@ -1,6 +1,6 @@
 # Instana
 
-Instana is an [APM solution(https://www.instana.com/) built for microservices that enables IT Ops to build applications faster and deliver higher quality services by automating monitoring, tracing and root cause analysis. This solution is optimized for [Kubernetes](https://www.instana.com/automatic-kubernetes-monitoring/).
+Instana is an [APM solution](https://www.instana.com/) built for microservices that enables IT Ops to build applications faster and deliver higher quality services by automating monitoring, tracing and root cause analysis. This solution is optimized for [Kubernetes](https://www.instana.com/automatic-kubernetes-monitoring/).
 
 ## Introduction
 
@@ -8,9 +8,17 @@ This chart adds the Instana Agent to all schedulable nodes in your cluster via a
 
 ## Prerequisites
 
-Kubernetes 1.9.x - 1.16.x
+Kubernetes 1.9.x - 1.18.x
 
-Working `helm` (version 3) with the `stable` repo added to your helm client.
+#### Helm 3 prerequisites
+
+Working `helm` with the `stable` repo added to your helm client.
+
+#### Helm 2 prerequisites
+
+Working `helm` and `tiller`.
+
+_Note:_ Tiller may need a service account and role binding if RBAC is enabled in your cluster.
 
 ## Installing the Chart
 
@@ -49,6 +57,8 @@ Agent can have APM, INFRASTRUCTURE or AWS mode. Default is APM and if you want t
 
 * agent.mode
 
+#### Installing with Helm 3
+
 First, create a namespace for the instana-agent
 
 ```bash
@@ -65,12 +75,32 @@ $ helm install instana-agent --namespace instana-agent \
 stable/instana-agent
 ```
 
+#### Installing with Helm 2
+
+To install the chart with the release name `instana-agent` and set the values on the command line run:
+
+```bash
+$ helm install --name instana-agent --namespace instana-agent \
+--set agent.key=INSTANA_AGENT_KEY \
+--set agent.endpointHost=HOST \
+--set zone.name=ZONE_NAME \
+stable/instana-agent
+```
+
 ## Uninstalling the Chart
 
-To uninstall/delete the `instana-agent` daemon set:
+To uninstall/delete the `instana-agent` release:
+
+#### Uninstalling with Helm 2
 
 ```bash
 $ helm del --purge instana-agent
+```
+
+#### Uninstalling with Helm 3
+
+```bash
+$ helm del instana-agent -n instana-agent
 ```
 
 ## Configuration
@@ -83,7 +113,7 @@ The following table lists the configurable parameters of the Instana chart and t
 |------------------------------------|-------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------|
 | `agent.configuration_yaml`         | Custom content for the agent configuration.yaml file                    | `nil` See [below](#agent) for more details                                                                  |
 | `agent.downloadKey`                | Your Instana Download key                                               | `nil` Usually not required                                                                                  |
-| `agent.endpointHost`               | Instana Agent backend endpoint host                                     | `saas-us-west-2.instana.io`                                                                                 |
+| `agent.endpointHost`               | Instana Agent backend endpoint host                                     | `ingress-red-saas.instana.io` (US and ROW). If in Europe, please override with `ingress-blue-saas.instana.io`                   |
 | `agent.endpointPort`               | Instana Agent backend endpoint port                                     | `443`                                                                                                       |
 | `agent.image.name`                 | The image name to pull                                                  | `instana/agent`                                                                                             |
 | `agent.image.tag`                  | The image tag to pull                                                   | `latest`                                                                                                    |
