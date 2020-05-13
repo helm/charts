@@ -3,6 +3,7 @@ apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
   name: {{ template "prometheus.server.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "prometheus.server.labels" . | nindent 4 }}
 spec:

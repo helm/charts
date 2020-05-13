@@ -13,6 +13,7 @@ metadata:
     {{ toYaml .Values.server.statefulSet.labels | nindent 4 }}
     {{- end}}
   name: {{ template "prometheus.server.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   serviceName: {{ template "prometheus.server.fullname" . }}-headless
   selector:

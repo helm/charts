@@ -3,6 +3,7 @@ apiVersion: {{ template "prometheus.networkPolicy.apiVersion" . }}
 kind: NetworkPolicy
 metadata:
   name: {{ template "prometheus.alertmanager.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "prometheus.alertmanager.labels" . | nindent 4 }}
 spec:
