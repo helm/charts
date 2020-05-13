@@ -165,7 +165,7 @@ Parameter | Description | Default
 `alertmanager.statefulSet.podManagementPolicy` | podManagementPolicy of alertmanager pods | `OrderedReady`
 `alertmanager.statefulSet.headless.annotations` | annotations for alertmanager headless service | `{}`
 `alertmanager.statefulSet.headless.labels` | labels for alertmanager headless service | `{}`
-`alertmanager.statefulSet.headless.enableMeshPeer` | If true, enable the mesh peer endpoint for the headless service | `{}`
+`alertmanager.statefulSet.headless.enableMeshPeer` | If true, enable the mesh peer endpoint for the headless service | `false`
 `alertmanager.statefulSet.headless.servicePort` | alertmanager headless service port | `80`
 `alertmanager.priorityClassName` | alertmanager priorityClassName | `nil`
 `alertmanager.resources` | alertmanager pod resource requests & limits | `{}`

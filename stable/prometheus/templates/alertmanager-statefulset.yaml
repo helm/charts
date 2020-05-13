@@ -55,6 +55,8 @@ spec:
           {{- range $n := until (.Values.alertmanager.replicaCount | int) }}
             - --cluster.peer={{ template "prometheus.alertmanager.fullname" $ }}-{{ $n }}.{{ template "prometheus.alertmanager.fullname" $ }}-headless:6783
           {{- end }}
+          {{- else }}
+            - --cluster.listen-address=""
           {{- end }}
           {{- range $key, $value := .Values.alertmanager.extraArgs }}
             - --{{ $key }}={{ $value }}
