@@ -67,7 +67,7 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
       {{- if .Values.securityContext.fsGroup }}
       securityContext:
-        fsGroup: 65534
+        fsGroup: {{ .Values.securityContext.fsGroup }}
       {{- end }}
       volumes:
       - name: tmp
