@@ -1,0 +1,6 @@
+apiVersion: v2
+name: shynet
+description: A modern, privacy-friendly, and detailed web analytics that works without cookies or JS
+type: application
+version: 0.1.0
+appVersion: 0.4.0
