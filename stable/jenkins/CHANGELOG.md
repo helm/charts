@@ -5,6 +5,11 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.19.0
+
+Add support for disabling remember me via `master.disableRememberMe`
+Add support for using a different markup formatter via `master.markupFormatter`
+
 ## 1.18.1
 
 Add support for executor mode configuraton with `master.executorMode`.

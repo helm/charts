@@ -72,7 +72,7 @@ Returns configuration as code default config
 */}}
 {{- define "jenkins.casc.defaults" -}}
 jenkins:
-  disableRememberMe: false
+  disableRememberMe: {{ .Values.master.disableRememberMe }}
   remotingSecurity:
     enabled: true
   mode: {{ .Values.master.executorMode }}
@@ -83,7 +83,7 @@ jenkins:
     rawHtml:
       disableSyntaxHighlighting: true
     {{- else }}
-      "plainText"
+    {{- toYaml .Values.master.markupFormatter | nindent 4 }}
     {{- end }}
   clouds:
   - kubernetes:
