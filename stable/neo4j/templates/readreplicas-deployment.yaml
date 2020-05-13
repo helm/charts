@@ -91,15 +91,12 @@ spec:
           name: browser
         - containerPort: 7687
           name: bolt
-<<<<<<< HEAD
-=======
         - containerPort: 6000
           name: tx
         {{- if .Values.metrics.prometheus.enabled }}
         - containerPort: 2004
           name: prometheus
         {{- end }}
->>>>>>> c67bdb9ec... Add Prometheus ServiceMonitor
         volumeMounts:
         - name: plugins
           mountPath: /plugins
