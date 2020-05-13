@@ -50,6 +50,8 @@ networkPolicy: false
 securityContext:
   # securityContext.runAsUser defines under which user the operator Pod and its containers/processes run.
   runAsUser: 1001
+  # securityContext.fsGroup defines the filesystem group
+  fsGroup: 65534
 
 podAnnotations: {}
 
