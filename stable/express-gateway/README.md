@@ -71,6 +71,7 @@ and their default values.
 | podAnnotations       | Annotations to add to each pod                                                                         | `{}`                             |
 | resources            | Pod resource requests & limits                                                                         | `{}`                             |
 | tolerations          | List of node taints to tolerate                                                                        | `[]`                             |
+| config               | Config Map with configuration files                                                                    | `[]`                             |
 
 
 ### Express Gateway configuration parameters
