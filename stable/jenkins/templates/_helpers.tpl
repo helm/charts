@@ -78,15 +78,13 @@ jenkins:
   mode: {{ .Values.master.executorMode }}
   numExecutors: {{ .Values.master.numExecutors }}
   projectNamingStrategy: "standard"
-  {{- if .Values.master.defaultMarkupFormatter }}
   markupFormatter:
     {{- if .Values.master.enableRawHtmlMarkupFormatter }}
     rawHtml:
       disableSyntaxHighlighting: true
     {{- else }}
-      "plainText"
+    {{- toYaml .Values.master.markupFormatter | nindent 4 }}
     {{- end }}
-  {{- end }}
   clouds:
   - kubernetes:
       containerCapStr: "{{ .Values.agent.containerCap }}"

@@ -71,7 +71,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.disableRememberMe`        | Disable use of remember me           | `false`                                   |
 | `master.numExecutors`             | Set Number of executors              | 0                                         |
 | `master.executorMode`             | Set executor mode of the Jenkins node. Possible values are: NORMAL or EXCLUSIVE | NORMAL |
-| `master.defaultMarkupFormatter`   | Use default markupFormatter          | `true`                                    |
+| `master.markupFormatter`          | Yaml of the markup formatter to use  | `plainText`                               |
 | `master.customJenkinsLabels`      | Append Jenkins labels to the master  | `{}`                                      |
 | `master.useSecurity`              | Use basic security                   | `true`                                    |
 | `master.securityRealm`            | Custom Security Realm                | Not set                                   |
