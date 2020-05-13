@@ -34,7 +34,7 @@ spec:
       serviceAccountName: {{ template "openebs.serviceAccountName" . }}
       containers:
       - name: {{ template "openebs.name" . }}-apiserver
-        image: "{{ .Values.apiserver.image }}:{{ .Values.apiserver.imageTag }}"
+        image: "{{ .Values.image.repository }}{{ .Values.apiserver.image }}:{{ .Values.apiserver.imageTag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: {{ .Values.apiserver.ports.internalPort }}

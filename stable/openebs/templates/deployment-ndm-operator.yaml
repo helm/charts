@@ -35,7 +35,7 @@ spec:
       serviceAccountName: {{ template "openebs.serviceAccountName" . }}
       containers:
       - name: {{ template "openebs.fullname" . }}-ndm-operator
-        image: "{{ .Values.ndmOperator.image }}:{{ .Values.ndmOperator.imageTag }}"
+        image: "{{ .Values.image.repository }}{{ .Values.ndmOperator.image }}:{{ .Values.ndmOperator.imageTag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         readinessProbe:
           exec:
