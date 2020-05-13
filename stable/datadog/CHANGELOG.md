@@ -1,5 +1,9 @@
 # Datadog changelog
 
+## 2.3.1
+
+* Update the example for `datadog.securityContext`
+
 ## 2.3.0
 
 * Mount the directory containing the CRI socket instead of the socket itself

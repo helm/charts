@@ -49,7 +49,10 @@ datadog:
   #
   securityContext:  #
   #   seLinuxOptions:
-  #     seLinuxLabel: "spc_t"
+  #     user: system_u
+  #     role: system_r
+  #     type: spc_t
+  #     level: s0
 
   ## @param clusterName - string - optional
   ## Set a unique cluster name to allow scoping hosts and Cluster Checks easily
