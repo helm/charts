@@ -169,7 +169,6 @@ spec:
       - name: {{ .Chart.Name }}-exporter
         image: "{{ .Values.vaultExporter.repository }}:{{ .Values.vaultExporter.tag }}"
         imagePullPolicy: {{ .Values.vaultExporter.pullPolicy }}
-        {{- if .Values.master.usePodSecurityContext }}
         securityContext:
           readOnlyRootFilesystem: true
           {{- if .Values.securityContext.usePodSecurityContext }}
