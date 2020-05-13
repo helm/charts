@@ -33,7 +33,7 @@ spec:
       hostNetwork: true
       containers:
       - name: {{ template "openebs.name" . }}-ndm
-        image: "{{ .Values.ndm.image }}:{{ .Values.ndm.imageTag }}"
+        image: "{{ .Values.image.repository }}{{ .Values.ndm.image }}:{{ .Values.ndm.imageTag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         securityContext:
           privileged: true
