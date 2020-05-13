@@ -1,26 +1,60 @@
-Congratulations! You've successfully installed Ambassador.
+-------------------------------------------------------------------------------
+{{- if .Values.enableAES }}
+Congratulations! You have successfully installed The Ambassador Edge Stack!
 
-For help, visit our Slack at https://d6e.co/slack or view the documentation online at https://www.getambassador.io.
+{{- if empty .Values.licenseKey.value }}
+-------------------------------------------------------------------------------
+NOTE: You are currently running The Ambassador Edge Stack in EVALUATION MODE. 
+  
+Request a free community license key at https://SERVICE_IP/edge_stack_admin/#dashboard 
+to unlock all the features of The Ambassador Edge Stack and update the value of 
+licenseKey.value in your values.yaml file.
+{{- end }}
 
+{{- if or .Values.authService.create .Values.rateLimit.create }}
+-------------------------------------------------------------------------------
+WARNING:
+
+With your installation of the Ambassador Edge Stack, you have created a:
+{{ if .Values.authService.create }}
+- AuthService named {{include "ambassador.fullname" .}}-auth
+{{ end }} {{ if .Values.rateLimit.create }}
+- RateLimitService named {{include "ambassador.fullname" .}}-ratelimit
+{{ end }}
+in the {{ .Release.Namespace }} namespace.
+
+Please ensure there is not another of these resources configured in your cluster. 
+If there is, please either remove the old resource or run 
+
+helm upgrade {{ .Release.Name }} -n {{ .Release.Namespace }} --set authService.create=false --set RateLimit.create=false
+
+{{- end }}
+{{- else }}
+  Congratulations! You've successfully installed Ambassador!
+
+-------------------------------------------------------------------------------
 To get the IP address of Ambassador, run the following commands:
 
 {{- if contains "NodePort" .Values.service.type }}
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "ambassador.fullname" . }})
-  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace}} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "ambassador.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace}} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo http://$NODE_IP:$NODE_PORT
 {{- else if contains "LoadBalancer" .Values.service.type }}
 NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-     You can watch the status of by running 'kubectl get svc -w  --namespace {{ .Release.Namespace }} {{ include "ambassador.fullname" . }}'
+     You can watch the status of by running 'kubectl get svc -w  --namespace {{ .Release.Namespace}} {{ include "ambassador.fullname" . }}'
 
   On GKE/Azure:
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "ambassador.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace}} {{ include "ambassador.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 
   On AWS:
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "ambassador.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace}} {{ include "ambassador.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
 
   echo http://$SERVICE_IP:{{ .Values.service.port }}
 {{- else if contains "ClusterIP" .Values.service.type }}
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ include "ambassador.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace}} -l "app={{ include "ambassador.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
   echo "Visit http://127.0.0.1:8080 to use your application"
   kubectl port-forward $POD_NAME 8080:80
 {{- end }}
+{{- end }}
+
+For help, visit our Slack at https://d6e.co/slack or view the documentation online at https://www.getambassador.io.

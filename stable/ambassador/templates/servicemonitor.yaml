@@ -1,0 +1,28 @@
+{{- if and .Values.adminService.create .Values.metrics.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "ambassador.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ include "ambassador.name" . }}
+    {{- if .Values.metrics.serviceMonitor.selector }}
+    {{ toYaml .Values.metrics.serviceMonitor.selector | indent 4 }}
+    {{- end }}
+spec:
+  endpoints:
+    - port: ambassador-admin
+      path: /metrics
+      {{- with .Values.metrics.serviceMonitor.interval }}
+      interval: {{ . }}
+      {{- end }}
+      {{- with .Values.metrics.serviceMonitor.scrapeTimeout }}
+      scrapeTimeout: {{ . }}
+      {{- end }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      service: ambassador-admin
+{{- end }}

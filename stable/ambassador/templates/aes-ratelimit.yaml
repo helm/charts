@@ -1,9 +1,9 @@
-{{- if .Values.serviceAccount.create -}}
-apiVersion: v1
-kind: ServiceAccount
+{{ if and .Values.rateLimit.create .Values.enableAES }}
+---
+apiVersion: getambassador.io/v2
+kind: RateLimitService
 metadata:
-  name: {{ include "ambassador.serviceAccountName" . }}
-  namespace: {{ .Release.Namespace }}
+  name: {{ include "ambassador.fullname" . }}-ratelimit
   labels:
     app.kubernetes.io/name: {{ include "ambassador.name" . }}
     app.kubernetes.io/part-of: {{ .Release.Name }}
@@ -14,5 +14,13 @@ metadata:
     {{- else }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     {{- end }}
+    app.kubernetes.io/component: {{ include "ambassador.name" . }}-ratelimit
     product: aes
-{{- end -}}
+spec:
+  {{- if .Values.env }}
+  {{- if hasKey .Values.env "AMBASSADOR_ID" }}
+  ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
+  {{- end }}
+  {{- end }}
+  service: 127.0.0.1:8500
+{{ end }}

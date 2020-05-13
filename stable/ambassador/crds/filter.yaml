@@ -3,20 +3,25 @@ kind: CustomResourceDefinition
 metadata:
   name: filters.getambassador.io
   labels:
+    product: aes
     app.kubernetes.io/name: ambassador
   annotations:
     "helm.sh/hook": crd-install
 spec:
   group: getambassador.io
-  version: v1beta2
+  names:
+    categories:
+    - ambassador-crds
+    kind: Filter
+    plural: filters
+    shortNames:
+    - fil
+    singular: filter
+  scope: Namespaced
   versions:
   - name: v1beta2
     served: true
+    storage: false
+  - name: v2
+    served: true
     storage: true
-  scope: Namespaced
-  names:
-    plural: filters
-    singular: filter
-    kind: Filter
-    shortNames:
-    - fil

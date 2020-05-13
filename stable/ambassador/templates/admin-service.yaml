@@ -3,15 +3,20 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "ambassador.fullname" . }}-admin
+  namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/name: {{ include "ambassador.name" . }}
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/part-of: {{ .Release.Name }}
+    {{- if .Values.deploymentTool }}
+    app.kubernetes.io/managed-by: {{ .Values.deploymentTool }}
+    {{- else }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-  {{- if .Values.extraLabels }}
-    {{- toYaml .Values.extraLabels | nindent 4 }}
-  {{- end }}
+    {{- end }}
+    # Hard-coded label for Prometheus Operator ServiceMonitor
+    service: ambassador-admin
+    product: aes
   {{- with .Values.adminService.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -22,9 +27,9 @@ spec:
     - port: {{ .Values.adminService.port }}
       targetPort: admin
       protocol: TCP
-      name: admin
+      name: ambassador-admin
       {{- if (and (eq .Values.adminService.type "NodePort") (not (empty .Values.adminService.nodePort))) }}
-      nodePort: {{ .Values.adminService.nodePort }}
+      nodePort: {{ int .Values.adminService.nodePort }}
       {{- end }}
   selector:
     app.kubernetes.io/name: {{ include "ambassador.name" . }}

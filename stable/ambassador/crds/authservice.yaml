@@ -3,18 +3,23 @@ kind: CustomResourceDefinition
 metadata:
   name: authservices.getambassador.io
   labels:
+    product: aes
     app.kubernetes.io/name: ambassador
   annotations:
     "helm.sh/hook": crd-install
 spec:
   group: getambassador.io
-  version: v1
+  names:
+    categories:
+    - ambassador-crds
+    kind: AuthService
+    plural: authservices
+    singular: authservice
+  scope: Namespaced
   versions:
   - name: v1
     served: true
+    storage: false
+  - name: v2
+    served: true
     storage: true
-  scope: Namespaced
-  names:
-    plural: authservices
-    singular: authservice
-    kind: AuthService
