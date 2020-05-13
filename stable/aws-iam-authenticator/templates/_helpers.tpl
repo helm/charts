@@ -30,3 +30,14 @@ Create chart name and version as used by the chart label.
 {{- define "aws-iam-authenticator.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Return the apiVersion of daemonset.
+*/}}
+{{- define "daemonset.apiVersion" -}}
+{{- if .Capabilities.APIVersions.Has "apps/v1" -}}
+    {{- print "apps/v1" -}}
+{{- else -}}
+    {{- print "extensions/v1beta1" -}}
+{{- end -}}
+{{- end -}}
