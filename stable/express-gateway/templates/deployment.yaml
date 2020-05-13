@@ -25,7 +25,11 @@ spec:
     spec:
       volumes:
       - configMap:
+      {{- if .Values.config }}
+          name: "{{ .Values.config . }}"
+      {{- else}}
           name: "{{ template "eg.fullname" . }}"
+      {{- end }}
         name: config
       containers:
       - name: {{ template "eg.name" . }}
