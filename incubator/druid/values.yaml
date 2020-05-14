@@ -5,7 +5,7 @@ image:
   tag: 0.18.0
   pullPolicy: IfNotPresent
   pullSecrets: []
-  
+
 configVars:
   DRUID_XMX: 1g
   DRUID_XMS: 1g
@@ -216,13 +216,13 @@ middleManager:
     - type: Resource
       resource:
         name: cpu
-        target: 
+        target:
           type: Utilization
           averageUtilization: 60
     - type: Resource
       resource:
         name: memory
-        target: 
+        target:
           type: Utilization
           averageUtilization: 60
 
