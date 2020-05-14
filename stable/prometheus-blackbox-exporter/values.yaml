@@ -31,6 +31,16 @@ runAsUser: 1000
 readOnlyRootFilesystem: true
 runAsNonRoot: true
 
+livenessProbe:
+  httpGet:
+    path: /health
+    port: http
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: http
+
 nodeSelector: {}
 tolerations: []
 affinity: {}
