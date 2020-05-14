@@ -95,6 +95,7 @@ Parameter | Description | Default
 `podLabels` | additional labesl to add to each pod | `{}`
 `podDisruptionBudget.enabled`| Enabled creation of PodDisruptionBudget (only if replicaCount > 1) | true
 `podDisruptionBudget.minAvailable`| minAvailable parameter for PodDisruptionBudget | 1
+`podSecurityContext` | Kubernetes security context to apply to pod | `{}`
 `priorityClassName` | priorityClassName | `nil`
 `readinessProbe.enabled` | enable Kubernetes readinessProbe. Disable to use oauth2-proxy with Istio mTLS. See [Istio FAQ](https://istio.io/help/faq/security/#k8s-health-checks) | `true`
 `readinessProbe.initialDelaySeconds` | number of seconds | 0
@@ -112,7 +113,7 @@ Parameter | Description | Default
 `serviceAccount.name` | the service account name | ``
 `serviceAccount.annotations` | (optional) annotations for the service account | `{}`
 `tolerations` | list of node taints to tolerate | `[]`
-`securityContext.enabled` | enable Kubernetes security context | `false`
+`securityContext.enabled` | enable Kubernetes security context on container | `false`
 `securityContext.runAsNonRoot` | make sure that the container runs as a non-root user | `true`
 `proxyVarsAsSecrets` | choose between environment values or secrets for setting up OAUTH2_PROXY variables. When set to false, remember to add the variables OAUTH2_PROXY_CLIENT_ID, OAUTH2_PROXY_CLIENT_SECRET, OAUTH2_PROXY_COOKIE_SECRET in extraEnv | `true`
 

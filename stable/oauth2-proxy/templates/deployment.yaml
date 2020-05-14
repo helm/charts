@@ -36,6 +36,10 @@ spec:
     {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
     {{- end }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       serviceAccountName: {{ template "oauth2-proxy.serviceAccountName" . }}
       containers:
       - name: {{ .Chart.Name }}
