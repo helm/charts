@@ -29,6 +29,7 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
         {{- end }}
     spec:
+      serviceAccountName: {{ template "prometheus-blackbox-exporter.serviceAccountName" . }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
