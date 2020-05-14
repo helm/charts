@@ -244,7 +244,7 @@ licenseKey:
   createSecret: true
   secretName:
 
-# The DevPortal is exposed at /docs/ endpoint in the AES container. 
+# The DevPortal is exposed at /docs/ endpoint in the AES container.
 # Setting this to true will automatically create routes for the DevPortal.
 createDevPortalMappings: true
 
@@ -281,7 +281,7 @@ redis:
 # Setting authService.create: false will not install the AES AuthService and
 # allow you to define your own.
 #
-# Typically when using the AES, you will want to keep this set to true and use 
+# Typically when using the AES, you will want to keep this set to true and use
 # the External Filter to communicate with a custom authentication service.
 # https://www.getambassador.io/reference/filter-reference/#filter-type-external
 authService:
@@ -301,7 +301,7 @@ authService:
     # timeout_ms: 30000
 
 
-# Configures the RateLimitService in the Ambassador Edge Stack. 
+# Configures the RateLimitService in the Ambassador Edge Stack.
 # Keep this enabled to configure RateLimits in AES.
 rateLimit:
   create: true
@@ -344,3 +344,4 @@ metrics:
     # interval: 30s
     # scrapeTimeout: 30s
     # selector: {}
+
