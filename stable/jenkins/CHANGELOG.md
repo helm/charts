@@ -10,9 +10,29 @@ NOTE: The change log until version 1.5.7 is auto generated based on git commits.
 The README contains more details for this update.
 Please note that the updated values contain breaking changes.
 
+## 1.17.2
+
+Allow templating of `serviceAccount.annotations` and `serviceAccountAgent.annotations` by rendering them with the `tpl` function
+
+## 1.17.1
+
+Add support for Persistent Volume Claim (PVC) in `agent.volumes`
+
+## 1.17.0
+
+Render `agent.volumes` in kubernetes pod template JCasC
+
+## 1.16.2
+
+Reverts 1.16.1 as it introduced an error #22047
+
+## 1.16.1
+
+Fixed a bug with master.runAsUser variable due to use wrong type for comparison.
+
 ## 1.16.0
 
-Add `master.overwritePluginsFromImage` to allow support for jenkins plugins installed in the master image to persist. 
+Add `master.overwritePluginsFromImage` to allow support for jenkins plugins installed in the master image to persist.
 
 ## 1.15.0 Update plugin versions & sidecar container
 
@@ -40,7 +60,7 @@ Add support for custom ClusterIP
 
 ## 1.13.1
 
-Fix yaml template rendering in kubernetes pod template JCasC
+Fix `agent.yamlTemplate` rendering in kubernetes pod template JCasC
 
 ## 1.13.0
 

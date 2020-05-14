@@ -1,3 +1,5 @@
+### 1.26.0
+* [ec6b96f](https://github.com/kubernetes/charts/commit/ec6b96f): Bump up GoCD Version to 20.3.0
 ### 1.25.1
 
 * [b70dd76](https://github.com/kubernetes/charts/commit/b70dd76): Update k8s supported versions to 1.14+.

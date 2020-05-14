@@ -21,6 +21,9 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         checksum/rules: {{ include (print $.Template.BasePath "/configmap-rules.yaml") . | sha256sum }}
+        {{- if .Values.daemonset.podAnnotations }}
+{{ toYaml .Values.daemonset.podAnnotations | indent 8 }}
+        {{- end }}
     spec:
       serviceAccountName: {{ template "falco.serviceAccountName" .}}
       {{- if (and .Values.ebpf.enabled .Values.ebpf.settings.hostNetwork) }}
