@@ -344,4 +344,3 @@ metrics:
     # interval: 30s
     # scrapeTimeout: 30s
     # selector: {}
-
