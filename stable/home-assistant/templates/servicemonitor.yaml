@@ -21,7 +21,12 @@ spec:
     bearerTokenFile: {{ .Values.monitoring.serviceMonitor.bearerTokenFile }}
 {{- end }}
 {{- if .Values.monitoring.serviceMonitor.bearerTokenSecret }}
-    bearerTokenSecret: {{ .Values.monitoring.serviceMonitor.bearerTokenSecret }}
+    bearerTokenSecret:
+      name: {{ .Values.monitoring.serviceMonitor.bearerTokenSecret.name }}
+      key: {{ .Values.monitoring.serviceMonitor.bearerTokenSecret.key }}
+      {{- if .Values.monitoring.serviceMonitor.bearerTokenSecret.optional }}
+      optional: {{ .Values.monitoring.serviceMonitor.bearerTokenSecret.optional }}
+      {{- end }}
 {{- end }}
   jobLabel: {{ template "home-assistant.fullname" . }}-prometheus-exporter
   namespaceSelector:

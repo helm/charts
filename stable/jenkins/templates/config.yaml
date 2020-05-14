@@ -24,11 +24,11 @@ data:
       <version>{{ .Values.master.tag }}</version>
 {{- end }}
       <numExecutors>{{ .Values.master.numExecutors }}</numExecutors>
-      <mode>NORMAL</mode>
+      <mode>{{ .Values.master.executorMode }}</mode>
       <useSecurity>{{ .Values.master.useSecurity }}</useSecurity>
 {{ .Values.master.authorizationStrategy | indent 6 }}
 {{ .Values.master.securityRealm | indent 6 }}
-      <disableRememberMe>false</disableRememberMe>
+      <disableRememberMe>{{ .Values.master.disableRememberMe }}</disableRememberMe>
       <projectNamingStrategy class="jenkins.model.ProjectNamingStrategy$DefaultProjectNamingStrategy"/>
       <workspaceDir>${JENKINS_HOME}/workspace/${ITEM_FULLNAME}</workspaceDir>
       <buildsDir>${ITEM_ROOTDIR}/builds</buildsDir>
@@ -249,11 +249,6 @@ data:
 {{- if .Values.master.installPlugins }}
 {{- range $index, $val := .Values.master.installPlugins }}
 {{ $val | indent 4 }}
-{{- end }}
-{{- if .Values.master.JCasC.enabled }}
-  {{- if not (contains "configuration-as-code" (quote .Values.master.installPlugins)) }}
-    configuration-as-code:{{ .Values.master.JCasC.pluginVersion }}
-  {{- end }}
 {{- end }}
 {{- end }}
 {{ else }}

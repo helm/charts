@@ -3,6 +3,25 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.7.15
+
+### Minor changes
+
+* Use the latest image from Agent (10.0.0) by default.
+
+## v1.7.14
+
+### Minor changes
+
+* Implement a more comprehensive securityContext for running the pod.
+
+## v1.7.13
+
+### Minor changes
+
+* Implement scheduling with affinity and not with nodeSelector on amd64 & linux nodes.
+* Add support for custom annotations on daemonSet.
+
 ## v1.7.12
 
 ### Minor changes

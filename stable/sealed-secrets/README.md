@@ -59,6 +59,7 @@ Read about kubeseal usage on [sealed-secrets docs](https://github.com/bitnami-la
 | **crd.keep**                  | `true` if the sealed secret CRD should be kept when the chart is deleted   | `true`                                      |
 | **networkPolicy**             | Whether to create a network policy that allows access to the service       | `false`                                     |
 | **securityContext.runAsUser** | Defines under which user the operator Pod and its containers/processes run | `1001`                                      |
+| **securityContext.fsGroup**   | Defines fsGroup for the operator Pod and its containers/processes run      | `65534`                                     |
 | **commandArgs**               | Set optional command line arguments passed to the controller process       | `[]`                                        |
 | **ingress.enabled**           | Enables Ingress                                                            | `false`                                     |
 | **ingress.annotations**       | Ingress annotations                                                        | `{}`                                        |
@@ -73,3 +74,9 @@ Read about kubeseal usage on [sealed-secrets docs](https://github.com/bitnami-la
 - In the case that **serviceAccount.create** is `false` and **rbac.create** is `true` it is expected for a service account with the name **serviceAccount.name** to exist _in the same namespace as this chart_ before installation.
 - If **serviceAccount.create** is `true` there cannot be an existing service account with the name **serviceAccount.name**.
 - If a secret with name **secretName** does not exist _in the same namespace as this chart_, then on install one will be created. If a secret already exists with this name the keys inside will be used.
+- OpenShift: unset the runAsUser and fsGroup like this:
+```
+  securityContext:
+    runAsUser:
+    fsGroup:
+```

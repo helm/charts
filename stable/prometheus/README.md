@@ -165,7 +165,7 @@ Parameter | Description | Default
 `alertmanager.statefulSet.podManagementPolicy` | podManagementPolicy of alertmanager pods | `OrderedReady`
 `alertmanager.statefulSet.headless.annotations` | annotations for alertmanager headless service | `{}`
 `alertmanager.statefulSet.headless.labels` | labels for alertmanager headless service | `{}`
-`alertmanager.statefulSet.headless.enableMeshPeer` | If true, enable the mesh peer endpoint for the headless service | `{}`
+`alertmanager.statefulSet.headless.enableMeshPeer` | If true, enable the mesh peer endpoint for the headless service | `false`
 `alertmanager.statefulSet.headless.servicePort` | alertmanager headless service port | `80`
 `alertmanager.priorityClassName` | alertmanager priorityClassName | `nil`
 `alertmanager.resources` | alertmanager pod resource requests & limits | `{}`
@@ -280,14 +280,14 @@ Parameter | Description | Default
 `server.enabled` | If false, Prometheus server will not be created | `true`
 `server.name` | Prometheus server container name | `server`
 `server.image.repository` | Prometheus server container image repository | `prom/prometheus`
-`server.image.tag` | Prometheus server container image tag | `v2.16.0`
+`server.image.tag` | Prometheus server container image tag | `v2.18.1`
 `server.image.pullPolicy` | Prometheus server container image pull policy | `IfNotPresent`
 `server.configPath` |  Path to a prometheus server config file on the container FS  | `/etc/config/prometheus.yml`
 `server.global.scrape_interval` | How frequently to scrape targets by default | `1m`
 `server.global.scrape_timeout` | How long until a scrape request times out | `10s`
 `server.global.evaluation_interval` | How frequently to evaluate rules | `1m`
-`server.remoteWrite` | The remote write feature of Prometheus allow transparently sending samples. | `{}`
-`server.remoteRead` | The remote read feature of Prometheus allow transparently receiving samples. | `{}`
+`server.remoteWrite` | The remote write feature of Prometheus allow transparently sending samples. | `[]`
+`server.remoteRead` | The remote read feature of Prometheus allow transparently receiving samples. | `[]`
 `server.extraArgs` | Additional Prometheus server container arguments | `{}`
 `server.extraFlags` | Additional Prometheus server container flags | `["web.enable-lifecycle"]`
 `server.extraInitContainers` | Init containers to launch alongside the server | `[]`
