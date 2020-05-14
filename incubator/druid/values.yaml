@@ -40,7 +40,7 @@ broker:
 
   config:
     JAVA_OPTS: "-Xms2G -Xmx2G -XX:MaxDirectMemorySize=8g"
-    # druid_monitoring_monitors: '["org.apache.druid.client.cache.CacheMonitor", "org.apache.druid.server.metrics.QueryCountStatsMonitor"]'
+    # druid_monitoring_monitors: '["org.apache.druid.client.cache.CacheMonitor", "org.apache.druid.server.metrics.QueryCountStatsMonitor", "org.apache.druid.java.util.metrics.SysMonitor"]'
 
   ingress:
     enabled: false
@@ -149,7 +149,7 @@ historical:
 
   config:
     JAVA_OPTS: "-Xms2G -Xmx2G -XX:MaxDirectMemorySize=8g"
-    # druid_monitoring_monitors: '["org.apache.druid.client.cache.CacheMonitor", "org.apache.druid.server.metrics.HistoricalMetricsMonitor", "org.apache.druid.server.metrics.QueryCountStatsMonitor"]'
+    # druid_monitoring_monitors: '["org.apache.druid.client.cache.CacheMonitor", "org.apache.druid.server.metrics.HistoricalMetricsMonitor", "org.apache.druid.server.metrics.QueryCountStatsMonitor", "org.apache.druid.java.util.metrics.SysMonitor"]'
 
   ingress:
     enabled: false
@@ -206,6 +206,7 @@ middleManager:
 
   config:
     JAVA_OPTS: "-Xms1G -Xmx1G"
+    # druid_monitoring_monitors: '["org.apache.druid.java.util.metrics.SysMonitor"]'
 
   autoscaling:
     enabled: false
