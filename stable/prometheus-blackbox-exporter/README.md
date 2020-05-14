@@ -69,6 +69,8 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 | `allowIcmp`                               | whether to enable ICMP probes, by giving the pods `CAP_NET_RAW` and running as root | `false`                                                                   |
 | `resources`                               | pod resource requests & limits                                                   | `{}`                                                                         |
 | `restartPolicy`                           | container restart policy                                                         | `Always`                                                                     |
+| `livenessProbe`                           | Container liveness probe                                                         | See values.yaml                                                              |
+| `readinessProbe`                          | Container readiness probe                                                        | See values.yaml                                                              |
 | `service.annotations`                     | annotations for the service                                                      | `{}`                                                                         |
 | `service.labels`                          | additional labels for the service                                                | None                                                                         |
 | `service.type`                            | type of service to create                                                        | `ClusterIP`                                                                  |
