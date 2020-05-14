@@ -194,6 +194,7 @@ config:
     address: 0.0.0.0
     tlsCert: /etc/dex/tls/https/server/tls.crt
     tlsKey: /etc/dex/tls/https/server/tls.key
+    allowedOrigins: []
 # Section below is relevant only when grpc support is enabled
   grpc:
     # port is taken from ports section above
