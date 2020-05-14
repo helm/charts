@@ -27,9 +27,6 @@ The recommended way to install the Anchore Engine Helm Chart is with a customize
 
 Create a new file named `anchore_values.yaml` and add all desired custom values (examples below); then run the following command:
 
-  #### Helm v2 installation
-  `helm install --name <release_name> -f anchore_values.yaml stable/anchore-engine`
-
   #### Helm v3 installation
   `helm repo add stable https://kubernetes-charts.storage.googleapis.com`
 
@@ -59,8 +56,10 @@ anchoreGlobal:
     * Graphical user interface
     * Customizable UI dashboards
     * On-premises feeds service
-    * Proprietary vulnerability data feed
+    * Proprietary vulnerability data feed (vulnDB, MSRC)
     * Anchore reporting API
+    * Notifications - Slack, GitHub, Jira, etc
+    * Microsoft image vulnerability scanning
 
 ### Enabling Enterprise Services
 Enterprise services require an Anchore Enterprise license, as well as credentials with
@@ -77,19 +76,12 @@ To use this Helm chart with the enterprise services enabled, perform these steps
     `kubectl create secret docker-registry anchore-enterprise-pullcreds --docker-server=docker.io --docker-username=<DOCKERHUB_USER> --docker-password=<DOCKERHUB_PASSWORD> --docker-email=<EMAIL_ADDRESS>`
 
 1. (demo) Install the Helm chart using default values
-    #### Helm v2 installation
-    `helm install --name <release_name> --set anchoreEnterpriseGlobal.enabled=true stable/anchore-engine`
-
     #### Helm v3 installation
     `helm repo add stable https://kubernetes-charts.storage.googleapis.com`
 
-    `helm install <release_name>  --set anchoreEnterpriseGlobal.enabled=true stable/anchore-engine`
+    `helm install <release_name> --set anchoreEnterpriseGlobal.enabled=true stable/anchore-engine`
 
 2. (production) Install the Helm chart using a custom anchore_values.yaml file - *see examples below*
-
-    #### Helm v2 installation
-    `helm install --name <release_name> -f anchore_values.yaml stable/anchore-engine`
-
     #### Helm v3 installation
     `helm repo add stable https://kubernetes-charts.storage.googleapis.com`
 
@@ -215,6 +207,21 @@ anchore-feeds-db:
 anchore-ui-redis:
   password: <PASSWORD>
 ```
+# Chart Updates
+See the anchore-engine [CHANGELOG](https://github.com/anchore/anchore-engine/blob/master/CHANGELOG.md) for updates to anchore engine.
+
+## Upgrading from previous chart versions
+A Helm post-upgrade hook job has been added starting with Chart version 1.6.0 - this job will shut down all previously running Anchore services and perform the Anchore DB upgrade process using a kubernetes job. The upgrade will only be considered successful when this job completes successfully. Performing an update after v1.6.0 will cause the Helm client to block until the upgrade job completes and the new Anchore service pods are started. To view progress of the upgrade process, tail the logs of the upgrade jobs `anchore-engine-upgrade` and `anchore-enterprise-upgrade`. These job resources will be removed upon a successful helm upgrade.
+
+## Chart version 1.6.0
+Changes with this version include:
+  * Anchore database upgrades will now be handled using a helm post-upgrade hook job
+  * Anchore Engine image updated to v0.7.1
+  * Anchore Enterprise updated to v2.3.0 - see [CHANGELOG](https://docs.anchore.com/current/docs/releasenotes/230/)
+  * Enterprise deployments now use the `anchore/enterprise` image for all components
+  * Added GitHub advisory feeds
+  * Added NuGet .NET feeds to Enterprise feed service
+  * Updated resources to provide better minimum requirements baseline (these are still not production ready)
 
 ## Chart version 1.5.0
 Changes to the Helm Chart include:
@@ -222,8 +229,6 @@ Changes to the Helm Chart include:
   * Enterprise deployments now use a different image for core anchore-engine services - .Values.anchoreEnterpriseGlobal.engineImage
   * Default feed sync timeout increased to 180s
   * Added a optional configuration for including imagePullSecret on all anchore-engine images - .Values.anchoreGlobal.imagePullSecretName
-
-See the anchore-engine [CHANGELOG](https://github.com/anchore/anchore-engine/blob/master/CHANGELOG.md#070-2020-03-26) for updates to anchore engine
 
 ## Chart version 1.4.0
 The following features were added with this chart version:
@@ -366,11 +371,11 @@ Engine DB Version: 0.0.8
 Engine Code Version: 0.3.0
 ```
 
-## Configuration
+# Configuration
 
 All configurations should be appended to your custom `anchore_values.yaml` file and utilized when installing the chart. While the configuration options of Anchore Engine are extensive, the options provided by the chart are:
 
-### Exposing the service outside the cluster:
+## Exposing the service outside the cluster:
 
 #### Using Ingress
 

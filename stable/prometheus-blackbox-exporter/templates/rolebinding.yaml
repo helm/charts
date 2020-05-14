@@ -1,0 +1,18 @@
+{{- if .Values.pspEnabled }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/name: {{ include "prometheus-blackbox-exporter.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "prometheus-blackbox-exporter.chart" . }}
+  name: {{ template "prometheus-blackbox-exporter.fullname" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ template "prometheus-blackbox-exporter.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "prometheus-blackbox-exporter.serviceAccountName" . }}
+{{- end -}}

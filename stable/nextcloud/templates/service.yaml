@@ -17,5 +17,8 @@ spec:
     targetPort: http
     protocol: TCP
     name: http
+    {{- if eq .Values.service.type "NodePort" }}
+    nodePort: {{ default "" .Values.service.nodePort}}
+    {{- end }}
   selector:
     app.kubernetes.io/name: {{ include "nextcloud.name" . }}

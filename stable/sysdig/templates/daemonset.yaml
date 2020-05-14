@@ -15,6 +15,10 @@ spec:
       name: {{ template "sysdig.fullname" .}}
       labels:
 {{ include "sysdig.labels" . | indent 8 }}
+      {{- if .Values.daemonset.annotations }}
+      annotations:
+{{ toYaml .Values.daemonset.annotations | indent 8 }}
+      {{- end }}
     spec:
       serviceAccountName: {{ template "sysdig.serviceAccountName" .}}
 {{- if .Values.priorityClassName }}
@@ -34,8 +38,6 @@ spec:
       imagePullSecrets:
 {{ toYaml .Values.image.pullSecrets | indent 8 }}
       {{- end }}
-      nodeSelector:
-{{ toYaml .Values.daemonset.nodeSelector | indent 8 }}
       {{- if .Values.slim.enabled }}
       initContainers:
         - name: sysdig-agent-kmodule
@@ -46,7 +48,14 @@ spec:
 {{ toYaml .Values.image.pullSecrets | indent 12 }}
           {{- end }}
           securityContext:
+            capabilities:
+              drop:
+                - ALL
             privileged: true
+            runAsNonRoot: false
+            runAsUser: 0
+            readOnlyRootFilesystem: false
+            allowPrivilegeEscalation: true
           resources:
 {{ toYaml .Values.slim.resources | indent 12 }}
           volumeMounts:
@@ -70,7 +79,14 @@ spec:
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           securityContext:
+            capabilities:
+              drop:
+                - ALL
             privileged: true
+            runAsNonRoot: false
+            runAsUser: 0
+            readOnlyRootFilesystem: false
+            allowPrivilegeEscalation: true
           env:
             {{- if .Values.ebpf.enabled }}
             - name: SYSDIG_BPF_PROBE

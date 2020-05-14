@@ -1,14 +1,12 @@
 # Default values for superset.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-
-
 replicaCount: 1
 
 ## Set default image, imageTag, and imagePullPolicy.
 image:
   repository: "amancevice/superset"
-  tag: "0.35.2"
+  tag: "0.36.0"
   pullPolicy: "IfNotPresent"
   pullSecrets: []
 
@@ -17,10 +15,16 @@ initFile: |-
     /usr/local/bin/superset-init --username admin --firstname admin --lastname user --email admin@fab.org --password admin
     superset run
   elif [ "$1" == "production-mode" ]; then
-    gunicorn -b 0.0.0.0:8088 \
-      --limit-request-line 0 \
-      --limit-request-field_size 0 \
-      --timeout 300 superset:app
+    superset db upgrade
+    superset init
+    gunicorn \
+        -w 10 \
+        -k gevent \
+        --timeout 300 \
+        -b  0.0.0.0:8088 \
+        --limit-request-line 0 \
+        --limit-request-field_size 0 \
+        "superset.app:create_app()"
   else
     echo "You need to specify which mode to start in by setting production-mode"
     echo "or development-mode in extraArguments."
