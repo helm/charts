@@ -38,7 +38,11 @@ spec:
 {{- if .Values.server.schedulerName }}
       schedulerName: "{{ .Values.server.schedulerName }}"
 {{- end }}
-      enableServiceLinks: {{ .Values.server.enableServiceLinks | default "true" }}
+      {{- if or (.Values.server.enableServiceLinks) (eq (.Values.server.enableServiceLinks | toString) "<nil>") }}
+      enableServiceLinks: true
+      {{- else }}
+      enableServiceLinks: false
+      {{- end }}
       serviceAccountName: {{ template "prometheus.serviceAccountName.server" . }}
       containers:
         {{- if .Values.configmapReload.prometheus.enabled }}
