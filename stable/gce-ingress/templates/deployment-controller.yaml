@@ -19,8 +19,8 @@ spec:
         app: {{ include "gce-ingress.name" . }}
         release: {{ .Release.Name }}
     spec:
-      {{- if .Values.rbac.enabled }}
-      serviceAccountName: {{ include "gce-ingress.fullname" . }}
+      {{- if .Values.rbac.create }}
+      serviceAccountName: {{ include "gce-ingress.serviceAccountName" . }}
       {{- end }}
       terminationGracePeriodSeconds: 600
       hostNetwork: true
