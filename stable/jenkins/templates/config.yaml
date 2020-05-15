@@ -68,7 +68,7 @@ data:
           <skipTlsVerify>false</skipTlsVerify>
           <namespace>{{ template "jenkins.master.slaveKubernetesNamespace" . }}</namespace>
 {{- if .Values.master.slaveJenkinsUrl }}
-          <jenkinsUrl>{{ tpl .Values.master.slaveJenkinsUrl }}</jenkinsUrl>
+          <jenkinsUrl>{{ tpl .Values.master.slaveJenkinsUrl . }}</jenkinsUrl>
 {{- else if .Values.master.slaveKubernetesNamespace }}
           <jenkinsUrl>http://{{ template "jenkins.fullname" . }}.{{ template "jenkins.namespace" . }}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</jenkinsUrl>
 {{- else }}
@@ -76,7 +76,7 @@ data:
 {{- end }}
 
 {{- if .Values.master.slaveJenkinsTunnel }}
-          <jenkinsTunnel>{{ tpl .Values.master.slaveJenkinsTunnel }}</jenkinsTunnel>
+          <jenkinsTunnel>{{ tpl .Values.master.slaveJenkinsTunnel . }}</jenkinsTunnel>
 {{- else if .Values.master.slaveKubernetesNamespace }}
           <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent.{{ template "jenkins.namespace" . }}:{{ .Values.master.slaveListenerPort }}</jenkinsTunnel>
 {{- else }}
