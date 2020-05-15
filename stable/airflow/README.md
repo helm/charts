@@ -244,7 +244,7 @@ By default, insecure username/password combinations are used.
 For a real production deployment, it's a good idea to create secure credentials before installing the Helm chart.
 For example, from the command line, run:
 ```bash
-kubectl create secret generic airflow-postgres --from-literal=postgresql-password=$(openssl rand -base64 13)
+kubectl create secret generic airflow-postgresql --from-literal=postgresql-password=$(openssl rand -base64 13)
 kubectl create secret generic airflow-redis --from-literal=redis-password=$(openssl rand -base64 13)
 ```
 Next, you can use those secrets with the Helm chart:
@@ -252,7 +252,7 @@ Next, you can use those secrets with the Helm chart:
 # values.yaml
 
 postgresql:
-  existingSecret: airflow-postgres
+  existingSecret: airflow-postgresql
 
 redis:
   existingSecret: airflow-redis
@@ -424,6 +424,8 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.service.type`                   | service type for Airflow UI                             | `ClusterIP`               |
 | `airflow.service.annotations`            | (optional) service annotations for Airflow UI           | `{}`                      |
 | `airflow.service.externalPort`           | (optional) external port for Airflow UI                 | `8080`                    |
+| `airflow.service.loadBalancerIP`         | (optional) for service.type == LoadBalancer, the loadBalancerIP | `` |
+| `airflow.service.loadBalancerSourceRanges` | (optional) for service.type == LoadBalancer, the loadBalancerSourceRanges | `[]` |
 | `airflow.service.nodePort.http`          | (optional) when using service.type == NodePort, an optional NodePort to request | ``|
 | `airflow.service.sessionAffinity`        | The session affinity for the airflow UI                 | `None`                    |
 | `airflow.service.sessionAffinityConfig`  | The session affinity config for the airflow UI          | `None`                    |
@@ -457,19 +459,24 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `flower.service.type`                    | service type for Flower UI                              | `ClusterIP`               |
 | `flower.service.annotations`             | (optional) service annotations for Flower UI            | `{}`                      |
 | `flower.service.externalPort`            | (optional) external port for Flower UI                  | `5555`                    |
+| `flower.service.loadBalancerIP`          | (optional) for service.type == LoadBalancer, the loadBalancerIP | `` |
+| `flower.service.loadBalancerSourceRanges` | (optional) for service.type == LoadBalancer, the loadBalancerSourceRanges | `[]` |
 | `flower.securityContext`                 | (optional) security context for the flower deployment   | `{}`                      |
 | `web.baseUrl`                            | webserver UI URL                                        | `http://localhost:8080`   |
 | `web.resources`                          | custom resource configuration for web pod               | `{}`                      |
+| `web.serializeDAGs`                      | if web will use DAG serialization (https://airflow.apache.org/docs/stable/dag-serialization.html). If enabled, git-sync containers will not be added to web pods. Completely supported in Airflow >= 1.10.10               | `false`                   |
 | `web.labels`                             | labels for the web deployment                           | `{}`                      |
 | `web.podLabels`                          | podLabels for the web deployment                        | `{}`                      |
 | `web.annotations`                        | annotations for the web deployment                      | `{}`                      |
 | `web.podAnnotations`                     | pod-annotations for the web deployment                  | `{}`                      |
 | `web.initialStartupDelay`                | amount of time webserver pod should sleep before initializing webserver             | `60`  |
-| `web.minReadySeconds`                    | minReadySeconds in the web deployment                   | `120`
+| `web.minReadySeconds`                    | minReadySeconds in the web deployment                   | `120` |
+| `web.livenessProbe.scheme`               | scheme to use for connecting to the host (HTTP or HTTPS) | `HTTP` |
 | `web.livenessProbe.periodSeconds`        | interval between probes                         | `60`  |
 | `web.livenessProbe.timeoutSeconds`       | time allowed for a result to return             | `1`  |
 | `web.livenessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful             | `1`  |
 | `web.livenessProbe.failureThreshold`     | Minimum consecutive successes for the probe to be considered failed                 | `5`  |
+| `web.readinessProbe.scheme`              | scheme to use for connecting to the host (HTTP or HTTPS) | `HTTP` |
 | `web.readinessProbe.periodSeconds`       | interval between probes                         | `60`  |
 | `web.readinessProbe.timeoutSeconds`      | time allowed for a result to return             | `1`  |
 | `web.readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful             | `1`  |
@@ -538,6 +545,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `dags.initContainer.installRequirements` | auto install requirements.txt deps                      | `true`                    |
 | `dags.initContainer.mountPath`           | Mountpath inside init container for dags                | `/dags`                   |
 | `dags.initContainer.syncSubPath`         | Path inside init container used to sync/clone git repo to; appended to `dags.initContainer.mountPath` | ``                      |
+| `dags.initContainer.resources`             | custom resource configuration for the git-clone initContainer    | `{}`                      |
 | `dags.git.url`                           | url to clone the git repository                         | nil                       |
 | `dags.git.ref`                           | branch name, tag or sha1 to reset to                    | `master`                  |
 | `dags.git.secret`                        | name of a secret containing an ssh deploy key           | nil                       |
@@ -557,7 +565,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `postgresql.existingSecret`              | The name of an existing secret with a key named `postgresql.existingSecretKey` to use as the password  | `nil` |
 | `postgresql.existingSecretKey`           | The name of the key containing the password in the secret named `postgresql.existingSecret`  | `postgresql-password` |
 | `postgresql.uri`                         | full URL to custom postgres setup                       | (undefined)               |
-| `postgresql.postgresHost`                | PostgreSQL Hostname                                     | (undefined)               |
+| `postgresql.postgresqlHost`              | PostgreSQL Hostname                                     | (undefined)               |
 | `postgresql.postgresqlUsername`                | PostgreSQL User                                         | `postgres`                |
 | `postgresql.postgresqlPassword`            | PostgreSQL Password                                     | `airflow`                 |
 | `postgresql.postgresqlDatabase`            | PostgreSQL Database name                                | `airflow`                 |
@@ -592,6 +600,7 @@ There are a few config key changes, in order to upgrade from a 5.x chart, modify
 
 | 5.x.x                                | 6.x.x                                 | Notes                                                     |
 |--------------------------------------|---------------------------------------|-----------------------------------------------------------|
+|`postgresql.postgresHost`             |`postgresql.postgresqlHost`            |                                                           |
 |`postgresql.postgresUser`             |`postgresql.postgresqlUsername`        |                                                           |
 |`postgresql.postgresPassword`         |`postgresql.postgresqlPassword`        |                                                           |
 |`postgresql.postgresDatabase`         |`postgresql.postgresqlDatabase`        |                                                           |

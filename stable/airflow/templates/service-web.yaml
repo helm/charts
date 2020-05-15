@@ -31,3 +31,12 @@ spec:
       nodePort: {{ .Values.airflow.service.nodePort.http }}
       {{- end }}
       targetPort: 8080
+{{- if eq .Values.airflow.service.type "LoadBalancer" }}
+{{- if .Values.airflow.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.airflow.service.loadBalancerIP | quote }}
+{{- end }}
+{{- if .Values.airflow.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{ toYaml .Values.airflow.service.loadBalancerSourceRanges | indent 4 }}
+{{- end }}
+{{- end }}

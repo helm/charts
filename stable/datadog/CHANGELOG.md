@@ -1,8 +1,72 @@
 # Datadog changelog
-## 2.2.1
+
+## 2.3.1
+
+* Update the example for `datadog.securityContext`
+
+## 2.3.0
+
+* Mount the directory containing the CRI socket instead of the socket itself
+  This is to handle the cases where the docker daemon is restarted.
+  In this case, the docker daemon will recreate its docker socket and,
+  if the container bind-mounted directly the socket, the container would
+  still have access to the old socket instead of the one of the new docker
+  daemon.
+  ⚠ This version of the chart requires an agent image 7.19.0 or more recent
+
+## 2.2.12
+
+* Adding resources for `system-probe` init container
+
+## 2.2.11
+
+* Add documentations around secret management in the datadog helm chart. It is to upstream
+  requested changes in the IBM charts repository: https://github.com/IBM/charts/pull/690#discussion_r411702458
+* update `kube-state-metrics` dependency
+* uncomment every values.yaml parameters for IBM chart compliancy
+
+## 2.2.10
+
+* Remove `kubeStateMetrics` section from `values.yaml` as not used anymore
+
+## 2.2.9
+
+* Fixing variables description in README and Migration documentation (#22031)
+* Avoid volumes mount conflict between `system-probe` and `logs` volumes in the `agent`.
+
+## 2.2.8
+
+* Mount `system-probe` socket in `agent` container when system-probe is enabled
+
+## 2.2.7
+
+* Add "Cluster-Agent" `Event` `create` RBAC permission
+
+## 2.2.6
+
+* Ensure the `trace-agent` computes the same hostname as the core `agent`.
+  by giving it access to all the elements that might be used to compute the hostname:
+  the `DD_CLUSTER_NAME` environment variable and the docker socket.
+
+## 2.2.5
+
+* Fix RBAC
+
+## 2.2.4
+
+* Move several EnvVars to `common-env-vars` to be accessible by the `trace-agent` #21991.
+* Fix discrepancies migration-guide and readme reporded in #21806 and #21920.
+* Fix EnvVars with integer value due to yaml. serialization, reported by #21853.
+* Fix .Values.datadog.tags encoding, reported by #21663.
+* Add Checksum to `xxx-cluster-agent-config` config map, reported by #21622 and contribution #21656.
+
+## 2.2.3
+
+* Fix `datadog.dockerOrCriSocketPath` helper #21992
+
+## 2.2.2
 
 * Fix indentation for `clusterAgent.volumes`.
-
 
 ## 2.2.1
 
@@ -72,7 +136,6 @@ config to this environment variable.
 
 * Fix templating error when `agents.useConfigMap` is set to true.
 * Add DD\_APM\_ENABLED environment variable to trace agent container.
-
 
 ## 2.0.2
 

@@ -138,6 +138,7 @@ Parameter                                            | Description              
 `service.loadBalancerSourceRanges`                   | Allow list for the load balancer                                                                           | `nil`
 `ingress.enabled`                                    | Enable ingress controller resource                                                                         | `false`
 `ingress.annotations`                                | Ingress annotations                                                                                        | `{}`
+`ingress.labels`                                     | Ingress labels                                                                                             | `{}`
 `ingress.hostname`                                   | URL to address your Sentry installation                                                                    | `sentry.local`
 `ingress.path`                                       | path to address your Sentry installation                                                                   | `/`
 `ingress.tls`                                        | Ingress TLS configuration                                                                                  | `[]`
