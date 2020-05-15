@@ -71,9 +71,7 @@ spec:
           image: {{ .Values.busyboxImage.repository}}:{{ .Values.busyboxImage.tag}}
           imagePullPolicy: {{ .Values.busyboxImage.pullPolicy }}
           securityContext:
-            runAsGroup: {{ .Values.initContainer.runAsGroup }}
-            runAsNonRoot: {{ .Values.initContainer.runAsNonRoot }}
-            runAsUser: {{ .Values.initContainer.runAsUser }}
+{{- toYaml .Values.initContainer.securityContext | nindent 12 }}
           command: ['sh']
           args:
           - "-c"

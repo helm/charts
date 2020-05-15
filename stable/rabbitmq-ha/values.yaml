@@ -371,9 +371,10 @@ resources: {}
   #   memory: 1Gi
 initContainer:
   enabled: true
-  runAsGroup: 0
-  runAsNonRoot: false
-  runAsUser: 0
+  securityContext:
+    runAsGroup: 0
+    runAsNonRoot: false
+    runAsUser: 0
   skipChown: false
   resources: {}
   #   limits:
