@@ -14,7 +14,6 @@ rules:
   - ""
   resources:
   - services
-  - events
   - endpoints
   - pods
   - nodes
@@ -23,6 +22,15 @@ rules:
   - get
   - list
   - watch
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - get
+  - list
+  - watch
+  - create
 - apiGroups: ["quota.openshift.io"]
   resources:
   - clusterresourcequotas
