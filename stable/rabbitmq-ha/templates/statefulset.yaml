@@ -84,7 +84,7 @@ spec:
               touch "${RABBITMQ_MNESIA_DIR}/force_load"
             fi
             {{- end }}
-            {{- if and (.Values.securityContext.runAsUser) (.Values.securityContext.fsGroup) (not .Values.initContainer.skipChown) }}
+            {{- if and (.Values.securityContext.runAsUser) (.Values.securityContext.fsGroup) (.Values.initContainer.chownFiles) }}
             chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }} /var/lib/rabbitmq/
             chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }} /etc/rabbitmq
             {{- end }}

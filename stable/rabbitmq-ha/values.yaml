@@ -375,7 +375,7 @@ initContainer:
     runAsGroup: 0
     runAsNonRoot: false
     runAsUser: 0
-  skipChown: false
+  chownFiles: true
   resources: {}
   #   limits:
   #     cpu: 100m
