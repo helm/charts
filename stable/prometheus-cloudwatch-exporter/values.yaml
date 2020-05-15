@@ -44,6 +44,9 @@ resources: {}
 
 aws:
   role:
+  # External ID can be used when a role is specified.
+  # https://aws.amazon.com/blogs/security/how-to-use-external-id-when-granting-access-to-your-aws-resources/
+  externalID:
 
   # The name of a pre-created secret in which AWS credentials are stored. When
   # set, aws_access_key_id is assumed to be in a field called access_key,

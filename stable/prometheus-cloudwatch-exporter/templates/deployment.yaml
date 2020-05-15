@@ -19,7 +19,10 @@ spec:
         app: {{ template "prometheus-cloudwatch-exporter.name" . }}
         release: {{ .Release.Name }}
       annotations:
-        {{ if .Values.aws.role}}iam.amazonaws.com/role: {{ .Values.aws.role }}{{ end }}
+        {{ if .Values.aws.role}}
+        iam.amazonaws.com/role: {{ .Values.aws.role }}
+        {{ if .Values.aws.externalID}}iam.amazonaws.com/external-id: {{ .Values.aws.externalID }}{{ end }}
+        {{ end }}
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:
       containers:
