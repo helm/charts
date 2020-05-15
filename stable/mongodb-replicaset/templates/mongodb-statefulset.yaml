@@ -246,7 +246,7 @@ spec:
           image: "{{ .Values.metrics.image.repository }}:{{ .Values.metrics.image.tag }}"
           imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
           command:
-            - sh
+            - bash
             - -c
             - >-
               /bin/mongodb_exporter
