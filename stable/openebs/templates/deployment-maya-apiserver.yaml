@@ -139,6 +139,10 @@ spec:
           value: "{{ .Values.analytics.pingInterval }}"
         - name: OPENEBS_IO_INSTALLER_TYPE
           value: "charts-helm"
+        # OPENEBS_IO_INSTALL_CRD environment variable is used to enable/disable CRD installation
+        # from Maya API server. By default the CRDs will be installed
+        - name: OPENEBS_IO_INSTALL_CRD
+          value: "{{ .Values.crd.enableInstall }}"
         livenessProbe:
           exec:
             command:
