@@ -1,5 +1,9 @@
 # Datadog changelog
 
+## 2.3.2
+
+* Update the DCA RBAC to allow it to create events in the HPA
+
 ## 2.3.1
 
 * Update the example for `datadog.securityContext`
