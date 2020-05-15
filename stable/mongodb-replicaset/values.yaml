@@ -76,6 +76,7 @@ metrics:
   securityContext:
     enabled: true
     runAsUser: 1001
+  lifecycle: {}
 
 # Annotations to be added to MongoDB pods
 podAnnotations: {}

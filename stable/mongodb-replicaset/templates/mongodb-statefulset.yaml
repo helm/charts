@@ -284,6 +284,10 @@ spec:
           securityContext:
             runAsUser: {{ .Values.metrics.securityContext.runAsUser }}
           {{- end }}
+          {{- with .Values.metrics.lifecycle }}
+          lifecycle:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           livenessProbe:
             exec:
               command:
