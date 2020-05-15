@@ -9,7 +9,9 @@ metadata:
   labels:
     {{- include "prometheus.nodeExporter.labels" . | nindent 4 }}
   name: {{ template "prometheus.nodeExporter.fullname" . }}
-  namespace: {{ .Release.Namespace }}
+{{- if .Values.forceNamespace }}
+  namespace: {{ .Values.forceNamespace }}
+{{- end }}
 spec:
   selector:
     matchLabels:

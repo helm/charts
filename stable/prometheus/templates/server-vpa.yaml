@@ -6,7 +6,9 @@ metadata:
   labels:
     {{- include "prometheus.server.labels" . | nindent 4 }}
   name: {{ template "prometheus.server.fullname" . }}-vpa
-  namespace: {{ .Release.Namespace }}
+{{- if .Values.forceNamespace }}
+  namespace: {{ .Values.forceNamespace }}
+{{- end }}
 spec:
   targetRef:
 {{- if .Values.server.statefulSet.enabled }}

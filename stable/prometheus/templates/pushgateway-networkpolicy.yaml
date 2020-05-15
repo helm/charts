@@ -3,7 +3,9 @@ apiVersion: {{ template "prometheus.networkPolicy.apiVersion" . }}
 kind: NetworkPolicy
 metadata:
   name: {{ template "prometheus.pushgateway.fullname" . }}
-  namespace: {{ .Release.Namespace }}
+{{- if .Values.forceNamespace }}
+  namespace: {{ .Values.forceNamespace }}
+{{- end }}
   labels:
     {{- include "prometheus.pushgateway.labels" . | nindent 4 }}
 spec:

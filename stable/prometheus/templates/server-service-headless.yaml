@@ -13,7 +13,9 @@ metadata:
 {{ toYaml .Values.server.statefulSet.headless.labels | indent 4 }}
 {{- end }}
   name: {{ template "prometheus.server.fullname" . }}-headless
-  namespace: {{ .Release.Namespace }}
+{{- if .Values.forceNamespace }}
+  namespace: {{ .Values.forceNamespace }}
+{{- end }}
 spec:
   clusterIP: None
   ports:

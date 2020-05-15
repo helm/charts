@@ -5,7 +5,9 @@ metadata:
   labels:
     {{- include "prometheus.alertmanager.labels" . | nindent 4 }}
   name: {{ template "prometheus.alertmanager.fullname" . }}
-  namespace: {{ .Release.Namespace }}
+{{- if .Values.forceNamespace }}
+  namespace: {{ .Values.forceNamespace }}
+{{- end }}
 data:
 {{- $root := . -}}
 {{- range $key, $value := .Values.alertmanagerFiles }}

@@ -3,7 +3,9 @@ apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
   name: {{ template "prometheus.pushgateway.fullname" . }}
-  namespace: {{ .Release.Namespace }}
+{{- if .Values.forceNamespace }}
+  namespace: {{ .Values.forceNamespace }}
+{{- end }}
   labels:
     {{- include "prometheus.pushgateway.labels" . | nindent 4 }}
 spec:

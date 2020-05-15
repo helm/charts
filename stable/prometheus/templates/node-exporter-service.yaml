@@ -12,7 +12,9 @@ metadata:
 {{ toYaml .Values.nodeExporter.service.labels | indent 4 }}
 {{- end }}
   name: {{ template "prometheus.nodeExporter.fullname" . }}
-  namespace: {{ .Release.Namespace }}
+{{- if .Values.forceNamespace }}
+  namespace: {{ .Values.forceNamespace }}
+{{- end }}
 spec:
 {{- if .Values.nodeExporter.service.clusterIP }}
   clusterIP: {{ .Values.nodeExporter.service.clusterIP }}
