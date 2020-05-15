@@ -43,6 +43,7 @@ The following table shows the configuration options for the Solr helm chart:
 | `readinessProbe.periodSeconds`                | Poll rate for readiness probe | `5`                                                                   |
 | `podAnnotations`                              | Annotations to be applied to the solr pods | `{}` |
 | `affinity`                                    | Affinity policy to be applied to the Solr pods | `{}` |
+| `tolerations`                                 | Tolerations to be applied to the Solr pods | `[]` |
 | `updateStrategy`                              | The update strategy of the solr pods | `{}` |
 | `logLevel`                                    | The log level of the solr pods  | `INFO` |
 | `podDisruptionBudget`                         | The pod disruption budget for the Solr statefulset | `{"maxUnavailable": 1}`                                                                   |
