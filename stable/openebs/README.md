@@ -40,34 +40,34 @@ The following table lists the configurable parameters of the OpenEBS chart and t
 | `rbac.create`                           | Enable RBAC Resources                         | `true`                                    |
 | `rbac.pspEnabled`                       | Create pod security policy resources          | `false`                                   |
 | `image.pullPolicy`                      | Container pull policy                         | `IfNotPresent`                            |
-| `image.registry`                        | Specify witch docker registry to use          | `quay.io/`                            |
+| `image.registry`                        | Specify witch docker registry to use          | `quay.io/`                                |
 | `apiserver.enabled`                     | Enable API Server                             | `true`                                    |
-| `apiserver.image`                       | Image for API Server                          | `quay.io/openebs/m-apiserver`             |
-| `apiserver.imageTag`                    | Image Tag for API Server                      | `1.9.0`                                   |
+| `apiserver.image`                       | Image for API Server                          | `openebs/m-apiserver`                     |
+| `apiserver.imageTag`                    | Image Tag for API Server                      | `1.10.0`                                  |
 | `apiserver.replicas`                    | Number of API Server Replicas                 | `1`                                       |
 | `apiserver.sparse.enabled`              | Create Sparse Pool based on Sparsefile        | `false`                                   |
 | `provisioner.enabled`                   | Enable Provisioner                            | `true`                                    |
-| `provisioner.image`                     | Image for Provisioner                         | `quay.io/openebs/openebs-k8s-provisioner` |
-| `provisioner.imageTag`                  | Image Tag for Provisioner                     | `1.9.0`                                   |
+| `provisioner.image`                     | Image for Provisioner                         | `openebs/openebs-k8s-provisioner`         |
+| `provisioner.imageTag`                  | Image Tag for Provisioner                     | `1.10.0`                                  |
 | `provisioner.replicas`                  | Number of Provisioner Replicas                | `1`                                       |
 | `localprovisioner.enabled`              | Enable localProvisioner                       | `true`                                    |
-| `localprovisioner.image`                | Image for localProvisioner                    | `quay.io/openebs/provisioner-localpv`     |
-| `localprovisioner.imageTag`             | Image Tag for localProvisioner                | `1.9.0`                                   |
+| `localprovisioner.image`                | Image for localProvisioner                    | `openebs/provisioner-localpv`             |
+| `localprovisioner.imageTag`             | Image Tag for localProvisioner                | `1.10.0`                                  |
 | `localprovisioner.replicas`             | Number of localProvisioner Replicas           | `1`                                       |
 | `localprovisioner.basePath`             | BasePath for hostPath volumes on Nodes        | `/var/openebs/local`                      |
 | `webhook.enabled`                       | Enable admission server                       | `true`                                    |
-| `webhook.image`                         | Image for admission server                    | `quay.io/openebs/admission-server`        |
-| `webhook.imageTag`                      | Image Tag for admission server                | `1.9.0`                                   |
+| `webhook.image`                         | Image for admission server                    | `openebs/admission-server`                |
+| `webhook.imageTag`                      | Image Tag for admission server                | `1.10.0`                                  |
 | `webhook.replicas`                      | Number of admission server Replicas           | `1`                                       |
 | `snapshotOperator.enabled`              | Enable Snapshot Provisioner                   | `true`                                    |
-| `snapshotOperator.provisioner.image`    | Image for Snapshot Provisioner                | `quay.io/openebs/snapshot-provisioner`    |
-| `snapshotOperator.provisioner.imageTag` | Image Tag for Snapshot Provisioner            | `1.9.0`                                   |
-| `snapshotOperator.controller.image`     | Image for Snapshot Controller                 | `quay.io/openebs/snapshot-controller`     |
-| `snapshotOperator.controller.imageTag`  | Image Tag for Snapshot Controller             | `1.9.0`                                   |
+| `snapshotOperator.provisioner.image`    | Image for Snapshot Provisioner                | `openebs/snapshot-provisioner`            |
+| `snapshotOperator.provisioner.imageTag` | Image Tag for Snapshot Provisioner            | `1.10.0`                                  |
+| `snapshotOperator.controller.image`     | Image for Snapshot Controller                 | `openebs/snapshot-controller`             |
+| `snapshotOperator.controller.imageTag`  | Image Tag for Snapshot Controller             | `1.10.0`                                  |
 | `snapshotOperator.replicas`             | Number of Snapshot Operator Replicas          | `1`                                       |
 | `ndm.enabled`                           | Enable Node Disk Manager                      | `true`                                    |
-| `ndm.image`                             | Image for Node Disk Manager                   | `quay.io/openebs/node-disk-manager-amd64` |
-| `ndm.imageTag`                          | Image Tag for Node Disk Manager               | `v0.4.9`                                  |
+| `ndm.image`                             | Image for Node Disk Manager                   | `openebs/node-disk-manager-amd64`         |
+| `ndm.imageTag`                          | Image Tag for Node Disk Manager               | `0.5.0`                                   |
 | `ndm.sparse.path`                       | Directory where Sparse files are created      | `/var/openebs/sparse`                     |
 | `ndm.sparse.size`                       | Size of the sparse file in bytes              | `10737418240`                             |
 | `ndm.sparse.count`                      | Number of sparse files to be created          | `0`                                       |
@@ -77,24 +77,27 @@ The following table lists the configurable parameters of the OpenEBS chart and t
 | `ndm.filters.excludePaths`              | Exclude devices with specified path patterns  | `loop,fd0,sr0,/dev/ram,/dev/dm-,/dev/md`  |
 | `ndm.probes.enableSeachest`             | Enable Seachest probe for NDM                 | `false`                                   |
 | `ndmOperator.enabled`                   | Enable NDM Operator                           | `true`                                    |
-| `ndmOperator.image`                     | Image for NDM Operator                        | `quay.io/openebs/node-disk-operator-amd64`|
-| `ndmOperator.imageTag`                  | Image Tag for NDM Operator                    | `v0.4.9`                                  |
-| `jiva.image`                            | Image for Jiva                                | `quay.io/openebs/jiva`                    |
-| `jiva.imageTag`                         | Image Tag for Jiva                            | `1.9.0`                                   |
+| `ndmOperator.image`                     | Image for NDM Operator                        | `openebs/node-disk-operator-amd64`        |
+| `ndmOperator.imageTag`                  | Image Tag for NDM Operator                    | `0.5.0`                                   |
+| `jiva.image`                            | Image for Jiva                                | `openebs/jiva`                            |
+| `jiva.imageTag`                         | Image Tag for Jiva                            | `1.10.0`                                  |
 | `jiva.replicas`                         | Number of Jiva Replicas                       | `3`                                       |
 | `jiva.defaultStoragePath`               | hostpath used by default Jiva StorageClass    | `/var/openebs`                            |
-| `cstor.pool.image`                      | Image for cStor Pool                          | `quay.io/openebs/cstor-pool`              |
-| `cstor.pool.imageTag`                   | Image Tag for cStor Pool                      | `1.9.0`                                   |
-| `cstor.poolMgmt.image`                  | Image for cStor Pool  Management              | `quay.io/openebs/cstor-pool-mgmt`         |
-| `cstor.poolMgmt.imageTag`               | Image Tag for cStor Pool Management           | `1.9.0`                                   |
-| `cstor.target.image`                    | Image for cStor Target                        | `quay.io/openebs/cstor-istgt`             |
-| `cstor.target.imageTag`                 | Image Tag for cStor Target                    | `1.9.0`                                   |
-| `cstor.volumeMgmt.image`                | Image for cStor Volume  Management            | `quay.io/openebs/cstor-volume-mgmt`       |
-| `cstor.volumeMgmt.imageTag`             | Image Tag for cStor Volume Management         | `1.9.0`                                   |
-| `helper.image`                          | Image for helper                              | `quay.io/openebs/linux-utils`             |
-| `helper.imageTag`                       | Image Tag for helper                          | `1.9.0`                                   |
-| `policies.monitoring.image`             | Image for Prometheus Exporter                 | `quay.io/openebs/m-exporter`              |
-| `policies.monitoring.imageTag`          | Image Tag for Prometheus Exporter             | `1.9.0`                                   |
+| `cstor.pool.image`                      | Image for cStor Pool                          | `openebs/cstor-pool`                      |
+| `cstor.pool.imageTag`                   | Image Tag for cStor Pool                      | `1.10.0`                                  |
+| `cstor.poolMgmt.image`                  | Image for cStor Pool  Management              | `openebs/cstor-pool-mgmt`                 |
+| `cstor.poolMgmt.imageTag`               | Image Tag for cStor Pool Management           | `1.10.0`                                  |
+| `cstor.target.image`                    | Image for cStor Target                        | `openebs/cstor-istgt`                     |
+| `cstor.target.imageTag`                 | Image Tag for cStor Target                    | `1.10.0`                                  |
+| `cstor.volumeMgmt.image`                | Image for cStor Volume  Management            | `openebs/cstor-volume-mgmt`               |
+| `cstor.volumeMgmt.imageTag`             | Image Tag for cStor Volume Management         | `1.10.0`                                  |
+| `helper.image`                          | Image for helper                              | `openebs/linux-utils`                     |
+| `helper.imageTag`                       | Image Tag for helper                          | `1.10.0`                                  |
+| `featureGates.enabled`                  | Enable feature gates for OpenEBS              | `false`                                   |
+| `featureGates.GPTBasedUUID.enabled`     | Enable GPT based UUID generation in NDM       | `false`                                   |
+| `crd.enableInstall`                     | Enable installation of CRDs by OpenEBS        | `true`                                    |
+| `policies.monitoring.image`             | Image for Prometheus Exporter                 | `openebs/m-exporter`                      |
+| `policies.monitoring.imageTag`          | Image Tag for Prometheus Exporter             | `1.10.0`                                  |
 | `analytics.enabled`                     | Enable sending stats to Google Analytics      | `true`                                    |
 | `analytics.pingInterval`                | Duration(hours) between sending ping stat     | `24h`                                     |
 | `defaultStorageConfig.enabled`          | Enable default storage class installation     | `true`                                    |

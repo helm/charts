@@ -34,6 +34,13 @@ spec:
       containers:
       - name: {{ template "openebs.name" . }}-ndm
         image: "{{ .Values.image.repository }}{{ .Values.ndm.image }}:{{ .Values.ndm.imageTag }}"
+        args:
+          - -v=4
+{{- if .Values.featureGates.enabled }}
+{{- if .Values.featureGates.GPTBasedUUID.enabled }}
+          - --feature-gates={{ .Values.featureGates.GPTBasedUUID.featureGateFlag }}
+{{- end}}
+{{- end}}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         securityContext:
           privileged: true
