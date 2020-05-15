@@ -100,6 +100,7 @@ and their default values.
 | `persistentVolume.name`                             | Persistent volume name                                                                                                                                                                                | `data`                                                     |
 | `persistentVolume.size`                             | Persistent volume size                                                                                                                                                                                | `8Gi`                                                      |
 | `persistentVolume.storageClass`                     | Persistent volume storage class                                                                                                                                                                       | `-`                                                        |
+| `persistentVolume.selector`                         | Persistent volume selector                                                                                                                                                                            | `{}`                                                       |
 | `podAntiAffinity`                                   | Pod anti-affinity, `hard` or `soft`                                                                                                                                                                   | `soft`                                                     |
 | `podAntiAffinityTopologyKey`                        | TopologyKey for anti-affinity, default is hostname                                                                                                                                                    | `"kubernetes.io/hostname"`                                 |
 | `affinity`                                          | Affinity settings. If specified, this will disable `podAntiAffinity` settings. If you still need anti-affinity, you must include the configuration here.                                              | `{}`                                                       |
@@ -155,6 +156,7 @@ and their default values.
 | `rbac.create`                                       | If true, create & use RBAC resources                                                                                                                                                                  | `true`                                                     |
 | `replicaCount`                                      | Number of replica                                                                                                                                                                                     | `3`                                                        |
 | `resources`                                         | CPU/Memory resource requests/limits                                                                                                                                                                   | `{}`                                                       |
+| `initContainer.resources`                           | CPU/Memory resource requests/limits for init container                                                                                                                                                | `{}` 
 | `schedulerName`                                     | alternate scheduler name                                                                                                                                                                              | `nil`                                                      |
 | `securityContext.fsGroup`                           | Group ID for the container's volumes                                                                                                                                                                  | `101`                                                      |
 | `securityContext.runAsGroup`                        | Group ID for the container                                                                                                                                                                            | `101`                                                      |
@@ -167,6 +169,7 @@ and their default values.
 | `service.clusterIP`                                 | IP address to assign to the service                                                                                                                                                                   | None                                                       |
 | `service.externalIPs`                               | Service external IP addresses                                                                                                                                                                         | `[]`                                                       |
 | `service.loadBalancerIP`                            | IP address to assign to load balancer (if supported)                                                                                                                                                  | `""`                                                       |
+| `service.externalTrafficPolicy`                     | Sets the external traffic policy for the service                                                                                                                                                     | `""`                                                       |
 | `service.loadBalancerSourceRanges`                  | List of IP CIDRs allowed access to load balancer (if supported)                                                                                                                                       | `[]`                                                       |
 | `service.type`                                      | Type of service to create                                                                                                                                                                             | `ClusterIP`                                                |
 | `ingress.enabled`                                   | Enable Ingress                                                                                                                                                                                        | `false`                                                    |
@@ -213,7 +216,7 @@ $ helm install --name my-release -f values.yaml stable/rabbitmq-ha
 When creating a new chart with this chart as a dependency, `existingConfigMap`
 can be used to override the default [configmap.yaml](templates/configmap.yaml)
 provided. It also allows for providing additional configuration files that will
-be mounted into `/etc/rabbitmq`. In the parent chart's values.yaml, set the
+be mounted into `/etc/definitions`. In the parent chart's values.yaml, set the
 value to true and provide the file [templates/configmap.yaml][] for your use
 case.
 
@@ -237,7 +240,7 @@ data:
     ].
   rabbitmq.conf: |
     # ....
-    management.load_definitions = /etc/rabbitmq/definitions.json
+    management.load_definitions = /etc/definitions/definitions.json
   definitions.json: |
     {
       "permissions": [],

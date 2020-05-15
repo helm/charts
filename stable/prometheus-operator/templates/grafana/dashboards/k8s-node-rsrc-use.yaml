@@ -814,7 +814,7 @@ data:
                                 "expr": "node:node_filesystem_usage:{cluster=\"$cluster\"}\n* on (namespace, pod) group_left (node) node_namespace_pod:kube_pod_info:{cluster=\"$cluster\", node=\"$node\"}\n",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{device}}`}}",
+                                "legendFormat": "{{`{{`}}device{{`}}`}}",
                                 "legendLink": null,
                                 "step": 10
                             }

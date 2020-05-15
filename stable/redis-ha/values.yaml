@@ -55,6 +55,7 @@ haproxy:
 
   annotations: {}
   resources: {}
+  emptyDir: {}
   ## Enable sticky sessions to Redis nodes via HAProxy
   ## Very useful for long-living connections as in case of Sentry for example
   stickyBalancing: false
@@ -357,3 +358,5 @@ hostPath:
   # change the owner of the hostPath folder to the user defined in the
   # security context
   chown: true
+
+emptyDir: {}

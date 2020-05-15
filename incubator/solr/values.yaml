@@ -22,6 +22,10 @@ resources: {}
 # Extra environment variables - allows yaml definitions
 extraEnvVars: []
 
+# Specify the initial script file name here to be executed before starting Solr
+# The file is located relative to the solr chart root folder
+initScript: ""
+
 # Sets the termination Grace period for the solr pods
 # This can take a while for shards to elect new leaders
 terminationGracePeriodSeconds: 180

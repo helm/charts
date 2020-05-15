@@ -18,7 +18,7 @@ agent:
   leaderElectorPort: 42655
 
   # agent.endpointHost is the hostname of the Instana server your agents will connect to.
-  endpointHost: saas-us-west-2.instana.io
+  endpointHost: ingress-red-saas.instana.io
   # agent.endpointPort is the port number (as a String) of the Instana server your agents will connect to.
   endpointPort: 443
 
@@ -77,6 +77,9 @@ agent:
   # agent.host.repository sets a host path to be mounted as the agent maven repository (for debugging or development purposes)
   host:
     repository: null
+
+  # agent.supportOpenshift specifies whether the cluster role should include openshift permissions
+  # supportOpenshift: true
 
 rbac:
   # Specifies whether RBAC resources should be created

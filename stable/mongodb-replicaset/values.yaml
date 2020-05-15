@@ -3,8 +3,8 @@ nameOverride: ""
 fullnameOverride: ""
 
 # Override the deployment namespace
-# global:
-#   namespaceOverride: ""
+global:
+#  namespaceOverride: ""
 
 replicas: 3
 port: 27017
@@ -17,6 +17,9 @@ replicaSetName: rs0
 podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 2
+
+# updateStrategy:
+  # type: RollingUpdate
 
 auth:
   enabled: false
@@ -143,6 +146,9 @@ persistentVolume:
     - ReadWriteOnce
   size: 10Gi
   annotations: {}
+
+# Annotations to be added to the secrets
+secretAnnotations: {}
 
 # Annotations to be added to the service
 serviceAnnotations: {}

@@ -58,6 +58,7 @@ spec:
         - name: ssh-secrets
           secret:
             secretName: {{ .Values.server.security.ssh.secretName }}
+            defaultMode: {{ .Values.server.security.ssh.defaultMode | default 256 }}
       {{- end }}
       {{- if .Values.server.initContainers }}
       initContainers:
@@ -84,7 +85,6 @@ spec:
             {{- end }}
           ports:
             - containerPort: 8153
-            - containerPort: 8154
           livenessProbe:
             httpGet:
               path: /go/api/v1/health

@@ -52,6 +52,7 @@ The following table lists the configurable parameters of the pushgateway chart a
 | `ingress.tls`                     | Ingress TLS configuration                                                                                                     | `[]`                              |
 | `resources`                       | CPU/Memory resource requests/limits                                                                                           | `{}`                              |
 | `replicaCount`                    | Number of replicas                                                                                                            | `1`                               |
+| `strategy`                        | Deployment strategy                                                                                                           | `{ "type": "Recreate" }`          |
 | `service.type`                    | Service type                                                                                                                  | `ClusterIP`                       |
 | `service.port`                    | The service port                                                                                                              | `9091`                            |
 | `service.nodePort`                | The optional service node port when `service.type` is `NodePort`                                                              | ``                                |

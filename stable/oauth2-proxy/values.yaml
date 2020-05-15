@@ -30,7 +30,7 @@ config:
 
 image:
   repository: "quay.io/pusher/oauth2_proxy"
-  tag: "v4.0.0"
+  tag: "v5.1.0"
   pullPolicy: "IfNotPresent"
 
 # Optionally specify an array of imagePullSecrets.
@@ -69,6 +69,15 @@ service:
   port: 80
   annotations: {}
   # foo.io/bar: "true"
+
+## Create or use ServiceAccount
+serviceAccount:
+  ## Specifies whether a ServiceAccount should be created
+  enabled: true
+  ## The name of the ServiceAccount to use.
+  ## If not set and create is true, a name is generated using the fullname template
+  name:
+  annotations: {}
 
 ingress:
   enabled: false
@@ -149,6 +158,10 @@ replicaCount: 1
 podDisruptionBudget:
   enabled: true
   minAvailable: 1
+
+# Configure Kubernetes security context for pod
+# Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+podSecurityContext: {}
 
 # whether to use http or https
 httpScheme: http

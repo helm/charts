@@ -78,7 +78,7 @@ data:
                                 "expr": "sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{cluster=\"$cluster\", node=\"$node\"}) by (pod)",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{pod}}`}}",
+                                "legendFormat": "{{`{{`}}pod{{`}}`}}",
                                 "legendLink": null,
                                 "step": 10
                             }
@@ -443,7 +443,7 @@ data:
                                 "expr": "sum(node_namespace_pod_container:container_memory_working_set_bytes{cluster=\"$cluster\", node=\"$node\", container!=\"\"}) by (pod)",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{pod}}`}}",
+                                "legendFormat": "{{`{{`}}pod{{`}}`}}",
                                 "legendLink": null,
                                 "step": 10
                             }
@@ -854,8 +854,8 @@ data:
             "list": [
                 {
                     "current": {
-                        "text": "Prometheus",
-                        "value": "Prometheus"
+                        "text": "default",
+                        "value": "default"
                     },
                     "hide": 0,
                     "label": null,
@@ -871,13 +871,13 @@ data:
                 {
                     "allValue": null,
                     "current": {
-                        "text": "prod",
-                        "value": "prod"
+                        "text": "",
+                        "value": ""
                     },
                     "datasource": "$datasource",
                     "hide": 2,
                     "includeAll": false,
-                    "label": "cluster",
+                    "label": null,
                     "multi": false,
                     "name": "cluster",
                     "options": [
@@ -886,7 +886,7 @@ data:
                     "query": "label_values(kube_pod_info, cluster)",
                     "refresh": 1,
                     "regex": "",
-                    "sort": 2,
+                    "sort": 1,
                     "tagValuesQuery": "",
                     "tags": [
 
@@ -898,13 +898,13 @@ data:
                 {
                     "allValue": null,
                     "current": {
-                        "text": "prod",
-                        "value": "prod"
+                        "text": "",
+                        "value": ""
                     },
                     "datasource": "$datasource",
                     "hide": 0,
                     "includeAll": false,
-                    "label": "node",
+                    "label": null,
                     "multi": false,
                     "name": "node",
                     "options": [
@@ -913,7 +913,7 @@ data:
                     "query": "label_values(kube_pod_info{cluster=\"$cluster\"}, node)",
                     "refresh": 1,
                     "regex": "",
-                    "sort": 2,
+                    "sort": 1,
                     "tagValuesQuery": "",
                     "tags": [
 

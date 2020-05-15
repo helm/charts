@@ -53,6 +53,11 @@ hub:
   ## Path for checking readiness and liveness via HTTP Request
   probePath: "/wd/hub/status"
 
+  # Configure security context on the hub pod
+  # securityContext:
+  #   fsGroup: 1000
+  #   runAsUser: 1000
+
   ## Additional environment variables to set
   extraEnvs: []
   # extraEnvs:
@@ -109,16 +114,17 @@ hub:
   #   # internal AWS ELB
   #   service.beta.kubernetes.io/aws-load-balancer-internal: "0.0.0.0/0"
 
-  ## ref: https://seleniumhq.github.io/docs/grid.html#step_1_start_the_hub
+  ## ref: https://github.com/SeleniumHQ/selenium/wiki/Grid2#configuring-the-nodes
+  ## In milliseconds
   # gridNewSessionWaitTimeout: -1
   # gridJettyMaxThreads: -1
   ## In milliseconds
   # gridNodePolling: 5000
   ## In milliseconds
   # gridCleanUpCycle: 5000
-  ## In milliseconds
-  # gridTimeout: 30000
-  ## In milliseconds
+  ## In seconds
+  # gridTimeout: 30
+  ## In seconds
   # gridBrowserTimeout: 0
   # gridMaxSession: 5
   ## In milliseconds
@@ -146,6 +152,9 @@ chrome:
   ## Enable the creation of a node-chrome pod
   enabled: false
 
+  ## DaemonSet instead of Deployment
+  runAsDaemonSet: false
+
   ## The repository and image
   ## ref: https://hub.docker.com/r/selenium/node-chrome/
   image: "selenium/node-chrome"
@@ -161,11 +170,22 @@ chrome:
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   pullPolicy: "IfNotPresent"
 
-  ## The number of pods in the deployment
+  ## The number of pods in the deployment. This is ignored if runAsDaemonSet is enabled.
   replicas: 1
+
+  ## When true will add a liveness check to the pod
+  enableLivenessProbe: false
+
+  ## When true will wait for current running sessions to finish before terminating the pod
+  waitForRunningSessions: false
 
   ## Configure annotations on the chrome pods
   podAnnotations: {}
+
+  # Configure security context on the chrome pods
+  # securityContext:
+  #   fsGroup: 1000
+  #   runAsUser: 1000
 
   ## Additional environment variables to set
   extraEnvs: []
@@ -237,6 +257,9 @@ chromeDebug:
   ## Enable the creation of a node-chrome-debug pod
   enabled: false
 
+  ## DaemonSet instead of Deployment
+  runAsDaemonSet: false
+
   ## The repository and image
   ## ref: https://hub.docker.com/r/selenium/node-chrome-debug/
   image: "selenium/node-chrome-debug"
@@ -252,11 +275,22 @@ chromeDebug:
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   pullPolicy: "IfNotPresent"
 
-  ## The number of pods in the deployment
+  ## The number of pods in the deployment. This is ignored if runAsDaemonSet is enabled.
   replicas: 1
+
+  ## When true will add a liveness check to the pod
+  enableLivenessProbe: false
+
+  ## When true will wait for current running sessions to finish before terminating the pod
+  waitForRunningSessions: false
 
   ## Configure annotations on the chrome debug pods
   podAnnotations: {}
+
+  # Configure security context on the chrome debug pods
+  # securityContext:
+  #   fsGroup: 1000
+  #   runAsUser: 1000
 
   ## Additional environment variables to set
   extraEnvs: []
@@ -327,6 +361,9 @@ firefox:
   ## Enable the creation of a node-firefox pod
   enabled: false
 
+  ## DaemonSet instead of Deployment
+  runAsDaemonSet: false
+
   ## The repository and image
   ## ref: https://hub.docker.com/r/selenium/node-firefox/
   image: "selenium/node-firefox"
@@ -342,11 +379,22 @@ firefox:
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   pullPolicy: "IfNotPresent"
 
-  ## The number of pods in the deployment
+  ## The number of pods in the deployment. This is ignored if runAsDaemonSet is enabled.
   replicas: 1
+
+  ## When true will add a liveness check to the pod
+  enableLivenessProbe: false
+
+  ## When true will wait for current running sessions to finish before terminating the pod
+  waitForRunningSessions: false
 
   ## Configure annotations on the firefox pods
   podAnnotations: {}
+
+  # Configure security context on the firefox pods
+  # securityContext:
+  #   fsGroup: 1000
+  #   runAsUser: 1000
 
   ## Additional environment variables to set
   extraEnvs: []
@@ -404,6 +452,9 @@ firefoxDebug:
   ## Enable the creation of a node-firefox-debug pod
   enabled: false
 
+  ## DaemonSet instead of Deployment
+  runAsDaemonSet: false
+
   ## The repository and image
   ## ref: https://hub.docker.com/r/selenium/node-firefox-debug/
   image: "selenium/node-firefox-debug"
@@ -419,11 +470,22 @@ firefoxDebug:
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   pullPolicy: "IfNotPresent"
 
-  ## The number of pods in the deployment
+  ## The number of pods in the deployment. This is ignored if runAsDaemonSet is enabled.
   replicas: 1
+
+  ## When true will add a liveness check to the pod
+  enableLivenessProbe: false
+
+  ## When true will wait for current running sessions to finish before terminating the pod
+  waitForRunningSessions: false
 
   ## Configure annotations on the firefox debug pods
   podAnnotations: {}
+
+  # Configure security context on the firefox debug pods
+  # securityContext:
+  #   fsGroup: 1000
+  #   runAsUser: 1000
 
   ## Additional environment variables to set
   extraEnvs: []

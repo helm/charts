@@ -26,7 +26,7 @@ spec:
     rules:
     - alert: NodeFilesystemSpaceFillingUp
       annotations:
-        description: Filesystem on {{`{{ $labels.device }}`}} at {{`{{ $labels.instance }}`}} has only {{`{{ printf "%.2f" $value }}`}}% available space left and is filling up.
+        description: Filesystem on {{`{{`}} $labels.device {{`}}`}} at {{`{{`}} $labels.instance {{`}}`}} has only {{`{{`}} printf "%.2f" $value {{`}}`}}% available space left and is filling up.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodefilesystemspacefillingup
         summary: Filesystem is predicted to run out of space within the next 24 hours.
       expr: |-
@@ -42,12 +42,12 @@ spec:
         severity: warning
     - alert: NodeFilesystemSpaceFillingUp
       annotations:
-        description: Filesystem on {{`{{ $labels.device }}`}} at {{`{{ $labels.instance }}`}} has only {{`{{ printf "%.2f" $value }}`}}% available space left and is filling up fast.
+        description: Filesystem on {{`{{`}} $labels.device {{`}}`}} at {{`{{`}} $labels.instance {{`}}`}} has only {{`{{`}} printf "%.2f" $value {{`}}`}}% available space left and is filling up fast.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodefilesystemspacefillingup
         summary: Filesystem is predicted to run out of space within the next 4 hours.
       expr: |-
         (
-          node_filesystem_avail_bytes{job="node-exporter",fstype!=""} / node_filesystem_size_bytes{job="node-exporter",fstype!=""} * 100 < 20
+          node_filesystem_avail_bytes{job="node-exporter",fstype!=""} / node_filesystem_size_bytes{job="node-exporter",fstype!=""} * 100 < 15
         and
           predict_linear(node_filesystem_avail_bytes{job="node-exporter",fstype!=""}[6h], 4*60*60) < 0
         and
@@ -58,7 +58,7 @@ spec:
         severity: critical
     - alert: NodeFilesystemAlmostOutOfSpace
       annotations:
-        description: Filesystem on {{`{{ $labels.device }}`}} at {{`{{ $labels.instance }}`}} has only {{`{{ printf "%.2f" $value }}`}}% available space left.
+        description: Filesystem on {{`{{`}} $labels.device {{`}}`}} at {{`{{`}} $labels.instance {{`}}`}} has only {{`{{`}} printf "%.2f" $value {{`}}`}}% available space left.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodefilesystemalmostoutofspace
         summary: Filesystem has less than 5% space left.
       expr: |-
@@ -72,7 +72,7 @@ spec:
         severity: warning
     - alert: NodeFilesystemAlmostOutOfSpace
       annotations:
-        description: Filesystem on {{`{{ $labels.device }}`}} at {{`{{ $labels.instance }}`}} has only {{`{{ printf "%.2f" $value }}`}}% available space left.
+        description: Filesystem on {{`{{`}} $labels.device {{`}}`}} at {{`{{`}} $labels.instance {{`}}`}} has only {{`{{`}} printf "%.2f" $value {{`}}`}}% available space left.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodefilesystemalmostoutofspace
         summary: Filesystem has less than 3% space left.
       expr: |-
@@ -86,7 +86,7 @@ spec:
         severity: critical
     - alert: NodeFilesystemFilesFillingUp
       annotations:
-        description: Filesystem on {{`{{ $labels.device }}`}} at {{`{{ $labels.instance }}`}} has only {{`{{ printf "%.2f" $value }}`}}% available inodes left and is filling up.
+        description: Filesystem on {{`{{`}} $labels.device {{`}}`}} at {{`{{`}} $labels.instance {{`}}`}} has only {{`{{`}} printf "%.2f" $value {{`}}`}}% available inodes left and is filling up.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodefilesystemfilesfillingup
         summary: Filesystem is predicted to run out of inodes within the next 24 hours.
       expr: |-
@@ -102,7 +102,7 @@ spec:
         severity: warning
     - alert: NodeFilesystemFilesFillingUp
       annotations:
-        description: Filesystem on {{`{{ $labels.device }}`}} at {{`{{ $labels.instance }}`}} has only {{`{{ printf "%.2f" $value }}`}}% available inodes left and is filling up fast.
+        description: Filesystem on {{`{{`}} $labels.device {{`}}`}} at {{`{{`}} $labels.instance {{`}}`}} has only {{`{{`}} printf "%.2f" $value {{`}}`}}% available inodes left and is filling up fast.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodefilesystemfilesfillingup
         summary: Filesystem is predicted to run out of inodes within the next 4 hours.
       expr: |-
@@ -118,7 +118,7 @@ spec:
         severity: critical
     - alert: NodeFilesystemAlmostOutOfFiles
       annotations:
-        description: Filesystem on {{`{{ $labels.device }}`}} at {{`{{ $labels.instance }}`}} has only {{`{{ printf "%.2f" $value }}`}}% available inodes left.
+        description: Filesystem on {{`{{`}} $labels.device {{`}}`}} at {{`{{`}} $labels.instance {{`}}`}} has only {{`{{`}} printf "%.2f" $value {{`}}`}}% available inodes left.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodefilesystemalmostoutoffiles
         summary: Filesystem has less than 5% inodes left.
       expr: |-
@@ -132,7 +132,7 @@ spec:
         severity: warning
     - alert: NodeFilesystemAlmostOutOfFiles
       annotations:
-        description: Filesystem on {{`{{ $labels.device }}`}} at {{`{{ $labels.instance }}`}} has only {{`{{ printf "%.2f" $value }}`}}% available inodes left.
+        description: Filesystem on {{`{{`}} $labels.device {{`}}`}} at {{`{{`}} $labels.instance {{`}}`}} has only {{`{{`}} printf "%.2f" $value {{`}}`}}% available inodes left.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodefilesystemalmostoutoffiles
         summary: Filesystem has less than 3% inodes left.
       expr: |-
@@ -146,7 +146,7 @@ spec:
         severity: critical
     - alert: NodeNetworkReceiveErrs
       annotations:
-        description: '{{`{{ $labels.instance }}`}} interface {{`{{ $labels.device }}`}} has encountered {{`{{ printf "%.0f" $value }}`}} receive errors in the last two minutes.'
+        description: '{{`{{`}} $labels.instance {{`}}`}} interface {{`{{`}} $labels.device {{`}}`}} has encountered {{`{{`}} printf "%.0f" $value {{`}}`}} receive errors in the last two minutes.'
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodenetworkreceiveerrs
         summary: Network interface is reporting many receive errors.
       expr: increase(node_network_receive_errs_total[2m]) > 10
@@ -155,11 +155,48 @@ spec:
         severity: warning
     - alert: NodeNetworkTransmitErrs
       annotations:
-        description: '{{`{{ $labels.instance }}`}} interface {{`{{ $labels.device }}`}} has encountered {{`{{ printf "%.0f" $value }}`}} transmit errors in the last two minutes.'
+        description: '{{`{{`}} $labels.instance {{`}}`}} interface {{`{{`}} $labels.device {{`}}`}} has encountered {{`{{`}} printf "%.0f" $value {{`}}`}} transmit errors in the last two minutes.'
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodenetworktransmiterrs
         summary: Network interface is reporting many transmit errors.
       expr: increase(node_network_transmit_errs_total[2m]) > 10
       for: 1h
+      labels:
+        severity: warning
+    - alert: NodeHighNumberConntrackEntriesUsed
+      annotations:
+        description: '{{`{{`}} $value | humanizePercentage {{`}}`}} of conntrack entries are used'
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodehighnumberconntrackentriesused
+        summary: Number of conntrack are getting close to the limit
+      expr: (node_nf_conntrack_entries / node_nf_conntrack_entries_limit) > 0.75
+      labels:
+        severity: warning
+    - alert: NodeClockSkewDetected
+      annotations:
+        message: Clock on {{`{{`}} $labels.instance {{`}}`}} is out of sync by more than 300s. Ensure NTP is configured correctly on this host.
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodeclockskewdetected
+        summary: Clock skew detected.
+      expr: |-
+        (
+          node_timex_offset_seconds > 0.05
+        and
+          deriv(node_timex_offset_seconds[5m]) >= 0
+        )
+        or
+        (
+          node_timex_offset_seconds < -0.05
+        and
+          deriv(node_timex_offset_seconds[5m]) <= 0
+        )
+      for: 10m
+      labels:
+        severity: warning
+    - alert: NodeClockNotSynchronising
+      annotations:
+        message: Clock on {{`{{`}} $labels.instance {{`}}`}} is not synchronising. Ensure NTP is configured on this host.
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodeclocknotsynchronising
+        summary: Clock not synchronising.
+      expr: min_over_time(node_timex_sync_status[5m]) == 0
+      for: 10m
       labels:
         severity: warning
 {{- end }}

@@ -41,3 +41,14 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Determine secret name, can either be the self-created of an existing one
+*/}}
+{{- define "prometheus-mongodb-exporter.secretName" -}}
+{{- if .Values.existingSecret.name -}}
+    {{- .Values.existingSecret.name -}}
+{{- else -}}
+    {{ include "prometheus-mongodb-exporter.fullname" . }}
+{{- end -}}
+{{- end -}}

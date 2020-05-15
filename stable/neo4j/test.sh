@@ -9,10 +9,11 @@ echo "Testing we can get the cluster role of each server in statefulset ${STATEF
 
 check_role() {
   name=$1
-  end="$((SECONDS+120))"
+  end="$((SECONDS+600))"
   while true; do
-    echo "checking cluster role: ${name}"
-    kubectl exec ${name} -n ${NS} -- bin/cypher-shell -u neo4j -p ${NEO4J_SECRETS_PASSWORD} "call dbms.cluster.role()" 2>/dev/null
+    echo "checking cluster role: ${name} for systemdb"
+    # In Neo4j 4.0 members now only have a cluster role with respect to a particular database.
+    kubectl exec ${name} -n ${NS} -- bin/cypher-shell -a ${name} -u neo4j -p ${NEO4J_SECRETS_PASSWORD} "call dbms.cluster.role('system')" 2>/dev/null
     response_code=$?
     [[ "0" = "$response_code" ]] && break
     [[ "${SECONDS}" -ge "${end}" ]] && exit 1
@@ -24,7 +25,7 @@ check_role() {
 for num in $(seq $CORE_REPLICAS); do
   id=$(expr $num - 1)
   name="${STATEFULSET_NAME}-core-$id"
-  echo "checking role of $name"
+  echo "checking role of $name for systemdb"
   check_role $name
 done
 

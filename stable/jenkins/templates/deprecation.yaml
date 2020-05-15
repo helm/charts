@@ -61,10 +61,6 @@
            {{ fail "`Master.AdminPassword` does no longer exist. It has been renamed to `master.adminPassword`" }}
         {{- end }}
 
-        {{- if .Values.Master.AdminSshKey }}
-           {{ fail "`Master.AdminSshKey` does no longer exist. It has been renamed to `master.adminSshKey`" }}
-        {{- end }}
-
         {{- if .Values.Master.JenkinsAdminEmail }}
            {{ fail "`Master.JenkinsAdminEmail` does no longer exist. It has been renamed to `master.jenkinsAdminEmail`" }}
         {{- end }}
@@ -352,5 +348,9 @@
 
     {{- if .Values.Persistence }}
        {{ fail "Persistence.* values have been renamed, please check the documentation" }}
+    {{- end }}
+
+    {{- if .Values.master.JCasC.pluginVersion }}
+       {{ fail "master.JCasC.pluginVersion has been deprecated, please use master.installPlugins instead" }}
     {{- end }}
 {{- end }}
