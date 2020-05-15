@@ -2,7 +2,7 @@
 prometheusScrape: true
 image:
   repository: quay.io/coreos/kube-state-metrics
-  tag: v1.9.5
+  tag: v1.9.6
   pullPolicy: IfNotPresent
 
 # If set to true, this will deploy kube-state-metrics as a StatefulSet and the data
