@@ -302,6 +302,8 @@ acme:
       GCE_SERVICE_ACCOUNT_FILE: ""
     linode:
       LINODE_API_KEY: ""
+    linodev4:
+      LINODE_TOKEN: ""
     namecheap:
       NAMECHEAP_API_USER: ""
       NAMECHEAP_API_KEY: ""
