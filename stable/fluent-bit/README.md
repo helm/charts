@@ -150,6 +150,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `podSecurityContext`               | [Security settings for a pod](https://kubernetes.io/docs/concepts/policy/security-context)       | `{}` |
 | `hostNetwork`                      | Use host's network                         | `false`                                           |
 | `dnsPolicy`                        | Specifies the dnsPolicy to use             | `ClusterFirst`                                    |
+| `dnsConfig`                        | Specifies the custom dnsConfig to use      | `NULL`                                            |
 | `priorityClassName`                | Specifies the priorityClassName to use     | `NULL`                                            |
 | `tolerations`                      | Optional daemonset tolerations             | `NULL`                                            |
 | `nodeSelector`                     | Node labels for fluent-bit pod assignment  | `NULL`                                            |

@@ -208,6 +208,19 @@ hostNetwork: false
 # Consider switching to 'ClusterFirstWithHostNet' when 'hostNetwork' is enabled.
 dnsPolicy: ClusterFirst
 
+# Optional field that allows more control on the DNS settings for the pod.
+# Ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config
+dnsConfig: {}
+  # nameservers:
+  #   - 1.2.3.4
+  # searches:
+  #   - ns1.svc.cluster-domain.example
+  #   - my.dns.search.suffix
+  # options:
+  #   - name: ndots
+  #     value: "2"
+  #   - name: edns0
+
 ## Node tolerations for fluent-bit scheduling to nodes with taints
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
 ##
