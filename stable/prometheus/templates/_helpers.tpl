@@ -236,3 +236,14 @@ Create the name of the service account to use for the server component
     {{ default "default" .Values.serviceAccounts.server.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Define the prometheus.namespace template if set with forceNamespace or .Release.Namespace is set
+*/}}
+{{- define "prometheus.namespace" -}}
+{{- if .Values.forceNamespace -}}
+{{ printf "namespace: %s" .Values.forceNamespace }}
+{{- else -}}
+{{ printf "namespace: %s" .Release.Namespace }}
+{{- end -}}
+{{- end -}}
