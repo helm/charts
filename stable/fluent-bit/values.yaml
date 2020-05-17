@@ -265,9 +265,16 @@ filter:
   kubeTag: kube
   kubeTagPrefix: kube.var.log.containers.
 
-# If true, use a lua function to replace dots with underscores in kubernetes labels' and annotations' names
+# If true, use a lua function to replace symbols in metadata keys in accordance with kubeRemapMetaKeys
 # See https://github.com/fluent/fluent-bit/issues/1134 for details
-  enableDedotKeys: true
+  enableRemapMetaKeys: true
+
+## List of the respective patterns and replacements for metadata keys replacements
+## Pattern must satisfy the Lua spec (see https://www.lua.org/pil/20.2.html)
+## Replacement is a plain symbol to replace with
+  kubeRemapMetaKeys:
+    - pattern: '[/.]'
+      replacement: '_'
 
 # If true, check to see if the log field content is a JSON string map, if so,
 # it append the map fields as part of the log structure.

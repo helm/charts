@@ -108,10 +108,10 @@ spec:
         - name: config
           mountPath: /fluent-bit/etc/fluent-bit-output.conf
           subPath: fluent-bit-output.conf
-{{- if .Values.filter.enableDedotKeys }}
+{{- if .Values.filter.enableRemapMetaKeys }}
         - name: config
-          mountPath: /fluent-bit/scripts/kubernetes_dedot.lua
-          subPath: kubernetes_dedot.lua
+          mountPath: /fluent-bit/scripts/kubernetes_remap.lua
+          subPath: kubernetes_remap.lua
 {{- end }}
 {{- range $key, $value := .Values.extraLuaScripts }}
         - name: config

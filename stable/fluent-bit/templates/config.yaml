@@ -24,34 +24,42 @@ data:
         HTTP_Port    2020
 {{- end }}
 
-{{ if .Values.filter.enableDedotKeys }}
-  kubernetes_dedot.lua: |-
-    function dedot(tag, timestamp, record)
+{{ if .Values.filter.enableRemapMetaKeys }}
+  kubernetes_remap.lua: |-
+    function remap_meta_keys(tag, timestamp, record)
         if record["kubernetes"] == nil then
             return 0, 0, 0
         end
-        dedot_keys(record["kubernetes"]["annotations"])
-        dedot_keys(record["kubernetes"]["labels"])
+        remap_keys(record["kubernetes"]["annotations"])
+        remap_keys(record["kubernetes"]["labels"])
         return 1, timestamp, record
     end
 
-    function dedot_keys(map)
+    function remap_keys(map)
         if map == nil then
             return
         end
+
         local new_map = {}
         local changed_keys = {}
+
         for k, v in pairs(map) do
-            local deslashed = string.gsub(k, "%/", "_")
-            local dedotted = string.gsub(deslashed, "%.", "_")
-            if dedotted ~= k then
-                new_map[dedotted] = v
+            local remapped = k
+
+            {{- range .Values.filter.kubeRemapMetaKeys }}
+            remapped = string.gsub(remapped, {{ .pattern | quote }}, {{ .replacement | quote }})
+            {{- end }}
+
+            if remapped ~= k then
+                new_map[remapped] = v
                 changed_keys[k] = true
             end
         end
+
         for k in pairs(changed_keys) do
             map[k] = nil
         end
+
         for k, v in pairs(new_map) do
             map[k] = v
         end
@@ -133,12 +141,12 @@ data:
         Use_Journal         On
 {{- end }}
 {{ .Values.extraEntries.filter | indent 8 }}
-{{- if .Values.filter.enableDedotKeys }}
+{{- if .Values.filter.enableRemapMetaKeys }}
     [FILTER]
         Name    lua
         Match   {{ .Values.filter.kubeTag }}.*
-        script  /fluent-bit/scripts/kubernetes_dedot.lua
-        call    dedot
+        script  /fluent-bit/scripts/kubernetes_remap.lua
+        call    remap_meta_keys
 {{- end }}
 
   fluent-bit-output.conf: |

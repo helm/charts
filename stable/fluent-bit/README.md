@@ -110,6 +110,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `extraPorts`                       | List of extra ports                        |                       |
 | `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
 | `extraVolume`                      | Extra volume                               |                                                |
+| `extraLuaScripts`                  | Extra Lua scripts injected to fluent-bit containers which are may be used in filters                               |                                                |
 | `service.flush`                    | Interval to flush output (seconds)        | `1`                   |
 | `service.logLevel`                 | Diagnostic level (error/warning/info/debug/trace)        | `info`                   |
 | `filter.enableExclude`             | Enable the use of monitoring for a pod annotation of `fluentbit.io/exclude: true`. If present, discard logs from that pod.         | `true`                                 |
@@ -119,7 +120,8 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `filter.kubeTokenFile`             | Optional custom configmaps       | `/var/run/secrets/kubernetes.io/serviceaccount/token`     |
 | `filter.kubeTag`                   | Optional top-level tag for matching in filter         | `kube`                                 |
 | `filter.kubeTagPrefix`             | Optional tag prefix used by Tail   | `kube.var.log.containers.`                                |
-| `filter.enableDedotKeys`           | If true, use a lua function to replace dots with underscores in kubernetes labels' and annotations' names   | `true`                                |
+| `filter.enableRemapMetaKeys`           | If true, use a lua function to replace symbols in metadata keys in accordance with kubeRemapMetaKeys   | `true`                                |
+| `filter.kubeRemapMetaKeys`           | List of the respective patterns and replacements for metadata keys replacements   | `[{ "pattern": "[/.]", replacement: "_"}]`                                |
 | `filter.mergeJSONLog`              | If the log field content is a JSON string map, append the map fields as part of the log structure         | `true`                                 |
 | `filter.mergeLogKey`               | If set, append the processed log keys under a new root key specified by this variable. | `nil` |
 | `filter.useJournal`                | If true, the filter reads logs coming in Journald format.  | `false` |
