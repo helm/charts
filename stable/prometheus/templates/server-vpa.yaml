@@ -6,6 +6,7 @@ metadata:
   labels:
     {{- include "prometheus.server.labels" . | nindent 4 }}
   name: {{ template "prometheus.server.fullname" . }}-vpa
+{{ include "prometheus.namespace" . | indent 2 }}
 spec:
   targetRef:
 {{- if .Values.server.statefulSet.enabled }}
