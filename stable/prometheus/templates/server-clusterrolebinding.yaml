@@ -8,7 +8,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: {{ template "prometheus.serviceAccountName.server" . }}
-    namespace: {{ .Release.Namespace }}
+{{ include "prometheus.namespace" . | indent 4 }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole

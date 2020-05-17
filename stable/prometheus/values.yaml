@@ -1541,3 +1541,6 @@ networkPolicy:
   ## Enable creation of NetworkPolicy resources.
   ##
   enabled: false
+
+# Force namespace of namespaced resources
+forceNamespace: null

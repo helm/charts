@@ -21,6 +21,7 @@ metadata:
     {{ $key }}: {{ $value }}
 {{- end }}
   name: {{ template "prometheus.server.fullname" . }}
+{{ include "prometheus.namespace" . | indent 2 }}
 spec:
   rules:
   {{- range .Values.server.ingress.hosts }}

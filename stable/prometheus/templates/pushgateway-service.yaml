@@ -12,6 +12,7 @@ metadata:
 {{ toYaml .Values.pushgateway.service.labels | indent 4}}
 {{- end }}
   name: {{ template "prometheus.pushgateway.fullname" . }}
+{{ include "prometheus.namespace" . | indent 2 }}
 spec:
 {{- if .Values.pushgateway.service.clusterIP }}
   clusterIP: {{ .Values.pushgateway.service.clusterIP }}

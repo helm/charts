@@ -6,6 +6,7 @@ metadata:
   labels:
     {{- include "prometheus.server.labels" . | nindent 4 }}
   name: {{ template "prometheus.server.fullname" . }}
+{{ include "prometheus.namespace" . | indent 2 }}
 data:
 {{- $root := . -}}
 {{- range $key, $value := .Values.serverFiles }}

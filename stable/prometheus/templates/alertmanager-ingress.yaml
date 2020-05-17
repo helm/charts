@@ -20,6 +20,7 @@ metadata:
     {{ $key }}: {{ $value }}
 {{- end }}
   name: {{ template "prometheus.alertmanager.fullname" . }}
+{{ include "prometheus.namespace" . | indent 2 }}
 spec:
   rules:
   {{- range .Values.alertmanager.ingress.hosts }}

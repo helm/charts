@@ -6,7 +6,7 @@ metadata:
   name: {{ template "prometheus.nodeExporter.fullname" . }}
   labels:
     {{- include "prometheus.nodeExporter.labels" . | nindent 4 }}
-  namespace: {{ .Release.Namespace }}
+{{ include "prometheus.namespace" . | indent 2 }}
 rules:
 - apiGroups: ['extensions']
   resources: ['podsecuritypolicies']
