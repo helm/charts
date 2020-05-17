@@ -14,6 +14,8 @@ data:
   POSTGRES_HOST: "{{ template "airflow.postgresql.fullname" . }}"
   POSTGRES_PORT: "{{ .Values.postgresql.service.port }}"
   POSTGRES_DB: "{{ .Values.postgresql.postgresqlDatabase }}"
+  POSTGRES_USER: "{{ .Values.postgresql.postgresqlPassword }}"
+  POSTGRES_PASSWORD: "{{ .Values.postgresql.postgresqlDatabase }}"
   {{- if eq .Values.airflow.executor "Celery" }}
   ## Redis DB configuration
   REDIS_HOST: "{{ template "airflow.redis.host" . }}"
