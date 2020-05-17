@@ -377,7 +377,8 @@ Parameter | Description | Default
 `serverFiles.prometheus.yml` | Prometheus server scrape configuration | example configuration
 `extraScrapeConfigs` | Prometheus server additional scrape configuration | ""
 `alertRelabelConfigs` | Prometheus server [alert relabeling configs](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#alert_relabel_configs) for H/A prometheus | ""
-`networkPolicy.enabled` | Enable NetworkPolicy | `false` |
+`networkPolicy.enabled` | Enable NetworkPolicy | `false`
+`forceNamespace` | Force resources to be namespaced | `null` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
