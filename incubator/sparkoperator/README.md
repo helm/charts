@@ -62,6 +62,7 @@ The following table lists the configurable parameters of the Spark operator char
 | `podAnnotations`          | Annotations to be added to pods                              | `{}`                                   |
 | `resyncInterval`          | Informer resync interval in seconds                          | 30                                     |
 | `webhookPort`             | Service port of the webhook server                           | 8080                                   |
+| `webhookNamespaceSelector`| The webhook will only operate on namespaces with this label, specified in the form key1=value1,key2=value2 | `""` |
 | `resources`               | Resources needed for the sparkoperator deployment            | {}                                     |
 | `enableBatchScheduler`    | Whether to enable batch scheduler for pod scheduling         | false                                  |
 | `enableResourceQuotaEnforcement`    | Whether to enable the ResourceQuota enforcement for SparkApplication resources. Requires the webhook to be enabled by setting enableWebhook to true.         | false                                  |
@@ -69,6 +70,7 @@ The following table lists the configurable parameters of the Spark operator char
 | `leaderElection.lockName` | Lock name to use for leader election                         | `spark-operator-lock`                  |
 | `leaderElection.lockNamespace` | Namespace to use for leader election                    | (namespace of release)                 |
 | `securityContext` | Defines security context for operator container. | `{}` |
+
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
 #### Upgrading

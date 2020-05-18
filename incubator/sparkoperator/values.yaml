@@ -25,6 +25,9 @@ securityContext: {}
 
 enableWebhook: false
 webhookPort: 8080
+## The webhook will only operate on namespaces with this label, specified in the form key1=value1,key2=value2
+## empty string will operate on all namespaces
+webhookNamespaceSelector: ""
 
 enableMetrics: true
 metricsPort: 10254

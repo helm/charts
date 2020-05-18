@@ -90,6 +90,7 @@ spec:
         - -webhook-port={{ .Values.webhookPort }}
         - -webhook-svc-name={{ .Release.Name }}-webhook
         - -webhook-config-name={{ include "sparkoperator.fullname" . }}-webhook-config
+        - -webhook-namespace-selector={{ .Values.webhookNamespaceSelector }}
         {{- end }}
         {{- if .Values.enableResourceQuotaEnforcement }}
         - -enable-resource-quota-enforcement={{ .Values.enableResourceQuotaEnforcement }}
