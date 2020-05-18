@@ -109,6 +109,11 @@ rbac:
 podAnnotations: {}
   # iam.amazonaws.com/role: efs-provisioner-role
 
+## Labels to be added to deployment
+##
+podLabels: {}
+  # environment: production
+
 ## Node labels for pod assignment
 ##
 nodeSelector: {}
