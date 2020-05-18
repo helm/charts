@@ -131,6 +131,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.ingress.annotations`      | Ingress annotations                  | `{}`                                      |
 | `master.ingress.labels`           | Ingress labels                       | `{}`                                      |
 | `master.ingress.path`             | Ingress path                         | Not set                                   |
+| `master.ingress.paths`            | Override for the default Ingress paths  | `[]`                                   |
 | `master.ingress.tls`              | Ingress TLS configuration            | `[]`                                      |
 | `master.backendconfig.enabled`     | Enables backendconfig     | `false`              |
 | `master.backendconfig.apiVersion`  | backendconfig API version | `extensions/v1beta1` |

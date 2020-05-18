@@ -357,6 +357,16 @@ master:
 
   ingress:
     enabled: false
+    # Override for the default paths that map requests to the backend
+    paths: []
+    # - backend:
+    #     serviceName: ssl-redirect
+    #     servicePort: use-annotation
+    # - backend:
+    #     serviceName: >-
+    #       {{ template "jenkins.fullname" . }}
+    #     # Don't use string here, use only integer value!
+    #     servicePort: 8080
     # For Kubernetes v1.14+, use 'networking.k8s.io/v1beta1'
     apiVersion: "extensions/v1beta1"
     labels: {}
