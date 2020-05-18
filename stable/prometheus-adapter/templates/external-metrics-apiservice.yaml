@@ -1,0 +1,23 @@
+{{- if .Values.rules.external }}
+apiVersion: apiregistration.k8s.io/v1beta1
+kind: APIService
+metadata:
+  labels:
+    app: {{ template "k8s-prometheus-adapter.name" . }}
+    chart: {{ template "k8s-prometheus-adapter.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  name: v1beta1.external.metrics.k8s.io
+spec:
+  service:
+    name: {{ template "k8s-prometheus-adapter.fullname" . }}
+    namespace: {{ .Release.Namespace | quote }}
+  {{ if .Values.tls.enable -}}
+  caBundle: {{ b64enc .Values.tls.ca }}
+  {{- end }}
+  group: external.metrics.k8s.io
+  version: v1beta1
+  insecureSkipTLSVerify: {{ if .Values.tls.enable }}false{{ else }}true{{ end }}
+  groupPriorityMinimum: 100
+  versionPriority: 100
+{{- end -}}

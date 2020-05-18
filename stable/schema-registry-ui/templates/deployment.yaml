@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "schema-registry-ui.fullname" . }}
@@ -26,6 +26,8 @@ spec:
           env:
           - name: SCHEMAREGISTRY_URL
             value: "{{ .Values.schemaRegistry.url }}:{{ .Values.schemaRegistry.port }}"
+          - name: PROXY
+            value: "{{ .Values.schemaRegistry.proxy }}"
           ports:
             - name: http
               containerPort: 8000

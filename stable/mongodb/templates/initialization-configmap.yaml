@@ -1,4 +1,4 @@
-{{ if  (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|js]") }}
+{{ if  (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|js|json]") }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -9,5 +9,5 @@ metadata:
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 data:
-{{ (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|js]").AsConfig | indent 2 }}
+{{ tpl (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|js|json]").AsConfig . | indent 2 }}
 {{ end }}

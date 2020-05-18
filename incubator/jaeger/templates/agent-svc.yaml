@@ -4,39 +4,37 @@ kind: Service
 metadata:
   name: {{ template "jaeger.agent.name" . }}
   labels:
-    app: {{ template "jaeger.name" . }}
-    jaeger-infra: agent-service
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: agent
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ include "jaeger.name" . }}
+    helm.sh/chart: {{ include "jaeger.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: agent
 {{- if .Values.agent.service.annotations }}
   annotations:
 {{ toYaml .Values.agent.service.annotations | indent 4 }}
 {{- end }}
 spec:
   ports:
-  - name: agent-zipkin-thrift
+  - name: zipkin-compact
     port: {{ .Values.agent.service.zipkinThriftPort }}
     protocol: UDP
-    targetPort: {{ .Values.agent.service.zipkinThriftPort }}
-  - name: agent-compact
+    targetPort: zipkin-compact
+  - name: jaeger-compact
     port: {{ .Values.agent.service.compactPort }}
     protocol: UDP
-    targetPort: {{ .Values.agent.service.compactPort }}
-  - name: agent-binary
+    targetPort: jaeger-compact
+  - name: jaeger-binary
     port: {{ .Values.agent.service.binaryPort }}
     protocol: UDP
-    targetPort: {{ .Values.agent.service.binaryPort }}
-  - name: agent-sampling
+    targetPort: jaeger-binary
+  - name: http
     port: {{ .Values.agent.service.samplingPort }}
     protocol: TCP
-    targetPort: {{ .Values.agent.service.samplingPort }}
+    targetPort: http
   type: {{ .Values.agent.service.type }}
   selector:
-    app: {{ template "jaeger.name" . }}
-    component: agent
-    release: {{ .Release.Name }}
-    jaeger-infra: agent-instance
+    app.kubernetes.io/name: {{ include "jaeger.name" . }}
+    app.kubernetes.io/component: agent
+    app.kubernetes.io/instance: {{ .Release.Name }}
 {{- template "loadBalancerSourceRanges" .Values.agent }}
 {{- end -}}

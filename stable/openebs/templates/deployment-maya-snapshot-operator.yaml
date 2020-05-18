@@ -1,3 +1,4 @@
+{{- if .Values.snapshotOperator.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -8,6 +9,8 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: snapshot-operator
+    openebs.io/component-name: openebs-snapshot-operator
+    openebs.io/version: {{ .Values.release.version }}
 spec:
   replicas: {{ .Values.snapshotOperator.replicas }}
   selector:
@@ -15,18 +18,22 @@ spec:
       app: {{ template "openebs.name" . }}
       release: {{ .Release.Name }}
   strategy:
-    type: {{ .Values.snapshotOperator.upgradeStrategy }}
+    type: "Recreate"
+    rollingUpdate: null
   template:
     metadata:
       labels:
         app: {{ template "openebs.name" . }}
         release: {{ .Release.Name }}
         component: snapshot-operator
+        name: openebs-snapshot-operator
+        openebs.io/version: {{ .Values.release.version }}
+        openebs.io/component-name: openebs-snapshot-operator
     spec:
       serviceAccountName: {{ template "openebs.serviceAccountName" . }}
       containers:
       - name: {{ template "openebs.name" . }}-snapshot-controller
-        image: "{{ .Values.snapshotOperator.controller.image }}:{{ .Values.snapshotOperator.controller.imageTag }}"
+        image: "{{ .Values.image.repository }}{{ .Values.snapshotOperator.controller.image }}:{{ .Values.snapshotOperator.controller.imageTag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         # OPENEBS_IO_K8S_MASTER enables openebs snapshot controller to connect to K8s
@@ -53,8 +60,22 @@ spec:
         # This is supported for openebs snapshot controller version 0.6-RC1 onwards
         - name: OPENEBS_MAYA_SERVICE_NAME
           value: "{{ template "openebs.fullname" . }}-apiservice"
+         # Process name used for matching is limited to the 15 characters
+         # present in the pgrep output.
+         # So fullname can't be used here with pgrep (>15 chars).A regular expression
+         # that matches the entire command name has to specified.
+         # Anchor `^` : matches any string that starts with `snapshot-contro`
+         # `.*`: matches any string that has `snapshot-contro` followed by zero or more char
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - test `pgrep -c "^snapshot-contro.*"` = 1
+          initialDelaySeconds: {{ .Values.snapshotOperator.healthCheck.initialDelaySeconds }}
+          periodSeconds: {{ .Values.snapshotOperator.healthCheck.periodSeconds }}
       - name: {{ template "openebs.name" . }}-snapshot-provisioner
-        image: "{{ .Values.snapshotOperator.provisioner.image }}:{{ .Values.snapshotOperator.provisioner.imageTag }}"
+        image: "{{ .Values.image.repository }}{{ .Values.snapshotOperator.provisioner.image }}:{{ .Values.snapshotOperator.provisioner.imageTag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         # OPENEBS_IO_K8S_MASTER enables openebs snapshot provisioner to connect to K8s
@@ -81,6 +102,20 @@ spec:
         # This is supported for openebs snapshot provisioner version 0.6-RC1 onwards
         - name: OPENEBS_MAYA_SERVICE_NAME
           value: "{{ template "openebs.fullname" . }}-apiservice"
+         # Process name used for matching is limited to the 15 characters
+         # present in the pgrep output.
+         # So fullname can't be used here with pgrep (>15 chars).A regular expression
+         # that matches the entire command name has to specified.
+         # Anchor `^` : matches any string that starts with `snapshot-provis`
+         # `.*`: matches any string that has `snapshot-provis` followed by zero or more char
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - test `pgrep -c "^snapshot-provis.*"` = 1
+          initialDelaySeconds: {{ .Values.snapshotOperator.healthCheck.initialDelaySeconds }}
+          periodSeconds: {{ .Values.snapshotOperator.healthCheck.periodSeconds }}
 {{- if .Values.snapshotOperator.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.snapshotOperator.nodeSelector | indent 8 }}
@@ -92,4 +127,5 @@ spec:
 {{- if .Values.snapshotOperator.affinity }}
       affinity:
 {{ toYaml .Values.snapshotOperator.affinity | indent 8 }}
+{{- end }}
 {{- end }}

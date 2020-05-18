@@ -7,13 +7,15 @@ metadata:
     helm.sh/chart: {{ include "helm-exporter.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+  {{- if not .Values.serviceMonitor.create }}
   annotations:
     prometheus.io/scrape: "true"
+  {{- end }}
 spec:
   type: ClusterIP
   clusterIP: None
   ports:
-    - port: 9100
+    - port: 9571
       targetPort: http
       protocol: TCP
       name: metrics

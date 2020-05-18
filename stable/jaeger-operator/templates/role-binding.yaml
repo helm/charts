@@ -1,20 +1,17 @@
 {{- if .Values.rbac.create }}
-kind: RoleBinding
-apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: {{ if .Values.rbac.clusterRole }}Cluster{{ end }}RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ include "jaeger-operator.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: {{ include "jaeger-operator.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    helm.sh/chart: {{ include "jaeger-operator.chart" . }}
+{{ include "jaeger-operator.labels" . | indent 4 }}
 subjects:
 - kind: ServiceAccount
   namespace: {{ .Release.Namespace }}
   name: {{ include "jaeger-operator.serviceAccountName" . }}
 roleRef:
-  kind: Role
+  kind: {{ if .Values.rbac.clusterRole }}Cluster{{ end }}Role
   name: {{ include "jaeger-operator.fullname" . }}
   apiGroup: rbac.authorization.k8s.io
 {{- end }}

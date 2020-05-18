@@ -15,6 +15,6 @@ spec:
   type: {{ .Values.service.type }}
   ports:
   - port: {{ .Values.service.externalPort }}
-    targetPort: {{ .Values.service.internalPort }}
+    targetPort: http
     protocol: TCP
     name: {{  include "mattermost-team-edition.name" . }}

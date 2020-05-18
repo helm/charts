@@ -9,7 +9,7 @@ metadata:
 {{- if .Values.controller.service.labels }}
 {{ toYaml .Values.controller.service.labels | indent 4 }}
 {{- end }}
-    app: {{ template "haproxy-ingress.name" . }}
+    app: {{ template "haproxy-ingress.labels.app.controller" . }}
     chart: {{ template "haproxy-ingress.chart" . }}
     component: "{{ .Values.controller.name }}"
     release: {{ .Release.Name }}
@@ -38,32 +38,34 @@ spec:
   healthCheckNodePort: {{ .Values.controller.service.healthCheckNodePort }}
 {{- end }}
   ports:
+  {{- if .Values.controller.enableStaticPorts }}
   {{- range .Values.controller.service.httpPorts }}
-    - name: "{{ .port }}-http"
+    - name: "http-{{ .port }}"
       port: {{ .port }}
       protocol: TCP
-      targetPort: http
+      targetPort: {{ .targetPort }}
       {{- if (not (empty .nodePort)) }}
       nodePort: {{ .nodePort }}
       {{- end }}
   {{- end }}
   {{- range .Values.controller.service.httpsPorts }}
-    - name: "{{ .port }}-https"
+    - name: "https-{{ .port }}"
       port: {{ .port }}
       protocol: TCP
-      targetPort: https
+      targetPort: {{ .targetPort }}
       {{- if (not (empty .nodePort)) }}
       nodePort: {{ .nodePort }}
       {{- end }}
   {{- end }}
-  {{- range $key, $value := .Values.tcp }}
-    - name: "{{ $key }}-tcp"
-      port: {{ $key }}
+  {{- end }}
+  {{- range $key, $value := .Values.controller.tcp }}
+    - name: "{{ tpl $key $ }}-tcp"
+      port: {{ tpl $key $ }}
       protocol: TCP
-      targetPort: "{{ $key }}-tcp"
+      targetPort: "{{ tpl $key $ }}-tcp"
   {{- end }}
   selector:
-    app: {{ template "haproxy-ingress.name" . }}
+    app: {{ template "haproxy-ingress.labels.app.controller" . }}
     component: "{{ .Values.controller.name }}"
     release: {{ .Release.Name }}
   type: "{{ .Values.controller.service.type }}"

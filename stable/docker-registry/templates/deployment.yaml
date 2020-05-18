@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "docker-registry.fullname" . }}
@@ -8,6 +8,10 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "docker-registry.name" . }}
+      release: {{ .Release.Name }}
   replicas: {{ .Values.replicaCount }}
 {{- if .Values.updateStrategy }}
   strategy:
@@ -19,6 +23,9 @@ spec:
       labels:
         app: {{ template "docker-registry.name" . }}
         release: {{ .Release.Name }}
+        {{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+        {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
 {{- if $.Values.podAnnotations }}
@@ -168,9 +175,16 @@ spec:
               name: tls-cert
               readOnly: true
 {{- end }}
+{{- with .Values.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+{{- end }}
 {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
 {{- end }}
 {{- if .Values.tolerations }}
       tolerations:
@@ -201,4 +215,7 @@ spec:
         - name: tls-cert
           secret:
             secretName: {{ .Values.tlsSecretName }}
+{{- end }}
+{{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
 {{- end }}

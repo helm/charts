@@ -1,4 +1,8 @@
 
+*******************
+****DEPRECATED*****
+*******************
+* The Concourse chart is deprecated. Future development has been moved to github.com/concourse/concourse-chart
 * Concourse can be accessed:
 
   * Within your cluster, at the following DNS name at port {{ .Values.concourse.web.bindPort }}:
@@ -35,18 +39,22 @@
   {{- end }}
 * If this is your first time using Concourse, follow the tutorials at https://concourse-ci.org/tutorials.html
 
+{{- if .Values.worker.enabled }}
+{{- if .Values.concourse.worker.baggageclaim.driver }}
 {{- if contains "naive" .Values.concourse.worker.baggageclaim.driver }}
 
 *******************
 ******WARNING******
 *******************
 
-You are using the "naive" baggage claim driver, which is also the default value for this chart. 
+You are using the "naive" baggage claim driver, which is also the default value for this chart.
 
-This is the default for compatibility reasons, but is very space inefficient, and should be changed to either "btrfs" (recommended) or "overlay" depending on that filesystem's support in the Linux kernel your cluster is using. 
+This is the default for compatibility reasons, but is very space inefficient, and should be changed to either "btrfs" (recommended) or "overlay" depending on that filesystem's support in the Linux kernel your cluster is using.
 
 Please see https://github.com/concourse/concourse/issues/1230 and https://github.com/concourse/concourse/issues/1966 for background.
 
+{{- end }}
+{{- end }}
 {{- end }}
 
 
@@ -66,3 +74,8 @@ Please see `README.md` for examples.
 
 {{- end }}
 {{- end }}
+
+*******************
+****DEPRECATED*****
+*******************
+* The Concourse chart is deprecated. Future development has been moved to github.com/concourse/concourse-chart

@@ -1,0 +1,31 @@
+{{- if .Values.prometheus.prometheusRule.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ template "metallb.fullname" . }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "metallb.chart" . }}
+    app: {{ template "metallb.name" . }}
+spec:
+  groups:
+  - name: {{ template "metallb.fullname" . }}.rules
+    rules:
+    - alert: MetalLBStaleConfig
+      annotations:
+        message: {{`'{{ $labels.job }} - MetalLB {{ $labels.container_name }} on {{ $labels.instance
+          }} has a stale config for > 1 minute'`}}
+      expr: metallb_k8s_client_config_stale_bool{job="{{ .Values.prometheus.serviceMonitor.jobLabel }}"} == 1
+      for: 1m
+      labels:
+        severity: warning
+    - alert: MetalLBConfigNotLoaded
+      annotations:
+        message: {{`'{{ $labels.job }} - MetalLB {{ $labels.container_name }} on {{ $labels.instance
+          }} has not loaded for > 1 minute'`}}
+      expr: metallb_k8s_client_config_loaded_bool{job="{{ .Values.prometheus.serviceMonitor.jobLabel }}"} == 0
+      for: 1m
+      labels:
+        severity: warning
+{{- end }} 

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "buzzfeed-sso.fullname" . }}
+  labels:
+    app: {{ template "buzzfeed-sso.name" . }}
+    chart: {{ template "buzzfeed-sso.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  upstream_configs.yml: |-
+{{- with .Values.upstreams }}
+{{ toYaml . | indent 4 }}
+{{- end }}

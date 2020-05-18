@@ -4,7 +4,7 @@ metadata:
   name: {{ template "vault.fullname" . }}
   labels:
     app: {{ template "vault.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "vault.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 {{- if .Values.service.annotations }}
@@ -30,6 +30,12 @@ spec:
     protocol: TCP
     targetPort: {{ .Values.service.port }}
     name: api
+  {{- if .Values.serviceMonitor.enabled }}
+  - port: 9410
+    protocol: TCP
+    targetPort: {{ .Values.serviceMonitor.podPortName }}
+    name: metrics
+  {{- end }}
   {{- if .Values.service.clusterExternalPort }}
   - port: {{ .Values.service.clusterExternalPort }}
     protocol: TCP
@@ -39,3 +45,6 @@ spec:
   selector:
     app: {{ template "vault.name" . }}
     release: {{ .Release.Name }}
+    {{- with .Values.service.additionalSelector }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}

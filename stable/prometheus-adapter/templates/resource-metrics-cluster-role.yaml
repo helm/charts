@@ -1,0 +1,22 @@
+{{- if and .Values.rbac.create .Values.rules.resource -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app: {{ template "k8s-prometheus-adapter.name" . }}
+    chart: {{ template "k8s-prometheus-adapter.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  name: {{ template "k8s-prometheus-adapter.name" . }}-metrics
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - nodes
+  - nodes/stats
+  verbs:
+  - get
+  - list
+  - watch
+{{- end -}}

@@ -1,0 +1,53 @@
+{{- if and .Values.prometheus.enabled .Values.prometheus.servicePerReplica.enabled .Values.prometheus.ingressPerReplica.enabled }}
+{{- $count := .Values.prometheus.prometheusSpec.replicas | int -}}
+{{- $servicePort := .Values.prometheus.servicePerReplica.port -}}
+{{- $ingressValues := .Values.prometheus.ingressPerReplica -}}
+apiVersion: v1
+kind: List
+metadata:
+  name: {{ include "prometheus-operator.fullname" $ }}-prometheus-ingressperreplica
+  namespace: {{ $.Release.Namespace }}
+items:
+{{ range $i, $e := until $count }}
+  - kind: Ingress
+    {{- if $.Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
+    apiVersion: networking.k8s.io/v1beta1
+    {{ else }}
+    apiVersion: extensions/v1beta1
+    {{ end -}}
+    metadata:
+      name: {{ include "prometheus-operator.fullname" $ }}-prometheus-{{ $i }}
+      namespace: {{ $.Release.Namespace }}
+      labels:
+        app: {{ include "prometheus-operator.name" $ }}-prometheus
+{{ include "prometheus-operator.labels" $ | indent 8 }}
+      {{- if $ingressValues.labels }}
+      {{ toYaml $ingressValues.labels | indent 8 }}
+      {{- end }}
+      {{- if $ingressValues.annotations }}
+      annotations:
+{{ toYaml $ingressValues.annotations | indent 8 }}
+      {{- end }}
+    spec:
+      rules:
+        - host: {{ $ingressValues.hostPrefix }}-{{ $i }}.{{ $ingressValues.hostDomain }}
+          http:
+            paths:
+      {{- range $p := $ingressValues.paths }}
+              - path: {{ tpl $p $ }}
+                backend:
+                  serviceName: {{ include "prometheus-operator.fullname" $ }}-prometheus-{{ $i }}
+                  servicePort: {{ $servicePort }}
+      {{- end -}}
+      {{- if or $ingressValues.tlsSecretName $ingressValues.tlsSecretPerReplica.enabled }}
+      tls:
+        - hosts:
+            - {{ $ingressValues.hostPrefix }}-{{ $i }}.{{ $ingressValues.hostDomain }}
+          {{- if $ingressValues.tlsSecretPerReplica.enabled }}
+          secretName: {{ $ingressValues.tlsSecretPerReplica.prefix }}-{{ $i }}
+          {{- else }}
+          secretName: {{ $ingressValues.tlsSecretName }}
+          {{- end }}
+      {{- end }}
+{{- end -}}
+{{- end -}}

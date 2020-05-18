@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "collabora-code.fullname" . }}
+data:
+  DONT_GEN_SSL_CERT: "{{ .Values.collabora.DONT_GEN_SSL_CERT }}"
+  dictionaries: {{ .Values.collabora.dictionaries }}
+  domain: {{ .Values.collabora.domain }}
+  extra_params: {{ .Values.collabora.extra_params }}
+  server_name: {{ .Values.collabora.server_name }}

@@ -8,10 +8,11 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   name: {{ template "haproxy-ingress.controller.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 data:
   healthz-port: {{ .Values.controller.healthzPort | quote }}
   stats-port: {{ .Values.controller.stats.port | quote }}
-{{- if .Values.controller.accessLogsSidecar }}
+{{- if .Values.controller.logs.enabled }}
   syslog-endpoint: "localhost:514"
 {{- end }}
 {{- if .Values.controller.config }}

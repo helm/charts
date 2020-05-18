@@ -21,6 +21,7 @@ replica_set="$REPLICA_SET"
 script_name=${0##*/}
 SECONDS=0
 timeout="${TIMEOUT:-900}"
+tls_mode="${TLS_MODE}"
 
 if [[ "$AUTH" == "true" ]]; then
     admin_user="$ADMIN_USER"
@@ -51,7 +52,7 @@ retry_until() {
         creds=()
     fi
 
-    until [[ $(mongo admin --host "${host}" "${creds[@]}" "${ssl_args[@]}" --quiet --eval "${command}") == "${expected}" ]]; do
+    until [[ $(mongo admin --host "${host}" "${creds[@]}" "${ssl_args[@]}" --quiet --eval "${command}" | tail -n1) == "${expected}" ]]; do
         sleep 1
 
         if (! ps "${pid}" &>/dev/null); then
@@ -88,7 +89,7 @@ init_mongod_standalone() {
 
     local port="27018"
     log "Starting a MongoDB instance as standalone..."
-    mongod --config /data/configdb/mongod.conf --dbpath=/data/db "${auth_args[@]}" --port "${port}" --bind_ip=0.0.0.0 2>&1 | tee -a /work-dir/log.txt 1>&2 &
+    mongod --config /data/configdb/mongod.conf --dbpath=/data/db "${auth_args[@]}" "${ssl_server_args[@]}" --port "${port}" --bind_ip=0.0.0.0 2>&1 | tee -a /work-dir/log.txt 1>&2 &
     export pid=$!
     trap shutdown_mongo EXIT
     log "Waiting for MongoDB to be ready..."
@@ -116,6 +117,7 @@ if [ -f "$ca_crt"  ]; then
     ca_key=/data/configdb/tls.key
     pem=/work-dir/mongo.pem
     ssl_args=(--ssl --sslCAFile "$ca_crt" --sslPEMKeyFile "$pem")
+    ssl_server_args=(--sslMode "$tls_mode" --sslCAFile "$ca_crt" --sslPEMKeyFile "$pem")
 
 # Move into /work-dir
 pushd /work-dir
@@ -151,9 +153,14 @@ fi
 
 init_mongod_standalone
 
+if [[ "${SKIP_INIT}" == "true" ]]; then
+    log "Skipping initialization"
+    exit 0
+fi
+
 log "Peers: ${peers[*]}"
 log "Starting a MongoDB replica"
-mongod --config /data/configdb/mongod.conf --dbpath=/data/db --replSet="$replica_set" --port="${port}" "${auth_args[@]}" --bind_ip=0.0.0.0 2>&1 | tee -a /work-dir/log.txt 1>&2 &
+mongod --config /data/configdb/mongod.conf --dbpath=/data/db --replSet="$replica_set" --port="${port}" "${auth_args[@]}" "${ssl_server_args[@]}" --bind_ip=0.0.0.0 2>&1 | tee -a /work-dir/log.txt 1>&2 &
 pid=$!
 trap shutdown_mongo EXIT
 
@@ -165,7 +172,7 @@ log "Initialized."
 for peer in "${peers[@]}"; do
     log "Checking if ${peer} is primary"
     # Check rs.status() first since it could be in primary catch up mode which db.isMaster() doesn't show
-    if [[ $(mongo admin --host "${peer}" "${admin_creds[@]}" "${ssl_args[@]}" --quiet --eval "rs.status().myState") == "1" ]]; then
+    if [[ $(mongo admin --host "${peer}" "${admin_creds[@]}" "${ssl_args[@]}" --quiet --eval "rs.status().myState" | tail -n1) == "1" ]]; then
         retry_until "${peer}" "db.isMaster().ismaster" "true"
         log "Found primary: ${peer}"
         primary="${peer}"
@@ -176,7 +183,7 @@ done
 if [[ "${primary}" = "${service_name}" ]]; then
     log "This replica is already PRIMARY"
 elif [[ -n "${primary}" ]]; then
-    if [[ $(mongo admin --host "${primary}" "${admin_creds[@]}" "${ssl_args[@]}" --quiet --eval "rs.conf().members.findIndex(m => m.host == '${service_name}:${port}')") == "-1" ]]; then
+    if [[ $(mongo admin --host "${primary}" "${admin_creds[@]}" "${ssl_args[@]}" --quiet --eval "rs.conf().members.findIndex(m => m.host == '${service_name}:${port}')" | tail -n1) == "-1" ]]; then
       log "Adding myself (${service_name}) to replica set..."
       if (mongo admin --host "${primary}" "${admin_creds[@]}" "${ssl_args[@]}" --eval "rs.add('${service_name}')" | grep 'Quorum check failed'); then
           log 'Quorum check failed, unable to join replicaset. Exiting prematurely.'
@@ -207,7 +214,7 @@ fi
 
 # User creation
 if [[ -n "${primary}" && "$AUTH" == "true" && "$METRICS" == "true" ]]; then
-    metric_user_count=$(mongo admin --host "${primary}" "${admin_creds[@]}" "${ssl_args[@]}" --eval "db.system.users.find({user: '${metrics_user}'}).count()" --quiet)
+    metric_user_count=$(mongo admin --host "${primary}" "${admin_creds[@]}" "${ssl_args[@]}" --eval "db.system.users.find({user: '${metrics_user}'}).count()" --quiet | tail -n1)
     if [[ "${metric_user_count}" == "0" ]]; then
         log "Creating clusterMonitor user..."
         mongo admin --host "${primary}" "${admin_creds[@]}" "${ssl_args[@]}" --eval "db.createUser({user: '${metrics_user}', pwd: '${metrics_password}', roles: [{role: 'clusterMonitor', db: 'admin'}, {role: 'read', db: 'local'}]})"

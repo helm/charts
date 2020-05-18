@@ -14,38 +14,38 @@ data:
     #!/bin/bash
     set -e
     {{- range $cluster := .Values.clusters }}
-    {{ printf "curl http://%s:9000/clusters -X POST -f " (include "kafka-manager.fullname" $) -}}
-    {{- printf "-d name=%s " (default "default" $cluster.name) -}}
-    {{- printf "-d zkHosts=%s " (default (include "kafka-manager.zkHosts" $) $cluster.zkHosts ) -}}
-    {{- printf "-d kafkaVersion=%s " (default "1.0.0" $cluster.kafkaVersion) -}}
-    {{- printf "-d jmxEnabled=%s " (default "false" $cluster.jmxEnabled) -}}
-    {{- printf "-d jmxUser=%s " (default "" $cluster.jmxUser) -}}
-    {{- printf "-d jmxPass=%s " (default "" $cluster.jmxPass) -}}
-    {{- printf "-d jmxSsl=%s " (default "false" $cluster.jmxSsl) -}}
-    {{- printf "-d logkafkaEnabled=%s " (default "false" $cluster.logkafkaEnabled) -}}
-    {{- printf "-d pollConsumers=%s " (default "false" $cluster.pollConsumers) -}}
-    {{- printf "-d filterConsumers=%s " (default "false" $cluster.filterConsumers) -}}
-    {{- printf "-d activeOffsetCacheEnabled=%s " (default "false" $cluster.activeOffsetCacheEnabled) -}}
-    {{- printf "-d displaySizeEnabled=%s " (default "false" $cluster.displaySizeEnabled) -}}
-    {{- printf "-d tuning.brokerViewUpdatePeriodSeconds=%s " (default "30" $cluster.tuning.brokerViewUpdatePeriodSeconds) -}}
-    {{- printf "-d tuning.clusterManagerThreadPoolSize=%s " (default "2" $cluster.tuning.clusterManagerThreadPoolSize) -}}
-    {{- printf "-d tuning.clusterManagerThreadPoolQueueSize=%s " (default "100" $cluster.tuning.clusterManagerThreadPoolQueueSize) -}}
-    {{- printf "-d tuning.kafkaCommandThreadPoolSize=%s " (default "2" $cluster.tuning.kafkaCommandThreadPoolSize) -}}
-    {{- printf "-d tuning.kafkaCommandThreadPoolQueueSize=%s " (default "100" $cluster.tuning.kafkaCommandThreadPoolQueueSize) -}}
-    {{- printf "-d tuning.logkafkaCommandThreadPoolSize=%s " (default "2" $cluster.tuning.logkafkaCommandThreadPoolSize) -}}
-    {{- printf "-d tuning.logkafkaCommandThreadPoolQueueSize=%s " (default "100" $cluster.tuning.logkafkaCommandThreadPoolQueueSize) -}}
-    {{- printf "-d tuning.logkafkaUpdatePeriodSeconds=%s " (default "30" $cluster.tuning.logkafkaUpdatePeriodSeconds) -}}
-    {{- printf "-d tuning.partitionOffsetCacheTimeoutSecs=%s " (default "5" $cluster.tuning.partitionOffsetCacheTimeoutSecs) -}}
-    {{- printf "-d tuning.brokerViewThreadPoolSize=%s " (default "4" $cluster.tuning.brokerViewThreadPoolSize) -}}
-    {{- printf "-d tuning.brokerViewThreadPoolQueueSize=%s " (default "1000" $cluster.tuning.brokerViewThreadPoolQueueSize) -}}
-    {{- printf "-d tuning.offsetCacheThreadPoolSize=%s " (default "4" $cluster.tuning.offsetCacheThreadPoolSize) -}}
-    {{- printf "-d tuning.offsetCacheThreadPoolQueueSize=%s " (default "1000" $cluster.tuning.offsetCacheThreadPoolQueueSize) -}}
-    {{- printf "-d tuning.kafkaAdminClientThreadPoolSize=%s " (default "4" $cluster.tuning.kafkaAdminClientThreadPoolSize) -}}
-    {{- printf "-d tuning.kafkaAdminClientThreadPoolQueueSize=%s " (default "1000" $cluster.tuning.kafkaAdminClientThreadPoolQueueSize) -}}
-    {{- printf "-d tuning.kafkaManagedOffsetMetadataCheckMillis=%s " (default "30000" $cluster.tuning.kafkaManagedOffsetMetadataCheckMillis) -}}
-    {{- printf "-d tuning.kafkaManagedOffsetGroupCacheSize=%s " (default "1000000" $cluster.tuning.kafkaManagedOffsetGroupCacheSize) -}}
-    {{- printf "-d tuning.kafkaManagedOffsetGroupExpireDays=%s " (default "7" $cluster.tuning.kafkaManagedOffsetGroupExpireDays) -}}
-    {{- printf "-d securityProtocol=%s " (default "PLAINTEXT" $cluster.securityProtocol) -}}
+    {{ printf "curl http://%s:%v/clusters -X POST -f " (include "kafka-manager.fullname" $) $.Values.service.port -}}
+    {{- printf "-d name=%v " (default "default" $cluster.name) -}}
+    {{- printf "-d zkHosts=%v " (default (include "kafka-manager.zkHosts" $) $cluster.zkHosts) -}}
+    {{- printf "-d kafkaVersion=%v " (default "2.0.0" $cluster.kafkaVersion) -}}
+    {{- printf "-d jmxEnabled=%v " (default "false" $cluster.jmxEnabled) -}}
+    {{- printf "-d jmxUser=%v " (default "" $cluster.jmxUser) -}}
+    {{- printf "-d jmxPass=%v " (default "" $cluster.jmxPass) -}}
+    {{- printf "-d jmxSsl=%v " (default "false" $cluster.jmxSsl) -}}
+    {{- printf "-d logkafkaEnabled=%v " (default "false" $cluster.logkafkaEnabled) -}}
+    {{- printf "-d pollConsumers=%v " (default "false" $cluster.pollConsumers) -}}
+    {{- printf "-d filterConsumers=%v " (default "false" $cluster.filterConsumers) -}}
+    {{- printf "-d activeOffsetCacheEnabled=%v " (default "false" $cluster.activeOffsetCacheEnabled) -}}
+    {{- printf "-d displaySizeEnabled=%v " (default "false" $cluster.displaySizeEnabled) -}}
+    {{- printf "-d tuning.brokerViewUpdatePeriodSeconds=%v " (default "30" $cluster.tuning.brokerViewUpdatePeriodSeconds) -}}
+    {{- printf "-d tuning.clusterManagerThreadPoolSize=%v " (default "2" $cluster.tuning.clusterManagerThreadPoolSize) -}}
+    {{- printf "-d tuning.clusterManagerThreadPoolQueueSize=%v " (default "100" $cluster.tuning.clusterManagerThreadPoolQueueSize) -}}
+    {{- printf "-d tuning.kafkaCommandThreadPoolSize=%v " (default "2" $cluster.tuning.kafkaCommandThreadPoolSize) -}}
+    {{- printf "-d tuning.kafkaCommandThreadPoolQueueSize=%v " (default "100" $cluster.tuning.kafkaCommandThreadPoolQueueSize) -}}
+    {{- printf "-d tuning.logkafkaCommandThreadPoolSize=%v " (default "2" $cluster.tuning.logkafkaCommandThreadPoolSize) -}}
+    {{- printf "-d tuning.logkafkaCommandThreadPoolQueueSize=%v " (default "100" $cluster.tuning.logkafkaCommandThreadPoolQueueSize) -}}
+    {{- printf "-d tuning.logkafkaUpdatePeriodSeconds=%v " (default "30" $cluster.tuning.logkafkaUpdatePeriodSeconds) -}}
+    {{- printf "-d tuning.partitionOffsetCacheTimeoutSecs=%v " (default "5" $cluster.tuning.partitionOffsetCacheTimeoutSecs) -}}
+    {{- printf "-d tuning.brokerViewThreadPoolSize=%v " (default "4" $cluster.tuning.brokerViewThreadPoolSize) -}}
+    {{- printf "-d tuning.brokerViewThreadPoolQueueSize=%v " (default "1000" $cluster.tuning.brokerViewThreadPoolQueueSize) -}}
+    {{- printf "-d tuning.offsetCacheThreadPoolSize=%v " (default "4" $cluster.tuning.offsetCacheThreadPoolSize) -}}
+    {{- printf "-d tuning.offsetCacheThreadPoolQueueSize=%v " (default "1000" $cluster.tuning.offsetCacheThreadPoolQueueSize) -}}
+    {{- printf "-d tuning.kafkaAdminClientThreadPoolSize=%v " (default "4" $cluster.tuning.kafkaAdminClientThreadPoolSize) -}}
+    {{- printf "-d tuning.kafkaAdminClientThreadPoolQueueSize=%v " (default "1000" $cluster.tuning.kafkaAdminClientThreadPoolQueueSize) -}}
+    {{- printf "-d tuning.kafkaManagedOffsetMetadataCheckMillis=%v " (default "30000" $cluster.tuning.kafkaManagedOffsetMetadataCheckMillis) -}}
+    {{- printf "-d tuning.kafkaManagedOffsetGroupCacheSize=%v " (default "1000000" $cluster.tuning.kafkaManagedOffsetGroupCacheSize) -}}
+    {{- printf "-d tuning.kafkaManagedOffsetGroupExpireDays=%v " (default "7" $cluster.tuning.kafkaManagedOffsetGroupExpireDays) -}}
+    {{- printf "-d securityProtocol=%v " (default "PLAINTEXT" $cluster.securityProtocol) -}}
     {{- printf "$( if $KAFKA_MANAGER_AUTH_ENABLED; then echo -u $KAFKA_MANAGER_USERNAME:$KAFKA_MANAGER_PASSWORD ; fi ) " -}}
     {{- end -}}
 {{- end -}}

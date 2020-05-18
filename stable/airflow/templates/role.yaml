@@ -17,4 +17,8 @@ rules:
   resources:
   - "pods/log"
   verbs: ["get", "list"]
+- apiGroups: [""]
+  resources:
+  - "pods/exec"
+  verbs: ["create", "get"]
 {{ end }}

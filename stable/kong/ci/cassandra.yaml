@@ -1,7 +1,0 @@
-env:
-  database: cassandra
-
-cassandra:
-  enabled: true
-postgres:
-  enabled: false

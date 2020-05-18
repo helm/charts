@@ -1,0 +1,24 @@
+apiVersion: v1
+appVersion: 1.1
+description: Instana Agent for Kubernetes
+home: https://www.instana.com/
+icon: https://instana-management-assets.s3-eu-west-1.amazonaws.com/stan-logo-2020.png
+maintainers:
+- email: jon.brisbin@instana.com
+  name: jbrisbin
+- email: william.james@instana.com
+  name: wiggzz
+- email: jeroen.soeters@instana.com
+  name: JeroenSoeters
+- email: fabian.staeber@instana.com
+  name: fstab
+- email: miel.donkers@instana.com
+  name: mdonkers
+- email: dahlia.bock@instana.com
+  name: dlbock
+- email: nathan.fisher@instana.com
+  name: nfisher
+name: instana-agent
+sources:
+- https://github.com/instana/instana-agent-docker
+version: 1.0.28

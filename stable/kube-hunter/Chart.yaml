@@ -1,8 +1,8 @@
 apiVersion: v1
-appVersion: "195"
+appVersion: "312"
 description: A Helm chart for Kube-hunter
 name: kube-hunter
-version: 1.0.2
+version: 1.0.3
 home: https://github.com/aquasecurity/kube-hunter
 icon: https://raw.githubusercontent.com/aquasecurity/kube-hunter/master/kube-hunter.png
 keywords:

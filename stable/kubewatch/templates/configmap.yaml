@@ -32,3 +32,4 @@ data:
 {{- end }}
     resource:
 {{ toYaml .Values.resourcesToWatch | indent 6 }}
+    namespace: {{ .Values.namespaceToWatch | quote }}

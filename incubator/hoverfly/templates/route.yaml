@@ -1,0 +1,59 @@
+{{ if .Values.openshift.route.admin.enabled }}
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}" 
+  name: "{{ template "fullname" . }}-admin"
+spec:
+  host: "{{ .Values.openshift.route.admin.hostname }}"
+  port:
+    targetPort: admin
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  to:
+    kind: Service
+    name: "{{ template "fullname" . }}" 
+    weight: 100
+status:
+  ingress:
+    - conditions:
+      - lastTransitionTime: "2019-12-06T03:24:58Z"
+        status: ""
+        type: "" 
+      host: ""
+      routerCanonicalHostname: ""
+      routerName: default
+      wildcardPolicy: None
+{{ end }}
+{{ if .Values.openshift.route.proxy.enabled }}
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+  name: "{{ template "fullname" . }}-proxy"
+spec:
+  host: "{{ .Values.openshift.route.proxy.hostname }}"
+  port:
+    targetPort: proxy
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  to:
+    kind: Service
+    name: "{{ template "fullname" . }}"
+    weight: 100
+status:
+  ingress:
+    - conditions:
+      - lastTransitionTime: "2019-12-06T03:24:58Z"
+        status: ""
+        type: ""
+      host: ""
+      routerCanonicalHostname: ""
+      routerName: default
+      wildcardPolicy: None
+{{ end }}

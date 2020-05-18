@@ -1,0 +1,15 @@
+{
+  "autoDeploy": {{ .Values.distributed.autoDeploy }},
+  "executionMode": "{{ .Values.distributed.executionMode }}",
+  "readQuorum": {{ .Values.distributed.readQuorum }},
+  "writeQuorum": "{{ .Values.distributed.writeQuorum }}",
+  "readYourWrites": {{ .Values.distributed.readYourWrites }},
+  "newNodeStrategy": "{{ .Values.distributed.newNodeStrategy }}",
+  "servers": { "*": "master" },
+  "clusters": {
+    "internal": {},
+    "*": {
+      "servers": ["<NEW_NODE>"]
+    }
+  }
+}

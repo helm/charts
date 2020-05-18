@@ -1,0 +1,114 @@
+{{- if and .Values.clusterAgent.enabled .Values.datadog.clusterChecks.enabled .Values.clusterChecksRunner.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "datadog.fullname" . }}-clusterchecks
+  labels:
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app.kubernetes.io/name: "{{ template "datadog.fullname" . }}"
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+spec:
+  replicas: {{ .Values.clusterChecksRunner.replicas }}
+  strategy:
+{{ toYaml .Values.clusterChecksRunner.strategy | indent 4 }}
+  selector:
+    matchLabels:
+      app: {{ template "datadog.fullname" . }}-clusterchecks
+  template:
+    metadata:
+      labels:
+        app: {{ template "datadog.fullname" . }}-clusterchecks
+      name: {{ template "datadog.fullname" . }}-clusterchecks
+    spec:
+      {{- if .Values.clusterChecksRunner.rbac.dedicated }}
+      serviceAccountName: {{ if .Values.clusterChecksRunner.rbac.create }}{{ template "datadog.fullname" . }}-cluster-checks{{ else }}"{{ .Values.clusterChecksRunner.rbac.serviceAccountName }}"{{ end }}
+      {{- else }}
+      serviceAccountName: {{ if .Values.clusterChecksRunner.rbac.create }}{{ template "datadog.fullname" . }}{{ else }}"{{ .Values.clusterChecksRunner.rbac.serviceAccountName }}"{{ end }}
+      {{- end }}
+      imagePullSecrets:
+{{ toYaml .Values.clusterChecksRunner.image.pullSecrets | indent 8 }}
+      containers:
+      - name: agent
+        image: "{{ .Values.clusterChecksRunner.image.repository }}:{{ .Values.clusterChecksRunner.image.tag }}"
+        imagePullPolicy: {{ .Values.clusterChecksRunner.image.pullPolicy }}
+        env:
+          - name: DD_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "datadog.apiSecretName" . }}
+                key: api-key
+          - name: DD_EXTRA_CONFIG_PROVIDERS
+            value: "clusterchecks endpointschecks"
+          - name: DD_HEALTH_PORT
+            value: "5555"
+          # Cluster checks
+          - name: DD_CLUSTER_AGENT_KUBERNETES_SERVICE_NAME
+            value: {{ template "datadog.fullname" . }}-cluster-agent
+          - name: DD_CLUSTER_AGENT_AUTH_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "clusterAgent.tokenSecretName" . }}
+                key: token
+          - name: DD_CLUSTER_AGENT_ENABLED
+            value: {{ .Values.clusterAgent.enabled | quote }}
+          # Remove unused features
+          - name: DD_PROCESS_AGENT_ENABLED
+            value: "false"
+          - name: DD_LOGS_ENABLED
+            value: "false"
+          # Safely run alongside the daemonset
+          - name: DD_ENABLE_METADATA_COLLECTION
+            value: "false"
+          - name: DD_HOSTNAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+        {{- range $value := .Values.clusterChecksRunner.env }}
+          - name: {{ $value.name }}
+            value: {{ $value.value | quote }}
+        {{- end }}
+        resources:
+{{ toYaml .Values.clusterChecksRunner.resources | indent 10 }}
+        volumeMounts:
+          - {name: s6-run, mountPath: /var/run/s6}
+          - {name: remove-corechecks, mountPath: /etc/datadog-agent/conf.d}
+{{- if .Values.clusterChecksRunner.livenessProbe }}
+        livenessProbe:
+{{ toYaml .Values.clusterChecksRunner.livenessProbe | indent 10 }}
+{{- else }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5555
+          initialDelaySeconds: 15
+          periodSeconds: 15
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 6
+{{- end }}
+      volumes:
+        - {name: s6-run, emptyDir: {}}
+        - {name: remove-corechecks, emptyDir: {}}
+      affinity:
+{{- if .Values.clusterChecksRunner.affinity }}
+{{ toYaml .Values.clusterChecksRunner.affinity | indent 8 }}
+{{- else }}
+        # Ensure we only run one worker per node, to avoid name collisions
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: {{ template "datadog.fullname" . }}-clusterchecks
+            topologyKey: kubernetes.io/hostname
+{{- end }}
+      {{- if .Values.clusterChecksRunner.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.clusterChecksRunner.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.clusterChecksRunner.tolerations }}
+      tolerations:
+{{ toYaml .Values.clusterChecksRunner.tolerations | indent 8 }}
+      {{- end }}
+{{ end }}

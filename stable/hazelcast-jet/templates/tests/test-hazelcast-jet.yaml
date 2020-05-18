@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ template "hazelcast-jet.fullname" . }}-test-{{ randAlphaNum 5 | lower }}"
+  annotations:
+    "helm.sh/hook": test-success
+    "helm.sh/hook-delete-policy": hook-succeeded, hook-failed
+  labels:
+    app.kubernetes.io/name: {{ template "hazelcast-jet.name" . }}
+    helm.sh/chart: {{ template "hazelcast-jet.chart" . }}
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+    app.kubernetes.io/component: "test"
+    role: test
+spec:
+  hostNetwork: false
+  hostPID: false
+  hostIPC: false
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1001
+    runAsGroup: 1001
+  {{- if .Values.nodeSelector }}
+  nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 4 }}
+  {{- end }}
+  containers:
+  - name: "{{ template "hazelcast-jet.fullname" . }}-test"
+    image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+    command:
+    - "bash"
+    - "-c"
+    - |
+      set -ex
+      # Get the number of Hazelcast members in the cluster
+      CLUSTER_SIZE=$(curl {{ template "hazelcast-jet.fullname" . }}:{{ .Values.service.port }}/hazelcast/health/cluster-size)
+      # Test the currect number of Hazelcast members
+      test ${CLUSTER_SIZE} -eq {{ .Values.cluster.memberCount }}
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 1001
+      runAsGroup: 1001
+      privileged: false
+      readOnlyRootFilesystem: true
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+  restartPolicy: Never

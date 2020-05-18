@@ -1,0 +1,80 @@
+replicaCount: 1
+
+# random if not set
+# rootPassword: root123
+
+image:
+  name: orientdb
+  tag: 3.0.13
+  pullPolicy: IfNotPresent
+
+# distributed settings for default-distributed-db-config.json
+distributed:
+  enabled: false
+  autoDeploy: true
+  executionMode: undefined
+  readQuorum: 1
+  writeQuorum: majority
+  newNodeStrategy: static
+  readYourWrites: true
+
+service:
+  type: ClusterIP
+  orientHttp: 2480
+  hazelcast: 2434
+  orientBinary: 2424
+  gremlinWebsocket: 8182
+
+ingress:
+  enabled: false
+  annotations: {}
+
+resources:
+  requests:
+    cpu: "500m"
+    memory: "2Gi"
+  limits:
+    cpu: "2000m"
+    memory: "8Gi"
+
+jvm: {}
+# Optional jvm settings:
+#  memory: "-Xms800m -Xmx800m"
+#  options: "-Djna.nosys=true -XX:+HeapDumpOnOutOfMemoryError -Djava.awt.headless=true -Dfile.encoding=UTF8 -Drhino.opt.level=9"
+#  settings: "-Dstorage.diskCache.bufferSize=7200"
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+readinessProbe:
+  enabled: true
+
+livenessProbe:
+  enabled: true
+
+hazelcast:
+  groupName: orientdb
+  groupPassword: orientdb
+
+persistence:
+  enabled: true
+  storage:
+    accessMode:
+    - ReadWriteOnce
+    size: 10Gi
+  backup:
+    accessMode:
+    - ReadWriteOnce
+    size: 2Gi
+
+config:
+  overrideHazelcastConfig: true
+  overrideOrientdbServerConfig: true
+  overrideGremlinServerConfig: true
+  overrideDistributedDbConfig: true
+
+testing:
+  enabled: false

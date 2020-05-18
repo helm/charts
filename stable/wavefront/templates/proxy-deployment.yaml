@@ -1,0 +1,76 @@
+{{- if .Values.proxy.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name : {{ template "wavefront.fullname" . }}
+    helm.sh/chart: {{ template "wavefront.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io.instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/component: proxy
+  name: {{ template "wavefront.proxy.fullname" . }} 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name : {{ template "wavefront.fullname" .}}
+      app.kubernetes.io/component: proxy
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name : {{ template "wavefront.fullname" .}}
+        app.kubernetes.io/component: proxy
+    spec:
+      containers:
+      - name: wavefront-proxy
+        image: {{ .Values.proxy.image.repository }}:{{ .Values.proxy.image.tag }}
+        imagePullPolicy: {{ .Values.proxy.image.pullPolicy }}
+        env:
+        - name: WAVEFRONT_URL
+          value: {{ .Values.wavefront.url }}/api
+        - name: WAVEFRONT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "wavefront.fullname" . }}
+              key: api-token
+        - name: WAVEFRONT_PROXY_ARGS
+          value: {{ .Values.proxy.args }}
+          {{- if .Values.proxy.tracePort }} --traceListenerPorts {{ .Values.proxy.tracePort }}{{- end -}}
+          {{- if .Values.proxy.jaegerPort }} --traceJaegerListenerPorts {{ .Values.proxy.jaegerPort }}{{- end -}}
+          {{- if .Values.proxy.zipkinPort }} --traceZipkinListenerPorts {{ .Values.proxy.zipkinPort }}{{- end -}}
+          {{- if .Values.proxy.traceSamplingRate }} --traceSamplingRate {{ .Values.proxy.traceSamplingRate }}{{- end -}}
+          {{- if .Values.proxy.traceSamplingDuration }} --traceSamplingDuration {{ .Values.proxy.traceSamplingDuration }}{{- end -}}
+          {{- if .Values.proxy.preprocessor }} --preprocessorConfigFile /etc/wavefront/wavefront-proxy/preprocessor/rules.yaml{{- end -}}
+        {{- if .Values.proxy.heap }}
+        - name: JAVA_HEAP_USAGE
+          value: {{ .Values.proxy.heap | quote }}
+        {{- end }}
+        ports:
+        - containerPort: {{ .Values.proxy.port }}
+          protocol: TCP
+        {{- if .Values.proxy.tracePort }}
+        - containerPort: {{ .Values.proxy.tracePort }}
+          protocol: TCP
+        {{- end }}
+        {{- if .Values.proxy.jaegerPort }}
+        - containerPort: {{ .Values.proxy.jaegerPort }}
+          protocol: TCP
+        {{- end }}
+        {{- if .Values.proxy.zipkinPort }}
+        - containerPort: {{ .Values.proxy.zipkinPort }}
+          protocol: TCP
+        {{- end }}
+        securityContext:
+          privileged: false
+        volumeMounts:
+        {{- if .Values.proxy.preprocessor }}
+        - name: preprocessor
+          mountPath: /etc/wavefront/wavefront-proxy/preprocessor
+        {{- end }}
+      volumes:
+      {{- if .Values.proxy.preprocessor }}
+      - name: preprocessor
+        configMap:
+          name: {{ template "wavefront.proxy.fullname" . }}-preprocessor
+      {{- end }}
+{{- end }}

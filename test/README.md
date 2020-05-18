@@ -29,10 +29,10 @@ The configuration of the Pull Request trigger is [in the config.json](https://gi
 
 This snippet tells Test Infra to run the [test/e2e.sh](https://github.com/helm/charts/blob/master/test/e2e.sh)
 when testing is triggered on a pull request. The e2e.sh script will use the [Charts test image](https://github.com/helm/charts/blob/master/test/Dockerfile)
-to run the [chart_test.sh](https://github.com/kubernetes-helm/chart-testing/blob/master/chart_test.sh) script. This script
+to run the [ct lint-and-install](https://github.com/helm/chart-testing/blob/master/doc/ct_lint-and-install.md) command. This
 is the main logic for validation of a pull request. It intends to only test charts that have changed in this PR.
 
-The testing logic has been extrated to the [chart-testing](https://github.com/kubernetes-helm/chart-testing) project. A bash library provides the required logic to lint, install, and test charts. It is provided as a Docker image and can be run by anyone on their own charts.
+The testing logic has been extracted to the [chart-testing](https://github.com/helm/chart-testing) project. A go library provides the required logic to lint, install, and test charts. It is provided as a Docker image and can be run by anyone on their own charts.
 
 #### Providing Custom Test Values
 

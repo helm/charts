@@ -1,3 +1,5 @@
+THIS CHART HAS BEEN DEPRECATED. PLEASE MOVE TO THE STABLE/VELERO CHART.
+
 Check that the ark is up and running:
 
 Check that the secret has been created:

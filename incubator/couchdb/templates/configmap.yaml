@@ -8,6 +8,7 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
 data:
+  clusterSize: "{{ .Values.clusterSize }}"
   inifile: |
     {{ range $section, $settings := .Values.couchdbConfig -}}
     {{ printf "[%s]" $section }}

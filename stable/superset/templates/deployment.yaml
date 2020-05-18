@@ -23,6 +23,9 @@ spec:
         heritage: {{ .Release.Service }}
       annotations:
         checksum/secrets: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        {{- with .Values.deploymentAnnotations }}
+        {{- . | toYaml | nindent 8 }}
+        {{- end }}
     spec:
       securityContext:
         runAsUser: 1000
@@ -46,8 +49,13 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["/bin/bash"]
-          args: ["/home/superset/init_superset.sh" ]
+          command: ["/usr/bin/env"]
+          args:
+          - bash
+          - /home/superset/init_superset.sh
+          {{- range .Values.extraArguments }}
+          - {{ . }}
+          {{- end }}
           volumeMounts:
             - name: superset-configs
               mountPath: /home/superset

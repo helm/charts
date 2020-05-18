@@ -1,0 +1,140 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "rundeck.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "rundeck.name" . }}
+    helm.sh/chart: {{ include "rundeck.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "rundeck.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      {{- if .Values.annotations }}
+      # Annotations iteration - Useful for KIAM and others
+      annotations:
+        {{- range $key, $value := .Values.annotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      {{- end }}
+      labels:
+        app.kubernetes.io/name: {{ include "rundeck.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+        - name: nginx
+          image: nginx:stable
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+              livenessProbe:
+                httpGet:
+                  path: /
+                  port: 80
+                  scheme: HTTP
+                initialDelaySeconds: 60
+                periodSeconds: 120
+              readinessProbe:
+                httpGet:
+                  path: /
+                  port: 80
+                  scheme: HTTP
+                initialDelaySeconds: 10
+                periodSeconds: 5
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx
+        - name: {{ .Chart.Name }}
+          command:
+          - /bin/sh
+          - -c
+          - echo {{ .Values.rundeck.adminUser  }} > /home/rundeck/server/config/realm.properties && /home/rundeck/docker-lib/entry.sh
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          envFrom:
+          - configMapRef:
+              name: {{ .Release.Name }}-environment-configmap
+          env:
+            - name: RUNDECK_GRAILS_URL
+              value: {{ .Values.rundeck.env.RUNDECK_GRAILS_URL }}
+            - name: RUNDECK_SERVER_FORWARDED
+              value: "true"
+            - name: RUNDECK_LOGGING_STRATEGY
+              value: "CONSOLE"
+          volumeMounts:
+          - name: data
+            mountPath: /home/rundeck/server/data
+        {{- if .Values.rundeck.sshSecrets }}
+          - name: sshkeys
+            mountPath: /home/rundeck/.ssh
+            readOnly: true
+        {{- end }}
+        {{- if .Values.rundeck.awsCredentialsSecret }}
+          - name: aws-credentials
+            mountPath: /home/rundeck/.aws/credentials
+        {{- end }}
+          ports:
+            - name: rundeck
+              containerPort: 4440
+          livenessProbe:
+            httpGet:  
+              path: /
+              port: 4440
+              scheme: HTTP
+            initialDelaySeconds: 120
+            periodSeconds: 120
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 4440
+              scheme: HTTP
+            initialDelaySeconds: 60
+            periodSeconds: 5
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: {{ .Release.Name }}-nginx-configmap
+            items:
+              - key: nginx.conf
+                path: nginx.conf
+        - name: data
+        {{- if .Values.rundeck.awsVolumeId }}
+          # This AWS EBS volume must already exist.
+          awsElasticBlockStore:
+            volumeID: {{ .Values.rundeck.awsVolumeId }}
+            fsType: ext4
+        {{- else }}
+          emptyDir: {}
+        {{- end }}  
+        {{- if .Values.rundeck.sshSecrets }}
+        - name: sshkeys
+          secret:
+            secretName: {{ .Values.rundeck.sshSecrets }}
+        {{- end }}
+        {{- if .Values.rundeck.awsCredentialsSecret }}
+        - name: aws-credentials
+          secret:
+            secretName: {{ .Values.rundeck.awsCredentialsSecret}}
+        {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

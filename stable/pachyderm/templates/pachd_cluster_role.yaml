@@ -3,11 +3,11 @@
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
-  name: pachyderm
-  creationTimestamp: 
+  name: {{ template "fullname" . }}
+  creationTimestamp:
   labels:
     app: ''
-    suite: pachyderm
+    suite: {{ template "fullname" . }}
 rules:
 - verbs:
   - get

@@ -1,3 +1,4 @@
+{{- if .Values.server.enabled -}}
 {{- if .Values.server.statefulSet.enabled -}}
 apiVersion: v1
 kind: Service
@@ -12,6 +13,7 @@ metadata:
 {{ toYaml .Values.server.statefulSet.headless.labels | indent 4 }}
 {{- end }}
   name: {{ template "prometheus.server.fullname" . }}-headless
+{{ include "prometheus.namespace" . | indent 2 }}
 spec:
   clusterIP: None
   ports:
@@ -21,4 +23,5 @@ spec:
       targetPort: 9090
   selector:
     {{- include "prometheus.server.matchLabels" . | nindent 4 }}
+{{- end -}}
 {{- end -}}

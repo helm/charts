@@ -1,0 +1,53 @@
+# Default values for kube-downscaler.
+# Declare variables to be passed into your templates.
+
+# How many kube-downscaler pods should run in deployment
+replicaCount: 1
+name: kube-downscaler
+debug:
+  enable: false
+
+# Namespace where kube-downscaler is going to be deployed.
+namespace:
+  # Deployment will query all namespaces if left empty:
+  active_in: ''
+
+# Default is 1 minute.
+interval: 60
+
+rbac:
+  # If true, create & use RBAC resources
+  create: true
+  # Ignored if rbac.create is true
+  serviceAccountName: default
+
+image:
+  repository: hjacobs/kube-downscaler
+  tag: 19.10.1
+  pullPolicy: IfNotPresent
+
+resources:
+  limits: {}
+  requests: {}
+  # limits:
+  #   cpu: 50m
+  #   memory: 200Mi
+  # requests:
+  #   cpu: 50m
+  #   memory: 200Mi
+
+securityContext: {}
+# runAsUser: 1000
+
+extraArgs: []
+# - --include-resources deployments
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+podLabels: {}
+
+podAnnotations: {}

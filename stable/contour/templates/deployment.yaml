@@ -1,0 +1,141 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "contour.fullname" . }}
+    app.kubernetes.io/name: contour
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "contour.chart" . }}
+  name: {{ template "contour.fullname" . }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "contour.fullname" . }}
+{{- if not .Values.hpa.create }}
+  replicas: 2
+{{- end }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "contour.fullname" . }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8002"
+        prometheus.io/path: "/stats/prometheus"
+    spec:
+      containers:
+      - image: "{{ .Values.contour.image.registry }}:{{ .Values.contour.image.tag }}"
+        imagePullPolicy: {{ .Values.contour.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.contour.resources | indent 10 }}
+        name: contour
+        command: ["contour"]
+        args:
+        - serve
+        - --incluster
+        - --insecure
+        - --envoy-service-http-port=8080
+        - --envoy-service-https-port=8443
+        - --config-path=/config/contour.yaml
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8000
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8000
+        volumeMounts:
+        - name: contour-config
+          mountPath: /config
+          readOnly: true
+      - image: "{{ .Values.envoy.image.registry }}:{{ .Values.envoy.image.tag }}"
+        imagePullPolicy: {{ .Values.envoy.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.envoy.resources | indent 10 }}
+        name: envoy
+        ports:
+        - containerPort: 8080
+          name: http
+        - containerPort: 8443
+          name: https
+        command: ["envoy"]
+        args:
+        - --config-path /config/envoy.json
+        - --service-cluster $(CONTOUR_NAMESPACE)
+        - --service-node $(ENVOY_POD_NAME)
+        - --log-level info
+        env:
+        - name: CONTOUR_NAMESPACE
+          valueFrom:
+             fieldRef:
+               apiVersion: v1
+               fieldPath: metadata.namespace
+        - name: ENVOY_POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8002
+          initialDelaySeconds: 3
+          periodSeconds: 3
+        volumeMounts:
+        - name: envoy-config
+          mountPath: /config
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - bash
+              - -c
+              - --
+              - echo
+              - -ne
+              - "POST /healthcheck/fail HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n"
+              - '>/dev/tcp/localhost/9001'
+      initContainers:
+      - image: "{{ .Values.init.image.registry }}:{{ .Values.init.image.tag }}"
+        imagePullPolicy: {{ .Values.init.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.init.resources | indent 10 }}
+        name: envoy-initconfig
+        command: ["contour"]
+        args:
+        - bootstrap
+        - /config/envoy.json
+        volumeMounts:
+        - name: envoy-config
+          mountPath: /config
+        env:
+        - name: CONTOUR_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+      volumes:
+      - name: envoy-config
+        emptyDir: {}
+      - name: contour-config
+        configMap:
+          name: {{ template "contour.fullname" . }}
+          defaultMode: 0643
+          items:
+          - key: contour.yaml
+            path: contour.yaml
+      dnsPolicy: ClusterFirst
+      serviceAccountName: {{ template "contour.fullname" . }}
+      terminationGracePeriodSeconds: 30
+      # The affinity stanza below tells Kubernetes to try hard not to place 2 of
+      # these pods on the same node.
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app: contour
+              topologyKey: kubernetes.io/hostname

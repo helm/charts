@@ -1,0 +1,10 @@
+{{- if .Values.initScripts.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "influxdb.fullname" . }}-init
+  labels:
+    {{- include "influxdb.labels" . | nindent 4 }}
+data:
+{{ toYaml .Values.initScripts.scripts | indent 2 }}
+{{- end -}}

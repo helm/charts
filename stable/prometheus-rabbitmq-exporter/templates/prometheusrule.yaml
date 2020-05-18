@@ -1,0 +1,47 @@
+{{- if .Values.prometheus.rules.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ template "prometheus-rabbitmq-exporter.fullname" . }}
+  labels:
+    app: {{ template "prometheus-rabbitmq-exporter.name" . }}
+    chart: {{ template "prometheus-rabbitmq-exporter.chart" . }}
+    heritage: {{ .Release.Service }}
+  {{- if .Values.prometheus.rules.additionalLabels }}
+{{ toYaml .Values.prometheus.rules.additionalLabels | indent 4 }}
+  {{- end }}
+spec:
+  groups:
+  - name: rabbitmq
+    rules:
+    - alert: RabbitmqDown
+      expr: |
+        absent(rabbitmq_up == 1)
+      for: 1m
+      labels:
+        severity: critical
+    - alert: RabbitmqNotRunning
+      expr: |
+        rabbitmq_running{self="1"} != 1
+      for: 1m
+      labels:
+        severity: critical
+    - alert: RabbitmqMessages
+      expr: |
+        rabbitmq_queue_messages > 250
+      for: 10m
+      labels:
+        severity: warning
+    - alert: RabbitmqMessages
+      expr: |
+        rabbitmq_queue_messages > 500
+      for: 10m
+      labels:
+        severity: critical
+    - alert: RabbitmqPartition
+      expr: |
+        rabbitmq_partitions{self="1"} != 0
+      for: 1m
+      labels:
+        severity: critical
+{{- end }}

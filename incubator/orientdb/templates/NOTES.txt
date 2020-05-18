@@ -1,0 +1,14 @@
+1. Get your 'root' user password by running:
+  printf $(kubectl get secret --namespace {{ .Release.Namespace }} {{ .Release.Name }}-secret -o jsonpath="{.data.root-password}" | base64 --decode);echo
+
+2. Access the UI using the following command 
+	kubectl port-forward --namespace {{ .Release.Namespace }} {{ template "orientdb.fullname" . }}-0 2480:2480
+
+{{- if .Values.persistence.enabled }}
+{{- else }}
+#################################################################################
+######   WARNING: Persistence is disabled!!! You will lose your data when   #####
+######            the Orient Cluster is terminated.                         #####
+#################################################################################
+{{- end }}
+

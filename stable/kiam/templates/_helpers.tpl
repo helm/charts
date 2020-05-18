@@ -88,3 +88,24 @@ Create the name of the server service account to use.
     {{ default "default" .Values.serviceAccounts.server.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Generate certificates for kiam server and agent
+*/}}
+{{- define "kiam.agent.gen-certs" -}}
+{{- $ca := .ca | default (genCA "kiam-ca" 365) -}}
+{{- $_ := set . "ca" $ca -}}
+{{- $cert := genSignedCert "Kiam Agent" nil nil 365 $ca -}}
+{{.Values.agent.tlsCerts.caFileName }}: {{ $ca.Cert | b64enc }}
+{{.Values.agent.tlsCerts.certFileName }}: {{ $cert.Cert | b64enc }}
+{{.Values.agent.tlsCerts.keyFileName }}: {{ $cert.Key | b64enc }}
+{{- end -}}
+{{- define "kiam.server.gen-certs" -}}
+{{- $altNames := list (include "kiam.server.fullname" .) (printf "%s:%d" (include "kiam.server.fullname" .) .Values.server.service.port) (printf "127.0.0.1:%d" .Values.server.service.targetPort) -}}
+{{- $ca := .ca | default (genCA "kiam-ca" 365) -}}
+{{- $_ := set . "ca" $ca -}}
+{{- $cert := genSignedCert "Kiam Server" (list "127.0.0.1") $altNames 365 $ca -}}
+{{.Values.server.tlsCerts.caFileName }}: {{ $ca.Cert | b64enc }}
+{{.Values.server.tlsCerts.certFileName }}: {{ $cert.Cert | b64enc }}
+{{.Values.server.tlsCerts.keyFileName }}: {{ $cert.Key | b64enc }}
+{{- end -}}

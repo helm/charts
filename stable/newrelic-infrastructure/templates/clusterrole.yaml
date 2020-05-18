@@ -1,0 +1,30 @@
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels: {{ include "newrelic.labels" . | indent 4 }}
+  name: {{ template "newrelic.fullname" . }}
+rules:
+  - apiGroups: [""]
+    resources:
+      - "nodes"
+      - "nodes/metrics"
+      - "nodes/stats"
+      - "nodes/proxy"
+      - "pods"
+      - "services"
+      - "secrets"
+    verbs: ["get", "list"]
+  - nonResourceURLs: ["/metrics"]
+    verbs: ["get"]
+{{- if .Values.rbac.pspEnabled }}
+  - apiGroups:
+      - extensions
+    resources:
+      - podsecuritypolicies
+    resourceNames:
+      - privileged-{{ template "newrelic.fullname" . }}
+    verbs:
+      - use
+{{- end -}}
+{{- end -}}

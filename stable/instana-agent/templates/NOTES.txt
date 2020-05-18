@@ -1,0 +1,66 @@
+{{- if (and (not .Values.agent.key) (and (not .Values.zone.name) (not .Values.cluster.name))) }}
+##############################################################################
+####    ERROR: You did not specify your secret agent key.                 ####
+####    ERROR: You also did not specify a zone or name for this cluster.  ####
+##############################################################################
+
+This agent deployment will be incomplete until you set your agent key and zone or name for this cluster:
+
+    helm upgrade {{ .Release.Name }} --reuse-values \
+        --set agent.key=$(YOUR_SECRET_AGENT_KEY) \
+        --set zone.name=$(YOUR_ZONE_NAME) stable/instana-agent
+
+Alternatively, you may specify a cluster name and the zone will be detected from availability zone information on the host:
+
+    helm upgrade {{ .Release.Name }} --reuse-values \
+        --set agent.key=$(YOUR_SECRET_AGENT_KEY) \
+        --set cluster.name=$(YOUR_CLUSTER_NAME) stable/instana-agent
+
+- YOUR_SECRET_AGENT_KEY can be obtained from the Management Portal section of your Instana installation.
+- YOUR_ZONE_NAME should be the zone that detected technologies will be assigned to.
+- YOUR_CLUSTER_NAME should be the custom name of your cluster.
+
+At least one of zone.name or cluster.name is required. This cluster will be reported with the name of the zone unless you specify a cluster name.
+
+{{- else if (and (not .Values.zone.name) (not .Values.cluster.name))  }}
+##############################################################################
+####    ERROR: You did not specify a zone or name for this cluster.       ####
+##############################################################################
+
+This agent deployment will be incomplete until you set a zone for this cluster:
+
+    helm upgrade {{ .Release.Name }} --reuse-values \
+        --set zone.name=$(YOUR_ZONE_NAME) stable/instana-agent
+
+Alternatively, you may specify a cluster name and the zone will be detected from availability zone information on the host:
+
+    helm upgrade {{ .Release.Name }} --reuse-values \
+        --set cluster.name=$(YOUR_CLUSTER_NAME) stable/instana-agent
+
+- YOUR_ZONE_NAME should be the zone that detected technologies will be assigned to.
+- YOUR_CLUSTER_NAME should be the custom name of your cluster.
+
+At least one of zone.name or cluster.name is required. This cluster will be reported with the name of the zone unless you specify a cluster name.
+
+{{- else if not .Values.agent.key }}
+##############################################################################
+####    ERROR: You did not specify your secret agent key.                 ####
+##############################################################################
+
+This agent deployment will be incomplete until you set your agent key:
+
+    helm upgrade {{ .Release.Name }} --reuse-values \
+        --set agent.key=$(YOUR_SECRET_AGENT_KEY) stable/instana-agent
+
+- YOUR_SECRET_AGENT_KEY can be obtained from the Management Portal section of your Instana installation.
+
+{{- else -}}
+It may take a few moments for the agents to fully deploy. You can see what agents are running by listing resources in the {{ .Release.Namespace }} namespace:
+
+    kubectl get all -n {{ .Release.Namespace }}
+
+You can get the logs for all of the agents with `kubectl logs`:
+
+    kubectl logs -l app.kubernetes.io/name={{ .Release.Name }} -n {{ .Release.Namespace }} -c instana-agent
+
+{{- end }}

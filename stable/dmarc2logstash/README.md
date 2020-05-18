@@ -31,7 +31,7 @@ dmarc2logstash.image.tag          | dmarc2logstash image tag, typically the vers
 dmarc2logstash.image.pullPolicy   | dmarc2logstash Kubernetes image pull policy                                                                           | IfNotPresent
 delete_messages                   | Set to 1 to delete messages or 0 to preserve messages (useful for debugging) | 1
 filebeat.image.repository         | Elastic filebeat Docker image repository                                                                              | docker.elastic.co/beats/filebeat
-filebeat.image.tag                | Elastic filebeat tag, typically the version, of the Docker image                                                      | 6.2.4
+filebeat.image.tag                | Elastic filebeat tag, typically the version, of the Docker image                                                      | 6.6.0
 filebeat.image.pullPolicy         | Elastic filebeat Kubernetes image pull policy                                                                         | IfNotPresent
 filebeat.logstash.host            | Logstash service host; ex: logstash (this value must be provided)                                                     | ""
 filebeat.logstash.port            | Logstash service port                                                                                                 | 5000

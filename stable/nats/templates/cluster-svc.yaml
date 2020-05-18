@@ -13,7 +13,7 @@ metadata:
   {{- end }}
 spec:
   type: {{ .Values.cluster.service.type }}
-  {{- if and (eq .Values.cluster.service.type "LoadBalancer") .Values.cluster.service.loadBalancerIP -}}
+  {{- if and (eq .Values.cluster.service.type "LoadBalancer") .Values.cluster.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.cluster.service.loadBalancerIP }}
   {{- end }}
   ports:

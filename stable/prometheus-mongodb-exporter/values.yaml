@@ -3,17 +3,18 @@ affinity: {}
 annotations: {}
 
 extraArgs:
-- -collect.collection=true
-- -collect.database=true
-- -collect.indexusage=true
-- -collect.topmetrics=true
+- --collect.collection
+- --collect.database
+- --collect.indexusage
+- --collect.topmetrics
+- --collect.connpoolstats
 
 fullnameOverride: ""
 
 image:
   pullPolicy: IfNotPresent
-  repository: ssalaues/mongodb-exporter
-  tag: 0.6.1
+  repository: ssheehy/mongodb-exporter
+  tag: 0.10.0
 
 imagePullSecrets: []
 
@@ -23,13 +24,24 @@ livenessProbe:
     port: metrics
   initialDelaySeconds: 10
 
-# mongodb://metrics-user:password@mongodb:27017
+# [mongodb[+srv]://][user:pass@]host1[:port1][,host2[:port2],...][/database][?options]
 mongodb:
-  uri:
+  uri: ""
+
+# Name of an externally managed secret (in the same namespace) containing the connection uri as key `mongodb-uri`.
+# If this is provided, the value mongodb.uri is ignored.
+existingSecret:
+  name: ""
 
 nameOverride: ""
 
 nodeSelector: {}
+
+podAnnotations: {}
+#  prometheus.io/scrape: "true"
+#  prometheus.io/port: "metrics"
+
+port: "9216"
 
 priorityClassName: ""
 
@@ -43,30 +55,39 @@ replicas: 1
 
 resources: {}
 # limits:
-#   cpu: 250mm
+#   cpu: 250m
 #   memory: 192Mi
 # requests:
-#   cpu: 100mm
+#   cpu: 100m
 #   memory: 128Mi
+
+# Extra environment variables that will be passed into the exporter pod
+env: {}
 
 securityContext:
   allowPrivilegeEscalation: false
   capabilities:
     drop: ["all"]
   readOnlyRootFilesystem: true
+  runAsGroup: 10000
   runAsNonRoot: true
   runAsUser: 10000
 
 service:
   annotations: {}
-  #  prometheus.io/scrape: "true"
-  #  prometheus.io/port: "9216"
   port: 9216
   type: ClusterIP
+
+serviceAccount:
+  create: true
+  # If create is true and name is not set, then a name is generated using the
+  # fullname template.
+  name:
 
 serviceMonitor:
   enabled: true
   interval: 30s
+  scrapeTimeout: 10s
   namespace:
   additionalLabels: {}
 

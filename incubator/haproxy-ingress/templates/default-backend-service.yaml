@@ -7,12 +7,13 @@ metadata:
 {{ toYaml .Values.defaultBackend.service.annotations | indent 4 }}
 {{- end }}
   labels:
-    app: {{ template "haproxy-ingress.name" . }}
+    app: {{ template "haproxy-ingress.labels.app.default-backend" . }}
     chart: {{ template "haproxy-ingress.chart" . }}
     component: "{{ .Values.defaultBackend.name }}"
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   name: {{ template "haproxy-ingress.defaultBackend.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
 {{- if .Values.defaultBackend.service.clusterIP }}
   clusterIP: "{{ .Values.defaultBackend.service.clusterIP }}"
@@ -34,7 +35,7 @@ spec:
       protocol: TCP
       targetPort: http
   selector:
-    app: {{ template "haproxy-ingress.name" . }}
+    app: {{ template "haproxy-ingress.labels.app.default-backend" . }}
     component: "{{ .Values.defaultBackend.name }}"
     release: {{ .Release.Name }}
   type: "{{ .Values.defaultBackend.service.type }}"
