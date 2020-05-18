@@ -104,16 +104,16 @@ spec:
           volumeMounts:
             - mountPath: /unifi/data
               name: unifi-data
-              subPath: data
+              subPath: {{ ternary "data" (printf "%s/%s" .Values.persistence.subPath "data") (empty .Values.persistence.subPath) }}
             - mountPath: /unifi/log
               name: unifi-data
-              subPath: log
+              subPath: {{ ternary "log" (printf "%s/%s" .Values.persistence.subPath "log") (empty .Values.persistence.subPath) }}
             - mountPath: /unifi/cert
               name: unifi-data
-              subPath: cert
+              subPath: {{ ternary "cert" (printf "%s/%s" .Values.persistence.subPath "cert") (empty .Values.persistence.subPath) }}
             - mountPath: /unifi/init.d
               name: unifi-data
-              subPath: init.d
+              subPath: {{ ternary "init.d" (printf "%s/%s" .Values.persistence.subPath "init.d") (empty .Values.persistence.subPath) }}
             {{- if .Values.extraConfigFiles }}
             - name: extra-config
               mountPath: /configmap
