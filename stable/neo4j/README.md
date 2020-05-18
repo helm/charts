@@ -1,5 +1,10 @@
 # Neo4j
 
+**This helm chart is deprecated**, replaced by 
+[https://github.com/neo4j-contrib/neo4j-helm](https://github.com/neo4j-contrib/neo4j-helm)
+
+## Overview
+
 [Neo4j](https://neo4j.com/) is a highly scalable native graph database that
 leverages data relationships as first-class entities, helping enterprises build
 intelligent applications to meet today’s evolving data challenges.
