@@ -1,5 +1,9 @@
 # Datadog changelog
 
+## 2.3.3
+
+* Fix default values in `values.yaml` to prevent warnings with Helm 2.x
+
 ## 2.3.2
 
 * Update the DCA RBAC to allow it to create events in the HPA
