@@ -188,6 +188,15 @@ Returns kubernetes pod template configuration as code
   - name: {{ .Values.agent.imagePullSecretName }}
   {{- end }}
   label: "{{ .Release.Name }}-{{ .Values.agent.componentName }} {{ .Values.agent.customJenkinsLabels  | join " " }}"
+{{- if .Values.agent.nodeSelector }}
+  nodeSelector:
+  {{- $local := dict "first" true }}
+  {{- range $key, $value := .Values.agent.nodeSelector }}
+    {{- if $local.first }} {{ else }},{{ end }}
+    {{- $key }}={{ tpl $value $ }}
+    {{- $_ := set $local "first" false }}
+  {{- end }}
+{{- end }}
   nodeUsageMode: "NORMAL"
   podRetention: {{ .Values.agent.podRetention }}
   showRawYaml: true

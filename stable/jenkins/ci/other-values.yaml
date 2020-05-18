@@ -7,6 +7,17 @@ agent:
     limits:
       cpu: "1"
       memory: "2048Mi"
+  nodeSelector:
+    "app.kubernetes.io/component": "{{ .Values.agent.componentName }}"
+  yamlTemplate: |-
+    apiVersion: v1
+    kind: Pod
+    spec:
+      tolerations:
+        - key: "app.kubernetes.io/component"
+          operator: "Equal"
+          value: "{{ .Values.agent.componentName }}"
+          effect: "NoSchedule"
   additionalAgents:
     maven:
       podName: maven
