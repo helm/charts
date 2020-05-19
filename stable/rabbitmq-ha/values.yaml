@@ -370,6 +370,12 @@ resources: {}
   #   cpu: 100m
   #   memory: 1Gi
 initContainer:
+  enabled: true
+  securityContext:
+    runAsGroup: 0
+    runAsNonRoot: false
+    runAsUser: 0
+  chownFiles: true
   resources: {}
   #   limits:
   #     cpu: 100m

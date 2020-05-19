@@ -66,13 +66,12 @@ spec:
 {{ toYaml .Values.securityContext | indent 10 }}
       serviceAccountName: {{ template "rabbitmq-ha.serviceAccountName" . }}
       initContainers:
+{{- if .Values.initContainer.enabled }}
         - name: bootstrap
           image: {{ .Values.busyboxImage.repository}}:{{ .Values.busyboxImage.tag}}
           imagePullPolicy: {{ .Values.busyboxImage.pullPolicy }}
           securityContext:
-            runAsGroup: 0
-            runAsNonRoot: false
-            runAsUser: 0
+{{- toYaml .Values.initContainer.securityContext | nindent 12 }}
           command: ['sh']
           args:
           - "-c"
@@ -85,7 +84,7 @@ spec:
               touch "${RABBITMQ_MNESIA_DIR}/force_load"
             fi
             {{- end }}
-            {{- if and (.Values.securityContext.runAsUser) (.Values.securityContext.fsGroup) }}
+            {{- if and (.Values.securityContext.runAsUser) (.Values.securityContext.fsGroup) (.Values.initContainer.chownFiles) }}
             chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }} /var/lib/rabbitmq/
             chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }} /etc/rabbitmq
             {{- end }}
@@ -111,6 +110,7 @@ spec:
               mountPath: /etc/rabbitmq
             - name: {{ .Values.persistentVolume.name }}
               mountPath: /var/lib/rabbitmq
+{{- end}}
 {{- if .Values.extraInitContainers }}
 {{ tpl (toYaml .Values.extraInitContainers) . | indent 8 }}
 {{- end }}
