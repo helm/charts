@@ -45,6 +45,7 @@ data:
       <clouds>
         <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@{{ template "jenkins.kubernetes-version" . }}">
           <name>kubernetes</name>
+          <defaultsProviderTemplate>{{ .Values.master.slaveDefaultsProviderTemplate }}</defaultsProviderTemplate>
           <templates>
 {{- if .Values.agent.enabled }}
   {{- include "jenkins.xml.podTemplate" . | nindent 12 }}
@@ -66,17 +67,25 @@ data:
           <serverUrl>https://kubernetes.default</serverUrl>
           <skipTlsVerify>false</skipTlsVerify>
           <namespace>{{ template "jenkins.master.slaveKubernetesNamespace" . }}</namespace>
-{{- if .Values.master.slaveKubernetesNamespace }}
+{{- if .Values.master.slaveJenkinsUrl }}
+          <jenkinsUrl>{{ tpl .Values.master.slaveJenkinsUrl . }}</jenkinsUrl>
+{{- else if .Values.master.slaveKubernetesNamespace }}
           <jenkinsUrl>http://{{ template "jenkins.fullname" . }}.{{ template "jenkins.namespace" . }}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</jenkinsUrl>
-          <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent.{{ template "jenkins.namespace" . }}:{{ .Values.master.slaveListenerPort }}</jenkinsTunnel>
 {{- else }}
           <jenkinsUrl>http://{{ template "jenkins.fullname" . }}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</jenkinsUrl>
+{{- end }}
+
+{{- if .Values.master.slaveJenkinsTunnel }}
+          <jenkinsTunnel>{{ tpl .Values.master.slaveJenkinsTunnel . }}</jenkinsTunnel>
+{{- else if .Values.master.slaveKubernetesNamespace }}
+          <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent.{{ template "jenkins.namespace" . }}:{{ .Values.master.slaveListenerPort }}</jenkinsTunnel>
+{{- else }}
           <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent:{{ .Values.master.slaveListenerPort }}</jenkinsTunnel>
 {{- end }}
           <containerCap>{{ .Values.agent.containerCap }}</containerCap>
           <retentionTimeout>5</retentionTimeout>
-          <connectTimeout>0</connectTimeout>
-          <readTimeout>0</readTimeout>
+          <connectTimeout>{{ .Values.master.slaveConnectTimeout }}</connectTimeout>
+          <readTimeout>{{ .Values.master.slaveReadTimeout }}</readTimeout>
           <podLabels>
             <org.csanchez.jenkins.plugins.kubernetes.PodLabel>
               <key>jenkins/{{ .Release.Name }}-{{ .Values.agent.componentName }}</key>

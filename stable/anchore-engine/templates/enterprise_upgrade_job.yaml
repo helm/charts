@@ -30,7 +30,6 @@ spec:
       - name: "{{ .Release.Name }}-enterprise-upgrade"
         imagePullPolicy: {{ .Values.anchoreEnterpriseGlobal.imagePullPolicy }}
         image: {{ .Values.anchoreEnterpriseGlobal.image }}
-        command: ["/bin/bash", "-c"]
         {{- if .Values.anchoreGlobal.dbConfig.ssl }}
         args: ["anchore-enterprise-manager db --db-use-ssl --db-connect postgresql://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@${ANCHORE_DB_HOST}/${ANCHORE_DB_NAME}?sslmode={{ .Values.anchoreGlobal.dbConfig.sslMode }}\\&sslrootcert=/home/anchore/certs/{{ .Values.anchoreGlobal.dbConfig.sslRootCertName }} upgrade --dontask"]
         {{- else }}
@@ -45,4 +44,16 @@ spec:
         {{- with .Values.anchoreGlobal.extraEnv }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
+        {{- if (.Values.anchoreGlobal.certStoreSecretName) }}
+        volumeMounts:
+        - name: certs
+          mountPath: /home/anchore/certs/
+          readOnly: true
+        {{- end }}
+    {{- with .Values.anchoreGlobal.certStoreSecretName }}
+      volumes:
+      - name: certs
+        secret:
+          secretName: {{ . }}
+      {{- end }}
 {{- end }}
