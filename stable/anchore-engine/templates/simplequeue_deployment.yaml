@@ -76,11 +76,10 @@ spec:
         imagePullPolicy: {{ .Values.anchoreGlobal.imagePullPolicy }}
         {{- end }}
         {{- if .Values.anchoreEnterpriseGlobal.enabled }}
-        command: ["anchore-enterprise-manager"]
+        args: ["anchore-enterprise-manager", "service", "start", "--no-auto-upgrade", "simplequeue"]
         {{- else }}
-        command: ["anchore-manager"]
+        args: ["anchore-manager", "service", "start", "--no-auto-upgrade", "simplequeue"]
         {{- end }}
-        args: ["service", "start", "--no-auto-upgrade", "simplequeue"]
         envFrom:
         - secretRef:
             name: {{ default (include "anchore-engine.fullname" .) .Values.anchoreGlobal.existingSecret }}
