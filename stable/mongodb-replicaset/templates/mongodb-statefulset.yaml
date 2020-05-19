@@ -251,8 +251,6 @@ spec:
             - >-
               /bin/mongodb_exporter
               --mongodb.uri {{ template "mongodb-replicaset.connection-string" . }}
-              --mongodb.socket-timeout={{ .Values.metrics.socketTimeout }}
-              --mongodb.sync-timeout={{ .Values.metrics.syncTimeout }}
               --web.telemetry-path={{ .Values.metrics.path }}
               --web.listen-address=:{{ .Values.metrics.port }}
           volumeMounts:

@@ -79,8 +79,6 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `metrics.securityContext.enabled`   | Enable security context                                                   | `true`                                              |
 | `metrics.securityContext.fsGroup`   | Group ID for the metrics container                                        | `1001`                                              |
 | `metrics.securityContext.runAsUser` | User ID for the metrics container                                         | `1001`                                              |
-| `metrics.socketTimeout`             | Time to wait for a non-responding socket                                  | `3s`                                                |
-| `metrics.syncTimeout`               | Time an operation with this session will wait before returning an error   | `1m`                                                |
 | `metrics.prometheusServiceDiscovery`| Adds annotations for Prometheus ServiceDiscovery                          | `true`                                              |
 | `auth.enabled`                      | If `true`, keyfile access control is enabled                              | `false`                                             |
 | `auth.key`                          | Key for internal authentication                                           | ``                                                  |
