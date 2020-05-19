@@ -5,6 +5,10 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.21.3
+
+Render `agent.envVars` in kubernetes pod template JCasC
+
 ## 1.21.2
 
 Cleanup `agent.yamlTemplate` rendering in kubernetes pod template XML configuration

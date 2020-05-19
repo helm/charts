@@ -181,6 +181,14 @@ Returns kubernetes pod template configuration as code
     resourceRequestMemory: {{.Values.agent.resources.requests.memory}}
     ttyEnabled: {{ .Values.agent.TTYEnabled }}
     workingDir: "/home/jenkins"
+{{- if .Values.agent.envVars }}
+  envVars:
+  {{- range $index, $var := .Values.agent.envVars }}
+    - envVar:
+        key: {{ $var.name }}
+        value: {{ tpl $var.value $ }}
+  {{- end }}
+{{- end }}
   idleMinutes: {{ .Values.agent.idleMinutes }}
   instanceCap: 2147483647
   {{- if .Values.agent.imagePullSecretName }}
