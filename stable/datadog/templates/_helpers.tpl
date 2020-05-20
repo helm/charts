@@ -13,7 +13,7 @@
 {{- if and (eq $length 1) (eq $version "latest") -}}
 {{- $version = "7.19.0" -}}
 {{- end -}}
-{{- if not (semverCompare "^6.19.0 || ^7.19.0" $version) -}}
+{{- if not (semverCompare "^6.19.0-0 || ^7.19.0-0" $version) -}}
 {{- fail "This version of the chart requires an agent image 7.19.0 or greater. If you want to force and skip this check, use `--set agents.image.doNotCheckTag=true`" -}}
 {{- end -}}
 {{- end -}}

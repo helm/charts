@@ -1,5 +1,9 @@
 # Datadog changelog
 
+## 2.3.3
+
+* Allow pre-release versions as docker image tag
+
 ## 2.3.2
 
 * Update the DCA RBAC to allow it to create events in the HPA
