@@ -55,7 +55,7 @@ spec:
           {{- end }}
         {{- end }}
         {{- if or .Values.config.existingConfig .Values.config.configFile }}
-          - --config=/etc/oauth2-proxy/oauth2-proxy.cfg
+          - --config=/etc/oauth2-proxy/oauth2_proxy.cfg
         {{- end }}
         {{- if .Values.authenticatedEmailsFile.enabled }}
         {{- if .Values.authenticatedEmailsFile.template }}

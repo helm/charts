@@ -10,6 +10,6 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "oauth2-proxy.fullname" . }}
 data:
-  oauth2-proxy.cfg: {{ .Values.config.configFile | quote }}
+  oauth2_proxy.cfg: {{ .Values.config.configFile | quote }}
 {{- end }}
 {{- end }}

@@ -20,7 +20,7 @@ config:
   configFile: |-
     email_domains = [ "*" ]
     upstreams = [ "file:///dev/null" ]
-  # Custom configuration file: oauth2-proxy.cfg
+  # Custom configuration file: oauth2_proxy.cfg
   # configFile: |-
   #   pass_basic_auth = false
   #   pass_access_token = true
