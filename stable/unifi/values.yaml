@@ -185,8 +185,11 @@ GID: 999
 customCert:
   enabled: false
   isChain: false
-  certName: cert.pem
-  keyName: privkey.pem
+  certName: tls.crt
+  keyName: tls.key
+  # If you want to store certificate and its key as a Kubernetes tls secret
+  # you can pass the name of that secret using certSecret variable
+  # certSecret: unifi-tls
 
 # define an external mongoDB instead of using the built-in mongodb
 mongodb:
