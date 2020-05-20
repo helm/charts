@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "airflow.fullname" . }}-git-clone
+  name: {{ include "airflow.fullname" . }}-git-clone
   labels:
-    app: {{ template "airflow.name" . }}
-    chart: {{ template "airflow.chart" . }}
+    app: {{ include "airflow.labels.app" . }}
+    chart: {{ include "airflow.labels.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
@@ -25,10 +25,10 @@ data:
     chmod 600 ~/.ssh/*
     echo -e "Host $REPO_HOST\n  Port $REPO_PORT\n  IdentityFile ~/.ssh/$PRIVATE_KEY" > ~/.ssh/config
     {{- end }}
-    # Init Containers will re-run on Pod restart. Remove the directory's contents
-    # and reprovision when this happens.
+    # Init Containers will re-run on Pod restart.
+    # Remove the directory's contents and reprovision when this happens.
     if [ -d "$DIR" ]; then
-        rm -rf $( find $DIR -mindepth 1 )
+      rm -rf $( find $DIR -mindepth 1 )
     fi
     git clone $REPO -b $REF $DIR
   git-sync.sh: |
@@ -51,7 +51,7 @@ data:
     {{- end }}
     {{- if and ( .Values.dags.git.gitSync.enabled ) (not .Values.dags.initContainer.enabled ) }}
     if [ -d "$DIR" ]; then
-        rm -rf $( find $DIR -mindepth 1 )
+      rm -rf $( find $DIR -mindepth 1 )
     fi
     git clone $REPO -b $REF $DIR
     {{- end }}
@@ -61,6 +61,5 @@ data:
       git reset --hard origin/$REF;
       git clean -fd;
       date;
-      echo "*** sleeping ${SYNC_TIME} seconds"
       sleep $SYNC_TIME;
     done
