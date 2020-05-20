@@ -23,6 +23,7 @@ spec:
   replicas: {{ .Values.anchoreCatalog.replicaCount }}
   strategy:
     type: Recreate
+    rollingUpdate: null
   template:
     metadata:
       labels:
