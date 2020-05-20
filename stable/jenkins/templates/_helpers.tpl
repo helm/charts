@@ -72,7 +72,7 @@ Returns configuration as code default config
 */}}
 {{- define "jenkins.casc.defaults" -}}
 jenkins:
-  disableRememberMe: false
+  disableRememberMe: {{ .Values.master.disableRememberMe }}
   remotingSecurity:
     enabled: true
   mode: {{ .Values.master.executorMode }}
@@ -83,17 +83,28 @@ jenkins:
     rawHtml:
       disableSyntaxHighlighting: true
     {{- else }}
-      "plainText"
+    {{- toYaml .Values.master.markupFormatter | nindent 4 }}
     {{- end }}
   clouds:
   - kubernetes:
       containerCapStr: "{{ .Values.agent.containerCap }}"
-      {{- if .Values.master.slaveKubernetesNamespace }}
-      jenkinsTunnel: "{{ template "jenkins.fullname" . }}-agent.{{ template "jenkins.namespace" . }}:{{ .Values.master.slaveListenerPort }}"
+      defaultsProviderTemplate: "{{ .Values.master.slaveDefaultsProviderTemplate }}"
+      connectTimeout: "{{ .Values.master.slaveConnectTimeout }}"
+      readTimeout: "{{ .Values.master.slaveReadTimeout }}"
+      {{- if .Values.master.slaveJenkinsUrl }}
+      jenkinsUrl: "{{ tpl .Values.master.slaveJenkinsUrl }}"
+      {{- else if .Values.master.slaveKubernetesNamespace }}
       jenkinsUrl: "http://{{ template "jenkins.fullname" . }}.{{ template "jenkins.namespace" . }}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}"
       {{- else }}
-      jenkinsTunnel: "{{ template "jenkins.fullname" . }}-agent:{{ .Values.master.slaveListenerPort }}"
       jenkinsUrl: "http://{{ template "jenkins.fullname" . }}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}"
+      {{- end }}
+
+      {{- if .Values.master.slaveJenkinsTunnel }}
+      jenkinsTunnel: "{{ tpl .Values.master.slaveJenkinsTunnel . }}"
+      {{- else if .Values.master.slaveKubernetesNamespace }}
+      jenkinsTunnel: "{{ template "jenkins.fullname" . }}-agent.{{ template "jenkins.namespace" . }}:{{ .Values.master.slaveListenerPort }}"
+      {{- else }}
+      jenkinsTunnel: "{{ template "jenkins.fullname" . }}-agent:{{ .Values.master.slaveListenerPort }}"
       {{- end }}
       maxRequestsPerHostStr: "32"
       name: "kubernetes"
@@ -153,7 +164,11 @@ Returns kubernetes pod template configuration as code
     envVars:
     - containerEnvVar:
         key: "JENKINS_URL"
+    {{- if .Values.master.slaveJenkinsUrl }}
+        value: {{ tpl .Values.master.slaveJenkinsUrl . }}
+    {{- else }}
         value: "http://{{ template "jenkins.fullname" . }}.{{ template "jenkins.namespace" . }}.svc.{{.Values.clusterZone}}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}"
+    {{- end }}
     {{- if .Values.agent.imageTag }}
     image: "{{ .Values.agent.image }}:{{ .Values.agent.imageTag }}"
     {{- else }}
@@ -173,6 +188,15 @@ Returns kubernetes pod template configuration as code
   - name: {{ .Values.agent.imagePullSecretName }}
   {{- end }}
   label: "{{ .Release.Name }}-{{ .Values.agent.componentName }} {{ .Values.agent.customJenkinsLabels  | join " " }}"
+{{- if .Values.agent.nodeSelector }}
+  nodeSelector:
+  {{- $local := dict "first" true }}
+  {{- range $key, $value := .Values.agent.nodeSelector }}
+    {{- if $local.first }} {{ else }},{{ end }}
+    {{- $key }}={{ tpl $value $ }}
+    {{- $_ := set $local "first" false }}
+  {{- end }}
+{{- end }}
   nodeUsageMode: "NORMAL"
   podRetention: {{ .Values.agent.podRetention }}
   showRawYaml: true
@@ -196,10 +220,10 @@ Returns kubernetes pod template configuration as code
     {{- end }}
   {{- end }}
 {{- end }}
-  {{- if .Values.agent.yamlTemplate }}
+{{- if .Values.agent.yamlTemplate }}
   yaml: |-
-  {{- tpl ( trim .Values.agent.yamlTemplate ) . | nindent 4 }}
-  {{- end }}
+    {{- tpl (trim .Values.agent.yamlTemplate) . | nindent 4 }}
+{{- end }}
   yamlMergeStrategy: "override"
 {{- end -}}
 
@@ -269,7 +293,11 @@ Returns kubernetes pod template xml configuration
       <envVars>
         <org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
           <key>JENKINS_URL</key>
+{{- if .Values.master.slaveJenkinsUrl }}
+          <value>{{ tpl .Values.master.slaveJenkinsUrl . }}</value>
+{{- else }}
           <value>http://{{ template "jenkins.fullname" . }}.{{ template "jenkins.namespace" . }}.svc.{{.Values.clusterZone}}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</value>
+{{- end }}
         </org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
       </envVars>
     </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
@@ -294,7 +322,9 @@ Returns kubernetes pod template xml configuration
 {{- end }}
   <nodeProperties/>
 {{- if .Values.agent.yamlTemplate }}
-  <yaml>{{ tpl .Values.agent.yamlTemplate . | html | indent 4 | trim }}</yaml>
+  <yaml>
+    {{- tpl (trim .Values.agent.yamlTemplate) . | html | nindent 4 }}
+  </yaml>
 {{- end }}
   <podRetention class="org.csanchez.jenkins.plugins.kubernetes.pod.retention.Default"/>
 </org.csanchez.jenkins.plugins.kubernetes.PodTemplate>

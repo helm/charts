@@ -159,6 +159,10 @@ podDisruptionBudget:
   enabled: true
   minAvailable: 1
 
+# Configure Kubernetes security context for pod
+# Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+podSecurityContext: {}
+
 # whether to use http or https
 httpScheme: http
 
