@@ -160,6 +160,26 @@ data:
         tls.ca_file /secure/es-tls-ca.crt
 {{- end }}
 {{- end }}
+{{ else if eq .Values.backend.type "kafka" }}
+    [OUTPUT]
+        Name  kafka
+        Match *
+        Format  {{ .Values.backend.kafka.format }}
+        Brokers  {{ .Values.backend.kafka.brokers }}
+        Topics  {{ .Values.backend.kafka.topics }}
+        Timestamp_Key  {{ .Values.backend.kafka.timestamp_key }}
+        Retry_Limit    {{ .Values.backend.kafka.retry_limit }}
+{{- if .Values.backend.kafka.message_key }}
+{{ .Values.backend.kafka.message_key | indent 8 }}
+{{- end }}
+{{- if .Values.backend.kafka.topic_key }}
+{{ .Values.backend.kafka.topic_key | indent 8 }}
+{{- end }}
+{{- if .Values.backend.kafka.librdkafka_properties }}
+{{- range $key, $value := .Values.backend.kafka.librdkafka_properties }}
+        {{ $key }} {{ $value }}
+{{- end }}
+{{- end }}
 {{ else if eq .Values.backend.type "splunk" }}
     [OUTPUT]
         Name  splunk

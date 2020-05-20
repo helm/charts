@@ -9,6 +9,9 @@ It will forward all container logs to the svc named {{ .Values.backend.es.host }
 {{- else if eq .Values.backend.type "http" }}
 
 It will forward all container logs to the svc named {{ .Values.backend.http.host }} on port: {{ .Values.backend.http.port }}
+{{- else if eq .Values.backend.type "kafka" }}
+
+It will forward all container logs to the kafka topics {{ .Values.backend.kafka.topics }} with brokers {{ .Values.backend.kafka.brokers }}
 {{- else if eq .Values.backend.type "splunk" }}
 
 It will forward all container logs to the svc named {{ .Values.backend.splunk.host }} on port: {{ .Values.backend.splunk.port }}

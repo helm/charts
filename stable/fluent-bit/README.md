@@ -71,6 +71,16 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.http.tls`              | Enable or disable TLS support | `off` |
 | `backend.http.tls_verify`       | Force certificate validation  | `on` |
 | `backend.http.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
+| **Kafka Backend**  |
+| `backend.kafka.format`     | Specify data format, options available: json, msgpack | `json` |
+| `backend.kafka.message_key`     | Optional key to store the message | `` |
+| `backend.kafka.timestamp_key`     | Set the key to store the record timestamp | `@timestamp` |
+| `backend.kafka.topic_key`     | If multiple Topics exists, the value of TopicKey in the record will indicate the topic to use. E.g: if Topic_Key is _router and the record is {"key1": 123, "router": "route2"}, Fluent Bit will use topic _route_2. Note that the topic must be registered in the Topics list. | `` |
+
+| `backend.kafka.brokers`         | Target broker where Fluent-Bit or Fluentd are listening for Forward messages. It accepts a string with comma separation, e.g: "broker-1:9200,broker-2:9200" | `""` |
+| `backend.kafka.topics`          | Kafka Topic(s) of the target service. It accepts a string with comma separation, e.g: "topic-1,topic-2"| `fluent-bit` |
+| `backend.kafka.retry_limit`     | Max number of retries to attempt (False == no limit) | `False` |
+| `backend.kafka.librdkafka_properties`         | Librdkafka properties to be applied. Refer https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md | `{"rdkafka.log.connection.close": false, "rdkafka.request.required.acks": 1}` |
 | **Splunk Backend**              |
 | `backend.splunk.host`           | IP address or hostname of the target Splunk Server | `127.0.0.1` |
 | `backend.splunk.port`           | TCP port of the target Splunk Server | `8088` |

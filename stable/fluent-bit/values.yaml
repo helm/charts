@@ -79,6 +79,29 @@ backend:
     tls_ca: ""
     # TLS debugging levels = 1-4
     tls_debug: 1
+  kafka:
+    # Specify data format, options available: json, msgpack.
+    format: "json"
+    # Optional key to store the message
+    message_key:
+    # Set the key to store the record timestamp
+    timestamp_key: "@timestamp"
+    # If multiple Topics exists, the value of TopicKey in the record will indicate the topic to use.
+    # E.g: if Topic_Key is _router and the record is {"key1": 123, "router": "route2"},
+    # Fluent Bit will use topic _route_2. Note that the topic must be registered in the Topics list.
+    topic_key:
+    # Target broker where Fluent-Bit or Fluentd are listening for Forward messages.
+    # It accepts a string with comma separation, e.g: "broker-1:9200,broker-2:9200"
+    brokers: ""
+    # Kafka Topic(s) of the target service. It accepts a string with comma separation, e.g: "topic-1,topic-2"
+    topics: "fluent-bit"
+    # Max number of retries to attempt (False == no limit)
+    retry_limit: "False"
+    # librdkafka properties to be applied. Refer https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md
+    # If you wish to not use the defaults, override the value as {}.
+    librdkafka_properties:
+      rdkafka.log.connection.close: false
+      rdkafka.request.required.acks: 1
   splunk:
     host: 127.0.0.1
     port: 8088
