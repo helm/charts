@@ -2,11 +2,11 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ template "airflow.fullname" . }}
+  name: {{ include "airflow.fullname" . }}
   labels:
-    app: {{ template "airflow.name" . }}
+    app: {{ include "airflow.labels.app" . }}
     component: worker
-    chart: {{ template "airflow.chart" . }}
+    chart: {{ include "airflow.labels.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     {{- range $key, $value := .Values.serviceMonitor.selector }}
@@ -15,7 +15,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: {{ template "airflow.name" . }}
+      app: {{ include "airflow.labels.app" . }}
       component: web
       release: {{ .Release.Name }}
   endpoints:

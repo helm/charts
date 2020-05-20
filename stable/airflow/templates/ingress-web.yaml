@@ -1,10 +1,10 @@
-{{- if .Values.ingress.enabled -}}
+{{- if .Values.ingress.enabled }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "airflow.fullname" . }}-web
+  name: {{ include "airflow.fullname" . }}-web
   labels:
-    app: {{ template "airflow.name" . }}
+    app: {{ include "airflow.labels.app" . }}
     component: web
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     release: "{{ .Release.Name }}"
@@ -14,12 +14,12 @@ metadata:
     {{ $key }}: {{ $value | quote }}
     {{- end }}
 spec:
-{{- if .Values.ingress.web.tls.enabled }}
+  {{- if .Values.ingress.web.tls.enabled }}
   tls:
     - hosts:
         - {{ .Values.ingress.web.host }}
       secretName: {{ .Values.ingress.web.tls.secretName }}
-{{- end }}
+  {{- end }}
   rules:
     - http:
         paths:
@@ -31,7 +31,7 @@ spec:
           {{- end }}
           - path: {{ .Values.ingress.web.path }}
             backend:
-              serviceName: {{ template "airflow.fullname" . }}-web
+              serviceName: {{ include "airflow.fullname" . }}-web
               servicePort: web
           {{- range .Values.ingress.web.succeedingPaths }}
           - path: {{ .path }}

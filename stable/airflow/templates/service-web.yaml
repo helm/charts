@@ -1,42 +1,44 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "airflow.fullname" . }}-web
+  name: {{ include "airflow.fullname" . }}-web
   labels:
-    app: {{ template "airflow.name" . }}
+    app: {{ include "airflow.labels.app" . }}
     component: web
-    chart: {{ template "airflow.chart" . }}
+    chart: {{ include "airflow.labels.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   annotations:
-  {{- if .Values.airflow.service.annotations }}
-{{ toYaml .Values.airflow.service.annotations | trim | indent 4 }}
+  {{- if .Values.web.service.annotations }}
+    {{- toYaml .Values.web.service.annotations | nindent 4 }}
   {{- end }}
 spec:
-  type: {{ .Values.airflow.service.type }}
+  type: {{ .Values.web.service.type }}
   selector:
-    app: {{ template "airflow.name" . }}
+    app: {{ include "airflow.labels.app" . }}
     component: web
     release: {{ .Release.Name }}
-  sessionAffinity: {{ .Values.airflow.service.sessionAffinity }}
+  sessionAffinity: {{ .Values.web.service.sessionAffinity }}
+  {{- if .Values.web.service.sessionAffinityConfig }}
   sessionAffinityConfig:
-{{- if .Values.airflow.service.sessionAffinityConfig }}
-{{ toYaml .Values.airflow.service.sessionAffinityConfig | indent 4 }}
-{{- end }}
+    {{- toYaml .Values.web.service.sessionAffinityConfig | nindent 4 }}
+  {{- end }}
   ports:
     - name: web
       protocol: TCP
-      port: {{ .Values.airflow.service.externalPort | default 8080 }}
-      {{- if (and (eq .Values.airflow.service.type "NodePort") (not (empty .Values.airflow.service.nodePort.http))) }}
-      nodePort: {{ .Values.airflow.service.nodePort.http }}
+      port: {{ .Values.web.service.externalPort | default 8080 }}
+      {{- if eq .Values.web.service.type "NodePort" }}
+      {{- if .Values.web.service.nodePort.http }}
+      nodePort: {{ .Values.web.service.nodePort.http }}
+      {{- end }}
       {{- end }}
       targetPort: 8080
-{{- if eq .Values.airflow.service.type "LoadBalancer" }}
-{{- if .Values.airflow.service.loadBalancerIP }}
-  loadBalancerIP: {{ .Values.airflow.service.loadBalancerIP | quote }}
-{{- end }}
-{{- if .Values.airflow.service.loadBalancerSourceRanges }}
+  {{- if eq .Values.web.service.type "LoadBalancer" }}
+  {{- if .Values.web.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.web.service.loadBalancerIP | quote }}
+  {{- end }}
+  {{- if .Values.web.service.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:
-{{ toYaml .Values.airflow.service.loadBalancerSourceRanges | indent 4 }}
-{{- end }}
+    {{- toYaml .Values.web.service.loadBalancerSourceRanges | nindent 4 }}
+  {{- end }}
 {{- end }}

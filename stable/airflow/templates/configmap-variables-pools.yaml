@@ -1,20 +1,20 @@
-{{- if or .Values.airflow.variables .Values.airflow.pools }}
+{{- if or (.Values.scheduler.variables) (.Values.scheduler.pools) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-    name: {{ template "airflow.fullname" . }}-variables-pools
+    name: {{ include "airflow.fullname" . }}-variables-pools
     labels:
-        app: {{ template "airflow.name" . }}
-        chart: {{ template "airflow.chart" . }}
+        app: {{ include "airflow.labels.app" . }}
+        chart: {{ include "airflow.labels.chart" . }}
         release: {{ .Release.Name }}
         heritage: {{ .Release.Service }}
 data:
-{{- if or .Values.airflow.variables }}
-    variables.json: |
-{{ .Values.airflow.variables | indent 8 }}
-{{- end }}
-{{- if or .Values.airflow.pools }}
-    pools.json: |
-{{ .Values.airflow.pools | indent 8 }}
-{{- end }}
+  {{- if .Values.scheduler.variables }}
+  variables.json: |
+    {{- .Values.scheduler.variables | nindent 4 }}
+  {{- end }}
+  {{- if .Values.scheduler.pools }}
+  pools.json: |
+    {{- .Values.scheduler.pools | nindent 4 }}
+  {{- end }}
 {{- end }}
