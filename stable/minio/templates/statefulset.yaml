@@ -4,7 +4,7 @@
 {{ $drivesPerNode := .Values.drivesPerNode | int }}
 {{ $scheme := "http" }}
 {{- if .Values.tls.enabled }}
-{{ $scheme := "https" }}
+{{ $scheme = "https" }}
 {{ end }}
 {{ $mountPath := .Values.mountPath }}
 {{ $bucketRoot := or ($.Values.bucketRoot) ($.Values.mountPath) }}
