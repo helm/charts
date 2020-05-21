@@ -112,8 +112,8 @@ airflow:
 
   ## extra pip packages to install in the web/scheduler/worker Pods
   ##
-  ## EXAMPLE:
-  ##   extraPipPackages: (enabling airflow crypto package)
+  ## EXAMPLE: ( enable airflow crypto package )
+  ##   extraPipPackages:
   ##     - "apache-airflow[crypto]==1.10.10"
   ##
   extraPipPackages: []
@@ -345,11 +345,9 @@ web:
 
   ## extra pip packages to install in the web container
   ##
-  ## EXAMPLE: ( packages used by FAB UI for OAuth )
+  ## EXAMPLE: ( packages used by RBAC UI for OAuth )
   ##   extraPipPackages:
-  ##     - "Flask-OAuthlib>=0.9.1"
-  ##     - "oauthlib!=2.0.3,!=2.0.4,!=2.0.5,<3.0.0,>=1.1.2"
-  ##     - "requests-oauthlib==1.1.0"
+  ##     - "apache-airflow[google_auth]==1.10.10"
   ##
   extraPipPackages: []
 
