@@ -7,6 +7,11 @@ agent:
     limits:
       cpu: "1"
       memory: "2048Mi"
+  envVars:
+    - name: HOME
+      value: /home/jenkins
+    - name: PATH
+      value: /usr/local/bin
   nodeSelector:
     "app.kubernetes.io/component": "{{ .Values.agent.componentName }}"
   yamlTemplate: |-
