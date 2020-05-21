@@ -32,6 +32,17 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/*
+Create serviceAccountName for deployment.
+*/}}
+{{- define "prometheus-cloudwatch-exporter.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+{{ default (include "prometheus-cloudwatch-exporter.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+{{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Return the appropriate apiVersion for deployment.
 */}}
 {{- define "deployment.apiVersion" -}}
