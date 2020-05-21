@@ -77,7 +77,7 @@ postgresql+psycopg2://${DATABASE_USER}:$( python -c "import urllib.parse; encode
 {{- else if and (not .Values.postgresql.enabled) (eq "postgres" .Values.externalDatabase.type) -}}
 postgresql+psycopg2://${DATABASE_USER}:$( python -c "import urllib.parse; encoded_pass = urllib.parse.quote('''${DATABASE_PASSWORD}'''); print(encoded_pass)" )@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DB}
 {{- else if and (not .Values.postgresql.enabled) (eq "mysql" .Values.externalDatabase.type) -}}
-mysqldb+pymysql://${DATABASE_USER}:$( python -c "import urllib.parse; encoded_pass = urllib.parse.quote('''${DATABASE_PASSWORD}'''); print(encoded_pass)" )@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DB}
+mysql+mysqldb://${DATABASE_USER}:$( python -c "import urllib.parse; encoded_pass = urllib.parse.quote('''${DATABASE_PASSWORD}'''); print(encoded_pass)" )@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DB}
 {{- end -}}
 {{- end -}}
 

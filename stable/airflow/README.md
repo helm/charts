@@ -244,16 +244,23 @@ kubectl create secret generic redshift-user --from-file=redshift-user=~/secrets/
 
 ### Kubernetes-Configs/Extra-Python-Packages
 
-Sometimes you may need to install extra pip packages for the WebUI Pod to work.
+Sometimes you may need to install extra pip packages for things to work, we provide `airflow.extraPipPackages` and `web.extraPipPackages` for this purpose.
 
-For example, you may be using `flask_oauthlib` to integrate with Okta/Google for authorizing WebUI users:
+For example, enabling the airflow `crypto` package:
+```yaml
+airflow:
+  extraPipPackages:
+    - "apache-airflow[crypto]==1.10.10"
+```
+
+For example, you may be using `flask_oauthlib` to integrate with Okta/Google/etc for authorizing WebUI users:
 ```yaml
 web:
   extraPipPackages:
-    - "Flask-OAuthlib>=0.9.1"
-    - "oauthlib!=2.0.3,!=2.0.4,!=2.0.5,<3.0.0,>=1.1.2"
-    - "requests-oauthlib==1.1.0"
+    - "apache-airflow[google_auth]==1.10.10"
 ```
+
+__NOTE:__ these work with any pip package that you can install with the `pip install XXXX` cli
 
 ### Kubernetes-Configs/Additional-Manifests
 
@@ -307,9 +314,11 @@ redis:
 ### Database-Configs/External-Database
 
 While this chart comes with an embedded [stable/postgresql](https://github.com/helm/charts/tree/master/stable/postgresql), this is NOT SUITABLE for production.
-You should instead make use of an external `mysql` or `postgres` database, for example, a managed one provided by your cloud provider.
+You should make use of an external `mysql` or `postgres` database, for example, one that is managed by your cloud provider.
 
-For example, an external Postgres containing an `airflow_cluster1` database:
+__Postgres:__
+
+Values for an external Postgres database, with an existing `airflow_cluster1` database:
 ```yaml
 externalDatabase:
   type: postgres
@@ -321,7 +330,9 @@ externalDatabase:
   passwordSecretKey: "postgresql-password"
 ```
 
-For example, an external MySQL containing an `airflow_cluster1` database:
+__MySQL:__
+
+Values for an external MySQL database, with an existing `airflow_cluster1` database:
 ```yaml
 externalDatabase:
   type: mysql
@@ -332,6 +343,8 @@ externalDatabase:
   passwordSecret: "airflow-cluster1-mysql-password"
   passwordSecretKey: "mysql-password"
 ```
+
+__WARNING:__ Airflow requires that `explicit_defaults_for_timestamp=1` in your MySQL instance, [see here](https://airflow.apache.org/docs/stable/howto/initialize-database.html)
 
 ## Other-Configs
 
@@ -716,6 +729,8 @@ The following values have been REMOVED:
   * As there is no reason to change the port of the embedded redis, and we have separated the external redis configs. 
 
 The following values have been ADDED:
+* `airflow.extraPipPackages`:
+  * Allows extra pip packages to be installed in the airflow-web/scheduler/worker containers.
 * `web.extraPipPackages`:
   * Allows extra pip packages to be installed in the airflow-web container only.
 
