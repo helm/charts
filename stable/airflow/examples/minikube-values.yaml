@@ -1,24 +1,44 @@
 airflow:
   image:
-    repository: puckel/docker-airflow
-    tag: 1.10.2
+    repository: apache/airflow
+    tag: 1.10.10-python3.6
     pullPolicy: IfNotPresent
-  service:
-    type: NodePort
-  webReplicas: 1
+
   config:
     AIRFLOW__CORE__LOGGING_LEVEL: DEBUG
     AIRFLOW__CORE__LOAD_EXAMPLES: True
 
-  variables: '{ "environment": "dev" }'
-  pools: '{ "example": { "description": "This is an example of a pool", "slots": 2 } }'
+web:
+  service:
+    type: NodePort
+
+scheduler:
+  # note, this is a string
+  variables: |
+    { "environment": "dev" }
+
+  # note, this is a string
+  pools: |
+    {
+      "example": {
+        "description": "This is an example of a pool",
+        "slots": 2
+      }
+    }
 
 workers:
   replicas: 1
   celery:
     instances: 1
 
-persistence:
+dags:
+  persistence:
+    enabled: true
+    accessMode: ReadWriteMany
+    size: 1Gi
+
+postgresql:
   enabled: true
-  accessMode: ReadWriteOnce
-  size: 1Gi
+
+redis:
+  enabled: true

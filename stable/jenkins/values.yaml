@@ -76,7 +76,12 @@ master:
   #      command:
   #      - "uname"
   #      - "-a"
+  disableRememberMe: false
   numExecutors: 0
+  # configures the executor mode of the Jenkins node. Possible values are: NORMAL or EXCLUSIVE
+  executorMode: "NORMAL"
+  # This is ignored if enableRawHtmlMarkupFormatter is true
+  markupFormatter: plainText
   customJenkinsLabels: []
   # configAutoReload requires UseSecurity is set to true:
   useSecurity: true
@@ -184,7 +189,12 @@ master:
   # GKE users: only regional static IPs will work for Service Load balancer.
   # slaveListenerLoadBalancerIP: 1.2.3.4
   slaveListenerServiceAnnotations: {}
+  slaveDefaultsProviderTemplate: ""
+  slaveConnectTimeout: 5
+  slaveReadTimeout: 15
   slaveKubernetesNamespace:
+  slaveJenkinsUrl:
+  slaveJenkinsTunnel:
 
   # Example of 'LoadBalancer' type of agent listener with annotations securing it
   # slaveListenerServiceType: LoadBalancer
@@ -347,6 +357,16 @@ master:
 
   ingress:
     enabled: false
+    # Override for the default paths that map requests to the backend
+    paths: []
+    # - backend:
+    #     serviceName: ssl-redirect
+    #     servicePort: use-annotation
+    # - backend:
+    #     serviceName: >-
+    #       {{ template "jenkins.fullname" . }}
+    #     # Don't use string here, use only integer value!
+    #     servicePort: 8080
     # For Kubernetes v1.14+, use 'networking.k8s.io/v1beta1'
     apiVersion: "extensions/v1beta1"
     labels: {}

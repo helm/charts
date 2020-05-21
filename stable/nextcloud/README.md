@@ -81,7 +81,10 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `nextcloud.defaultConfigs.\.apps\.config\.php`               | Default configuration for apps                          | `true`                                      |
 | `nextcloud.defaultConfigs.\.autoconfig\.php`                 | Default auto-configuration for databases                | `true`                                      |
 | `nextcloud.defaultConfigs.\.smtp\.config\.php`               | Default configuration for smtp                          | `true`                                      |
+| `nextcloud.strategy`                                         | specifies the strategy used to replace old Pods by new ones | `type: Recreate`                                      |
 | `nextcloud.extraEnv`                                         | specify additional environment variables                | `{}`                                        |
+| `nextcloud.extraVolumes`                                     | specify additional volumes for the NextCloud pod        | `{}`                                        |
+| `nextcloud.extraVolumeMounts`                                | specify additional volume mounts for the NextCloud pod  | `{}`                                        |
 | `nginx.enabled`                                              | Enable nginx (requires you use php-fpm image)           | `false`                                     |
 | `nginx.image.repository`                                     | nginx Image name                                        | `nginx`                                     |
 | `nginx.image.tag`                                            | nginx Image tag                                         | `alpine`                                    |

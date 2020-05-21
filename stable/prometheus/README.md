@@ -165,7 +165,7 @@ Parameter | Description | Default
 `alertmanager.statefulSet.podManagementPolicy` | podManagementPolicy of alertmanager pods | `OrderedReady`
 `alertmanager.statefulSet.headless.annotations` | annotations for alertmanager headless service | `{}`
 `alertmanager.statefulSet.headless.labels` | labels for alertmanager headless service | `{}`
-`alertmanager.statefulSet.headless.enableMeshPeer` | If true, enable the mesh peer endpoint for the headless service | `{}`
+`alertmanager.statefulSet.headless.enableMeshPeer` | If true, enable the mesh peer endpoint for the headless service | `false`
 `alertmanager.statefulSet.headless.servicePort` | alertmanager headless service port | `80`
 `alertmanager.priorityClassName` | alertmanager priorityClassName | `nil`
 `alertmanager.resources` | alertmanager pod resource requests & limits | `{}`
@@ -280,7 +280,7 @@ Parameter | Description | Default
 `server.enabled` | If false, Prometheus server will not be created | `true`
 `server.name` | Prometheus server container name | `server`
 `server.image.repository` | Prometheus server container image repository | `prom/prometheus`
-`server.image.tag` | Prometheus server container image tag | `v2.16.0`
+`server.image.tag` | Prometheus server container image tag | `v2.18.1`
 `server.image.pullPolicy` | Prometheus server container image pull policy | `IfNotPresent`
 `server.configPath` |  Path to a prometheus server config file on the container FS  | `/etc/config/prometheus.yml`
 `server.global.scrape_interval` | How frequently to scrape targets by default | `1m`
@@ -377,7 +377,8 @@ Parameter | Description | Default
 `serverFiles.prometheus.yml` | Prometheus server scrape configuration | example configuration
 `extraScrapeConfigs` | Prometheus server additional scrape configuration | ""
 `alertRelabelConfigs` | Prometheus server [alert relabeling configs](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#alert_relabel_configs) for H/A prometheus | ""
-`networkPolicy.enabled` | Enable NetworkPolicy | `false` |
+`networkPolicy.enabled` | Enable NetworkPolicy | `false`
+`forceNamespace` | Force resources to be namespaced | `null` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
