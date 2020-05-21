@@ -126,6 +126,11 @@ data:
 {{ .Values.rabbitmqAmqpsSupport.config | indent 4 }}
     {{- end }}
 
+    ## Logging settings.
+    {{- if .Values.rabbitmqLoggingSupport.enabled }}
+{{ .Values.rabbitmqLoggingSupport.config | indent 4 }}
+    {{- end }}
+    
 {{ .Values.extraConfig | indent 4 }}
 
 {{- end }}

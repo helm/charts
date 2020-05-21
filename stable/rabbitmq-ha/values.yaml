@@ -299,6 +299,33 @@ rabbitmqAmqpsSupport:
     # ssl_options.verify                = verify_peer
     # ssl_options.fail_if_no_peer_cert  = false
 
+## Rabbitmq Logging Settings
+## Ref:
+rabbitmqLoggingSupport:
+  enabled: true
+
+  config: |
+
+    ## Log directory, taken from the RABBITMQ_LOG_BASE env variable by default.
+    log.dir = /var/log/rabbitmq
+    ## Logging to file. Can be false or a filename.
+    log.file = rabbit.log
+    ## To disable logging to a file
+    log.file = true
+    ## Log level for file logging
+    log.file.level = error
+    ## File rotation config. No rotation by default.
+    log.file.rotation.date = $D0
+    log.file.rotation.size = 1024
+    ## Logging to console (can be true or false)
+    log.console = false
+    ## Log level for console logging
+    log.console.level = critical
+    ## Logging to the amq.rabbitmq.log exchange (can be true or false)
+    log.exchange = true
+    ## Log level to use when logging to the amq.rabbitmq.log exchange
+    log.exchange.level = critical
+
 ## Number of replicas
 replicaCount: 3
 
