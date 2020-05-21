@@ -105,7 +105,7 @@ spec:
               optional: true
               {{- end }}
         {{- end }}
-        {{- if not (and .Values.allowEmptyRootPassword (not .Values.mysqPassword)) }}
+        {{- if not (and .Values.allowEmptyRootPassword (not .Values.mysqlPassword)) }}
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
