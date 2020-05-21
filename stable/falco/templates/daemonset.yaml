@@ -115,7 +115,7 @@ spec:
               readOnly: true
             - mountPath: /dev/shm
               name: dshm
-            {{- if (and .Values.ebpf.enabled .Values.ebpf.settings.mountEtcVolume) }}
+            {{- if .Values.mountEtcVolume }}
             - mountPath: /host/etc
               name: etc-fs
               readOnly: true
@@ -229,7 +229,7 @@ spec:
         - name: usr-fs
           hostPath:
             path: /usr
-        {{- if (and .Values.ebpf.enabled .Values.ebpf.settings.mountEtcVolume) }}
+        {{- if .Values.mountEtcVolume }}
         - name: etc-fs
           hostPath:
             path: /etc

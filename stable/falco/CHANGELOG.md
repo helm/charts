@@ -3,6 +3,12 @@
 This file documents all notable changes to Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.1.8
+
+### Minor Changes
+
+* adjust host-etc mount logic to support use outside ebpf probe path
+
 ## v1.1.7
 
 ### Minor Changes

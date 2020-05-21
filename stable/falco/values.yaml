@@ -81,9 +81,9 @@ ebpf:
     # Needed to enable eBPF JIT at runtime for performance reasons.
     # Can be skipped if eBPF JIT is enabled from outside the container
     hostNetwork: true
-    # Needed to correctly detect the kernel version for the eBPF program
-    # Set to false if not running on Google COS
-    mountEtcVolume: true
+
+# Needed to correctly detect the kernel version
+mountEtcVolume: true
 
 auditLog:
   # true here activates the K8s Audit Log feature for Falco
