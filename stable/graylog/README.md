@@ -187,7 +187,6 @@ The following table lists the configurable parameters of the Graylog chart and t
 | `serviceAccount.name`                          | Name of the server service account to use or create                                                                                                   | `{{ graylog.fullname }}`          |
 | `tags.install-mongodb`                         | If true, this chart will install MongoDB from requirement dependencies. If you want to install MongoDB by yourself, please set to `false`             | `true`                            |
 | `tags.install-elasticsearch`                   | If true, this chart will install Elasticsearch from requirement dependencies. If you want to install Elasticsearch by yourself, please set to `false` | `true`                            |
-| `tags.install-elasticsearch`                   | If true, this chart will install Elasticsearch from requirement dependencies. If you want to install Elasticsearch by yourself, please set to `false` | `true`                            |
 | `imagePullSecrets`                             | Configuration for [imagePullSecrets][3] so that you can use a private registry for your images                                                        | `[]`                              |
 
 ## How it works
