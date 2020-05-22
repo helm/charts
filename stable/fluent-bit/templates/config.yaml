@@ -140,6 +140,8 @@ data:
         Logstash_Prefix {{ .Values.backend.es.logstash_prefix }}
 {{- if .Values.backend.es.logstash_prefix_key }}
         Logstash_Prefix_Key {{ .Values.backend.es.logstash_prefix_key }}
+{{- if .Values.backend.es.logstash_dateformat }}
+        Logstash_DateFormat {{ .Values.backend.es.logstash_dateformat }}
 {{- end }}
 {{ else if .Values.backend.es.index }}
         Index {{ .Values.backend.es.index }}
