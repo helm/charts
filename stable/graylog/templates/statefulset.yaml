@@ -41,6 +41,10 @@ spec:
       tolerations:
 {{ toYaml .Values.graylog.tolerations | indent 8 }}
 {{- end }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
       initContainers:
         - name: "setup"
           image: "alpine"

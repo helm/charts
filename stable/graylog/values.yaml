@@ -380,7 +380,11 @@ graylog:
     #    "roles_header": "Roles"
     #  }'
     #  curl -v -u "admin:$GRAYLOG_PASSWORD_SECRET" -X PUT --header 'Content-Type: application/json' --header 'X-Requested-By: localhost' --data-binary "${json}" http://graylog-master:9000/api/plugins/org.graylog.plugins.auth.sso/config
-
+## Specify image pull secrets used in the deployment
+imagePullSecrets: []
+## imagePullSecrets:
+##   - name: some-registry
+##   - name: another-registry
 ## Specify Elasticsearch version from requirement dependencies. Ignore this seection if you install Elasticsearch manually.
 ## Note: Graylog 2.4 requires Elasticsearch version <= 5.6
 elasticsearch:
