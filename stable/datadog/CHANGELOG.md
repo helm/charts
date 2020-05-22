@@ -1,5 +1,10 @@
 # Datadog changelog
 
+## 2.3.4
+
+* Mount the system-probe.yaml in the main container
+when the system-probe container is enabled to run.
+
 ## 2.3.3
 
 * Allow pre-release versions as docker image tag

@@ -85,6 +85,8 @@
     {{- if .Values.datadog.systemProbe.enabled }}
     - name: SYSTEM_PROBE_CONFIG_SYSPROBE_SOCKET
       value: /sysprobe/var/run
+    - name: sysprobe-config
+      mountPath: {{ template "datadog.confPath" . }}/system-probe.yaml
     {{- end }}
   {{- range $value := .Values.agents.containers.agent.env }}
     - name: {{ $value.name }}
