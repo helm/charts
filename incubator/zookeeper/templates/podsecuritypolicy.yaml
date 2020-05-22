@@ -1,0 +1,17 @@
+{{- if .Values.podSecurityPolicy.create -}}
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  {{- if .Values.podSecurityPolicy.name }}
+  name: {{ .Values.podSecurityPolicy.name | quote }}
+  {{- else }}
+  name: {{ include "zookeeper.fullname" . | quote }}
+  {{- end }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ include "zookeeper.fullname" . | quote }}
+spec:
+{{ toYaml .Values.podSecurityPolicy.spec | indent 2 }}
+{{- end -}}

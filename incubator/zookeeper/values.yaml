@@ -93,6 +93,30 @@ securityContext:
   fsGroup: 1000
   runAsUser: 1000
 
+podSecurityPolicy:
+  create: false
+  name: ""
+  spec:
+    privileged: true
+    fsGroup:
+      rule: RunAsAny
+    runAsUser:
+      rule: RunAsAny
+    seLinux:
+      rule: RunAsAny
+    supplementalGroups:
+      rule: RunAsAny
+    volumes:
+      - secret
+      - configMap
+      - persistentVolumeClaim
+      - projected
+      - emptyDir
+
+rbac:
+  create: false
+  serviceAccountName: ""
+
 ## Useful, if you want to use an alternate image.
 command:
   - /bin/bash
