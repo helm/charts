@@ -62,9 +62,29 @@ logSubPath: "logs"
 ##
 # schedulerName:
 
-## Use an alternate serviceAccount
-## Useful when using images in custom repositories
-# serviceAccountName:
+podSecurityPolicy:
+  create: false
+  name: ""
+  spec:
+    privileged: true
+    fsGroup:
+      rule: RunAsAny
+    runAsUser:
+      rule: RunAsAny
+    seLinux:
+      rule: RunAsAny
+    supplementalGroups:
+      rule: RunAsAny
+    volumes:
+      - secret
+      - configMap
+      - persistentVolumeClaim
+      - projected
+      - emptyDir
+
+rbac:
+  create: false
+  serviceAccountName: ""
 
 ## Set a pod priorityClassName
 # priorityClassName: high-priority

@@ -1,0 +1,25 @@
+{{- if .Values.rbac.create -}}
+{{- $fullName := include "kafka.fullname" . -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ $fullName | quote }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ $fullName | quote }}
+rules:
+  - apiGroups:
+      - extensions
+    resources:
+      - podsecuritypolicies
+    resourceNames:
+      {{- if eq .Values.podSecurityPolicy.name "" }}
+      - {{ $fullName | quote }}
+      {{- else }}
+      - {{ .Values.podSecurityPolicy.name | quote }}
+      {{- end }}
+    verbs:
+      - use
+{{- end -}}
