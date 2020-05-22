@@ -8,6 +8,11 @@ metadata:
 spec:
   backoffLimit: 1
   template:
+    metadata:
+{{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
 {{- $file := .Files.Get "files/job.tpl" }}
 {{ tpl $file . | indent 4 }}
 {{ end }}

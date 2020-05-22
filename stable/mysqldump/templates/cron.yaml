@@ -21,6 +21,11 @@ spec:
     spec:
       backoffLimit: 1
       template:
+        metadata:
+{{- if .Values.podAnnotations }}
+          annotations:
+{{ toYaml .Values.podAnnotations | indent 12 }}
+{{- end }}
 {{- $file := .Files.Get "files/job.tpl" }}
 {{ tpl $file . | indent 8 }}
 {{ end }}
