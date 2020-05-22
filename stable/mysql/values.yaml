@@ -14,7 +14,7 @@ busybox:
 testFramework:
   enabled: true
   image: "dduportal/bats"
-  tag: "1.1.0"
+  tag: "0.4.0"
 
 ## Specify password for root user
 ##
