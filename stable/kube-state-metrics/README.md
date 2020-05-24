@@ -30,6 +30,7 @@ $ helm install stable/kube-state-metrics
 | `serviceAccount.imagePullSecrets`            | Specify image pull secrets field                                                      | `[]`                                       |
 | `podSecurityPolicy.enabled`                  | If true, create & use PodSecurityPolicy resources. Note that related RBACs are created only if `rbac.enabled` is `true. | `false`  |
 | `podSecurityPolicy.annotations`              | Specify pod annotations in the pod security policy                                    | {}                                         |
+| `podSecurityPolicy.additionalVolumes`        | Specify allowed volumes in the pod security policy (`secret` is always allowed)       | []                                         |
 | `securityContext.enabled`                    | Enable security context                                                               | `true`                                     |
 | `securityContext.fsGroup`                    | Group ID for the container                                                            | `65534`                                    |
 | `securityContext.runAsUser`                  | User ID for the container                                                             | `65534`                                    |
