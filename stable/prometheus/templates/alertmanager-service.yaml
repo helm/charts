@@ -12,6 +12,7 @@ metadata:
 {{ toYaml .Values.alertmanager.service.labels | indent 4 }}
 {{- end }}
   name: {{ template "prometheus.alertmanager.fullname" . }}
+{{ include "prometheus.namespace" . | indent 2 }}
 spec:
 {{- if .Values.alertmanager.service.clusterIP }}
   clusterIP: {{ .Values.alertmanager.service.clusterIP }}

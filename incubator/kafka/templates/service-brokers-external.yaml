@@ -38,6 +38,9 @@ metadata:
   labels:
   {{- include "kafka.broker.labels" $root | nindent 4 }}
     pod: {{ $responsiblePod | quote }}
+  {{- if $root.Values.external.labels }}
+{{ toYaml $root.Values.external.labels | indent 4 }}
+  {{- end }}
 spec:
   type: {{ $root.Values.external.type }}
   ports:

@@ -68,7 +68,10 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.tag`                      | Master image tag                     | `lts`                                     |
 | `master.imagePullPolicy`          | Master image pull policy             | `Always`                                  |
 | `master.imagePullSecretName`      | Master image pull secret             | Not set                                   |
+| `master.disableRememberMe`        | Disable use of remember me           | `false`                                   |
 | `master.numExecutors`             | Set Number of executors              | 0                                         |
+| `master.executorMode`             | Set executor mode of the Jenkins node. Possible values are: NORMAL or EXCLUSIVE | NORMAL |
+| `master.markupFormatter`          | Yaml of the markup formatter to use  | `plainText`                               |
 | `master.customJenkinsLabels`      | Append Jenkins labels to the master  | `{}`                                      |
 | `master.useSecurity`              | Use basic security                   | `true`                                    |
 | `master.securityRealm`            | Custom Security Realm                | Not set                                   |
@@ -106,6 +109,11 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.slaveListenerPort`        | Listening port for agents            | `50000`                                   |
 | `master.slaveHostPort`            | Host port to listen for agents            | Not set                              |
 | `master.slaveKubernetesNamespace` | Namespace in which the Kubernetes agents should be launched  | Not set           |
+| `master.slaveDefaultsProviderTemplate` | The name of the pod template to use for providing default values | Not set  |
+| `master.slaveJenkinsUrl`          | Overrides the Kubernetes Jenkins URL    | Not set                                |
+| `master.slaveJenkinsTunnel`       | Overrides the Kubernetes Jenkins tunnel | Not set                                |
+| `master.slaveConnectTimeout`      | The connection timeout in seconds for connections to Kubernetes API. Minimum value is 5. | 5 |
+| `master.slaveReadTimeout`         | The read timeout in seconds for connections to Kubernetes API. Minimum value is 15. | 15 |
 | `master.disabledAgentProtocols`   | Disabled agent protocols             | `JNLP-connect JNLP2-connect`              |
 | `master.csrf.defaultCrumbIssuer.enabled` | Enable the default CSRF Crumb issuer | `true`                             |
 | `master.csrf.defaultCrumbIssuer.proxyCompatability` | Enable proxy compatibility | `true`                            |
@@ -123,6 +131,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.ingress.annotations`      | Ingress annotations                  | `{}`                                      |
 | `master.ingress.labels`           | Ingress labels                       | `{}`                                      |
 | `master.ingress.path`             | Ingress path                         | Not set                                   |
+| `master.ingress.paths`            | Override for the default Ingress paths  | `[]`                                   |
 | `master.ingress.tls`              | Ingress TLS configuration            | `[]`                                      |
 | `master.backendconfig.enabled`     | Enables backendconfig     | `false`              |
 | `master.backendconfig.apiVersion`  | backendconfig API version | `extensions/v1beta1` |
@@ -214,6 +223,7 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 512m, memory: 512Mi}, limits: {cpu: 512m, memory: 512Mi}}` |
 | `agent.volumes`            | Additional volumes                              | `[]`                   |
 | `agent.envVars`            | Environment variables for the agent Pod         | `[]`                   |
+| `agent.nodeSelector`       | Node labels for pod assignment                  | `{}`                   |
 | `agent.command`            | Executed command when side container starts     | Not set                |
 | `agent.args`               | Arguments passed to executed command            | `${computer.jnlpmac} ${computer.name}` |
 | `agent.sideContainerName`  | Side container name in agent                    | jnlp                   |
@@ -627,6 +637,3 @@ master:
        password: "changeit"
        jenkinsKeyStoreBase64Encoded: ''
 ```
-
-
-
