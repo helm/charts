@@ -10,6 +10,9 @@ image:
 ##
 # host:
 
+nameOverride: ""
+fullnameOverride: ""
+
 replicaCount: 1
 minAvailable: 1
 

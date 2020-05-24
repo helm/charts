@@ -47,6 +47,8 @@ Parameter | Description | Default
 `image.tag` | Image tag | `3.2.2`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `host` | Hostname for Rocket.Chat. Also used for ingress (if enabled) | `""`
+`nameOverride` | Override the app name | `""`
+`fullnameOverride` | Override the app full name  | `""`
 `replicaCount` | Number of replicas to run | `1`
 `smtp.enabled` | Enable SMTP for sending mails | `false`
 `smtp.username` | Username of the SMTP account | `""`
