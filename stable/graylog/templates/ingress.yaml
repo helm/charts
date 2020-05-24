@@ -1,9 +1,8 @@
 {{- if .Values.graylog.ingress.enabled -}}
-{{- $extraPaths := .Values.graylog.ingress.extraPaths -}}
-{{- if .Capabilities.APIVersions.Has "extensions/v1beta1/Ingress" }}
-apiVersion: extensions/v1beta1
-{{- else }}
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
 {{- end }}
 kind: Ingress
 metadata:
