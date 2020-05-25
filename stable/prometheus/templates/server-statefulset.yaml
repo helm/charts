@@ -13,6 +13,7 @@ metadata:
     {{ toYaml .Values.server.statefulSet.labels | nindent 4 }}
     {{- end}}
   name: {{ template "prometheus.server.fullname" . }}
+{{ include "prometheus.namespace" . | indent 2 }}
 spec:
   serviceName: {{ template "prometheus.server.fullname" . }}-headless
   selector:
@@ -32,16 +33,17 @@ spec:
         {{ toYaml .Values.server.statefulSet.labels | nindent 8 }}
         {{- end}}
     spec:
-{{- if .Values.server.affinity }}
-      affinity:
-{{ toYaml .Values.server.affinity | indent 8 }}
-{{- end }}
 {{- if .Values.server.priorityClassName }}
       priorityClassName: "{{ .Values.server.priorityClassName }}"
 {{- end }}
 {{- if .Values.server.schedulerName }}
       schedulerName: "{{ .Values.server.schedulerName }}"
 {{- end }}
+      {{- if or (.Values.server.enableServiceLinks) (eq (.Values.server.enableServiceLinks | toString) "<nil>") }}
+      enableServiceLinks: true
+      {{- else }}
+      enableServiceLinks: false
+      {{- end }}
       serviceAccountName: {{ template "prometheus.serviceAccountName.server" . }}
       containers:
         {{- if .Values.configmapReload.prometheus.enabled }}
@@ -147,6 +149,10 @@ spec:
     {{- if .Values.server.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.server.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.server.hostAliases }}
+      hostAliases:
+{{ toYaml .Values.server.hostAliases | indent 8 }}
     {{- end }}
     {{- if .Values.server.securityContext }}
       securityContext:

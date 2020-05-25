@@ -8,6 +8,7 @@ metadata:
   annotations:
 {{- if .Values.certManager.enabled }}
     certmanager.k8s.io/inject-ca-from: {{ printf "%s/%s" .Release.Namespace (include "opa.rootCACertificate" .) | quote }}
+    cert-manager.io/inject-ca-from: {{ printf "%s/%s" .Release.Namespace (include "opa.rootCACertificate" .) | quote }}
 {{- end }}
   labels:
 {{ include "opa.labels.standard" . | indent 4 }}
@@ -40,7 +41,7 @@ webhooks:
 ---
 # Create a selfsigned Issuer, in order to create a root CA certificate for
 # signing webhook serving certificates
-apiVersion: certmanager.k8s.io/v1alpha1
+apiVersion: {{ include "opa.certManagerApiVersion" . }}
 kind: Issuer
 metadata:
   name: {{ include "opa.selfSignedIssuer" . }}
@@ -51,7 +52,7 @@ spec:
 
 ---
 # Generate a CA Certificate used to sign certificates for the webhook
-apiVersion: certmanager.k8s.io/v1alpha1
+apiVersion: {{ include "opa.certManagerApiVersion" . }}
 kind: Certificate
 metadata:
   name: {{ include "opa.rootCACertificate" . }}
@@ -67,7 +68,7 @@ spec:
 
 ---
 # Create an Issuer that uses the above generated CA certificate to issue certs
-apiVersion: certmanager.k8s.io/v1alpha1
+apiVersion: {{ include "opa.certManagerApiVersion" . }}
 kind: Issuer
 metadata:
   name: {{ include "opa.rootCAIssuer" . }}
@@ -80,7 +81,7 @@ spec:
 ---
 
 # Finally, generate a serving certificate for the webhook to use
-apiVersion: certmanager.k8s.io/v1alpha1
+apiVersion: {{ include "opa.certManagerApiVersion" . }}
 kind: Certificate
 metadata:
   name: {{ include "opa.servingCertificate" . }}

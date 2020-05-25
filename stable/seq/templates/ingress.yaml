@@ -1,11 +1,9 @@
-{{- if .Values.ingress.enabled -}}
-{{- $fullName := include "seq.fullname" . -}}
-{{- $servicePort := .Values.service.port -}}
-{{- $ingressPath := .Values.ingress.path -}}
+{{- if or .Values.ui.ingress.enabled .Values.ingestion.ingress.enabled }}
+{{- $serviceName := include "seq.fullname" . -}}
 apiVersion: {{ template "ingress.apiVersion" . }}
 kind: Ingress
 metadata:
-  name: {{ $fullName }}
+  name: {{ $serviceName }}
   labels:
     app: {{ template "seq.name" . }}
     chart: {{ template "seq.chart" . }}
@@ -30,13 +28,30 @@ spec:
   {{- end }}
 {{- end }}
   rules:
-  {{- range .Values.ingress.hosts }}
+  {{ if .Values.ui.ingress.enabled }}
+  {{- $uiPath := .Values.ui.ingress.path -}}
+  {{- $uiPort := .Values.ui.service.port -}}
+  {{- range .Values.ui.ingress.hosts }}
     - host: {{ . }}
       http:
         paths:
-          - path: {{ $ingressPath }}
+          - path: {{ $uiPath }}
             backend:
-              serviceName: {{ $fullName }}
-              servicePort: {{ $servicePort }}
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $uiPort }}
+  {{- end }}
+  {{- end }}
+  {{ if .Values.ingestion.ingress.enabled }}
+  {{- $ingestionPath := .Values.ingestion.ingress.path -}}
+  {{- $ingestionPort := .Values.ingestion.service.port -}}
+  {{- range .Values.ingestion.ingress.hosts }}
+    - host: {{ . }}
+      http:
+        paths:
+          - path: {{ $ingestionPath }}
+            backend:
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $ingestionPort }}
+  {{- end }}
   {{- end }}
 {{- end }}

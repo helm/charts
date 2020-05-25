@@ -29,6 +29,12 @@ spec:
         app: {{ template "datadog.fullname" . }}-cluster-agent
       name: {{ template "datadog.fullname" . }}-cluster-agent
       annotations:
+        {{- if .Values.clusterAgent.datadog_cluster_yaml }}
+        checksum/clusteragent-config: {{ tpl (toYaml .Values.clusterAgent.datadog_cluster_yaml) . | sha256sum }}
+        {{- end }}
+        {{- if .Values.clusterAgent.confd }}
+        checksum/confd-config: {{ tpl (toYaml .Values.clusterAgent.confd) . | sha256sum }}
+        {{- end }}
         ad.datadoghq.com/cluster-agent.check_names: '["prometheus"]'
         ad.datadoghq.com/cluster-agent.init_configs: '[{}]'
         ad.datadoghq.com/cluster-agent.instances: |
@@ -102,9 +108,9 @@ spec:
           - name: DD_CLUSTER_CHECKS_ENABLED
             value: {{ .Values.datadog.clusterChecks.enabled | quote }}
           - name: DD_EXTRA_CONFIG_PROVIDERS
-            value: "kube_services"
+            value: "kube_endpoints kube_services"
           - name: DD_EXTRA_LISTENERS
-            value: "kube_services"
+            value: "kube_endpoints kube_services"
           {{- end }}
           {{- if .Values.datadog.clusterName }}
           {{- if not (regexMatch "^([a-z]([a-z0-9\\-]{0,38}[a-z0-9])?\\.)*([a-z]([a-z0-9\\-]{0,38}[a-z0-9])?)$" .Values.datadog.clusterName) }}
@@ -137,9 +143,9 @@ spec:
           {{- if .Values.datadog.collectEvents }}
           - name: DD_COLLECT_KUBERNETES_EVENTS
             value: {{ .Values.datadog.collectEvents | quote}}
+          {{- end }}
           - name: DD_CLUSTER_AGENT_KUBERNETES_SERVICE_NAME
             value: {{ template "datadog.fullname" . }}-cluster-agent
-          {{- end }}
           - name: DD_CLUSTER_AGENT_AUTH_TOKEN
             valueFrom:
               secretKeyRef:
@@ -182,7 +188,7 @@ spec:
 {{- end}}
 
 {{- if .Values.clusterAgent.volumes }}
-{{ toYaml .Values.clusterAgent.volumes | indent 10 }}
+{{ toYaml .Values.clusterAgent.volumes | indent 8 }}
 {{- end }}
       {{- if .Values.clusterAgent.tolerations }}
       tolerations:

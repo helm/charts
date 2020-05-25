@@ -47,6 +47,10 @@ Version 2.0.0 of this chart introduces support for Kubernetes v1.16.x by way of 
 
 Due to [this issue](https://github.com/helm/helm/issues/6583) there may be errors performing a `helm upgrade`of this chart from versions earlier than 2.0.0.
 
+### To 3.0.0
+
+Version 3.0.0 introduces support for [EKS IAM roles for service accounts](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html) by adding a managed service account to the chart.  This is a breaking change since the service account is enabled by default.  To disable this behaviour set `serviceAccount.enabled` to `false`
+
 ## Configuration
 
 The following table lists the configurable parameters of the oauth2-proxy chart and their default values.
@@ -91,6 +95,7 @@ Parameter | Description | Default
 `podLabels` | additional labesl to add to each pod | `{}`
 `podDisruptionBudget.enabled`| Enabled creation of PodDisruptionBudget (only if replicaCount > 1) | true
 `podDisruptionBudget.minAvailable`| minAvailable parameter for PodDisruptionBudget | 1
+`podSecurityContext` | Kubernetes security context to apply to pod | `{}`
 `priorityClassName` | priorityClassName | `nil`
 `readinessProbe.enabled` | enable Kubernetes readinessProbe. Disable to use oauth2-proxy with Istio mTLS. See [Istio FAQ](https://istio.io/help/faq/security/#k8s-health-checks) | `true`
 `readinessProbe.initialDelaySeconds` | number of seconds | 0
@@ -104,8 +109,11 @@ Parameter | Description | Default
 `service.clusterIP` | cluster ip address | `nil`
 `service.loadBalancerIP` | ip of load balancer | `nil`
 `service.loadBalancerSourceRanges` | allowed source ranges in load balancer | `nil`
+`serviceAccount.enabled` | create a service account | `true`
+`serviceAccount.name` | the service account name | ``
+`serviceAccount.annotations` | (optional) annotations for the service account | `{}`
 `tolerations` | list of node taints to tolerate | `[]`
-`securityContext.enabled` | enable Kubernetes security context | `false`
+`securityContext.enabled` | enable Kubernetes security context on container | `false`
 `securityContext.runAsNonRoot` | make sure that the container runs as a non-root user | `true`
 `proxyVarsAsSecrets` | choose between environment values or secrets for setting up OAUTH2_PROXY variables. When set to false, remember to add the variables OAUTH2_PROXY_CLIENT_ID, OAUTH2_PROXY_CLIENT_SECRET, OAUTH2_PROXY_COOKIE_SECRET in extraEnv | `true`
 

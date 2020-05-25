@@ -52,7 +52,7 @@ The following table lists the configurable parameters of the Cloudwatch Exporter
 | Parameter                         | Description                                                             | Default                     |
 | --------------------------------- | ----------------------------------------------------------------------- | --------------------------- |
 | `image.repository`                | Image                                                                   | `prom/cloudwatch-exporter`  |
-| `image.tag`                       | Image tag                                                               | `cloudwatch_exporter-0.6.0` |
+| `image.tag`                       | Image tag                                                               | `cloudwatch_exporter-0.8.0` |
 | `image.pullPolicy`                | Image pull policy                                                       | `IfNotPresent`              |
 | `command`                         | Container entrypoint command                                            | `[]`                        |
 | `service.type`                    | Service type                                                            | `ClusterIP`                 |
@@ -84,6 +84,10 @@ The following table lists the configurable parameters of the Cloudwatch Exporter
 | `serviceMonitor.timeout`          | Timeout after which the scrape is ended                                 |                             |
 | `serviceMonitor.relabelings`      | RelabelConfigs to apply to samples before scraping.                     |                             |
 | `serviceMonitor.metricRelabelings`| MetricRelabelConfigs to apply to samples before ingestion.              |                             |
+| `prometheusRule.enabled`          | Namespace thes PrometheusRule  is installed in                          | `false`                     |
+| `prometheusRule.namespace`        | Use PrometheusRule from prometheus operator                             |                             |
+| `prometheusRule.labels`           | labels for the prometheusRule passed to Prometheus Operator             |                             |
+| `prometheusRule.rules`            | Specify alerting rules in YAML format for PrometheusRule                |                             |
 | `ingress.enabled`                 | Enables Ingress                                                         | `false`                     |
 | `ingress.annotations`             | Ingress annotations                                                     | `{}`                        |
 | `ingress.labels`                  | Custom labels                                                           | `{}`                        |

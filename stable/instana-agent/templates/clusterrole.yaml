@@ -17,6 +17,7 @@ rules:
 - apiGroups: ["batch"]
   resources:
     - "jobs"
+    - 'cronjobs'
   verbs: ["get", "list", "watch"]
 - apiGroups: ["extensions"]
   resources:
@@ -28,6 +29,8 @@ rules:
   resources:
     - "deployments"
     - "replicasets"
+    - "daemonsets"
+    - "statefulsets"
   verbs: ["get", "list", "watch"]
 - apiGroups: [""]
   resources:
@@ -45,6 +48,10 @@ rules:
   resources:
     - "endpoints"
   verbs: ["create", "update", "patch"]
+- apiGroups: ["networking.k8s.io"]
+  resources:
+    - "ingresses"
+  verbs: ["get", "list", "watch"]
 {{- if .Values.agent.supportOpenshift }}
 - apiGroups: ["apps.openshift.io"]
   resources:

@@ -49,10 +49,10 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `deploymentStrategy`                      | Deployment strategy                           | `{ "type": "RollingUpdate" }`                           |
 | `livenessProbe`                           | Liveness Probe settings                       | `{ "httpGet": { "path": "/api/health", "port": 3000 } "initialDelaySeconds": 60, "timeoutSeconds": 30, "failureThreshold": 10 }` |
 | `readinessProbe`                          | Readiness Probe settings                      | `{ "httpGet": { "path": "/api/health", "port": 3000 } }`|
-| `securityContext`                         | Deployment securityContext                    | `{"runAsUser": 472, "fsGroup": 472}`                    |
+| `securityContext`                         | Deployment securityContext                    | `{"runAsUser": 472, "runAsGroup": 472, "fsGroup": 472}`  |
 | `priorityClassName`                       | Name of Priority Class to assign pods         | `nil`                                                   |
 | `image.repository`                        | Image repository                              | `grafana/grafana`                                       |
-| `image.tag`                               | Image tag (`Must be >= 5.0.0`)                | `6.7.1`                                                 |
+| `image.tag`                               | Image tag (`Must be >= 5.0.0`)                | `6.7.3`                                                 |
 | `image.pullPolicy`                        | Image pull policy                             | `IfNotPresent`                                          |
 | `image.pullSecrets`                       | Image pull secrets                            | `{}`                                                    |
 | `service.type`                            | Kubernetes service type                       | `ClusterIP`                                             |
@@ -65,10 +65,10 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `service.clusterIP`                       | internal cluster service IP                   | `nil`                                                   |
 | `service.loadBalancerIP`                  | IP address to assign to load balancer (if supported) | `nil`                                            |
 | `service.loadBalancerSourceRanges`        | list of IP CIDRs allowed access to lb (if supported) | `[]`                                             |
-| `serivce.externalIPs`                     | service external IP addresses                 | `[]`                                                    |
+| `service.externalIPs`                     | service external IP addresses                 | `[]`                                                    |
 | `extraExposePorts`                        | Additional service ports for sidecar containers| `[]`                                                   | 
 | `ingress.enabled`                         | Enables Ingress                               | `false`                                                 |
-| `ingress.annotations`                     | Ingress annotations                           | `{}`                                                    |
+| `ingress.annotations`                     | Ingress annotations (values are templated)    | `{}`                                                    |
 | `ingress.labels`                          | Custom labels                                 | `{}`                                                    |
 | `ingress.path`                            | Ingress accepted path                         | `/`                                                     |
 | `ingress.hosts`                           | Ingress accepted hostnames                    | `[]`                                                    |
@@ -80,6 +80,7 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `affinity`                                | Affinity settings for pod assignment          | `{}`                                                    |
 | `extraInitContainers`                     | Init containers to add to the grafana pod     | `{}`                                                    |
 | `extraContainers`                         | Sidecar containers to add to the grafana pod  | `{}`                                                    |
+| `extraContainerVolumes`                   | Volumes that can be mounted in sidecar containers | `[]`                                                |
 | `schedulerName`                           | Name of the k8s scheduler (other than default) | `nil`                                                  |
 | `persistence.enabled`                     | Use persistent volume to store data           | `false`                                                 |
 | `persistence.type`                        | Type of persistence (`pvc` or `statefulset`)  | `pvc`                                                   |
@@ -98,7 +99,7 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `schedulerName`                           | Alternate scheduler name                      | `nil`                                                   |
 | `env`                                     | Extra environment variables passed to pods    | `{}`                                                    |
 | `envValueFrom`                            | Environment variables from alternate sources. See the API docs on [EnvVarSource](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#envvarsource-v1-core) for format details.  | `{}` |
-| `envFromSecret`                           | Name of a Kubernetes secret (must be manually created in the same namespace) containing values to be added to the environment | `""` |
+| `envFromSecret`                           | Name of a Kubernetes secret (must be manually created in the same namespace) containing values to be added to the environment. Can be templated | `""` |
 | `envRenderSecret`                         | Sensible environment variables passed to pods and stored as secret | `{}`                               |
 | `extraSecretMounts`                       | Additional grafana server secret mounts       | `[]`                                                    |
 | `extraVolumeMounts`                       | Additional grafana server volume mounts       | `[]`                                                    |
@@ -167,6 +168,22 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `downloadDashboardsImage.tag`             | Curl docker image tag                         | `7.68.0`                                                |
 | `downloadDashboardsImage.pullPolicy`      | Curl docker image pull policy                 | `IfNotPresent`                                          |
 | `namespaceOverride`                       | Override the deployment namespace             | `""` (`Release.Namespace`)                              |
+
+### Example ingress with path
+
+With grafana 6.3 and above
+```yaml
+grafana.ini:
+  server:
+    domain: monitoring.example.com
+    root_url: "%(protocol)s://%(domain)s/grafana"
+    serve_from_sub_path: true
+ingress:
+  enabled: true
+  hosts:
+    - "monitoring.example.com"
+  path: "/grafana"
+```
 
 ### Example of extraVolumeMounts
 
@@ -322,3 +339,23 @@ stringData:
 
 ```
 
+## How to serve Grafana with a path prefix (/grafana)
+
+In order to serve Grafana with a prefix (e.g., http://example.com/grafana), add the following to your values.yaml.
+
+```yaml
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/use-regex: "true"
+
+  path: /grafana/?(.*)
+  hosts:
+    - k8s.example.dev
+
+grafana.ini:
+  server:
+    root_url: http://localhost:3000/grafana # this host can be localhost
+```

@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "locust.worker" . }}
@@ -10,6 +10,10 @@ metadata:
     component: worker
 spec:
   replicas: {{ default 2 .Values.worker.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "locust.selectorLabels" . | nindent 6 }}
+      component: worker
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -18,7 +22,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "locust.fullname" . }}
+        {{- include "locust.selectorLabels" . | nindent 8 }}
         component: worker
     spec:
     {{- if .Values.image.pullSecrets }}
@@ -67,5 +71,9 @@ spec:
 {{- end }}
 {{- with .Values.worker.tolerations }}
       tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.worker.affinity }}
+      affinity:
 {{ toYaml . | indent 8 }}
 {{- end }}

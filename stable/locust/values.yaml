@@ -50,7 +50,7 @@ master:
       memory: 128Mi
   nodeSelector: {}
     # kops.k8s.io/instancegroup: master
-  tolerations: {}
+  tolerations: []
   # - key: "application"
   #   operator: "Equal"
   #   value: "api"
@@ -73,8 +73,17 @@ worker:
       memory: 128Mi
   nodeSelector: {}
     # kops.k8s.io/instancegroup: worker
-  tolerations: {}
+  tolerations: []
   # - key: "application"
   #   operator: "Equal"
   #   value: "api"
   #   effect: "NoSchedule"
+  #
+  #
+  affinity: {}
+  #  podAntiAffinity:
+  #    requiredDuringSchedulingIgnoredDuringExecution:
+  #    - topologyKey: kubernetes.io/hostname
+  #      labelSelector:
+  #        matchLabels:
+  #          component: worker

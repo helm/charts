@@ -90,6 +90,47 @@ On a platform that provides a LoadBalancer such as GKE, the following can be che
 
 See the Grafana table below for default credentials and override parameters.
 
+### Using an Ingress
+
+If you would like to use an Ingress instead of having the services use the `LoadBalancer` type there are a few things to consider.
+
+First you need to have an [Ingress Controller](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/) installed in your cluster. If you don't already have one instaled, you can use the following helm command to install an NGINX Ingress Controller:
+
+```bash
+kubectl create namespace nginx-ingress
+helm install --name nginx-ingress --namespace nginx-ingress stable/nginx-ingress
+```
+
+You can look up the IP address used by the NGINX Ingress Controller with:
+
+```bash
+ingress=$(kubectl get svc nginx-ingress-controller -n nginx-ingress -ojsonpath='{.status.loadBalancer.ingress[0].ip}')
+```
+
+This is useful if you would like to use `xip.io` instead of your own DNS resolution. The folowing options assume that you will use `xip.io` but you can replace the host values below with your own DNS hosts if you prefer.
+
+To enable the creation of an `Ingress` resource and configure the services to use `ClusterIP` type use the following set options in your helm install command:
+
+```bash
+  --set server.service.type=ClusterIP \
+  --set ingress.enabled=true \
+  --set ingress.protocol=http \
+  --set ingress.server.host=scdf.${ingress}.xip.io \
+```
+
+If you want to use an `Ingress` with the monitoring feature enabled, then use thes options instead:
+
+```bash
+  --set features.monitoring.enabled=true \
+  --set server.service.type=ClusterIP \
+  --set grafana.service.type=ClusterIP \
+  --set prometheus.proxy.service.type=ClusterIP \
+  --set ingress.enabled=true \
+  --set ingress.protocol=http \
+  --set ingress.server.host=scdf.${ingress}.xip.io \
+  --set ingress.grafana.host=grafana.${ingress}.xip.io \
+```
+
 ## Configuration
 
 The following tables list the configurable parameters and their default values.
@@ -109,24 +150,27 @@ The following tables list the configurable parameters and their default values.
 
 ### Data Flow Server Configuration
 
-| Parameter                               | Description                                                        | Default          |
-| --------------------------------------- | ------------------------------------------------------------------ | ---------------- |
-| server.version                          | The version/tag of the Data Flow server                            | 2.4.0.RELEASE
-| server.imagePullPolicy                  | The imagePullPolicy of the Data Flow server                        | IfNotPresent
-| server.service.type                     | The service type for the Data Flow server                          | LoadBalancer
-| server.service.annotations              | Extra annotations for service resource                             | {}
-| server.service.externalPort             | The external port for the Data Flow server                         | 80
-| server.service.labels                   | Extra labels for the service resource                              | {}
-| server.service.loadBalancerSourceRanges | A list of IP address ranges to allow through the load balancer     | no restriction
-| server.platformName                     | The name of the configured platform account                        | default
-| server.configMap                        | Custom ConfigMap name for Data Flow server configuration           |
-| server.trustCerts                       | Trust self signed certs                                            | false
+| Parameter                                                                                 | Description                                                                  | Default          |
+| ----------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------- |
+| server.version                                                                            | The version/tag of the Data Flow server                                      | 2.5.1.RELEASE
+| server.imagePullPolicy                                                                    | The imagePullPolicy of the Data Flow server                                  | IfNotPresent
+| server.service.type                                                                       | The service type for the Data Flow server                                    | LoadBalancer
+| server.service.annotations                                                                | Extra annotations for service resource                                       | {}
+| server.service.externalPort                                                               | The external port for the Data Flow server                                   | 80
+| server.service.labels                                                                     | Extra labels for the service resource                                        | {}
+| server.service.loadBalancerSourceRanges                                                   | A list of IP address ranges to allow through the load balancer               | no restriction
+| server.platformName                                                                       | The name of the configured platform account                                  | default
+| server.configMap                                                                          | Custom ConfigMap name for Data Flow server configuration                     |
+| server.trustCerts                                                                         | Trust self signed certs                                                      | false
+| server.extraEnv                                                                           | Extra environment variables to add to the server container                   | {}
+| server.containerConfiguration.container.registry-configurations.<NAME>.registry-host      | The registry host to use for the profile represented by <NAME>               |
+| server.containerConfiguration.container.registry-configurations.<NAME>.authorization-type | The registry authorization type to use for the profile represented by <NAME> |
 
 ### Skipper Server Configuration
 
 | Parameter                         | Description                                                      | Default          |
 | --------------------------------- | ---------------------------------------------------------------- | ---------------- |
-| skipper.version                   | The version/tag of the Skipper server                            | 2.3.0.RELEASE
+| skipper.version                   | The version/tag of the Skipper server                            | 2.4.1.RELEASE
 | skipper.imagePullPolicy           | The imagePullPolicy of the Skipper server                        | IfNotPresent
 | skipper.platformName              | The name of the configured platform account                      | default
 | skipper.service.type              | The service type for the Skipper server                          | ClusterIP
@@ -134,6 +178,7 @@ The following tables list the configurable parameters and their default values.
 | skipper.service.labels            | Extra labels for the service resource                            | {}
 | skipper.configMap                 | Custom ConfigMap name for Skipper server configuration           |
 | skipper.trustCerts                | Trust self signed certs                                          | false
+| skipper.extraEnv                  | Extra environment variables to add to the skipper container      | {}
 
 ### Spring Cloud Deployer for Kubernetes Configuration
 
@@ -196,6 +241,15 @@ The following tables list the configurable parameters and their default values.
 | features.batch.enabled       | Enables or disables tasks and schedules | true
 | features.monitoring.enabled  | Enables or disables monitoring          | false
 
+### Ingress
+
+| Parameter            | Description                              | Default                   |
+| -------------------- | ---------------------------------------- | ------------------------- |
+| ingress.enabled      | Enables or disables ingress support      | true
+| ingress.protocol     | Sets the protocol used by ingress server | https
+| ingress.server.host  | Sets the host used for server            | data-flow.local
+| ingress.server.host  | Sets the host used for grafana           | grafana.local
+
 ### Grafana
 
 | Parameter                            | Description                                                  | Default                    |
@@ -222,3 +276,4 @@ The following tables list the configurable parameters and their default values.
 | prometheus.kubeStateMetrics                  | Enable or disable kube state metrics               | false
 | prometheus.nodeExporter                      | Enable or disable node exporter                    | false
 | prometheus.pushgateway                       | Enable or disable push gateway                     | false
+| prometheus.proxy.service.type                | Service type to use                                | LoadBalancer

@@ -83,6 +83,7 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `persistence.subPath`                        | Subdirectory of the volume to mount                                                          | `nil`                                                |
 | `persistence.annotations`                    | Persistent Volume annotations                                                                | {}                                                   |
 | `nodeSelector`                               | Node labels for pod assignment                                                               | {}                                                   |
+| `affinity`                                   | Affinity rules for pod assignment                                                            | {}                                                   |
 | `tolerations`                                | Pod taint tolerations for deployment                                                         | {}                                                   |
 | `metrics.enabled`                            | Start a side-car prometheus exporter                                                         | `false`                                              |
 | `metrics.image`                              | Exporter image                                                                               | `prom/mysqld-exporter`                               |

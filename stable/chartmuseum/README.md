@@ -96,11 +96,13 @@ their default values. See values.yaml for all available options.
 | `resources.limits.memory`               | Container maximum memory                                                    | `128Mi`                              |
 | `resources.requests.cpu`                | Container requested CPU                                                     | `80m`                                |
 | `resources.requests.memory`             | Container requested memory                                                  | `64Mi`                               |
+| `secret.labels`                         | Additional labels for secret                                                | `false`                              |
 | `serviceAccount.create`                 | If true, create the service account                                         | `false`                              |
 | `serviceAccount.name`                   | Name of the serviceAccount to create or use                                 | `{{ chartmuseum.fullname }}`         |
 | `serviceAccount.annotations`            | Additional Service Account annotations                                      | `{}`                                 |
 | `securityContext.enabled`               | Enable securityContext                                                      | `true`                               |
 | `securityContext.fsGroup`               | Group ID for the container                                                  | `1000`                               |
+| `priorityClassName      `               | priorityClassName                                                           | `""`                                 |
 | `nodeSelector`                          | Map of node labels for pod assignment                                       | `{}`                                 |
 | `tolerations`                           | List of node taints to tolerate                                             | `[]`                                 |
 | `affinity`                              | Map of node/pod affinities                                                  | `{}`                                 |
@@ -151,6 +153,7 @@ their default values. See values.yaml for all available options.
 | `env.secret.BASIC_AUTH_USER`            | Username for basic HTTP authentication                                      | ``                                   |
 | `env.secret.BASIC_AUTH_PASS`            | Password for basic HTTP authentication                                      | ``                                   |
 | `env.secret.CACHE_REDIS_PASSWORD`       | Redis requirepass server configuration                                      | ``                                   |
+| `extraArgs`                             | Pass extra arguments to the chartmuseum binary                              | ``                                   |
 | `gcp.secret.enabled`                    | Flag for the GCP service account                                            | `false`                              |
 | `gcp.secret.name`                       | Secret name for the GCP json file                                           | ``                                   |
 | `gcp.secret.key`                        | Secret key for te GCP json file                                             | `credentials.json`                   |
