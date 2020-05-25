@@ -19,8 +19,8 @@ persistence:
 
 cli:
   image:
-    repository: hyperledger/composer-cli
-    tag: 0.20.0
+    repository: alexvicegrab/composer-cli
+    tag: 0.20.10
     pullPolicy: IfNotPresent
 
   secrets: {}
@@ -52,8 +52,8 @@ cli:
 
 rest:
   image:
-    repository: hyperledger/composer-rest-server
-    tag: 0.20.0
+    repository: alexvicegrab/composer-rest-server
+    tag: 0.20.10
     pullPolicy: IfNotPresent
 
   service:
@@ -103,8 +103,8 @@ pg:
   enabled: true
 
   image:
-    repository: hyperledger/composer-playground
-    tag: 0.20.0
+    repository: alexvicegrab/composer-playground
+    tag: 0.20.10
     pullPolicy: IfNotPresent
 
   service:
