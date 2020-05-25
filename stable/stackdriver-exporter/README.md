@@ -65,6 +65,7 @@ Parameter                           | Description                               
 `image.pullPolicy`                  | Container image pull policy                                                     | `IfNotPresent`
 `resources`                         | Resource requests & limits                                                      | `{}`
 `serviceAccount.name`               | Name of Kubernetes service account to use                                       | `""` (defaults to `default`)
+`serviceAccount.annotations`        | Annotations to add to the service account                                   | {}
 `serviceAccount.create`             | Toggle for service account creation                                             | `false`
 `service.type`                      | Type of service to create                                                       | `ClusterIP`
 `service.httpPort`                  | Port for the http service                                                       | `9255`
