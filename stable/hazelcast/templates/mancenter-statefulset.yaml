@@ -108,7 +108,7 @@ spec:
           value: {{ .Values.mancenter.licenseKey }}
         {{- end }}
         - name: MC_INIT_CMD
-          value: "./mc-conf.sh cluster add -H /data -cc /config/hazelcast-client.yaml"
+          value: "./mc-conf.sh cluster add --lenient=true -H /data -cc /config/hazelcast-client.yaml"
         - name: JAVA_OPTS
           value: "{{ if or .Values.mancenter.licenseKey .Values.mancenter.licenseKeySecretName }}-Dhazelcast.mc.license=$(MC_LICENSE_KEY){{ end }} {{ if or .Values.mancenter.readinessProbe.enabled .Values.mancenter.livenessProbe.enabled }}-Dhazelcast.mc.healthCheck.enable=true{{ end }} -DserviceName={{ template "hazelcast.serviceName" . }} -Dhazelcast.mc.tls.enabled={{ .Values.mancenter.ssl }} {{ .Values.mancenter.javaOpts }}"
         {{- if .Values.securityContext.enabled }}
