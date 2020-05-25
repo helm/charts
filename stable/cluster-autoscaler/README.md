@@ -155,7 +155,7 @@ Parameter | Description | Default
 `autoscalingGroupsnamePrefix[].minSize` | minimum MIG size |  None. Required for `cloudProvider=gce`
 `cloudProvider` | `aws` or `spotinst` are currently supported for AWS. `gce` for GCE. `azure` for Azure AKS | `aws`
 `image.repository` | Image | `k8s.gcr.io/cluster-autoscaler`
-`image.tag` | Image tag  | `v1.13.1`
+`image.tag` | Image tag  | `v1.17.1`
 `image.pullPolicy` | Image pull policy  | `IfNotPresent`
 `image.pullSecrets` | Image pull secrets  | `[]`
 `extraArgs` | additional container arguments | `{}`

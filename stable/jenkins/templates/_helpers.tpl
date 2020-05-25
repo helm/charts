@@ -181,6 +181,14 @@ Returns kubernetes pod template configuration as code
     resourceRequestMemory: {{.Values.agent.resources.requests.memory}}
     ttyEnabled: {{ .Values.agent.TTYEnabled }}
     workingDir: "/home/jenkins"
+{{- if .Values.agent.envVars }}
+  envVars:
+  {{- range $index, $var := .Values.agent.envVars }}
+    - envVar:
+        key: {{ $var.name }}
+        value: {{ tpl $var.value $ }}
+  {{- end }}
+{{- end }}
   idleMinutes: {{ .Values.agent.idleMinutes }}
   instanceCap: 2147483647
   {{- if .Values.agent.imagePullSecretName }}
@@ -188,6 +196,15 @@ Returns kubernetes pod template configuration as code
   - name: {{ .Values.agent.imagePullSecretName }}
   {{- end }}
   label: "{{ .Release.Name }}-{{ .Values.agent.componentName }} {{ .Values.agent.customJenkinsLabels  | join " " }}"
+{{- if .Values.agent.nodeSelector }}
+  nodeSelector:
+  {{- $local := dict "first" true }}
+  {{- range $key, $value := .Values.agent.nodeSelector }}
+    {{- if $local.first }} {{ else }},{{ end }}
+    {{- $key }}={{ tpl $value $ }}
+    {{- $_ := set $local "first" false }}
+  {{- end }}
+{{- end }}
   nodeUsageMode: "NORMAL"
   podRetention: {{ .Values.agent.podRetention }}
   showRawYaml: true
@@ -211,10 +228,10 @@ Returns kubernetes pod template configuration as code
     {{- end }}
   {{- end }}
 {{- end }}
-  {{- if .Values.agent.yamlTemplate }}
+{{- if .Values.agent.yamlTemplate }}
   yaml: |-
-  {{- tpl ( trim .Values.agent.yamlTemplate ) . | nindent 4 }}
-  {{- end }}
+    {{- tpl (trim .Values.agent.yamlTemplate) . | nindent 4 }}
+{{- end }}
   yamlMergeStrategy: "override"
 {{- end -}}
 
@@ -313,7 +330,9 @@ Returns kubernetes pod template xml configuration
 {{- end }}
   <nodeProperties/>
 {{- if .Values.agent.yamlTemplate }}
-  <yaml>{{ tpl .Values.agent.yamlTemplate . | html | indent 4 | trim }}</yaml>
+  <yaml>
+    {{- tpl (trim .Values.agent.yamlTemplate) . | html | nindent 4 }}
+  </yaml>
 {{- end }}
   <podRetention class="org.csanchez.jenkins.plugins.kubernetes.pod.retention.Default"/>
 </org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
