@@ -48,6 +48,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.es.logstash_format`          | Enable Logstash format compatibility. | `On` |
 | `backend.es.logstash_prefix`  | Index Prefix. If Logstash_Prefix is equal to 'mydata' your index will become 'mydata-YYYY.MM.DD'. | `kubernetes_cluster` |
 | `backend.es.logstash_prefix_key`  | Index Prefix key. When included, the value in the record that belongs to the key will be looked up and overwrite `Logstash_Prefix` for index generation. If `Logstash_Prefix_Key` = 'mydata' the index becomes 'mydata-YYYY.MM.DD'. | `` |
+| `backend.es.logstash_dateformat`  | Time format (based on strftime) to generate the second part of the Index name. Fluent-bit by default use %Y.%m.%d | `` |
 | `backend.es.replace_dots`     | Enable/Disable Replace_Dots option. | `On` |
 | `backend.es.http_user`        | Optional username credential for Elastic X-Pack access. | `` |
 | `backend.es.http_passwd`      | Password for user defined in HTTP_User. | `` |
