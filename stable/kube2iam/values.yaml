@@ -85,11 +85,11 @@ rbac:
 
 resources: {}
   # limits:
-  #   cpu: 4m
-  #   memory: 16Mi
+  #   cpu: 50m
+  #   memory: 64Mi
   # requests:
-  #   cpu: 4m
-  #   memory: 16Mi
+  #   cpu: 20m
+  #   memory: 64Mi
 
 ## Strategy for DaemonSet updates (requires Kubernetes 1.6+)
 ## Ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
