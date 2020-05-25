@@ -7,7 +7,6 @@ agent:
     port: 80
     type: ClusterIP
   config:
-    JOURNAL_DIR: /opt/spm/st-agent
     PIPELINE_CONSOLE_OUTPUT: false
     PIPELINE_NULL_OUTPUT: false
     API_SERVER_HOST: 0.0.0.0
