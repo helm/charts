@@ -1,4 +1,4 @@
-{{- if .Values.flower.enabled }}
+{{- if and (.Values.flower.enabled) (eq .Values.airflow.executor "CeleryExecutor") }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -91,24 +91,33 @@ spec:
             - "-c"
             - >
               true \
-               && echo "*** waiting 60s..." \
-               && sleep 60 \
+              {{- if gt .Values.flower.initialStartupDelay 0.0 }}
+               && echo "*** waiting {{ .Values.flower.initialStartupDelay }}s..." \
+               && sleep {{ .Values.flower.initialStartupDelay }} \
+              {{- end }}
                && mkdir -p /home/airflow/.local/bin \
-               && export PATH=/home/airflow/.local/bin:$PATH \
-               && export AIRFLOW__CORE__SQL_ALCHEMY_CONN="{{ include "airflow.connection.alchemy" . }}" \
-               && export AIRFLOW__CELERY__RESULT_BACKEND="{{ include "airflow.connection.celery.backend" . }}" \
-               && export AIRFLOW__CELERY__BROKER_URL="{{ include "airflow.connection.celery.broker" . }}" \
+               && echo 'export PATH="/home/airflow/.local/bin:$PATH"' >> /home/airflow/airflow_env.sh \
+               && echo 'export AIRFLOW__CORE__SQL_ALCHEMY_CONN="{{ include "airflow.connection.alchemy" . }}"' >> /home/airflow/airflow_env.sh \
+               && echo 'export AIRFLOW__CELERY__RESULT_BACKEND="{{ include "airflow.connection.celery.backend" . }}"' >> /home/airflow/airflow_env.sh \
+               && echo 'export AIRFLOW__CELERY__BROKER_URL="{{ include "airflow.connection.celery.broker" . }}"' >> /home/airflow/airflow_env.sh \
+               && echo 'source /home/airflow/airflow_env.sh' >> /home/airflow/.profile \
+               && echo 'source /home/airflow/airflow_env.sh' >> /home/airflow/.bashrc \
+               && source /home/airflow/airflow_env.sh \
                && echo "*** running flower..." \
-               && airflow flower
+               && exec airflow flower
           livenessProbe:
             httpGet:
-              path: "{{ .Values.ingress.flower.livenessPath }}/"
+              {{- if .Values.ingress.flower.livenessPath }}
+              path: "{{ .Values.ingress.flower.livenessPath }}"
+              {{- else }}
+              path: "{{ .Values.ingress.flower.path }}/"
+              {{- end }}
               port: flower
             initialDelaySeconds: 60
-            periodSeconds: 60
+            periodSeconds: 30
             timeoutSeconds: 1
             successThreshold: 1
-            failureThreshold: 5
+            failureThreshold: 3
           resources:
             {{- toYaml .Values.flower.resources | nindent 12 }}
 {{- end }}

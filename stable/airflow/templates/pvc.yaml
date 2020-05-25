@@ -1,4 +1,4 @@
-{{- if and .Values.dags.persistence.enabled (not .Values.dags.persistence.existingClaim) }}
+{{- if and (.Values.dags.persistence.enabled) (not .Values.dags.persistence.existingClaim) }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
