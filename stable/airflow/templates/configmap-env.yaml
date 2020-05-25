@@ -11,7 +11,7 @@ data:
   ## Force UTC timezone
   TZ: Etc/UTC
 
-  ## Airflow (Database)
+  ## Database
   {{- if .Values.postgresql.enabled }}
   DATABASE_HOST: "{{ include "airflow.postgresql.fullname" . }}"
   DATABASE_PORT: "5432"
@@ -24,7 +24,8 @@ data:
   DATABASE_DB: "{{ .Values.externalDatabase.database }}"
   {{- end }}
 
-  ## Airflow (Redis)
+  {{- if (eq .Values.airflow.executor "CeleryExecutor") }}
+  ## Redis
   {{- if .Values.redis.enabled }}
   REDIS_HOST: "{{ include "airflow.redis.fullname" . }}-master"
   REDIS_PORT: "6379"
@@ -38,6 +39,20 @@ data:
   ## Airflow (Flower)
   AIRFLOW__CELERY__FLOWER_URL_PREFIX: "{{ .Values.flower.urlPrefix }}"
   AIRFLOW__CELERY__WORKER_CONCURRENCY: "{{ .Values.workers.celery.instances }}"
+  {{- end }}
+
+  {{- if (eq .Values.airflow.executor "KubernetesExecutor") }}
+  ## Airflow (Kubernetes)
+  {{- if (not .Values.airflow.config.AIRFLOW__KUBERNETES__NAMESPACE) }}
+  AIRFLOW__KUBERNETES__NAMESPACE: "{{ .Release.Namespace }}"
+  {{- end }}
+  {{- if (not .Values.airflow.config.AIRFLOW__KUBERNETES__WORKER_SERIVCE_ACCOUNT_NAME) }}
+  AIRFLOW__KUBERNETES__WORKER_SERVICE_ACCOUNT_NAME: "{{ include "airflow.serviceAccountName" . }}"
+  {{- end }}
+  {{- if (not .Values.airflow.config.AIRFLOW__KUBERNETES__ENV_FROM_CONFIGMAP_REF) }}
+  AIRFLOW__KUBERNETES__ENV_FROM_CONFIGMAP_REF: "{{ include "airflow.fullname" . }}-env"
+  {{- end }}
+  {{- end }}
 
   ## Airflow (Logs)
   AIRFLOW__CORE__BASE_LOG_FOLDER: "{{ .Values.logs.path }}"
