@@ -250,7 +250,7 @@ datadog:
   ## ref: https://github.com/DataDog/datadog-agent/tree/master/Dockerfiles/agent#optional-volumes
   ## ref: https://docs.datadoghq.com/agent/autodiscovery/
   #
-  confd:
+  confd: {}
   #   redisdb.yaml: |-
   #     init_config:
   #     instances:
@@ -431,7 +431,7 @@ clusterAgent:
   ## Each key will become a file in /conf.d
   ## ref: https://docs.datadoghq.com/agent/autodiscovery/
   #
-  confd:
+  confd: {}
   #   mysql.yaml: |-
   #     cluster_check: true
   #     instances:
@@ -987,7 +987,7 @@ kube-state-metrics:
   ## @param resources - object - optional
   ## Resource requests and limits for the kube-state-metrics container.
   #
-  resources:
+  resources: {}
   #   requests:
   #     cpu: 200m
   #     memory: 256Mi

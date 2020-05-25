@@ -1,5 +1,9 @@
 # Datadog changelog
 
+## 2.3.4
+
+* Fix default values in `values.yaml` to prevent warnings with Helm 2.x
+
 ## 2.3.3
 
 * Allow pre-release versions as docker image tag
