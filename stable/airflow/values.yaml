@@ -27,21 +27,19 @@ airflow:
   ##
   executor: CeleryExecutor
 
-  ## the fernet key used to encrypt the connections in the database
+  ## the fernet key used to encrypt the connections/variables in the database
   ##
   ## WARNING:
-  ## - you MUST create a custom fernet key, otherwise your connections will not
-  ##   necessarily be readable from all Pods
+  ## - you MUST customise this value, otherwise the encryption will be somewhat pointless
+  ##
+  ## NOTE:
   ## - to prevent this value being stored in your values.yaml (and airflow-env ConfigMap),
   ##   consider using `airflow.extraEnv` to define it from a pre-created secret
   ##
   ## GENERATE:
   ##   python -c "from cryptography.fernet import Fernet; FERNET_KEY = Fernet.generate_key().decode(); print(FERNET_KEY)"
   ##
-  ## EXAMPLE:
-  ##  fernetKey: "7T512UXSSmBOkpWimFHIVb8jK6lfmSAvx4mO6Arehnc="
-  ##
-  fernetKey: ""
+  fernetKey: "7T512UXSSmBOkpWimFHIVb8jK6lfmSAvx4mO6Arehnc="
 
   ## environment variables for the web/scheduler/worker Pods (for airflow configs)
   ##
@@ -210,7 +208,11 @@ scheduler:
 
     ## the maximum unavailable pods/percentage for the scheduler
     ##
-    maxUnavailable: "1"
+    ## NOTE:
+    ## - as there is only ever a single scheduler Pod,
+    ##   this must be 100% for Kubernetes to be able to migrate it
+    ##
+    maxUnavailable: "100%"
 
     ## the minimum available pods/percentage for the scheduler
     ##

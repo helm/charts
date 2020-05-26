@@ -516,7 +516,7 @@ __Global Values:__
 | --- | --- | --- |
 | `airflow.image.*` | configs for the docker image of the web/scheduler/worker | `<see values.yaml>` |
 | `airflow.executor` | the airflow executor type to use | `CeleryExecutor` |
-| `airflow.fernetKey` | the fernet key used to encrypt the connections in the database | `""` |
+| `airflow.fernetKey` | the fernet key used to encrypt the connections/variables in the database | `7T512UXSSmBOkpWimFHIVb8jK6lfmSAvx4mO6Arehnc=` |
 | `airflow.config` | environment variables for the web/scheduler/worker pods (for airflow configs) | `{}` |
 | `airflow.podAnnotations` | extra annotations for the web/scheduler/worker/flower Pods | `{}` |
 | `airflow.extraEnv` | extra environment variables for the web/scheduler/worker/flower Pods | `[]` |
