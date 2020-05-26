@@ -30,14 +30,6 @@
     - name: DD_DOGSTATSD_ORIGIN_DETECTION
       value: {{ .Values.datadog.dogstatsd.originDetection | quote }}
     {{- end }}
-    {{- if .Values.datadog.acInclude }}
-    - name: DD_AC_INCLUDE
-      value: {{ .Values.datadog.acInclude | quote }}
-    {{- end }}
-    {{- if .Values.datadog.acExclude }}
-    - name: DD_AC_EXCLUDE
-      value: {{ .Values.datadog.acExclude | quote }}
-    {{- end }}
     {{- if not .Values.clusterAgent.enabled }}
     {{- if .Values.datadog.leaderElection }}
     - name: DD_LEADER_ELECTION
@@ -76,7 +68,7 @@
     {{- end }}
     {{- if .Values.datadog.dogstatsd.useSocketVolume }}
     - name: DD_DOGSTATSD_SOCKET
-      value: {{ default "/var/run/datadog/dsd.socket" .Values.datadog.dogstatsd.socketPath | quote }}
+      value: {{ .Values.datadog.dogstatsd.socketPath | quote }}
     {{- end }}
     {{- if and .Values.datadog.clusterChecks.enabled (not .Values.clusterChecksRunner.enabled) }}
     - name: DD_EXTRA_CONFIG_PROVIDERS
@@ -110,7 +102,7 @@
     {{- if eq .Values.targetSystem "linux" }}
     {{- if .Values.datadog.dogstatsd.useSocketVolume }}
     - name: dsdsocket
-      mountPath: "/var/run/datadog"
+      mountPath: {{ (dir .Values.datadog.dogstatsd.socketPath) }}
     {{- end }}
     {{- if .Values.datadog.systemProbe.enabled }}
     - name: sysprobe-socket-dir

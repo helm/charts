@@ -44,7 +44,7 @@ spec:
             "metrics": [
               "go_goroutines", "go_memstats_*", "process_*",
               "api_requests",
-              "datadog_requests", "external_metrics",
+              "datadog_requests", "external_metrics", "rate_limit_queries_*",
               "cluster_checks_*"
             ]
           }]

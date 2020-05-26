@@ -7,8 +7,15 @@
   name: cgroups
 {{- if .Values.datadog.dogstatsd.useSocketVolume }}
 - hostPath:
-    path: "/var/run/datadog/"
+    path: {{ .Values.datadog.dogstatsd.hostSocketPath }}
+    type: DirectoryOrCreate
   name: dsdsocket
+{{- end }}
+{{- if .Values.datadog.apm.useSocketVolume }}
+- hostPath:
+    path: {{ .Values.datadog.apm.hostSocketPath }}
+    type: DirectoryOrCreate
+  name: apmsocket
 {{- end }}
 - name: s6-run
   emptyDir: {}

@@ -1,5 +1,14 @@
 # Datadog changelog
 
+## 2.3.5
+
+* Add `DD_AC_INCLUDE` and `DD_AC_EXCLUDE` to all containers
+* Add "Unix Domain Socket" support in trace-agent
+* Add new parameter to specify the dogstatsd socket path on the host
+* Fix typos in values.yaml
+* Update "tags:" example in values.yaml
+* Add "rate_limit_queries_*" in the datadog.cluster-agent prometheus check configuration
+
 ## 2.3.4
 
 * Fix default values in `values.yaml` to prevent warnings with Helm 2.x
