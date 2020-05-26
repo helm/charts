@@ -3,7 +3,7 @@
 # - This is intended to be a `custom-values.yaml` starting point for non-production deployment (like minikube)
 
 # External Dependencies:
-# - A git repo for DAGs: ssh://git@repo.example.com:my-airflow-dags.git
+# - A PUBLIC git repo for DAGs: ssh://git@repo.example.com:my-airflow-dags.git
 #
 
 ###################################
