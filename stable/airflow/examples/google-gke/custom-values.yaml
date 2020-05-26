@@ -27,6 +27,7 @@
 # - Secret: airflow-cluster1-fernet-key
 # - Secret: airflow-cluster1-mysql-password
 # - Secret: airflow-cluster1-redis-password
+# - Secret: airflow-cluster1-git-keys
 # - ConfigMap: airflow-cluster1-webserver-config
 # - cert-manager.io/Certificate: airflow-cluster1-cert
 #
