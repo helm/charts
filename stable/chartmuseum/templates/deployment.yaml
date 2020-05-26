@@ -24,7 +24,7 @@ spec:
 {{- if .Values.deployment.matchlabes }}
   selector:
     matchLabels:
-{{ toYaml .Values.deployment.matchlabes | indent 6 }}
+{{ toYaml .Values.deployment.matchlabels | indent 6 }}
 {{- end }}
   template:
     metadata:
@@ -160,6 +160,9 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+    {{- if .Values.serviceAccount.create }}
+      schedulerName: {{ .Values.deployment.schedulerName }}
+    {{- end -}}
     {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ include "chartmuseum.fullname" . }}
     {{- else if .Values.serviceAccount.name }}
