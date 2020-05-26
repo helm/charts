@@ -267,13 +267,14 @@ spec:
           configMap:
             name: {{ include "airflow.fullname" . }}-scripts
             defaultMode: 0755
+        {{- if .Values.dags.persistence.enabled }}
         - name: dags-data
-          {{- if .Values.dags.persistence.enabled }}
           persistentVolumeClaim:
             claimName: {{ .Values.dags.persistence.existingClaim | default (include "airflow.fullname" . ) }}
-          {{- else if or (.Values.dags.initContainer.enabled) (.Values.dags.git.gitSync.enabled) }}
+        {{- else if or (.Values.dags.initContainer.enabled) (.Values.dags.git.gitSync.enabled) }}
+        - name: dags-data
           emptyDir: {}
-          {{- end }}
+        {{- end }}
         {{- if .Values.logs.persistence.enabled }}
         - name: logs-data
           persistentVolumeClaim:
