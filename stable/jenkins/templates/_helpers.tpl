@@ -264,7 +264,7 @@ Returns kubernetes pod template xml configuration
     <org.csanchez.jenkins.plugins.kubernetes.volumes.{{ $volume.type }}Volume>
   {{- end }}
   {{- range $key, $value := $volume }}{{- if not (eq $key "type") }}
-      <{{ $key }}>{{ $value }}</{{ $key }}>
+      <{{ $key }}>{{ if kindIs "string" $value }}{{ tpl $value $ | quote }}{{ else }}{{ $value }}{{ end -}}</{{ $key }}>
   {{- end }}{{- end }}
   {{- if (eq $volume.type "PVC") }}
     </org.csanchez.jenkins.plugins.kubernetes.volumes.PersistentVolumeClaim>
