@@ -30,3 +30,14 @@ Create chart name and version as used by the chart label.
 {{- define "fluentd-cloudwatch.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Return the appropriate apiVersion for PodSecurityPolicy.
+*/}}
+{{- define "podSecurityPolicy.apiVersion" -}}
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "policy/v1beta1" -}}
+{{- else -}}
+{{- print "extensions/v1beta1" -}}
+{{- end -}}
+{{- end -}}
