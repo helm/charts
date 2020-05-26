@@ -171,10 +171,10 @@ kubectl get pods \
 -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.spec.containers[0].image}{"\n"}'
 ```
 ```
-my-release-cockroachdb-0    cockroachdb/cockroach:v19.2.5
-my-release-cockroachdb-1    cockroachdb/cockroach:v19.2.5
-my-release-cockroachdb-2    cockroachdb/cockroach:v19.2.5
-my-release-cockroachdb-3    cockroachdb/cockroach:v19.2.5
+my-release-cockroachdb-0    cockroachdb/cockroach:v20.1.1
+my-release-cockroachdb-1    cockroachdb/cockroach:v20.1.1
+my-release-cockroachdb-2    cockroachdb/cockroach:v20.1.1
+my-release-cockroachdb-3    cockroachdb/cockroach:v20.1.1
 ```
 
 Resume normal operations. Once you are comfortable that the stability and performance of the cluster is what you'd expect post-upgrade, finalize the upgrade:
@@ -219,7 +219,11 @@ kubectl delete statefulset my-release-cockroachdb --cascade=false
 
 Verify that no pod is deleted and then upgrade as normal. A new StatefulSet will be created, taking over the management of the existing pods and upgrading them if needed.
 
+### See also
 
+For more information about upgrading a cluster to the latest major release of CockroachDB, see [Upgrade to CockroachDB v20.1](https://www.cockroachlabs.com/docs/stable/upgrade-cockroach-version.html).
+
+Note that there are some backward-incompatible changes to SQL features between versions 19.2 and 20.1. For details, see the [CockroachDB v20.1.0 release notes](https://www.cockroachlabs.com/docs/releases/v20.1.0.html#backward-incompatible-changes).
 
 
 ## Configuration
@@ -244,7 +248,7 @@ For details see the [`values.yaml`](values.yaml) file.
 | `conf.port`                              | CockroachDB primary serving port in Pods                        | `26257`                                          |
 | `conf.http-port`                         | CockroachDB HTTP port in Pods                                   | `8080`                                           |
 | `image.repository`                       | Container image name                                            | `cockroachdb/cockroach`                          |
-| `image.tag`                              | Container image tag                                             | `v19.2.5`                                        |
+| `image.tag`                              | Container image tag                                             | `v20.1.1`                                        |
 | `image.pullPolicy`                       | Container pull policy                                           | `IfNotPresent`                                   |
 | `image.credentials`                      | `registry`, `user` and `pass` credentials to pull private image | `{}`                                             |
 | `statefulset.replicas`                   | StatefulSet replicas number                                     | `3`                                              |
