@@ -1773,7 +1773,7 @@ prometheus:
     #     regex: __meta_kubernetes_node_label_(.+)
     #   - source_labels: [__address__]
     #     action: replace
-    #     targetLabel: __address__
+    #     target_label: __address__
     #     regex: ([^:;]+):(\d+)
     #     replacement: ${1}:2379
     #   - source_labels: [__meta_kubernetes_node_name]
@@ -1781,7 +1781,7 @@ prometheus:
     #     regex: .*mst.*
     #   - source_labels: [__meta_kubernetes_node_name]
     #     action: replace
-    #     targetLabel: node
+    #     target_label: node
     #     regex: (.*)
     #     replacement: ${1}
     #   metric_relabel_configs:
