@@ -26,11 +26,7 @@ spec:
   publishNotReadyAddresses: true
   clusterIP: None
   ports:
-    {{- if .Values.tls.enabled }}
-    - name: https
-    {{ else }}
-    - name: http
-    {{- end }}
+    - name: {{ $scheme }}
       port: {{ .Values.service.port }}
       protocol: TCP
   selector:
@@ -114,11 +110,7 @@ spec:
               mountPath: {{ .Values.certsPath }}
             {{ end }}
           ports:
-            {{- if .Values.tls.enabled }}
-            - name: https
-            {{ else }}
-            - name: http
-            {{- end }}
+            - name: {{ $scheme }}
               containerPort: 9000
           env:
             - name: MINIO_ACCESS_KEY
@@ -138,16 +130,8 @@ spec:
           livenessProbe:
             httpGet:
               path: /minio/health/live
-              {{- if .Values.tls.enabled }}
-              port: https
-              {{ else }}
-              port: http
-              {{- end }}
-              {{- if .Values.tls.enabled }}
-              scheme: HTTPS
-              {{ else }}
-              scheme: HTTP
-              {{- end }}
+              port: {{ $scheme }}
+              scheme: {{ $scheme | upper }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -156,16 +140,8 @@ spec:
           readinessProbe:
             httpGet:
               path: /minio/health/ready
-              {{- if .Values.tls.enabled }}
-              port: https
-              {{ else }}
-              port: http
-              {{- end }}
-              {{- if .Values.tls.enabled }}
-              scheme: HTTPS
-              {{ else }}
-              scheme: HTTP
-              {{- end }}
+              port: {{ $scheme }}
+              scheme: {{ $scheme | upper }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
