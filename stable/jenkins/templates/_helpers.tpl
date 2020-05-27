@@ -72,6 +72,17 @@ Returns configuration as code default config
 */}}
 {{- define "jenkins.casc.defaults" -}}
 jenkins:
+{{- if eq .Values.master.enableXmlConfig false }}
+  {{- $configScripts := toYaml .Values.master.JCasC.configScripts }}
+  {{- if not (contains "authorizationStrategy:" $configScripts) }}
+  authorizationStrategy:
+    {{- tpl .Values.master.JCasC.authorizationStrategy . | nindent 4 }}
+  {{- end }}
+  {{- if not (contains "securityRealm:" $configScripts) }}
+  securityRealm:
+    {{- tpl .Values.master.JCasC.securityRealm . | nindent 4 }}
+  {{- end }}
+{{- end }}
   disableRememberMe: {{ .Values.master.disableRememberMe }}
   remotingSecurity:
     enabled: true

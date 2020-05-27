@@ -74,8 +74,8 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.markupFormatter`          | Yaml of the markup formatter to use  | `plainText`                               |
 | `master.customJenkinsLabels`      | Append Jenkins labels to the master  | `{}`                                      |
 | `master.useSecurity`              | Use basic security                   | `true`                                    |
-| `master.securityRealm`            | Custom Security Realm                | Not set                                   |
-| `master.authorizationStrategy`    | Jenkins XML job config for AuthorizationStrategy | Not set                       |
+| `master.securityRealm`            | Jenkins XML for Security Realm       | XML for `LegacySecurityRealm`             |
+| `master.authorizationStrategy`    | Jenkins XML for Authorization Strategy | XML for `FullControlOnceLoggedInAuthorizationStrategy` |
 | `master.deploymentLabels`         | Custom Deployment labels             | Not set                                   |
 | `master.serviceLabels`            | Custom Service labels                | Not set                                   |
 | `master.podLabels`                | Custom Pod labels                    | Not set                                   |
@@ -147,6 +147,8 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.JCasC.enabled`            | Wheter Jenkins Configuration as Code is enabled or not | `false`                 |
 | `master.JCasC.defaultConfig`      | Enables default Jenkins configuration via configuration as code plugin | `false` |
 | `master.JCasC.configScripts`      | List of Jenkins Config as Code scripts | `{}`                                    |
+| `master.JCasC.securityRealm`      | Jenkins Config as Code for Security Realm | `legacy`                             |
+| `master.JCasC.authorizationStrategy` | Jenkins Config as Code for Authorization Strategy | `loggedInUsersCanDoAnything` |
 | `master.enableXmlConfig`          | enables configuration done via XML files | `true`                               |
 | `master.sidecars.configAutoReload` | Jenkins Config as Code auto-reload settings |                                   |
 | `master.sidecars.configAutoReload.enabled` | Jenkins Config as Code auto-reload settings (Attention: rbac needs to be enabled otherwise the sidecar can't read the config map) | `false`                                                      |
@@ -369,13 +371,12 @@ configScripts:
       securityRealm:
         ldap:
           configurations:
-            configurations:
-              - server: ldap.acme.com
-                rootDN: dc=acme,dc=uk
-                managerPasswordSecret: ${LDAP_PASSWORD}
-              - groupMembershipStrategy:
-                  fromUserRecord:
-                    attributeName: "memberOf"
+            - server: ldap.acme.com
+              rootDN: dc=acme,dc=uk
+              managerPasswordSecret: ${LDAP_PASSWORD}
+              groupMembershipStrategy:
+                fromUserRecord:
+                  attributeName: "memberOf"
 ```
 
 Further JCasC examples can be found [here.](https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos)
