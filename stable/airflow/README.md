@@ -622,7 +622,7 @@ __Airflow DAGs Values:__
 
 | Parameter | Description | Default |
 | --- | --- | --- |
-| `dags.path` | the airflow dags folder | `/opt/airflow/logs` |
+| `dags.path` | the airflow dags folder | `/opt/airflow/dags` |
 | `dags.doNotPickle` | whether to disable pickling dags from the scheduler to workers | `false` |
 | `dags.installRequirements` | install any Python `requirements.txt` at the root of `dags.path` automatically | `false` |
 | `dags.persistence.*` | configs for the dags PVC | `<see values.yaml>` |
