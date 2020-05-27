@@ -55,20 +55,20 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 12 }}
         env:
-{{- if .Values.elasticsearch.existingSecret }}
-{{- if .Values.elasticsearch.existingSecretUsernameKey }}
+{{- if .Values.elasticsearch.credentialsSecret }}
+{{- if .Values.elasticsearch.credentialsSecretUsernameKey }}
           - name: ES_USERNAME
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.elasticsearch.existingSecret }}
-                key: {{ .Values.elasticsearch.existingSecretUsernameKey }}
+                name: {{ .Values.elasticsearch.credentialsSecret }}
+                key: {{ .Values.elasticsearch.credentialsSecretUsernameKey }}
 {{- end }}
-{{- if .Values.elasticsearch.existingSecretPasswordKey }}
+{{- if .Values.elasticsearch.credentialsSecretPasswordKey }}
           - name: ES_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.elasticsearch.existingSecret }}
-                key: {{ .Values.elasticsearch.existingSecretPasswordKey }}
+                name: {{ .Values.elasticsearch.credentialsSecret }}
+                key: {{ .Values.elasticsearch.credentialsSecretPasswordKey }}
 {{- end }}
 {{- end }}
 {{- if .Values.optEnv }}
