@@ -104,6 +104,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `client.loadBalancerSourceRanges`    | Client loadBalancerSourceRanges                                     | `{}`                                                |
 | `client.antiAffinity`                | Client anti-affinity policy                                         | `soft`                                              |
 | `client.nodeAffinity`                | Client node affinity policy                                         | `{}`                                                |
+| `client.podAffinity`                 | Client pod affinity policy                                          | `{}`                                                |
 | `client.initResources`               | Client initContainer resources requests & limits                    | `{}`                                                |
 | `client.hooks.preStop`               | Client nodes: Lifecycle hook script to execute prior the pod stops  | `nil`                                               |
 | `client.hooks.preStart`              | Client nodes: Lifecycle hook script to execute after the pod starts | `nil`                                               |
@@ -136,6 +137,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `master.readinessProbe`              | Master container readiness probes                                   | see `values.yaml` for defaults                      |
 | `master.antiAffinity`                | Master anti-affinity policy                                         | `soft`                                              |
 | `master.nodeAffinity`                | Master node affinity policy                                         | `{}`                                                |
+| `master.podAffinity`                 | Master pod affinity policy                                          | `{}`                                                |
 | `master.podManagementPolicy`         | Master pod creation strategy                                        | `OrderedReady`                                      |
 | `master.updateStrategy`              | Master node update strategy policy                                  | `{type: "onDelete"}`                                |
 | `master.hooks.preStop`               | Master nodes: Lifecycle hook script to execute prior the pod stops  | `nil`                                               |
@@ -162,6 +164,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.terminationGracePeriodSeconds` | Data termination grace period (seconds)                             | `3600`                                              |
 | `data.antiAffinity`                  | Data anti-affinity policy                                           | `soft`                                              |
 | `data.nodeAffinity`                  | Data node affinity policy                                           | `{}`                                                |
+| `data.podAffinity`                   | Data pod affinity policy                                            | `{}`                                                |
 | `data.podManagementPolicy`           | Data pod creation strategy                                          | `OrderedReady`                                      |
 | `data.updateStrategy`                | Data node update strategy policy                                    | `{type: "onDelete"}`                                |
 | `sysctlInitContainer.enabled`        | If true, the sysctl init container is enabled (does not stop chownInitContainer or extraInitContainers from running) | `true`                                              |

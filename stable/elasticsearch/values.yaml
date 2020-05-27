@@ -122,6 +122,7 @@ client:
   # additionalJavaOpts: "-XX:MaxRAM=512m"
   antiAffinity: "soft"
   nodeAffinity: {}
+  podAffinity: {}
   nodeSelector: {}
   tolerations: []
   # terminationGracePeriodSeconds: 60
@@ -187,6 +188,7 @@ master:
     initialDelaySeconds: 5
   antiAffinity: "soft"
   nodeAffinity: {}
+  podAffinity: {}
   nodeSelector: {}
   tolerations: []
   # terminationGracePeriodSeconds: 60
@@ -242,6 +244,7 @@ data:
   terminationGracePeriodSeconds: 3600
   antiAffinity: "soft"
   nodeAffinity: {}
+  podAffinity: {}
   nodeSelector: {}
   tolerations: []
   initResources: {}

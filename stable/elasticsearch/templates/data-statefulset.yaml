@@ -43,7 +43,7 @@ spec:
 {{- end }}
       securityContext:
         fsGroup: 1000
-      {{- if or .Values.data.antiAffinity .Values.data.nodeAffinity }}
+      {{- if or .Values.data.antiAffinity .Values.data.nodeAffinity .Values.data.podAffinity }}
       affinity:
       {{- end }}
       {{- if eq .Values.data.antiAffinity "hard" }}
@@ -69,6 +69,10 @@ spec:
       {{- end }}
       {{- with .Values.data.nodeAffinity }}
         nodeAffinity:
+{{ toYaml . | indent 10 }}
+      {{- end }}
+      {{- with .Values.data.podAffinity }}
+        podAffinity:
 {{ toYaml . | indent 10 }}
       {{- end }}
 {{- if .Values.data.nodeSelector }}
