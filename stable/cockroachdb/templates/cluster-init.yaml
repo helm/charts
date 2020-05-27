@@ -1,0 +1,73 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}-init"
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+spec:
+  template:
+    metadata:
+{{- if and (.Values.NetworkPolicy.Enabled) (not .Values.NetworkPolicy.AllowExternal) }}
+      labels:
+        {{.Release.Name}}-{{.Values.Component}}-client: "true"
+{{- end }}
+{{- if .Values.ExtraInitAnnotations }}
+      annotations:
+{{ toYaml .Values.ExtraInitAnnotations | indent 8 }}
+{{- end }}
+    spec:
+{{- if .Values.Secure.Enabled }}
+      serviceAccountName: {{ template "cockroachdb.serviceAccountName" . }}
+      initContainers:
+      # The init-certs container sends a certificate signing request to the
+      # kubernetes cluster.
+      # You can see pending requests using: kubectl get csr
+      # CSRs can be approved using:         kubectl certificate approve <csr name>
+      #
+      # In addition to the client certificate and key, the init-certs entrypoint will symlink
+      # the cluster CA to the certs directory.
+      - name: init-certs
+        image: "{{ .Values.Secure.RequestCertsImage }}:{{ .Values.Secure.RequestCertsImageTag }}"
+        imagePullPolicy: "{{ .Values.ImagePullPolicy }}"
+        command:
+        - "/bin/ash"
+        - "-ecx"
+        - "/request-cert -namespace=${POD_NAMESPACE} -certs-dir=/cockroach-certs -type=client -user=root -symlink-ca-from=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+        env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        volumeMounts:
+        - name: client-certs
+          mountPath: /cockroach-certs
+{{- end }}
+      containers:
+      - name: cluster-init
+        image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
+        imagePullPolicy: "{{ .Values.ImagePullPolicy }}"
+        resources:
+{{ toYaml .Values.InitPodResources | indent 10 }}
+{{- if .Values.Secure.Enabled }}
+        volumeMounts:
+        - name: client-certs
+          mountPath: /cockroach-certs
+{{- end }}
+        # Run the command in an `until` loop because this job is bound to come
+        # up before the cockroach pods (due to the time needed to get
+        # persistent volumes attached to nodes), and sleeping 5 seconds between
+        # attempts is much better than letting the pod fail when the init
+        # command does and waiting out Kubernetes' non-configurable exponential
+        # backoff for pod restarts.
+        command:
+          - "/bin/bash"
+          - "-ecx"
+          - "until /cockroach/cockroach init {{ if .Values.Secure.Enabled }}--certs-dir=/cockroach-certs{{ else }}--insecure{{ end }} --host={{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}-0.{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }} --port {{ .Values.InternalGrpcPort }}; do sleep 5; done"
+      restartPolicy: OnFailure
+{{- if .Values.Secure.Enabled }}
+      volumes:
+      - name: client-certs
+        emptyDir: {}
+{{- end }}
