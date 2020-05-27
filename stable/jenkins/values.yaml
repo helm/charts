@@ -268,6 +268,15 @@ master:
     enabled: false
     defaultConfig: false
     configScripts: {}
+    # Ignored if securityRealm is defined in master.JCasC.configScripts and
+    # ignored if master.enableXmlConfig=true as master.securityRealm takes precedence
+    securityRealm: |-
+      legacy
+    # Ignored if authorizationStrategy is defined in master.JCasC.configScripts and
+    # ignored if master.enableXmlConfig=true as master.authorizationStrategy takes precedence
+    authorizationStrategy: |-
+      loggedInUsersCanDoAnything:
+        allowAnonymousRead: false
     # welcome-message: |
     #   jenkins:
     #     systemMessage: Welcome to our CI\CD server.  This Jenkins is configured and managed 'as code'.
