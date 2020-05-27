@@ -16,11 +16,17 @@ data:
     fi
 
     cd {{ .Values.dags.path | quote }}
-    if [ -f requirements.txt ]; then
-      pip install --user -r requirements.txt
-    else
-      exit 0
-    fi
+    COUNT=0
+    while [ "${COUNT}" -lt 10 ]; do
+      if [ -f requirements.txt ]; then
+        pip install --user -r requirements.txt
+        exit 0
+      else
+        ((COUNT++))
+        echo "*** File requirements.txt not found: waiting 5s before retry #${COUNT}"
+        wait 5
+      fi
+    done
   graceful-stop-celery-worker.sh: |
     #!/bin/bash -e
     echo "*** starting graceful worker shutdown"
