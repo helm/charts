@@ -54,8 +54,24 @@ spec:
 {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}
-{{- if .Values.optEnv }}
         env:
+{{- if .Values.elasticsearch.existingSecret }}
+{{- if .Values.elasticsearch.existingSecretUsernameKey }}
+          - name: ES_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.elasticsearch.existingSecret }}
+                key: {{ .Values.elasticsearch.existingSecretUsernameKey }}
+{{- end }}
+{{- if .Values.elasticsearch.existingSecretPasswordKey }}
+          - name: ES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.elasticsearch.existingSecret }}
+                key: {{ .Values.elasticsearch.existingSecretPasswordKey }}
+{{- end }}
+{{- end }}
+{{- if .Values.optEnv }}
 {{ .Values.optEnv | toYaml | indent 10}}
 {{- end }}
       restartPolicy: Always
