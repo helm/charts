@@ -53,7 +53,7 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `replicationSecret.passwordKey`         | Password key of Postgres replication in secret | `pg_repl_password`                                           |
 | `replicationUsername`                   | Replication username                           | `repluser`                                                   |
 | `replicationPasswordFile`                     | File where to read the replication password                   |               |
-| `replicationPassword`                   | Replication password                           | (Required if `replicationSecret.name` is not set)            |
+| `replicationPassword`                   | Replication password                           | (Required if `replicationSecret.name` and `replicationPasswordFile` are not set)            |
 | `store.backend`                         | Store backend (kubernetes/consul/etcd)         | `kubernetes`                                                 |
 | `store.endpoints`                       | Store backend endpoints                        | `nil`                                                        |
 | `store.kubeResourceKind`                | Kubernetes resource kind (only for kubernetes) | `configmap`                                                  |
