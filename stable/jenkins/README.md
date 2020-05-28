@@ -81,6 +81,9 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.podLabels`                | Custom Pod labels                    | Not set                                   |
 | `master.adminUser`                | Admin username (and password) created as a secret if useSecurity is true | `admin` |
 | `master.adminPassword`            | Admin password (and user) created as a secret if useSecurity is true | Random value |
+| `master.admin.existingSecret`     | The name of an existing secret containing the admin credentials. | `""`|
+| `master.admin.userKey`            | The key in the existing admin secret containing the username. | `jenkins-admin-user` |
+| `master.admin.passwordKey`        | The key in the existing admin secret containing the password. | `jenkins-admin-password` |
 | `master.jenkinsHome`              | Custom Jenkins home path             | `/var/jenkins_home`                       |
 | `master.jenkinsRef`               | Custom Jenkins reference path        | `/usr/share/jenkins/ref`                  |
 | `master.jenkinsAdminEmail`        | Email address for the administrator of the Jenkins instance | Not set            |
