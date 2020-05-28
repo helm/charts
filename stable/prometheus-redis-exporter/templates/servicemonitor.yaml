@@ -32,8 +32,8 @@ spec:
       app: {{ template "prometheus-redis-exporter.name" . }}
       release: {{ .Release.Name }}
 {{- if .Values.serviceMonitor.targetLabels }}
+  targetLabels:
 {{- range .Values.serviceMonitor.targetLabels }}
-  targetLabels: 
     - {{ . }}
 {{- end }}
 {{- end }}
