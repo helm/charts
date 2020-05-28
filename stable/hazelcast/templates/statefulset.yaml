@@ -23,6 +23,8 @@ spec:
         app.kubernetes.io/instance: "{{ .Release.Name }}"
         app.kubernetes.io/managed-by: "{{ .Release.Service }}"
         role: hazelcast
+      annotations:
+        checksum/hazelcast-config: {{ toYaml .Values.hazelcast.yaml | sha256sum }}
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
