@@ -48,6 +48,9 @@ spec:
           - {{ .Values.config.excludeDatabases | join "," }}
           {{- end }}
           {{- end }}
+{{- if .Values.config.extraArgs }}
+{{ toYaml .Values.config.extraArgs | indent 12 }}
+{{- end }}
           env:
           {{- if .Values.config.datasourceSecret }}
           - name: DATA_SOURCE_NAME

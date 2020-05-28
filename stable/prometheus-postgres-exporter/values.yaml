@@ -86,8 +86,15 @@ config:
   disableSettingsMetrics: false
   autoDiscoverDatabases: false
   excludeDatabases: []
+  ## Additional container arguments
+  ## Available flags: https://github.com/wrouesnel/postgres_exporter#flags
+  ## Read about overlap with environment variables: https://github.com/wrouesnel/postgres_exporter#environment-variables
+  ##
+  extraArgs: []
+  #   - --log.level=debug
+  ###
   # this are the defaults queries that the exporter will run, extracted from: https://github.com/wrouesnel/postgres_exporter/blob/master/queries.yaml
-  queries: |-
+  queries: |
     pg_replication:
       query: "SELECT EXTRACT(EPOCH FROM (now() - pg_last_xact_replay_timestamp())) as lag"
       master: true
@@ -212,7 +219,7 @@ config:
             description: "Number of buffer hits in this table's TOAST table indexes (if any)"
 
     pg_database:
-      query: "SELECT pg_database.datname, pg_database_size(pg_database.datname) as size FROM pg_database"
+      query: "SELECT pg_database.datname, pg_database_size(pg_database.datname) as size_bytes FROM pg_database"
       master: true
       cache_seconds: 30
       metrics:
@@ -224,7 +231,7 @@ config:
             description: "Disk space used by the database"
 
     pg_stat_statements:
-      query: "SELECT t2.rolname, t3.datname, queryid, calls, total_time / 1000 as total_time_seconds, min_time / 1000 as min_time_seconds, max_time / 1000 as max_time_seconds, mean_time / 1000 as mean_time_seconds, stddev_time / 1000 as stddev_time_seconds, rows, shared_blks_hit, shared_blks_read, shared_blks_dirtied, shared_blks_written, local_blks_hit, local_blks_read, local_blks_dirtied, local_blks_written, temp_blks_read, temp_blks_written, blk_read_time / 1000 as blk_read_time_seconds, blk_write_time / 1000 as blk_write_time_seconds FROM pg_stat_statements t1 join pg_roles t2 on (t1.userid=t2.oid) join pg_database t3 on (t1.dbid=t3.oid)"
+      query: "SELECT t2.rolname, t3.datname, queryid, calls, total_time / 1000 as total_time_seconds, min_time / 1000 as min_time_seconds, max_time / 1000 as max_time_seconds, mean_time / 1000 as mean_time_seconds, stddev_time / 1000 as stddev_time_seconds, rows, shared_blks_hit, shared_blks_read, shared_blks_dirtied, shared_blks_written, local_blks_hit, local_blks_read, local_blks_dirtied, local_blks_written, temp_blks_read, temp_blks_written, blk_read_time / 1000 as blk_read_time_seconds, blk_write_time / 1000 as blk_write_time_seconds FROM pg_stat_statements t1 JOIN pg_roles t2 ON (t1.userid=t2.oid) JOIN pg_database t3 ON (t1.dbid=t3.oid)"
       master: true
       metrics:
         - rolname:
