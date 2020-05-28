@@ -13,7 +13,7 @@ agent:
     LOGGING_WRITE_EVENTS: false
     LOGGING_REQUEST_TRACKING: false
     AUTODISCO_ALLOWED_NAMESPACES: "default"
-    LOGGING_LEVEL: warn
+    LOGGING_LEVEL: info
   resources: {}
 
 logagent:

@@ -18,6 +18,7 @@ rules:
   - list
   - get
   - watch
+  - pods/log
 {{- if or (.Values.containerToken) (.Values.infraToken) }}
 - apiGroups:
   - ""
