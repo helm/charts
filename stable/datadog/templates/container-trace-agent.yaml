@@ -25,6 +25,10 @@
       value: "true"
     - name: DD_APM_RECEIVER_PORT
       value: {{ .Values.datadog.apm.port | quote }}
+  {{- if .Values.datadog.apm.useSocketVolume -}}
+    - name: DD_APM_RECEIVER_SOCKET
+      value: {{ .Values.datadog.apm.socketPath | quote }}
+  {{- end }}
   {{- range $value := .Values.agents.containers.traceAgent.env }}
     - name: {{ $value.name }}
       value: {{ $value.value | quote }}
@@ -45,6 +49,10 @@
     {{- if eq .Values.targetSystem "windows" }}
     - name: runtimesocket
       mountPath: {{ template "datadog.dockerOrCriSocketPath" . }}
+    {{- end }}
+    {{- if .Values.datadog.apm.useSocketVolume }}
+    - name: apmsocket
+      mountPath: {{ (dir .Values.datadog.apm.socketPath) }}
     {{- end }}
   livenessProbe:
 {{ toYaml .Values.agents.containers.traceAgent.livenessProbe | indent 4 }}

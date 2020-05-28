@@ -32,6 +32,8 @@ prometheus:
     interval: 10s
     # Alternative namespace to install the ServiceMonitor in
     namespace: ""
+    # Labels to add to the service monitor
+    labels: {}
 
 image:
   repository: jtblin/kube2iam
