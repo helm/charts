@@ -95,7 +95,10 @@ ndm:
     size: "10737418240"
     count: "0"
   filters:
+    enableOsDiskExcludeFilter: true
+    enableVendorFilter: true
     excludeVendors: "CLOUDBYT,OpenEBS"
+    enablePathFilter: true
     includePaths: ""
     excludePaths: "loop,fd0,sr0,/dev/ram,/dev/dm-,/dev/md"
   probes:
