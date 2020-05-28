@@ -14,11 +14,11 @@ rules:
   resources:
   - events
   - pods
+  - pods/log
   verbs:
   - list
   - get
   - watch
-  - pods/log
 {{- if or (.Values.containerToken) (.Values.infraToken) }}
 - apiGroups:
   - ""
