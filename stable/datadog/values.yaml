@@ -484,6 +484,12 @@ clusterAgent:
   #
   nodeSelector:  # {}
 
+  ## @param affinity - object - optional
+  ## Allow the Cluster Agent Deployment to schedule using affnity rules
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  #
+  affinity:  # {}
+
   ## @param healthPort - integer - optional - default: 8080
   ## Port number use the cluster-agent to server healthz endpoint
   healthPort: 8080
