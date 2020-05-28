@@ -71,7 +71,10 @@ The following table lists the configurable parameters of the OpenEBS chart and t
 | `ndm.sparse.path`                       | Directory where Sparse files are created      | `/var/openebs/sparse`                     |
 | `ndm.sparse.size`                       | Size of the sparse file in bytes              | `10737418240`                             |
 | `ndm.sparse.count`                      | Number of sparse files to be created          | `0`                                       |
+| `ndm.filters.enableOsDiskExcludeFilter` | Enable filters of OS disk exclude             | `true`                                    |
+| `ndm.filters.enableVendorFilter`        | Enable filters of venders                     | `true`                                    |
 | `ndm.filters.excludeVendors`            | Exclude devices with specified vendor         | `CLOUDBYT,OpenEBS`                        |
+| `ndm.filters.enablePathFilter`          | Enable filters of paths                       | `true`                                    |
 | `ndm.filters.excludePaths`              | Exclude devices with specified path patterns  | `loop,fd0,sr0,/dev/ram,/dev/dm-,/dev/md`  |
 | `ndm.filters.includePaths`              | Include devices with specified path patterns  | `""`                                      |
 | `ndm.filters.excludePaths`              | Exclude devices with specified path patterns  | `loop,fd0,sr0,/dev/ram,/dev/dm-,/dev/md`  |
