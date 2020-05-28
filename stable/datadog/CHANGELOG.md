@@ -1,5 +1,9 @@
 # Datadog changelog
 
+## 2.3.6
+
+* Add `affinity` parameter in `values.yaml` for cluster agent deployment
+
 ## 2.3.5
 
 * Add `DD_AC_INCLUDE` and `DD_AC_EXCLUDE` to all containers
