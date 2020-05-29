@@ -243,7 +243,7 @@ Returns kubernetes pod template configuration as code
   yaml: |-
     {{- tpl (trim .Values.agent.yamlTemplate) . | nindent 4 }}
 {{- end }}
-  yamlMergeStrategy: "override"
+  yamlMergeStrategy: {{ .Values.agent.yamlMergeStrategy }}
 {{- end -}}
 
 {{/*
