@@ -1,3 +1,5 @@
+### 1.27.0
+* [57cd4b264](https://github.com/kubernetes/charts/commit/57cd4b264): Bump up GoCD Version to 20.4.0
 ### 1.26.1
 * [7a9cd1bb4](https://github.com/kubernetes/charts/commit/7a9cd1bb4): Updated permissions of files in ~/.ssh directory
 
