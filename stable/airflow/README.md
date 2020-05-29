@@ -572,6 +572,7 @@ __Airflow WebUI Values:__
 | `web.livenessProbe.*` | configs for the web Service liveness probe | `<see values.yaml>` |
 | `web.secretsDir` | the directory in which to mount secrets on web containers | `/var/airflow/secrets` |
 | `web.secrets` | secret names which will be mounted as a file at `{web.secretsDir}/<secret_name>` | `[]` |
+| `web.secretsMap` | you can use secretsMap to specify a map and all the secrets will be stored within it secrets will be mounted as files at `{web.secretsDir}/<secrets_in_map>`. If you use web.secretsMap, then it overrides `web.secrets`.| `""` |
 
 __Airflow Worker Values:__
 
@@ -593,6 +594,7 @@ __Airflow Worker Values:__
 | `workers.terminationPeriod` | how many seconds to wait for tasks on a worker to finish before SIGKILL | `60` |
 | `workers.secretsDir` | directory in which to mount secrets on worker containers | `/var/airflow/secrets` |
 | `workers.secrets` | secret names which will be mounted as a file at `{workers.secretsDir}/<secret_name>` | `[]` |
+| `workers.secretsMap` | you can use secretsMap to specify a map and all the secrets will be stored within it secrets will be mounted as files at `{workers.secretsDir}/<secrets_in_map>`. If you use workers.secretsMap, then it overrides `workers.secrets`.| `""` |
 
 __Airflow Flower Values:__
 
