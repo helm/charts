@@ -12,9 +12,10 @@ metadata:
     app.kubernetes.io/name: "{{ template "datadog.fullname" . }}"
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
-    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
   annotations:
     checksum/clusteragent-config: {{ tpl (toYaml .Values.clusterAgent.datadog_cluster_yaml) . | sha256sum }}
 data:
-{{tpl (toYaml .Values.clusterAgent.datadog_cluster_yaml) . | indent 2}}
+  datadog-cluster.yaml: |
+{{ tpl (toYaml .Values.clusterAgent.datadog_cluster_yaml) . | indent 4 }}
 {{- end }}
