@@ -159,10 +159,16 @@ spec:
             - name: scripts
               mountPath: /home/airflow/scripts
             {{- $secretsDir := .Values.workers.secretsDir }}
+            {{- if .Values.workers.secretsMap }}
+            - name: {{ .Values.workers.secretsMap }}-volume
+              readOnly: true
+              mountPath: {{ $secretsDir }}
+            {{- else }}
             {{- range .Values.workers.secrets }}
             - name: {{ . }}-volume
               readOnly: true
               mountPath: {{ $secretsDir }}/{{ . }}
+            {{- end }}
             {{- end }}
             {{- if .Values.dags.persistence.enabled }}
             - name: dags-data
@@ -234,10 +240,16 @@ spec:
           configMap:
             name: {{ include "airflow.fullname" . }}-scripts
             defaultMode: 0755
+        {{- if .Values.workers.secretsMap }}
+        - name: {{ .Values.workers.secretsMap }}-volume
+          secret:
+            secretName: {{ .Values.workers.secretsMap }}
+        {{- else }}
         {{- range .Values.workers.secrets }}
         - name: {{ . }}-volume
           secret:
             secretName: {{ . }}
+        {{- end }}
         {{- end }}
         {{- if .Values.dags.persistence.enabled }}
         - name: dags-data

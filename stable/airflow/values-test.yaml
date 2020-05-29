@@ -104,7 +104,25 @@ airflow:
   ##           name: airflow-ldap-password
   ##           key: value
   ##
-  extraEnv: []
+  extraEnv:
+    - name: AIRFLOW__GOOGLE__CLIENT_ID
+      valueFrom:
+        secretKeyRef:
+          name: airflow
+          key: google_client_id
+    - name: AIRFLOW__GOOGLE__CLIENT_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: airflow
+          key: google_client_secret
+    - name: AIRFLOW__GOOGLE__OAUTH_CALLBACK_ROUTE
+      value: "/oauth2callback"
+    - name: AIRFLOW__GOOGLE__DOMAIN
+      value: "tractable.ai"
+    - name: AIRFLOW__WEBSERVER__AUTHENTICATE
+      value: "True"
+    - name: AIRFLOW__WEBSERVER__AUTH_BACKEND
+      value: airflow.contrib.auth.backends.google_auth
 
   ## extra configMap volumeMounts for the web/scheduler/worker Pods
   ##
@@ -136,7 +154,13 @@ airflow:
   ##   extraPipPackages:
   ##     - "airflow-exporter==1.3.1"
   ##
-  extraPipPackages: []
+  extraPipPackages:
+    - "airflow-exporter"
+    - "apache-airflow[aws]"
+    - "apache-airflow[mysql]"
+    - "apache-airflow[postgres]"
+    - "apache-airflow[slack]"
+    - "apache-airflow[statsd]"
 
   ## extra volumeMounts for the web/scheduler/worker Pods
   ##
@@ -366,7 +390,7 @@ web:
   ## NOTE:
   ## - should be compatible with `ingress.web.path` config
   ##
-  baseUrl: "http://localhost:8080"
+  baseUrl: "https://airflow.dev.k8s.tractable.io"
 
   ## sets `AIRFLOW__CORE__STORE_SERIALIZED_DAGS`
   ##
@@ -382,7 +406,8 @@ web:
   ##   extraPipPackages:
   ##     - "apache-airflow[google_auth]==1.10.10"
   ##
-  extraPipPackages: []
+  extraPipPackages:
+    - "apache-airflow[google_auth]==1.10.10"
 
   ## the number of seconds to wait (in bash) before starting the web container
   ##
@@ -431,15 +456,7 @@ web:
   ##     - airflow-web-secret
   ##
   secrets: []
-
-  ## you can use secretsMap to specify a map and all the secrets will be stored within it
-  ## secrets will be mounted as files at `{web.secretsDir}/<secrets_in_map>`
-  ## If you use web.secretsMap, then it overrides web.secrets.
-  ##
-  ## EXAMPLE:
-  ## secretsMap: airflow-secrets
-  ##
-  secretsMap:
+  # secretsMap: "airflow"
 
 ###################################
 # Airflow - Worker Configs
@@ -552,15 +569,6 @@ workers:
   ##     - airflow-worker-secret
   ##
   secrets: []
-
-  ## you can use secretsMap to specify a map and all the secrets will be stored within it
-  ## secrets will be mounted as files at `{workers.secretsDir}/<secrets_in_map>`
-  ## If you use web.secretsMap, then it overrides workers.secrets.
-  ##
-  ## EXAMPLE:
-  ## secretsMap: airflow-secrets
-  ##
-  secretsMap:
 
 ###################################
 # Airflow - Flower Configs
@@ -749,15 +757,7 @@ dags:
   ## configs for the DAG git repository & sync container
   ##
   git:
-    ## url of the git repository
-    ##
-    ## EXAMPLE: (HTTP)
-    ##   url: "https://github.com/torvalds/linux.git"
-    ##
-    ## EXAMPLE: (SSH)
-    ##   url: "ssh://git@github.com:torvalds/linux.git"
-    ##
-    url: ""
+    url: "ssh://git@bitbucket.org/xmachinas/tractable.airflow.git"
 
     ## the branch/tag/sha1 which we clone
     ##
@@ -770,7 +770,7 @@ dags:
     ## - the secret commonly includes files: id_rsa, id_rsa.pub, known_hosts
     ## - known_hosts is NOT NEEDED if `git.sshKeyscan` is true
     ##
-    secret: ""
+    secret: airflow
 
     ## if we should implicitly trust [git.repoHost]:git.repoPort, by auto creating a ~/.ssh/known_hosts
     ##
@@ -782,7 +782,7 @@ dags:
     ## - this is not needed if known_hosts is provided in `git.secret`
     ## - git.repoHost and git.repoPort ARE REQUIRED for this to work
     ##
-    sshKeyscan: false
+    sshKeyscan: true
 
     ## the name of the private key file in your `git.secret`
     ##
@@ -799,7 +799,7 @@ dags:
     ## EXAMPLE:
     ##   repoHost: "github.com"
     ##
-    repoHost: ""
+    repoHost: "bitbucket.org"
 
     ## the port of the git repo
     ##
@@ -852,7 +852,7 @@ dags:
     ## - this is NOT required for the git-sync sidecar to work
     ## - in most environments, you can leave this as false
     ##
-    enabled: false
+    enabled: true
 
     ## resource requests/limits for the git-clone container
     ##
@@ -887,134 +887,7 @@ dags:
     ## EXAMPLE:
     ##   syncSubPath: "/subdirWithDags"
     ##
-    syncSubPath: ""
-
-###################################
-# Kubernetes - Ingress Configs
-###################################
-ingress:
-  ## if we should deploy Ingress resources
-  ##
-  ## NOTE:
-  ## - if you want to change url prefix for web ui or flower (even if you do not use this Ingress),
-  ##   you can change `web.baseUrl` and `flower.urlPrefix`
-  ##
-  enabled: false
-
-  ## configs for the Ingress of the web Service
-  ##
-  web:
-    ## annotations for the web Ingress
-    ##
-    annotations: {}
-
-    ## the path for the web Ingress
-    ##
-    ## WARNING:
-    ## - do NOT include the trailing slash (for root, set an empty string)
-    ##
-    ## NOTE:
-    ## - should be compatible with `web.baseUrl` config
-    ##
-    ## EXAMPLE: (if set to "/airflow")
-    ## - UI:     http://example.com/airflow/admin
-    ## - API:    http://example.com/airflow/api
-    ## - HEALTH: http://example.com/airflow/health
-    ##
-    path: ""
-
-    ## the hostname for the web Ingress
-    ##
-    host: ""
-
-    ## the livenessPath for the web Ingress
-    ##
-    ## NOTE:
-    ## - if set to "", defaults to: `{ingress.web.path}/health`
-    ##
-    livenessPath: ""
-
-    ## configs for web Ingress TLS
-    ##
-    tls:
-      ## enable TLS termination for the web Ingress
-      ##
-      enabled: false
-
-      ## the name of a pre-created Secret containing a TLS private key and certificate
-      ##
-      ## NOTE:
-      ## - this MUST be specified if `ingress.web.tls.enabled` is true
-      ##
-      secretName: ""
-
-    ## http paths to add to the web Ingress before the default path
-    ##
-    ## EXAMPLE:
-    ##   precedingPaths:
-    ##     - path: "/*"
-    ##       serviceName: "ssl-redirect"
-    ##       servicePort: "use-annotation"
-    ##
-    precedingPaths: []
-
-    ## http paths to add to the web Ingress after the default path
-    ##
-    ## EXAMPLE:
-    ##   succeedingPaths:
-    ##     - path: "/extra-service"
-    ##       serviceName: "extra-service"
-    ##       servicePort: "use-annotation"
-    ##
-    succeedingPaths: []
-
-  ## configs for the Ingress of the flower Service
-  ##
-  flower:
-    ## annotations for the flower Ingress
-    ##
-    annotations: {}
-
-    ## the path for the flower Ingress
-    ##
-    ## WARNING:
-    ## - do NOT include the trailing slash (for root, set an empty string)
-    ##
-    ## NOTE:
-    ## - should match `flower.urlPrefix` config
-    ##
-    ## EXAMPLE: (if set to "/airflow/flower")
-    ## - UI: http://example.com/airflow/flower
-    ##
-    path: ""
-
-    ## the hostname for the flower Ingress
-    ##
-    host: ""
-
-    ## the livenessPath for the flower Ingress
-    ##
-    ## WARNING:
-    ## - keep the trailing slash
-    ##
-    ## NOTE:
-    ## - if set to "", defaults to: `{ingress.flower.path}/`
-    ##
-    livenessPath: ""
-
-    ## configs for flower Ingress TLS
-    ##
-    tls:
-      ## enable TLS termination for the flower Ingress
-      ##
-      enabled: false
-
-      ## the name of a pre-created Secret containing a TLS private key and certificate
-      ##
-      ## NOTE:
-      ## - this MUST be specified if `ingress.flower.tls.enabled` is true
-      ##
-      secretName: ""
+    syncSubPath: "/src/dags"
 
 ###################################
 # Kubernetes - RBAC
