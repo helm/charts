@@ -57,6 +57,26 @@ spec:
                 configMapKeyRef:
                   name: {{ include "mercure.fullname" . }}
                   key: allowAnonymous
+            - name: SUBSCRIPTIONS
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "mercure.fullname" . }}
+                  key: subscriptions
+            - name: METRICS
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "mercure.fullname" . }}
+                  key: metrics
+            - name: METRICS_LOGIN
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "mercure.fullname" . }}
+                  key: metricsLogin
+            - name: METRICS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "mercure.fullname" . }}
+                  key: metricsPassword
             - name: CORS_ALLOWED_ORIGINS
               valueFrom:
                 configMapKeyRef:
@@ -117,6 +137,16 @@ spec:
                 configMapKeyRef:
                   name: {{ include "mercure.fullname" . }}
                   key: writeTimeout
+            - name: DISPATCH_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "mercure.fullname" . }}
+                  key: dispatchTimeout
+            - name: COMPRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "mercure.fullname" . }}
+                  key: compress
             - name: USE_FORWARDED_HEADERS
               valueFrom:
                 configMapKeyRef:
