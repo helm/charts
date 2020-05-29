@@ -1,5 +1,9 @@
 {{- if .Values.master.ingress.enabled }}
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
 apiVersion: {{ .Values.master.ingress.apiVersion }}
+{{- end }}
 kind: Ingress
 metadata:
   namespace: {{ template "jenkins.namespace" . }}
