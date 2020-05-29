@@ -11,10 +11,11 @@ metadata:
 spec:
   template:
     metadata:
-    {{- if .Values.halyard.annotations }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap/halyard-config.yaml") . | sha256sum }}
+          {{- if .Values.halyard.annotations }}
 {{ toYaml .Values.halyard.annotations | indent 8 }}
-    {{- end }}
+          {{- end }}
       labels:
 {{ include "spinnaker.standard-labels" . | indent 8 }}
     spec:
