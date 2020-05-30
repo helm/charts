@@ -342,6 +342,13 @@ service:
   amqpNodePort: null
   managerNodePort: null
 
+  ## Custom annotations for discovery service
+  ## Will fallback to `service.annotations` while `separateAnnotations: false`
+  ##
+  discovery:
+    separateAnnotations: false
+    annotations: {}
+
 podManagementPolicy: OrderedReady
 
 ## Statefulsets rolling update update strategy
