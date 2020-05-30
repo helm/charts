@@ -33,5 +33,14 @@ spec:
       {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
       nodePort: {{ .Values.service.nodePort }}
       {{- end }}
+      {{- if .Values.grpc.enabled }}
+    - name: grpc
+      port: {{ .Values.service.grpcPort }}
+      protocol: TCP
+      targetPort: grpc
+      {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.grpcNodePort))) }}
+      nodePort: {{ .Values.service.grpcNodePort }}
+      {{- end }}
+      {{- end }}
   selector:
     {{- include "centrifugo.selectorLabels" . | nindent 4 }}

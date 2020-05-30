@@ -17,7 +17,9 @@ service:
   loadBalancerSourceRanges: []
   type: ClusterIP
   port: 8000
+  grpcPort: 10000
   nodePort: ""
+  grpcNodePort: ""
 
 ingress:
   enabled: false
@@ -62,6 +64,14 @@ admin:
   ## Defaults to a random 10-character alphanumeric string if not set
   password: ""
 
+## Centrifugo token_hmac_secret_key to check JWT signature
+## Defaults to a random 10-character alphanumeric string if not set
+token_hmac_secret_key: ""
+
+## Centrifugo api_key for Centrifugo API endpoint authorization
+## Defaults to a random 10-character alphanumeric string if not set
+api_key: ""
+
 args:
 - --config=/centrifugo/config.json
 - --admin
@@ -72,3 +82,7 @@ args:
 # - --redis_sentinels=redis:26379
 
 resources: {}
+
+# for GRPC support
+grpc:
+  enabled: false

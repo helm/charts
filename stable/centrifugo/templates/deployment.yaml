@@ -33,6 +33,10 @@ spec:
         - centrifugo
         args:
         - --port={{ .Values.service.port }}
+        {{- if .Values.grpc.enabled }}
+        - --grpc_api
+        - --grpc_api_port={{ .Values.service.grpcPort }}
+        {{- end }}
         {{- range $arg := .Values.args }}
         - {{ $arg }}
         {{- end }}
@@ -52,6 +56,16 @@ spec:
             secretKeyRef:
               name: {{ include "centrifugo.fullname" . }}
               key: secret
+        - name: CENTRIFUGO_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "centrifugo.fullname" . }}
+              key: api_key
+        - name: CENTRIFUGO_TOKEN_HMAC_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "centrifugo.fullname" . }}
+              key: token_hmac_secret_key
         volumeMounts:
         - name: "{{ include "centrifugo.fullname" . }}-config"
           mountPath: "/centrifugo"
@@ -59,6 +73,10 @@ spec:
         ports:
         - name: http
           containerPort: {{ .Values.service.port }}
+        {{- if .Values.grpc.enabled }}
+        - name: grpc
+          containerPort: {{ .Values.service.grpcPort }}
+        {{- end }}
         livenessProbe:
           httpGet:
             path: /health
