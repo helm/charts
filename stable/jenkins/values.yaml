@@ -529,10 +529,10 @@ agent:
   #     - key: "key"
   #       operator: "Equal"
   #       value: "value"
-  # Timeout in seconds for an agent to be online
-  slaveConnectTimeout: 100
   # Defines how the raw yaml field gets merged with yaml definitions from inherited pod templates: merge or override
   yamlMergeStrategy: "override"
+  # Timeout in seconds for an agent to be online
+  slaveConnectTimeout: 100
 
   # Below is the implementation of custom pod templates for the default configured kubernetes cloud.
   # Add a key under podTemplates for each pod template. Each key (prior to | character) is just a label, and can be any value.
