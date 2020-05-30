@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ template "fluentd-cloudwatch.fullname" . }}
@@ -8,6 +8,10 @@ metadata:
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "fluentd-cloudwatch.name" . }}
+      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
