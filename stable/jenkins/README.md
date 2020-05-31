@@ -33,21 +33,11 @@ Configuration is done via [Jenkins Configuration as Code Plugin](https://github.
 That means that changes in values which result in a configuration change are always applied.
 In contrast the XML configuration was only applied during the first start and never altered.
 
-:exclamation::exclamation::exclamation: Attention: This also means if you manually altered configuration then this will most likely be reset to what was configured by default. :exclamation::exclamation::exclamation:
-
-`securityRealm` and `authorizationStrategy` are not configured using configuration as code so these should be identical to what you configured before.
-It's advised to supply your own configuration here. e.g.
-
-```yaml
-master:
-  JCasC:
-    configScripts:
-      security: |
-        jenkins:
-          authorizationStrategy:
-            loggedInUsersCanDoAnything:
-              allowAnonymousRead: false
-```
+:exclamation::exclamation::exclamation:
+Attention:
+This also means if you manually altered configuration then this will most likely be reset to what was configured by default.
+It also applies to `securityRealm` and `authorizationStrategy` as they are also configured using configuration as code.
+:exclamation::exclamation::exclamation:
 
 #### Image does not run as root anymore
 
@@ -221,7 +211,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.route.labels`             | Route labels                         | `{}`                                      |
 | `master.route.path`               | Route path                           | Not set                                   |
 | `master.jenkinsUrlProtocol`       | Set protocol for JenkinsLocationConfiguration.xml | Set to `https` if `Master.ingress.tls`, `http` otherwise |
-| `master.JCasC.enabled`            | Wheter Jenkins Configuration as Code is enabled or not | `true`                  |
+| `master.JCasC.enabled`            | Whether Jenkins Configuration as Code is enabled or not | `true`                  |
 | `master.JCasC.defaultConfig`      | Enables default Jenkins configuration via configuration as code plugin | `true`  |
 | `master.JCasC.configScripts`      | List of Jenkins Config as Code scripts | `{}`                                    |
 | `master.JCasC.securityRealm`      | Jenkins Config as Code for Security Realm | `legacy`                             |
