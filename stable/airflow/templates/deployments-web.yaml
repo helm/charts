@@ -154,10 +154,16 @@ spec:
           volumeMounts:
             - name: scripts
               mountPath: /home/airflow/scripts
+            {{- if .Values.web.secretsMap }}
+            - name: {{ .Values.web.secretsMap }}-volume
+              readOnly: true
+              mountPath: {{ $.Values.web.secretsDir }}
+            {{- else }}
             {{- range .Values.web.secrets }}
             - name: {{ . }}-volume
               readOnly: true
               mountPath: {{ $.Values.web.secretsDir }}/{{ . }}
+            {{- end }}
             {{- end }}
             {{- if .Values.dags.persistence.enabled }}
             - name: dags-data
@@ -255,18 +261,25 @@ spec:
           configMap:
             name: {{ include "airflow.fullname" . }}-scripts
             defaultMode: 0755
+        {{- if .Values.web.secretsMap }}
+        - name: {{ .Values.web.secretsMap }}-volume
+          secret:
+            secretName: {{ .Values.web.secretsMap }}
+        {{- else }}
         {{- range .Values.web.secrets }}
         - name: {{ . }}-volume
           secret:
             secretName: {{ . }}
         {{- end }}
+        {{- end }}
+        {{- if .Values.dags.persistence.enabled }}
         - name: dags-data
-          {{- if .Values.dags.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ .Values.dags.persistence.existingClaim | default (include "airflow.fullname" .) }}
-          {{- else if or (.Values.dags.initContainer.enabled) (.Values.dags.git.gitSync.enabled) }}
+            claimName: {{ .Values.dags.persistence.existingClaim | default (include "airflow.fullname" . ) }}
+        {{- else if or (.Values.dags.initContainer.enabled) (.Values.dags.git.gitSync.enabled) }}
+        - name: dags-data
           emptyDir: {}
-          {{- end }}
+        {{- end }}
         {{- if .Values.logs.persistence.enabled }}
         - name: logs-data
           persistentVolumeClaim:

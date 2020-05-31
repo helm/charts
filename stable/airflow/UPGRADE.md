@@ -21,8 +21,9 @@ __The following IMPROVEMENTS have been made:__
 __The following values have CHANGED DEFAULTS:__
 
 * `airflow.fernetKey`:
-    * Is now `""` by default, to enforce that users generate a custom one.
-      (However, please consider using `airflow.extraEnv` to define it from a pre-created secret)
+    * ~~Is now `""` by default, to enforce that users generate a custom one.~~
+      ~~(However, please consider using `airflow.extraEnv` to define it from a pre-created secret)~~
+      __(We have undone this change in `7.1.1`, but we still encourage you to set a custom fernetKey!)__
 * `dags.installRequirements`:
     * Is now `false` by default, as this was an unintended change with the 7.0.0 upgrade.
 

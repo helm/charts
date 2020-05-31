@@ -1,5 +1,26 @@
 # Datadog changelog
 
+## 2.3.8
+
+* Fix templating errors when `clusterAgent.datadog_cluster_yaml` is being used.
+
+## 2.3.7
+
+* Fix an agent warning at startup because of a deprecated parameter
+
+## 2.3.6
+
+* Add `affinity` parameter in `values.yaml` for cluster agent deployment
+
+## 2.3.5
+
+* Add `DD_AC_INCLUDE` and `DD_AC_EXCLUDE` to all containers
+* Add "Unix Domain Socket" support in trace-agent
+* Add new parameter to specify the dogstatsd socket path on the host
+* Fix typos in values.yaml
+* Update "tags:" example in values.yaml
+* Add "rate_limit_queries_*" in the datadog.cluster-agent prometheus check configuration
+
 ## 2.3.4
 
 * Fix default values in `values.yaml` to prevent warnings with Helm 2.x
