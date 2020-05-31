@@ -551,6 +551,9 @@ For a full list of configurable values please refer to the [Grafana chart](https
 | `kubelet.serviceMonitor.cAdvisor` | Enable scraping `/metrics/cadvisor` from kubelet's service | `true` |
 | `kubelet.serviceMonitor.cAdvisorMetricRelabelings` | The `metric_relabel_configs` for scraping cAdvisor. | `` |
 | `kubelet.serviceMonitor.cAdvisorRelabelings` | The `relabel_configs` for scraping cAdvisor. | `[{"sourceLabels":["__metrics_path__"], "targetLabel":"metrics_path"}]` |
+| `kubelet.serviceMonitor.probes` | Enable scraping `/metrics/probes` from kubelet's service | `true` |
+| `kubelet.serviceMonitor.probesMetricRelabelings` | The `metric_relabel_configs` for scraping kubelet. | `` |
+| `kubelet.serviceMonitor.probesRelabelings` | The `relabel_configs` for scraping kubelet. | `[{"sourceLabels":["__metrics_path__"], "targetLabel":"metrics_path"}]` |
 | `kubelet.serviceMonitor.https` | Enable scraping of the kubelet over HTTPS. For more information, see https://github.com/coreos/prometheus-operator/issues/926 | `true` |
 | `kubelet.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `kubelet.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping kubelet. | `` |
