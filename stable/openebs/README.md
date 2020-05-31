@@ -40,7 +40,7 @@ The following table lists the configurable parameters of the OpenEBS chart and t
 | `rbac.create`                           | Enable RBAC Resources                         | `true`                                    |
 | `rbac.pspEnabled`                       | Create pod security policy resources          | `false`                                   |
 | `image.pullPolicy`                      | Container pull policy                         | `IfNotPresent`                            |
-| `image.registry`                        | Specify witch docker registry to use          | `quay.io/`                                |
+| `image.repository`                      | Specify which docker registry to use          | `quay.io/`                                |
 | `apiserver.enabled`                     | Enable API Server                             | `true`                                    |
 | `apiserver.image`                       | Image for API Server                          | `openebs/m-apiserver`                     |
 | `apiserver.imageTag`                    | Image Tag for API Server                      | `1.10.0`                                  |
@@ -71,7 +71,10 @@ The following table lists the configurable parameters of the OpenEBS chart and t
 | `ndm.sparse.path`                       | Directory where Sparse files are created      | `/var/openebs/sparse`                     |
 | `ndm.sparse.size`                       | Size of the sparse file in bytes              | `10737418240`                             |
 | `ndm.sparse.count`                      | Number of sparse files to be created          | `0`                                       |
+| `ndm.filters.enableOsDiskExcludeFilter` | Enable filters of OS disk exclude             | `true`                                    |
+| `ndm.filters.enableVendorFilter`        | Enable filters of venders                     | `true`                                    |
 | `ndm.filters.excludeVendors`            | Exclude devices with specified vendor         | `CLOUDBYT,OpenEBS`                        |
+| `ndm.filters.enablePathFilter`          | Enable filters of paths                       | `true`                                    |
 | `ndm.filters.excludePaths`              | Exclude devices with specified path patterns  | `loop,fd0,sr0,/dev/ram,/dev/dm-,/dev/md`  |
 | `ndm.filters.includePaths`              | Include devices with specified path patterns  | `""`                                      |
 | `ndm.filters.excludePaths`              | Exclude devices with specified path patterns  | `loop,fd0,sr0,/dev/ram,/dev/dm-,/dev/md`  |

@@ -48,6 +48,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.es.logstash_format`          | Enable Logstash format compatibility. | `On` |
 | `backend.es.logstash_prefix`  | Index Prefix. If Logstash_Prefix is equal to 'mydata' your index will become 'mydata-YYYY.MM.DD'. | `kubernetes_cluster` |
 | `backend.es.logstash_prefix_key`  | Index Prefix key. When included, the value in the record that belongs to the key will be looked up and overwrite `Logstash_Prefix` for index generation. If `Logstash_Prefix_Key` = 'mydata' the index becomes 'mydata-YYYY.MM.DD'. | `` |
+| `backend.es.logstash_dateformat`  | Time format (based on strftime) to generate the second part of the Index name. Fluent-bit by default use %Y.%m.%d | `` |
 | `backend.es.replace_dots`     | Enable/Disable Replace_Dots option. | `On` |
 | `backend.es.http_user`        | Optional username credential for Elastic X-Pack access. | `` |
 | `backend.es.http_passwd`      | Password for user defined in HTTP_User. | `` |
@@ -133,6 +134,8 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `input.tail.parser`                | Specify Parser in tail input.        | `docker`                                             |
 | `input.tail.path`                  | Specify log file(s) through the use of common wildcards.        | `/var/log/containers/*.log`                                             |
 | `input.tail.ignore_older`          | Ignores files that have been last modified before this time in seconds. Supports m,h,d (minutes, hours,days) syntax.        | ``                                             |
+| `input.tail.dockerMode`            | Recombine split Docker log lines before passing them to the parser.        | `false`                                             |
+| `input.tail.dockerModeFlush`       | Wait period time in seconds to flush queued unfinished split lines in docker mode.        | `4`                                             |
 | `input.systemd.enabled`            | [Enable systemd input](https://docs.fluentbit.io/manual/input/systemd)                   | `false`                                       |
 | `input.systemd.filters.systemdUnit` | Please see https://docs.fluentbit.io/manual/input/systemd | `[docker.service, kubelet.service`, `node-problem-detector.service]`                                       |
 | `input.systemd.maxEntries`         | Please see https://docs.fluentbit.io/manual/input/systemd | `1000`                             |

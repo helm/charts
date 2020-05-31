@@ -5,6 +5,26 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.23.2
+
+In the `jenkins.xml.podTemplate` helper function, allow templating of all string values under `agent.volumes` except `type` by rendering them with the `tpl` function
+
+## 1.23.1
+
+Added auto detection for Ingress API version
+
+## 1.23.0
+
+Allow to use an existing secret for the jenkins admin credentials
+
+## 1.22.0
+
+Add support for UI security in the default JCasC via `master.JCasC.securityRealm` and `master.JCasC.authorizationStrategy` which deny anonymous access by default
+
+## 1.21.3
+
+Render `agent.envVars` in kubernetes pod template JCasC
+
 ## 1.21.2
 
 Cleanup `agent.yamlTemplate` rendering in kubernetes pod template XML configuration
