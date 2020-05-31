@@ -5,6 +5,9 @@ kind: Deployment
 podDisruptionBudget: {}
   # maxUnavailable: 0
 
+## Enable pod security policy
+pspEnabled: true
+
 strategy:
   rollingUpdate:
     maxSurge: 1
@@ -27,6 +30,16 @@ image:
 runAsUser: 1000
 readOnlyRootFilesystem: true
 runAsNonRoot: true
+
+livenessProbe:
+  httpGet:
+    path: /health
+    port: http
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: http
 
 nodeSelector: {}
 tolerations: []
@@ -77,7 +90,7 @@ service:
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
-  create: false
+  create: true
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:

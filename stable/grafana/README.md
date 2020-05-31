@@ -52,7 +52,7 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `securityContext`                         | Deployment securityContext                    | `{"runAsUser": 472, "runAsGroup": 472, "fsGroup": 472}`  |
 | `priorityClassName`                       | Name of Priority Class to assign pods         | `nil`                                                   |
 | `image.repository`                        | Image repository                              | `grafana/grafana`                                       |
-| `image.tag`                               | Image tag (`Must be >= 5.0.0`)                | `6.7.3`                                                 |
+| `image.tag`                               | Image tag (`Must be >= 5.0.0`)                | `7.0.1`                                                 |
 | `image.pullPolicy`                        | Image pull policy                             | `IfNotPresent`                                          |
 | `image.pullSecrets`                       | Image pull secrets                            | `{}`                                                    |
 | `service.type`                            | Kubernetes service type                       | `ClusterIP`                                             |
@@ -65,7 +65,7 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `service.clusterIP`                       | internal cluster service IP                   | `nil`                                                   |
 | `service.loadBalancerIP`                  | IP address to assign to load balancer (if supported) | `nil`                                            |
 | `service.loadBalancerSourceRanges`        | list of IP CIDRs allowed access to lb (if supported) | `[]`                                             |
-| `serivce.externalIPs`                     | service external IP addresses                 | `[]`                                                    |
+| `service.externalIPs`                     | service external IP addresses                 | `[]`                                                    |
 | `extraExposePorts`                        | Additional service ports for sidecar containers| `[]`                                                   | 
 | `ingress.enabled`                         | Enables Ingress                               | `false`                                                 |
 | `ingress.annotations`                     | Ingress annotations (values are templated)    | `{}`                                                    |

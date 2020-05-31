@@ -5,6 +5,7 @@ metadata:
   labels:
     {{- include "prometheus.pushgateway.labels" . | nindent 4 }}
   name: {{ template "prometheus.pushgateway.fullname" . }}
+{{ include "prometheus.namespace" . | indent 2 }}
 spec:
   selector:
     {{- if .Values.schedulerName }}

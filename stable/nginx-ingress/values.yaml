@@ -5,7 +5,7 @@ controller:
   name: controller
   image:
     repository: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
-    tag: "0.30.0"
+    tag: "0.32.0"
     pullPolicy: IfNotPresent
     # www-data -> uid 101
     runAsUser: 101
@@ -556,6 +556,7 @@ podSecurityPolicy:
 serviceAccount:
   create: true
   name:
+  annotations: {}
 
 ## Optional array of imagePullSecrets containing private registry credentials
 ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/

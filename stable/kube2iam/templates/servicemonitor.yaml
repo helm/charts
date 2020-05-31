@@ -11,6 +11,9 @@ metadata:
     helm.sh/chart: {{ template "kube2iam.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- if .Values.prometheus.serviceMonitor.labels }}
+    {{- toYaml .Values.prometheus.serviceMonitor.labels | nindent 4 }}
+    {{- end }}
 spec:
   selector:
     matchLabels:

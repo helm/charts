@@ -12,6 +12,7 @@ metadata:
 {{ toYaml .Values.alertmanager.statefulSet.headless.labels | indent 4 }}
 {{- end }}
   name: {{ template "prometheus.alertmanager.fullname" . }}-headless
+{{ include "prometheus.namespace" . | indent 2 }}
 spec:
   clusterIP: None
   ports:

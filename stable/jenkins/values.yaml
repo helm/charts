@@ -103,6 +103,10 @@ master:
   # you should revert master.adminUser to your preferred admin user:
   adminUser: "admin"
   # adminPassword: <defaults to random>
+  admin:
+    existingSecret: ""
+    userKey: jenkins-admin-user
+    passwordKey: jenkins-admin-password
   # This values should not be changed unless you use your custom image of jenkins or any devired from. If you want to use
   # Cloudbees Jenkins Distribution docker, you should set jenkinsHome: "/var/cloudbees-jenkins-distribution"
   jenkinsHome: "/var/jenkins_home"
@@ -189,7 +193,12 @@ master:
   # GKE users: only regional static IPs will work for Service Load balancer.
   # slaveListenerLoadBalancerIP: 1.2.3.4
   slaveListenerServiceAnnotations: {}
+  slaveDefaultsProviderTemplate: ""
+  slaveConnectTimeout: 5
+  slaveReadTimeout: 15
   slaveKubernetesNamespace:
+  slaveJenkinsUrl:
+  slaveJenkinsTunnel:
 
   # Example of 'LoadBalancer' type of agent listener with annotations securing it
   # slaveListenerServiceType: LoadBalancer
@@ -263,6 +272,15 @@ master:
     enabled: true
     defaultConfig: true
     configScripts: {}
+    # Ignored if securityRealm is defined in master.JCasC.configScripts and
+    # ignored if master.enableXmlConfig=true as master.securityRealm takes precedence
+    securityRealm: |-
+      legacy
+    # Ignored if authorizationStrategy is defined in master.JCasC.configScripts and
+    # ignored if master.enableXmlConfig=true as master.authorizationStrategy takes precedence
+    authorizationStrategy: |-
+      loggedInUsersCanDoAnything:
+        allowAnonymousRead: false
     # welcome-message: |
     #   jenkins:
     #     systemMessage: Welcome to our CI\CD server.  This Jenkins is configured and managed 'as code'.
@@ -352,6 +370,16 @@ master:
 
   ingress:
     enabled: false
+    # Override for the default paths that map requests to the backend
+    paths: []
+    # - backend:
+    #     serviceName: ssl-redirect
+    #     servicePort: use-annotation
+    # - backend:
+    #     serviceName: >-
+    #       {{ template "jenkins.fullname" . }}
+    #     # Don't use string here, use only integer value!
+    #     servicePort: 8080
     # For Kubernetes v1.14+, use 'networking.k8s.io/v1beta1'
     apiVersion: "extensions/v1beta1"
     labels: {}
@@ -501,6 +529,8 @@ agent:
   #     - key: "key"
   #       operator: "Equal"
   #       value: "value"
+  # Defines how the raw yaml field gets merged with yaml definitions from inherited pod templates: merge or override
+  yamlMergeStrategy: "override"
   # Timeout in seconds for an agent to be online
   slaveConnectTimeout: 100
 

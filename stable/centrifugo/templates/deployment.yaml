@@ -1,14 +1,15 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "centrifugo.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-    chart: {{ include "centrifugo.chart" . }}
-    app: {{ include "centrifugo.name" . }}
+    {{- include "centrifugo.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "centrifugo.selectorLabels" . | nindent 6 }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -17,9 +18,12 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        {{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+        {{- end }}
       labels:
-        app: {{ include "centrifugo.name" . }}
-        release: {{ .Release.Name }}
+        {{- include "centrifugo.selectorLabels" . | nindent 8 }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
@@ -28,6 +32,11 @@ spec:
         command:
         - centrifugo
         args:
+        - --port={{ .Values.service.port }}
+        {{- if .Values.grpc.enabled }}
+        - --grpc_api
+        - --grpc_api_port={{ .Values.service.grpcPort }}
+        {{- end }}
         {{- range $arg := .Values.args }}
         - {{ $arg }}
         {{- end }}
@@ -47,6 +56,16 @@ spec:
             secretKeyRef:
               name: {{ include "centrifugo.fullname" . }}
               key: secret
+        - name: CENTRIFUGO_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "centrifugo.fullname" . }}
+              key: api_key
+        - name: CENTRIFUGO_TOKEN_HMAC_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "centrifugo.fullname" . }}
+              key: token_hmac_secret_key
         volumeMounts:
         - name: "{{ include "centrifugo.fullname" . }}-config"
           mountPath: "/centrifugo"
@@ -54,6 +73,10 @@ spec:
         ports:
         - name: http
           containerPort: {{ .Values.service.port }}
+        {{- if .Values.grpc.enabled }}
+        - name: grpc
+          containerPort: {{ .Values.service.grpcPort }}
+        {{- end }}
         livenessProbe:
           httpGet:
             path: /health

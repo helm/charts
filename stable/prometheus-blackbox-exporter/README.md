@@ -64,16 +64,19 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 | `affinity`                                | node affinity for pod assignment                                                 | `{}`                                                                         |
 | `podAnnotations`                          | annotations to add to each pod                                                   | `{}`                                                                         |
 | `podDisruptionBudget`                     | pod disruption budget                                                            | `{}`                                                                         |
+| `pspEnabled`                              | create pod security policy resources                                             | `true`                                                                       |
 | `priorityClassName`                       | priority class name                                                              | None                                                                         |
 | `allowIcmp`                               | whether to enable ICMP probes, by giving the pods `CAP_NET_RAW` and running as root | `false`                                                                   |
 | `resources`                               | pod resource requests & limits                                                   | `{}`                                                                         |
 | `restartPolicy`                           | container restart policy                                                         | `Always`                                                                     |
+| `livenessProbe`                           | Container liveness probe                                                         | See values.yaml                                                              |
+| `readinessProbe`                          | Container readiness probe                                                        | See values.yaml                                                              |
 | `service.annotations`                     | annotations for the service                                                      | `{}`                                                                         |
 | `service.labels`                          | additional labels for the service                                                | None                                                                         |
 | `service.type`                            | type of service to create                                                        | `ClusterIP`                                                                  |
 | `service.port`                            | port for the blackbox http service                                               | `9115`                                                                       |
 | `service.externalIPs`                     | list of external ips                                                             | []                                                                           |
-| `serviceAccount.create`                   | Specifies whether a service account should be created.                           | `false`                                                                      |
+| `serviceAccount.create`                   | Specifies whether a service account should be created.                           | `true`                                                                       |
 | `serviceAccount.name`                     | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template |                                 |
 | `serviceAccount.annotations`              | ServiceAccount annotations                                                       |                                                                              |
 | `serviceMonitor.enabled`                  | If true, a ServiceMonitor CRD is created for a prometheus operator               | `false`                                                                      |
@@ -112,6 +115,10 @@ $ helm install --name my-release -f values.yaml stable/prometheus-blackbox-expor
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
 ## Upgrading an existing Release to a new major version
+
+### 4.0.0
+
+This version create the service account by default and introduce pod security policy, it can be enabled by setting `pspEnabled: true`.
 
 ### 2.0.0
 

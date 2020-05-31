@@ -148,13 +148,16 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.markupFormatter`          | Yaml of the markup formatter to use  | `plainText`                               |
 | `master.customJenkinsLabels`      | Append Jenkins labels to the master  | `{}`                                      |
 | `master.useSecurity`              | Use basic security                   | `true`                                    |
-| `master.securityRealm`            | Custom Security Realm                | Not set                                   |
-| `master.authorizationStrategy`    | Jenkins XML job config for AuthorizationStrategy | Not set                       |
+| `master.securityRealm`            | Jenkins XML for Security Realm       | XML for `LegacySecurityRealm`             |
+| `master.authorizationStrategy`    | Jenkins XML for Authorization Strategy | XML for `FullControlOnceLoggedInAuthorizationStrategy` |
 | `master.deploymentLabels`         | Custom Deployment labels             | Not set                                   |
 | `master.serviceLabels`            | Custom Service labels                | Not set                                   |
 | `master.podLabels`                | Custom Pod labels                    | Not set                                   |
 | `master.adminUser`                | Admin username (and password) created as a secret if useSecurity is true | `admin` |
 | `master.adminPassword`            | Admin password (and user) created as a secret if useSecurity is true | Random value |
+| `master.admin.existingSecret`     | The name of an existing secret containing the admin credentials. | `""`|
+| `master.admin.userKey`            | The key in the existing admin secret containing the username. | `jenkins-admin-user` |
+| `master.admin.passwordKey`        | The key in the existing admin secret containing the password. | `jenkins-admin-password` |
 | `master.jenkinsHome`              | Custom Jenkins home path             | `/var/jenkins_home`                       |
 | `master.jenkinsRef`               | Custom Jenkins reference path        | `/usr/share/jenkins/ref`                  |
 | `master.jenkinsAdminEmail`        | Email address for the administrator of the Jenkins instance | Not set            |
@@ -183,6 +186,11 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.slaveListenerPort`        | Listening port for agents            | `50000`                                   |
 | `master.slaveHostPort`            | Host port to listen for agents            | Not set                              |
 | `master.slaveKubernetesNamespace` | Namespace in which the Kubernetes agents should be launched  | Not set           |
+| `master.slaveDefaultsProviderTemplate` | The name of the pod template to use for providing default values | Not set  |
+| `master.slaveJenkinsUrl`          | Overrides the Kubernetes Jenkins URL    | Not set                                |
+| `master.slaveJenkinsTunnel`       | Overrides the Kubernetes Jenkins tunnel | Not set                                |
+| `master.slaveConnectTimeout`      | The connection timeout in seconds for connections to Kubernetes API. Minimum value is 5. | 5 |
+| `master.slaveReadTimeout`         | The read timeout in seconds for connections to Kubernetes API. Minimum value is 15. | 15 |
 | `master.disabledAgentProtocols`   | Disabled agent protocols             | `JNLP-connect JNLP2-connect`              |
 | `master.csrf.defaultCrumbIssuer.enabled` | Enable the default CSRF Crumb issuer | `true`                             |
 | `master.csrf.defaultCrumbIssuer.proxyCompatability` | Enable proxy compatibility | `true`                            |
@@ -200,6 +208,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.ingress.annotations`      | Ingress annotations                  | `{}`                                      |
 | `master.ingress.labels`           | Ingress labels                       | `{}`                                      |
 | `master.ingress.path`             | Ingress path                         | Not set                                   |
+| `master.ingress.paths`            | Override for the default Ingress paths  | `[]`                                   |
 | `master.ingress.tls`              | Ingress TLS configuration            | `[]`                                      |
 | `master.backendconfig.enabled`     | Enables backendconfig     | `false`              |
 | `master.backendconfig.apiVersion`  | backendconfig API version | `extensions/v1beta1` |
@@ -215,7 +224,9 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.JCasC.enabled`            | Wheter Jenkins Configuration as Code is enabled or not | `true`                  |
 | `master.JCasC.defaultConfig`      | Enables default Jenkins configuration via configuration as code plugin | `true`  |
 | `master.JCasC.configScripts`      | List of Jenkins Config as Code scripts | `{}`                                    |
-| `master.enableXmlConfig`          | enables configuration done via XML files | `true`                                |
+| `master.JCasC.securityRealm`      | Jenkins Config as Code for Security Realm | `legacy`                             |
+| `master.JCasC.authorizationStrategy` | Jenkins Config as Code for Authorization Strategy | `loggedInUsersCanDoAnything` |
+| `master.enableXmlConfig`          | enables configuration done via XML files | `false`                               |
 | `master.sidecars.configAutoReload` | Jenkins Config as Code auto-reload settings |                                   |
 | `master.sidecars.configAutoReload.enabled` | Jenkins Config as Code auto-reload settings (Attention: rbac needs to be enabled otherwise the sidecar can't read the config map) | `false`                                                      |
 | `master.sidecars.configAutoReload.image` | Image which triggers the reload | `kiwigrid/k8s-sidecar:0.1.20`           |
@@ -291,6 +302,7 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 512m, memory: 512Mi}, limits: {cpu: 512m, memory: 512Mi}}` |
 | `agent.volumes`            | Additional volumes                              | `[]`                   |
 | `agent.envVars`            | Environment variables for the agent Pod         | `[]`                   |
+| `agent.nodeSelector`       | Node labels for pod assignment                  | `{}`                   |
 | `agent.command`            | Executed command when side container starts     | Not set                |
 | `agent.args`               | Arguments passed to executed command            | `${computer.jnlpmac} ${computer.name}` |
 | `agent.sideContainerName`  | Side container name in agent                    | jnlp                   |
@@ -299,6 +311,7 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.podName`            | Agent Pod base name                             | Not set                |
 | `agent.idleMinutes`        | Allows the Pod to remain active for reuse       | 0                      |
 | `agent.yamlTemplate`       | The raw yaml of a Pod API Object to merge into the agent spec | Not set  |
+| `agent.yamlMergeStrategy   | Defines how the raw yaml field gets merged with yaml definitions from inherited pod templates | `override` |
 | `agent.slaveConnectTimeout`| Timeout in seconds for an agent to be online    | 100                    |
 | `agent.podTemplates`       | Configures extra pod templates for the default kubernetes cloud | `{}`   |
 | `additionalAgents`         | Configure additional agents which inherit values from `agent` | `{}` |
@@ -436,13 +449,12 @@ configScripts:
       securityRealm:
         ldap:
           configurations:
-            configurations:
-              - server: ldap.acme.com
-                rootDN: dc=acme,dc=uk
-                managerPasswordSecret: ${LDAP_PASSWORD}
-              - groupMembershipStrategy:
-                  fromUserRecord:
-                    attributeName: "memberOf"
+            - server: ldap.acme.com
+              rootDN: dc=acme,dc=uk
+              managerPasswordSecret: ${LDAP_PASSWORD}
+              groupMembershipStrategy:
+                fromUserRecord:
+                  attributeName: "memberOf"
 ```
 
 Further JCasC examples can be found [here.](https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos)
@@ -704,6 +716,3 @@ master:
        password: "changeit"
        jenkinsKeyStoreBase64Encoded: ''
 ```
-
-
-

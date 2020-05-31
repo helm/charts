@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 image:
   repository: quay.io/prometheus/node-exporter
-  tag: v0.18.1
+  tag: v1.0.0
   pullPolicy: IfNotPresent
 
 service:
@@ -50,6 +50,8 @@ serviceAccount:
   imagePullSecrets: []
 
 securityContext:
+  fsGroup: 65534
+  runAsGroup: 65534
   runAsNonRoot: true
   runAsUser: 65534
 

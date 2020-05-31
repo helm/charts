@@ -49,6 +49,27 @@ spec:
 {{ toYaml .Values.kubelet.serviceMonitor.cAdvisorRelabelings | indent 4 }}
 {{- end }}
 {{- end }}
+{{- if .Values.kubelet.serviceMonitor.probes }}
+  - port: https-metrics
+    scheme: https
+    path: /metrics/probes
+    {{- if .Values.kubelet.serviceMonitor.interval }}
+    interval: {{ .Values.kubelet.serviceMonitor.interval }}
+    {{- end }}
+    honorLabels: true
+    tlsConfig:
+      caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      insecureSkipVerify: true
+    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+{{- if .Values.kubelet.serviceMonitor.probesMetricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.kubelet.serviceMonitor.probesMetricRelabelings | indent 4) . }}
+{{- end }}
+{{- if .Values.kubelet.serviceMonitor.probesRelabelings }}
+    relabelings:
+{{ toYaml .Values.kubelet.serviceMonitor.probesRelabelings | indent 4 }}
+{{- end }}
+{{- end }}
   {{- else }}
   - port: http-metrics
     {{- if .Values.kubelet.serviceMonitor.interval }}
