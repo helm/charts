@@ -1,8 +1,12 @@
 replicaCount: 1
 
+fullnameOverride:
+
+nameOverride:
+
 image:
   repository: centrifugo/centrifugo
-  tag: v2.1.0
+  tag: v2.4.0
   pullPolicy: IfNotPresent
 
 service:
@@ -13,12 +17,14 @@ service:
   loadBalancerSourceRanges: []
   type: ClusterIP
   port: 8000
+  grpcPort: 10000
   nodePort: ""
+  grpcNodePort: ""
 
 ingress:
   enabled: false
   hosts: []
-  annotations:
+  annotations: {}
     # kubernetes.io/ingress.class: nginx
     # ingress.kubernetes.io/upstream-fail-timeout: 60
     # ingress.kubernetes.io/upstream-max-fails: 2
@@ -46,20 +52,37 @@ config:
     history_lifetime: 60
     history_recover: true
 
-## Centrifugo secret
+## Centrifugo secret for application backend
 ## Defaults to a random 10-character alphanumeric string if not set
 secret: ""
+
 admin:
-  ## Centrifugo admin secret
+  ## Centrifugo admin secret to sign authorization token used to call admin API endpoints
   ## Defaults to a random 10-character alphanumeric string if not set
   secret: ""
-  ## Centrifugo admin password
+  ## Centrifugo admin password to log into admin web interface
   ## Defaults to a random 10-character alphanumeric string if not set
   password: ""
 
+## Centrifugo token_hmac_secret_key to check JWT signature
+## Defaults to a random 10-character alphanumeric string if not set
+token_hmac_secret_key: ""
+
+## Centrifugo api_key for Centrifugo API endpoint authorization
+## Defaults to a random 10-character alphanumeric string if not set
+api_key: ""
+
 args:
-- --config=centrifugo/config.json
+- --config=/centrifugo/config.json
 - --admin
 - --health
+## For redis sentinel
+# - --engine=redis
+# - --redis_master_name=master
+# - --redis_sentinels=redis:26379
 
 resources: {}
+
+# for GRPC support
+grpc:
+  enabled: false
