@@ -529,6 +529,8 @@ agent:
   #     - key: "key"
   #       operator: "Equal"
   #       value: "value"
+  # Defines how the raw yaml field gets merged with yaml definitions from inherited pod templates: merge or override
+  yamlMergeStrategy: "override"
   # Timeout in seconds for an agent to be online
   slaveConnectTimeout: 100
 
