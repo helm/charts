@@ -2,11 +2,9 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: {{ include "centrifugo.fullname" . }}-test-{{ randAlphaNum 5 | lower }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: {{ include "centrifugo.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    helm.sh/chart: {{ include "centrifugo.chart" . }}
+    {{- include "centrifugo.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": test-success
 spec:
