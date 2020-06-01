@@ -5,7 +5,7 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
-## 1.25.0 Update plugin versions & sidecar container
+## 1.26.0 Update plugin versions & sidecar container
 
 | plugin                | old version | new version |
 | --------------------- | ----------- | ----------- |
@@ -15,6 +15,10 @@ NOTE: The change log until version 1.5.7 is auto generated based on git commits.
 | configuration-as-code | 1.39        | 1.41        |
 
 configAutoReload container updated from `kiwigrid/k8s-sidecar:0.1.132` to `kiwigrid/k8s-sidecar:0.1.144`
+
+## 1.25.0
+
+Add support for installing plugins in addition to the chart's default plugins via `master.additionalPlugins`
 
 ## 1.24.0
 
