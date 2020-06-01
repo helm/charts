@@ -33,7 +33,7 @@ spec:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         checksum/dashboards-json-config: {{ include (print $.Template.BasePath "/dashboards-json-configmap.yaml") . | sha256sum }}
         checksum/sc-dashboard-provider-config: {{ include (print $.Template.BasePath "/configmap-dashboard-provider.yaml") . | sha256sum }}
-{{- if and (not .Values.admin.existingSecret) (not .Values.env.GF_SECURITY_ADMIN_PASSWORD__FILE) }}
+{{- if and (not .Values.admin.existingSecret) (not .Values.env.GF_SECURITY_ADMIN_PASSWORD__FILE) (not .Values.env.GF_SECURITY_ADMIN_PASSWORD) }}
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
 {{- end }}
 {{- with .Values.podAnnotations }}
