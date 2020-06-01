@@ -20,13 +20,7 @@ master:
   enableXmlConfig: false
   healthProbeLivenessInitialDelay: 10
   healthProbeReadinessInitialDelay: 10
-  installPlugins:
-    - kubernetes:1.25.3
-    - workflow-job:2.38
-    - workflow-aggregator:2.6
-    - credentials-binding:1.21
-    - git:4.2.2
-    - configuration-as-code:1.39
+  additionalPlugins:
     - ldap:1.24
 persistence:
   enabled: false
