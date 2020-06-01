@@ -28,7 +28,7 @@ rbac:
   # Specifies whether RBAC resources should be created
   create: true
   # psp:
-  #   name: 
+  #   name:
   #   - policyname
 
 serviceAccount:
