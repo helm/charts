@@ -18,7 +18,9 @@ This command deploys the prometheus adapter with the default configuration. The 
 
 ## Using the Chart
 
-To use the chart, ensure the `prometheus.url` and `prometheus.port` are configured with the correct Prometheus service endpoint. If Prometheus is exposed under HTTPS the host's CA Bundle must be exposed to the container using `extraVolumes` and `extraVolumeMounts`.
+To use the chart, ensure the `prometheus.url`, `prometheus.port` and `prometheus.path` are configured with the correct Prometheus service endpoint. If Prometheus is exposed under HTTPS the host's CA Bundle must be exposed to the container using `extraVolumes` and `extraVolumeMounts`.
+
+To provide a pod security policy (PSP) name for the cluster role ensure `rbac.psp.name` has been configured with an existing resource name.
 
 Additionally, the chart comes with a set of default rules out of the box but they may pull in too many metrics or not map them correctly for your needs. Therefore, it is recommended to populate `rules.custom` with a list of rules (see the [config document](https://github.com/DirectXMan12/k8s-prometheus-adapter/blob/master/docs/config.md) for the proper format).
 

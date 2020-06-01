@@ -21,3 +21,13 @@ rules:
   - list
   - watch
 {{- end -}}
+{{- if .Values.rbac.psp }}
+- apiGroups:
+  - policy
+  resources:
+  - podsecuritypolicies
+  verbs:
+  - use
+  resourceNames:
+  {{ toYaml .Values.rbac.psp.name | indent 2}}
+{{- end -}}

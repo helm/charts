@@ -20,12 +20,16 @@ priorityClassName: ""
 prometheus:
   url: http://prometheus.default.svc
   port: 9090
+  # path: /prometheus
 
 replicas: 1
 
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
+  # psp:
+  #   name: 
+  #   - policyname
 
 serviceAccount:
   # Specifies whether a service account should be created
