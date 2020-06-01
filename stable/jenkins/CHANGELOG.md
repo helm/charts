@@ -5,6 +5,18 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.26.0
+
+Add support to override `workingDir` for default pod template
+
+## 1.25.0
+
+Add support for installing plugins in addition to the chart's default plugins via `master.additionalPlugins`
+
+## 1.24.0
+
+Allow configuration of yamlMergeStrategy via `agent.yamlMergeStrategy`
+
 ## 1.23.2
 
 In the `jenkins.xml.podTemplate` helper function, allow templating of all string values under `agent.volumes` except `type` by rendering them with the `tpl` function
