@@ -233,6 +233,9 @@ master:
     - git:4.2.2
     - configuration-as-code:1.39
 
+  # List of plugins to install in addition to those listed in master.installPlugins
+  additionalPlugins: []
+
   # Enable to always override the installed plugins with the values of 'master.installPlugins' on upgrade or redeployment.
   # overwritePlugins: true
 
