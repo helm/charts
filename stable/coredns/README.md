@@ -79,6 +79,10 @@ The command removes all the Kubernetes components associated with the chart and 
 | `autoscaler.enabled`                    | Optionally enabled a cluster-proportional-autoscaler for CoreDNS                      | `false`                                                     |
 | `autoscaler.coresPerReplica`            | Number of cores in the cluster per CoreDNS replica                                    | `256`                                                       |
 | `autoscaler.nodesPerReplica`            | Number of nodes in the cluster per CoreDNS replica                                    | `16`                                                        |
+| `autoscaler.min`                        | Min size of replicaCount                                                              | 0                                                           |
+| `autoscaler.max`                        | Max size of replicaCount                                                              | 0  (aka no max)                                             |
+| `autoscaler.includeUnschedulableNodes`  | Should the replicas scale based on the total number or only schedulable nodes         | `false`                                                     |
+| `autoscaler.preventSinglePointFailure`  | If true does not allow single points of failure to form                               | `true`                                                      |
 | `autoscaler.image.repository`           | The image repository to pull autoscaler from                                          | k8s.gcr.io/cluster-proportional-autoscaler-amd64            |
 | `autoscaler.image.tag`                  | The image tag to pull autoscaler from                                                 | `1.7.1`                                                     |
 | `autoscaler.image.pullPolicy`           | Image pull policy for the autoscaler                                                  | IfNotPresent                                                |
