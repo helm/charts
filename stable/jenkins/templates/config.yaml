@@ -256,9 +256,21 @@ data:
 {{- end }}
   plugins.txt: |-
 {{- if .Values.master.installPlugins }}
-{{- range $index, $val := .Values.master.installPlugins }}
-{{ $val | indent 4 }}
-{{- end }}
+  {{- range $installPlugin := .Values.master.installPlugins }}
+    {{- $installPlugin | nindent 4 }}
+  {{- end }}
+  {{- range $addlPlugin := .Values.master.additionalPlugins }}
+    {{- /* duplicate plugin check */}}
+    {{- range $installPlugin := $.Values.master.installPlugins }}
+      {{- if eq (splitList ":" $addlPlugin | first) (splitList ":" $installPlugin | first) }}
+        {{- $message := print "[PLUGIN CONFLICT] master.additionalPlugins contains '" $addlPlugin "'" }}
+        {{- $message := print $message " but master.installPlugins already contains '" $installPlugin "'." }}
+        {{- $message := print $message " Override master.installPlugins to use '" $addlPlugin "' plugin." }}
+        {{- fail $message }}
+      {{- end }}
+    {{- end }}
+    {{- $addlPlugin | nindent 4 }}
+  {{- end }}
 {{- end }}
 {{ else }}
 {{ include "override_config_map" . }}
