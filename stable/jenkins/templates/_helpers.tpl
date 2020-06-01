@@ -191,7 +191,7 @@ Returns kubernetes pod template configuration as code
     resourceRequestCpu: {{.Values.agent.resources.requests.cpu}}
     resourceRequestMemory: {{.Values.agent.resources.requests.memory}}
     ttyEnabled: {{ .Values.agent.TTYEnabled }}
-    workingDir: "/home/jenkins"
+    workingDir: {{ .Values.agent.workingDir }}
 {{- if .Values.agent.envVars }}
   envVars:
   {{- range $index, $var := .Values.agent.envVars }}
@@ -298,7 +298,7 @@ Returns kubernetes pod template xml configuration
       <privileged>false</privileged>
 {{- end }}
       <alwaysPullImage>{{ .Values.agent.alwaysPullImage }}</alwaysPullImage>
-      <workingDir>/home/jenkins</workingDir>
+      <workingDir>{{ .Values.agent.workingDir }}</workingDir>
       <command>{{ .Values.agent.command }}</command>
       <args>{{ .Values.agent.args }}</args>
       <ttyEnabled>{{ .Values.agent.TTYEnabled }}</ttyEnabled>

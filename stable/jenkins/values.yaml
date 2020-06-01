@@ -454,6 +454,7 @@ agent:
   enabled: true
   image: "jenkins/jnlp-slave"
   tag: "3.27-1"
+  workingDir: "/home/jenkins"
   customJenkinsLabels: []
   # name of the secret to be used for image pulling
   imagePullSecretName:
