@@ -241,7 +241,8 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.yamlMergeStrategy   | Defines how the raw yaml field gets merged with yaml definitions from inherited pod templates | `override` |
 | `agent.slaveConnectTimeout`| Timeout in seconds for an agent to be online    | 100                    |
 | `agent.podTemplates`       | Configures extra pod templates for the default kubernetes cloud | `{}`   |
-| `additionalAgents`         | Configure additional agents which inherit values from `agent` | `{}` |
+| `agent.workingDir`         | Configure working directory for default agent   | `/home/jenkins`        |
+| `additionalAgents`         | Configure additional agents which inherit values from `agent` | `{}`     |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
