@@ -32,7 +32,8 @@ $ helm install stable/kube-state-metrics
 | `podSecurityPolicy.annotations`              | Specify pod annotations in the pod security policy                                    | {}                                         |
 | `podSecurityPolicy.additionalVolumes`        | Specify allowed volumes in the pod security policy (`secret` is always allowed)       | []                                         |
 | `securityContext.enabled`                    | Enable security context                                                               | `true`                                     |
-| `securityContext.fsGroup`                    | Group ID for the container                                                            | `65534`                                    |
+| `securityContext.fsGroup`                    | Group ID for the filesystem                                                           | `65534`                                    |
+| `securityContext.runAsGroup`                 | Group ID for the container                                                            | `65534`                                    |
 | `securityContext.runAsUser`                  | User ID for the container                                                             | `65534`                                    |
 | `priorityClassName`                          | Name of Priority Class to assign pods                                                 | `nil`                                      |
 | `nodeSelector`                               | Node labels for pod assignment                                                        | {}                                         |
