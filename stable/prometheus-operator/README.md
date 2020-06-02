@@ -198,7 +198,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheusOperator.namespaces` |  Namespaces to scope the interaction of the Prometheus Operator and the apiserver (allow list). This is mutually exclusive with `denyNamespaces`. Setting this to an empty object will disable the configuration | `{}` |
 | `prometheusOperator.namespaces.releaseNamespace` | Include the release namespace | `false` |
 | `prometheusOperator.namespaces.additional` | Include additional namespaces besides the release namespace | `[]` |
-| `prometheusOperator.manageCrds` |If true prometheus operator will create and update its CRDs on startup | `true` |
+| `prometheusOperator.manageCrds` |If true prometheus operator will create and update its CRDs on startup (for operator `<v0.39.0`)) | `true` |
 | `prometheusOperator.denyNamespaces` | Namespaces not to scope the interaction of the Prometheus Operator (deny list). This is mutually exclusive with `namespaces` | `[]` |
 | `prometheusOperator.enabled` | Deploy Prometheus Operator. Only one of these should be deployed into the cluster | `true` |
 | `prometheusOperator.hyperkubeImage.pullPolicy` | Image pull policy for hyperkube image used to perform maintenance tasks | `IfNotPresent` |

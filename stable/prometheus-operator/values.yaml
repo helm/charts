@@ -1096,6 +1096,7 @@ prometheusOperator:
   enabled: true
 
   # If true prometheus operator will create and update its CRDs on startup
+  # Only for prometheusOperator.image.tag < v0.39.0
   manageCrds: true
 
   tlsProxy:
