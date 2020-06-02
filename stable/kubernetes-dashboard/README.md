@@ -1,4 +1,7 @@
-# kubernetes-dashboard
+# DEPRECATED - kubernetes-dashboard
+
+This chart is deprecated as we move to our own repo (https://kubernetes.github.io/dashboard/)
+The chart source can be found here: https://github.com/kubernetes/dashboard/tree/master/aio/deploy/helm-chart/kubernetes-dashboard
 
 [Kubernetes Dashboard](https://github.com/kubernetes/dashboard) is a general purpose, web-based UI for Kubernetes clusters. It allows users to manage applications running in the cluster and troubleshoot them, as well as manage the cluster itself.
 
