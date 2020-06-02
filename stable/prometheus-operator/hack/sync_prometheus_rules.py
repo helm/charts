@@ -55,6 +55,7 @@ condition_map = {
     'k8s.rules': ' .Values.defaultRules.rules.k8s',
     'kube-apiserver.rules': ' .Values.kubeApiServer.enabled .Values.defaultRules.rules.kubeApiserver',
     'kube-apiserver-error': ' .Values.kubeApiServer.enabled .Values.defaultRules.rules.kubeApiserverError',
+    'kube-apiserver-slos': ' .Values.kubeApiServer.enabled .Values.defaultRules.rules.kubeApiserverSlos',
     'kube-prometheus-node-alerting.rules': ' .Values.defaultRules.rules.kubePrometheusNodeAlerting',
     'kube-prometheus-node-recording.rules': ' .Values.defaultRules.rules.kubePrometheusNodeRecording',
     'kube-scheduler.rules': ' .Values.kubeScheduler.enabled .Values.defaultRules.rules.kubeScheduler',
