@@ -13,6 +13,9 @@ metadata:
 {{- end }}
 spec:
   clusterIP: None
+{{- if .Values.headless.publishNotReadyAddresses }}
+  publishNotReadyAddresses: true
+{{- end }}
   ports:
 {{- range $key, $port := .Values.ports }}
     - name: {{ $key }}

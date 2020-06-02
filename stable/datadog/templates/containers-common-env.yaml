@@ -53,17 +53,24 @@
 - name: {{ $value.name }}
   value: {{ $value.value | quote }}
 {{- end }}
-{{- if .Values.datadog.dockerSocketPath }}
-- name: DOCKER_HOST
-{{- if eq .Values.targetSystem "linux" }}
-  value: unix://{{ .Values.datadog.dockerSocketPath }}
+{{- if .Values.datadog.acInclude }}
+- name: DD_AC_INCLUDE
+  value: {{ .Values.datadog.acInclude | quote }}
 {{- end }}
-{{- if eq .Values.targetSystem "windows" }}
-  value: npipe://{{ .Values.datadog.dockerSocketPath | replace "\\" "/" }}
-{{- end }}
+{{- if .Values.datadog.acExclude }}
+- name: DD_AC_EXCLUDE
+  value: {{ .Values.datadog.acExclude | quote }}
 {{- end }}
 {{- if .Values.datadog.criSocketPath }}
 - name: DD_CRI_SOCKET_PATH
-  value: {{ .Values.datadog.criSocketPath }}
+  value: {{ print "/host/" .Values.datadog.criSocketPath | clean }}
+{{- else }}
+- name: DOCKER_HOST
+{{- if eq .Values.targetSystem "linux" }}
+  value: unix://{{ print "/host/" (include "datadog.dockerOrCriSocketPath" .) | clean }}
+{{- end }}
+{{- if eq .Values.targetSystem "windows" }}
+  value: npipe://{{ (include "datadog.dockerOrCriSocketPath" .) | replace "\\" "/" }}
+{{- end }}
 {{- end }}
 {{- end -}}

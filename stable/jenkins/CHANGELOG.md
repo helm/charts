@@ -5,6 +5,81 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.27.0 Update plugin versions & sidecar container
+
+| plugin                | old version | new version |
+| --------------------- | ----------- | ----------- |
+| kubernetes            | 1.25.3      | 1.25.7      |
+| workflow-job          | 2.38        | 2.39        |
+| credentials-binding   | 1.21        | 1.22        |
+| configuration-as-code | 1.39        | 1.41        |
+
+configAutoReload container updated from `kiwigrid/k8s-sidecar:0.1.132` to `kiwigrid/k8s-sidecar:0.1.144`
+
+## 1.26.0
+
+Add support to override `workingDir` for default pod template
+>>>>>>> master
+
+## 1.25.0
+
+Add support for installing plugins in addition to the chart's default plugins via `master.additionalPlugins`
+
+## 1.24.0
+
+Allow configuration of yamlMergeStrategy via `agent.yamlMergeStrategy`
+
+## 1.23.2
+
+In the `jenkins.xml.podTemplate` helper function, allow templating of all string values under `agent.volumes` except `type` by rendering them with the `tpl` function
+
+## 1.23.1
+
+Added auto detection for Ingress API version
+
+## 1.23.0
+
+Allow to use an existing secret for the jenkins admin credentials
+
+## 1.22.0
+
+Add support for UI security in the default JCasC via `master.JCasC.securityRealm` and `master.JCasC.authorizationStrategy` which deny anonymous access by default
+
+## 1.21.3
+
+Render `agent.envVars` in kubernetes pod template JCasC
+
+## 1.21.2
+
+Cleanup `agent.yamlTemplate` rendering in kubernetes pod template XML configuration
+
+## 1.21.1
+
+Render `agent.nodeSelector` in the kubernetes pod template JCasC
+
+## 1.21.0
+
+Add support for overriding Ingress paths via `master.ingress.paths`
+
+## 1.20.0
+
+  Add the following options for configuring the Kubernetes plugin.
+
+ - master.slaveDefaultsProviderTemplate
+ - master.slaveJenkinsUrl
+ - master.slaveJenkinsTunnel
+ - master.slaveConnectTimeout
+ - master.slaveReadTimeout
+
+## 1.19.0
+
+Add support for disabling remember me via `master.disableRememberMe`
+Add support for using a different markup formatter via `master.markupFormatter`
+
+## 1.18.1
+
+Add support for executor mode configuraton with `master.executorMode`.
+
 ## 1.18.0 Make installation of configuration-as-code plugin explicit
 
 Instead of configuring the configuration-as-code plugin version via
