@@ -1,5 +1,10 @@
 # dmarc2logstash Helm Chart
 
+## NOTICE: This chart has moved!
+
+Due to the [deprecation and obsoletion plan](https://github.com/helm/charts#status-of-the-project) of the Helm charts repository this chart has been moved to a new repository. Refer to the [dmarc2logstash GitHub project](https://github.com/jertel/dmarc2logstash) for information on installing this chart from the new repository.
+
+## Overview 
 [dmarc2logstash](https://github.com/jertel/dmarc2logstash): A POP3 polling service that converts Domain-based Message Authentication, Reporting, and Complicane (DMARC) reports into a logstash feed. More information about the DMARC organization and RFC 7489 standards can be found at https://dmarc.org. An accompanying [dashboard](https://github.com/jertel/dmarc2logstash/blob/master/grafana-dashboard.json) is available for import into Grafana.
 
 ## Installing the Chart
