@@ -29,6 +29,11 @@ tolerations: []
 
 affinity: {}
 
+# auto-trust will create an anchor file (need internet access!)
+# disable to not use auto-trust-anchor-file
+autotrust:
+  enable: true
+
 # clusterIP:
 
 # Controls which IP address ranges unbound will allow queries from.

@@ -31,6 +31,9 @@ spec:
       containers:
       - name: "unbound"
         image: {{ .Values.unbound.image.repository }}:{{ .Values.unbound.image.tag }}
+    {{- if (not .Values.autotrust.enable) }}
+        command: ["unbound", "-c", "/etc/unbound/unbound.conf"]
+    {{- end }}
         imagePullPolicy: {{ .Values.unbound.image.pullPolicy | quote }}
 {{- with .Values.resources }}
         resources:
@@ -84,4 +87,3 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
 {{- end }}
-

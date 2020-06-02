@@ -18,7 +18,9 @@ data:
         do-daemonize: no
         logfile: ""
         use-syslog: no
+        {{- if .Values.autotrust.enable }}
         auto-trust-anchor-file: "/var/lib/unbound/root.key"
+        {{- end }}
         verbosity: {{ .Values.unbound.verbosity }}
         statistics-interval: {{ .Values.unbound.statsInterval }}
         statistics-cumulative: {{ .Values.unbound.statsCumulative }}
