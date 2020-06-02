@@ -82,6 +82,7 @@ their default values.
 | `nodeSelector`                 | Map of node labels for pod assignment                                                                           | `{}`                                                     |
 | `tolerations`                  | List of node taints to tolerate                                                                                 | `[]`                                                     |
 | `affinity`                     | Map of node/pod affinities                                                                                      | `{}`                                                     |
+| `securityContext`              | Security context settings for nfs-server-provisioner pod                                                        | `{}`                                                     |
 
 ```console
 $ helm install stable/nfs-server-provisioner --name my-release \
