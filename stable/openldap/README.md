@@ -34,7 +34,7 @@ The following table lists the configurable parameters of the openldap chart and 
 | `podAnnotations`                   | Annotations to add to the pod                                                                                                             | `{}`                |
 | `existingSecret`                   | Use an existing secret for admin and config user passwords                                                                                | `""`                |
 | `service.annotations`              | Annotations to add to the service                                                                                                         | `{}`                |
-| `service.clusterIP`                | IP address to assign to the service                                                                                                       | `""`                |
+| `service.clusterIP`                | IP address to assign to the service                                                                                                       | `nil`                |
 | `service.externalIPs`              | Service external IP addresses                                                                                                             | `[]`                |
 | `service.ldapPort`                 | External service port for LDAP                                                                                                            | `389`               |
 | `service.loadBalancerIP`           | IP address to assign to load balancer (if supported)                                                                                      | `""`                |
