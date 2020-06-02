@@ -226,12 +226,12 @@ master:
 
   # List of plugins to be install during Jenkins master start
   installPlugins:
-    - kubernetes:1.25.3
-    - workflow-job:2.38
+    - kubernetes:1.25.7
+    - workflow-job:2.39
     - workflow-aggregator:2.6
-    - credentials-binding:1.21
+    - credentials-binding:1.22
     - git:4.2.2
-    - configuration-as-code:1.39
+    - configuration-as-code:1.41
 
   # List of plugins to install in addition to those listed in master.installPlugins
   additionalPlugins: []
@@ -300,7 +300,7 @@ master:
       # jcasc changes will cause a reboot and will only be applied at the subsequent start-up.  Auto-reload uses the
       # http://<jenkins_url>/reload-configuration-as-code endpoint to reapply config when changes to the configScripts are detected.
       enabled: false
-      image: kiwigrid/k8s-sidecar:0.1.132
+      image: kiwigrid/k8s-sidecar:0.1.144
       imagePullPolicy: IfNotPresent
       resources: {}
         #   limits:

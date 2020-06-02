@@ -5,9 +5,21 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.27.0 Update plugin versions & sidecar container
+
+| plugin                | old version | new version |
+| --------------------- | ----------- | ----------- |
+| kubernetes            | 1.25.3      | 1.25.7      |
+| workflow-job          | 2.38        | 2.39        |
+| credentials-binding   | 1.21        | 1.22        |
+| configuration-as-code | 1.39        | 1.41        |
+
+configAutoReload container updated from `kiwigrid/k8s-sidecar:0.1.132` to `kiwigrid/k8s-sidecar:0.1.144`
+
 ## 1.26.0
 
 Add support to override `workingDir` for default pod template
+>>>>>>> master
 
 ## 1.25.0
 
