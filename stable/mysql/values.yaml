@@ -2,14 +2,14 @@
 ## ref: https://hub.docker.com/r/library/mysql/tags/
 ##
 image: "mysql"
-imageTag: "5.7.28"
+imageTag: "5.7.30"
 
 strategy:
   type: Recreate
 
 busybox:
   image: "busybox"
-  tag: "1.29.3"
+  tag: "1.31.1"
 
 testFramework:
   enabled: true
@@ -69,6 +69,10 @@ extraInitContainers: |
 ## Node selector
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 nodeSelector: {}
+
+## Affinity
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}
 
 ## Tolerations for pod assignment
 ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/

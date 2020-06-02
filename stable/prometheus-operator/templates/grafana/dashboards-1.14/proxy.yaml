@@ -38,7 +38,7 @@ data:
         "links": [
 
         ],
-        "refresh": "",
+        "refresh": "10s",
         "rows": [
             {
                 "collapse": false,
@@ -233,15 +233,15 @@ data:
                         },
                         "id": 4,
                         "legend": {
-                            "alignAsTable": "true",
+                            "alignAsTable": true,
                             "avg": false,
-                            "current": "true",
+                            "current": true,
                             "max": false,
                             "min": false,
-                            "rightSide": "true",
-                            "show": "true",
+                            "rightSide": true,
+                            "show": true,
                             "total": false,
-                            "values": "true"
+                            "values": true
                         },
                         "lines": true,
                         "linewidth": 1,
@@ -266,7 +266,7 @@ data:
                                 "expr": "histogram_quantile(0.99,rate(kubeproxy_sync_proxy_rules_duration_seconds_bucket{job=\"kube-proxy\", instance=~\"$instance\"}[5m]))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}}",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}}",
                                 "refId": "A"
                             }
                         ],
@@ -428,15 +428,15 @@ data:
                         },
                         "id": 6,
                         "legend": {
-                            "alignAsTable": "true",
+                            "alignAsTable": true,
                             "avg": false,
-                            "current": "true",
+                            "current": true,
                             "max": false,
                             "min": false,
-                            "rightSide": "true",
-                            "show": "true",
+                            "rightSide": true,
+                            "show": true,
                             "total": false,
-                            "values": "true"
+                            "values": true
                         },
                         "lines": true,
                         "linewidth": 1,
@@ -461,7 +461,7 @@ data:
                                 "expr": "histogram_quantile(0.99, sum(rate(kubeproxy_network_programming_duration_seconds_bucket{job=\"kube-proxy\", instance=~\"$instance\"}[5m])) by (instance, le))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}}",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}}",
                                 "refId": "A"
                             }
                         ],
@@ -677,7 +677,7 @@ data:
                                 "expr": "histogram_quantile(0.99, sum(rate(rest_client_request_latency_seconds_bucket{job=\"kube-proxy\",instance=~\"$instance\",verb=\"POST\"}[5m])) by (verb, url, le))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{verb}}`}} {{`{{url}}`}}",
+                                "legendFormat": "{{`{{`}}verb{{`}}`}} {{`{{`}}url{{`}}`}}",
                                 "refId": "A"
                             }
                         ],
@@ -748,15 +748,15 @@ data:
                         },
                         "id": 9,
                         "legend": {
-                            "alignAsTable": "true",
+                            "alignAsTable": true,
                             "avg": false,
-                            "current": "true",
+                            "current": true,
                             "max": false,
                             "min": false,
-                            "rightSide": "true",
-                            "show": "true",
+                            "rightSide": true,
+                            "show": true,
                             "total": false,
-                            "values": "true"
+                            "values": true
                         },
                         "lines": true,
                         "linewidth": 1,
@@ -781,7 +781,7 @@ data:
                                 "expr": "histogram_quantile(0.99, sum(rate(rest_client_request_latency_seconds_bucket{job=\"kube-proxy\", instance=~\"$instance\", verb=\"GET\"}[5m])) by (verb, url, le))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{verb}}`}} {{`{{url}}`}}",
+                                "legendFormat": "{{`{{`}}verb{{`}}`}} {{`{{`}}url{{`}}`}}",
                                 "refId": "A"
                             }
                         ],
@@ -885,7 +885,7 @@ data:
                                 "expr": "process_resident_memory_bytes{job=\"kube-proxy\",instance=~\"$instance\"}",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}}",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}}",
                                 "refId": "A"
                             }
                         ],
@@ -976,7 +976,7 @@ data:
                                 "expr": "rate(process_cpu_seconds_total{job=\"kube-proxy\",instance=~\"$instance\"}[5m])",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}}",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}}",
                                 "refId": "A"
                             }
                         ],
@@ -1067,7 +1067,7 @@ data:
                                 "expr": "go_goroutines{job=\"kube-proxy\",instance=~\"$instance\"}",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{instance}}`}}",
+                                "legendFormat": "{{`{{`}}instance{{`}}`}}",
                                 "refId": "A"
                             }
                         ],
@@ -1130,8 +1130,8 @@ data:
             "list": [
                 {
                     "current": {
-                        "text": "Prometheus",
-                        "value": "Prometheus"
+                        "text": "default",
+                        "value": "default"
                     },
                     "hide": 0,
                     "label": null,

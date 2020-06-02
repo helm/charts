@@ -10,6 +10,8 @@ logLevel: 4
 
 metricsRelistInterval: 1m
 
+listenPort: 6443
+
 nodeSelector: {}
 
 priorityClassName: ""
@@ -122,6 +124,9 @@ extraVolumeMounts: []
   #     readOnly: true
 
 tolerations: []
+
+# Labels added to the pod
+podLabels: {}
 
 # Annotations added to the pod
 podAnnotations: {}

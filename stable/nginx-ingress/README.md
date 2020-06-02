@@ -48,7 +48,8 @@ Parameter | Description | Default
 --- | --- | ---
 `controller.name` | name of the controller component | `controller`
 `controller.image.repository` | controller container image repository | `quay.io/kubernetes-ingress-controller/nginx-ingress-controller`
-`controller.image.tag` | controller container image tag | `0.30.0`
+`controller.image.tag` | controller container image tag | `0.32.0`
+`controller.image.digest` | controller container image digest | `""`
 `controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
 `controller.image.runAsUser` | User ID of the controller process. Value depends on the Linux distribution used inside of the container image. | `101`
 `controller.useComponentLabel` | Wether to add component label so the HPA can work separately for controller and defaultBackend. *Note: don't change this if you have an already running deployment as it will need the recreation of the controller deployment* | `false`
@@ -87,6 +88,7 @@ Parameter | Description | Default
 `controller.minReadySeconds` | how many seconds a pod needs to be ready before killing the next, during update | `0`
 `controller.nodeSelector` | node labels for pod assignment | `{}`
 `controller.podAnnotations` | annotations to be added to pods | `{}`
+`controller.deploymentLabels` | labels to add to the deployment metadata | `{}`
 `controller.podLabels` | labels to add to the pod container metadata | `{}`
 `controller.podSecurityContext` | Security context policies to add to the controller pod | `{}`
 `controller.replicaCount` | desired number of controller pods | `1`
@@ -161,9 +163,10 @@ Parameter | Description | Default
 `controller.admissionWebhooks.service.loadBalancerSourceRanges` | List of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `controller.admissionWebhooks.service.servicePort` | Admission webhook service port | `443`
 `controller.admissionWebhooks.service.type` | Type of admission webhook service to create | `ClusterIP`
-`controller.admissionWebhooks.patch.enabled` | If true, will use a pre and post install hooks to generate a CA and certificate to use for the prometheus operator tls proxy, and patch the created webhooks with the CA. | `true`
+`controller.admissionWebhooks.patch.enabled` | If true, will use a pre and post install hooks to generate a CA and certificate to use for validating webhook endpoint, and patch the created webhooks with the CA. | `true`
 `controller.admissionWebhooks.patch.image.repository` | Repository to use for the webhook integration jobs | `jettech/kube-webhook-certgen`
 `controller.admissionWebhooks.patch.image.tag` |  Tag to use for the webhook integration jobs | `v1.0.0`
+`controller.admissionWebhooks.patch.image.digest` |  Digest to use for the webhook integration jobs | `""`
 `controller.admissionWebhooks.patch.image.pullPolicy` | Image pull policy for the webhook integration jobs | `IfNotPresent`
 `controller.admissionWebhooks.patch.priorityClassName` | Priority class for the webhook integration jobs | `""`
 `controller.admissionWebhooks.patch.podAnnotations` | Annotations for the webhook job pods | `{}`
@@ -181,6 +184,7 @@ Parameter | Description | Default
 `defaultBackend.name` | name of the default backend component | `default-backend`
 `defaultBackend.image.repository` | default backend container image repository | `k8s.gcr.io/defaultbackend-amd64`
 `defaultBackend.image.tag` | default backend container image tag | `1.5`
+`defaultBackend.image.digest` | default backend container image digest | `""`
 `defaultBackend.image.pullPolicy` | default backend container image pull policy | `IfNotPresent`
 `defaultBackend.image.runAsUser` | User ID of the controller process. Value depends on the Linux distribution used inside of the container image. By default uses nobody user. | `65534`
 `defaultBackend.useComponentLabel` | Whether to add component label so the HPA can work separately for controller and defaultBackend. *Note: don't change this if you have an already running deployment as it will need the recreation of the defaultBackend deployment* | `false`
@@ -201,6 +205,7 @@ Parameter | Description | Default
 `defaultBackend.affinity` | node/pod affinities (requires Kubernetes >=1.6) | `{}`
 `defaultBackend.nodeSelector` | node labels for pod assignment | `{}`
 `defaultBackend.podAnnotations` | annotations to be added to pods | `{}`
+`defaultBackend.deploymentLabels` | labels to add to the deployment metadata | `{}`
 `defaultBackend.podLabels` | labels to add to the pod container metadata | `{}`
 `defaultBackend.replicaCount` | desired number of default backend pods | `1`
 `defaultBackend.minAvailable` | minimum number of available default backend pods for PodDisruptionBudget | `1`
@@ -222,9 +227,11 @@ Parameter | Description | Default
 `podSecurityPolicy.enabled` | if `true`, create & use Pod Security Policy resources | `false`
 `serviceAccount.create` | if `true`, create a service account for the controller | `true`
 `serviceAccount.name` | The name of the controller service account to use. If not set and `create` is `true`, a name is generated using the fullname template. | ``
+`serviceAccount.annotations` | Annotations for service account. Only used if `create` is `true`. | ``
 `revisionHistoryLimit` | The number of old history to retain to allow rollback. | `10`
 `tcp` | TCP service key:value pairs. The value is evaluated as a template. | `{}`
 `udp` | UDP service key:value pairs The value is evaluated as a template. | `{}`
+`releaseLabelOverride` | If provided, the value will be used as the `release` label instead of .Release.Name | `""`
 
 These parameters can be passed via Helm's `--set` option
 ```console
@@ -305,7 +312,7 @@ The port NLB `80` will be mapped to nginx container port `80` and NLB port `443`
 ```
 controller:
   config:
-    ssl-redirect: "false" # we use `special` port to control ssl redirection 
+    ssl-redirect: "false" # we use `special` port to control ssl redirection
     server-snippet: |
       listen 8000;
       if ( $server_port = 80 ) {

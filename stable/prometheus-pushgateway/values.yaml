@@ -135,6 +135,10 @@ serviceMonitor:
 # If not set then a PodDisruptionBudget will not be created
 podDisruptionBudget: {}
 
+# Deployment Strategy type
+strategy:
+  type: Recreate
+
 persistentVolume:
   ## If true, pushgateway will create/use a Persistent Volume Claim
   ## If false, use emptyDir

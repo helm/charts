@@ -29,7 +29,7 @@ spec:
         message: Cluster has overcommitted CPU resource requests for Pods and cannot tolerate node failure.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubecpuovercommit
       expr: |-
-        sum(namespace:kube_pod_container_resource_requests_cpu_cores:sum)
+        sum(namespace:kube_pod_container_resource_requests_cpu_cores:sum{})
           /
         sum(kube_node_status_allocatable_cpu_cores)
           >
@@ -37,12 +37,12 @@ spec:
       for: 5m
       labels:
         severity: warning
-    - alert: KubeMemOvercommit
+    - alert: KubeMemoryOvercommit
       annotations:
         message: Cluster has overcommitted memory resource requests for Pods and cannot tolerate node failure.
-        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubememovercommit
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubememoryovercommit
       expr: |-
-        sum(namespace:kube_pod_container_resource_requests_memory_bytes:sum)
+        sum(namespace:kube_pod_container_resource_requests_memory_bytes:sum{})
           /
         sum(kube_node_status_allocatable_memory_bytes)
           >
@@ -52,10 +52,10 @@ spec:
       for: 5m
       labels:
         severity: warning
-    - alert: KubeCPUOvercommit
+    - alert: KubeCPUQuotaOvercommit
       annotations:
         message: Cluster has overcommitted CPU resource requests for Namespaces.
-        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubecpuovercommit
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubecpuquotaovercommit
       expr: |-
         sum(kube_resourcequota{job="kube-state-metrics", type="hard", resource="cpu"})
           /
@@ -64,10 +64,10 @@ spec:
       for: 5m
       labels:
         severity: warning
-    - alert: KubeMemOvercommit
+    - alert: KubeMemoryQuotaOvercommit
       annotations:
         message: Cluster has overcommitted memory resource requests for Namespaces.
-        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubememovercommit
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubememoryquotaovercommit
       expr: |-
         sum(kube_resourcequota{job="kube-state-metrics", type="hard", resource="memory"})
           /
@@ -78,7 +78,7 @@ spec:
         severity: warning
     - alert: KubeQuotaExceeded
       annotations:
-        message: Namespace {{`{{ $labels.namespace }}`}} is using {{`{{ $value | humanizePercentage }}`}} of its {{`{{ $labels.resource }}`}} quota.
+        message: Namespace {{`{{`}} $labels.namespace {{`}}`}} is using {{`{{`}} $value | humanizePercentage {{`}}`}} of its {{`{{`}} $labels.resource {{`}}`}} quota.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubequotaexceeded
       expr: |-
         kube_resourcequota{job="kube-state-metrics", type="used"}
@@ -90,7 +90,7 @@ spec:
         severity: warning
     - alert: CPUThrottlingHigh
       annotations:
-        message: '{{`{{ $value | humanizePercentage }}`}} throttling of CPU in namespace {{`{{ $labels.namespace }}`}} for container {{`{{ $labels.container }}`}} in pod {{`{{ $labels.pod }}`}}.'
+        message: '{{`{{`}} $value | humanizePercentage {{`}}`}} throttling of CPU in namespace {{`{{`}} $labels.namespace {{`}}`}} for container {{`{{`}} $labels.container {{`}}`}} in pod {{`{{`}} $labels.pod {{`}}`}}.'
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-cputhrottlinghigh
       expr: |-
         sum(increase(container_cpu_cfs_throttled_periods_total{container!="", }[5m])) by (container, pod, namespace)

@@ -9,6 +9,7 @@ metadata:
   labels:
     {{- include "prometheus.nodeExporter.labels" . | nindent 4 }}
   name: {{ template "prometheus.nodeExporter.fullname" . }}
+{{ include "prometheus.namespace" . | indent 2 }}
 spec:
   selector:
     matchLabels:
@@ -30,6 +31,10 @@ spec:
 {{- end }}
     spec:
       serviceAccountName: {{ template "prometheus.serviceAccountName.nodeExporter" . }}
+      {{- if .Values.nodeExporter.extraInitContainers }}
+      initContainers:
+{{ toYaml .Values.nodeExporter.extraInitContainers | indent 8 }}
+      {{- end }}
 {{- if .Values.nodeExporter.priorityClassName }}
       priorityClassName: "{{ .Values.nodeExporter.priorityClassName }}"
 {{- end }}

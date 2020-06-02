@@ -4,7 +4,7 @@ This is the Helm chart for the [Kubernetes Operator for Apache Spark](https://gi
 
 #### Prerequisites
 
-The Operator requires Kubernetes version 1.8 and above because it relies on garbage collection of custom resources. If customization of driver and executor pods (through mounting custom ConfigMaps and volumes) is desired, then the [Mutating Admission Webhook](https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/docs/quick-start-guide.md#using-the-mutating-admission-webhook) needs to be enabled and it only became beta in Kubernetes 1.9.
+The Operator requires Kubernetes version 1.13 or above to use the subresource support for CustomResourceDefinitions, which became beta in 1.13 and is enabled by default in 1.13 and higher.
 
 #### Installing the chart
 
@@ -43,7 +43,7 @@ The following table lists the configurable parameters of the Spark operator char
 | Parameter                 | Description                                                  | Default                                |
 | ------------------------- | ------------------------------------------------------------ | -------------------------------------- |
 | `operatorImageName`       | The name of the operator image                               | `gcr.io/spark-operator/spark-operator` |
-| `operatorVersion`         | The version of the operator to install                       | `v1beta2-1.1.1-2.4.5`                  |
+| `operatorVersion`         | The version of the operator to install                       | `v1beta2-1.1.2-2.4.5`                  |
 | `imagePullPolicy`         | Docker image pull policy                                     | `IfNotPresent`                         |
 | `imagePullSecrets`        | Docker image pull secrets                                    |                                        |
 | `replicas`                | The number of replicas of the operator Deployment            | 1                                      |
@@ -57,9 +57,12 @@ The following table lists the configurable parameters of the Spark operator char
 | `metricsPort`             | Port for the metrics endpoint                                | 10254                                  |
 | `metricsEndpoint`         | Metrics endpoint                                             | "/metrics"                             |
 | `metricsPrefix`           | Prefix for the metrics                                       | ""                                     |
-| `podAnnotations`          | annotations to be added to pods                              | `{}`                                   |
+| `nodeSelector`            | Node labels for pod assignment                               | `{}`                                   |
+| `tolerations`             | Tolerations for the sparkoperator deployment                 | `[]`                                   |
+| `podAnnotations`          | Annotations to be added to pods                              | `{}`                                   |
 | `resyncInterval`          | Informer resync interval in seconds                          | 30                                     |
 | `webhookPort`             | Service port of the webhook server                           | 8080                                   |
+| `webhookNamespaceSelector`| The webhook will only operate on namespaces with this label, specified in the form key1=value1,key2=value2 | `""` |
 | `resources`               | Resources needed for the sparkoperator deployment            | {}                                     |
 | `enableBatchScheduler`    | Whether to enable batch scheduler for pod scheduling         | false                                  |
 | `enableResourceQuotaEnforcement`    | Whether to enable the ResourceQuota enforcement for SparkApplication resources. Requires the webhook to be enabled by setting enableWebhook to true.         | false                                  |
@@ -67,6 +70,7 @@ The following table lists the configurable parameters of the Spark operator char
 | `leaderElection.lockName` | Lock name to use for leader election                         | `spark-operator-lock`                  |
 | `leaderElection.lockNamespace` | Namespace to use for leader election                    | (namespace of release)                 |
 | `securityContext` | Defines security context for operator container. | `{}` |
+
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
 #### Upgrading

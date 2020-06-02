@@ -220,12 +220,19 @@ spec:
   containers:
 {{ toYaml .Values.prometheus.prometheusSpec.containers | indent 4 }}
 {{- end }}
+{{- if .Values.prometheus.prometheusSpec.initContainers }}
+  initContainers:
+{{ toYaml .Values.prometheus.prometheusSpec.initContainers | indent 4 }}
+{{- end }}
 {{- if .Values.prometheus.prometheusSpec.priorityClassName }}
   priorityClassName: {{ .Values.prometheus.prometheusSpec.priorityClassName }}
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.thanos }}
   thanos:
 {{ toYaml .Values.prometheus.prometheusSpec.thanos | indent 4 }}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.disableCompaction }}
+  disableCompaction: {{ .Values.prometheus.prometheusSpec.disableCompaction }}
 {{- end }}
   portName: {{ .Values.prometheus.prometheusSpec.portName }}
 {{- end }}
