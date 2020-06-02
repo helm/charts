@@ -69,7 +69,7 @@ affinity: {}
 ## Replace the nginx.conf file in this chart with a customised config.
 nginxConfOverride: ""
   # # This example adds configuration for external auth e.g. via oauth2-proxy
-  # # It also demonstrates templating in another arbitrary value (authRoles) 
+  # # It also demonstrates templating in another arbitrary value (authRoles)
   # # to create a map of external users to rundeck roles
   # events {
   #   worker_connections  1024;
