@@ -71,6 +71,11 @@ Parameter | Description | Default
 `service.metricsPort.name` | name for the http service | `http`
 `service.annotations` | Annotations on the http service | `{}`
 `service.labels` | Additional labels for the service definition | `{}`
+`ingress.enabled` | If true, create an ingress resource | `false`
+`ingress.annotations` | Optional ingress annotations | `{}`
+`ingress.path` | Ingress path | `/`
+`ingress.hosts` | Ingress hostnames | `elasticsearch-exporter.local`
+`ingress.tls` | Ingress TLS configuration | `[]`
 `env` | Extra environment variables passed to pod | `{}`
 `extraEnvSecrets` | Extra environment variables passed to the pod from k8s secrets - see `values.yaml` for an example | `{}` |
 `envFromSecret` | The name of an existing secret in the same kubernetes namespace which contains values to be added to the environment | `nil`

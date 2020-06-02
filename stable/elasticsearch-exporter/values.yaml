@@ -46,6 +46,14 @@ service:
   annotations: {}
   labels: {}
 
+ingress:
+  enabled: true
+  annotations: {}
+  path: /
+  hosts:
+    - log-es-exporter.k8s.ks-live.com
+  tls: []
+
 ## Extra environment variables that will be passed into the exporter pod
 ## example:
 ## env:
