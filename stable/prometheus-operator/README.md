@@ -154,6 +154,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `defaultRules.rules.k8s` | Create K8S default rules| `true` |
 | `defaultRules.rules.kubeApiserver` | Create Api Server default rules| `true` |
 | `defaultRules.rules.kubeApiserverError` | Create Api Server Error default rules| `true` |
+| `defaultRules.rules.kubeApiserverSlos` | Create Api Server SLOs default rules| `true` |
 | `defaultRules.rules.kubePrometheusNodeAlerting` | Create Node Alerting default rules| `true` |
 | `defaultRules.rules.kubePrometheusNodeRecording` | Create Node Recording default rules| `true` |
 | `defaultRules.rules.kubeScheduler` | Create Kubernetes Scheduler default rules| `true` |
