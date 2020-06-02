@@ -164,6 +164,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.jobs`                     | Jenkins XML job configs              | `{}`                                      |
 | `master.overwriteJobs`            | Replace jobs w/ ConfigMap on boot    | `false`                                   |
 | `master.installPlugins`           | List of Jenkins plugins to install. If you don't want to install plugins set it to `[]` | `kubernetes:1.18.2 workflow-aggregator:2.6 credentials-binding:1.19 git:3.11.0 workflow-job:2.33` |
+| `master.additionalPlugins`        | List of Jenkins plugins to install in addition to those listed in master.installPlugins | `[]` |
 | `master.overwritePlugins`         | Overwrite installed plugins on start.| `false`                                   |
 | `master.overwritePluginsFromImage` | Keep plugins that are already installed in the master image.| `true`            |
 | `master.enableRawHtmlMarkupFormatter` | Enable HTML parsing using (see below) | false                                |
@@ -237,9 +238,11 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.podName`            | Agent Pod base name                             | Not set                |
 | `agent.idleMinutes`        | Allows the Pod to remain active for reuse       | 0                      |
 | `agent.yamlTemplate`       | The raw yaml of a Pod API Object to merge into the agent spec | Not set  |
+| `agent.yamlMergeStrategy   | Defines how the raw yaml field gets merged with yaml definitions from inherited pod templates | `override` |
 | `agent.slaveConnectTimeout`| Timeout in seconds for an agent to be online    | 100                    |
 | `agent.podTemplates`       | Configures extra pod templates for the default kubernetes cloud | `{}`   |
-| `additionalAgents`         | Configure additional agents which inherit values from `agent` | `{}` |
+| `agent.workingDir`         | Configure working directory for default agent   | `/home/jenkins`        |
+| `additionalAgents`         | Configure additional agents which inherit values from `agent` | `{}`     |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
