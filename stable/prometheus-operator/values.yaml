@@ -31,6 +31,7 @@ defaultRules:
     k8s: true
     kubeApiserver: true
     kubeApiserverError: true
+    kubeApiserverSlos: true
     kubePrometheusNodeAlerting: true
     kubePrometheusNodeRecording: true
     kubernetesAbsent: true
@@ -1096,6 +1097,7 @@ prometheusOperator:
   enabled: true
 
   # If true prometheus operator will create and update its CRDs on startup
+  # Only for prometheusOperator.image.tag < v0.39.0
   manageCrds: true
 
   tlsProxy:

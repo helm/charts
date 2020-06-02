@@ -42,6 +42,7 @@ spec:
       {{- if .Values.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsGroup: {{ .Values.securityContext.runAsGroup }}
         runAsUser: {{ .Values.securityContext.runAsUser }}
       {{- end }}
     {{- if .Values.priorityClassName }}
