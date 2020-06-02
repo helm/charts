@@ -30,6 +30,7 @@ nodeSelector: {}
 sink: glog
 
 podAnnotations: {}
+podLabels: {}
 
 containerPorts: []
 
