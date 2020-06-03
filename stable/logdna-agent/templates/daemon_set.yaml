@@ -1,3 +1,4 @@
+{{- if .Values.logdna.key -}}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -110,3 +111,4 @@ spec:
 {{- end }}
       tolerations:
 {{ toYaml .Values.daemonset.tolerations | indent 8 }}
+{{- end -}}
