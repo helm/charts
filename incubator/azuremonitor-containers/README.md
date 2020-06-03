@@ -31,7 +31,7 @@ Monitoring your Kubernetes cluster and containers is critical, especially when r
 
 > Note: `--name` flag not required in Helm3 since this flag is deprecated
 
-> Note: use `omsagent.proxy` parameter to set the proxy endpoint. Refer to [configure proxy](#Support-for-configuring-Forward-Proxy-endpoint) for more details about the proxy endpoint format.
+> Note: use `omsagent.proxy` parameter to set the proxy endpoint. Refer to [configure proxy](#Configuring-Proxy-Endpoint) for more details about  proxy.
 
 ### To Use Azure Log Analytics Workspace in Public Cloud
 
@@ -88,7 +88,7 @@ The following table lists the configurable parameters of the MSOMS chart and the
 | `omsagent.domain`          | Azure Log analytics cloud domain (public,china, us govt)| opinsights.azure.com (Public cloud as default), opinsights.azure.cn (China Cloud), opinsights.azure.us (US Govt Cloud)      |
 | `omsagent.env.clusterName` | Name of your cluster                                    | Does not have a default value, needs to be provided                                                                         |
 | `omsagent.rbac`            | rbac enabled/disabled                                   | true  (i.e.enabled)                                                                                                           |
-| `omsagent.proxy`           | Proxy endpoint                                          | Doesnt have default value. Refer to [configure proxy](#Support-for-configuring-Forward-Proxy-endpoint) |
+| `omsagent.proxy`           | Proxy endpoint                                          | Doesnt have default value. Refer to [configure proxy](#Configuring-Proxy-Endpoint) |
 
 ### Note
 
@@ -132,9 +132,12 @@ Starting with chart version 2.0.0, chart will create a CRD (healthstates.azmon.c
 
 Starting with chart version 2.7.0, chart will support Container Runtime Interface(CRI) compatiable runtimes such as CRI-O and ContainerD etc. in addition to Docker/Moby.
 
-## Support for configuring Forward Proxy endpoint
+## Configuring Proxy Endpoint
 
-Starting with chart version 2.7.1, chart will support specifying the Proxy endpoint via `omsagent.proxy` chart parameter so that all remote outbound traffic will be routed via configured proxy endpoint.Communication between the Azure Monitor for containers agent and Azure Monitor backend can use an HTTP or HTTPS proxy server.
+Starting with chart version 2.7.1, chart will support specifying the Proxy endpoint via `omsagent.proxy` chart parameter so that all remote outbound traffic will be routed via configured proxy endpoint.
+
+Communication between the Azure Monitor for containers agent and Azure Monitor backend can use an HTTP or HTTPS proxy server.
+
 Both anonymous and basic authentication (username/password) proxies are supported.
 
 The proxy configuration value has the following syntax:
@@ -146,7 +149,7 @@ Protocol|http or https
 user|username for proxy authentication
 password|password for proxy authentication
 proxyhost|Address or FQDN of the proxy server
-port|Optional port number for the proxy server
+port|port number for the proxy server
 
 For example:
 `omsagent.proxy=http://user01:password@proxy01.contoso.com:8080`
