@@ -315,6 +315,7 @@ metrics:
 # Provide affinity for hooks if needed
 hooks:
   affinity: {}
+  tolerations: []
   dbInit:
     enabled: true
     resources:

@@ -31,6 +31,10 @@ spec:
       affinity:
 {{ toYaml . | indent 8 }}
       {{- end }}
+      {{- if .Values.hooks.tolerations }}
+      tolerations:
+{{ toYaml .Values.hooks.tolerations | indent 8 }}
+      {{- end }}
       restartPolicy: Never
       {{- if .Values.image.imagePullSecrets }}
       imagePullSecrets:
