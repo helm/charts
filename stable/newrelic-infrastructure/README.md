@@ -21,7 +21,28 @@ $ helm upgrade my-release newrelic/<chart>
 
 Issues and PRs related to the chart itself will be redirected to `newrelic/charts` GitHub repository.
 
-**New Relic is very thankful for all the 20+ community members that contributed and helped maintain this chart throughout the years. Everyone is welcome to contribute at the new repository.**
+## Past contributors
+
+New Relic is very thankful for all the 15+ community members that contributed and helped maintain this chart throughout the years:
+
+* coreypobrien
+* sstarcher
+* jmccarty3
+* slayerjain
+* ryanhope2
+* rk295
+* michaelajr
+* isindir
+* idirouhab
+* ismferd
+* enver
+* diclophis
+* jeffdesc
+* costimuraru
+* verwilst
+* ezelenka
+
+**Everyone is welcome to contribute at the new repository.**
 
 ## Chart Details
 
