@@ -35,6 +35,18 @@ database:
   host: ""
   port: ""
 
+  ## Database name where model will be created
+  ##
+  name: prisma
+
+  ## Enable SSL
+  ##
+  ssl: false
+
+  ## The maximum number of database connections (must be at least 2).
+  ##
+  connectionLimit: 2
+
   ## Database credentials
   ##
   user: prisma

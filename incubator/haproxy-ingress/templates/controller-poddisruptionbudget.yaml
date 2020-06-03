@@ -2,7 +2,7 @@ apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
   labels:
-    app: {{ template "haproxy-ingress.name" . }}
+    app: {{ template "haproxy-ingress.labels.app.controller" . }}
     chart: {{ template "haproxy-ingress.chart" . }}
     component: "{{ .Values.controller.name }}"
     release: {{ .Release.Name }}
@@ -11,7 +11,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: {{ template "haproxy-ingress.name" . }}
+      app: {{ template "haproxy-ingress.labels.app.controller" . }}
       release: {{ .Release.Name }}
       component: "{{ .Values.controller.name }}"
   minAvailable: {{ .Values.controller.minAvailable }}

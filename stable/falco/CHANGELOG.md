@@ -3,6 +3,12 @@
 This file documents all notable changes to Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.1.7
+
+### Minor Changes
+
+* Add pod annotation support for daemonset
+
 ## v1.1.6
 
 ### Minor Changes

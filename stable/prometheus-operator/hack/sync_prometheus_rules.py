@@ -55,6 +55,7 @@ condition_map = {
     'k8s.rules': ' .Values.defaultRules.rules.k8s',
     'kube-apiserver.rules': ' .Values.kubeApiServer.enabled .Values.defaultRules.rules.kubeApiserver',
     'kube-apiserver-error': ' .Values.kubeApiServer.enabled .Values.defaultRules.rules.kubeApiserverError',
+    'kube-apiserver-slos': ' .Values.kubeApiServer.enabled .Values.defaultRules.rules.kubeApiserverSlos',
     'kube-prometheus-node-alerting.rules': ' .Values.defaultRules.rules.kubePrometheusNodeAlerting',
     'kube-prometheus-node-recording.rules': ' .Values.defaultRules.rules.kubePrometheusNodeRecording',
     'kube-scheduler.rules': ' .Values.kubeScheduler.enabled .Values.defaultRules.rules.kubeScheduler',
@@ -120,7 +121,7 @@ replacement_map = {
 }
 
 # standard header
-header = '''{{- /* 
+header = '''{{- /*
 Generated from '%(name)s' group from %(url)s
 Do not change in-place! In order to change this file first read following link:
 https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
@@ -153,7 +154,7 @@ def init_yaml_styles():
 
 
 def escape(s):
-    return s.replace("{{", "{{`{{").replace("}}", "}}`}}")
+    return s.replace("{{", "{{`{{").replace("}}", "}}`}}").replace("{{`{{", "{{`{{`}}").replace("}}`}}", "{{`}}`}}")
 
 
 def fix_expr(rules):

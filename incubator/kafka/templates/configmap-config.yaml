@@ -13,14 +13,35 @@ data:
     cd /usr/bin
     until kafka-configs --zookeeper {{ $zk }} --entity-type topics --describe || (( count++ >= 6 ))
     do
-      echo "Waiting for Zookeeper..."
+      echo "Waiting for ZooKeeper..."
       sleep 20
     done
-    until nc -z {{ template "kafka.fullname" . }} 9092 || (( retries++ >= 6 ))
+
+    # expected='0,1,2,3,...,n,'
+    # the trailing comma is significant
+    expected='{{ until (int .Values.replicas) | join "," | trim }},'
+    connected_brokers=''
+    until [[ "$connected_brokers" == "$expected" ]]
     do
-      echo "Waiting for Kafka..."
+      echo "Waiting for all Kafka brokers to be connected to ZooKeeper..."
+      connected_brokers=$(zookeeper-shell {{ $zk }} ls /brokers/ids | \
+        # brokers formatted as: [ 0, 1, 2 ]
+        tail -1 | \
+        # broker ids separated by newline
+        grep -o '[0-9]\+' | \
+        # they may have connected in a random order
+        sort | \
+        # trim the leading and trailing whitespace
+        sed 's/ *$//' | \
+        # Replace newline with comma
+        # The result has a trailing comma
+        tr '\n' ','
+        )
+      echo "Currently available brokers: $connected_brokers"
+      echo "Expected brokers: $expected"
       sleep 20
     done
+
     echo "Applying runtime configuration using {{ .Values.image }}:{{ .Values.imageTag }}"
   {{- range $n, $topic := .Values.topics }}
     {{- if and $topic.partitions $topic.replicationFactor $topic.reassignPartitions }}

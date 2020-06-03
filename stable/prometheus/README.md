@@ -165,7 +165,7 @@ Parameter | Description | Default
 `alertmanager.statefulSet.podManagementPolicy` | podManagementPolicy of alertmanager pods | `OrderedReady`
 `alertmanager.statefulSet.headless.annotations` | annotations for alertmanager headless service | `{}`
 `alertmanager.statefulSet.headless.labels` | labels for alertmanager headless service | `{}`
-`alertmanager.statefulSet.headless.enableMeshPeer` | If true, enable the mesh peer endpoint for the headless service | `{}`
+`alertmanager.statefulSet.headless.enableMeshPeer` | If true, enable the mesh peer endpoint for the headless service | `false`
 `alertmanager.statefulSet.headless.servicePort` | alertmanager headless service port | `80`
 `alertmanager.priorityClassName` | alertmanager priorityClassName | `nil`
 `alertmanager.resources` | alertmanager pod resource requests & limits | `{}`
@@ -205,12 +205,14 @@ Parameter | Description | Default
 `initChownData.image.pullPolicy` | init-chown-data container image pull policy | `IfNotPresent`
 `initChownData.resources` | init-chown-data pod resource requests & limits | `{}`
 `kubeStateMetrics.enabled` | If true, create kube-state-metrics sub-chart, see the [kube-state-metrics chart for configuration options](https://github.com/helm/charts/tree/master/stable/kube-state-metrics) | `true`
+`kube-state-metrics` | [kube-state-metrics configuration options](https://github.com/helm/charts/tree/master/stable/kube-state-metrics) | `Same as sub-chart's`
 `nodeExporter.enabled` | If true, create node-exporter | `true`
 `nodeExporter.name` | node-exporter container name | `node-exporter`
 `nodeExporter.image.repository` | node-exporter container image repository| `prom/node-exporter`
 `nodeExporter.image.tag` | node-exporter container image tag | `v0.18.1`
 `nodeExporter.image.pullPolicy` | node-exporter container image pull policy | `IfNotPresent`
 `nodeExporter.extraArgs` | Additional node-exporter container arguments | `{}`
+`nodeExporter.extraInitContainers` | Init containers to launch alongside the node-exporter | `[]`
 `nodeExporter.extraHostPathMounts` | Additional node-exporter hostPath mounts | `[]`
 `nodeExporter.extraConfigmapMounts` | Additional node-exporter configMap mounts | `[]`
 `nodeExporter.hostNetwork` | If true, node-exporter pods share the host network namespace | `true`
@@ -241,6 +243,7 @@ Parameter | Description | Default
 `pushgateway.image.tag` | pushgateway container image tag | `v1.0.1`
 `pushgateway.image.pullPolicy` | pushgateway container image pull policy | `IfNotPresent`
 `pushgateway.extraArgs` | Additional pushgateway container arguments | `{}`
+`pushgateway.extraInitContainers` | Init containers to launch alongside the pushgateway | `[]`
 `pushgateway.ingress.enabled` | If true, pushgateway Ingress will be created | `false`
 `pushgateway.ingress.annotations` | pushgateway Ingress annotations | `{}`
 `pushgateway.ingress.hosts` | pushgateway Ingress hostnames | `[]`
@@ -277,14 +280,14 @@ Parameter | Description | Default
 `server.enabled` | If false, Prometheus server will not be created | `true`
 `server.name` | Prometheus server container name | `server`
 `server.image.repository` | Prometheus server container image repository | `prom/prometheus`
-`server.image.tag` | Prometheus server container image tag | `v2.16.0`
+`server.image.tag` | Prometheus server container image tag | `v2.18.1`
 `server.image.pullPolicy` | Prometheus server container image pull policy | `IfNotPresent`
 `server.configPath` |  Path to a prometheus server config file on the container FS  | `/etc/config/prometheus.yml`
 `server.global.scrape_interval` | How frequently to scrape targets by default | `1m`
 `server.global.scrape_timeout` | How long until a scrape request times out | `10s`
 `server.global.evaluation_interval` | How frequently to evaluate rules | `1m`
-`server.remoteWrite` | The remote write feature of Prometheus allow transparently sending samples. | `{}`
-`server.remoteRead` | The remote read feature of Prometheus allow transparently receiving samples. | `{}`
+`server.remoteWrite` | The remote write feature of Prometheus allow transparently sending samples. | `[]`
+`server.remoteRead` | The remote read feature of Prometheus allow transparently receiving samples. | `[]`
 `server.extraArgs` | Additional Prometheus server container arguments | `{}`
 `server.extraFlags` | Additional Prometheus server container flags | `["web.enable-lifecycle"]`
 `server.extraInitContainers` | Init containers to launch alongside the server | `[]`
@@ -350,13 +353,12 @@ Parameter | Description | Default
 `server.service.gRPC.nodePort` | Port to be used as gRPC nodePort in the prometheus service | `0`
 `server.service.statefulsetReplica.enabled` | If true, send the traffic from the service to only one replica of the replicaset | `false`
 `server.service.statefulsetReplica.replica` | Which replica to send the traffice to | `0`
+`server.hostAliases` | /etc/hosts-entries in container(s) | []
 `server.sidecarContainers` | array of snippets with your sidecar containers for prometheus server | `""`
 `server.strategy` | Deployment strategy | `{ "type": "RollingUpdate" }`
 `serviceAccounts.alertmanager.create` | If true, create the alertmanager service account | `true`
 `serviceAccounts.alertmanager.name` | name of the alertmanager service account to use or create | `{{ prometheus.alertmanager.fullname }}`
 `serviceAccounts.alertmanager.annotations` | annotations for the alertmanager service account | `{}`
-`serviceAccounts.kubeStateMetrics.create` | If true, create the kubeStateMetrics service account | `true`
-`serviceAccounts.kubeStateMetrics.name` | name of the kubeStateMetrics service account to use or create | `{{ prometheus.kubeStateMetrics.fullname }}`
 `serviceAccounts.nodeExporter.create` | If true, create the nodeExporter service account | `true`
 `serviceAccounts.nodeExporter.name` | name of the nodeExporter service account to use or create | `{{ prometheus.nodeExporter.fullname }}`
 `serviceAccounts.nodeExporter.annotations` | annotations for the nodeExporter service account | `{}`
@@ -375,7 +377,8 @@ Parameter | Description | Default
 `serverFiles.prometheus.yml` | Prometheus server scrape configuration | example configuration
 `extraScrapeConfigs` | Prometheus server additional scrape configuration | ""
 `alertRelabelConfigs` | Prometheus server [alert relabeling configs](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#alert_relabel_configs) for H/A prometheus | ""
-`networkPolicy.enabled` | Enable NetworkPolicy | `false` |
+`networkPolicy.enabled` | Enable NetworkPolicy | `false`
+`forceNamespace` | Force resources to be namespaced | `null` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -418,7 +421,7 @@ $ helm install stable/prometheus --name my-release -f values.yaml -f service1-al
 ```
 
 ### RBAC Configuration
-Roles and RoleBindings resources will be created automatically for `server` and `kubeStateMetrics` services.
+Roles and RoleBindings resources will be created automatically for `server` service.
 
 To manually setup RBAC you need to set the parameter `rbac.create=false` and specify the service account to be used for each service by setting the parameters: `serviceAccounts.{{ component }}.create` to `false` and `serviceAccounts.{{ component }}.name` to the name of a pre-existing service account.
 

@@ -54,6 +54,7 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 | `ingress.annotations`                     | Ingress annotations                                                              | None                                                                         |
 | `ingress.enabled`                         | Enables Ingress                                                                  | `false`                                                                      |
 | `ingress.hosts`                           | Ingress accepted hostnames                                                       | None                                                                         |
+| `ingress.path`                            | Ingress accepted path                                                            | `/`                                                                         |
 | `ingress.tls`                             | Ingress TLS configuration                                                        | None                                                                         |
 | `nodeSelector`                            | node labels for pod assignment                                                   | `{}`                                                                         |
 | `runAsUser`                               | User to run blackbox-exporter container as                                       | `1000`                                                                       |
@@ -63,15 +64,21 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 | `affinity`                                | node affinity for pod assignment                                                 | `{}`                                                                         |
 | `podAnnotations`                          | annotations to add to each pod                                                   | `{}`                                                                         |
 | `podDisruptionBudget`                     | pod disruption budget                                                            | `{}`                                                                         |
+| `pspEnabled`                              | create pod security policy resources                                             | `true`                                                                       |
 | `priorityClassName`                       | priority class name                                                              | None                                                                         |
 | `allowIcmp`                               | whether to enable ICMP probes, by giving the pods `CAP_NET_RAW` and running as root | `false`                                                                   |
 | `resources`                               | pod resource requests & limits                                                   | `{}`                                                                         |
 | `restartPolicy`                           | container restart policy                                                         | `Always`                                                                     |
+| `livenessProbe`                           | Container liveness probe                                                         | See values.yaml                                                              |
+| `readinessProbe`                          | Container readiness probe                                                        | See values.yaml                                                              |
 | `service.annotations`                     | annotations for the service                                                      | `{}`                                                                         |
 | `service.labels`                          | additional labels for the service                                                | None                                                                         |
 | `service.type`                            | type of service to create                                                        | `ClusterIP`                                                                  |
 | `service.port`                            | port for the blackbox http service                                               | `9115`                                                                       |
 | `service.externalIPs`                     | list of external ips                                                             | []                                                                           |
+| `serviceAccount.create`                   | Specifies whether a service account should be created.                           | `true`                                                                       |
+| `serviceAccount.name`                     | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template |                                 |
+| `serviceAccount.annotations`              | ServiceAccount annotations                                                       |                                                                              |
 | `serviceMonitor.enabled`                  | If true, a ServiceMonitor CRD is created for a prometheus operator               | `false`                                                                      |
 | `serviceMonitor.defaults.labels`          | Labels for prometheus operator                                                   | `{}`                                                                         |
 | `serviceMonitor.defaults.interval`        | Interval for prometheus operator endpoint                                        | `30s`                                                                        |
@@ -84,6 +91,10 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 | `serviceMonitor.targets.[].interval`      | See above in `serviceMonitor.defaults`                                           | `{{ serviceMonitor.defaults.interval }}`                                     |
 | `serviceMonitor.targets.[].scrapeTimeout` | See above in `serviceMonitor.defaults`                                           | `{{ serviceMonitor.defaults.scrateTimeout }}`                                |
 | `serviceMonitor.targets.[].module`        | See above in `serviceMonitor.defaults`                                           | `{{ serviceMonitor.defaults.module }}`                                       |
+| `prometheusRule.enabled`                  | Set this to true to create PrometheusRule for Prometheus operator | `false`     |
+| `prometheusRule.additionalLabels`         | Additional labels that can be passed to PrometheusRule | `{}`  |
+| `prometheusRule.namespace`                | Namespace where PrometheusRule resource should be created |      |
+| `prometheusRule.rules`                    | [PrometheusRule](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) to be created                      | `[]`                                                    |
 | `strategy`                                | strategy used to replace old Pods with new ones                                  | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
@@ -104,6 +115,10 @@ $ helm install --name my-release -f values.yaml stable/prometheus-blackbox-expor
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
 ## Upgrading an existing Release to a new major version
+
+### 4.0.0
+
+This version create the service account by default and introduce pod security policy, it can be enabled by setting `pspEnabled: true`.
 
 ### 2.0.0
 

@@ -26,8 +26,14 @@ spec:
       labels:
         app: {{ template "cerebro.name" . }}
         release: {{ .Release.Name }}
+        {{- if .Values.deployment.podLabels }}
+        {{- toYaml .Values.deployment.podLabels | nindent 8 }}
+        {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- if .Values.deployment.podAnnotations }}
+        {{- toYaml .Values.deployment.podAnnotations | nindent 8 }}
+        {{- end }}
     spec:
       {{- if .Values.securityContext }}
       securityContext:
@@ -69,19 +75,19 @@ spec:
             - secretRef:
                 name: "{{ .Values.envFromSecretRef }}"
           {{- end }}
-          {{- if .Values.deployment.readinessProbe.enabled}}
+          {{- if .Values.deployment.livenessProbe.enabled}}
           livenessProbe:
             httpGet:
               path: {{ .Values.config.basePath }}
               port: http
             initialDelaySeconds: 120
           {{- end }}
-          {{- if .Values.deployment.livenessProbe.enabled}}
+          {{- if .Values.deployment.readinessProbe.enabled}}
           readinessProbe:
             httpGet:
               path: {{ .Values.config.basePath }}
               port: http
-            initialDelaySeconds: 120
+            initialDelaySeconds: 5
           {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}

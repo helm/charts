@@ -1,0 +1,59 @@
+{{- if .Values.anchoreEnterpriseGlobal.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ .Release.Name }}-enterprise-upgrade"
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+  annotations:
+    "helm.sh/hook": post-upgrade
+    "helm.sh/hook-weight": "-3"
+spec:
+  template:
+    metadata:
+      name: "{{ .Release.Name }}-enterprise-upgrade"
+      labels:
+        app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+      imagePullSecrets:
+      - name: {{ .Values.anchoreEnterpriseGlobal.imagePullSecretName }}
+      restartPolicy: Never
+      containers:
+      - name: "{{ .Release.Name }}-enterprise-upgrade"
+        imagePullPolicy: {{ .Values.anchoreEnterpriseGlobal.imagePullPolicy }}
+        image: {{ .Values.anchoreEnterpriseGlobal.image }}
+        {{- if .Values.anchoreGlobal.dbConfig.ssl }}
+        args: ["/bin/bash", "-c", "anchore-enterprise-manager db --db-use-ssl --db-connect postgresql://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@${ANCHORE_DB_HOST}/${ANCHORE_DB_NAME}?sslmode={{ .Values.anchoreGlobal.dbConfig.sslMode }}\\&sslrootcert=/home/anchore/certs/{{ .Values.anchoreGlobal.dbConfig.sslRootCertName }} upgrade --dontask"]
+        {{- else }}
+        args: ["/bin/bash", "-c", "anchore-enterprise-manager db --db-connect postgresql://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@${ANCHORE_DB_HOST}/${ANCHORE_DB_NAME} upgrade --dontask"]
+        {{- end }}
+        envFrom:
+        - secretRef:
+            name: {{ default (include "anchore-engine.fullname" .) .Values.anchoreGlobal.existingSecret }}
+        - configMapRef:
+            name: {{ template "anchore-engine.fullname" . }}-env
+        env:
+        {{- with .Values.anchoreGlobal.extraEnv }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- if (.Values.anchoreGlobal.certStoreSecretName) }}
+        volumeMounts:
+        - name: certs
+          mountPath: /home/anchore/certs/
+          readOnly: true
+        {{- end }}
+    {{- with .Values.anchoreGlobal.certStoreSecretName }}
+      volumes:
+      - name: certs
+        secret:
+          secretName: {{ . }}
+      {{- end }}
+{{- end }}
