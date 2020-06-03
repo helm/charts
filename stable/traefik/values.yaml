@@ -1,6 +1,6 @@
 ## Default values for Traefik
 image: traefik
-imageTag: 1.7.20
+imageTag: 1.7.23
 imagePullPolicy: IfNotPresent
 
 ## Optionally specify an array of imagePullSecrets.
@@ -429,6 +429,18 @@ metrics:
   prometheus:
     enabled: false
     # buckets: [0.1,0.3,1.2,5]
+    service:
+      # Set a custom service name
+      name:
+      annotations:
+        prometheus.io/scrape: "true"
+      port: 9100
+      type: ClusterIP
+      # loadBalancerIP: ""
+      # loadBalancerSourceRanges: []
+      # externalIP: ""
+      # externalTrafficPolicy: Cluster
+      # nodePort: 9100
    # serviceMonitor:
     # When set true and if Prometheus Operator is installed then use a ServiceMonitor to configure scraping
     # enabled: false

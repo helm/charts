@@ -4,7 +4,7 @@ image:
   # Image was built from
   # https://github.com/zalando/spilo/tree/master/postgres-appliance
   repository: registry.opensource.zalan.do/acid/spilo-10
-  tag: 1.4-p16
+  tag: 1.5-p5
   pullPolicy: IfNotPresent
 
 # Credentials used by Patroni

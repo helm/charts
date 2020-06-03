@@ -185,8 +185,11 @@ GID: 999
 customCert:
   enabled: false
   isChain: false
-  certName: cert.pem
-  keyName: privkey.pem
+  certName: tls.crt
+  keyName: tls.key
+  # If you want to store certificate and its key as a Kubernetes tls secret
+  # you can pass the name of that secret using certSecret variable
+  # certSecret: unifi-tls
 
 # define an external mongoDB instead of using the built-in mongodb
 mongodb:
@@ -209,6 +212,9 @@ persistence:
   ## If you want to reuse an existing claim, you can pass the name of the PVC using
   ## the existingClaim variable
   # existingClaim: your-claim
+  #
+  ## Applies a prefix to the directories created by the unifi container
+  # subPath: unifi
   accessMode: ReadWriteOnce
   size: 5Gi
 
