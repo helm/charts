@@ -1,5 +1,26 @@
 # newrelic-infrastructure
 
+## This Helm chart is deprecated
+
+Given the [`stable` deprecation timeline](https://github.com/helm/charts#deprecation-timeline), the New Relic infrastructure integration chart is now located at [newrelic/helm-charts](https://github.com/newrelic/helm-charts/).
+
+New Relic will continue providing the same cadence of updates, support, etc that we've been keeping here these years. Installation instructions are very similar, just adding the _newrelic_ repo and using it during the installation (`newrelic/<chart>` instead of `stable/<chart>`).
+
+```bash
+$ helm repo add newrelic https://helm-charts.newrelic.com
+$ helm install my-release newrelic/<chart>           # Helm 3
+$ helm install --name my-release newrelic/<chart>    # Helm 2
+```
+
+To update an exisiting _stable_ deployment with a chart hosted in the New Relic repository you can execute:
+
+```bash
+$ helm repo add newrelic https://helm-charts.newrelic.com
+$ helm upgrade my-release newrelic/<chart>
+```
+
+Issues and PRs related to the chart itself will be redirected to `newrelic/charts` GitHub repository.
+
 ## Chart Details
 
 This chart will deploy the New Relic Infrastructure agent as a Daemonset.
