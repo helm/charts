@@ -19,6 +19,8 @@ $ helm upgrade my-release newrelic/<chart>
 
 Issues and PRs related to the chart itself will be redirected to `newrelic/charts` GitHub repository.
 
+New Relic is very thankful for all the 20+ community members that contributed and helped maintain this chart throughout the years. Everyone is welcome to contribute at the new repository.
+
 {{- if (include "newrelic.areValuesValid" .) }}
 Your deployment of the New Relic Infrastructure agent is complete. You can check on the progress of this by running the following command:
 
