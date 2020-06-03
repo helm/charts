@@ -2,6 +2,24 @@ master:
   overwritePluginsFromImage: false
   runAsUser: 0
   fsGroup: 1000
+  JCasC:
+    authorizationStrategy: |-
+      loggedInUsersCanDoAnything:
+        allowAnonymousRead: true
+    securityRealm: |-
+      ldap:
+        configurations:
+          - server: ldap.acme.com
+            rootDN: dc=acme,dc=uk
+            managerPasswordSecret: ${LDAP_PASSWORD}
+            groupMembershipStrategy:
+              fromUserRecord:
+                attributeName: "memberOf"
+  additionalPlugins:
+    - ldap:1.24
+persistence:
+  enabled: false
+
 agent:
   resources:
     limits:
