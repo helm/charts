@@ -24,7 +24,6 @@ configAutoReload container updated from `kiwigrid/k8s-sidecar:0.1.132` to `kiwig
 ## 1.26.0
 
 Add support to override `workingDir` for default pod template
->>>>>>> master
 
 ## 1.25.0
 
@@ -33,7 +32,6 @@ Add support for installing plugins in addition to the chart's default plugins vi
 ## 1.24.0
 
 Allow configuration of yamlMergeStrategy via `agent.yamlMergeStrategy`
->>>>>>> master
 
 ## 1.23.2
 
@@ -129,7 +127,6 @@ configAutoReload container updated from `kiwigrid/k8s-sidecar:0.1.20` to `kiwigr
 ## 1.14.0
 
 support auto-reload container environment variables configuration
->>>>>>> master
 
 ## 1.13.3
 
