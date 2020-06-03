@@ -992,6 +992,21 @@ clusterChecksRunner:
   #   - name: <ENV_VAR_NAME>
   #     value: <ENV_VAR_VALUE>
 
+  ## @param volumes - list of objects - optional
+  ## Specify additional volumes to mount in the cluster checks container
+  #
+  volumes:
+  #   - hostPath:
+  #       path: <HOST_PATH>
+  #     name: <VOLUME_NAME>
+
+  ## @param volumeMounts - list of objects - optional
+  ## Specify additional volumes to mount in the cluster checks container
+  #
+  volumeMounts:
+  #   - name: <VOLUME_NAME>
+  #     mountPath: <CONTAINER_PATH>
+  #     readOnly: true
 
 kube-state-metrics:
   rbac:
