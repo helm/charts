@@ -924,6 +924,11 @@ clusterChecksRunner:
     #
     dedicated: false
 
+    ## @param serviceAccountAnnotations - object - required
+    ## Annotations to add to the ServiceAccount if clusterChecksRunner.rbac.dedicated is true
+    #
+    serviceAccountAnnotations: {}
+
     ## @param serviceAccountName - string - required
     ## Ignored if clusterChecksRunner.rbac.create is true
     #
