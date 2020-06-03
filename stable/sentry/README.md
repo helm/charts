@@ -194,6 +194,7 @@ Parameter                                            | Description              
 `metrics.serviceMonitor.interval`                    | How frequently to scrape metrics (use by default, falling back to Prometheus' default)                     | `nil`
 `metrics.serviceMonitor.selector`                    | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install | `{ prometheus: kube-prometheus }`
 `hooks.affinity`                                     | Affinity settings for hooks pods                                                                           | `{}`
+`hooks.tolerations`                                  | Toleration labels for hook pod assignment                                                                  | `[]`
 `hooks.dbInit.enabled`                               | Boolean to enable the dbInit job using a hook                                                              | `true`
 `hooks.dbInit.resources.limits`                      | Hook job resource limits                                                                                   | `{memory: 3200Mi}`
 `hooks.dbInit.resources.requests`                    | Hook job resource requests                                                                                 | `{memory: 3000Mi}`
