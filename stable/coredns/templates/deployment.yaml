@@ -74,6 +74,11 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args: [ "-conf", "/etc/coredns/Corefile" ]
         volumeMounts:
+{{- range  .Values.extraHostPathVolumes }}
+        - name: {{ .name }}
+          mountPath: {{ .mountPath }}
+          readOnly: true
+{{- end }}
         - name: config-volume
           mountPath: /etc/coredns
 {{- range .Values.extraSecrets }}
@@ -119,4 +124,11 @@ spec:
           secret:
             secretName: {{ .name }}
             defaultMode: 400
+{{- end }}
+{{- range .Values.extraHostPathVolumes }}
+        - name: {{ .name }}
+          hostPath:
+            path: {{ .path }}
+            type: {{ .type }}
+              defaultMode: 400
 {{- end }}

@@ -150,6 +150,12 @@ extraSecrets: []
 # - name: some-fancy-secret
 #   mountPath: /etc/wherever
 
+extraHostPathVolumes: []
+#  - name: etc-hosts
+#    path: /etc/hosts
+#    type: FileOrCreate
+#    mountPath: /etc/hostsFromNode
+
 # Custom labels to apply to Deployment, Pod, Service, ServiceMonitor. Including autoscaler if enabled.
 customLabels: {}
 

@@ -74,6 +74,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `tolerations`                           | Tolerations for pod assignment                                                        | []                                                          |
 | `zoneFiles`                             | Configure custom Zone files                                                           | []                                                          |
 | `extraSecrets`                          | Optional array of secrets to mount inside the CoreDNS container                       | []                                                          |
+| `extraHostPathVolumes`                  | Optional array of hostPath to mount inside the CoreDNS container                      | []                                                          |
 | `customLabels`                          | Optional labels for Deployment(s), Pod, Service, ServiceMonitor objects               | {}                                                          |
 | `podDisruptionBudget`                   | Optional PodDisruptionBudget                                                          | {}                                                          |
 | `autoscaler.enabled`                    | Optionally enabled a cluster-proportional-autoscaler for CoreDNS                      | `false`                                                     |
