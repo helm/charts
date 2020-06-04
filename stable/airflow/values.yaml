@@ -432,6 +432,15 @@ web:
   ##
   secrets: []
 
+  ## you can use secretsMap to specify a map and all the secrets will be stored within it
+  ## secrets will be mounted as files at `{web.secretsDir}/<secrets_in_map>`
+  ## If you use web.secretsMap, then it overrides web.secrets.
+  ##
+  ## EXAMPLE:
+  ## secretsMap: airflow-secrets
+  ##
+  secretsMap:
+
 ###################################
 # Airflow - Worker Configs
 ###################################
@@ -543,6 +552,15 @@ workers:
   ##     - airflow-worker-secret
   ##
   secrets: []
+
+  ## you can use secretsMap to specify a map and all the secrets will be stored within it
+  ## secrets will be mounted as files at `{workers.secretsDir}/<secrets_in_map>`
+  ## If you use web.secretsMap, then it overrides workers.secrets.
+  ##
+  ## EXAMPLE:
+  ## secretsMap: airflow-secrets
+  ##
+  secretsMap:
 
 ###################################
 # Airflow - Flower Configs
