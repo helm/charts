@@ -1,5 +1,10 @@
 # Datadog changelog
 
+## 2.3.9
+
+* Add parameter `clusterChecksRunner.rbac.serviceAccountAnnotations` for specifying annotations for dedicated ServiceAccount for Cluster Checks runners.
+* Add parameters `clusterChecksRunner.volumes` and `clusterChecksRunner.volumeMounts` that can be used for providing a secret backend to Cluster Checks runners.
+
 ## 2.3.8
 
 * Fix templating errors when `clusterAgent.datadog_cluster_yaml` is being used.
