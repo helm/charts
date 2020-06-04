@@ -1,0 +1,63 @@
+{{- if and .Values.persistence.enabled .Values.persistence.cache.clearJob.cronSchedule }}
+{{- range $index, $volume := .Values.persistence.cache.volumes }}
+{{- if eq $volume.type "PVC" }}
+{{- $claimName := tpl ($volume.claimName | required "claimName is required") $ }}
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ $claimName }}-clear-cache-job
+  labels:
+    "app.kubernetes.io/name": '{{ template "jenkins.name" $ }}'
+    "helm.sh/chart": "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
+    "app.kubernetes.io/managed-by": "{{ $.Release.Service }}"
+    "app.kubernetes.io/instance": "{{ $.Release.Name }}"
+    "app.kubernetes.io/component": "{{ $.Values.master.componentName }}"
+spec:
+  concurrencyPolicy : "Forbid"
+  failedJobsHistoryLimit : 5
+  successfulJobsHistoryLimit: 5
+  schedule: "{{ $.Values.persistence.cache.clearJob.cronSchedule }}"
+  jobTemplate:
+    spec:
+      backoffLimit: 6
+      template:
+        metadata:
+          labels:
+            "app.kubernetes.io/name": '{{ template "jenkins.name" $ }}'
+            "helm.sh/chart": "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
+            "app.kubernetes.io/managed-by": "{{ $.Release.Service }}"
+            "app.kubernetes.io/instance": "{{ $.Release.Name }}"
+            "app.kubernetes.io/component": "{{ $.Values.master.componentName }}"
+        spec:
+          volumes:
+          - name: cache-volume
+            persistentVolumeClaim:
+              claimName: {{ $claimName }}
+          containers:
+          - name: {{ $claimName }}-clear-cache-job
+            image: "docker-registry.default.svc:5000/{{ $.Values.persistence.cache.clearJob.image }}:{{ $.Values.persistence.cache.clearJob.tag }}"
+            volumeMounts:
+            - mountPath: "/tmp/cache" 
+              name: cache-volume
+            resources:
+              limits:
+                cpu: 500m
+                memory: 512Mi
+              requests:
+                cpu: 500m
+                memory: 512Mi
+            command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Remove files from {{ $claimName }} cache and confirm"
+              echo "rm -rf /tmp/cache/*"
+              rm -rf /tmp/cache/*
+              echo "ls -A /tmp/cache/ and return 1 if not empty"
+              [ "$(ls -A /tmp/cache/)" ] && exit 1
+              echo "Clear cache job completed"      
+          restartPolicy: OnFailure
+{{- end }}
+{{- end }}
+{{- end }}

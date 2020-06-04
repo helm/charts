@@ -555,13 +555,13 @@ agent:
   # master.JCasC.defaultConfig: true
   # Best reference is https://<jenkins_url>/configuration-as-code/reference#Cloud-kubernetes. The example below creates a python pod template.
   podTemplates: {}
-  #  python: |
-  #    - name: python
-  #      label: jenkins-python
+  #  maven: |
+  #    - name: maven
+  #      label: jenkins-maven
   #      serviceAccount: jenkins
   #      containers:
-  #        - name: python
-  #          image: python:3
+  #        - name: maven
+  #          image: jenkins/jnlp-agent-maven:latest
   #          command: "/bin/sh -c"
   #          args: "cat"
   #          ttyEnabled: true
@@ -570,6 +570,11 @@ agent:
   #          resourceRequestMemory: "512Mi"
   #          resourceLimitCpu: "1"
   #          resourceLimitMemory: "1024Mi"
+  #      volumes:
+  #        - persistentVolumeClaim:
+  #            claimName: "{{ .Release.Name }}-maven-cache"
+  #            mountPath: /home/jenkins/agent/.m2/repository
+  #            readOnly: false
 
 # Here you can add additional agents
 # They inherit all values from `agent` so you only need to specify values which differ
@@ -581,6 +586,11 @@ additionalAgents: {}
 #    # sideContainerName: jnlp
 #    image: jenkins/jnlp-agent-maven
 #    tag: latest
+#    volumes:
+#    - type: PVC
+#      claimName: "{{ .Release.Name }}-maven-cache"
+#      mountPath: /home/jenkins/agent/.m2/repository
+#      readOnly: false
 #  python:
 #    podName: python
 #    customJenkinsLabels: python
@@ -615,6 +625,26 @@ persistence:
   #  - mountPath: /var/nothing
   #    name: nothing
   #    readOnly: true
+
+  ## values for development caches to speed builds
+  cache:
+    ## Create arbitrary PVC's for caches
+    volumes: []
+    # volumes:
+    #   - type: PVC
+    #     claimName: "{{ .Release.Name }}-maven-cache"
+    #     size: "4Gi"
+    #     storageClassName:
+    ## Details of job to clear caches on a periodic basis
+    clearJob:
+      ## Cron schedule to clear caches on a periodic basis
+      ## set to null or "" for disabling periodic cache clearing
+      ## default cron clear schedule is every Sunday at 00:00 EST
+      cronSchedule: "0 0 * * SUN"
+      ## image for the container on which cache PVC's are mounted and cleared
+      image: "alpine"
+      ## tag for the container on which cache PVC's are mounted and cleared
+      tag: "3.7"
 
 networkPolicy:
   # Enable creation of NetworkPolicy resources.

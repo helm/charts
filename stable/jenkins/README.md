@@ -493,17 +493,21 @@ It is possible to mount several volumes using `persistence.volumes` and `persist
 
 ### Persistence Values
 
-| Parameter                   | Description                     | Default         |
-| --------------------------- | ------------------------------- | --------------- |
-| `persistence.enabled`       | Enable the use of a Jenkins PVC | `true`          |
-| `persistence.existingClaim` | Provide the name of a PVC       | `nil`           |
-| `persistence.storageClass`  | Storage class for the PVC       | `nil`           |
-| `persistence.annotations`   | Annotations for the PVC         | `{}`            |
-| `persistence.accessMode`    | The PVC access mode             | `ReadWriteOnce` |
-| `persistence.size`          | The size of the PVC             | `8Gi`           |
-| `persistence.subPath`       | SubPath for jenkins-home mount  | `nil`           |
-| `persistence.volumes`       | Additional volumes              | `nil`           |
-| `persistence.mounts`        | Additional mounts               | `nil`           |
+| Parameter                                 | Description                     | Default         |
+| ----------------------------------------- | ------------------------------- | --------------- |
+| `persistence.enabled`                     | Enable the use of a Jenkins PVC | `true`          |
+| `persistence.existingClaim`               | Provide the name of a PVC       | `nil`           |
+| `persistence.storageClass`                | Storage class for the PVC       | `nil`           |
+| `persistence.annotations`                 | Annotations for the PVC         | `{}`            |
+| `persistence.accessMode`                  | The PVC access mode             | `ReadWriteOnce` |
+| `persistence.size`                        | The size of the PVC             | `8Gi`           |
+| `persistence.subPath`                     | SubPath for jenkins-home mount  | `nil`           |
+| `persistence.volumes`                     | Additional volumes              | `nil`           |
+| `persistence.mounts`                      | Additional mounts               | `nil`           |
+| `persistence.cache.volumes`               | List of volumes, created if PVCs| `[]`            |
+| `persistence.cache.clearJob.cronSchedule` | Cron string for schedule        | `0 0 * * SUN`   |
+| `persistence.cache.clearJob.image`        | Image to run cache clear job    | `alpine`        |
+| `persistence.cache.clearJob.tag`          | Image ta to run cache clear job | `3.7`           |
 
 #### Existing PersistentVolumeClaim
 
@@ -527,6 +531,49 @@ If set to a dash (`-`, as in `persistence.storageClass=-`), the dynamic provisio
 
 If the storage class is set to null or left undefined (`persistence.storageClass=`),
 the default provisioner is used (gp2 on AWS, standard on GKE, AWS & OpenStack).
+
+#### Persistence Cache Values
+
+Its possible to define a set of volumes that will be mounted by agent pods for caching 
+libraries and other artifacts for build. Each volume of type `PVC` in this list will be created
+by the chart along with a `CronJob` to clear the cache (delete all files) on a periodic basis.
+
+A volume is defined in the format below:
+
+```
+  volumes:
+  - type: PVC
+    claimName: "{{ .Release.Name }}-maven-cache"
+    size: "4Gi"
+    storageClassName:
+```
+
+These volumes can be mounted in agents under `additionalAgents` and `podTemplates` sections as
+per the code snippets below:
+
+```  
+  podTemplates: 
+    maven: |
+      - name: maven
+...
+        volumes:
+          - persistentVolumeClaim: 
+              claimName: "{{ .Release.Name }}-maven-cache"
+              mountPath: /home/jenkins/agent/.m2/repository
+              readOnly: false
+```
+
+```
+additionalAgents: {}
+  maven:
+    podName: maven
+...
+    volumes:
+    - type: PVC
+      claimName: "{{ .Release.Name }}-maven-cache"
+      mountPath: /home/jenkins/agent/.m2/repository
+      readOnly: false
+```
 
 ## Configuration as Code
 Jenkins Configuration as Code is now a standard component in the Jenkins project.  Add a key under configScripts for each configuration area, where each corresponds to a plugin or section of the UI.  The keys (prior to | character) are just labels, and can be any value.  They are only used to give the section a meaningful name.  The only restriction is they must conform to RFC 1123 definition of a DNS label, so may only contain lowercase letters, numbers, and hyphens.  Each key will become the name of a configuration yaml file on the master in /var/jenkins_home/casc_configs (by default) and will be processed by the Configuration as Code Plugin during Jenkins startup.  The lines after each | become the content of the configuration yaml file.  The first line after this is a JCasC root element, eg jenkins, credentials, etc.  Best reference is the Documentation link here: https://<jenkins_url>/configuration-as-code.  The example below creates ldap settings:

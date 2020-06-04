@@ -5,65 +5,11 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
-## 2.5.2
+## 2.0.1 persistence.cache section to define volumes to be mounted by agents
 
-Fix as per JENKINS-47112
-
-## 2.5.1
-
-Support Jenkins Resource Root URL
-
-## 2.5.0
-
-Add an option to specify that Jenkins master should be initialized only once, during first install.
-
-## 2.4.1
-
-Reorder README parameters into sections to facilitate chart usage and maintenance
-
-## 2.4.0 Update default agent image
-
-`jenkins/jnlp-slave` is deprected and `jenkins/inbound-agent` should be used instead.
-Also updated it to newest version (4.3-4).
-
-## 2.3.3 correct templating of master.slaveJenkinsUrl
-
-Fixes #22708
-
-## 2.3.2 Fix wrong value for overwritePluginsFromImage
-
-Fixes #23003
-Fixes #22633
-
-Also fixes indentation for #23114
-
-## 2.3.1
-
-Always mount {{ .Values.master.jenkinsRef }}/secrets/ directory. Previous it
-was mounted only when `master.enableXmlConfig` was enabled.
-
-## 2.3.0
-
-Add an option to specify pod based on labels that can connect to master if NetworkPolicy is enabled
-
-## 2.2.0 increase retry for config auto reload
-
-Configure `REQ_RETRY_CONNECT` to `10` to give Jenkins more time to start up.
-https://github.com/kiwigrid/k8s-sidecar
-
-Value can be configured via `master.sidecars.configAutoReload.reqRetryConnect`
-
-## 2.1.2 updated README
-
-## 2.1.1 update credentials-binding plugin to 1.23
-
-## 2.1.0
-
-Add support to set `runAsUser` and `runAsGroup` for `agent`.
-
-## 2.0.1
-
-Only render authorizationStrategy and securityRealm when values are set.
+Added the ability under `persistence.cache` to define cache volumes
+Volumes of type `PVC` are created by the chart and cleared on a schedule
+The README contains more details for this update and how to mount these agent volumes
 
 ## 2.0.0 Configuration as Code now default + container does not run as root anymore
 
