@@ -22,7 +22,7 @@ dependencies:
   version: 2.0.7
 - name: nginx-ldapauth-proxy
   repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 0.1.3
+  version: 0.1.4
 - name: elasticsearch-curator
   repository: https://kubernetes-charts.storage.googleapis.com/
   version: 2.1.0

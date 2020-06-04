@@ -154,6 +154,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `defaultRules.rules.k8s` | Create K8S default rules| `true` |
 | `defaultRules.rules.kubeApiserver` | Create Api Server default rules| `true` |
 | `defaultRules.rules.kubeApiserverError` | Create Api Server Error default rules| `true` |
+| `defaultRules.rules.kubeApiserverSlos` | Create Api Server SLOs default rules| `true` |
 | `defaultRules.rules.kubePrometheusNodeAlerting` | Create Node Alerting default rules| `true` |
 | `defaultRules.rules.kubePrometheusNodeRecording` | Create Node Recording default rules| `true` |
 | `defaultRules.rules.kubeScheduler` | Create Kubernetes Scheduler default rules| `true` |
@@ -198,7 +199,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheusOperator.namespaces` |  Namespaces to scope the interaction of the Prometheus Operator and the apiserver (allow list). This is mutually exclusive with `denyNamespaces`. Setting this to an empty object will disable the configuration | `{}` |
 | `prometheusOperator.namespaces.releaseNamespace` | Include the release namespace | `false` |
 | `prometheusOperator.namespaces.additional` | Include additional namespaces besides the release namespace | `[]` |
-| `prometheusOperator.manageCrds` |If true prometheus operator will create and update its CRDs on startup | `true` |
+| `prometheusOperator.manageCrds` |If true prometheus operator will create and update its CRDs on startup (for operator `<v0.39.0`)) | `true` |
 | `prometheusOperator.denyNamespaces` | Namespaces not to scope the interaction of the Prometheus Operator (deny list). This is mutually exclusive with `namespaces` | `[]` |
 | `prometheusOperator.enabled` | Deploy Prometheus Operator. Only one of these should be deployed into the cluster | `true` |
 | `prometheusOperator.hyperkubeImage.pullPolicy` | Image pull policy for hyperkube image used to perform maintenance tasks | `IfNotPresent` |
@@ -551,6 +552,9 @@ For a full list of configurable values please refer to the [Grafana chart](https
 | `kubelet.serviceMonitor.cAdvisor` | Enable scraping `/metrics/cadvisor` from kubelet's service | `true` |
 | `kubelet.serviceMonitor.cAdvisorMetricRelabelings` | The `metric_relabel_configs` for scraping cAdvisor. | `` |
 | `kubelet.serviceMonitor.cAdvisorRelabelings` | The `relabel_configs` for scraping cAdvisor. | `[{"sourceLabels":["__metrics_path__"], "targetLabel":"metrics_path"}]` |
+| `kubelet.serviceMonitor.probes` | Enable scraping `/metrics/probes` from kubelet's service | `true` |
+| `kubelet.serviceMonitor.probesMetricRelabelings` | The `metric_relabel_configs` for scraping kubelet. | `` |
+| `kubelet.serviceMonitor.probesRelabelings` | The `relabel_configs` for scraping kubelet. | `[{"sourceLabels":["__metrics_path__"], "targetLabel":"metrics_path"}]` |
 | `kubelet.serviceMonitor.https` | Enable scraping of the kubelet over HTTPS. For more information, see https://github.com/coreos/prometheus-operator/issues/926 | `true` |
 | `kubelet.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `kubelet.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping kubelet. | `` |
