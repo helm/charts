@@ -1,6 +1,5 @@
 image:
   name: logdna/logdna-agent
-  tag: 1.5.6
   pullPolicy: IfNotPresent
 
 logdna:
@@ -9,8 +8,6 @@ logdna:
   ## An ingestion key is required for this chart to run
   # key:
 
-  ## Optional settings
-  autoupdate: "0"
   # tags:
 
   name: logdna-agent
@@ -19,7 +16,7 @@ resources:
   requests:
     cpu: 20m
   limits:
-    memory: 500Mi
+    memory: 75Mi
 
 daemonset:
   # updateStrategy:
@@ -32,3 +29,7 @@ priorityClassName: ""
 extraEnv: {}
 extraVolumeMounts: []
 extraVolumes: []
+
+serviceAccount:
+  create: true
+  name:
