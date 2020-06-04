@@ -1,5 +1,10 @@
 # Elastabot Helm Chart
 
+## NOTICE: This chart has moved!
+
+Due to the [deprecation and obsoletion plan](https://github.com/helm/charts#status-of-the-project) of the Helm charts repository this chart has been moved to a new repository. Refer to the [Elastabot GitHub project](https://github.com/jertel/elastabot) for information on installing this chart from the new repository.
+
+## Overview 
 [Elastabot](https://github.com/jertel/elastabot): A Slack bot companion to Elasticsearch and [ElastAlert](https://github.com/kubernetes/charts/tree/master/stable/elastalert). Current support includes searching for data, checking the cluster health, acknowledging (and silencing) alerts, and also triggering triage events, which are currently initiated via an smtp email. The emails by default will contain the alert details, but arbitrary triage requests can also be created. The triage email is best used with a ticketing system that is monitoring for such emails, such as Jira.
 
 ## Usage
