@@ -12,7 +12,10 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 */}}
 {{- define "etcd-operator.fullname" -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- printf "%s-%s-%s" .Release.Name $name .Values.etcdOperator.name | trunc 63 | trimSuffix "-" -}}
+{{- if contains $name .Release.Name -}}
+    {{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+    {{- printf "%s-%s-%s" .Release.Name $name .Values.etcdOperator.name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{- define "etcd-backup-operator.name" -}}
@@ -25,7 +28,10 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 */}}
 {{- define "etcd-backup-operator.fullname" -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- printf "%s-%s-%s" .Release.Name $name .Values.backupOperator.name | trunc 63 | trimSuffix "-" -}}
+{{- if contains $name .Release.Name -}}
+    {{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+    {{- printf "%s-%s-%s" .Release.Name $name .Values.backupOperator.name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{- define "etcd-restore-operator.name" -}}
@@ -38,7 +44,10 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 */}}
 {{- define "etcd-restore-operator.fullname" -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- printf "%s-%s-%s" .Release.Name $name .Values.restoreOperator.name | trunc 63 | trimSuffix "-" -}}
+{{- if contains $name .Release.Name -}}
+    {{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+    {{- printf "%s-%s-%s" .Release.Name $name .Values.restoreOperator.name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
