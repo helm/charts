@@ -32,9 +32,15 @@ spec:
 {{- end }}
   ports:
     - name: metrics
+    {{- if .Values.nodeExporter.hostNetwork }}
+      port: {{ .Values.nodeExporter.service.hostPort }}
+      protocol: TCP
+      targetPort: {{ .Values.nodeExporter.service.hostPort }}
+    {{- else }}
       port: {{ .Values.nodeExporter.service.servicePort }}
       protocol: TCP
       targetPort: 9100
+    {{- end }}
   selector:
     {{- include "prometheus.nodeExporter.matchLabels" . | nindent 4 }}
   type: "{{ .Values.nodeExporter.service.type }}"

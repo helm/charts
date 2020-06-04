@@ -87,8 +87,7 @@ master:
   useSecurity: true
 
   # enables configuration done directly via XML files
-  # People who want to configure Jenkins via https://github.com/jenkinsci/configuration-as-code-plugin only can set it to false
-  enableXmlConfig: true
+  enableXmlConfig: false
   # Allows to configure different SecurityRealm using Jenkins XML
   securityRealm: |-
     <securityRealm class="hudson.security.LegacySecurityRealm"/>
@@ -141,8 +140,8 @@ master:
   usePodSecurityContext: true
   # Set runAsUser to 1000 to let Jenkins run as non-root user 'jenkins' which exists in 'jenkins/jenkins' docker image.
   # When setting runAsUser to a different value than 0 also set fsGroup to the same value:
-  # runAsUser: <defaults to 0>
-  # fsGroup: <will be omitted in deployment if runAsUser is 0>
+  runAsUser: 1000
+  fsGroup: 1000
   servicePort: 8080
   targetPort: 8080
   # For minikube, set this to NodePort, elsewhere use LoadBalancer
@@ -272,8 +271,8 @@ master:
   # become the content of the configuration yaml file.  The first line after this is a JCasC root element, eg jenkins, credentials,
   # etc.  Best reference is https://<jenkins_url>/configuration-as-code/reference.  The example below creates a welcome message:
   JCasC:
-    enabled: false
-    defaultConfig: false
+    enabled: true
+    defaultConfig: true
     configScripts: {}
     # Ignored if securityRealm is defined in master.JCasC.configScripts and
     # ignored if master.enableXmlConfig=true as master.securityRealm takes precedence
@@ -299,7 +298,7 @@ master:
       # If enabled: true, Jenkins Configuration as Code will be reloaded on-the-fly without a reboot.  If false or not-specified,
       # jcasc changes will cause a reboot and will only be applied at the subsequent start-up.  Auto-reload uses the
       # http://<jenkins_url>/reload-configuration-as-code endpoint to reapply config when changes to the configScripts are detected.
-      enabled: false
+      enabled: true
       image: kiwigrid/k8s-sidecar:0.1.144
       imagePullPolicy: IfNotPresent
       resources: {}
