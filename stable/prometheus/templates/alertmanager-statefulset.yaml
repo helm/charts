@@ -120,8 +120,13 @@ spec:
     {{- end }}
       volumes:
         - name: config-volume
+          {{- if empty .Values.alertmanager.configFromSecret }}
           configMap:
             name: {{ if .Values.alertmanager.configMapOverrideName }}{{ .Release.Name }}-{{ .Values.alertmanager.configMapOverrideName }}{{- else }}{{ template "prometheus.alertmanager.fullname" . }}{{- end }}
+          {{- else }}
+          secret:
+            secretName: {{ .Values.alertmanager.configFromSecret }}
+          {{- end }}
       {{- range .Values.alertmanager.extraSecretMounts }}
         - name: {{ .name }}
           secret:
