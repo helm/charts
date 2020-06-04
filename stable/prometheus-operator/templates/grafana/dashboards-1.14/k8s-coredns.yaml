@@ -814,7 +814,7 @@ data:
                 },
                 "yaxes": [
                     {
-                        "format": "ms",
+                        "format": "s",
                         "logBase": 1,
                         "max": null,
                         "min": 0,
