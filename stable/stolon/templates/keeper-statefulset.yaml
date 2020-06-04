@@ -87,6 +87,8 @@ spec:
             - name: STKEEPER_PG_REPL_PASSWORDFILE
 {{ if not (empty .Values.replicationSecret.name) }}
               value: /etc/secrets/stolon-{{ .Values.replicationSecret.name }}/{{ .Values.replicationSecret.passwordKey }}
+{{ else if not (empty .Values.replicationPasswordFile) }}
+              value: {{ .Values.replicationPasswordFile }}
 {{ else }}
               value: "/etc/secrets/stolon/pg_repl_password"
 {{ end }}
@@ -102,6 +104,8 @@ spec:
             - name: STKEEPER_PG_SU_PASSWORDFILE
 {{ if not (empty .Values.superuserSecret.name) }}
               value: /etc/secrets/stolon-{{ .Values.superuserSecret.name }}/{{ .Values.superuserSecret.passwordKey }}
+{{ else if not (empty .Values.superuserPasswordFile) }}
+              value: {{ .Values.superuserPasswordFile }}
 {{ else }}
               value: "/etc/secrets/stolon/pg_su_password"
 {{ end }}
@@ -130,7 +134,7 @@ spec:
           - name: certs
             mountPath: /certs
 {{- end }}
-{{ if or (empty .Values.superuserSecret.name) (empty .Values.replicationSecret.name) }}
+{{ if and (or (empty .Values.superuserSecret.name) (empty .Values.replicationSecret.name)) (or (empty .Values.superuserPasswordFile) (empty .Values.replicationPasswordFile)) }}
           - name: stolon-secrets
             mountPath: /etc/secrets/stolon
 {{ end }}
