@@ -6,11 +6,11 @@ dependencies:
     condition: kubeStateMetrics.enabled
 
   - name: prometheus-node-exporter
-    version: "1.9.*"
+    version: "1.10.*"
     repository: https://kubernetes-charts.storage.googleapis.com/
     condition: nodeExporter.enabled
 
   - name: grafana
-    version: "5.0.*"
+    version: "5.1.*"
     repository: https://kubernetes-charts.storage.googleapis.com/
     condition: grafana.enabled
