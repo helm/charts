@@ -326,6 +326,8 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.prometheusSpec.storageSpec` | Storage spec to specify how storage shall be used. | `{}` |
 | `prometheus.prometheusSpec.thanos` | Thanos configuration allows configuring various aspects of a Prometheus server in a Thanos environment. This section is experimental, it may change significantly without deprecation notice in any release.This is experimental and may change significantly without backward compatibility in any release. See https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#thanosspec | `{}` |
 | `prometheus.prometheusSpec.tolerations` | If specified, the pod's tolerations. | `[]` |
+| `prometheus.prometheusSpec.volumes` | Additional Volumes on the output StatefulSet definition. | `[]` |
+| `prometheus.prometheusSpec.volumeMounts` | Additional VolumeMounts on the output StatefulSet definition. | `[]` |
 | `prometheus.service.additionalPorts` |  Additional Prometheus Service ports to add for NodePort service type | `[]` |
 | `prometheus.service.annotations` |  Prometheus Service Annotations | `{}` |
 | `prometheus.service.clusterIP` | Prometheus service clusterIP IP | `""` |
