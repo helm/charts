@@ -40,7 +40,7 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
-      {{- with .Values.securityContext }}
+      {{- with .Values.podSecurityContext }}
       securityContext:
 {{ toYaml . | indent 8 }}
       {{- end }}
@@ -52,6 +52,9 @@ spec:
         {{- if .Values.redis.enabled }}
         args:
         - --redis-url=redis://{{ .Release.Name }}-redis-master:{{ .Values.redis.master.port }}
+        {{- end }}
+        {{- with .Values.securityContext }}
+        securityContext: {{ toYaml . | nindent 10 }}
         {{- end }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}

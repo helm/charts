@@ -46,6 +46,9 @@ tolerations: []
 # Add securityContext
 securityContext: {}
 
+# Add securityContext at pod level:
+podSecurityContext: {}
+
 # Defaults for Redis
 redis:
   enabled: false
