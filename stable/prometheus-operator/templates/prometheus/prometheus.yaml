@@ -239,3 +239,11 @@ spec:
 {{- if .Values.prometheus.prometheusSpec.enforcedNamespaceLabel }}
   enforcedNamespaceLabel: {{ .Values.prometheus.prometheusSpec.enforcedNamespaceLabel }}
 {{- end }}
+{{- if .Values.prometheus.prometheusSpec.volumes }}
+  volumes:
+{{ toYaml .Values.prometheus.prometheusSpec.volumes | indent 4 }}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.volumeMounts }}
+  volumeMounts:
+{{ toYaml .Values.prometheus.prometheusSpec.volumeMounts | indent 4 }}
+{{- end }}
