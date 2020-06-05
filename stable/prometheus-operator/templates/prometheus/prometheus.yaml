@@ -50,9 +50,9 @@ spec:
   replicaExternalLabelName: "{{ .Values.prometheus.prometheusSpec.replicaExternalLabelName }}"
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.externalUrl }}
-  externalUrl: "{{ .Values.prometheus.prometheusSpec.externalUrl }}"
+  externalUrl: "{{ tpl .Values.prometheus.prometheusSpec.externalUrl . }}"
 {{- else if and .Values.prometheus.ingress.enabled .Values.prometheus.ingress.hosts }}
-  externalUrl: "http://{{ index .Values.prometheus.ingress.hosts 0 }}{{ .Values.prometheus.prometheusSpec.routePrefix }}"
+  externalUrl: "http://{{ tpl (index .Values.prometheus.ingress.hosts 0) . }}{{ .Values.prometheus.prometheusSpec.routePrefix }}"
 {{- else }}
   externalUrl: http://{{ template "prometheus-operator.fullname" . }}-prometheus.{{ $.Release.Namespace }}:{{ .Values.prometheus.service.port }}
 {{- end }}
@@ -238,4 +238,12 @@ spec:
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.enforcedNamespaceLabel }}
   enforcedNamespaceLabel: {{ .Values.prometheus.prometheusSpec.enforcedNamespaceLabel }}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.volumes }}
+  volumes:
+{{ toYaml .Values.prometheus.prometheusSpec.volumes | indent 4 }}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.volumeMounts }}
+  volumeMounts:
+{{ toYaml .Values.prometheus.prometheusSpec.volumeMounts | indent 4 }}
 {{- end }}
