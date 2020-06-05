@@ -50,12 +50,16 @@ replicationSecret:
   usernameKey: pg_repl_username
   passwordKey: pg_repl_password
 
+superuserPasswordFile:
+
 superuserUsername: "stolon"
-## password for the superuser (REQUIRED if superuserSecret is not set)
+## password for the superuser (REQUIRED if superuserSecret and superuserPasswordFile are not set)
 superuserPassword:
 
+replicationPasswordFile:
+
 replicationUsername: "repluser"
-## password for the replication user (REQUIRED if replicationSecret is not set)
+## password for the replication user (REQUIRED if replicationSecret and replicationPasswordFile are not set)
 replicationPassword:
 
 ## backend could be one of the following: consul, etcdv2, etcdv3 or kubernetes
