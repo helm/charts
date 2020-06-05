@@ -74,11 +74,11 @@ Returns configuration as code default config
 jenkins:
 {{- if eq .Values.master.enableXmlConfig false }}
   {{- $configScripts := toYaml .Values.master.JCasC.configScripts }}
-  {{- if not (contains "authorizationStrategy:" $configScripts) }}
+  {{- if and (.Values.master.JCasC.authorizationStrategy) (not (contains "authorizationStrategy:" $configScripts)) }}
   authorizationStrategy:
     {{- tpl .Values.master.JCasC.authorizationStrategy . | nindent 4 }}
   {{- end }}
-  {{- if not (contains "securityRealm:" $configScripts) }}
+  {{- if and (.Values.master.JCasC.securityRealm) (not (contains "securityRealm:" $configScripts)) }}
   securityRealm:
     {{- tpl .Values.master.JCasC.securityRealm . | nindent 4 }}
   {{- end }}
