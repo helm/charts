@@ -4,6 +4,17 @@
 
 _This helm chart is **not** official nor maintained by Sentry itself._
 
+
+----------------------------------------
+# Deprecation Warning
+*As part of the [deprecation timeline](https://github.com/helm/charts/#deprecation-timeline), another repository has taken over the chart [here](https://github.com/sentry-kubernetes/charts)*
+
+Note: this repository supports Sentry 10.
+
+Please make PRs / Issues here from now on.
+
+----------------------------------------
+
 ## TL;DR;
 
 ```console
