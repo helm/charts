@@ -1,5 +1,11 @@
 # Elastalert Helm Chart
 
+## NOTICE: This chart has moved!
+
+Due to the [deprecation and obsoletion plan](https://github.com/helm/charts#status-of-the-project) of the Helm charts repository this chart has been moved to a new repository. Refer to the [Elastalert-Docker GitHub project](https://github.com/jertel/elastalert-docker) for information on installing this chart from the new repository.
+
+## Overview 
+
 [elastalert](https://github.com/Yelp/elastalert) is a simple framework for alerting on anomalies, spikes, or other patterns of interest from data in Elasticsearch.
 
 ## TL;DR;
