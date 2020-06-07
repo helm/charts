@@ -168,6 +168,8 @@ alertmanager:
   #         *Details:*
   #           {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
   #           {{ end }}
+  #       {{ end }}
+  #       {{ end }}
 
   ingress:
     enabled: false
