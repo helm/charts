@@ -32,7 +32,7 @@ spec:
       containers:
         - name: patch
           image: {{ .Values.prometheusOperator.admissionWebhooks.patch.image.repository }}:{{ .Values.prometheusOperator.admissionWebhooks.patch.image.tag }}
-          imagePullPolicy: {{ .Values.prometheusOperator.admissionWebhooks.patch.pullPolicy }}
+          imagePullPolicy: {{ .Values.prometheusOperator.admissionWebhooks.patch.image.pullPolicy }}
           args:
             - patch
             - --webhook-name={{ template "prometheus-operator.fullname" . }}-admission
@@ -56,6 +56,7 @@ spec:
 {{ toYaml . | indent 8 }}
       {{- end }}
       securityContext:
+        runAsGroup: 2000
         runAsNonRoot: true
         runAsUser: 2000
 {{- end }}

@@ -10,7 +10,6 @@ metadata:
 data:
   install-requirements.sh: |
     #!/bin/bash -e
-
     if [ ! -d {{ .Values.dags.path | quote }} ]; then
       echo 'No folder {{ .Values.dags.path | quote }}'
       exit 0
@@ -22,19 +21,27 @@ data:
     else
       exit 0
     fi
-  stop-worker.sh: |
+  graceful-stop-celery-worker.sh: |
     #!/bin/bash -e
+    echo "*** starting graceful worker shutdown"
 
-    celery -b $AIRFLOW__CELERY__BROKER_URL -d celery@$HOSTNAME control cancel_consumer default
+    # source the required environment variables
+    source /home/airflow/airflow_env.sh
 
-    # wait 10 second before checking the status of the worker
-    sleep 10
+    # prevent the worker accepting new tasks
+    echo "*** preventing worker accepting new tasks"
+    celery control --broker $AIRFLOW__CELERY__BROKER_URL --destination celery@$HOSTNAME cancel_consumer default
+    sleep 5
 
-    while (( $(celery -b $AIRFLOW__CELERY__BROKER_URL inspect active --json | python -c "import sys, json; print(len(json.load(sys.stdin)['celery@$HOSTNAME']))") > 0 )); do
-      sleep 60
+    # loop until all active task are finished
+    echo "*** waiting for active tasks to finish"
+    while (( celery inspect --broker $AIRFLOW__CELERY__BROKER_URL --destination celery@$HOSTNAME --json active | python3 -c "import json; active_tasks = json.loads(input())['celery@$HOSTNAME']; print(len(active_tasks))" > 0 )); do
+      sleep 30
     done
   preinit-db.sh: |
-    #!/bin/bash -e
+    #!/bin/bash
+    # export the required environment variables
+    export AIRFLOW__CORE__SQL_ALCHEMY_CONN="{{ include "airflow.connection.alchemy" . }}"
 
     echo "*** Waiting 10s for postgres"
     sleep 10

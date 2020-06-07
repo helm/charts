@@ -104,13 +104,13 @@ spec:
             - name: ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "jenkins.fullname" . }}
-                  key: jenkins-admin-password
+                  name: {{ .Values.master.admin.existingSecret | default (include "jenkins.fullname" .) }}
+                  key: {{ .Values.master.admin.passwordKey | default "jenkins-admin-password" }}
             - name: ADMIN_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "jenkins.fullname" . }}
-                  key: jenkins-admin-user
+                  name: {{ .Values.master.admin.existingSecret | default (include "jenkins.fullname" .) }}
+                  key: {{ .Values.master.admin.userKey | default "jenkins-admin-user" }}
             {{- end }}
             {{- if .Values.master.initContainerEnv }}
 {{ toYaml .Values.master.initContainerEnv | indent 12 }}
@@ -193,13 +193,13 @@ spec:
             - name: ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "jenkins.fullname" . }}
-                  key: jenkins-admin-password
+                  name: {{ .Values.master.admin.existingSecret | default (include "jenkins.fullname" .) }}
+                  key: {{ .Values.master.admin.password | default "jenkins-admin-password" }}
             - name: ADMIN_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "jenkins.fullname" . }}
-                  key: jenkins-admin-user
+                  name: {{ .Values.master.admin.existingSecret | default (include "jenkins.fullname" .) }}
+                  key: {{ .Values.master.admin.user | default "jenkins-admin-user" }}
             {{- end }}
             {{- if .Values.master.httpsKeyStore.enable }}
             - name: JENKINS_HTTPS_KEYSTORE_PASSWORD
