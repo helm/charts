@@ -7,14 +7,13 @@ agent:
     port: 80
     type: ClusterIP
   config:
-    JOURNAL_DIR: /opt/spm/st-agent
     PIPELINE_CONSOLE_OUTPUT: false
     PIPELINE_NULL_OUTPUT: false
     API_SERVER_HOST: 0.0.0.0
     LOGGING_WRITE_EVENTS: false
     LOGGING_REQUEST_TRACKING: false
     AUTODISCO_ALLOWED_NAMESPACES: "default"
-    LOGGING_LEVEL: warn
+    LOGGING_LEVEL: info
   resources: {}
 
 logagent:

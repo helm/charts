@@ -246,6 +246,8 @@ input:
     parser: docker
     path: /var/log/containers/*.log
     ignore_older: ""
+    dockerMode: false
+    dockerModeFlush: 4
   systemd:
     enabled: false
     filters:

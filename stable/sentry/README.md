@@ -4,6 +4,17 @@
 
 _This helm chart is **not** official nor maintained by Sentry itself._
 
+
+----------------------------------------
+# Deprecation Warning
+*As part of the [deprecation timeline](https://github.com/helm/charts/#deprecation-timeline), another repository has taken over the chart [here](https://github.com/sentry-kubernetes/charts)*
+
+Note: this repository supports Sentry 10.
+
+Please make PRs / Issues here from now on.
+
+----------------------------------------
+
 ## TL;DR;
 
 ```console
@@ -194,6 +205,7 @@ Parameter                                            | Description              
 `metrics.serviceMonitor.interval`                    | How frequently to scrape metrics (use by default, falling back to Prometheus' default)                     | `nil`
 `metrics.serviceMonitor.selector`                    | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install | `{ prometheus: kube-prometheus }`
 `hooks.affinity`                                     | Affinity settings for hooks pods                                                                           | `{}`
+`hooks.tolerations`                                  | Toleration labels for hook pod assignment                                                                  | `[]`
 `hooks.dbInit.enabled`                               | Boolean to enable the dbInit job using a hook                                                              | `true`
 `hooks.dbInit.resources.limits`                      | Hook job resource limits                                                                                   | `{memory: 3200Mi}`
 `hooks.dbInit.resources.requests`                    | Hook job resource requests                                                                                 | `{memory: 3000Mi}`

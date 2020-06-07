@@ -62,9 +62,11 @@ podSecurityPolicy:
     # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
     # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
 
+  additionalVolumes: []
 
 securityContext:
   enabled: true
+  runAsGroup: 65534
   runAsUser: 65534
   fsGroup: 65534
 
@@ -118,7 +120,7 @@ collectors:
   statefulsets: true
   storageclasses: true
   validatingwebhookconfigurations: true
-  verticalpodautoscalers: true
+  verticalpodautoscalers: false
   volumeattachments: true
 
 # Namespace to be enabled for collecting resources. By default all namespaces are collected.
