@@ -68,6 +68,52 @@ properties:
   # cache.db-cache-time: 180000
   # cache.db-cache-size: 0.5
 
+
+gremlinServer:
+  ## use this section to configure settings for the gremlin server
+  ## available settings under this section will be added to the gremlin-server.yaml file
+  ## to be used for starting the gremlin server
+  ## for more information, see: http://tinkerpop.apache.org/docs/current/reference/#_configuring_2
+  host: 0.0.0.0
+  port: 8182
+  scriptEvaluationTimeout: 30000
+  channelizer: org.apache.tinkerpop.gremlin.server.channel.WsAndHttpChannelizer
+  graphs: {
+    graph: conf/gremlin-server/janusgraph.properties
+  }
+  plugins:
+    - janusgraph.imports
+  scriptEngines: {
+    gremlin-groovy: {
+      imports: [java.lang.Math],
+      staticImports: [java.lang.Math.PI],
+      scripts: [scripts/empty-sample.groovy]}}
+  serializers:
+    - { className: org.apache.tinkerpop.gremlin.driver.ser.GryoMessageSerializerV1d0, config: { ioRegistries: [org.janusgraph.graphdb.tinkerpop.JanusGraphIoRegistry] }}
+    - { className: org.apache.tinkerpop.gremlin.driver.ser.GryoLiteMessageSerializerV1d0, config: {ioRegistries: [org.janusgraph.graphdb.tinkerpop.JanusGraphIoRegistry] }}
+    - { className: org.apache.tinkerpop.gremlin.driver.ser.GryoMessageSerializerV1d0, config: { serializeResultToString: true }}
+    - { className: org.apache.tinkerpop.gremlin.driver.ser.GraphSONMessageSerializerGremlinV1d0, config: { ioRegistries: [org.janusgraph.graphdb.tinkerpop.JanusGraphIoRegistryV1d0] }}
+    - { className: org.apache.tinkerpop.gremlin.driver.ser.GraphSONMessageSerializerGremlinV2d0, config: { ioRegistries: [org.janusgraph.graphdb.tinkerpop.JanusGraphIoRegistry] }}
+    - { className: org.apache.tinkerpop.gremlin.driver.ser.GraphSONMessageSerializerV1d0, config: { ioRegistries: [org.janusgraph.graphdb.tinkerpop.JanusGraphIoRegistryV1d0] }}
+  processors:
+    - { className: org.apache.tinkerpop.gremlin.server.op.session.SessionOpProcessor, config: { sessionTimeout: 28800000 }}
+    - { className: org.apache.tinkerpop.gremlin.server.op.traversal.TraversalOpProcessor, config: { cacheExpirationTime: 600000, cacheMaxSize: 1000 }}
+  metrics: {
+    consoleReporter: {enabled: true, interval: 180000},
+    csvReporter: {enabled: true, interval: 180000, fileName: /tmp/gremlin-server-metrics.csv},
+    jmxReporter: {enabled: true},
+    slf4jReporter: {enabled: true, interval: 180000},
+    gangliaReporter: {enabled: false, interval: 180000, addressingMode: MULTICAST},
+    graphiteReporter: {enabled: false, interval: 180000}}
+  maxInitialLineLength: 4096
+  maxHeaderSize: 8192
+  maxChunkSize: 8192
+  maxContentLength: 65536
+  maxAccumulationBufferComponents: 1024
+  resultIterationBatchSize: 64
+  writeBufferLowWaterMark: 32768
+  writeBufferHighWaterMark: 65536
+
 ## when using local storage and indexing, choose whether to persist day
 persistence:
   enabled: true  # set to false if you are testing and do not want to persist data
