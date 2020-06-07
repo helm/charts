@@ -89,15 +89,15 @@ gremlinServer:
       staticImports: [java.lang.Math.PI],
       scripts: [scripts/empty-sample.groovy]}}
   serializers:
-    - { className: org.apache.tinkerpop.gremlin.driver.ser.GryoMessageSerializerV1d0, config: { ioRegistries: [org.janusgraph.graphdb.tinkerpop.JanusGraphIoRegistry] }}
-    - { className: org.apache.tinkerpop.gremlin.driver.ser.GryoLiteMessageSerializerV1d0, config: {ioRegistries: [org.janusgraph.graphdb.tinkerpop.JanusGraphIoRegistry] }}
-    - { className: org.apache.tinkerpop.gremlin.driver.ser.GryoMessageSerializerV1d0, config: { serializeResultToString: true }}
-    - { className: org.apache.tinkerpop.gremlin.driver.ser.GraphSONMessageSerializerGremlinV1d0, config: { ioRegistries: [org.janusgraph.graphdb.tinkerpop.JanusGraphIoRegistryV1d0] }}
-    - { className: org.apache.tinkerpop.gremlin.driver.ser.GraphSONMessageSerializerGremlinV2d0, config: { ioRegistries: [org.janusgraph.graphdb.tinkerpop.JanusGraphIoRegistry] }}
-    - { className: org.apache.tinkerpop.gremlin.driver.ser.GraphSONMessageSerializerV1d0, config: { ioRegistries: [org.janusgraph.graphdb.tinkerpop.JanusGraphIoRegistryV1d0] }}
+    - {className: org.apache.tinkerpop.gremlin.driver.ser.GryoMessageSerializerV1d0, config: {ioRegistries: [org.janusgraph.graphdb.tinkerpop.JanusGraphIoRegistry]}}
+    - {className: org.apache.tinkerpop.gremlin.driver.ser.GryoLiteMessageSerializerV1d0, config: {ioRegistries: [org.janusgraph.graphdb.tinkerpop.JanusGraphIoRegistry]}}
+    - {className: org.apache.tinkerpop.gremlin.driver.ser.GryoMessageSerializerV1d0, config: {serializeResultToString: true}}
+    - {className: org.apache.tinkerpop.gremlin.driver.ser.GraphSONMessageSerializerGremlinV1d0, config: {ioRegistries: [orgjanusgraph.graphdb.tinkerpop.JanusGraphIoRegistryV1d0]}}
+    - {className: org.apache.tinkerpop.gremlin.driver.ser.GraphSONMessageSerializerGremlinV2d0, config: {ioRegistries: [orgjanusgraph.graphdb.tinkerpop.JanusGraphIoRegistry]}}
+    - {className: org.apache.tinkerpop.gremlin.driver.ser.GraphSONMessageSerializerV1d0, config: {ioRegistries: [org.janusgraph.graphdb.tinkerpop.JanusGraphIoRegistryV1d0]}}
   processors:
-    - { className: org.apache.tinkerpop.gremlin.server.op.session.SessionOpProcessor, config: { sessionTimeout: 28800000 }}
-    - { className: org.apache.tinkerpop.gremlin.server.op.traversal.TraversalOpProcessor, config: { cacheExpirationTime: 600000, cacheMaxSize: 1000 }}
+    - {className: org.apache.tinkerpop.gremlin.server.op.session.SessionOpProcessor, config: {sessionTimeout: 28800000}}
+    - {className: org.apache.tinkerpop.gremlin.server.op.traversal.TraversalOpProcessor, config: {cacheExpirationTime: 600000, cacheMaxSize: 1000}}
   metrics: {
     consoleReporter: {enabled: true, interval: 180000},
     csvReporter: {enabled: true, interval: 180000, fileName: /tmp/gremlin-server-metrics.csv},
