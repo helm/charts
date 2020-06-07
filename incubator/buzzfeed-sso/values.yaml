@@ -101,6 +101,12 @@ ingress:
   #  - secretName: mybackend-mydomain-tls
   #    hosts:
   #      - mybackend.mydomain.foo
+  # GCP backend service configuration
+  # Possible values can be found here : https://cloud.google.com/kubernetes-engine/docs/concepts/backendconfig#backendconfigspec_v1beta1_cloudgooglecom
+  gcpBackendConfig: {}
+  # timeoutSec: 60
+  # connectionDraining:
+  #   drainingTimeoutSec: 60
 
 upstreams: []
 # See https://github.com/buzzfeed/sso/blob/f437f237ac977201f15868601c9bc0e9dff11f40/docs/sso_config.md#proxy-config
