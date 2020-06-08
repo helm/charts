@@ -73,6 +73,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | `nodeSelector`                          | Node labels for pod assignment                                                        | {}                                                          |
 | `tolerations`                           | Tolerations for pod assignment                                                        | []                                                          |
 | `zoneFiles`                             | Configure custom Zone files                                                           | []                                                          |
+| `extraVolumes`                          | Optional array of volumes to create                                                   | []                                                          |
+| `extraVolumeMounts`                     | Optional array of volumes to mount inside the CoreDNS container                       | []                                                          |
 | `extraSecrets`                          | Optional array of secrets to mount inside the CoreDNS container                       | []                                                          |
 | `customLabels`                          | Optional labels for Deployment(s), Pod, Service, ServiceMonitor objects               | {}                                                          |
 | `podDisruptionBudget`                   | Optional PodDisruptionBudget                                                          | {}                                                          |

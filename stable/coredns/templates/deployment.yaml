@@ -81,6 +81,9 @@ spec:
           mountPath: {{ .mountPath }}
           readOnly: true
 {{- end }}
+{{- if .Values.extraVolumeMounts }}
+{{- toYaml .Values.extraVolumeMounts | nindent 8}}
+{{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         ports:
@@ -119,4 +122,7 @@ spec:
           secret:
             secretName: {{ .name }}
             defaultMode: 400
+{{- end }}
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 8 }}
 {{- end }}
