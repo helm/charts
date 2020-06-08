@@ -73,8 +73,9 @@ spec:
               - C:\opt\omsagentwindows\scripts\cmd\livenessProbe.cmd
           periodSeconds: 60
           initialDelaySeconds: 180
-   nodeSelector:
-    beta.kubernetes.io/os: windows
+   {{- with .Values.omsagent.daemonset-windows.affinity }}
+   affinity: {{- toYaml . | nindent 8 }}
+   {{- end }}
    volumes:
     - name: docker-windows-kuberenetes-container-logs
       hostPath:

@@ -94,8 +94,6 @@ spec:
          - "/opt/livenessprobe.sh"
         initialDelaySeconds: 60
         periodSeconds: 60
-   nodeSelector:
-    beta.kubernetes.io/os: linux
    {{- with .Values.omsagent.deployment.affinity }}
    affinity: {{- toYaml . | nindent 8 }}
    {{- end }}
