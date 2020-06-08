@@ -298,3 +298,14 @@ jobs:
     parallelism: 1
     resources: {}
     restartPolicy: Never
+
+initContainers: []
+
+tls:
+  enabled: false
+  secureClientPort: 2182
+  trustStorePath: ""
+  trustStorePassword: ""
+  keyStorePath: ""
+  keyStorePassword: ""
+  authProvider: "org.apache.zookeeper.server.auth.X509AuthenticationProvider"

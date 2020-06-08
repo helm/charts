@@ -64,6 +64,17 @@ data:
       mkdir -p $ZK_DATA_LOG_DIR
       echo $MY_ID >> $ID_FILE
 
+{{ if .Values.tls.enabled }}
+      echo "secureClientPort={{ .Values.tls.secureClientPort }}" >> $ZK_CONFIG_FILE
+{{ if .Values.tls.trustStorePath }}
+      echo "ssl.trustStore.location={{ .Values.tls.trustStorePath }}" >> $ZK_CONFIG_FILE
+      echo "ssl.trustStore.password={{ .Values.tls.trustStorePassword }}" >> $ZK_CONFIG_FILE
+{{ end }}
+      echo "ssl.keyStore.location={{ .Values.tls.keyStorePath }}" >> $ZK_CONFIG_FILE
+      echo "ssl.keyStore.password={{ .Values.tls.keyStorePassword }}" >> $ZK_CONFIG_FILE
+      echo "authProvider.1={{ .Values.tls.authProvider }}" >> $ZK_CONFIG_FILE
+      echo "serverCnxnFactory=org.apache.zookeeper.server.NettyServerCnxnFactory" >> $ZK_CONFIG_FILE
+{{ end }}
       echo "clientPort=$ZK_CLIENT_PORT" >> $ZK_CONFIG_FILE
       echo "dataDir=$ZK_DATA_DIR" >> $ZK_CONFIG_FILE
       echo "dataLogDir=$ZK_DATA_LOG_DIR" >> $ZK_CONFIG_FILE

@@ -175,6 +175,11 @@ spec:
 {{ toYaml .Values.exporters.zookeeper.resources | indent 12 }}
 {{- end }}
 
+# Custom init containers
+{{- if .Values.initContainers }}
+      initContainers:
+        {{ .Values.initContainers }}
+{{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
