@@ -130,6 +130,7 @@ spec:
             - name: extra-config
               mountPath: /configmap
             {{- end }}
+            {{- if .Values.extraVolumeMounts }}{{ toYaml .Values.extraVolumeMounts | trim | nindent 12 }}{{ end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
       volumes:
@@ -150,6 +151,7 @@ spec:
           secret:
             secretName: "{{ .Values.customCert.certSecret }}"
         {{- end }}
+        {{- if .Values.extraVolumes  }}{{ toYaml .Values.extraVolumes | trim | nindent 8 }}{{ end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

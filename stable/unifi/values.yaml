@@ -218,6 +218,18 @@ persistence:
   accessMode: ReadWriteOnce
   size: 5Gi
 
+extraVolumes: []
+  ## specify additional volume to be used by extraVolumeMounts inside unifi container
+  # - name: additional-volume
+  #   hostPath:
+  #     path: /path/on/host
+  #     type: DirectoryOrCreate
+
+extraVolumeMounts: []
+  ## specify additional VolumeMount to be mounted inside unifi container
+  # - name: additional-volume
+  #   mountPath: /path/in/container
+
 extraJvmOpts: []
   ## Extra java options
   ## Here are some examples of valid JVM options:

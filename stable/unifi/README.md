@@ -114,6 +114,8 @@ The following tables lists the configurable parameters of the Unifi chart and th
 | `persistence.existingClaim`                     | `nil`                        | Use an existing PVC to persist data                                                                                    |
 | `persistence.subPath`                           | ``                           | Store data in a subdirectory of PV instead of at the root directory                                                    |
 | `persistence.storageClass`                      | `-`                          | Type of persistent volume claim                                                                                        |
+| `extraVolumes`                                  | `[]`                         | Additional volumes to be used by extraVolumeMounts                                                                     |
+| `extraVolumeMounts`                             | `[]`                         | Additional volume mounts to be mounted in unifi container                                                              |
 | `persistence.accessModes`                       | `[]`                         | Persistence access modes                                                                                               |
 | `extraConfigFiles`                              | `{}`                         | Dictionary containing files mounted to `/configmap` inside the pod (See [values.yaml](values.yaml) for examples)       |
 | `extraJvmOpts`                                  | `[]`                         | List of additional JVM options, e.g. `["-Dlog4j.configurationFile=file:/configmap/log4j2.xml"]`                        |
