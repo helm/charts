@@ -47,8 +47,8 @@ weave-scope-frontend:
     # weave-scope-frontend path(s) must be provided if Ingress is enabled
     paths: []
     # weave-scope-frontend hostname(s) must be provided if Ingress is enabled
-    hosts:
-      - weave-scope.example.test
+    hosts: []
+    #  - weave-scope.example.test
     # Ingress TLS secret
     # Must be created manually in the namespace
     tls: []
