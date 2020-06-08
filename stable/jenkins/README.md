@@ -265,6 +265,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `networkPolicy.enabled`           | Enable creation of NetworkPolicy resources. | `false`                            |
 | `networkPolicy.apiVersion`        | NetworkPolicy ApiVersion             | `networking.k8s.io/v1`                    |
 | `networkPolicy.internalAgents.allowed`           | Allow internal agents (from the same cluster) to connect to master. Agent pods would be filtered based on PodLabels. | `false`                            |
+| `networkPolicy.internalAgents.podLabels`           | A map of labels (keys/values) that agents pods must have to be able to connect to master. | `{}`                            |
 | `networkPolicy.internalAgents.namespaceLabels`           | A map of labels (keys/values) that agents namespaces must have to be able to connect to master. | `{}`                            |
 | `networkPolicy.externalAgents.ipCIDR`           | The IP range from which external agents are allowed to connect to master. | ``                            |
 | `networkPolicy.externalAgents.except`           | A list of IP sub-ranges to be excluded from the whitelisted IP range. | `[]`                            |

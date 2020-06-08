@@ -620,6 +620,7 @@ networkPolicy:
   # You can allow agents to connect from both within the cluster (from within specific/all namespaces) AND/OR from a given external IP range
   internalAgents:
     allowed: true
+    podLabels: {}
     namespaceLabels: {}
       # project: myproject
   externalAgents: {}
