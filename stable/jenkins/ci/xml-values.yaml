@@ -1,0 +1,10 @@
+master:
+  enableXmlConfig: true
+  runAsUser: 0
+  fsGroup: 0
+  JCasC:
+    enabled: false
+    defaultConfig: false
+  sidecars:
+    configAutoReload:
+      enabled: false
