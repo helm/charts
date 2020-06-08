@@ -51,7 +51,7 @@ There are many ways to deploy this chart, but here are some starting points for 
 
 | Name | File | Description |
 | --- | --- | --- |
-| (CeleryExecutor) Minimal | [examples/minikube/custom-values.yaml](examples/minikube/custom-values.yaml) | a __non-production__ starting point |
+| (CeleryExecutor) Minimal | [examples/minikube/custom-values.yaml](examples/minikube/custom-values.yaml) | a __non-production__ starting point | 
 | (CeleryExecutor) Google Cloud | [examples/google-gke/custom-values.yaml](examples/google-gke/custom-values.yaml) | a __production__ starting point for GKE on Google Cloud |
 
 ## Airflow-Configs
@@ -104,7 +104,7 @@ scheduler:
         }
 ```
 
-__NOTE:__ As connections may include sensitive data, we store the bash script which generates the connections in a Kubernetes Secret, and mount this to the pods.
+__NOTE:__ As connections may include sensitive data, we store the bash script which generates the connections in a Kubernetes Secret, and mount this to the pods. 
 
 __WARNING:__ Because some values are sensitive, you should take care to store your custom `values.yaml` securely before passing it to helm with: `helm -f <my-secret-values.yaml>`
 
@@ -174,9 +174,9 @@ This chart exposes 2 endpoints on the Ingress:
 
 #### Custom Paths:
 
-This chart enables you to add various paths to the ingress.
+This chart enables you to add various paths to the ingress. 
 It includes two values for you to customize these paths, `precedingPaths` and `succeedingPaths`, which are before and after the default path to `Service/airflow-web`.
-A common use case is enabling https with the `aws-alb-ingress-controller` [ssl-redirect](https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/tasks/ssl_redirect/), which needs a redirect path to be hit before the airflow-web one.
+A common use case is enabling https with the `aws-alb-ingress-controller` [ssl-redirect](https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/tasks/ssl_redirect/), which needs a redirect path to be hit before the airflow-web one. 
 
 You would set the values of `precedingPaths` as the following:
 ```yaml
@@ -195,7 +195,7 @@ For example, with a url-prefix of `/airflow/`:
 
 
 When customizing this, please note:
-- Airflow WebUI behaves transparently, to configure it one just needs to specify the `web.baseUrl` value.
+- Airflow WebUI behaves transparently, to configure it one just needs to specify the `web.baseUrl` value. 
 - Flower requires a URL rewrite mechanism in front of it.
   For specifics on this, see the comments of `flower.urlPrefix` inside `values.yaml`.
 
@@ -204,8 +204,8 @@ When customizing this, please note:
 We use a Kubernetes StatefulSet for the Celery workers, this allows the webserver to requests logs from each workers individually, with a fixed DNS name.
 
 Celery workers can be scaled using the [Horizontal Pod Autoscaler](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/).
-To enable autoscaling, you must set `workers.autoscaling.enabled=true`, then provide `workers.autoscaling.maxReplicas`, and `workers.replicas` for the minimum amount.
-Make sure to set a resource request in `workers.resources`, and `dags.git.gitSync.resources`, otherwise worker pods will not scale.
+To enable autoscaling, you must set `workers.autoscaling.enabled=true`, then provide `workers.autoscaling.maxReplicas`, and `workers.replicas` for the minimum amount. 
+Make sure to set a resource request in `workers.resources`, and `dags.git.gitSync.resources`, otherwise worker pods will not scale. 
 (For git-sync, `64Mi` should be enough.)
 
 Assume every task a worker executes consumes approximately `200Mi` memory, that means memory is a good metric for utilisation monitoring.
@@ -248,7 +248,7 @@ dags:
           memory: "64Mi"
 ```
 
-__NOTE:__ With this config if a worker consumes `80%` of `2Gi` (which will happen if it runs 9-10 tasks at the same time), an autoscale event will be triggered, and a new worker will be added.
+__NOTE:__ With this config if a worker consumes `80%` of `2Gi` (which will happen if it runs 9-10 tasks at the same time), an autoscale event will be triggered, and a new worker will be added. 
 If you have many tasks in a queue, Kubernetes will keep adding workers until maxReplicas reached, in this case `16`.
 
 ### Kubernetes-Configs/Worker-Secrets
@@ -307,7 +307,7 @@ __NOTE:__ these work with any pip package that you can install with the `pip ins
 
 ### Kubernetes-Configs/Additional-Manifests
 
-It is possible to add additional manifests into a deployment, to extend the chart.
+It is possible to add additional manifests into a deployment, to extend the chart. 
 One of the reason is to deploy a manifest specific to a cloud provider.
 
 For example, adding a `BackendConfig` on GKE:
@@ -328,7 +328,7 @@ extraManifests:
 
 If the value `scheduler.initdb` is set to `true`, the airflow-scheduler container will run `airflow initdb` before starting the scheduler as part of its startup script.
 
-If the value `scheduler.preinitdb` is set to `true`, the airflow-scheduler pod will run `airflow initdb` as an initContainer, before the git-clone initContainer (if that is enabled).
+If the value `scheduler.preinitdb` is set to `true`, the airflow-scheduler pod will run `airflow initdb` as an initContainer, before the git-clone initContainer (if that is enabled).  
 This is rarely necessary but can be so under certain conditions if your synced DAGs include custom database hooks that prevent `initdb` from running successfully.
 For example, if they have dependencies on variables that won't be present yet.
 The initdb initcontainer will retry up to 5 times before giving up.
@@ -423,7 +423,7 @@ __NOTE:__ it is also possible to persist logs by mounting a `PersistentVolume` t
 ### Other/Service-Monitor
 
 The service monitor is something introduced by the [CoresOS Prometheus Operator](https://github.com/coreos/prometheus-operator).
-To be able to expose metrics to prometheus you need install a plugin, this can be added to the docker image.
+To be able to expose metrics to prometheus you need install a plugin, this can be added to the docker image. 
 A good one is [epoch8/airflow-exporter](https://github.com/epoch8/airflow-exporter), which exposes dag and task based metrics from Airflow.
 For more information: see the `serviceMonitor` section of `values.yaml`.
 
@@ -468,7 +468,7 @@ However, if you want to implicitly trust all repo host signatures set `dags.git.
 In this method you store your DAGs in a Kubernetes Persistent Volume Claim (PVC), and use some external system to ensure this volume has your latest DAGs.
 For example, you could use your CI/CD pipeline system to preform a sync as changes are pushed to a git repo.
 
-Since ALL Pods MUST HAVE the same collection of DAG files, it is recommended to create just one PVC that is shared.
+Since ALL Pods MUST HAVE the same collection of DAG files, it is recommended to create just one PVC that is shared. 
 To share a PVC with multiple Pods, the PVC needs to have `accessMode` set to `ReadOnlyMany` or `ReadWriteMany` (Note: different StorageClass support different [access modes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes)).
 If you are using Kubernetes on a public cloud, a persistent volume controller is likely built in:
 [Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/storage-classes.html),
@@ -487,11 +487,11 @@ dags:
 
 #### Option 2a -- Single PVC for DAGs & Logs
 
-You may want to store DAGs and logs on the same volume and configure Airflow to use subdirectories for them.
+You may want to store DAGs and logs on the same volume and configure Airflow to use subdirectories for them. 
 One reason is that mounting the same volume multiple times with different subPaths can cause problems in Kubernetes, e.g. one of the mounts gets stuck during container initialisation.
 
 Here's an approach that achieves this:
-* Configure `airflow.extraVolume` and `airflow.extraVolumeMount` to put a volume at `/opt/airflow/efs`
+* Configure `airflow.extraVolume` and `airflow.extraVolumeMount` to put a volume at `/opt/airflow/efs` 
 * Configure `dags.persistence.enabled` and `logs.persistence.enabled` to be `false`
 * Configure `dags.path` to be `/opt/airflow/efs/dags`
 * Configure `logs.path` to be `/opt/airflow/efs/logs`

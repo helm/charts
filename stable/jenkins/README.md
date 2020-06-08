@@ -68,7 +68,7 @@ master:
 #### Migration steps
 
 Migration instructions heavily depend on your current setup.
-So think of the list below more as a general guideline of what should be done.
+So think of the list below more as a general guideline of what should be done. 
 
 - Ensure that the Jenkins image you are using contains a user with id 1000 and a group with the same id.
   That's the case for `jenkins/jenkins:lts` image, which the chart uses by default
