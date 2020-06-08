@@ -759,7 +759,7 @@ dags:
     ##   url: "https://github.com/torvalds/linux.git"
     ##
     ## EXAMPLE: (SSH)
-    ##   url: "ssh://git@github.com:torvalds/linux.git"
+    ##   url: "git@github.com:torvalds/linux.git"
     ##
     url: ""
 
