@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: {{ template "kube-slack.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "kube-slack.fullname" . }}
