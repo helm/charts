@@ -45,6 +45,9 @@ spec:
           args:
             - --path.procfs=/host/proc
             - --path.sysfs=/host/sys
+          {{- if .Values.nodeExporter.hostNetwork }}
+            - --web.listen-address=:{{ .Values.nodeExporter.service.hostPort }}
+          {{- end }}
           {{- range $key, $value := .Values.nodeExporter.extraArgs }}
           {{- if $value }}
             - --{{ $key }}={{ $value }}
@@ -54,7 +57,11 @@ spec:
           {{- end }}
           ports:
             - name: metrics
+              {{- if .Values.nodeExporter.hostNetwork }}
+              containerPort: {{ .Values.nodeExporter.service.hostPort }}
+              {{- else }}
               containerPort: 9100
+              {{- end }}
               hostPort: {{ .Values.nodeExporter.service.hostPort }}
           resources:
 {{ toYaml .Values.nodeExporter.resources | indent 12 }}
