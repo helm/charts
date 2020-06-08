@@ -158,3 +158,7 @@ For example:
 
 The Azure Monitor for containers agent only creates secure connection over http.
 Even if you specify the protocol as http, please note that http requests are created using SSL/TLS secure connection so the proxy must support SSL/TLS.
+
+## Support for Windows Container Logs
+
+Starting with chart version 2.7.1, deploys the daemonset for windows agent which collects std{out;err} logs of the containers running on windows nodes.
