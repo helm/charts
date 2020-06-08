@@ -79,7 +79,7 @@ omsagent:
                   operator: NotIn
                   values:
                     - master
-  daemonset-windows:
+  daemonsetwindows:
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:

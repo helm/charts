@@ -73,7 +73,7 @@ spec:
               - C:\opt\omsagentwindows\scripts\cmd\livenessProbe.cmd
           periodSeconds: 60
           initialDelaySeconds: 180
-   {{- with .Values.omsagent.daemonset-windows.affinity }}
+   {{- with .Values.omsagent.daemonsetwindows.affinity }}
    affinity: {{- toYaml . | nindent 8 }}
    {{- end }}
    volumes:
