@@ -1,5 +1,8 @@
 # Datadog changelog
 
+## 2.3.9
+* Add `clusterAgent.podLabels` variable to add labels to the Cluster Agent Pod(s)
+
 ## 2.3.8
 
 * Fix templating errors when `clusterAgent.datadog_cluster_yaml` is being used.
