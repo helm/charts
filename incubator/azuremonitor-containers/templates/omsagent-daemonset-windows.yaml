@@ -21,7 +21,7 @@ spec:
    labels:
     dsName: "omsagent-ds"
    annotations:
-    agentVersion: {{ .Values.omsagent.image.tagWindowsAgent }}
+    agentVersion: {{ .Values.omsagent.image.tagWindows }}
     dockerProviderVersion: {{ .Values.omsagent.image.dockerProviderVersion }}
     schema-versions: "v1"
   spec:
@@ -31,9 +31,9 @@ spec:
    containers:
      - name: omsagent-win
        {{- if eq (.Values.omsagent.domain | lower) "opinsights.azure.cn" }}
-       image: "dockerhub.azk8s.cn/microsoft/oms:{{ .Values.omsagent.image.tagWindowsAgent }}"
+       image: "dockerhub.azk8s.cn/microsoft/oms:{{ .Values.omsagent.image.tagWindows }}"
        {{- else }}
-       image: {{ printf "%s:%s" .Values.omsagent.image.repo .Values.omsagent.image.tagWindowsAgent }}
+       image: {{ printf "%s:%s" .Values.omsagent.image.repo .Values.omsagent.image.tagWindows }}
        {{- end }}
        imagePullPolicy: IfNotPresent
        resources:
