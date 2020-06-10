@@ -95,6 +95,10 @@ spec:
         - mountPath: /etc/config/settings
           name: settings-vol-config
           readOnly: true
+        {{- if .Values.omsagent.logsettings.custommountpath }}
+        - mountPath: {{ .Values.omsagent.logsettings.custommountpath }}
+          name: custom-mount-path
+        {{- end }}
        livenessProbe:
         exec:
          command:
@@ -135,4 +139,9 @@ spec:
       configMap:
         name: container-azm-ms-agentconfig
         optional: true
+    {{- if .Values.omsagent.logsettings.custommountpath }}
+    - name: custom-mount-path
+      hostPath:
+       path: {{ .Values.omsagent.logsettings.custommountpath }}
+    {{- end }}
 {{- end }}

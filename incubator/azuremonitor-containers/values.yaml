@@ -30,6 +30,8 @@ omsagent:
     logflushintervalsecs: ""
     tailbufchunksizemegabytes: ""
     tailbufmaxsizemegabytes: ""
+    ## Applicable for only Azure Stack Edge K8s since it has custom mount path for container logs which will have symlink to /var/log path
+    custommountpath: ""
 
   ## Configure node tolerations for scheduling onto nodes with taints
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
