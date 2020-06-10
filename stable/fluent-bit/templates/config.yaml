@@ -234,6 +234,9 @@ data:
 {{- if .timeFormat }}
         Time_Format {{ .timeFormat }}
 {{- end }}
+{{- if .types }}
+        Types       {{ .types }}
+{{- end }}
 {{ end }}
 {{- end }}
 {{- if .Values.parsers.json }}
@@ -268,6 +271,9 @@ data:
 {{- end }}
 {{- if .timeFormat }}
         Time_Format {{ .timeFormat }}
+{{- end }}
+{{- if .types }}
+        Types       {{ .types }}
 {{- end }}
 {{- if .extraEntries }}
 {{ .extraEntries | indent 8 }}
