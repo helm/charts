@@ -97,6 +97,15 @@ spec:
           {{- end }}
           {{- end }}
           {{- end }}
+{{- if .Values.backup.usePodSecurityContext }}
+          securityContext:
+            runAsUser: {{ default 0 .Values.backup.runAsUser }}
+{{- if and (.Values.backup.runAsUser) (.Values.backup.fsGroup) }}
+{{- if not (eq (int .Values.backup.runAsUser) 0) }}
+            fsGroup: {{ .Values.backup.fsGroup }}
+{{- end }}
+{{- end }}
+{{- end }}
           affinity:
             podAffinity:
               preferredDuringSchedulingIgnoredDuringExecution:
