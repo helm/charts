@@ -290,7 +290,7 @@ b2gateway:
 
 ## Use this field to add environment variables relevant to Minio server. These fields will be passed on to Minio container(s)
 ## when Chart is deployed
-environment:
+environment: {}
   ## Please refer for comprehensive list https://docs.minio.io/docs/minio-server-configuration-guide.html
 
 networkPolicy:
