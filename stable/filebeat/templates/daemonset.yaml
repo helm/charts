@@ -37,6 +37,10 @@ spec:
 {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
 {{- end }}
+{{- if .Values.dnsConfig }}
+      dnsConfig:
+{{ toYaml .Values.dnsConfig | indent 8 }}
+{{- end }}
       initContainers:
 {{- if .Values.indexTemplateLoad }}
       - name: "load-es-template"
