@@ -304,7 +304,7 @@ replicaCount: 3
 
 image:
   repository: rabbitmq
-  tag: 3.8.0-alpine
+  tag: 3.8.4-alpine
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -341,6 +341,13 @@ service:
   epmdNodePort: null
   amqpNodePort: null
   managerNodePort: null
+
+  ## Custom annotations for discovery service
+  ## Will fallback to `service.annotations` while `separateAnnotations: false`
+  ##
+  discovery:
+    separateAnnotations: false
+    annotations: {}
 
 podManagementPolicy: OrderedReady
 
@@ -498,7 +505,7 @@ livenessProbe:
     command:
       - /bin/sh
       - -c
-      - 'timeout 5 wget -O - -q --header "Authorization: Basic `echo -n \"$RABBIT_MANAGEMENT_USER:$RABBIT_MANAGEMENT_PASSWORD\" | base64`" http://localhost:15672/api/healthchecks/node | grep -qF "{\"status\":\"ok\"}"'
+      - 'timeout 5 wget -O - -q --header "Authorization: Basic `echo -n \"$RABBIT_MANAGEMENT_USER:$RABBIT_MANAGEMENT_PASSWORD\" | base64`" http://127.0.0.1:15672/api/healthchecks/node | grep -qF "{\"status\":\"ok\"}"'
 
 readinessProbe:
   initialDelaySeconds: 20
@@ -509,7 +516,7 @@ readinessProbe:
     command:
       - /bin/sh
       - -c
-      - 'timeout 3 wget -O - -q --header "Authorization: Basic `echo -n \"$RABBIT_MANAGEMENT_USER:$RABBIT_MANAGEMENT_PASSWORD\" | base64`" http://localhost:15672/api/healthchecks/node | grep -qF "{\"status\":\"ok\"}"'
+      - 'timeout 3 wget -O - -q --header "Authorization: Basic `echo -n \"$RABBIT_MANAGEMENT_USER:$RABBIT_MANAGEMENT_PASSWORD\" | base64`" http://127.0.0.1:15672/api/healthchecks/node | grep -qF "{\"status\":\"ok\"}"'
 
 # Specifies an existing secret to be used for RMQ password, management user password and Erlang Cookie
 existingSecret: ""

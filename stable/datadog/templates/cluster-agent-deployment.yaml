@@ -23,10 +23,16 @@ spec:
   selector:
     matchLabels:
       app: {{ template "datadog.fullname" . }}-cluster-agent
+        {{- if .Values.clusterAgent.podLabels }}
+{{ toYaml .Values.clusterAgent.podLabels | indent 6 }}
+        {{- end }}
   template:
     metadata:
       labels:
         app: {{ template "datadog.fullname" . }}-cluster-agent
+        {{- if .Values.clusterAgent.podLabels }}
+{{ toYaml .Values.clusterAgent.podLabels | indent 8 }}
+        {{- end }}
       name: {{ template "datadog.fullname" . }}-cluster-agent
       annotations:
         {{- if .Values.clusterAgent.datadog_cluster_yaml }}
@@ -44,7 +50,7 @@ spec:
             "metrics": [
               "go_goroutines", "go_memstats_*", "process_*",
               "api_requests",
-              "datadog_requests", "external_metrics",
+              "datadog_requests", "external_metrics", "rate_limit_queries_*",
               "cluster_checks_*"
             ]
           }]

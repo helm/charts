@@ -11,7 +11,7 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   {{- if .Values.scheduler.podDisruptionBudget.maxUnavailable }}
-  maxUnavailable: {{ .Values.scheduler.podDisruptionBudget.minAvailable }}
+  maxUnavailable: {{ .Values.scheduler.podDisruptionBudget.maxUnavailable }}
   {{- end }}
   {{- if .Values.scheduler.podDisruptionBudget.minAvailable }}
   minAvailable: {{ .Values.scheduler.podDisruptionBudget.minAvailable }}

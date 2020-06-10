@@ -13,7 +13,6 @@ spec:
     apiVersion: apps/v1
     kind: StatefulSet
     name: {{ include "fluentd.fullname" . }}
-    serviceName: {{ .Values.service.name | default (include "fluentd.fullname" .) }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:

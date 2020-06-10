@@ -1,4 +1,4 @@
-# Airflow / Celery
+# Airflow Helm Chart
 
 [Airflow](https://airflow.apache.org/) is a platform to programmatically author, schedule and monitor workflows.
 
@@ -92,7 +92,7 @@ We expose the `scheduler.connections` value to allow specifying [Airflow Connect
 
 For example, to add a connection called `my_aws`:
 ```yaml
-airflow:
+scheduler:
   connections:
     - id: my_aws
       type: aws
@@ -114,18 +114,18 @@ We expose the `scheduler.variables` value to allow specifying [Airflow Variables
 
 For example, to specify a variable called `environment`:
 ```yaml
-airflow:
+scheduler:
   variables: |
     { "environment": "dev" }
 ```
 
 ### Airflow-Configs/Pools
 
-We expose the `airflow.pools` value to allow specifying [Airflow Variables](https://airflow.apache.org/docs/stable/concepts.html#pools) at deployment time, these pools will be automatically imported by the Airflow scheduler when it starts up.
+We expose the `scheduler.pools` value to allow specifying [Airflow Variables](https://airflow.apache.org/docs/stable/concepts.html#pools) at deployment time, these pools will be automatically imported by the Airflow scheduler when it starts up.
 
 For example, to create a pool called `example`:
 ```yaml
-airflow:
+scheduler:
   pools: |
     {
       "example": {
@@ -326,9 +326,9 @@ extraManifests:
 
 ### Database-Configs/Initialization
 
-If the value `airflow.initdb` is set to `true`, the airflow-scheduler container will run `airflow initdb` before starting the scheduler as part of its startup script.
+If the value `scheduler.initdb` is set to `true`, the airflow-scheduler container will run `airflow initdb` before starting the scheduler as part of its startup script.
 
-If the value `airflow.preinitdb` is set to `true`, the airflow-scheduler pod will run `airflow initdb` as an initContainer, before the git-clone initContainer (if that is enabled).  
+If the value `scheduler.preinitdb` is set to `true`, the airflow-scheduler pod will run `airflow initdb` as an initContainer, before the git-clone initContainer (if that is enabled).  
 This is rarely necessary but can be so under certain conditions if your synced DAGs include custom database hooks that prevent `initdb` from running successfully.
 For example, if they have dependencies on variables that won't be present yet.
 The initdb initcontainer will retry up to 5 times before giving up.
@@ -516,7 +516,7 @@ __Global Values:__
 | --- | --- | --- |
 | `airflow.image.*` | configs for the docker image of the web/scheduler/worker | `<see values.yaml>` |
 | `airflow.executor` | the airflow executor type to use | `CeleryExecutor` |
-| `airflow.fernetKey` | the fernet key used to encrypt the connections in the database | `""` |
+| `airflow.fernetKey` | the fernet key used to encrypt the connections/variables in the database | `7T512UXSSmBOkpWimFHIVb8jK6lfmSAvx4mO6Arehnc=` |
 | `airflow.config` | environment variables for the web/scheduler/worker pods (for airflow configs) | `{}` |
 | `airflow.podAnnotations` | extra annotations for the web/scheduler/worker/flower Pods | `{}` |
 | `airflow.extraEnv` | extra environment variables for the web/scheduler/worker/flower Pods | `[]` |
@@ -572,6 +572,7 @@ __Airflow WebUI Values:__
 | `web.livenessProbe.*` | configs for the web Service liveness probe | `<see values.yaml>` |
 | `web.secretsDir` | the directory in which to mount secrets on web containers | `/var/airflow/secrets` |
 | `web.secrets` | secret names which will be mounted as a file at `{web.secretsDir}/<secret_name>` | `[]` |
+| `web.secretsMap` | you can use secretsMap to specify a map and all the secrets will be stored within it secrets will be mounted as files at `{web.secretsDir}/<secrets_in_map>`. If you use web.secretsMap, then it overrides `web.secrets`.| `""` |
 
 __Airflow Worker Values:__
 
@@ -593,6 +594,7 @@ __Airflow Worker Values:__
 | `workers.terminationPeriod` | how many seconds to wait for tasks on a worker to finish before SIGKILL | `60` |
 | `workers.secretsDir` | directory in which to mount secrets on worker containers | `/var/airflow/secrets` |
 | `workers.secrets` | secret names which will be mounted as a file at `{workers.secretsDir}/<secret_name>` | `[]` |
+| `workers.secretsMap` | you can use secretsMap to specify a map and all the secrets will be stored within it secrets will be mounted as files at `{workers.secretsDir}/<secrets_in_map>`. If you use workers.secretsMap, then it overrides `workers.secrets`.| `""` |
 
 __Airflow Flower Values:__
 
@@ -622,7 +624,7 @@ __Airflow DAGs Values:__
 
 | Parameter | Description | Default |
 | --- | --- | --- |
-| `dags.path` | the airflow dags folder | `/opt/airflow/logs` |
+| `dags.path` | the airflow dags folder | `/opt/airflow/dags` |
 | `dags.doNotPickle` | whether to disable pickling dags from the scheduler to workers | `false` |
 | `dags.installRequirements` | install any Python `requirements.txt` at the root of `dags.path` automatically | `false` |
 | `dags.persistence.*` | configs for the dags PVC | `<see values.yaml>` |
