@@ -12,8 +12,3 @@ sources:
   - https://github.com/node-red/node-red-docker
   - https://github.com/kubernetes/charts/stable/node-red
 deprecated: true
-maintainers:
-  - name: billimek
-    email: jeff@billimek.com
-  - name: batazor
-    email: batazor111@gmail.com
