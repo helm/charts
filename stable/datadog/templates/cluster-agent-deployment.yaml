@@ -179,6 +179,11 @@ spec:
           {{- if .Values.datadog.orchestratorExplorer.enabled }}
           - name: DD_ORCHESTRATOR_EXPLORER_ENABLED
             value: "true"
+          - name: DD_COMPLIANCE_ENABLED
+            value:  {{ .Values.datadog.securityAgent.compliance.enabled | quote }}
+          {{- if .Values.datadog.securityAgent.compliance.enabled }}
+          - name: DD_COMPLIANCE_CONFIG_CHECK_INTERVAL
+            value: {{ .Values.datadog.securityAgent.compliance.checkInterval | quote }}
           {{- end }}
 {{- if .Values.clusterAgent.env }}
 {{ toYaml .Values.clusterAgent.env | indent 10 }}
@@ -202,6 +207,11 @@ spec:
             subPath: datadog-cluster.yaml
             readOnly: true
 {{- end}}
+{{- if .Values.datadog.securityAgent.compliance.configMap }}
+          - name: complianceconfigdir
+            mountPath: /etc/datadog-agent/compliance.d
+            readOnly: true
+{{- end}}
       volumes:
 {{- if .Values.clusterAgent.confd }}
         - name: confd
@@ -212,6 +222,11 @@ spec:
         - name: cluster-agent-yaml
           configMap:
             name: {{ template "datadog.fullname" . }}-cluster-agent-config
+{{- end}}
+{{- if .Values.datadog.securityAgent.compliance.configMap }}
+        - name: complianceconfigdir
+          configMap:
+            name: {{ .Values.datadog.securityAgent.compliance.configMap }}
 {{- end}}
 
 {{- if .Values.clusterAgent.volumes }}

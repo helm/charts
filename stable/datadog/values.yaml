@@ -384,6 +384,24 @@ datadog:
     #
     enabled: false
 
+  ## @param securityAgent - object - required
+  ## Enable security agent and provide custom configs
+  #
+  securityAgent:
+    ## @param enabled - boolean - required
+    ## Set this to true to enable security agent
+    #
+    enabled: false
+
+    ## @param compliance - object - required
+    compliance:
+      ## @param enabled - boolean - required
+      ## Set this to true to enable compliance checks
+      #
+      enabled: false
+      configMap: datadog-compliance-benchmarks
+      checkInterval: 20m
+
 ## @param clusterAgent - object - required
 ## This is the Datadog Cluster Agent implementation that handles cluster-wide
 ## metrics more cleanly, separates concerns for better rbac, and implements
@@ -906,6 +924,30 @@ agents:
 
       ## @param resources - object - required
       ## Resource requests and limits for the system-probe container.
+      #
+      resources: {}
+      #  requests:
+      #    cpu: 100m
+      #    memory: 200Mi
+      #  limits:
+      #    cpu: 100m
+      #    memory: 200Mi
+
+    securityAgent:
+      ## @param env - list - required
+      ## Additional environment variables for the security-agent container.
+      #
+      env:
+
+      ## @param logLevel - string - optional
+      ## Set logging verbosity, valid log levels are:
+      ## trace, debug, info, warn, error, critical, and off.
+      ## If not set, fall back to the value of datadog.logLevel.
+      #
+      logLevel:  # INFO
+
+      ## @param resources - object - required
+      ## Resource requests and limits for the security-agent container.
       #
       resources: {}
       #  requests:

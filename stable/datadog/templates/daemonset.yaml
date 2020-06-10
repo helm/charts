@@ -59,8 +59,12 @@ spec:
       dnsConfig:
 {{ toYaml .Values.agents.dnsConfig | indent 8 }}
       {{- end }}
+      {{- if .Values.datadog.securityAgent.enabled }}
+      hostPID: true
+      {{- else -}}
       {{- if .Values.datadog.dogstatsd.useHostPID }}
       hostPID: {{ .Values.datadog.dogstatsd.useHostPID }}
+      {{- end }}
       {{- end }}
       {{- if .Values.agents.image.pullSecrets }}
       imagePullSecrets:
@@ -79,6 +83,9 @@ spec:
         {{- end }}
         {{- if .Values.datadog.systemProbe.enabled }}
           {{- include "container-system-probe" . | nindent 6 }}
+        {{- end }}
+        {{- if .Values.datadog.securityAgent.enabled }}
+          {{- include "container-security-agent" . | nindent 6 }}
         {{- end }}
       initContainers:
         {{- if eq .Values.targetSystem "windows" }}
