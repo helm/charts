@@ -69,6 +69,12 @@ The following tables lists the configurable parameters of the Unifi chart and th
 | `controllerService.loadBalancerIP`              | `{}`                         | Loadbalance IP for the Unifi Controller                                                                                |
 | `controllerService.loadBalancerSourceRanges`    | None                         | List of IP CIDRs allowed access to load balancer (if supported)                                                        |
 | `controllerService.externalTrafficPolicy`       | `Cluster`                    | Set the externalTrafficPolicy in the Service to either Cluster or Local                                                |
+| `controllerService.ingress.enabled`             | `false`                      | Enables Ingress for the controller                                                                                     |
+| `controllerService.ingress.annotations`         | `{}`                         | Ingress annotations for the controller                                                                                 |
+| `controllerService.ingress.labels`              | `{}`                         | Custom labels for the controller                                                                                       |
+| `controllerService.ingress.path`                | `/`                          | Ingress path for the controller                                                                                        |
+| `controllerService.ingress.hosts`               | `chart-example.local`        | Ingress accepted hostnames for the controller                                                                          |
+| `controllerService.ingress.tls`                 | `[]`                         | Ingress TLS configuration for the controller                                                                           |
 | `stunService.type`                              | `NodePort`                   | Kubernetes service type for the Unifi STUN                                                                             |
 | `stunService.port`                              | `3478`                       | Kubernetes UDP port where the Unifi STUN is exposed                                                                    |
 | `stunService.annotations`                       | `{}`                         | Service annotations for the Unifi STUN                                                                                 |
