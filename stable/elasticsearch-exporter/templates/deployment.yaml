@@ -67,41 +67,7 @@ spec:
           {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["elasticsearch_exporter",
-                    {{- if .Values.es.uri }}
-                    "--es.uri={{ .Values.es.uri }}",
-                    {{- end }}
-                    {{- if .Values.es.all }}
-                    "--es.all",
-                    {{- end }}
-                    {{- if .Values.es.indices }}
-                    "--es.indices",
-                    {{- end }}
-                    {{- if .Values.es.indices_settings }}
-                    "--es.indices_settings",
-                    {{- end }}
-                    {{- if .Values.es.shards }}
-                    "--es.shards",
-                    {{- end }}
-                    {{- if .Values.es.snapshots }}
-                    "--es.snapshots",
-                    {{- end }}
-                    {{- if .Values.es.cluster_settings }}
-                    "--es.cluster_settings",
-                    {{- end }}
-                    "--es.timeout={{ .Values.es.timeout }}",
-                    {{- if .Values.es.sslSkipVerify }}
-                    "--es.ssl-skip-verify",
-                    {{- end }}
-                    {{- if .Values.es.ssl.enabled }}
-                    "--es.ca={{.Values.es.ssl.ca.path }}",
-                    {{- if .Values.es.ssl.client.enabled }}
-                    "--es.client-cert={{ .Values.es.ssl.client.pemPath }}",
-                    "--es.client-private-key={{ .Values.es.ssl.client.keyPath }}",
-                    {{- end }}
-                    {{- end }}
-                    "--web.listen-address=:{{ .Values.service.httpPort }}",
-                    "--web.telemetry-path={{ .Values.web.path }}"]
+          command: ["sh", "/opt/run.sh"]
           securityContext:
             capabilities:
               drop:
@@ -144,6 +110,8 @@ spec:
               exec:
                 command: ["/bin/bash", "-c", "sleep 20"]
           volumeMounts:
+            - name: run-script
+              mountPath: /opt
             {{- if and .Values.es.ssl.enabled (eq .Values.es.ssl.useExistingSecrets false) }}
             - mountPath: /ssl
               name: ssl
@@ -168,6 +136,9 @@ spec:
 {{ toYaml .Values.affinity | indent 8 }}
 {{- end }}
       volumes:
+        - name: run-script
+          configMap:
+            name: {{ template "elasticsearch-exporter.fullname" . }}-run-script
         {{- if and .Values.es.ssl.enabled (eq .Values.es.ssl.useExistingSecrets false) }}
         - name: ssl
           secret:

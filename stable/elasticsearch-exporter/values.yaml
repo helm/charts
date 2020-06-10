@@ -136,7 +136,7 @@ es:
     client:
       ## if true, client SSL certificate is used for authentication
       ##
-      enabled: true
+      enabled: false
 
       ## PEM that contains the client cert to connect to Elasticsearch.
       ##

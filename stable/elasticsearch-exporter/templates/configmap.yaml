@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "elasticsearch-exporter.fullname" . }}-run-script
+  labels:
+    chart: {{ template "elasticsearch-exporter.chart" . }}
+    app: {{ template "elasticsearch-exporter.name" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  run.sh: |
+    #!/bin/sh
+
+    elasticsearch_exporter \
+    {{- if .Values.es.uri }}
+    --es.uri={{ .Values.es.uri }}  \
+    {{- end }}
+    {{- if .Values.es.all }}
+    --es.all \
+    {{- end }}
+    {{- if .Values.es.indices }}
+    --es.indices \
+    {{- end }}
+    {{- if .Values.es.indices_settings }}
+    --es.indices_settings \
+    {{- end }}
+    {{- if .Values.es.shards }}
+    --es.shards \
+    {{- end }}
+    {{- if .Values.es.snapshots }}
+    --es.snapshots \
+    {{- end }}
+    {{- if .Values.es.cluster_settings }}
+    --es.cluster_settings \
+    {{- end }}
+    --es.timeout={{ .Values.es.timeout }} \
+    {{- if .Values.es.sslSkipVerify }}
+    --es.ssl-skip-verify \
+    {{- end }}
+    {{- if .Values.es.ssl.enabled }}
+    --es.ca={{.Values.es.ssl.ca.path }} \
+    {{- if .Values.es.ssl.client.enabled }}
+    --es.client-cert={{ .Values.es.ssl.client.pemPath }} \
+    --es.client-private-key={{ .Values.es.ssl.client.keyPath }} \
+    {{- end }}
+    {{- end }}
+    --web.listen-address=:{{ .Values.service.httpPort }} \
+    --web.telemetry-path={{ .Values.web.path }}
