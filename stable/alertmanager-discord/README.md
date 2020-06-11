@@ -77,5 +77,4 @@ $ helm install --name my-release -f values.yaml stable/alertmanager-discord
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
-
 > **Tip**: Do you wanna see this working? Enter this discord channel: [channel-link](https://discord.gg/5bXMu3)
