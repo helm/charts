@@ -1,0 +1,43 @@
+replicaCount: 1
+
+updateStrategy: {}
+
+imagePullSecretName:
+
+image:
+  repository: evertonfreire/alertmanager-discord
+  tag: latest
+  pullPolicy: IfNotPresent
+service:
+  type: LoadBalancer
+  externalPort: 9094
+  internalPort: 9094
+  externalIPs: []
+  nodePort: 32085
+
+  annotations: {}
+podAnnotations: {}
+
+ipForwardInitContainer: false
+
+resources:
+  limits:
+    cpu: 300m
+    memory: 128Mi
+  requests:
+    cpu: 300m
+    memory: 128Mi
+
+## Put your discord webhook link bellow on value
+env:
+  normal:
+    DISCORD_WEBHOOK: https://discord.com/api/webhooks/720391725322993694/alMvpGrG3-XytEAIZq-OGZIlofL6M-eOrE-Lth-ZpnOSh_Rvy-kLc75HJMi3OaNkvx3_
+
+readinessProbe:
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  successThreshold: 2
+
+nodeSelector: {}
+tolerations: []
+

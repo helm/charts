@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "alertmanager-discord.fullname" . }}
+  labels:
+    app: {{ template "alertmanager-discord.name" . }}
+    chart: {{ template "alertmanager-discord.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+{{- if .Values.updateStrategy }}
+  strategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}
+{{- end }}
+  selector:
+    matchLabels:
+      app: {{ template "alertmanager-discord.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "alertmanager-discord.name" . }}
+        release: {{ .Release.Name }}
+      annotations:
+        {{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+        {{- end }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 8080
+          hostPort: 8080
+          name: readness
+        - containerPort: {{ .Values.service.internalPort }}
+          {{- if .Values.service.hostPort }}
+          hostPort: {{ .Values.service.hostPort }}
+          {{- end }}
+          name: manager-discord
+        resources:
+          requests:
+            cpu: "{{ .Values.resources.requests.cpu }}"
+            memory: "{{ .Values.resources.requests.memory }}"
+          limits:
+            cpu: "{{ .Values.resources.limits.cpu }}"
+            memory: "{{ .Values.resources.limits.memory }}"
+        env:
+        {{- range $key, $val := .Values.env.normal }}
+         - name: {{ $key }}
+           value: {{ $val | quote }}
+        {{- end}}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+        {{ toYaml .Values.nodeSelector }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+
+{{- if .Values.imagePullSecretName }}
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecretName }}
+{{- end -}}
+

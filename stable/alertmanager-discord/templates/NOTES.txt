@@ -1,0 +1,3 @@
+To verify that alertmanager-discord has started, run:
+
+  kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "alertmanager-discord.name" . }},release={{ .Release.Name }}"
