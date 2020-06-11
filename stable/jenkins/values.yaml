@@ -87,8 +87,7 @@ master:
   useSecurity: true
 
   # enables configuration done directly via XML files
-  # People who want to configure Jenkins via https://github.com/jenkinsci/configuration-as-code-plugin only can set it to false
-  enableXmlConfig: true
+  enableXmlConfig: false
   # Allows to configure different SecurityRealm using Jenkins XML
   securityRealm: |-
     <securityRealm class="hudson.security.LegacySecurityRealm"/>
@@ -103,6 +102,10 @@ master:
   # you should revert master.adminUser to your preferred admin user:
   adminUser: "admin"
   # adminPassword: <defaults to random>
+  admin:
+    existingSecret: ""
+    userKey: jenkins-admin-user
+    passwordKey: jenkins-admin-password
   # This values should not be changed unless you use your custom image of jenkins or any devired from. If you want to use
   # Cloudbees Jenkins Distribution docker, you should set jenkinsHome: "/var/cloudbees-jenkins-distribution"
   jenkinsHome: "/var/jenkins_home"
@@ -137,8 +140,8 @@ master:
   usePodSecurityContext: true
   # Set runAsUser to 1000 to let Jenkins run as non-root user 'jenkins' which exists in 'jenkins/jenkins' docker image.
   # When setting runAsUser to a different value than 0 also set fsGroup to the same value:
-  # runAsUser: <defaults to 0>
-  # fsGroup: <will be omitted in deployment if runAsUser is 0>
+  runAsUser: 1000
+  fsGroup: 1000
   servicePort: 8080
   targetPort: 8080
   # For minikube, set this to NodePort, elsewhere use LoadBalancer
@@ -222,12 +225,15 @@ master:
 
   # List of plugins to be install during Jenkins master start
   installPlugins:
-    - kubernetes:1.25.3
-    - workflow-job:2.38
+    - kubernetes:1.25.7
+    - workflow-job:2.39
     - workflow-aggregator:2.6
-    - credentials-binding:1.21
+    - credentials-binding:1.22
     - git:4.2.2
-    - configuration-as-code:1.39
+    - configuration-as-code:1.41
+
+  # List of plugins to install in addition to those listed in master.installPlugins
+  additionalPlugins: []
 
   # Enable to always override the installed plugins with the values of 'master.installPlugins' on upgrade or redeployment.
   # overwritePlugins: true
@@ -265,9 +271,18 @@ master:
   # become the content of the configuration yaml file.  The first line after this is a JCasC root element, eg jenkins, credentials,
   # etc.  Best reference is https://<jenkins_url>/configuration-as-code/reference.  The example below creates a welcome message:
   JCasC:
-    enabled: false
-    defaultConfig: false
+    enabled: true
+    defaultConfig: true
     configScripts: {}
+    # Ignored if securityRealm is defined in master.JCasC.configScripts and
+    # ignored if master.enableXmlConfig=true as master.securityRealm takes precedence
+    securityRealm: |-
+      legacy
+    # Ignored if authorizationStrategy is defined in master.JCasC.configScripts and
+    # ignored if master.enableXmlConfig=true as master.authorizationStrategy takes precedence
+    authorizationStrategy: |-
+      loggedInUsersCanDoAnything:
+        allowAnonymousRead: false
     # welcome-message: |
     #   jenkins:
     #     systemMessage: Welcome to our CI\CD server.  This Jenkins is configured and managed 'as code'.
@@ -283,8 +298,8 @@ master:
       # If enabled: true, Jenkins Configuration as Code will be reloaded on-the-fly without a reboot.  If false or not-specified,
       # jcasc changes will cause a reboot and will only be applied at the subsequent start-up.  Auto-reload uses the
       # http://<jenkins_url>/reload-configuration-as-code endpoint to reapply config when changes to the configScripts are detected.
-      enabled: false
-      image: kiwigrid/k8s-sidecar:0.1.132
+      enabled: true
+      image: kiwigrid/k8s-sidecar:0.1.144
       imagePullPolicy: IfNotPresent
       resources: {}
         #   limits:
@@ -438,6 +453,7 @@ agent:
   enabled: true
   image: "jenkins/jnlp-slave"
   tag: "3.27-1"
+  workingDir: "/home/jenkins"
   customJenkinsLabels: []
   # name of the secret to be used for image pulling
   imagePullSecretName:
@@ -516,6 +532,8 @@ agent:
   #     - key: "key"
   #       operator: "Equal"
   #       value: "value"
+  # Defines how the raw yaml field gets merged with yaml definitions from inherited pod templates: merge or override
+  yamlMergeStrategy: "override"
   # Timeout in seconds for an agent to be online
   slaveConnectTimeout: 100
 

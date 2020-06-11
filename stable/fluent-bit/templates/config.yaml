@@ -26,19 +26,23 @@ data:
 
   fluent-bit-input.conf: |
     [INPUT]
-        Name             tail
-        Path             {{ .Values.input.tail.path }}
-        Parser           {{ .Values.input.tail.parser }}
-        Tag              {{ .Values.filter.kubeTag }}.*
-        Refresh_Interval 5
-        Mem_Buf_Limit    {{ .Values.input.tail.memBufLimit }}
-        Skip_Long_Lines  On
+        Name              tail
+        Path              {{ .Values.input.tail.path }}
+        Parser            {{ .Values.input.tail.parser }}
+        Tag               {{ .Values.filter.kubeTag }}.*
+        Refresh_Interval  5
+        Mem_Buf_Limit     {{ .Values.input.tail.memBufLimit }}
+        Skip_Long_Lines   On
 {{- if .Values.input.tail.ignore_older }}
-        Ignore_Older    {{ .Values.input.tail.ignore_older }}
+        Ignore_Older      {{ .Values.input.tail.ignore_older }}
 {{- end }}
 {{- if .Values.trackOffsets }}
-        DB               /tail-db/tail-containers-state.db
-        DB.Sync          Normal
+        DB                /tail-db/tail-containers-state.db
+        DB.Sync           Normal
+{{- end }}
+{{- if .Values.input.tail.dockerMode }}
+        Docker_Mode       On
+        Docker_Mode_Flush {{ .Values.input.tail.dockerModeFlush }}
 {{- end }}
 {{- if .Values.input.systemd.enabled }}
     [INPUT]
@@ -140,6 +144,9 @@ data:
         Logstash_Prefix {{ .Values.backend.es.logstash_prefix }}
 {{- if .Values.backend.es.logstash_prefix_key }}
         Logstash_Prefix_Key {{ .Values.backend.es.logstash_prefix_key }}
+{{- end }}
+{{- if .Values.backend.es.logstash_dateformat }}
+        Logstash_DateFormat {{ .Values.backend.es.logstash_dateformat }}
 {{- end }}
 {{ else if .Values.backend.es.index }}
         Index {{ .Values.backend.es.index }}

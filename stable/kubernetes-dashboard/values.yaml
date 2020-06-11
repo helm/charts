@@ -44,6 +44,9 @@ extraEnv: []
 #   seccomp.security.alpha.kubernetes.io/pod: 'runtime/default'
 podAnnotations: {}
 
+# Add custom labels to pods
+podLabels: {}
+
 ## SecurityContext for the kubernetes dashboard container
 ## Recommended values
 # dashboardContainerSecurityContext:

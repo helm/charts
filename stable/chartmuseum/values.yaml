@@ -119,12 +119,14 @@ env:
     CACHE_REDIS_PASSWORD:
 
 deployment:
+  # Define scheduler name. Use of 'default' if empty
+  schedulerName: ""
   ## Chartmuseum Deployment annotations
   annotations: {}
   #   name: value
   labels: {}
   #   name: value
-  matchlabes: {}
+  matchlabels: {}
   #   name: value
 replica:
   ## Chartmuseum Replicas annotations

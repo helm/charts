@@ -37,6 +37,11 @@ service:
 ##
 headless:
   annotations: {}
+  # publishNotReadyAddresses, default false for backward compatibility
+  # set to true to register DNS entries for unready pods, which helps in rare
+  # occasions when cluster is unable to be created, DNS caching is enforced
+  # or pods are in persistent crash loop
+  publishNotReadyAddresses: false
 
 ports:
   client:
