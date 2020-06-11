@@ -31,7 +31,7 @@ resources:
 ## Put your discord webhook link bellow on value
 env:
   normal:
-    DISCORD_WEBHOOK: https://discord.com/api/webhooks/720391725322993694/alMvpGrG3-XytEAIZq-OGZIlofL6M-eOrE-Lth-ZpnOSh_Rvy-kLc75HJMi3OaNkvx3_
+    DISCORD_WEBHOOK: https://discord.com/api/webhooks/720718621021831208/E1Djl5GtPrIAmmi7Kx5zRbEmFg5374vujN_zdpGZcWYVUR03YYMHn_qN_T3mD6jYKKXJ
 
 readinessProbe:
   initialDelaySeconds: 5
