@@ -359,7 +359,7 @@ You'll need to set both the following values:
 `controller.service.internal.enabled`
 `controller.service.internal.annotations`
 
-If one of them is missing the internal load balancer will not be daployed. Example you may have `controller.service.internal.enabled=true` but no annotations set, in this case no action will be taken.
+If one of them is missing the internal load balancer will not be deployed. Example you may have `controller.service.internal.enabled=true` but no annotations set, in this case no action will be taken.
 
 `controller.service.internal.annotations` varies with the cloud service you're using.
 
