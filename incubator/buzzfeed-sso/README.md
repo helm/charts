@@ -81,6 +81,7 @@ Parameter | Description | Default
 `proxy.service.port` | port for the http proxy service | `80`
 `proxy.secret` | secrets to be generated randomly with `openssl rand -base64 32 | head -c 32 | base64`. | REQUIRED if `proxy.customSecret` is not set
 `proxy.customSecret` | the secret key to reuse (avoids secret creation via helm) | REQUIRED if `proxy.secret` is not set
+`proxy.defaultAllowedEmailDomains` | the default allowed domains for upstreams | ``
 `provider.google` | the Oauth provider to use (only Google support for now) | REQUIRED
 `provider.google.adminEmail` | the Google admin email | `undefined`
 `provider.google.slug` | the Google provider slug | `oauth2`
@@ -94,6 +95,7 @@ Parameter | Description | Default
 `ingress.extraLabels` | extra ingress labels | `{}`
 `ingress.hosts` | proxied hosts | `[]`
 `ingress.tls` | tls certificates for the proxied hosts | `[]`
+`ingress.gcpBackendConfig` | GCP LB backend service configuration | `{}`
 `upstreams` | configuration of services that use sso | `[]`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

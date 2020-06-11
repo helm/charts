@@ -10,6 +10,7 @@ metadata:
   labels:
     {{- include "prometheus.server.labels" . | nindent 4 }}
   name: {{ template "prometheus.server.fullname" . }}
+{{ include "prometheus.namespace" . | indent 2 }}
 spec:
   selector:
     matchLabels:
@@ -17,9 +18,9 @@ spec:
   replicas: {{ .Values.server.replicaCount }}
   {{- if .Values.server.strategy }}
   strategy:
-{{ toYaml .Values.server.strategy | indent 4 }}
-  {{- if eq .Values.server.strategy.type "Recreate" }}rollingUpdate: null{{- end }}
-  {{- end }}
+{{ toYaml .Values.server.strategy | trim | indent 4 }}
+    {{ if eq .Values.server.strategy.type "Recreate" }}rollingUpdate: null{{ end }}
+{{- end }}
   template:
     metadata:
     {{- if .Values.server.podAnnotations }}

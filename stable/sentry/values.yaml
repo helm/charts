@@ -204,6 +204,11 @@ ingress:
   #   kubernetes.io/ingress.class: nginx
   #   kubernetes.io/tls-acme: 'true'
 
+  ## Ingress labels
+  #
+  labels: {}
+  #   env: dev
+
   ## Ingress TLS configuration
   ## Secrets must be manually created in the namespace
   ##
@@ -310,6 +315,7 @@ metrics:
 # Provide affinity for hooks if needed
 hooks:
   affinity: {}
+  tolerations: []
   dbInit:
     enabled: true
     resources:

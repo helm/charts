@@ -1,5 +1,24 @@
 {{/* vim: set filetype=mustache: */}}
 
+{{- define "check-version" -}}
+{{- if not .Values.agents.image.doNotCheckTag -}}
+{{- $version := .Values.agents.image.tag | toString | trimSuffix "-jmx" -}}
+{{- $length := len (split "." $version) -}}
+{{- if and (eq $length 1) (eq $version "6") -}}
+{{- $version = "6.19.0" -}}
+{{- end -}}
+{{- if and (eq $length 1) (eq $version "7") -}}
+{{- $version = "7.19.0" -}}
+{{- end -}}
+{{- if and (eq $length 1) (eq $version "latest") -}}
+{{- $version = "7.19.0" -}}
+{{- end -}}
+{{- if not (semverCompare "^6.19.0-0 || ^7.19.0-0" $version) -}}
+{{- fail "This version of the chart requires an agent image 7.19.0 or greater. If you want to force and skip this check, use `--set agents.image.doNotCheckTag=true`" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
 {{/*
 Expand the name of the chart.
 */}}
@@ -76,13 +95,7 @@ Return the container runtime socket
 */}}
 {{- define "datadog.dockerOrCriSocketPath" -}}
 {{- if eq .Values.targetSystem "linux" -}}
-{{- if .Values.datadog.dockerSocketPath -}}
-{{- .Values.dockerSocketPath -}}
-{{- else if .Values.datadog.criSocketPath -}}
-{{- .Values.datadog.criSocketPath -}}
-{{- else -}}
-/var/run/docker.sock
-{{- end -}}
+{{- .Values.datadog.dockerSocketPath | default .Values.datadog.criSocketPath | default "/var/run/docker.sock" -}}
 {{- end -}}
 {{- if eq .Values.targetSystem "windows" -}}
 \\.\pipe\docker_engine

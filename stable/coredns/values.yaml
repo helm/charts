@@ -142,6 +142,15 @@ zoneFiles: []
 #      example.com.   IN A   192.168.99.102
 #      *.example.com. IN A   192.168.99.102
 
+# optional array of extra volumes to create
+extraVolumes: []
+# - name: some-volume-name
+#   emptyDir: {}
+# optional array of mount points for extraVolumes
+extraVolumeMounts: []
+# - name: some-volume-name
+#   mountPath: /etc/wherever
+
 # optional array of secrets to mount inside coredns container
 # possible usecase: need for secure connection with etcd backend
 extraSecrets: []
@@ -163,10 +172,18 @@ autoscaler:
   coresPerReplica: 256
   # Number of nodes in the cluster per coredns replica
   nodesPerReplica: 16
+  # Min size of replicaCount
+  min: 0
+  # Max size of replicaCount (default of 0 is no max)
+  max: 0
+  # Whether to include unschedulable nodes in the nodes/cores calculations - this requires version 1.8.0+ of the autoscaler
+  includeUnschedulableNodes: false
+  # If true does not allow single points of failure to form
+  preventSinglePointFailure: true
 
   image:
     repository: k8s.gcr.io/cluster-proportional-autoscaler-amd64
-    tag: "1.7.1"
+    tag: "1.8.0"
     pullPolicy: IfNotPresent
 
   # Optional priority class to be used for the autoscaler pods. priorityClassName used if not set.

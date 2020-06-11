@@ -27,9 +27,9 @@ securityContext:
 # https://hub.docker.com/r/itzg/minecraft-server/
 livenessProbe:
   command:
-    - mcstatus
-    - localhost:25565
+    - mc-monitor
     - status
+    - localhost:25565
   initialDelaySeconds: 30
   periodSeconds: 5
   failureThreshold: 10
@@ -37,9 +37,9 @@ livenessProbe:
   timeoutSeconds: 1
 readinessProbe:
   command:
-    - mcstatus
-    - localhost:25565
+    - mc-monitor
     - status
+    - localhost:25565
   initialDelaySeconds: 30
   periodSeconds: 5
   failureThreshold: 10
@@ -173,6 +173,7 @@ persistence:
   dataDir:
     # Set this to false if you don't care to persist state between restarts.
     enabled: true
+    # existingClaim: nil
     Size: 1Gi
 
 podAnnotations: {}
