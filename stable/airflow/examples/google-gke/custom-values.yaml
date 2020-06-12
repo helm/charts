@@ -125,7 +125,7 @@ scheduler:
       type: google_cloud_platform
       extra: '{"extra__google_cloud_platform__num_retries": "5"}'
 
-  ## custom airflow pools for the airflow scheduler
+  ## custom airflow variables for the airflow scheduler
   ##
   variables: |
     { "environment": "prod" }

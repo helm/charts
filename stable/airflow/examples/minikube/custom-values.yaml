@@ -50,7 +50,7 @@ scheduler:
           "region_name":"eu-central-1"
         }
 
-  ## custom airflow pools for the airflow scheduler
+  ## custom airflow variables for the airflow scheduler
   ##
   variables: |
     { "environment": "dev" }
