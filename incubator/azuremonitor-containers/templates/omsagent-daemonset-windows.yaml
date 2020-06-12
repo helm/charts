@@ -31,7 +31,7 @@ spec:
    containers:
      - name: omsagent-win
        {{- if eq (.Values.omsagent.domain | lower) "opinsights.azure.cn" }}
-       image: "dockerhub.azk8s.cn/microsoft/oms:{{ .Values.omsagent.image.tagWindows }}"
+       image: "mcr.azk8s.cn/azuremonitor/containerinsights/ciprod:{{ .Values.omsagent.image.tagWindows }}"
        {{- else }}
        image: {{ printf "%s:%s" .Values.omsagent.image.repo .Values.omsagent.image.tagWindows }}
        {{- end }}
