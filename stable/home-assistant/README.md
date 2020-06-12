@@ -1,4 +1,9 @@
-# Home Assistant
+# DEPRECATED - Home Assistant
+
+**This chart has been deprecated and moved to its new home:**
+
+- **GitHub repo:** https://github.com/billimek/billimek-charts/tree/master/charts/home-assistant
+- **Charts repo:** https://billimek.com/billimek-charts
 
 This is a helm chart for [Home Assistant](https://www.home-assistant.io/)
 

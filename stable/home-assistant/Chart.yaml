@@ -2,7 +2,7 @@ apiVersion: v1
 appVersion: 0.108.7
 description: Home Assistant
 name: home-assistant
-version: 0.13.3
+version: 0.13.4
 keywords:
 - home-assistant
 - hass
@@ -13,8 +13,4 @@ sources:
 - https://github.com/home-assistant/home-assistant
 - https://github.com/danielperna84/hass-configurator
 - https://github.com/cdr/code-server
-maintainers:
-- name: billimek
-  email: jeff@billimek.com
-- name: runningman84
-  email: phil@hellmi.de
+deprecated: true
