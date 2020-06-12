@@ -81,7 +81,14 @@ spec:
               protocol: TCP
           {{- if .Values.flower.extraConfigmapMounts }}
           volumeMounts:
-            {{- toYaml .Values.flower.extraConfigmapMounts | nindent 12 }}
+            {{- range .Values.flower.extraConfigmapMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+              {{- if .subPath }}
+              subPath: {{ .subPath }}
+              {{- end }}
+            {{- end }}
           {{- end }}
           command:
             - "/usr/bin/dumb-init"
@@ -120,4 +127,12 @@ spec:
             failureThreshold: 3
           resources:
             {{- toYaml .Values.flower.resources | nindent 12 }}
+      {{- if .Values.flower.extraConfigmapMounts }}
+      volumes:
+        {{- range .Values.flower.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
+        {{- end }}
+      {{- end }}
 {{- end }}
