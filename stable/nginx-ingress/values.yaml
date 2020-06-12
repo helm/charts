@@ -361,6 +361,7 @@ controller:
       priorityClassName: ""
       podAnnotations: {}
       nodeSelector: {}
+      resources: {}
 
   metrics:
     port: 10254
