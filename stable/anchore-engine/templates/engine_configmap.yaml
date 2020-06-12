@@ -65,7 +65,7 @@ data:
           vulndb: {{ default "true" .Values.anchoreEnterpriseFeeds.vulndbDriverEnabled }}
           # Enabling microsoft syncs MSRC data from an on-premise anchore enterprise feeds service. Please contact
           # anchore support for finding out more about this service
-          microsoft: {{ .Values.anchoreEnterpriseFeeds.microsoftDriverEnabled }}
+          microsoft: {{ .Values.anchoreEnterpriseFeeds.msrcDriverEnabled }}
           {{- else }}
           vulndb: false
           microsoft: false
