@@ -176,6 +176,17 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.additionalPlugins`        | List of Jenkins plugins to install in addition to those listed in master.installPlugins | `[]` |
 | `master.overwritePlugins`         | Overwrite installed plugins on start.| `false`                                   |
 | `master.overwritePluginsFromImage` | Keep plugins that are already installed in the master image.| `true`            |
+| Jenkins Kubernetes Plugin         |                                      |                                           |
+| `master.slaveListenerPort`        | Listening port for agents            | `50000`                                   |
+| `master.slaveHostPort`            | Host port to listen for agents            | Not set                              |
+| `master.slaveKubernetesNamespace` | Namespace in which the Kubernetes agents should be launched  | Not set           |
+| `master.slaveDefaultsProviderTemplate` | The name of the pod template to use for providing default values | Not set  |
+| `master.slaveJenkinsUrl`          | Overrides the Kubernetes Jenkins URL    | Not set                                |
+| `master.slaveJenkinsTunnel`       | Overrides the Kubernetes Jenkins tunnel | Not set                                |
+| `master.slaveConnectTimeout`      | The connection timeout in seconds for connections to Kubernetes API. Minimum value is 5. | 5 |
+| `master.slaveReadTimeout`         | The read timeout in seconds for connections to Kubernetes API. Minimum value is 15. | 15 |
+| `master.slaveListenerServiceType` | Defines how to expose the slaveListener service | `ClusterIP`                    |
+| `master.slaveListenerLoadBalancerIP`  | Static IP for the slaveListener LoadBalancer | Not set                       |
 | Kubernetes Deployment & Service   |                                      |                                           |
 | `master.image`                    | Master image name                    | `jenkins/jenkins`                         |
 | `master.tag`                      | Master image tag                     | `lts`                                     |
@@ -225,17 +236,6 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.healthProbeReadinessFailureThreshold` | Set the failure threshold for the readiness probe | `3`               |
 | `master.healthProbeLivenessInitialDelay` | Set the initial delay for the liveness probe | `90`               |
 | `master.healthProbeReadinessInitialDelay` | Set the initial delay for the readiness probe | `60`               |
-| Jenkins Kubernetes Plugin         |                                      |                                           |
-| `master.slaveListenerPort`        | Listening port for agents            | `50000`                                   |
-| `master.slaveHostPort`            | Host port to listen for agents            | Not set                              |
-| `master.slaveKubernetesNamespace` | Namespace in which the Kubernetes agents should be launched  | Not set           |
-| `master.slaveDefaultsProviderTemplate` | The name of the pod template to use for providing default values | Not set  |
-| `master.slaveJenkinsUrl`          | Overrides the Kubernetes Jenkins URL    | Not set                                |
-| `master.slaveJenkinsTunnel`       | Overrides the Kubernetes Jenkins tunnel | Not set                                |
-| `master.slaveConnectTimeout`      | The connection timeout in seconds for connections to Kubernetes API. Minimum value is 5. | 5 |
-| `master.slaveReadTimeout`         | The read timeout in seconds for connections to Kubernetes API. Minimum value is 15. | 15 |
-| `master.slaveListenerServiceType` | Defines how to expose the slaveListener service | `ClusterIP`                    |
-| `master.slaveListenerLoadBalancerIP`  | Static IP for the slaveListener LoadBalancer | Not set                       |
 | Kubernetes Ingress                           |                                      |                                           |
 | `master.ingress.enabled`          | Enables ingress                      | `false`                                   |
 | `master.ingress.apiVersion`       | Ingress API version                  | `extensions/v1beta1`                      |
