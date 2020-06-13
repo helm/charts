@@ -147,16 +147,23 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.overwriteJobs`            | Replace jobs w/ ConfigMap on boot    | `false`                                   |
 | `master.customConfigMap`          | Deprecated: Use a custom ConfigMap   | `false`                                   |
 | `master.additionalConfig`         | Deprecated: Add additional config files | `{}`                                   |
+| Jenkins Global Security           |                                      |                                           |
+| `master.useSecurity`              | Use basic security                   | `true`                                    |
 | `master.disableRememberMe`        | Disable use of remember me           | `false`                                   |
+| `master.securityRealm`            | Jenkins XML for Security Realm       | XML for `LegacySecurityRealm`             |
+| `master.authorizationStrategy`    | Jenkins XML for Authorization Strategy | XML for `FullControlOnceLoggedInAuthorizationStrategy` |
+| `master.JCasC.securityRealm`      | Jenkins Config as Code for Security Realm | `legacy`                             |
+| `master.JCasC.authorizationStrategy` | Jenkins Config as Code for Authorization Strategy | `loggedInUsersCanDoAnything` |
+| `master.enableRawHtmlMarkupFormatter` | Enable HTML parsing using (see below) | false                                |
+| `master.markupFormatter`          | Yaml of the markup formatter to use  | `plainText`                               |
+| `master.disabledAgentProtocols`   | Disabled agent protocols             | `JNLP-connect JNLP2-connect`              |
+| `master.csrf.defaultCrumbIssuer.enabled` | Enable the default CSRF Crumb issuer | `true`                             |
+| `master.csrf.defaultCrumbIssuer.proxyCompatability` | Enable proxy compatibility | `true`                            |
+| `master.cli`                      | Enable CLI over remoting             | `false`                                   |
 | Jenkins Global Settings           |                                      |                                           |
 | `master.numExecutors`             | Set Number of executors              | 0                                         |
 | `master.executorMode`             | Set executor mode of the Jenkins node. Possible values are: NORMAL or EXCLUSIVE | NORMAL |
-| `master.markupFormatter`          | Yaml of the markup formatter to use  | `plainText`                               |
 | `master.customJenkinsLabels`      | Append Jenkins labels to the master  | `{}`                                      |
-| Jenkins Global Security           |                                      |                                           |
-| `master.useSecurity`              | Use basic security                   | `true`                                    |
-| `master.securityRealm`            | Jenkins XML for Security Realm       | XML for `LegacySecurityRealm`             |
-| `master.authorizationStrategy`    | Jenkins XML for Authorization Strategy | XML for `FullControlOnceLoggedInAuthorizationStrategy` |
 | `master.jenkinsHome`              | Custom Jenkins home path             | `/var/jenkins_home`                       |
 | `master.jenkinsRef`               | Custom Jenkins reference path        | `/usr/share/jenkins/ref`                  |
 | `master.jenkinsAdminEmail`        | Email address for the administrator of the Jenkins instance | Not set            |
@@ -218,10 +225,6 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.slaveJenkinsTunnel`       | Overrides the Kubernetes Jenkins tunnel | Not set                                |
 | `master.slaveConnectTimeout`      | The connection timeout in seconds for connections to Kubernetes API. Minimum value is 5. | 5 |
 | `master.slaveReadTimeout`         | The read timeout in seconds for connections to Kubernetes API. Minimum value is 15. | 15 |
-| `master.disabledAgentProtocols`   | Disabled agent protocols             | `JNLP-connect JNLP2-connect`              |
-| `master.csrf.defaultCrumbIssuer.enabled` | Enable the default CSRF Crumb issuer | `true`                             |
-| `master.csrf.defaultCrumbIssuer.proxyCompatability` | Enable proxy compatibility | `true`                            |
-| `master.cli`                      | Enable CLI over remoting             | `false`                                   |
 | `master.slaveListenerServiceType` | Defines how to expose the slaveListener service | `ClusterIP`                    |
 | `master.slaveListenerLoadBalancerIP`  | Static IP for the slaveListener LoadBalancer | Not set                       |
 | Kubernetes Ingress                           |                                      |                                           |
@@ -246,14 +249,11 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.route.labels`             | Route labels                         | `{}`                                      |
 | `master.route.path`               | Route path                           | Not set                                   |
 | `master.jenkinsUrlProtocol`       | Set protocol for JenkinsLocationConfiguration.xml | Set to `https` if `Master.ingress.tls`, `http` otherwise |
-| `master.JCasC.securityRealm`      | Jenkins Config as Code for Security Realm | `legacy`                             |
-| `master.JCasC.authorizationStrategy` | Jenkins Config as Code for Authorization Strategy | `loggedInUsersCanDoAnything` |
 | Jenkins Plugins                   |                                      |                                           |
 | `master.installPlugins`           | List of Jenkins plugins to install. If you don't want to install plugins set it to `[]` | `kubernetes:1.18.2 workflow-aggregator:2.6 credentials-binding:1.19 git:3.11.0 workflow-job:2.33` |
 | `master.additionalPlugins`        | List of Jenkins plugins to install in addition to those listed in master.installPlugins | `[]` |
 | `master.overwritePlugins`         | Overwrite installed plugins on start.| `false`                                   |
 | `master.overwritePluginsFromImage` | Keep plugins that are already installed in the master image.| `true`            |
-| `master.enableRawHtmlMarkupFormatter` | Enable HTML parsing using (see below) | false                                |
 | Jenkins In-Process Script Approval |                                     |                                           |
 | `master.scriptApproval`           | List of groovy functions to approve  | `[]`                                      |
 | `master.jenkinsUriPrefix`         | Root Uri Jenkins will be served on   | Not set                                   |
