@@ -171,6 +171,11 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.jenkinsUriPrefix`         | Root Uri Jenkins will be served on   | Not set                                   |
 | Jenkins In-Process Script Approval |                                     |                                           |
 | `master.scriptApproval`           | List of groovy functions to approve  | `[]`                                      |
+| Jenkins Plugins                   |                                      |                                           |
+| `master.installPlugins`           | List of Jenkins plugins to install. If you don't want to install plugins set it to `[]` | `kubernetes:1.18.2 workflow-aggregator:2.6 credentials-binding:1.19 git:3.11.0 workflow-job:2.33` |
+| `master.additionalPlugins`        | List of Jenkins plugins to install in addition to those listed in master.installPlugins | `[]` |
+| `master.overwritePlugins`         | Overwrite installed plugins on start.| `false`                                   |
+| `master.overwritePluginsFromImage` | Keep plugins that are already installed in the master image.| `true`            |
 | Kubernetes Deployment & Service   |                                      |                                           |
 | `master.image`                    | Master image name                    | `jenkins/jenkins`                         |
 | `master.tag`                      | Master image tag                     | `lts`                                     |
@@ -252,11 +257,6 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.route.annotations`        | Route annotations                    | `{}`                                      |
 | `master.route.labels`             | Route labels                         | `{}`                                      |
 | `master.route.path`               | Route path                           | Not set                                   |
-| Jenkins Plugins                   |                                      |                                           |
-| `master.installPlugins`           | List of Jenkins plugins to install. If you don't want to install plugins set it to `[]` | `kubernetes:1.18.2 workflow-aggregator:2.6 credentials-binding:1.19 git:3.11.0 workflow-job:2.33` |
-| `master.additionalPlugins`        | List of Jenkins plugins to install in addition to those listed in master.installPlugins | `[]` |
-| `master.overwritePlugins`         | Overwrite installed plugins on start.| `false`                                   |
-| `master.overwritePluginsFromImage` | Keep plugins that are already installed in the master image.| `true`            |
 | Prometheus                        |                                      |                                           |
 | `master.prometheus.enabled`       | Enables prometheus service monitor | `false`                                     |
 | `master.prometheus.serviceMonitorAdditionalLabels` | Additional labels to add to the service monitor object | `{}`                       |
