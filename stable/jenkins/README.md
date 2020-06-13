@@ -147,11 +147,6 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.overwriteJobs`            | Replace jobs w/ ConfigMap on boot    | `false`                                   |
 | `master.customConfigMap`          | Deprecated: Use a custom ConfigMap   | `false`                                   |
 | `master.additionalConfig`         | Deprecated: Add additional config files | `{}`                                   |
-| Kubernetes Deployment & Service   |                                      |                                           |
-| `master.image`                    | Master image name                    | `jenkins/jenkins`                         |
-| `master.tag`                      | Master image tag                     | `lts`                                     |
-| `master.imagePullPolicy`          | Master image pull policy             | `Always`                                  |
-| `master.imagePullSecretName`      | Master image pull secret             | Not set                                   |
 | `master.disableRememberMe`        | Disable use of remember me           | `false`                                   |
 | Jenkins Global Settings           |                                      |                                           |
 | `master.numExecutors`             | Set Number of executors              | 0                                         |
@@ -162,17 +157,16 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.useSecurity`              | Use basic security                   | `true`                                    |
 | `master.securityRealm`            | Jenkins XML for Security Realm       | XML for `LegacySecurityRealm`             |
 | `master.authorizationStrategy`    | Jenkins XML for Authorization Strategy | XML for `FullControlOnceLoggedInAuthorizationStrategy` |
-| `master.deploymentLabels`         | Custom Deployment labels             | Not set                                   |
-| `master.serviceLabels`            | Custom Service labels                | Not set                                   |
-| `master.podLabels`                | Custom Pod labels                    | Not set                                   |
 | `master.adminUser`                | Admin username (and password) created as a secret if useSecurity is true | `admin` |
 | `master.adminPassword`            | Admin password (and user) created as a secret if useSecurity is true | Random value |
-| `master.admin.existingSecret`     | The name of an existing secret containing the admin credentials. | `""`|
-| `master.admin.userKey`            | The key in the existing admin secret containing the username. | `jenkins-admin-user` |
-| `master.admin.passwordKey`        | The key in the existing admin secret containing the password. | `jenkins-admin-password` |
 | `master.jenkinsHome`              | Custom Jenkins home path             | `/var/jenkins_home`                       |
 | `master.jenkinsRef`               | Custom Jenkins reference path        | `/usr/share/jenkins/ref`                  |
 | `master.jenkinsAdminEmail`        | Email address for the administrator of the Jenkins instance | Not set            |
+| Kubernetes Deployment & Service   |                                      |                                           |
+| `master.image`                    | Master image name                    | `jenkins/jenkins`                         |
+| `master.tag`                      | Master image tag                     | `lts`                                     |
+| `master.imagePullPolicy`          | Master image pull policy             | `Always`                                  |
+| `master.imagePullSecretName`      | Master image pull secret             | Not set                                   |
 | `master.resources`                | Resources allocation (Requests and Limits) | `{requests: {cpu: 50m, memory: 256Mi}, limits: {cpu: 2000m, memory: 4096Mi}}`|
 | `master.initContainerEnv`         | Environment variables for Init Container                                 | Not set |
 | `master.containerEnv`             | Environment variables for Jenkins Container                              | Not set |
@@ -186,6 +180,27 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.servicePort`              | k8s service port                     | `8080`                                    |
 | `master.targetPort`               | k8s target port                      | `8080`                                    |
 | `master.nodePort`                 | k8s node port                        | Not set                                   |
+| `master.jmxPort`                  | Open a port, for JMX stats           | Not set                                   |
+| `master.extraPorts`               | Open extra ports, for other uses     | `[]`                                      |
+| `master.loadBalancerSourceRanges` | Allowed inbound IP addresses         | `0.0.0.0/0`                               |
+| `master.loadBalancerIP`           | Optional fixed external IP           | Not set                                   |
+| `master.deploymentLabels`         | Custom Deployment labels             | Not set                                   |
+| `master.serviceLabels`            | Custom Service labels                | Not set                                   |
+| `master.podLabels`                | Custom Pod labels                    | Not set                                   |
+| `master.nodeSelector`             | Node labels for pod assignment       | `{}`                                      |
+| `master.affinity`                 | Affinity settings                    | `{}`                                      |
+| `master.schedulerName`            | Kubernetes scheduler name            | Not set                                   |
+| `master.terminationGracePeriodSeconds` | Set TerminationGracePeriodSeconds   | Not set                               |
+| `master.tolerations`              | Toleration labels for pod assignment | `[]`                                      |
+| `master.podAnnotations`           | Annotations for master pod           | `{}`                                      |
+| `master.deploymentAnnotations`           | Annotations for master deployment           | `{}`                                      |
+| `master.lifecycle`                | Lifecycle specification for master-container | Not set                           |
+| `master.priorityClassName`        | The name of a `priorityClass` to apply to the master pod | Not set               |
+| `master.admin.existingSecret`     | The name of an existing secret containing the admin credentials. | `""`|
+| `master.admin.userKey`            | The key in the existing admin secret containing the username. | `jenkins-admin-user` |
+| `master.admin.passwordKey`        | The key in the existing admin secret containing the password. | `jenkins-admin-password` |
+| `master.customInitContainers`     | Custom init-container specification in raw-yaml format | Not set                 |
+| `master.sidecars.other`           | Configures additional sidecar container(s) for Jenkins master | `[]`             |
 | Kubernetes Health Probes                     |                                      |                                           |
 | `master.healthProbes`             | Enable k8s liveness and readiness probes    | `true`                             |
 | `master.healthProbesLivenessTimeout`  | Set the timeout for the liveness probe  | `5`                              |
@@ -211,10 +226,6 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.cli`                      | Enable CLI over remoting             | `false`                                   |
 | `master.slaveListenerServiceType` | Defines how to expose the slaveListener service | `ClusterIP`                    |
 | `master.slaveListenerLoadBalancerIP`  | Static IP for the slaveListener LoadBalancer | Not set                       |
-| `master.loadBalancerSourceRanges` | Allowed inbound IP addresses         | `0.0.0.0/0`                               |
-| `master.loadBalancerIP`           | Optional fixed external IP           | Not set                                   |
-| `master.jmxPort`                  | Open a port, for JMX stats           | Not set                                   |
-| `master.extraPorts`               | Open extra ports, for other uses     | `[]`                                      |
 | Kubernetes Ingress                           |                                      |                                           |
 | `master.ingress.enabled`          | Enables ingress                      | `false`                                   |
 | `master.ingress.apiVersion`       | Ingress API version                  | `extensions/v1beta1`                      |
@@ -239,7 +250,6 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.jenkinsUrlProtocol`       | Set protocol for JenkinsLocationConfiguration.xml | Set to `https` if `Master.ingress.tls`, `http` otherwise |
 | `master.JCasC.securityRealm`      | Jenkins Config as Code for Security Realm | `legacy`                             |
 | `master.JCasC.authorizationStrategy` | Jenkins Config as Code for Authorization Strategy | `loggedInUsersCanDoAnything` |
-| `master.sidecars.other`           | Configures additional sidecar container(s) for Jenkins master | `[]`             |
 | Jenkins Plugins                   |                                      |                                           |
 | `master.installPlugins`           | List of Jenkins plugins to install. If you don't want to install plugins set it to `[]` | `kubernetes:1.18.2 workflow-aggregator:2.6 credentials-binding:1.19 git:3.11.0 workflow-job:2.33` |
 | `master.additionalPlugins`        | List of Jenkins plugins to install in addition to those listed in master.installPlugins | `[]` |
@@ -248,16 +258,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.enableRawHtmlMarkupFormatter` | Enable HTML parsing using (see below) | false                                |
 | Jenkins In-Process Script Approval |                                     |                                           |
 | `master.scriptApproval`           | List of groovy functions to approve  | `[]`                                      |
-| `master.nodeSelector`             | Node labels for pod assignment       | `{}`                                      |
-| `master.affinity`                 | Affinity settings                    | `{}`                                      |
-| `master.schedulerName`            | Kubernetes scheduler name            | Not set                                   |
-| `master.terminationGracePeriodSeconds` | Set TerminationGracePeriodSeconds   | Not set                               |
-| `master.tolerations`              | Toleration labels for pod assignment | `[]`                                      |
-| `master.podAnnotations`           | Annotations for master pod           | `{}`                                      |
-| `master.deploymentAnnotations`           | Annotations for master deployment           | `{}`                                      |
 | `master.jenkinsUriPrefix`         | Root Uri Jenkins will be served on   | Not set                                   |
-| `master.customInitContainers`     | Custom init-container specification in raw-yaml format | Not set                 |
-| `master.lifecycle`                | Lifecycle specification for master-container | Not set                           |
 | Prometheus                        |                                      |                                           |
 | `master.prometheus.enabled`       | Enables prometheus service monitor | `false`                                     |
 | `master.prometheus.serviceMonitorAdditionalLabels` | Additional labels to add to the service monitor object | `{}`                       |
@@ -266,7 +267,6 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.prometheus.scrapeEndpoint` | The endpoint prometheus should get metrics from | `/prometheus`                 |
 | `master.prometheus.alertingrules` | Array of prometheus alerting rules | `[]`                                        |
 | `master.prometheus.alertingRulesAdditionalLabels` | Additional labels to add to the prometheus rule object     | `{}`                                   |
-| `master.priorityClassName`        | The name of a `priorityClass` to apply to the master pod | Not set               |
 | HTTPS Keystore                    |                                      |                                           |
 | `master.httpsKeyStore.enable`     | Enables https keystore on jenkins master      | `false`      |
 | `master.httpsKeyStore.jenkinsHttpsJksSecretName`     | Name of the secret that already has ssl keystore      | ``      |
