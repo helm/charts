@@ -128,15 +128,18 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `fullnameOverride`                | Override the full resource names     | `jenkins-{release-name}` (or `jenkins` if release-name is `jenkins`) |
 | `namespaceOverride`               | Override the deployment namespace    | Not set (`Release.Namespace`)             |
 | `master.componentName`            | Jenkins master name                  | `jenkins-master`                          |
+| Kubernetes Deployment & Service   |                                      |                                           |
 | `master.image`                    | Master image name                    | `jenkins/jenkins`                         |
 | `master.tag`                      | Master image tag                     | `lts`                                     |
 | `master.imagePullPolicy`          | Master image pull policy             | `Always`                                  |
 | `master.imagePullSecretName`      | Master image pull secret             | Not set                                   |
 | `master.disableRememberMe`        | Disable use of remember me           | `false`                                   |
+| Jenkins Global Settings           |                                      |                                           |
 | `master.numExecutors`             | Set Number of executors              | 0                                         |
 | `master.executorMode`             | Set executor mode of the Jenkins node. Possible values are: NORMAL or EXCLUSIVE | NORMAL |
 | `master.markupFormatter`          | Yaml of the markup formatter to use  | `plainText`                               |
 | `master.customJenkinsLabels`      | Append Jenkins labels to the master  | `{}`                                      |
+| Jenkins Global Security           |                                      |                                           |
 | `master.useSecurity`              | Use basic security                   | `true`                                    |
 | `master.securityRealm`            | Jenkins XML for Security Realm       | XML for `LegacySecurityRealm`             |
 | `master.authorizationStrategy`    | Jenkins XML for Authorization Strategy | XML for `FullControlOnceLoggedInAuthorizationStrategy` |
@@ -164,6 +167,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.servicePort`              | k8s service port                     | `8080`                                    |
 | `master.targetPort`               | k8s target port                      | `8080`                                    |
 | `master.nodePort`                 | k8s node port                        | Not set                                   |
+| Kubernetes Health Probes                     |                                      |                                           |
 | `master.healthProbes`             | Enable k8s liveness and readiness probes    | `true`                             |
 | `master.healthProbesLivenessTimeout`  | Set the timeout for the liveness probe  | `5`                              |
 | `master.healthProbesReadinessTimeout` | Set the timeout for the readiness probe | `5`                               |
@@ -173,6 +177,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.healthProbeReadinessFailureThreshold` | Set the failure threshold for the readiness probe | `3`               |
 | `master.healthProbeLivenessInitialDelay` | Set the initial delay for the liveness probe | `90`               |
 | `master.healthProbeReadinessInitialDelay` | Set the initial delay for the readiness probe | `60`               |
+| Jenkins Kubernetes Plugin         |                                      |                                           |
 | `master.slaveListenerPort`        | Listening port for agents            | `50000`                                   |
 | `master.slaveHostPort`            | Host port to listen for agents            | Not set                              |
 | `master.slaveKubernetesNamespace` | Namespace in which the Kubernetes agents should be launched  | Not set           |
@@ -192,6 +197,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.jmxPort`                  | Open a port, for JMX stats           | Not set                                   |
 | `master.extraPorts`               | Open extra ports, for other uses     | `[]`                                      |
 | `master.overwriteConfig`          | Replace init scripts and config w/ ConfigMap on boot  | `false`                  |
+| Kubernetes Ingress                           |                                      |                                           |
 | `master.ingress.enabled`          | Enables ingress                      | `false`                                   |
 | `master.ingress.apiVersion`       | Ingress API version                  | `extensions/v1beta1`                      |
 | `master.ingress.hostName`         | Ingress host name                    | Not set                                   |
@@ -200,12 +206,14 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.ingress.path`             | Ingress path                         | Not set                                   |
 | `master.ingress.paths`            | Override for the default Ingress paths  | `[]`                                   |
 | `master.ingress.tls`              | Ingress TLS configuration            | `[]`                                      |
+| GKE BackendConfig                    |                                      |                                           |
 | `master.backendconfig.enabled`     | Enables backendconfig     | `false`              |
 | `master.backendconfig.apiVersion`  | backendconfig API version | `extensions/v1beta1` |
 | `master.backendconfig.name`        | backendconfig name        | Not set              |
 | `master.backendconfig.annotations` | backendconfig annotations | `{}`                 |
 | `master.backendconfig.labels`      | backendconfig labels      | `{}`                 |
 | `master.backendconfig.spec`        | backendconfig spec        | `{}`                 |
+| OpenShift Route                   |                                      |                                           |
 | `master.route.enabled`            | Enables openshift route              | `false`                                   |
 | `master.route.annotations`        | Route annotations                    | `{}`                                      |
 | `master.route.labels`             | Route labels                         | `{}`                                      |
@@ -223,16 +231,19 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.sidecars.configAutoReload.reqRetryConnect` | How many connection-related errors to retry on  | `10`          |
 | `master.sidecars.configAutoReload.env` | Environment variables for the Jenkins Config as Code auto-reload container  | Not set |
 | `master.sidecars.other`           | Configures additional sidecar container(s) for Jenkins master | `[]`             |
+| Jenkins Configuration Files & Scripts |                                  |                                           |
 | `master.initScripts`              | List of Jenkins init scripts         | `[]`                                      |
 | `master.credentialsXmlSecret`     | Kubernetes secret that contains a 'credentials.xml' file | Not set               |
 | `master.secretsFilesSecret`       | Kubernetes secret that contains 'secrets' files | Not set                        |
 | `master.jobs`                     | Jenkins XML job configs              | `{}`                                      |
 | `master.overwriteJobs`            | Replace jobs w/ ConfigMap on boot    | `false`                                   |
+| Jenkins Plugins                   |                                      |                                           |
 | `master.installPlugins`           | List of Jenkins plugins to install. If you don't want to install plugins set it to `[]` | `kubernetes:1.18.2 workflow-aggregator:2.6 credentials-binding:1.19 git:3.11.0 workflow-job:2.33` |
 | `master.additionalPlugins`        | List of Jenkins plugins to install in addition to those listed in master.installPlugins | `[]` |
 | `master.overwritePlugins`         | Overwrite installed plugins on start.| `false`                                   |
 | `master.overwritePluginsFromImage` | Keep plugins that are already installed in the master image.| `true`            |
 | `master.enableRawHtmlMarkupFormatter` | Enable HTML parsing using (see below) | false                                |
+| Jenkins In-Process Script Approval |                                     |                                           |
 | `master.scriptApproval`           | List of groovy functions to approve  | `[]`                                      |
 | `master.nodeSelector`             | Node labels for pod assignment       | `{}`                                      |
 | `master.affinity`                 | Affinity settings                    | `{}`                                      |
@@ -246,6 +257,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.jenkinsUriPrefix`         | Root Uri Jenkins will be served on   | Not set                                   |
 | `master.customInitContainers`     | Custom init-container specification in raw-yaml format | Not set                 |
 | `master.lifecycle`                | Lifecycle specification for master-container | Not set                           |
+| Prometheus                        |                                      |                                           |
 | `master.prometheus.enabled`       | Enables prometheus service monitor | `false`                                     |
 | `master.prometheus.serviceMonitorAdditionalLabels` | Additional labels to add to the service monitor object | `{}`                       |
 | `master.prometheus.serviceMonitorNamespace` | Custom namespace for serviceMonitor | Not set (same ns where is Jenkins being deployed) |
@@ -255,6 +267,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.prometheus.alertingRulesAdditionalLabels` | Additional labels to add to the prometheus rule object     | `{}`                                   |
 | `master.priorityClassName`        | The name of a `priorityClass` to apply to the master pod | Not set               |
 | `master.testEnabled`              | Can be used to disable rendering test resources when using helm template | `true`                         |
+| HTTPS Keystore                    |                                      |                                           |
 | `master.httpsKeyStore.enable`     | Enables https keystore on jenkins master      | `false`      |
 | `master.httpsKeyStore.jenkinsHttpsJksSecretName`     | Name of the secret that already has ssl keystore      | ``      |
 | `master.httpsKeyStore.httpPort`   | Http Port that Jenkins should listen on along with https, it also serves liveness and readiness probs port. When https keystore is enabled servicePort and targetPort will be used as https port  | `8081`   |
@@ -262,6 +275,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.httpsKeyStore.fileName`  | Jenkins keystore filename which will apear under master.httpsKeyStore.path      | `keystore.jks` |
 | `master.httpsKeyStore.password`   | Jenkins keystore password                                           | `password` |
 | `master.httpsKeyStore.jenkinsKeyStoreBase64Encoded`  | Base64 ecoded Keystore content. Keystore must be converted to base64 then being pasted here  | a self signed cert |
+| Kubernetes NetworkPolicy          |                                      |                                           |
 | `networkPolicy.enabled`           | Enable creation of NetworkPolicy resources. | `false`                            |
 | `networkPolicy.apiVersion`        | NetworkPolicy ApiVersion             | `networking.k8s.io/v1`                    |
 | `networkPolicy.internalAgents.allowed`           | Allow internal agents (from the same cluster) to connect to master. Agent pods would be filtered based on PodLabels. | `false`                            |
@@ -269,11 +283,14 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `networkPolicy.internalAgents.namespaceLabels`           | A map of labels (keys/values) that agents namespaces must have to be able to connect to master. | `{}`                            |
 | `networkPolicy.externalAgents.ipCIDR`           | The IP range from which external agents are allowed to connect to master. | ``                            |
 | `networkPolicy.externalAgents.except`           | A list of IP sub-ranges to be excluded from the whitelisted IP range. | `[]`                            |
+| Kubernetes RBAC                   |                                      |                                           |
 | `rbac.create`                     | Whether RBAC resources are created   | `true`                                    |
 | `rbac.readSecrets`                | Whether the Jenkins service account should be able to read Kubernetes secrets    | `false` |
+| Kubernetes ServiceAccount - Master |                                      |                                           |
 | `serviceAccount.name`             | name of the ServiceAccount to be used by access-controlled resources | autogenerated |
 | `serviceAccount.create`           | Configures if a ServiceAccount with this name should be created | `true`         |
 | `serviceAccount.annotations`      | Configures annotation for the ServiceAccount | `{}`                              |
+| Kubernetes ServiceAccount - Agent |                                      |                                           |
 | `serviceAccountAgent.name`        | name of the agent ServiceAccount to be used by access-controlled resources | autogenerated |
 | `serviceAccountAgent.create`      | Configures if an agent ServiceAccount with this name should be created | `false`         |
 | `serviceAccountAgent.annotations` | Configures annotation for the agent ServiceAccount | `{}`                              |
@@ -286,8 +303,10 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | Parameter                  | Description                                     | Default                |
 | -------------------------- | ----------------------------------------------- | ---------------------- |
 | `agent.alwaysPullImage`    | Always pull agent container image before build  | `false`                |
+| Pod Configuration          |                                                 |                        |
 | `agent.customJenkinsLabels`| Append Jenkins labels to the agent              | `{}`                   |
 | `agent.enabled`            | Enable Kubernetes plugin jnlp-agent podTemplate | `true`                 |
+| Side Container Configuration |                                                 |                  |
 | `agent.image`              | Agent image name                                | `jenkins/inbound-agent`|
 | `agent.imagePullSecretName` | Agent image pull secret                        | Not set                |
 | `agent.tag`                | Agent image tag                                 | `4.3-4`               |
@@ -306,6 +325,7 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.yamlTemplate`       | The raw yaml of a Pod API Object to merge into the agent spec | Not set  |
 | `agent.yamlMergeStrategy`  | Defines how the raw yaml field gets merged with yaml definitions from inherited pod templates | `override` |
 | `agent.slaveConnectTimeout`| Timeout in seconds for an agent to be online    | 100                    |
+| Other                      |                                                 |                        |
 | `agent.podTemplates`       | Configures extra pod templates for the default kubernetes cloud | `{}`   |
 | `agent.workingDir`         | Configure working directory for default agent   | `/home/jenkins`        |
 | `agent.runAsUser`          | Configure container user                        | Not set                |
