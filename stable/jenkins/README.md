@@ -169,6 +169,8 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.jenkinsAdminEmail`        | Email address for the administrator of the Jenkins instance | Not set            |
 | `master.jenkinsUrlProtocol`       | Set protocol for JenkinsLocationConfiguration.xml | Set to `https` if `Master.ingress.tls`, `http` otherwise |
 | `master.jenkinsUriPrefix`         | Root Uri Jenkins will be served on   | Not set                                   |
+| Jenkins In-Process Script Approval |                                     |                                           |
+| `master.scriptApproval`           | List of groovy functions to approve  | `[]`                                      |
 | Kubernetes Deployment & Service   |                                      |                                           |
 | `master.image`                    | Master image name                    | `jenkins/jenkins`                         |
 | `master.tag`                      | Master image tag                     | `lts`                                     |
@@ -255,8 +257,6 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.additionalPlugins`        | List of Jenkins plugins to install in addition to those listed in master.installPlugins | `[]` |
 | `master.overwritePlugins`         | Overwrite installed plugins on start.| `false`                                   |
 | `master.overwritePluginsFromImage` | Keep plugins that are already installed in the master image.| `true`            |
-| Jenkins In-Process Script Approval |                                     |                                           |
-| `master.scriptApproval`           | List of groovy functions to approve  | `[]`                                      |
 | Prometheus                        |                                      |                                           |
 | `master.prometheus.enabled`       | Enables prometheus service monitor | `false`                                     |
 | `master.prometheus.serviceMonitorAdditionalLabels` | Additional labels to add to the service monitor object | `{}`                       |
