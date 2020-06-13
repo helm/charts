@@ -328,6 +328,9 @@ zookeeper:
   ## Configure Zookeeper persistence
   persistence:
     enabled: true
+  ## Configure Zookeeper headless
+  headless:
+    publishNotReadyAddresses: true
 
 
 # ------------------------------------------------------------------------------
