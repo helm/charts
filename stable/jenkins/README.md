@@ -137,6 +137,16 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.sidecars.configAutoReload.reqRetryConnect` | How many connection-related errors to retry on  | `10`          |
 | `master.sidecars.configAutoReload.env` | Environment variables for the Jenkins Config as Code auto-reload container  | Not set |
 | `master.testEnabled`              | Can be used to disable rendering test resources when using helm template | `true`                         |
+| Jenkins Configuration Files & Scripts |                                  |                                           |
+| `master.JCasC.configScripts`      | List of Jenkins Config as Code scripts | `{}`                                    |
+| `master.initScripts`              | List of Jenkins init scripts         | `[]`                                      |
+| `master.overwriteConfig`          | Replace init scripts and config w/ ConfigMap on boot  | `false`                  |
+| `master.credentialsXmlSecret`     | Kubernetes secret that contains a 'credentials.xml' file | Not set               |
+| `master.secretsFilesSecret`       | Kubernetes secret that contains 'secrets' files | Not set                        |
+| `master.jobs`                     | Jenkins XML job configs              | `{}`                                      |
+| `master.overwriteJobs`            | Replace jobs w/ ConfigMap on boot    | `false`                                   |
+| `master.customConfigMap`          | Deprecated: Use a custom ConfigMap   | `false`                                   |
+| `master.additionalConfig`         | Deprecated: Add additional config files | `{}`                                   |
 | Kubernetes Deployment & Service   |                                      |                                           |
 | `master.image`                    | Master image name                    | `jenkins/jenkins`                         |
 | `master.tag`                      | Master image tag                     | `lts`                                     |
@@ -205,7 +215,6 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.loadBalancerIP`           | Optional fixed external IP           | Not set                                   |
 | `master.jmxPort`                  | Open a port, for JMX stats           | Not set                                   |
 | `master.extraPorts`               | Open extra ports, for other uses     | `[]`                                      |
-| `master.overwriteConfig`          | Replace init scripts and config w/ ConfigMap on boot  | `false`                  |
 | Kubernetes Ingress                           |                                      |                                           |
 | `master.ingress.enabled`          | Enables ingress                      | `false`                                   |
 | `master.ingress.apiVersion`       | Ingress API version                  | `extensions/v1beta1`                      |
@@ -228,16 +237,9 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.route.labels`             | Route labels                         | `{}`                                      |
 | `master.route.path`               | Route path                           | Not set                                   |
 | `master.jenkinsUrlProtocol`       | Set protocol for JenkinsLocationConfiguration.xml | Set to `https` if `Master.ingress.tls`, `http` otherwise |
-| `master.JCasC.configScripts`      | List of Jenkins Config as Code scripts | `{}`                                    |
 | `master.JCasC.securityRealm`      | Jenkins Config as Code for Security Realm | `legacy`                             |
 | `master.JCasC.authorizationStrategy` | Jenkins Config as Code for Authorization Strategy | `loggedInUsersCanDoAnything` |
 | `master.sidecars.other`           | Configures additional sidecar container(s) for Jenkins master | `[]`             |
-| Jenkins Configuration Files & Scripts |                                  |                                           |
-| `master.initScripts`              | List of Jenkins init scripts         | `[]`                                      |
-| `master.credentialsXmlSecret`     | Kubernetes secret that contains a 'credentials.xml' file | Not set               |
-| `master.secretsFilesSecret`       | Kubernetes secret that contains 'secrets' files | Not set                        |
-| `master.jobs`                     | Jenkins XML job configs              | `{}`                                      |
-| `master.overwriteJobs`            | Replace jobs w/ ConfigMap on boot    | `false`                                   |
 | Jenkins Plugins                   |                                      |                                           |
 | `master.installPlugins`           | List of Jenkins plugins to install. If you don't want to install plugins set it to `[]` | `kubernetes:1.18.2 workflow-aggregator:2.6 credentials-binding:1.19 git:3.11.0 workflow-job:2.33` |
 | `master.additionalPlugins`        | List of Jenkins plugins to install in addition to those listed in master.installPlugins | `[]` |
@@ -253,8 +255,6 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.tolerations`              | Toleration labels for pod assignment | `[]`                                      |
 | `master.podAnnotations`           | Annotations for master pod           | `{}`                                      |
 | `master.deploymentAnnotations`           | Annotations for master deployment           | `{}`                                      |
-| `master.customConfigMap`          | Deprecated: Use a custom ConfigMap   | `false`                                   |
-| `master.additionalConfig`         | Deprecated: Add additional config files | `{}`                                   |
 | `master.jenkinsUriPrefix`         | Root Uri Jenkins will be served on   | Not set                                   |
 | `master.customInitContainers`     | Custom init-container specification in raw-yaml format | Not set                 |
 | `master.lifecycle`                | Lifecycle specification for master-container | Not set                           |
