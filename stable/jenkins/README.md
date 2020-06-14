@@ -307,25 +307,25 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.containerCap`       | Maximum number of agent                         | 10                     |
 | `agent.alwaysPullImage`    | Always pull agent container image before build  | `false`                |
 | Pod Configuration          |                                                 |                        |
+| `agent.podName`            | Agent Pod base name                             | Not set                |
 | `agent.customJenkinsLabels`| Append Jenkins labels to the agent              | `{}`                   |
+| `agent.envVars`            | Environment variables for the agent Pod         | `[]`                   |
+| `agent.idleMinutes`        | Allows the Pod to remain active for reuse       | 0                      |
+| `agent.imagePullSecretName` | Agent image pull secret                        | Not set                |
+| `agent.nodeSelector`       | Node labels for pod assignment                  | `{}`                   |
+| `agent.slaveConnectTimeout`| Timeout in seconds for an agent to be online    | 100                    |
+| `agent.volumes`            | Additional volumes                              | `[]`                   |
+| `agent.yamlTemplate`       | The raw yaml of a Pod API Object to merge into the agent spec | Not set  |
+| `agent.yamlMergeStrategy`   | Defines how the raw yaml field gets merged with yaml definitions from inherited pod templates | `override` |
 | Side Container Configuration |                                                 |                  |
 | `agent.image`              | Agent image name                                | `jenkins/inbound-agent`|
-| `agent.imagePullSecretName` | Agent image pull secret                        | Not set                |
 | `agent.tag`                | Agent image tag                                 | `4.3-4`               |
 | `agent.privileged`         | Agent privileged container                      | `false`                |
 | `agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 512m, memory: 512Mi}, limits: {cpu: 512m, memory: 512Mi}}` |
-| `agent.volumes`            | Additional volumes                              | `[]`                   |
-| `agent.envVars`            | Environment variables for the agent Pod         | `[]`                   |
-| `agent.nodeSelector`       | Node labels for pod assignment                  | `{}`                   |
 | `agent.command`            | Executed command when side container starts     | Not set                |
 | `agent.args`               | Arguments passed to executed command            | `${computer.jnlpmac} ${computer.name}` |
 | `agent.sideContainerName`  | Side container name in agent                    | jnlp                   |
 | `agent.TTYEnabled`         | Allocate pseudo tty to the side container       | false                  |
-| `agent.podName`            | Agent Pod base name                             | Not set                |
-| `agent.idleMinutes`        | Allows the Pod to remain active for reuse       | 0                      |
-| `agent.yamlTemplate`       | The raw yaml of a Pod API Object to merge into the agent spec | Not set  |
-| `agent.yamlMergeStrategy`  | Defines how the raw yaml field gets merged with yaml definitions from inherited pod templates | `override` |
-| `agent.slaveConnectTimeout`| Timeout in seconds for an agent to be online    | 100                    |
 | Other                      |                                                 |                        |
 | `agent.podTemplates`       | Configures extra pod templates for the default kubernetes cloud | `{}`   |
 | `agent.workingDir`         | Configure working directory for default agent   | `/home/jenkins`        |
