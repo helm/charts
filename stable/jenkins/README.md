@@ -305,7 +305,6 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | -------------------------- | ----------------------------------------------- | ---------------------- |
 | `agent.enabled`            | Enable Kubernetes plugin jnlp-agent podTemplate | `true`                 |
 | `agent.containerCap`       | Maximum number of agent                         | 10                     |
-| `agent.alwaysPullImage`    | Always pull agent container image before build  | `false`                |
 | Pod Configuration          |                                                 |                        |
 | `agent.podName`            | Agent Pod base name                             | Not set                |
 | `agent.customJenkinsLabels`| Append Jenkins labels to the agent              | `{}`                   |
@@ -318,19 +317,20 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.yamlTemplate`       | The raw yaml of a Pod API Object to merge into the agent spec | Not set  |
 | `agent.yamlMergeStrategy`   | Defines how the raw yaml field gets merged with yaml definitions from inherited pod templates | `override` |
 | Side Container Configuration |                                                 |                  |
+| `agent.sideContainerName`  | Side container name in agent                    | jnlp                   |
 | `agent.image`              | Agent image name                                | `jenkins/inbound-agent`|
 | `agent.tag`                | Agent image tag                                 | `4.3-4`               |
+| `agent.alwaysPullImage`    | Always pull agent container image before build  | `false`                |
 | `agent.privileged`         | Agent privileged container                      | `false`                |
 | `agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 512m, memory: 512Mi}, limits: {cpu: 512m, memory: 512Mi}}` |
-| `agent.command`            | Executed command when side container starts     | Not set                |
-| `agent.args`               | Arguments passed to executed command            | `${computer.jnlpmac} ${computer.name}` |
-| `agent.sideContainerName`  | Side container name in agent                    | jnlp                   |
-| `agent.TTYEnabled`         | Allocate pseudo tty to the side container       | false                  |
-| Other                      |                                                 |                        |
-| `agent.podTemplates`       | Configures extra pod templates for the default kubernetes cloud | `{}`   |
-| `agent.workingDir`         | Configure working directory for default agent   | `/home/jenkins`        |
 | `agent.runAsUser`          | Configure container user                        | Not set                |
 | `agent.runAsGroup`         | Configure container group                       | Not set                |
+| `agent.command`            | Executed command when side container starts     | Not set                |
+| `agent.args`               | Arguments passed to executed command            | `${computer.jnlpmac} ${computer.name}` |
+| `agent.TTYEnabled`         | Allocate pseudo tty to the side container       | false                  |
+| `agent.workingDir`         | Configure working directory for default agent   | `/home/jenkins`        |
+| Other                      |                                                 |                        |
+| `agent.podTemplates`       | Configures extra pod templates for the default kubernetes cloud | `{}`   |
 | `additionalAgents`         | Configure additional agents which inherit values from `agent` | `{}`     |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
