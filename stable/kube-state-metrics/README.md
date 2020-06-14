@@ -76,3 +76,4 @@ $ helm install stable/kube-state-metrics
 | `prometheus.monitor.namespace`               | Namespace where servicemonitor resource should be created                             | `the same namespace as kube-state-metrics` |
 | `prometheus.monitor.honorLabels`             | Honor metric labels                                                                   | `false`                                    |
 | `namespaceOverride`                          | Override the deployment namespace                                                     | `""` (`Release.Namespace`)                 |
+| `kubeTargetVersionOverride`                  | Override the k8s version of the target cluster                                        | `""`                                       |
