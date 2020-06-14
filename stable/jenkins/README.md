@@ -157,8 +157,6 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.useSecurity`              | Use basic security                   | `true`                                    |
 | `master.securityRealm`            | Jenkins XML for Security Realm       | XML for `LegacySecurityRealm`             |
 | `master.authorizationStrategy`    | Jenkins XML for Authorization Strategy | XML for `FullControlOnceLoggedInAuthorizationStrategy` |
-| `master.adminUser`                | Admin username (and password) created as a secret if useSecurity is true | `admin` |
-| `master.adminPassword`            | Admin password (and user) created as a secret if useSecurity is true | Random value |
 | `master.jenkinsHome`              | Custom Jenkins home path             | `/var/jenkins_home`                       |
 | `master.jenkinsRef`               | Custom Jenkins reference path        | `/usr/share/jenkins/ref`                  |
 | `master.jenkinsAdminEmail`        | Email address for the administrator of the Jenkins instance | Not set            |
@@ -275,6 +273,9 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.httpsKeyStore.fileName`  | Jenkins keystore filename which will apear under master.httpsKeyStore.path      | `keystore.jks` |
 | `master.httpsKeyStore.password`   | Jenkins keystore password                                           | `password` |
 | `master.httpsKeyStore.jenkinsKeyStoreBase64Encoded`  | Base64 ecoded Keystore content. Keystore must be converted to base64 then being pasted here  | a self signed cert |
+| Kubernetes Secret                 |                                      |                                           |
+| `master.adminUser`                | Admin username (and password) created as a secret if useSecurity is true | `admin` |
+| `master.adminPassword`            | Admin password (and user) created as a secret if useSecurity is true | Random value |
 | Kubernetes NetworkPolicy          |                                      |                                           |
 | `networkPolicy.enabled`           | Enable creation of NetworkPolicy resources. | `false`                            |
 | `networkPolicy.apiVersion`        | NetworkPolicy ApiVersion             | `networking.k8s.io/v1`                    |
