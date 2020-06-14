@@ -303,10 +303,11 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 
 | Parameter                  | Description                                     | Default                |
 | -------------------------- | ----------------------------------------------- | ---------------------- |
+| `agent.enabled`            | Enable Kubernetes plugin jnlp-agent podTemplate | `true`                 |
+| `agent.containerCap`       | Maximum number of agent                         | 10                     |
 | `agent.alwaysPullImage`    | Always pull agent container image before build  | `false`                |
 | Pod Configuration          |                                                 |                        |
 | `agent.customJenkinsLabels`| Append Jenkins labels to the agent              | `{}`                   |
-| `agent.enabled`            | Enable Kubernetes plugin jnlp-agent podTemplate | `true`                 |
 | Side Container Configuration |                                                 |                  |
 | `agent.image`              | Agent image name                                | `jenkins/inbound-agent`|
 | `agent.imagePullSecretName` | Agent image pull secret                        | Not set                |
@@ -320,7 +321,6 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.args`               | Arguments passed to executed command            | `${computer.jnlpmac} ${computer.name}` |
 | `agent.sideContainerName`  | Side container name in agent                    | jnlp                   |
 | `agent.TTYEnabled`         | Allocate pseudo tty to the side container       | false                  |
-| `agent.containerCap`       | Maximum number of agent                         | 10                     |
 | `agent.podName`            | Agent Pod base name                             | Not set                |
 | `agent.idleMinutes`        | Allows the Pod to remain active for reuse       | 0                      |
 | `agent.yamlTemplate`       | The raw yaml of a Pod API Object to merge into the agent spec | Not set  |
