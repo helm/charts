@@ -9,6 +9,11 @@ NOTE: The change log until version 1.5.7 is auto generated based on git commits.
 
 Add support to set `runAsUser` and `runAsGroup` for `agent`.
 
+## 2.0.2 increase retry for config auto reload
+
+Configure `REQ_RETRY_CONNECT` to `10` to give Jenkins more time to start up.
+https://github.com/kiwigrid/k8s-sidecar
+
 ## 2.0.1
 
 Only render authorizationStrategy and securityRealm when values are set.
