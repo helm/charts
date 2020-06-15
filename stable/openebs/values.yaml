@@ -17,7 +17,7 @@ release:
 
 image:
   pullPolicy: IfNotPresent
-  repository: "quay.io/"
+  repository: ""
 
 apiserver:
   enabled: true
