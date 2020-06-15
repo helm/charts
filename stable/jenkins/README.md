@@ -306,6 +306,8 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.slaveConnectTimeout`| Timeout in seconds for an agent to be online    | 100                    |
 | `agent.podTemplates`       | Configures extra pod templates for the default kubernetes cloud | `{}`   |
 | `agent.workingDir`         | Configure working directory for default agent   | `/home/jenkins`        |
+| `agent.runAsUser`          | Configure container user                        | Not set                |
+| `agent.runAsGroup`         | Configure container group                       | Not set                |
 | `additionalAgents`         | Configure additional agents which inherit values from `agent` | `{}`     |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
