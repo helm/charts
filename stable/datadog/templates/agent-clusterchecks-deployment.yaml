@@ -29,6 +29,10 @@ spec:
       {{- end }}
       imagePullSecrets:
 {{ toYaml .Values.clusterChecksRunner.image.pullSecrets | indent 8 }}
+      {{- if .Values.clusterChecksRunner.dnsConfig }}
+      dnsConfig:
+{{ toYaml .Values.clusterChecksRunner.dnsConfig | indent 8 }}
+      {{- end }}
       containers:
       - name: agent
         image: "{{ .Values.clusterChecksRunner.image.repository }}:{{ .Values.clusterChecksRunner.image.tag }}"

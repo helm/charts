@@ -49,6 +49,10 @@ spec:
       hostNetwork: {{ .Values.agents.useHostNetwork }}
       dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
+      {{- if .Values.agents.dnsConfig }}
+      dnsConfig:
+{{ toYaml .Values.agents.dnsConfig | indent 8 }}
+      {{- end }}
       {{- if .Values.datadog.dogstatsd.useHostPID }}
       hostPID: {{ .Values.datadog.dogstatsd.useHostPID }}
       {{- end }}
