@@ -10,4 +10,3 @@ spec:
   names:
     plural: healthstates
     kind: HealthState
-    
